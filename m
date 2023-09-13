@@ -2,137 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9EF79E03D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE51279E009
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbjIMGxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 02:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S238392AbjIMGaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 02:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238461AbjIMGaZ (ORCPT
+        with ESMTP id S238351AbjIMGaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 02:30:25 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CECE198D;
-        Tue, 12 Sep 2023 23:30:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id 15CB52B0014C;
-        Wed, 13 Sep 2023 02:30:14 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 13 Sep 2023 02:30:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694586613; x=1694593813; bh=Ce
-        b4aT1WPu9kJYMz0+axHKLX036tvDE1NLFhquYjUyo=; b=uelx2bRLfFCEOk/4Sn
-        tdEf/3G7NqzDKtaz6FXZiE8HwkannShE9Vhl+FY1Vyrg1jYOOVeHKxVtb1UC0zjb
-        GrOQMFl7fvpgz2z3BKaIVFAhQ77NOVRQgEdOg0efgMorMz5kt4ZqCeOTas9rUz4n
-        9VSTyGoY4SRTo7eCvp3ZPR9qKhUenCYw/OGADEOzi8qNzEjcdXVxnBDUP3IUMw3V
-        YG1NOFiAJ3rtuTHzqiMCVpXT4LnQXb2X2dYLdiY36mZ0jv9svbz0gutKBLVE7NBE
-        L6zaA03V22duVrXe++FpzJWzWnZV9KX3alRKvGmqeS3QLj6IWAXKa3i3g99vhVYU
-        0uUw==
+        Wed, 13 Sep 2023 02:30:03 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1466E173D
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 23:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1694586613; x=1694593813; bh=Ceb4aT1WPu9kJ
-        YMz0+axHKLX036tvDE1NLFhquYjUyo=; b=bsmlqKiFayLkn7sKMcRyIGpoz2xfe
-        m4SZ+z3qnnfUMf8iOWbpxG2zcy+fQxjTEb3SST6CEIr7rcVXoDQdphZCaLTm5MLK
-        RUjrltoMn8hWyHIMBqapF65rYagxDdHAiyoi1LquC2AL8BihE4KFVHasJ6/ROrrF
-        kvsYS4TUeexXwIRXafoQwQlCKQbdFGMqn2F574SuoqVNDLiapQR0z+CfojcnaO86
-        2gGM4rj5cK+SdUZ+945sxw8I2oxyOuM1EUJ2rSwLVo2fVkmCz9iscXQIxHu/Pqur
-        o0bn247bMTgWVg0zFIat5TKAP6ZRs01zbgxcIqzmU0FRVcULrt9KP3UOQ==
-X-ME-Sender: <xms:81YBZaG0Mnf6_vYAAd1hAeWFS6cps4Nwb30US9DstqV3L2GUcNCnzg>
-    <xme:81YBZbWqQbmpnrIuqWOTMsih5b2MUzAz4ervZQnQ_FzRNoJeVVZV22RYMszM_dYhc
-    PReZqlG_mcotBaq79M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeijedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:81YBZUKlkCyNX_SzBwYJ_ZCSk6PBhMpZay9X34r4z8pzgOgwJ3zFIQ>
-    <xmx:81YBZUEVy8fAgG9T9lwjzta2ySQn2_8-V7lrS5cBtRCj1ECyZoaVVQ>
-    <xmx:81YBZQU3wLh4CSPYSiI-slV5m2JhBcmn9-nvFebAiPUTSa59sS_ZVQ>
-    <xmx:9VYBZWydeG8ghXMVJqcVWi22uwiECWEdaCfONoA428U5Y9LoDYT_gyqWpkY>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id F34F1B60089; Wed, 13 Sep 2023 02:30:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <7b13a832-972a-4de6-ae0f-73b3bbb372b9@app.fastmail.com>
-In-Reply-To: <20230912221127.487327-1-ulf.hansson@linaro.org>
-References: <20230912221127.487327-1-ulf.hansson@linaro.org>
-Date:   Wed, 13 Sep 2023 08:29:49 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Olof Johansson" <olof@lixom.net>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Michal Simek" <michal.simek@amd.com>,
-        "Nishanth Menon" <nm@ti.com>,
-        "Santosh Shilimkar" <ssantosh@kernel.org>,
-        "Tero Kristo" <kristo@kernel.org>,
-        "Tony Lindgren" <tony@atomide.com>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        "Jon Hunter" <jonathanh@nvidia.com>,
-        "Mikko Perttunen" <mperttunen@nvidia.com>,
-        "Chen-Yu Tsai" <wens@csie.org>,
-        "Jernej Skrabec" <jernej.skrabec@gmail.com>,
-        "Samuel Holland" <samuel@sholland.org>,
-        "Walker Chen" <walker.chen@starfivetech.com>,
-        "Conor Dooley" <conor@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        "Magnus Damm" <magnus.damm@gmail.com>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "AngeloGioacchino Del Regno" 
-        <angelogioacchino.delregno@collabora.com>,
-        "Shawn Guo" <shawnguo@kernel.org>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Fabio Estevam" <festevam@gmail.com>,
-        "Florian Fainelli" <florian.fainelli@broadcom.com>,
-        "Ray Jui" <rjui@broadcom.com>,
-        "Scott Branden" <sbranden@broadcom.com>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Sven Peter" <sven@svenpeter.dev>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        "Kevin Hilman" <khilman@baylibre.com>,
-        "Jerome Brunet" <jbrunet@baylibre.com>,
-        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :in-reply-to:references:mime-version:content-transfer-encoding;
+         s=k1; bh=YXJOhBKin2MR8tV4lFJR3XpMrEsZzUkf4neCg226l1I=; b=ACLq9W
+        YeE62kLkVpcDzBtalbM3TiPekub5kK8UEhvcH8pO7DAIM1gsGj4KctjQ+LRqi89u
+        BqoJ7Yav4nOmYWK5PAxjAHQlj2+/iw6wbnDKAMNoc/mpuqE1LQeaMYVAr0SLGpXP
+        DY8JLRMTQ5afK+lOEH4mkZTL96vXN6mVwRIHdnuEjCOj2tCIaM4r8Klgw2/bLpI1
+        +ZOKB6zqPrYpKcOT9tm1AWkPVKfdw31Yy3bX60PpSXrNeIMh9dEmdo4TYdf6TLTX
+        AOSZq2jNNvTxauXCpwpg5WVNUTv7/DHxa5msNNEAn3ngRcm5Q22ZeXmocaXBIkwy
+        3+J+4dzcTEDOFW3A==
+Received: (qmail 489585 invoked from network); 13 Sep 2023 08:29:57 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Sep 2023 08:29:57 +0200
+X-UD-Smtp-Session: l3s3148p1@ohMosDcFlqMujnuS
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pmdomain: Rename the genpd subsystem to pmdomain
-Content-Type: text/plain
+Subject: [PATCH RFT 2/2] i2c: rcar: improve accuracy for R-Car Gen3+
+Date:   Wed, 13 Sep 2023 08:29:49 +0200
+Message-Id: <20230913062950.4968-3-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230913062950.4968-1-wsa+renesas@sang-engineering.com>
+References: <20230913062950.4968-1-wsa+renesas@sang-engineering.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, at 00:11, Ulf Hansson wrote:
-> It has been pointed out that naming a subsystem "genpd" isn't very
-> self-explanatory and the acronym itself that means Generic Power Domain, is
-> known only by a limited group of people.
->
-> In a way to improve the situation, let's rename the subsystem to pmdomain,
-> which ideally should indicate that this is about so called Power Domains or
-> "PM domains" as we often also use within the Linux Kernel terminology.
->
-> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+With some new registers, SCL can be calculated to be closer to the
+desired rate. Apply the new formula for R-Car Gen3 device types.
 
-Looks good to me,
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+The base for this patch was a BSP patch adding FM+ support. However,
+this clock calculation is significantly different:
+
+* it calculates the divider instead of trying values until it fits
+* as there was no information about reasonable SMD calculation, it uses
+  a fixed value suggested from recommended settings in the docs
+* the SCL low/high ratio is 5:4 instead of 1:1. Otherwise the specs for
+  Fastmode are slightly not met
+* it doesn't use soc_device_match
+
+ drivers/i2c/busses/i2c-rcar.c | 126 +++++++++++++++++++++++-----------
+ 1 file changed, 87 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 342c3747f415..bc5c7a0050eb 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -41,6 +41,10 @@
+ #define ICSAR	0x1C	/* slave address */
+ #define ICMAR	0x20	/* master address */
+ #define ICRXTX	0x24	/* data port */
++#define ICCCR2	0x28	/* Clock control 2 */
++#define ICMPR	0x2C	/* SCL mask control */
++#define ICHPR	0x30	/* SCL HIGH control */
++#define ICLPR	0x34	/* SCL LOW control */
+ #define ICFBSCR	0x38	/* first bit setup cycle (Gen3) */
+ #define ICDMAER	0x3c	/* DMA enable (Gen3) */
+ 
+@@ -84,11 +88,25 @@
+ #define RMDMAE	BIT(1)	/* DMA Master Received Enable */
+ #define TMDMAE	BIT(0)	/* DMA Master Transmitted Enable */
+ 
++/* ICCCR2 */
++#define CDFD	BIT(2)	/* CDF Disable */
++#define HLSE	BIT(1)	/* HIGH/LOW Separate Control Enable */
++#define SME	BIT(0)	/* SCL Mask Enable */
++
+ /* ICFBSCR */
+ #define TCYC17	0x0f		/* 17*Tcyc delay 1st bit between SDA and SCL */
+ 
+ #define RCAR_MIN_DMA_LEN	8
+ 
++/* SCL low/high ratio 5:4 to meet all I2C timing specs (incl safety margin) */
++#define RCAR_SCLD_RATIO		5
++#define RCAR_SCHD_RATIO		4
++/*
++ * SMD should be smaller than SCLD/SCHD and is always around 20 in the docs.
++ * Thus, we simply use 20 which works for low and high speeds.
++*/
++#define RCAR_DEFAULT_SMD	20
++
+ #define RCAR_BUS_PHASE_START	(MDBS | MIE | ESG)
+ #define RCAR_BUS_PHASE_DATA	(MDBS | MIE)
+ #define RCAR_BUS_PHASE_STOP	(MDBS | MIE | FSB)
+@@ -128,6 +146,7 @@ struct rcar_i2c_priv {
+ 
+ 	int pos;
+ 	u32 icccr;
++	u32 scl_gran;
+ 	u8 recovery_icmcr;	/* protected by adapter lock */
+ 	enum rcar_i2c_type devtype;
+ 	struct i2c_client *slave;
+@@ -216,11 +235,16 @@ static void rcar_i2c_init(struct rcar_i2c_priv *priv)
+ 	rcar_i2c_write(priv, ICMCR, MDBS);
+ 	rcar_i2c_write(priv, ICMSR, 0);
+ 	/* start clock */
+-	rcar_i2c_write(priv, ICCCR, priv->icccr);
+-
+-	if (priv->devtype == I2C_RCAR_GEN3)
++	if (priv->devtype < I2C_RCAR_GEN3) {
++		rcar_i2c_write(priv, ICCCR, priv->icccr);
++	} else {
++		rcar_i2c_write(priv, ICCCR2, CDFD | HLSE | SME);
++		rcar_i2c_write(priv, ICCCR, priv->icccr);
++		rcar_i2c_write(priv, ICMPR, RCAR_DEFAULT_SMD);
++		rcar_i2c_write(priv, ICHPR, RCAR_SCHD_RATIO * priv->scl_gran);
++		rcar_i2c_write(priv, ICLPR, RCAR_SCLD_RATIO * priv->scl_gran);
+ 		rcar_i2c_write(priv, ICFBSCR, TCYC17);
+-
++	}
+ }
+ 
+ static int rcar_i2c_bus_barrier(struct rcar_i2c_priv *priv)
+@@ -241,7 +265,7 @@ static int rcar_i2c_bus_barrier(struct rcar_i2c_priv *priv)
+ 
+ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+ {
+-	u32 scgd, cdf, round, ick, sum, scl, cdf_width;
++	u32 cdf, round, ick, sum, scl, cdf_width;
+ 	unsigned long rate;
+ 	struct device *dev = rcar_i2c_priv_to_dev(priv);
+ 	struct i2c_timings t = {
+@@ -254,27 +278,17 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+ 	/* Fall back to previously used values if not supplied */
+ 	i2c_parse_fw_timings(dev, &t, false);
+ 
+-	switch (priv->devtype) {
+-	case I2C_RCAR_GEN1:
+-		cdf_width = 2;
+-		break;
+-	case I2C_RCAR_GEN2:
+-	case I2C_RCAR_GEN3:
+-		cdf_width = 3;
+-		break;
+-	default:
+-		dev_err(dev, "device type error\n");
+-		return -EIO;
+-	}
+-
+ 	/*
+ 	 * calculate SCL clock
+ 	 * see
+-	 *	ICCCR
++	 *	ICCCR (and ICCCR2 for Gen3+)
+ 	 *
+ 	 * ick	= clkp / (1 + CDF)
+ 	 * SCL	= ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
+ 	 *
++	 * for Gen3+:
++	 * SCL	= clkp / (8 + SMD * 2 + SCLD + SCHD +F[(ticf + tr + intd) * clkp])
++	 *
+ 	 * ick  : I2C internal clock < 20 MHz
+ 	 * ticf : I2C SCL falling time
+ 	 * tr   : I2C SCL rising  time
+@@ -284,11 +298,12 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+ 	 */
+ 	rate = clk_get_rate(priv->clk);
+ 	cdf = rate / 20000000;
+-	if (cdf >= 1U << cdf_width) {
+-		dev_err(dev, "Input clock %lu too high\n", rate);
+-		return -EIO;
+-	}
+-	ick = rate / (cdf + 1);
++	cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
++	if (cdf >= 1U << cdf_width)
++		goto err_no_val;
++
++	/* On Gen3+, we use cdf only for the filters, not as a SCL divider */
++	ick = rate / (priv->devtype < I2C_RCAR_GEN3 ? (cdf + 1) : 1);
+ 
+ 	/*
+ 	 * It is impossible to calculate a large scale number on u32. Separate it.
+@@ -301,24 +316,57 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+ 	round = DIV_ROUND_CLOSEST(ick, 1000000);
+ 	round = DIV_ROUND_CLOSEST(round * sum, 1000);
+ 
+-	/*
+-	 * SCL	= ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
+-	 * 20 + 8 * SCGD + F[...] = ick / SCL
+-	 * SCGD = ((ick / SCL) - 20 - F[...]) / 8
+-	 * Result (= SCL) should be less than bus_speed for hardware safety
+-	 */
+-	scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
+-	scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
+-	scl = ick / (20 + 8 * scgd + round);
++	if (priv->devtype < I2C_RCAR_GEN3) {
++		u32 scgd;
++		/*
++		 * SCL	= ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
++		 * 20 + 8 * SCGD + F[...] = ick / SCL
++		 * SCGD = ((ick / SCL) - 20 - F[...]) / 8
++		 * Result (= SCL) should be less than bus_speed for hardware safety
++		 */
++		scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
++		scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
++		scl = ick / (20 + 8 * scgd + round);
+ 
+-	if (scgd > 0x3f)
+-		goto err_no_val;
++		if (scgd > 0x3f)
++			goto err_no_val;
+ 
+-	dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
+-		scl, t.bus_freq_hz, rate, round, cdf, scgd);
++		dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
++			scl, t.bus_freq_hz, rate, round, cdf, scgd);
+ 
+-	/* keep icccr value */
+-	priv->icccr = scgd << cdf_width | cdf;
++		priv->icccr = scgd << cdf_width | cdf;
++	} else {
++		u32 x, sum_ratio = RCAR_SCHD_RATIO + RCAR_SCLD_RATIO;
++		/*
++		 * SCLD/SCHD ratio and SMD default value are explained above
++		 * where they are defined. With these definitions, we can compute
++		 * x as a base value for the SCLD/SCHD ratio:
++		 *
++		 * SCL = clkp / (8 + 2 * SMD + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
++		 * SCL = clkp / (8 + 2 * RCAR_DEFAULT_SMD + RCAR_SCLD_RATIO * x
++		 * 		 + RCAR_SCHD_RATIO * x + F[...])
++		 *
++		 * with: sum_ratio = RCAR_SCLD_RATIO + RCAR_SCHD_RATIO
++		 * and:  smd = 2 * RCAR_DEFAULT_SMD
++		 *
++		 * SCL = clkp / (8 + smd + sum_ratio * x + F[...])
++		 * 8 + smd + sum_ratio * x + F[...] = SCL / clkp
++		 * x = ((SCL / clkp) - 8 - smd - F[...]) / sum_ratio
++		 */
++		x = DIV_ROUND_UP(rate, t.bus_freq_hz ?: 1);
++		x = DIV_ROUND_UP(x - 8 - 2 * RCAR_DEFAULT_SMD - round, sum_ratio);
++		scl = rate / (8 + 2 * RCAR_DEFAULT_SMD + sum_ratio * x + round);
++
++		/* Bail out if values don't fit into 16 bit or SMD became too large */
++		if (x * RCAR_SCLD_RATIO > 0xffff || RCAR_DEFAULT_SMD > x * RCAR_SCHD_RATIO)
++			goto err_no_val;
++
++		dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u SCL gran %u\n",
++			scl, t.bus_freq_hz, rate, round, cdf, x);
++
++		priv->icccr = cdf;
++		priv->scl_gran = x;
++	}
+ 
+ 	return 0;
+ 
+-- 
+2.35.1
+
