@@ -2,162 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23DB79EA60
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC54D79EDC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239942AbjIMOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        id S230208AbjIMP6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234305AbjIMOCn (ORCPT
+        with ESMTP id S230154AbjIMP63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:02:43 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38F61BC8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:02:22 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf6ea270b2so47981335ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694613742; x=1695218542; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L8TV/vYHUT88G2GqhITGFuP8X++DkQFLt8lcg7QPXWY=;
-        b=Cdg7btD62WAqeVwfafPQCoww3Z8iidlaAgrmalliYz3wj9M/ynAZV9jr13xT0XBWM2
-         b5xr6h0J5rzW6Dr8b5B5dHwW2TLu7f2svDMrcM7aOuynG5v8xDOC0NhIU9kuhXWnA8px
-         ksfKAwPg1Cqb3mmqim8Y65mm5IfqhEqRJkBTD7nMCc9i1JgzmHrX305duyXO6seY4uxz
-         HE/ezrer9QpM+a+N/olQsbl0koGX+lSfztRz1JNcl5SOYqRAd5ghVQkH5w+/Hd6mQFVd
-         vhUYYF9F6CgQZtahXyOwDDGwJN8vJOziL1mIArbECTR6qETGeRtrnoEzEEDHLpvkyrkx
-         CvyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694613742; x=1695218542;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=L8TV/vYHUT88G2GqhITGFuP8X++DkQFLt8lcg7QPXWY=;
-        b=O5kOpda7St6DbMnh/6bRDcWDABliPf3NCx6d2PQns8qQj1Itx7FRBMUriDpuT2M8QB
-         nscpWYOLunxDw2W4kUYzBMikMqUhAT4qgp+0NsHTC5nEwMqwi6oEjb9XRWc2Q1UhjcWz
-         gFmMWQ0d5SnOxwNcKsYF9sxsXnjVqoTHUDNvM7qTG7AxlWZ1cxrcUKGSQprHNcqMnAfi
-         vBuRVM4LjWlQifVLHsNh5D8+5/iwuvHlt77Y/MioDvPrbk9qGcixZxJgY69XTO6Vsxas
-         S/lr5gX1yZhuNfyDfDOQygbNd/iKB9fW11gC02RZ4UE8r10ewyW3fi+zya0bDxlTuu3F
-         u6tw==
-X-Gm-Message-State: AOJu0Yz2g4WbL/8CDfTuFyQMU5+oVOYwObNCc4j+wZGToll00HwnL+0T
-        nPHjyXNDKeqzksCMN4MdHPyhmdvm17Wgan4G2oc=
-X-Google-Smtp-Source: AGHT+IFk6cTmiwFURg4gM8dH/WDxl6Sas5H/iaWjCRhncDQqPfSneK4dPfBcnJRi5FS1TgjMyuJL8A==
-X-Received: by 2002:a17:90b:3ec1:b0:273:e8c0:f9b with SMTP id rm1-20020a17090b3ec100b00273e8c00f9bmr2314225pjb.15.1694613742251;
-        Wed, 13 Sep 2023 07:02:22 -0700 (PDT)
-Received: from [10.254.99.16] ([139.177.225.246])
-        by smtp.gmail.com with ESMTPSA id 19-20020a17090a001300b00263f5ac814esm1604293pja.38.2023.09.13.07.02.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 07:02:21 -0700 (PDT)
-Message-ID: <bec78588-7585-1ca9-1c52-ad626f981d89@bytedance.com>
-Date:   Wed, 13 Sep 2023 22:02:15 +0800
+        Wed, 13 Sep 2023 11:58:29 -0400
+X-Greylist: delayed 13155 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 08:58:24 PDT
+Received: from 19.mo582.mail-out.ovh.net (19.mo582.mail-out.ovh.net [188.165.56.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54D3E54
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:58:24 -0700 (PDT)
+Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.16.135])
+        by mo582.mail-out.ovh.net (Postfix) with ESMTP id E438421566
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:19:06 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-wcl26 (unknown [10.110.171.185])
+        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 310891FE9D;
+        Wed, 13 Sep 2023 12:19:05 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.95])
+        by ghost-submission-6684bf9d7b-wcl26 with ESMTPSA
+        id AjfFB7moAWVcSQwAZu02Bw
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 13 Sep 2023 12:19:05 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-95G001570f04b8-d8ce-4485-bc59-0a46056bb914,
+                    DC2EF514C16DA978A4B56AB6E34F69DC0F88BBA7) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 91.157.108.232
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     airlied@gmail.com, daniel@ffwll.ch, skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        mripard@kernel.org, mairacanal@riseup.net, javierm@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] drm/tests: provide exit function
+Date:   Wed, 13 Sep 2023 15:19:00 +0300
+Message-Id: <20230913121900.11814-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Introduce css_task open-coded
- iterator kfuncs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-3-zhouchuyi@bytedance.com>
- <20230912171337.px445hxd76uxxnu6@iphone-544e90d47a76.dhcp.thefacebook.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <20230912171337.px445hxd76uxxnu6@iphone-544e90d47a76.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 12158030146281776806
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedghedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpledurdduheejrddutdekrddvfedvpdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekvddpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Alexei.
+Similarly to the drm_exec_test module, the drm_modes_test
+shows the following output on dmesg on load:
 
-在 2023/9/13 01:13, Alexei Starovoitov 写道:
-> On Tue, Sep 12, 2023 at 03:01:45PM +0800, Chuyi Zhou wrote:
->> This patch adds kfuncs bpf_iter_css_task_{new,next,destroy} which allow
->> creation and manipulation of struct bpf_iter_css_task in open-coded
->> iterator style. These kfuncs actually wrapps css_task_iter_{start,next,
->> end}. BPF programs can use these kfuncs through bpf_for_each macro for
->> iteration of all tasks under a css.
->>
->> css_task_iter_*() would try to get the global spin-lock *css_set_lock*, so
->> the bpf side has to be careful in where it allows to use this iter.
->> Currently we only allow it in bpf_lsm and bpf iter-s.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   include/uapi/linux/bpf.h       |  4 +++
->>   kernel/bpf/helpers.c           |  3 +++
->>   kernel/bpf/task_iter.c         | 48 ++++++++++++++++++++++++++++++++++
->>   kernel/bpf/verifier.c          | 23 ++++++++++++++++
->>   tools/include/uapi/linux/bpf.h |  4 +++
->>   tools/lib/bpf/bpf_helpers.h    |  7 +++++
->>   6 files changed, 89 insertions(+)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 73b155e52204..de02c0971428 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -7318,4 +7318,8 @@ struct bpf_iter_num {
->>   	__u64 __opaque[1];
->>   } __attribute__((aligned(8)));
->>   
->> +struct bpf_iter_css_task {
->> +	__u64 __opaque[1];
->> +} __attribute__((aligned(8)));
->> +
->>   #endif /* _UAPI__LINUX_BPF_H__ */
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index b0a9834f1051..d6a16becfbb9 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2504,6 +2504,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
->>   BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> 
-> Looking at selftest:
-> struct cgroup_subsys_state *css = &cgrp->self;
-> 
-> realized that we're missing KF_TRUSTED_ARGS here.
-> 
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> index 7473068ed313..d8539cc05ffd 100644
->> --- a/kernel/bpf/task_iter.c
->> +++ b/kernel/bpf/task_iter.c
->> @@ -803,6 +803,54 @@ const struct bpf_func_proto bpf_find_vma_proto = {
->>   	.arg5_type	= ARG_ANYTHING,
->>   };
->>   
->> +struct bpf_iter_css_task_kern {
->> +	struct css_task_iter *css_it;
->> +} __attribute__((aligned(8)));
->> +
->> +__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
->> +		struct cgroup_subsys_state *css, unsigned int flags)
-> 
-> the verifier does a type check, but it's not strong enough.
-> We need KF_TRUSTED_ARGS to make sure the pointer is valid.
-> The BTF_TYPE_SAFE_RCU(struct cgroup) {
-> probably doesn't need to change, since '&cgrp->self' is not a pointer deref.
-> The verifier should understand that cgroup_subsys_state is also PTR_TRUSTED
-> just like 'cgrp' pointer.
+[ 5556.674834] KTAP version 1
+[ 5556.674841] 1..1
+[ 5556.675317]     KTAP version 1
+[ 5556.675321]     # Subtest: drm_modes_analog_tv
+[ 5556.675323]     # module: drm_modes_test
+[ 5556.675327]     1..4
+[ 5556.683731] ==================================================================
+[ 5556.683777] BUG: KASAN: slab-use-after-free in drm_dev_put.part.0+0x4b/0x90 [drm]
+[ 5556.683882] Read of size 8 at addr ffff88812db30428 by task kunit_try_catch/75921
+[ 5556.683882]
+[ 5556.683882] CPU: 1 PID: 75921 Comm: kunit_try_catch Tainted: G        W        N 6.6.0-rc1-dirty #2
+[ 5556.683882] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+[ 5556.683882] Call Trace:
+[ 5556.683882]  <TASK>
+[ 5556.683882]  dump_stack_lvl+0x43/0x60
+[ 5556.683882]  print_report+0xcf/0x660
+[ 5556.683882]  ? __virt_addr_valid+0xd9/0x160
+[ 5556.683882]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
+[ 5556.683882]  kasan_report+0xda/0x110
+[ 5556.683882]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
+[ 5556.683882]  drm_dev_put.part.0+0x4b/0x90 [drm]
+[ 5556.683882]  release_nodes+0x83/0x160
+[ 5556.683882]  devres_release_all+0xe6/0x130
+[ 5556.683882]  ? __pfx_devres_release_all+0x10/0x10
+[ 5556.683882]  ? mutex_unlock+0x80/0xd0
+[ 5556.683882]  ? __pfx_mutex_unlock+0x10/0x10
+[ 5556.683882]  device_unbind_cleanup+0x16/0xc0
+[ 5556.683882]  device_release_driver_internal+0x28b/0x2e0
+[ 5556.683882]  bus_remove_device+0x124/0x1d0
+[ 5556.683882]  device_del+0x23d/0x580
+[ 5556.683882]  ? __pfx_device_del+0x10/0x10
+[ 5556.683882]  ? kasan_set_track+0x21/0x30
+[ 5556.683882]  ? _raw_spin_lock_irqsave+0x98/0xf0
+[ 5556.683882]  platform_device_del.part.0+0x19/0xe0
+[ 5556.683882]  kunit_remove_resource+0xfa/0x140 [kunit]
+[ 5556.683882]  kunit_cleanup+0x47/0xa0 [kunit]
+[ 5556.683882]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
+[ 5556.683882]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10 [kunit]
+[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[ 5556.683882]  kthread+0x184/0x1c0
+[ 5556.683882]  ? __pfx_kthread+0x10/0x10
+[ 5556.683882]  ret_from_fork+0x30/0x50
+[ 5556.683882]  ? __pfx_kthread+0x10/0x10
+[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
+[ 5556.683882]  </TASK>
+[ 5556.683882]
+[ 5556.683882] Allocated by task 75920:
+[ 5556.683882]  kasan_save_stack+0x2f/0x50
+[ 5556.683882]  kasan_set_track+0x21/0x30
+[ 5556.683882]  __kasan_kmalloc+0xa6/0xb0
+[ 5556.683882]  __kmalloc+0x5d/0x160
+[ 5556.683882]  kunit_kmalloc_array+0x1c/0x50 [kunit]
+[ 5556.683882]  drm_test_modes_init+0xda/0x260 [drm_modes_test]
+[ 5556.683882]  kunit_try_run_case+0x6e/0x100 [kunit]
+[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[ 5556.683882]  kthread+0x184/0x1c0
+[ 5556.683882]  ret_from_fork+0x30/0x50
+[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
+[ 5556.683882]
+[ 5556.683882] Freed by task 75921:
+[ 5556.683882]  kasan_save_stack+0x2f/0x50
+[ 5556.683882]  kasan_set_track+0x21/0x30
+[ 5556.683882]  kasan_save_free_info+0x27/0x40
+[ 5556.683882]  ____kasan_slab_free+0x166/0x1c0
+[ 5556.683882]  slab_free_freelist_hook+0x9f/0x1e0
+[ 5556.683882]  __kmem_cache_free+0x187/0x2d0
+[ 5556.683882]  kunit_remove_resource+0xfa/0x140 [kunit]
+[ 5556.683882]  kunit_cleanup+0x47/0xa0 [kunit]
+[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[ 5556.683882]  kthread+0x184/0x1c0
+[ 5556.683882]  ret_from_fork+0x30/0x50
+[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
+[ 5556.683882]
+[ 5556.683882] The buggy address belongs to the object at ffff88812db30400
+[ 5556.683882]  which belongs to the cache kmalloc-256 of size 256
+[ 5556.683882] The buggy address is located 40 bytes inside of
+[ 5556.683882]  freed 256-byte region [ffff88812db30400, ffff88812db30500)
+[ 5556.683882]
+[ 5556.683882] The buggy address belongs to the physical page:
+[ 5556.683882] page:00000000b3a5f157 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12db30
+[ 5556.683882] head:00000000b3a5f157 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[ 5556.683882] ksm flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+[ 5556.683882] page_type: 0xffffffff()
+[ 5556.683882] raw: 0017ffffc0000840 ffff888100042b40 ffffea00053e2000 dead000000000003
+[ 5556.683882] raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+[ 5556.683882] page dumped because: kasan: bad access detected
+[ 5556.683882]
+[ 5556.683882] Memory state around the buggy address:
+[ 5556.683882]  ffff88812db30300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 5556.683882]  ffff88812db30380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 5556.683882] >ffff88812db30400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 5556.683882]                                   ^
+[ 5556.683882]  ffff88812db30480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[ 5556.683882]  ffff88812db30500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 5556.683882] ==================================================================
+[ 5556.687191] Disabling lock debugging due to kernel taint
+[ 5556.689341]     not ok 1 drm_test_modes_analog_tv_ntsc_480i
+[ 5556.700913]     ok 2 drm_test_modes_analog_tv_ntsc_480i_inlined
+[ 5556.713501]     ok 3 drm_test_modes_analog_tv_pal_576i
+[ 5556.724240]     ok 4 drm_test_modes_analog_tv_pal_576i_inlined
+[ 5556.724260] # drm_modes_analog_tv: pass:3 fail:1 skip:0 total:4
+[ 5556.724270] # Totals: pass:3 fail:1 skip:0 total:4
+[ 5556.724279] not ok 8 drm_modes_analog_tv
 
-Got it. It seems we should also apply this to bpf_iter_css_{pre,post}_new.
+Unlike the drm_exec_test, this time it is required
+to guarantee that de drm mode is destroyed on the
+test that is created, otherwise it will trigger the
+following output:
 
-> 
-> Also please add negative tests in patch 6.
-> Like doing bpf_rcu_read_unlock() in the middle and check that the verifier
-> catches such mistake.
+[  876.491050] KTAP version 1
+[  876.491057] 1..1
+[  876.491467]     KTAP version 1
+[  876.491469]     # Subtest: drm_modes_analog_tv
+[  876.491473]     # module: drm_modes_test
+[  876.491477]     1..4
+[  876.502373] ==================================================================
+[  876.502386] BUG: KASAN: slab-use-after-free in drm_dev_put.part.0+0x1b/0x90 [drm]
+[  876.502531] Write of size 4 at addr ffff8881330b8004 by task kunit_try_catch/13563
+[  876.502536]
+[  876.502539] CPU: 6 PID: 13563 Comm: kunit_try_catch Tainted: G                 N 6.6.0-rc1+ #3
+[  876.502546] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+[  876.502550] Call Trace:
+[  876.502554]  <TASK>
+[  876.502557]  dump_stack_lvl+0x43/0x60
+[  876.502568]  print_report+0xcf/0x660
+[  876.502577]  ? __virt_addr_valid+0xd9/0x160
+[  876.502586]  ? drm_dev_put.part.0+0x1b/0x90 [drm]
+[  876.502737]  kasan_report+0xda/0x110
+[  876.502744]  ? drm_dev_put.part.0+0x1b/0x90 [drm]
+[  876.502831]  kasan_check_range+0xfc/0x1b0
+[  876.502831]  drm_dev_put.part.0+0x1b/0x90 [drm]
+[  876.502831]  drm_test_modes_exit+0xa8/0x160 [drm_modes_test]
+[  876.502831]  ? __pfx_drm_test_modes_exit+0x10/0x10 [drm_modes_test]
+[  876.502831]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+[  876.502831]  ? __pfx_set_cpus_allowed_ptr+0x10/0x10
+[  876.502831]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10 [kunit]
+[  876.502831]  kunit_try_run_case_cleanup+0x5f/0x70 [kunit]
+[  876.502831]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
+[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[  876.502831]  kthread+0x184/0x1c0
+[  876.502831]  ? __pfx_kthread+0x10/0x10
+[  876.502831]  ret_from_fork+0x30/0x50
+[  876.502831]  ? __pfx_kthread+0x10/0x10
+[  876.502831]  ret_from_fork_asm+0x1b/0x30
+[  876.502831]  </TASK>
+[  876.502831]
+[  876.502831] Allocated by task 13562:
+[  876.502831]  kasan_save_stack+0x2f/0x50
+[  876.502831]  kasan_set_track+0x21/0x30
+[  876.502831]  __kasan_kmalloc+0xa6/0xb0
+[  876.502831]  __kmalloc+0x5d/0x160
+[  876.502831]  __devm_drm_dev_alloc+0x21/0xb0 [drm]
+[  876.502831]  __drm_kunit_helper_alloc_drm_device_with_driver+0x15/0x60 [drm_kunit_helpers]
+[  876.502831]  drm_test_modes_init+0x112/0x260 [drm_modes_test]
+[  876.502831]  kunit_try_run_case+0x6e/0x100 [kunit]
+[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[  876.502831]  kthread+0x184/0x1c0
+[  876.502831]  ret_from_fork+0x30/0x50
+[  876.502831]  ret_from_fork_asm+0x1b/0x30
+[  876.502831]
+[  876.502831] Freed by task 13563:
+[  876.502831]  kasan_save_stack+0x2f/0x50
+[  876.502831]  kasan_set_track+0x21/0x30
+[  876.502831]  kasan_save_free_info+0x27/0x40
+[  876.502831]  ____kasan_slab_free+0x166/0x1c0
+[  876.502831]  slab_free_freelist_hook+0x9f/0x1e0
+[  876.502831]  __kmem_cache_free+0x187/0x2d0
+[  876.502831]  release_nodes+0x83/0x160
+[  876.502831]  devres_release_all+0xe6/0x130
+[  876.502831]  device_unbind_cleanup+0x16/0xc0
+[  876.502831]  device_release_driver_internal+0x28b/0x2e0
+[  876.502831]  bus_remove_device+0x124/0x1d0
+[  876.502831]  device_del+0x23d/0x580
+[  876.502831]  platform_device_del.part.0+0x19/0xe0
+[  876.502831]  kunit_release_action+0x1d7/0x230 [kunit]
+[  876.502831]  drm_kunit_helper_free_device+0x1d/0x50 [drm_kunit_helpers]
+[  876.502831]  drm_test_modes_exit+0x7f/0x160 [drm_modes_test]
+[  876.502831]  kunit_try_run_case_cleanup+0x5f/0x70 [kunit]
+[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
+[  876.502831]  kthread+0x184/0x1c0
+[  876.502831]  ret_from_fork+0x30/0x50
+[  876.502831]  ret_from_fork_asm+0x1b/0x30
+[  876.502831]
+[  876.502831] Last potentially related work creation:
+[  876.502831]  kasan_save_stack+0x2f/0x50
+[  876.502831]  __kasan_record_aux_stack+0xaf/0xc0
+[  876.502831]  __call_rcu_common.constprop.0+0x9b/0x990
+[  876.502831]  netlink_release+0x6d3/0xb70
+[  876.502831]  __sock_release+0x66/0x120
+[  876.502831]  sock_close+0x11/0x20
+[  876.502831]  __fput+0x1db/0x450
+[  876.502831]  __x64_sys_close+0x51/0x90
+[  876.502831]  do_syscall_64+0x5b/0xc0
+[  876.502831]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[  876.502831]
+[  876.502831] The buggy address belongs to the object at ffff8881330b8000
+[  876.502831]  which belongs to the cache kmalloc-2k of size 2048
+[  876.502831] The buggy address is located 4 bytes inside of
+[  876.502831]  freed 2048-byte region [ffff8881330b8000, ffff8881330b8800)
+[  876.502831]
+[  876.502831] The buggy address belongs to the physical page:
+[  876.502831] page:000000007d194834 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8881330bf000 pfn:0x1330b8
+[  876.502831] head:000000007d194834 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[  876.502831] flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+[  876.502831] page_type: 0xffffffff()
+[  876.502831] raw: 0017ffffc0000840 ffff888100042f00 dead000000000100 dead000000000122
+[  876.502831] raw: ffff8881330bf000 0000000080080007 00000001ffffffff 0000000000000000
+[  876.502831] page dumped because: kasan: bad access detected
+[  876.502831]
+[  876.502831] Memory state around the buggy address:
+[  876.502831]  ffff8881330b7f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[  876.502831]  ffff8881330b7f80: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
+[  876.502831] >ffff8881330b8000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  876.502831]                    ^
+[  876.502831]  ffff8881330b8080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  876.502831]  ffff8881330b8100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  876.502831] ==================================================================
+[  876.503733] Disabling lock debugging due to kernel taint
 
-I will do it in next version.
+Applying the patch, the output will look like:
 
-Thanks.
+[ 1098.895487] KTAP version 1
+[ 1098.895499] 1..1
+[ 1098.896132]     KTAP version 1
+[ 1098.896139]     # Subtest: drm_modes_analog_tv
+[ 1098.896144]     # module: drm_modes_test
+[ 1098.896150]     1..4
+[ 1098.906634]     ok 1 drm_test_modes_analog_tv_ntsc_480i
+[ 1098.920305]     ok 2 drm_test_modes_analog_tv_ntsc_480i_inlined
+[ 1098.931438]     ok 3 drm_test_modes_analog_tv_pal_576i
+[ 1098.941509]     ok 4 drm_test_modes_analog_tv_pal_576i_inlined
+[ 1098.941533] # drm_modes_analog_tv: pass:4 fail:0 skip:0 total:4
+[ 1098.941546] # Totals: pass:4 fail:0 skip:0 total:4
+[ 1098.941556] ok 1 drm_modes_analog_tv
+
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+---
+ drivers/gpu/drm/tests/drm_modes_test.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/gpu/drm/tests/drm_modes_test.c b/drivers/gpu/drm/tests/drm_modes_test.c
+index 1e9f63fbfead..059c790810d6 100644
+--- a/drivers/gpu/drm/tests/drm_modes_test.c
++++ b/drivers/gpu/drm/tests/drm_modes_test.c
+@@ -36,6 +36,19 @@ static int drm_test_modes_init(struct kunit *test)
+ 	return 0;
+ }
+ 
++static void drm_test_modes_exit(struct kunit *test)
++{
++	struct drm_test_modes_priv *priv = test->priv;
++
++	drm_kunit_helper_free_device(test, priv->dev);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
++
++	drm_dev_put(priv->drm);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
++
++	kunit_kfree(test, priv);
++}
++
+ static void drm_test_modes_analog_tv_ntsc_480i(struct kunit *test)
+ {
+ 	struct drm_test_modes_priv *priv = test->priv;
+@@ -64,6 +77,7 @@ static void drm_test_modes_analog_tv_ntsc_480i(struct kunit *test)
+ 
+ 	KUNIT_EXPECT_EQ(test, mode->vdisplay, 480);
+ 	KUNIT_EXPECT_EQ(test, mode->vtotal, 525);
++	drm_mode_destroy(priv->drm, mode);
+ }
+ 
+ static void drm_test_modes_analog_tv_ntsc_480i_inlined(struct kunit *test)
+@@ -141,6 +155,7 @@ static struct kunit_case drm_modes_analog_tv_tests[] = {
+ static struct kunit_suite drm_modes_analog_tv_test_suite = {
+ 	.name = "drm_modes_analog_tv",
+ 	.init = drm_test_modes_init,
++	.exit = drm_test_modes_exit,
+ 	.test_cases = drm_modes_analog_tv_tests,
+ };
+ 
+-- 
+2.39.2
+
