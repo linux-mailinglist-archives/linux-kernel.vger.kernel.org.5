@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D61179E877
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F7779E875
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240707AbjIMM6l convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 08:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        id S240692AbjIMM6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240702AbjIMM6h (ORCPT
+        with ESMTP id S240686AbjIMM6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:58:37 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB5D1BC0;
-        Wed, 13 Sep 2023 05:58:33 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59b50b4556eso56721467b3.1;
-        Wed, 13 Sep 2023 05:58:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694609913; x=1695214713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xxeNViXmBE9aJ+D4KbNZSYMYxw6j4hA0qNGsj2aEsME=;
-        b=kyuaAuXLzBMP7wXGC80ipYMrJS++U0XsRbZYcIklrU0TNkE2nRe5K41jwgICDu1QfF
-         XwiF713A8bktUb1V6BPVWSgCBbYxtxTZICSS5D5xoImx9YaNI1nA5A2tr+N5o7dEz5Zg
-         Tv9OHKzXtQBbk650pFA5JPbxM1DTe8T3PY8ft9w6jP/T9DJ67ysAV7AtyK2dnOiEaI/r
-         SSFYaA902LbNe9YVm5UBqmr41/WhQOSg1MLIyGBOhNY6Y5B+6KDnaBctvkr0HJbKy1Ky
-         nVctHDajh8AlqWZrllPiFLE1jEbOVxtu3GF65b0zt0DhJnMeaGNoJwVy/dO8bIarsnd8
-         ZtBw==
-X-Gm-Message-State: AOJu0YzWYO+T/rBmF25BM//DJaiqTFN6EOr46uYViMQVkZ7kaCbRGTFc
-        U9UrXP071G4SoQPONAh4R28YHi/AjTKxJg==
-X-Google-Smtp-Source: AGHT+IE76qCHLbIm5rUON3SZXJ87b4QDB0bEPEY8AZf1iGku3FNeM1M4/iC8YI3s0XhwcbcwfDwJxQ==
-X-Received: by 2002:a81:5f45:0:b0:581:5cb9:6c2b with SMTP id t66-20020a815f45000000b005815cb96c2bmr2542003ywb.45.1694609912779;
-        Wed, 13 Sep 2023 05:58:32 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id b65-20020a0df244000000b005869fd2b5bcsm3119414ywf.127.2023.09.13.05.58.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 05:58:32 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d8164e661abso447866276.1;
-        Wed, 13 Sep 2023 05:58:32 -0700 (PDT)
-X-Received: by 2002:a25:c7cb:0:b0:d7f:8e1f:6df0 with SMTP id
- w194-20020a25c7cb000000b00d7f8e1f6df0mr2208489ybe.2.1694609912250; Wed, 13
- Sep 2023 05:58:32 -0700 (PDT)
+        Wed, 13 Sep 2023 08:58:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A5F19BD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:58:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC443C433C8;
+        Wed, 13 Sep 2023 12:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694609912;
+        bh=Dm8nPuZvFh0PS3q5tY1maihWmD+gVq1qHqcDYEbybag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IVtCamP8iz+I2giT9zMKAjS2SBf1eYvu3XQunocMDBLGluzwPONUi4rgZXGfOah1N
+         dDURtGrmzQIBVa8UR5t5YFAtw5c67zowXZcO3FOCdVXJ78hCD+MkNNusqJwTACdXZn
+         kp8YWupGS0Pk4Ss9gPHnfHX+jqvWOh6AXq+15SefYYx5sU2/ppx5xo8xPNhTuLpGet
+         RqXD/qQ6GtD9ZgGXvHdTr06r9YY+vAgjTVjfR8BS5PeP1kyPjDNapTfEWQ20ZF8eXF
+         nC5/Khz09WnmWo1E/XQ0FMHPvQaXv0DRaUAIGXHyEfdcdDI6MBEGsV3Io4iLu/Vs7Q
+         DD9DlVIhmGvcA==
+Date:   Wed, 13 Sep 2023 13:58:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        pierre-louis.bossart@linux.intel.com,
+        yung-chuan.liao@linux.intel.com, kai.vehmanen@linux.intel.com,
+        peter.ujfalusi@linux.intel.com, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 1/4] ASoC: soc-card: Add storage for PCI SSID
+Message-ID: <66a4381b-1a35-495f-a74a-1da0af1334c1@sirena.org.uk>
+References: <20230912163207.3498161-1-rf@opensource.cirrus.com>
+ <20230912163207.3498161-2-rf@opensource.cirrus.com>
+ <92b2b69e-3175-651f-45bb-d9ae11eaec82@linux.intel.com>
 MIME-Version: 1.0
-References: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
-In-Reply-To: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Sep 2023 14:58:20 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWR68a49=vthdp03stpvaHLS5BRa+rhVdnr7gQDFkNotQ@mail.gmail.com>
-Message-ID: <CAMuHMdWR68a49=vthdp03stpvaHLS5BRa+rhVdnr7gQDFkNotQ@mail.gmail.com>
-Subject: Re: [PATCH] init/main: Clear boot task idle flag
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k8z/zzyoNTrEHxEA"
+Content-Disposition: inline
+In-Reply-To: <92b2b69e-3175-651f-45bb-d9ae11eaec82@linux.intel.com>
+X-Cookie: You will be surrounded by luxury.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liam,
 
-On Wed, Sep 13, 2023 at 2:57 AM Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
-> Initial booting is setting the task flag to idle (PF_IDLE) by the call
-> path sched_init() -> init_idle().  Having the task idle and calling
-> call_rcu() in kernel/rcu/tiny.c means that TIF_NEED_RESCHED will be
-> set.  Subsequent calls to any cond_resched() will enable IRQs,
-> potentially earlier than the IRQ setup has completed.  Recent changes
-> have caused just this scenario and IRQs have been enabled early.
->
-> This causes a warning later in start_kernel() as interrupts are enabled
-> before they are fully set up.
->
-> Fix this issue by clearing the PF_IDLE flag on return from sched_init()
-> and restore the flag in rest_init().  Although the boot task was marked
-> as idle since (at least) d80e4fda576d, I am not sure that it is wrong to
-> do so.  The forced context-switch on idle task was introduced in the
-> tiny_rcu update, so I'm going to claim this fixes 5f6130fa52ee.
->
-> Link: https://lore.kernel.org/linux-mm/87v8cv22jh.fsf@mail.lhotse/
-> Link: https://lore.kernel.org/linux-mm/CAMuHMdWpvpWoDa=Ox-do92czYRvkok6_x6pYUH+ZouMcJbXy+Q@mail.gmail.com/
-> Fixes: 5f6130fa52ee ("tiny_rcu: Directly force QS when call_rcu_[bh|sched]() on idle_task")
-> Cc: stable@vger.kernel.org
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Peng Zhang <zhangpeng.00@bytedance.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+--k8z/zzyoNTrEHxEA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch!
+On Wed, Sep 13, 2023 at 12:56:03PM +0200, Amadeusz S=C5=82awi=C5=84ski wrot=
+e:
+> On 9/12/2023 6:32 PM, Richard Fitzgerald wrote:
 
-This fixes the
+> > +#ifdef CONFIG_PCI
+> > +	/*
+> > +	 * PCI does not define 0 as invalid, so pci_subsystem_set indicates
+> > +	 * whether a value has been written to these fields.
+> > +	 */
+> > +	unsigned short pci_subsystem_vendor;
+> > +	unsigned short pci_subsystem_device;
+> > +	bool pci_subsystem_set;
+> > +#endif /* CONFIG_PCI */
+> > +
+> >   	char topology_shortname[32];
+> >   	struct device *dev;
 
-      WARNING: CPU: 0 PID: 0 at init/main.c:992 start_kernel+0x2f0/0x480
+> This looks bit weird to me, snd_soc_card is _generic_ struct which is not
+> device specific in any way, and now you add fields for PCI, can't this
+> somehow be done using drvdata or something?
 
-I was seeing during boot on Renesas RZ/A1 and RZ/A2 since commit
-cfeb6ae8bcb96ccf ("maple_tree: disable mas_wr_append() when other
-readers are possible") in v6.5.
+You're right that it's a bit messy but if we use driver data then it
+becomes specific to a particular driver and there's a goal here to share
+with subfunction drivers.  I was thinking we could refactor to a union
+or otherwise extend if we find other users with a similar need.
 
-However, this causes lots of new warnings on e.g. R-Car M2-W, which
-wasn't affected before, like:
+--k8z/zzyoNTrEHxEA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-+BUG: sleeping function called from invalid context at
-kernel/sched/completion.c:111
-+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
-+preempt_count: 0, expected: 0
-+no locks held by swapper/0/1.
-+CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W
-6.6.0-rc1-koelsch-02359-g9a5bed6a8bd8 #1864
-+Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-+ unwind_backtrace from show_stack+0x10/0x14
-+ show_stack from dump_stack_lvl+0x68/0x90
-+ dump_stack_lvl from __might_resched+0x1b0/0x22c
-+ __might_resched from __wait_for_common+0x38/0x170
-+ __wait_for_common from kernel_init+0x10/0x130
-+ kernel_init from ret_from_fork+0x14/0x30
-+Exception stack(0xf0815fb0 to 0xf0815ff8)
-+5fa0:                                     00000000 00000000 00000000 00000000
-+5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-+5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+-----BEGIN PGP SIGNATURE-----
 
-and
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUBsfEACgkQJNaLcl1U
+h9AY/Qf/YSKmZXsq1uAETsqoTJwyPENEXumzubfY98BLa82pFZ16eFJP991TrQI9
+3Ac1oKOmelk4tkUV6dHnYCf4vipVmW7gOalV09kGgVmfUk5cRBjKvMRG/wjp7EoT
+MP6EmgUT29aS0MhVvtcvKYtAL7KHIOQQdTT+r/fkcN6dCvp5w6wyexy0ZPLnLno+
+2OH+3IbuQ5cJqwBbdepRBoc1Y6NNllkUz/D0IuvUZQ8UBYeOhQCJcPZk9nSIfpl/
+Z9wWpq++HJhCtCS3hxygKOw9k7UETmGsMkvdDTa0ivH41Jc3R1LfCh4iXp7op+JO
+nOFVux2zyeFWHGJ0JG3q1gkwfj9Lzg==
+=hQRp
+-----END PGP SIGNATURE-----
 
-+BUG: sleeping function called from invalid context at
-kernel/locking/mutex.c:580
-+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 1, name: systemd
-+preempt_count: 0, expected: 0
-+no locks held by systemd/1.
-+CPU: 1 PID: 1 Comm: systemd Tainted: G        W        N
-6.6.0-rc1-koelsch-02359-g9a5bed6a8bd8 #1864
-+Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-+ unwind_backtrace from show_stack+0x10/0x14
-+ show_stack from dump_stack_lvl+0x68/0x90
-+ dump_stack_lvl from __might_resched+0x1b0/0x22c
-+ __might_resched from __mutex_lock+0x34/0x3a8
-+ __mutex_lock from mutex_lock_nested+0x18/0x20
-+ mutex_lock_nested from do_epoll_wait+0x220/0x5ac
-+ do_epoll_wait from sys_epoll_wait+0x44/0x6c
-+ sys_epoll_wait from ret_fast_syscall+0x0/0x1c
-+Exception stack(0xf0815fa8 to 0xf0815ff0)
-+5fa0:                   beff75e0 00000004 00000004 beff75e0 0000003b ffffffff
-+5fc0: beff75e0 00000004 ffffffff 000000fc 00000000 ffffffff 0000003b 00000004
-+5fe0: 000000fc beff75b8 b6ef8511 b6e75786
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--k8z/zzyoNTrEHxEA--
