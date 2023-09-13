@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EAC79ECCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82C079ECEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjIMP2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S229592AbjIMP3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjIMP2C (ORCPT
+        with ESMTP id S229702AbjIMP2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:28:02 -0400
-Received: from meesny.iki.fi (meesny.iki.fi [IPv6:2001:67c:2b0:1c1::201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DB81BC3;
-        Wed, 13 Sep 2023 08:27:58 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (dkzdf0gkyyyyyyyyyyyyt-3.rev.dnainternet.fi [IPv6:2001:14ba:4506:4f15::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 4Rm48T4zjDzyRq;
-        Wed, 13 Sep 2023 18:27:53 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1694618875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtJQ13C7aWh7rZj0Lwe+NgyzXlnh8ie4gD9UtoD1Y3E=;
-        b=B//6ZcGsnW8Yq4Zm+3b+tLEMAaBPazwV666r1xdd89TPMSkULwsu0sz+QxZGqOhzA1EZ1c
-        ofuiJ9KuWEcebTzUgva+ucpZf5y8W3ByDlieajrm4r1bZyF5dR/eixLvaV4RXQ5LXTcXtW
-        hEXfBV3FRlBxNA22to/wiy1uQTz9uFk=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1694618875; a=rsa-sha256; cv=none;
-        b=nsz23pU4dYYIegYK7rguZu1M6UP/jWV1WaCQcGP+lT1QupZU15E8MeTGc0UfY+tJoSjq1O
-        2VWm0C8H9Ax9XbxI/ucz2tm8/qkg+tPR++U3guQordJJNtoMbbcoVf1EfkJbxs5F9+ASEd
-        WScrY+jNwMhmxlfU36WYL6QX+ZdXLN4=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1694618875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtJQ13C7aWh7rZj0Lwe+NgyzXlnh8ie4gD9UtoD1Y3E=;
-        b=OFixtXpEfoNGrgJuE90rl32J34RqC0Zz4eukLvzINr/Xsn2g1jyju0NDp0D/imx3uc7f2v
-        QomO+I9sSv45LZ5SEhDWsHlfEepDvOEcTL3LdNMepTh/UfnB3CrPVx4wyCfppTBb1z08EG
-        aModKR+kujUj2yoyE7vGjfa5YHYQ8p8=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id C600D634C93;
-        Wed, 13 Sep 2023 18:27:52 +0300 (EEST)
-Date:   Wed, 13 Sep 2023 15:27:52 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarrah Gosbell <kernel@undef.tools>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-        laurent.pinchart@ideasonboard.com
-Subject: Re: [PATCH] media: ov5640: use pm_runtime_force_suspend/resume for
- system suspend
-Message-ID: <ZQHU+LA+BEB7jzx1@valkosipuli.retiisi.eu>
-References: <20230818173416.2467832-1-andrej.skvortzov@gmail.com>
+        Wed, 13 Sep 2023 11:28:52 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EF21FE5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:28:48 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31c5a2e8501so6814588f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:28:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694618926; x=1695223726; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/d3xKANM1+Tg4h0nwb5Z/K20lY+AlE+zGQheDE2qGpc=;
+        b=AhqfG2+5FcuejNIvuv5zMQkFaApwcEyt8Dk1eYhKBhfll3VnwmP5KRRn8Jc1hnIeqC
+         i16rrqZr7JA0PL88gUXYuuE6xqsQyZN6MK0oYAxYKGb6ICZda80o6Qqt0GAWIK5iVHEk
+         SirrUjSVAsEajCPIqxqwAyyLbVb+JYmVsECM4Asfn3RXi+Rx6XAR/pshdEYwSHs/PEus
+         XMQ3MwURHew9Nb3UViSyidNtpEqE4czUeZ7ttYoZWxe9MLEqxmBsC2kWtgfgLmPIu6RV
+         8yRfo3llOduJOhp44QP1oRhoZv+UzdkBU8GPTwUC7DHtYgHqUbhRmPzcOJy0BRONXoST
+         gTmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694618926; x=1695223726;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/d3xKANM1+Tg4h0nwb5Z/K20lY+AlE+zGQheDE2qGpc=;
+        b=Sflonal1nJe6rhrGla+/Cy4VuXp+rnMDK+mvsbeu+M5W3Y5ZBP3KJPRxh3sDqDsd+G
+         Q1wmVjS5ZTAlK0wPa/jIcRf6NTX0qOdYvUcUWmNZhsj9fhOygIkiZKL7HIsHWb9gWUH+
+         rS4zfxq8sELNxTcZFPuA02jKUocMu+cSPdVdygqfdMi/ydvKetfs11Fhwr6FL6iUFidT
+         UGug/wqfJ6cFvEbtg7AVN10CYGoSttV/FhDeQWcTQNgVsCBw8oKn1EzvHWaOIkqAVToc
+         JOHRz18FAMbYsYIXfKNMDM+BtC2jxQzH+ngzwAzH3LYIMk/mEqC9XAdC7g1BaSOaxI3Q
+         yPFA==
+X-Gm-Message-State: AOJu0YxnWX59drHhHfxFGrfWW8k9HGa/evqzvzq1HT8txlVqDkSTT5YA
+        b87sfLGlB9Max38bi6MBHL46sBqyNyogxocto/WhJA==
+X-Google-Smtp-Source: AGHT+IFPKfpKr7JxfwV7TtSFzjcqi3rNuz/mPAOK8wwns9KWtPA/nP9F/6atME34EMEXX6TndxWazA==
+X-Received: by 2002:adf:b306:0:b0:317:df4f:4b97 with SMTP id j6-20020adfb306000000b00317df4f4b97mr2330649wrd.7.1694618926324;
+        Wed, 13 Sep 2023 08:28:46 -0700 (PDT)
+Received: from [10.167.154.1] (178235177106.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.106])
+        by smtp.gmail.com with ESMTPSA id a11-20020aa7d74b000000b0052a404e5929sm7391979eds.66.2023.09.13.08.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 08:28:45 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v3 0/3] MM8013 fg driver
+Date:   Wed, 13 Sep 2023 17:28:42 +0200
+Message-Id: <20230621-topic-mm8013-v3-0-781da361ec60@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818173416.2467832-1-andrej.skvortzov@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACrVAWUC/32NQQ6DIBQFr2JYSwMfRe2q92i6AEQlUTBgSRvj3
+ Yuu2kVdzkvmzYqC9kYHdM1W5HU0wTibgOUZUoOwvcamTYyAACMcKF7cbBSepppQhlnFq7LRTS2
+ hRkmRImgsvbBqSJJ9jmMaZ6878zoa90fiwYTF+feRjHRf/7xHigkuClIpDpyQkt1GY4V3F+d7t
+ D9FOLNht6XmAKysK9F+23l2ZjUdlQXtCqkI/2lu2/YBIZYv6TIBAAA=
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694618924; l=1329;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=O8IJxCgW8NJAZR11B6cnppK2RlWuoaoVovJyUjtSzjc=;
+ b=Xvlu7u7xd3EMxyhDH4IZnXF98FyEd04pkOaHT6okLEyrsrCnqxomnnMeq3/9QD+TtcvueT/qW
+ PTpashvKGNUBjcq3mpBhpMwM8ejZ6eWtn+1pI7Sa8HxCqlmF+HnUEfH
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrey,
+This series brings support for the Mitsumi MM8013 Li-Ion fuel gauge.
 
-On Fri, Aug 18, 2023 at 08:34:16PM +0300, Andrey Skvortsov wrote:
-> If system was suspended while camera sensor was used, data and
-> interrupts were still coming from sensor and that caused unstable
-> system. Sometimes system hanged during a resume. Use
-> pm_runtime_force_* helpers in order to support system suspend.
-> 
-> Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v3:
+- Reference power-supply.yaml in bindings
+- Link to v2: https://lore.kernel.org/r/20230621-topic-mm8013-v2-0-9f1b41f4bc06@linaro.org
 
-Thanks for the patch.
+Changes in v2:
+- Fix typo in patch 2 commit message
+- Drop driver.owner in patch 3
+- Add PRESENT psy property
+- Pick up tags
+- Link to v1: https://lore.kernel.org/r/20230621-topic-mm8013-v1-0-4407c6260053@linaro.org
 
-It's not been documented really how system suspend and resume should
-work for complex cameras. But I don't think it can be done by drivers
-separately as the CSI-2 bus initialisation requires actions from both
-sender and receiver drivers, at particular points of time.
+---
+Konrad Dybcio (3):
+      dt-bindings: vendor-prefixes: Add Mitsumi Electric Co., Ltd.
+      dt-bindings: power: supply: Document Mitsumi MM8013 fuel gauge
+      power: supply: Introduce MM8013 fuel gauge driver
 
-So I think we'll need to initiate this from the driver handling DMA, just
-as starting and stopping streaming. Even then, there needs to be a
-certainty that the sensor device has resumed before streaming is started. I
-recall Laurent suggested device links for that purpose, but I don't think
-any work has been done to implement it that way.
+ .../bindings/power/supply/mitsumi,mm8013.yaml      |  38 +++
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ MAINTAINERS                                        |   5 +
+ drivers/power/supply/Kconfig                       |   9 +
+ drivers/power/supply/Makefile                      |   1 +
+ drivers/power/supply/mm8013.c                      | 283 +++++++++++++++++++++
+ 6 files changed, 338 insertions(+)
+---
+base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
+change-id: 20230621-topic-mm8013-376759e98b28
 
+Best regards,
 -- 
-Kind regards,
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Sakari Ailus
