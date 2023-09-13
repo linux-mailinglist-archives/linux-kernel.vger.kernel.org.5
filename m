@@ -2,205 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A0379E16F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539A479E178
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238762AbjIMIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S238802AbjIMIGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238752AbjIMIEo (ORCPT
+        with ESMTP id S238803AbjIMIGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:04:44 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD31198B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:04:39 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so70542075e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694592278; x=1695197078; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iPWN3g7ekkDjnkl2bbqC6JeTQY1RKOcv/b55LHoasX4=;
-        b=csrFx/FGn5VwPfxI/PpcZ/+ogHKFn4phoBDoVWKc3n47c9LF0/fj9Vka15eKJvKgHp
-         2PIzsdQY8hExCmcZkjpTN4FbfviFOpD03dNoU7rHicej/Ux4GFUKecng/XLZSeyiGcHE
-         bfry1HchVjpznPa7H/j9bjfrexPfcWi2niZbJpFMtsoImd6nG0XBcsBH/zU8qRnYdkLx
-         fglxGL6O5sDzhthJUHBlmXtDGcBde4A+BGsA71NUGEGif89dvSEst2XT4klo1LN3AN2D
-         J1Q5HjwPjEYVOqOc+2fTp34x1pIf1zlkAvEwS4T1Ug23fyFY1rCHDCGCH49/mA3KG1Qr
-         lP5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694592278; x=1695197078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iPWN3g7ekkDjnkl2bbqC6JeTQY1RKOcv/b55LHoasX4=;
-        b=d0pidPYiWcBw56EVjMDzXFUfHuPVctvl6HPxWLxqDx22Gh7CYYS11JRJmigkoWyKj2
-         3aZ65SqipveonAP0KQmvg2camEnQkSlIRakWeWwqPYh8hsISw7VRc9kYKuyNDUnL4hSc
-         AfIBT3bTtR4DMZFcK/DUpXkdAGz6xDhUGUJtqiqPb+5lsAfw7C9lG7GB7rlTBymwHMOT
-         OJkWOBgIjz68+iO2iaqWNwuVWo9U2NT3N/NMLNeQ4kqujDKocIcCkX8A2MMkdtq2bRLy
-         ol6lHk8w7r/cKkyO1lR7PrqWm9qb+L/qOMIQCySIsujooQGAGcr0jgcs5Sk2UiNGviI9
-         ShCQ==
-X-Gm-Message-State: AOJu0YzP6SWniubcQOKyLvG/RS5sJ9ScWHF8Kddm3TDYLQqH5wCnQIHS
-        8QTaRC7w1Xx+LYJ+vOyj/E6720bnJ96lVbmaJeGSEw==
-X-Google-Smtp-Source: AGHT+IFHcnsSPP5H7mpSp2WLQ1AsmP2vnqPuf5kEEIlg3PcRjIDekEMoUd66v/YNaqjRaATFe+JBJQROFg/wYya6n0c=
-X-Received: by 2002:a7b:cbc8:0:b0:3fe:111a:d1d9 with SMTP id
- n8-20020a7bcbc8000000b003fe111ad1d9mr1465328wmi.25.1694592278218; Wed, 13 Sep
- 2023 01:04:38 -0700 (PDT)
+        Wed, 13 Sep 2023 04:06:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4A2198A;
+        Wed, 13 Sep 2023 01:06:15 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3AEA9215EE;
+        Wed, 13 Sep 2023 08:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694592374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UVXZO7W2/QCPPSKGU4H/Fe8rerhR3cSJZGyrzhYOvmk=;
+        b=c03TtHJub3JTBDiTKedrTnB0QDOzSi2Gsnh8FR5Ihkc9N8R+HeZbMLOSnj0ZzzdNveD47f
+        5cMbweHy0EppeoPtIdyuib6XERK/XWEoh8bu7YFwf1zvUvNCT3Hqj4lP6BhKSkJ/01PqUb
+        Jga5QzIe7QA9YgzG9VuBwblqEZY0XkE=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5A20E2C146;
+        Wed, 13 Sep 2023 08:06:12 +0000 (UTC)
+Date:   Wed, 13 Sep 2023 10:06:12 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Alessandro Carminati <alessandro.carminati@gmail.com>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Kris Van Hees <kris.van.hees@oracle.com>,
+        Eugene Loh <eugene.loh@oracle.com>,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate
+ symbols for kallsyms
+Message-ID: <ZQFtdJEKJ9taYpA0@alley>
+References: <20230828080423.3539686-1-alessandro.carminati@gmail.com>
+ <d385548e-9788-2814-05c9-bb0f275b233f@intel.com>
+ <CAPp5cGSHdU6z2J=bUYkXMOakFzSWzjeCznTsV=DrTSvWmaqStA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230911131224.61924-1-alexghiti@rivosinc.com> <20230911131224.61924-5-alexghiti@rivosinc.com>
-In-Reply-To: <20230911131224.61924-5-alexghiti@rivosinc.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 13 Sep 2023 10:04:27 +0200
-Message-ID: <CAHVXubiVH=q9pnTLQyjS3X3W-hvuA=ZMM2D2xYPFkGjFnAgbWg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPp5cGSHdU6z2J=bUYkXMOakFzSWzjeCznTsV=DrTSvWmaqStA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@Lad, Prabhakar Any chance you give a try to this new patchset? So
-that we make sure Samuel found your issue :)
+On Tue 2023-09-12 16:18:00, Alessandro Carminati wrote:
+> <aleksander.lobakin@intel.com> ha scritto:
+> > From: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+> > > sample from new v3
+> > >
+> > >  ~ # cat /proc/kallsyms | grep gic_mask_irq
+> > >  ffffd0b03c04dae4 t gic_mask_irq
+> > >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
+> > >  ffffd0b03c050960 t gic_mask_irq
+> > >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
+> >
+> > BTW, why normalize them? Why not just
+> >
+> > gic_mask_irq@drivers/irqchip/...
+> >
+> > Aaaaand why line number? Line numbers break reproducible builds and also
+> > would make it harder to refer to a particular symbol by its path and
+> > name since we also have to pass its line number which may change once
+> > you add a debug print there, for example.
+> > OTOH there can't be 2 symbols with the same name within one file, so
+> > just path + name would be enough. Or not?
 
-On Mon, Sep 11, 2023 at 3:16=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> This function used to simply flush the whole tlb of all harts, be more
-> subtile and try to only flush the range.
->
-> The problem is that we can only use PAGE_SIZE as stride since we don't kn=
-ow
-> the size of the underlying mapping and then this function will be improve=
-d
-> only if the size of the region to flush is < threshold * PAGE_SIZE.
->
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/tlbflush.h | 11 ++++++-----
->  arch/riscv/mm/tlbflush.c          | 33 ++++++++++++++++++++++---------
->  2 files changed, 30 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
-lbflush.h
-> index 170a49c531c6..8f3418c5f172 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -40,6 +40,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned =
-long start,
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->                      unsigned long end);
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
-,
-> @@ -56,15 +57,15 @@ static inline void flush_tlb_range(struct vm_area_str=
-uct *vma,
->         local_flush_tlb_all();
->  }
->
-> -#define flush_tlb_mm(mm) flush_tlb_all()
-> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> -
->  /* Flush a range of kernel pages */
->  static inline void flush_tlb_kernel_range(unsigned long start,
->         unsigned long end)
->  {
-> -       flush_tlb_all();
-> +       local_flush_tlb_all();
->  }
->
-> +#define flush_tlb_mm(mm) flush_tlb_all()
-> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> +
->  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 2c1136d73411..28cd8539b575 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -97,19 +97,27 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
-nsigned long start,
->                               unsigned long size, unsigned long stride)
->  {
->         struct flush_tlb_range_data ftd;
-> -       struct cpumask *cmask =3D mm_cpumask(mm);
-> +       struct cpumask *cmask, full_cmask;
->         unsigned long asid =3D FLUSH_TLB_NO_ASID;
-> -       unsigned int cpuid;
->         bool broadcast;
->
-> -       if (cpumask_empty(cmask))
-> -               return;
-> +       if (mm) {
-> +               unsigned int cpuid;
-> +
-> +               cmask =3D mm_cpumask(mm);
-> +               if (cpumask_empty(cmask))
-> +                       return;
->
-> -       cpuid =3D get_cpu();
-> -       /* check if the tlbflush needs to be sent to other CPUs */
-> -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +               cpuid =3D get_cpu();
-> +               /* check if the tlbflush needs to be sent to other CPUs *=
-/
-> +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +       } else {
-> +               cpumask_setall(&full_cmask);
-> +               cmask =3D &full_cmask;
-> +               broadcast =3D true;
-> +       }
->
-> -       if (static_branch_unlikely(&use_asid_allocator))
-> +       if (static_branch_unlikely(&use_asid_allocator) && mm)
->                 asid =3D atomic_long_read(&mm->context.id) & asid_mask;
->
->         if (broadcast) {
-> @@ -128,7 +136,8 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
-nsigned long start,
->                 local_flush_tlb_range_asid(start, size, stride, asid);
->         }
->
-> -       put_cpu();
-> +       if (mm)
-> +               put_cpu();
->  }
->
->  void flush_tlb_mm(struct mm_struct *mm)
-> @@ -189,6 +198,12 @@ void flush_tlb_range(struct vm_area_struct *vma, uns=
-igned long start,
->
->         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
->  }
-> +
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> +{
-> +       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
-,
->                         unsigned long end)
-> --
-> 2.39.2
->
+I am afraid that there can be more symbols with the same name in a
+single source file. For example, static variables defined inside
+functions:
+
+$> cat >test-duplicate-symbols.c <<EOT
+#include <stdio.h>
+
+void a(void)
+{
+	static int duplicate_var = 100;
+
+	printf("%s: %d\n", __func__, duplicate_var);
+}
+
+void b(void)
+{
+	static int duplicate_var = 200;
+
+	printf("%s: %d\n", __func__, duplicate_var);
+}
+
+int main(int argc, char *argv)
+{
+	a();
+	b();
+}
+EOT
+
+$> gcc -o test-duplicate-symbols test-duplicate-symbols.c
+
+$> ./test-duplicate-symbols 
+a: 100
+b: 200
+
+$> objdump -t test-duplicate-symbols | grep duplicate
+test-duplicate-symbols:     file format elf64-x86-64
+0000000000000000 l    df *ABS*  0000000000000000              test-duplicate-symbols.c
+0000000000402018 l     O .data  0000000000000004              duplicate_var.2190
+000000000040201c l     O .data  0000000000000004              duplicate_var.2195
+
+
+> Regarding the use of full file paths and line numbers for symbol decoration,
+> it indeed provides the highest level of uniqueness for each symbol.
+> However, I understand your point that this level of detail might be more than
+> necessary.
+> 
+> This approach was implemented in response to a specific request expressed in
+> the live-patching list, and I wanted to ensure we met those requirements.
+> I am open to revisiting this aspect, and I am willing to accommodate changes
+> based on feedback.
+
+Yeah, livepatching needs to be able to find any symbol which might
+need to be accessed from the livepatch.
+
+The line number is perfectly fine for livepatching because there
+is 1:1:1 relationship between the kernel sources, binary, and
+livepatch.
+
+And it might be even useful for the tracing. It helps to find
+and investigate the traced code easily.
+
+Hmm, I understand that it complicates the live for the trace
+tooling. I wonder if we could allow searching the symbols
+with a pattern, e.g. the bash style
+"duplicated_symbol_name-source_file_c*"
+
+
+> If you believe that simplifying the format to just path + name would be more
+> practical, or if you think that eliminating line numbers is a better choice
+> to avoid potential issues while debugging builds, I'm open to considering
+> these adjustments.
+> Additionally, I've interpreted and implemented Francis's suggestion as making
+> the separator a configurable option, but maybe a proper format string here,
+> would be more appropriate.
+
+Please, do not make the format configurable. I think that it will
+cause more harm than good. It would make the life more complicated
+for developing tracing tools.
+
+The tools would need to support all the formats as well. Or they
+would support only some and will not be able to trace kernels
+with the others. Both is bad.
+
+Anyway, thanks a lot for working on this.
+
+Best Regards,
+Petr
