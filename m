@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AFC79DEB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7010279DEB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbjIMDrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 23:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S234574AbjIMDrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 23:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjIMDra (ORCPT
+        with ESMTP id S230052AbjIMDrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 23:47:30 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C358A1722;
-        Tue, 12 Sep 2023 20:47:25 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 3D3FB8132;
-        Wed, 13 Sep 2023 11:47:24 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
- 2023 11:47:24 +0800
-Received: from [192.168.125.55] (113.72.145.181) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
- 2023 11:47:23 +0800
-Message-ID: <c417d55d-d886-f66d-15a9-73b297d28d59@starfivetech.com>
-Date:   Wed, 13 Sep 2023 11:47:22 +0800
+        Tue, 12 Sep 2023 23:47:49 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D791F1722;
+        Tue, 12 Sep 2023 20:47:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vrz42ty_1694576860;
+Received: from 30.221.128.188(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Vrz42ty_1694576860)
+          by smtp.aliyun-inc.com;
+          Wed, 13 Sep 2023 11:47:41 +0800
+Message-ID: <923f3dd1-c264-9d5f-3f17-1212493a7daa@linux.alibaba.com>
+Date:   Wed, 13 Sep 2023 11:47:39 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [-next v2 1/2] riscv: dts: starfive: visionfive 2: Enable usb0
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230829020511.26844-1-hal.feng@starfivetech.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v2] fs: ocfs2: Replace strlcpy with sysfs_emit
 Content-Language: en-US
-From:   Hal Feng <hal.feng@starfivetech.com>
-In-Reply-To: <20230829020511.26844-1-hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>,
+        akpm <akpm@linux-foundation.org>
+Cc:     linux-hardening@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+        Jeff Layton <jlayton@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20230831193827.1528867-1-azeemshaikh38@gmail.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+In-Reply-To: <20230831193827.1528867-1-azeemshaikh38@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.145.181]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 10:05:10 +0800, Hal Feng wrote:
-> usb0 was disabled by mistake when merging, so enable it.
+
+
+On 9/1/23 3:38 AM, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with sysfs_emit().
 > 
-> Fixes: e7c304c0346d ("riscv: dts: starfive: jh7110: add the node and pins configuration for tdm")
-> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+> Direct replacement is safe here since its ok for `kernel_param_ops.get()`
+> to return -errno [3].
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> [3] https://elixir.bootlin.com/linux/v6.5/source/include/linux/moduleparam.h#L52
+> 
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+
 > ---
->  arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 1 +
->  1 file changed, 1 insertion(+)
+> v2:
+>  * Removes patch [1/2] which replaced module_param_call with module_param_cb.
+>  * Use sysfs_emit instead of strscpy.
 > 
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index d79f94432b27..85f40df93f25 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -513,6 +513,7 @@ &uart0 {
->  
->  &usb0 {
->  	dr_mode = "peripheral";
-> +	status = "okay";
->  };
-
-Hi, Conor,
-
-As v6.6-rc1 is already released, would you apply this series
-in rc2 or the later rc versions?
-
-Best regards,
-Hal
+> v1:
+>  * https://lore.kernel.org/all/20230830215426.4181755-1-azeemshaikh38@gmail.com/
+> 
+>  fs/ocfs2/dlmfs/dlmfs.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+> index 81265123ce6c..b38776ba3306 100644
+> --- a/fs/ocfs2/dlmfs/dlmfs.c
+> +++ b/fs/ocfs2/dlmfs/dlmfs.c
+> @@ -80,8 +80,7 @@ static int param_set_dlmfs_capabilities(const char *val,
+>  static int param_get_dlmfs_capabilities(char *buffer,
+>  					const struct kernel_param *kp)
+>  {
+> -	return strlcpy(buffer, DLMFS_CAPABILITIES,
+> -		       strlen(DLMFS_CAPABILITIES) + 1);
+> +	return sysfs_emit(buffer, DLMFS_CAPABILITIES);
+>  }
+>  module_param_call(capabilities, param_set_dlmfs_capabilities,
+>  		  param_get_dlmfs_capabilities, NULL, 0444);
+> --
+> 2.42.0.283.g2d96d420d3-goog
+> 
