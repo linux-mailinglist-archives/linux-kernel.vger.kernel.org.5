@@ -2,189 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DFC79DF91
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F57F79DF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237181AbjIMFxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 01:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S234071AbjIMF6T convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 01:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbjIMFxn (ORCPT
+        with ESMTP id S230188AbjIMF6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 01:53:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFA9172D;
-        Tue, 12 Sep 2023 22:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694584419; x=1726120419;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FfUA0UJfdB5sO+CbLAWUBiXpBV0138FnSY1bREzj/FU=;
-  b=QV8jGdSjLEz5e8Rs40VJFqPJokTyfYRb5bBS6zollkQie6chUQq0llmP
-   K2bcMRKuf5cilPQAV0G2lD8CkNbsWIbfET6XYPueghB2ns9XyHiDezx0U
-   WvmzVm79eCcOkQR1aSkg/IOAOQn1fdnPUKX2OfoezwG1Ws22hJA16BS6o
-   0LTEsuyIyxhMI/b5GRICyJacAPU+w5rxJLcZfRCFhbu/bBbPneg16CPUp
-   BpjUzXWC/1pZeGrGbxfPXspj8j35QKEOvXpPWdC2ng2zrGmjb2NhNnBW6
-   WBVtH9gG5gnMAy8d1F+6eBAyDlVQPISuYePCUZ3+KBSQuTjJ39b2RULCh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464941613"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="464941613"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 22:53:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="990784456"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="990784456"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.45.177])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 22:53:31 -0700
-Message-ID: <592b8fd2-bfe3-0f8d-2814-d8340bbc75ee@intel.com>
-Date:   Wed, 13 Sep 2023 08:53:26 +0300
+        Wed, 13 Sep 2023 01:58:18 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171AA172A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:58:12 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id C6A0F24DFCE;
+        Wed, 13 Sep 2023 13:58:07 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
+ 2023 13:58:07 +0800
+Received: from [192.168.151.232] (172.16.6.8) by EXMBX066.cuchost.com
+ (172.16.6.66) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
+ 2023 13:58:06 +0800
+Message-ID: <e2783323-6f76-bedb-4e0c-aafba909117b@starfivetech.com>
+Date:   Wed, 13 Sep 2023 13:58:05 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 5/7] tools/perf: fix Python string escapes
-To:     Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-pm@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org,
-        Todd E Brandt <todd.e.brandt@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-6-bgray@linux.ibm.com>
- <340eae90-d270-5e52-4982-a67459bc46dd@intel.com>
- <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/1] i3c: Add fallback method for GETMXDS CCC
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        <vitor.soares@synopsys.com>, <conor.culhane@silvaco.com>
+CC:     <alexandre.belloni@bootlin.com>, <linux-i3c@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911082456.23239-1-joshua.yeong@starfivetech.com>
+ <20230911082456.23239-2-joshua.yeong@starfivetech.com>
+ <20230912130821.21edfafc@xps-13>
 Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Joshua Yeong <joshua.yeong@starfivetech.com>
+In-Reply-To: <20230912130821.21edfafc@xps-13>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Originating-IP: [172.16.6.8]
+X-ClientProxiedBy: EXCAS081.cuchost.com (172.16.6.41) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/23 03:26, Benjamin Gray wrote:
-> On 12/9/23 8:56 pm, Adrian Hunter wrote:
->> On 12/09/23 09:07, Benjamin Gray wrote:
->>> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
->>> index a7e88332276d..980f080a5a2c 100755
->>> --- a/tools/perf/pmu-events/jevents.py
->>> +++ b/tools/perf/pmu-events/jevents.py
->>> @@ -83,7 +83,7 @@ def c_len(s: str) -> int:
->>>     """Return the length of s a C string
->>>       This doesn't handle all escape characters properly. It first assumes
->>> -  all \ are for escaping, it then adjusts as it will have over counted
->>> +  all \\ are for escaping, it then adjusts as it will have over counted
->>
->> It looks like the whole string should be a raw string
->>
-> ...
->>> -                s = value.replace("%", "\%")
->>> -                s = s.replace("_", "\_")
->>> +                s = value.replace("%", "\\%")
->>> +                s = s.replace("_", "\\_")
->>
->> Raw strings seem more readable, so could be
->> used here too
-> 
-> Yeah, sounds good. I normally use r strings only for regex, but there shouldn't be any ambiguity here (it might have been misleading if the search argument to replace looked like a regex).
-> 
-> Having the docstring be an r string is a good catch. There's probably a few like that in the kernel, but finding them is a little more complicated because they might be 'valid' syntax (e.g., the '\000' just becomes a null byte. This series is focused on the syntax errors though, so I'll just leave it be.
-> 
-> How is the following?
-> ---
-> Subject: [PATCH] tools/perf: fix Python string escapes
-> 
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
-> 
-> Fix these now to get ahead of it before it's an error.
-> 
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
+Hi Miquel,
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> ---
->  tools/perf/pmu-events/jevents.py                 | 2 +-
->  tools/perf/scripts/python/arm-cs-trace-disasm.py | 4 ++--
->  tools/perf/scripts/python/compaction-times.py    | 2 +-
->  tools/perf/scripts/python/exported-sql-viewer.py | 4 ++--
->  4 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> index a7e88332276d..1b4519333a28 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -80,7 +80,7 @@ def file_name_to_table_name(prefix: str, parents: Sequence[str],
-> 
-> 
->  def c_len(s: str) -> int:
-> -  """Return the length of s a C string
-> +  r"""Return the length of s a C string
-> 
->    This doesn't handle all escape characters properly. It first assumes
->    all \ are for escaping, it then adjusts as it will have over counted
-> diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> index d59ff53f1d94..de58991c78bb 100755
-> --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> @@ -45,8 +45,8 @@ parser = OptionParser(option_list=option_list)
->  # Initialize global dicts and regular expression
->  disasm_cache = dict()
->  cpu_data = dict()
-> -disasm_re = re.compile("^\s*([0-9a-fA-F]+):")
-> -disasm_func_re = re.compile("^\s*([0-9a-fA-F]+)\s.*:")
-> +disasm_re = re.compile(r"^\s*([0-9a-fA-F]+):")
-> +disasm_func_re = re.compile(r"^\s*([0-9a-fA-F]+)\s.*:")
->  cache_size = 64*1024
-> 
->  glb_source_file_name    = None
-> diff --git a/tools/perf/scripts/python/compaction-times.py b/tools/perf/scripts/python/compaction-times.py
-> index 2560a042dc6f..9401f7c14747 100644
-> --- a/tools/perf/scripts/python/compaction-times.py
-> +++ b/tools/perf/scripts/python/compaction-times.py
-> @@ -260,7 +260,7 @@ def pr_help():
-> 
->  comm_re = None
->  pid_re = None
-> -pid_regex = "^(\d*)-(\d*)$|^(\d*)$"
-> +pid_regex = r"^(\d*)-(\d*)$|^(\d*)$"
-> 
->  opt_proc = popt.DISP_DFL
->  opt_disp = topt.DISP_ALL
-> diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-> index 13f2d8a81610..78763531fe5a 100755
-> --- a/tools/perf/scripts/python/exported-sql-viewer.py
-> +++ b/tools/perf/scripts/python/exported-sql-viewer.py
-> @@ -677,8 +677,8 @@ class CallGraphModelBase(TreeModel):
->              #   sqlite supports GLOB (text only) which uses * and ? and is case sensitive
->              if not self.glb.dbref.is_sqlite3:
->                  # Escape % and _
-> -                s = value.replace("%", "\%")
-> -                s = s.replace("_", "\_")
-> +                s = value.replace("%", r"\%")
-> +                s = s.replace("_", r"\_")
->                  # Translate * and ? into SQL LIKE pattern characters % and _
->                  trans = string.maketrans("*?", "%_")
->                  match = " LIKE '" + str(s).translate(trans) + "'"
+On 12-Sep-23 7:08 PM, Miquel Raynal wrote:
+> Hi Joshua,
+>
+> joshua.yeong@starfivetech.com wrote on Mon, 11 Sep 2023 16:24:56 +0800:
+>
+>> Some I3C hardware will report error when incorrect length is received from
+>> device. GETMXDS CCC are availble in 2 formats; without turnaround time (format
+>> 1) and with turnaround time (format 2). There is no mechanics to determine which
+>> format is supported by device. In case sending GETMXDS CCC format 2 resulted
+>> failure, try sending GETMXDS CCC format 1 instead.
+>>
+>> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+>> ---
+>>   drivers/i3c/master.c    | 33 ++++++++++++++++++++++++++++-----
+>>   include/linux/i3c/ccc.h | 17 +++++++++++++++--
+>>   2 files changed, 43 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+>> index 87283e4a4607..084f64bef155 100644
+>> --- a/drivers/i3c/master.c
+>> +++ b/drivers/i3c/master.c
+>> @@ -1088,10 +1088,37 @@ static int i3c_master_getmxds_locked(struct i3c_master_controller *master,
+>>   				     struct i3c_device_info *info)
+>>   {
+>>   	struct i3c_ccc_getmxds *getmaxds;
+>> +	struct i3c_ccc_getmxds_turnaround *getmaxds_ta;
+>>   	struct i3c_ccc_cmd_dest dest;
+>>   	struct i3c_ccc_cmd cmd;
+>>   	int ret;
+>>   
+>> +	getmaxds_ta = i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
+>> +					 sizeof(*getmaxds_ta));
+>> +	if (!getmaxds_ta)
+>> +		return -ENOMEM;
+>> +
+>> +	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETMXDS, &dest, 1);
+>> +	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
+>> +	if (ret) {
+>> +		goto alternative;
+>> +	}
+>> +
+>> +	if (dest.payload.len != 2 && dest.payload.len != 5) {
+> Can len be 2 here?
 
+I do not know if other IP allows lower payload length. The Cadence IP 
+will trigger an error in case the GET CCC length is mismatch. May need 
+Vitor/Conor to confirm this behavior in Synopsys/Silvaco.
+
+>> +		ret = -EIO;
+>> +		goto out;
+>> +	}
+>> +
+>> +	info->max_read_ds = getmaxds_ta->maxrd;
+>> +	info->max_write_ds = getmaxds_ta->maxwr;
+>> +	if (dest.payload.len == 5)
+>> +		info->max_read_turnaround = getmaxds_ta->maxrdturn[0] |
+>> +					    ((u32)getmaxds_ta->maxrdturn[1] << 8) |
+>> +					    ((u32)getmaxds_ta->maxrdturn[2] << 16);
+> Don't you want to avoid the "alternative" if it worked?
+Thank you, will fix this.
+>
+>> +
+>> +alternative:
+> I would expect a comment somewhere to explain the subtlety.
+Will add comments to explain this code.
+>
+>> +	i3c_ccc_cmd_dest_cleanup(&dest);
+>> +
+>>   	getmaxds = i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
+>>   					 sizeof(*getmaxds));
+>>   	if (!getmaxds)
+>> @@ -1102,17 +1129,13 @@ static int i3c_master_getmxds_locked(struct i3c_master_controller *master,
+>>   	if (ret)
+>>   		goto out;
+>>   
+>> -	if (dest.payload.len != 2 && dest.payload.len != 5) {
+>> +	if (dest.payload.len != 2) {
+>>   		ret = -EIO;
+>>   		goto out;
+>>   	}
+>>   
+>>   	info->max_read_ds = getmaxds->maxrd;
+>>   	info->max_write_ds = getmaxds->maxwr;
+>> -	if (dest.payload.len == 5)
+>> -		info->max_read_turnaround = getmaxds->maxrdturn[0] |
+>> -					    ((u32)getmaxds->maxrdturn[1] << 8) |
+>> -					    ((u32)getmaxds->maxrdturn[2] << 16);
+>>   
+>>   out:
+>>   	i3c_ccc_cmd_dest_cleanup(&dest);
+>> diff --git a/include/linux/i3c/ccc.h b/include/linux/i3c/ccc.h
+>> index ad59a4ae60d1..50ed41d4d5a1 100644
+>> --- a/include/linux/i3c/ccc.h
+>> +++ b/include/linux/i3c/ccc.h
+>> @@ -269,14 +269,27 @@ enum i3c_tsco {
+>>   #define I3C_CCC_MAX_SDR_FSCL(x)		((x) & I3C_CCC_MAX_SDR_FSCL_MASK)
+>>   
+>>   /**
+>> - * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC
+>> + * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC without turnaround
+>> + * (format 1)
+>> + *
+>> + * @maxwr: write limitations
+>> + * @maxrd: read limitations
+>> + */
+>> +struct i3c_ccc_getmxds {
+>> +	u8 maxwr;
+>> +	u8 maxrd;
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct i3c_ccc_getmxds_ta - payload passed to GETMXDS CCC with turnaround
+>> + * (format 2)
+>>    *
+>>    * @maxwr: write limitations
+>>    * @maxrd: read limitations
+>>    * @maxrdturn: maximum read turn-around expressed micro-seconds and
+>>    *	       little-endian formatted
+>>    */
+>> -struct i3c_ccc_getmxds {
+>> +struct i3c_ccc_getmxds_turnaround {
+>>   	u8 maxwr;
+>>   	u8 maxrd;
+>>   	u8 maxrdturn[3];
+>
+> Thanks,
+> Miquèl
