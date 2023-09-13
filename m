@@ -2,152 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE51679F248
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90DA79F24D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbjIMToK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        id S232546AbjIMToi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjIMToI (ORCPT
+        with ESMTP id S232516AbjIMToh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:44:08 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4173AB7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:44:04 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c93638322so48960066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694634242; x=1695239042; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ymH1v6cOBwI8SJ/5mETElIehW/IG9VVdKuCvlgGH9zI=;
-        b=UiXuCXjcyR6hVjFPlwuTS/HRTbrbIkqG98Ij90Tqx2DZpyUtb0CRXcUulpgAobbXE+
-         U8xBPEOAjB/D0IMty0hWfRRZefAvCItykPE1PPuH58sWDUlYfJAInh5JR9jtdzrAQMUQ
-         5cSdeYNvHWQWy7TQmlasilYmQuwdbNn8RwkMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694634242; x=1695239042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ymH1v6cOBwI8SJ/5mETElIehW/IG9VVdKuCvlgGH9zI=;
-        b=v0if4Eqw8AK2z37vdpWbbKWI6InbKEq7Zg+/U0hLTnI6wohIRWJmOn7qUfQoyQHRPJ
-         kRC7lOcGi2drcLJRxTeS672RnhSBCt+JDuC+BkQpSTrhWVytIzXXOwmvazOforvJpcCQ
-         ijsHhpwBfxpo68y+ckPnETnSuPAzjeunG4EKmpIdcElXxyKS2089Ewd8w3dFFHj6hu9M
-         K8APZXGLqCC+FSKgdEq7rIrSg4kcV3ybrp6GpTjbQNMB3Mk+Hw2i/ys9jbfTcfXguH0B
-         ThPb3L/W787kCDpDoezDVkmdJwk1S9qvj3iQuYM3i7JLvL/z2G+63cKVD82ceBwktm93
-         F1Vw==
-X-Gm-Message-State: AOJu0YzsfHkG0wL9MbaDZGuZ2l3bXU3GDC4b3SJyAtcWDPlY5BwzLefH
-        5beSfPXk5km8aNa+/9avPrdQVFONS4+NBd7xRbjtD5ns
-X-Google-Smtp-Source: AGHT+IFzRBvd3pW5tQdDj0W4+XhqjxRMN1iq1VUrnVxAHB8YXj6zjo+b4G+vJ1AiMEMGtm04Q/2b9A==
-X-Received: by 2002:a17:907:96a4:b0:9a5:c38d:6b75 with SMTP id hd36-20020a17090796a400b009a5c38d6b75mr10005593ejc.15.1694634242303;
-        Wed, 13 Sep 2023 12:44:02 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id e10-20020a170906044a00b0099d0a8ccb5fsm8942919eja.152.2023.09.13.12.44.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 12:44:01 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so2921820a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:44:01 -0700 (PDT)
-X-Received: by 2002:a17:907:6e92:b0:9ad:7840:ab29 with SMTP id
- sh18-20020a1709076e9200b009ad7840ab29mr11942207ejc.32.1694634240890; Wed, 13
- Sep 2023 12:44:00 -0700 (PDT)
+        Wed, 13 Sep 2023 15:44:37 -0400
+Received: from smtp56.i.mail.ru (smtp56.i.mail.ru [95.163.41.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45059B;
+        Wed, 13 Sep 2023 12:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
+        ; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+        Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+        X-Cloud-Ids:Disposition-Notification-To;
+        bh=++SJ5Dkbrvd3/hbARRa2crLSFGPmwlWrz6P14t0GtUc=; t=1694634273; x=1694724273; 
+        b=XWpjaf5EeN+AtzHKbDUi5ontoiC7Xb1t6K4ByMboh89cP9osIHPuDxm/zAxc7mw1NWVsRNCPwUH
+        UzVcUdJsTOBrMyKL+G8YY95WqqltYGl8M/puxmbdy9/PEod+Yeid5FCytomXA5ZmBqIklpv2hFy84
+        ir7l1TavGVeLCDVfAmg=;
+Received: by smtp56.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
+        id 1qgVmn-009uvf-0V; Wed, 13 Sep 2023 22:44:29 +0300
+From:   Danila Tikhonov <danila@jiaxyga.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, robimarko@gmail.com, quic_gurus@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Danila Tikhonov <danila@jiaxyga.com>
+Subject: [PATCH] dt-bindings: firmware: document Qualcomm SM7150 SCM
+Date:   Wed, 13 Sep 2023 22:44:18 +0300
+Message-ID: <20230913194418.30272-1-danila@jiaxyga.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230913165648.2570623-1-dhowells@redhat.com> <20230913165648.2570623-8-dhowells@redhat.com>
-In-Reply-To: <20230913165648.2570623-8-dhowells@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 Sep 2023 12:43:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiULvMMcdf36JU3daqnTG2KqtJwm788k6fR4bJo7LvAiw@mail.gmail.com>
-Message-ID: <CAHk-=wiULvMMcdf36JU3daqnTG2KqtJwm788k6fR4bJo7LvAiw@mail.gmail.com>
-Subject: Re: [PATCH v4 07/13] iov_iter: Make copy_from_iter() always handle MCE
-To:     David Howells <dhowells@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp56.i.mail.ru; auth=pass smtp.auth=danila@jiaxyga.com smtp.mailfrom=danila@jiaxyga.com
+X-Mailru-Src: smtp
+X-7564579A: B8F34718100C35BD
+X-77F55803: 4F1203BC0FB41BD927CFE6CA1630A10C0C2E07651900246E0BFBA1F9AAFF16A000894C459B0CD1B911B2854684B9102EEB1C7D3CD30EECC3B4127DE3E3D96F36AF77107535B39722
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7353CFE866E745C13EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006375D8840FA58F505298638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B1851902FEC7EB0850C076EBC170C7F0117882F4460429724CE54428C33FAD305F5C1EE8F4F765FCEA77C8EAE1CE44B0A471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F44604297287769387670735201E561CDFBCA1751FF04B652EEC242312D2E47CDBA5A96583BA9C0B312567BB2376E601842F6C81A19E625A9149C048EE4B6963042765DA4B148812EF9080FC94D8FC6C240DEA76429C9F4D5AE37F343AA9539A8B242431040A6AB1C7CE11FEE30085B890FD2717DA9735652A29929C6CC4224003CC836476E2F48590F00D11D6E2021AF6380DFAD1A18204E546F3947CB11811A4A51E3B096D1867E19FE1407959CC434672EE6371089D37D7C0E48F6C8AA50765F790063757B1FBEA53BC6EDBEFF80C71ABB335746BA297DBC24807EABDAD6C7F3747799A
+X-C1DE0DAB: 0D63561A33F958A527C9ACEF86008B865BCCA6C82D6BAFD2D14640B0C5C926F4F87CCE6106E1FC07E67D4AC08A07B9B01DAA61796BF5227B9C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF9A1DD9300BCC08FE9C3C506B07A9307A2A52AC4D35A21963AA65ADCEEDDABB0512B9ACBE231CC78AC4B8F2E8CFB8F571F4B5A46BC9DE83B81579546215BAD8B921BEC6C0C71ED4F84C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojoMTWofjSWSR9r/oz2xb+RA==
+X-Mailru-Sender: 9EB879F2C80682A09F26F806C73949817A73A00031D9200A4EECB8BFBF450AF1B878F0385D421739643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sept 2023 at 09:57, David Howells <dhowells@redhat.com> wrote:
->
-> Make copy_from_iter() always catch an MCE and return a short copy and make
-> the coredump code rely on that.  This requires arch support in the form of
-> a memcpy_mc() function that returns the length copied.
+Document the compatible for Qualcomm SM7150 SCM.
 
-What?
+Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+---
+ Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-This patch seems to miss the point of the machine check copy entirely.
+diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+index 4233ea839bfc..0c073335f8ff 100644
+--- a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
++++ b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+@@ -56,6 +56,7 @@ properties:
+           - qcom,scm-sm6125
+           - qcom,scm-sm6350
+           - qcom,scm-sm6375
++          - qcom,scm-sm7150
+           - qcom,scm-sm8150
+           - qcom,scm-sm8250
+           - qcom,scm-sm8350
+-- 
+2.41.0
 
-You create that completely random memcpy_mc() function, that has
-nothing to do with our existing copy_mc_to_kernel(), and you claim
-that the issue is that it should return the length copied.
-
-Which is not the issue at all.
-
-Several x86 chips will HANG due to internal CPU corruption if you use
-the string instructions for copying data when a machine check
-exception happens (possibly only due to memory poisoning with some
-non-volatile RAM thing).
-
-Are these chips buggy? Yes.
-
-Is the Intel machine check architecture nasty and bad? Yes, Christ yes.
-
-Can these machines hang if user space does repeat string instructions
-to said memory? Afaik, very much yes again. They are buggy.
-
-I _think_ this only happens with the non-volatile storage stuff (thus
-the dax / pmem / etc angle), and I hope we can put it behind us some
-day.
-
-But that doesn't mean that you can take our existing
-copy_mc_to_kernel() code that tries to work around this and replace it
-with something completely different that definitely does *not* work
-around it.
-
-See the comment in arch/x86/lib/copy_mc_64.S:
-
- * copy_mc_fragile - copy memory with indication if an exception /
-fault happened
- *
- * The 'fragile' version is opted into by platform quirks and takes
- * pains to avoid unrecoverable corner cases like 'fast-string'
- * instruction sequences, and consuming poison across a cacheline
- * boundary. The non-fragile version is equivalent to memcpy()
- * regardless of CPU machine-check-recovery capability.
-
-and yes, it's disgusting, and no, I've never seen a machine that does
-this, since it's all "enterprise hardware", and I don't want to touch
-that shite with a ten-foot pole.
-
-Should I go on another rant about how "enterprise" means "over-priced
-garbage, but with a paper trail of how bad it is, so that you can
-point fingers at somebody else"?
-
-That's true both when applied to software and to hardware, I'm afraid.
-
-So if we get rid of that horrendous "copy_mc_fragile", then pretty
-much THE WHOLE POINT of the stupid MC copy goes away, and we should
-just get rid of it all entirely.
-
-Which might be a good idea, but is absolutely *not* something that
-should be done randomly as part of some iov_iter rewrite series.
-
-I'll dance on the grave of that *horrible* machine check copy code,
-but when I see this as part of iov_iter cleanup, I can only say "No.
-Not this way".
-
-> [?] Is it better to kill the thread in the event of an MCE occurring?
-
-Oh, the thread will be dead already. In fact, if I understand the
-problem correctly, the whole f$^!ng machine will be dead and need to
-be power-cycled.
-
-                 Linus
