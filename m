@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C9079EFCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783FA79EFD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjIMREg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        id S230204AbjIMRH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjIMREd (ORCPT
+        with ESMTP id S229472AbjIMRH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:04:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1906CE;
-        Wed, 13 Sep 2023 10:04:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2ECAC433C8;
-        Wed, 13 Sep 2023 17:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694624669;
-        bh=7rv3Solh0betRWknM4KbpX2Yzq/6PuTa+8pHyrMJGLA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QVJnA+aBoPDbHvk8YrLqfUO2xt+TBAZSJweq0lY30J46pjlEIWz3WjieCmseON/88
-         ylqNWd3Laqfh+ek+uk2rL22H18Z85BL7UfSb2gVDwUXpEVyORdsFZZcEuOMXkrNchE
-         G/cYB0p2d05fshkD+v+Em9SVX3aKdTCEriBBlgAAVk5WfLZf2nevRk2F1LYhY0EZtk
-         GvD91tOsCEJSP4pnT1hbbFVThhMaOCPNLXIT0xtdBNrW8XZI3VP8+EqiNkKwU1QHTP
-         sQmVfyt/mJcyLPUIsIZF/9Uuepm1Ra4kKz6ie5D1prKqWtU41V+f3jHT4Cf3npsv+M
-         JClNNDAK/RJng==
-Message-ID: <c57b71b5109942d7c66d8466fb26f82211c1a175.camel@kernel.org>
-Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 13 Sep 2023 13:04:27 -0400
-In-Reply-To: <20230913-hausbank-wortlaut-b2bb3cee6156@brauner>
-References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
-         <20230913-hausbank-wortlaut-b2bb3cee6156@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 13 Sep 2023 13:07:26 -0400
+Received: from smtp118.iad3a.emailsrvr.com (smtp118.iad3a.emailsrvr.com [173.203.187.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4733DDC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20221208-6x11dpa4; t=1694624841;
+        bh=euqjwZb6dubS+43EgVReoNYE3c5GNQw3CY5eKNN0B9c=;
+        h=From:To:Subject:Date:From;
+        b=NTsMs/ploqtjbtwZI1JcAX0PSRFmdrZ/tTs6s8MQO5X4F7vWVPkqPJoDJfR6ltebV
+         +shAqwBEEGWj/Sc7XbBbR2JbZhAz+HObk4SA4PNkBg5lQrDBFMLOjK3fSfFeT+7x/v
+         kVS4JLLcx+yS2EoGpSD2VcseY5f0zE50FPc8nasA=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp39.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 7C6C94343;
+        Wed, 13 Sep 2023 13:07:20 -0400 (EDT)
+From:   Ian Abbott <abbotti@mev.co.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH v3 00/13] comedi: Re-do HAS_IOPORT dependencies
+Date:   Wed, 13 Sep 2023 18:06:59 +0100
+Message-Id: <20230913170712.111719-1-abbotti@mev.co.uk>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230913164013.107520-1-abbotti@mev.co.uk>
+References: <20230913164013.107520-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 19793052-af61-4898-a406-82596fa230be-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-13 at 18:45 +0200, Christian Brauner wrote:
-> On Wed, Sep 13, 2023 at 09:33:12AM -0400, Jeff Layton wrote:
-> > Nathan reported that he was seeing the new warning in
-> > setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-> > trying to set the atime and mtime via notify_change without also
-> > setting the ctime.
-> >=20
-> > POSIX states that when the atime and mtime are updated via utimes() tha=
-t
-> > we must also update the ctime to the current time. The situation with
-> > overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
-> > notify_change will fill in the value.
-> >=20
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
->=20
-> Looks good to me,
-> Acked-by: Christian Brauner <brauner@kernel.org>
->=20
-> So we can wait for ovl to upstream this fix next and then we'll delay
-> sending the ctime fixes or we'll take this fixup as well. Just let me
-> know what you all prefer.
+Commit b5c75b68b7de ("comedi: add HAS_IOPORT dependencies") was reverted
+because it made it impossible to select configuration options that
+depend on the COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
+COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
+'depends on' directives and there being no other way to select those
+codependent configuration options.
 
-No preference here.
---=20
-Jeff Layton <jlayton@kernel.org>
+This patch series conditionally removes port I/O support from various
+comedi modules so they still be built when a future patch removes the
+port I/O functions (inb(), outb() and friends) unless the HAS_IOPORT
+configuration option is selected.  The final patch 13 adds HAS_IOPORT
+dependencies to the configuration options as in the reverted patch, but
+there are now fewer options that need to depend on HAS_IOPORT, and the
+'select' directives have not been replaced with 'depends on' directives.
+
+01) comedi: Correct dependencies for COMEDI_NI_PCIDIO
+02) comedi: comedi_8254: Use a call-back function for register access
+03) comedi: comedi_8254: Replace comedi_8254_init() and comedi_8254_mm_init()
+04) comedi: comedi_8254: Conditionally remove I/O port support
+05) comedi: 8255_pci: Conditionally remove devices that use port I/O
+06) comedi: comedi_8255: Rework subdevice initialization functions
+07) comedi: comedi_8255: Conditionally remove I/O port support
+08) comedi: ni_labpc_common: Conditionally remove I/O port support
+09) comedi: ni_mio_common: Conditionally use I/O port or MMIO
+10) comedi: amplc_dio200_pci: Conditionally remove devices that use port I/O
+11) comedi: amplc_dio200_common: Refactor register access functions
+12) comedi: amplc_dio200_common: Conditionally remove I/O port support
+13) comedi: add HAS_IOPORT dependencies again
+
+=============================
+v2:
+
+0. Patch titles and numbering is unchanged since v1.
+
+1. Corrects [CONFIG_]HAS_PORTIO to [CONFIG_]HAS_IOPORT in the code for
+patches 05 and 08, and in the description for patches 05, 06, 08, 10,
+11, and 12.
+
+2. Enhances the commit description for patch 08 a bit.
+
+======
+
+v3:
+
+0. Patch titles and numbering is unchanged since v2.
+
+1. Adds missing `---` divider lines before patch changelogs for patches
+06 and 09.
+
+2. The 'In-Reply-To:' and 'References:' email headers were incorrect in
+the v2 series.
+=============================
+
+
+ drivers/comedi/Kconfig                       |  45 +++++-
+ drivers/comedi/drivers.c                     |   3 +-
+ drivers/comedi/drivers/8255.c                |   2 +-
+ drivers/comedi/drivers/8255_pci.c            |  15 +-
+ drivers/comedi/drivers/adl_pci9111.c         |   8 +-
+ drivers/comedi/drivers/adl_pci9118.c         |   8 +-
+ drivers/comedi/drivers/adv_pci1710.c         |   8 +-
+ drivers/comedi/drivers/adv_pci_dio.c         |  14 +-
+ drivers/comedi/drivers/aio_aio12_8.c         |  10 +-
+ drivers/comedi/drivers/amplc_dio200_common.c | 104 +++++++++---
+ drivers/comedi/drivers/amplc_dio200_pci.c    |  12 +-
+ drivers/comedi/drivers/amplc_pc236_common.c  |   2 +-
+ drivers/comedi/drivers/amplc_pci224.c        |   8 +-
+ drivers/comedi/drivers/amplc_pci230.c        |  10 +-
+ drivers/comedi/drivers/cb_das16_cs.c         |   8 +-
+ drivers/comedi/drivers/cb_pcidas.c           |  23 +--
+ drivers/comedi/drivers/cb_pcidas64.c         |   7 +-
+ drivers/comedi/drivers/cb_pcidda.c           |   2 +-
+ drivers/comedi/drivers/cb_pcimdas.c          |  12 +-
+ drivers/comedi/drivers/cb_pcimdda.c          |   2 +-
+ drivers/comedi/drivers/comedi_8254.c         | 234 ++++++++++++++++++---------
+ drivers/comedi/drivers/comedi_8255.c         | 123 +++++++-------
+ drivers/comedi/drivers/daqboard2000.c        |   4 +-
+ drivers/comedi/drivers/das08.c               |  11 +-
+ drivers/comedi/drivers/das16.c               |  10 +-
+ drivers/comedi/drivers/das16m1.c             |  22 +--
+ drivers/comedi/drivers/das1800.c             |   8 +-
+ drivers/comedi/drivers/das6402.c             |   8 +-
+ drivers/comedi/drivers/das800.c              |   8 +-
+ drivers/comedi/drivers/dmm32at.c             |   3 +-
+ drivers/comedi/drivers/me4000.c              |   6 +-
+ drivers/comedi/drivers/ni_at_a2150.c         |   8 +-
+ drivers/comedi/drivers/ni_at_ao.c            |   8 +-
+ drivers/comedi/drivers/ni_atmio16d.c         |   2 +-
+ drivers/comedi/drivers/ni_daq_dio24.c        |   2 +-
+ drivers/comedi/drivers/ni_labpc_common.c     |  51 +++---
+ drivers/comedi/drivers/ni_mio_common.c       |  74 ++++++---
+ drivers/comedi/drivers/pcl711.c              |   8 +-
+ drivers/comedi/drivers/pcl724.c              |   6 +-
+ drivers/comedi/drivers/pcl812.c              |  10 +-
+ drivers/comedi/drivers/pcl816.c              |   8 +-
+ drivers/comedi/drivers/pcl818.c              |   8 +-
+ drivers/comedi/drivers/pcm3724.c             |   2 +-
+ drivers/comedi/drivers/rtd520.c              |   6 +-
+ include/linux/comedi/comedi_8254.h           |  51 ++++--
+ include/linux/comedi/comedi_8255.h           |  24 ++-
+ 46 files changed, 649 insertions(+), 359 deletions(-)
+
