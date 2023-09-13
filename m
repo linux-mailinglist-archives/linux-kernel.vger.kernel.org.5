@@ -2,363 +2,832 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A91E79E687
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093DA79E683
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240043AbjIMLVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S239949AbjIMLVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239964AbjIMLUz (ORCPT
+        with ESMTP id S239978AbjIMLU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:20:55 -0400
-Received: from smtp111.iad3b.emailsrvr.com (smtp111.iad3b.emailsrvr.com [146.20.161.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4C11BD1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:51 -0700 (PDT)
+        Wed, 13 Sep 2023 07:20:57 -0400
+Received: from smtp109.iad3b.emailsrvr.com (smtp109.iad3b.emailsrvr.com [146.20.161.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4F21BF1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694604051;
-        bh=nqQvoe7SqSrpCEoqrow/X3Txdt2uLA568cRnHOMEY38=;
+        s=20221208-6x11dpa4; t=1694604052;
+        bh=+Sh3mtwEAE3bSbUpGi5QeUjtBxvEQfhfCzuMlBoZ5r8=;
         h=From:To:Subject:Date:From;
-        b=EfDYF0l6gldHCAR3hx5FkviT+wcwa7PoB0Nui7HhFnhcxsVzbyixUHEkooHDVo2wY
-         Nf7HbQJqVAYZxWfPo9klskPkLdvMqJelDjg3drHz5zLZUY3Z/VdS8hvlm6R1Oyj32H
-         09Inf4vuG2DZM9m/z1QAui5a/n/SgGgGLDNW8/uQ=
+        b=ymyhvb766bD4EWN+fwjkOsT1GO5j59h3a0DuHdIeczaHkxHvv3XTpfbt2WpD3rWDV
+         aF1ju6Lt+HjwOi8NVWyXGzoyKjbrPo5xkL7tXcIP42wEbPIFch2mfRvwMAXF2ZmkpR
+         uSenMob4LhF9aDjN9AXoNKiYg8oDxOJYz5N1gSGY=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 732EE200F0;
-        Wed, 13 Sep 2023 07:20:50 -0400 (EDT)
+Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 988D8200F4;
+        Wed, 13 Sep 2023 07:20:51 -0400 (EDT)
 From:   Ian Abbott <abbotti@mev.co.uk>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@kernel.org>,
         Niklas Schnelle <schnelle@linux.ibm.com>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 02/13] comedi: comedi_8254: Use a call-back function for register access
-Date:   Wed, 13 Sep 2023 12:20:21 +0100
-Message-Id: <20230913112032.90618-3-abbotti@mev.co.uk>
+Subject: [PATCH 03/13] comedi: comedi_8254: Replace comedi_8254_init() and comedi_8254_mm_init()
+Date:   Wed, 13 Sep 2023 12:20:22 +0100
+Message-Id: <20230913112032.90618-4-abbotti@mev.co.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230913112032.90618-1-abbotti@mev.co.uk>
 References: <20230913112032.90618-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-3-1
+X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-4-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the comedi_8254 module to use a call-back function for register
-access.  This will make it easier to isolate the parts that will depend
-on the `CONFIG_HAS_IOPORT` macro being defined and also allows the
-possibility of supplying an external callback function during
-initialization by a variant of the `comedi_8254_init()` and
-`comedi_8254_mm_init()` functions, although that has not been
-implemented yet.
-
-The `struct comedi_8254` members have been changed to use a pointer to a
-callback function and a context of type `unsigned long`.  The
-`comedi_8254_init()` and `comedi_8254_mm_init()` functions use an
-internal callback function and set the context to the base address of
-the registers (for `comedi_8254_mm_init()` that involves converting a
-`void __iomem *` to `unsigned long`).
-
-A minor change to `dio200_subdev_8254_offset()` in the
-amplc_dio200_common module has been made due to the changes in `struct
-comedi_8254`.
+`comedi_8254_init()` and `comedi_8254_mm_init()` return `NULL` on
+failure, but the failure is not necessarily due to lack of memory.
+Change them to return an `ERR_PTR` value on failure and rename the
+functions to make it obvious the API has changed.  `comedi_8254_init()`
+has been replaced with `comedi_8254_io_alloc()`, and
+`comedi_8254_mm_init()` has been replaced with `comedi_8254_mm_alloc()`.
 
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Niklas Schnelle <schnelle@linux.ibm.com>
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
- drivers/comedi/drivers/amplc_dio200_common.c |   4 +-
- drivers/comedi/drivers/comedi_8254.c         | 177 +++++++++++++------
- include/linux/comedi/comedi_8254.h           |  22 ++-
- 3 files changed, 144 insertions(+), 59 deletions(-)
+ drivers/comedi/drivers.c                     |  3 +-
+ drivers/comedi/drivers/adl_pci9111.c         |  8 +--
+ drivers/comedi/drivers/adl_pci9118.c         |  8 +--
+ drivers/comedi/drivers/adv_pci1710.c         |  8 +--
+ drivers/comedi/drivers/adv_pci_dio.c         | 10 ++--
+ drivers/comedi/drivers/aio_aio12_8.c         |  8 +--
+ drivers/comedi/drivers/amplc_dio200_common.c | 12 ++---
+ drivers/comedi/drivers/amplc_pci224.c        |  8 +--
+ drivers/comedi/drivers/amplc_pci230.c        |  8 +--
+ drivers/comedi/drivers/cb_das16_cs.c         |  8 +--
+ drivers/comedi/drivers/cb_pcidas.c           | 21 ++++----
+ drivers/comedi/drivers/cb_pcimdas.c          | 10 ++--
+ drivers/comedi/drivers/comedi_8254.c         | 55 +++++++++++---------
+ drivers/comedi/drivers/das08.c               |  9 ++--
+ drivers/comedi/drivers/das16.c               |  8 +--
+ drivers/comedi/drivers/das16m1.c             | 20 +++----
+ drivers/comedi/drivers/das1800.c             |  8 +--
+ drivers/comedi/drivers/das6402.c             |  8 +--
+ drivers/comedi/drivers/das800.c              |  8 +--
+ drivers/comedi/drivers/me4000.c              |  6 +--
+ drivers/comedi/drivers/ni_at_a2150.c         |  8 +--
+ drivers/comedi/drivers/ni_at_ao.c            |  8 +--
+ drivers/comedi/drivers/ni_labpc_common.c     | 38 +++++++-------
+ drivers/comedi/drivers/pcl711.c              |  8 +--
+ drivers/comedi/drivers/pcl812.c              | 10 ++--
+ drivers/comedi/drivers/pcl816.c              |  8 +--
+ drivers/comedi/drivers/pcl818.c              |  8 +--
+ drivers/comedi/drivers/rtd520.c              |  6 +--
+ include/linux/comedi/comedi_8254.h           | 16 +++---
+ 29 files changed, 179 insertions(+), 165 deletions(-)
 
+diff --git a/drivers/comedi/drivers.c b/drivers/comedi/drivers.c
+index d4e2ed709bfc..376130bfba8a 100644
+--- a/drivers/comedi/drivers.c
++++ b/drivers/comedi/drivers.c
+@@ -177,7 +177,8 @@ static void comedi_device_detach_cleanup(struct comedi_device *dev)
+ 		dev->n_subdevices = 0;
+ 	}
+ 	kfree(dev->private);
+-	kfree(dev->pacer);
++	if (!IS_ERR(dev->pacer))
++		kfree(dev->pacer);
+ 	dev->private = NULL;
+ 	dev->pacer = NULL;
+ 	dev->driver = NULL;
+diff --git a/drivers/comedi/drivers/adl_pci9111.c b/drivers/comedi/drivers/adl_pci9111.c
+index c50f94272a74..086d93f40cb9 100644
+--- a/drivers/comedi/drivers/adl_pci9111.c
++++ b/drivers/comedi/drivers/adl_pci9111.c
+@@ -647,10 +647,10 @@ static int pci9111_auto_attach(struct comedi_device *dev,
+ 			dev->irq = pcidev->irq;
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCI9111_8254_BASE_REG,
+-				      I8254_OSC_BASE_2MHZ, I8254_IO16, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCI9111_8254_BASE_REG,
++					  I8254_OSC_BASE_2MHZ, I8254_IO16, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/adl_pci9118.c b/drivers/comedi/drivers/adl_pci9118.c
+index 9a816c718303..a76e2666d583 100644
+--- a/drivers/comedi/drivers/adl_pci9118.c
++++ b/drivers/comedi/drivers/adl_pci9118.c
+@@ -1524,10 +1524,10 @@ static int pci9118_common_attach(struct comedi_device *dev,
+ 	devpriv->iobase_a = pci_resource_start(pcidev, 0);
+ 	dev->iobase = pci_resource_start(pcidev, 2);
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCI9118_TIMER_BASE,
+-				      I8254_OSC_BASE_4MHZ, I8254_IO32, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCI9118_TIMER_BASE,
++					  I8254_OSC_BASE_4MHZ, I8254_IO32, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	pci9118_reset(dev);
+ 
+diff --git a/drivers/comedi/drivers/adv_pci1710.c b/drivers/comedi/drivers/adv_pci1710.c
+index 4f2639968260..c49b0f1f5228 100644
+--- a/drivers/comedi/drivers/adv_pci1710.c
++++ b/drivers/comedi/drivers/adv_pci1710.c
+@@ -767,10 +767,10 @@ static int pci1710_auto_attach(struct comedi_device *dev,
+ 		return ret;
+ 	dev->iobase = pci_resource_start(pcidev, 2);
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCI171X_TIMER_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO16, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCI171X_TIMER_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO16, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	n_subdevices = 1;	/* all boards have analog inputs */
+ 	if (board->has_ao)
+diff --git a/drivers/comedi/drivers/adv_pci_dio.c b/drivers/comedi/drivers/adv_pci_dio.c
+index efa3e46b554b..0319d8c7ee47 100644
+--- a/drivers/comedi/drivers/adv_pci_dio.c
++++ b/drivers/comedi/drivers/adv_pci_dio.c
+@@ -664,11 +664,11 @@ static int pci_dio_auto_attach(struct comedi_device *dev,
+ 	if (board->timer_regbase) {
+ 		s = &dev->subdevices[subdev++];
+ 
+-		dev->pacer = comedi_8254_init(dev->iobase +
+-					      board->timer_regbase,
+-					      0, I8254_IO8, 0);
+-		if (!dev->pacer)
+-			return -ENOMEM;
++		dev->pacer =
++		    comedi_8254_io_alloc(dev->iobase + board->timer_regbase,
++					 0, I8254_IO8, 0);
++		if (IS_ERR(dev->pacer))
++			return PTR_ERR(dev->pacer);
+ 
+ 		comedi_8254_subdevice_init(s, dev->pacer);
+ 	}
+diff --git a/drivers/comedi/drivers/aio_aio12_8.c b/drivers/comedi/drivers/aio_aio12_8.c
+index 30b8a32204d8..f9d40fa3d3a9 100644
+--- a/drivers/comedi/drivers/aio_aio12_8.c
++++ b/drivers/comedi/drivers/aio_aio12_8.c
+@@ -206,10 +206,10 @@ static int aio_aio12_8_attach(struct comedi_device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + AIO12_8_8254_BASE_REG,
+-				      0, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + AIO12_8_8254_BASE_REG,
++					  0, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
 diff --git a/drivers/comedi/drivers/amplc_dio200_common.c b/drivers/comedi/drivers/amplc_dio200_common.c
-index ff651f2eb86c..2c1507a23f8a 100644
+index 2c1507a23f8a..19166cb26f5e 100644
 --- a/drivers/comedi/drivers/amplc_dio200_common.c
 +++ b/drivers/comedi/drivers/amplc_dio200_common.c
-@@ -149,9 +149,9 @@ static unsigned int dio200_subdev_8254_offset(struct comedi_device *dev,
+@@ -556,14 +556,14 @@ static int dio200_subdev_8254_init(struct comedi_device *dev,
+ 	}
  
- 	/* get the offset that was passed to comedi_8254_*_init() */
- 	if (dev->mmio)
--		offset = i8254->mmio - dev->mmio;
-+		offset = (void __iomem *)i8254->context - dev->mmio;
- 	else
--		offset = i8254->iobase - dev->iobase;
-+		offset = i8254->context - dev->iobase;
+ 	if (dev->mmio) {
+-		i8254 = comedi_8254_mm_init(dev->mmio + offset,
+-					    0, I8254_IO8, regshift);
++		i8254 = comedi_8254_mm_alloc(dev->mmio + offset,
++					     0, I8254_IO8, regshift);
+ 	} else {
+-		i8254 = comedi_8254_init(dev->iobase + offset,
+-					 0, I8254_IO8, regshift);
++		i8254 = comedi_8254_io_alloc(dev->iobase + offset,
++					     0, I8254_IO8, regshift);
+ 	}
+-	if (!i8254)
+-		return -ENOMEM;
++	if (IS_ERR(i8254))
++		return PTR_ERR(i8254);
  
- 	/* remove the shift that was added for PCIe boards */
- 	if (board->is_pcie)
+ 	comedi_8254_subdevice_init(s, i8254);
+ 
+diff --git a/drivers/comedi/drivers/amplc_pci224.c b/drivers/comedi/drivers/amplc_pci224.c
+index 5a04e55daeea..1373637c2ca2 100644
+--- a/drivers/comedi/drivers/amplc_pci224.c
++++ b/drivers/comedi/drivers/amplc_pci224.c
+@@ -1051,10 +1051,10 @@ pci224_auto_attach(struct comedi_device *dev, unsigned long context_model)
+ 	outw(devpriv->daccon | PCI224_DACCON_FIFORESET,
+ 	     dev->iobase + PCI224_DACCON);
+ 
+-	dev->pacer = comedi_8254_init(devpriv->iobase1 + PCI224_Z2_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(devpriv->iobase1 + PCI224_Z2_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 1);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/amplc_pci230.c b/drivers/comedi/drivers/amplc_pci230.c
+index 92ba8b8c0172..783da73877b9 100644
+--- a/drivers/comedi/drivers/amplc_pci230.c
++++ b/drivers/comedi/drivers/amplc_pci230.c
+@@ -2475,10 +2475,10 @@ static int pci230_auto_attach(struct comedi_device *dev,
+ 			dev->irq = pci_dev->irq;
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCI230_Z2_CT_BASE,
+-				      0, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCI230_Z2_CT_BASE,
++					  0, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	rc = comedi_alloc_subdevices(dev, 3);
+ 	if (rc)
+diff --git a/drivers/comedi/drivers/cb_das16_cs.c b/drivers/comedi/drivers/cb_das16_cs.c
+index 8e0d2fa5f95d..306208a0695b 100644
+--- a/drivers/comedi/drivers/cb_das16_cs.c
++++ b/drivers/comedi/drivers/cb_das16_cs.c
+@@ -363,10 +363,10 @@ static int das16cs_auto_attach(struct comedi_device *dev,
+ 	if (!devpriv)
+ 		return -ENOMEM;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS16CS_TIMER_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO16, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS16CS_TIMER_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO16, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/cb_pcidas.c b/drivers/comedi/drivers/cb_pcidas.c
+index 0c7576b967fc..7a6cd681e932 100644
+--- a/drivers/comedi/drivers/cb_pcidas.c
++++ b/drivers/comedi/drivers/cb_pcidas.c
+@@ -1288,16 +1288,16 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
+ 	}
+ 	dev->irq = pcidev->irq;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCIDAS_AI_8254_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCIDAS_AI_8254_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+-	devpriv->ao_pacer = comedi_8254_init(dev->iobase + PCIDAS_AO_8254_BASE,
+-					     I8254_OSC_BASE_10MHZ,
+-					     I8254_IO8, 0);
+-	if (!devpriv->ao_pacer)
+-		return -ENOMEM;
++	devpriv->ao_pacer =
++	    comedi_8254_io_alloc(dev->iobase + PCIDAS_AO_8254_BASE,
++				 I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(devpriv->ao_pacer))
++		return PTR_ERR(devpriv->ao_pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 7);
+ 	if (ret)
+@@ -1453,7 +1453,8 @@ static void cb_pcidas_detach(struct comedi_device *dev)
+ 		if (devpriv->amcc)
+ 			outl(INTCSR_INBOX_INTR_STATUS,
+ 			     devpriv->amcc + AMCC_OP_REG_INTCSR);
+-		kfree(devpriv->ao_pacer);
++		if (!IS_ERR(devpriv->ao_pacer))
++			kfree(devpriv->ao_pacer);
+ 	}
+ 	comedi_pci_detach(dev);
+ }
+diff --git a/drivers/comedi/drivers/cb_pcimdas.c b/drivers/comedi/drivers/cb_pcimdas.c
+index 8bdb00774f11..5816ef65ed5f 100644
+--- a/drivers/comedi/drivers/cb_pcimdas.c
++++ b/drivers/comedi/drivers/cb_pcimdas.c
+@@ -364,11 +364,11 @@ static int cb_pcimdas_auto_attach(struct comedi_device *dev,
+ 	devpriv->BADR3 = pci_resource_start(pcidev, 3);
+ 	dev->iobase = pci_resource_start(pcidev, 4);
+ 
+-	dev->pacer = comedi_8254_init(devpriv->BADR3 + PCIMDAS_8254_BASE,
+-				      cb_pcimdas_pacer_clk(dev),
+-				      I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(devpriv->BADR3 + PCIMDAS_8254_BASE,
++					  cb_pcimdas_pacer_clk(dev),
++					  I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 6);
+ 	if (ret)
 diff --git a/drivers/comedi/drivers/comedi_8254.c b/drivers/comedi/drivers/comedi_8254.c
-index b4185c1b2695..3f8657fc7ee5 100644
+index 3f8657fc7ee5..696596944506 100644
 --- a/drivers/comedi/drivers/comedi_8254.c
 +++ b/drivers/comedi/drivers/comedi_8254.c
-@@ -119,63 +119,101 @@
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
- 
--static unsigned int __i8254_read(struct comedi_8254 *i8254, unsigned int reg)
-+static unsigned int i8254_io8_cb(struct comedi_8254 *i8254, int dir,
-+				unsigned int reg, unsigned int val)
- {
--	unsigned int reg_offset = (reg * i8254->iosize) << i8254->regshift;
--	unsigned int val;
-+	unsigned long iobase = i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO8) << i8254->regshift;
- 
--	switch (i8254->iosize) {
--	default:
--	case I8254_IO8:
--		if (i8254->mmio)
--			val = readb(i8254->mmio + reg_offset);
--		else
--			val = inb(i8254->iobase + reg_offset);
--		break;
--	case I8254_IO16:
--		if (i8254->mmio)
--			val = readw(i8254->mmio + reg_offset);
--		else
--			val = inw(i8254->iobase + reg_offset);
--		break;
--	case I8254_IO32:
--		if (i8254->mmio)
--			val = readl(i8254->mmio + reg_offset);
--		else
--			val = inl(i8254->iobase + reg_offset);
--		break;
-+	if (dir) {
-+		outb(val, iobase + reg_offset);
-+		return 0;
-+	} else {
-+		return inb(iobase + reg_offset);
- 	}
--	return val & 0xff;
- }
- 
--static void __i8254_write(struct comedi_8254 *i8254,
--			  unsigned int val, unsigned int reg)
-+static unsigned int i8254_io16_cb(struct comedi_8254 *i8254, int dir,
-+				  unsigned int reg, unsigned int val)
- {
--	unsigned int reg_offset = (reg * i8254->iosize) << i8254->regshift;
-+	unsigned long iobase = i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO16) << i8254->regshift;
- 
--	switch (i8254->iosize) {
--	default:
--	case I8254_IO8:
--		if (i8254->mmio)
--			writeb(val, i8254->mmio + reg_offset);
--		else
--			outb(val, i8254->iobase + reg_offset);
--		break;
--	case I8254_IO16:
--		if (i8254->mmio)
--			writew(val, i8254->mmio + reg_offset);
--		else
--			outw(val, i8254->iobase + reg_offset);
--		break;
--	case I8254_IO32:
--		if (i8254->mmio)
--			writel(val, i8254->mmio + reg_offset);
--		else
--			outl(val, i8254->iobase + reg_offset);
--		break;
-+	if (dir) {
-+		outw(val, iobase + reg_offset);
-+		return 0;
-+	} else {
-+		return inw(iobase + reg_offset);
-+	}
-+}
-+
-+static unsigned int i8254_io32_cb(struct comedi_8254 *i8254, int dir,
-+				  unsigned int reg, unsigned int val)
-+{
-+	unsigned long iobase = i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO32) << i8254->regshift;
-+
-+	if (dir) {
-+		outl(val, iobase + reg_offset);
-+		return 0;
-+	} else {
-+		return inl(iobase + reg_offset);
-+	}
-+}
-+
-+static unsigned int i8254_mmio8_cb(struct comedi_8254 *i8254, int dir,
-+				   unsigned int reg, unsigned int val)
-+{
-+	void __iomem *mmiobase = (void __iomem *)i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO8) << i8254->regshift;
-+
-+	if (dir) {
-+		writeb(val, mmiobase + reg_offset);
-+		return 0;
-+	} else {
-+		return readb(mmiobase + reg_offset);
-+	}
-+}
-+
-+static unsigned int i8254_mmio16_cb(struct comedi_8254 *i8254, int dir,
-+				    unsigned int reg, unsigned int val)
-+{
-+	void __iomem *mmiobase = (void __iomem *)i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO16) << i8254->regshift;
-+
-+	if (dir) {
-+		writew(val, mmiobase + reg_offset);
-+		return 0;
-+	} else {
-+		return readw(mmiobase + reg_offset);
- 	}
- }
- 
-+static unsigned int i8254_mmio32_cb(struct comedi_8254 *i8254, int dir,
-+				    unsigned int reg, unsigned int val)
-+{
-+	void __iomem *mmiobase = (void __iomem *)i8254->context;
-+	unsigned int reg_offset = (reg * I8254_IO32) << i8254->regshift;
-+
-+	if (dir) {
-+		writel(val, mmiobase + reg_offset);
-+		return 0;
-+	} else {
-+		return readl(mmiobase + reg_offset);
-+	}
-+}
-+
-+static unsigned int __i8254_read(struct comedi_8254 *i8254, unsigned int reg)
-+{
-+	return 0xff & i8254->iocb(i8254, 0, reg, 0);
-+}
-+
-+static void __i8254_write(struct comedi_8254 *i8254,
-+			  unsigned int val, unsigned int reg)
-+{
-+	i8254->iocb(i8254, 1, reg, val);
-+}
-+
- /**
-  * comedi_8254_status - return the status of a counter
-  * @i8254:	comedi_8254 struct for the timer
-@@ -571,8 +609,8 @@ void comedi_8254_subdevice_init(struct comedi_subdevice *s,
- }
- EXPORT_SYMBOL_GPL(comedi_8254_subdevice_init);
- 
--static struct comedi_8254 *__i8254_init(unsigned long iobase,
--					void __iomem *mmio,
-+static struct comedi_8254 *__i8254_init(comedi_8254_iocb_fn *iocb,
-+					unsigned long context,
- 					unsigned int osc_base,
- 					unsigned int iosize,
- 					unsigned int regshift)
-@@ -585,12 +623,15 @@ static struct comedi_8254 *__i8254_init(unsigned long iobase,
+@@ -24,14 +24,17 @@
+  *
+  * This module provides the following basic functions:
+  *
+- * comedi_8254_init() / comedi_8254_mm_init()
++ * comedi_8254_io_alloc() / comedi_8254_mm_alloc()
+  *	Initializes this module to access the 8254 registers. The _mm version
+- *	sets up the module for MMIO register access the other for PIO access.
+- *	The pointer returned from these functions is normally stored in the
+- *	comedi_device dev->pacer and will be freed by the comedi core during
+- *	the driver (*detach). If a driver has multiple 8254 devices, they need
+- *	to be stored in the drivers private data and freed when the driver is
+- *	detached.
++ *	sets up the module for MMIO register access; the _io version sets it
++ *	up for PIO access.  These functions return a pointer to a struct
++ *	comedi_8254 on success, or an ERR_PTR value on failure.  The pointer
++ *	returned from these functions is normally stored in the comedi_device
++ *	dev->pacer and will be freed by the comedi core during the driver
++ *	(*detach). If a driver has multiple 8254 devices, they need to be
++ *	stored in the drivers private data and freed when the driver is
++ *	detached.  If the ERR_PTR value is stored, code should check the
++ *	pointer value with !IS_ERR(pointer) before freeing.
+  *
+  *	NOTE: The counters are reset by setting them to I8254_MODE0 as part of
+  *	this initialization.
+@@ -621,14 +624,14 @@ static struct comedi_8254 *__i8254_init(comedi_8254_iocb_fn *iocb,
+ 	/* sanity check that the iosize is valid */
+ 	if (!(iosize == I8254_IO8 || iosize == I8254_IO16 ||
  	      iosize == I8254_IO32))
- 		return NULL;
+-		return NULL;
++		return ERR_PTR(-EINVAL);
  
-+	if (!iocb)
-+		return NULL;
-+
+ 	if (!iocb)
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 
  	i8254 = kzalloc(sizeof(*i8254), GFP_KERNEL);
  	if (!i8254)
- 		return NULL;
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
  
--	i8254->iobase	= iobase;
--	i8254->mmio	= mmio;
-+	i8254->iocb	= iocb;
-+	i8254->context	= context;
- 	i8254->iosize	= iosize;
- 	i8254->regshift	= regshift;
- 
-@@ -617,7 +658,22 @@ struct comedi_8254 *comedi_8254_init(unsigned long iobase,
- 				     unsigned int iosize,
- 				     unsigned int regshift)
- {
--	return __i8254_init(iobase, NULL, osc_base, iosize, regshift);
-+	comedi_8254_iocb_fn *iocb;
-+
-+	switch (iosize) {
-+	case I8254_IO8:
-+		iocb = i8254_io8_cb;
-+		break;
-+	case I8254_IO16:
-+		iocb = i8254_io16_cb;
-+		break;
-+	case I8254_IO32:
-+		iocb = i8254_io32_cb;
-+		break;
-+	default:
-+		return NULL;
-+	}
-+	return __i8254_init(iocb, iobase, osc_base, iosize, regshift);
+ 	i8254->iocb	= iocb;
+ 	i8254->context	= context;
+@@ -646,17 +649,19 @@ static struct comedi_8254 *__i8254_init(comedi_8254_iocb_fn *iocb,
  }
- EXPORT_SYMBOL_GPL(comedi_8254_init);
  
-@@ -634,7 +690,22 @@ struct comedi_8254 *comedi_8254_mm_init(void __iomem *mmio,
- 					unsigned int iosize,
- 					unsigned int regshift)
+ /**
+- * comedi_8254_init - allocate and initialize the 8254 device for pio access
++ * comedi_8254_io_alloc - allocate and initialize the 8254 device for pio access
+  * @iobase:	port I/O base address
+  * @osc_base:	base time of the counter in ns
+  *		OPTIONAL - only used by comedi_8254_cascade_ns_to_timer()
+  * @iosize:	I/O register size
+  * @regshift:	register gap shift
++ *
++ * Return: A pointer to a struct comedi_8254 or an ERR_PTR value.
+  */
+-struct comedi_8254 *comedi_8254_init(unsigned long iobase,
+-				     unsigned int osc_base,
+-				     unsigned int iosize,
+-				     unsigned int regshift)
++struct comedi_8254 *comedi_8254_io_alloc(unsigned long iobase,
++					 unsigned int osc_base,
++					 unsigned int iosize,
++					 unsigned int regshift)
  {
--	return __i8254_init(0, mmio, osc_base, iosize, regshift);
-+	comedi_8254_iocb_fn *iocb;
-+
-+	switch (iosize) {
-+	case I8254_IO8:
-+		iocb = i8254_mmio8_cb;
-+		break;
-+	case I8254_IO16:
-+		iocb = i8254_mmio16_cb;
-+		break;
-+	case I8254_IO32:
-+		iocb = i8254_mmio32_cb;
-+		break;
-+	default:
-+		return NULL;
-+	}
-+	return __i8254_init(iocb, (unsigned long)mmio, osc_base, iosize, regshift);
- }
- EXPORT_SYMBOL_GPL(comedi_8254_mm_init);
+ 	comedi_8254_iocb_fn *iocb;
  
+@@ -671,24 +676,26 @@ struct comedi_8254 *comedi_8254_init(unsigned long iobase,
+ 		iocb = i8254_io32_cb;
+ 		break;
+ 	default:
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
+ 	return __i8254_init(iocb, iobase, osc_base, iosize, regshift);
+ }
+-EXPORT_SYMBOL_GPL(comedi_8254_init);
++EXPORT_SYMBOL_GPL(comedi_8254_io_alloc);
+ 
+ /**
+- * comedi_8254_mm_init - allocate and initialize the 8254 device for mmio access
++ * comedi_8254_mm_alloc - allocate and initialize the 8254 device for mmio access
+  * @mmio:	memory mapped I/O base address
+  * @osc_base:	base time of the counter in ns
+  *		OPTIONAL - only used by comedi_8254_cascade_ns_to_timer()
+  * @iosize:	I/O register size
+  * @regshift:	register gap shift
++ *
++ * Return: A pointer to a struct comedi_8254 or an ERR_PTR value.
+  */
+-struct comedi_8254 *comedi_8254_mm_init(void __iomem *mmio,
+-					unsigned int osc_base,
+-					unsigned int iosize,
+-					unsigned int regshift)
++struct comedi_8254 *comedi_8254_mm_alloc(void __iomem *mmio,
++					 unsigned int osc_base,
++					 unsigned int iosize,
++					 unsigned int regshift)
+ {
+ 	comedi_8254_iocb_fn *iocb;
+ 
+@@ -703,11 +710,11 @@ struct comedi_8254 *comedi_8254_mm_init(void __iomem *mmio,
+ 		iocb = i8254_mmio32_cb;
+ 		break;
+ 	default:
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
+ 	return __i8254_init(iocb, (unsigned long)mmio, osc_base, iosize, regshift);
+ }
+-EXPORT_SYMBOL_GPL(comedi_8254_mm_init);
++EXPORT_SYMBOL_GPL(comedi_8254_mm_alloc);
+ 
+ static int __init comedi_8254_module_init(void)
+ {
+diff --git a/drivers/comedi/drivers/das08.c b/drivers/comedi/drivers/das08.c
+index f8ab3af2e391..6a3b5411aa90 100644
+--- a/drivers/comedi/drivers/das08.c
++++ b/drivers/comedi/drivers/das08.c
+@@ -439,10 +439,11 @@ int das08_common_attach(struct comedi_device *dev, unsigned long iobase)
+ 	/* Counter subdevice (8254) */
+ 	s = &dev->subdevices[5];
+ 	if (board->i8254_offset) {
+-		dev->pacer = comedi_8254_init(dev->iobase + board->i8254_offset,
+-					      0, I8254_IO8, 0);
+-		if (!dev->pacer)
+-			return -ENOMEM;
++		dev->pacer =
++		    comedi_8254_io_alloc(dev->iobase + board->i8254_offset,
++					 0, I8254_IO8, 0);
++		if (IS_ERR(dev->pacer))
++			return PTR_ERR(dev->pacer);
+ 
+ 		comedi_8254_subdevice_init(s, dev->pacer);
+ 	} else {
+diff --git a/drivers/comedi/drivers/das16.c b/drivers/comedi/drivers/das16.c
+index 728dc02156c8..bfe8811be1b5 100644
+--- a/drivers/comedi/drivers/das16.c
++++ b/drivers/comedi/drivers/das16.c
+@@ -1067,10 +1067,10 @@ static int das16_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 			osc_base = I8254_OSC_BASE_1MHZ / it->options[3];
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS16_TIMER_BASE_REG,
+-				      osc_base, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS16_TIMER_BASE_REG,
++					  osc_base, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	das16_alloc_dma(dev, it->options[2]);
+ 
+diff --git a/drivers/comedi/drivers/das16m1.c b/drivers/comedi/drivers/das16m1.c
+index 275effb77746..ff9c5a8897bd 100644
+--- a/drivers/comedi/drivers/das16m1.c
++++ b/drivers/comedi/drivers/das16m1.c
+@@ -529,15 +529,16 @@ static int das16m1_attach(struct comedi_device *dev,
+ 			dev->irq = it->options[1];
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS16M1_8254_IOBASE2,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS16M1_8254_IOBASE2,
++					  I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+-	devpriv->counter = comedi_8254_init(dev->iobase + DAS16M1_8254_IOBASE1,
+-					    0, I8254_IO8, 0);
+-	if (!devpriv->counter)
+-		return -ENOMEM;
++	devpriv->counter =
++	    comedi_8254_io_alloc(dev->iobase + DAS16M1_8254_IOBASE1,
++				 0, I8254_IO8, 0);
++	if (IS_ERR(devpriv->counter))
++		return PTR_ERR(devpriv->counter);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+@@ -603,7 +604,8 @@ static void das16m1_detach(struct comedi_device *dev)
+ 	if (devpriv) {
+ 		if (devpriv->extra_iobase)
+ 			release_region(devpriv->extra_iobase, DAS16M1_SIZE2);
+-		kfree(devpriv->counter);
++		if (!IS_ERR(devpriv->counter))
++			kfree(devpriv->counter);
+ 	}
+ 	comedi_legacy_detach(dev);
+ }
+diff --git a/drivers/comedi/drivers/das1800.c b/drivers/comedi/drivers/das1800.c
+index f09608c0f4ff..7117c67aee7e 100644
+--- a/drivers/comedi/drivers/das1800.c
++++ b/drivers/comedi/drivers/das1800.c
+@@ -1233,10 +1233,10 @@ static int das1800_attach(struct comedi_device *dev,
+ 	if (!devpriv->fifo_buf)
+ 		return -ENOMEM;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS1800_COUNTER,
+-				      I8254_OSC_BASE_5MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS1800_COUNTER,
++					  I8254_OSC_BASE_5MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/das6402.c b/drivers/comedi/drivers/das6402.c
+index 1af394591e74..68f95330de45 100644
+--- a/drivers/comedi/drivers/das6402.c
++++ b/drivers/comedi/drivers/das6402.c
+@@ -590,10 +590,10 @@ static int das6402_attach(struct comedi_device *dev,
+ 		}
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS6402_TIMER_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS6402_TIMER_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/das800.c b/drivers/comedi/drivers/das800.c
+index 4ca33f46eaa7..300775523031 100644
+--- a/drivers/comedi/drivers/das800.c
++++ b/drivers/comedi/drivers/das800.c
+@@ -672,10 +672,10 @@ static int das800_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 			dev->irq = irq;
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + DAS800_8254,
+-				      I8254_OSC_BASE_1MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + DAS800_8254,
++					  I8254_OSC_BASE_1MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 3);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/me4000.c b/drivers/comedi/drivers/me4000.c
+index 9aea02b86ed9..7dd3a0071863 100644
+--- a/drivers/comedi/drivers/me4000.c
++++ b/drivers/comedi/drivers/me4000.c
+@@ -1209,9 +1209,9 @@ static int me4000_auto_attach(struct comedi_device *dev,
+ 		if (!timer_base)
+ 			return -ENODEV;
+ 
+-		dev->pacer = comedi_8254_init(timer_base, 0, I8254_IO8, 0);
+-		if (!dev->pacer)
+-			return -ENOMEM;
++		dev->pacer = comedi_8254_io_alloc(timer_base, 0, I8254_IO8, 0);
++		if (IS_ERR(dev->pacer))
++			return PTR_ERR(dev->pacer);
+ 
+ 		comedi_8254_subdevice_init(s, dev->pacer);
+ 	} else {
+diff --git a/drivers/comedi/drivers/ni_at_a2150.c b/drivers/comedi/drivers/ni_at_a2150.c
+index df8d219e6723..e4e5a0ebd195 100644
+--- a/drivers/comedi/drivers/ni_at_a2150.c
++++ b/drivers/comedi/drivers/ni_at_a2150.c
+@@ -707,10 +707,10 @@ static int a2150_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	/* an IRQ and DMA are required to support async commands */
+ 	a2150_alloc_irq_and_dma(dev, it);
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + I8253_BASE_REG,
+-				      0, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + I8253_BASE_REG,
++					  0, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 1);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/ni_at_ao.c b/drivers/comedi/drivers/ni_at_ao.c
+index 9f3147b72aa8..9cf6b4ff6b65 100644
+--- a/drivers/comedi/drivers/ni_at_ao.c
++++ b/drivers/comedi/drivers/ni_at_ao.c
+@@ -303,10 +303,10 @@ static int atao_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	if (!devpriv)
+ 		return -ENOMEM;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + ATAO_82C53_BASE,
+-				      0, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + ATAO_82C53_BASE,
++					  0, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/ni_labpc_common.c b/drivers/comedi/drivers/ni_labpc_common.c
+index 763249653228..eb8f6431276a 100644
+--- a/drivers/comedi/drivers/ni_labpc_common.c
++++ b/drivers/comedi/drivers/ni_labpc_common.c
+@@ -1222,24 +1222,24 @@ int labpc_common_attach(struct comedi_device *dev,
+ 	}
+ 
+ 	if (dev->mmio) {
+-		dev->pacer = comedi_8254_mm_init(dev->mmio + COUNTER_B_BASE_REG,
+-						 I8254_OSC_BASE_2MHZ,
+-						 I8254_IO8, 0);
+-		devpriv->counter = comedi_8254_mm_init(dev->mmio +
+-						       COUNTER_A_BASE_REG,
+-						       I8254_OSC_BASE_2MHZ,
+-						       I8254_IO8, 0);
++		dev->pacer =
++		    comedi_8254_mm_alloc(dev->mmio + COUNTER_B_BASE_REG,
++					 I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
++		devpriv->counter =
++		    comedi_8254_mm_alloc(dev->mmio + COUNTER_A_BASE_REG,
++					 I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
+ 	} else {
+-		dev->pacer = comedi_8254_init(dev->iobase + COUNTER_B_BASE_REG,
+-					      I8254_OSC_BASE_2MHZ,
+-					      I8254_IO8, 0);
+-		devpriv->counter = comedi_8254_init(dev->iobase +
+-						    COUNTER_A_BASE_REG,
+-						    I8254_OSC_BASE_2MHZ,
+-						    I8254_IO8, 0);
++		dev->pacer =
++		    comedi_8254_io_alloc(dev->iobase + COUNTER_B_BASE_REG,
++					 I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
++		devpriv->counter =
++		    comedi_8254_io_alloc(dev->iobase + COUNTER_A_BASE_REG,
++					 I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
+ 	}
+-	if (!dev->pacer || !devpriv->counter)
+-		return -ENOMEM;
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
++	if (IS_ERR(devpriv->counter))
++		return PTR_ERR(devpriv->counter);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 5);
+ 	if (ret)
+@@ -1341,8 +1341,10 @@ void labpc_common_detach(struct comedi_device *dev)
+ {
+ 	struct labpc_private *devpriv = dev->private;
+ 
+-	if (devpriv)
+-		kfree(devpriv->counter);
++	if (devpriv) {
++		if (!IS_ERR(devpriv->counter))
++			kfree(devpriv->counter);
++	}
+ }
+ EXPORT_SYMBOL_GPL(labpc_common_detach);
+ 
+diff --git a/drivers/comedi/drivers/pcl711.c b/drivers/comedi/drivers/pcl711.c
+index 05172c553c8a..0cf3917defe7 100644
+--- a/drivers/comedi/drivers/pcl711.c
++++ b/drivers/comedi/drivers/pcl711.c
+@@ -429,10 +429,10 @@ static int pcl711_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 			dev->irq = it->options[1];
+ 	}
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCL711_TIMER_BASE,
+-				      I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCL711_TIMER_BASE,
++					  I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/pcl812.c b/drivers/comedi/drivers/pcl812.c
+index 70dbc129fcf5..0df639c6a595 100644
+--- a/drivers/comedi/drivers/pcl812.c
++++ b/drivers/comedi/drivers/pcl812.c
+@@ -1143,11 +1143,11 @@ static int pcl812_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 		return ret;
+ 
+ 	if (board->irq_bits) {
+-		dev->pacer = comedi_8254_init(dev->iobase + PCL812_TIMER_BASE,
+-					      I8254_OSC_BASE_2MHZ,
+-					      I8254_IO8, 0);
+-		if (!dev->pacer)
+-			return -ENOMEM;
++		dev->pacer =
++		    comedi_8254_io_alloc(dev->iobase + PCL812_TIMER_BASE,
++					 I8254_OSC_BASE_2MHZ, I8254_IO8, 0);
++		if (IS_ERR(dev->pacer))
++			return PTR_ERR(dev->pacer);
+ 
+ 		if ((1 << it->options[1]) & board->irq_bits) {
+ 			ret = request_irq(it->options[1], pcl812_interrupt, 0,
+diff --git a/drivers/comedi/drivers/pcl816.c b/drivers/comedi/drivers/pcl816.c
+index a5e5320be648..28d1a88c50f6 100644
+--- a/drivers/comedi/drivers/pcl816.c
++++ b/drivers/comedi/drivers/pcl816.c
+@@ -615,10 +615,10 @@ static int pcl816_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	/* an IRQ and DMA are required to support async commands */
+ 	pcl816_alloc_irq_and_dma(dev, it);
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCL816_TIMER_BASE,
+-				      I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCL816_TIMER_BASE,
++					  I8254_OSC_BASE_10MHZ, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	ret = comedi_alloc_subdevices(dev, 4);
+ 	if (ret)
+diff --git a/drivers/comedi/drivers/pcl818.c b/drivers/comedi/drivers/pcl818.c
+index 29e503de8267..4127adcfb229 100644
+--- a/drivers/comedi/drivers/pcl818.c
++++ b/drivers/comedi/drivers/pcl818.c
+@@ -1015,10 +1015,10 @@ static int pcl818_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	else
+ 		osc_base = I8254_OSC_BASE_1MHZ;
+ 
+-	dev->pacer = comedi_8254_init(dev->iobase + PCL818_TIMER_BASE,
+-				      osc_base, I8254_IO8, 0);
+-	if (!dev->pacer)
+-		return -ENOMEM;
++	dev->pacer = comedi_8254_io_alloc(dev->iobase + PCL818_TIMER_BASE,
++					  osc_base, I8254_IO8, 0);
++	if (IS_ERR(dev->pacer))
++		return PTR_ERR(dev->pacer);
+ 
+ 	/* max sampling speed */
+ 	devpriv->ns_min = board->ns_min;
+diff --git a/drivers/comedi/drivers/rtd520.c b/drivers/comedi/drivers/rtd520.c
+index 7e0ec1a2a2ca..44bb0decd7a4 100644
+--- a/drivers/comedi/drivers/rtd520.c
++++ b/drivers/comedi/drivers/rtd520.c
+@@ -1289,9 +1289,9 @@ static int rtd_auto_attach(struct comedi_device *dev,
+ 
+ 	/* 8254 Timer/Counter subdevice */
+ 	s = &dev->subdevices[3];
+-	dev->pacer = comedi_8254_mm_init(dev->mmio + LAS0_8254_TIMER_BASE,
+-					 RTD_CLOCK_BASE, I8254_IO8, 2);
+-	if (!dev->pacer)
++	dev->pacer = comedi_8254_mm_alloc(dev->mmio + LAS0_8254_TIMER_BASE,
++					  RTD_CLOCK_BASE, I8254_IO8, 2);
++	if (IS_ERR(dev->pacer))
+ 		return -ENOMEM;
+ 
+ 	comedi_8254_subdevice_init(s, dev->pacer);
 diff --git a/include/linux/comedi/comedi_8254.h b/include/linux/comedi/comedi_8254.h
-index d8264417e53c..18d12321c87d 100644
+index 18d12321c87d..393ccb301028 100644
 --- a/include/linux/comedi/comedi_8254.h
 +++ b/include/linux/comedi/comedi_8254.h
-@@ -57,10 +57,24 @@ struct comedi_subdevice;
- /* counter maps zero to 0x10000 */
- #define I8254_MAX_COUNT			0x10000
+@@ -136,13 +136,13 @@ void comedi_8254_set_busy(struct comedi_8254 *i8254,
+ void comedi_8254_subdevice_init(struct comedi_subdevice *s,
+ 				struct comedi_8254 *i8254);
  
-+struct comedi_8254;
-+
-+/**
-+ * typedef comedi_8254_iocb_fn - call-back function type for 8254 register access
-+ * @i8254:		pointer to struct comedi_8254
-+ * @dir:		direction (0 = read, 1 = write)
-+ * @reg:		register number
-+ * @val:		value to write
-+ *
-+ * Return: Register value when reading, 0 when writing.
-+ */
-+typedef unsigned int comedi_8254_iocb_fn(struct comedi_8254 *i8254, int dir,
-+					 unsigned int reg, unsigned int val);
-+
- /**
-  * struct comedi_8254 - private data used by this module
-- * @iobase:		PIO base address of the registers (in/out)
-- * @mmio:		MMIO base address of the registers (read/write)
-+ * @iocb:		I/O call-back function for register access
-+ * @context:		context for register access (e.g. a base address)
-  * @iosize:		I/O size used to access the registers (b/w/l)
-  * @regshift:		register gap shift
-  * @osc_base:		cascaded oscillator speed in ns
-@@ -76,8 +90,8 @@ struct comedi_subdevice;
-  * @insn_config:	driver specific (*insn_config) callback
-  */
- struct comedi_8254 {
--	unsigned long iobase;
--	void __iomem *mmio;
-+	comedi_8254_iocb_fn *iocb;
-+	unsigned long context;
- 	unsigned int iosize;
- 	unsigned int regshift;
- 	unsigned int osc_base;
+-struct comedi_8254 *comedi_8254_init(unsigned long iobase,
+-				     unsigned int osc_base,
+-				     unsigned int iosize,
+-				     unsigned int regshift);
+-struct comedi_8254 *comedi_8254_mm_init(void __iomem *mmio,
+-					unsigned int osc_base,
+-					unsigned int iosize,
+-					unsigned int regshift);
++struct comedi_8254 *comedi_8254_io_alloc(unsigned long iobase,
++					 unsigned int osc_base,
++					 unsigned int iosize,
++					 unsigned int regshift);
++struct comedi_8254 *comedi_8254_mm_alloc(void __iomem *mmio,
++					 unsigned int osc_base,
++					 unsigned int iosize,
++					 unsigned int regshift);
+ 
+ #endif	/* _COMEDI_8254_H */
 -- 
 2.40.1
 
