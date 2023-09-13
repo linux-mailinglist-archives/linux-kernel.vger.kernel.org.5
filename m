@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8261979EDF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A2779EDEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjIMQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S230153AbjIMQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjIMQGu (ORCPT
+        with ESMTP id S229441AbjIMQEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:06:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C44492
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694621206; x=1726157206;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EGfEOxdAYf5EgE3oBsesna+TMXHSoZpHq3Y5tKMSCQE=;
-  b=IwfmTKb+MOGJ0AH/vGTnaRhu572oYIFNh/fewS7Do3jIo9vijzHBGjnO
-   JQwFOge5/uOGfMAouJHZIL7eG3N11CpLMiHBQiBnjFZJ37qTdjB9dqMaM
-   puNnV8nby3wOtV0Q/e7HIACIHPo2K/f8aR6n7DeooDSwgcKDP6H5s0u75
-   mlsSN3/yvAycRB6+LZV2ZxddcRqGqY3051E2HGVe+6TFH53NJeGYnelKb
-   hxKPOQlt/zM3bkSReINUsUz/0k4Q1x4U3XTG66zlgCNxyEnQc1CTzC+W4
-   Y8av8mbpwodEcOyovFAtKqgt9PCELh6SOfAKlGG9lZaL7p1pfm8BmCaNa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="378616286"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="378616286"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 09:04:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="917879675"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="917879675"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 09:04:24 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgSLl-0000HR-36;
-        Wed, 13 Sep 2023 16:04:21 +0000
-Date:   Thu, 14 Sep 2023 00:03:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ping Gan <jacky_gam_2001@163.com>, kbusch@kernel.org,
-        axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, ping_gan@dell.com,
-        jacky_gam_2001@163.com
-Subject: Re: [PATCH 2/4] nvmet: Add polling queue task for nvme target
-Message-ID: <202309132330.9Vr4qPji-lkp@intel.com>
-References: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
+        Wed, 13 Sep 2023 12:04:11 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9DC95;
+        Wed, 13 Sep 2023 09:04:07 -0700 (PDT)
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: festevam@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 609B586A27;
+        Wed, 13 Sep 2023 18:04:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1694621046;
+        bh=Z2IjWn+eoAIoFOZg8W3DakYsk5dq5rFonV8eLvmuXRo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xu3/br7w6+z7+B86XApzfGZwJY9O3DvJOYHMf/1zPGmUNWYkp2IE16760MNcmypJl
+         KUbLiMS0D9Wu5jClNzGQXGd3JtwloInWXEb4l24vcwCFP1lfMvBmBOFFxTfkI4A+90
+         nLZQh18mY1Obh85IjSXh8KV3i2NegvecQ3VIzzE5KTWyTcZbcuSRlwQXh/IQX2MG2M
+         UaCoy6syt0x0tgQaZYCSnmLcq3zB/ES1KGPVuOoS6UBSnOMLxc49MTXfzO3Ae2Dq+N
+         qbloTOcfk/hGuM6HYGps3o+FaURFWXchWbCmJDEgEhJ3ahktPPke9ACRQnc86/GEy5
+         BGwIXpY+bJa/Q==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 13 Sep 2023 13:04:06 -0300
+From:   Fabio Estevam <festevam@denx.de>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        linux-media@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3] dt-bindings: media: Add OV5642
+In-Reply-To: <ZQHbm4K6tDs6ILo+@valkosipuli.retiisi.eu>
+References: <20230802160326.293420-1-festevam@denx.de>
+ <ZQHbm4K6tDs6ILo+@valkosipuli.retiisi.eu>
+Message-ID: <19523723a202647d0ab5135581f5090f@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ping,
+Hi Sakari,
 
-kernel test robot noticed the following build warnings:
+On 13/09/2023 12:56, Sakari Ailus wrote:
 
-[auto build test WARNING on v6.6-rc1]
-[also build test WARNING on linus/master next-20230913]
-[cannot apply to hch-configfs/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> One more little thing. Do you have a driver for this device? In 
+> upstream
+> there doesn't seem to be any.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ping-Gan/nvmet-Add-nvme-target-polling-queue-task-parameters/20230913-164112
-base:   v6.6-rc1
-patch link:    https://lore.kernel.org/r/84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001%40163.com
-patch subject: [PATCH 2/4] nvmet: Add polling queue task for nvme target
-config: x86_64-randconfig-121-20230913 (https://download.01.org/0day-ci/archive/20230913/202309132330.9Vr4qPji-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309132330.9Vr4qPji-lkp@intel.com/reproduce)
+Correct. There is no driver for OV5642 upstream.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309132330.9Vr4qPji-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/nvme/target/polling-queue-thread.c:72:29: sparse: sparse: symbol 'nvmet_pqt_data' was not declared. Should it be static?
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The DT folks asked me to document the OV5642 binding even without an 
+existing driver.
