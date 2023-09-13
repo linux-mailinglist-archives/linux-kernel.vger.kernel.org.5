@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B578179EA96
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A418279EAB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241427AbjIMOJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        id S241657AbjIMOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241284AbjIMOI5 (ORCPT
+        with ESMTP id S241320AbjIMOJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:08:57 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1139D1BC3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:50 -0700 (PDT)
+        Wed, 13 Sep 2023 10:09:41 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B141FE6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:53 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by laurent.telenet-ops.be with bizsmtp
-        id lS8n2A0033fvA4V01S8nmA; Wed, 13 Sep 2023 16:08:48 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id lS8p2A00V3fvA4V06S8qJY; Wed, 13 Sep 2023 16:08:51 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003cs9-Mb;
+        id 1qgQXd-003csE-NQ;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV4s-1k;
+        id 1qgQXv-00FV4w-2W;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -38,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 19/52] m68k: atari: Make ikbd_reset() static
-Date:   Wed, 13 Sep 2023 16:08:09 +0200
-Message-Id: <6babf691fff55f913808ad845e66f60ab00063b2.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 20/52] m68k: atari: Make atari_platform_init() static
+Date:   Wed, 13 Sep 2023 16:08:10 +0200
+Message-Id: <417b46ec1945212c0b1fcc8b0f4074bae9a8b0b4.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -53,12 +53,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/atari/atakeyb.c:335:6: warning: no previous prototype for ‘ikbd_reset’ [-Wmissing-prototypes]
-      335 | void ikbd_reset(void)
-	  |      ^~~~~~~~~~
+    arch/m68k/atari/config.c:883:12: warning: no previous prototype for ‘atari_platform_init’ [-Wmissing-prototypes]
+      883 | int __init atari_platform_init(void)
+	  |            ^~~~~~~~~~~~~~~~~~~
 
-Fix this by making ikbd_reset() static.
-There was never a user outside arch/m68k/atari/atakey.c.
+Fix this by making atari_platform_init() static.
+There was never a user outside arch/m68k/atari/config.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -66,22 +66,22 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/atari/atakeyb.c | 2 +-
+ arch/m68k/atari/config.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-index 5e0e682f9c61a60e..49a9a459bdf4ccbd 100644
---- a/arch/m68k/atari/atakeyb.c
-+++ b/arch/m68k/atari/atakeyb.c
-@@ -332,7 +332,7 @@ void ikbd_write(const char *str, int len)
- }
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 38a7c05781059840..b4fe4273ad912ebe 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -880,7 +880,7 @@ static const struct resource atari_falconide_rsrc[] __initconst = {
+ 	DEFINE_RES_MEM(FALCON_IDE_BASE + 0x38, 2),
+ };
  
- /* Reset (without touching the clock) */
--void ikbd_reset(void)
-+static void ikbd_reset(void)
+-int __init atari_platform_init(void)
++static int __init atari_platform_init(void)
  {
- 	static const char cmd[2] = { 0x80, 0x01 };
- 
+ 	struct platform_device *pdev;
+ 	int rv = 0;
 -- 
 2.34.1
 
