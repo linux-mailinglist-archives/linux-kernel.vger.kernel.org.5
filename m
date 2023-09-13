@@ -2,155 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C1D79F572
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E68F79F571
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbjIMXYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 19:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        id S233135AbjIMXYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 19:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbjIMXYW (ORCPT
+        with ESMTP id S233095AbjIMXYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 19:24:22 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ECC1BCF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:24:18 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41761e9181eso10261cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:24:18 -0700 (PDT)
+        Wed, 13 Sep 2023 19:24:08 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03331BCD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:24:04 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c397ed8681so2763045ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:24:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694647457; x=1695252257; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a4L2DCL/mifd2+VI52Ilf7k2pafo1lSl/LHLgMOO83Q=;
-        b=d9ppuansxCkeaqWdlOyVzh919PqnbFRP7j5RmlwgAHfqaJIdVS5/T9pUUF+jzd0xSa
-         u9Q3mEl1hGF6b0Q8CA6Mui4YtZO0mRHCmpOYUEpUuRTmK5aVokH7OOtszusuVkdlwx7H
-         1yoKpY+swupBtep2mJWDnrGVkYVJn1qoPpVVBu6qkzYzHjFQ6gE6eVXpIwgmmTciAQ6B
-         ZSmwdkpejBG+JSdS754GxCKt6d/m0bwFCfkTvWTnHVIQ+o7967zpEM80D1WL993gdi69
-         rNrBSoWdyXHIgtb4mWwUCKAgEzK5ah9zzudSlJoTONW1gmg/0WY2K5+0rWa3K4wxY+JW
-         hIiw==
+        d=chromium.org; s=google; t=1694647444; x=1695252244; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=McEVX1hx5k8f+NcqiKTD/lVS9HGO2QYi1j8mbG944+c=;
+        b=nfSprJwJVGxMYiZX6YXuG9lWVv8JSryTkdx3gsOj8IG+vs8bj+7g7pgu9PHCjJda+B
+         /wut+R4zuX/TFDfRj6ed7mWP8vIdHsqE0u3CeFH2Djx71QM80nBglEwaLiEHPKfmfx/0
+         Qu45pTW7IOEdyVCNXH+oFD+1Q7kojdqfovvs0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694647457; x=1695252257;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a4L2DCL/mifd2+VI52Ilf7k2pafo1lSl/LHLgMOO83Q=;
-        b=DDnc6f5GoydW99abmeODkWLioc8I5eSZDyRlZc3CiK7WdqHvAdoJnYnUGBdhk1BjsW
-         d6uQo66vUHxyRdA+TRBL5O35MN2NkJWNqVMgcM6hQE7uZ6U7PXcsTzUjmMK2KD9CiJHt
-         yeLo5faG+8Oj1uo/JuZ38CQA2xbI4zuYf7eaMUhMmIuMlltcF9m2AdYLQ9DvwFiEyjty
-         2APWwMDlECgOL3oIF4oWPTKPD/shEXrTO6fVxMdnaKPv7OKlDVQEd/feNVotLQr7oGxA
-         2k+hfkzjNZ61+3gam/YoRdLSBuSs2pDoq+fhMvWzZnQwy9Z5xzOpZo30p3BOP2YP+zJT
-         QXOA==
-X-Gm-Message-State: AOJu0YxBPhLEr2oD0UUTfegAEcQdK2iovIIxJDXOQBFGXihAHm3qmU8F
-        UVj2opy6qaZBA6mY/mGbstJdzrWteSs1fcpGKpheLQ==
-X-Google-Smtp-Source: AGHT+IHltBTmYGbmbGfCXqJncsLjjkdbQXd1v3vr+uIrhuxi7JXc9CH2r7XXbJGJ0qUORK5lID309eZycS6JJ+RwxnQ=
-X-Received: by 2002:ac8:7d56:0:b0:410:9af1:f9b4 with SMTP id
- h22-20020ac87d56000000b004109af1f9b4mr474796qtb.10.1694647457361; Wed, 13 Sep
- 2023 16:24:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694647444; x=1695252244;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=McEVX1hx5k8f+NcqiKTD/lVS9HGO2QYi1j8mbG944+c=;
+        b=vR+WXrQ6+TrOs/JQ8M3q4iQpFMqE5R15z5Hb/554IVIGfm48N/fha6if8GRAkebT6i
+         GAiUt1lpsfirMlpRGA5wPEYEWUtnj/PCU5cL0WYCGzi32lwCieRQHw4zmx9xPQWD6C0Y
+         9tLDxlYQBwbtyGs4iNn3BXtyKzuoutfopcvCV/w4lB+ezWccPT5UpZVD7WLeHCO59U8i
+         ns/jsClTjX+gC0sD9xYPkjUjaEC7Z1sr8n8U/3Apq/ob0xktcNX0E3S0ujXRM7LZ/G6V
+         Zr5BJlUzmlqin3EV8YadgsBDjVszBh4xDpP2OcKk5gUn9d1PI7W8VKpV6WjOL3jRelIp
+         ErXg==
+X-Gm-Message-State: AOJu0YzeXTPrUc0QnSq/FAzsS5S5BjbmQjB4xsgnd3TzaV3MfRjZwzUM
+        ztxK3ah+lvCFZu//FPEoWqU//A==
+X-Google-Smtp-Source: AGHT+IEhoRu0Lao0AX88usO4EFB8BidZ06eLDfk+p1OxG1nODfcmpktTieCBSCEMoiWnY1czPMaLqw==
+X-Received: by 2002:a17:902:d2c4:b0:1c0:d575:d28 with SMTP id n4-20020a170902d2c400b001c0d5750d28mr4287074plc.50.1694647444198;
+        Wed, 13 Sep 2023 16:24:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b001bb8895848bsm163538plj.71.2023.09.13.16.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 16:24:03 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 16:24:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     corbet@lwn.net, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        tony.luck@intel.com, gpiccoli@igalia.com,
+        mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        will@kernel.org, linus.walleij@linaro.org,
+        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
+        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
+        bmasney@redhat.com, quic_tsoni@quicinc.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [REBASE PATCH v5 10/17] pstore: Add pstore_region_defined()
+ helper and export it
+Message-ID: <202309131620.34EB0F6972@keescook>
+References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
+ <1694429639-21484-11-git-send-email-quic_mojha@quicinc.com>
 MIME-Version: 1.0
-References: <20230908052216.566148-1-namhyung@kernel.org> <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
- <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
- <ad8a8d46151142a883d2d259c884acc0@AcuMS.aculab.com> <CAM9d7ciB-Rmsi4eTOU7n=mcEP2-JjDycL6f_8cKnKGKtqVT3UQ@mail.gmail.com>
-In-Reply-To: <CAM9d7ciB-Rmsi4eTOU7n=mcEP2-JjDycL6f_8cKnKGKtqVT3UQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 13 Sep 2023 16:24:01 -0700
-Message-ID: <CAP-5=fU=8RwHsd=nP6evT2oxCeOvXF4dfNF9MhBVk3y2WvH3MQ@mail.gmail.com>
-Subject: Re: [PATCH] perf annotate: Add more x86 mov instruction cases
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694429639-21484-11-git-send-email-quic_mojha@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 2:14=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Mon, Sep 11, 2023 at 1:12=E2=80=AFAM David Laight <David.Laight@aculab=
-.com> wrote:
-> >
-> > From: Namhyung Kim
-> > > Sent: 09 September 2023 00:56
-> > >
-> > > Hi Ian,
-> > >
-> > > On Thu, Sep 7, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > On Thu, Sep 7, 2023 at 10:22=E2=80=AFPM Namhyung Kim <namhyung@kern=
-el.org> wrote:
-> > > > >
-> > > > > Instructions with sign- and zero- extention like movsbl and movzw=
-q were
-> > > > > not handled properly.  As it can check different size suffix (-b,=
- -w, -l
-> > > > > or -q) we can omit that and add the common parts even though some
-> > > > > combinations are not possible.
-> > > > >
-> > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > > ---
-> > > > >  tools/perf/arch/x86/annotate/instructions.c | 9 ++++++---
-> > > > >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/perf/arch/x86/annotate/instructions.c
-> > > b/tools/perf/arch/x86/annotate/instructions.c
-> > > > > index 5f4ac4fc7fcf..5cdf457f5cbe 100644
-> > > > > --- a/tools/perf/arch/x86/annotate/instructions.c
-> > > > > +++ b/tools/perf/arch/x86/annotate/instructions.c
-> > > > > @@ -74,12 +74,15 @@ static struct ins x86__instructions[] =3D {
-> > > > >         { .name =3D "movdqa",     .ops =3D &mov_ops,  },
-> > > > >         { .name =3D "movdqu",     .ops =3D &mov_ops,  },
-> > > > >         { .name =3D "movsd",      .ops =3D &mov_ops,  },
-> > > > > -       { .name =3D "movslq",     .ops =3D &mov_ops,  },
-> > > > >         { .name =3D "movss",      .ops =3D &mov_ops,  },
-> > > > > +       { .name =3D "movsb",      .ops =3D &mov_ops,  },
-> > > > > +       { .name =3D "movsw",      .ops =3D &mov_ops,  },
-> > > > > +       { .name =3D "movsl",      .ops =3D &mov_ops,  },
-> > > >
-> > > > In Intel's manual some of these names are "Move Data From String to
-> > > > String" operations, movsb and movsw in particular. These instructio=
-ns
-> > > > can be used to make simple memcpy loops. Could it be the past omiss=
-ion
-> > > > was deliberate due to the different way the addressing works in the
-> > > > instructions?
-> > >
-> > > I don't know but in terms of instruction parsing, they are the same
-> > > "MOVE" with two operands.  I'm not aware of anything in perf with
-> > > the operands of these instructions.  So I guess it'd be fine to add
-> > > these instructions even if they have different underlying behaviors.
-> >
-> > I'm pretty sure that 'rep movs[bwlq]' (aka while (cx--) *di++ =3D *si++=
-)
-> > is likely to be missing the memory argument parameters.
-> > There is also 'fun and games' with one variant - iirc 'rep movsd'
-> > what has been used for 64bit, but got hijacked by one of the SIMD sets.
->
-> It seems perf annotate don't process the rep prefix yet.
-> So I think there should be no functional change now.
+On Mon, Sep 11, 2023 at 04:23:52PM +0530, Mukesh Ojha wrote:
+> There are users like Qualcomm minidump which is interested in
+> knowing the pstore frontend addresses and sizes from the backend
+> (ram) to be able to register it with firmware to finally collect
+> them during crash for debugging.
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+>  fs/pstore/platform.c   | 15 +++++++++++++++
+>  fs/pstore/ram.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pstore.h |  6 ++++++
+>  3 files changed, 63 insertions(+)
+> 
+> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+> index e5bca9a004cc..fdac951059c1 100644
+> --- a/fs/pstore/platform.c
+> +++ b/fs/pstore/platform.c
+> @@ -139,6 +139,21 @@ enum pstore_type_id pstore_name_to_type(const char *name)
+>  }
+>  EXPORT_SYMBOL_GPL(pstore_name_to_type);
+>  
+> +int pstore_region_defined(struct pstore_record *record,
+> +			  void **virt, phys_addr_t *phys,
+> +			  size_t *size, unsigned int *max_dump_cnt)
+> +{
+> +	if (!psinfo)
+> +		return -EINVAL;
+> +
+> +	record->psi = psinfo;
 
-Reading the code, I also think it should be okay. Doing:
-```
-$ objdump -d /usr/lib/x86_64-linux-gnu/libc.so.6 |grep rep
-   2650a:       f3 ab                   rep stos %eax,%es:(%rdi)
-   33b76:       f3 48 a5                rep movsq %ds:(%rsi),%es:(%rdi)
-...
-```
-The mov parsing logic doesn't appear to care about src and dest, and
-the formatting above matches other mov cases.
+Uh, this makes no sense to me. If this is a real pstore_record, you
+cannot just assign psi here.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> +
+> +	return psinfo->region_info ?
+> +	       psinfo->region_info(record, virt, phys, size, max_dump_cnt) :
+> +	       -EINVAL;
 
-Thanks,
-Ian
+Common code style for this kind of thing is usually like this:
 
-> Thanks,
-> Namhyung
+	if (!psinfo->region_info)
+		return -EINVAL;
+
+	return psinfo->region_info(...)
+
+> +}
+> +EXPORT_SYMBOL_GPL(pstore_region_defined);
+> +
+>  static void pstore_timer_kick(void)
+>  {
+>  	if (pstore_update_ms < 0)
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index ab551caa1d2a..62202f3ddf63 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -437,6 +437,47 @@ static int ramoops_pstore_erase(struct pstore_record *record)
+>  	return 0;
+>  }
+>  
+> +static int ramoops_region_info(struct pstore_record *record,
+> +			       void **virt, phys_addr_t *phys,
+> +			       size_t *size, unsigned int *max_dump_cnt)
+
+But there's a larger problem here -- "virt", "phys" and likely
+"max_dump_cnt" are aspects _specific to the ram backend_. This can't be
+a generic pstore interface.
+
+I'm not opposed to it being exposed only from ramoops, though.
+
+But I think you'll want a pstore generic way to iterate over the
+records...
+
+-- 
+Kees Cook
