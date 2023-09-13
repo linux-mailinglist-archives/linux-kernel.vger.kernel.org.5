@@ -2,165 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B73B79E6E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD84E79E6EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240496AbjIMLfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        id S240374AbjIMLfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240494AbjIMLfM (ORCPT
+        with ESMTP id S240401AbjIMLfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:35:12 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4751FF5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:52 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52e64bc7c10so8672261a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694604891; x=1695209691; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=86DQ4dbXO3ltBvM0+Xx3eqvo5Kea0JEzESAZn6J7D1g=;
-        b=GO4qH7Px50FMG3XikTCe/PkfJTl+q0yQUNFDr4JG9QJeuviyTapdHEH+jtPuGkQVEK
-         d6B9BiZKEQYWp1qDldHu3xPxrUNfLQODL0QXI59sEcE4Me4G5SeK48aAV6b6Z8gvVyeh
-         Y874CPbgCgXf3BIRicjUCogzVl5ruJiW6/ulBvYWTxcv334pGLgw2js0l8bMfPzZegsC
-         e2KTgmEsuCmoXHHTckZgt2P8nt5ei1Aqsq59l+fqT+7pk4HmrsF5p2Hp4gnNJlZMtWgL
-         b0tgCAk2EDmN5iVY7oUFxMEQngjmqI3n+8MhnJPoqIjmhGJZNqqNv+Nel7LCK2+IKrmi
-         K0eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694604891; x=1695209691;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=86DQ4dbXO3ltBvM0+Xx3eqvo5Kea0JEzESAZn6J7D1g=;
-        b=klV1JtPvKTpStYnkeziNo5HKZJjJMVF7IuFyDUDE0Xxhc/KZ40wdKlzu90hAoEoD+e
-         cFlCd4NwO6EaJ1ZyHb1Bqr10bGyW/hCff4ZwUiQuYTvGckN0TtPTZ18LNKn1waISJ/EB
-         2PTf8FwNM9IbBBcyqhEVjtigEPbzOMNVwcp7UE7zi0YTEGznHRSs0zuETLxqrisqTV7I
-         Ll/oaPUlRVAHithwrNzu/D+Z9BBnIlMIGo65N8pXhLZ9JeiMb+cF0UWi7DgGZibMtIuS
-         uPt/+1ZW15RPdY+QdEoEyu2IVY7OO4sjDb1VyyiAwfu37k013vr0Mu59WsE+cCywB1DX
-         +Isw==
-X-Gm-Message-State: AOJu0YzUI8Ls45V2j0mgeq2gykqQBMQRQluTSG9iKNbrdA2EDULaEtyq
-        fpCl49h4xFdD7h+4/XH+ZaMOqw==
-X-Google-Smtp-Source: AGHT+IHi5PfiV1i8W1FVPsm2gMd9DnF1UJBCVdqq2qVQD6JwR4/8C2dGtRLWDlARgmhxaq1wkdWzVQ==
-X-Received: by 2002:aa7:d349:0:b0:52f:a6e4:28c6 with SMTP id m9-20020aa7d349000000b0052fa6e428c6mr1990355edr.12.1694604891138;
-        Wed, 13 Sep 2023 04:34:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id s8-20020a056402164800b0052ea03b9d05sm7154232edx.85.2023.09.13.04.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 04:34:50 -0700 (PDT)
-Message-ID: <1b3e6111-b2fe-b652-6208-e33bca863159@linaro.org>
-Date:   Wed, 13 Sep 2023 13:34:49 +0200
+        Wed, 13 Sep 2023 07:35:36 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44621FC0;
+        Wed, 13 Sep 2023 04:35:31 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 235F224000E;
+        Wed, 13 Sep 2023 11:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1694604930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WbMwXGk6o+lbYJAjbVb82tnFj2aYuAgarBbBqqRuBPc=;
+        b=Z2GShICU3ihvCutupOM5tgMDhIm2mE3jZBu65j1kClIXb2kYp4zA/1kLyRZzGnS+y8zwpF
+        i86FO0SJS5yz1RmHw7lK4RftC4V8Zq87sTEDaeW6ujIFLUgkEcgSneHohDugmA/6dXn9M7
+        l6ri9KtfyFJDfNZa5xmZdwMi4UJUcKqCk4itn8lqSf4uXjh/hLbvGajBUtR+3uqm8KgPyE
+        P0CTMnaxoU9OeECX6sFWp7QiheE76FXBve+lU0I1gknHwXcQtOK6Ujz0RJT34oRYMgMcUy
+        ootEQlkXZFAYcTtHnxCsV1YuntvZx6uKdcTZYTyUsvrhINyUHJiJQGJmuJjvIw==
+Message-ID: <137fd54d-7d2d-4d0b-a50b-cca69875a814@arinc9.com>
+Date:   Wed, 13 Sep 2023 14:35:11 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v6 4/4] remoteproc: k3-m4: Add a remoteproc driver for M4F
- subsystem
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
 Content-Language: en-US
-To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
-        mathieu.poirier@linaro.org, p.zabel@pengutronix.de,
-        martyn.welch@collabora.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <20230913111644.29889-1-hnagalla@ti.com>
- <20230913111644.29889-5-hnagalla@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913111644.29889-5-hnagalla@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+ <20230911225126.rk23g3u3bzo3agby@skbuf>
+ <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
+ <20230912193450.h5s6miubag46z623@skbuf>
+ <6cec079e-991e-4222-a76d-d6156de0daca@arinc9.com>
+ <20230913074231.5azwxqjuv2wp5nik@skbuf>
+ <89c9b84c-574c-4071-9524-9207597a3f0a@arinc9.com>
+ <20230913110404.co7earmnbzf6hhoe@skbuf>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20230913110404.co7earmnbzf6hhoe@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 13:16, Hari Nagalla wrote:
-> From: Martyn Welch <martyn.welch@collabora.com>
-> 
-> The AM62x and AM64x SoCs of the TI K3 family has a Cortex M4F core in
-> the MCU domain. This core is typically used for safety applications in a
-> stand alone mode. However, some application (non safety related) may
-> want to use the M4F core as a generic remote processor with IPC to the
-> host processor. The M4F core has internal IRAM and DRAM memories and are
-> exposed to the system bus for code and data loading.
-> 
-> A remote processor driver is added to support this subsystem, including
-> being able to load and boot the M4F core. Loading includes to M4F
-> internal memories and predefined external code/data memories. The
-> carve outs for external contiguous memory is defined in the M4F device
-> node and should match with the external memory declarations in the M4F
-> image binary. The M4F subsystem has two resets. One reset is for the
-> entire subsystem i.e including the internal memories and the other, a
-> local reset is only for the M4F processing core. When loading the image,
-> the driver first releases the subsystem reset, loads the firmware image
-> and then releases the local reset to let the M4F processing core run.
-> 
-> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
-> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
-> ---
-> Changes since v1:
->  - Addressed minor review comments (refactoring completed in separate
->    patch)
-> 
-> Changes since v2:
->  - Refactoring completed first, thus smaller change
-> 
-> Changes since v3:
->  - Removed 'ipc_only' flag and made changes in probe() to enact right
->    operations
->  - Fixed spelling mistakes in commit message
->  - Changed some 'dev_err' messages to 'dev_info'
->  - Removed unnecessary checks rproc state
-> 
-> Changes since v4:
->  - None
-> 
-> Changes since v5:
->  - None
-> 
->  drivers/remoteproc/Kconfig               |  13 +
->  drivers/remoteproc/Makefile              |   1 +
->  drivers/remoteproc/ti_k3_m4_remoteproc.c | 331 +++++++++++++++++++++++
->  3 files changed, 345 insertions(+)
->  create mode 100644 drivers/remoteproc/ti_k3_m4_remoteproc.c
-> 
-> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> index 48845dc8fa85..85c1a3a2b987 100644
-> --- a/drivers/remoteproc/Kconfig
-> +++ b/drivers/remoteproc/Kconfig
-> @@ -339,6 +339,19 @@ config TI_K3_DSP_REMOTEPROC
->  	  It's safe to say N here if you're not interested in utilizing
->  	  the DSP slave processors.
->  
-> +config TI_K3_M4_REMOTEPROC
-> +	tristate "TI K3 M4 remoteproc support"
-> +	depends on ARCH_K3
-> +	select MAILBOX
-> +	select OMAP2PLUS_MBOX
-> +	help
-> +	  Say m here to support TI's M4 remote processor subsystems
-> +	  on various TI K3 family of SoCs through the remote processor
-> +	  framework.
-> +
-> +	  It's safe to say N here if you're not interested in utilizing
-> +	  a remote processor.
-> +
->  config TI_K3_R5_REMOTEPROC
->  	tristate "TI K3 R5 remoteproc support"
->  	depends on ARCH_K3
-> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-> index 55c552e27a45..e30908ca4bfc 100644
-> --- a/drivers/remoteproc/Makefile
-> +++ b/drivers/remoteproc/Makefile
-> @@ -37,5 +37,6 @@ obj-$(CONFIG_ST_REMOTEPROC)		+= st_remoteproc.o
->  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
->  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
->  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o ti_k3_common.o
-> +obj-$(CONFIG_TI_K3_M4_REMOTEPROC)	+= ti_k3_m4_remoteproc.o ti_k3_common.o
+On 13.09.2023 14:04, Vladimir Oltean wrote:
+> I don't think they're for switch ports only. Any driver which uses
+> phylink_fwnode_phy_connect() or its derivatives gets subject to the same
+> bindings. But putting the sub-schema in ethernet-controller.yaml makes
+> sense, just maybe not naming it "phylink-switch".
 
-Nope, please compile your code and fix all the warnings. There is a big
-fat warning about including objects twice.
+Got it. Should we disallow managed altogether when fixed-link is also
+defined, or just with in-band-status value?
 
-Best regards,
-Krzysztof
+Currently:
 
+diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+index 9f6a5ccbcefe..3b5946a4be34 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+@@ -284,6 +284,21 @@ allOf:
+              controllers that have configurable TX internal delays. If this
+              property is present then the MAC applies the TX delay.
+  
++$defs:
++  phylink:
++    description: phylink bindings for ethernet controllers
++    allOf:
++      - anyOf:
++          - required: [ fixed-link ]
++          - required: [ phy-handle ]
++          - required: [ managed ]
++
++      - if:
++          required: [ fixed-link ]
++        then:
++          properties:
++            managed: false
++
+  additionalProperties: true
+  
+  ...
+
+Arınç
