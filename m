@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF5479DE3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91C079DE3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236960AbjIMCUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 22:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
+        id S238154AbjIMCVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 22:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjIMCUr (ORCPT
+        with ESMTP id S237798AbjIMCVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 22:20:47 -0400
-Received: from out-226.mta1.migadu.com (out-226.mta1.migadu.com [95.215.58.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C018170A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 19:20:43 -0700 (PDT)
-Message-ID: <b0278635-2c6f-c316-f7ff-64c6978dac95@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694571641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z8wsciRXxC4ZkB77LojSqC5l3QSYtqdqHx5TpDtcjbg=;
-        b=luS8ZCIIDr1Q7HVRMIMRCuClOJm+JpXL7F3OdTGcEpMru6cqNBfyvjBF2mai+fCnUGUo1u
-        +i1RAmE3gJKihn6E9zU7Nn60IWl+2jcAI+SSj2fEE4+TgGgZPYiXHbKGgIrurlQyQEU7GX
-        fEoxe6HEPQ5Ff6NT+5xhxsmYKWcBlCk=
-Date:   Wed, 13 Sep 2023 10:20:32 +0800
+        Tue, 12 Sep 2023 22:21:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9526310FE;
+        Tue, 12 Sep 2023 19:20:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B026C433C8;
+        Wed, 13 Sep 2023 02:20:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694571656;
+        bh=p0CHdZa8KlXcbj//65Q/lcW6/zB0JeOD1X2rYK6IK3Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kBFiF8/35PXtPRvBqYjCRXhdoO+UEarSh5dbUSwBAEPJQwlMdFjuZ/luXqYQjywNx
+         IAOQRFOepkA7K46VtpVJyeAAT3o+LAK4Pm5W9B/LnAW7oSNGi06iJ/aCi31xgkGON2
+         drn6ldmGNdsRsnIzYZQOz+0XeEm1Tzr0cft9MKRxAJtCiF67e286w17/fn31fxgM3H
+         X4xLHQDT3gqPdbuWsILNkawG67XKIbdo2MLA5rF0N8vRx2ozhJMGkcsMYojfW5ycH1
+         QZXMk5Wyhkp2aOcJaD4sCTjBcHn8djIau9974JIgR1bKRbeF5e9IyiALHuu2RE7AGl
+         U+OCdUUACJAsQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND v2 0/2] mm/damon: add a tracepoint for damos apply target regions
+Date:   Wed, 13 Sep 2023 02:20:48 +0000
+Message-Id: <20230913022050.2109-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Subject: Re: [PATCH] net/core: Export dev_core_stats_rx_dropped_inc sets
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        horms@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230911082016.3694700-1-yajun.deng@linux.dev>
- <CANn89i+W1iAQmOhunLbqpvHu8EUO6uawv6Uvx7qimyBa_PBNCg@mail.gmail.com>
- <f3e84a37-3218-0d52-e7ed-2d215fed58e3@intel.com>
- <CANn89i+AwmpjM-bNuYRS26v-GRrVoucewxgmkvv25PNM4VWPGA@mail.gmail.com>
- <39c906f6-910d-01c7-404a-8fe6a161ef2e@intel.com>
- <CANn89i+QSPoXphaLzfKCqCHxjsD20ifr8YPJM_fZ_H5kFZ7dwQ@mail.gmail.com>
- <8bc6c1cd-50bb-44ef-5979-3bb50a70afcb@intel.com>
- <CANn89iL6HVvRegORfP49prJV4EJU2-AbD4YXB-eo_vwU1JG1ew@mail.gmail.com>
- <CANn89iKbn97Rbjc+3uZMpUi0tqCuhj88UdFZhhnqpC6nJRLC=A@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <CANn89iKbn97Rbjc+3uZMpUi0tqCuhj88UdFZhhnqpC6nJRLC=A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changlog
+--------
 
-On 2023/9/13 02:05, Eric Dumazet wrote:
-> On Tue, Sep 12, 2023 at 8:03 PM Eric Dumazet <edumazet@google.com> wrote:
->
->> Sure, this was what was suggested (perhaps not _very_ precisely, but
->> the general idea was pretty clear).
->> v2 seems ok, right ?
->>
->> It seems we are all on the same page.
->>
->> +static __cold struct net_device_core_stats __percpu
->> *dev_core_stats(struct net_device *dev)
->> +{
->> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
->> +       struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
->> +
->> +       if (likely(p))
->> +               return p;
->> +
->> +       return netdev_core_stats_alloc(dev);
->> +}
->> +
->> +#define DEV_CORE_STATS_INC(FIELD)                              \
->> +void dev_core_stats_##FIELD##_inc(struct net_device *dev)      \
->> +{                                                              \
->> +       struct net_device_core_stats __percpu *p;               \
->> +                                                               \
->> +       p = dev_core_stats(dev);                                \
->> +       if (p)                                                  \
->> +               this_cpu_inc(p->FIELD);                         \
->> +}                                                              \
->> +EXPORT_SYMBOL(dev_core_stats_##FIELD##_inc)
-> Oh well, I just read the patch, and it seems wrong indeed.
->
-> netdev_core_stats_alloc() is the one that can be cold.
+From original v2 post
+(https://lore.kernel.org/damon/20230912183559.4733-1-sj@kernel.org/)
+- Fix header
+- Rebase on latest mm-unstable
 
-Okay, I would add __cold to netdev_core_stats_alloc() in v3.
+From v1
+(https://lore.kernel.org/damon/20230911045908.97649-1-sj@kernel.org/)
+- Get scheme/target indices only when the trace is enabled (Steven Rostedt)
 
-Olek suggest that define a new dev_core_stats_inc() function.
+From RFC
+(https://lore.kernel.org/damon/20230827004045.49516-1-sj@kernel.org/)
+- Fix the 4 byte hole (Steven Rostedt)
+- Add documentation
 
-I hope to see the suggestion in another reply.
+Description
+-----------
+
+DAMON provides damon_aggregated tracepoint to let users record full monitoring
+results.  Sometimes, users need to record monitoring results of specific
+pattern.  DAMOS tried regions directory of DAMON sysfs interface allows it, but
+the interface is mainly designed for snapshots and therefore would be
+inefficient for such recording.  Implement yet another tracepoint for efficient
+support of the usecase.
+
+
+SeongJae Park (2):
+  mm/damon/core: add a tracepoint for damos apply target regions
+  Docs/admin-guide/mm/damon/usage: document damos_before_apply
+    tracepoint
+
+ Documentation/admin-guide/mm/damon/usage.rst | 37 +++++++++++++++----
+ include/trace/events/damon.h                 | 39 ++++++++++++++++++++
+ mm/damon/core.c                              | 32 +++++++++++++++-
+ 3 files changed, 100 insertions(+), 8 deletions(-)
+
+
+base-commit: 8abeac23845e94681a163299a52d802b82475761
+-- 
+2.25.1
 
