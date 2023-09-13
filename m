@@ -2,292 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3F479E76B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5208D79E775
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240538AbjIMMBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
+        id S240052AbjIMMCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240593AbjIMMBT (ORCPT
+        with ESMTP id S239976AbjIMMCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:01:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2398519AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:01:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE28C433C8;
-        Wed, 13 Sep 2023 12:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694606474;
-        bh=KQnu+yUCS+TKdothFVSmgo4xOTdtd4pcUkwXpwy1VEg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gOayipHD1lN/DDCe+sKON940dcJsQBpGBouZht80YMme10+nCV72kT8ZGqze0mx2K
-         Ch7onIBwYr47VCGTpq/A4L8DDfLbYlB7bUTbe/F3k5V5PS8xEgPC1GJ/kjS3Vb0qQG
-         5cwRduoRllZr8tidBncIx11+qaY6FNaXmUYuuyClmqIkvSsxjHs6CHU9dgPzVrwlvo
-         8G3nuhxBbdf9YCEvbUjXDcA+pd+6sfajM6sBx2VmCaN1yngQn8N8NH5c10pUOmSUIK
-         3W82F6FZZT0Dk3h5kKYBklRdA6yLmS1Legs1kr5xYa67qw7fRM/tdPL6uEcxm9FWtU
-         CFzTTS7Cg0Tdw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 872D1403F4; Wed, 13 Sep 2023 09:01:11 -0300 (-03)
-Date:   Wed, 13 Sep 2023 09:01:11 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Simon Ser <contact@emersion.fr>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 1/1 fyi] tools headers UAPI: Update tools's copy of drm.h
- headers
-Message-ID: <ZQGkh9qlhpKA/SMY@kernel.org>
+        Wed, 13 Sep 2023 08:02:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FD7D19AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694606476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hYG/a4t3UUL3Vg4BBIneH5+8bciI8LQrZr4sB9iAJfs=;
+        b=L/pYtlHDt6umDPC8o+uiyupHWKgIaNgZjnuN25idKtz2/aqMH5PHu8u2uJEfR3s9+5fizY
+        glckXyksI3919WxBEHtD5d+AX8Ip4T5szgWJ296qxhppqwbt42rdtWY8LaM2CUPkxSKEYX
+        GXWpw/qP+nNABNCFsIlHVktwVSKPJo0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-m_HMJyNnPuCjUcKJC5AHQA-1; Wed, 13 Sep 2023 08:01:14 -0400
+X-MC-Unique: m_HMJyNnPuCjUcKJC5AHQA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-52a398d8a51so4771564a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:01:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694606473; x=1695211273;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hYG/a4t3UUL3Vg4BBIneH5+8bciI8LQrZr4sB9iAJfs=;
+        b=Tw6LiJ08TcqMJtniH1YZ8LQiCPMFfa17aVgu5w69J659NZRlErSHhTuCrp/kkRRkmO
+         +LC48O6N3Eqlimzh7tIF571BcYGWp5k6x5WxtEBu2132manRlTtXrXi3+85kQ0hpnOEG
+         z+gtNNKMJmJHl6pPWvgk+PQbFYN0jSBBey89PbWRpvlSGH8BvlejjTaZMqx1AKOGtj0T
+         ScD42rAz8gwz70JluUrz6c8o8zfsl2OK7xPq6Em7QK+Bqr1NwWqHUHcjI5W+BBVaR9Pj
+         cfXEN8LU+6oolH3YbYUrgEl3XDr5TOQP61xDVpm62b6PXgEaBmKJdPRnpY7iMGqPtlUj
+         LBoQ==
+X-Gm-Message-State: AOJu0YzyaItp0E6uIT2uh4oUr+nMcXmUruXwcGBlgjJtLx/Nv+2nS/4q
+        V/ik7cA41a7I5O9Ratsy6viik8MjB5OYWD5/vDjrLIBHqgX1ho65iSrp5xEW4m9ruKfUjaBGVTY
+        jxrdZgKNs2u6isg1GrWY9BldP
+X-Received: by 2002:a17:906:535d:b0:9a2:c5a:6c9d with SMTP id j29-20020a170906535d00b009a20c5a6c9dmr1531271ejo.62.1694606473403;
+        Wed, 13 Sep 2023 05:01:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGCm9r4dlgEx3uEHmGTCUiRp6ZekgmBxqp7iJ7jGaAZgprbGqd+GHpjf+epvbkR6ptxux9ZBg==
+X-Received: by 2002:a17:906:535d:b0:9a2:c5a:6c9d with SMTP id j29-20020a170906535d00b009a20c5a6c9dmr1531248ejo.62.1694606473037;
+        Wed, 13 Sep 2023 05:01:13 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b0099b76c3041csm8357365eja.7.2023.09.13.05.01.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 05:01:12 -0700 (PDT)
+Message-ID: <7fa7ba28-3568-968d-5cf6-933292082965@redhat.com>
+Date:   Wed, 13 Sep 2023 14:01:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     Dave Airlie <airlied@gmail.com>, daniel@ffwll.ch,
+        matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-7-dakr@redhat.com>
+ <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
+ <20230913090311.5eeb026a@collabora.com>
+ <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
+ <20230913091918.62c06a30@collabora.com>
+ <df85257a-02ed-4869-2421-0039a9c97db5@linux.intel.com>
+ <20230913133318.15edec7c@collabora.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20230913133318.15edec7c@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tldr; Just FYI, I'm carrying this on the perf tools tree.
+After some more discussion with Boris on IRC, he seems to be willing to drop GPUVM
+updates from the async path. If everyone agrees I'm fine to go ahead and drop this
+use case for GPUVM.
 
-- Arnaldo
+@Thomas: I will reply to your last mail only considering GPUVM updates from within
+the IOCTL.
 
-Full explanation:
+- Danilo
 
-There used to be no copies, with tools/ code using kernel headers
-directly. From time to time tools/perf/ broke due to legitimate kernel
-hacking. At some point Linus complained about such direct usage. Then we
-adopted the current model.
-
-The way these headers are used in perf are not restricted to just
-including them to compile something.
-
-There are sometimes used in scripts that convert defines into string
-tables, etc, so some change may break one of these scripts, or new MSRs
-may use some different #define pattern, etc.
-
-E.g.:
-
-  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
-  tools/perf/trace/beauty/arch_errno_names.sh
-  tools/perf/trace/beauty/drm_ioctl.sh
-  tools/perf/trace/beauty/fadvise.sh
-  tools/perf/trace/beauty/fsconfig.sh
-  tools/perf/trace/beauty/fsmount.sh
-  $
-  $ tools/perf/trace/beauty/fadvise.sh
-  static const char *fadvise_advices[] = {
-  	[0] = "NORMAL",
-  	[1] = "RANDOM",
-  	[2] = "SEQUENTIAL",
-  	[3] = "WILLNEED",
-  	[4] = "DONTNEED",
-  	[5] = "NOREUSE",
-  };
-  $
-
-The tools/perf/check-headers.sh script, part of the tools/ build
-process, points out changes in the original files.
-
-So its important not to touch the copies in tools/ when doing changes in
-the original kernel headers, that will be done later, when
-check-headers.sh inform about the change to the perf tools hackers.
-
----
-
-Picking the changes from:
-
-  ad9ee11fdf113f96 ("drm/doc: document that PRIME import/export is always supported")
-  2ff4f6d410afa762 ("drm/doc: document drm_event and its types")
-  9a2eabf48ade4fba ("drm/doc: use proper cross-references for sections")
-  c7a4722971691562 ("drm/syncobj: add IOCTL to register an eventfd")
-
-Addressing these perf build warnings:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/include/uapi/drm/drm.h include/uapi/drm/drm.h
-
-Now 'perf trace' and other code that might use the
-tools/perf/trace/beauty autogenerated tables will be able to translate
-this new ioctl code into a string:
-
-  $ tools/perf/trace/beauty/drm_ioctl.sh > before
-  $ cp include/uapi/drm/drm.h tools/include/uapi/drm/drm.h
-  $ tools/perf/trace/beauty/drm_ioctl.sh > after
-  $ diff -u before after
-  --- before	2023-09-13 08:54:45.170134002 -0300
-  +++ after	2023-09-13 08:55:06.612712776 -0300
-  @@ -108,6 +108,7 @@
-   	[0xCC] = "SYNCOBJ_TRANSFER",
-   	[0xCD] = "SYNCOBJ_TIMELINE_SIGNAL",
-   	[0xCE] = "MODE_GETFB2",
-  +	[0xCF] = "SYNCOBJ_EVENTFD",
-   	[DRM_COMMAND_BASE + 0x00] = "I915_INIT",
-   	[DRM_COMMAND_BASE + 0x01] = "I915_FLUSH",
-   	[DRM_COMMAND_BASE + 0x02] = "I915_FLIP",
-  $
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Simon Ser <contact@emersion.fr>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/include/uapi/drm/drm.h | 84 +++++++++++++++++++++++++++++-------
- 1 file changed, 69 insertions(+), 15 deletions(-)
-
-diff --git a/tools/include/uapi/drm/drm.h b/tools/include/uapi/drm/drm.h
-index a87bbbbca2d48ada..794c1d857677d9b9 100644
---- a/tools/include/uapi/drm/drm.h
-+++ b/tools/include/uapi/drm/drm.h
-@@ -673,8 +673,11 @@ struct drm_gem_open {
-  * Bitfield of supported PRIME sharing capabilities. See &DRM_PRIME_CAP_IMPORT
-  * and &DRM_PRIME_CAP_EXPORT.
-  *
-- * PRIME buffers are exposed as dma-buf file descriptors. See
-- * Documentation/gpu/drm-mm.rst, section "PRIME Buffer Sharing".
-+ * Starting from kernel version 6.6, both &DRM_PRIME_CAP_IMPORT and
-+ * &DRM_PRIME_CAP_EXPORT are always advertised.
-+ *
-+ * PRIME buffers are exposed as dma-buf file descriptors.
-+ * See :ref:`prime_buffer_sharing`.
-  */
- #define DRM_CAP_PRIME			0x5
- /**
-@@ -682,6 +685,8 @@ struct drm_gem_open {
-  *
-  * If this bit is set in &DRM_CAP_PRIME, the driver supports importing PRIME
-  * buffers via the &DRM_IOCTL_PRIME_FD_TO_HANDLE ioctl.
-+ *
-+ * Starting from kernel version 6.6, this bit is always set in &DRM_CAP_PRIME.
-  */
- #define  DRM_PRIME_CAP_IMPORT		0x1
- /**
-@@ -689,6 +694,8 @@ struct drm_gem_open {
-  *
-  * If this bit is set in &DRM_CAP_PRIME, the driver supports exporting PRIME
-  * buffers via the &DRM_IOCTL_PRIME_HANDLE_TO_FD ioctl.
-+ *
-+ * Starting from kernel version 6.6, this bit is always set in &DRM_CAP_PRIME.
-  */
- #define  DRM_PRIME_CAP_EXPORT		0x2
- /**
-@@ -756,15 +763,14 @@ struct drm_gem_open {
- /**
-  * DRM_CAP_SYNCOBJ
-  *
-- * If set to 1, the driver supports sync objects. See
-- * Documentation/gpu/drm-mm.rst, section "DRM Sync Objects".
-+ * If set to 1, the driver supports sync objects. See :ref:`drm_sync_objects`.
-  */
- #define DRM_CAP_SYNCOBJ		0x13
- /**
-  * DRM_CAP_SYNCOBJ_TIMELINE
-  *
-  * If set to 1, the driver supports timeline operations on sync objects. See
-- * Documentation/gpu/drm-mm.rst, section "DRM Sync Objects".
-+ * :ref:`drm_sync_objects`.
-  */
- #define DRM_CAP_SYNCOBJ_TIMELINE	0x14
- 
-@@ -909,6 +915,27 @@ struct drm_syncobj_timeline_wait {
- 	__u32 pad;
- };
- 
-+/**
-+ * struct drm_syncobj_eventfd
-+ * @handle: syncobj handle.
-+ * @flags: Zero to wait for the point to be signalled, or
-+ *         &DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE to wait for a fence to be
-+ *         available for the point.
-+ * @point: syncobj timeline point (set to zero for binary syncobjs).
-+ * @fd: Existing eventfd to sent events to.
-+ * @pad: Must be zero.
-+ *
-+ * Register an eventfd to be signalled by a syncobj. The eventfd counter will
-+ * be incremented by one.
-+ */
-+struct drm_syncobj_eventfd {
-+	__u32 handle;
-+	__u32 flags;
-+	__u64 point;
-+	__s32 fd;
-+	__u32 pad;
-+};
-+
- 
- struct drm_syncobj_array {
- 	__u64 handles;
-@@ -1169,6 +1196,8 @@ extern "C" {
-  */
- #define DRM_IOCTL_MODE_GETFB2		DRM_IOWR(0xCE, struct drm_mode_fb_cmd2)
- 
-+#define DRM_IOCTL_SYNCOBJ_EVENTFD	DRM_IOWR(0xCF, struct drm_syncobj_eventfd)
-+
- /*
-  * Device specific ioctls should only be in their respective headers
-  * The device specific ioctl range is from 0x40 to 0x9f.
-@@ -1180,25 +1209,50 @@ extern "C" {
- #define DRM_COMMAND_BASE                0x40
- #define DRM_COMMAND_END			0xA0
- 
--/*
-- * Header for events written back to userspace on the drm fd.  The
-- * type defines the type of event, the length specifies the total
-- * length of the event (including the header), and user_data is
-- * typically a 64 bit value passed with the ioctl that triggered the
-- * event.  A read on the drm fd will always only return complete
-- * events, that is, if for example the read buffer is 100 bytes, and
-- * there are two 64 byte events pending, only one will be returned.
-+/**
-+ * struct drm_event - Header for DRM events
-+ * @type: event type.
-+ * @length: total number of payload bytes (including header).
-  *
-- * Event types 0 - 0x7fffffff are generic drm events, 0x80000000 and
-- * up are chipset specific.
-+ * This struct is a header for events written back to user-space on the DRM FD.
-+ * A read on the DRM FD will always only return complete events: e.g. if the
-+ * read buffer is 100 bytes large and there are two 64 byte events pending,
-+ * only one will be returned.
-+ *
-+ * Event types 0 - 0x7fffffff are generic DRM events, 0x80000000 and
-+ * up are chipset specific. Generic DRM events include &DRM_EVENT_VBLANK,
-+ * &DRM_EVENT_FLIP_COMPLETE and &DRM_EVENT_CRTC_SEQUENCE.
-  */
- struct drm_event {
- 	__u32 type;
- 	__u32 length;
- };
- 
-+/**
-+ * DRM_EVENT_VBLANK - vertical blanking event
-+ *
-+ * This event is sent in response to &DRM_IOCTL_WAIT_VBLANK with the
-+ * &_DRM_VBLANK_EVENT flag set.
-+ *
-+ * The event payload is a struct drm_event_vblank.
-+ */
- #define DRM_EVENT_VBLANK 0x01
-+/**
-+ * DRM_EVENT_FLIP_COMPLETE - page-flip completion event
-+ *
-+ * This event is sent in response to an atomic commit or legacy page-flip with
-+ * the &DRM_MODE_PAGE_FLIP_EVENT flag set.
-+ *
-+ * The event payload is a struct drm_event_vblank.
-+ */
- #define DRM_EVENT_FLIP_COMPLETE 0x02
-+/**
-+ * DRM_EVENT_CRTC_SEQUENCE - CRTC sequence event
-+ *
-+ * This event is sent in response to &DRM_IOCTL_CRTC_QUEUE_SEQUENCE.
-+ *
-+ * The event payload is a struct drm_event_crtc_sequence.
-+ */
- #define DRM_EVENT_CRTC_SEQUENCE	0x03
- 
- struct drm_event_vblank {
--- 
-2.37.1
+On 9/13/23 13:33, Boris Brezillon wrote:
+> On Wed, 13 Sep 2023 12:39:01 +0200
+> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
+> 
+>> Hi,
+>>
+>> On 9/13/23 09:19, Boris Brezillon wrote:
+>>> On Wed, 13 Sep 2023 17:05:42 +1000
+>>> Dave Airlie <airlied@gmail.com> wrote:
+>>>   
+>>>> On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
+>>>> <boris.brezillon@collabora.com> wrote:
+>>>>> On Tue, 12 Sep 2023 18:20:32 +0200
+>>>>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
+>>>>>      
+>>>>>>> +/**
+>>>>>>> + * get_next_vm_bo_from_list() - get the next vm_bo element
+>>>>>>> + * @__gpuvm: The GPU VM
+>>>>>>> + * @__list_name: The name of the list we're iterating on
+>>>>>>> + * @__local_list: A pointer to the local list used to store already iterated items
+>>>>>>> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
+>>>>>>> + *
+>>>>>>> + * This helper is here to provide lockless list iteration. Lockless as in, the
+>>>>>>> + * iterator releases the lock immediately after picking the first element from
+>>>>>>> + * the list, so list insertion deletion can happen concurrently.
+>>>>>> Are the list spinlocks needed for that async state update from within
+>>>>>> the dma-fence critical section we've discussed previously?
+>>>>> Any driver calling _[un]link() from its drm_gpu_scheduler::run_job()
+>>>>> hook will be in this situation (Panthor at the moment, PowerVR soon). I
+>>>>> get that Xe and Nouveau don't need that because they update the VM
+>>>>> state early (in the ioctl path), but I keep thinking this will hurt us
+>>>>> if we don't think it through from the beginning, because once you've
+>>>>> set this logic to depend only on resv locks, it will be pretty hard to
+>>>>> get back to a solution which lets synchronous VM_BINDs take precedence
+>>>>> on asynchronous request, and, with vkQueueBindSparse() passing external
+>>>>> deps (plus the fact the VM_BIND queue might be pretty deep), it can
+>>>>> take a long time to get your synchronous VM_BIND executed...
+>>
+>> So this would boil down to either (possibly opt-in) keeping the spinlock
+>> approach or pushing the unlink out to a wq then?
+> 
+> Deferred _unlink() would not be an issue, since I already defer the
+> drm_gpuva destruction to a wq, it would just a be a matter of moving the
+> _unlink() call there as well. But _link() also takes the GEM gpuva list
+> lock, and that one is bit tricky, in that sm_map() can trigger 2 more
+> _link() calls for the prev/next mappings, which we can't guess until we
+> get to execute the VM update. If we mandate the use of the GEM resv
+> lock, that simply means async VM updates (AKA calling
+> drm_gpuvm_sm_[un]map()) are not an option. And if this is what everyone
+> agrees on, then I'd like the APIs that make this sort of async VM
+> update possible (drm_gpuvm_sm_[un]map(), the drm_gpuvm_ops::sm_step*
+> methods, and probably other things) to be dropped, so we don't make it
+> look like it's something we support.
+> 
+>> BTW, as also asked in a reply to Danilo, how do you call unlink from
+>> run_job() when it was requiring the obj->dma_resv lock, or was that a WIP?
+> 
+> _unlink() makes sure the GEM gpuva list lock is taken, but this can be
+> a custom lock (see drm_gem_gpuva_set_lock()). In panthor we have
+> panthor_gem_object::gpuva_list_lock that's dedicated the gpuva list
+> protection. We make sure we never take this lock while allocating
+> memory to guarantee the dma-signalling path can't deadlock.
+> 
+>>
+>>>>>      
+>>>> btw what is the use case for this? do we have actual vulkan
+>>>> applications we know will have problems here?
+>>> I don't, but I think that's a concern Faith raised at some point (dates
+>>> back from when I was reading threads describing how VM_BIND on i915
+>>> should work, and I was clearly discovering this whole VM_BIND thing at
+>>> that time, so maybe I misunderstood).
+>>>   
+>>>> it feels like a bit of premature optimisation, but maybe we have use cases.
+>>> Might be, but that's the sort of thing that would put us in a corner if
+>>> we don't have a plan for when the needs arise. Besides, if we don't
+>>> want to support that case because it's too complicated, I'd recommend
+>>> dropping all the drm_gpuvm APIs that let people think this mode is
+>>> valid/supported (map/remap/unmap hooks in drm_gpuvm_ops,
+>>> drm_gpuvm_sm_[un]map helpers, etc). Keeping them around just adds to the
+>>> confusion.
+>>
+>> Xe allows bypassing the bind-queue with another bind-queue, but to
+>> completely avoid dependencies between queues the Operations may not
+>> overlap.
+> 
+> So, you check the VM state with some VM lock held (would be the VM resv
+> in my case), and if the mapping is new (no overlaps with pre-existing
+> mappings), you queue it to the fast-track/sync-VM_BIND queue. What would
+> be missing I guess is a way to know if the mapping is active (MMU has
+> been updated) or pending (MMU update queued to the bind-queue), so I can
+> fast-track mapping/unmapping of active mappings. This would leave
+> overlapping sync/async VM updates, which can't happen in practice
+> unless userspace is doing something wrong (sparse bindings always go
+> through vkQueueBindSparse).
+> 
+> I'll give it a try.
+> 
+>> (And the definition of overlap is currently page-table
+>> structure updates may not overlap) but no guarantees are made about
+>> priority.
+>>
+>> /Thomas
+>>
+>>
+>>
+> 
 
