@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2428E79EB2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11BA79EB7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241201AbjIMOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S241538AbjIMOqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235721AbjIMOe6 (ORCPT
+        with ESMTP id S241431AbjIMOqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:34:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9968B90
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694615652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EmuGLD5luQvJ6ql8baS4uOR3VUqVjxIpyPp1zFnXnLU=;
-        b=HMqfwshJ6qJrZzCzIFzVb0vqB/iOfdGZrt1xL46ua5X3ECtyQ5Lr9k73VIdTUzvj1f3owV
-        jZ54X7Kg/w799AJ3kYSAKStlV+zx1kF3P7vmmaoprM6SOAhhV1sUQLS6rLN2Hdt4qhN6wq
-        DdIiCoZgY40rYK0DY4eahWZUv8thpr4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-LmmY_tHvOJKaSWdSPHGUyg-1; Wed, 13 Sep 2023 10:34:09 -0400
-X-MC-Unique: LmmY_tHvOJKaSWdSPHGUyg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31ad77537ebso4548385f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:34:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694615648; x=1695220448;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EmuGLD5luQvJ6ql8baS4uOR3VUqVjxIpyPp1zFnXnLU=;
-        b=I7q58FoJIit2UjULOY5iXxyeZIQJFPrMeV91bzIibyLj6ub1r2gdJDzssnWLCXjqF1
-         ++TuK2EPoVe5pplueeaDr6tLbgca8Q1dfj3QVY+aXL+lJSLcFvvHdwmPn9WEGoZubYOs
-         SUE9yFdDDiirFTlRWICm0JFaWrP2pJxXtGvbm3ImZGFPif03IAaUmB2MPjlyEDzzQVha
-         m+71Iqfy8Sycr6yDEWxILgOC3Na0eDghmkXJEXPaPI39CQM8EAdTgQbQx+d74/WnGIbP
-         PCYwevsKzWOgwgZCoZDaTh+LC79WviOkUG40O2cK+VDTFfJ+n9GWq6+Q/5rSJsMsK/EX
-         auIA==
-X-Gm-Message-State: AOJu0Ywt8cWHfkFg1TzmAr72y7d6HvGz+j6xXGNv0uPcvgKR3B/xUHj5
-        hHj98AI1mt0IGHyqU766gqsr0fUYQejFmlsLeN8F2rIT7hT8y4JcHEQj9LVGMhL78AdGrBHOsjw
-        1zLyPfMPCiltsMjaOiWp8Wq49
-X-Received: by 2002:adf:e350:0:b0:31a:d7ce:927a with SMTP id n16-20020adfe350000000b0031ad7ce927amr2155939wrj.3.1694615648307;
-        Wed, 13 Sep 2023 07:34:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxXsLR5zjRy/DLOO1GBaPn0ZcQQNCwDb5j2gSJukItrCH3FTJ6g1iQgv/XHrp9fSH7duWpvw==
-X-Received: by 2002:adf:e350:0:b0:31a:d7ce:927a with SMTP id n16-20020adfe350000000b0031ad7ce927amr2155922wrj.3.1694615647937;
-        Wed, 13 Sep 2023 07:34:07 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70b:ff00:f8af:dffd:bbb7:6c76? (p200300cbc70bff00f8afdffdbbb76c76.dip0.t-ipconnect.de. [2003:cb:c70b:ff00:f8af:dffd:bbb7:6c76])
-        by smtp.gmail.com with ESMTPSA id d16-20020adff2d0000000b0031981c500aasm15563508wrp.25.2023.09.13.07.34.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 07:34:07 -0700 (PDT)
-Message-ID: <3142b596-43d9-7c6d-cdcc-59137d0f2ca1@redhat.com>
-Date:   Wed, 13 Sep 2023 16:34:06 +0200
+        Wed, 13 Sep 2023 10:46:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AC398
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:46:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE9FC433C8;
+        Wed, 13 Sep 2023 14:46:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694616406;
+        bh=MEPRVLhq94lkOpBYdxRoPzKxMTXOzT6mLYuQo0C5GYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oGLkwU9FWN+uir2AxMWDTeonZoJko3bsyCrAoEwRogRsrKE3tdrx4B9pi8+bKr/rN
+         YNmj1snrt3z/3uMq8t3XLwRcIdtFeEX4usIBazutl44jkrrsnbzmUi+o/KlszxGhTW
+         kQ/3EbY9WMqXrWE+yQ0jghLPZaWW+prreEFa455H+PLcHo/nLRU9nYtgaZo3JnKrPj
+         vFqlFKnCj6MRw+R8ApLZnFn10v9011Amq+LnEVzCYWDd8jZUbGtwzr5m5NpxvdL84/
+         3VKpgZuZL8GyrJ1R2wgmk36jUw1EttiwIhx9Ix80TmVPWYzmiShvDIdhGPcyxDKqwd
+         tx3968REAuSrA==
+Date:   Wed, 13 Sep 2023 22:34:42 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Jose Abreu <joabreu@synopsys.com>, kernel@pengutronix.de,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-sunxi@lists.linux.dev,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [REGRESSION] [PATCH net-next v5 2/2] net: stmmac: use per-queue
+ 64 bit statistics where necessary
+Message-ID: <ZQHIgmcnCNoZwtwu@xhacker>
+References: <20230717160630.1892-1-jszhang@kernel.org>
+ <20230717160630.1892-3-jszhang@kernel.org>
+ <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
+ <ZQAa3277GC4c9W1D@xhacker>
+ <99695befef06b025de2c457ea5f861aa81a0883c.camel@pengutronix.de>
+ <20230912092411.pprnpvrbxwz77x6a@pengutronix.de>
+ <2fcc9fb0e40ceff8ea4ae55cca3ce0aff75a20ca.camel@sipsolutions.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 2/6] mm/rmap: move SetPageAnonExclusive out of
- __page_set_anon_rmap()
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>
-References: <20230913125113.313322-1-david@redhat.com>
- <20230913125113.313322-3-david@redhat.com>
- <ZQHH6ZC9aHQaqlNJ@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZQHH6ZC9aHQaqlNJ@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2fcc9fb0e40ceff8ea4ae55cca3ce0aff75a20ca.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.23 16:32, Matthew Wilcox wrote:
-> On Wed, Sep 13, 2023 at 02:51:09PM +0200, David Hildenbrand wrote:
->> @@ -1246,11 +1241,13 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
->>   
->>   	if (likely(!folio_test_ksm(folio))) {
->>   		if (first)
->> -			__page_set_anon_rmap(folio, page, vma, address,
->> -					     !!(flags & RMAP_EXCLUSIVE));
->> +			__folio_set_anon(folio, vma, address,
->> +					 !!(flags & RMAP_EXCLUSIVE));
->>   		else
->>   			__page_check_anon_rmap(folio, page, vma, address);
->>   	}
->> +	if (flags & RMAP_EXCLUSIVE)
->> +		SetPageAnonExclusive(page);
+On Tue, Sep 12, 2023 at 11:30:14AM +0200, Johannes Berg wrote:
+> On Tue, 2023-09-12 at 11:24 +0200, Uwe Kleine-König wrote:
+> > > 
+> > > The newly added "struct u64_stats_sync syncp" uses a seqlock
+> > > internally, which is broken into multiple words on 32bit machines, and
+> > > needs to be initialized properly. You need to call u64_stats_init on
+> > > syncp before first usage.
+> > 
+> > This is done. The problematic thing is that in stmmac_open() ->
+> > __stmmac_open() the syncp initialized before is overwritten by
+> > 
+> > 	memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));
+
+Thank Johannes and Uwe for pointing out the issue.
+
+> > 
+> > Do I need to point out that this is ugly?
 > 
-> Won't we end up setting AnonExclusive on ksm pages, or do we make sure
-> to never pass RMAP_EXCLUSIVE for ksm pages?
+> I think it also leaks the (lockdep) state since it reinits the syncp
+> (and a lot of other state) doing this. This is also called when the MTU
+> changes.
+> 
+> Also, I couldn't convince myself that it's even race-free? Even if it
+> is, it's not really obvious, IMHO.
+> 
+> So it seems to me that really this needs to be split into data that
+> actually should be reinitialized, and data that shouldn't, or just not
+> use memcpy() here but copy only the relevant state?
 
-Not if there is a bug and someone passes RMAP_EXCLUSIVE for these. :)
+Since we are in rc1, I need to fix the bug with as small changes as
+possible. so another solution could be: replace rx/tx stats structure
+with pointers, then setup pointers in the new allocated dma_conf with
+the old one as current code did for dma_tx_size/dma_rx_size in
+stmmac_setup_dma_desc():
 
-Fortunately, we do have
+dma_conf->dma_tx_size = priv->dma_conf.dma_tx_size
 
-VM_BUG_ON_PGFLAGS(!PageAnon(page) || PageKsm(page), page);
+Is it acceptable?
 
-in SetPageAnonExclusive() to catch such bugs.
+Thanks
 
 > 
-> Maybe better to move these last two lines inside the previous test,
-> just to avoid the question.
-
-That could end up hiding another BUG, so I'd rather let 
-SetPageAnonExclusive() catch it.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> But anyway, I have no skin in this game - just reviewing this because I
+> was trying to help out Uwe.
+> 
+> johannes
