@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C7979E7C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E74779E7C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240378AbjIMMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        id S240384AbjIMMTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240320AbjIMMSY (ORCPT
+        with ESMTP id S240320AbjIMMTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:18:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FD019AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:18:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06943C433C7;
-        Wed, 13 Sep 2023 12:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694607500;
-        bh=Uxv++mH8jyJnhpSSyjfFLcVM9kp3MVHe1CFOoNDtlsQ=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=cYOkBw6NuGg4O4JyT0BMP7Ed3T69snqt5xNYuqKDapgHZnaNDyVY1PK7LVFt5E0pH
-         5H6UqvSVYYEPfpe/81604hLL+T72z5rAKpPg+11KSLeiKEiOinI18K1mbxA0QUtrVl
-         QSoFvZavzqjD8FHlsWaXRi3fzaCS3XgbQtai395D2mP8u6ebUiSlcpnQ9jSPkPjb6p
-         Eo3u1Ap01PGw+L2LxTHQGHGJM/RWHD75PTRuNA7SIJsUQgKPf6txB6FAGLd9xw6VeX
-         e2BpF6562u7WT/AXsw3Khzcd5z0sC40PC+9hEdayF1r59hM0oBcGrKs3JKnEXAVtQR
-         X9irxlteydALg==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailauth.nyi.internal (Postfix) with ESMTP id E0CEF27C0054;
-        Wed, 13 Sep 2023 08:18:18 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 13 Sep 2023 08:18:18 -0400
-X-ME-Sender: <xms:iqgBZTEaiFcXHfUabB4PIUB6z-Q-QNZ_lXUnAn2TxSPs5fDmeJtvJg>
-    <xme:iqgBZQVJnXcjSEvFFQcOq-8zUOWIfbIw75vt3NFcN5850Wkwk7QM4-lLhOSdQN8vR
-    WPMCSv99V51R2lt1JE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:iqgBZVLtjtvG4FrWLGjd-BIiAYoNJmu9pnp-koH5DGKs7y0chNp0jQ>
-    <xmx:iqgBZREkjg0FTBKLIxhRR2or_6bXPRS38Mxc1P2ZKs-o3LOHV4gsGQ>
-    <xmx:iqgBZZVl3LPjzgpfBmkCkFi3lo5FZopog_AUVngQQfu-cwpIzUypHA>
-    <xmx:iqgBZaei-XUtUpjWN-4xU8-UbLPOc8C65D_hcmVIIdNeeWIe29g2Bg>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9D734B60089; Wed, 13 Sep 2023 08:18:18 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <ca073163-d947-42f4-b45a-3ea75ab2f7fc@app.fastmail.com>
-In-Reply-To: <20230913112032.90618-10-abbotti@mev.co.uk>
-References: <20230913112032.90618-1-abbotti@mev.co.uk>
- <20230913112032.90618-10-abbotti@mev.co.uk>
-Date:   Wed, 13 Sep 2023 14:17:58 +0200
-From:   "Arnd Bergmann" <arnd@kernel.org>
-To:     "Ian Abbott" <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
-Cc:     "Niklas Schnelle" <schnelle@linux.ibm.com>
-Subject: Re: [PATCH 09/13] comedi: ni_mio_common: Conditionally use I/O port or MMIO
-Content-Type: text/plain
+        Wed, 13 Sep 2023 08:19:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E6819A8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694607568; x=1726143568;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X1Pn9TpUNoyPdD3j0+oAS9diSSpPQYYq5l0i8RYiScQ=;
+  b=VTsSMIPBw9BEQ45IWBzIc/d12pKSt9Skmkr6KXSqY04KUXADFQeB4m6t
+   hHUQMEqhPABL7zsqtY2OyQ/yt0G6yXujC92oY5Hr/Zgo/JS41aPZLHZr3
+   lcXjlj5/NSHrhAe8uKdSxMg6Q4CsqRa3e4eeqA6eEFbZGaOplhzpzuwtX
+   RarUw17ZPX++dcFKUf8ec8j/ESgJNDBu9VWzgejxhzNH3L7fiBisO4Pg/
+   sRLhbT6B+9vHb0qAF7sroW9DHGzxhQhdfIjq4V0Zlh5wzUQ2cWMBEXfIm
+   XgphjwSOIXaaQRDAcwVBeMcw11NfMShie8sWTfzozGfDsSxgeBwjydtLQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363673110"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="363673110"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:19:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779169400"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="779169400"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 05:19:25 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgOq3-00002J-0E;
+        Wed, 13 Sep 2023 12:19:23 +0000
+Date:   Wed, 13 Sep 2023 20:19:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ping Gan <jacky_gam_2001@163.com>, kbusch@kernel.org,
+        axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev, ping_gan@dell.com,
+        jacky_gam_2001@163.com
+Subject: Re: [PATCH 2/4] nvmet: Add polling queue task for nvme target
+Message-ID: <202309131959.1zH6sjmk-lkp@intel.com>
+References: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, at 13:20, Ian Abbott wrote:
-> In a future patch, the port I/O functions (`inb()`, `outb()`, and
-> friends will only be declared in the `HAS_IOPORT` configuration option
-> is enabled.
->
-> The "ni_mio_common.c" file contains calls to both port I/O functions and
-> memory-mapped I/O functions.  The file is `#include`d by "ni_atmio.c",
-> "ni_mio_cs.c", and "ni_pcimio.c" for the ni_atmio, ni_mio_cs, and
-> ni_pcimio modules, respectively.  Only "ni_pcimio.c" defines the
-> `PCIDMA` macro before including "ni_mio_common.c" and various bits of
-> code in "ni_mio_common.c" is conditionally compiled according to whether
-> that macro is defined or not.  Currently, the port I/O function calls
-> are compiled in regardless of whether the `PCIDMA` macro is defined or
-> not.  However, the fact is that the ni_atmio and ni_mio_cs modules will
-> never call the memory-mapped I/O functions, and the ni_pcimio module
-> will never call the port I/O functions.
->
-> Calls to the port I/O and memory-mapped I/O functions is confined to the
-> `ni_writel()`, `ni_writew()`, `ni_writeb()`, `ni_readl()`, `ni_readw()`,
-> and `ni_readb()` functions which do a run-time test to decide whether to
-> call the port I/O functions or the memory-mapped I/O functions.
-> Conditionally compile two variants of the functions so they only call
-> the port I/O functions if the `PCIDMA` macro is undefined (for the
-> ni_atmio and ni_mio_cs modules), and only call the memory-mapped I/O
-> functions if the `PCIDMA` macro is defined (for the ni_pcimio module).
->
-> Add a run-time check in the `ni_E_init()` function to return an error if
-> the comedi device has been set up to use port I/O if `PCIDMA` is
-> defined, or has been set up to use memory-mapped I/O if `PCIDMA` is not
-> defined.
->
-> The changes make it possible to build the ni_pcimio module even if the
-> port I/O functions have not been declared.  (The ni_atmio and ni_mio_cs
-> modules do still require the port I/O functions to be declared.)
+Hi Ping,
 
-I think this all works, but there is probably a simpler way to
-achieve the same:
- 
-> +#ifdef PCIDMA
-> +
->  static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
->  {
-> -	if (dev->mmio)
-> -		writel(data, dev->mmio + reg);
-> -	else
-> -		outl(data, dev->iobase + reg);
-> +	writel(data, dev->mmio + reg);
->  }
-> 
-> 
-> +#else /* PCIDMA */
-> +
-> +static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
-> +{
-> +	outl(data, dev->iobase + reg);
-> +}
+kernel test robot noticed the following build warnings:
 
-We already have an abstraction for this using iowrite32(),
-which turns into either writel() or outl() depending on the
-argument, so you could just use pci_iomap() or ioport_map()
-to turn port numbers into tokens suitable for the common
-helper.
+[auto build test WARNING on v6.6-rc1]
+[also build test WARNING on linus/master next-20230913]
+[cannot apply to hch-configfs/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-     Arnd
+url:    https://github.com/intel-lab-lkp/linux/commits/Ping-Gan/nvmet-Add-nvme-target-polling-queue-task-parameters/20230913-164112
+base:   v6.6-rc1
+patch link:    https://lore.kernel.org/r/84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001%40163.com
+patch subject: [PATCH 2/4] nvmet: Add polling queue task for nvme target
+config: arc-randconfig-r004-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131959.1zH6sjmk-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131959.1zH6sjmk-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131959.1zH6sjmk-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/nvme/target/polling-queue-thread.c: In function '__nvmet_pq_ring_do_enqueue':
+>> drivers/nvme/target/polling-queue-thread.c:150:37: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     150 |                         ring[idx++] = obj_table[i++]; /* fallthrough */ \
+         |                         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
+     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:151:17: note: here
+     151 |                 case 2: \
+         |                 ^~~~
+   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
+     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:152:37: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     152 |                         ring[idx++] = obj_table[i++]; /* fallthrough */ \
+         |                         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
+     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:153:17: note: here
+     153 |                 case 1: \
+         |                 ^~~~
+   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
+     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c: In function '__nvmet_pq_ring_do_dequeue':
+   drivers/nvme/target/polling-queue-thread.c:181:40: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     181 |                         obj_table[i++] = ring[idx++]; /* fallthrough */ \
+         |                                        ^
+   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
+     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:182:17: note: here
+     182 |                 case 2: \
+         |                 ^~~~
+   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
+     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:183:40: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     183 |                         obj_table[i++] = ring[idx++]; /* fallthrough */ \
+         |                                        ^
+   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
+     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+   drivers/nvme/target/polling-queue-thread.c:184:17: note: here
+     184 |                 case 1: \
+         |                 ^~~~
+   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
+     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
+         |         ^~~~~~~~~~~~
+
+
+vim +150 drivers/nvme/target/polling-queue-thread.c
+
+   131	
+   132	//below is derived from FreeBSD's bufring.h
+   133	/* the actual enqueue of pointers on the ring.
+   134	 * Placed here since identical code needed in both
+   135	 * single and multi producer enqueue functions */
+   136	#define ENQUEUE_PTRS(r, ring_start, prod_head, obj_table, n, obj_type) do { \
+   137		unsigned int i; \
+   138		const u32 size = (r)->size; \
+   139		u32 idx = prod_head & (r)->mask; \
+   140		obj_type *ring = (obj_type *)ring_start; \
+   141		if (likely(idx + n < size)) { \
+   142			for (i = 0; i < (n & ((~(unsigned)0x3))); i += 4, idx += 4) { \
+   143				ring[idx] = obj_table[i]; \
+   144				ring[idx+1] = obj_table[i+1]; \
+   145				ring[idx+2] = obj_table[i+2]; \
+   146				ring[idx+3] = obj_table[i+3]; \
+   147			} \
+   148			switch (n & 0x3) { \
+   149			case 3: \
+ > 150				ring[idx++] = obj_table[i++]; /* fallthrough */ \
+   151			case 2: \
+   152				ring[idx++] = obj_table[i++]; /* fallthrough */ \
+   153			case 1: \
+   154				ring[idx++] = obj_table[i++]; \
+   155			} \
+   156		} else { \
+   157			for (i = 0; idx < size; i++, idx++)\
+   158				ring[idx] = obj_table[i]; \
+   159			for (idx = 0; i < n; i++, idx++) \
+   160				ring[idx] = obj_table[i]; \
+   161		} \
+   162	} while (0)
+   163	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
