@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A3279F300
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5C179F304
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbjIMUiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        id S232629AbjIMUis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbjIMUiI (ORCPT
+        with ESMTP id S232540AbjIMUiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:38:08 -0400
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFB21BCB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:38:04 -0700 (PDT)
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay07.hostedemail.com (Postfix) with ESMTP id 32609160494;
-        Wed, 13 Sep 2023 20:38:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 0B01A2000E;
-        Wed, 13 Sep 2023 20:38:00 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Gustavo Silva <gustavoars@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] checkpatch: Add a couple new alloc functions to alloc with multiplies check
-Date:   Wed, 13 Sep 2023 13:37:52 -0700
-Message-ID: <edb667e19211652a32ef6069159bb85dbc3bcdfc.1694636817.git.joe@perches.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1694636817.git.joe@perches.com>
-References: <cover.1694636817.git.joe@perches.com>
+        Wed, 13 Sep 2023 16:38:46 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6A21BCA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:38:42 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-414b3b65e85so1100381cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694637521; x=1695242321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zwVOfYwHpMwktmYsXHkpEkdKer4I1SfhoGgmDQcwfcA=;
+        b=DkUODoeoutX+fnNWGpq84ZK2tTioQ3MzRtj6VbRrtDrZ6nAUubNJDEIDlYCQ6CxABj
+         vhQuHi/1smrA9X238eSKybfeJIU/DDRZx/RgXY4r0HNyXwV1C8jZQZmYwnzixbFHh9qb
+         H61Ysf81rbKAMBMkr3Yasn1tQzpsnHjXrCQqtsUwP/28+BDtnfSbOzrOSW0JEjNQqaRQ
+         D53ZEE9lmKVh4ER4jM0ymn0VNkTy8KnejIcdDb07NyksWAbBhYIASxsjoaxdjanRpry0
+         1igu8lGpSM6g4xVkKmkODy2fm+OHnmpCMzK8uCFnAuwe3qCQoSXS3gzES1wKlGY1C6o/
+         bq6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694637521; x=1695242321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zwVOfYwHpMwktmYsXHkpEkdKer4I1SfhoGgmDQcwfcA=;
+        b=lzxy7vbkvzfK530chWi9pqUNma//VVkVn7hZ0oAEKysfat/fU1HBsmDKWfbO0t2DbH
+         18+V02fleXaQC02THSaOZ4v0BC0+Osq+ApbUl/k72uKJzEGyxGc6pScn/bKM9jABQFgB
+         fkxBcbfXrvYr09YY6i3t6kayo3elhs8HhSgoSjMg2CdVHWSz3UV8gZPdO6h6qXt3Y18z
+         UXCsG+9iifKSuO3EvkGa23/pds4dADvka7n/jrBPKtK/RsItInElDUUXClK7A3uNPgTw
+         t9whnghH0JZO6sPwSgHSCq1p2N5DyKNcQRmBY7YLUhMYNN8B9ylRwD+UJjOAZEVOVia3
+         NW2A==
+X-Gm-Message-State: AOJu0Yy3R7GgEemX4myPPypU7PLU0cyGlgKQAZOaFhKpENkt6eLbaaC/
+        N7wSwOTbzfYzXwYH0Vgl0WL5yg==
+X-Google-Smtp-Source: AGHT+IH1ZDZfWwx8ZsEmLQw8AjRhhAy9QDYEdCvB0mO045R5lZFLCXc9qs+DfLxBtLvaL0Kn+ok1hA==
+X-Received: by 2002:ac8:75c8:0:b0:416:6663:3812 with SMTP id z8-20020ac875c8000000b0041666633812mr1808568qtq.35.1694637521530;
+        Wed, 13 Sep 2023 13:38:41 -0700 (PDT)
+Received: from maple.home ([174.94.49.189])
+        by smtp.gmail.com with ESMTPSA id j6-20020ac85506000000b0040f200feb4fsm24203qtq.80.2023.09.13.13.38.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 13:38:41 -0700 (PDT)
+From:   Ralph Siemsen <ralph.siemsen@linaro.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ralph Siemsen <ralph.siemsen@linaro.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/2] clk: renesas: r9a06g032: fix kerneldoc warning
+Date:   Wed, 13 Sep 2023 16:38:04 -0400
+Message-Id: <20230913203805.465780-1-ralph.siemsen@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0B01A2000E
-X-Spam-Status: No, score=-0.10
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: xjm5zefc7i1hfmefnuramsasuzznxpc6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18h5Wco8x/jTt4ifkNztuqruDZ97G4luyg=
-X-HE-Tag: 1694637480-576201
-X-HE-Meta: U2FsdGVkX1/qvO+5ATy0oC1xdPj7yURbZiZ6p1jLPhVLbglW7mKrqeVfYdqE5XaGFecjXtS4WwLrkIDeavUySJSiZFdh2oQoEcyXe6nHZ5soQD5lUgr7HdLmHWo5l2ad26LgFg1Z9LQMFh5noewE80KKrBLPHlaPaSr+uDl/nL3GnCsOb2gt4y8A4TrD41kRFgxUEj4aVbr5125fztpf9Zmp/pcQz3VjzESUWVLoT8Vf8H0VNTdQav3wTvDjmVp/jDQj8jwi//bB5hO15srBsQ1DlxY6B0xwAx0He0eoCzVgYndVq2a9AOcmxJt7eZcUAFAAOXwHB0sC9obPoCama+Jkf7n7U6/kXwDLUdzRaPIMWuhgJmujoEHZYnyrJV1BA/QBLNh34rK6BBcizbS0CXAXHzO2WQo1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmalloc() and vzalloc() functions have now 2-factor multiplication
-argument forms vmalloc_array() and vcalloc(), correspondingly.
+Mention the 'dual' structure in the kdoc. This fixes the following
+W=1 warning during build:
 
-Add alloc-with-multiplies checks for these new functions.
+> drivers/clk/renesas/r9a06g032-clocks.c:119: warning: Function parameter or member 'dual' not described in 'r9a06g032_clkdesc'
 
-Simplify the original codes repeated else to use a hash.
-
-Link: https://github.com/KSPP/linux/issues/342
-
-Original-patch-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/lkml/ZQCaO+tYycDxVLy7@work/
-Signed-off-by: Joe Perches <joe@perches.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309101314.kTRoxND5-lkp@intel.com/
+Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 ---
- scripts/checkpatch.pl | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+Changes in v2:
+- split the warning fix into separate commit
+---
+ drivers/clk/renesas/r9a06g032-clocks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 617f9e53bacdf..4cb248985eefc 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -834,6 +834,16 @@ our %deprecated_apis = (
- #Create a search pattern for all these strings to speed up a loop below
- our $deprecated_apis_search = '(?:' . join('|', keys %deprecated_apis) . ')';
- 
-+our %alloc_with_multiply_apis = (
-+	"kmalloc"		=> "kmalloc_array",
-+	"kvmalloc"		=> "kvmalloc_array",
-+	"vmalloc"		=> "vmalloc_array",
-+	"kvzalloc"		=> "kvcalloc",
-+	"kzalloc"		=> "kcalloc",
-+	"vzalloc"		=> "vcalloc",
-+);
-+our $alloc_with_multiply_search = '(?:' . join('|', keys %alloc_with_multiply_apis) . ')';
-+
- our $mode_perms_world_writable = qr{
- 	S_IWUGO		|
- 	S_IWOTH		|
-@@ -7187,17 +7197,14 @@ sub process {
- 			    "Prefer $3(sizeof(*$1)...) over $3($4...)\n" . $herecurr);
- 		}
- 
--# check for (kv|k)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/kvcalloc/kcalloc
-+# check for various allocs with multiplies that should use safer functions
- 		if ($perl_version_ok &&
- 		    defined $stat &&
--		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
-+		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*($alloc_with_multiply_search)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
- 			my $oldfunc = $3;
-+			my $newfunc = $alloc_with_multiply_apis{$oldfunc};
- 			my $a1 = $4;
- 			my $a2 = $10;
--			my $newfunc = "kmalloc_array";
--			$newfunc = "kvmalloc_array" if ($oldfunc eq "kvmalloc");
--			$newfunc = "kvcalloc" if ($oldfunc eq "kvzalloc");
--			$newfunc = "kcalloc" if ($oldfunc eq "kzalloc");
- 			my $r1 = $a1;
- 			my $r2 = $a2;
- 			if ($a1 =~ /^sizeof\s*\S/) {
-@@ -7213,7 +7220,7 @@ sub process {
- 					 "Prefer $newfunc over $oldfunc with multiply\n" . $herectx) &&
- 				    $cnt == 1 &&
- 				    $fix) {
--					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
-+					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*($oldfunc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
- 				}
- 			}
- 		}
+diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
+index 55db63c7041a..aa00543fe865 100644
+--- a/drivers/clk/renesas/r9a06g032-clocks.c
++++ b/drivers/clk/renesas/r9a06g032-clocks.c
+@@ -109,6 +109,7 @@ enum gate_type {
+  *             must be in ascending order, zero for unused
+  * @div:       divisor for fixed-factor clock
+  * @mul:       multiplier for fixed-factor clock
++ * @dual:      substructure for dual clock gates
+  * @group:     UART group, 0=UART0/1/2, 1=UART3/4/5/6/7
+  * @sel:       select either g1/r1 or g2/r2 as clock source
+  * @g1:        1st source gate (clock enable/disable)
 -- 
-2.41.0
+2.25.1
 
