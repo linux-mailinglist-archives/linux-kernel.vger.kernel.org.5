@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98CC79E4B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A6079E4B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239615AbjIMKSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        id S239659AbjIMKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239648AbjIMKSb (ORCPT
+        with ESMTP id S239536AbjIMKUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:18:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E112219A9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694600307; x=1726136307;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SHP0nIGBAt4mtaptQJxzxBO3GPdpuwYHV4f9icbzzAo=;
-  b=b6LZZ7SfWYCCDi9hsAloDScrTFsiUZ08zKlNGJzyb85ny4fwYGusK3Oc
-   sKVD+7QL4x/+V+QqvdvjbLl2oL6Dyoys2FkcfCUXDv85+dJI30MAm3Fzm
-   JhuXLzZPfJnnlkC7OTGTPA733pjNWuzLXKCeAhiagY3wbcwufok1R4zfz
-   pEVEUx/lSzQVUj91NvmyaZh/Dkvlr4pvdhxK2+gDFUHDuT3Xh9P4M/gQb
-   MIglw/VUHV3eL6ML3SFbAw1tzerv4i27O8axgg27xc4WD59449xVMEq6i
-   130rXPPPzVVvBfHJJashiGiMCgPeGOn73LsVObEdFpNPM/qOXfd8woIG5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="445058230"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="445058230"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 03:18:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="814171608"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="814171608"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2023 03:18:23 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgMwt-0000O9-0y;
-        Wed, 13 Sep 2023 10:18:19 +0000
-Date:   Wed, 13 Sep 2023 18:17:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ping Gan <jacky_gam_2001@163.com>, kbusch@kernel.org,
-        axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, ping_gan@dell.com,
-        jacky_gam_2001@163.com
-Subject: Re: [PATCH 4/4] nvme-core: Get lowlevel disk for target polling
- queue task
-Message-ID: <202309131858.YUV19V9E-lkp@intel.com>
-References: <006b6aefe94d73ee64931c769af4a908616439ad.1694592708.git.jacky_gam_2001@163.com>
+        Wed, 13 Sep 2023 06:20:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 481BE1989;
+        Wed, 13 Sep 2023 03:20:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D4191FB;
+        Wed, 13 Sep 2023 03:20:57 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCA2C3F5A1;
+        Wed, 13 Sep 2023 03:20:16 -0700 (PDT)
+Message-ID: <c122cf68-6ceb-5441-960e-fc754b0dfdb0@arm.com>
+Date:   Wed, 13 Sep 2023 11:20:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <006b6aefe94d73ee64931c769af4a908616439ad.1694592708.git.jacky_gam_2001@163.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 5/7] perf pmu: Move pmu__find_core_pmu() to pmus.c
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Chen Zhongjin <chenzhongjin@huawei.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230831151632.124985-1-james.clark@arm.com>
+ <20230831151632.124985-6-james.clark@arm.com> <ZQC7da2AM9ih8RMz@kernel.org>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZQC7da2AM9ih8RMz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ping,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on v6.6-rc1]
-[also build test WARNING on linus/master next-20230913]
-[cannot apply to hch-configfs/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ping-Gan/nvmet-Add-nvme-target-polling-queue-task-parameters/20230913-164112
-base:   v6.6-rc1
-patch link:    https://lore.kernel.org/r/006b6aefe94d73ee64931c769af4a908616439ad.1694592708.git.jacky_gam_2001%40163.com
-patch subject: [PATCH 4/4] nvme-core: Get lowlevel disk for target polling queue task
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230913/202309131858.YUV19V9E-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131858.YUV19V9E-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131858.YUV19V9E-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/nvme/host/multipath.c:375:22: warning: no previous prototype for 'nvme_mpath_get_bdev' [-Wmissing-prototypes]
-     375 | struct block_device *nvme_mpath_get_bdev(struct block_device *bdev)
-         |                      ^~~~~~~~~~~~~~~~~~~
 
 
-vim +/nvme_mpath_get_bdev +375 drivers/nvme/host/multipath.c
+On 12/09/2023 20:26, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Aug 31, 2023 at 04:16:16PM +0100, James Clark escreveu:
+>> pmu__find_core_pmu() more logically belongs in pmus.c because it
+>> iterates over all PMUs, so move it to pmus.c
+>>
+>> At the same time rename it to perf_pmus__find_core_pmu() to match the
+>> naming convention in this file.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+> 
+> So, this one is hitting this:
+> 
+>   CC      /tmp/build/perf-tools-next/util/expr.o
+> In file included from /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:7,
+>                  from util/pmus.c:2:
+> In function ‘perf_pmus__scan_core’,
+>     inlined from ‘perf_pmus__find_core_pmu’ at util/pmus.c:601:16:
+> /var/home/acme/git/perf-tools-next/tools/include/linux/kernel.h:36:45: error: array subscript 0 is outside array bounds of ‘struct list_head[1]’ [-Werror=array-bounds]
+>    36 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
+>       |                                             ^~~~~~
+> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:352:9: note: in expansion of macro ‘container_of’
+>   352 |         container_of(ptr, type, member)
+>       |         ^~~~~~~~~~~~
+> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:404:9: note: in expansion of macro ‘list_entry’
+>   404 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>       |         ^~~~~~~~~~
+> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:494:20: note: in expansion of macro ‘list_next_entry’
+>   494 |         for (pos = list_next_entry(pos, member);                        \
+>       |                    ^~~~~~~~~~~~~~~
+> util/pmus.c:274:9: note: in expansion of macro ‘list_for_each_entry_continue’
+>   274 |         list_for_each_entry_continue(pmu, &core_pmus, list)
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> util/pmus.c: In function ‘perf_pmus__find_core_pmu’:
+> util/pmus.c:35:18: note: at offset -128 into object ‘core_pmus’ of size 16
+>    35 | static LIST_HEAD(core_pmus);
+>       |                  ^~~~~~~~~
+> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:23:26: note: in definition of macro ‘LIST_HEAD’
+>    23 |         struct list_head name = LIST_HEAD_INIT(name)
+>       |                          ^~~~
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/pmus.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+>   LD      /tmp/build/perf-tools-next/ui/browsers/perf-in.o
+> 
+> 
+> So I applied up to 4/7
+> 
+> Please continue from what will be in tmp.perf-tools-next in some
+> jiffies.
+> 
+> - Arnaldo
 
-   373	
-   374	//for polling queue task to get lowlevel block device
- > 375	struct block_device *nvme_mpath_get_bdev(struct block_device *bdev)
-   376	{
-   377		struct nvme_ns_head *head = bdev->bd_disk->private_data;
-   378		int srcu_idx;
-   379		struct nvme_ns *ns;
-   380		struct block_device *ret = NULL;
-   381	
-   382		if (!multipath)
-   383			return NULL;
-   384		srcu_idx = srcu_read_lock(&head->srcu);
-   385		ns = nvme_find_path(head);
-   386		if (likely(ns))
-   387			ret = ns->disk->part0;
-   388		srcu_read_unlock(&head->srcu, srcu_idx);
-   389		return ret;
-   390	}
-   391	EXPORT_SYMBOL_GPL(nvme_mpath_get_bdev);
-   392	
+I wasn't able to reproduce this on x86 or Arm, with either Clang or GCC.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+That was with this patch applied onto 999b81b907e on tmp.perf-tools-next
+and a pretty normal "make WERROR=1" command.
+
+It seems like the 0 here is just to get the type rather than access
+anything, if that's the 0 that the "array subscript 0" error is about,
+so something seems a bit strange:
+
+> /var/home/acme/git/perf-tools-next/tools/include/linux/kernel.h:36:45:
+error: array subscript 0 is outside array bounds of ‘struct
+list_head[1]’ [-Werror=array-bounds]
+>    36 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
