@@ -2,125 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B084C79E238
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2607679E23D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238964AbjIMIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
+        id S238972AbjIMIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233174AbjIMIfh (ORCPT
+        with ESMTP id S238724AbjIMIg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:35:37 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE806196
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:33 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a9d6b98845so153575566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:33 -0700 (PDT)
+        Wed, 13 Sep 2023 04:36:29 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D648196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:36:25 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-403061cdf2bso40070145e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694594132; x=1695198932; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vzZ6MgD3pf8m+rx1Xv6RC5XGWASwhi1UIBmWgNbxJHM=;
-        b=WiqwXqpCw5ZCaEqOwUSFTsfNpCtAmJ/kyuxym9ki+G6ezs+Jz+wxdVawpkPlg43+e8
-         cF/OznCHufRkwjpKX5k2zxGz0bqDLbnclKoTBPtKQvIXnU8lekABqWnKjfkEGkxc30Oy
-         HkuVqoxSYUo5XOpnE+8IksqyGNrrfmiSHJ8BZFCtTbNRcWeOuDfhwqEnM0k2vnWWbIlR
-         kPTTysAppwaHdpmMVKbclk5QX+NYVyBrCupVPxJeN3gFHW0KnAlMERmOW9jylvlFFI7h
-         X7UH/zD73yUD5avrjkopjm8Wd/hbazAAhl9D4O/pKXnhtQPCKd0+pTRUjWVEWV46D7Y0
-         SeMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694594132; x=1695198932;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=sigma-star.at; s=google; t=1694594184; x=1695198984; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vzZ6MgD3pf8m+rx1Xv6RC5XGWASwhi1UIBmWgNbxJHM=;
-        b=I98KGqMmo6nU6IdYsCbfTWAPNVCZTe1tsvOxY0f6U2Q2V7BVvg/N5mQc/BRkEgKPIm
-         qK4O/RpDgNWwpM1lc6A0ecCtXclsxX5595tM0EE1ik4F8SpYTJfMyJP7UJH7H5irDWWU
-         yQGWyxYo1vDDMd1HM3fbDcsmb6fxlnGjRPGxt2YxjvYRVs0b3pZYCu9ho11IGGQSKfZy
-         vSleJ+JlWnTsEkVLo4DBMPdk31F+vtEyJoDugi8nnY5LfnKO4gmHU1btCod+OxFmpytG
-         8uyLcKuiabYP38nho3pBTp62wRM/o0onFJn6y9KJKm5cnywjVHdO6Hf1w76N5Co/9ywA
-         5Iow==
-X-Gm-Message-State: AOJu0YyJ59A7TmocI3hmWalnWpyonL1U5Ey7gJYDZhC4dGOAk/eFt+px
-        IWhU+tUCFHwfLm0d80kqaMEPYg==
-X-Google-Smtp-Source: AGHT+IGZ4W6oHcVWa6n5e3HT26skU4k3V7FAnm2BWzLS+1RwRT1pMvQIlK0HWxcVOFIXwB+8acOF1Q==
-X-Received: by 2002:a17:906:c112:b0:9a4:11a3:c32b with SMTP id do18-20020a170906c11200b009a411a3c32bmr7346391ejc.29.1694594132177;
-        Wed, 13 Sep 2023 01:35:32 -0700 (PDT)
-Received: from blmsp ([2001:4091:a246:82a0:6611:d59a:8ba3:9a66])
-        by smtp.gmail.com with ESMTPSA id lz5-20020a170906fb0500b0098e78ff1a87sm7990464ejb.120.2023.09.13.01.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 01:35:30 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 10:35:29 +0200
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] thermal/drivers/mediatek: Fix control buffer enablement
- on MT7896
-Message-ID: <20230913083529.3bgjl6rvfmixgjnd@blmsp>
-References: <20230907112018.52811-1-linux@fw-web.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230907112018.52811-1-linux@fw-web.de>
+        bh=uolj6bycuQLgVCoKuVx7OW6O8ol63jhVI8+H9GWvM7E=;
+        b=Vmz3kM5iod7g2/kTmUqwIehe1BC7Wxz1zWFdOdF3TiSQsYUBaxOQUqq9BK9dTs12l4
+         Qa+A/Qt0st2kubPQLk7YJt3Gt5Q8uWWQdCBrh4fgdJ/9NpqSmGxukKY5YTWplAhyXtxX
+         Wz+yaTS3GyCnYY7Mf22/8xGWnpd2yPH7dfL3a4/+4+gw7TrrxzEuwcNiVnskIJ9aXhBz
+         1NRE7h54vKgvrb8aYRScrg+awzMReU669L344JEz2BXhFyS35akvZVZRfvXNw+F5mOLb
+         cua7JIXoBMe7BQsGydTrHjsbtx62c3IYrvZH3zepxtKy60RzQKp8BwJl0bI1/72YViQK
+         bcmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694594184; x=1695198984;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uolj6bycuQLgVCoKuVx7OW6O8ol63jhVI8+H9GWvM7E=;
+        b=Fv9LOClj8fjb6C1E79Kg9U8AFwvjmpJwD1fCXOYp15zEpluAQQ3npGI8j/UW1FNk4x
+         YkjEyccDCL/wLX4SWzpk07IrRKOsTqj8VbxGrfXulnbZZox4Zh4tOsqymrAZytGTotYE
+         lQLn3yEmSDwiJt0CuCQxBwXCQUdq/0A5KAFS7vOOxLnQrzsehf7h0iclqKIYJB6INIRj
+         SmQklrVx0QnsQ+krxU2it0xguds9kpt2ViYZkBeHvNoVxqz6td9pYZyQ1IFb3jEOx4x1
+         zKRiQHEdcHcMG+0jHpLZJ25BH+6oArAzwOTJlUEXdEuV4asUqy+LXagoLSVPXnF+HCzO
+         rjjQ==
+X-Gm-Message-State: AOJu0YxF8/ohSZaJqS0YbN9BQMKWfSh2ldO+de0CKzT7V/+2/A2raYju
+        1gbeu36oB3hCiMj0jOOc/0m9BA==
+X-Google-Smtp-Source: AGHT+IGXZEXOiBFL14tbu7JB9wJiL81o7SR10ExAo1isVi5iswnBwwcoSwfHQtzWGjeJP8MxZaq/dw==
+X-Received: by 2002:a05:600c:2159:b0:402:f503:6d1b with SMTP id v25-20020a05600c215900b00402f5036d1bmr1463747wml.0.1694594183662;
+        Wed, 13 Sep 2023 01:36:23 -0700 (PDT)
+Received: from smtpclient.apple (clnet-p106-198.ikbnet.co.at. [83.175.106.198])
+        by smtp.gmail.com with ESMTPSA id y17-20020adff151000000b0031c5dda3aedsm14955606wro.95.2023.09.13.01.36.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Sep 2023 01:36:23 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH v2 1/3] crypto: mxs-dcp: Add support for hardware provided
+ keys
+From:   David Gstir <david@sigma-star.at>
+In-Reply-To: <CVH49V57VE6R.2488KOQMR5AKQ@suppilovahvero>
+Date:   Wed, 13 Sep 2023 10:36:11 +0200
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        Li Yang <leoyang.li@nxp.com>, Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F2794F55-D63B-448D-B954-C3C25E0B474D@sigma-star.at>
+References: <20230912111115.24274-1-david@sigma-star.at>
+ <20230912111115.24274-2-david@sigma-star.at>
+ <CVH49V57VE6R.2488KOQMR5AKQ@suppilovahvero>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+X-Mailer: Apple Mail (2.3731.700.6)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 01:20:18PM +0200, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Reading thermal sensor on mt7986 devices returns invalid temperature:
-> 
-> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
->  -274000
-> 
-> Fix this by adding missing members in mtk_thermal_data struct which were
-> used in mtk_thermal_turn_on_buffer after commit 33140e668b10.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 33140e668b10 ("thermal/drivers/mediatek: Control buffer enablement tweaks")
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Hi Jarkko,
 
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+thanks for the review!
 
-Thanks for fixing!
+> On 12.09.2023, at 19:32, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>=20
+> On Tue Sep 12, 2023 at 2:11 PM EEST, David Gstir wrote:
 
-Best,
-Markus
+[...]
 
-> ---
->  drivers/thermal/mediatek/auxadc_thermal.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/thermal/mediatek/auxadc_thermal.c b/drivers/thermal/mediatek/auxadc_thermal.c
-> index 843214d30bd8..967b9a1aead4 100644
-> --- a/drivers/thermal/mediatek/auxadc_thermal.c
-> +++ b/drivers/thermal/mediatek/auxadc_thermal.c
-> @@ -690,6 +690,9 @@ static const struct mtk_thermal_data mt7986_thermal_data = {
->  	.adcpnp = mt7986_adcpnp,
->  	.sensor_mux_values = mt7986_mux_values,
->  	.version = MTK_THERMAL_V3,
-> +	.apmixed_buffer_ctl_reg = APMIXED_SYS_TS_CON1,
-> +	.apmixed_buffer_ctl_mask = GENMASK(31, 6) | BIT(3),
-> +	.apmixed_buffer_ctl_set = BIT(0),
->  };
->  
->  static bool mtk_thermal_temp_is_valid(int temp)
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> - /* Payload contains the key. */
+>> - desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
+>> + if (key_referenced) {
+>> + /* Set OTP key bit to select the key via KEY_SELECT. */
+>> + desc->control0 |=3D MXS_DCP_CONTROL0_OTP_KEY;
+>> + } else {
+>> + /* Payload contains the key. */
+>> + desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
+>> + }
+>=20
+> Remove curly braces (coding style).
+
+Will fix that and all similar cases for v3.
+
+
+>> +static int mxs_dcp_aes_setrefkey(struct crypto_skcipher *tfm, const =
+u8 *key,
+>> + unsigned int len)
+>> +{
+>> + struct dcp_async_ctx *actx =3D crypto_skcipher_ctx(tfm);
+>> +
+>> + if (len !=3D DCP_PAES_KEYSIZE)
+>> + return -EINVAL;
+>> +
+>> + switch (key[0]) {
+>> + case DCP_PAES_KEY_SLOT0:
+>> + case DCP_PAES_KEY_SLOT1:
+>> + case DCP_PAES_KEY_SLOT2:
+>> + case DCP_PAES_KEY_SLOT3:
+>> + case DCP_PAES_KEY_UNIQUE:
+>> + case DCP_PAES_KEY_OTP:
+>> + memcpy(actx->key, key, len);
+>> + break;
+>=20
+> I don't understand why the "commit" is split into two parts
+> (memcpy and assignments in different code blocks). You should
+> probably rather:
+>=20
+> switch (key[0]) {
+> case DCP_PAES_KEY_SLOT0:
+> case DCP_PAES_KEY_SLOT1:
+> case DCP_PAES_KEY_SLOT2:
+> case DCP_PAES_KEY_SLOT3:
+> case DCP_PAES_KEY_UNIQUE:
+> case DCP_PAES_KEY_OTP:
+> memcpy(actx->key, key, len);
+> actx->key_len =3D len;
+> actx->refkey =3D true;
+> return 0;
+>=20
+> default:
+> return -EINVAL;
+> }
+> }
+>=20
+> Or alternatively you can move all operations after the switch-case
+> statement. IMHO, any state change is better to put into a singular
+> location.
+
+Makes sense. I=E2=80=99ll change that.
+
+
+>> diff --git a/include/soc/fsl/dcp.h b/include/soc/fsl/dcp.h
+>> new file mode 100644
+>> index 000000000000..df6678ee10a1
+>> --- /dev/null
+>> +++ b/include/soc/fsl/dcp.h
+>> @@ -0,0 +1,19 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (C) 2021 sigma star gmbh
+>> + * Authors: David Gstir <david@sigma-star.at>
+>> + *          Richard Weinberger <richard@sigma-star.at>
+>=20
+> Git already has author-field and commit can have co-developed-by so
+> this is totally obsolete.
+
+Also noted for v3.
+
+Thanks,
+- David
+
+--
+sigma star gmbh | Eduard-Bodem-Gasse 6, 6020 Innsbruck, Austria
+UID/VAT Nr: ATU 66964118 | FN: 374287y
+
