@@ -2,132 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A89B979E1CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D3079E1CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbjIMIRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S238857AbjIMIRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238822AbjIMIRA (ORCPT
+        with ESMTP id S238793AbjIMIRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:17:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1131997;
-        Wed, 13 Sep 2023 01:16:56 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EA3DD6607328;
-        Wed, 13 Sep 2023 09:16:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694593014;
-        bh=mU5VTMmj4Bk5zwC02IZiyizGeuYAnQMM+ZrqhTcpD2g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bju3Cw55iBAwyWfAl/xdZy4PJepo6+Cje/AxJ8knGzUCWoaMNZzPFiAw5gl8ULUH3
-         1f6TqU9NiqEL06G9YGpC85RC2aA4PFdsvHvfExXRH12jg0P3mSzlWo1DF/xcjcS1HN
-         0/0OiHyeI21EghuCJMQs7w4o7aVUHU1+f73mcm/NQNKNl0tdjxMnF7TMawL/PzYTfv
-         dEJGSjvghHQV5DK8dUIX4hvoMG7soRfDBzmzIih8ZRu3BN/XqYpSJ1p2B+NSsqNra4
-         lm6kjqNHOrkoldvOzFOnqCVDvfoEv7RU4hI7rMFkuwWBx8YHSID/9K456vmSaP5hnS
-         LvWNHiugycxEw==
-Message-ID: <8949cbfa-acae-d6ac-e5fb-f238a29630bc@collabora.com>
-Date:   Wed, 13 Sep 2023 10:16:51 +0200
+        Wed, 13 Sep 2023 04:17:21 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28C319A4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=XR3dh35/QhQEf+862guB3I5IbCeKyOZ1Ck8CZrTaQWs=; b=sNsEsHkn+tRAnBd8vQ4F3MyjfW
+        YjdQwu6IW7FMpBKjwmcukhcpSlB7x6XF12uorKvvFex3T5Bkh1cq7uhcStvxSCkAHXr3Tkcp1q2bX
+        AOGrEQ0UC8UG1SRXoEj/IkQ4rRNSipNkr/FuvqzJZeDiVHTZW/37aWVL3N1CbtpAVIRDxZGB4BG85
+        R1/YTVKgG7IG6SLyerkyLay/in0KEt3utgTJxNp1R5UKTiQ6dXccZAjjB/3yB1fzMfbyXtRkwZN0C
+        x7e0g6PpKiCh0DzAzigUsikVFdNERxsBxHPQWRsICeRTlT1CldSrmfZ/5TB21zJkhdurPJWVuSYRM
+        d7VXL3uQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54172)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qgL3Q-000284-1y;
+        Wed, 13 Sep 2023 09:16:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qgL3L-0003aA-TC; Wed, 13 Sep 2023 09:16:51 +0100
+Date:   Wed, 13 Sep 2023 09:16:51 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ke.wang@unisoc.com
+Subject: Re: [PATCH] arch: arm: remove redundant clear_page when
+ CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on
+Message-ID: <ZQFv8+tI/hEaOzcD@shell.armlinux.org.uk>
+References: <20230912103334.2074140-1-zhaoyang.huang@unisoc.com>
+ <ZQBW23Upv/CdN9v6@casper.infradead.org>
+ <CAGWkznEt+mAGtEN+mQm3ZdxTpScmBBOa0TT=oLtuTF6Z-ipqZw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC v1 3/3] thermal/drivers/mediatek/lvts_thermal: add mt7988
- support
-Content-Language: en-US
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20230911183354.11487-1-linux@fw-web.de>
- <20230911183354.11487-4-linux@fw-web.de>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230911183354.11487-4-linux@fw-web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGWkznEt+mAGtEN+mQm3ZdxTpScmBBOa0TT=oLtuTF6Z-ipqZw@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/09/23 20:33, Frank Wunderlich ha scritto:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Add Support for mediatek fologic 880/MT7988.
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->   drivers/thermal/mediatek/lvts_thermal.c | 73 +++++++++++++++++++++++++
->   1 file changed, 73 insertions(+)
-> 
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index c1004b4da3b6..48b257a3c80e 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -82,6 +82,8 @@
->   #define LVTS_GOLDEN_TEMP_DEFAULT	50
->   #define LVTS_COEFF_A_MT8195			-250460
->   #define LVTS_COEFF_B_MT8195			250460
-> +#define LVTS_COEFF_A_MT7988			-204650
-> +#define LVTS_COEFF_B_MT7988			204650
->   
->   #define LVTS_MSR_IMMEDIATE_MODE		0
->   #define LVTS_MSR_FILTERED_MODE		1
-> @@ -1272,6 +1274,67 @@ static int lvts_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> +/*
-> + * LVTS MT7988
-> + */
-> +#define LVTS_HW_SHUTDOWN_MT7988	117000
+On Wed, Sep 13, 2023 at 09:13:14AM +0800, Zhaoyang Huang wrote:
+> On Tue, Sep 12, 2023 at 8:18 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Tue, Sep 12, 2023 at 06:33:34PM +0800, zhaoyang.huang wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > >
+> > > Double times of clear_page observed in an arm SOC(A55) when
+> > > CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on, which introduced by
+> > > vma_alloc_zeroed_movable_folio within do_anonymous_pages.
+> > > Since there is no D-cache operation within v6's clear_user_highpage,
+> > > I would like to suggest to remove the redundant clear_page.
 
-Are you sure that this chip's Tj is >117°C ?!
+So if CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled, then what ensures
+that the page is cleared?
 
-Looks a bit high... if it is exactly 117°C, I would suggest cutting earlier,
-either at 110 (safe side) or 115: after all, this is a life-saver feature and
-the chip is actually never meant to *constantly* work at 110°C (as it would
-degrade fast and say goodbye earlier than "planned").
+> > >
+> > > struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
+> > >                                  unsigned long vaddr)
+> > > {
+> > >       struct folio *folio;
+> > >
+> > > //first clear_page invoked by vma_alloc_folio==>alloc_page==>post_alloc_hook
+> > >       folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vaddr, false);
+> > >       if (folio)
+> > > //second clear_page which is meaningless since it do nothing to D-cache in armv6
+> > >               clear_user_highpage(&folio->page, vaddr);
 
-> +//enum mt7988_lvts_domain { MT7988_AP_DOMAIN, MT7988_NUM_DOMAIN };
-> +
-> +enum mt7988_lvts_sensor_enum {
-> +	MT7988_TS3_0,
-> +	MT7988_TS3_1,
-> +	MT7988_TS3_2,
-> +	MT7988_TS3_3,
-> +	MT7988_TS4_0,
-> +	MT7988_TS4_1,
-> +	MT7988_TS4_2,
-> +	MT7988_TS4_3,
-> +	MT7988_NUM_TS
-> +};
+If this clear_user_highpage() is removed, how is this code then safe when
+CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled?
 
-This enumeration should be definitions in bindings (mediatek,lvts-thermal.h).
+> >
+> > This is, of course, not the only place which calls clear_user_highpage().
+> > Please explain why this patch is safe for all the _other_ places which
+> > call clear_user_highpage().
+> Here are all positions called clear_user_highpage which are paired
+> with alloc_pages. IMO,  it is safe to skip the second clear_page under
+> armv6.
 
-Besides, the LVTS is about internal temperatures, so those TS3_x and 4_x can
-be renamed like what was done for MT8192 and MT8195: this is because you will
-never see TS3_2 being CPU2 on a board and CPU4 on another, being those - again -
-internal to the SoC, hence unchangeable.
+No.
 
-Another reason is that you'll anyway have to refer to those sensors in the
-devicetree to configure thermal trips and such, so... :-)
+Looking at, for example, the v4l case... This allocates a page and
+provides it to userspace. The page is allocated using GFP_USER |
+__GFP_DMA32. This does not set __GFP_ZERO. If
+CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled, the page will not
+be initialised, and thus we will leak any data in that page to
+userspace.
 
-Regards,
-Angelo
+Now, it's not just about whether that configuration symbol is enabled
+in the kernel configuration - there is a command line argument to
+consider as well. CONFIG_INIT_ON_ALLOC_DEFAULT_ON can be y, but with
+init_on_alloc=0 passed to the kernel, if we remove the above
+clear_user_highpage(), the kernel then becomes unsafe.
 
+However, it's more than that. The kernel allocator has no idea that the
+page will be mapped to userspace, so it can't do the "clear the page at
+the user cache colour" trick for VIPT aliasing caches, which ensures
+that we hit cache lines that the user will see. So, I think we would
+then have to add arch specific cache operations to write-back the
+zeroing of the kernel mapping, _and_ cache operations to discard any
+data in the user cache colour.
+
+So, essentially, I don't think that _even_ when init_on_alloc is
+enabled, we can skip calling clear_user_highpage() as that would lead
+to data exposure to userspace.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
