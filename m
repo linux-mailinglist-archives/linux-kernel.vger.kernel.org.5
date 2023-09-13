@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D1079EA5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010AC79EA55
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241151AbjIMOCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
+        id S241144AbjIMOBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241182AbjIMOCB (ORCPT
+        with ESMTP id S237959AbjIMOBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:02:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B50081BE3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694613669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xS4/fTwaJzoinJru6fqZ1bq4iwGN/D53z+FVXXr+H7M=;
-        b=Mkb38tvedVPWLVvhtB9K/0ri8VmQshXCN//mFgHCO6+OBKF5X2Va0Q1lKk4cOkeS2ZKrch
-        YVZBSEB0v4WTXxJpiwDMbvETC9uyiV4Y1PhlTXROuT9bqLspvCJWABZ60/KwhVNp5zsUbZ
-        g/4wiJneEZm2tWE+T27zY5uNgG6NRuQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-539-TQukLfSvNPe2LCPAt8_LrA-1; Wed, 13 Sep 2023 10:01:03 -0400
-X-MC-Unique: TQukLfSvNPe2LCPAt8_LrA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 13 Sep 2023 10:01:01 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF92F19B1;
+        Wed, 13 Sep 2023 07:00:57 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C4E27939A78;
-        Wed, 13 Sep 2023 14:00:48 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.39.192.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9BCF1008807;
-        Wed, 13 Sep 2023 14:00:46 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 16:00:45 +0200
-From:   Philipp Rudo <prudo@redhat.com>
-To:     Jan Hendrik Farr <kernel@jfarr.cc>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
-        vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, bhe@redhat.com, bhelgaas@google.com,
-        bluca@debian.org, lennart@poettering.net
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-Message-ID: <20230913160045.40d377f9@rotkaeppchen>
-In-Reply-To: <20230911052535.335770-1-kernel@jfarr.cc>
-References: <20230911052535.335770-1-kernel@jfarr.cc>
-Organization: Red Hat inc.
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E9F4F66072F4;
+        Wed, 13 Sep 2023 15:00:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694613656;
+        bh=zNzJow6Gn0s5lcUUXuQqO24RP3fvno10hjXXk/5ytb8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FPqf764XjDlDRzXc/WCOeWXB4U20gfHRMvI6TON8Gs4r+ajqG8jZEPliH+tqp739t
+         AmUQcmBxv0PLHPufVTN4dMA2v7XewK5vkxZVCr+ix7x4+i5ZncJUawBsS7tn/HGers
+         vVY49DopN+HNZMAaFKAcCdOtkPE4V4fdDZeqHvich/1Im7yGbJDvqk+iMEcYfIsReA
+         YN194QBwHPoVvBOly6accH+GGNaVgqYuulaEguwqNbzZ8vZXOZSJcPLOH7wioscrfg
+         1A7iIE6WkdTHaztNlDDHj6XMCkRKzgqIaycBaVaEENST/L0swdLSW5Qn24x2a2JB62
+         Op5YCsPMelVAA==
+Message-ID: <0fd097fd-9fdb-9001-cddb-7a396fde28bb@collabora.com>
+Date:   Wed, 13 Sep 2023 16:00:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] i2c: mt65xx: allow optional pmic clock
+Content-Language: en-US
+To:     Daniel Golle <daniel@makrotopia.org>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     =?UTF-8?B?6YOt5bCP5qGl?= <joe@gainstrong.cn>
+References: <3bf827929a44c17bfb1bf1000b143c02ce26a929.1693102324.git.daniel@makrotopia.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <3bf827929a44c17bfb1bf1000b143c02ce26a929.1693102324.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
-
-All in all the code looks fine to me. Nevertheless I don't think UKI support
-should be added at the moment. This is because IMHO you basically reinterpret
-the kexec_file systemcall and thus add a new uapi to the kernel. Once
-introduced it is extremely hard to remove or change an uapi again. The problem
-I see is that the spec you based your work on is in such a poor shape that I
-don't feel comfortable to add any new uapi based on it.
-
-For example there are two definitions for the UKI which contradict each other.
-The dedicated one [1] you have cited earlier and the one in the BLS for type #2
-entries [2]. In [1] the .linux and .initrd sections are mandatory and the
-.osrel and .cmdline sections are optional while in [2] it is the other way
-round. Which definition should the kernel follow?
-
-Furthermore, I absolutely don't understand how the spec should be read. All
-the spec does is defining some file formats. There is no word about which
-component in the boot chain is supposed to handle them and what exactly this
-component is supposed to do with it. But that is crucial if we want to add UKI
-support for kexec as the kexec systemcall will replace the stub. So we need to
-know what tasks the stub is supposed to perform. Currently this is only some
-implementation detail of the systemd-stub [3] that can change any moment and I
-strongly oppose to base any uapi on it.
-
-In the end the only benefit this series brings is to extend the signature
-checking on the whole UKI except of just the kernel image. Everything else can
-also be done in user space. Compared to the problems described above this is a
-very small gain for me.
-
-Until the spec got fixed I don't see a chance to add UKI support for kexec.
-
-Thanks
-Philipp
-
-[1] https://uapi-group.org/specifications/specs/unified_kernel_image/
-[2] https://uapi-group.org/specifications/specs/boot_loader_specification/#type-2-efi-unified-kernel-images
-[3] https://www.freedesktop.org/software/systemd/man/systemd-stub.html
-
-On Mon, 11 Sep 2023 07:25:33 +0200
-Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-
-> Hello,
+Il 27/08/23 04:13, Daniel Golle ha scritto:
+> Using the I2C host controller on the MT7981 SoC requires 4 clocks to
+> be enabled. One of them, the pmic clk, is only enabled in case
+> 'mediatek,have-pmic' is also set which has other consequences which
+> are not desired in this case.
 > 
-> this patch (v2) implements UKI support for kexec_file_load. It will require
-> support in the kexec-tools userspace utility. For testing purposes the
-> following can be used: https://github.com/Cydox/kexec-test/
+> Allow defining a pmic clk even in case the 'mediatek,have-pmic' propterty
+> is not present and the bus is not used to connect to a pmic, but may
+> still require to enable the pmic clock.
 > 
-> Creating UKIs for testing can be done with ukify (included in systemd),
-> sbctl, and mkinitcpio, etc.
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>   drivers/i2c/busses/i2c-mt65xx.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> There has been discussion on this topic in an issue on GitHub that is linked
-> below for reference.
-> 
-> Changes for v2:
-> - .cmdline section is now optional
-> - moving pefile_parse_binary is now in a separate commit for clarity
-> - parse_pefile.c is now in /lib instead of arch/x86/kernel (not sure if
->   this is the best location, but it definetly shouldn't have been in an
->   architecture specific location)
-> - parse_pefile.h is now in include/kernel instead of architecture
->   specific location
-> - if initrd or cmdline is manually supplied EPERM is returned instead of
->   being silently ignored
-> - formatting tweaks
-> 
-> 
-> Some links:
-> - Related discussion: https://github.com/systemd/systemd/issues/28538
-> - Documentation of UKIs: https://uapi-group.org/specifications/specs/unified_kernel_image/
-> 
-> Jan Hendrik Farr (2):
->   move pefile_parse_binary to its own file
->   x86/kexec: UKI support
-> 
->  arch/x86/include/asm/kexec-uki.h       |   7 ++
->  arch/x86/kernel/Makefile               |   1 +
->  arch/x86/kernel/kexec-uki.c            | 126 +++++++++++++++++++++++++
->  arch/x86/kernel/machine_kexec_64.c     |   2 +
->  crypto/asymmetric_keys/mscode_parser.c |   2 +-
->  crypto/asymmetric_keys/verify_pefile.c | 110 +++------------------
->  crypto/asymmetric_keys/verify_pefile.h |  16 ----
->  include/linux/parse_pefile.h           |  32 +++++++
->  lib/Makefile                           |   3 +
->  lib/parse_pefile.c                     | 109 +++++++++++++++++++++
->  10 files changed, 292 insertions(+), 116 deletions(-)
->  create mode 100644 arch/x86/include/asm/kexec-uki.h
->  create mode 100644 arch/x86/kernel/kexec-uki.c
->  create mode 100644 include/linux/parse_pefile.h
->  create mode 100644 lib/parse_pefile.c
-> 
+> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+> index 1a9b5a068ef1b..a8b5719c33729 100644
+> --- a/drivers/i2c/busses/i2c-mt65xx.c
+> +++ b/drivers/i2c/busses/i2c-mt65xx.c
+> @@ -1442,15 +1442,19 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+>   	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk))
+>   		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk);
+>   
+> +	i2c->clocks[I2C_MT65XX_CLK_PMIC].clk = devm_clk_get_optional(&pdev->dev, "pmic");
+> +	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk)) {
+> +		dev_err(&pdev->dev, "cannot get pmic clock\n");
+> +		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk);
+> +	}
+> +
+>   	if (i2c->have_pmic) {
+
+...but you're not changing speed_clk if !i2c->have_pmic, I'm not sure that
+this will work correctly. Perhaps you wanted to also set speed_clk if the
+clock is present?
+
+if (IS_ERR...) {
+	error handling
+} else if (clk is present)
+	speed_clk = I2C_MT65XX_CLK_PMIC;
+
+if (have_pmic && !clk_is_present)
+	error
+
+Regards,
+Angelo
+
+> -		i2c->clocks[I2C_MT65XX_CLK_PMIC].clk = devm_clk_get(&pdev->dev, "pmic");
+> -		if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk)) {
+> +		if (!i2c->clocks[I2C_MT65XX_CLK_PMIC].clk) {
+>   			dev_err(&pdev->dev, "cannot get pmic clock\n");
+> -			return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk);
+> +			return -ENODEV;
+>   		}
+>   		speed_clk = I2C_MT65XX_CLK_PMIC;
+>   	} else {
+> -		i2c->clocks[I2C_MT65XX_CLK_PMIC].clk = NULL;
+>   		speed_clk = I2C_MT65XX_CLK_MAIN;
+>   	}
+>   
+
 
