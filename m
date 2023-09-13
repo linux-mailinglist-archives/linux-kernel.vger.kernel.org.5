@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0288579E13B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AA879E142
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238671AbjIMHz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S238682AbjIMH5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjIMHzy (ORCPT
+        with ESMTP id S238663AbjIMH5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:55:54 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2129.outbound.protection.outlook.com [40.107.215.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865601729;
-        Wed, 13 Sep 2023 00:55:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jrs0JFfV+C2/vbvTwnFoX2txBN6AGGD7t1fgbNIq7KJgHhqJa+zN7UNjV/vpdtfv5PIzOZUgGt2jTqFhbSQBzT4rAPtusmiMBlWeA7cw4HNhO7HySi90DxrUqYezpkrmzrk3HdHs5mld9+RjghgUlfpfxjD+0GD0lj+n1OK5hCbfVxYeGUvJsW7/fdbPfAPP+X9/Eoa5IKGgOcUjUpfmlgQlJ9lmz2FjtpHYmpKZ6RLpm4SEFZZW4ZZBuBWuDHROPUhX1EPtxH+GEa2NfF5UbBvN/bJhlN+MDd3YpIGkMtYeJNwt+I2VYF9RtmcZKuyu7N9BTgO03GxU3stAiQxTfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dYyvZluYBLrf1eTt7h14miI4PTsxZkiSKZubhsyejiI=;
- b=HiyQohybPHTEvYhM0EBOl4kOFxyZEf4+Lhjz2YGaUJqq8iQca4U10OZp3GNuvqGkZZz+tVJH4DMP9My6E39st6NSaFSMO7p7iUun15mID1rk8quBhgAxhxFa6sVesitJUJhKLXzR227KYDtTKBl6M8+HwaJjK8U6CoQWbCrf5PirGaJXaNEnRyNFOJYiEmSWTUi44FjdKU2G7kHTu0lRjNINicT4SO1kExWvGLg8dlURya3EUeAIJbUUYsXlOCmb7qJJkXO+rVlpBgclRFSWU2B2GEtLPJV3yuMYBRswdp92uqWt67ipgmITvEteCQG3Hptns7hbwODiTNBkV4w5yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dYyvZluYBLrf1eTt7h14miI4PTsxZkiSKZubhsyejiI=;
- b=Nx3hFhlNu52tGZ+R+fosHGlVP3FR2Pt/V/I9iSbUUAhIAonJJQgLPnIBE6DdgaHTMbh4fSIqT03jJeOn6XOL0/bqp8QGLIL2ue3EowlsDEtWLF8mFmdoTxFlAEjjc+53U/8mJ/d9KLYcGCxpO5zWby8tOimi+Fj3PDI5+2B+cPswoIP0F/Ju9Gp3rEEBFei/GUQlQ79i1VDCmwjbwWoAUCbRWry/ee4jitANCvXfNjw6mWq0ybjs4D3OkLpKvzJmLI+Q9NtzaoJi13E1xPanGatrGRN/zQr/VrhGCV1/dTlIU0yMJTiqDFLQtmxFf9xAsSPf8xt+647dVoyzEu1CdQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
- by SEZPR06MB5069.apcprd06.prod.outlook.com (2603:1096:101:44::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Wed, 13 Sep
- 2023 07:55:46 +0000
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::1c25:781c:9638:960d]) by TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::1c25:781c:9638:960d%7]) with mapi id 15.20.6768.036; Wed, 13 Sep 2023
- 07:55:45 +0000
-Message-ID: <39a426ed-9b78-4d7d-a35c-d99c69115982@vivo.com>
-Date:   Wed, 13 Sep 2023 15:55:31 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 4/5] bpf: Add a OOM policy test
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-5-zhouchuyi@bytedance.com>
-From:   Bixuan Cui <cuibixuan@vivo.com>
-In-Reply-To: <20230810081319.65668-5-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0058.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::9) To TYZPR06MB4045.apcprd06.prod.outlook.com
- (2603:1096:400:21::8)
+        Wed, 13 Sep 2023 03:57:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 129B11989
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694591774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+2YZeWGnhtLtLKWmmtDa9+kw7Cib/DF3yutI/cbgQ0s=;
+        b=FzyE05m0Mk2EPnvhyJQfwRq+37i7bx8kpiPpaoJ3VhLxkmgNCTpMOLXb3lw0EUPuD65hUt
+        Uzjl+QShoFE1WS3b2BUkV9iRkkbszUBP/GAzeaN3rWOnRMxh5sXw3xh1bplva2In4XIC5m
+        wKeirwYS/SAzcYfRZpuQtDOoDnaL4RY=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-139-B6fTUf5bM72yMrRfZeayow-1; Wed, 13 Sep 2023 03:56:10 -0400
+X-MC-Unique: B6fTUf5bM72yMrRfZeayow-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-57617c2528dso6499510eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:56:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694591770; x=1695196570;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+2YZeWGnhtLtLKWmmtDa9+kw7Cib/DF3yutI/cbgQ0s=;
+        b=DyDcaBDOXJIrGqLH1XtCfX4k3O1OFKlAoIfLEMciI3EhPI41lC/Ty7zpOcf11hw1s4
+         tHP1AMkLPNApBcLwO0lGw+YOyzO5+NoyPv1O/SioocI+Qm5me+c8mwvhKUDoeZ5djAut
+         +1VUhgoJXT/JFm16e3UkhTI3+RYd4q6PfxOrN3hzheN1ZYPyLUbuyxC8kQq2QU4/KVKN
+         Ah6igNs596OmFicNBKkcfQtakuol7ox9YG01GfZfnmcFhnoI+a+ZSn/lSAOntWWC6/OH
+         2kRU/xkYkMI7JglTrZEY2LtljiveCxwHJxZb7VtK9h/SkJJtEOJYwPFONJ+Iw+HVJmTG
+         h+ig==
+X-Gm-Message-State: AOJu0YydJSrrqrQvbXA+2LBEor1vFQVu5DV0w8/tv5VPnuNIENYlRGRG
+        ZXqP59q/lNtw90Cag2iofM1sW9H5fdFcRPXqH+fhBjW1oPY1hWaH+Gi9FpDuInpeqTDENIKz9nH
+        bq3bUWNf5bmQP8JLAKW3qQwO8
+X-Received: by 2002:a4a:925d:0:b0:576:8c2c:c869 with SMTP id g29-20020a4a925d000000b005768c2cc869mr1992890ooh.7.1694591769771;
+        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETWXxBvUyReXyaN1A1TR+W1jjzsiQKEmfbD3TbDliUontlhrXfdDCeVcvCyU7EdBmLiDCw1A==
+X-Received: by 2002:a4a:925d:0:b0:576:8c2c:c869 with SMTP id g29-20020a4a925d000000b005768c2cc869mr1992885ooh.7.1694591769591;
+        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a803:4ff9:7c29:fe41:6aa7:43df])
+        by smtp.gmail.com with ESMTPSA id a42-20020a4a98ad000000b0057327cecdd8sm5137519ooj.10.2023.09.13.00.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Leonardo Bras <leobras@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.or
+Subject: [RFC PATCH v4 1/1] scripts: Introduce a default git.orderFile
+Date:   Wed, 13 Sep 2023 04:55:50 -0300
+Message-ID: <20230913075550.90934-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4045:EE_|SEZPR06MB5069:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee60e16e-bb52-4bdb-9c9d-08dbb42ed61b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GwwcKsH+KjF8dGH0la7nw+aBvJ7Gv+TCEl/WFGET8/0m8XlrBuakfvwaLtvoUxNqIU3IGEhuHk+x0+n181TBZrFKH6b4Ng4g5d7BITvLBoZK1+ajgs2Q74R33mvM8mVd/5JqIWFrPvm9NaKuOb6GqzHLVGi1lfoKkt1WIugGu7qeixf5K+AC2VPltHeR8u7Z1JRH9WsRxxjFaxMvlH8mvOXS489GudNsFjZZ2wyydQ2k86OYdzj1jvcn5zbv76ubUGDM/Mx8r/E0hm2F+Au4scdUEEboZd8GUI/UxVYEdmCCt/gaD7W97I4KZJBEjtZ0fT28ygIIyObcWz77/jp6sGXUHDoUvPGNkUMlEwlGiNEIT3QamgsrQZuek0LHcz06sGr0Kq38Eguf6tuERyhWjkfg8J0za6iQaXSOsdjLsJhoZZuOGJiGM2UCV+5c8IdJALYei6nNwyp2ohFqN0tyw5C7lGuD2bb4nV91Q6bbOxmWk/F2r7qrp9KTnpiAZWpZq+3rpqO9VW4pKfOJLhFTp2iOTZQ3AxAtAIePzP71GXNMeynmXEORdFpvXhKPIT7YQvAnbX/2EUnmQodNa3RQtkBL9JYKyMRFOuztBo9asUQQ0lSQWnrbL/JgQi3h/STf5wzfo5ZAA3ZphfO7W1IhbxN6MlwknHGjXuU1HoIuCofRFTuS66ZP6rPy0wZb2qHo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4045.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(346002)(39860400002)(451199024)(1800799009)(186009)(2906002)(38100700002)(31696002)(38350700002)(36756003)(86362001)(558084003)(41300700001)(26005)(4326008)(2616005)(8676002)(8936002)(66476007)(31686004)(5660300002)(66946007)(66556008)(6506007)(6512007)(316002)(52116002)(6666004)(6486002)(7416002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wk1UQkN3UG9NUHQ0dG94bFFGY1VJa3pDeDhyNVNYeTkvNmYxZy9pVkpCemF6?=
- =?utf-8?B?dUk4OXdlVUtxTzQ4bzl2b0h0SUhCT2NrK3NQOE1leTZ3bjZLYms0RFhGUzZI?=
- =?utf-8?B?TmdTNE1kN21JSVZ5b205bDVFUVFVV0FFbmlSOTN0WmpQaWF3Q1ZrQVZRaEFt?=
- =?utf-8?B?R1VIVzdneUxKR2lNb0tTdXVMR0tRUVJOL1hoa1BZblFFRkNNRHNjSDlPeG5Z?=
- =?utf-8?B?T01KWWtsVGdUa0FOcngvU1JyQ0JGZitVS21aNk9GVU1IOGYrSmFrd3VxaHlh?=
- =?utf-8?B?YWFzMnpYeE1iUmRlK1ZsLzhNdXBLc2lZalowNmUwVHA5YmdBZ1NTZ1lYTnR6?=
- =?utf-8?B?bDhjVldvZ2ZUelp5aS9YVlNHN3hZRkxxeXZkRTlvWkpjVUVUSldBRU1rVDBD?=
- =?utf-8?B?RFFaUGs2N0lxajJlWWkrTEZaeCtOVVZIS3VXK0cwQjgxaXhSSmNIWWtPVzFB?=
- =?utf-8?B?UVlwS053Rk1ISG54a2tiUDh1ajZHTFUyZnZYeVk5eG1RM2J0TE0wemxRUHA1?=
- =?utf-8?B?WUZOQitwL1BNNHJCb28vT0Nqcjk3ckZETjRPeWJEcDhOcXZGajgwdDVKRzlx?=
- =?utf-8?B?endMNlh5SEFPaUpVWE1KSE94QmFxM0VqdW5nYXo5dVFNVVFhbndOenVsbEVx?=
- =?utf-8?B?RFhSd25peHJGUGhqRThqNU5BU2VlS0tqSlc5VVAzVnh5VkZTWFdGUkxCOE9F?=
- =?utf-8?B?cFh4OUo0a2s0UHNGRUpDS2YwdTJIc2dCQmNkOVpNWjhvRnBFMlNqaG9BTDE5?=
- =?utf-8?B?MS8wREw3TTdWaWk3MzRLRFV2Y2hPczhkc3QwSDROcE1pUVRKVFpSakpmMzhP?=
- =?utf-8?B?RXhGM25tT2JnTXVlU0FwQTFpMTFoTFcxd2s5ZTNOcWoxNnV5Ri9WYzR5ekww?=
- =?utf-8?B?aWdVQnh5aEZ6ak9ZdS82TEQvZDhqTStsRm1aMnhrcUs0UXZlZ0ZNbndxdUVD?=
- =?utf-8?B?aVkvYlZ6ZDFPU1dka3ZvbUJoT0RFbUhvc25Ka1F2T3R0S3RrMXFlbDlCbzFL?=
- =?utf-8?B?QnF6cXVudWZjZGhNRjZPSGJ1ODJYa3FQOHR5aDhGR0FBSmlxWDl0RHlCU2hv?=
- =?utf-8?B?MDdhZS9pS1VxS25sMkNSRDF1MGthUUxLcEFUcUZXdnB2Mm1GbXBaVkZ5K1ds?=
- =?utf-8?B?L1I3dXlBTWp3dGtRbHN6dnVyRkwxSDFnR1prMnJzVk56Q0ZJQ3grVXJWVkNP?=
- =?utf-8?B?WUhhbmUxaDdQK2sreXhxSUcwRVR1bXhWNnMrWHJXcTQ3VXg2NkloZ3pFbGFl?=
- =?utf-8?B?ODBlaGJRZitRdVNtaW1NYVBjSVFaWDE0dmdUNENuNWhBbUh1L0N6eTQ3SGU5?=
- =?utf-8?B?Y0F2T3lXaGJlNko5cXVtUEhJbGFVMVpZa2JRbHVkVUIzVThTMUtmRU5tWlhM?=
- =?utf-8?B?SVZmSXMrdDJIcXExSmE5bGdWTDlQckhCNWhVb01yZVlVTU9XZytDeHltZEVI?=
- =?utf-8?B?c2tJc3pVN2xrMXE4Mkc3ejErb0VvY3FzYzdZS0w4WldtRXdqZmNvVmd4R3Fq?=
- =?utf-8?B?M01XQzFGbkdYZEpnczlGdFFEelpvTXhkUlBNeElHL0szOTdKdkI0Rmo2R2ZW?=
- =?utf-8?B?anpHNzd3dENPRnhZTHpTN2pJMWFyT25TS2o2ZlFFN3JVcWJXWFNGb3FvbUtk?=
- =?utf-8?B?MXlWN1ZNYlNBWWdXM3hWVkpwdEcxTGgvZTlnZEo4UkZlbkl6SkpKKzVwdzVV?=
- =?utf-8?B?SzB2UitJeURxTXFhVFh4NEZRa2IvUVN1R2htU2piSVJTdUhMa0tyN0JhT1dX?=
- =?utf-8?B?SFlRWlZWOS9vZndnS3g4WjBaTCsrcUFEMkVWbmI3WUJidVV6UlZlei81eUMz?=
- =?utf-8?B?ZExucHFsWHVwd2c3SzVKVGNJd3QyWFA1b0hndFNuV2NWZzhBK1RDcmdhb2Jt?=
- =?utf-8?B?ZXJVN1grN1hDQUp2RC9uN2dRWGQvR1dRQUlmRStMR2w3Sm9DSUdtMndvbVRw?=
- =?utf-8?B?aTNhL1Q5QVk2Nk1ka2RKK2R6am1PVGRLUTk1M1ZwWUpmWUJ3TklBVGtSRmd1?=
- =?utf-8?B?Z0srV3dQZmpkenV6QXNHVElUMGR6bjZxNWRLOHVhTUpnMEJWQUNqell3MUY1?=
- =?utf-8?B?NUhabCtxM05Cb0Yzb3ZhRkgrOEpKOFFZRThJb1J6Z2srcWZMOWV5aXkzMVUx?=
- =?utf-8?Q?YekDy7yGoQHi+vUQda3DX/by6?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee60e16e-bb52-4bdb-9c9d-08dbb42ed61b
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4045.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 07:55:45.9375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VpGAz5PPJev9gMBZfq1tB31tGMQPnoSxZyiKM7XSXFxIP7LVEZZLr+nwCCCUiTNmGQ6IXdVLTK4SDA+UCafBUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5069
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When reviewing patches, it looks much nicer to have some changes shown
+before others, which allow better understanding of the patch before the
+the .c files reviewing.
+
+Introduce a default git.orderFile, in order to help developers getting the
+best ordering easier.
+
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+---
+
+Please provide feedback on what else to add / remove / reorder here!
+
+Changes since RFCv3:
+- Added "*types.h" matching so type headers appear before reguler headers
+- Removed line ends ($) in patterns: they previously provided a 
+  false-positive
+- Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
+  in any subdirectory
+
+Changes since RFCv2:
+- Fixed licence comment to from /**/ to #
+- Fixed filename in how-to comment
+- Fix build order: Kconfig -> Kbuild -> Makefile
+- Add *.mk extension 
+- Add line-ends ($) to make sure and get the correct extensions
+- Thanks Masahiro Yamada for above suggestions!
+- 1 Ack, thanks Randy!
+
+Changes since RFCv1:
+- Added Kconfig* (thanks Randy Dunlap!)
+- Changed Kbuild to Kbuild* (improve matching)
 
 
-在 2023/8/10 16:13, Chuyi Zhou 写道:
-> + +void test_oom_policy(void) +{ + struct oom_policy *skel; + struct 
-> bpf_link *link;
-'link' doesn't seem to be used.
+ scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 scripts/git.orderFile
 
-Thanks
-Bixuan Cui
+diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+new file mode 100644
+index 000000000000..7cef02cbba3c
+--- /dev/null
++++ b/scripts/git.orderFile
+@@ -0,0 +1,34 @@
++# SPDX-License-Identifier: GPL-2.0
++
++# order file for git, to produce patches which are easier to review
++# by diffing the important stuff like header changes first.
++#
++# one-off usage:
++#   git diff -O scripts/git.orderFile ...
++#
++# add to git config:
++#   git config diff.orderFile scripts/git.orderFile
++#
++
++MAINTAINERS
++
++# Documentation
++Documentation/*
++*.rst
++
++# build system
++*Kconfig*
++*Kbuild*
++*Makefile*
++*.mak
++*.mk
++
++# semantic patches
++*.cocci
++
++# headers
++*types.h
++*.h
++
++# code
++*.c
+-- 
+2.42.0
+
