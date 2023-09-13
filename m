@@ -2,190 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D098379E3E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC4679E3E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239354AbjIMJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S239315AbjIMJjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238849AbjIMJjQ (ORCPT
+        with ESMTP id S229712AbjIMJjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:39:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DD1196;
-        Wed, 13 Sep 2023 02:39:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB3BC433C7;
-        Wed, 13 Sep 2023 09:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694597951;
-        bh=dSg3FHeMAumbmUvzWNHW95nSf89/Wz3zP7aimaIkbxI=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=ZXzWXrwu9RC5kdgvyD4Ye5Agb5QzVO02jBJEW0mnHaQpEFqlkH9MjuSEVgXaUrJmq
-         EfQzJwDD9BBpXXvndNj+eIkUmIlhnnrBnsgfdmO/sFI5PRoHRFwjrU0y6hxj6aL84H
-         I/1JlDKdOO1LKXWPAMI7ktI9zNLjuHZKAgw7jpbATlCAQIIfwwhGBcxlYjrAwHRiWN
-         2hlxUuKCUSaDDKSY2Qy6K2Eom2p4u9TlGy9UGMjX9bItwj7Dnlyod7p1U3kbdl/FiD
-         Wu/LBlqhgtKWx1dvr4RG1Rdjsr2CT7nXCgU1y7jqToY0rPbmBIx4XdymwLrsZa4tpi
-         czcohdodFxFCA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Sep 2023 05:39:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD7F196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694597972; x=1726133972;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AFPkf81JiqACjKxsag5lm5MCBmk/FWJjDDbZ5Lp7fwc=;
+  b=mlH6KTN/cYf5NBNhGGap+a3pFTWxY5nuhCVMIq+HxZidF0TuYb0sNFyl
+   GnOb0Q8LHtUFa1KzeyU42yPZ2sfhfqYx0kw/iOB2apr/dO2NogkvCQL8B
+   hYEMxIQNQwZ0QyHS/8+IFtidkPtpk2e7MY8XTUrh/kYZD+IpCbBPDGKXF
+   jABKMb5bGaLCtcv9Qt7nWwFLBbVpTdsusikkBNrkDjcBcnkwDeRQuhd3L
+   88p7zJOPJ6UOTUKtth0+uTAgvlIJuqXuxt6UIdcTY/k1d833wqJlN6HUa
+   KO8sR/Fj0UGql2ZyfxvqxeaiTN3k5crZNMVOXcTu+L6LlAWdawcS6oKjO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464982301"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="464982301"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:39:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="867720893"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="867720893"
+Received: from mduman-mobl.ger.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.252.48.209])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:39:29 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     tiwai@suse.com, perex@perex.cz, arnd@arndb.de
+Cc:     masahiroy@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, maciej.szmigiero@oracle.com
+Subject: [PATCH] ALSA: usb-audio: mixer: Remove temporary string use in parse_clock_source_unit
+Date:   Wed, 13 Sep 2023 12:39:33 +0300
+Message-ID: <20230913093933.24564-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 13 Sep 2023 12:39:06 +0300
-Message-Id: <CVHOU5G1SCUT.RCBVZ3W8G2NJ@suppilovahvero>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v4 01/18] cgroup/misc: Add per resource callbacks for
- CSS events
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-2-haitao.huang@linux.intel.com>
-In-Reply-To: <20230913040635.28815-2-haitao.huang@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->
-> Consumers of the misc cgroup controller might need to perform separate
-> actions for Cgroups Subsystem State(CSS) events: cgroup alloc and free.
+The kctl->id.name can be directly passed to snd_usb_copy_string_desc() and
+if the string has been fetched the suffix can be appended with the
+append_ctl_name() call.
+The temporary name string becomes redundant and can be removed.
 
-nit: s/State(CSS)/State (CSS)/
+This change will also fixes the following compiler warning/error (W=1):
 
-"cgroup alloc" and "cgroup free" mean absolutely nothing.
+sound/usb/mixer.c: In function ‘parse_audio_unit’:
+sound/usb/mixer.c:1972:29: error: ‘ Validity’ directive output may be truncated writing 9 bytes into a region of size between 1 and 44 [-Werror=format-truncation=]
+ 1972 |                          "%s Validity", name);
+      |                             ^~~~~~~~~
+In function ‘parse_clock_source_unit’,
+    inlined from ‘parse_audio_unit’ at sound/usb/mixer.c:2892:10:
+sound/usb/mixer.c:1971:17: note: ‘snprintf’ output between 10 and 53 bytes into a destination of size 44
+ 1971 |                 snprintf(kctl->id.name, sizeof(kctl->id.name),
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1972 |                          "%s Validity", name);
+      |                          ~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
+The warnings got brought to light by a recent patch upstream:
+commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
 
-> In addition, writes to the max value may also need separate action. Add
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/usb/mixer.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-What "the max value"?
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 9105ec623120..985b1aea9cdc 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1929,7 +1929,6 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
+ 	struct uac_clock_source_descriptor *hdr = _ftr;
+ 	struct usb_mixer_elem_info *cval;
+ 	struct snd_kcontrol *kctl;
+-	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	int ret;
+ 
+ 	if (state->mixer->protocol != UAC_VERSION_2)
+@@ -1966,10 +1965,9 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
+ 
+ 	kctl->private_free = snd_usb_mixer_elem_free;
+ 	ret = snd_usb_copy_string_desc(state->chip, hdr->iClockSource,
+-				       name, sizeof(name));
++				       kctl->id.name, sizeof(kctl->id.name));
+ 	if (ret > 0)
+-		snprintf(kctl->id.name, sizeof(kctl->id.name),
+-			 "%s Validity", name);
++		append_ctl_name(kctl, " Validity");
+ 	else
+ 		snprintf(kctl->id.name, sizeof(kctl->id.name),
+ 			 "Clock Source %d Validity", hdr->bClockID);
+-- 
+2.42.0
 
-> the ability to allow downstream users to setup callbacks for these
-> operations, and call the corresponding per-resource-type callback when
-> appropriate.
-
-Who are "the downstream users" and what sort of callbacks they setup?
-
->
-> This code will be utilized by the SGX driver in a future patch.
->
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> ---
-> V4:
-> - Moved this to the front of the series.
-> - Applies on cgroup/for-6.6 with the overflow fix for misc.
->
-> V3:
-> - Removed the released() callback
-> ---
->  include/linux/misc_cgroup.h |  5 +++++
->  kernel/cgroup/misc.c        | 32 +++++++++++++++++++++++++++++---
->  2 files changed, 34 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index e799b1f8d05b..e1bcd176c2de 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -37,6 +37,11 @@ struct misc_res {
->  	u64 max;
->  	atomic64_t usage;
->  	atomic64_t events;
-> +
-> +	/* per resource callback ops */
-> +	int (*misc_cg_alloc)(struct misc_cg *cg);
-> +	void (*misc_cg_free)(struct misc_cg *cg);
-> +	void (*misc_cg_max_write)(struct misc_cg *cg);
->  };
-> =20
->  /**
-> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> index 79a3717a5803..e0092170d0dd 100644
-> --- a/kernel/cgroup/misc.c
-> +++ b/kernel/cgroup/misc.c
-> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct kernfs_open=
-_file *of, char *buf,
-> =20
->  	cg =3D css_misc(of_css(of));
-> =20
-> -	if (READ_ONCE(misc_res_capacity[type]))
-> +	if (READ_ONCE(misc_res_capacity[type])) {
->  		WRITE_ONCE(cg->res[type].max, max);
-> -	else
-> +		if (cg->res[type].misc_cg_max_write)
-> +			cg->res[type].misc_cg_max_write(cg);
-> +	} else {
->  		ret =3D -EINVAL;
-> +	}
-> =20
->  	return ret ? ret : nbytes;
->  }
-> @@ -383,23 +386,39 @@ static struct cftype misc_cg_files[] =3D {
->  static struct cgroup_subsys_state *
->  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
->  {
-> +	struct misc_cg *parent_cg;
->  	enum misc_res_type i;
->  	struct misc_cg *cg;
-> +	int ret;
-> =20
->  	if (!parent_css) {
->  		cg =3D &root_cg;
-> +		parent_cg =3D &root_cg;
->  	} else {
->  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
->  		if (!cg)
->  			return ERR_PTR(-ENOMEM);
-> +		parent_cg =3D css_misc(parent_css);
->  	}
-> =20
->  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
->  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
->  		atomic64_set(&cg->res[i].usage, 0);
-> +		if (parent_cg->res[i].misc_cg_alloc) {
-> +			ret =3D parent_cg->res[i].misc_cg_alloc(cg);
-> +			if (ret)
-> +				goto alloc_err;
-> +		}
->  	}
-> =20
->  	return &cg->css;
-> +
-> +alloc_err:
-> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> +		if (parent_cg->res[i].misc_cg_free)
-> +			cg->res[i].misc_cg_free(cg);
-> +	kfree(cg);
-> +	return ERR_PTR(ret);
->  }
-> =20
->  /**
-> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state *parent_css=
-)
->   */
->  static void misc_cg_free(struct cgroup_subsys_state *css)
->  {
-> -	kfree(css_misc(css));
-> +	struct misc_cg *cg =3D css_misc(css);
-> +	enum misc_res_type i;
-> +
-> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> +		if (cg->res[i].misc_cg_free)
-> +			cg->res[i].misc_cg_free(cg);
-> +
-> +	kfree(cg);
->  }
-> =20
->  /* Cgroup controller callbacks */
-> --=20
-> 2.25.1
-
-BR, Jarkko
