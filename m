@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F02379E956
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A47879E954
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239688AbjIMNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S240932AbjIMNcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbjIMNc3 (ORCPT
+        with ESMTP id S236214AbjIMNcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:32:29 -0400
+        Wed, 13 Sep 2023 09:32:31 -0400
 Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2057.outbound.protection.outlook.com [40.107.7.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1182919B6;
-        Wed, 13 Sep 2023 06:32:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B225D19B1;
+        Wed, 13 Sep 2023 06:32:27 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T0hGAAz1Wap63LG2Al7tanIO4omaj8OcBwnJ8F4q9FbIwSlMqO/4A4WI20lGQqjveca/ErbM0Zbq8eoe0Y/0Z0uprILM9zmQFn/XEsbBi8JxIT78lqZGN8MazaB+Weu/ET27neF3fL2fCf5NKg3F0Ds32NdPoww3BDTE7ILc55Co0FLO5MxLSHDVeyr+bxb0mBtDGB356bWXmyeI80OPG6PqsmadPhp+35DZXLIto1Q+X4xhBZeOXh0e6QgDo6vi2jHgdcbK0nl1GChFF5DCr6pxgvG0LsPP83EwmCxDi6qarblNDyPLFn8YUYinfM2zM1uciwU7PhkJpmEeZSHgmA==
+ b=bxKU7WY2HsGbObS8mxxBnKDmkUpTO9NJOY4ZmidiX9rwHVaF1OR0hoZkM1axQmK0KRts8nuSrkxqQ539YhQXN0Q4rnRvNXHD0vJesD/dfFDBc1Fva6CJ3eXcmWtp9WEOwYh5ZZqUGj8yXpQULFsOzEyZL9lXzAEP97r688+vIaH20BhxuE8/R3/R8lXiQLJA/1lf0JnsFUZLr/+80deCMQTYLKYy/ug48Bni7zvMN+y74U0ZFKqQTi2xZ1N8vfnR9CpH3VnAchUyVr4C55YLfj2uc5eZ+iVPAB8vsBGcpvnk2Rfi2t7FZYMq8AA5u7oNx8XWhDsSmH75uWX2p9BZiw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ptttOu7BCBrIVx7RRWA2CjQLpXJ8B1jM5pv/OCdaJPo=;
- b=knucm7L2r4SGAQ0iOdjU+E1cCjdNaPqXLetlNm1lxPT0dk7EaDjkfdCwY81GtA+ikgUSw3Y3vur+7mykv3ZWDH5HnANCZFadNPR0dZZ15OJtdGwnR2IEPsj/usuWSUjVdgZtPf0Q7rWBjD820fjUHYvwgJ0h1dbCL0tZtcKcfLtAQo5ncTxp1L8S8J0J8pfNHfZFRhc9wMlZEaJ5vkRv4KqJnLpwSF7Yg29HvaX7brOXYCgF99wHEUXO3gZyjJjnBWs+VBDlFDgQuOvT56fp6dgBSxeZ+occQQmuSc7JpZLi55qSS/tLbZmAQfRBR8bQg2beB1n76vofeboTouZVbw==
+ bh=xZs/CfOWcju4P4wbc2E1qPQRYa+hIUgg46SFBBGJ214=;
+ b=dUaCft5+zUbUZUjkKd3CmI5GmjB+Heoa+LinPbPQXpfDTLTOSKb1CTmqMlJxeFOYyGsRH9xTA5jZ0CSRS1mZPW46XbTuQ3khtdWhcdlF9cPvydgE6IHtkzuwgl1M4NWVhr3fvRa+QviVQxZ2by+GCD9H7ZKs2LwaXmmGt2P/W77s0WyqnzmPqCKecZWOiNDCvBGPP761xEOm5qWJuYcM4O0J2f4AfSpkwQ7zPMBlKy7Z8eRngW/vbC85uuBKwzIQSvBQYai7jBkDh0saktiVOodeUIWmimk8LdIZo5rXOFhm+n88CATjSE/z/90Nppg0X6HMGxBoh4tYMpQaAyY9gA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ptttOu7BCBrIVx7RRWA2CjQLpXJ8B1jM5pv/OCdaJPo=;
- b=DeydIpbQ8XNmQR/J8CO726P129thouY6zsgJ4E8YZghU37wIgKnSq76LSz+vzg5xQ5kpFVUL4fBUpJHEDZg2wwxZG05YPMaXSkmPFZO5n8Mf3iG85uChxF/1ZmG8sCt1Ejw4iJniPkbpDXmg1lJ2OwvTIlXoVjGNvV/gJx8MfXg=
+ bh=xZs/CfOWcju4P4wbc2E1qPQRYa+hIUgg46SFBBGJ214=;
+ b=fS+sLsnkZymy0tjp/YFYv+ssk3PW0MsuWwRG8JF6JWwoDSbPZrbfnhnpzHuNID1mi9gbq9SMJnQ9inZ/r7R8+K30UfPaWXxzv4nIxomCAS1t0VWjlErTqwD7nYHYD+p37TQfRAQA9/hJmko3G6lmM43wEBnZvA9AmXtHa2OnL1w=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
  by AM8PR04MB7235.eurprd04.prod.outlook.com (2603:10a6:20b:1d1::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
- 2023 13:32:23 +0000
+ 2023 13:32:24 +0000
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
- 13:32:22 +0000
+ 13:32:24 +0000
 From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -48,9 +48,9 @@ To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         sebastian.tobuschat@nxp.com
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [RFC net-next v4 2/7] net: macsec: documentation for macsec_context and macsec_ops
-Date:   Wed, 13 Sep 2023 16:32:00 +0300
-Message-Id: <20230913133205.3749628-3-radu-nicolae.pirea@oss.nxp.com>
+Subject: [RFC net-next v4 3/7] net: macsec: indicate next pn update when offloading
+Date:   Wed, 13 Sep 2023 16:32:01 +0300
+Message-Id: <20230913133205.3749628-4-radu-nicolae.pirea@oss.nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230913133205.3749628-1-radu-nicolae.pirea@oss.nxp.com>
 References: <20230913133205.3749628-1-radu-nicolae.pirea@oss.nxp.com>
@@ -63,131 +63,111 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AM8PR04MB7235:EE_
-X-MS-Office365-Filtering-Correlation-Id: c91aebc9-f363-41b6-fc47-08dbb45ddc7b
+X-MS-Office365-Filtering-Correlation-Id: acb32566-af57-48d8-38b2-08dbb45ddd44
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w0KzVlZS9yNWQE8yFDJomfFBSngUmb6ctppTcCD9TBf/h/uYHeH0F7JvbXn121MtpaQo5fL0qZeiFk7s0fmgqVzbnSnghi2xga4iruOMSuvAo373IlBPVyz2OYTHVKZClAsTk37GNiWZFe0RzAuaqrR8TR0nduhRsszDONFXXdrKXo3SN9mqGIayI0NDMe0xS1hr3gPxyJ11UQRgzSdmv1HpWGp4CyAf8fs/UU3f2SGARpY2jXnWXS0YSh8R1Noa9adCQmiQ2P+hJTuoW6UtBgd84FN7BqGgn3MBXhB0OboWb5dnDQ+Ik7kJ6i8HWk4cltQCNmBpgNWVw3j/3JyIQLCMUk3zUzSl40RNxIZ9aopXAPgm/fDqr/rIrqlLwb8uAx5D8qjuPE+hWSpxRyK7SGs/gl+97R69w5xVko/o3pFJFqODJAs5jRWEsH8IWFQokK90+kOuicRAV/vCAOqizqivfgnWZ7YyjBWixtv2X/r2/GxhwAdso8v30AG/NGIsTOxjr9JEuLjNC2q5H9kKneY0IwnKfGbrUFI5tzsGkJ9ILoAQMTMUbD8F5pgEvSgaWjAR+uNHETU90E4dHNDFxe4+soBxe3Au5VS/wwjZr1NrM+eaXXEwqBFxOJuw77g/GBBPfMedNjhkIttwOpPn2w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(136003)(366004)(186009)(451199024)(1800799009)(26005)(4326008)(8936002)(8676002)(52116002)(6666004)(1076003)(38100700002)(921005)(2616005)(478600001)(83380400001)(5660300002)(66476007)(66556008)(66946007)(41300700001)(6506007)(6486002)(316002)(6512007)(7416002)(2906002)(86362001)(38350700002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: S5EkO8bgQayuUJ7fpFajdq8UNiY80GHxoMB7z+l3fx8nQovApZJ9l1aJpZPA0RHUep+HHuI9shmjVkkXga3Dm8tGJOg/bf+6xC1X746968SlUaSLFEi7g2jeCS+XI7OwwMVdkFhtdvjTEVIRa35tYxqMcfmPRJ16f50srmO9fYGtbTPQGSIc8WMQPZsmb41YJk370pMW3iV4yH/iHYiztF6wLo/tYMR+vWPV1JW6r75xt2GNQ232lVlN1vrZC3rt/Djnw1mi97eCHB1MXQ23Zo38ZHunc3z9TSasODXn+L2iqyuT0r28Ozh7vGHvGEzyYna7BsK8vvpduAK1nwgmiXKrP5lg0cCbqW8c2CXMopLiVtrZbXePAyHEGkGKXWel3bIK7Wc9jP+mo3i4j2yuUqjo64W0OQBGLUzOkLM8tir70MNFij/m2T76LPVF5+/qZOhv3q5tgzQqS9J1lINBvHKOYJuNPkEp1e0/PeN4QomJN79OVBZ5GyJmS9cVMZBVqx5toljhdhtDFYWl6nf3l8iaVfa8sMH2PTKOM+oI7Pnf8AL1jwNi2IPsXMD8Whe1sZrhK/hfbp8XPLqbjxodiyuPlTgkl9I+HgNHCs95V4ZBxrvlCi9jROtb+tzLHeHIIcKgrlQ2CMPx/xhbMi2SgqOm1hbkdyJ7TLPWxTrffrg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(136003)(366004)(186009)(451199024)(1800799009)(26005)(4326008)(8936002)(8676002)(52116002)(6666004)(1076003)(38100700002)(921005)(2616005)(478600001)(83380400001)(5660300002)(66476007)(66556008)(66946007)(41300700001)(6506007)(6486002)(316002)(6512007)(7416002)(15650500001)(2906002)(86362001)(38350700002)(309714004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r44IKIeBfKhEi6M+v2+Et2PtXfbsw9UvWRkH0pLeFrx0aaIkbNoOas3H5mkV?=
- =?us-ascii?Q?mn7nTc7jSaTW1+DbcxRSJLfoadoJCG7W9cD65yjwQm84rOh6YtZJeZqQNnmx?=
- =?us-ascii?Q?vEJhSHa+5JAASf3CwFRcUSYb6y8+nSviZr12p3fT/2wFtW77XS7AgLGxTI+7?=
- =?us-ascii?Q?QDS1E5f7JmSyVxxI4FpyUdVaRWNCnPJFmr6WxgWrbMSYa4eN3/m27Ipx/EBj?=
- =?us-ascii?Q?+sjCJvND1CbdW0ExFVAXNJdi5ibFigyiAEnnvj9AN9f0M76En0zh3Qzoyaw0?=
- =?us-ascii?Q?2DsmRdK4BTcKG9mBVvqM/G84eKWIO4yNhBVxRzE4mcuAeH1B1ehCUCh54vf1?=
- =?us-ascii?Q?lfX4ftbMz7/IiqkMkkXNMuGnYzvk6yxizzPKZJxnIeQAqk+bKy7lyVO1HZjQ?=
- =?us-ascii?Q?lgYbDww1l+32zFpCCQhedrK9xdkpmrMqWDfTxsd1g+BM6y3UFbAlfsxI+c/5?=
- =?us-ascii?Q?D++i7hrhHdNiwx3abMb8n5NW4k8wEDIDdYUv5qy2ok+MvHnynezfiG0VPbX3?=
- =?us-ascii?Q?6nmtJumqbLRV7EdFojVSZQDa0GIeiLdUc8OG9sQdlDYJTnBNiAxKmaYo1cR1?=
- =?us-ascii?Q?HjAwADr/7RJV0Rspr4kC6Zxq/+vnNlAzh96BWKLnijUIBWtttvGFyFsr6/IF?=
- =?us-ascii?Q?xZNYhENTfVWXGWWfIP8NVidtqJM2bWVXZlbG/Fhf7wy2v/umda4+yC4iBirn?=
- =?us-ascii?Q?pJN8hVVcODrfloBnp99PpMDxrIkeLEukeKY3jCc84/dTlnWEm6HlZovAbRsy?=
- =?us-ascii?Q?GHxJsUmrm4clDpQVUaPii4o2imYFTnrRkjl6dYixT9JdII7/93xoUSXBgbwP?=
- =?us-ascii?Q?BReaBGXszBAJjPhyzZtRpSkuRTEZ7oUjsHeoAkFYmy8gkMnUBzJGoINvx+JR?=
- =?us-ascii?Q?dk7rBzsVUl4RBuLw1wcRU5ZnbT/JkCShJquqfBlxMgxEthqlccEgp7sqoYV0?=
- =?us-ascii?Q?4g+VKpGeSQU2iB2tc2tu/yxUG2xjOLgdvEsDSV4/4NDC9vbznxCFqlmQh4e3?=
- =?us-ascii?Q?oEDQFm6+jkKBtwmjqhNa3TeBPi8tAFvfrNokbHjmouzm2750qB3ycCEvyxkR?=
- =?us-ascii?Q?SVgnnKi2yx6RQYc2+S5jvaPAT11yx6BOhRb8rghIQLsTah+nM5ojBK3wP87Z?=
- =?us-ascii?Q?DTZER5a+INUAacoYPR4XsasukREMHdkKKKVNJemNL/aMbI2YbHL8PW9evtYO?=
- =?us-ascii?Q?m9vQr0O1btCiBRSzh8YobeEKubaeMhbWlhUZSxNdry1wKeRAi4ZXQ8kc7nhY?=
- =?us-ascii?Q?GtV1lefJpBx87mQ8tyjPkbe62BENdP3qEDNKR8R5NMSGZ11wv4ciVuN5OQE5?=
- =?us-ascii?Q?Evs/pGAS4bAtoEQ7pRzHOSIoM4yLWwJODG1CovriqVHGII495p6MGk9rvZSt?=
- =?us-ascii?Q?rVBbEMublfoIAkdTo6emx3iEnSO+kt4eBwZWN+S21lsLtA9ox9N7ngcNhJIQ?=
- =?us-ascii?Q?vYtd2wv+c9i7sNBR1jyg00OaJW8CBeeJCo3wAJU4DqLIdkp/Er7E+Qwi3B+n?=
- =?us-ascii?Q?5ZfBvdodcrY2j73Jbi5CwGevQTHyMOP4HjTZOCB52oV9gVIhhlMp/Na8hlFN?=
- =?us-ascii?Q?lxhe8Lphx3NRPfYT7xnubzN0iqGvziw7tz95d9EmkK96SBHEV/DqP59xCjuc?=
- =?us-ascii?Q?VA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JoTfGqzhoCrgw1J/qo1nzuT1YlRDmlzDFnuSWd15vcjQGP9/3RTNS46Im03K?=
+ =?us-ascii?Q?EMZFkHGqCEBsCKWWa8GOwmHO8UELXVjVB28hupdDNdmEFBTdhRsOaeTEqy2B?=
+ =?us-ascii?Q?9Fiq9IEfnJN8Awz+wx1QOko14fL6GMMgvE+FLv1ovNUeFqoYVE7dFvETSipR?=
+ =?us-ascii?Q?cpXYNOHTsFEXEzFBng1WhqTmE7eCY3ZnVaf6S6fCg+sWN0kpPi49ZuwkkVmO?=
+ =?us-ascii?Q?SmQ3i0OyboVI1e0iktbsRdrkpxyZG8BGB744hQben81NohJYQKO7hqQY5yKH?=
+ =?us-ascii?Q?di2JZ7AcLuCgIVHJA0nKxAvH0QsFCqLFUHSBeeLmsI4sB9/BaPUet4dgjP4/?=
+ =?us-ascii?Q?oUkWQZwTZ4sjLe5x+0aLRrqm4Dm8rQdxhELA4NonInvCyb6Jn6fwJi95M0oN?=
+ =?us-ascii?Q?nYChUZx5jPcXYQgPwdQPZ0b79T8MlFjmJewyouw3MUT7XGVIysBHTPDVyFCF?=
+ =?us-ascii?Q?JjdIP6tXcD0/fg6ULdDn8NSbtU/t9fWnBkHxRI3cZI/hgunC0WhINfIEKaw1?=
+ =?us-ascii?Q?ER2m0jKSsDlE978vOUCrHi9YsLL2qrwRMGwBZ2tBqiTPU4g/IKhV9d9gh3xy?=
+ =?us-ascii?Q?y6aNMy+Ftw70CybCT8J5Tpaes6jE5OowGEUaIeRfLoxMNSvlMFTLUx9PUTL2?=
+ =?us-ascii?Q?htHKzdJLln080bh/W/bgI+uI7RKRV1b+vtmGoQn0cF208GV8x71yFHuBWat3?=
+ =?us-ascii?Q?G/kxBrGGFzG17sCwpHYG2s8OV6mnOk/BQe53BWWSt2cPvpWzOhlsqVEd57/j?=
+ =?us-ascii?Q?hICwtv0WOrD5OkPokOpZkCWGsg3eR2TvsMOyhrNePoUSUYxxt4sYfQs3Tkbk?=
+ =?us-ascii?Q?0AcGjQRutYBTV+pDnZvK8yyJ6tJSgzY0aNCez5wcKRnMOQHOXs6RkyLejwmt?=
+ =?us-ascii?Q?lYDrB3/VnK2KQruoAyf54FPUpEpKzdPMbKJvYgwP5nAcwOWtUgZzQFNocIab?=
+ =?us-ascii?Q?4nLUzPFO/p7kLoarIRWMtToBIgTo+dEQ1Q6hIy5kW+2lA/fiTGDmwPx+mgsY?=
+ =?us-ascii?Q?zlIDlQh6L29rbW03E3nPa1e/45U2B41b+p5WfTT9f/H2h/hvtCKcGlxOoIjw?=
+ =?us-ascii?Q?sGYFNI6tY69J97BJfwMbD12Z8gQmaspjt0BsTWvRRVBtG4TlPXJAU1O3ZOT4?=
+ =?us-ascii?Q?XVwYAPm0yiF0E1Tv5sunwVFLoBLeV3tGu47o7D46xMNS2+Pmsy/HUzhspWxy?=
+ =?us-ascii?Q?QZKXoHDLxiHVqI7ZL8UL+SB7Neo5amvQsjZZ23uHCRn8CQTCAV0gve4t+4DH?=
+ =?us-ascii?Q?SEaK3YNwNyeTAsySnb4fhS+v/KUIjcVaciuiC4Zq3v8AbLK8RDeADCSZSwXR?=
+ =?us-ascii?Q?u3EvdmNuavZve8SJXabGPe7eJwf/neEsoeT2oIMb8sVQ1mB5GxTWkjncDo7U?=
+ =?us-ascii?Q?+B08k5aiu3KS6o+2fNS3VGADiaQWt3omakc8lj4nrJrKmwGHbDmCVlw+qhm0?=
+ =?us-ascii?Q?PkmtpIsyHw8rg9bcVqKd+9aD8qPeOLJgeJ8KIqYXWORYav73Sg+0A4B5gHo8?=
+ =?us-ascii?Q?wLNsILc8RezmrjICj+Wbevj2CrOtManLXT3zVKLUcgof50lR/FzAoBjNyhKl?=
+ =?us-ascii?Q?M8YK4IROmt6/r5nKaGPBLBPHCGdpCqaKZCbLzbqi2jvqjuPoEv+R+diatT9b?=
+ =?us-ascii?Q?mw=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c91aebc9-f363-41b6-fc47-08dbb45ddc7b
+X-MS-Exchange-CrossTenant-Network-Message-Id: acb32566-af57-48d8-38b2-08dbb45ddd44
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 13:32:22.8896
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 13:32:24.1859
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0QRRU1W4zOixaIwQPDV440WKfQrbnu9P0kA5RM0v3GD04kqfzVR00yucbm/YSQzycNl7Dx5xd2XyZlVybCk8dSRA7xpM+LWoGPALzp1Ug0Q=
+X-MS-Exchange-CrossTenant-UserPrincipalName: f8KHFkKPGAg9TAkJkwdKCAQ+5HMXLyhO/oNXIxDwO7oL/ERMCEnX8waZh6Zc33Lqa2tyTUKuoOf/Uyaq5p0QQxEaXyXFFIpD6+AUmMtzPiE=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7235
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description for fields of struct macsec_context and struct
-macsec_ops.
+Indicate next PN update using update_pn flag in macsec_context.
+Offloaded MACsec implementations does not know whether or not the
+MACSEC_SA_ATTR_PN attribute was passed for an SA update and assume
+that next PN should always updated, but this is not always true.
 
 Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
 ---
 Changes in v4:
-- none
+- patch added in v4
 
-Changes in v3:
-- improved description for the netdev and phydev fields
-- fixed typo in mdo_get_rx_sc_stats description
+ drivers/net/macsec.c | 2 ++
+ include/net/macsec.h | 2 ++
+ 2 files changed, 4 insertions(+)
 
-Changes in v2:
-- patch added in v2
-
- include/net/macsec.h | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
+diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
+index c3f30663070f..2dde22e01fc1 100644
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -2384,6 +2384,7 @@ static int macsec_upd_txsa(struct sk_buff *skb, struct genl_info *info)
+ 
+ 		ctx.sa.assoc_num = assoc_num;
+ 		ctx.sa.tx_sa = tx_sa;
++		ctx.sa.update_pn = !!prev_pn.full64;
+ 		ctx.secy = secy;
+ 
+ 		ret = macsec_offload(ops->mdo_upd_txsa, &ctx);
+@@ -2477,6 +2478,7 @@ static int macsec_upd_rxsa(struct sk_buff *skb, struct genl_info *info)
+ 
+ 		ctx.sa.assoc_num = assoc_num;
+ 		ctx.sa.rx_sa = rx_sa;
++		ctx.sa.update_pn = !!prev_pn.full64;
+ 		ctx.secy = secy;
+ 
+ 		ret = macsec_offload(ops->mdo_upd_rxsa, &ctx);
 diff --git a/include/net/macsec.h b/include/net/macsec.h
-index 75216efe4818..ecae5eeb021a 100644
+index ecae5eeb021a..5e0b24a2f49c 100644
 --- a/include/net/macsec.h
 +++ b/include/net/macsec.h
-@@ -247,6 +247,22 @@ struct macsec_secy {
- 
- /**
-  * struct macsec_context - MACsec context for hardware offloading
-+ * @netdev: a valid pointer to a struct net_device if @offload ==
-+ *	MACSEC_OFFLOAD_MAC
-+ * @phydev: a valid pointer to a struct phy_device if @offload ==
-+ *	MACSEC_OFFLOAD_PHY
-+ * @offload: MACsec offload status
-+ * @secy: pointer to a MACsec SecY
-+ * @rx_sc: pointer to a RX SC
-+ * @assoc_num: association number of the target SA
-+ * @key: key of the target SA
-+ * @rx_sa: pointer to an RX SA if a RX SA is added/updated/removed
-+ * @tx_sa: pointer to an TX SA if a TX SA is added/updated/removed
-+ * @tx_sc_stats: pointer to TX SC stats structure
-+ * @tx_sa_stats: pointer to TX SA stats structure
-+ * @rx_sc_stats: pointer to RX SC stats structure
-+ * @rx_sa_stats: pointer to RX SA stats structure
-+ * @dev_stats: pointer to dev stats structure
-  */
- struct macsec_context {
- 	union {
-@@ -276,6 +292,28 @@ struct macsec_context {
- 
- /**
-  * struct macsec_ops - MACsec offloading operations
-+ * @mdo_dev_open: called when the MACsec interface transitions to the up state
-+ * @mdo_dev_stop: called when the MACsec interface transitions to the down
-+ *	state
-+ * @mdo_add_secy: called when a new SecY is added
-+ * @mdo_upd_secy: called when the SecY flags are changed or the MAC address of
-+ *	the MACsec interface is changed
-+ * @mdo_del_secy: called when the hw offload is disabled or the MACsec
-+ *	interface is removed
-+ * @mdo_add_rxsc: called when a new RX SC is added
-+ * @mdo_upd_rxsc: called when a certain RX SC is updated
-+ * @mdo_del_rxsc: called when a certain RX SC is removed
-+ * @mdo_add_rxsa: called when a new RX SA is added
-+ * @mdo_upd_rxsa: called when a certain RX SA is updated
-+ * @mdo_del_rxsa: called when a certain RX SA is removed
-+ * @mdo_add_txsa: called when a new TX SA is added
-+ * @mdo_upd_txsa: called when a certain TX SA is updated
-+ * @mdo_del_txsa: called when a certain TX SA is removed
-+ * @mdo_get_dev_stats: called when dev stats are read
-+ * @mdo_get_tx_sc_stats: called when TX SC stats are read
-+ * @mdo_get_tx_sa_stats: called when TX SA stats are read
-+ * @mdo_get_rx_sc_stats: called when RX SC stats are read
-+ * @mdo_get_rx_sa_stats: called when RX SA stats are read
-  */
- struct macsec_ops {
- 	/* Device wide */
+@@ -254,6 +254,7 @@ struct macsec_secy {
+  * @offload: MACsec offload status
+  * @secy: pointer to a MACsec SecY
+  * @rx_sc: pointer to a RX SC
++ * @update_pn: this flag indicates the PN update when updating the SA
+  * @assoc_num: association number of the target SA
+  * @key: key of the target SA
+  * @rx_sa: pointer to an RX SA if a RX SA is added/updated/removed
+@@ -274,6 +275,7 @@ struct macsec_context {
+ 	struct macsec_secy *secy;
+ 	struct macsec_rx_sc *rx_sc;
+ 	struct {
++		bool update_pn;
+ 		unsigned char assoc_num;
+ 		u8 key[MACSEC_MAX_KEY_LEN];
+ 		union {
 -- 
 2.34.1
 
