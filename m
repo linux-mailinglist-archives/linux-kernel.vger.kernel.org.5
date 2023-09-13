@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E2479EDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B47B79EDA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjIMPvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        id S229936AbjIMPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIMPvt (ORCPT
+        with ESMTP id S229655AbjIMPuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:51:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDA0A1724
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694620258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=VnG66QyFsTzARJUHVO8Khm4VR1nzFPa/6kCMVpwGaPA=;
-        b=Ne1CD3Dgx+v/N0NdG4UBEiEYODQubnpQFAGrUvYAiq8VdzqyivzrEeHlzm+u1V3xOd+2Xt
-        C9jCqjVaIjnOopyVWC6kLA6SScG401QZoQTosMpxHi7sGVZ5lob7Lh0Dbva46xucHo1h25
-        af3gKAuUUNkzVZ9zFhw6gfraKGPQCDI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-424-8fcwpHowNhq13iRSFKUVLg-1; Wed, 13 Sep 2023 11:50:52 -0400
-X-MC-Unique: 8fcwpHowNhq13iRSFKUVLg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3F876857A9A;
-        Wed, 13 Sep 2023 15:50:52 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id BE2A940C6EBF;
-        Wed, 13 Sep 2023 15:50:49 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 13 Sep 2023 17:49:59 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 17:49:56 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] seqlock: change __seqprop() to return the function
- pointer
-Message-ID: <20230913154956.GA26245@redhat.com>
+        Wed, 13 Sep 2023 11:50:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2629793
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:50:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E18DC433C7;
+        Wed, 13 Sep 2023 15:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694620203;
+        bh=4cS9a9ki/iG8FGG+1HPrLkBPok8PcDHXuEtrMm83LOk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MACifao79fmPgw3Q6VWdxD5Kg3dOOmLcvkpKXWF7foUL6wVxnLHpkx7PkxplYuYZx
+         rZ1uUvdccp2eCbCf5bRfz1GnELembTf0zGe5jpsKW4etePXS9xeBgfHgAUMpYmYxtr
+         N0/MjPsFtNiFYennz6Z/wkp0SKF8zYekyCfgqSwAclTQrhUSpP7qZfBMhc1FfEmSIp
+         pXjPKc+/UK0NbNtpOGLiB8ZituG0zZSRGb45HTIB7RIl/dsaHzVDUOJVRVRtdrJhKK
+         ePX9k0XCcG9uw41lmPlcFUfKXejWA+XKJS7LUkzsnrPjOm5csX2HMCi0LB0G+aNm/z
+         +JfoHeuQ6lfQA==
+Message-ID: <583b6ce6-48eb-9119-4f71-f9a5689354f2@kernel.org>
+Date:   Wed, 13 Sep 2023 17:49:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913154907.GA26210@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH 4/9] dt-bindings: i3c: svc: add compatible string i3c:
+ silvaco,i3c-slave-v1
+Content-Language: en-US
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     miquel.raynal@bootlin.com, alexandre.belloni@bootlin.com,
+        conor.culhane@silvaco.com, imx@lists.linux.dev,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230905213842.3035779-1-Frank.Li@nxp.com>
+ <20230905213842.3035779-5-Frank.Li@nxp.com>
+ <e9880548-11c5-2790-7c77-7ca031849182@kernel.org>
+ <ZPneI4KUw8UXBUze@lizhi-Precision-Tower-5810>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <ZPneI4KUw8UXBUze@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preparation, see the next patch.
+On 07/09/2023 16:28, Frank Li wrote:
+> On Wed, Sep 06, 2023 at 10:01:40AM +0200, Krzysztof Kozlowski wrote:
+>> On 05/09/2023 23:38, Frank Li wrote:
+>>> Add compatible string 'silvaco,i3c-slave-v1' for slave mode.
+>>>
+>>
+>> No, it's the same device.
+>>
+>> Anyway, this was not tested.
+>>
+>> Please use scripts/get_maintainers.pl to get a list of necessary people
+>> and lists to CC. It might happen, that command when run on an older
+>> kernel, gives you outdated entries. Therefore please be sure you base
+>> your patches on recent Linux kernel.
+>>
+>> You missed at least devicetree list (maybe more), so this won't be
+>> tested by automated tooling. Performing review on untested code might be
+>> a waste of time, thus I will skip this patch entirely till you follow
+>> the process allowing the patch to be tested.
+>>
+>> Please kindly resend and include all necessary To/Cc entries.
+> 
+> Thank you for your comments. I write notes at RFC cover letter, this
+> patches is not totally completed yet. I want to get more feedback about
+> i3c slave mode API and configfs design, which will impact the overall
+> design.
+> 
+> So I have not included tty mail list and you in review list.
+> I send out all patches just because let i3c reviewer know how to use these
+> API. 
 
-This way it is trivial to add the new seqprop's with 2 or more args,
-and we do not loose the type info.
+Other people send RFC and they, surprise, expect comments. Probably
+because RFC means Requests For Comments. If you do not expect comments,
+review, call it somehow else, like "BROKEN", so we will know to ignore it.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- include/linux/seqlock.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index ac6631bd5706..41e36f8afad4 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -200,9 +200,9 @@ typedef struct seqcount_##lockname {					\
- } seqcount_##lockname##_t;						\
- 									\
- static __always_inline seqcount_t *					\
--__seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
-+__seqprop_##lockname##_ptr(const seqcount_##lockname##_t *s)		\
- {									\
--	return &s->seqcount;						\
-+	return (void *)&s->seqcount; /* drop const */			\
- }									\
- 									\
- static __always_inline unsigned						\
-@@ -292,19 +292,19 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
- #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
- 
- #define __seqprop_case(s, lockname, prop)				\
--	seqcount_##lockname##_t: __seqprop_##lockname##_##prop((void *)(s))
-+	seqcount_##lockname##_t: __seqprop_##lockname##_##prop
- 
- #define __seqprop(s, prop) _Generic(*(s),				\
--	seqcount_t:		__seqprop_##prop((void *)(s)),		\
-+	seqcount_t:		__seqprop_##prop,			\
- 	__seqprop_case((s),	raw_spinlock,	prop),			\
- 	__seqprop_case((s),	spinlock,	prop),			\
- 	__seqprop_case((s),	rwlock,		prop),			\
- 	__seqprop_case((s),	mutex,		prop))
- 
--#define seqprop_ptr(s)			__seqprop(s, ptr)
--#define seqprop_sequence(s)		__seqprop(s, sequence)
--#define seqprop_preemptible(s)		__seqprop(s, preemptible)
--#define seqprop_assert(s)		__seqprop(s, assert)
-+#define seqprop_ptr(s)			__seqprop(s, ptr)(s)
-+#define seqprop_sequence(s)		__seqprop(s, sequence)(s)
-+#define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
-+#define seqprop_assert(s)		__seqprop(s, assert)(s)
- 
- /**
-  * __read_seqcount_begin() - begin a seqcount_t read section w/o barrier
--- 
-2.25.1.362.g51ebf55
+Best regards,
+Krzysztof
 
