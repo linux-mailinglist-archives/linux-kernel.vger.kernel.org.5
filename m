@@ -2,287 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5724679E4D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B489B79E4E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239694AbjIMK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        id S239713AbjIMK1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235450AbjIMK0a (ORCPT
+        with ESMTP id S239701AbjIMK1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:26:30 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC0D3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:26:26 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d8020510203so4828497276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694600785; x=1695205585; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IQXRtkcWnaL0Ba9213fBVNCcFnWxRFQCO3/YE6hkuMA=;
-        b=mgRge+rTymMEOi42FkiFahGcnMseaD0L56OlHub+U7l6Or3CHzEtbSdG7AIEEf8oIp
-         6PRjollm5H3HGzRwAhPF89RJdj9KYp7txgADshxrBMeAagoTscp2O4QakEpJkwiV1MB9
-         C8hfYuw/7544aHVgyC8EIG/c1nemoBwZoy15G1MGPg8nQUYms7WIhSfI2DiIK8eiId04
-         ibvZF4dlxacAp5+MW42pTEVEWIclx5JNtFE2qE+mhkuYWql/er3UKdCkzqx4zJP9rB+B
-         fQ5CEL1vB8KsQJQkW7/GIR1V/Cclt54K1nyGNWaXOMaGSN8QATwgG9I4Mry+805BejRF
-         PVIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694600785; x=1695205585;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IQXRtkcWnaL0Ba9213fBVNCcFnWxRFQCO3/YE6hkuMA=;
-        b=nQcqMvzIHmGSMSBM67hk0Q/RbLIbfunqDloR1qC7nDgxwqqcyNeFS14HhBRfw+TSHO
-         HSTeXp2qfYuFWuHv7G23WrBOQUSVWXXf6u4gnvgq6s9uutdjkfRCQfs2EdFHb17wsHus
-         96Ri1hZgrSHkQORXpu+je+y5kOZzkuJ8BF3dZBtYWlMUkWaXGYxHGYnyPufcRArIzrci
-         84Hc6a2g1D8J69HRgIo3oXQ54T3uMr3n/by/nZfI4yBMioNED1Ll9OEHUn4lnBpGceE1
-         1Lvc7WHbywXEreSPbOVJzkBv9z9ZGsZNNe4f7+7nsr2gljRnSW7ydSBnOqoNvxk6I6HT
-         t/yQ==
-X-Gm-Message-State: AOJu0YyPxuE+dmOnVMtdakvjgkX7n1rTg6P6xuiRQm74EB8RV8HILtUw
-        qqU0QXAsOaLOwaV0jO1lUY/QqJJrxeDWFg0Lqreklg==
-X-Google-Smtp-Source: AGHT+IFsa7g+lTF78/6Oq+g1h7V+W32ilCSZCgjNZ+F6FR8qocNT/2a83+A9hgOW/X1dEoXYl6wxcRR2eVaLH50SmAA=
-X-Received: by 2002:a25:40ca:0:b0:d7f:cdc8:e183 with SMTP id
- n193-20020a2540ca000000b00d7fcdc8e183mr1765183yba.39.1694600785584; Wed, 13
- Sep 2023 03:26:25 -0700 (PDT)
+        Wed, 13 Sep 2023 06:27:36 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2049.outbound.protection.outlook.com [40.107.13.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8FF19B2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:27:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jd19UXReXam92t36ElGICJ3//hmYGn0vftw9/DR9VvGesFkW3lltgxRB8UaG2b/+YCkNFBZjx35bgI1HDkKm9OHke4jqwhh2HXd0i5IFyOgwcBJDeMSBuBJrUdDrZnJo2uEOFk7HvxDB0UoNQv96lYTmazGOwogirDk2QvlT20ECob9qavEPMckd+2vZ0Bs3iWSOJHUjRxMUTPlqFUanBZv9/EvBPFZoPUYCIoYk1rTaJcdzYQVMEeQ05QSVCYGaeNukmXuMdpDjWLpPkwlOHRkC0gtROF4vIsF0cEV2WSJTQ7VmXfu8Hy7IY3qJJFilO5CIc/TPo1jh+mU76NxlrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5tQdiu0x5kU+1CLi1MumrJfpwumomnH0TkPRLQ9Bt/s=;
+ b=B8wnFWhfKSh7SmiPvcpzSku1DfizBi+0rg75FHnlaFl2HMzUxEHanSQ3i9/ca27GBfH5aeODDI3hQcM3y7eX0+VmMGP4wtBrfNoswsKvuQmdp6jD6HNy0xm1oANCS989rcvVIvE/r+7Kb1Gpj7OuVFaOn6jn5hPMGvFtkoNvRZQ17JbLPZkhBdnpjQCvFqkx9ee34KBq4v+3n8IJtej0Nkx3pql5GY0CusVGFefgfTO9cWf2/i96GGN+re7qqfOggJsMzK0NPzhWQpiUW9l95u6NRYlh2B+SVmy5m8I1e7iX1uU+FDc4Tdm9cTM9IIbNtMKpbmbSrLNS3d5ND4VYxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5tQdiu0x5kU+1CLi1MumrJfpwumomnH0TkPRLQ9Bt/s=;
+ b=OBr8CnAqOZTAF+lhpUCDUnU9n/+TnnMgWMW9qRE48c+TdDVxxHHgEUq0U+ihjuuc7uHFC0i252MuArmh9kZftxzS0g9YENLI1sFdew/jsPbfh4ob0kKHd2oCetGwmHACj4EPh2RBNLI4MH/4Qpr0V+wN+TxEz33rp2n6ZgTVFsc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by AM9PR04MB7554.eurprd04.prod.outlook.com (2603:10a6:20b:2da::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 10:27:29 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::cda8:5cad:29b6:3c96]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::cda8:5cad:29b6:3c96%7]) with mapi id 15.20.6745.034; Wed, 13 Sep 2023
+ 10:27:29 +0000
+From:   Chancel Liu <chancel.liu@nxp.com>
+To:     shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v2] ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
+Date:   Wed, 13 Sep 2023 18:26:56 +0800
+Message-Id: <20230913102656.2966757-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0006.apcprd02.prod.outlook.com
+ (2603:1096:4:194::8) To DB9PR04MB9498.eurprd04.prod.outlook.com
+ (2603:10a6:10:360::21)
 MIME-Version: 1.0
-References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
- <20230903214150.2877023-2-dmitry.baryshkov@linaro.org> <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
- <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
- <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com> <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
- <ZPiAwOf00RREiYPr@kuha.fi.intel.com> <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
- <ZQBGD8CY5OVKYX63@kuha.fi.intel.com> <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
- <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com>
-In-Reply-To: <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 13 Sep 2023 13:26:14 +0300
-Message-ID: <CAA8EJpqaipCT66x698R6dKDTSMk-D2iNHv8NSnMzPy-X_jFJ1Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|AM9PR04MB7554:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a2b6d4c-62f8-4de2-aa72-08dbb4440802
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k9NJxvfZN6xOU3xO/qRAqBWZV9qS9vJFfgT4Agkq6YeBt7oVFQFfcziIpgGrYMjcbD8qdLKg67KxgZ72ofEcMBeEheAKnFGmVm6peJcOMNN2uISKEjfSJY7NJnsE3psegHgG1hYa4kVjw4MsgCpM/r4xHUktVfxfahupjMm5Olkhqoi7/I2liR3AALCPPlx8NPw5lLzRD3JByGjNx12Uql+LNql6eGf76OksdWKHAv7q1PhUBp4fNZzSHkVVuFu5VAKW7e1UdKGK/CWQuePPGBcdT8p5mKOpdaOgmNJF9mTbkoiFMuMi0OQV41GrAs6kttgoc2nLXF6lRw18lP+2M/WJLtQ6mFWDVBHU1dzsxdmYM9aYAZpuFGsvp+uJSoSUAvo1Mdwfyfpo3BcoAOVD/1hvXixGJjcXQsFhG47ui/AkMPzHDxTwr3/kowdZyXwknDz825dAnlVAOGbkrUtitqzG8JDfKyaF7gPdcjaYglVJPWiiFA6pzk3WHzCcby0t8zBhm1N7P46gti3bf3kjTFz8yhzyJ/OLreDz8U3TIgZbj3z0kGeI5F6CrPChu2vOaXxqqX/zd2POREeYmmSVVLuSG4JiNEef6sMgTJhK/xLbU6zj8937IcAflG5d2SAykfAd5Qz7cZVo7AK1QPiZOA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(346002)(396003)(136003)(451199024)(186009)(1800799009)(7416002)(2906002)(44832011)(5660300002)(8936002)(41300700001)(4326008)(8676002)(66556008)(66476007)(26005)(66946007)(316002)(478600001)(6506007)(6486002)(6666004)(6512007)(1076003)(2616005)(52116002)(83380400001)(36756003)(921005)(38350700002)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OXpnQeYVH/Nohn8KYkrOK9ZTC9DTIKIADllLAc6WBbAGa5hiPGFAb6LGa5Wx?=
+ =?us-ascii?Q?CHXgy1RRv79ui2JBmTFnTmVCpS7kvZZjw+qN1+e6SsIYJmz88/8HlGZbLH0V?=
+ =?us-ascii?Q?nkouzFSrpv9RjdHTZO0yX4iAxHErf9Hm/AwptkF7xmSw5dhGewmVYRy9eUcp?=
+ =?us-ascii?Q?aTlEOiJd/g2dR5XFily1hfEVeEPXcGVR4/vSsCFtRj3Rgbc73m8zC2GlP104?=
+ =?us-ascii?Q?HtmotHRqSesT3zbNlDHT468fXxfzPGZpe2tZHXu4IfjuamaarGXn6Ub8MTnV?=
+ =?us-ascii?Q?BWsdqa3ndpcCLdhVJPFeOZOlyr+ta+UdXuk0rGIUpiifzMy7vvfgPfSn9Spi?=
+ =?us-ascii?Q?PCmHIT3KdV+6LiXZwHKu6oq3aHcW7YHHjaSms398VSGax2AHommh+TuK3vTN?=
+ =?us-ascii?Q?lRimY5k0ufEWRiFMYXePtEpCfslDUJhIBi1oZnzQNOvQ6Kajt2iI2Meqv24P?=
+ =?us-ascii?Q?Ka21jitpA68UkSvim6ShjBCK5oOsP7Y7GJTK2mJIDSqoy7QebZvQNVTIUEvF?=
+ =?us-ascii?Q?GNrXQLGpZtmX12vv5Wadme/VZaX58eEWAxbY6cTDUV+dDzcRAAqJhLijIt5D?=
+ =?us-ascii?Q?/v4Z2RJSHjw89idLKkgElT3dGLTG3u/yEwq3+4mVnG1ZlWDknqnaGU0OM1cT?=
+ =?us-ascii?Q?PJ8ZYqeg8Ear0CANs4nJdvxdUvW96DHgBCPvDgeAqcZ+OioV0896RNRbbCQ7?=
+ =?us-ascii?Q?/9uMiFXjvbs+5Ik1ns2/mC0q/OOkR6ARmVOya5XeJJPzYsgicKyKfOZDNrDf?=
+ =?us-ascii?Q?2q8fXJftS9YlWNFcC63mQMKxShx3d2MAfnW7lB9IQhcvScemN14SFaEgdO/Z?=
+ =?us-ascii?Q?hhwQ4q0RY9GRkVYqcTse9RsI+7q7Hv2bTSR6XHGHSvL6g8Y06r8qdO+R6c5g?=
+ =?us-ascii?Q?MUlPj+PRg4vYWQBv6TxT2k+Qh0JNSA1UIzvptmxYduC/RgwduIOpKor1Cymp?=
+ =?us-ascii?Q?bABBMk29dVOnt7jhnbltaJGswEZOVNpWTXwMzcISyYAGfq1j1ipZmUixUO86?=
+ =?us-ascii?Q?tuccTFNZPxhxvD2SmFYTeDOComoUWlxdX2qVZmSiFIq4KQZI7W7pwF95USYM?=
+ =?us-ascii?Q?MJ8rw30KXwWtzzP0iEvl84Eu591d8Fun/K3KFzEJXL1Id0p2i23JtSAcTiNd?=
+ =?us-ascii?Q?ivUJO1EnXI7EfiapSnsLvFuDFkFbZBSnhzQ9LJwKa1oQpssq+2V2/G6bMstD?=
+ =?us-ascii?Q?I8TbJrcong1q27ZYaBR6vinjOx7DGJydJLYFrhTODNSnbLwbGY4T2Bnbw3/Q?=
+ =?us-ascii?Q?guPf9JsxvhTR7yhOzI8NjQtsiSsHffpQrGpytnTSg/2Plkgvm4FRtjx6OBys?=
+ =?us-ascii?Q?Jv+OMYP8kTjdQfVwJEbfFIEceUGyQe3WNVr5Vari7gqxJR/wztCG2nlOExZC?=
+ =?us-ascii?Q?qTbDd7RbHSsWpmxgsSGmFFhN3/REIBCy+srs7gzigj7BVv0mlp5LlZWLL170?=
+ =?us-ascii?Q?KHJ1qnh/46DCYlFM8V75clpFgwfc7DjqotMkaiUyOClgjLEw7+6gKPnrv3di?=
+ =?us-ascii?Q?ixv/cCAybz4WQGUjzPvhSk/HiAXdQVAds7XQGw6A5rhrVAGBoUdgL0Zeqa6M?=
+ =?us-ascii?Q?K/NuoxtsriD+1GgCPEgJbOxUGqGvmRtC1ALcz+He?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2b6d4c-62f8-4de2-aa72-08dbb4440802
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 10:27:29.1287
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oT3tiGkVCx7+zsgFPXlsekbNhedJl8Ub9J33OvPt9Hp6GJDX5En6LLmVALee6T5sXIh1CDbiNKK6yQqycm++hg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7554
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+i.MX rpmsg sound cards work on codec slave mode. MCLK will be disabled
+by CPU DAI driver in hw_free(). Some codec requires MCLK present at
+power up/down sequence. So need to set ignore_pmdown_time to power down
+codec immediately before MCLK is turned off.
 
-On Wed, 13 Sept 2023 at 12:27, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
-> On Tue, Sep 12, 2023 at 08:39:45PM +0300, Dmitry Baryshkov wrote:
-> > On 12/09/2023 14:05, Heikki Krogerus wrote:
-> > > On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
-> > > > On 06/09/2023 16:38, Heikki Krogerus wrote:
-> > > > > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
-> > > > > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
-> > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > >
-> > > > > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > Hi Heikki,
-> > > > > > > >
-> > > > > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > > > >
-> > > > > > > > > Hi Dmitry,
-> > > > > > > > >
-> > > > > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > > > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> > > > > > > > >
-> > > > > > > > > That's not true. The dev->fwnode is assigned when the device is
-> > > > > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
-> > > > > > > > > member is assigned before the device is registered, then that fwnode
-> > > > > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
-> > > > > > > > >
-> > > > > > > > > But please note that even if drm_connector does not have anything in
-> > > > > > > > > its fwnode member, the device may still be assigned fwnode, just based
-> > > > > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> > > > > > > > >
-> > > > > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > > > > > > > > breaks drivers already using components (as it was pointed at [1]),
-> > > > > > > > > > resulting in a deadlock. Lockdep trace is provided below.
-> > > > > > > > > >
-> > > > > > > > > > Granted these two issues, it seems impractical to fix this commit in any
-> > > > > > > > > > sane way. Revert it instead.
-> > > > > > > > >
-> > > > > > > > > I think there is already user space stuff that relies on these links,
-> > > > > > > > > so I'm not sure you can just remove them like that. If the component
-> > > > > > > > > framework is not the correct tool here, then I think you need to
-> > > > > > > > > suggest some other way of creating them.
-> > > > > > > >
-> > > > > > > > The issue (that was pointed out during review) is that having a
-> > > > > > > > component code in the framework code can lead to lockups. With the
-> > > > > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
-> > > > > > > > for non-ACPI systems) probing of drivers which use components and set
-> > > > > > > > drm_connector::fwnode breaks immediately.
-> > > > > > > >
-> > > > > > > > Can we move the component part to the respective drivers? With the
-> > > > > > > > patch 2 in place, connector->fwnode will be copied to the created
-> > > > > > > > kdev's fwnode pointer.
-> > > > > > > >
-> > > > > > > > Another option might be to make this drm_sysfs component registration optional.
-> > > > > > >
-> > > > > > > You don't need to use the component framework at all if there is
-> > > > > > > a better way of determining the connection between the DP and its
-> > > > > > > Type-C connector (I'm assuming that that's what this series is about).
-> > > > > > > You just need the symlinks, not the component.
-> > > > > >
-> > > > > > The problem is that right now this component registration has become
-> > > > > > mandatory. And if I set the kdev->fwnode manually (like in the patch
-> > > > > > 2), the kernel hangs inside the component code.
-> > > > > > That's why I proposed to move the components to the place where they
-> > > > > > are really necessary, e.g. i915 and amd drivers.
-> > > > >
-> > > > > So why can't we replace the component with the method you are
-> > > > > proposing in this series of finding out the Type-C port also with
-> > > > > i915, AMD, or whatever driver and platform (that's the only thing that
-> > > > > component is used for)?
-> > > >
-> > > > The drm/msm driver uses drm_bridge for the pipeline (including the last DP
-> > > > entry) and the drm_bridge_connector to create the connector. I think that
-> > > > enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
-> > > > series.
-> > > >
-> > > >
-> > > > > Determining the connection between a DP and its Type-C connector is
-> > > > > starting to get really important, so ideally we have a common solution
-> > > > > for that.
-> > > >
-> > > > Yes. This is what we have been discussing with Simon for quite some time on
-> > > > #dri-devel.
-> > > >
-> > > > Unfortunately I think the solution that got merged was pretty much hastened
-> > > > in instead of being well-thought. For example, it is also not always
-> > > > possible to provide the drm_connector / typec_connector links (as you can
-> > > > see from the patch7. Sometimes we can only express that this is a Type-C DP
-> > > > connector, but we can not easily point it to the particular USB-C port.
-> > > >
-> > > > So, I'm not sure, how can we proceed here. Currently merged patch breaks
-> > > > drm/msm if we even try to use it by setting kdef->fwnode to
-> > > > drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
-> > > > an ACPI-only thing, which is not expected to work in a non-ACPI cases.
-> > >
-> > > You really have to always supply not only the Type-C ports and partners,
-> > > but also the alt modes. You need them, firstly to keep things sane
-> > > inside kernel, but more importantly, so they are always exposed to the
-> > > user space, AND, always the same way. We have ABIs for all this stuff,
-> > > including the DP alt mode. Use them. No shortcuts.
-> > >
-> > > So here's what you need to do. UCSI does not seem to bring you
-> > > anything useful, so just disable it for now. You don't need it. Your
-> > > port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
-> > > that's where you need to register all these components - the ports,
-> > > partners and alt modes. You have all the needed information there.
-> >
-> > To make things even more complicate, UCSI is necessary for the USB part of
-> > the story. It handles vbus and direction.
-> >
-> > > Only after you've done that we can start to look at how should the
-> > > connection between the DPs and their USB Type-C connectors be handled.
-> >
-> > But sure enough, I can add typec port registration to the altmode driver.
-> > This will solve the 'port not existing' part of the story.
-> >
-> > I'd like to hear your opinion on:
-> >
-> > - components. Using them breaks drm/msm. How can we proceed?
->
-> I don't think replacing the components is going to be a problem once
-> you have described everything properly in you DT. I'm fairly certain now
-> that that is the main problem here. You don't have this connection
-> described in your DT as it should.
+Take WM8962 as an example, if MCLK is disabled before DAPM power down
+playback stream, FIFO error will arise in WM8962 which will have bad
+impact on playback next.
 
-We have. See https://lore.kernel.org/linux-arm-msm/20230817145940.9887-1-dmitry.baryshkov@linaro.org/
-(for non-PMIC-GLINK platform)
-Or arch/arm64/boot/dts/qcom/sm8350-hdk.dts, which already has a full
-description of USB-C connector and signal flow.
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+---
+ sound/soc/fsl/imx-rpmsg.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-In fact, thanks to this representation I can properly set
-'connector->fwnode' to point to the OF node corresponding to the
-connector's drm_bridge. I can even propagate it to the kdef->fwnode /
-kdev->of_node in drm_sysfs_connector_add(). But then a component_add()
-call looks the kernel up.
-
-And to add on top of that, here is another reason why I think that
-this sysfs links ABI/implementation was not well thought. The
-typec_connector_ops are added to all fwnode-enabled connector devices.
-It doesn't even bother checking that the device is really the DP
-connector and that the device on the other side of fwnode link is a
-typec port device. The symlink is named 'typec_connector', so one can
-not easily extend this ABI to support SlimPort aka MyDP (which uses
-micro-USB-B connectors instead of USB-C). Neither can we extend it to
-represent MHL connections (again, micro-USB-B).
-
-> > - PATH property usage. This way we make USB-C DisplayPort behave like the
-> > MST ports.
->
-> That looks to me like an attempt to exploit a feature that is not
-> designed for this purposes at all. Just drop all that.
-
-But why? From the docs: 'Connector path property to identify how this
-sink is physically connected.'
-
-So far we have been using it for MST only. But the description above
-also suits properly for the 'connected to the Type-C port0 device'
-kind of data. Then the userspace can use this property to change the
-representation of the controller. Or to rename it as it does for
-DP-MST connectors. Or just add the USB-C icon in the UI.
-
-Having this data in sysfs only requires userspace first to map the
-connector to the device under sysfs (which is not trivial since Xorg
-renames DP-MST connectors), then to look for the symlink value. Quite
-complicated compared to checking the DRM property.
-
-Moreover, once we get to the SlimPort / MyDP / MHL, we can extend the
-schema to support 'microusb:something' values for this property.
-
-> The connection has to be first described in your DT, and the way you
-> usually describe connections in DT is by using the device graph (OF
-> graph). It seems that you have everything needed for that - the USB
-> Type-C connectors have their own OF nodes (what you register as
-> drm_bridges are in fact USB Type-C connectors), and presumable you
-> also have OF nodes for all your video ports (DisplayPorts) - so
-> applying the graph between the two really should not be a problem. The
-> DP is endpoint for the USB Type-C connector, and vice versa.
-
-Not quite. There is no direct connection between the USB Type-C
-connector and DP controller. The USB-C connector has three ports.
-
-port@0 goes to theHS-USB controller. This is simple.
-
-port@1 goes to the USB+DP PHY. All retimers and SS line muxes are
-included in between. And it is the USB+DP PHY that is connected to the
-DP and USB-SS controllers.
-
-port@2 goes to SBU lines mux (e.g. fsa4480).
-
-> After you have everything needed in your DT, the problem here isn't
-> actually much of a problem at all. We will have options how to move
-> forward after that.
-
-Could you please describe what is missing there?
-
+diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
+index 3c7b95db2eac..b578f9a32d7f 100644
+--- a/sound/soc/fsl/imx-rpmsg.c
++++ b/sound/soc/fsl/imx-rpmsg.c
+@@ -89,6 +89,14 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
+ 			    SND_SOC_DAIFMT_NB_NF |
+ 			    SND_SOC_DAIFMT_CBC_CFC;
+ 
++	/*
++	 * i.MX rpmsg sound cards work on codec slave mode. MCLK will be
++	 * disabled by CPU DAI driver in hw_free(). Some codec requires MCLK
++	 * present at power up/down sequence. So need to set ignore_pmdown_time
++	 * to power down codec immediately before MCLK is turned off.
++	 */
++	data->dai.ignore_pmdown_time = 1;
++
+ 	/* Optional codec node */
+ 	ret = of_parse_phandle_with_fixed_args(np, "audio-codec", 0, 0, &args);
+ 	if (ret) {
 -- 
-With best wishes
-Dmitry
+2.25.1
+
