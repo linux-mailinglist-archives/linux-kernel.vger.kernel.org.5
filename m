@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFBF79E8D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C8E79E8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240814AbjIMNL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        id S240799AbjIMNLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240798AbjIMNLS (ORCPT
+        with ESMTP id S240809AbjIMNLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:11:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B38619BB;
-        Wed, 13 Sep 2023 06:11:14 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 13:11:12 -0000
+        Wed, 13 Sep 2023 09:11:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A530619B4;
+        Wed, 13 Sep 2023 06:11:15 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 13:11:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694610672;
+        s=2020; t=1694610674;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=WSH5DAuj9ryML7nV9EnMVKVgDWCcsxry1G0kCNpwZ8g=;
-        b=S6pEA7mzLAfDCh05I+zis080r8h8Rw3UH01N7AG4YLHkT5aV7b4svnYOgfCK0YTxwCS5Mj
-        7GtPNggn2MOeBWmCOkRlD6YhPaZO5HuTXn03J+p0xeVFnZsS/IaA8VrTzfpJU5eizR1OYh
-        hY1KhLycsoFbNGaRePhW5fR4Md8VOeupsCQ/+ww1x8jRpDTo4JymZTMPktctRlARYku3Me
-        2Yx/3o6u0MXIXcaLUFo7F5R48yaPbp/elVkYF/r18uTkNWFX8ri6LFJ3Lf1mFXS6yAlCbs
-        3q5ubRQT/WHnBIZmvOU4x7mFsN2pkAU4qyiCmZPfLJPXQtTFSXGwT3L+0cwifA==
+        bh=DofI4X0SwM4cFKXg33+5VCuGohNRvsuXKMzK44gzZPw=;
+        b=BR9MjLkliLA6G0LaMQm9kY1ecIaR6emAees6PMbnKWPmdcx6vxuKen9oph4if/BOrK0jRk
+        aIXH+PUi5BK5d8lIItJAcAEDslvC23K93kbVNyZDhKqznOXAfWg9qwTTfebHMtBLTMx4h2
+        +Tu1Ncbe9xg2QMokSYtVyR5aaGM61mvfMfneA7B+sVgsu5v42yxjvJKI8ZtmvAxtXdvXnG
+        i71xrNrHbaoyF+nVDuINmruikmF4tPhweLcI2uOEaCTcSKKs++TmioUpzkNeL2Og3k2wu+
+        ZLHpqQjh3uTyI+YYaygxFqx42+JmnEMq1v7BTfJ6J4TeCobO9ChGuaVNGL2oMg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694610672;
+        s=2020e; t=1694610674;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=WSH5DAuj9ryML7nV9EnMVKVgDWCcsxry1G0kCNpwZ8g=;
-        b=0L/IlosIMIxS958oIIG+X6Tz3FszJtsrlJ12ESripnaz3+DvsAKW54LjHLoadYMz1hRMaY
-        BWNYBvlB5RDfrFCA==
+        bh=DofI4X0SwM4cFKXg33+5VCuGohNRvsuXKMzK44gzZPw=;
+        b=60Z3NBBw591pkqBJLg1YDhdkexfPkT6DkpO8mXScNmmgMIO+KGjGYrLL7eokbuC2kU0ZgP
+        smfEwknQSVk02mDg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Simplify yield_to()
+Subject: [tip: sched/core] sched: Simplify syscalls
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169461067223.27769.6572821196325694466.tip-bot2@tip-bot2>
+Message-ID: <169461067369.27769.2835016945011485874.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,109 +55,260 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     7a50f76674f8b6f4f30a1cec954179f10e20110c
-Gitweb:        https://git.kernel.org/tip/7a50f76674f8b6f4f30a1cec954179f10e20110c
+Commit-ID:     febe162d4d9158cf2b5d48fdd440db7bb55dd622
+Gitweb:        https://git.kernel.org/tip/febe162d4d9158cf2b5d48fdd440db7bb55dd622
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 09 Jun 2023 16:58:23 +02:00
+AuthorDate:    Fri, 09 Jun 2023 16:54:54 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 13 Sep 2023 15:01:28 +02:00
+CommitterDate: Wed, 13 Sep 2023 15:01:19 +02:00
 
-sched: Simplify yield_to()
+sched: Simplify syscalls
 
 Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- kernel/sched/core.c | 67 +++++++++++++++++++-------------------------
- 1 file changed, 29 insertions(+), 38 deletions(-)
+ kernel/sched/core.c | 154 ++++++++++++++++++-------------------------
+ 1 file changed, 68 insertions(+), 86 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1d5cbb3..6c8c40a 100644
+index fa57a56..67c32c4 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8888,55 +8888,46 @@ int __sched yield_to(struct task_struct *p, bool preempt)
+@@ -7506,6 +7506,21 @@ static struct task_struct *find_process_by_pid(pid_t pid)
+ 	return pid ? find_task_by_vpid(pid) : current;
+ }
+ 
++static struct task_struct *find_get_task(pid_t pid)
++{
++	struct task_struct *p;
++	guard(rcu)();
++
++	p = find_process_by_pid(pid);
++	if (likely(p))
++		get_task_struct(p);
++
++	return p;
++}
++
++DEFINE_CLASS(find_get_task, struct task_struct *, if (_T) put_task_struct(_T),
++	     find_get_task(pid), pid_t pid)
++
+ /*
+  * sched_setparam() passes in -1 for its policy, to let the functions
+  * it calls know not to change it.
+@@ -7543,14 +7558,11 @@ static void __setscheduler_params(struct task_struct *p,
+ static bool check_same_owner(struct task_struct *p)
  {
- 	struct task_struct *curr = current;
- 	struct rq *rq, *p_rq;
--	unsigned long flags;
- 	int yielded = 0;
+ 	const struct cred *cred = current_cred(), *pcred;
+-	bool match;
++	guard(rcu)();
  
--	local_irq_save(flags);
--	rq = this_rq();
-+	scoped_guard (irqsave) {
-+		rq = this_rq();
+-	rcu_read_lock();
+ 	pcred = __task_cred(p);
+-	match = (uid_eq(cred->euid, pcred->euid) ||
+-		 uid_eq(cred->euid, pcred->uid));
+-	rcu_read_unlock();
+-	return match;
++	return (uid_eq(cred->euid, pcred->euid) ||
++		uid_eq(cred->euid, pcred->uid));
+ }
  
- again:
--	p_rq = task_rq(p);
--	/*
--	 * If we're the only runnable task on the rq and target rq also
--	 * has only one task, there's absolutely no point in yielding.
--	 */
--	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
--		yielded = -ESRCH;
--		goto out_irq;
+ /*
+@@ -7962,27 +7974,17 @@ static int
+ do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
+ {
+ 	struct sched_param lparam;
+-	struct task_struct *p;
+-	int retval;
+ 
+ 	if (!param || pid < 0)
+ 		return -EINVAL;
+ 	if (copy_from_user(&lparam, param, sizeof(struct sched_param)))
+ 		return -EFAULT;
+ 
+-	rcu_read_lock();
+-	retval = -ESRCH;
+-	p = find_process_by_pid(pid);
+-	if (likely(p))
+-		get_task_struct(p);
+-	rcu_read_unlock();
+-
+-	if (likely(p)) {
+-		retval = sched_setscheduler(p, policy, &lparam);
+-		put_task_struct(p);
 -	}
-+		p_rq = task_rq(p);
-+		/*
-+		 * If we're the only runnable task on the rq and target rq also
-+		 * has only one task, there's absolutely no point in yielding.
-+		 */
-+		if (rq->nr_running == 1 && p_rq->nr_running == 1)
++	CLASS(find_get_task, p)(pid);
++	if (!p)
++		return -ESRCH;
+ 
+-	return retval;
++	return sched_setscheduler(p, policy, &lparam);
+ }
+ 
+ /*
+@@ -8078,7 +8080,6 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 			       unsigned int, flags)
+ {
+ 	struct sched_attr attr;
+-	struct task_struct *p;
+ 	int retval;
+ 
+ 	if (!uattr || pid < 0 || flags)
+@@ -8093,21 +8094,14 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	if (attr.sched_flags & SCHED_FLAG_KEEP_POLICY)
+ 		attr.sched_policy = SETPARAM_POLICY;
+ 
+-	rcu_read_lock();
+-	retval = -ESRCH;
+-	p = find_process_by_pid(pid);
+-	if (likely(p))
+-		get_task_struct(p);
+-	rcu_read_unlock();
++	CLASS(find_get_task, p)(pid);
++	if (!p)
++		return -ESRCH;
+ 
+-	if (likely(p)) {
+-		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
+-			get_params(p, &attr);
+-		retval = sched_setattr(p, &attr);
+-		put_task_struct(p);
+-	}
++	if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
++		get_params(p, &attr);
+ 
+-	return retval;
++	return sched_setattr(p, &attr);
+ }
+ 
+ /**
+@@ -8125,16 +8119,17 @@ SYSCALL_DEFINE1(sched_getscheduler, pid_t, pid)
+ 	if (pid < 0)
+ 		return -EINVAL;
+ 
+-	retval = -ESRCH;
+-	rcu_read_lock();
++	guard(rcu)();
+ 	p = find_process_by_pid(pid);
+-	if (p) {
+-		retval = security_task_getscheduler(p);
+-		if (!retval)
+-			retval = p->policy
+-				| (p->sched_reset_on_fork ? SCHED_RESET_ON_FORK : 0);
++	if (!p)
++		return -ESRCH;
++
++	retval = security_task_getscheduler(p);
++	if (!retval) {
++		retval = p->policy;
++		if (p->sched_reset_on_fork)
++			retval |= SCHED_RESET_ON_FORK;
+ 	}
+-	rcu_read_unlock();
+ 	return retval;
+ }
+ 
+@@ -8155,30 +8150,23 @@ SYSCALL_DEFINE2(sched_getparam, pid_t, pid, struct sched_param __user *, param)
+ 	if (!param || pid < 0)
+ 		return -EINVAL;
+ 
+-	rcu_read_lock();
+-	p = find_process_by_pid(pid);
+-	retval = -ESRCH;
+-	if (!p)
+-		goto out_unlock;
++	scoped_guard (rcu) {
++		p = find_process_by_pid(pid);
++		if (!p)
 +			return -ESRCH;
  
--	double_rq_lock(rq, p_rq);
--	if (task_rq(p) != p_rq) {
--		double_rq_unlock(rq, p_rq);
--		goto again;
--	}
-+		guard(double_rq_lock)(rq, p_rq);
-+		if (task_rq(p) != p_rq)
-+			goto again;
- 
--	if (!curr->sched_class->yield_to_task)
+-	retval = security_task_getscheduler(p);
+-	if (retval)
 -		goto out_unlock;
-+		if (!curr->sched_class->yield_to_task)
-+			return 0;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
  
--	if (curr->sched_class != p->sched_class)
--		goto out_unlock;
-+		if (curr->sched_class != p->sched_class)
-+			return 0;
+-	if (task_has_rt_policy(p))
+-		lp.sched_priority = p->rt_priority;
+-	rcu_read_unlock();
++		if (task_has_rt_policy(p))
++			lp.sched_priority = p->rt_priority;
++	}
  
--	if (task_on_cpu(p_rq, p) || !task_is_running(p))
--		goto out_unlock;
-+		if (task_on_cpu(p_rq, p) || !task_is_running(p))
-+			return 0;
- 
--	yielded = curr->sched_class->yield_to_task(rq, p);
--	if (yielded) {
--		schedstat_inc(rq->yld_count);
--		/*
--		 * Make p's CPU reschedule; pick_next_entity takes care of
--		 * fairness.
--		 */
--		if (preempt && rq != p_rq)
--			resched_curr(p_rq);
-+		yielded = curr->sched_class->yield_to_task(rq, p);
-+		if (yielded) {
-+			schedstat_inc(rq->yld_count);
-+			/*
-+			 * Make p's CPU reschedule; pick_next_entity
-+			 * takes care of fairness.
-+			 */
-+			if (preempt && rq != p_rq)
-+				resched_curr(p_rq);
-+		}
- 	}
- 
--out_unlock:
--	double_rq_unlock(rq, p_rq);
--out_irq:
--	local_irq_restore(flags);
+ 	/*
+ 	 * This one might sleep, we cannot do it with a spinlock held ...
+ 	 */
+-	retval = copy_to_user(param, &lp, sizeof(*param)) ? -EFAULT : 0;
 -
--	if (yielded > 0)
-+	if (yielded)
- 		schedule();
+-	return retval;
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
++	return copy_to_user(param, &lp, sizeof(*param)) ? -EFAULT : 0;
+ }
  
- 	return yielded;
+ /*
+@@ -8238,39 +8226,33 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	    usize < SCHED_ATTR_SIZE_VER0 || flags)
+ 		return -EINVAL;
+ 
+-	rcu_read_lock();
+-	p = find_process_by_pid(pid);
+-	retval = -ESRCH;
+-	if (!p)
+-		goto out_unlock;
++	scoped_guard (rcu) {
++		p = find_process_by_pid(pid);
++		if (!p)
++			return -ESRCH;
+ 
+-	retval = security_task_getscheduler(p);
+-	if (retval)
+-		goto out_unlock;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
+ 
+-	kattr.sched_policy = p->policy;
+-	if (p->sched_reset_on_fork)
+-		kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+-	get_params(p, &kattr);
+-	kattr.sched_flags &= SCHED_FLAG_ALL;
++		kattr.sched_policy = p->policy;
++		if (p->sched_reset_on_fork)
++			kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
++		get_params(p, &kattr);
++		kattr.sched_flags &= SCHED_FLAG_ALL;
+ 
+ #ifdef CONFIG_UCLAMP_TASK
+-	/*
+-	 * This could race with another potential updater, but this is fine
+-	 * because it'll correctly read the old or the new value. We don't need
+-	 * to guarantee who wins the race as long as it doesn't return garbage.
+-	 */
+-	kattr.sched_util_min = p->uclamp_req[UCLAMP_MIN].value;
+-	kattr.sched_util_max = p->uclamp_req[UCLAMP_MAX].value;
++		/*
++		 * This could race with another potential updater, but this is fine
++		 * because it'll correctly read the old or the new value. We don't need
++		 * to guarantee who wins the race as long as it doesn't return garbage.
++		 */
++		kattr.sched_util_min = p->uclamp_req[UCLAMP_MIN].value;
++		kattr.sched_util_max = p->uclamp_req[UCLAMP_MAX].value;
+ #endif
+-
+-	rcu_read_unlock();
++	}
+ 
+ 	return sched_attr_copy_to_user(uattr, &kattr, usize);
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
+ }
+ 
+ #ifdef CONFIG_SMP
