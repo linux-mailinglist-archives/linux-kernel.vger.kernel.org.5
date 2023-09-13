@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A7679E3B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843F979E3AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238861AbjIMJaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S238946AbjIMJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjIMJaQ (ORCPT
+        with ESMTP id S237229AbjIMJ31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:30:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A0F10DD;
-        Wed, 13 Sep 2023 02:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=BYNLXBo0bL67GPqYQl9HGYIz6cphXRkKLo87ZYOM0ns=; b=o+iKtUwmbYyLhUvUBpleugkAp7
-        kOmB4pyjzNZKP88yrfQ3243OyFHKsZgnYr+3vhW3rAqNnQx6lcCi7Jy1ZTt631WiPcEr0Aoqj9AVs
-        PXDISGpMnbPnq2ntOnMGbaRrfEqeIB9sk0Tz1Z83TvnQgQsprQuzmRTn54TsCuPlHT0uP7GWXQQ1P
-        uSVnz1pc1LIkOGiQTJzunrK1kaViDH9P2InUKMNW5jsKpy+FY+TBRv7V+V+GjqqMnuvWOxMWVDg5M
-        l0i6coOwFfbh3AQS/4upLtGog+jp8D02+BWC8ml1Y4Do5gaS/iYnAEiTfQzg7fvHQTl6q3Bbo6hIA
-        4kiIqZkQ==;
-Received: from [89.27.170.32] (helo=[127.0.0.1])
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgMCF-00D0hd-Eq; Wed, 13 Sep 2023 09:30:07 +0000
-Date:   Wed, 13 Sep 2023 11:30:06 +0200
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Like Xu <like.xu.linux@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v5=5D_KVM=3A_x86/tsc=3A_Don=27t_sync_T?= =?US-ASCII?Q?SC_on_the_first_write_in_state_restoration?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <90194cd0-61d8-18b9-980a-b46f903409b4@gmail.com>
-References: <20230913072113.78885-1-likexu@tencent.com> <e506ceb2d837344999c4899525a3490d8c46c95b.camel@infradead.org> <90194cd0-61d8-18b9-980a-b46f903409b4@gmail.com>
-Message-ID: <461B7217-7AA7-479E-9060-772E243CB03D@infradead.org>
+        Wed, 13 Sep 2023 05:29:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAF4EC;
+        Wed, 13 Sep 2023 02:29:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 15779218E8;
+        Wed, 13 Sep 2023 09:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694597362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3zkN0jprRlNgAWBNnwR9+n4RWOVj4MMw+4ONI9DbmTg=;
+        b=sy/7mX2iw7iKv8P9spaqJzKhuvhMTMG7zNwc5tSfPCX0r8mq5sC5YkIUe+u9AxXK4XSUqs
+        cR6JPoEcWTiAwdkObk2E+nbLNrdNFostv0/2Cn4Az6qCOMdUEl8g1Et3jILR0xBH8KbkpP
+        Ci0yCSTsutSN0D9fjp49FPxHDkzu0ck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694597362;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3zkN0jprRlNgAWBNnwR9+n4RWOVj4MMw+4ONI9DbmTg=;
+        b=CNYrhCga/C9N/KHhBo2n4aWMUeeYw4VKE6KPB/ijC8ftosBsahMcvFujh2F7XJFh61XT6b
+        jBGdb8BTnnSy0jAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 05FCC13582;
+        Wed, 13 Sep 2023 09:29:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id j0s1APKAAWUvRAAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Wed, 13 Sep 2023 09:29:22 +0000
+Date:   Wed, 13 Sep 2023 11:30:08 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Gao <wegao@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Martin Doucha <mdoucha@suse.cz>
+Subject: Re: Qemu-arm64: LTP: cfs_bandwidth01: Unable to handle kernel NULL
+ pointer dereference at virtual address 0000000000000038
+Message-ID: <ZQGBINUoRuEhTFwQ@yuki>
+References: <CA+G9fYvHhiiGKhNd=L9+xYFVwv0Q8k6gUBeFQGWCWw1cWhb50Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvHhiiGKhNd=L9+xYFVwv0Q8k6gUBeFQGWCWw1cWhb50Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+> Following kernel crash noticed on Linux stable-rc 6.5.3-rc1 on qemu-arm64 while
+> running LTP sched tests cases.
+> 
+> This is not always reproducible.
+
+What the test does is to create three levels of cgroups, sets CPU
+quotas for them, runs bussy loop proceses in the groups and changes the
+quotas during the time the bussy processes runs.
+
+And the test is regression test for quite a few commits:
+
+commit 39f23ce07b9355d05a64ae303ce20d1c4b92b957
+Author: Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed May 13 15:55:28 2020 +0200
+
+    sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list
 
 
-On 13 September 2023 11:17:49 CEST, Like Xu <like=2Exu=2Elinux@gmail=2Ecom=
-> wrote:
->> I think you also need to set kvm->arch=2Euser_set_tsc() in
->> kvm_arch_tsc_set_attr(), don't you?
->
->How about:
->
->diff --git a/arch/x86/kvm/x86=2Ec b/arch/x86/kvm/x86=2Ec
->index c55cc60769db=2E=2E374965f66137 100644
->--- a/arch/x86/kvm/x86=2Ec
->+++ b/arch/x86/kvm/x86=2Ec
->@@ -5545,6 +5545,7 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *v=
-cpu,
-> 		tsc =3D kvm_scale_tsc(rdtsc(), vcpu->arch=2El1_tsc_scaling_ratio) + of=
-fset;
-> 		ns =3D get_kvmclock_base_ns();
->
->+		kvm->arch=2Euser_set_tsc =3D true;
-> 		__kvm_synchronize_tsc(vcpu, offset, tsc, ns, matched);
-> 		raw_spin_unlock_irqrestore(&kvm->arch=2Etsc_write_lock, flags);
+commit b34cb07dde7c2346dec73d053ce926aeaa087303
+Author: Phil Auld <pauld@redhat.com>
+Date:   Tue May 12 09:52:22 2020 -0400
 
-Yep, that looks good=2E
+    sched/fair: Fix enqueue_task_fair() warning some more
 
+commit fe61468b2cbc2b7ce5f8d3bf32ae5001d4c434e9
+Author: Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri Mar 6 14:52:57 2020 +0100
 
->> This comment isn't quite right; it wants to use some excerpt of the
->> commit message I've suggested above=2E
->
->How about:
->
->@@ -2735,20 +2735,34 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *=
-vcpu, u64 data)
-> 			 * kvm_clock stable after CPU hotplug
-> 			 */
-> 			synchronizing =3D true;
->-		} else {
->+		} else if (kvm->arch=2Euser_set_tsc) {
-> 			u64 tsc_exp =3D kvm->arch=2Elast_tsc_write +
-> 						nsec_to_cycles(vcpu, elapsed);
-> 			u64 tsc_hz =3D vcpu->arch=2Evirtual_tsc_khz * 1000LL;
-> 			/*
->-			 * Special case: TSC write with a small delta (1 second)
->-			 * of virtual cycle time against real time is
->-			 * interpreted as an attempt to synchronize the CPU=2E
->+			 * Here lies UAPI baggage: user-initiated TSC write with
->+			 * a small delta (1 second) of virtual cycle time
->+			 * against real time is interpreted as an attempt to
->+			 * synchronize the CPU=2E
+    sched/fair: Fix enqueue_task_fair warning
 
-Much better, thanks=2E But I don't much like "an attempt to synchronize th=
-e CPU"=2E=20
+commit 5ab297bab984310267734dfbcc8104566658ebef
+Author: Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri Mar 6 09:42:08 2020 +0100
 
-In my response to Sean I objected to that classification=2E Userspace is j=
-ust *setting* the TSC=2E There is no dedicated intent to "synchronize" it=
-=2E It just sets it, and the value just *might* happen to be in sync with a=
-nother vCPU=2E=20
+    sched/fair: Fix reordering of enqueue/dequeue_task_fair()
 
-It's just that our API is so fundamentally broken that it *can't* be in sy=
-nc, so we "help" it a bit if it looks close=2E
+commit 6d4d22468dae3d8757af9f8b81b848a76ef4409d
+Author: Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon Feb 24 09:52:14 2020 +0000
 
-So maybe=2E=2E=2E
+    sched/fair: Reorder enqueue/dequeue_task_fair path
 
-Here lies UAPI baggage: when a user-initiated TSC write has a small delta =
-(1 second) of virtual cycle time against the previously set vCPU, we assume=
- that they were intended to be in sync and the delta was only due to the ra=
-cy nature of the legacy API=2E
+commit fdaba61ef8a268d4136d0a113d153f7a89eb9984
+Author: Rik van Riel <riel@surriel.com>
+Date:   Mon Jun 21 19:43:30 2021 +0200
 
->+			 * This trick falls down when restoring a guest which genuinely
->+			 * has been running for less time than the 1 second of imprecision
->+			 * which we allow for in the legacy API=2E In this case, the first
->+			 * value written by userspace (on any vCPU) should not be subject
->+			 * to this 'correction' to make it sync up with values that only
->+			 * from from the kernel's default vCPU creation=2E Make the 1-second
->+			 * slop hack only trigger if flag is already set=2E
->+			 *
->+			 * The correct answer is for the VMM not to use the legacy API=2E
+    sched/fair: Ensure that the CFS parent is added after unthrottling
 
 
+Unless this is a random corruption we should look closer at scheduller
+changes.
 
-
->> Userspace used to be able to write zero to force a sync=2E You've remov=
-ed
->> that ability from the ABI, and haven't even mentioned it=2E Must we?
->
->Will continue to use "bool user_initiated" for lack of a better move=2E
-
-Why? Can't we treat an explicit zero write just the same as when the kerne=
-l does it?
+-- 
+Cyril Hrubis
+chrubis@suse.cz
