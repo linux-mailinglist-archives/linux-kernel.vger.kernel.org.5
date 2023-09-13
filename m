@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86B179E6E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B73B79E6E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240382AbjIMLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S240496AbjIMLfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240566AbjIMLes (ORCPT
+        with ESMTP id S240494AbjIMLfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:34:48 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B392137
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:05 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c136ee106so840135966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:05 -0700 (PDT)
+        Wed, 13 Sep 2023 07:35:12 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4751FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52e64bc7c10so8672261a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694604843; x=1695209643; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694604891; x=1695209691; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wM5SIUdq9q8lGvXrXs9VMWSQTu6Zcs1sHBlGbNl1KLk=;
-        b=x/Am8EON2gkt1A/n8jVWiPwZOJjSM3hm/+eTcUR2VrrMDUfLCXlPdh1/LccfVnOCp2
-         VsH2Q8+fWHzvxyaua4hVFciVCl9pr5qhdq5tI5Zs91rYI5pQbVLhABlrEKhnQv1sdhV+
-         1GEiQLx3b1KodHiQEmP68xzq15KFDkCfvkA6EzHyJLk6bPE4/7MWSfSE3rDFgCp53jLc
-         yzcF2cp+UbdNfHjLC+oRK3DTc33J4PaISBSuAwwdK7ZVJViKbjB0wvceh0ehsArG9Bmx
-         e9cffcO8QwllBlQXOz6wcWBX+mQvIp9ZdFrNHsWBFWFJKS2P9CDfK9NG8Ixa+OsvkzGf
-         OaZg==
+        bh=86DQ4dbXO3ltBvM0+Xx3eqvo5Kea0JEzESAZn6J7D1g=;
+        b=GO4qH7Px50FMG3XikTCe/PkfJTl+q0yQUNFDr4JG9QJeuviyTapdHEH+jtPuGkQVEK
+         d6B9BiZKEQYWp1qDldHu3xPxrUNfLQODL0QXI59sEcE4Me4G5SeK48aAV6b6Z8gvVyeh
+         Y874CPbgCgXf3BIRicjUCogzVl5ruJiW6/ulBvYWTxcv334pGLgw2js0l8bMfPzZegsC
+         e2KTgmEsuCmoXHHTckZgt2P8nt5ei1Aqsq59l+fqT+7pk4HmrsF5p2Hp4gnNJlZMtWgL
+         b0tgCAk2EDmN5iVY7oUFxMEQngjmqI3n+8MhnJPoqIjmhGJZNqqNv+Nel7LCK2+IKrmi
+         K0eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694604843; x=1695209643;
+        d=1e100.net; s=20230601; t=1694604891; x=1695209691;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wM5SIUdq9q8lGvXrXs9VMWSQTu6Zcs1sHBlGbNl1KLk=;
-        b=u739Cqeji6bT53tRmY6Hfkh8GhGm/+ODOalimFCqURguXVPI9y2b6D918wI13UvK2N
-         DRVpHYharHPRaBErGziIKuZcUy2hfJ9bUssUxt/+TcOOCtczznAIyrGyYKGHA/pTu1b6
-         1aAodxYwHXdxI6XkcWYnk0g0g6Y7uld+HkQHMr9pzO12HmtEbivPKo+/xJG41QwCICUn
-         VRrAQnnt2am9UOEsr7OFh+U5DFmBQ2UAR6LFUbF1HnwoXvf9t4krKggsPikav79zJsI2
-         P6qYSTaXtPW/rRODJ8VTFuBfW0JLz/V4dpkifOIhKtbIpz8x783A5hUW/Vvc9pQrIXkj
-         NUNA==
-X-Gm-Message-State: AOJu0YxzQq4X2xIZ6YBWby2exL2bQUj+p909qFtu/x/SHycldktyHS39
-        esbKg7/eTj/RWkLcvfW17ZZagg==
-X-Google-Smtp-Source: AGHT+IFpLPaGgHkHb7TWz2h534XTfQQkS800fp8I2bYQFpK202UNLN0lz7T7mWJfEwkv5Wc31F2IBA==
-X-Received: by 2002:a17:906:32c3:b0:9a1:f5b1:c85d with SMTP id k3-20020a17090632c300b009a1f5b1c85dmr1827996ejk.12.1694604843481;
-        Wed, 13 Sep 2023 04:34:03 -0700 (PDT)
+        bh=86DQ4dbXO3ltBvM0+Xx3eqvo5Kea0JEzESAZn6J7D1g=;
+        b=klV1JtPvKTpStYnkeziNo5HKZJjJMVF7IuFyDUDE0Xxhc/KZ40wdKlzu90hAoEoD+e
+         cFlCd4NwO6EaJ1ZyHb1Bqr10bGyW/hCff4ZwUiQuYTvGckN0TtPTZ18LNKn1waISJ/EB
+         2PTf8FwNM9IbBBcyqhEVjtigEPbzOMNVwcp7UE7zi0YTEGznHRSs0zuETLxqrisqTV7I
+         Ll/oaPUlRVAHithwrNzu/D+Z9BBnIlMIGo65N8pXhLZ9JeiMb+cF0UWi7DgGZibMtIuS
+         uPt/+1ZW15RPdY+QdEoEyu2IVY7OO4sjDb1VyyiAwfu37k013vr0Mu59WsE+cCywB1DX
+         +Isw==
+X-Gm-Message-State: AOJu0YzUI8Ls45V2j0mgeq2gykqQBMQRQluTSG9iKNbrdA2EDULaEtyq
+        fpCl49h4xFdD7h+4/XH+ZaMOqw==
+X-Google-Smtp-Source: AGHT+IHi5PfiV1i8W1FVPsm2gMd9DnF1UJBCVdqq2qVQD6JwR4/8C2dGtRLWDlARgmhxaq1wkdWzVQ==
+X-Received: by 2002:aa7:d349:0:b0:52f:a6e4:28c6 with SMTP id m9-20020aa7d349000000b0052fa6e428c6mr1990355edr.12.1694604891138;
+        Wed, 13 Sep 2023 04:34:51 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id a22-20020a1709064a5600b00992ca779f42sm8288599ejv.97.2023.09.13.04.34.01
+        by smtp.gmail.com with ESMTPSA id s8-20020a056402164800b0052ea03b9d05sm7154232edx.85.2023.09.13.04.34.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 04:34:02 -0700 (PDT)
-Message-ID: <32e308fa-1118-e17a-8038-c28cb2484c92@linaro.org>
-Date:   Wed, 13 Sep 2023 13:34:01 +0200
+        Wed, 13 Sep 2023 04:34:50 -0700 (PDT)
+Message-ID: <1b3e6111-b2fe-b652-6208-e33bca863159@linaro.org>
+Date:   Wed, 13 Sep 2023 13:34:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v6 2/4] remoteproc: k3: Split out data structures common
- with M4 driver
+Subject: Re: [PATCH v6 4/4] remoteproc: k3-m4: Add a remoteproc driver for M4F
+ subsystem
 Content-Language: en-US
 To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
         mathieu.poirier@linaro.org, p.zabel@pengutronix.de,
@@ -65,9 +65,9 @@ To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
 Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
 References: <20230913111644.29889-1-hnagalla@ti.com>
- <20230913111644.29889-3-hnagalla@ti.com>
+ <20230913111644.29889-5-hnagalla@ti.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913111644.29889-3-hnagalla@ti.com>
+In-Reply-To: <20230913111644.29889-5-hnagalla@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -77,59 +77,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 13/09/2023 13:16, Hari Nagalla wrote:
 > From: Martyn Welch <martyn.welch@collabora.com>
 > 
-> We will be adding the M4F driver which shares a lot of commonality
-> with the DSP driver. Common data structures are introduced here.
+> The AM62x and AM64x SoCs of the TI K3 family has a Cortex M4F core in
+> the MCU domain. This core is typically used for safety applications in a
+> stand alone mode. However, some application (non safety related) may
+> want to use the M4F core as a generic remote processor with IPC to the
+> host processor. The M4F core has internal IRAM and DRAM memories and are
+> exposed to the system bus for code and data loading.
+> 
+> A remote processor driver is added to support this subsystem, including
+> being able to load and boot the M4F core. Loading includes to M4F
+> internal memories and predefined external code/data memories. The
+> carve outs for external contiguous memory is defined in the M4F device
+> node and should match with the external memory declarations in the M4F
+> image binary. The M4F subsystem has two resets. One reset is for the
+> entire subsystem i.e including the internal memories and the other, a
+> local reset is only for the M4F processing core. When loading the image,
+> the driver first releases the subsystem reset, loads the firmware image
+> and then releases the local reset to let the M4F processing core run.
 > 
 > Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
 > Signed-off-by: Hari Nagalla <hnagalla@ti.com>
 > ---
-> Changes in v6:
->  - Created a separate patch for data structures to ease review
+> Changes since v1:
+>  - Addressed minor review comments (refactoring completed in separate
+>    patch)
 > 
->  drivers/remoteproc/ti_k3_common.h | 103 ++++++++++++++++++++++++++++++
->  1 file changed, 103 insertions(+)
->  create mode 100644 drivers/remoteproc/ti_k3_common.h
+> Changes since v2:
+>  - Refactoring completed first, thus smaller change
 > 
-> diff --git a/drivers/remoteproc/ti_k3_common.h b/drivers/remoteproc/ti_k3_common.h
-> new file mode 100644
-> index 000000000000..5e1f27741183
-> --- /dev/null
-> +++ b/drivers/remoteproc/ti_k3_common.h
-> @@ -0,0 +1,103 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * TI K3 Remote Processor(s) driver common code
-> + *
-> + * Refactored from ti_k3_dsp_remoteproc.c.
-> + *
-> + * ti_k3_dsp_remoteproc.c:
-> + * Copyright (C) 2018-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + *	Suman Anna <s-anna@ti.com>
-> + */
+> Changes since v3:
+>  - Removed 'ipc_only' flag and made changes in probe() to enact right
+>    operations
+>  - Fixed spelling mistakes in commit message
+>  - Changed some 'dev_err' messages to 'dev_info'
+>  - Removed unnecessary checks rproc state
+> 
+> Changes since v4:
+>  - None
+> 
+> Changes since v5:
+>  - None
+> 
+>  drivers/remoteproc/Kconfig               |  13 +
+>  drivers/remoteproc/Makefile              |   1 +
+>  drivers/remoteproc/ti_k3_m4_remoteproc.c | 331 +++++++++++++++++++++++
+>  3 files changed, 345 insertions(+)
+>  create mode 100644 drivers/remoteproc/ti_k3_m4_remoteproc.c
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 48845dc8fa85..85c1a3a2b987 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -339,6 +339,19 @@ config TI_K3_DSP_REMOTEPROC
+>  	  It's safe to say N here if you're not interested in utilizing
+>  	  the DSP slave processors.
+>  
+> +config TI_K3_M4_REMOTEPROC
+> +	tristate "TI K3 M4 remoteproc support"
+> +	depends on ARCH_K3
+> +	select MAILBOX
+> +	select OMAP2PLUS_MBOX
+> +	help
+> +	  Say m here to support TI's M4 remote processor subsystems
+> +	  on various TI K3 family of SoCs through the remote processor
+> +	  framework.
 > +
-> +#ifndef REMOTEPROC_TI_K3_COMMON_H
-> +#define REMOTEPROC_TI_K3_COMMON_H
+> +	  It's safe to say N here if you're not interested in utilizing
+> +	  a remote processor.
 > +
-> +#define KEYSTONE_RPROC_LOCAL_ADDRESS_MASK	(SZ_16M - 1)
-> +
-> +/**
-> + * struct k3_rproc_mem - internal memory structure
-> + * @cpu_addr: MPU virtual address of the memory region
-> + * @bus_addr: Bus address used to access the memory region
-> + * @dev_addr: Device address of the memory region from DSP view
-> + * @size: Size of the memory region
-> + */
-> +struct k3_rproc_mem {
-> +	void __iomem *cpu_addr;
-> +	phys_addr_t bus_addr;
-> +	u32 dev_addr;
-> +	size_t size;
+>  config TI_K3_R5_REMOTEPROC
+>  	tristate "TI K3 R5 remoteproc support"
+>  	depends on ARCH_K3
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 55c552e27a45..e30908ca4bfc 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -37,5 +37,6 @@ obj-$(CONFIG_ST_REMOTEPROC)		+= st_remoteproc.o
+>  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
+>  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
+>  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o ti_k3_common.o
+> +obj-$(CONFIG_TI_K3_M4_REMOTEPROC)	+= ti_k3_m4_remoteproc.o ti_k3_common.o
 
-Where is the split? I see only addition here.
-
-Where is the usage of this header? This is basically dead code. Don't
-add dead code, but instead actually move the structures here! Move is
-cut and paste, not just paste.
+Nope, please compile your code and fix all the warnings. There is a big
+fat warning about including objects twice.
 
 Best regards,
 Krzysztof
