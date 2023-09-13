@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 667EF79F2A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BF579F2A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbjIMUM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
+        id S232107AbjIMUNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbjIMUM5 (ORCPT
+        with ESMTP id S231603AbjIMUNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:12:57 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9DF1BC3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:12:53 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-579de633419so2370197b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694635972; x=1695240772; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Su1HKHhLigyzqYlZO3Q6GiJPuDvWadoF+8eJgSHSJSM=;
-        b=aiRSgXPbdPszjUbrmOvfo8VAbkCooNj2DlaPadFcfWqONmI1e1Ks9j2Zmtg9KMhvVx
-         PX/x5k/D0b1WEwZtEzWZRkPA8IrfbYHsqP+tjC85HjqExhu7XheGk8CdHWuLCAz3ZOOM
-         VCuoKtlcFasz019GO6zGs8sPXIZkq+03b5o4kMViuZUBPfWD1EkVMI5jbh/AGXOoQe5Y
-         +rHm/yIuaKSCA/OMPD1AyTCabMcwJEvRXFYuODEV110l2EF96r0v5ZHKr67DsB0HExr7
-         FK463fHavC8jhL1xEhQSum117HDUvYlfT7mfteSZTabEAvtcsAgJS/4vcWp6RjQJUIQO
-         KsSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694635972; x=1695240772;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Su1HKHhLigyzqYlZO3Q6GiJPuDvWadoF+8eJgSHSJSM=;
-        b=fwak2HnhXTNXabD836hsZ7zprbijjR1YhWdASiKSL1FiNPHCvgUFa5066UqGvmWqeU
-         0y6O1YYgvsrKCgZ1dHEQaTSAGrTEvAX01JwAQ2hZYU9scD3aRlipBqBowbfxiWc43obM
-         WEjBEpHf/Tf2R5CkIOpwO8ZwnRK2/K088aQkQK1zGUpT58q3YRan5VlSxqAabSitev+p
-         hBXLsFWXpME/qSbH+oxvHq9fgFZ1kVbr4QWuWVREM2mclbUfyCXHruLOIijq7wQMadR9
-         NMsGfyNeZvOhtaLF7qsG25WEgmpl8IEYwPbkLlC0kvdDI+QUlk/q8owolQ44z4iDvAVR
-         dqHQ==
-X-Gm-Message-State: AOJu0YwknyNwQjDrMS18AfwFUtZlFGFw/3xAdnRnvNludJkw4hyptl8J
-        +0BSlTgGXUdIIdSXUAsv4IO7czzc2fULkPdjAenAZQ==
-X-Google-Smtp-Source: AGHT+IGNdHiKi9h+VMupJWAnl7lkQjZz2lyGhzlQ4y/m/GOS5wCeU4E04eoE42Ydser353023glv4MnCjnMPMHjH7ys=
-X-Received: by 2002:a25:d246:0:b0:d81:6a54:48f0 with SMTP id
- j67-20020a25d246000000b00d816a5448f0mr2205331ybg.22.1694635972595; Wed, 13
- Sep 2023 13:12:52 -0700 (PDT)
+        Wed, 13 Sep 2023 16:13:16 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F331BC3;
+        Wed, 13 Sep 2023 13:13:12 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 3AD4C3200931;
+        Wed, 13 Sep 2023 16:13:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 13 Sep 2023 16:13:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1694635990; x=1694722390; bh=nW
+        Gq1gLR7F41muaJaoLOMct76xa7LgE2SjtA7mYmrLE=; b=xvbgZdE3/nGTuYUUvH
+        u5cCgINz/3pwJhWTguTgefNOzbUhpNqf3mZHxc4jf8Gi1EVIya1H3GR2ZBgF/dXp
+        7hNXBAXnSlbfx4HBobFsvvCCxiPdcnXymIZOsu41aom5nBhu4l7FXoH8I5VF0SnJ
+        U68NDJ6hCCK5D67ktwRZBjTvJTpdc2KhnOPUvPQyG8kZIysketKrIAR6AZfd5HmF
+        85F0KpKO2XbB71FviIWMfeskmsu7YynqqsOHNaBB/JJbZYM38i6zff7PpOD4Kscf
+        TWLBWUYJik0rQBafXPQJ/RTOd+g2sPesJscNbLDHt04KAWgTzv0XMC8C83F7Sret
+        mJ1A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; t=1694635990; x=1694722390; bh=n
+        WGq1gLR7F41muaJaoLOMct76xa7LgE2SjtA7mYmrLE=; b=q9t1HOCltCbs9NGp2
+        35SQHUh7Yz5SCWu97v/ldfktBV9gKyWzHfSBHsZcxXGXkk/Dbz3Yr/6sPJY+YWj+
+        Bc5gJ/GC57NUV4TOAR9Y+nqkp0XcRZK5QSyxjGVmPWLNldWyLWOd/DnqdtqTxxmt
+        gMtqtLzXzKIOGCOWdTIg/epr7yg8lYox9+bsRr2ibP+Q2wFCLzUOe2NTW9x3fVgc
+        TzqjN5HUq7VwAeGfjUdXL1EI4tVzsEDBgSAQBz4HZtMb7l7+gOHHugHK+fG9rneN
+        XIcAVxVDCw3nkHNGILSx5VEblUtX8o/6wecDsvsW794pGIMpChkMXrjpIsKjRohQ
+        MECQA==
+X-ME-Sender: <xms:1hcCZbqe39lCulOHh3IBffCDvRGYLCQJF9hA_Zm_2kqyBN2NzpIBkQ>
+    <xme:1hcCZVrNP5SdHm0SPhC76xognGMq0Tht527_8g_Lg4Uugkowh99n3f3C4Z3KlqtWb
+    DYDR46M5BK7CSuY4A>
+X-ME-Received: <xmr:1hcCZYOjAcSEEaG7ayzMToZDZEa2gXQAx0WVYo3qQvhZKW5-OH-l2pOofHnBp3iDKXEUXRbqhEzuJv8Ua4mcSgUHORk5DhQ_a7cI_BI81Oem5CNL-gcKYVNt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedgudegiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofhrggfg
+    sedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnhhtrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeduffekueejvdetgeelgfdvudfggfejtedvheev
+    hedvhedvjedvgeejvdffleeuveenucffohhmrghinhepmhgrnhhiphhulhgrthhiohhnrd
+    hmmhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeii
+    ihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:1hcCZe68QYm3FAjawT_66yjMVD4OS9u9E__zja0uY2QivxybFwA6OQ>
+    <xmx:1hcCZa4JZ0zbNUisDdqGqZaNIOCI5pzNfL93_a1nyF0YGA8qn-d-cw>
+    <xmx:1hcCZWgP4Gtm0GcL_GPOQodU5dHOykmfYJHSYKrtAazw4vwxkKysRQ>
+    <xmx:1hcCZTH1F1Y_tMd92CraEJmPu-2WlQK0NVxKntLqRomFhhXhpdsOHg>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Sep 2023 16:13:09 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH v3 0/5] Use nth_page() in place of direct struct page manipulation
+Date:   Wed, 13 Sep 2023 16:12:43 -0400
+Message-Id: <20230913201248.452081-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.40.1
+Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-3-brgl@bgdev.pl>
- <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
-In-Reply-To: <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 13 Sep 2023 22:12:40 +0200
-Message-ID: <CACRpkdYtYDJa6fo6RnizHNzUsyazBQxEaNMznaij8rBF4ie+ew@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 10:05=E2=80=AFPM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Wed, Sep 13, 2023 at 2:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> >
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Use the new, less cumbersome interface for setting the GPIO as
-> > active-high that doesn't require first checking the current state.
->
-> ...
->
-> >          * here for older DTs so we can re-use the generic nand_gpio_wa=
-itrdy()
-> >          * helper, and be consistent with what other drivers do.
-> >          */
-> > -       if (of_machine_is_compatible("qi,lb60") &&
-> > -           gpiod_is_active_low(nand->busy_gpio))
-> > -               gpiod_toggle_active_low(nand->busy_gpio);
-> > +       if (of_machine_is_compatible("qi,lb60"))
-> > +               gpiod_set_active_high(nand->busy_gpio);
->
-> Why not moving this quirk to gpiolib-of.c?
+From: Zi Yan <ziy@nvidia.com>
 
-That's a better idea here I think, it's clearly a quirk for a
-buggy device tree.
+On SPARSEMEM without VMEMMAP, struct page is not guaranteed to be
+contiguous, since each memory section's memmap might be allocated
+independently. hugetlb pages can go beyond a memory section size, thus
+direct struct page manipulation on hugetlb pages/subpages might give
+wrong struct page. Kernel provides nth_page() to do the manipulation
+properly. Use that whenever code can see hugetlb pages.
 
-Yours,
-Linus Walleij
+The patches are on top of next-20230913
+
+Changes:
+
+From v2:
+1. Fixed the subject and the commit log of Patch 3 (David Hildenbrand)
+
+From v1:
+1. Separated first patch into three and add Fixes for better backport.
+
+Zi Yan (5):
+  mm/cma: use nth_page() in place of direct struct page manipulation.
+  mm/hugetlb: use nth_page() in place of direct struct page
+    manipulation.
+  mm/memory_hotplug: use pfn math in place of direct struct page
+    manipulation.
+  fs: use nth_page() in place of direct struct page manipulation.
+  mips: use nth_page() in place of direct struct page manipulation.
+
+ arch/mips/mm/cache.c | 2 +-
+ fs/hugetlbfs/inode.c | 4 ++--
+ mm/cma.c             | 2 +-
+ mm/hugetlb.c         | 2 +-
+ mm/memory_hotplug.c  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+--=20
+2.40.1
+
