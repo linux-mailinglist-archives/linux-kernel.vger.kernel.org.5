@@ -2,403 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B76079E2D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2411079E2E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbjIMJAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        id S239180AbjIMJDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238884AbjIMJAd (ORCPT
+        with ESMTP id S236929AbjIMJDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:00:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C8C6219A0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694595586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zg3xgaGt3YM14Q/74ywVVEdNECrsCoG2YVv1+tUkXQw=;
-        b=Nch9QGhUXrY8AiTvrfG/e8IAqpLoLos8RvjUjbbIv+Znbbm15lSomk2uTFzL1zad5MdFdY
-        BoPex6tcbPKICfjxbfInQlZHooCxfs44ZE77NEKzblN03Z6ww14E1X6EUf4J9X2ygY4VU3
-        RiRcL+Uts52F4LBUQGIXHaBA+co2Uas=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-118-wln6kwCTOmSmCKkfuvC0Yw-1; Wed, 13 Sep 2023 04:59:44 -0400
-X-MC-Unique: wln6kwCTOmSmCKkfuvC0Yw-1
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68fbe41b9d3so3677185b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:59:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694595583; x=1695200383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zg3xgaGt3YM14Q/74ywVVEdNECrsCoG2YVv1+tUkXQw=;
-        b=rGMDy7ZU46x6vmjOzqgGP0K2fp4Qqo3NWlGzOSn4fV1KcBqnd/C7I90aBrp0bCZVoQ
-         FJ0b/af4pUo8Ef+D3AQIkCMckQ2k7fQ97EmzgsvRTioFXLhqBrG1MSrmXx0yZ28/jqUd
-         YEGxIwm19bOch5LvLT5A5m8wMKL/di1PmHg2UV8mmtQHYkMqJbrfNJSZRN9o07VCqNr8
-         dnVIJW6fQEXNER+HFlfaFmkHW5t6pk8wLOuG7lpQwFV013ceoGCzAbEUirzroVOLrv0Q
-         wJp7t++GCWi7nANd2ipNnmtmrkF8K9AAG82dxO4NQ9PDYvnGmFgFZR2XvwnagqN+0NaM
-         eNMw==
-X-Gm-Message-State: AOJu0YxEYCBUpzlpaKPR2SDmQv0dRnfVXnpSn9NFJCCL2Bh8Ci8aIbbg
-        MCs2tgqzJyjTa2JijQ3JQZZ3GZBUuD4wyuNz9qK2bnz6jGIZjeSuXBa0ShPbHxBYrqrN2yUkE+e
-        xF9gmE60zpWZGyQ8S0Y2NL7zmozR8Ee7+jcvViHHGClGqDdNb2/+7Ez12
-X-Received: by 2002:a05:6a20:4409:b0:147:ecf6:c4e6 with SMTP id ce9-20020a056a20440900b00147ecf6c4e6mr2624924pzb.0.1694595582895;
-        Wed, 13 Sep 2023 01:59:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEvjwGjuxLbs3G0Vtth7vyyQ5drG3y9+lL82C/9FoeyuulGiba97ar4/B83UDRUpkZnhpiW5DzYL2nEc4fFfcU=
-X-Received: by 2002:a05:6a20:4409:b0:147:ecf6:c4e6 with SMTP id
- ce9-20020a056a20440900b00147ecf6c4e6mr2624903pzb.0.1694595582527; Wed, 13 Sep
- 2023 01:59:42 -0700 (PDT)
+        Wed, 13 Sep 2023 05:03:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D81997;
+        Wed, 13 Sep 2023 02:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694595790; x=1726131790;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Dxa1s4XwKeXVgdc9qv9AkmCDwZA82OCSSHsyB65KS+w=;
+  b=RApvCs1+K2BlokCwi0aOEewPYwRUu2LPzKhERISVwBQx3ekDzsHeff1n
+   oCAZa6Nd5cRzx6u9fOiUuZiwGWv/mXQl1m95KFql29kxbHO68Jh19fsjj
+   cdG3D5lDBwOIjm3Fnha502+yjJByENBPWKM3uwNx1yPuMY80Sj3gNKHLx
+   hv8FEwCWlXQ1QaLyUHI3ETqokoZASdVYzx9cm4ARjJjwWsBr9c9aYGex3
+   g0Wv07yIEArU3proOf113Z9DyF3HEbCeMISqj4y65MU9VuAVbkA0w+l+B
+   rKbLl5KhmkJe9vEOMqbJQS+4egplVyjXHdYnJUYcZCnl3/DraKyxOYOZZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="442637177"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="442637177"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:03:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="887253870"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="887253870"
+Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2023 02:02:36 -0700
+Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgLm3-0000It-1b;
+        Wed, 13 Sep 2023 09:03:03 +0000
+Date:   Wed, 13 Sep 2023 17:02:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
+ iterator kfuncs
+Message-ID: <202309131621.h5ogfV0Z-lkp@intel.com>
+References: <20230912070149.969939-5-zhouchuyi@bytedance.com>
 MIME-Version: 1.0
-References: <ZOWFtqA2om0w5Vmz@fedora> <20230823-kuppe-lassen-bc81a20dd831@brauner>
- <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
-In-Reply-To: <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
-From:   Yi Zhang <yi.zhang@redhat.com>
-Date:   Wed, 13 Sep 2023 16:59:31 +0800
-Message-ID: <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
-Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
- fs/dcache.c:365 __dentry_kill+0x214/0x278]
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Changhui Zhong <czhong@redhat.com>, mark.rutland@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912070149.969939-5-zhouchuyi@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue still can be reproduced on the latest linux tree[2].
-To reproduce I need to run about 1000 times blktests block/001, and
-bisect shows it was introduced with commit[1], as it was not 100%
-reproduced, not sure if it's the culprit?
+Hi Chuyi,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20230912-150454
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230912070149.969939-5-zhouchuyi%40bytedance.com
+patch subject: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded iterator kfuncs
+config: hexagon-randconfig-r032-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131621.h5ogfV0Z-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131621.h5ogfV0Z-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131621.h5ogfV0Z-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/bpf/task_iter.c:9:
+   In file included from include/linux/filter.h:9:
+   In file included from include/linux/bpf.h:31:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:337:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   kernel/bpf/task_iter.c:820:7: error: use of undeclared identifier 'CSS_TASK_ITER_PROCS'
+     820 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+         |              ^
+   kernel/bpf/task_iter.c:820:29: error: use of undeclared identifier 'CSS_TASK_ITER_THREADED'
+     820 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+         |                                    ^
+   kernel/bpf/task_iter.c:821:7: error: use of undeclared identifier 'CSS_TASK_ITER_PROCS'
+     821 |         case CSS_TASK_ITER_PROCS:
+         |              ^
+   kernel/bpf/task_iter.c:828:24: error: invalid application of 'sizeof' to an incomplete type 'struct css_task_iter'
+     828 |         kit->css_it = kzalloc(sizeof(struct css_task_iter), GFP_KERNEL);
+         |                               ^     ~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:807:9: note: forward declaration of 'struct css_task_iter'
+     807 |         struct css_task_iter *css_it;
+         |                ^
+   kernel/bpf/task_iter.c:831:2: error: call to undeclared function 'css_task_iter_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     831 |         css_task_iter_start(css, flags, kit->css_it);
+         |         ^
+   kernel/bpf/task_iter.c:831:2: note: did you mean '__sg_page_iter_start'?
+   include/linux/scatterlist.h:573:6: note: '__sg_page_iter_start' declared here
+     573 | void __sg_page_iter_start(struct sg_page_iter *piter,
+         |      ^
+   kernel/bpf/task_iter.c:810:17: warning: no previous prototype for function 'bpf_iter_css_task_new' [-Wmissing-prototypes]
+     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+         |                 ^
+   kernel/bpf/task_iter.c:810:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:841:9: error: call to undeclared function 'css_task_iter_next'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     841 |         return css_task_iter_next(kit->css_it);
+         |                ^
+   kernel/bpf/task_iter.c:841:9: error: incompatible integer to pointer conversion returning 'int' from a function with result type 'struct task_struct *' [-Wint-conversion]
+     841 |         return css_task_iter_next(kit->css_it);
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:835:33: warning: no previous prototype for function 'bpf_iter_css_task_next' [-Wmissing-prototypes]
+     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
+         |                                 ^
+   kernel/bpf/task_iter.c:835:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:850:2: error: call to undeclared function 'css_task_iter_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     850 |         css_task_iter_end(kit->css_it);
+         |         ^
+   kernel/bpf/task_iter.c:844:18: warning: no previous prototype for function 'bpf_iter_css_task_destroy' [-Wmissing-prototypes]
+     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+         |                  ^
+   kernel/bpf/task_iter.c:844:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:858:17: warning: no previous prototype for function 'bpf_iter_process_new' [-Wmissing-prototypes]
+     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
+         |                 ^
+   kernel/bpf/task_iter.c:858:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:870:33: warning: no previous prototype for function 'bpf_iter_process_next' [-Wmissing-prototypes]
+     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
+         |                                 ^
+   kernel/bpf/task_iter.c:870:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:879:18: warning: no previous prototype for function 'bpf_iter_process_destroy' [-Wmissing-prototypes]
+     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+         |                  ^
+   kernel/bpf/task_iter.c:879:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+         |             ^
+         |             static 
+>> kernel/bpf/task_iter.c:888:17: warning: no previous prototype for function 'bpf_iter_css_pre_new' [-Wmissing-prototypes]
+     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+         |                 ^
+   kernel/bpf/task_iter.c:888:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:904:13: error: call to undeclared function 'css_next_descendant_pre'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     904 |         kit->pos = css_next_descendant_pre(kit->pos, kit->root);
+         |                    ^
+   kernel/bpf/task_iter.c:904:11: error: incompatible integer to pointer conversion assigning to 'struct cgroup_subsys_state *' from 'int' [-Wint-conversion]
+     904 |         kit->pos = css_next_descendant_pre(kit->pos, kit->root);
+         |                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:900:41: warning: no previous prototype for function 'bpf_iter_css_pre_next' [-Wmissing-prototypes]
+     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
+         |                                         ^
+   kernel/bpf/task_iter.c:900:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
+         |             ^
+         |             static 
+>> kernel/bpf/task_iter.c:908:18: warning: no previous prototype for function 'bpf_iter_css_pre_destroy' [-Wmissing-prototypes]
+     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
+         |                  ^
+   kernel/bpf/task_iter.c:908:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
+         |             ^
+         |             static 
+>> kernel/bpf/task_iter.c:912:17: warning: no previous prototype for function 'bpf_iter_css_post_new' [-Wmissing-prototypes]
+     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
+         |                 ^
+   kernel/bpf/task_iter.c:912:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
+         |             ^
+         |             static 
+   kernel/bpf/task_iter.c:928:13: error: call to undeclared function 'css_next_descendant_post'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     928 |         kit->pos = css_next_descendant_post(kit->pos, kit->root);
+         |                    ^
+   kernel/bpf/task_iter.c:928:11: error: incompatible integer to pointer conversion assigning to 'struct cgroup_subsys_state *' from 'int' [-Wint-conversion]
+     928 |         kit->pos = css_next_descendant_post(kit->pos, kit->root);
+         |                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:924:41: warning: no previous prototype for function 'bpf_iter_css_post_next' [-Wmissing-prototypes]
+     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
+         |                                         ^
+   kernel/bpf/task_iter.c:924:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
+         |             ^
+         |             static 
+>> kernel/bpf/task_iter.c:932:18: warning: no previous prototype for function 'bpf_iter_css_post_destroy' [-Wmissing-prototypes]
+     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
+         |                  ^
+   kernel/bpf/task_iter.c:932:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
+         |             ^
+         |             static 
+   18 warnings and 12 errors generated.
 
 
-[1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeffery
-[2]
-[ 2304.536339] scsi 48:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.540805] sr 50:0:0:0: Attached scsi CD-ROM sr3
-[ 2304.544574] scsi 48:0:0:0: Power-on or device reset occurred
-[ 2304.600645] sr 48:0:0:0: [sr1] scsi-1 drive
-[ 2304.616364] scsi 51:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.624639] scsi 51:0:0:0: Power-on or device reset occurred
-[ 2304.626634] sr 48:0:0:0: Attached scsi CD-ROM sr1
-[ 2304.680537] sr 51:0:0:0: [sr2] scsi-1 drive
-[ 2304.706394] sr 51:0:0:0: Attached scsi CD-ROM sr2
-[ 2304.746329] scsi 49:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.754569] scsi 49:0:0:0: Power-on or device reset occurred
-[ 2304.756302] scsi 50:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.768483] scsi 50:0:0:0: Power-on or device reset occurred
-[ 2304.806321] scsi 48:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.810587] sr 49:0:0:0: [sr0] scsi-1 drive
-[ 2304.814561] scsi 48:0:0:0: Power-on or device reset occurred
-[ 2304.824475] sr 50:0:0:0: [sr3] scsi-1 drive
-[ 2304.836384] scsi 51:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2304.840364] sr 49:0:0:0: Attached scsi CD-ROM sr0
-[ 2304.844619] scsi 51:0:0:0: Power-on or device reset occurred
-[ 2304.850444] sr 50:0:0:0: Attached scsi CD-ROM sr3
-[ 2304.874563] sr 48:0:0:0: [sr1] scsi-1 drive
-[ 2304.900660] sr 51:0:0:0: [sr2] scsi-1 drive
-[ 2304.901506] sr 48:0:0:0: Attached scsi CD-ROM sr1
-[ 2304.926306] sr 51:0:0:0: Attached scsi CD-ROM sr2
-[ 2305.056432] scsi 50:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2305.056572] scsi 49:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2305.064635] scsi 50:0:0:0: Power-on or device reset occurred
-[ 2305.072821] scsi 49:0:0:0: Power-on or device reset occurred
-[ 2305.086286] scsi 51:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2305.086357] scsi 48:0:0:0: CD-ROM            Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[ 2305.094521] scsi 51:0:0:0: Power-on or device reset occurred
-[ 2305.102693] scsi 48:0:0:0: Power-on or device reset occurred
-[ 2305.128785] sr 50:0:0:0: [sr0] scsi-1 drive
-[ 2305.134445] sr 49:0:0:0: [sr1] scsi-1 drive
-[ 2305.154728] sr 50:0:0:0: Attached scsi CD-ROM sr0
-[ 2305.158607] sr 51:0:0:0: [sr2] scsi-1 drive
-[ 2305.160392] sr 49:0:0:0: Attached scsi CD-ROM sr1
-[ 2305.164254] sr 48:0:0:0: [sr3] scsi-1 drive
-[ 2305.184185] sr 51:0:0:0: Attached scsi CD-ROM sr2
-[ 2305.190086] sr 48:0:0:0: Attached scsi CD-ROM sr3
-[ 2305.555658] Unable to handle kernel execute from non-executable
-memory at virtual address ffffc61b656052e8
-[ 2305.565301] Mem abort info:
-[ 2305.568086]   ESR =3D 0x000000008600000e
-[ 2305.571822]   EC =3D 0x21: IABT (current EL), IL =3D 32 bits
-[ 2305.577123]   SET =3D 0, FnV =3D 0
-[ 2305.580164]   EA =3D 0, S1PTW =3D 0
-[ 2305.583292]   FSC =3D 0x0e: level 2 permission fault
-[ 2305.588074] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000080731fa00=
-00
-[ 2305.594761] [ffffc61b656052e8] pgd=3D1000080ffffff003,
-p4d=3D1000080ffffff003, pud=3D1000080fffffe003, pmd=3D0068080732e00f01
-[ 2305.605362] Internal error: Oops: 000000008600000e [#1] SMP
-[ 2305.610922] Modules linked in: scsi_debug sr_mod pktcdvd cdrom
-rfkill sunrpc vfat fat acpi_ipmi arm_spe_pmu ipmi_ssif ipmi_devintf
-ipmi_msghandler arm_cmn arm_dmc620_pmu arm_dsu_pmu cppc_cpufreq loop
-fuse zram xfs crct10dif_ce ghash_ce nvme sha2_ce nvme_core
-sha256_arm64 igb sha1_ce ast sbsa_gwdt nvme_common
-i2c_designware_platform i2c_algo_bit i2c_designware_core xgene_hwmon
-dm_mod [last unloaded: scsi_debug]
-[ 2305.647236] CPU: 85 PID: 1 Comm: systemd Kdump: loaded Not tainted
-6.6.0-rc1+ #13
-[ 2305.654706] Hardware name: GIGABYTE R152-P31-00/MP32-AR1-00, BIOS
-F31n (SCP: 2.10.20220810) 09/30/2022
-[ 2305.663997] pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=
-=3D--)
-[ 2305.670946] pc : in_lookup_hashtable+0x1138/0x2000
-[ 2305.675728] lr : rcu_do_batch+0x194/0x488
-[ 2305.679727] sp : ffff8000802abe60
-[ 2305.683029] x29: ffff8000802abe60 x28: ffffc61b6524c7c0 x27: ffffc61b634=
-52f40
-[ 2305.690152] x26: ffff080f37ab6438 x25: 000000000000000a x24: 00000000000=
-00000
-[ 2305.697274] x23: 0000000000000002 x22: ffff8000802abec0 x21: ffff080f37a=
-b63c0
-[ 2305.704396] x20: ffff07ff8136a580 x19: 0000000000000003 x18: 00000000000=
-00000
-[ 2305.711519] x17: ffff41f3d3161000 x16: ffff8000802a8000 x15: 00000000000=
-00000
-[ 2305.718641] x14: 0000000000000000 x13: ffff07ffa131802d x12: ffff8000804=
-1bb94
-[ 2305.725764] x11: 0000000000000040 x10: ffff07ff802622e8 x9 : ffffc61b634=
-52e30
-[ 2305.732887] x8 : 000002189dce1780 x7 : ffff07ff8d5c1000 x6 : ffff41f3d31=
-61000
-[ 2305.740009] x5 : ffff07ff8136a580 x4 : ffff080f37aba960 x3 : 00000000155=
-0a055
-[ 2305.747131] x2 : 0000000000000000 x1 : ffffc61b656052e8 x0 : ffff080184c=
-565f0
-[ 2305.754254] Call trace:
-[ 2305.756687]  in_lookup_hashtable+0x1138/0x2000
-[ 2305.761119]  rcu_core+0x268/0x350
-[ 2305.764422]  rcu_core_si+0x18/0x30
-[ 2305.767812]  __do_softirq+0x120/0x3d4
-[ 2305.771462]  ____do_softirq+0x18/0x30
-[ 2305.775112]  call_on_irq_stack+0x24/0x30
-[ 2305.779022]  do_softirq_own_stack+0x24/0x38
-[ 2305.783192]  __irq_exit_rcu+0xfc/0x130
-[ 2305.786929]  irq_exit_rcu+0x18/0x30
-[ 2305.790404]  el1_interrupt+0x4c/0xe8
-[ 2305.793969]  el1h_64_irq_handler+0x18/0x28
-[ 2305.798052]  el1h_64_irq+0x78/0x80
-[ 2305.801441]  d_same_name+0x50/0xd0
-[ 2305.804832]  __lookup_slow+0x64/0x158
-[ 2305.808482]  walk_component+0xe0/0x1a0
-[ 2305.812219]  path_lookupat+0x7c/0x1b8
-[ 2305.815869]  filename_lookup+0xb4/0x1b8
-[ 2305.819692]  vfs_statx+0x94/0x1a8
-[ 2305.822995]  vfs_fstatat+0xd4/0x110
-[ 2305.826471]  __do_sys_newfstatat+0x58/0xa8
-[ 2305.830556]  __arm64_sys_newfstatat+0x28/0x40
-[ 2305.834901]  invoke_syscall.constprop.0+0x80/0xd8
-[ 2305.839592]  do_el0_svc+0x48/0xd0
-[ 2305.842894]  el0_svc+0x4c/0x1c0
-[ 2305.846023]  el0t_64_sync_handler+0x120/0x130
-[ 2305.850367]  el0t_64_sync+0x1a4/0x1a8
-[ 2305.854017] Code: 00000000 00000000 00000000 00000000 (84c565f1)
-[ 2305.860098] SMP: stopping secondary CPUs
-[ 2305.865048] Starting crashdump kernel...
-[ 2305.868958] Bye!
+vim +/bpf_iter_css_pre_new +888 kernel/bpf/task_iter.c
 
+   878	
+ > 879	__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+   880	{
+   881	}
+   882	
+   883	struct bpf_iter_css_kern {
+   884		struct cgroup_subsys_state *root;
+   885		struct cgroup_subsys_state *pos;
+   886	} __attribute__((aligned(8)));
+   887	
+ > 888	__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+   889			struct cgroup_subsys_state *root)
+   890	{
+   891		struct bpf_iter_css_kern *kit = (void *)it;
+   892	
+   893		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
+   894		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_pre));
+   895		kit->root = root;
+   896		kit->pos = NULL;
+   897		return 0;
+   898	}
+   899	
+ > 900	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
+   901	{
+   902		struct bpf_iter_css_kern *kit = (void *)it;
+   903	
+ > 904		kit->pos = css_next_descendant_pre(kit->pos, kit->root);
+   905		return kit->pos;
+   906	}
+   907	
+ > 908	__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
+   909	{
+   910	}
+   911	
+ > 912	__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
+   913			struct cgroup_subsys_state *root)
+   914	{
+   915		struct bpf_iter_css_kern *kit = (void *)it;
+   916	
+   917		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
+   918		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_post));
+   919		kit->root = root;
+   920		kit->pos = NULL;
+   921		return 0;
+   922	}
+   923	
+ > 924	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
+   925	{
+   926		struct bpf_iter_css_kern *kit = (void *)it;
+   927	
+ > 928		kit->pos = css_next_descendant_post(kit->pos, kit->root);
+   929		return kit->pos;
+   930	}
+   931	
+ > 932	__bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
+   933	{
+   934	}
+   935	
 
-On Mon, Aug 28, 2023 at 6:43=E2=80=AFPM Ming Lei <ming.lei@redhat.com> wrot=
-e:
->
-> On Wed, Aug 23, 2023 at 4:47=E2=80=AFPM Christian Brauner <brauner@kernel=
-.org> wrote:
-> >
-> > On Wed, Aug 23, 2023 at 12:06:14PM +0800, Ming Lei wrote:
-> > >
-> > > Looks the issue is more related with vfs, so forward to vfs list.
-> > >
-> > > ----- Forwarded message from Changhui Zhong <czhong@redhat.com> -----
-> > >
-> > > Date: Wed, 23 Aug 2023 11:17:55 +0800
-> > > From: Changhui Zhong <czhong@redhat.com>
-> > > To: linux-scsi@vger.kernel.org
-> > > Cc: Ming Lei <ming.lei@redhat.com>
-> > > Subject: [bug report] WARNING: CPU: 121 PID: 93233 at fs/dcache.c:365=
- __dentry_kill+0x214/0x278
-> > >
-> > > Hello,
-> > >
-> > > triggered below warning issue with branch
-> > > "
-> > > Tree: mainline.kernel.org-clang
-> > > Repository: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/=
-linux.git
-> > > @ master
-> > > Commit Hash: 89bf6209cad66214d3774dac86b6bbf2aec6a30d
-> > > Commit Name: v6.5-rc7-18-g89bf6209cad6
-> > > Kernel information:
-> > > Commit message: Merge tag 'devicetree-fixes-for-6.5-2' of
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux
-> > > "
-> > > for more detail=EF=BC=8Cplease check
-> > > https://datawarehouse.cki-project.org/kcidb/tests/9232643
-> > >
-> > > #modprobe scsi_debug virtual_gb=3D128
-> > > #echo none > /sys/block/sdb/queue/scheduler
-> > > #fio --bs=3D4k --ioengine=3Dlibaio --iodepth=3D1 --numjobs=3D4 --rw=
-=3Drandrw
-> > > --name=3Dsdb-libaio-randrw-4k --filename=3D/dev/sdb --direct=3D1 --si=
-ze=3D60G
-> > > --runtime=3D60
-> >
-> > Looking at this issue it seems unlikely that this is a vfs bug.
-> > We should see this all over the place and specifically not just on arm6=
-4.
-> >
-> > The sequence here seems to be:
-> >
-> > echo 4 > /proc/sys/vm/drop_caches
-> > rmmod scsi_debug > /dev/null 3>&1
-> >
-> > [ 3117.059778] WARNING: CPU: 121 PID: 93233 at fs/dcache.c:365 __dentry=
-_kill+0x214/0x278
-> > [ 3117.067601] Modules linked in: scsi_debug nvme nvme_core nvme_common=
- null_blk pktcdvd ipmi_watchdog ipmi_poweroff rfkill sunrpc vfat fat acpi_i=
-pmi ipmi_ssif arm_spe_pmu igb ipmi_devintf ipmi_msghandler arm_cmn arm_dmc6=
-20_pmu cppc_cpufreq arm_dsu_pmu acpi_tad loop fuse zram xfs crct10dif_ce po=
-lyval_ce polyval_generic ghash_ce sbsa_gwdt ast onboard_usb_hub i2c_algo_bi=
-t xgene_hwmon [last unloaded: scsi_debug]
-> >
-> > So my money is on some device that gets removed still having an
-> > increased refcount and pinning the dentry. Immediate suspects would be:
-> >
-> > 7882541ca06d ("of/platform: increase refcount of fwnode")
-> >
-> > but that part is complete speculation on my part.
->
-> BTW, just saw another panic on 6.5-rc7, still scsi_debug test on arm64:
->
-> [  959.371726] sr 50:0:0:0: Attached scsi generic sg1 type 5
-> [  959.603145] scsi 48:0:0:0: CD-ROM            Linux    scsi_debug
->    0191 PQ: 0 ANSI: 7
-> [  959.603155] scsi 50:0:0:0: CD-ROM            Linux    scsi_debug
->    0191 PQ: 0 ANSI: 7
-> [  959.603950] scsi 49:0:0:0: CD-ROM            Linux    scsi_debug
->    0191 PQ: 0 ANSI: 7
-> [  959.604052] scsi 49:0:0:0: Power-on or device reset occurred
-> [  959.609336] sr 49:0:0:0: [sr1] scsi-1 drive
-> [  959.611360] scsi 48:0:0:0: Power-on or device reset occurred
-> [  959.614540] Unable to handle kernel paging request at virtual
-> address 65888c2e6fe694d5
-> [  959.614544] Mem abort info:
-> [  959.614545]   ESR =3D 0x0000000096000004
-> [  959.614547]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> [  959.614550]   SET =3D 0, FnV =3D 0
-> [  959.614552]   EA =3D 0, S1PTW =3D 0
-> [  959.614553]   FSC =3D 0x04: level 0 translation fault
-> [  959.614555] Data abort info:
-> [  959.614556]   ISV =3D 0, ISS =3D 0x00000004, ISS2 =3D 0x00000000
-> [  959.614559]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
-> [  959.614561]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> [  959.614563] [65888c2e6fe694d5] address between user and kernel address=
- ranges
-> [  959.614566] Internal error: Oops: 0000000096000004 [#1] SMP
-> [  959.614570] Modules linked in: pktcdvd scsi_debug ipmi_watchdog
-> ipmi_poweroff rfkill sunrpc vfat fat acpi_ipmi ipmi_ssif arm_spe_pmu
-> igb ipmi_devintf arm_cmn ipmi_msghandler arm_dmc620_pmu arm_dsu_pmu
-> cppc_cpufreq acpi_tad loop fuse zram xfs nvme crct10dif_ce polyval_ce
-> nvme_core polyval_generic ghash_ce sbsa_gwdt nvme_common ast
-> onboard_usb_hub i2c_algo_bit xgene_hwmon [last unloaded: scsi_debug]
-> [  959.614620] CPU: 108 PID: 19529 Comm: check Not tainted 6.5.0-rc7 #1
-> [  959.614625] Hardware name: GIGABYTE R152-P31-00/MP32-AR1-00, BIOS
-> F31n (SCP: 2.10.20220810) 09/30/2022
-> [  959.614627] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYP=
-E=3D--)
-> [  959.614632] pc : d_alloc_parallel+0x140/0x440
-> [  959.614641] lr : d_alloc_parallel+0xcc/0x440
-> [  959.614646] sp : ffff80008a7d3290
-> [  959.614647] x29: ffff80008a7d3290 x28: ffff07ff8230c530 x27: 65888c2e6=
-fe69565
-> [  959.614654] x26: ffffcb72eac9e1d0 x25: ffff80008a7d33d8 x24: ffff07ffa=
-0fd3800
-> [  959.614659] x23: 00000000000003c0 x22: 000000007a701548 x21: ffffcb72e=
-ac9ffd0
-> [  959.614664] x20: ffff07ffa0fd35c0 x19: ffffcb72ea6e9600 x18: fffffffff=
-fffffff
-> [  959.614670] x17: 00000000440fd8e0 x16: 00000000b6431329 x15: ffff80008=
-a7d3360
-> [  959.614675] x14: ffff80008a7d3508 x13: ffffcb72e94da6d0 x12: ffff80008=
-a7d334c
-> [  959.614680] x11: 0000000c7a701548 x10: ffff3c8cb54590b8 x9 : ffffcb72e=
-80832f4
-> [  959.614685] x8 : ffff07ffa0fd35c0 x7 : 7473696c5f71725f x6 : 000000000=
-0200008
-> [  959.614690] x5 : ffffcb72ea6f4000 x4 : 00000000003d380a x3 : 000000000=
-0000004
-> [  959.614696] x2 : ffff80008a7d331c x1 : ffff07ffe1760000 x0 : 000000000=
-0005000
-> [  959.614701] Call trace:
-> [  959.614703]  d_alloc_parallel+0x140/0x440
-> [  959.614708]  __lookup_slow+0x64/0x158
-> [  959.614714]  lookup_one_len+0xac/0xc8
-> [  959.614719]  start_creating.part.0+0x88/0x198
-> [  959.614725]  __debugfs_create_file+0x70/0x230
-> [  959.614730]  debugfs_create_file+0x34/0x48
-> [  959.614734]  blk_mq_debugfs_register_hctx+0x154/0x1d0
-> [  959.614740]  blk_mq_debugfs_register+0xfc/0x1e0
-> [  959.614745]  blk_register_queue+0xc0/0x1f0
-> [  959.614750]  device_add_disk+0x1dc/0x3e0
-> [  959.614754]  sr_probe+0x2c0/0x368
-> [  959.614760]  really_probe+0x190/0x3d8
-> [  959.614766]  __driver_probe_device+0x84/0x180
-> [  959.614771]  driver_probe_device+0x44/0x120
-> [  959.614776]  __device_attach_driver+0xc4/0x168
-> [  959.614781]  bus_for_each_drv+0x8c/0xf0
-> [  959.614785]  __device_attach+0xa4/0x1c0
-> [  959.614790]  device_initial_probe+0x1c/0x30
-> [  959.614795]  bus_probe_device+0xb4/0xc0
-> [  959.614799]  device_add+0x508/0x6f8
-> [  959.614803]  scsi_sysfs_add_sdev+0x8c/0x250
-> [  959.614809]  scsi_add_lun+0x424/0x558
-> [  959.614813]  scsi_probe_and_add_lun+0x11c/0x430
-> [  959.614817]  __scsi_scan_target+0xb8/0x258
-> [  959.614821]  scsi_scan_channel+0xa0/0xb8
-> [  959.614825]  scsi_scan_host_selected+0x170/0x188
-> [  959.614830]  store_scan+0x194/0x1a8
-> [  959.614835]  dev_attr_store+0x20/0x40
-> [  959.614840]  sysfs_kf_write+0x4c/0x68
-> [  959.614845]  kernfs_fop_write_iter+0x13c/0x1d8
-> [  959.614849]  vfs_write+0x1c0/0x310
-> [  959.614855]  ksys_write+0x78/0x118
-> [  959.614859]  __arm64_sys_write+0x24/0x38
-> [  959.614864]  invoke_syscall+0x78/0x100
-> [  959.614868]  el0_svc_common.constprop.0+0x4c/0xf8
-> [  959.614871]  do_el0_svc+0x34/0x50
-> [  959.614874]  el0_svc+0x34/0x108
-> [  959.614879]  el0t_64_sync_handler+0x120/0x130
-> [  959.614884]  el0t_64_sync+0x194/0x198
-> [  959.614889] Code: 54000088 14000067 f940037b b4000cbb (b8570360)
-> [  959.614892] ---[ end trace 0000000000000000 ]---
-> [  959.614895] Kernel panic - not syncing: Oops: Fatal exception
-> [  959.614897] SMP: stopping secondary CPUs
-> [  959.619492] Kernel Offset: 0x4b7267c40000 from 0xffff800080000000
-> [  959.619494] PHYS_OFFSET: 0x80000000
-> [  959.619496] CPU features: 0x00000010,b80140a1,8841720b
-> [  959.619498] Memory Limit: none
-> [  960.040819] ---[ end Kernel panic - not syncing: Oops: Fatal exception=
- ]---
->
-
-
---=20
-Best Regards,
-  Yi Zhang
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
