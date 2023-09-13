@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BAF79E54D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D330179E552
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239770AbjIMKwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S239785AbjIMKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjIMKwG (ORCPT
+        with ESMTP id S239771AbjIMKwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:52:06 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102C819B3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:51:40 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c3d6d88231so14244915ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694602299; x=1695207099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vAOrPSsOrrtCdgcdNBhBIJ9lMgP52ECzfG7iAGXlHhI=;
-        b=PrBxWXQjm37HDiomZUuS/RSeHfoTysiLaA5MC3MqDrO5EL6zDFVeNsgQ3pE8sbxI8+
-         FMtOlbvDK47KQkgbaQcD13/lcV0EzbnKv6gqpxUSgh+z//stJ4iy+TeYhjc01HscGlXD
-         xdA0RskyqA1pgcdhglDQYMkKJ+0ICbTyYRcGwio50OLjFDaucWjMUJfMxpTZ8+0NxrA1
-         bbqlylaRYXGPeFe3xuRGJ2Gv8Zf+/yTETthzfLPWPsmBu+xkUnZbNdavPb5iq3mPvJFR
-         WIc0hOTznD25P2n3e3Hcn4R6G3NCn3OSa84zKbLy94L/zPIcOdDS6rssJL9LBbiVl3ga
-         +q9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694602299; x=1695207099;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vAOrPSsOrrtCdgcdNBhBIJ9lMgP52ECzfG7iAGXlHhI=;
-        b=vFwfHvZAfokIRVummxgdtp0a1aPLu2ks0up7aRt5uXK1y75b4dIJJToabZtajqbBOQ
-         /YjLk0c+6d4n8J13OUuWWNrvwApOSqUqfJFIz4KB5F7tlbsVwDhYJwl1Y8tl0X9a5VvS
-         qAhZJxn7kXZQUOezbWDPgc86k0dDQj+4s06mU7z8BgLsS+TDyxhpPJeHEbLJJgblz1YN
-         66N/WOg1VDeBQJU5lNdrQXLkmNC2msMbpzLUoHgkkKH7luP7+5HZnTavN9OAjttpiHoX
-         2xa4cpk8Bczp6Yin2DWOf38c0kuMJKf0n6n2CVH7VDXTflccJI+iSFWwUocKJZfq1d59
-         eqbA==
-X-Gm-Message-State: AOJu0YyUwp0SJ2ancFt2rsr+rzMyWgXLOthQbZ9G0bFxyTQXIAKvvR60
-        DT1uQR7xGzaEgolEVuQuvzM13A==
-X-Google-Smtp-Source: AGHT+IG5P+8z++2ruiY2+YiHv5iAfClOm5tGRcqgrHkDNSB8yf9zLHGTMaj/HADdjZqYExM3z36hlQ==
-X-Received: by 2002:a17:902:d38d:b0:1c3:f4fa:b1a2 with SMTP id e13-20020a170902d38d00b001c3f4fab1a2mr68430pld.8.1694602299532;
-        Wed, 13 Sep 2023 03:51:39 -0700 (PDT)
-Received: from PF2LML5M-SMJ.bytedance.net ([220.243.131.6])
-        by smtp.gmail.com with ESMTPSA id d12-20020a170903230c00b001b8b07bc600sm10187493plh.186.2023.09.13.03.51.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 03:51:39 -0700 (PDT)
-From:   Jinhui Guo <guojinhui.liam@bytedance.com>
-To:     jonathan.cameron@huawei.com
-Cc:     catalin.marinas@arm.com, guojinhui.liam@bytedance.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH] arm64: cpufeature: Expose the real mpidr value to EL0
-Date:   Wed, 13 Sep 2023 18:51:33 +0800
-Message-Id: <20230913105133.2902-1-guojinhui.liam@bytedance.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230912115116.000049b0@Huawei.com>
-References: <20230912115116.000049b0@Huawei.com>
+        Wed, 13 Sep 2023 06:52:54 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D861F19AD;
+        Wed, 13 Sep 2023 03:52:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D25C51FB;
+        Wed, 13 Sep 2023 03:53:26 -0700 (PDT)
+Received: from bogus (unknown [10.57.93.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A941C3F5A1;
+        Wed, 13 Sep 2023 03:52:47 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 11:51:48 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Oza Pawandeep <quic_poza@quicinc.com>, catalin.marinas@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>, rafael@kernel.org,
+        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v5] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230913105148.xntz3qeascibvuxx@bogus>
+References: <20230912172933.3561144-1-quic_poza@quicinc.com>
+ <20230913083908.dfanwizomj5i536k@bogus>
+ <20230913102721.GB12021@willie-the-truck>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913102721.GB12021@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> As a follow up question, is there some information that is missing from
-> current topology description?  (there is lots missing but I'm curious
-> as to what might matter for your use case!)
+On Wed, Sep 13, 2023 at 11:27:21AM +0100, Will Deacon wrote:
+> On Wed, Sep 13, 2023 at 09:43:01AM +0100, Sudeep Holla wrote:
+> > On Tue, Sep 12, 2023 at 10:29:33AM -0700, Oza Pawandeep wrote:
+> > > Arm� Functional Fixed Hardware Specification defines LPI states,
+> > > which provide an architectural context loss flags field that can
+> > > be used to describe the context that might be lost when an LPI
+> > > state is entered.
+> > > 
+> > > - Core context Lost
+> > >         - General purpose registers.
+> > >         - Floating point and SIMD registers.
+> > >         - System registers, include the System register based
+> > >         - generic timer for the core.
+> > >         - Debug register in the core power domain.
+> > >         - PMU registers in the core power domain.
+> > >         - Trace register in the core power domain.
+> > > - Trace context loss
+> > > - GICR
+> > > - GICD
+> > > 
+> > > Qualcomm's custom CPUs preserves the architectural state,
+> > > including keeping the power domain for local timers active.
+> > > when core is power gated, the local timers are sufficient to
+> > > wake the core up without needing broadcast timer.
+> > > 
+> > > The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> > > broadcast timer if core context lost is defined in ACPI LPI.
+> > > 
+> > > Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> > 
+> > IIRC, Rafael had acked this, perhaps missing the tag ?
+> > Also just add a note to Will/Catalin that Rafael has acked and prefer to
+> > take it via arm64 tree.
+> 
+> Is this a fix? If so, please can I have a "Fixes:" tag (and does it need to
+> go into stable?)
+>
 
-We want to know the infomation about dies to advoid memroy accessing
-across dies (some settings like 2 numa per die).
+Well, most platform today have CPUIDLE_CORE_CTXT set so the existing code
+works as expected. It is this Qcom platform that doesn't set it and need
+different behaviour. So based on their requirement for running stable
+tree, the fixes tag can be added. In short yes it can be seen as a fix
+if this new requirement is considered.
 
-thanks,
+Sorry the main reason for trying to avoid is there are multiple patches
+adding the initial support and there has been some code restructuring
+around this. So it may need proper backporting based on the version.
+I just want to avoid if there is no real requirement for that.
 
-Jinhui Guo
+--
+Regards,
+Sudeep
