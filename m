@@ -2,325 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D281679F372
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B813F79F373
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbjIMVH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        id S231328AbjIMVH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjIMVH2 (ORCPT
+        with ESMTP id S229671AbjIMVH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:07:28 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2219B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:07:24 -0700 (PDT)
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DGMh6D026659;
-        Wed, 13 Sep 2023 21:06:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=T/PCLIStexfrtKmnLPScdEONKKfgHBwcZNmbDEDmUDQ=;
- b=BtFRFaVknVjepHCh2NkfekvrukhlQdMMnSMf+Jqk3zMpQc48uOu67lzHV4Ndb7+DUDkk
- h7FO1xSGuMty72itI+aCIxmxIvHXmxTqZBFhLG5U85KbH1sD8dfaAQQAWyoxq5l470dD
- IbeKm+xBqr9idU95gqkAwqNRQF+GLm8m5n6pjgsVw/9Qroa0GL19qj1sxmP31bgH9YjB
- OcpUsRMARMyHM2g9ulxw2B5DEZT+B3Y75d1vsZExfD9HWxMHIVYxHvrq+ulDKVQt/6dv
- iA2/mVQYBp7JA2VYW5Fk/DwXUKbG/PRKMElCLsSHFhEPEBATO+0KqJWn5b1VJTrQI23Y qw== 
-Received: from p1lg14879.it.hpe.com ([16.230.97.200])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3t3ghk2anq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 21:06:57 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 00C58131AC;
-        Wed, 13 Sep 2023 21:06:54 +0000 (UTC)
-Received: from swahl-linux (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id EE1C98064B9;
-        Wed, 13 Sep 2023 21:06:52 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 16:06:51 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Steve Wahl <steve.wahl@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Kyle Meyer <kyle.meyer@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Subject: Re: [PATCH v2] x86/platform/uv: Rework NMI "action" modparam handling
-Message-ID: <ZQIka+OM1+2M3CsU@swahl-linux>
-References: <20230913180111.85397-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913180111.85397-1-hdegoede@redhat.com>
-X-Proofpoint-GUID: ELdipt_CK3xah17fLDkj4ubvMYNPvpSd
-X-Proofpoint-ORIG-GUID: ELdipt_CK3xah17fLDkj4ubvMYNPvpSd
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_16,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
- phishscore=0 impostorscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309130177
+        Wed, 13 Sep 2023 17:07:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B75F1BCA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:07:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6655AC433C8;
+        Wed, 13 Sep 2023 21:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1694639271;
+        bh=RNYP9+p+x6ZzoNqDo1JjEqeN5WDavOAss0TMtv0FSd8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OJieTzkWepHpXecGf8t8Ijddd8IpFJqDWvCMhN8ZxENiV1Rs1sqhQ8mBITiN4qB1o
+         9n/MSZuMCni9rbepiJz+5kA1EPSxgJkipqfrU7zlJ3PGp7aBm9azwd30YnDrdEsVBb
+         uI2Hp+QSxGL5jkTYgJtafMqpfmJJmWRMAQEVGlfo=
+Date:   Wed, 13 Sep 2023 14:07:50 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Stefan Roesch <shr@devkernel.io>
+Cc:     kernel-team@fb.com, david@redhat.com, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 1/4] mm/ksm: add "smart" page scanning mode
+Message-Id: <20230913140750.616d3d87fe986a74d870b71f@linux-foundation.org>
+In-Reply-To: <20230912175228.952039-2-shr@devkernel.io>
+References: <20230912175228.952039-1-shr@devkernel.io>
+        <20230912175228.952039-2-shr@devkernel.io>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:01:11PM +0200, Hans de Goede wrote:
-> Rework NMI "action" modparam handling:
+On Tue, 12 Sep 2023 10:52:25 -0700 Stefan Roesch <shr@devkernel.io> wrote:
+
+> This change adds a "smart" page scanning mode for KSM. So far all the
+> candidate pages are continuously scanned to find candidates for
+> de-duplication. There are a considerably number of pages that cannot be
+> de-duplicated. This is costly in terms of CPU. By using smart scanning
+> considerable CPU savings can be achieved.
 > 
-> 1. Replace the uv_nmi_action string with an enum; and
-> 2. Use sysfs_match_string() for string parsing in param_set_action()
+> This change takes the history of scanning pages into account and skips
+> the page scanning of certain pages for a while if de-deduplication for
+> this page has not been successful in the past.
 > 
-> Suggested-by: Steve Wahl <steve.wahl@hpe.com>
-> Cc: Justin Stitt <justinstitt@google.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in v2:
-> - Also change uv_nmi_action to an enum to replace a bunch of
->   strcmp() calls
-> ---
->  arch/x86/platform/uv/uv_nmi.c | 104 +++++++++++++++++++---------------
->  1 file changed, 57 insertions(+), 47 deletions(-)
+> To do this it introduces two new fields in the ksm_rmap_item structure:
+> age and skip_age. age, is the KSM age and skip_page is the age for how
+
+s/skip_page/skip_age/
+
+> long page scanning of this page is skipped. The age field is incremented
+> each time the page is scanned and the page cannot be de-duplicated.
 > 
-> diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-> index 45d0c17ce77c..b92f1b4adeb0 100644
-> --- a/arch/x86/platform/uv/uv_nmi.c
-> +++ b/arch/x86/platform/uv/uv_nmi.c
-> @@ -178,49 +178,57 @@ module_param_named(debug, uv_nmi_debug, int, 0644);
->  	} while (0)
->  
->  /* Valid NMI Actions */
-> -#define	ACTION_LEN	16
-> -static struct nmi_action {
-> -	char	*action;
-> -	char	*desc;
-> -} valid_acts[] = {
-> -	{	"kdump",	"do kernel crash dump"			},
-> -	{	"dump",		"dump process stack for each cpu"	},
-> -	{	"ips",		"dump Inst Ptr info for each cpu"	},
-> -	{	"kdb",		"enter KDB (needs kgdboc= assignment)"	},
-> -	{	"kgdb",		"enter KGDB (needs gdb target remote)"	},
-> -	{	"health",	"check if CPUs respond to NMI"		},
-> +enum action_t {
-> +	nmi_act_kdump,
-> +	nmi_act_dump,
-> +	nmi_act_ips,
-> +	nmi_act_kdb,
-> +	nmi_act_kgdb,
-> +	nmi_act_health,
->  };
-> -typedef char action_t[ACTION_LEN];
-> -static action_t uv_nmi_action = { "dump" };
-> +
-> +static const char * const actions[] = {
-> +	[nmi_act_kdump] = "kdump",
-> +	[nmi_act_dump] = "dump",
-> +	[nmi_act_ips] = "ips",
-> +	[nmi_act_kdb] = "kdb",
-> +	[nmi_act_kgdb] = "kgdb",
-> +	[nmi_act_health] = "health",
-> +};
-> +
-> +static const char * const actions_desc[] = {
-> +	[nmi_act_kdump] = "do kernel crash dump",
-> +	[nmi_act_dump] = "dump process stack for each cpu",
-> +	[nmi_act_ips] = "dump Inst Ptr info for each cpu",
-> +	[nmi_act_kdb] = "enter KDB (needs kgdboc= assignment)",
-> +	[nmi_act_kgdb] = "enter KGDB (needs gdb target remote)",
-> +	[nmi_act_health] = "check if CPUs respond to NMI",
-> +};
-> +
-> +static_assert(ARRAY_SIZE(actions) == ARRAY_SIZE(actions_desc));
-> +
-> +static enum action_t uv_nmi_action = nmi_act_dump;
->  
->  static int param_get_action(char *buffer, const struct kernel_param *kp)
->  {
-> -	return sprintf(buffer, "%s\n", uv_nmi_action);
-> +	return sprintf(buffer, "%s\n", actions[uv_nmi_action]);
+> How often a page is skipped is dependent how often de-duplication has
+> been tried so far and the number of skips is currently limited to 8.
+> This value has shown to be effective with different workloads.
+> 
+> The feature is currently disable by default and can be enabled with the
+> new smart_scan knob.
+> 
+> The feature has shown to be very effective: upt to 25% of the page scans
+> can be eliminated; the pages_to_scan rate can be reduced by 40 - 50% and
+> a similar de-duplication rate can be maintained.
+> 
+
+All seems nice.  I'll sit out v1, see what people have to say.
+
+Some nits:
+
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+>
+> ...
+>
+> @@ -2305,6 +2314,45 @@ static struct ksm_rmap_item *get_next_rmap_item(struct ksm_mm_slot *mm_slot,
+>  	return rmap_item;
 >  }
 >  
->  static int param_set_action(const char *val, const struct kernel_param *kp)
->  {
-> -	int i;
-> -	int n = ARRAY_SIZE(valid_acts);
-> -	char arg[ACTION_LEN];
-> +	int i, n = ARRAY_SIZE(actions);
->  
-> -	/* (remove possible '\n') */
-> -	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
-> -
-> -	for (i = 0; i < n; i++)
-> -		if (!strcmp(arg, valid_acts[i].action))
-> -			break;
-> -
-> -	if (i < n) {
-> -		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
-> -		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
-> +	i = sysfs_match_string(actions, val);
-> +	if (i >= 0) {
-> +		uv_nmi_action = i;
-> +		pr_info("UV: New NMI action:%s\n", actions[i]);
->  		return 0;
->  	}
->  
-> -	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", arg);
-> +	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", val);
-
-This is a very minor nit in an otherwise fine patch:
-
-Testing by echoing to /sys/module/uv_nmi/parameters/action shows an
-invalid action in val has a trailing newline that appears just before
-the comma:
-
-# echo "invalid" >/sys/module/uv_nmi/parameters/action
-[ 1070.079303] UV: Invalid NMI action:invalid
-[ 1070.079303] , valid actions are:
-[ 1070.087485] UV: kdump    - do kernel crash dump
-[ 1070.092558] UV: dump     - dump process stack for each cpu
-[ 1070.098694] UV: ips      - dump Inst Ptr info for each cpu
-[ 1070.098697] UV: kdb      - enter KDB (needs kgdboc= assignment)
-[ 1070.098699] UV: kgdb     - enter KGDB (needs gdb target remote)
-[ 1070.098702] UV: health   - check if CPUs respond to NMI
--bash: echo: write error: Invalid argument
-#
-
-There's no newline in val if it comes from the kernel command line, so
-you can't just assume it's there.
-
-It would be bad style to just overwrite the newline in place.
-Allocating space for and copying a string seems a waste.  Maybe rework
-the message so a possible newline doesn't look so awkward, by removing
-the comma?
-
-> +	pr_err("UV: Invalid NMI action:%s Valid actions are:\n", val);
-
-Frankly, I approve of this patch going in, regardless of what, if
-anything, is done about this.
-
-Thanks.
-
-Reveiwed-by: Steve Wahl <steve.wahl@hpe.com>
-Tested-by: Steve Wahl <steve.wahl@hpe.com>
-
-
-
->  	for (i = 0; i < n; i++)
-> -		pr_err("UV: %-8s - %s\n",
-> -			valid_acts[i].action, valid_acts[i].desc);
-> +		pr_err("UV: %-8s - %s\n", actions[i], actions_desc[i]);
+> +static unsigned int inc_skip_age(rmap_age_t age)
+> +{
+> +	if (age <= 3)
+> +		return 1;
+> +	if (age <= 5)
+> +		return 2;
+> +	if (age <= 8)
+> +		return 4;
 > +
->  	return -EINVAL;
->  }
->  
-> @@ -228,15 +236,10 @@ static const struct kernel_param_ops param_ops_action = {
->  	.get = param_get_action,
->  	.set = param_set_action,
->  };
-> -#define param_check_action(name, p) __param_check(name, p, action_t)
-> +#define param_check_action(name, p) __param_check(name, p, enum action_t)
->  
->  module_param_named(action, uv_nmi_action, action, 0644);
->  
-> -static inline bool uv_nmi_action_is(const char *action)
-> -{
-> -	return (strncmp(uv_nmi_action, action, strlen(action)) == 0);
-> -}
-> -
->  /* Setup which NMI support is present in system */
->  static void uv_nmi_setup_mmrs(void)
->  {
-> @@ -727,10 +730,10 @@ static void uv_nmi_dump_state_cpu(int cpu, struct pt_regs *regs)
->  	if (cpu == 0)
->  		uv_nmi_dump_cpu_ip_hdr();
->  
-> -	if (current->pid != 0 || !uv_nmi_action_is("ips"))
-> +	if (current->pid != 0 || uv_nmi_action != nmi_act_ips)
->  		uv_nmi_dump_cpu_ip(cpu, regs);
->  
-> -	if (uv_nmi_action_is("dump")) {
-> +	if (uv_nmi_action == nmi_act_dump) {
->  		pr_info("UV:%sNMI process trace for CPU %d\n", dots, cpu);
->  		show_regs(regs);
->  	}
-> @@ -798,7 +801,7 @@ static void uv_nmi_dump_state(int cpu, struct pt_regs *regs, int master)
->  		int saved_console_loglevel = console_loglevel;
->  
->  		pr_alert("UV: tracing %s for %d CPUs from CPU %d\n",
-> -			uv_nmi_action_is("ips") ? "IPs" : "processes",
-> +			uv_nmi_action == nmi_act_ips ? "IPs" : "processes",
->  			atomic_read(&uv_nmi_cpus_in_nmi), cpu);
->  
->  		console_loglevel = uv_nmi_loglevel;
-> @@ -874,7 +877,7 @@ static inline int uv_nmi_kdb_reason(void)
->  static inline int uv_nmi_kdb_reason(void)
->  {
->  	/* Ensure user is expecting to attach gdb remote */
-> -	if (uv_nmi_action_is("kgdb"))
-> +	if (uv_nmi_action == nmi_act_kgdb)
->  		return 0;
->  
->  	pr_err("UV: NMI error: KDB is not enabled in this kernel\n");
-> @@ -950,28 +953,35 @@ static int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
->  	master = (atomic_read(&uv_nmi_cpu) == cpu);
->  
->  	/* If NMI action is "kdump", then attempt to do it */
-> -	if (uv_nmi_action_is("kdump")) {
-> +	if (uv_nmi_action == nmi_act_kdump) {
->  		uv_nmi_kdump(cpu, master, regs);
->  
->  		/* Unexpected return, revert action to "dump" */
->  		if (master)
-> -			strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_action));
-> +			uv_nmi_action = nmi_act_dump;
->  	}
->  
->  	/* Pause as all CPU's enter the NMI handler */
->  	uv_nmi_wait(master);
->  
->  	/* Process actions other than "kdump": */
-> -	if (uv_nmi_action_is("health")) {
-> +	switch (uv_nmi_action) {
-> +	case nmi_act_health:
->  		uv_nmi_action_health(cpu, regs, master);
-> -	} else if (uv_nmi_action_is("ips") || uv_nmi_action_is("dump")) {
-> +		break;
-> +	case nmi_act_ips:
-> +	case nmi_act_dump:
->  		uv_nmi_dump_state(cpu, regs, master);
-> -	} else if (uv_nmi_action_is("kdb") || uv_nmi_action_is("kgdb")) {
-> +		break;
-> +	case nmi_act_kdb:
-> +	case nmi_act_kgdb:
->  		uv_call_kgdb_kdb(cpu, regs, master);
-> -	} else {
-> +		break;
-> +	default:
->  		if (master)
-> -			pr_alert("UV: unknown NMI action: %s\n", uv_nmi_action);
-> +			pr_alert("UV: unknown NMI action: %d\n", uv_nmi_action);
->  		uv_nmi_sync_exit(master);
-> +		break;
->  	}
->  
->  	/* Clear per_cpu "in_nmi" flag */
-> -- 
-> 2.41.0
-> 
+> +	return 8;
+> +}
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
+"inc_skip_age" sounds like it increments something.  Can we give it a
+better name?
+
+And a nice comment explaining its role in life.
+
+> +static bool skip_rmap_item(struct page *page, struct ksm_rmap_item *rmap_item)
+> +{
+> +	rmap_age_t age;
+> +
+> +	if (!ksm_smart_scan)
+> +		return false;
+> +
+> +	if (PageKsm(page))
+> +		return false;
+> +
+> +	age = rmap_item->age++;
+> +	if (age < 3)
+> +		return false;
+> +
+> +	if (rmap_item->skip_age == age) {
+> +		rmap_item->skip_age = 0;
+> +		return false;
+> +	}
+> +
+> +	if (rmap_item->skip_age == 0) {
+> +		rmap_item->skip_age = age + inc_skip_age(age);
+> +		remove_rmap_item_from_tree(rmap_item);
+> +	}
+> +
+> +	return true;
+> +}
+
+Would a better name be should_skip_rmap_item()?
+
+But even that name implies that the function is idempotent (has no
+side-effects).  Again, an explanatory comment would be good.  And
+simple comments over each non-obvious `if' statement.
+
+>
+> ...
+>
