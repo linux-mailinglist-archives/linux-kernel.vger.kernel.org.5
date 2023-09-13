@@ -2,145 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611D579DE5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11FF79DE61
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbjIMCr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 22:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        id S238153AbjIMCth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 22:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjIMCr0 (ORCPT
+        with ESMTP id S229557AbjIMCtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 22:47:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF381719;
-        Tue, 12 Sep 2023 19:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694573242; x=1726109242;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4cbEGO6IVZ670Bn0msjrzLBr0sS4CiHbeKPk7wJW3wY=;
-  b=fk5kLZhcqRcba4CoRDUOhW/P1ZbF2p2JFFVZ2wX5IExhBMrj2NVY7Jot
-   UY9z0BcSzxJRDsgm1bX2U5uR75zqTTkxXEbrBmaTpLUkTE3je9ACIzcZk
-   4vFcRCArFRkLAUeeguJAqk8ROqzUHJZU671gggS3gr68Ac+ntV/FBbBZY
-   6KJ3EROa3ZRaJCdUbKWPocPim+RAHBG6ANRP1foHbmK7qcluU6mUDJd67
-   /wIZKe+SQIohFL21jn1K4fHKwVEh9M9HACCp2q5rOUkEGyh+CxCMItW3O
-   o+w2e097PLRfL2mnxkboZkSzK4IC6S8/ZfRb2AaSoZLWEVp2Twwg8cQMp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="378460619"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="378460619"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 19:47:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="990735142"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="990735142"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Sep 2023 19:47:18 -0700
-Message-ID: <6e550123-4307-571c-d70e-d66ac0bf66ad@linux.intel.com>
-Date:   Wed, 13 Sep 2023 10:44:19 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+        Tue, 12 Sep 2023 22:49:36 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEAB10F6;
+        Tue, 12 Sep 2023 19:49:32 -0700 (PDT)
+X-UUID: 272c8b2251e011eea33bb35ae8d461a2-20230913
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
+        b=Wk5IPaEVWqW1+Vo2vuB/SUHfpgQ0d62wZF5fZDq4cI3afJWiiGotUsugArt7LTGDZgxxQjMv5uICzvffioY/Fz6PEPO6Ly+CyUQAn6WXeLrcLmIx5DPsnMn45NiTNisdTwlQjjh8YAfgQD8p+qet9KIhAAxPWkoM+MXlFSYdNS0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:62090bca-1050-4eb8-a172-74b1c253cce1,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:14cbf5c2-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 272c8b2251e011eea33bb35ae8d461a2-20230913
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 666528851; Wed, 13 Sep 2023 10:49:26 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 13 Sep 2023 10:49:26 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 13 Sep 2023 10:49:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AP8tuNPb4/z0Ms1pokW92FOFASRV7goWJ+/BGUacueT9f3kO+TQLWneJCMBxWcndhRG2h7X5SLOWhuizhMo1Hm/dadC1aI/1SDnnq+Z/HkW16qHWCLYxG4ldv2CoYi/ewWqMmo0b9CfnyBt+Ik7/cXLmj/3bk5pelsZ5dPM68jV3dOnR4mMJAaJ74KHm52Wv4WEFY3N96eJye864BtNsO/c5S7a/JjtzFOxb2vN3iEXhuFNKD7RdaCRI6LQ0yYE9OLt0FA0y7J4wOFN6PNocUy7OaCQDejbW6Eku920uIU//58ybjmvrun5HyeAcoM/eCTokOFAmZ07a28tTFxq28w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
+ b=oaQ8M8wDUW7iYv0BBWe8LwZqnVoVyjnaZWMcOsuc/tk4rYQxZj00i3FS1ZfSRS7zlz5gh0uBqu8RPpaj70Rv4g23utr0BbWb3RIE5CgCqsu4pXYOyhAw/gnTLVPSwtzNng8LNHVkJxgVJ3Ug1iY2oo2/TvN1fAMZpz6bfOEUgXGBa0nJwKIioDJIRorJDuK6Ne71xdRLejED41f5YxLb6RN5pI7ebz3J4i/o1JmfZ9bcWfXlMluzKzUyxFU74j2Q2whryZkdNGNhJ9PzogZoC71ewjRGuxxOndELk47HA5bdAPi1sbjmIbQT4/Xiiz9/9dIuGCSk8b6OZIjDqEcuvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
+ b=mCS23YjTdq8K5G0bmozY39qvdEBNmizo/YbYsB/AJ+f5wNls84ImYn7C2P5btbPWvGYp8+/Q1vGWV7qcU0U26ZBXe5Ozrk/GGRy411WCBr9zxSVDKh9PDIZfWUIRjmetNTAhKOvaZ1na0NJScNUqh1EGjFebj5bcD0e68oQjJoQ=
+Received: from TY0PR03MB6356.apcprd03.prod.outlook.com (2603:1096:400:14c::9)
+ by TYSPR03MB7329.apcprd03.prod.outlook.com (2603:1096:400:433::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 02:49:24 +0000
+Received: from TY0PR03MB6356.apcprd03.prod.outlook.com
+ ([fe80::492f:b5e4:51a:5ecc]) by TY0PR03MB6356.apcprd03.prod.outlook.com
+ ([fe80::492f:b5e4:51a:5ecc%6]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
+ 02:49:24 +0000
+From:   =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
+To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v5 02/14] arm64: dts: mediatek: mt8195: add MDP3 nodes
+Thread-Topic: [PATCH v5 02/14] arm64: dts: mediatek: mt8195: add MDP3 nodes
+Thread-Index: AQHZ5U7fe9fbI0C8pEKUFmZap9QRdLAW2jqAgAE09YA=
+Date:   Wed, 13 Sep 2023 02:49:23 +0000
+Message-ID: <457fa572774d7a3ccd9cdb525b517aa8f1b5f937.camel@mediatek.com>
+References: <20230912075805.11432-1-moudy.ho@mediatek.com>
+         <20230912075805.11432-3-moudy.ho@mediatek.com>
+         <c64efa17-704d-0bb0-da91-5658bc0bf34e@linaro.org>
+In-Reply-To: <c64efa17-704d-0bb0-da91-5658bc0bf34e@linaro.org>
+Accept-Language: zh-TW, en-US
 Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
- <20230825023026.132919-10-baolu.lu@linux.intel.com>
- <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <cbfbe969-1a92-52bf-f00c-3fb89feefd66@linux.intel.com>
- <BN9PR11MB52768891BC89107AD291E45C8CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <67aa00ae-01e6-0dd8-499f-279cb6df3ddd@linux.intel.com>
- <BN9PR11MB527610423B186F1C5E734A4B8CE4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <068e3e43-a5c9-596b-3d39-782b7893dbcc@linux.intel.com>
- <BN9PR11MB52768F9AEBC4BF39300E44478CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <926da2a0-6b3e-cb24-23d1-1d9bce93b997@linux.intel.com>
- <BN9PR11MB5276CF3330478AFC4FD3C2768CF0A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276CF3330478AFC4FD3C2768CF0A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY0PR03MB6356:EE_|TYSPR03MB7329:EE_
+x-ms-office365-filtering-correlation-id: 964a12ef-715b-4fb8-1b40-08dbb40409c8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NYJCtRoZ3nPQX24kDp2xGWyb6yfUZ/n1gkKeqKSB8FZf5L56GlMDSdBBvD+EBcAlKT4+Sy3OCMeSQD063xPeQhJBHmvb1sEgEhiMQeboJPtCk0t+bKETc3Ii5iltCI5sQH5KCWxizSZEDmmBMPOdSpS72FPTY/Opg/Sqpxx8EUyWLGONRiZj2v9k12ojRkpwWS96gloUtQi6P5TxgNRV9vf6y+UU16n8ZcX1h+582en4NUJ1cKLiZU5Du9ykg9jVG3wLiGcboJ7S77bAULzsSbbxroUS44keOGIjm18QVHJL+9J3tsj7W4s/82Wl0XmIKLIBDYVHTYeqVCOuELRU0lAxztQwgVv4VF5y3LR+RlO3P6Y1DhasqQcYxKkTej83cAEm966QfVXQdt/Vu8jbHNUNNLeMCJJkFMyvURG4Ul+UemathrrlakFwPQitF8Zl6Y6fzGUIq0Rr7uXiP5hK1buo5YC452mmZkhCQAjAI8psMuANYtSTHTL27wBs6eo6puOmS1wSnYYyVXqvheyIZPqatcO8CZRMRw7sbAyUrhw6y61qp8fXx028HUVkvf+pDo2ScCp4B6zHH3NYSEu3CVx6Cj2FfUmpxZ0BKkiyVJRfVcAE8jJO7wSXdELdCaFuWmaTp8zCYaKqX3QV75mXiElQfCDB8zCUFr45WuCd9F3oHdeWGLlT29yTa6sNXvCv9UbyczKyJ3rBz3xc8A03dg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY0PR03MB6356.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(1800799009)(451199024)(186009)(6512007)(6486002)(6506007)(53546011)(71200400001)(38100700002)(38070700005)(2616005)(110136005)(76116006)(66946007)(86362001)(478600001)(122000001)(83380400001)(921005)(26005)(66556008)(66446008)(2906002)(5660300002)(7416002)(85182001)(4326008)(36756003)(64756008)(54906003)(316002)(8936002)(8676002)(41300700001)(66476007)(4744005)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VGlRbG9ON3ZrMUFtZDErbHc3YmxtaUlNZWVpTFYvdTd2L0V1a0w0MGFjeXFX?=
+ =?utf-8?B?M0pQcGNLS2orMERscENQenJWaWZ1aWd1aHlTalQxY3A2K1pndnRzYkJ2MzRs?=
+ =?utf-8?B?V2JZNnl1dzJSRW9wWlB3YjhwVnNmZVVjSU03eTFMR2pSWEhTTnhMc3lvRW8y?=
+ =?utf-8?B?anliYkFsRXRSciszdHVWa0I1c0ltKzVEOHZBVVY2NGp6Q3lZbWpDbGdmbU9L?=
+ =?utf-8?B?dmdwQlk3QnlmM0ZsNXhhT1Z0VTllazRvU2VGMm5RSTl6WUJmWXJBWWV2blpv?=
+ =?utf-8?B?OGNOSTArVFg5cWZCempLckt3dHJWWGluM1lvdUFDUUY3RCt6OXI5YnJ3aElR?=
+ =?utf-8?B?NjY4M1hLRUVZcHlzTXU4WW1BenRLNDQ3QndoZ01xOTNKWDBYWHJ4VUtRRnIy?=
+ =?utf-8?B?NktEOG1zaEIrVUY0MlI3cDlEcHRsWGs5Tkt4UWtiN1MxY1l6Qks1TUNuM3cx?=
+ =?utf-8?B?Tms5OWRXK1lheXM4RVRZemdvVUkwUmV4dGZhaGZlSzlYL2xKVGo2bGk3Z3pl?=
+ =?utf-8?B?UDI5TGR3MVpxdHhBOWExYy9peGp1NUZZeDdGWFFLd0xTSU8wMmhUZDdZSkF2?=
+ =?utf-8?B?S2hXUjdUL2luTmljMllsN05VYm5uTEtqMGtBRVBvbmU0ODA0c2JtdkRncVJE?=
+ =?utf-8?B?d2NSZllSSWtFdGVrWHFGdWxiY0NDMENnUkpURkl4cSsxWGNLcWtFRG1yQWR3?=
+ =?utf-8?B?WWxRMk9hZXdPeUhtVFc0TDBMYWozWkJqTGRQdDJyWkZYS295U3pENXFQWE1o?=
+ =?utf-8?B?aDVKWHhPbjZJNUVMbzdHMWlaWk5hYW8wQ0VIZzAvN0pWME8remJJTjAzSUFt?=
+ =?utf-8?B?M0hrendnd1M3UVp6K2ZQc3pBeEIrKy9PZ2tJaDFycW9pVGkveXJ6cU5USkZw?=
+ =?utf-8?B?V0hGcXV2QkVWOTdpTHVqZ0FVSndGT3kycFdFbkEzdlNoT1h6dzN1ejZzbGN1?=
+ =?utf-8?B?alZXSGJEbEF0OUxZZmIxSjJtMVRrTWQzOXlXN1NCYk5EdmlpM1lIWmdmMG5a?=
+ =?utf-8?B?OHdHQUFMU2U2b2dzL2xUQlhia2JnMmo2dkwxRklPN1pVNmtCNUtHMElmdHhS?=
+ =?utf-8?B?LzhVbmo5S2lIMmh6QkpVRkpHRmRIMTR3UDVYMG9TM2FCRENEVmZtakYrTXBa?=
+ =?utf-8?B?czNpdEdsVUxXN3FjdHh3WnMzSC9NNEVMd2RPalEzL1dYTDlEd0RFS2VmNUZE?=
+ =?utf-8?B?YVpVL2JteGJHVUZuaDJHTFhkNzM0Z0R4YjRFOExFQytVY1BIc2dTckpnSVUz?=
+ =?utf-8?B?VktjNEpITXFuSWpObHBCTVlDRm5lVENEaFFEYXEwU01xRXJFTFVBWGR4WlVa?=
+ =?utf-8?B?VytQYWRGK1FhU0ZGbVljN1J2V3RJeVlzTHgzZ0pXRFVxWFV4YjdpczNmNTNl?=
+ =?utf-8?B?OVJYTFF1Z1E0WFlNQXAvanJCMlQzQi9Zc2VCeS96a0ZUZHpmejdoQWJRZTBz?=
+ =?utf-8?B?blZEZGNaZkYzRjZ6M0ZrRFpZdHN2Vy9SNmlOUHVQemgzTnNPbEttNHh3Q3RO?=
+ =?utf-8?B?c2ZGOE1TK2N2VVpZd0RRMHVxd3RUUFVkNmVyWVE5SjdtRVE1ZEorOGxmVnFx?=
+ =?utf-8?B?YWhVNFdEdjBOcFc0Qm9ZVDdsdVkrOExmR09vS29PREhEWXgyR1gxcG5lZ3NS?=
+ =?utf-8?B?eUthUjNFV2tZYUNMRTcxQlJsY1NOb0R6MVVGa09MMHpjNGgwWXNIMmwrczV2?=
+ =?utf-8?B?SUdUK0JVeVpTMG5HcnE5ZEZHc21XMDhjWVhGSXNmU3JHeHZ4RzVrMGd0RFpm?=
+ =?utf-8?B?UGhGa2pmalAvazkvbGc3cklYSmoySlRNMjQ5SFJXMTVLOEdQUmdlN1crdjJa?=
+ =?utf-8?B?TjRnV05teUFxaDU5Y2gwb3hZM3habUpuOWZCZ2M4QmRiQ0FxR3NsdURjVVQx?=
+ =?utf-8?B?UzJnZTZreHBlWUVINFNadmp2WEluR2pHTUhVR2tLQTVKS05rNWFiTTFueWdw?=
+ =?utf-8?B?SUUwRTRDNURIdUdkTHlKaG14ZTNvQ29vSm82UlZ2dWI0RUxmS0xSMGVYTW13?=
+ =?utf-8?B?TllVdWNWeTZsMThNRTVyNjQzMmp3dVZGRzV2N1p4M01mdlIxcnhyYTV3em5v?=
+ =?utf-8?B?RHJnOEZUQ0NRdVNJN3NyL1E2QzMwaFREOU1IdG1MNmVvTG9MdjJqWXhLN3Qx?=
+ =?utf-8?B?bGsxck9kUmVLQ3QvWGJCZjVjTXlvemltYmpraVU5bzN1RTRZaTBZMC85eWV0?=
+ =?utf-8?B?VVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9E59AB1F5F031C4993F441958C4A4AFF@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY0PR03MB6356.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 964a12ef-715b-4fb8-1b40-08dbb40409c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 02:49:23.9945
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3PduhPuKdr9XefN58jhJvigJDBHXt1/0qUd87TGw2cSiPgnI99CnePc4Aq3JmbYrpyinv/bF6RaXcJ12Ie8F/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB7329
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/23 10:25 AM, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Monday, September 11, 2023 8:27 PM
->>
->>>
->>> Out of curiosity. Is it a valid configuration which has
->> REQUEST_PASID_VALID
->>> set but RESP_PASID_VALID cleared? I'm unclear why another response
->>> flag is required beyond what the request flag has told...
->>
->> This seems to have uncovered a bug in VT-d driver.
->>
->> The PCIe spec (Section 10.4.2.2) states:
->>
->> "
->> If a Page Request has a PASID, the corresponding PRG Response Message
->> may optionally contain one as well.
->>
->> If the PRG Response PASID Required bit is Clear, PRG Response Messages
->> do not have a PASID. If the PRG Response PASID Required bit is Set, PRG
->> Response Messages have a PASID if the Page Request also had one. The
->> Function is permitted to use the PASID value from the prefix in
->> conjunction with the PRG Index to match requests and responses.
->> "
->>
->> The "PRG Response PASID Required bit" is a read-only field in the PCI
->> page request status register. It is represented by
->> "pdev->pasid_required".
->>
->> So below code in VT-d driver is not correct:
->>
->> 542 static int intel_svm_prq_report(struct intel_iommu *iommu, struct
->> device *dev,
->> 543                                 struct page_req_dsc *desc)
->> 544 {
->>
->> [...]
->>
->> 556
->> 557         if (desc->lpig)
->> 558                 event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
->> 559         if (desc->pasid_present) {
->> 560                 event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
->> 561                 event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
->> 562         }
->> [...]
->>
->> The right logic should be
->>
->> 	if (pdev->pasid_required)
->> 		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
->>
->> Thoughts?
->>
-> 
-> yes, it's the right fix. We haven't seen any bug report probably because
-> all SVM-capable devices have pasid_required set? 😊
-
-More precisely, the idxd devices have pasid_required set. :-)
-
-Anyway, I will post a formal fix for this.
-
-Best regards,
-baolu
+T24gVHVlLCAyMDIzLTA5LTEyIGF0IDEwOjIzICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtz
+IG9yIG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRl
+ciBvciB0aGUgY29udGVudC4NCj4gIE9uIDEyLzA5LzIwMjMgMDk6NTcsIE1vdWR5IEhvIHdyb3Rl
+Og0KPiA+IEFkZCBkZXZpY2Ugbm9kZXMgZm9yIE1lZGlhIERhdGEgUGF0aCAzIChNRFAzKSBtb2R1
+bGVzLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1vdWR5IEhvIDxtb3VkeS5ob0BtZWRpYXRl
+ay5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTk1
+LmR0c2kgfCAzNzgNCj4gKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDM3OCBpbnNlcnRpb25zKCspDQo+IA0KPiBXaHkgaXMgdGhpcyB0YXJnZXRpbmcgbWVkaWE/
+IE5vLCBkb24ndC4gRFRTIGdvZXMgdmlhIFNvQywgbm90IG1lZGlhLg0KPiBEb24ndCBtaXggcGF0
+Y2hlcy4NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQo+IA0KDQpIaSBLcnp5c3p0
+b2YsDQoNCk15IGFwb2xvZ2llcy4gSSdsbCBzcGxpdCB0aGVzZSBEVFMgaW50byBzZXBhcmF0ZSBz
+ZXJpZXMuDQoNClNpbmNlcmVseSwNCk1vdWR5DQo=
