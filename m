@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B6D79EB81
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C19279EB83
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241397AbjIMOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        id S241543AbjIMOrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241415AbjIMOrU (ORCPT
+        with ESMTP id S241506AbjIMOrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:47:20 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D579B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:16 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68fac73c54aso5345007b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694616436; x=1695221236; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMCw5TG7E2QUMrbjxkEI8JkXPsdAS9lS/ivoHC9sTRs=;
-        b=HYNX4JEr5yHH8m2Ge2M++apUrY5Ny341YR3SNs8t9EvtK0OIV1UY3RjOmaQNike3xf
-         DGjbtmEUu6EVKf3byo/dq8g3KC5dMCFyXyHROr+lWYSLCg7k5uVF8WK3k6ebRkvQ/CW7
-         jz/IY+2Y5VdAKFMSCqezEj6852NcPkYO7kNZk5c8UExHSnRblFJXId1WBfKgNkMMUBZx
-         K3gw+8FSDwrNVvTUCTIQfiNGIgkgtaUvXxQb4oybr1mL7PArYNf0lTPMXc+TQbceAny7
-         gxaGoXwiLSk6xPVHh3hssQ88SepGXr2aQslMB8vEUoVAuDBM5RDjba/RBt9OlTRBlGMI
-         3dZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694616436; x=1695221236;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMCw5TG7E2QUMrbjxkEI8JkXPsdAS9lS/ivoHC9sTRs=;
-        b=fn2vwmdtyYGlLfEcR1f9vSuO40QfsiMyyVJU/fH6qHINzKQYJsw+r3HbW1czgru9p0
-         WoTvEq/mn1iCUlFs4b8W2HHCSeHLQc9gCfba/Ae9xISf8gxvUfZNXBK0fBZs33/Efaut
-         AvICYbsUet9Tp3Qd518cT0fhs/iNUSyXIO5QnTN4Hr6u1B/xHFr3BlaZgpO+bJt+NZpU
-         hwX0ZqyZbjvF6MPhpLhWpSjkF+qeLO8TAjBJEQEb17FTWAVhb2tDX+hE+/LamHu+IfqG
-         +ZFt78ksxdMqISLXXuKxiz+GVNu/AKnLikFafqZvYpcoAd9bg4UiObwWw8lDlavyTahn
-         2Bxg==
-X-Gm-Message-State: AOJu0Yx0F3enSGuvOiqI8CBWtW9ioSsLg7U8rXGzpOI33iHxRlFdXIfM
-        MNmOJTUfXBY3HhbgPUU3rMcmkSfqRUo=
-X-Google-Smtp-Source: AGHT+IFChbN8HMdA2gZsaodcSrytXbT4AwgAFpfF1saADVj4sQEbxn667GNHOFWcQttO8Sn32+P4Mz8Dp1Y=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1487:b0:68f:fa41:4e94 with SMTP id
- v7-20020a056a00148700b0068ffa414e94mr201334pfu.0.1694616435711; Wed, 13 Sep
- 2023 07:47:15 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 07:47:14 -0700
-In-Reply-To: <2eaf612b-1ce3-0dfe-5d2e-2cf29bba7641@gmail.com>
-Mime-Version: 1.0
-References: <20230913103729.51194-1-likexu@tencent.com> <5367c45df8e4730564ed7a55ed441a6a2d6ab0f9.camel@infradead.org>
- <2eaf612b-1ce3-0dfe-5d2e-2cf29bba7641@gmail.com>
-Message-ID: <ZQHLcs3VGyLUb6wW@google.com>
-Subject: Re: [PATCH v6] KVM: x86/tsc: Don't sync user-written TSC against
- startup values
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
+        Wed, 13 Sep 2023 10:47:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3827AB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:30 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9E30C1F385;
+        Wed, 13 Sep 2023 14:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694616449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=91ytSZhAZZJxRLS51DPAMbgyIGi3HFabuhDgqq8+ZcY=;
+        b=pqlznT6UI67IMPdHtm8FZNrlprjno9lQRxR/VNssD6mG4gJMCHrMmzrN2gwPJeb6GxBC0B
+        bWPDmDYM8Z4KwfYEDP09Csi0E7YrqjnA6DQ+3BzmZv2h6zXZMjoUcxRdaZRwxENDje5pdG
+        2e1Ug5Swug0e0lzs0YBrtjGk9BeF728=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694616449;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=91ytSZhAZZJxRLS51DPAMbgyIGi3HFabuhDgqq8+ZcY=;
+        b=dtYqore8nc2Jlv7dpegTaDv40gsMQCTVkFUEzhxShCWbxdRvoN4pCFIdbBK1zENcYRL/3N
+        HAZb6p0s7GZSs1DA==
+Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
+        by relay2.suse.de (Postfix) with ESMTP id 077842C142;
+        Wed, 13 Sep 2023 14:47:29 +0000 (UTC)
+Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
+        id D571C4A04B1; Wed, 13 Sep 2023 16:47:28 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     suagrfillet@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, anup@brainfault.org, alex@ghiti.fr,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: BUG Report: Some issues about vmlinux with emit-relocs
+In-Reply-To: <mhng-0208249f-0619-4be7-bbc7-e1c0ee6e3c8c@palmer-ri-x1c9>
+        (Palmer Dabbelt's message of "Wed, 13 Sep 2023 07:30:48 -0700 (PDT)")
+References: <20230808085438.3445957-1-suagrfillet@gmail.com>
+        <mhng-0208249f-0619-4be7-bbc7-e1c0ee6e3c8c@palmer-ri-x1c9>
+X-Yow:  My nose feels like a bad Ronald Reagan movie...
+Date:   Wed, 13 Sep 2023 16:47:28 +0200
+Message-ID: <mvmcyymxh8f.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, Like Xu wrote:
-> I'll wait for a cooling off period to see if the maintainers need me to post v7.
+On Sep 13 2023, Palmer Dabbelt wrote:
 
-You should have waiting to post v5, let alone v6.  Resurrecting a thread after a
-month and not waiting even 7 hours for others to respond is extremely frustrating.
+> Having R_RISCV_NONE in any binary is a bug, it's not a real relocation
+> just an internal binutils thing.
+
+That's not true.  It's an official part of the ELF psABI.
+
+-- 
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
