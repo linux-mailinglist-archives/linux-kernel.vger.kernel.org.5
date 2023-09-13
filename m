@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A95679E65B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A5879E662
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240184AbjIMLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S240085AbjIMLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240163AbjIMLPk (ORCPT
+        with ESMTP id S240111AbjIMLPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:15:40 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4D93C21
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:25 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso73453995e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694603663; x=1695208463; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X4j22lmDBEdz68x3qUhl5gJ0drA+YexofLKRZQjwWfs=;
-        b=MsJTl3hH4aJNrK5tFeLAxICWDzLg91wl3pT/mKCW+Vb19en/I/7/yG0MEMIoEwBxTG
-         7j7n6R1q3u/vNeitp7ccZoqRIUlBvyzPL1Sm3EKawQBtuNKeew02N48cyZo/wYOKCOzu
-         WboobLHLEpW95M5poDU+qbwX39v5xJwzlLwdAj3+7ujFDnrguB6DhcAMXy7OWzIwZUXp
-         v0cPajGP40D1TFXYhNlutjrJF7Siaes0SHtPWicV2i5ott0XXCr5MD+3O9ggspqfh8Ul
-         qXHlbeB2xzpT7xviOxeQ24af1ulbvqpm4lYlYLiMPqhNA1lh/oVrvOVDd5qculDqH48D
-         JDgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694603663; x=1695208463;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X4j22lmDBEdz68x3qUhl5gJ0drA+YexofLKRZQjwWfs=;
-        b=fv5mWaHArNWBT3CH+bQykNm3xK3yBKlnHFm/p7NN/QUnELseatjIlbHz2Ly5VmZq6z
-         JA48VFPoBE4pPtDm23KFYGUq1ZPCv6CbsyONb1LxF0UxPQXFZAlhoSDo3+PKOIzYXyAW
-         xEFxBeSvo+xMs/k+L5UF/qeq+Kh+/kHILSOsmneos5FWu15tIHZ4mHTtzsy03SYzo6QM
-         I/osaO/fG2YHwHlkNvxklcwk3UG5HCy02vpZCmPP7Qz9kC6SQvdTBzAR4mh2Q2EUnAT1
-         u+fgtRTpyGTRJPTJu9FIwpu1pFYjpxspr1DnCKPGDelDYF+u5aXyPn8beAj2SI/9ZgIE
-         yCBg==
-X-Gm-Message-State: AOJu0Yz6TRHpgognQYbGm/nSZMcG7+3Vg1uAX48IGz6F14zfl0BMQSWe
-        wRwYhU9mopU7dvGYMwk/SDMJtw==
-X-Google-Smtp-Source: AGHT+IFJlSnmnVty++JAQlMdedVZw+ig39ydIHFfYUarwozinwRjAGGXz3bvVLJ7KKgGWK++b7J6OQ==
-X-Received: by 2002:a5d:4a09:0:b0:317:70da:abdd with SMTP id m9-20020a5d4a09000000b0031770daabddmr1727674wrq.59.1694603663440;
-        Wed, 13 Sep 2023 04:14:23 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id l5-20020adfe585000000b0031759e6b43fsm15246555wrm.39.2023.09.13.04.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 04:14:22 -0700 (PDT)
-Message-ID: <30bb6068-6bb8-9a2c-af19-b989960d0be9@linaro.org>
-Date:   Wed, 13 Sep 2023 13:14:20 +0200
+        Wed, 13 Sep 2023 07:15:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075883C02
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694603674; x=1726139674;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CO7FuKGxFldgK75QHPqN9lKBJ3RZKKyTcKvNBywVB6U=;
+  b=Zzfyg8HDA5+7XrjlfzPdCaeoNAiNFwN64a1rRZoNgMgS/fTUWiup4Xej
+   pG1agdYmu1BK7k+qeseMh+IQ/rQR4159G58JI7wNj87MHJ0nPf3J1CKe0
+   2w5cd7AUN1zHWBfXFE2XU3mBpNjV3hJDpsfyuGZp/htnk6+OoBHE0dfP6
+   77bPiWQxWkXwRO9Svl2Oq1Booci/EDFCjxXqhknsjgXjRSI8qqVCBs2E1
+   WydN4w6wuE4RVE2ZJCrR76eZIFOgNZ6F3HU0o6j4zIE3EK7NTBR6qcb2s
+   iaTM2enBVgNy4YF5IcQ2dAWJx3FZVUXrucCwnwrUoystADNCTG/dvB10G
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363660576"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="363660576"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:14:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="917791463"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="917791463"
+Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 04:14:31 -0700
+Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgNpD-0000R1-29;
+        Wed, 13 Sep 2023 11:14:28 +0000
+Date:   Wed, 13 Sep 2023 19:14:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 07/19] powerpc: Untangle fixmap.h and pgtable.h and
+ mmu.h
+Message-ID: <202309131942.k7EzJho8-lkp@intel.com>
+References: <c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 01/14] arm64: dts: qcom: msm8916: Drop RPM bus clocks
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v2-1-1e506593b1bd@linaro.org>
- <bd11d1b1-efe5-4f96-43e7-163fca5d3278@linaro.org>
- <ac501bcc-80a1-4b65-ba24-272152d1c95c@linaro.org>
- <7b500bba-3091-f425-a60d-e58a3d9e4c1a@linaro.org>
- <9a0ab5a9-d4d8-41b8-94b0-9c62bd686254@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9a0ab5a9-d4d8-41b8-94b0-9c62bd686254@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 12:48, Konrad Dybcio wrote:
-> On 13.09.2023 10:53, Krzysztof Kozlowski wrote:
->> On 13/09/2023 10:47, Konrad Dybcio wrote:
->>> On 13.09.2023 09:07, Krzysztof Kozlowski wrote:
->>>> On 12/09/2023 15:31, Konrad Dybcio wrote:
->>>>> These clocks are now handled from within the icc framework and are
->>>>
->>>> That's a driver behavior, not hardware.
->>> I believe we've been over this already..
->>>
->>> The rationale behind this change is: that hardware, which falls
->>> under the "interconnect" class, was previously misrepresented as
->>> a bunch of clocks. There are clocks underneath, but accessing them
->>> directly would be equivalent to e.g. circumventing the PHY subsystem
->>> and initializing your UFS PHY from within the UFS device.
->>
->> And every time one write such commit msg, how should we remember there
->> is some exception and actually it is about clock representation not CCF
->> or ICC framework.
-> So is your reply essentially "fine, but please make it clear in
-> each commit message"?
+Hi Christophe,
 
-I am fine with this change. If commit msg had such statement, I would
-not have doubts :/
+kernel test robot noticed the following build errors:
 
-Best regards,
-Krzysztof
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc1 next-20230913]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/powerpc-8xx-Fix-pte_access_permitted-for-PAGE_NONE/20230912-031616
+base:   linus/master
+patch link:    https://lore.kernel.org/r/c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy%40csgroup.eu
+patch subject: [PATCH v1 07/19] powerpc: Untangle fixmap.h and pgtable.h and mmu.h
+config: powerpc-randconfig-r013-20230912 (https://download.01.org/0day-ci/archive/20230913/202309131942.k7EzJho8-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131942.k7EzJho8-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131942.k7EzJho8-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/powerpc/platforms/83xx/misc.c: In function 'mpc83xx_setup_arch':
+>> arch/powerpc/platforms/83xx/misc.c:126:28: error: implicit declaration of function 'fix_to_virt'; did you mean 'bus_to_virt'? [-Werror=implicit-function-declaration]
+     126 |         unsigned long va = fix_to_virt(FIX_IMMR_BASE);
+         |                            ^~~~~~~~~~~
+         |                            bus_to_virt
+>> arch/powerpc/platforms/83xx/misc.c:126:40: error: 'FIX_IMMR_BASE' undeclared (first use in this function)
+     126 |         unsigned long va = fix_to_virt(FIX_IMMR_BASE);
+         |                                        ^~~~~~~~~~~~~
+   arch/powerpc/platforms/83xx/misc.c:126:40: note: each undeclared identifier is reported only once for each function it appears in
+   cc1: all warnings being treated as errors
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+   Selected by [y]:
+   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
+
+
+vim +/FIX_IMMR_BASE +126 arch/powerpc/platforms/83xx/misc.c
+
+fff69fd03d1290 Kevin Hao        2016-08-23  121  
+fff69fd03d1290 Kevin Hao        2016-08-23  122  void __init mpc83xx_setup_arch(void)
+fff69fd03d1290 Kevin Hao        2016-08-23  123  {
+6b7c095a51e1ba Christophe Leroy 2019-09-16  124  	phys_addr_t immrbase = get_immrbase();
+6b7c095a51e1ba Christophe Leroy 2019-09-16  125  	int immrsize = IS_ALIGNED(immrbase, SZ_2M) ? SZ_2M : SZ_1M;
+6b7c095a51e1ba Christophe Leroy 2019-09-16 @126  	unsigned long va = fix_to_virt(FIX_IMMR_BASE);
+6b7c095a51e1ba Christophe Leroy 2019-09-16  127  
+1ce844973bb516 Christophe Leroy 2022-06-14  128  	if (ppc_md.progress)
+1ce844973bb516 Christophe Leroy 2022-06-14  129  		ppc_md.progress("mpc83xx_setup_arch()", 0);
+1ce844973bb516 Christophe Leroy 2022-06-14  130  
+6b7c095a51e1ba Christophe Leroy 2019-09-16  131  	setbat(-1, va, immrbase, immrsize, PAGE_KERNEL_NCG);
+6b7c095a51e1ba Christophe Leroy 2019-09-16  132  	update_bats();
+6b7c095a51e1ba Christophe Leroy 2019-09-16  133  }
+0deae39cec6dab Christophe Leroy 2018-12-10  134  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
