@@ -2,72 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA68079E2A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C8779E234
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbjIMIwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S238959AbjIMIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239103AbjIMIwE (ORCPT
+        with ESMTP id S238880AbjIMIfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:52:04 -0400
-X-Greylist: delayed 917 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 01:51:59 PDT
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AECD0E73
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xSjnY
-        J6kacZY7UCZLdel3UJ+ItlAuPMrAohzlcPsg08=; b=WLACnnLTEgEVh2FFtehcH
-        vAxHkGuemmWMJytCpUumDGoDgFGPYBYK+O4OZinkfXhfGJV5cCzL18rCCf8P9r+Z
-        n2sFjlTOvSZVnKUfYBfCNdLNpn2SvxNHYYAUWg/nrBBsZLVqP39rS1fAKHS4Y0Rm
-        0QqQxdoM1YPRSYemcfeXgI=
-Received: from localhost.localdomain (unknown [223.166.237.2])
-        by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wBHOthidAFlHFGdAA--.29242S2;
-        Wed, 13 Sep 2023 16:35:47 +0800 (CST)
-From:   Ping Gan <jacky_gam_2001@163.com>
-To:     kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me,
-        kch@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Cc:     ping_gan@dell.com, jacky_gam_2001@163.com
-Subject: [PATCH 0/4] nvmet: support polling queue task for bio request 
-Date:   Wed, 13 Sep 2023 16:34:33 +0800
-Message-Id: <cover.1694592708.git.jacky_gam_2001@163.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 13 Sep 2023 04:35:10 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB35EC3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:06 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5251D660732B;
+        Wed, 13 Sep 2023 09:35:04 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694594105;
+        bh=b1+U2pGflwc/V1Z4xgUhLMPjPG7gNXIcxF/u4aJVNLw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HIt2c3/+tufCzvGPr6PR1hR57aag53jqn1I5ql+1dQscZQAyXpGYCsLgTUuEJ9nDM
+         yVYqUD7YtKlFfXn4vrkeKKBSVsgPsGsX2jxEIU+NoxwY38Q5I98qWrbYqxROUcm4MM
+         pCp0Q1vqc8ICoTFYzmUCNJu9IsglY8B9QQv6zSJGZyHqL+tmhHqZiUovsu+hIyd5kJ
+         cJEPdxyhYZyIgZIBg2qU5Qn/Htrv9I8OKECZr+psUWMXjqjoCY/6dCG4KJyjKGgmqg
+         Jbtq0fjIVYDIa5SKatpvytljZluz9rXCE9vswZWrb5018EtXV/vCsQ5dFoUiPaaEjS
+         SNPvtrFk6Hykg==
+Message-ID: <5a4a0d12-d16a-0836-f6c5-6e6c2f3a9097@collabora.com>
+Date:   Wed, 13 Sep 2023 10:35:01 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBHOthidAFlHFGdAA--.29242S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GrWDWr45ur1xZrykKry8Xwb_yoWfKFX_Cr
-        10vr9rKFW8uF1DtFW7Cr1UXFZFka1Fvr92gFs0qr45Kr9rury5Jrn2vF9xAw4xAw48Zrn8
-        GryUGr4FkrWUWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRMqXHJUUUUU==
-X-Originating-IP: [223.166.237.2]
-X-CM-SenderInfo: 5mdfy55bjdzsisqqiqqrwthudrp/xtbBogXpKVaEJdIBfAAAs-
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] drm/mediatek: Add spinlock for setting vblank event in
+ atomic_begin
+Content-Language: en-US
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Alexandre Mergnat <amergnat@baylibre.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Fei Shao <fshao@chromium.org>
+References: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since nvme target currently does not support to submit bio to a polling
-queue, the bio's completion relies on system interrupt. But when there
-is high workload in system and the competition is very high, so it makes
-sense to add polling queue task to submit bio to disk's polling queue
-and poll the completion queue of disk. 
+Il 22/08/23 15:26, Jason-JH.Lin ha scritto:
+> Add spinlock protection to avoid race condition on vblank event
+> between mtk_drm_crtc_atomic_begin() and mtk_drm_finish_page_flip().
+> 
 
-Ping Gan (4):
-  nvmet: Add nvme target polling queue task parameters
-  nvmet: Add polling queue task for nvme target
-  nvmet: support bio polling queue request
-  nvme-core: Get lowlevel disk for target polling queue task
+Hello Jason,
 
- drivers/nvme/host/multipath.c              |  20 +
- drivers/nvme/target/Makefile               |   2 +-
- drivers/nvme/target/core.c                 |  55 +-
- drivers/nvme/target/io-cmd-bdev.c          | 243 ++++++++-
- drivers/nvme/target/nvmet.h                |  13 +
- drivers/nvme/target/polling-queue-thread.c | 594 +++++++++++++++++++++
- 6 files changed, 895 insertions(+), 32 deletions(-)
- create mode 100644 drivers/nvme/target/polling-queue-thread.c
+Can you please provide more information about this race condition?
+(check below)
 
--- 
-2.26.2
+> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> index d40142842f85..128a672fe3c9 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -746,6 +746,9 @@ static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
+>   									  crtc);
+>   	struct mtk_crtc_state *mtk_crtc_state = to_mtk_crtc_state(crtc_state);
+>   	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&crtc->dev->event_lock, flags);
+>   
+>   	if (mtk_crtc->event && mtk_crtc_state->base.event)
+>   		DRM_ERROR("new event while there is still a pending event\n");
+> @@ -756,6 +759,8 @@ static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
+
+...because my suspect is that what creates the race condition in this function is
+the unlocked *assignment* to mtk_crtc->event, not the rest.
+
+If I'm right, you don't need to unconditionally spinlock at the beginning of this
+function hence ever-so-slightly improving performance compared to this version.
+
+Can you please try this one and check if this *also* solves the issue?
+
+	if (mtk_crtc_state->base.event) {
+		mtk_crtc_state->base.event->pipe = drm_crtc_index(crtc);
+		WARN_ON(drm_crtc_vblank_get(crtc) != 0);
+
+		spin_lock_irqsave(&crtc->dev->event_lock, flags);
+		mtk_crtc->event = mtk_crtc_state->base.event;
+		spin_lock_irqrestore(&crtc->dev->event_lock, flags);
+
+		mtk_crtc_state->base.event = NULL;
+	}
+
+P.S.: I'd try that myself, but I can't seem to reproduce the issue.
+
+Regards,
+Angelo
 
