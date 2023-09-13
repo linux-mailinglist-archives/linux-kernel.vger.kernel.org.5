@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C1779F4CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2E979F4CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbjIMWOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 18:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
+        id S232973AbjIMWOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 18:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjIMWOI (ORCPT
+        with ESMTP id S229645AbjIMWOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:14:08 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C311996;
-        Wed, 13 Sep 2023 15:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694643243;
-        bh=Yc79kZstegY2MgDJ+A93XCaJaTftTDq8DtZ/AeBZWgE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nqaDFJzNBxhN71nHpw2Fjuj3yUferW24HDRwvvGCglXoEjybqrVUrc6xGLT2vl8FK
-         d1wm5ypI0Kc7SJPECo5wO4IJvhcYG7p5tKrOtdiyN0BjfKmAOnfpPC4hlMSfQi/cAW
-         SBvNqG38KvDGeFnAsXQbq87QN11A2ni5zr7xMKXGQXM73Iq5QtqVWCNufbpuI/Ssjz
-         Jh0XWwbaRcOX9Acffruj0CmP5rtTwNDMsRXspVhY9UtszApSN6EualnhOcO28MsRlb
-         W/78TwgaNLJV20rX+cW5Bl4q2T35QZEMS592bszoAUycLAUoaFe+uMm2IKMrlErPFD
-         xwFqy7GcKPPRQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmF966DxFz4wxf;
-        Thu, 14 Sep 2023 08:14:02 +1000 (AEST)
-Date:   Thu, 14 Sep 2023 08:14:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bcachefs tree
-Message-ID: <20230914081400.5d9e5b8f@canb.auug.org.au>
-In-Reply-To: <20230912120429.7852428f@canb.auug.org.au>
-References: <20230912120429.7852428f@canb.auug.org.au>
+        Wed, 13 Sep 2023 18:14:05 -0400
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98505198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:14:01 -0700 (PDT)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+        by cmsmtp with ESMTP
+        id gU3YqCmhCWU1cgY7Uq9GoM; Wed, 13 Sep 2023 22:14:00 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id gY7TqxXZHXfVegY7Tqb6mq; Wed, 13 Sep 2023 22:14:00 +0000
+X-Authority-Analysis: v=2.4 cv=VrIwvs6n c=1 sm=1 tr=0 ts=65023428
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=jFRxq2wKO8WXaxfeKaYA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dZ4X6+zZMXjSOhvMDt4VTdB7ETyMBxc+LRS7AMiNx4o=; b=tPyPbdnZPEEKMvZ4zkMTNoUiA6
+        pmMAqnXt1JqSfMxaJEoUls89aL+Q9OHRGIJg8W7ngxqTwDC8+XfJangsgN6WC6Hqu9lEZJLLNGTeC
+        xSJ/sJVjl2Ci8svmjP/NAxuniAvYvXRTguaPhJ9v3NlAR7LnlFSOftzFCAUEzxMWeq+oAkTx4mtZO
+        9et6bJI2KYs3R4RZ1+p4912wdKN1JaZ5p1FekNrI++5NbCBjLodauDyun9vjGdInSf5cuEPR0wJqi
+        xS9npUqrp6V+mnhWoQE3b8PHaIofEbp7GM5O2cp2KcmwG5X0Z7/zP7R1Xne5IW3PhHZtmFLW3xZEn
+        zFUOzWLA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:39334 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qgY7T-001lOu-0P;
+        Wed, 13 Sep 2023 17:13:59 -0500
+Message-ID: <968f8168-1a0f-c916-86fb-fe4d89bb6250@embeddedor.com>
+Date:   Wed, 13 Sep 2023 16:14:55 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TJF0qsaXAVjLHvoEJXlN/8F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] checkpatch: Add a couple new alloc functions to alloc
+ with multiplies check
+Content-Language: en-US
+To:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Gustavo Silva <gustavoars@kernel.org>, linux-kernel@vger.kernel.org
+References: <cover.1694636817.git.joe@perches.com>
+ <edb667e19211652a32ef6069159bb85dbc3bcdfc.1694636817.git.joe@perches.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <edb667e19211652a32ef6069159bb85dbc3bcdfc.1694636817.git.joe@perches.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qgY7T-001lOu-0P
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:39334
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfACw8y3edszWC6JoToOLqEK2bRo2eTk1je3gFShdX+smiNC0zPTzKSFGOLKLcgXvG0J25FPsyazVkzZnftAJERdrC8HkO//Ya6HEHpU+E7yk2V6Fq9Oj
+ ehXIsqbIyieyOQKhhKgSzmV8bkRDbxIeQ859UoPJeIkEMa6RgGcDoadVCTBEHyIWz4VkGPNZEozevV7gTiR13zoHtiHTM11JJXK9eJ+myt0Pt8qssmFaiZiH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TJF0qsaXAVjLHvoEJXlN/8F
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Tue, 12 Sep 2023 12:04:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the bcachefs tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_exit':
-> fs/bcachefs/btree_cache.c:403:9: error: implicit declaration of function =
-'unregister_shrinker'; did you mean 'unregister_chrdev'? [-Werror=3Dimplici=
-t-function-declaration]
->   403 |         unregister_shrinker(&bc->shrink);
->       |         ^~~~~~~~~~~~~~~~~~~
->       |         unregister_chrdev
-> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_init':
-> fs/bcachefs/btree_cache.c:479:15: error: implicit declaration of function=
- 'register_shrinker'; did you mean 'register_chrdev'? [-Werror=3Dimplicit-f=
-unction-declaration]
->   479 |         ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", =
-c->name);
->       |               ^~~~~~~~~~~~~~~~~
->       |               register_chrdev
-> cc1: all warnings being treated as errors
->=20
-> Caused by commits
->=20
->   5ec30115c066 ("bcachefs: Initial commit")
->=20
-> interacting with commit
->=20
->   eba045d9350d ("mm: shrinker: remove old APIs")
->=20
-> from v6.6-rc1.
+On 9/13/23 14:37, Joe Perches wrote:
+> vmalloc() and vzalloc() functions have now 2-factor multiplication
+> argument forms vmalloc_array() and vcalloc(), correspondingly.
+> 
+> Add alloc-with-multiplies checks for these new functions.
+> 
+> Simplify the original codes repeated else to use a hash.
+> 
+> Link: https://github.com/KSPP/linux/issues/342
+> 
+> Original-patch-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This latter commit is actually in the mm tree and is now commit
+Why don't you wait for a response or a v2 from the original
+submitter?
 
-  d3ed57149dec ("mm: shrinker: remove old APIs")
+--
+Gustavo
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TJF0qsaXAVjLHvoEJXlN/8F
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCNCgACgkQAVBC80lX
-0Gx5WQgAjnorkenbowZRRxj7bh6wVE9bBrQqFhyKbXhx/L+Tf04wm2m2CarbrNdN
-FE0QCovckdbN9N/2jBpAd1tuTNW8g+a2IFCvwTh1IIrXUv9cUry1Pz4kkWiRXeso
-oJ0fFAHPQkCVJ8RGZdCj4zf53RtWyJkFZ7GRElmD+hsVFZdbF8DHMOuq2nnam7yn
-8cnlEX20jRQUWXb35wSBJwh/f89U3QjgTtce98QFZ9hJWnMPRv6SP8PnbxUxiXWQ
-KCe/B4fErMci4KdkJJKPyS6Hfzdi5SvrtF7lP0QZu/0pOzUtlevheWWmdYJq4Xun
-mqPJWTpcLPzhaNZf2Qs4vTgC9pDohA==
-=3jSd
------END PGP SIGNATURE-----
-
---Sig_/TJF0qsaXAVjLHvoEJXlN/8F--
