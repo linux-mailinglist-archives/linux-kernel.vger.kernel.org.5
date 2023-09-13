@@ -2,179 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E74779E7C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F64079E7CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240384AbjIMMTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        id S240391AbjIMMUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240320AbjIMMTc (ORCPT
+        with ESMTP id S240320AbjIMMU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:19:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E6819A8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694607568; x=1726143568;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=X1Pn9TpUNoyPdD3j0+oAS9diSSpPQYYq5l0i8RYiScQ=;
-  b=VTsSMIPBw9BEQ45IWBzIc/d12pKSt9Skmkr6KXSqY04KUXADFQeB4m6t
-   hHUQMEqhPABL7zsqtY2OyQ/yt0G6yXujC92oY5Hr/Zgo/JS41aPZLHZr3
-   lcXjlj5/NSHrhAe8uKdSxMg6Q4CsqRa3e4eeqA6eEFbZGaOplhzpzuwtX
-   RarUw17ZPX++dcFKUf8ec8j/ESgJNDBu9VWzgejxhzNH3L7fiBisO4Pg/
-   sRLhbT6B+9vHb0qAF7sroW9DHGzxhQhdfIjq4V0Zlh5wzUQ2cWMBEXfIm
-   XgphjwSOIXaaQRDAcwVBeMcw11NfMShie8sWTfzozGfDsSxgeBwjydtLQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363673110"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="363673110"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:19:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779169400"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="779169400"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 05:19:25 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgOq3-00002J-0E;
-        Wed, 13 Sep 2023 12:19:23 +0000
-Date:   Wed, 13 Sep 2023 20:19:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ping Gan <jacky_gam_2001@163.com>, kbusch@kernel.org,
-        axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, kch@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, ping_gan@dell.com,
-        jacky_gam_2001@163.com
-Subject: Re: [PATCH 2/4] nvmet: Add polling queue task for nvme target
-Message-ID: <202309131959.1zH6sjmk-lkp@intel.com>
-References: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
+        Wed, 13 Sep 2023 08:20:29 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B579519A8;
+        Wed, 13 Sep 2023 05:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9fjohWWyeQwCPIoP4ypoYm41HAX/BcH8sWQeNzqML3s=; b=tO6wyliQMAg4HHakrUy4uugtK8
+        0pr0AC+xQRdcusx7kPBY09WkFgvz4bXZHUcJ8QT6OMnd3IdMci0otVUK+Bo0JxJDfH73F+8kjvJ8C
+        v5OrXwRktbaKnvhjJR5+rHgu8BPO6m06kPrx5u5m6RjiDeiC4AaACEkTrmbHSOBMmCus=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qgOqb-006Iux-2J; Wed, 13 Sep 2023 14:19:57 +0200
+Date:   Wed, 13 Sep 2023 14:19:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Roger Quadros <rogerq@kernel.org>, Simon Horman <horms@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
+        r-gunasekaran@ti.com, Pekka Varis <p-varis@ti.com>
+Subject: Re: [RFC PATCH net-next 3/4] net: ti: icssg-prueth: Add support for
+ ICSSG switch firmware on AM654 PG2.0 EVM
+Message-ID: <055e781e-f614-4436-9d8d-e60e17fac5c9@lunn.ch>
+References: <20230830110847.1219515-1-danishanwar@ti.com>
+ <20230830110847.1219515-4-danishanwar@ti.com>
+ <1fb683f4-d762-427b-98b7-8567ca1f797c@lunn.ch>
+ <0d70cebf-8fd0-cf04-ccc2-6f240b27ecca@ti.com>
+ <12c11462-5449-b100-5f92-f66c775237fa@kernel.org>
+ <3fbf9514-8f9f-d362-9006-1fd435540e67@ti.com>
+ <09931a97-df62-9803-967f-df6135dc3be7@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001@163.com>
+In-Reply-To: <09931a97-df62-9803-967f-df6135dc3be7@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ping,
+> As discussed on this thread, switching operation can work with the ICSSG
+> switch firmware, without creating bridge. However without bridge only
+> forwarding works. If we want the switch to consume packets bridge is
+> required.
 
-kernel test robot noticed the following build warnings:
+What packets will the switch consume? The only packets i can think of
+are pause frames. Everything else get passed to the CPU.
 
-[auto build test WARNING on v6.6-rc1]
-[also build test WARNING on linus/master next-20230913]
-[cannot apply to hch-configfs/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+You also need to think of what happens when a single switch port is
+added to the bridge, and an external port, like a tun/tap device for a
+VPN is added to the bridge.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ping-Gan/nvmet-Add-nvme-target-polling-queue-task-parameters/20230913-164112
-base:   v6.6-rc1
-patch link:    https://lore.kernel.org/r/84d7f188e892b5b0ba251a4601455d7a137075f3.1694592708.git.jacky_gam_2001%40163.com
-patch subject: [PATCH 2/4] nvmet: Add polling queue task for nvme target
-config: arc-randconfig-r004-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131959.1zH6sjmk-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131959.1zH6sjmk-lkp@intel.com/reproduce)
+For most switches, a port not being a member of a switch means the
+port is pretty dumb and every frame is forwarded to the CPU. There are
+however some switches which perform address learning as usual,
+learning if an address is on the port, or on the CPU. Maybe you can
+see if that is possible.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131959.1zH6sjmk-lkp@intel.com/
+It might be you need your firmware people involved to produce a new
+firmware version which combines both firmwares in one.
 
-All warnings (new ones prefixed by >>):
-
-   drivers/nvme/target/polling-queue-thread.c: In function '__nvmet_pq_ring_do_enqueue':
->> drivers/nvme/target/polling-queue-thread.c:150:37: warning: this statement may fall through [-Wimplicit-fallthrough=]
-     150 |                         ring[idx++] = obj_table[i++]; /* fallthrough */ \
-         |                         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
-     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:151:17: note: here
-     151 |                 case 2: \
-         |                 ^~~~
-   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
-     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:152:37: warning: this statement may fall through [-Wimplicit-fallthrough=]
-     152 |                         ring[idx++] = obj_table[i++]; /* fallthrough */ \
-         |                         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
-     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:153:17: note: here
-     153 |                 case 1: \
-         |                 ^~~~
-   drivers/nvme/target/polling-queue-thread.c:278:9: note: in expansion of macro 'ENQUEUE_PTRS'
-     278 |         ENQUEUE_PTRS(r, &r[1], prod_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c: In function '__nvmet_pq_ring_do_dequeue':
-   drivers/nvme/target/polling-queue-thread.c:181:40: warning: this statement may fall through [-Wimplicit-fallthrough=]
-     181 |                         obj_table[i++] = ring[idx++]; /* fallthrough */ \
-         |                                        ^
-   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
-     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:182:17: note: here
-     182 |                 case 2: \
-         |                 ^~~~
-   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
-     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:183:40: warning: this statement may fall through [-Wimplicit-fallthrough=]
-     183 |                         obj_table[i++] = ring[idx++]; /* fallthrough */ \
-         |                                        ^
-   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
-     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-   drivers/nvme/target/polling-queue-thread.c:184:17: note: here
-     184 |                 case 1: \
-         |                 ^~~~
-   drivers/nvme/target/polling-queue-thread.c:298:9: note: in expansion of macro 'DEQUEUE_PTRS'
-     298 |         DEQUEUE_PTRS(r, &r[1], cons_head, obj_table, n, void *);
-         |         ^~~~~~~~~~~~
-
-
-vim +150 drivers/nvme/target/polling-queue-thread.c
-
-   131	
-   132	//below is derived from FreeBSD's bufring.h
-   133	/* the actual enqueue of pointers on the ring.
-   134	 * Placed here since identical code needed in both
-   135	 * single and multi producer enqueue functions */
-   136	#define ENQUEUE_PTRS(r, ring_start, prod_head, obj_table, n, obj_type) do { \
-   137		unsigned int i; \
-   138		const u32 size = (r)->size; \
-   139		u32 idx = prod_head & (r)->mask; \
-   140		obj_type *ring = (obj_type *)ring_start; \
-   141		if (likely(idx + n < size)) { \
-   142			for (i = 0; i < (n & ((~(unsigned)0x3))); i += 4, idx += 4) { \
-   143				ring[idx] = obj_table[i]; \
-   144				ring[idx+1] = obj_table[i+1]; \
-   145				ring[idx+2] = obj_table[i+2]; \
-   146				ring[idx+3] = obj_table[i+3]; \
-   147			} \
-   148			switch (n & 0x3) { \
-   149			case 3: \
- > 150				ring[idx++] = obj_table[i++]; /* fallthrough */ \
-   151			case 2: \
-   152				ring[idx++] = obj_table[i++]; /* fallthrough */ \
-   153			case 1: \
-   154				ring[idx++] = obj_table[i++]; \
-   155			} \
-   156		} else { \
-   157			for (i = 0; idx < size; i++, idx++)\
-   158				ring[idx] = obj_table[i]; \
-   159			for (idx = 0; i < n; i++, idx++) \
-   160				ring[idx] = obj_table[i]; \
-   161		} \
-   162	} while (0)
-   163	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	 Andrew
