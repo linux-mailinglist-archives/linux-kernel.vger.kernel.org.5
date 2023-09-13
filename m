@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FE279E138
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E07E79E160
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238737AbjIMHxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
+        id S238710AbjIMIC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjIMHw6 (ORCPT
+        with ESMTP id S238699AbjIMICx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:52:58 -0400
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1981729;
-        Wed, 13 Sep 2023 00:52:54 -0700 (PDT)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38D7M02F014523;
-        Wed, 13 Sep 2023 09:52:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=2qj6oZC/xalnXYn+xtZs64KlT9SJyMmoe1KmvotRn5o=; b=32
-        D9Wfvwm3arFY07+aI+zYDT3vMuUa+0UIVD3OIwDNHKOI3bCj6o8WlkzrSgxuhNI8
-        EySQi7akkow2fD98pOtvSWcsKf0ZoTHlvafKN/tbytZofjyEre67Mr4xfXSHnBCx
-        P4wro3Cv2VFj/AmPiUwjaD51ee4kI6umGRP29Q/QWoKdyZpyv0vDZbYnLZN4eYg0
-        yR3CtbCcAQRkndY22bNnWjIy2ihf/vtxVBooy8RU/w4Gg8p895Wx68ccTES/jqf+
-        fBJHKtS/AStBv+eRS0Tjyxljnl/N+1tndxAIzLgo8R7JieU0PS/QcXMle41uaxPO
-        KiIP9a5NhXEh/kXtoLBg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t2y7m9yqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 09:52:38 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 80497100057;
-        Wed, 13 Sep 2023 09:52:37 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 78A22226FD3;
-        Wed, 13 Sep 2023 09:52:37 +0200 (CEST)
-Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 13 Sep
- 2023 09:52:36 +0200
-Message-ID: <abd1db1b-7cdb-177b-7995-23f500597155@foss.st.com>
-Date:   Wed, 13 Sep 2023 09:52:36 +0200
+        Wed, 13 Sep 2023 04:02:53 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CBD198C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:02:49 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7a855441a36so604410241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694592168; x=1695196968; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eVi9HWsbyhPpxRlpwWkXgfmiV8lk8qQbW6adbUERlyM=;
+        b=WtqJJ8zdF2DvevVlZUhifJqIjvzG6d52EXJ/FGWxwKb04dsvN5ilpFnQXqaon0qMZ5
+         7Egy9zqeMIilpPtvctkBSU5dgbTyt6mMFVRybsrt8hv8RnSx7mNzQtgnjs/YWV0kDZF5
+         UwvQBudXGR+np6IbljBax6FU+eL6TJXZ8eKpM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694592168; x=1695196968;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eVi9HWsbyhPpxRlpwWkXgfmiV8lk8qQbW6adbUERlyM=;
+        b=LpEMt5C3S8j/KPVQVuswdo7Ux30vza5qpxBQ6uiDstycs+SczsGbAmBThCv/THMCMf
+         SfF15OUAyYVMzTNzYZxtAxHNdeQX8jqeC1A+tfO6qyA+0oj3jnWza/D31SfvpQ1elKxU
+         +RKo1tfQ53ehweWjMVCGy5tqr1BdTfvnfpzyEDVBCUmOlO6a477SjxmJOwdehzACkGpv
+         Df998lbshF1Mv3jzSbr4m1FMb9jNYP1K6B+IvusmRQoSkpoM1hhlHMsBkGpRSbFZZ4uk
+         CJ0ZrFhEqDI7eS+CKjiQVOVgbOMXiDP06SCC0oj3kB6tKlYQ2JUVm3a9+/M3G02kUL/3
+         Y6WA==
+X-Gm-Message-State: AOJu0YyEaO/PqDC+G+8OJUJzquWGZTfpzMsCwQSKp0gvnCYFcvQxzhm7
+        UwDGs9DXfGRl9/xU+yRNg3KH+JBRo9uKJKL85P4=
+X-Google-Smtp-Source: AGHT+IG1R2njgKcwR00E0/V8UyFQ66dRBCfuNxtfXxCoKwrky9jyAmdzMEzIAQN+dcpd07js5/jnJQ==
+X-Received: by 2002:a67:fd54:0:b0:44e:a216:59a2 with SMTP id g20-20020a67fd54000000b0044ea21659a2mr1458457vsr.7.1694592168655;
+        Wed, 13 Sep 2023 01:02:48 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id x188-20020a0deec5000000b00582b239674esm2970889ywe.129.2023.09.13.01.02.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 01:02:48 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59b8f5b6c0aso28451327b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:02:48 -0700 (PDT)
+X-Received: by 2002:a05:6602:3281:b0:786:7100:72de with SMTP id
+ d1-20020a056602328100b00786710072demr2263328ioz.16.1694591694827; Wed, 13 Sep
+ 2023 00:54:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 10/10] ARM: dts: stm32: add RNG node for STM32MP13x
- platforms
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
- <20230911120203.774632-11-gatien.chevallier@foss.st.com>
- <327ff0b3-21c9-1452-af1b-e9b6ece52924@linaro.org>
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <327ff0b3-21c9-1452-af1b-e9b6ece52924@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
+References: <20230822132646.9811-1-jason-jh.lin@mediatek.com> <CAC=S1njUVqt969Wv+dMc5wD3Uyu-2Cm4qCUwkp7kfeG_uBbpVw@mail.gmail.com>
+In-Reply-To: <CAC=S1njUVqt969Wv+dMc5wD3Uyu-2Cm4qCUwkp7kfeG_uBbpVw@mail.gmail.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Wed, 13 Sep 2023 15:54:18 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nhhAevMct0SoipCRpVmHmMGEuvu2yKmkjuVVUpeZxZ5ug@mail.gmail.com>
+Message-ID: <CAC=S1nhhAevMct0SoipCRpVmHmMGEuvu2yKmkjuVVUpeZxZ5ug@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: Add spinlock for setting vblank event in atomic_begin
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 3:12=E2=80=AFPM Fei Shao <fshao@chromium.org> wrote=
+:
+>
+> On Tue, Aug 22, 2023 at 10:27=E2=80=AFPM Jason-JH.Lin <jason-jh.lin@media=
+tek.com> wrote:
+> >
+> > Add spinlock protection to avoid race condition on vblank event
+> > between mtk_drm_crtc_atomic_begin() and mtk_drm_finish_page_flip().
+> >
+> > Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8=
+173.")
+> > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>
+> Reviewed-by: Fei Shao <fshao@chromium.org>
 
+Also, I verified that this fixes a real world system hang issue on the
+MT8195 Chromebook.
 
-On 9/12/23 16:38, Krzysztof Kozlowski wrote:
-> On 11/09/2023 14:02, Gatien Chevallier wrote:
->> The RNG on STM32MP13 offers upgrades like customization of its
->> configuration and the conditional reset.
->>
->> The hardware RNG should be managed in the secure world for but it
->> is supported on Linux. Therefore, is it not default enabled.
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->> ---
->>   arch/arm/boot/dts/st/stm32mp131.dtsi | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
->> index ac90fcbf0c09..39db82b782eb 100644
->> --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
->> +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
->> @@ -1220,6 +1220,14 @@ mdma: dma-controller@58000000 {
->>   			dma-requests = <48>;
->>   		};
->>   
->> +		rng: rng@54004000 {
->> +			compatible = "st,stm32mp13-rng";
->> +			reg = <0x54004000 0x400>;
->> +			clocks = <&rcc RNG1_K>;
->> +			resets = <&rcc RNG1_R>;
->> +			status = "disabled";
-> 
-> Why? What other resources are missing?
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Hello Krzysztof,
-
-Our default implementation is to handle the RNG in OP-TEE for
-these platforms. Therefore, it goes through optee-rng driver.
-The RNG services are exposed by a PTA (Pseudo Trusted Application)
-in OP-TEE. In this case, there's no need to enable the RNG node
-in the Linux Kernel.
-
-Best regards,
-Gatien
+Tested-by: Fei Shao <fshao@chromium.org>
