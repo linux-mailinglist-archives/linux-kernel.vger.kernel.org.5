@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5692979EB7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B6D79EB81
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241524AbjIMOq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
+        id S241397AbjIMOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241412AbjIMOq1 (ORCPT
+        with ESMTP id S241415AbjIMOrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:46:27 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5899891
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:46:23 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 48D1940E01A2;
-        Wed, 13 Sep 2023 14:46:21 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-        reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kSqtKosVwqsu; Wed, 13 Sep 2023 14:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1694616378; bh=mFifg/MtbgKHH9sRTf162NPA8eGUlQaXOGCGhH4Cm8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hYqQtiz3V1LAL013lk5nR8aU6b9NYvVc/CTfDuUiJPGj9it7eW0YRCyL4qVS7xQHz
-         qjA+RbxuR/1j2geDEgF/bB6+YpkPfBxOH0/Qlv6t5LiZA7l5qJUngkF3RyeJPGHpbJ
-         KFGk6oiYOWcjXB2QkrDAblYWWEXskR7ygkO8R0aTGYKfiKKO0iiEGo6R+mD06g/kfY
-         B1i2SdL5SeESgw3c72VkDl6mhB4BjjFFyCp9uj4YOXVQBweQz7q95aI4NuOwS28fGB
-         lsg0i2XsfzMcZbzeMN+NCoJA3WGpdZ6t1Mi/nFCCZmGT4d1g5w1qMDiT1dv4a85ePU
-         H67gLLDyz3ps82pzX7JULcTc0eVIs2AWpVF4ne7V84wtwczOz3FuzIDPx/8krmS7gn
-         lGUR6kWi/dA9wiFhAgc4FGQGkmowxVBpKFKpmmcoO/2SjDXzE/2qn8vH7avv3BcJjt
-         Fz3woDTELe2LJ+EvAFdOvWaw7iRw4+isuu7umqFEqTZgW1phGEOwSVNZVk8wEzk3gb
-         RlawM6kIqY13ghq7WaKZnPk1sLWcVzblEheqYHuwQP2izGgY0Db19i/Qp1GyogOpfw
-         kssQiy2HCDR2+d+1uwN5VvOZ4wpLetS1gN8z2LArbCWWe2/XbOp0gCe+UIiqrZsbE+
-         oOOCkPvSQoy/hiSxbQAo+fVw=
-Received: from nazgul.tnic (unknown [93.123.97.133])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 44B6C40E0198;
-        Wed, 13 Sep 2023 14:46:08 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 16:46:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/4] x86/srso: Rename srso_alias_*() to srso_fam19_*()
-Message-ID: <20230913144623.GCZQHLPw2OC2gnzeri@fat_crate.local>
-References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
- <20230821112723.3995187-2-andrew.cooper3@citrix.com>
- <20230913134618.GAZQG9KrdVjjpYpBqe@fat_crate.local>
- <8331673e-ce7d-8509-4ccc-f5eaaafd2d94@citrix.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8331673e-ce7d-8509-4ccc-f5eaaafd2d94@citrix.com>
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Sep 2023 10:47:20 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D579B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:16 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68fac73c54aso5345007b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694616436; x=1695221236; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMCw5TG7E2QUMrbjxkEI8JkXPsdAS9lS/ivoHC9sTRs=;
+        b=HYNX4JEr5yHH8m2Ge2M++apUrY5Ny341YR3SNs8t9EvtK0OIV1UY3RjOmaQNike3xf
+         DGjbtmEUu6EVKf3byo/dq8g3KC5dMCFyXyHROr+lWYSLCg7k5uVF8WK3k6ebRkvQ/CW7
+         jz/IY+2Y5VdAKFMSCqezEj6852NcPkYO7kNZk5c8UExHSnRblFJXId1WBfKgNkMMUBZx
+         K3gw+8FSDwrNVvTUCTIQfiNGIgkgtaUvXxQb4oybr1mL7PArYNf0lTPMXc+TQbceAny7
+         gxaGoXwiLSk6xPVHh3hssQ88SepGXr2aQslMB8vEUoVAuDBM5RDjba/RBt9OlTRBlGMI
+         3dZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694616436; x=1695221236;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMCw5TG7E2QUMrbjxkEI8JkXPsdAS9lS/ivoHC9sTRs=;
+        b=fn2vwmdtyYGlLfEcR1f9vSuO40QfsiMyyVJU/fH6qHINzKQYJsw+r3HbW1czgru9p0
+         WoTvEq/mn1iCUlFs4b8W2HHCSeHLQc9gCfba/Ae9xISf8gxvUfZNXBK0fBZs33/Efaut
+         AvICYbsUet9Tp3Qd518cT0fhs/iNUSyXIO5QnTN4Hr6u1B/xHFr3BlaZgpO+bJt+NZpU
+         hwX0ZqyZbjvF6MPhpLhWpSjkF+qeLO8TAjBJEQEb17FTWAVhb2tDX+hE+/LamHu+IfqG
+         +ZFt78ksxdMqISLXXuKxiz+GVNu/AKnLikFafqZvYpcoAd9bg4UiObwWw8lDlavyTahn
+         2Bxg==
+X-Gm-Message-State: AOJu0Yx0F3enSGuvOiqI8CBWtW9ioSsLg7U8rXGzpOI33iHxRlFdXIfM
+        MNmOJTUfXBY3HhbgPUU3rMcmkSfqRUo=
+X-Google-Smtp-Source: AGHT+IFChbN8HMdA2gZsaodcSrytXbT4AwgAFpfF1saADVj4sQEbxn667GNHOFWcQttO8Sn32+P4Mz8Dp1Y=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1487:b0:68f:fa41:4e94 with SMTP id
+ v7-20020a056a00148700b0068ffa414e94mr201334pfu.0.1694616435711; Wed, 13 Sep
+ 2023 07:47:15 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 07:47:14 -0700
+In-Reply-To: <2eaf612b-1ce3-0dfe-5d2e-2cf29bba7641@gmail.com>
+Mime-Version: 1.0
+References: <20230913103729.51194-1-likexu@tencent.com> <5367c45df8e4730564ed7a55ed441a6a2d6ab0f9.camel@infradead.org>
+ <2eaf612b-1ce3-0dfe-5d2e-2cf29bba7641@gmail.com>
+Message-ID: <ZQHLcs3VGyLUb6wW@google.com>
+Subject: Re: [PATCH v6] KVM: x86/tsc: Don't sync user-written TSC against
+ startup values
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 03:27:00PM +0100, Andrew Cooper wrote:
-> I know you may like $FOO and $FOO_alias, but an alias infix on one of a
-> pair implies they're related when in fact they are not.=C2=A0 It takes =
-a the
-> already-insanely-complicated logic and makes even harder to follow.
+On Wed, Sep 13, 2023, Like Xu wrote:
+> I'll wait for a cooling off period to see if the maintainers need me to post v7.
 
-Maybe, but adding the family into the function name doesn't make it more
-clear. After all, the family is just a number.
-
-I'm open to other suggestions which make this logic easier to follow
-- although this is as confusing as it gets already and I doubt that
-calling it whatever would make it more clear...
-
-In any case, the family number ain't the right one.
-
-Thx.
-
---=20
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+You should have waiting to post v5, let alone v6.  Resurrecting a thread after a
+month and not waiting even 7 hours for others to respond is extremely frustrating.
