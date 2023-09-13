@@ -2,106 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3999879DD65
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD89179DD68
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbjIMBKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S238011AbjIMBKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjIMBKK (ORCPT
+        with ESMTP id S229553AbjIMBKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:10:10 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C4310E6;
-        Tue, 12 Sep 2023 18:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694567403;
-        bh=Bgqmvp6Vvzr/QlZJbVXlrj7k1IFmb3uGG7LW/EaoHdM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZkKQVRR2DriYryMHGjVtGxLWECn8xVT9Nvnbx6+agJI5dZWsMiYtgJmZdg/i6RfNK
-         7bXR8yWVs8Opqvl1PFMTEiF1bzD8dlmzx/X1hm+sb8L6C/JoUMztuOvoNPRL/tWf8m
-         XsQAYyaCSxygaASOojLtt21AemFTM1yxeDWkpl8JPskkPVmqFOpjbiOvxhSrvfvHLN
-         Vlc6REtBvgxtWB84NyoyXRNOnzY2wqyisM4pjPVhcNMAPlZz/MWM24CegtCUIlhRDW
-         QmWb5+cNSNQVjH3q4OEohV77tSUnsvnGEUUuDR5yFImh9KlmcHIMfwi6ZvCGqyfoax
-         b671Ul1Y7xuTw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rlj6f62ktz4x3D;
-        Wed, 13 Sep 2023 11:10:02 +1000 (AEST)
-Date:   Wed, 13 Sep 2023 11:09:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20230913110939.574c7ec2@canb.auug.org.au>
+        Tue, 12 Sep 2023 21:10:21 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE05310F6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:10:17 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68e3c6aa339so1154844b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694567417; x=1695172217; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7eohFATvRETBvRjM1zaZLKbfO2pb4xmpUg9USI0k+7o=;
+        b=N2LFuAxd0qlj1mIoWK0kN4DnQ6K9qhowUE3q2unlQ2H+QdjADwJXj0+Pg61sqEv4rI
+         Iqaz3ZcqakCIP2IiekNnxh+D1b2PTTXlFVNo9q0FavqwMQ/AruZfUXtYiEv0CH/PC7G0
+         54NjAW1eEd5ds9yCTjJFX7eBd1jQg94XMME75KL+zqLQthgJnsO96VjP5NsawWHFFGVk
+         bdAHssFqx14+WTY/cI6AhgXUrPmAN4gQnulY7hLKQgrEU1BBxDmjVtUWfp+VOLQO8/ZK
+         bqgSIw75zltIAdGEYm/MfkweN7Q+k7lpIVXlizWVgqgK6HZDB8ofn8YlsTP91bd6yF9S
+         rN1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694567417; x=1695172217;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eohFATvRETBvRjM1zaZLKbfO2pb4xmpUg9USI0k+7o=;
+        b=PhGPMn9a27FHdI6gCV3nAFr+YfAQ3OLlUK79jETqU+3Yc85pngu9yMTHSZ9xdvVKCa
+         iHclCo/Lpi3z8jiRFqdieV+AFfio9GcylfL5Wdx9o5G833jAnJUJfC6RsmyUWRBnqnAt
+         1w4m1fPe1XFgkl3O4xTxpzqhmFbwUh09rVZKEFhNUjPj+bD/SWhPk2NU41jnMBsHpSVk
+         aFl0EP6RsYuCJrMC4I/HIoVUWT8pCA1vLEfyM+q09PQE7HcxJaWbN3k6HUNQbebWEZmD
+         OhwQP5ctVrR2ZPr8e+/pOdYz4lBi5IkDpnBdHUuDRxC/Zt5DnzbqQxv8ZHCkWYlEmRcc
+         mZgg==
+X-Gm-Message-State: AOJu0YwnizRjJ7ICDwzAMlsHbbW0nGyy+iBP/sFyF3TQfnUhxMOCogpg
+        8M0YdZgT/56UnDU6hRi2OLe4fw==
+X-Google-Smtp-Source: AGHT+IE20gXr2nHuxsup4nD7Fg5WPeK0R7jsymLGc6sCi48rI7lU+3bvdlQyMVyV9Six3ws/KG17Zg==
+X-Received: by 2002:a05:6a00:2da0:b0:68e:2bba:b5fe with SMTP id fb32-20020a056a002da000b0068e2bbab5femr1458412pfb.0.1694567417216;
+        Tue, 12 Sep 2023 18:10:17 -0700 (PDT)
+Received: from [10.84.155.178] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id w4-20020aa78584000000b006732786b5f1sm2743169pfn.213.2023.09.12.18.10.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 18:10:16 -0700 (PDT)
+Message-ID: <ada473e9-aa2f-c6ff-b869-cf94942ddd20@bytedance.com>
+Date:   Wed, 13 Sep 2023 09:10:11 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ed9H9=+yKJKWcjudP/1OMa+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: linux-next: build failure after merge of the bcachefs tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230912120429.7852428f@canb.auug.org.au>
+ <e639a428-0fb7-7329-ce52-e51f7951a146@bytedance.com>
+ <20230913093553.4290421e@canb.auug.org.au>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230913093553.4290421e@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ed9H9=+yKJKWcjudP/1OMa+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Stephen,
 
-Hi all,
+On 2023/9/13 07:35, Stephen Rothwell wrote:
+> Hi Qi,
+> 
+> Thanks for the corrections.  See below.
+> 
+> On Tue, 12 Sep 2023 10:47:14 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+>>
+>>> diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+>>> index 245ddd92b2d1..7f0eded6c296 100644
+>>> --- a/fs/bcachefs/btree_cache.c
+>>> +++ b/fs/bcachefs/btree_cache.c
+>>> @@ -285,7 +285,7 @@ static int btree_node_write_and_reclaim(struct bch_fs *c, struct btree *b)
+>>>    static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>>>    					   struct shrink_control *sc)
+>>>    {
+>>> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+>>> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>>>    					btree_cache.shrink);
+>>
+>> The shrink passed in here will be a local variable, so its address can
+>> not be used directly. So need to be modified as follows:
+>>
+>> 	struct bch_fs *c = shrink->private_data;
+> 
+> OK.
+> 
+>>> @@ -384,7 +384,7 @@ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>>>    static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
+>>>    					    struct shrink_control *sc)
+>>>    {
+>>> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+>>> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>>>    					btree_cache.shrink);
+>>
+>> Ditto.
+> 
+> OK
+> 
+>>>    > @@ -473,12 +474,14 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
+>>>    >   	mutex_init(&c->verify_lock);
+>>>    > -	bc->shrink.count_objects	= bch2_btree_cache_count;
+>>> -	bc->shrink.scan_objects		= bch2_btree_cache_scan;
+>>> -	bc->shrink.seeks		= 4;
+>>> -	ret = register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+>>> -	if (ret)
+>>> +	shrink = shrinker_alloc(0, "%s/btree_cache", c->name);
+>>> +	if (!shrink)
+>>>    		goto err;
+>>
+>> Here the 'ret' needs to be set to -ENOMEM.
+>>
+>> 	if (!shrink) {
+>> 		ret = -ENOMEM;
+>> 		goto err;
+>> 	}
+> 
+> Except err: does this:
+> 
+>      return -BCH_ERR_ENOMEM_fs_btree_cache_init;
+> 
+> so ret does not need to be set.
+> 
+>>> +	bc->shrink = shrink;
+>>> +	shrink->count_objects	= bch2_btree_cache_count;
+>>> +	shrink->scan_objects	= bch2_btree_cache_scan;
+>>> +	shrink->seeks		= 4;
+>>
+>> 	shrink->private_data = c;
+> 
+> OK
+> 
+>>> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+>>> index 505e7c365ab7..88d33690233b 100644
+>>> --- a/fs/bcachefs/btree_key_cache.c
+>>> +++ b/fs/bcachefs/btree_key_cache.c
+>>> @@ -838,7 +838,7 @@ void bch2_btree_key_cache_drop(struct btree_trans *trans,
+>>>    static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>>>    					   struct shrink_control *sc)
+>>>    {
+>>> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+>>> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>>>    					btree_key_cache.shrink);
+>>
+>> 	struct bch_fs *c = shrink->private_data;
+>>
+> 
+> OK
+> 
+>>> @@ -936,7 +936,7 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>>>    static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
+>>>    					    struct shrink_control *sc)
+>>>    {
+>>> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+>>> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>>>    					btree_key_cache.shrink);
+>>
+>> Ditto.
+> 
+> OK
+> 
+>>> @@ -957,7 +957,7 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cache *bc)
+>>>    	int cpu;
+>>>    #endif
+>>>    > -	unregister_shrinker(&bc->shrink);
+>>> +	shrinker_free(bc->shrink);
+>>>    >   	mutex_lock(&bc->lock);
+>>>    > @@ -1031,6 +1031,7 @@ void bch2_fs_btree_key_cache_init_early(struct btree_key_cache *c)
+>>>    int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>>>    {
+>>>    	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
+>>> +	struct shrinker *shrink;
+>>>    >   #ifdef __KERNEL__
+>>>    	bc->pcpu_freed = alloc_percpu(struct btree_key_cache_freelist);
+>>> @@ -1043,11 +1044,14 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>>
+>> 	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
+> 
+> Already done n this function.
+> 
+>>>    >   	bc->table_init_done = true;
+>>>    > -	bc->shrink.seeks		= 0;
+>>> -	bc->shrink.count_objects	= bch2_btree_key_cache_count;
+>>> -	bc->shrink.scan_objects		= bch2_btree_key_cache_scan;
+>>> -	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
+>>> +	shrink = shrinker_alloc(0, "%s/btree_key_cache", c->name);
+>>> +	if (!shrink)
+>>>    		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
+>>> +	bc->shrink = shrink;
+>>> +	shrink->seeks		= 0;
+>>> +	shrink->count_objects	= bch2_btree_key_cache_count;
+>>> +	shrink->scan_objects	= bch2_btree_key_cache_scan;
+>>
+>> 	shrink->private_data = c;
+> 
+> OK
+> 
+> So the merge resolution patch now looks like this:
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 12 Sep 2023 11:27:22 +1000
+> Subject: [PATCH] bcachefs: convert to dynamically allocated shrinkers
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>   fs/bcachefs/btree_cache.c     | 22 ++++++++++++----------
+>   fs/bcachefs/btree_key_cache.c | 21 ++++++++++++---------
+>   fs/bcachefs/btree_types.h     |  4 ++--
+>   fs/bcachefs/fs.c              |  2 +-
+>   fs/bcachefs/sysfs.c           |  2 +-
+>   5 files changed, 28 insertions(+), 23 deletions(-)
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
+This version looks good to me.
 
-  drivers/gpu/drm/mediatek/mtk_dpi.c
+Reviewed-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-between commits:
+Thanks,
+Qi
 
-  47d4bb6bbcdb ("drm/mediatek: mtk_dpi: Simplify with devm_drm_bridge_add()=
-")
-  90c95c3892dd ("drm/mediatek: mtk_dpi: Switch to .remove_new() void callba=
-ck")
-
-from Linus' tree and commit:
-
-  c04ca6bbb7ea ("drm/mediatek: Convert to platform remove callback returnin=
-g void")
-
-from the drm-misc tree.
-
-I fixed it up (the latter is the same as 90c95c3892dd) and can carry the
-fix as necessary. This is now fixed as far as linux-next is concerned,
-but any non trivial conflicts should be mentioned to your upstream
-maintainer when your tree is submitted for merging.  You may also want
-to consider cooperating with the maintainer of the conflicting tree to
-minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Ed9H9=+yKJKWcjudP/1OMa+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUBC9MACgkQAVBC80lX
-0Gz+YQf/czaMUHm7Pn2zchw6gWWTMLOVA5z8YP5XY+9R7tyumgL77f8Dk/HX3Z3v
-8pd5sID37cNZUYraYV3hEi2FgmYRvf6zMiyy4jhqpz6VGgeD/zwRPfDuMsiaxaTp
-7QbO5d5CmzAZk3lEBCnJjOKxhapgdSggB8l3iLgWjhKGLENt7Oc2jjQf+VmeYE3o
-OyZwR04TndcYbUODmqR40l7xomTTd2jyshXKcdAtDU+wZNyQM+SP/zSq5jQTCg3b
-R649yfI0T2ZzMw2dXxRQkGDZbsa9GoPCk036EesHzQUDa0kKN3irPrJmPYq5Vgw5
-NYtZX/qmr+3kKxEyysZI4dIJpP9JFg==
-=kpxN
------END PGP SIGNATURE-----
-
---Sig_/Ed9H9=+yKJKWcjudP/1OMa+--
+> 
+> diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+> index 245ddd92b2d1..d8cd0bbc33cc 100644
+> --- a/fs/bcachefs/btree_cache.c
+> +++ b/fs/bcachefs/btree_cache.c
+> @@ -285,8 +285,7 @@ static int btree_node_write_and_reclaim(struct bch_fs *c, struct btree *b)
+>   static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>   					   struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> -					btree_cache.shrink);
+> +	struct bch_fs *c = shrink->private_data;
+>   	struct btree_cache *bc = &c->btree_cache;
+>   	struct btree *b, *t;
+>   	unsigned long nr = sc->nr_to_scan;
+> @@ -384,8 +383,7 @@ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>   static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
+>   					    struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> -					btree_cache.shrink);
+> +	struct bch_fs *c = shrink->private_data;
+>   	struct btree_cache *bc = &c->btree_cache;
+>   
+>   	if (bch2_btree_shrinker_disabled)
+> @@ -400,7 +398,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+>   	struct btree *b;
+>   	unsigned i, flags;
+>   
+> -	unregister_shrinker(&bc->shrink);
+> +	shrinker_free(bc->shrink);
+>   
+>   	/* vfree() can allocate memory: */
+>   	flags = memalloc_nofs_save();
+> @@ -454,6 +452,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+>   int bch2_fs_btree_cache_init(struct bch_fs *c)
+>   {
+>   	struct btree_cache *bc = &c->btree_cache;
+> +	struct shrinker *shrink;
+>   	unsigned i;
+>   	int ret = 0;
+>   
+> @@ -473,12 +472,15 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
+>   
+>   	mutex_init(&c->verify_lock);
+>   
+> -	bc->shrink.count_objects	= bch2_btree_cache_count;
+> -	bc->shrink.scan_objects		= bch2_btree_cache_scan;
+> -	bc->shrink.seeks		= 4;
+> -	ret = register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+> -	if (ret)
+> +	shrink = shrinker_alloc(0, "%s/btree_cache", c->name);
+> +	if (!shrink)
+>   		goto err;
+> +	bc->shrink = shrink;
+> +	shrink->count_objects	= bch2_btree_cache_count;
+> +	shrink->scan_objects	= bch2_btree_cache_scan;
+> +	shrink->seeks		= 4;
+> +	shrink->private_data	= c;
+> +	shrinker_register(shrink);
+>   
+>   	return 0;
+>   err:
+> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+> index 505e7c365ab7..ed387eb915c3 100644
+> --- a/fs/bcachefs/btree_key_cache.c
+> +++ b/fs/bcachefs/btree_key_cache.c
+> @@ -838,8 +838,7 @@ void bch2_btree_key_cache_drop(struct btree_trans *trans,
+>   static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>   					   struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> -					btree_key_cache.shrink);
+> +	struct bch_fs *c = shrink->private_data;
+>   	struct btree_key_cache *bc = &c->btree_key_cache;
+>   	struct bucket_table *tbl;
+>   	struct bkey_cached *ck, *t;
+> @@ -936,8 +935,7 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>   static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
+>   					    struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> -					btree_key_cache.shrink);
+> +	struct bch_fs *c = shrink->private_data;
+>   	struct btree_key_cache *bc = &c->btree_key_cache;
+>   	long nr = atomic_long_read(&bc->nr_keys) -
+>   		atomic_long_read(&bc->nr_dirty);
+> @@ -957,7 +955,7 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cache *bc)
+>   	int cpu;
+>   #endif
+>   
+> -	unregister_shrinker(&bc->shrink);
+> +	shrinker_free(bc->shrink);
+>   
+>   	mutex_lock(&bc->lock);
+>   
+> @@ -1031,6 +1029,7 @@ void bch2_fs_btree_key_cache_init_early(struct btree_key_cache *c)
+>   int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>   {
+>   	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
+> +	struct shrinker *shrink;
+>   
+>   #ifdef __KERNEL__
+>   	bc->pcpu_freed = alloc_percpu(struct btree_key_cache_freelist);
+> @@ -1043,11 +1042,15 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>   
+>   	bc->table_init_done = true;
+>   
+> -	bc->shrink.seeks		= 0;
+> -	bc->shrink.count_objects	= bch2_btree_key_cache_count;
+> -	bc->shrink.scan_objects		= bch2_btree_key_cache_scan;
+> -	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
+> +	shrink = shrinker_alloc(0, "%s/btree_key_cache", c->name);
+> +	if (!shrink)
+>   		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
+> +	bc->shrink = shrink;
+> +	shrink->seeks		= 0;
+> +	shrink->count_objects	= bch2_btree_key_cache_count;
+> +	shrink->scan_objects	= bch2_btree_key_cache_scan;
+> +	shrink->private_data	= c;
+> +	shrinker_register(shrink);
+>   	return 0;
+>   }
+>   
+> diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+> index 70398aaa095e..fac0abdaf167 100644
+> --- a/fs/bcachefs/btree_types.h
+> +++ b/fs/bcachefs/btree_types.h
+> @@ -163,7 +163,7 @@ struct btree_cache {
+>   	unsigned		used;
+>   	unsigned		reserve;
+>   	atomic_t		dirty;
+> -	struct shrinker		shrink;
+> +	struct shrinker		*shrink;
+>   
+>   	/*
+>   	 * If we need to allocate memory for a new btree node and that
+> @@ -321,7 +321,7 @@ struct btree_key_cache {
+>   	bool			table_init_done;
+>   	struct list_head	freed_pcpu;
+>   	struct list_head	freed_nonpcpu;
+> -	struct shrinker		shrink;
+> +	struct shrinker		*shrink;
+>   	unsigned		shrink_iter;
+>   	struct btree_key_cache_freelist __percpu *pcpu_freed;
+>   
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 48431700b83e..bdc8573631bd 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -1885,7 +1885,7 @@ static struct dentry *bch2_mount(struct file_system_type *fs_type,
+>   		sb->s_flags	|= SB_POSIXACL;
+>   #endif
+>   
+> -	sb->s_shrink.seeks = 0;
+> +	sb->s_shrink->seeks = 0;
+>   
+>   	vinode = bch2_vfs_inode_get(c, BCACHEFS_ROOT_SUBVOL_INUM);
+>   	ret = PTR_ERR_OR_ZERO(vinode);
+> diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+> index 41c6900c34c1..a9f480c26bb4 100644
+> --- a/fs/bcachefs/sysfs.c
+> +++ b/fs/bcachefs/sysfs.c
+> @@ -522,7 +522,7 @@ STORE(bch2_fs)
+>   
+>   		sc.gfp_mask = GFP_KERNEL;
+>   		sc.nr_to_scan = strtoul_or_return(buf);
+> -		c->btree_cache.shrink.scan_objects(&c->btree_cache.shrink, &sc);
+> +		c->btree_cache.shrink->scan_objects(c->btree_cache.shrink, &sc);
+>   	}
+>   
+>   	if (attr == &sysfs_btree_wakeup)
