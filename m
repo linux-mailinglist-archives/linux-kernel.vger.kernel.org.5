@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D06479EA9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E22179EA75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241342AbjIMOKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        id S241214AbjIMOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241347AbjIMOJO (ORCPT
+        with ESMTP id S231767AbjIMOIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:09:14 -0400
-Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9239F1FCE
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:53 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PH2q0Sz4x20h
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:08:51 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by xavier.telenet-ops.be with bizsmtp
-        id lS8q2A0021C8whw01S8q3q; Wed, 13 Sep 2023 16:08:51 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXe-003ctI-8w;
-        Wed, 13 Sep 2023 16:08:47 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV6L-Ja;
-        Wed, 13 Sep 2023 16:08:47 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 37/52] m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
-Date:   Wed, 13 Sep 2023 16:08:27 +0200
-Message-Id: <b9178e864d6c5e06c177d53bc4cce6d689f94d78.1694613528.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
-References: <cover.1694613528.git.geert@linux-m68k.org>
+        Wed, 13 Sep 2023 10:08:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329B419B1;
+        Wed, 13 Sep 2023 07:08:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE9F0C433C7;
+        Wed, 13 Sep 2023 14:08:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694614114;
+        bh=U0uF/Hy56VJL0mJg5gDqOTRdoiUMba1sRM09O5WC0A0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZXRh2XAwWjglZRrf4C8kmeEaaKwcdq7iyQv3rdUqUL/lHXxjECxSWAETJVrhjv0KA
+         l+1ZnZBjmsxRvWBL9bVGkQLlncKiR9g7ZSS/eM79YODZxZ5Kbke7TddQ6bpLDJdJl8
+         IjKcMHFA1k2RRdOYkB+FmCvpafbv+Aqr+24EAZGEo9Fwoj2YjhYyJogKFKVguMniaf
+         yJnaH3WxJmQxi0pZitFm1EUevL4DqkIa1xTnitflY8xl0Hy1gq1wYAlOdgcPo/kspU
+         mP4VmRpD1CzsOId08Rj/aHwQ4LHRGC26z+BKG/CyUUyELafG57JDa1+8GjHex7Zjdf
+         no+tTZ2JGzO8w==
+Date:   Wed, 13 Sep 2023 16:08:28 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Jinjian Song <songjinjian@hotmail.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
+        ryazanov.s.a@gmail.com, jiri@resnulli.us,
+        johannes@sipsolutions.net, chandrashekar.devegowda@intel.com,
+        linuxwwan@intel.com, chiranjeevi.rapolu@linux.intel.com,
+        haijun.liu@mediatek.com, m.chetan.kumar@linux.intel.com,
+        ricardo.martinez@linux.intel.com, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nmarupaka@google.com, vsankar@lenovo.com, danielwinkler@google.com,
+        Jinjian Song <jinjian.song@fibocom.com>
+Subject: Re: [net-next v4 5/5] net: wwan: t7xx: Devlink documentation
+Message-ID: <20230913140828.GU401982@kernel.org>
+References: <20230912094845.11233-1-songjinjian@hotmail.com>
+ <ME3P282MB27037E574DB3685216A0DF56BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ME3P282MB27037E574DB3685216A0DF56BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1:
+On Tue, Sep 12, 2023 at 05:48:45PM +0800, Jinjian Song wrote:
+> From: Jinjian Song <jinjian.song@fibocom.com>
+> 
+> Document the t7xx devlink commands usage for firmware flashing &
+> coredump collection.
+> 
+> Base on the v5 patch version of follow series:
+> 'net: wwan: t7xx: fw flashing & coredump support'
+> (https://patchwork.kernel.org/project/netdevbpf/patch/f902d4a0cb807a205687f7e693079fba72ca7341.1674307425.git.m.chetan.kumar@linux.intel.com/)
+> 
+> Signed-off-by: Jinjian Song <jinjian.song@fibocom.com>
+> ---
+> v4:
+>  * no change
+> v3:
+>  * supplementary separator '~'
+> v2:
+>  * no change
+> ---
+>  Documentation/networking/devlink/index.rst |   1 +
+>  Documentation/networking/devlink/t7xx.rst  | 232 +++++++++++++++++++++
+>  2 files changed, 233 insertions(+)
+>  create mode 100644 Documentation/networking/devlink/t7xx.rst
+> 
+> diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+> index b49749e2b9a6..f101781105ca 100644
+> --- a/Documentation/networking/devlink/index.rst
+> +++ b/Documentation/networking/devlink/index.rst
+> @@ -67,3 +67,4 @@ parameters, info versions, and other features it supports.
+>     iosm
+>     octeontx2
+>     sfc
+> +   mtk_t7xx
 
-    arch/m68k/sun3/config.c:123:13: warning: no previous prototype for ‘config_sun3’ [-Wmissing-prototypes]
-      126 | void __init config_sun3(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/sun3x/config.c:42:13: warning: no previous prototype for ‘config_sun3x’ [-Wmissing-prototypes]
-       42 | void __init config_sun3x(void)
-	  |             ^~~~~~~~~~~~
+Hi Jinjian Song,
 
-Fix this by including <asm/config.h>
+I think that this should be t7xx rather than mtk_t7xx,
+to match the filename of the new file created by the following hunk
 
-Fixes: 91d7b75a5888c182 ("m68k: Add asm/config.h")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
-v2:
-  - Add Acked-by.
----
- arch/m68k/sun3/config.c  | 1 +
- arch/m68k/sun3x/config.c | 1 +
- 2 files changed, 2 insertions(+)
+> diff --git a/Documentation/networking/devlink/t7xx.rst b/Documentation/networking/devlink/t7xx.rst
 
-diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
-index 203f428a0344a735..b932250c9e7ffbae 100644
---- a/arch/m68k/sun3/config.c
-+++ b/arch/m68k/sun3/config.c
-@@ -32,6 +32,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- #include <asm/sun3ints.h>
-+#include <asm/config.h>
- 
- char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
- 
-diff --git a/arch/m68k/sun3x/config.c b/arch/m68k/sun3x/config.c
-index 37121a0f12531fef..3a10cda636fc38fb 100644
---- a/arch/m68k/sun3x/config.c
-+++ b/arch/m68k/sun3x/config.c
-@@ -19,6 +19,7 @@
- #include <asm/sun3ints.h>
- #include <asm/setup.h>
- #include <asm/oplib.h>
-+#include <asm/config.h>
- 
- #include "time.h"
- 
--- 
-2.34.1
-
+...
