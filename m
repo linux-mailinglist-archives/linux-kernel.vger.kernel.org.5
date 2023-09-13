@@ -2,166 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D3B79EE42
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2966679EE45
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbjIMQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S229564AbjIMQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjIMQ3C (ORCPT
+        with ESMTP id S229471AbjIMQbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:29:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CC4B3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:28:58 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5d4a8242so170127b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:28:58 -0700 (PDT)
+        Wed, 13 Sep 2023 12:31:48 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECE919A8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:31:44 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34df0f0a5beso705ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694622537; x=1695227337; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTzciLAK1rHaLd0gWzMb/fWg9Lw/LcXOlDJsQ/Mdv44=;
-        b=l4uOP3MY34hzAUeOFJRXJSa4hc4X+OKjFiAf3+yOoxNVo4Rw0QwAFImWyXdQmTLVfD
-         XWoYg0Ld3mi2akEqFtf8B9f9Muzn526V9HZJZ7VYhQF66Sy67eFXO1Ff8KxveH79ng2v
-         oMTx5HB/F9K6d0zkjZke5o0xvieu7YvP7hGXwr+xpkl9hl4VQ0y27D9G/rI6UN/9c0pq
-         B4hU5ZWL/J3Ro4qEs3uUnJSPHWcdX4OlUjCE8K3o376ixNnwRmBokA2iEnUjiHYQl5mC
-         LIe+nAmd76ITkUaRgptmNFBrf5vQKlUkG6FoV7btwXNaV8Z39UB3/J+O4/KZ1iQzRfIC
-         cvvw==
+        d=google.com; s=20230601; t=1694622704; x=1695227504; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DpztZBQJl10oqU07wK0IFzN+LLamje8BENXZn/FkHvA=;
+        b=eFlf0VfguD9/Yi2hXCPcn0IBj01XvuunXpGNEwPrk5EYZyVlO7JdFWaBhJhEE/R0q0
+         cspg+EPQZUX9ZyNxQCcYe0IUJ/+GKVW7WaALLOLWs0wSYqiNMrL0rfYH5MrFDjt8ygiz
+         A8yWOlNwo666KO9DdA0tn23DrjVFX9nyPVa5l8gMVBnPkSgS4m22cMym8LHA75ywVoE4
+         w5EjZvARORDKG2v77Grm1g/iP0beNj/a02LgyTvXpEhdWF5voAxFE13omWUY3r1jPRTy
+         wEBI9cZe5nujr/ZjJoqtnSLR6hIPWFSrcOfaJAyQ1fp1D9Q+ZAZJLlQAuLPcGFFPSJ9U
+         Hydw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622537; x=1695227337;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTzciLAK1rHaLd0gWzMb/fWg9Lw/LcXOlDJsQ/Mdv44=;
-        b=LUfy24hNXO9gfqnN4p7iyPpVDEZnD8L0JysUqSNxp/ZirErCQx0f1khNqLS0LGAb+4
-         7x8OnR6X3+5P9QITflHKiqPYNtPnNpJ9aeZn0G9XW47YFufLbsJFdtXyLtT2Hq7nNcDZ
-         9Pr8nU/h34B65dVxErrJujW8GWTL9xyyR6I0AqZ11/DF4EQlDoULzkHY6k2rDCMQaW0r
-         ORvB2rn+3OXiF7/DUgPGC+m8QNsvQBNyW9yWgRO5ulMkEaOsATU+ZzcF3CmumFEnYInn
-         gPOw21H21Ar3EKymUWi3yGNaDhTBRjFXLo9glSAJLfXGftTSIDsdRTWkZiKeKaqRJPCe
-         0lbA==
-X-Gm-Message-State: AOJu0YzIQ2UBRQB09FvmWATW7lg7ymKcvM3B0xajn/sTxLuhJMoO42QH
-        bnJ1DcTGNK9v9Y377EQvkZ/KQzL5eqU=
-X-Google-Smtp-Source: AGHT+IF46GoZBpBu9T03PtWbv2UJpHn9Ww4IDx0PCBEgrZzLs7mJmzm5VD2skhuBuxBH34J0c2R8ha4gffg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8210:0:b0:d7e:8dee:7813 with SMTP id
- q16-20020a258210000000b00d7e8dee7813mr66802ybk.8.1694622537338; Wed, 13 Sep
- 2023 09:28:57 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 09:28:55 -0700
-In-Reply-To: <d6601227769ec82eed95270053ef58e13c2c0a09.1694599703.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1694599703.git.isaku.yamahata@intel.com> <d6601227769ec82eed95270053ef58e13c2c0a09.1694599703.git.isaku.yamahata@intel.com>
-Message-ID: <ZQHjR8ZAwRUJGDzi@google.com>
-Subject: Re: [RFC PATCH 2/6] KVM: guestmem_fd: Make error_remove_page callback
- to unmap guest memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1694622704; x=1695227504;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DpztZBQJl10oqU07wK0IFzN+LLamje8BENXZn/FkHvA=;
+        b=Oqz1l6qxQoI7E46+au9RSFxyV+u4RfFp5lHeBIBfbFF4NfwjyzWBFqc/yIqbcdDm1o
+         r7zFcI6PPtWH/AVDnHOpSfLJp/NDP9eE8Zq9DzgxwpiRb30tRgI2z6VF89c3/HbLy7Xw
+         k+CAMgbxQO3tq5eu4QcjmRRRaROp9/eW1DYbtJbx9h2VZKqifaMT6jfdsVVJX/sankHo
+         zMhYD/HliB6yLXZZfmD/giiRTrAyM5g4Oo3rugyhAyTkKkWy3ysj9aaCKc0osUTbdKtm
+         LTMj8O1q6JCI1FzIi+0edBwfrwhNzKRkkX/1G+aox0eUvx9zBvW+aEOjweZfosBnBzfS
+         KlOA==
+X-Gm-Message-State: AOJu0Ywt5VjXDHLVnS5SqJ2Rv0BQTK/UspP8Bg2W0AENj+EOqec43lvF
+        qZu99PDICsY8/tkYc2OYcwN/juIFuXPazB3Ra34Rig==
+X-Google-Smtp-Source: AGHT+IGuPWoe04ycLchJdkh7wvembyi6qnEngJiQFtN2crYzRc0IPOXpa69VDDgEUH+ZMtq1ZYIRzXLuOnRGiErGM/c=
+X-Received: by 2002:a05:6e02:12cd:b0:349:3dd2:3cf1 with SMTP id
+ i13-20020a056e0212cd00b003493dd23cf1mr207318ilm.23.1694622704010; Wed, 13 Sep
+ 2023 09:31:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230913125157.2790375-1-tmricht@linux.ibm.com>
+In-Reply-To: <20230913125157.2790375-1-tmricht@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 13 Sep 2023 09:31:29 -0700
+Message-ID: <CAP-5=fUiHMRPVYhbQv-YM+EMKyBF6TEopea=PPX2thbtdmhGsg@mail.gmail.com>
+Subject: Re: [PATCH] perf jevent: fix core dump on software events on s390
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, sumanthk@linux.ibm.com, dengler@linux.ibm.com,
+        svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, isaku.yamahata@intel.com wrote:
-> @@ -316,26 +316,43 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
->  	end = start + thp_nr_pages(page);
->  
->  	list_for_each_entry(gmem, gmem_list, entry) {
-> +		struct kvm *kvm = gmem->kvm;
-> +
-> +		KVM_MMU_LOCK(kvm);
-> +		kvm_mmu_invalidate_begin(kvm);
-> +		KVM_MMU_UNLOCK(kvm);
-> +
-> +		flush = false;
->  		xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
-> -			for (gfn = start; gfn < end; gfn++) {
-> -				if (WARN_ON_ONCE(gfn < slot->base_gfn ||
-> -						gfn >= slot->base_gfn + slot->npages))
-> -					continue;
-> -
-> -				/*
-> -				 * FIXME: Tell userspace that the *private*
-> -				 * memory encountered an error.
-> -				 */
-> -				send_sig_mceerr(BUS_MCEERR_AR,
-> -						(void __user *)gfn_to_hva_memslot(slot, gfn),
-> -						PAGE_SHIFT, current);
-> -			}
-> +			pgoff_t pgoff;
-> +
-> +			if (WARN_ON_ONCE(end < slot->base_gfn ||
-> +					 start >= slot->base_gfn + slot->npages))
-> +				continue;
-> +
-> +			pgoff = slot->gmem.pgoff;
-> +			struct kvm_gfn_range gfn_range = {
-> +				.slot = slot,
-> +				.start = slot->base_gfn + max(pgoff, start) - pgoff,
-> +				.end = slot->base_gfn + min(pgoff + slot->npages, end) - pgoff,
-> +				.arg.page = page,
-> +				.may_block = true,
-> +				.memory_error = true,
+On Wed, Sep 13, 2023 at 5:52=E2=80=AFAM Thomas Richter <tmricht@linux.ibm.c=
+om> wrote:
+>
+> Running commands such as
+>  # ./perf stat -e cs -- true
+>  Segmentation fault (core dumped)
+>  # ./perf stat -e cpu-clock-- true
+>  Segmentation fault (core dumped)
+>  #
+>
+> dump core. This should not happen as these events are defined
+> even when no hardware PMU is available.
+> Debugging this reveals this call chain:
+>
+>   perf_pmus__find_by_type(type=3D1)
+>   +--> pmu_read_sysfs(core_only=3Dfalse)
+>        +--> perf_pmu__find2(dirfd=3D3, name=3D0x152a113 "software")
+>             +--> perf_pmu__lookup(pmus=3D0x14f0568 <other_pmus>, dirfd=3D=
+3,
+>                                   lookup_name=3D0x152a113 "software")
+>                  +--> perf_pmu__find_events_table (pmu=3D0x1532130)
+>
+> Now the pmu is "software" and it tries to find a proper table
+> generated by the pmu-event generation process for s390:
+>
+>  # cd pmu-events/
+>  # ./jevents.py  s390 all /root/linux/tools/perf/pmu-events/arch |\
+>         grep -E '^const struct pmu_table_entry'
+>  const struct pmu_table_entry pmu_events__cf_z10[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_z13[] =3D {
+>  const struct pmu_table_entry pmu_metrics__cf_z13[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_z14[] =3D {
+>  const struct pmu_table_entry pmu_metrics__cf_z14[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_z15[] =3D {
+>  const struct pmu_table_entry pmu_metrics__cf_z15[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_z16[] =3D {
+>  const struct pmu_table_entry pmu_metrics__cf_z16[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_z196[] =3D {
+>  const struct pmu_table_entry pmu_events__cf_zec12[] =3D {
+>  const struct pmu_table_entry pmu_metrics__cf_zec12[] =3D {
+>  const struct pmu_table_entry pmu_events__test_soc_cpu[] =3D {
+>  const struct pmu_table_entry pmu_metrics__test_soc_cpu[] =3D {
+>  const struct pmu_table_entry pmu_events__test_soc_sys[] =3D {
+>  #
+>
+> However event "software" is not listed, as can be seen in the
+> generated const struct pmu_events_map pmu_events_map[].
+> So in function perf_pmu__find_events_table(), the variable
+> table is initialized to NULL, but never set to a proper
+> value. The function scans all generated &pmu_events_map[]
+> tables, but no table matches, because the tables are
+> s390 CPU Measurement unit specific:
+>
+>   i =3D 0;
+>   for (;;) {
+>       const struct pmu_events_map *map =3D &pmu_events_map[i++];
+>       if (!map->arch)
+>            break;
+>
+>       --> the maps are there because the build generated them
+>
+>            if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
+>                 table =3D &map->event_table;
+>                 break;
+>            }
+>       --> Since no matching CPU string the table var remains 0x0
+>       }
+>       free(cpuid);
+>       if (!pmu)
+>            return table;
+>
+>       --> The pmu is "software" so it exists and no return
+>
+>       --> and here perf dies because table is 0x0
+>       for (i =3D 0; i < table->num_pmus; i++) {
+>               ...
+>       }
+>       return NULL;
+>
+> Fix this and do not access the table variable. Instead return 0x0
+> which is the same return code when the for-loop was not successful.
+>
+> Output after:
+>  # ./perf stat -e cs -- true
+>
+>  Performance counter stats for 'true':
+>
+>                  0      cs
+>
+>        0.000853105 seconds time elapsed
+>
+>        0.000061000 seconds user
+>        0.000827000 seconds sys
+>
+>  # ./perf stat -e cpu-clock -- true
+>
+>  Performance counter stats for 'true':
+>
+>               0.25 msec cpu-clock #    0.341 CPUs utilized
+>
+>        0.000728383 seconds time elapsed
+>
+>        0.000055000 seconds user
+>        0.000706000 seconds sys
+>
+>  # ./perf stat -e cycles -- true
+>
+>  Performance counter stats for 'true':
+>
+>    <not supported>      cycles
+>
+>        0.000767298 seconds time elapsed
+>
+>        0.000055000 seconds user
+>        0.000739000 seconds sys
+>
+>  #
+>
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
 
-Why pass arg.page and memory_error?  There's no usage in this mini-series, and no
-explanation of what arch code would do the information.  And I can't think of why
-arch would need to do anything but zap the SPTEs.  If the memory error is directly
-related to the current instruction, the vCPU will fault on the zapped SPTE, see
--HWPOISON, and exit to userspace.  If the memory is unrelated, then the delayed
-notification is less than ideal, but not fundamentally broken, e.g. it's no worse
-than TDX's behavior of not signaling #MC until a poisoned cache line is actually
-accessed.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-I don't get arg.page in particular, because having the gfn should be enough for
-arch code to take action beyond zapping SPTEs.
+Thanks!
+Ian
 
-And _if_ we want to communicate the error to arch code, it would be much better
-to add a dedicated arch hook instead of piggybacking kvm_mmu_unmap_gfn_range()
-with a "memory_error" flag. 
-
-If we just zap SPTEs, then can't this simply be?
-
-  static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
-  {
-	struct list_head *gmem_list = &mapping->private_list;
-	struct kvm_gmem *gmem;
-	pgoff_t start, end;
-
-	filemap_invalidate_lock_shared(mapping);
-
-	start = page->index;
-	end = start + thp_nr_pages(page);
-
-	list_for_each_entry(gmem, gmem_list, entry)
-		kvm_gmem_invalidate_begin(gmem, start, end);
-
-	/*
-	 * Do not truncate the range, what action is taken in response to the
-	 * error is userspace's decision (assuming the architecture supports
-	 * gracefully handling memory errors).  If/when the guest attempts to
-	 * access a poisoned page, kvm_gmem_get_pfn() will return -EHWPOISON,
-	 * at which point KVM can either terminate the VM or propagate the
-	 * error to userspace.
-	 */
-
-	list_for_each_entry(gmem, gmem_list, entry)
-		kvm_gmem_invalidate_end(gmem, start, end);
-
-	filemap_invalidate_unlock_shared(mapping);
-
-	return MF_DELAYED;
-  }
+> ---
+>  tools/perf/pmu-events/jevents.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jev=
+ents.py
+> index a7e88332276d..72ba4a9239c6 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -991,7 +991,7 @@ const struct pmu_events_table *perf_pmu__find_events_=
+table(struct perf_pmu *pmu)
+>                  }
+>          }
+>          free(cpuid);
+> -        if (!pmu)
+> +        if (!pmu || !table)
+>                  return table;
+>
+>          for (i =3D 0; i < table->num_pmus; i++) {
+> --
+> 2.41.0
+>
