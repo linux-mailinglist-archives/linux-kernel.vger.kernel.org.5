@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0ABB79E06D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECD179E076
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238423AbjIMHGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44198 "EHLO
+        id S238488AbjIMHHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238362AbjIMHGA (ORCPT
+        with ESMTP id S238468AbjIMHHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:06:00 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADB61738
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:05:55 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c93638322so133034966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694588754; x=1695193554; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ARucV4SPV6o29NZnTlh9kC1XvI7Cu6efHFTCveAgcl0=;
-        b=NUbMkY9togY3+BvTooXA+5xbDdE1THV4l0FnLyfjVR7CCbUR0E5Urqff75nzD5fko+
-         qxnDsAozS9g8JNqO5r5YoC2YQGCJ8qtdhvr7nd0hS+/c2j3A3Tqa12w8pwdKcJAqtqG0
-         6Lwf3sRRf4wvTnT67/JBlCokT2XNHATZNdthiU5e4QvZ1JfwXHOsqM9GOw1e7m2XHWn+
-         gB6vigffTRphZ6k2zaXFhsUrLzRdkbVdxg7enX8aUXfHn1YbY1S9dR7/NuzbREu85aEA
-         BdkNc8q/CAD5lrFUyPb3MN1UhKT3klB7WoPPbnsZKocoMoP3Td7lK8MlP0TJAZ67bkxO
-         lrBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694588754; x=1695193554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ARucV4SPV6o29NZnTlh9kC1XvI7Cu6efHFTCveAgcl0=;
-        b=Iw5gorsmxDypEk2o8zsQOv1ZctoxNBUkWwCmnpb/0NypYCRF9VYczh3vPY07WoHjAf
-         nYzhcZ0vKs5SKczi5qeJFBQtR0du54EIworPzdlkqr/XeERBOW6XMgrUI+S0+jBAeML+
-         TkdEZfs9NtGUNvlfNjZKDwW/YWO068tg5Hu8ZyBQIJ0tbzpPmoGDkiNzDDBI9wyFiYVY
-         ZAX4/D0BK1ItfL4Igz3Ljy7PkViLIdya380kcsAOeXyaK03kpPkRote667y5Mql26Ai0
-         ZhZdijsvBziiE7aVpyQsoz7oS4B2HXBOlgooGTLOxalf4+RJy0pnZPn67cANU3uefy8L
-         vT2A==
-X-Gm-Message-State: AOJu0YxNs6Uta6fEe9LoOzFOqhayaoZ25EQ7Pq54XGvJOEtJ/CZHYFUQ
-        tnQUrTBPuUWaQH3RwgVhGw5boincAjcjeQ5ieeI=
-X-Google-Smtp-Source: AGHT+IHkJKnf5Vb1twD6bjQNQC3iEYctJfsdYHtpo6SstTdYPYDzfAgiSTsnLIEfHqr1m0kJedNPsdPs7MHhH7vSrJo=
-X-Received: by 2002:a17:907:75d7:b0:9a5:a543:2744 with SMTP id
- jl23-20020a17090775d700b009a5a5432744mr2313726ejc.33.1694588754097; Wed, 13
- Sep 2023 00:05:54 -0700 (PDT)
+        Wed, 13 Sep 2023 03:07:52 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BFB1738;
+        Wed, 13 Sep 2023 00:07:48 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38D6LeuN032357;
+        Wed, 13 Sep 2023 07:07:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=AtULoQJOI/orWb1R9vpylxnI/QhZ91XnJHJFIIByYuE=;
+ b=fL5qOsInEerQdiU2GacN+7eTN0KXwNz4W65JK9GU9nEK/3tn/ilKxR8K4lYwKJzCzQuA
+ SsDtsHvm2whcULY5wyPQYeArhuXl+FpgGMxWZpteJJkG6gRkP8FuWd+Rjuc82619q527
+ 0c2OuApoRfMB4cJrVcd79CLhXsm9/+3H+Ut1zEwW3HlTmLFmSkPfkZW470MP1qY4slbE
+ SliJeGKokGbZyjOHSTyucCR5L5GpnwaPa+Tl/mVDT3HxT5VElcgONDEMwSSGiJB3awIN
+ YrnsLnjiMniaDzbG1hiIId+lZE5fjA08VGDXVNIiREHgk9JH6Y0jgKrZnwTN+r+rsGJo KA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y8jrxa0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 07:07:31 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38D77Ufj022743
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 07:07:30 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 13 Sep 2023 00:07:23 -0700
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To:     <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_pkondeti@quicinc.com>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v5] mtd: rawnand: qcom: Unmap the right resource upon probe failure
+Date:   Wed, 13 Sep 2023 12:37:02 +0530
+Message-ID: <20230913070702.12707-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20230909153125.30032-1-dakr@redhat.com> <20230909153125.30032-7-dakr@redhat.com>
- <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com> <20230913090311.5eeb026a@collabora.com>
-In-Reply-To: <20230913090311.5eeb026a@collabora.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Wed, 13 Sep 2023 17:05:42 +1000
-Message-ID: <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
-        matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oiAv9tXSZ13X51HGY9mUgpjxhZ53p84x
+X-Proofpoint-GUID: oiAv9tXSZ13X51HGY9mUgpjxhZ53p84x
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ impostorscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 clxscore=1011 mlxscore=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309130059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
-<boris.brezillon@collabora.com> wrote:
->
-> On Tue, 12 Sep 2023 18:20:32 +0200
-> Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
->
-> > > +/**
-> > > + * get_next_vm_bo_from_list() - get the next vm_bo element
-> > > + * @__gpuvm: The GPU VM
-> > > + * @__list_name: The name of the list we're iterating on
-> > > + * @__local_list: A pointer to the local list used to store already =
-iterated items
-> > > + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_nex=
-t_cached_vm_bo()
-> > > + *
-> > > + * This helper is here to provide lockless list iteration. Lockless =
-as in, the
-> > > + * iterator releases the lock immediately after picking the first el=
-ement from
-> > > + * the list, so list insertion deletion can happen concurrently.
-> >
-> > Are the list spinlocks needed for that async state update from within
-> > the dma-fence critical section we've discussed previously?
->
-> Any driver calling _[un]link() from its drm_gpu_scheduler::run_job()
-> hook will be in this situation (Panthor at the moment, PowerVR soon). I
-> get that Xe and Nouveau don't need that because they update the VM
-> state early (in the ioctl path), but I keep thinking this will hurt us
-> if we don't think it through from the beginning, because once you've
-> set this logic to depend only on resv locks, it will be pretty hard to
-> get back to a solution which lets synchronous VM_BINDs take precedence
-> on asynchronous request, and, with vkQueueBindSparse() passing external
-> deps (plus the fact the VM_BIND queue might be pretty deep), it can
-> take a long time to get your synchronous VM_BIND executed...
+We currently provide the physical address of the DMA region
+rather than the output of dma_map_resource() which is obviously wrong.
 
-btw what is the use case for this? do we have actual vulkan
-applications we know will have problems here?
+Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+Cc: stable@vger.kernel.org
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+v5: Incorporated suggestions from Miquel/Mani
+    - Added tag to automatically include this patch in stable tree.
 
-it feels like a bit of premature optimisation, but maybe we have use cases.
+v4: Incorporated suggestion from Miquel
+    - Modified title and commit description.
+    https://lore.kernel.org/all/20230912115903.1007-1-quic_bibekkum@quicinc.com/
 
-Dave.
+v3: Incorporated comments from Miquel
+    - Modified the commit message and title as per suggestions.
+    https://lore.kernel.org/all/20230912101814.7748-1-quic_bibekkum@quicinc.com/
+
+v2: Incorporated comments from Pavan/Mani.
+    https://lore.kernel.org/all/20230911133026.29868-1-quic_bibekkum@quicinc.com/
+
+v1: https://lore.kernel.org/all/20230907092854.11408-1-quic_bibekkum@quicinc.com/
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 64499c1b3603..b079605c84d3 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3444,7 +3444,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ err_aon_clk:
+ 	clk_disable_unprepare(nandc->core_clk);
+ err_core_clk:
+-	dma_unmap_resource(dev, res->start, resource_size(res),
++	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+ 			   DMA_BIDIRECTIONAL, 0);
+ 	return ret;
+ }
+--
+2.17.1
+
