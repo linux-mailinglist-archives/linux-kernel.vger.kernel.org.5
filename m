@@ -2,297 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BD379E35E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98B379E366
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239243AbjIMJSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S239191AbjIMJTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbjIMJSC (ORCPT
+        with ESMTP id S229897AbjIMJTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:18:02 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B261173E;
-        Wed, 13 Sep 2023 02:17:58 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68fb85afef4so2963314b3a.1;
-        Wed, 13 Sep 2023 02:17:58 -0700 (PDT)
+        Wed, 13 Sep 2023 05:19:22 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0470173E;
+        Wed, 13 Sep 2023 02:19:17 -0700 (PDT)
+X-UUID: 99996dde521611eea33bb35ae8d461a2-20230913
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=GAbS1knFkhtTTH+U9yohkHGElNtig5FOv41QoN4q+dQ=;
+        b=QH9oDvFTEVhgGz9EMrmDT9+iLnXFOtw70HzXcwO/d9SUXhT6ITdToka8pQCJZxyFHgnQsd+DEQ1XjFCFI4WuHXSAS7JeF/2qI91jO6qOorc6okQfHNhUNvW/+feySIEC92pbno+XAWy2gZOujk2lcC8OaEJ/uVHMrv4Q6+3a2D4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:79428208-acab-446d-b568-9ed334d948e9,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:bfaee313-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 99996dde521611eea33bb35ae8d461a2-20230913
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1293847464; Wed, 13 Sep 2023 17:19:11 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 13 Sep 2023 17:19:10 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 13 Sep 2023 17:19:09 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g3xY0YicZL1lQiGupR7UQ1AnbE4RLv0zdbzF3i0AbhoM3fcHkNBXBEIdtSp8UmFnMcy2MiYS05I8pqWWvOgmJR+Q4cB6JZCJZCR1X9R0DPNiXCk/9GhOEgKphhiuxqWmfEa2XjdpZsV/NrrV8Y0ASp7OGZ2lttHLBWtC1hDCaYpMdfJB0OvRfusTYhJTa92QLIwQ4kkVL6NgdeLM4G2nwZpl0jQimH+h47Bf52mpVeF4bC39ZX6kW5aDNVgH/zhUE2lQAJae8JaMxtlwOgfZ33/YTw7ssiw21Uwjy89I2HB4aU6CoIjlYYrBztougSFy25/8pKOcohxV0oVQMB/3Yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GAbS1knFkhtTTH+U9yohkHGElNtig5FOv41QoN4q+dQ=;
+ b=e+h7q6qqGfQJzxXHVFwZPwY7/WL1msPc+E3huMvB92bdN8Caujb3Zg8TVLWvpISgdpG5pQ9e51lZZFNt1JU89R3/T/ITtnaI1vdnQZaF9rXWq8pT9KiHJMthZfMHxtO0BULRl0GssHX8vVnHDPcr9OeLyt+tq5BSmgDeYuu5cjkZ0JGq8pDknQMljuwH3FpbdgJPXWDky2mKFNG2/t+t4XsTSJx+rV3Ww/Iu1pV0m7/YCviJaV09P6u2O8SCZTrGN8MtycJRUEWRUdAtL18EGcDlSXHLMV13KPTpDc19cKmx/ke9hfMGeq/wg5tDgOwxokToqQaSue+RuxEoHSYN9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694596678; x=1695201478; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D5ntlfyfrnWhRaPe5gyjAcDshm+TQkTrWZZbi0hLuRo=;
-        b=VaO9L8rA0hfDvX63LHdsATtDLL71M1fQSWsYk03prPOB7l/eZtC4grf1eRyXoh7G+L
-         d2q1hFFAcGPF54u7GGxWlYj6U4HrFLWUSUy3RLGn/rqD7MzX3gVcOmwfJxgkuQnuZefv
-         CpsQa0y8G5T0xUo02JM6QJJuetxsJMfDL7ziiMZAgmLEyTeMw/8JzECRVwOr4MkP+IfD
-         04ohce6t0FoYHMGmoaYHsA67lfJ+nQ3KUB2WYqBFsBKEQFNCan3D9dfDFC1UJ6ISkeRe
-         Di7dxPP9zXV1tRRl9o4++s9u9w8VsRXianirBDNfWCkXNEvjqhV7kV4iR0q5OhBii5U7
-         RnUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694596678; x=1695201478;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D5ntlfyfrnWhRaPe5gyjAcDshm+TQkTrWZZbi0hLuRo=;
-        b=Kky6X5GW937PEiGgq3Ff+AzIA3/ezjQjHvNVENM7OKGariqVi3ZJSYVBsq5SMVtHjC
-         Brok6dGEI2VuFVYEH1XZyUj4WlnrKNqE6AodkFicylsZBPDwsQjHV7iE8wmRj8GEfQ7o
-         x94Q/Dhl6zhWBTKt9ERFRkxXzt1nZk4hTxDQm/i+qNBsn7QSbqpyL4GBfb/9IlcEaDsO
-         UtGNfSArxfYgyZi3rdiT0LDF3uSbmjZbZqvUqPFMejKih+pzNejmWMM1X1PHeL0DvyrK
-         RXSNqUbbped/g92am+NIcFqSh1Q3IOiCLcBWzt1sjavZxhhuWpursS8k9G1Q6IP7ajRq
-         Hm8g==
-X-Gm-Message-State: AOJu0Ywtj9qbidnFdgN9+K5ZbxnRzBXzPpuAnA+j6UndGZiooX6FEF60
-        v6XIeuF4QANh6gy+r46sr3A=
-X-Google-Smtp-Source: AGHT+IFL55pYAq1VsdG9gnxZsr0fiX9yLoanH66YdDqBEyjDFEgQ+3z2guA4i9QK0kndgxG+nEjrXQ==
-X-Received: by 2002:a05:6a20:5613:b0:14c:84e6:1ab4 with SMTP id ir19-20020a056a20561300b0014c84e61ab4mr1490436pzc.33.1694596677614;
-        Wed, 13 Sep 2023 02:17:57 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001b39ffff838sm10039861plb.25.2023.09.13.02.17.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 02:17:56 -0700 (PDT)
-Message-ID: <90194cd0-61d8-18b9-980a-b46f903409b4@gmail.com>
-Date:   Wed, 13 Sep 2023 17:17:49 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v5] KVM: x86/tsc: Don't sync TSC on the first write in
- state restoration
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GAbS1knFkhtTTH+U9yohkHGElNtig5FOv41QoN4q+dQ=;
+ b=ExWLrg1WG6rzlPzgvQC3kMC7T+Ay3MLGSfwldUeRpy4gSMMGvaWUvirpG/ne67EukBiY9c3pwuvT+D6jfpicfe+aLBeZ9Qqdh4bJJYI9r/hS8f+fAAMmgnonvIV4Rr8bxVp7LPIopdu8ga3RZUyX2Tq/nuZ0/Zu7LyF2FfnWcWQ=
+Received: from TY0PR03MB6356.apcprd03.prod.outlook.com (2603:1096:400:14c::9)
+ by SEYPR03MB8364.apcprd03.prod.outlook.com (2603:1096:101:1af::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Wed, 13 Sep
+ 2023 09:19:05 +0000
+Received: from TY0PR03MB6356.apcprd03.prod.outlook.com
+ ([fe80::492f:b5e4:51a:5ecc]) by TY0PR03MB6356.apcprd03.prod.outlook.com
+ ([fe80::492f:b5e4:51a:5ecc%6]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
+ 09:19:05 +0000
+From:   =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
+To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v5 03/14] media: platform: mtk-mdp3: add support second
+ sets of MMSYS
+Thread-Topic: [PATCH v5 03/14] media: platform: mtk-mdp3: add support second
+ sets of MMSYS
+Thread-Index: AQHZ5U7fWoTD/qQRkEaax/EZeY2dEbAW6ZIAgAGSfgA=
+Date:   Wed, 13 Sep 2023 09:19:05 +0000
+Message-ID: <4c8a21f32c37e6cb2360763c6306ba5951e99282.camel@mediatek.com>
+References: <20230912075805.11432-1-moudy.ho@mediatek.com>
+         <20230912075805.11432-4-moudy.ho@mediatek.com>
+         <28285acc-4236-36d6-2784-eac0d9220a5b@collabora.com>
+In-Reply-To: <28285acc-4236-36d6-2784-eac0d9220a5b@collabora.com>
+Accept-Language: zh-TW, en-US
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230913072113.78885-1-likexu@tencent.com>
- <e506ceb2d837344999c4899525a3490d8c46c95b.camel@infradead.org>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <e506ceb2d837344999c4899525a3490d8c46c95b.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY0PR03MB6356:EE_|SEYPR03MB8364:EE_
+x-ms-office365-filtering-correlation-id: 0ac1d793-80ce-40ea-72ac-08dbb43a7a35
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zZxhi4slRs+9ltnNMPNlYYecK/JcQOws/DkaeQ4I/YgsdH4lfn8UPRjdt9WG/O+ryguwvdb2qZd1xfOXYfdCB8EKvZ1K6/pNJh+DT/+Esi25dJ1MXdc/LGWVRp+D7xHTdWuI1LJLVs0oKn7wYL55aQPxqF8J7Y8AzfULQXo6LdpcoVbWgo/R+xvKLaLkOrqUx0g8OpeGPs6KLBsfQV9XQLshCs9oXrrG3DyH7EKldlssfjh8oX0w7Z3oTC3ICVfB9PXGJsfRwpDzVnF3I5XX8YiA41svJ5uMc2hkDurt7PzKye0+IplRFbc5sN1m3KjYQMfvxcwhAUgWg/q4ErBf2scx1cgzlxwKdlQ6hPn1WIgzActpKtK3aMwVgyt7TJBFRKsI8DHXhw1vW5qWVUWk/o4GK6Zy8reeyxpthARv5xIJE95YihtMJ0NVkyNN3iwOcm7mq5wyVBLhec2QoTV85rc3WT2Id7lVublS0bsTIN55O3OxGuWNdllWF04hviZZaWu/gwXfmrXpDPAT5HMhlC8qnu7Z6kGIXmHuAcSs8ucgSvsBMuk6xHZIlDB1+5g2Un+gEQ5ooq3FANuE5iz9XoSTWsY6WnfCqxTWdafieyZN4Y0mFW6HRUtwX3fsi5LYqnr9yLKcZ/7RC4IEYWdC7nQX/vBrk9lNlhU9Ga1TRGsOLLlDuDMJ5aBJMghtSp9VPATBc7mecLno/AVXfyvKNA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY0PR03MB6356.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(186009)(451199024)(1800799009)(2616005)(83380400001)(38100700002)(8936002)(54906003)(110136005)(66556008)(66476007)(36756003)(6506007)(26005)(85182001)(6512007)(6486002)(8676002)(71200400001)(38070700005)(4326008)(66446008)(122000001)(5660300002)(66946007)(76116006)(2906002)(316002)(478600001)(64756008)(41300700001)(86362001)(921005)(7416002)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a2IxY3g4bzhqTFV4TjlNTk0yTENvY0tSY2hyZmJSUTZXRjdEY1g1YnVZbVk3?=
+ =?utf-8?B?NktCNVdORjNva1dMOExVaUZ6Sy9TVFc2NCtFQnpiNVZ5ODRVdWhkeVY5Ykxk?=
+ =?utf-8?B?TEdCdEJHUzZyRGZXcVJHMlJIOCtsdzRSQ0dsZzJsbWR3QVh3ZlRRem5EMnZk?=
+ =?utf-8?B?bW50TXVKVjFjZ2pOMEtDdG90eUVIeExWU0p1ZXhpRFExdWNMWHhCeWR3dmJt?=
+ =?utf-8?B?bDdrTStJOWFWTEttNzh5b0NDTXAzdHlVUnNaSXp0MVRjRjhuN0czQWZMbHVw?=
+ =?utf-8?B?MHlmY1luTkVVNHNDbGpsLzBPRTkvQ1ovNU55NW80bXJEdmZhV3I4SHJTdkZm?=
+ =?utf-8?B?bXVZM2I1YU44Mm1qVGdCdW1FcmJDc0lIeTMrc20rL2xoMDBMZzM2QllaRFF2?=
+ =?utf-8?B?MzF5K0xaTEhuSS9ZdjJEWmV3emdESHowSTJSOHhvbXVaazg5aGVncnR6a20z?=
+ =?utf-8?B?c3BDMTgvVmdYSmdDY0x2eWk0S1hBQ0YwQ0M3SzA0OHA3ZCtzMG44VVRYSnh2?=
+ =?utf-8?B?VnEzUkVWeUhsdGYzQTV5ZGxHSnI1ZnAzWi8vQXlvL2N6Q1poTmcxSC9SeDZa?=
+ =?utf-8?B?bXJXaTZVbVdieUduVndTU3FpRVU3RWVMRXNUSCtHNml4eDdFeG80T0ZwM1lO?=
+ =?utf-8?B?dUo5bmdSbWZqS3U1N0RMOUVWdzc5Qjlidkh1d0FnZlBBaHRqT010cGJpbGx3?=
+ =?utf-8?B?Qk9KOGg5ZmNFclZVaURXeVRjM0xOQlNYV05Nc2dTNEVYT2c2ZGgzamxudlRs?=
+ =?utf-8?B?TGFjQTRDdFNvTFpETzNPM2hGZ0UwdU5MaWcyYTcyaXplRTFReGVOMktvK1hP?=
+ =?utf-8?B?dC8yRnpCdVQvbmZBTjVXQzU2b2xISGR6M1VuRDNqak53NExPU0dWc05oRmov?=
+ =?utf-8?B?OUV1TTA4Y21NcHZHTzY4enU0RFpNYnJXOXo1QWlVRGtCazdKc3N5My9aMWt3?=
+ =?utf-8?B?dC85RG41UWk0blFUUDBMRGNWWEh0NG44eFBrZVZqY3d2NnRuaWo0Q0lvaXZP?=
+ =?utf-8?B?bTJOSVQwZWVpelpKcDV3MlJGT2Zid1B1NDZ5YWVhUWxnZjBMT1lPQ0FWS2VY?=
+ =?utf-8?B?MjVvR2dVVVJKUnd1MnRBa2VXMTgzTktzcTVnMXJMaFExcUt4T0x3SHNvZnN2?=
+ =?utf-8?B?L0lNTlFYNXhqSk5JUlBrdjJxTjRkYUZSb1lVNDAzOXJCSG1ic0pXR2tRSlZ1?=
+ =?utf-8?B?L05JeFhuWlJ5VWhJR3p1ckM5dFRQdVFEMmtXMVcvSGkvVnRYeHdsL0ZQaWo5?=
+ =?utf-8?B?VVAyQTF6Zm9Ba1FqcnMxSFNBckU5cGRHck9paENGU0U2V1Rxc3RWNWxNWmUy?=
+ =?utf-8?B?eXNIaTdWdjk2VU1McXhJUDUxZFN6KzdtRjdPcFFoc2dVVkN0ZDJQbEkrK2ZD?=
+ =?utf-8?B?WHJJcmtIZkV2U2dhRC9FY0wvUmROUmJRZkJsU2doWEs4RElKRXRLRS9MdGRw?=
+ =?utf-8?B?Q0k2Y0FrS054RjJ2Y0YvQlRiV0o2aGdhNHVnTzljSVlaZkwrZlZoT2w4UEhE?=
+ =?utf-8?B?UlA0ejFxc1gzS1hpcUpQMEkrSkZuTGIrWmtmL1BGWXB6V1ZUTnAyc1JkZmVN?=
+ =?utf-8?B?N25mYTEzS3pTc0h3T3JVUFdiZTNSVVh6dXNTcXlJbGJhREVnSndTdENSMUFh?=
+ =?utf-8?B?dUNXTnZSaDBWa0dxKzNFbUVnRm9KeE8yekpEMWJ6L3FrU1VhZWpJNDhkWGJy?=
+ =?utf-8?B?Z3BIcDNzaFc0cHZXWFcyeE9mcmxMMzNacFE1cVdEbFpXV3NBNVY1MHUxb0Zo?=
+ =?utf-8?B?VDRLeWtKM2JwYkEvSjVXNWlreUphL2hKcSsyV2lGR1N6c3JuQXl0YTBYVEhl?=
+ =?utf-8?B?M2x4OFVNclA1TXlPRVJJNHkyOU1Qa3hVNWFmYWJFaXpuY2dZZ0pJby9EKy82?=
+ =?utf-8?B?UFh6b2oxaHc5ell6bVVUYnF1eUtmazh5TTQ3cTNkV0hscjlwak0zcE9hS0FP?=
+ =?utf-8?B?SGJvZ3hDVSt0WFFpbkpxajNSVCtydHJLd0NnMVhZUGp4a092aHVCTE5VN3Nu?=
+ =?utf-8?B?eGNVUXhpcitNT2ZESmU4THYySUxUWWRXM1lrT3NnNkl4T0tkOUZoejUra0pZ?=
+ =?utf-8?B?VVJnYlFabG12YngyNFVOTk5lNUg0RmtiMVhoUVFuTGJxaWNEajZnWHZUaHJF?=
+ =?utf-8?B?Z0hwNzlRd3VjdUtOUXpwM1JXQTQ4dzUrUDhuTHpOTDAzWVRMVytpY05UcnlL?=
+ =?utf-8?B?ZEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <24621D296F6E1F4BBADD7EE9E2551FE0@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY0PR03MB6356.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ac1d793-80ce-40ea-72ac-08dbb43a7a35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 09:19:05.4213
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BBiyYAmsSHFRNPiKrW9CE497ZWWDiSyxZ0TtMDOjKr6NIBVp1/U4CIG6XGkQgcdMq2jIiWbOxIQs9Lwx1G/Jeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB8364
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--20.644900-8.000000
+X-TMASE-MatchedRID: c/HXCguHooHUL3YCMmnG4kD6z8N1m1ALjLOy13Cgb49qSjxROy+AU2yd
+        bY7xfgXYECw8p/maK/z04yiGX/wMF294Ipa1otxoH5YQyOg71Zb4uJ1REX4MHQqiCYa6w8tvVSd
+        AA6mVeIYUp5xe5/mWoR2a9WLoHBuravi5Lq9+Ha2jFYHTfcPkwhLXa2P1m93zNEJplIoT86yF2x
+        YNveuZzS6igz7+K+iZK+OWhFmxeSBHU2fChZKMzVz+axQLnAVB0X0X5dpeBd7zYcyIF7RSVedFU
+        1Vx1p6ZlHQ5WrruXIGwZHMQdNbacUL9tcyTZdAsgxsfzkNRlfKx5amWK2anSPoLR4+zsDTtAqYB
+        E3k9Mpw=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--20.644900-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 58175B11BEE0317E64AE8F3B0F60B7A1598F6B9D08897FC0EE8AA0947213F6B32000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/9/2023 4:37 pm, David Woodhouse wrote:
-> On Wed, 2023-09-13 at 15:21 +0800, Like Xu wrote:
->> From: Like Xu <likexu@tencent.com>
->>
->> Add kvm->arch.user_set_tsc to avoid synchronization on the first write
->> from userspace so as not to misconstrue state restoration after live
->> migration as an attempt from userspace to synchronize. More precisely,
->> the problem is that the sync code doesn't differentiate between userspace
->> initializing the TSC and userspace attempting to synchronize the TSC.
-> 
-> 
-> That commit message definitely needs work. Oliver gave you some
-> verbiage which made a lot more sense to me. Let me try again...
-
-Thank you for reviewing it.
-
-> 
-> ================
-> 
-> [PATCH] KVM: x86/tsc: Don't sync user-written TSC against startup values
-> 
-> The legacy API for setting the TSC is fundamentally broken, and only
-> allows userspace to set a TSC "now", without any way to account for
-> time lost to preemption between the calculation of the value, and the
-> kernel eventually handling the ioctl.
-> 
-> To work around this we have had a hack which, if a TSC is set with a
-> value which is within a second's worth of a previous vCPU, assumes that
-> userspace actually intended them to be in sync and adjusts the newly-
-> written TSC value accordingly.
-> 
-> Thus, when a VMM restores a guest after suspend or migration using the
-> legacy API, the TSCs aren't necessarily *right*, but at least they're
-> in sync.
-> 
-> This trick falls down when restoring a guest which genuinely has been
-> running for less time than the 1 second of imprecision which we allow
-> for in the legacy API. On *creation* the first vCPU starts its TSC
-> counting from zero, and the subsequent vCPUs synchronize to that. But
-> then when the VMM tries to set the intended TSC value, because that's
-> within a second of what the last TSC synced to, it just adjusts it to
-> match that.
-> 
-> The correct answer is for the VMM not to use the legacy API of course.
-> 
-> But we can pile further hacks onto our existing hackish ABI, and
-> declare that the *first* value written by userspace (on any vCPU)
-> should not be subject to this 'correction' to make it sync up with
-> values that only from from the kernel's default vCPU creation.
-> 
-> To that end: Add a flag in kvm->arch.user_set_tsc, protected by
-> kvm->arch.tsc_write_lock, to record that a TSC for at least one vCPU in
-> this KVM *has* been set by userspace. Make the 1-second slop hack only
-> trigger if that flag is already set.
-> 
-> ===================
-> 
-> I think you also need to set kvm->arch.user_set_tsc() in
-> kvm_arch_tsc_set_attr(), don't you?
-
-How about:
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c55cc60769db..374965f66137 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5545,6 +5545,7 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
-  		tsc = kvm_scale_tsc(rdtsc(), vcpu->arch.l1_tsc_scaling_ratio) + offset;
-  		ns = get_kvmclock_base_ns();
-
-+		kvm->arch.user_set_tsc = true;
-  		__kvm_synchronize_tsc(vcpu, offset, tsc, ns, matched);
-  		raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
-
-> 
-> 
->> Reported-by: Yong He <alexyonghe@tencent.com>
->> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217423
->> Suggested-by: Sean Christopherson <seanjc@google.com>
->> Suggested-by: Oliver Upton <oliver.upton@linux.dev>
->> Original-by: Sean Christopherson <seanjc@google.com>
->> Tested-by: Like Xu <likexu@tencent.com>
->> Signed-off-by: Like Xu <likexu@tencent.com>
->> ---
->> V4 -> V5 Changelog:
->> - Making kvm_synchronize_tsc(@data) a pointer and passing NULL; (Sean)
->> - Refine commit message in a more accurate way; (Sean)
->> V4: https://lore.kernel.org/kvm/20230801034524.64007-1-likexu@tencent.com/
->>
->>   arch/x86/include/asm/kvm_host.h |  1 +
->>   arch/x86/kvm/x86.c              | 25 ++++++++++++++++---------
->>   2 files changed, 17 insertions(+), 9 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 1a4def36d5bb..9a7dfef9d32d 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -1324,6 +1324,7 @@ struct kvm_arch {
->>          int nr_vcpus_matched_tsc;
->>   
->>          u32 default_tsc_khz;
->> +       bool user_set_tsc;
->>   
->>          seqcount_raw_spinlock_t pvclock_sc;
->>          bool use_master_clock;
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 6c9c81e82e65..0fef6ed69cbb 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -2714,8 +2714,9 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
->>          kvm_track_tsc_matching(vcpu);
->>   }
->>   
->> -static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->> +static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
->>   {
->> +       u64 data = user_value ? *user_value : 0;
->>          struct kvm *kvm = vcpu->kvm;
->>          u64 offset, ns, elapsed;
->>          unsigned long flags;
->> @@ -2728,14 +2729,17 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->>          elapsed = ns - kvm->arch.last_tsc_nsec;
->>   
->>          if (vcpu->arch.virtual_tsc_khz) {
->> +               /*
->> +                * Force synchronization when creating or hotplugging a vCPU,
->> +                * i.e. when the TSC value is '0', to help keep clocks stable.
->> +                * If this is NOT a hotplug/creation case, skip synchronization
->> +                * on the first write from userspace so as not to misconstrue
->> +                * state restoration after live migration as an attempt from
->> +                * userspace to synchronize.
-> 
-> This comment isn't quite right; it wants to use some excerpt of the
-> commit message I've suggested above.
-
-How about:
-
-@@ -2735,20 +2735,34 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, 
-u64 data)
-  			 * kvm_clock stable after CPU hotplug
-  			 */
-  			synchronizing = true;
--		} else {
-+		} else if (kvm->arch.user_set_tsc) {
-  			u64 tsc_exp = kvm->arch.last_tsc_write +
-  						nsec_to_cycles(vcpu, elapsed);
-  			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
-  			/*
--			 * Special case: TSC write with a small delta (1 second)
--			 * of virtual cycle time against real time is
--			 * interpreted as an attempt to synchronize the CPU.
-+			 * Here lies UAPI baggage: user-initiated TSC write with
-+			 * a small delta (1 second) of virtual cycle time
-+			 * against real time is interpreted as an attempt to
-+			 * synchronize the CPU.
-+			 *
-+			 * This trick falls down when restoring a guest which genuinely
-+			 * has been running for less time than the 1 second of imprecision
-+			 * which we allow for in the legacy API. In this case, the first
-+			 * value written by userspace (on any vCPU) should not be subject
-+			 * to this 'correction' to make it sync up with values that only
-+			 * from from the kernel's default vCPU creation. Make the 1-second
-+			 * slop hack only trigger if flag is already set.
-+			 *
-+			 * The correct answer is for the VMM not to use the legacy API.
-  			 */
-  			synchronizing = data < tsc_exp + tsc_hz &&
-  					data + tsc_hz > tsc_exp;
-  		}
-  	}
-
-> 
->> +                */
->>                  if (data == 0) {
->> -                       /*
->> -                        * detection of vcpu initialization -- need to sync
->> -                        * with other vCPUs. This particularly helps to keep
->> -                        * kvm_clock stable after CPU hotplug
->> -                        */
->>                          synchronizing = true;
->> -               } else {
->> +               } else if (kvm->arch.user_set_tsc) {
->>                          u64 tsc_exp = kvm->arch.last_tsc_write +
->>                                                  nsec_to_cycles(vcpu, elapsed);
->>                          u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
->> @@ -2749,6 +2753,9 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->>                  }
->>          }
->>   
->> +       if (user_value)
->> +               kvm->arch.user_set_tsc = true;
->> +
->>          /*
->>           * For a reliable TSC, we can match TSC offsets, and for an unstable
->>           * TSC, we add elapsed time in this computation.  We could let the
->> @@ -3777,7 +3784,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->>                  break;
->>          case MSR_IA32_TSC:
->>                  if (msr_info->host_initiated) {
->> -                       kvm_synchronize_tsc(vcpu, data);
->> +                       kvm_synchronize_tsc(vcpu, &data);
-> 
-> Userspace used to be able to write zero to force a sync. You've removed
-> that ability from the ABI, and haven't even mentioned it. Must we?
-
-Will continue to use "bool user_initiated" for lack of a better move.
-
-> 
->>                  } else {
->>                          u64 adj = kvm_compute_l1_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
->>                          adjust_tsc_offset_guest(vcpu, adj);
->> @@ -11959,7 +11966,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
->>          if (mutex_lock_killable(&vcpu->mutex))
->>                  return;
->>          vcpu_load(vcpu);
->> -       kvm_synchronize_tsc(vcpu, 0);
->> +       kvm_synchronize_tsc(vcpu, NULL);
->>          vcpu_put(vcpu);
->>   
->>          /* poll control enabled by default */
->>
->> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> 
+SGkgQW5nZWxvLA0KDQpPbiBUdWUsIDIwMjMtMDktMTIgYXQgMTE6MTggKzAyMDAsIEFuZ2Vsb0dp
+b2FjY2hpbm8gRGVsIFJlZ25vIHdyb3RlOg0KPiBJbCAxMi8wOS8yMyAwOTo1NywgTW91ZHkgSG8g
+aGEgc2NyaXR0bzoNCj4gPiBNVDgxOTUgaGFzIHR3byBNTVNZUyBzZXRzLCBWUFBTWVMwIGFuZCBW
+UFBTWVMxLg0KPiA+IFRoZXNlIHNldHMgY29vcmRpbmF0ZSBhbmQgY29udHJvbCB0aGUgY2xvY2ss
+IHBvd2VyLCBhbmQNCj4gPiByZWdpc3RlciBzZXR0aW5ncyBuZWVkZWQgZm9yIHRoZSBjb21wb25l
+bnRzIG9mIE1EUDMuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTW91ZHkgSG8gPG1vdWR5Lmhv
+QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgIC4uLi9wbGF0Zm9ybS9tZWRpYXRlay9tZHAz
+L21kcF9jZmdfZGF0YS5jICAgICB8IDQ0ICsrKysrKysrKy0tLS0tDQo+ID4gLS0tLS0NCj4gPiAg
+IC4uLi9wbGF0Zm9ybS9tZWRpYXRlay9tZHAzL210ay1tZHAzLWNvbXAuaCAgICB8ICAxICsNCj4g
+PiAgIC4uLi9wbGF0Zm9ybS9tZWRpYXRlay9tZHAzL210ay1tZHAzLWNvcmUuYyAgICB8IDQwICsr
+KysrKysrKysrLS0tDQo+ID4gLS0tDQo+ID4gICAuLi4vcGxhdGZvcm0vbWVkaWF0ZWsvbWRwMy9t
+dGstbWRwMy1jb3JlLmggICAgfCAgMyArKw0KPiA+ICAgNCBmaWxlcyBjaGFuZ2VkLCA1MyBpbnNl
+cnRpb25zKCspLCAzNSBkZWxldGlvbnMoLSkNCg0KKHNuaXApDQoNCj4gPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tZWRpYXRlay9tZHAzL210ay1tZHAzLWNvcmUuYw0KPiA+
+IGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tZWRpYXRlay9tZHAzL210ay1tZHAzLWNvcmUuYw0K
+PiA+IGluZGV4IGNjNDRiZTEwZmRiNy4uOWMzM2QzYWFmOWNkIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
+aXZlcnMvbWVkaWEvcGxhdGZvcm0vbWVkaWF0ZWsvbWRwMy9tdGstbWRwMy1jb3JlLmMNCj4gPiAr
+KysgYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL21lZGlhdGVrL21kcDMvbXRrLW1kcDMtY29yZS5j
+DQo+ID4gQEAgLTI2LDM5ICsyNiw0NSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9p
+ZCBtZHBfb2ZfaWRzW10gPQ0KPiA+IHsNCj4gPiAgIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG1k
+cF9vZl9pZHMpOw0KPiA+ICAgDQo+ID4gICBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+X19nZXRfcGRldl9ieV9pZChzdHJ1Y3QNCj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsDQo+ID4g
+KwkJCQkJCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gPiAqZnJvbSwNCj4gPiAgIAkJCQkJCWVu
+dW0gbWRwX2luZnJhX2lkIGlkKQ0KPiA+ICAgew0KPiA+IC0Jc3RydWN0IGRldmljZV9ub2RlICpu
+b2RlOw0KPiA+ICsJc3RydWN0IGRldmljZV9ub2RlICpub2RlLCAqZiA9IE5VTEw7DQo+ID4gICAJ
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqbWRwX3BkZXYgPSBOVUxMOw0KPiA+ICAgCWNvbnN0IHN0
+cnVjdCBtdGtfbWRwX2RyaXZlcl9kYXRhICptZHBfZGF0YTsNCj4gPiAgIAljb25zdCBjaGFyICpj
+b21wYXQ7DQo+ID4gICANCj4gPiAgIAlpZiAoIXBkZXYpDQo+ID4gLQkJcmV0dXJuIE5VTEw7DQo+
+ID4gKwkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7DQo+ID4gICANCj4gDQo+IEZpeGluZyB0aGUg
+ZXJyb3IgaGFuZGxpbmcgc2hhbGwgYmUgZG9uZSBpbiBhIGRpZmZlcmVudCBjb21taXQsIHdoaWNo
+DQo+IHNoYWxsIGFsc28NCj4gaGF2ZSBhIEZpeGVzIHRhZzogdGhpcyBpcyBib3RoIGZvciBiYWNr
+cG9ydGluZyBwdXJwb3NlcyBhbmQgYmVjYXVzZQ0KPiB0aG9zZSBmaXhlcw0KPiBhcmUgbm90IHJl
+bGV2YW50IHRvIGFkZGluZyBzdXBwb3J0IGZvciBzZWNvbmRhcnkgc2V0cyBvZiBNTVNZUyAoc28s
+DQo+IHRob3NlIGFyZQ0KPiBub3QgcmVsZXZhbnQgZm9yIHRoaXMgc3BlY2lmaWMgY29tbWl0KS4N
+Cj4gDQpUaGFua3MgZm9ycmVtaW5kaW5nIG1lLiBJIHdpbGwgYWRkcmVzcyB0aGlzIGVycm9yIGhh
+bmRpbmcgc2VwYXJhdGVseSBpbg0KYSBkZWRpY2F0ZWQgZml4IHBhdGNoLg0KDQo+ID4gICAJaWYg
+KGlkIDwgTURQX0lORlJBX01NU1lTIHx8IGlkID49IE1EUF9JTkZSQV9NQVgpIHsNCj4gPiAgIAkJ
+ZGV2X2VycigmcGRldi0+ZGV2LCAiSWxsZWdhbCBpbmZyYSBpZCAlZFxuIiwgaWQpOw0KPiA+IC0J
+CXJldHVybiBOVUxMOw0KPiA+ICsJCXJldHVybiBFUlJfUFRSKC1FTk9ERVYpOw0KPiA+ICAgCX0N
+Cj4gPiAgIA0KPiA+ICAgCW1kcF9kYXRhID0gb2ZfZGV2aWNlX2dldF9tYXRjaF9kYXRhKCZwZGV2
+LT5kZXYpOw0KPiA+ICAgCWlmICghbWRwX2RhdGEpIHsNCj4gPiAgIAkJZGV2X2VycigmcGRldi0+
+ZGV2LCAiaGF2ZSBubyBkcml2ZXIgZGF0YSB0byBmaW5kDQo+ID4gbm9kZVxuIik7DQo+ID4gLQkJ
+cmV0dXJuIE5VTEw7DQo+ID4gKwkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7DQo+ID4gICAJfQ0K
+PiA+ICsNCj4gPiAgIAljb21wYXQgPSBtZHBfZGF0YS0+bWRwX3Byb2JlX2luZnJhW2lkXS5jb21w
+YXRpYmxlOw0KPiA+ICsJaWYgKHN0cmxlbihjb21wYXQpID09IDApDQo+ID4gKwkJcmV0dXJuIE5V
+TEw7DQo+ID4gICANCj4gPiAtCW5vZGUgPSBvZl9maW5kX2NvbXBhdGlibGVfbm9kZShOVUxMLCBO
+VUxMLCBjb21wYXQpOw0KPiA+ICsJaWYgKGZyb20pDQo+ID4gKwkJZiA9IGZyb20tPmRldi5vZl9u
+b2RlOw0KPiA+ICsJbm9kZSA9IG9mX2ZpbmRfY29tcGF0aWJsZV9ub2RlKGYsIE5VTEwsIGNvbXBh
+dCk7DQo+ID4gICAJaWYgKFdBUk5fT04oIW5vZGUpKSB7DQo+ID4gICAJCWRldl9lcnIoJnBkZXYt
+PmRldiwgImZpbmQgbm9kZSBmcm9tIGlkICVkIGZhaWxlZFxuIiwNCj4gPiBpZCk7DQo+ID4gLQkJ
+cmV0dXJuIE5VTEw7DQo+ID4gKwkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7DQo+ID4gICAJfQ0K
+PiA+ICAgDQo+ID4gICAJbWRwX3BkZXYgPSBvZl9maW5kX2RldmljZV9ieV9ub2RlKG5vZGUpOw0K
+PiA+ICAgCW9mX25vZGVfcHV0KG5vZGUpOw0KPiA+ICAgCWlmIChXQVJOX09OKCFtZHBfcGRldikp
+IHsNCj4gPiAgIAkJZGV2X2VycigmcGRldi0+ZGV2LCAiZmluZCBwZGV2IGZyb20gaWQgJWQgZmFp
+bGVkXG4iLA0KPiA+IGlkKTsNCj4gPiAtCQlyZXR1cm4gTlVMTDsNCj4gPiArCQlyZXR1cm4gRVJS
+X1BUUigtRU5PREVWKTsNCj4gPiAgIAl9DQo+ID4gICANCj4gPiAgIAlyZXR1cm4gbWRwX3BkZXY7
+DQo+ID4gQEAgLTE1Miw3ICsxNTgsNyBAQCBzdGF0aWMgaW50IG1kcF9wcm9iZShzdHJ1Y3QgcGxh
+dGZvcm1fZGV2aWNlDQo+ID4gKnBkZXYpDQo+ID4gICB7DQo+ID4gICAJc3RydWN0IGRldmljZSAq
+ZGV2ID0gJnBkZXYtPmRldjsNCj4gPiAgIAlzdHJ1Y3QgbWRwX2RldiAqbWRwOw0KPiA+IC0Jc3Ry
+dWN0IHBsYXRmb3JtX2RldmljZSAqbW1fcGRldjsNCj4gPiArCXN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKm1tX3BkZXYsICptbTJfcGRldjsNCj4gPiAgIAlpbnQgcmV0LCBpLCBtdXRleF9pZDsNCj4g
+PiAgIA0KPiA+ICAgCW1kcCA9IGt6YWxsb2Moc2l6ZW9mKCptZHApLCBHRlBfS0VSTkVMKTsNCj4g
+PiBAQCAtMTY0LDE1ICsxNzAsMjMgQEAgc3RhdGljIGludCBtZHBfcHJvYmUoc3RydWN0IHBsYXRm
+b3JtX2RldmljZQ0KPiA+ICpwZGV2KQ0KPiA+ICAgCW1kcC0+cGRldiA9IHBkZXY7DQo+ID4gICAJ
+bWRwLT5tZHBfZGF0YSA9IG9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsNCj4g
+PiAgIA0KPiA+IC0JbW1fcGRldiA9IF9fZ2V0X3BkZXZfYnlfaWQocGRldiwgTURQX0lORlJBX01N
+U1lTKTsNCj4gPiAtCWlmICghbW1fcGRldikgew0KPiA+ICsJbW1fcGRldiA9IF9fZ2V0X3BkZXZf
+YnlfaWQocGRldiwgTlVMTCwgTURQX0lORlJBX01NU1lTKTsNCj4gPiArCWlmIChJU19FUlJfT1Jf
+TlVMTChtbV9wZGV2KSkgew0KPiA+ICAgCQlyZXQgPSAtRU5PREVWOw0KPiA+ICAgCQlnb3RvIGVy
+cl9kZXN0cm95X2RldmljZTsNCj4gPiAgIAl9DQo+ID4gICAJbWRwLT5tZHBfbW1zeXMgPSAmbW1f
+cGRldi0+ZGV2Ow0KPiA+ICAgDQo+ID4gLQltbV9wZGV2ID0gX19nZXRfcGRldl9ieV9pZChwZGV2
+LCBNRFBfSU5GUkFfTVVURVgpOw0KPiA+IC0JaWYgKFdBUk5fT04oIW1tX3BkZXYpKSB7DQo+ID4g
+KwkvKiBNTVNZUzIgaXMgbm90IGF2YWlsYWJsZSBvbiBhbGwgY2hpcHMsIHNvIHRoZSBjb25maWcg
+bWF5IGJlDQo+ID4gbnVsbC4gKi8NCj4gPiArCW1tMl9wZGV2ID0gX19nZXRfcGRldl9ieV9pZChw
+ZGV2LCBtbV9wZGV2LCBNRFBfSU5GUkFfTU1TWVMyKTsNCj4gPiArCWlmIChJU19FUlIobW0yX3Bk
+ZXYpKSB7DQo+ID4gKwkJcmV0ID0gUFRSX0VSUihtbTJfcGRldik7DQo+ID4gKwkJZ290byBlcnJf
+ZGVzdHJveV9kZXZpY2U7DQo+ID4gKwl9DQo+ID4gKwltZHAtPm1kcF9tbXN5czIgPSAmbW0yX3Bk
+ZXYtPmRldjsNCj4gPiArDQo+ID4gKwltbV9wZGV2ID0gX19nZXRfcGRldl9ieV9pZChwZGV2LCBO
+VUxMLCBNRFBfSU5GUkFfTVVURVgpOw0KPiA+ICsJaWYgKElTX0VSUl9PUl9OVUxMKG1tX3BkZXYp
+KSB7DQo+ID4gICAJCXJldCA9IC1FTk9ERVY7DQo+ID4gICAJCWdvdG8gZXJyX2Rlc3Ryb3lfZGV2
+aWNlOw0KPiA+ICAgCX0NCj4gPiBAQCAtMjA4LDcgKzIyMiw3IEBAIHN0YXRpYyBpbnQgbWRwX3By
+b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gPiAqcGRldikNCj4gPiAgIAkJZ290byBlcnJf
+ZGVzdHJveV9qb2Jfd3E7DQo+ID4gICAJfQ0KPiA+ICAgDQo+ID4gLQltbV9wZGV2ID0gX19nZXRf
+cGRldl9ieV9pZChwZGV2LCBNRFBfSU5GUkFfU0NQKTsNCj4gPiArCW1tX3BkZXYgPSBfX2dldF9w
+ZGV2X2J5X2lkKHBkZXYsIE5VTEwsIE1EUF9JTkZSQV9TQ1ApOw0KPiA+ICAgCWlmIChXQVJOX09O
+KCFtbV9wZGV2KSkgew0KPiA+ICAgCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJDb3VsZCBub3QgZ2V0
+IHNjcCBkZXZpY2VcbiIpOw0KPiA+ICAgCQlyZXQgPSAtRU5PREVWOw0KPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL21lZGlhdGVrL21kcDMvbXRrLW1kcDMtY29yZS5oDQo+
+ID4gYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL21lZGlhdGVrL21kcDMvbXRrLW1kcDMtY29yZS5o
+DQo+ID4gaW5kZXggN2UyMWQyMjZjZWI4Li4wNDM0YjcwZTFmYzkgMTAwNjQ0DQo+ID4gLS0tIGEv
+ZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tZWRpYXRlay9tZHAzL210ay1tZHAzLWNvcmUuaA0KPiA+
+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbWVkaWF0ZWsvbWRwMy9tdGstbWRwMy1jb3Jl
+LmgNCj4gPiBAQCAtMjAsNiArMjAsNyBAQA0KPiA+ICAgDQo+ID4gICBlbnVtIG1kcF9pbmZyYV9p
+ZCB7DQo+ID4gICAJTURQX0lORlJBX01NU1lTLA0KPiA+ICsJTURQX0lORlJBX01NU1lTMiwNCj4g
+PiAgIAlNRFBfSU5GUkFfTVVURVgsDQo+ID4gICAJTURQX0lORlJBX1NDUCwNCj4gPiAgIAlNRFBf
+SU5GUkFfTUFYDQo+ID4gQEAgLTY4LDYgKzY5LDcgQEAgc3RydWN0IG10a19tZHBfZHJpdmVyX2Rh
+dGEgew0KPiA+ICAgc3RydWN0IG1kcF9kZXYgew0KPiA+ICAgCXN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UJCQkqcGRldjsNCj4gPiAgIAlzdHJ1Y3QgZGV2aWNlCQkJCSptZHBfbW1zeXM7DQo+ID4gKwlz
+dHJ1Y3QgZGV2aWNlCQkJCSptZHBfbW1zeXMyOw0KPiANCj4gSSdtIHdvbmRlcmluZyBpZiB0aGlz
+IHdvdWxkIGJlY29tZSBtb3JlIHJlYWRhYmxlIGJ5IGRvaW5nIGl0IGxpa2Ugc286DQo+IA0KPiAJ
+c3RydWN0IG1kcF9kZXZfaW5mcmEgew0KPiAJCXN0cnVjdCBkZXZpY2UgKm1tc3lzOw0KPiAJCXN0
+cnVjdCBtdGtfbXV0ZXggKm10a19tdXRleFtNRFBfUElQRV9NQVhdOw0KPiAJfQ0KPiANCj4gCXN0
+cnVjdCBtZHBfZGV2IHsNCj4gCQlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2Ow0KPiAJCXN0
+cnVjdCBtZHBfZGV2X2luZnJhIG1kcF9pbmZyYTsNCj4gCQkuLi4uLg0KPiAJfQ0KPiANCj4gc28g
+dGhhdCB5b3UgY2FuIGFkZCB0aGUgc2Vjb25kYXJ5IE1NU1lTICh0aGF0IGdvZXMgYWxvbmcgd2l0
+aCB0aGUNCj4gc2Vjb25kYXJ5DQo+IE1VVEVYIGFueXdheSkgYnkgdGhlbiBjaGFuZ2luZyBtZHBf
+aW5mcmEgdG8NCj4gDQo+IAkJc3RydWN0IG10a19kZXZfaW5mcmEgbWRwX2luZnJhW05VTV9NTVNZ
+U107DQo+IA0KPiBhbmQgdGhlbiByZWZlcmVuY2luZyB0aGF0IGxpa2UNCj4gDQo+IG1kcC0+bWRw
+X2luZnJhW01EUF9JTkZSQV9NTVNZUzBdLT5tbXN5cw0KPiBtZHAtPm1kcF9pbmZyYVtNRFBfSU5G
+UkFfTU1TWVMwXS0+bXRrX211dGV4DQo+IG1kcC0+bWRwX2luZnJhW01EUF9JTkZSQV9NTVNZUzFd
+LT5tbXN5cw0KPiBtZHAtPm1kcF9pbmZyYVtNRFBfSU5GUkFfTU1TWVMxXS0+bXRrX211dGV4DQo+
+IA0KPiBXaGF0IGRvIHlvdSB0aGluaz8NCj4gDQo+IFJlZ2FyZHMsDQo+IEFuZ2Vsbw0KPiANCg0K
+VGhhbmtzIGZvciB0aGUgYWR2aWNlLiBJIHdpbGwgZm9sbG93IHlvdXIgc3VnZ2VzdGlvbiB0byBz
+aW1wbGlmeSB0aGUNCnNldHRpbmdzLg0KDQpTaW5jZXJlbHksDQpNb3VkeQ0KDQo+ID4gICAJc3Ry
+dWN0IG10a19tdXRleAkJCSptZHBfbXV0ZXhbTURQX1BJUEVfTUFYXTsNCj4gPiAgIAlzdHJ1Y3Qg
+bWRwX2NvbXAJCQkJKmNvbXBbTURQX01BWF9DT01QXw0KPiA+IENPVU5UXTsNCj4gPiAgIAljb25z
+dCBzdHJ1Y3QgbXRrX21kcF9kcml2ZXJfZGF0YQkqbWRwX2RhdGE7DQo+ID4gQEAgLTk2LDYgKzk4
+LDcgQEAgc3RydWN0IG1kcF9kZXYgew0KPiA+ICAgDQo+ID4gICBzdHJ1Y3QgbWRwX3BpcGVfaW5m
+byB7DQo+ID4gICAJZW51bSBtZHBfcGlwZV9pZCBwaXBlX2lkOw0KPiA+ICsJdTMyIG1tc3lzX2lk
+Ow0KPiA+ICAgCXUzMiBtdXRleF9pZDsNCj4gPiAgIH07DQo+ID4gICANCj4gDQo+IA0K
