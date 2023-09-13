@@ -2,618 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C628279E3DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824CD79E3A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239206AbjIMJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
+        id S239327AbjIMJ1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239448AbjIMJga (ORCPT
+        with ESMTP id S239300AbjIMJ1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:36:30 -0400
-X-Greylist: delayed 500 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 02:36:25 PDT
-Received: from mail-m49206.qiye.163.com (mail-m49206.qiye.163.com [45.254.49.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C964196;
-        Wed, 13 Sep 2023 02:36:24 -0700 (PDT)
-Received: from [10.128.10.193] (unknown [123.120.52.233])
-        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 2C67A4A033D;
-        Wed, 13 Sep 2023 17:27:28 +0800 (CST)
-Message-ID: <f365a5b0-bf44-4c60-8214-5b66112cb42a@sangfor.com.cn>
-Date:   Wed, 13 Sep 2023 17:27:24 +0800
+        Wed, 13 Sep 2023 05:27:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C91C19A3;
+        Wed, 13 Sep 2023 02:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694597255; x=1726133255;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a4uKZbRKFX14nqUBbrKXjQ6CnagpGtaDDf+A0Lhl1Sg=;
+  b=Z4AbwIGOcXuW5xM+2RmVScED0ABeBgur+d1Im9q1Yu7ZfGHjlCA6fvcY
+   76CHX4YkCARta0hr17GPaXg4iPaxihvdxgWUYwvKVTNaSVa7wm98EwIb7
+   Ak8u/2l/G7KiJiqArYn5b85WZXQCF+TMk4PZAwU8zMwRr3t1KavQ01lx6
+   Ohmnh0AkY72hxklaDTVuJz+/DJWvmngh7pKi8BzpxN6x7Mae/fersFRSg
+   uao57dKry0SmEdmy98YrkEfPTVWlzy3yAYSJEUvWa0TqUsowSxatfk0TV
+   mxKIsm9HCpg+krr5Tqq3H4CcMAyc3UgWt/s4W2bROS2c8726wQl2mM5mV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="382417268"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="382417268"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:27:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="814154015"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="814154015"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga004.fm.intel.com with SMTP; 13 Sep 2023 02:27:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 Sep 2023 12:27:26 +0300
+Date:   Wed, 13 Sep 2023 12:27:26 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
+Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
+ corresponding Type-C connectors"
+Message-ID: <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com>
+References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
+ <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
+ <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
+ <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
+ <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
+ <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
+ <ZPiAwOf00RREiYPr@kuha.fi.intel.com>
+ <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
+ <ZQBGD8CY5OVKYX63@kuha.fi.intel.com>
+ <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   pengdonglin <pengdonglin@sangfor.com.cn>
-Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     martin.lau@linux.dev, ast@kernel.org, song@kernel.org, yhs@fb.com,
-        rostedt@goodmis.org, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
- <20230909212933.1552f2842b06e50525a4daef@kernel.org>
- <33d64375-d672-49a8-bbc8-c31a67595403@sangfor.com.cn>
- <4c20dc33-8d10-45f3-a1f7-d8a872aaf5bd@sangfor.com.cn>
- <20230913170758.56098cb2d2eb2e9f4b17bf00@kernel.org>
-In-Reply-To: <20230913170758.56098cb2d2eb2e9f4b17bf00@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCTEoeVkhJT05LGB9LTEkfS1UTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSEpOTUlVSktLVUtZBg++
-X-HM-Tid: 0a8a8dddf69fb212kuuu2c67a4a033d
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pk06Qzo4Lj1KFQ8OT1E1LTgp
-        TxkaFANVSlVKTUJPTkJMSU9CTkpIVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
-        WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBSUlMSEs3Bg++
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/13 16:07, Masami Hiramatsu (Google) wrote:
-> On Tue, 12 Sep 2023 11:35:16 +0800
-> pengdonglin <pengdonglin@sangfor.com.cn> wrote:
-> 
->> On 2023/9/12 10:06, pengdonglin wrote:
->>> 在 2023/9/9 20:29, Masami Hiramatsu (Google) 写道:
->>>> On Sat,  9 Sep 2023 02:16:46 -0700
->>>> Donglin Peng <pengdonglin@sangfor.com.cn> wrote:
->>>>
->>>>> Currently, we are only using the linear search method to find the
->>>>> type id
->>>>> by the name, which has a time complexity of O(n). This change involves
->>>>> sorting the names of btf types in ascending order and using binary
->>>>> search,
->>>>> which has a time complexity of O(log(n)). This idea was inspired by the
->>>>> following patch:
->>>>>
->>>>> 60443c88f3a8 ("kallsyms: Improve the performance of
->>>>> kallsyms_lookup_name()").
->>>>>
->>>>> At present, this improvement is only for searching in vmlinux's and
->>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or
->>>>> BTF_KIND_STRUCT.
->>>>>
->>>>> Another change is the search direction, where we search the BTF first
->>>>> and
->>>>> then its base, the type id of the first matched btf_type will be
->>>>> returned.
->>>>>
->>>>> Here is a time-consuming result that finding all the type ids of
->>>>> 67,819 kernel
->>>>> functions in vmlinux's BTF by their names:
->>>>>
->>>>> Before: 17000 ms
->>>>> After:     10 ms
->>>>
->>>> Nice work!
->>>
->>> Thank you
->>>
->>>>
->>>>>
->>>>> The average lookup performance has improved about 1700x at the above
->>>>> scenario.
->>>>>
->>>>> However, this change will consume more memory, for example, 67,819
->>>>> kernel
->>>>> functions will allocate about 530KB memory.
->>>>
->>>> I'm not so familier with how the BTF is generated, what about making this
->>>> list offline? Since BTF is static data, it is better to make the map when
->>>
->>> The BTF is generated by pahole during the building of the kernel or
->>> modules.
->>> Pahole is maintained in the project https://github.com/acmel/dwarves.
->>> The log
->>> printed by scripts/link-vmlinux.sh when generating BTF for vmlinux is as
->>> follows:
->>>
->>> LLVM_OBJCOPY=objcopy pahole -J --skip_encoding_btf_vars --btf_gen_floats
->>> .tmp_vmlinux.btf
->>>
->>> If making the list offline, the pahole needs to be modified or a new tool
->>> needs to be written and maintained in the kernel tree. Therefore, it may
->>> be simpler to make the list at runtime.
-> 
-> Hmm, I'm not convinced, since this push the sorting cost to the kernel
-> boot process. To reduce the kernel boot time we need to drop this improvement.
-> But if pahole just sort it offline, in any case we can use this.
+Hi Dmitry,
 
-Thank you, I agree. In a separate thread, Eduard and Alexei also proposed
-modifying the pahole. I will analyze the pahole and conduct a test.
+On Tue, Sep 12, 2023 at 08:39:45PM +0300, Dmitry Baryshkov wrote:
+> On 12/09/2023 14:05, Heikki Krogerus wrote:
+> > On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
+> > > On 06/09/2023 16:38, Heikki Krogerus wrote:
+> > > > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
+> > > > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
+> > > > > <heikki.krogerus@linux.intel.com> wrote:
+> > > > > > 
+> > > > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
+> > > > > > > Hi Heikki,
+> > > > > > > 
+> > > > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
+> > > > > > > <heikki.krogerus@linux.intel.com> wrote:
+> > > > > > > > 
+> > > > > > > > Hi Dmitry,
+> > > > > > > > 
+> > > > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
+> > > > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
+> > > > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
+> > > > > > > > 
+> > > > > > > > That's not true. The dev->fwnode is assigned when the device is
+> > > > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
+> > > > > > > > member is assigned before the device is registered, then that fwnode
+> > > > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
+> > > > > > > > 
+> > > > > > > > But please note that even if drm_connector does not have anything in
+> > > > > > > > its fwnode member, the device may still be assigned fwnode, just based
+> > > > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
+> > > > > > > > 
+> > > > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
+> > > > > > > > > breaks drivers already using components (as it was pointed at [1]),
+> > > > > > > > > resulting in a deadlock. Lockdep trace is provided below.
+> > > > > > > > > 
+> > > > > > > > > Granted these two issues, it seems impractical to fix this commit in any
+> > > > > > > > > sane way. Revert it instead.
+> > > > > > > > 
+> > > > > > > > I think there is already user space stuff that relies on these links,
+> > > > > > > > so I'm not sure you can just remove them like that. If the component
+> > > > > > > > framework is not the correct tool here, then I think you need to
+> > > > > > > > suggest some other way of creating them.
+> > > > > > > 
+> > > > > > > The issue (that was pointed out during review) is that having a
+> > > > > > > component code in the framework code can lead to lockups. With the
+> > > > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
+> > > > > > > for non-ACPI systems) probing of drivers which use components and set
+> > > > > > > drm_connector::fwnode breaks immediately.
+> > > > > > > 
+> > > > > > > Can we move the component part to the respective drivers? With the
+> > > > > > > patch 2 in place, connector->fwnode will be copied to the created
+> > > > > > > kdev's fwnode pointer.
+> > > > > > > 
+> > > > > > > Another option might be to make this drm_sysfs component registration optional.
+> > > > > > 
+> > > > > > You don't need to use the component framework at all if there is
+> > > > > > a better way of determining the connection between the DP and its
+> > > > > > Type-C connector (I'm assuming that that's what this series is about).
+> > > > > > You just need the symlinks, not the component.
+> > > > > 
+> > > > > The problem is that right now this component registration has become
+> > > > > mandatory. And if I set the kdev->fwnode manually (like in the patch
+> > > > > 2), the kernel hangs inside the component code.
+> > > > > That's why I proposed to move the components to the place where they
+> > > > > are really necessary, e.g. i915 and amd drivers.
+> > > > 
+> > > > So why can't we replace the component with the method you are
+> > > > proposing in this series of finding out the Type-C port also with
+> > > > i915, AMD, or whatever driver and platform (that's the only thing that
+> > > > component is used for)?
+> > > 
+> > > The drm/msm driver uses drm_bridge for the pipeline (including the last DP
+> > > entry) and the drm_bridge_connector to create the connector. I think that
+> > > enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
+> > > series.
+> > > 
+> > > 
+> > > > Determining the connection between a DP and its Type-C connector is
+> > > > starting to get really important, so ideally we have a common solution
+> > > > for that.
+> > > 
+> > > Yes. This is what we have been discussing with Simon for quite some time on
+> > > #dri-devel.
+> > > 
+> > > Unfortunately I think the solution that got merged was pretty much hastened
+> > > in instead of being well-thought. For example, it is also not always
+> > > possible to provide the drm_connector / typec_connector links (as you can
+> > > see from the patch7. Sometimes we can only express that this is a Type-C DP
+> > > connector, but we can not easily point it to the particular USB-C port.
+> > > 
+> > > So, I'm not sure, how can we proceed here. Currently merged patch breaks
+> > > drm/msm if we even try to use it by setting kdef->fwnode to
+> > > drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
+> > > an ACPI-only thing, which is not expected to work in a non-ACPI cases.
+> > 
+> > You really have to always supply not only the Type-C ports and partners,
+> > but also the alt modes. You need them, firstly to keep things sane
+> > inside kernel, but more importantly, so they are always exposed to the
+> > user space, AND, always the same way. We have ABIs for all this stuff,
+> > including the DP alt mode. Use them. No shortcuts.
+> > 
+> > So here's what you need to do. UCSI does not seem to bring you
+> > anything useful, so just disable it for now. You don't need it. Your
+> > port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
+> > that's where you need to register all these components - the ports,
+> > partners and alt modes. You have all the needed information there.
+> 
+> To make things even more complicate, UCSI is necessary for the USB part of
+> the story. It handles vbus and direction.
+> 
+> > Only after you've done that we can start to look at how should the
+> > connection between the DPs and their USB Type-C connectors be handled.
+> 
+> But sure enough, I can add typec port registration to the altmode driver.
+> This will solve the 'port not existing' part of the story.
+> 
+> I'd like to hear your opinion on:
+> 
+> - components. Using them breaks drm/msm. How can we proceed?
 
-> 
->>>
->>>> it is built. And I also would like to suggest to make a new map to make
->>>> another new map which maps the BTF ID and the address of the function, so
->>>> that we can do binary search the BTF object from the function address.
->>>> (The latter map should be built when CONFIG_BTF_ADDR_MAP=y)
->>>
->>> It has been observed that two or more functions may have the same address
->>> but different IDs. For example:
->>>
->>>           ffffffff81218370 t __do_sys_getuid16
->>>           ffffffff81218370 T __ia32_sys_getuid16
->>>           ffffffff81218370 T __x64_sys_getuid16
->>>
->>>           {
->>>               "id": 27911,
->>>               "kind": "FUNC",
->>>               "name": "__do_sys_getuid16",
->>>               "type_id": 4455,
->>>               "linkage": "static"
->>>           },{
->>>               "id": 20303,
->>>               "kind": "FUNC",
->>>               "name": "__ia32_sys_getuid16",
->>>               "type_id": 4455,
->>>               "linkage": "static"
->>>           },{
->>>               "id": 20304,
->>>               "kind": "FUNC",
->>>               "name": "__x64_sys_getuid16",
->>>               "type_id": 4455,
->>>               "linkage": "static"
->>>           },
->>>
->>> It may be a issue to return which id. However, if only the FUNC_PROTO is
->>> of concern, any one of them can be returned.
-> 
-> In this case, since those have same type_id, returning either one is
-> good enough. Since those have same address, we can not identify even
-> if we use kallsyms ;)
+I don't think replacing the components is going to be a problem once
+you have described everything properly in you DT. I'm fairly certain now
+that that is the main problem here. You don't have this connection
+described in your DT as it should.
 
-Yeah.
+> - PATH property usage. This way we make USB-C DisplayPort behave like the
+> MST ports.
 
-> 
->>>
->>> It may not be necessary to create a new list for function addresses because
->>>    the id_name map can be reused for this purpose. Here is an idea:
->>>
->>> 1. Use the function address to get the name by calling the function
->>>    sprint_symbol_no_offset.
->>>
->>> 2. Then call the function btf_find_by_name_kind to get the BTF ID.
->>>
->>> Both sprint_symbol_no_offset and btf_find_by_name_kind use binary search.
->>>
->>
->> Here is a time-consuming test to compare two methods for finding all the
->> IDs of 67,823 kernel function by their addresses:
->>
->> 1. Using a new map for function addresses took 4 ms.
->>
->> 2. Using sprint_symbol_no_offset + btf_find_by_name_kind took 38 ms.
->>
->> However, the former method requires more memory. For example, if we use
->> the following structure to hold the function address and the BTF ID:
->>
->> struct btf_id_func {
->> 	void *addr;
->> 	int id;
->> };
->>
->> We would need to allocate 1059K (67823 * 16) of memory.
-> 
-> OK, then it can be optional. Anyway, currently only kprobe event will
-> need it but in the cold path.
+That looks to me like an attempt to exploit a feature that is not
+designed for this purposes at all. Just drop all that.
 
-Yeah, it appears that we need to utilize method 2 or explore alternateive
-approaches.
+The connection has to be first described in your DT, and the way you
+usually describe connections in DT is by using the device graph (OF
+graph). It seems that you have everything needed for that - the USB
+Type-C connectors have their own OF nodes (what you register as
+drm_bridges are in fact USB Type-C connectors), and presumable you
+also have OF nodes for all your video ports (DisplayPorts) - so
+applying the graph between the two really should not be a problem. The
+DP is endpoint for the USB Type-C connector, and vice versa.
 
-> 
-> Thank you,
-> 
->>
->>>>
->>>> Thank you,
->>>>
->>>>>
->>>>> Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
->>>>> ---
->>>>> Changes in RFC v2:
->>>>>    - Fix the build issue reported by kernel test robot <lkp@intel.com>
->>>>> ---
->>>>>    include/linux/btf.h |   1 +
->>>>>    kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
->>>>>    2 files changed, 291 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/btf.h b/include/linux/btf.h
->>>>> index cac9f304e27a..6260a0668773 100644
->>>>> --- a/include/linux/btf.h
->>>>> +++ b/include/linux/btf.h
->>>>> @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
->>>>>    bool btf_is_module(const struct btf *btf);
->>>>>    struct module *btf_try_get_module(const struct btf *btf);
->>>>>    u32 btf_nr_types(const struct btf *btf);
->>>>> +u32 btf_type_cnt(const struct btf *btf);
->>>>>    bool btf_member_is_reg_int(const struct btf *btf, const struct
->>>>> btf_type *s,
->>>>>                   const struct btf_member *m,
->>>>>                   u32 expected_offset, u32 expected_size);
->>>>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->>>>> index 817204d53372..51aa9f27853b 100644
->>>>> --- a/kernel/bpf/btf.c
->>>>> +++ b/kernel/bpf/btf.c
->>>>> @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
->>>>>        struct btf_id_dtor_kfunc dtors[];
->>>>>    };
->>>>> +enum {
->>>>> +    BTF_ID_NAME_FUNC,    /* function */
->>>>> +    BTF_ID_NAME_STRUCT,    /* struct */
->>>>> +    BTF_ID_NAME_MAX
->>>>> +};
->>>>> +
->>>>> +struct btf_id_name {
->>>>> +    int id;
->>>>> +    u32 name_off;
->>>>> +};
->>>>> +
->>>>> +struct btf_id_name_map {
->>>>> +    struct btf_id_name *id_name;
->>>>> +    u32 count;
->>>>> +};
->>>>> +
->>>>> +struct btf_id_name_maps {
->>>>> +    struct btf_id_name_map map[BTF_ID_NAME_MAX];
->>>>> +};
->>>>> +
->>>>>    struct btf {
->>>>>        void *data;
->>>>>        struct btf_type **types;
->>>>> @@ -257,6 +277,7 @@ struct btf {
->>>>>        struct btf_kfunc_set_tab *kfunc_set_tab;
->>>>>        struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
->>>>>        struct btf_struct_metas *struct_meta_tab;
->>>>> +    struct btf_id_name_maps *id_name_maps;
->>>>>        /* split BTF support */
->>>>>        struct btf *base_btf;
->>>>> @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
->>>>>        return total;
->>>>>    }
->>>>> +u32 btf_type_cnt(const struct btf *btf)
->>>>> +{
->>>>> +    return btf->start_id + btf->nr_types;
->>>>> +}
->>>>> +
->>>>> +static inline u8 btf_id_name_idx_to_kind(int index)
->>>>> +{
->>>>> +    u8 kind;
->>>>> +
->>>>> +    switch (index) {
->>>>> +    case BTF_ID_NAME_FUNC:
->>>>> +        kind = BTF_KIND_FUNC;
->>>>> +        break;
->>>>> +    case BTF_ID_NAME_STRUCT:
->>>>> +        kind = BTF_KIND_STRUCT;
->>>>> +        break;
->>>>> +    default:
->>>>> +        kind = BTF_KIND_UNKN;
->>>>> +        break;
->>>>> +    }
->>>>> +
->>>>> +    return kind;
->>>>> +}
->>>>> +
->>>>> +static inline int btf_id_name_kind_to_idx(u8 kind)
->>>>> +{
->>>>> +    int index;
->>>>> +
->>>>> +    switch (kind) {
->>>>> +    case BTF_KIND_FUNC:
->>>>> +        index = BTF_ID_NAME_FUNC;
->>>>> +        break;
->>>>> +    case BTF_KIND_STRUCT:
->>>>> +        index = BTF_ID_NAME_STRUCT;
->>>>> +        break;
->>>>> +    default:
->>>>> +        index = -1;
->>>>> +        break;
->>>>> +    }
->>>>> +
->>>>> +    return index;
->>>>> +}
->>>>> +
->>>>> +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
->>>>> +                    u32 size, const char *name,
->>>>> +                    struct btf_id_name **start,
->>>>> +                    struct btf_id_name **end,
->>>>> +                    const struct btf *btf)
->>>>> +{
->>>>> +    int ret;
->>>>> +    int low, mid, high;
->>>>> +    const char *name_buf;
->>>>> +
->>>>> +    low = 0;
->>>>> +    high = size - 1;
->>>>> +
->>>>> +    while (low <= high) {
->>>>> +        mid = low + (high - low) / 2;
->>>>> +        name_buf = btf_name_by_offset(btf, id_name[mid].name_off);
->>>>> +        ret = strcmp(name, name_buf);
->>>>> +        if (ret > 0)
->>>>> +            low = mid + 1;
->>>>> +        else if (ret < 0)
->>>>> +            high = mid - 1;
->>>>> +        else
->>>>> +            break;
->>>>> +    }
->>>>> +
->>>>> +    if (low > high)
->>>>> +        return -ESRCH;
->>>>> +
->>>>> +    if (start) {
->>>>> +        low = mid;
->>>>> +        while (low) {
->>>>> +            name_buf = btf_name_by_offset(btf,
->>>>> id_name[low-1].name_off);
->>>>> +            if (strcmp(name, name_buf))
->>>>> +                break;
->>>>> +            low--;
->>>>> +        }
->>>>> +        *start = &id_name[low];
->>>>> +    }
->>>>> +
->>>>> +    if (end) {
->>>>> +        high = mid;
->>>>> +        while (high < size - 1) {
->>>>> +            name_buf = btf_name_by_offset(btf,
->>>>> id_name[high+1].name_off);
->>>>> +            if (strcmp(name, name_buf))
->>>>> +                break;
->>>>> +            high++;
->>>>> +        }
->>>>> +        *end = &id_name[high];
->>>>> +    }
->>>>> +
->>>>> +    return id_name[mid].id;
->>>>> +}
->>>>> +
->>>>>    s32 btf_find_by_name_kind(const struct btf *btf, const char *name,
->>>>> u8 kind)
->>>>>    {
->>>>> +    const struct btf_id_name_maps *maps;
->>>>> +    const struct btf_id_name_map *map;
->>>>> +    struct btf_id_name *start;
->>>>>        const struct btf_type *t;
->>>>>        const char *tname;
->>>>> -    u32 i, total;
->>>>> +    int index = btf_id_name_kind_to_idx(kind);
->>>>> +    s32 id, total;
->>>>> -    total = btf_nr_types(btf);
->>>>> -    for (i = 1; i < total; i++) {
->>>>> -        t = btf_type_by_id(btf, i);
->>>>> -        if (BTF_INFO_KIND(t->info) != kind)
->>>>> -            continue;
->>>>> +    do {
->>>>> +        maps = btf->id_name_maps;
->>>>> +        if (index >= 0 && maps && maps->map[index].id_name) {
->>>>> +            /* binary search */
->>>>> +            map = &maps->map[index];
->>>>> +            id = btf_find_by_name_bsearch(map->id_name,
->>>>> +                map->count, name, &start, NULL, btf);
->>>>> +            if (id > 0) {
->>>>> +                /*
->>>>> +                 * Return the first one that
->>>>> +                 * matched
->>>>> +                 */
->>>>> +                return start->id;
->>>>> +            }
->>>>> +        } else {
->>>>> +            /* linear search */
->>>>> +            total = btf_type_cnt(btf);
->>>>> +            for (id = btf->start_id; id < total; id++) {
->>>>> +                t = btf_type_by_id(btf, id);
->>>>> +                if (BTF_INFO_KIND(t->info) != kind)
->>>>> +                    continue;
->>>>> +
->>>>> +                tname = btf_name_by_offset(btf, t->name_off);
->>>>> +                if (!strcmp(tname, name))
->>>>> +                    return id;
->>>>> +            }
->>>>> +        }
->>>>> -        tname = btf_name_by_offset(btf, t->name_off);
->>>>> -        if (!strcmp(tname, name))
->>>>> -            return i;
->>>>> -    }
->>>>> +        btf = btf->base_btf;
->>>>> +    } while (btf);
->>>>>        return -ENOENT;
->>>>>    }
->>>>> @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
->>>>>        spin_unlock_irqrestore(&btf_idr_lock, flags);
->>>>>    }
->>>>> +static void btf_destroy_id_name(struct btf *btf, int index)
->>>>> +{
->>>>> +    struct btf_id_name_maps *maps = btf->id_name_maps;
->>>>> +    struct btf_id_name_map *map = &maps->map[index];
->>>>> +
->>>>> +    if (map->id_name) {
->>>>> +        kvfree(map->id_name);
->>>>> +        map->id_name = NULL;
->>>>> +        map->count = 0;
->>>>> +    }
->>>>> +}
->>>>> +
->>>>> +static void btf_destroy_id_name_map(struct btf *btf)
->>>>> +{
->>>>> +    int i;
->>>>> +
->>>>> +    if (!btf->id_name_maps)
->>>>> +        return;
->>>>> +
->>>>> +    for (i = 0; i < BTF_ID_NAME_MAX; i++)
->>>>> +        btf_destroy_id_name(btf, i);
->>>>> +
->>>>> +    kfree(btf->id_name_maps);
->>>>> +    btf->id_name_maps = NULL;
->>>>> +}
->>>>> +
->>>>>    static void btf_free_kfunc_set_tab(struct btf *btf)
->>>>>    {
->>>>>        struct btf_kfunc_set_tab *tab = btf->kfunc_set_tab;
->>>>> @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf
->>>>> *btf)
->>>>>    static void btf_free(struct btf *btf)
->>>>>    {
->>>>> +    btf_destroy_id_name_map(btf);
->>>>>        btf_free_struct_meta_tab(btf);
->>>>>        btf_free_dtor_kfunc_tab(btf);
->>>>>        btf_free_kfunc_set_tab(btf);
->>>>> @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct
->>>>> bpf_verifier_log *log, enum bpf_prog_type prog_ty
->>>>>        return kctx_type_id;
->>>>>    }
->>>>> +static int btf_compare_id_name(const void *a, const void *b, const
->>>>> void *priv)
->>>>> +{
->>>>> +    const struct btf_id_name *ia = (const struct btf_id_name *)a;
->>>>> +    const struct btf_id_name *ib = (const struct btf_id_name *)b;
->>>>> +    const struct btf *btf = priv;
->>>>> +    int ret;
->>>>> +
->>>>> +    /*
->>>>> +     * Sort names in ascending order, if the name is same, sort ids in
->>>>> +     * ascending order.
->>>>> +     */
->>>>> +    ret = strcmp(btf_name_by_offset(btf, ia->name_off),
->>>>> +             btf_name_by_offset(btf, ib->name_off));
->>>>> +    if (!ret)
->>>>> +        ret = ia->id - ib->id;
->>>>> +
->>>>> +    return ret;
->>>>> +}
->>>>> +
->>>>> +static int btf_create_id_name(struct btf *btf, int index)
->>>>> +{
->>>>> +    struct btf_id_name_maps *maps = btf->id_name_maps;
->>>>> +    struct btf_id_name_map *map = &maps->map[index];
->>>>> +    const struct btf_type *t;
->>>>> +    struct btf_id_name *id_name;
->>>>> +    const char *name;
->>>>> +    int i, j = 0;
->>>>> +    u32 total, count = 0;
->>>>> +    u8 kind;
->>>>> +
->>>>> +    kind = btf_id_name_idx_to_kind(index);
->>>>> +    if (kind == BTF_KIND_UNKN)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    if (map->id_name || map->count != 0)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    total = btf_type_cnt(btf);
->>>>> +    for (i = btf->start_id; i < total; i++) {
->>>>> +        t = btf_type_by_id(btf, i);
->>>>> +        if (BTF_INFO_KIND(t->info) != kind)
->>>>> +            continue;
->>>>> +        name = btf_name_by_offset(btf, t->name_off);
->>>>> +        if (str_is_empty(name))
->>>>> +            continue;
->>>>> +        count++;
->>>>> +    }
->>>>> +
->>>>> +    if (count == 0)
->>>>> +        return 0;
->>>>> +
->>>>> +    id_name = kvcalloc(count, sizeof(struct btf_id_name),
->>>>> +               GFP_KERNEL);
->>>>> +    if (!id_name)
->>>>> +        return -ENOMEM;
->>>>> +
->>>>> +    for (i = btf->start_id; i < total; i++) {
->>>>> +        t = btf_type_by_id(btf, i);
->>>>> +        if (BTF_INFO_KIND(t->info) != kind)
->>>>> +            continue;
->>>>> +        name = btf_name_by_offset(btf, t->name_off);
->>>>> +        if (str_is_empty(name))
->>>>> +            continue;
->>>>> +
->>>>> +        id_name[j].id = i;
->>>>> +        id_name[j].name_off = t->name_off;
->>>>> +        j++;
->>>>> +    }
->>>>> +
->>>>> +    sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
->>>>> +           NULL, btf);
->>>>> +
->>>>> +    map->id_name = id_name;
->>>>> +    map->count = count;
->>>>> +
->>>>> +    return 0;
->>>>> +}
->>>>> +
->>>>> +static int btf_create_id_name_map(struct btf *btf)
->>>>> +{
->>>>> +    int err, i;
->>>>> +    struct btf_id_name_maps *maps;
->>>>> +
->>>>> +    if (btf->id_name_maps)
->>>>> +        return -EBUSY;
->>>>> +
->>>>> +    maps = kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
->>>>> +    if (!maps)
->>>>> +        return -ENOMEM;
->>>>> +
->>>>> +    btf->id_name_maps = maps;
->>>>> +
->>>>> +    for (i = 0; i < BTF_ID_NAME_MAX; i++) {
->>>>> +        err = btf_create_id_name(btf, i);
->>>>> +        if (err < 0)
->>>>> +            break;
->>>>> +    }
->>>>> +
->>>>> +    return err;
->>>>> +}
->>>>> +
->>>>>    BTF_ID_LIST(bpf_ctx_convert_btf_id)
->>>>>    BTF_ID(struct, bpf_ctx_convert)
->>>>> @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
->>>>>        if (err)
->>>>>            goto errout;
->>>>> +    err = btf_create_id_name_map(btf);
->>>>> +    if (err)
->>>>> +        goto errout;
->>>>> +
->>>>>        /* btf_parse_vmlinux() runs under bpf_verifier_lock */
->>>>>        bpf_ctx_convert.t = btf_type_by_id(btf,
->>>>> bpf_ctx_convert_btf_id[0]);
->>>>> @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
->>>>>    errout:
->>>>>        btf_verifier_env_free(env);
->>>>>        if (btf) {
->>>>> +        btf_destroy_id_name_map(btf);
->>>>>            kvfree(btf->types);
->>>>>            kfree(btf);
->>>>>        }
->>>>> @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const
->>>>> char *module_name, const void *data, u
->>>>>        if (err)
->>>>>            goto errout;
->>>>> +    err = btf_create_id_name_map(btf);
->>>>> +    if (err)
->>>>> +        goto errout;
->>>>> +
->>>>>        btf_verifier_env_free(env);
->>>>>        refcount_set(&btf->refcnt, 1);
->>>>> +
->>>>>        return btf;
->>>>>    errout:
->>>>>        btf_verifier_env_free(env);
->>>>>        if (btf) {
->>>>> +        btf_destroy_id_name_map(btf);
->>>>>            kvfree(btf->data);
->>>>>            kvfree(btf->types);
->>>>>            kfree(btf);
->>>>> -- 
->>>>> 2.25.1
->>>>>
->>>>
->>>>
->>>
->>
-> 
-> 
+After you have everything needed in your DT, the problem here isn't
+actually much of a problem at all. We will have options how to move
+forward after that.
 
+Br,
+
+-- 
+heikki
