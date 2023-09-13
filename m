@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A8B79F0D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145C979F0E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjIMSF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
+        id S231146AbjIMSIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjIMSFY (ORCPT
+        with ESMTP id S229552AbjIMSIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:05:24 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84CB19BB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:05:20 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so2688261a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:05:20 -0700 (PDT)
+        Wed, 13 Sep 2023 14:08:06 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0EB19B6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:08:02 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-59b9d255037so1098017b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694628319; x=1695233119; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EA+rhaOJb0CMGu7EIM3OJMimctfMG2s/Yf58LoBvEr8=;
-        b=Rx3I9RFDGCbyFKvsxLe5lY3inC6G/UVb1Tp5pwGyEL9MXZHNfdpR6BxUTgpah0uK/Q
-         81Opbq+50gMgXDGhj8LYF9cjjZlZbCm/9nEBWX8LCfY/LfdI1kQPLpESnO8tVnOvLUTt
-         T5HO6kf0qUIxvboaJlzd6ZmP73ho5Fvt7zFQjrPQ0MtALPF4VYRWNLEgnw2dMMXfUU57
-         frnnG+5CrfO6X2uDHp7IgqdREKAr462gqrBDh4LMQ7qCk6RBPWMbVB6wD0dzoURosAFZ
-         QC8o4EbP8xYpH1Vlo3k7aDv1v2WY6HL5n+vv/Bd9vQC99aquxCxXTAeIrLA98kJz0Et9
-         QrMg==
+        d=paul-moore.com; s=google; t=1694628482; x=1695233282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D6p7tbPnNvlpg9xblNmKJQDZftsfkQOleUTpRaGHhOQ=;
+        b=D/zZMzn3quzXBOp7hhi+83UVtfEZE+amUwPJvrNUHSb6mmbzOWlx2jNfDhPiSkbn5Q
+         rAmXnPZIwzVaTNb3buy0+7xfPn+7alGqdG1Zxo1BYACF21E8SVi6dpGpgHqtyAAus4p6
+         mONWdR+fDPqDAFnFLI10xZkOREUOlSRJlQBO0+xd/yGTDEVjPxT/X91pqSwUf0TFIxV+
+         VOeNzjK/KLqVWqJDwmCw2OGH80OBQWxuJFl6P/D09HE0r+c6kPBdQEJCwU2ahHLDmOXJ
+         FpSIVKvJAbvMq7XmU2bH6SBRhFDEALmzF30CjFXAMlURGCkn/oLMdofIsbshBT2KvX63
+         xTUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694628319; x=1695233119;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EA+rhaOJb0CMGu7EIM3OJMimctfMG2s/Yf58LoBvEr8=;
-        b=wFd26qCDoQg/3Ps6NNi8jkp/PCUDG6ZbzLZwkd0niwbxdDzxTi70RVDEFfIfguq5WR
-         pxsDUvHu6zXpddrNFPSwrKkVehObPSflfD7cvROzot8edZAhOA6Q50y8s3DX/qUXUByG
-         8j3Xrzw4LI+1yItWg5Jxt5iAqrAJMxkYsB6pSLO16NvavCPeHyDbt9s5ak376+fkY7sT
-         EOtOixfwlwKvtqLkcM0NUhXmMC/QjpMQYPNcFUQ1fjByPyU2uIESDUAcsQ4mcrQz0ona
-         ecSwrYkb7JCM/0LML9b/PWpsWxRXk8j6Muly7tXG06+LZ659iaFrQQJObF89m5s9hLb+
-         IFCA==
-X-Gm-Message-State: AOJu0YxB1Dof3+SXiPzcve94xNtXQcqfL4ucgyulv11+dh1VxVXgokhD
-        GRnCBtn4/+7X6EyhilFyDELemA==
-X-Google-Smtp-Source: AGHT+IE6LRy4QiQj7s2KglzqfydLIrqvv+25l+GZ5+5U6g45Mb5TaSZqKrfnEizhaQ4ROgtQfM8BmA==
-X-Received: by 2002:aa7:d782:0:b0:522:3149:159b with SMTP id s2-20020aa7d782000000b005223149159bmr4704053edq.2.1694628319116;
-        Wed, 13 Sep 2023 11:05:19 -0700 (PDT)
-Received: from [192.168.37.232] (178235177172.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.172])
-        by smtp.gmail.com with ESMTPSA id cn27-20020a0564020cbb00b0052718577668sm1453733edb.11.2023.09.13.11.05.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 11:05:18 -0700 (PDT)
-Message-ID: <e4a40052-8e16-449a-92c0-f7c822aa49ad@linaro.org>
-Date:   Wed, 13 Sep 2023 20:05:16 +0200
+        d=1e100.net; s=20230601; t=1694628482; x=1695233282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D6p7tbPnNvlpg9xblNmKJQDZftsfkQOleUTpRaGHhOQ=;
+        b=J46ckd+5UIqAmd11GMdmjpKxFUUCsIoH8P4sJMHKR2pDVoG7VgyFotLv7y8WhWNvs2
+         bmTLsB8882ZYIuSxiRJsi5Vk4TRztXpw2ISAkuFr+ZiKbpQQmKD+IH6d6IEAZOfx8bl/
+         XzGhmgDh7CyfN2KOFoacR0PDBHtboMCPo3o8HwyoUieKoupm6Suqvso+qKTrITRKx/rQ
+         Cj989eOn7StowOGL3RXUJT7R7h2n+In3fUx31QimaNVDOyIYIpQSaa1A03hTKfTBwU+G
+         tH+WXZyxbvrTjCxyzXOXGgmQzw/yj2reLf1Y8nx8CvOgm3ocARwLOqtADwGqmIHEOxGm
+         Du6g==
+X-Gm-Message-State: AOJu0YxLTTZPvvYwWON8D7ej678Knh0DYZyZ4u1XCrZshn2yWtlkvZJy
+        XovigtbfbJ4mC8HWiLDN3zEw8CVF8yF58oQb0Uzi
+X-Google-Smtp-Source: AGHT+IGr/m1hyc4o4APGIfiTAia1ePxK8DO5U7tgx893pHWObgaCGyeOCxpAQq8syxb7Tu0KA7RCu08gfsZoff3PVbw=
+X-Received: by 2002:a0d:cb15:0:b0:59b:5275:800a with SMTP id
+ n21-20020a0dcb15000000b0059b5275800amr3432151ywd.2.1694628481746; Wed, 13 Sep
+ 2023 11:08:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sa8775p: enable the inline crypto
- engine
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913153529.32777-1-bartosz.golaszewski@linaro.org>
- <20230913153529.32777-2-bartosz.golaszewski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230913153529.32777-2-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230818151220.166215-1-cgzones@googlemail.com>
+ <CAEjxPJ7_CMFvRHFp1HVV+ppZEXPkWG6oH1MMEbjFESH44wZukg@mail.gmail.com>
+ <CAHC9VhTiuZRCm2E3DkB=zD8R1OZccSCpsbr2mB=aOPGXkjUhhw@mail.gmail.com> <CAEjxPJ5PVAK2LnzzkjjwZ-FtiXPeyrE8ZGCDxxCpY_AvTY3M4w@mail.gmail.com>
+In-Reply-To: <CAEjxPJ5PVAK2LnzzkjjwZ-FtiXPeyrE8ZGCDxxCpY_AvTY3M4w@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 13 Sep 2023 14:07:51 -0400
+Message-ID: <CAHC9VhTfoM0Z1uKbBE9KVY4LAHUB=YOOEUGxrsZUh4ZyZG=PDA@mail.gmail.com>
+Subject: Re: [PATCH 2/6] selinux: dump statistics for more hash tables
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.2023 17:35, Bartosz Golaszewski wrote:
-> Add an ICE node to sa8775p SoC description and enable it by adding a
-> phandle to the UFS node.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
-I don't have any sources backing this up, but 8350 seems to
-have the exact same register ranges for this block, so I'm
-inclined to believe it's ok
+On Wed, Sep 13, 2023 at 2:03=E2=80=AFPM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+> On Wed, Sep 13, 2023 at 12:12=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> > On Thu, Sep 7, 2023 at 1:42=E2=80=AFPM Stephen Smalley
+> > <stephen.smalley.work@gmail.com> wrote:
+> > > On Fri, Aug 18, 2023 at 11:12=E2=80=AFAM Christian G=C3=B6ttsche
+> > > <cgzones@googlemail.com> wrote:
+> > > >
+> > > > Dump in the SELinux debug configuration the statistics for the
+> > > > conditional rules avtab, the role transition, and class and common
+> > > > permission hash tables.
+> > > >
+> > > > Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> > > > ---
+> > >
+> > > > diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/p=
+olicydb.c
+> > > > index 84f02d4f8093..932e383bcad6 100644
+> > > > --- a/security/selinux/ss/policydb.c
+> > > > +++ b/security/selinux/ss/policydb.c
+> > > > @@ -1158,6 +1158,8 @@ static int common_read(struct policydb *p, st=
+ruct symtab *s, void *fp)
+> > > >                         goto bad;
+> > > >         }
+> > > >
+> > > > +       hash_eval(&comdatum->permissions.table, "common_permissions=
+");
+> > > > +
+> > > >         rc =3D symtab_insert(s, key, comdatum);
+> > > >         if (rc)
+> > > >                 goto bad;
+> > > > @@ -1339,6 +1341,8 @@ static int class_read(struct policydb *p, str=
+uct symtab *s, void *fp)
+> > > >                         goto bad;
+> > > >         }
+> > > >
+> > > > +       hash_eval(&cladatum->permissions.table, "class_permissions"=
+);
+> > > > +
+> > > >         rc =3D read_cons_helper(p, &cladatum->constraints, ncons, 0=
+, fp);
+> > > >         if (rc)
+> > > >                 goto bad;
+> > >
+> > > Do we want to embed the actual common and class keys in the output to
+> > > distinguish among the multiple common and class permissions tables?
+> >
+> > That seems reasonable, were you thinking of just adding it to the
+> > hash_eval()'s hash name string, e.g. "common_permissions[XXX]"?
+>
+> Yes, otherwise you get a bunch of common_permissions and
+> class_permissions lines with no way to correlate.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Agreed, I was asking more to determine how you envisioned the keys in
+the output.
 
-Konrad
+Christian, instead of creating the combined string in the caller I
+would suggest adding a third parameter to the hash_eval() function and
+having hash_eval() add the extra info (if present, NULL should be
+acceptable) to the output.  This should ensure no extra work is done
+when debug is disabled.
+
+--=20
+paul-moore.com
