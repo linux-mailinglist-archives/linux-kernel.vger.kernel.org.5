@@ -2,420 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB5879EF1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1139B79EF20
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbjIMQny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
+        id S231551AbjIMQoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjIMQn1 (ORCPT
+        with ESMTP id S231547AbjIMQn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:43:27 -0400
-Received: from smtp65.iad3a.emailsrvr.com (smtp65.iad3a.emailsrvr.com [173.203.187.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC20B448A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694623245;
-        bh=sm7xpOt0Hoy/O4o9B/CtZxhYXOK5NICbIJTaCn2O1BA=;
-        h=From:To:Subject:Date:From;
-        b=QL1uDCO7YO5H/YQjCg84mdG30jbc+nODqk6QJRqh7chwxQ+nm/x8QvengBZfBZ+y5
-         P6pcoqFQM6J2LMm1QdNjr2c+cwIQPC2nO2Vsz1QPCXns7VYZ2eDRq8wZplTRFLdf6a
-         UOGKOal8IZDQm1C/q4b26a07HjzWXj8gTeQQE4Dk=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp25.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id F0AC42529F;
-        Wed, 13 Sep 2023 12:40:43 -0400 (EDT)
-From:   Ian Abbott <abbotti@mev.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH v2 13/13] comedi: add HAS_IOPORT dependencies again
-Date:   Wed, 13 Sep 2023 17:40:13 +0100
-Message-Id: <20230913164013.107520-14-abbotti@mev.co.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230913164013.107520-1-abbotti@mev.co.uk>
-References: <Message-Id: <20230913113247.91749-1-abbotti@mev.co.uk>
- <20230913164013.107520-1-abbotti@mev.co.uk>
+        Wed, 13 Sep 2023 12:43:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75BE0420E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694623239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g0aLIFFDSBpbpLkAvAxYd71PTXHU6ggKEjN1XOK5kQo=;
+        b=Llz7Q+U1L9XgxZhm4blGFW8t9skY7h0+q8ePepkJHUEpmQGkXBCNvyqWI7vpM/h1PGnZTf
+        2r4sH/vYf1wgdWH/ZBdZb3P8e+FbVjtR33QBujW47NDO01bioRmGDxwNx3OaPUOSpefUqt
+        uI+rPztfwMOiy4RgqlnHcts97RRZnDE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-295-jAJdMJ9VN5-taT4VVcfNOQ-1; Wed, 13 Sep 2023 12:40:37 -0400
+X-MC-Unique: jAJdMJ9VN5-taT4VVcfNOQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-978a991c3f5so6139766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:40:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694623236; x=1695228036;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0aLIFFDSBpbpLkAvAxYd71PTXHU6ggKEjN1XOK5kQo=;
+        b=D0KErtfuVgPpiYvvgmic0yVZZPn7uqZpqNRFaMncjMtBHWshOwaTBm82kfhaHk1W8l
+         s3UqJahUKjVAamrnmZtX66PID/OO4VTssM/N+HjceWGkRZ1WhQ4e+WDk9LhSIzbKQ4fK
+         d2Ew7GyeC4sfz2IUEcbkSRv35CGRCAXTD8laWVKv2JZq5zf3UilfIp0qLypVT3ydjPv7
+         RHP1yqtPJu4NbQZB5KO1U4rjRD7gk1cwg40Ep/rzb5GYt8fwJltncudhRloGcOWw0cTa
+         okxRdnRbpMf3Wwrp0zP43wpIPov9D4mO2KJ7bIsK2It+JG+yRZsKiL2EyPGzKHKvVG3W
+         3Ujg==
+X-Gm-Message-State: AOJu0Yzalh51/POxDeSxTejRDm8OxIiX7ihLwFU+tyi2+1JzvGuoX/MY
+        colHszWYx/3RDFz8JLU+H118opewD4gkvU+V3SCg5TqqED6q0jwB/HD/NLK3VG/sUBdwu90oBwn
+        BYnR5tRs49ctaBtl3laOt8CKi
+X-Received: by 2002:a17:906:8468:b0:99d:6b3c:3d40 with SMTP id hx8-20020a170906846800b0099d6b3c3d40mr2309633ejc.6.1694623236717;
+        Wed, 13 Sep 2023 09:40:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFmO4cDGlmI7FUyTuA4rIh+7DFY1qGORDLf53qavXa66JUxmblLVzn5tdHfe+owYmuo75ynDw==
+X-Received: by 2002:a17:906:8468:b0:99d:6b3c:3d40 with SMTP id hx8-20020a170906846800b0099d6b3c3d40mr2309621ejc.6.1694623236312;
+        Wed, 13 Sep 2023 09:40:36 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id l15-20020a1709066b8f00b0099bca8b9a31sm8571966ejr.100.2023.09.13.09.40.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 09:40:35 -0700 (PDT)
+Message-ID: <f4e846f0-1084-0999-0fb7-592198666bc5@redhat.com>
+Date:   Wed, 13 Sep 2023 18:40:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: bb5231ff-a70f-4c9d-8b55-93f03f91465d-14-1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] platform/x86: think-lmi: Add bulk save feature
+Content-Language: en-US, nl
+To:     Mark Pearson <mpearson-lenovo@squebb.ca>
+Cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <mpearson-lenovo@squebb.ca>
+ <20230906121328.50437-1-mpearson-lenovo@squebb.ca>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230906121328.50437-1-mpearson-lenovo@squebb.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
-not being declared. We thus need to add HAS_IOPORT as dependency for
-those drivers using them.
+Hi,
 
-This was previously done in commit b5c75b68b7de ("comedi: add HAS_IOPORT
-dependencies"), but that has been reverted because it made it impossible
-to select configuration options for several comedi drivers.  This is a
-do-over that avoids that.
+On 9/6/23 14:13, Mark Pearson wrote:
+> On Lenovo platforms there is a limitation in the number of times an
+> attribute can be saved. This is an architectural limitation and it limits
+> the number of attributes that can be modified to 48.
+> A solution for this is instead of the attribute being saved after every
+> modification allow a user to bulk set the attributes and then trigger a
+> final save. This allows unlimited attributes.
+> 
+> This patch introduces a save_settings attribute that can be configured to
+> either single or bulk mode by the user.
+> Single mode is the default but customers who want to avoid the 48
+> attribute limit can enable bulk mode.
+> 
+> Displaying the save_settings attribute will display the enabled mode.
+> 
+> When in bulk mode writing 'save' to the save_settings attribute will
+> trigger a save. Once this has been done a reboot is required before more
+> attributes can be modified.
+> 
+> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
 
-Since the original patch, modifications have been made to various comedi
-modules so that they can still be built even if the port I/O functions
-have not been declared, so the configuration options for building those
-modules no longer need to depend on HAS_IOPORT.
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Make the COMEDI_ISA_DRIVERS menu option (which allows configuration
-options for ISA and PC/104 drivers to be selected) depend on HAS_IOPORT,
-and also depend on ISA || ISA_BUS || PC104.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Co-developed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
----
-v2: N/A
----
- drivers/comedi/Kconfig | 44 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 43 insertions(+), 1 deletion(-)
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-diff --git a/drivers/comedi/Kconfig b/drivers/comedi/Kconfig
-index 536101f68e0f..93c68a40a17b 100644
---- a/drivers/comedi/Kconfig
-+++ b/drivers/comedi/Kconfig
-@@ -67,6 +67,7 @@ config COMEDI_TEST
- 
- config COMEDI_PARPORT
- 	tristate "Parallel port support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for the standard parallel port.
- 	  A cheap and easy way to get a few more digital I/O lines. Steal
-@@ -79,6 +80,7 @@ config COMEDI_PARPORT
- config COMEDI_SSV_DNP
- 	tristate "SSV Embedded Systems DIL/Net-PC support"
- 	depends on X86_32 || COMPILE_TEST
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for SSV Embedded Systems DIL/Net-PC
- 
-@@ -89,6 +91,8 @@ endif # COMEDI_MISC_DRIVERS
- 
- menuconfig COMEDI_ISA_DRIVERS
- 	bool "Comedi ISA and PC/104 drivers"
-+	depends on ISA || ISA_BUS || PC104
-+	depends on HAS_IOPORT
- 	help
- 	  Enable comedi ISA and PC/104 drivers to be built
- 
-@@ -589,6 +593,7 @@ config COMEDI_8255_PCI
- 
- config COMEDI_ADDI_WATCHDOG
- 	tristate
-+	depends on HAS_IOPORT
- 	help
- 	  Provides support for the watchdog subdevice found on many ADDI-DATA
- 	  boards. This module will be automatically selected when needed. The
-@@ -596,6 +601,7 @@ config COMEDI_ADDI_WATCHDOG
- 
- config COMEDI_ADDI_APCI_1032
- 	tristate "ADDI-DATA APCI_1032 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADDI-DATA APCI_1032 cards
- 
-@@ -604,6 +610,7 @@ config COMEDI_ADDI_APCI_1032
- 
- config COMEDI_ADDI_APCI_1500
- 	tristate "ADDI-DATA APCI_1500 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADDI-DATA APCI_1500 cards
- 
-@@ -612,6 +619,7 @@ config COMEDI_ADDI_APCI_1500
- 
- config COMEDI_ADDI_APCI_1516
- 	tristate "ADDI-DATA APCI-1016/1516/2016 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_ADDI_WATCHDOG
- 	help
- 	  Enable support for ADDI-DATA APCI-1016, APCI-1516 and APCI-2016 boards.
-@@ -623,6 +631,7 @@ config COMEDI_ADDI_APCI_1516
- 
- config COMEDI_ADDI_APCI_1564
- 	tristate "ADDI-DATA APCI_1564 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_ADDI_WATCHDOG
- 	help
- 	  Enable support for ADDI-DATA APCI_1564 cards
-@@ -632,6 +641,7 @@ config COMEDI_ADDI_APCI_1564
- 
- config COMEDI_ADDI_APCI_16XX
- 	tristate "ADDI-DATA APCI_16xx support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADDI-DATA APCI_16xx cards
- 
-@@ -640,6 +650,7 @@ config COMEDI_ADDI_APCI_16XX
- 
- config COMEDI_ADDI_APCI_2032
- 	tristate "ADDI-DATA APCI_2032 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_ADDI_WATCHDOG
- 	help
- 	  Enable support for ADDI-DATA APCI_2032 cards
-@@ -649,6 +660,7 @@ config COMEDI_ADDI_APCI_2032
- 
- config COMEDI_ADDI_APCI_2200
- 	tristate "ADDI-DATA APCI_2200 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_ADDI_WATCHDOG
- 	help
- 	  Enable support for ADDI-DATA APCI_2200 cards
-@@ -658,6 +670,7 @@ config COMEDI_ADDI_APCI_2200
- 
- config COMEDI_ADDI_APCI_3120
- 	tristate "ADDI-DATA APCI_3120/3001 support"
-+	depends on HAS_IOPORT
- 	depends on HAS_DMA
- 	help
- 	  Enable support for ADDI-DATA APCI_3120/3001 cards
-@@ -667,6 +680,7 @@ config COMEDI_ADDI_APCI_3120
- 
- config COMEDI_ADDI_APCI_3501
- 	tristate "ADDI-DATA APCI_3501 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADDI-DATA APCI_3501 cards
- 
-@@ -675,6 +689,7 @@ config COMEDI_ADDI_APCI_3501
- 
- config COMEDI_ADDI_APCI_3XXX
- 	tristate "ADDI-DATA APCI_3xxx support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADDI-DATA APCI_3xxx cards
- 
-@@ -683,6 +698,7 @@ config COMEDI_ADDI_APCI_3XXX
- 
- config COMEDI_ADL_PCI6208
- 	tristate "ADLink PCI-6208A support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADLink PCI-6208A cards
- 
-@@ -691,6 +707,7 @@ config COMEDI_ADL_PCI6208
- 
- config COMEDI_ADL_PCI7X3X
- 	tristate "ADLink PCI-723X/743X isolated digital i/o board support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADlink PCI-723X/743X isolated digital i/o boards.
- 	  Supported boards include the 32-channel PCI-7230 (16 in/16 out),
-@@ -702,6 +719,7 @@ config COMEDI_ADL_PCI7X3X
- 
- config COMEDI_ADL_PCI8164
- 	tristate "ADLink PCI-8164 4 Axes Motion Control board support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for ADlink PCI-8164 4 Axes Motion Control board
- 
-@@ -710,6 +728,7 @@ config COMEDI_ADL_PCI8164
- 
- config COMEDI_ADL_PCI9111
- 	tristate "ADLink PCI-9111HR support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	help
- 	  Enable support for ADlink PCI9111 cards
-@@ -719,6 +738,7 @@ config COMEDI_ADL_PCI9111
- 
- config COMEDI_ADL_PCI9118
- 	tristate "ADLink PCI-9118DG, PCI-9118HG, PCI-9118HR support"
-+	depends on HAS_IOPORT
- 	depends on HAS_DMA
- 	select COMEDI_8254
- 	help
-@@ -729,6 +749,7 @@ config COMEDI_ADL_PCI9118
- 
- config COMEDI_ADV_PCI1710
- 	tristate "Advantech PCI-171x and PCI-1731 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	help
- 	  Enable support for Advantech PCI-1710, PCI-1710HG, PCI-1711,
-@@ -739,6 +760,7 @@ config COMEDI_ADV_PCI1710
- 
- config COMEDI_ADV_PCI1720
- 	tristate "Advantech PCI-1720 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Advantech PCI-1720 Analog Output board.
- 
-@@ -747,6 +769,7 @@ config COMEDI_ADV_PCI1720
- 
- config COMEDI_ADV_PCI1723
- 	tristate "Advantech PCI-1723 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Advantech PCI-1723 cards
- 
-@@ -755,6 +778,7 @@ config COMEDI_ADV_PCI1723
- 
- config COMEDI_ADV_PCI1724
- 	tristate "Advantech PCI-1724U support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Advantech PCI-1724U cards.  These are 32-channel
- 	  analog output cards with voltage and current loop output ranges and
-@@ -765,6 +789,7 @@ config COMEDI_ADV_PCI1724
- 
- config COMEDI_ADV_PCI1760
- 	tristate "Advantech PCI-1760 support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Advantech PCI-1760 board.
- 
-@@ -773,6 +798,7 @@ config COMEDI_ADV_PCI1760
- 
- config COMEDI_ADV_PCI_DIO
- 	tristate "Advantech PCI DIO card support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	select COMEDI_8255
- 	help
-@@ -796,6 +822,7 @@ config COMEDI_AMPLC_DIO200_PCI
- 
- config COMEDI_AMPLC_PC236_PCI
- 	tristate "Amplicon PCI236 DIO board support"
-+	depends on HAS_IOPORT
- 	select COMEDI_AMPLC_PC236
- 	help
- 	  Enable support for Amplicon PCI236 DIO board.
-@@ -805,6 +832,7 @@ config COMEDI_AMPLC_PC236_PCI
- 
- config COMEDI_AMPLC_PC263_PCI
- 	tristate "Amplicon PCI263 relay board support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Amplicon PCI263 relay board.  This is a PCI board
- 	  with 16 reed relay output channels.
-@@ -814,6 +842,7 @@ config COMEDI_AMPLC_PC263_PCI
- 
- config COMEDI_AMPLC_PCI224
- 	tristate "Amplicon PCI224 and PCI234 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	help
- 	  Enable support for Amplicon PCI224 and PCI234 AO boards
-@@ -823,6 +852,7 @@ config COMEDI_AMPLC_PCI224
- 
- config COMEDI_AMPLC_PCI230
- 	tristate "Amplicon PCI230 and PCI260 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	select COMEDI_8255
- 	help
-@@ -834,6 +864,7 @@ config COMEDI_AMPLC_PCI230
- 
- config COMEDI_CONTEC_PCI_DIO
- 	tristate "Contec PIO1616L digital I/O board support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for the Contec PIO1616L digital I/O board
- 
-@@ -842,6 +873,7 @@ config COMEDI_CONTEC_PCI_DIO
- 
- config COMEDI_DAS08_PCI
- 	tristate "DAS-08 PCI support"
-+	depends on HAS_IOPORT
- 	select COMEDI_DAS08
- 	help
- 	  Enable support for PCI DAS-08 cards.
-@@ -861,6 +893,7 @@ config COMEDI_DT3000
- 
- config COMEDI_DYNA_PCI10XX
- 	tristate "Dynalog PCI DAQ series support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Dynalog PCI DAQ series
- 	  PCI-1050
-@@ -911,6 +944,7 @@ config COMEDI_JR3_PCI
- 
- config COMEDI_KE_COUNTER
- 	tristate "Kolter-Electronic PCI Counter 1 card support"
-+	depends on HAS_IOPORT
- 	help
- 	  Enable support for Kolter-Electronic PCI Counter 1 cards
- 
-@@ -929,6 +963,7 @@ config COMEDI_CB_PCIDAS64
- 
- config COMEDI_CB_PCIDAS
- 	tristate "MeasurementComputing PCI-DAS support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	select COMEDI_8255
- 	help
-@@ -942,6 +977,7 @@ config COMEDI_CB_PCIDAS
- 
- config COMEDI_CB_PCIDDA
- 	tristate "MeasurementComputing PCI-DDA series support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8255
- 	help
- 	  Enable support for ComputerBoards/MeasurementComputing PCI-DDA
-@@ -953,6 +989,7 @@ config COMEDI_CB_PCIDDA
- 
- config COMEDI_CB_PCIMDAS
- 	tristate "MeasurementComputing PCIM-DAS1602/16, PCIe-DAS1602/16 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	select COMEDI_8255
- 	help
-@@ -964,6 +1001,7 @@ config COMEDI_CB_PCIMDAS
- 
- config COMEDI_CB_PCIMDDA
- 	tristate "MeasurementComputing PCIM-DDA06-16 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8255
- 	help
- 	  Enable support for ComputerBoards/MeasurementComputing PCIM-DDA06-16
-@@ -973,6 +1011,7 @@ config COMEDI_CB_PCIMDDA
- 
- config COMEDI_ME4000
- 	tristate "Meilhaus ME-4000 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	help
- 	  Enable support for Meilhaus PCI data acquisition cards
-@@ -1102,7 +1141,7 @@ endif # COMEDI_PCI_DRIVERS
- 
- menuconfig COMEDI_PCMCIA_DRIVERS
- 	tristate "Comedi PCMCIA drivers"
--	depends on PCMCIA
-+	depends on PCMCIA && HAS_IOPORT
- 	help
- 	  Enable support for comedi PCMCIA drivers.
- 
-@@ -1253,6 +1292,7 @@ config COMEDI_8255
- 
- config COMEDI_8255_SA
- 	tristate "Standalone 8255 support"
-+	depends on HAS_IOPORT
- 	select COMEDI_8255
- 	help
- 	  Enable support for 8255 digital I/O as a standalone driver.
-@@ -1289,10 +1329,12 @@ config COMEDI_AMPLC_DIO200
- 
- config COMEDI_AMPLC_PC236
- 	tristate
-+	depends on HAS_IOPORT
- 	select COMEDI_8255
- 
- config COMEDI_DAS08
- 	tristate
-+	depends on HAS_IOPORT
- 	select COMEDI_8254
- 	select COMEDI_8255
- 
--- 
-2.40.1
+Regards,
+
+Hans
+
+
+
+
+> ---
+> Changes in v2: Improve string handling in store and show functions. Use
+> sysfs_match_string for cleaner implementation.
+> 
+>  .../testing/sysfs-class-firmware-attributes   |  30 ++++
+>  drivers/platform/x86/think-lmi.c              | 152 ++++++++++++++++--
+>  drivers/platform/x86/think-lmi.h              |  15 ++
+>  3 files changed, 182 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-firmware-attributes b/Documentation/ABI/testing/sysfs-class-firmware-attributes
+> index f205d39409a3..c2f1a044475e 100644
+> --- a/Documentation/ABI/testing/sysfs-class-firmware-attributes
+> +++ b/Documentation/ABI/testing/sysfs-class-firmware-attributes
+> @@ -383,6 +383,36 @@ Description:
+>  		Note that any changes to this attribute requires a reboot
+>  		for changes to take effect.
+>  
+> +What:		/sys/class/firmware-attributes/*/attributes/save_settings
+> +Date:		August 2023
+> +KernelVersion:	6.5
+> +Contact:	Mark Pearson <mpearson-lenovo@squebb.ca>
+> +Description:
+> +		On Lenovo platforms there is a limitation in the number of times an attribute can be
+> +		saved. This is an architectural limitation and it limits the number of attributes
+> +		that can be modified to 48.
+> +		A solution for this is instead of the attribute being saved after every modification,
+> +		to allow a user to bulk set the attributes, and then trigger a final save. This allows
+> +		unlimited attributes.
+> +
+> +		Read the attribute to check what save mode is enabled (single or bulk).
+> +		E.g:
+> +		# cat /sys/class/firmware-attributes/thinklmi/attributes/save_settings
+> +		single
+> +
+> +		Write the attribute with 'bulk' to enable bulk save mode.
+> +		Write the attribute with 'single' to enable saving, after every attribute set.
+> +		The default setting is single mode.
+> +		E.g:
+> +		# echo bulk > /sys/class/firmware-attributes/thinklmi/attributes/save_settings
+> +
+> +		When in bulk mode write 'save' to trigger a save of all currently modified attributes.
+> +		Note, once a save has been triggered, in bulk mode, attributes can no longer be set and
+> +		will return a permissions error. This is to prevent users hitting the 48+ save limitation
+> +		(which requires entering the BIOS to clear the error condition)
+> +		E.g:
+> +		# echo save > /sys/class/firmware-attributes/thinklmi/attributes/save_settings
+> +
+>  What:		/sys/class/firmware-attributes/*/attributes/debug_cmd
+>  Date:		July 2021
+>  KernelVersion:	5.14
+> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+> index 52d1ce8dfe44..a319a358ddcf 100644
+> --- a/drivers/platform/x86/think-lmi.c
+> +++ b/drivers/platform/x86/think-lmi.c
+> @@ -985,6 +985,13 @@ static ssize_t current_value_store(struct kobject *kobj,
+>  	if (!tlmi_priv.can_set_bios_settings)
+>  		return -EOPNOTSUPP;
+>  
+> +	/*
+> +	 * If we are using bulk saves a reboot should be done once save has
+> +	 * been called
+> +	 */
+> +	if (tlmi_priv.save_mode == TLMI_SAVE_BULK && tlmi_priv.reboot_required)
+> +		return -EPERM;
+> +
+>  	new_setting = kstrdup(buf, GFP_KERNEL);
+>  	if (!new_setting)
+>  		return -ENOMEM;
+> @@ -1011,10 +1018,11 @@ static ssize_t current_value_store(struct kobject *kobj,
+>  		ret = tlmi_simple_call(LENOVO_SET_BIOS_SETTING_CERT_GUID, set_str);
+>  		if (ret)
+>  			goto out;
+> -		ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
+> -				tlmi_priv.pwd_admin->save_signature);
+> -		if (ret)
+> -			goto out;
+> +		if (tlmi_priv.save_mode == TLMI_SAVE_BULK)
+> +			tlmi_priv.save_required = true;
+> +		else
+> +			ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
+> +					       tlmi_priv.pwd_admin->save_signature);
+>  	} else if (tlmi_priv.opcode_support) {
+>  		/*
+>  		 * If opcode support is present use that interface.
+> @@ -1033,14 +1041,17 @@ static ssize_t current_value_store(struct kobject *kobj,
+>  		if (ret)
+>  			goto out;
+>  
+> -		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+> -			ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
+> -						  tlmi_priv.pwd_admin->password);
+> -			if (ret)
+> -				goto out;
+> +		if (tlmi_priv.save_mode == TLMI_SAVE_BULK) {
+> +			tlmi_priv.save_required = true;
+> +		} else {
+> +			if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+> +				ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
+> +							  tlmi_priv.pwd_admin->password);
+> +				if (ret)
+> +					goto out;
+> +			}
+> +			ret = tlmi_save_bios_settings("");
+>  		}
+> -
+> -		ret = tlmi_save_bios_settings("");
+>  	} else { /* old non-opcode based authentication method (deprecated) */
+>  		if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+>  			auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+> @@ -1068,10 +1079,14 @@ static ssize_t current_value_store(struct kobject *kobj,
+>  		if (ret)
+>  			goto out;
+>  
+> -		if (auth_str)
+> -			ret = tlmi_save_bios_settings(auth_str);
+> -		else
+> -			ret = tlmi_save_bios_settings("");
+> +		if (tlmi_priv.save_mode == TLMI_SAVE_BULK) {
+> +			tlmi_priv.save_required = true;
+> +		} else {
+> +			if (auth_str)
+> +				ret = tlmi_save_bios_settings(auth_str);
+> +			else
+> +				ret = tlmi_save_bios_settings("");
+> +		}
+>  	}
+>  	if (!ret && !tlmi_priv.pending_changes) {
+>  		tlmi_priv.pending_changes = true;
+> @@ -1152,6 +1167,107 @@ static ssize_t pending_reboot_show(struct kobject *kobj, struct kobj_attribute *
+>  
+>  static struct kobj_attribute pending_reboot = __ATTR_RO(pending_reboot);
+>  
+> +static const char * const save_mode_strings[] = {
+> +	[TLMI_SAVE_SINGLE] = "single",
+> +	[TLMI_SAVE_BULK] = "bulk",
+> +	[TLMI_SAVE_SAVE] = "save"
+> +};
+> +
+> +static ssize_t save_settings_show(struct kobject *kobj, struct kobj_attribute *attr,
+> +				  char *buf)
+> +{
+> +	/* Check that setting is valid */
+> +	if (WARN_ON((tlmi_priv.save_mode < TLMI_SAVE_SINGLE) ||
+> +		    (tlmi_priv.save_mode > TLMI_SAVE_BULK)))
+> +		return -EIO;
+> +	return sprintf(buf, "%s\n", save_mode_strings[tlmi_priv.save_mode]);
+> +}
+> +
+> +static ssize_t save_settings_store(struct kobject *kobj, struct kobj_attribute *attr,
+> +				   const char *buf, size_t count)
+> +{
+> +	char *auth_str = NULL;
+> +	int ret = 0;
+> +	int cmd;
+> +
+> +	cmd = sysfs_match_string(save_mode_strings, buf);
+> +
+> +	/* Use lock in case multiple WMI operations needed */
+> +	mutex_lock(&tlmi_mutex);
+> +
+> +	switch (cmd) {
+> +	case TLMI_SAVE_SINGLE:
+> +	case TLMI_SAVE_BULK:
+> +		tlmi_priv.save_mode = cmd;
+> +		goto out;
+> +	case TLMI_SAVE_SAVE:
+> +		/* Check if supported*/
+> +		if ((!tlmi_priv.can_set_bios_settings) ||
+> +		    (tlmi_priv.save_mode == TLMI_SAVE_SINGLE)) {
+> +			ret = -EOPNOTSUPP;
+> +			goto out;
+> +		}
+> +		/* Check there is actually something to save */
+> +		if (!tlmi_priv.save_required) {
+> +			ret = -ENOENT;
+> +			goto out;
+> +		}
+> +		/* Check if certificate authentication is enabled and active */
+> +		if (tlmi_priv.certificate_support && tlmi_priv.pwd_admin->cert_installed) {
+> +			if (!tlmi_priv.pwd_admin->signature ||
+> +			    !tlmi_priv.pwd_admin->save_signature) {
+> +				ret = -EINVAL;
+> +				goto out;
+> +			}
+> +			ret = tlmi_simple_call(LENOVO_SAVE_BIOS_SETTING_CERT_GUID,
+> +					       tlmi_priv.pwd_admin->save_signature);
+> +			if (ret)
+> +				goto out;
+> +		} else if (tlmi_priv.opcode_support) {
+> +			if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+> +				ret = tlmi_opcode_setting("WmiOpcodePasswordAdmin",
+> +							  tlmi_priv.pwd_admin->password);
+> +				if (ret)
+> +					goto out;
+> +			}
+> +			ret = tlmi_save_bios_settings("");
+> +		} else { /* old non-opcode based authentication method (deprecated) */
+> +			if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+> +				auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+> +						     tlmi_priv.pwd_admin->password,
+> +						     encoding_options[tlmi_priv.pwd_admin->encoding],
+> +						     tlmi_priv.pwd_admin->kbdlang);
+> +				if (!auth_str) {
+> +					ret = -ENOMEM;
+> +					goto out;
+> +				}
+> +			}
+> +
+> +			if (auth_str)
+> +				ret = tlmi_save_bios_settings(auth_str);
+> +			else
+> +				ret = tlmi_save_bios_settings("");
+> +		}
+> +		tlmi_priv.save_required = false;
+> +		tlmi_priv.reboot_required = true;
+> +
+> +		if (!ret && !tlmi_priv.pending_changes) {
+> +			tlmi_priv.pending_changes = true;
+> +			/* let userland know it may need to check reboot pending again */
+> +			kobject_uevent(&tlmi_priv.class_dev->kobj, KOBJ_CHANGE);
+> +		}
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +	}
+> +out:
+> +	mutex_unlock(&tlmi_mutex);
+> +	kfree(auth_str);
+> +	return ret ?: count;
+> +}
+> +
+> +static struct kobj_attribute save_settings = __ATTR_RW(save_settings);
+> +
+>  /* ---- Debug interface--------------------------------------------------------- */
+>  static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr,
+>  				const char *buf, size_t count)
+> @@ -1221,6 +1337,8 @@ static void tlmi_release_attr(void)
+>  		}
+>  	}
+>  	sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &pending_reboot.attr);
+> +	sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &save_settings.attr);
+> +
+>  	if (tlmi_priv.can_debug_cmd && debug_support)
+>  		sysfs_remove_file(&tlmi_priv.attribute_kset->kobj, &debug_cmd.attr);
+>  
+> @@ -1302,6 +1420,10 @@ static int tlmi_sysfs_init(void)
+>  	if (ret)
+>  		goto fail_create_attr;
+>  
+> +	ret = sysfs_create_file(&tlmi_priv.attribute_kset->kobj, &save_settings.attr);
+> +	if (ret)
+> +		goto fail_create_attr;
+> +
+>  	if (tlmi_priv.can_debug_cmd && debug_support) {
+>  		ret = sysfs_create_file(&tlmi_priv.attribute_kset->kobj, &debug_cmd.attr);
+>  		if (ret)
+> diff --git a/drivers/platform/x86/think-lmi.h b/drivers/platform/x86/think-lmi.h
+> index 4daba6151cd6..b2e654bd8316 100644
+> --- a/drivers/platform/x86/think-lmi.h
+> +++ b/drivers/platform/x86/think-lmi.h
+> @@ -27,6 +27,18 @@ enum level_option {
+>  	TLMI_LEVEL_MASTER,
+>  };
+>  
+> +/* There are a limit on the number of WMI operations you can do if you use
+> + * the default implementation of saving on every set. This is due to a
+> + * limitation in EFI variable space used.
+> + * Have a 'bulk save' mode where you can manually trigger the save, and can
+> + * therefore set unlimited variables - for users that need it.
+> + */
+> +enum save_mode {
+> +	TLMI_SAVE_SINGLE,
+> +	TLMI_SAVE_BULK,
+> +	TLMI_SAVE_SAVE,
+> +};
+> +
+>  /* password configuration details */
+>  struct tlmi_pwdcfg_core {
+>  	uint32_t password_mode;
+> @@ -86,6 +98,9 @@ struct think_lmi {
+>  	bool can_debug_cmd;
+>  	bool opcode_support;
+>  	bool certificate_support;
+> +	enum save_mode save_mode;
+> +	bool save_required;
+> +	bool reboot_required;
+>  
+>  	struct tlmi_attr_setting *setting[TLMI_SETTINGS_COUNT];
+>  	struct device *class_dev;
 
