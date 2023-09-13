@@ -2,211 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F0979E814
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43F879E817
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240669AbjIMMcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
+        id S240601AbjIMMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240714AbjIMMbt (ORCPT
+        with ESMTP id S240502AbjIMMcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:31:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899971BE9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694608305; x=1726144305;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ymLSW1L95jleLchFQXPWopRf7sZeZ4TRazRZmPxgIEY=;
-  b=P5Say8g1PKxyapyUPvOpA738DkPPRKndtnODRU0Ynmp13rb3J8ezlKnC
-   bO9eJZoTM3PUNI59SDPao+xXyiofwLfgBjfr+XEwxx2SceVJilCxHIWVo
-   z+/SyP2U60cBKTVrTXnju0Saqh5SEruYKqac75k0kyUBm33beKRcpaZpD
-   KUxPlqOgJbEkYr2ErDtOtdcm9H8OFFxsdWIEfu30rkn5tLCd0gSl982W3
-   YtwEW+uCnB4JQxYhbfKf+vN3yP+6J3TKbDAJIVkw7rb6Ui0gf1lK3SpG5
-   IH7n5l+XoCN2w/9hn+mFL76uGvKVegtOZeKJOYmiKmdoRf5USVo0a31uG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="375975531"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="375975531"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:31:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779171240"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="779171240"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 05:31:43 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgP1v-000031-1O;
-        Wed, 13 Sep 2023 12:31:40 +0000
-Date:   Wed, 13 Sep 2023 20:30:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Igor Torrente <igormtorrente@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Melissa Wen <melissa.srw@gmail.com>
-Subject: drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202309132039.QGjCtYXa-lkp@intel.com>
+        Wed, 13 Sep 2023 08:32:43 -0400
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C7019A8;
+        Wed, 13 Sep 2023 05:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1694608359; x=1726144359;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:reply-to:mime-version:
+   content-transfer-encoding;
+  bh=5oIhYdCJEkownT50F9w6XGgNq4kRwDe875Odq22n3v0=;
+  b=rj9DLiQpKgT1eW9AVJHWZadTQRzs3rqrqJhPFd/kAA7Eu0hcCLMYsS6i
+   UpqvIMr6zd729bhQfiMYwSjjydHmFZOrcZx9jNFx1lQE0iGnJB8xMFil3
+   DsE1bSFcf71Oj9s4SdjelPmg0+8hurhOKP1ct2Dp4ZEQWi3v+2KTxIadT
+   s=;
+X-IronPort-AV: E=Sophos;i="6.02,143,1688428800"; 
+   d="scan'208";a="238776791"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:32:35 +0000
+Received: from EX19D017EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com (Postfix) with ESMTPS id 61788805E0;
+        Wed, 13 Sep 2023 12:32:29 +0000 (UTC)
+Received: from dev-dsk-gerhorst-1c-a6f23d20.eu-west-1.amazon.com
+ (10.15.21.113) by EX19D017EUA004.ant.amazon.com (10.252.50.239) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 13 Sep
+ 2023 12:32:22 +0000
+From:   Luis Gerhorst <gerhorst@amazon.de>
+To:     <alexei.starovoitov@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <haoluo@google.com>,
+        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+        <kpsingh@kernel.org>, <laoar.shao@gmail.com>,
+        <martin.lau@linux.dev>, <sdf@google.com>, <song@kernel.org>,
+        <yonghong.song@linux.dev>, <mykolal@fb.com>, <shuah@kernel.org>,
+        <gerhorst@amazon.de>, <iii@linux.ibm.com>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Luis Gerhorst <gerhorst@cs.fau.de>
+Subject: [PATCH 3/3] selftests/bpf: Add selftest for packet-pointer Spectre v1 gadget
+Date:   Wed, 13 Sep 2023 12:31:54 +0000
+Message-ID: <20230913123154.94264-1-gerhorst@amazon.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+Reply-To: <gerhorst@cs.fau.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Originating-IP: [10.15.21.113]
+X-ClientProxiedBy: EX19D035UWB003.ant.amazon.com (10.13.138.85) To
+ EX19D017EUA004.ant.amazon.com (10.252.50.239)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3669558bdf354cd352be955ef2764cde6a9bf5ec
-commit: 3675d8a1726337bd1e839a185e0a7ce0bc459b6b drm: vkms: Adds XRGB_16161616 and ARGB_1616161616 formats
-date:   1 year ago
-config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230913/202309132039.QGjCtYXa-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309132039.QGjCtYXa-lkp@intel.com/reproduce)
+When allowing speculative leaks by enabling packet pointer accesses
+without CAP_PERFMON (i.e., without having [1] reverted):
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309132039.QGjCtYXa-lkp@intel.com/
+  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
+  tc_bpf_non_root:PASS:set_cap_bpf_cap_net_admin 0 nsec
+  tc_bpf_non_root:PASS:disable_cap_sys_admin 0 nsec
+  tc_bpf_non_root:FAIL:test_tc_bpf__open_and_load unexpected pointer: 0x55bbd81969a0
+  Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:92:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:93:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:94:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:109:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:110:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:111:35: sparse: sparse: cast to restricted __le16
->> drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     got restricted __le16 [usertype]
+With [1] reverted:
 
-vim +91 drivers/gpu/drm/vkms/vkms_formats.c
+  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
+  #238/1   tc_bpf/tc_bpf_root:OK
+  #238/2   tc_bpf/tc_bpf_non_root:OK
+  #238     tc_bpf:OK
+  Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
 
-    80	
-    81	static void ARGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
-    82					     const struct vkms_frame_info *frame_info,
-    83					     int y)
-    84	{
-    85		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
-    86		u16 *src_pixels = get_packed_src_addr(frame_info, y);
-    87		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-    88				    stage_buffer->n_pixels);
-    89	
-    90		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
-  > 91			out_pixels[x].a = le16_to_cpu(src_pixels[3]);
-    92			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
-    93			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
-    94			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
-    95		}
-    96	}
-    97	
-    98	static void XRGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
-    99					     const struct vkms_frame_info *frame_info,
-   100					     int y)
-   101	{
-   102		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
-   103		u16 *src_pixels = get_packed_src_addr(frame_info, y);
-   104		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   105				    stage_buffer->n_pixels);
-   106	
-   107		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
-   108			out_pixels[x].a = (u16)0xffff;
-   109			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
-   110			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
-   111			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
-   112		}
-   113	}
-   114	
-   115	/*
-   116	 * The following  functions take an line of argb_u16 pixels from the
-   117	 * src_buffer, convert them to a specific format, and store them in the
-   118	 * destination.
-   119	 *
-   120	 * They are used in the `compose_active_planes` to convert and store a line
-   121	 * from the src_buffer to the writeback buffer.
-   122	 */
-   123	static void argb_u16_to_ARGB8888(struct vkms_frame_info *frame_info,
-   124					 const struct line_buffer *src_buffer, int y)
-   125	{
-   126		int x_dst = frame_info->dst.x1;
-   127		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   128		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   129		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   130				    src_buffer->n_pixels);
-   131	
-   132		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
-   133			/*
-   134			 * This sequence below is important because the format's byte order is
-   135			 * in little-endian. In the case of the ARGB8888 the memory is
-   136			 * organized this way:
-   137			 *
-   138			 * | Addr     | = blue channel
-   139			 * | Addr + 1 | = green channel
-   140			 * | Addr + 2 | = Red channel
-   141			 * | Addr + 3 | = Alpha channel
-   142			 */
-   143			dst_pixels[3] = DIV_ROUND_CLOSEST(in_pixels[x].a, 257);
-   144			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
-   145			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
-   146			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
-   147		}
-   148	}
-   149	
-   150	static void argb_u16_to_XRGB8888(struct vkms_frame_info *frame_info,
-   151					 const struct line_buffer *src_buffer, int y)
-   152	{
-   153		int x_dst = frame_info->dst.x1;
-   154		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   155		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   156		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   157				    src_buffer->n_pixels);
-   158	
-   159		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
-   160			dst_pixels[3] = 0xff;
-   161			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
-   162			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
-   163			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
-   164		}
-   165	}
-   166	
-   167	static void argb_u16_to_ARGB16161616(struct vkms_frame_info *frame_info,
-   168					     const struct line_buffer *src_buffer, int y)
-   169	{
-   170		int x_dst = frame_info->dst.x1;
-   171		u16 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   172		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   173		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   174				    src_buffer->n_pixels);
-   175	
-   176		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
- > 177			dst_pixels[3] = cpu_to_le16(in_pixels[x].a);
-   178			dst_pixels[2] = cpu_to_le16(in_pixels[x].r);
-   179			dst_pixels[1] = cpu_to_le16(in_pixels[x].g);
-   180			dst_pixels[0] = cpu_to_le16(in_pixels[x].b);
-   181		}
-   182	}
-   183	
+[1] d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2 ("bpf: Fix issue in verifying allow_ptr_leaks")
 
+Signed-off-by: Luis Gerhorst <gerhorst@amazon.de>
+Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
+Based-on-patch-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ .../testing/selftests/bpf/prog_tests/tc_bpf.c | 37 +++++++-
+ .../testing/selftests/bpf/progs/test_tc_bpf.c | 95 +++++++++++++++++++
+ 2 files changed, 131 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+index e873766276d1..5319cb94a0ae 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+@@ -3,6 +3,7 @@
+ #include <test_progs.h>
+ #include <linux/pkt_cls.h>
+ 
++#include "cap_helpers.h"
+ #include "test_tc_bpf.skel.h"
+ 
+ #define LO_IFINDEX 1
+@@ -327,7 +328,7 @@ static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
+ 	return 0;
+ }
+ 
+-void test_tc_bpf(void)
++void tc_bpf_root(void)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
+ 			    .attach_point = BPF_TC_INGRESS);
+@@ -393,3 +394,37 @@ void test_tc_bpf(void)
+ 	}
+ 	test_tc_bpf__destroy(skel);
+ }
++
++void tc_bpf_non_root(void)
++{
++	struct test_tc_bpf *skel = NULL;
++	__u64 caps = 0;
++	int ret;
++
++	/* In case CAP_BPF and CAP_PERFMON is not set */
++	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
++	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
++		return;
++	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
++	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
++		goto restore_cap;
++
++	skel = test_tc_bpf__open_and_load();
++	if (!ASSERT_ERR_PTR(skel, "test_tc_bpf__open_and_load"))
++		goto destroy;
++
++	goto restore_cap;
++destroy:
++	test_tc_bpf__destroy(skel);
++restore_cap:
++	if (caps)
++		cap_enable_effective(caps, NULL);
++}
++
++void test_tc_bpf(void)
++{
++	if (test__start_subtest("tc_bpf_root"))
++		tc_bpf_root();
++	if (test__start_subtest("tc_bpf_non_root"))
++		tc_bpf_non_root();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+index d28ca8d1f3d0..3b3f9ce6b9d4 100644
+--- a/tools/testing/selftests/bpf/progs/test_tc_bpf.c
++++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+@@ -2,6 +2,8 @@
+ 
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
++#include <linux/if_ether.h>
++#include <linux/ip.h>
+ 
+ /* Dummy prog to test TC-BPF API */
+ 
+@@ -10,3 +12,96 @@ int cls(struct __sk_buff *skb)
+ {
+ 	return 0;
+ }
++
++/* Prog to verify tc-bpf without cap_sys_admin and cap_perfmon is rejected as
++ * required to prevent Spectre v1 using CPU multiplication port contention
++ * side-channel. This is not a full exploit but rather a PoC for x86_64. With
++ * extensions to the verifier's mitigations this may become obsolete.
++ *
++ * This should compile to the following bytecode if the kernel would allow
++ * unprivileged packet pointer accesses:
++ *
++
++0000000000000000 <pkt_ptr>:
++       0:	b4 00 00 00 00 00 00 00	w0 = 0
++       1:	61 12 50 00 00 00 00 00	r2 = *(u32 *)(r1 + 80)
++       2:	61 11 4c 00 00 00 00 00	r1 = *(u32 *)(r1 + 76)
++       3:	bf 13 00 00 00 00 00 00	r3 = r1
++       4:	07 03 00 00 22 00 00 00	r3 += 34
++       5:	bd 23 07 00 00 00 00 00	if r3 <= r2 goto +7 <LBB1_3>
++       6:	71 10 0e 00 00 00 00 00	r0 = *(u8 *)(r1 + 14)
++       7:	64 00 00 00 18 00 00 00	w0 <<= 24
++       8:	c4 00 00 00 18 00 00 00	w0 s>>= 24
++       9:	bc 01 00 00 00 00 00 00	w1 = w0
++      10:	54 01 00 00 01 00 00 00	w1 &= 1
++      11:	16 01 01 00 00 00 00 00	if w1 == 0 goto +1 <LBB1_3>
++      12:	24 00 00 00 61 00 00 00	w0 *= 97
++
++0000000000000068 <LBB1_3>:
++      13:	95 00 00 00 00 00 00 00	exit
++
++ *
++ * Which should in turn translate to this x86_64 assembly with !allow_ptr_leaks
++ * and !bypass_spec_v1:
++ *
++
++int pkt_ptr(struct __sk_buff * skb):
++bpf_prog_7c3834bad32f2b0f_pkt_ptr:
++; int pkt_ptr(struct __sk_buff *skb)
++   0:   endbr64
++   4:   nopl   0x0(%rax,%rax,1)
++   9:   xchg   %ax,%ax
++   b:   push   %rbp
++   c:   mov    %rsp,%rbp
++   f:   endbr64
++  13:   xor    %eax,%eax
++; if ((long)(iph + 1) > (long)skb->data_end)
++  15:   mov    0x50(%rdi),%rsi
++; struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
++  19:   mov    0xc8(%rdi),%rdi
++; if ((long)(iph + 1) > (long)skb->data_end)
++  20:   mov    %rdi,%rdx
++  23:   add    $0x22,%rdx
++; if ((long)(iph + 1) > (long)skb->data_end)
++  27:   cmp    %rsi,%rdx
++  2a:   ja     0x0000000000000043
++; char secret = *((char *) iph);
++  2c:   movzbq 0xe(%rdi),%rax
++  31:   shl    $0x18,%eax
++  34:   sar    $0x18,%eax
++; if (secret & 1) {
++  37:   mov    %eax,%edi
++  39:   and    $0x1,%edi
++; if (secret & 1) {
++  3c:   test   %edi,%edi
++  3e:   je     0x0000000000000043
++  40:   imul   $0x61,%eax,%eax
++; }
++  43:   leaveq
++  44:   retq
++
++ *
++ */
++SEC("tcx/ingress")
++int pkt_ptr(struct __sk_buff *skb)
++{
++	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
++
++	/* Branch to be speculatively bypassed. */
++	if ((long)(iph + 1) > (long)skb->data_end)
++		return 0;
++
++	/* Speculative access to be prevented. */
++	char secret = *((char *) iph);
++
++	/* Leak the first bit of the secret value that lies behind data_end to a
++	 * SMP silbling thread that also executes imul instructions. If the bit
++	 * is 1, the silbling will experience a slowdown. */
++	long long x = secret;
++	if (secret & 1) {
++		x *= 97;
++	}
++
++	/* To prevent optimization. */
++	return x;
++}
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
