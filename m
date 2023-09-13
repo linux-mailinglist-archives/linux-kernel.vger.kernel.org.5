@@ -2,93 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E05479E42D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A09179E430
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239616AbjIMJwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        id S239514AbjIMJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239516AbjIMJwI (ORCPT
+        with ESMTP id S239529AbjIMJwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:52:08 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B3219BB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:52:04 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rlwdl20fPzVkfZ;
-        Wed, 13 Sep 2023 17:49:15 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 13 Sep 2023 17:52:02 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <ying.huang@intel.com>,
-        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 8/8] mm: migrate: remove isolated variable in add_page_for_migration()
+        Wed, 13 Sep 2023 05:52:14 -0400
+Received: from mail-m12738.qiye.163.com (mail-m12738.qiye.163.com [115.236.127.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885DF19BB;
+        Wed, 13 Sep 2023 02:52:09 -0700 (PDT)
+Received: from [10.128.10.193] (unknown [123.120.52.233])
+        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 72B584A01D2;
+        Wed, 13 Sep 2023 17:51:35 +0800 (CST)
+Message-ID: <44030794-4baa-4207-af75-4c600a3626f9@sangfor.com.cn>
 Date:   Wed, 13 Sep 2023 17:51:31 +0800
-Message-ID: <20230913095131.2426871-9-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20230913095131.2426871-1-wangkefeng.wang@huawei.com>
-References: <20230913095131.2426871-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To:     Eduard Zingerman <eddyz87@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn,
+        huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+ <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
+ <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
+ <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
+ <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
+From:   pengdonglin <pengdonglin@sangfor.com.cn>
+In-Reply-To: <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDGEseVk8YS04aHUkZTUJDTVUTARMWGhIXJBQOD1
+        lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSEpCSE9VSktLVUtZBg++
+X-HM-Tid: 0a8a8df40bf7b212kuuu72b584a01d2
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6Pww4KD1IHQ8CGCk4Pjg6
+        ExkKFAJVSlVKTUJPTkJDTUJNTkhLVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+        WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBTUxISTcG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Directly check the return of isolate_hugetlb() and folio_isolate_lru()
-to remove isolated variable, also setup err = -EBUSY in advance before
-isolation, and update err only when successfully queued for migration,
-which could help us to unify and simplify code a bit.
+On 2023/9/13 1:03, Eduard Zingerman wrote:
+> On Tue, 2023-09-12 at 09:40 -0700, Alexei Starovoitov wrote:
+>> On Tue, Sep 12, 2023 at 7:19 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>>>
+>>> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
+>>>> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
+>>>>> Currently, we are only using the linear search method to find the type id
+>>>>> by the name, which has a time complexity of O(n). This change involves
+>>>>> sorting the names of btf types in ascending order and using binary search,
+>>>>> which has a time complexity of O(log(n)). This idea was inspired by the
+>>>>> following patch:
+>>>>>
+>>>>> 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
+>>>>>
+>>>>> At present, this improvement is only for searching in vmlinux's and
+>>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_STRUCT.
+>>>>>
+>>>>> Another change is the search direction, where we search the BTF first and
+>>>>> then its base, the type id of the first matched btf_type will be returned.
+>>>>>
+>>>>> Here is a time-consuming result that finding all the type ids of 67,819 kernel
+>>>>> functions in vmlinux's BTF by their names:
+>>>>>
+>>>>> Before: 17000 ms
+>>>>> After:     10 ms
+>>>>>
+>>>>> The average lookup performance has improved about 1700x at the above scenario.
+>>>>>
+>>>>> However, this change will consume more memory, for example, 67,819 kernel
+>>>>> functions will allocate about 530KB memory.
+>>>>
+>>>> Hi Donglin,
+>>>>
+>>>> I think this is a good improvement. However, I wonder, why did you
+>>>> choose to have a separate name map for each BTF kind?
+>>>>
+>>>> I did some analysis for my local testing kernel config and got such numbers:
+>>>> - total number of BTF objects: 97350
+>>>> - number of FUNC and STRUCT objects: 51597
+>>>> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC objects: 56817
+>>>>    (these are all kinds for which lookup by name might make sense)
+>>>> - number of named objects: 54246
+>>>> - number of name collisions:
+>>>>    - unique names: 53985 counts
+>>>>    - 2 objects with the same name: 129 counts
+>>>>    - 3 objects with the same name: 3 counts
+>>>>
+>>>> So, it appears that having a single map for all named objects makes
+>>>> sense and would also simplify the implementation, what do you think?
+>>>
+>>> Some more numbers for my config:
+>>> - 13241 types (struct, union, typedef, enum), log2 13241 = 13.7
+>>> - 43575 funcs, log2 43575 = 15.4
+>>> Thus, having separate map for types vs functions might save ~1.7
+>>> search iterations. Is this a significant slowdown in practice?
+>>
+>> What do you propose to do in case of duplicates ?
+>> func and struct can have the same name, but they will have two different
+>> btf_ids. How do we store them ?
+>> Also we might add global vars to BTF. Such request came up several times.
+>> So we need to make sure our search approach scales to
+>> func, struct, vars. I don't recall whether we search any other kinds.
+>> Separate arrays for different kinds seems ok.
+>> It's a bit of code complexity, but it's not an increase in memory.
+> 
+> Binary search gives, say, lowest index of a thing with name A, then
+> increment index while name remains A looking for correct kind.
+> Given the name conflicts info from above, 99% of times there would be
+> no need to iterate and in very few cases there would a couple of iterations.
 
-Reviewed-by: Zi Yan <ziy@nvidia.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/migrate.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+Yeah, I agree.
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 7b07c97f5a6f..a5d739603458 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2059,7 +2059,6 @@ static int add_page_for_migration(struct mm_struct *mm, const void __user *p,
- 	struct page *page;
- 	struct folio *folio;
- 	int err;
--	bool isolated;
- 
- 	mmap_read_lock(mm);
- 	addr = (unsigned long)untagged_addr_remote(mm, p);
-@@ -2092,15 +2091,13 @@ static int add_page_for_migration(struct mm_struct *mm, const void __user *p,
- 	if (page_mapcount(page) > 1 && !migrate_all)
- 		goto out_putfolio;
- 
-+	err = -EBUSY;
- 	if (folio_test_hugetlb(folio)) {
--		isolated = isolate_hugetlb(folio, pagelist);
--		err = isolated ? 1 : -EBUSY;
-+		if (isolate_hugetlb(folio, pagelist))
-+			err = 1;
- 	} else {
--		isolated = folio_isolate_lru(folio);
--		if (!isolated) {
--			err = -EBUSY;
-+		if (!folio_isolate_lru(folio))
- 			goto out_putfolio;
--		}
- 
- 		err = 1;
- 		list_add_tail(&folio->lru, pagelist);
--- 
-2.27.0
+> 
+> Same logic would be necessary with current approach if different BTF
+> kinds would be allowed in BTF_ID_NAME_* cohorts. I figured that these
+> cohorts are mainly a way to split the tree for faster lookups, but
+> maybe that is not the main intent.
+Yeah, I thought it may be faster for some kinds, but I didn't perform a
+comparative test.
+
+> 
+>> With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyte
+>> extra memory. That's quite a bit. Anything we can do to compress it?
+> 
+> That's an interesting question, from the top of my head:
+> pre-sort in pahole (re-assign IDs so that increasing ID also would
+> mean "increasing" name), shouldn't be that difficult.
+
+Thank you, I agree.
+
+> 
+>> Folks requested vmlinux BTF to be a module, so it's loaded on demand.
+>> BTF memory consumption is a concern to many.
+>> I think before we add these per-kind search arrays we better make
+>> BTF optional as a module.
+> 
+> 
 
