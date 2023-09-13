@@ -2,149 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5F379F262
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B166B79F265
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbjIMTwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
+        id S232458AbjIMTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjIMTwX (ORCPT
+        with ESMTP id S229642AbjIMTyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:52:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505C1B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:52:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 03BAF218E3;
-        Wed, 13 Sep 2023 19:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694634738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3lN7bSKVF5Ye4MzDY2kf7YVJd7wa8KQ9puGZkU8cNug=;
-        b=tfquWEGbNzaMBuutCxOGon4c6Z4Z11vxMfYQGdhjLgyCbwC9kFZ8RrIKmZjOLWe8yrrGje
-        58QY9l/1fsW4YUXkKU2ySYBxweNWko2KKDHjxpLXdWSSWiOz11XwOhcNlVMyOwcVWbekKr
-        Ubip/TpNiYAWFGAx1QL7TW29WE4wjVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694634738;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3lN7bSKVF5Ye4MzDY2kf7YVJd7wa8KQ9puGZkU8cNug=;
-        b=zU+u4kIJebrTdhHmOFo9DkQOHnLA6gK6lkd/jxL5PDvs4PIp1nZaY8COsu9AY9nqpQjJDD
-        8BTbhk7+tVe4JkAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6C8813440;
-        Wed, 13 Sep 2023 19:52:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dQi8M/ESAmUhdwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 13 Sep 2023 19:52:17 +0000
-Message-ID: <5911bf29-b2a0-9016-7071-68334e7d680d@suse.cz>
-Date:   Wed, 13 Sep 2023 21:52:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 5/6] mm: page_alloc: fix freelist movement during block
- conversion
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        Wed, 13 Sep 2023 15:54:13 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9E99E;
+        Wed, 13 Sep 2023 12:54:09 -0700 (PDT)
+Received: from umang.jainideasonboard.com (unknown [103.86.18.170])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8B4CA755;
+        Wed, 13 Sep 2023 21:52:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694634755;
+        bh=dZQYIYhd8wtDU67jQTMB8G2epHTfgZbmOFawwvBWHRw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XszMOHbWPsFIBRT1kXxrTff9DznD6g3PRD6GPRe0lEe2KDA7CN18WF/Tteogaywxg
+         mzcYCwr3e06DVsU5j83i5VzxBomxEoMuY90hiwpfcGuaa8NZYHwR+DlYHD9VF4d09s
+         8u2EOtD7sgEH4tWCEbVRJ2g8D5v8tEukwlQ99gxo=
+From:   Umang Jain <umang.jain@ideasonboard.com>
+To:     linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-6-hannes@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230911195023.247694-6-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrien Thierry <athierry@redhat.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v11 0/5] staging: vc04_services: vchiq: Register devices with a custom bus_type
+Date:   Thu, 14 Sep 2023 01:23:49 +0530
+Message-Id: <20230913195354.835884-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 21:41, Johannes Weiner wrote:
-> Currently, page block type conversion during fallbacks, atomic
-> reservations and isolation can strand various amounts of free pages on
-> incorrect freelists.
-> 
-> For example, fallback stealing moves free pages in the block to the
-> new type's freelists, but then may not actually claim the block for
-> that type if there aren't enough compatible pages already allocated.
-> 
-> In all cases, free page moving might fail if the block straddles more
-> than one zone, in which case no free pages are moved at all, but the
-> block type is changed anyway.
-> 
-> This is detrimental to type hygiene on the freelists. It encourages
-> incompatible page mixing down the line (ask for one type, get another)
-> and thus contributes to long-term fragmentation.
-> 
-> Split the process into a proper transaction: check first if conversion
-> will happen, then try to move the free pages, and only if that was
-> successful convert the block to the new type.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+The patch series added a new bus type vchiq_bus_type and registers
+child devices in order to move them away from using platform
+device/driver.
 
-<snip>
+Tested on RPi-3-b with media tree master branch.
 
-> @@ -1638,26 +1629,62 @@ static int move_freepages(struct zone *zone,
->  	return pages_moved;
->  }
->  
-> -int move_freepages_block(struct zone *zone, struct page *page,
-> -				int migratetype, int *num_movable)
-> +static bool prep_move_freepages_block(struct zone *zone, struct page *page,
-> +				      unsigned long *start_pfn,
-> +				      unsigned long *end_pfn,
-> +				      int *num_free, int *num_movable)
->  {
-> -	unsigned long start_pfn, end_pfn, pfn;
-> -
-> -	if (num_movable)
-> -		*num_movable = 0;
-> +	unsigned long pfn, start, end;
->  
->  	pfn = page_to_pfn(page);
-> -	start_pfn = pageblock_start_pfn(pfn);
-> -	end_pfn = pageblock_end_pfn(pfn) - 1;
-> +	start = pageblock_start_pfn(pfn);
-> +	end = pageblock_end_pfn(pfn) - 1;
+Patch 1/5 and 2/5 adds a new bus_type and registers them to vchiq
+interface
 
->  	/* Do not cross zone boundaries */
-> -	if (!zone_spans_pfn(zone, start_pfn))
-> -		start_pfn = zone->zone_start_pfn;
-> -	if (!zone_spans_pfn(zone, end_pfn))
-> -		return 0;
-> +	if (!zone_spans_pfn(zone, start))
-> +		start = zone->zone_start_pfn;
-> +	if (!zone_spans_pfn(zone, end))
-> +		return false;
+Patch 3/5 and 4/5 moves the bcm2835-camera and bcm2835-audio
+to the new bus respectively
 
-This brings me back to my previous suggestion - if we update the end, won't
-the whole "block straddles >1 zones" situation to check for go away?
+Patch 5/5 removes a platform registeration helper which is no
+longer required.
 
-Hm or is it actually done because we have a problem by representing
-pageblock migratetype with multiple zones, since there's a single
-pageblock_bitmap entry per the respective pageblock range of pfn's, so one
-zone's migratetype could mess with other's? And now it matters if we want
-100% match of freelist vs pageblock migratetype?
-(I think even before this series it could have mattered for
-MIGRATETYPE_ISOLATE, is it broken in those corner cases?)
+Changes in v11:
+- Move setting of DMA mask in child devices (3/5 and 4/5)
+- Fixes "DMA mask not set issue" reported in v10.
 
-But in that case we might not be detecting the situation properly for the
-later of the two zones in a pageblock, because if start_pfn is not spanned
-we adjust it and continue? Hmm...
+Changes in v10:
+- fix dma_attr WARN issue with bcm2835-audio module loading
+- Unregister bus on parent platform device fails to register
+- Reword commit to highlight bcm2835_audio to bcm2835-audio name change
 
+Changes in v9:
+- Fix module autoloading
+- Implement bus_type's probe() callback to load drivers
+- Implement bus_type's uevent() to make sure appropriate drivers are
+  loaded when device are registed from vchiq.
+
+Changes in v8:
+- Drop dual licensing. Instead use GPL-2.0 only for patch 1/5
+
+Changes in v7:
+(5 out of 6 patches from v6 merged)
+- Split the main patch (6/6) as requested.
+- Use struct vchiq_device * instead of struct device * in
+  all bus functions.
+- Drop additional name attribute displayed in sysfs (redundant info)
+- Document vchiq_interface doesn't enumerate device discovery
+- remove EXPORT_SYMBOL_GPL(vchiq_bus_type)
+
+Changes in v6:
+- Split struct device and struct driver wrappers in vchiq_device.[ch]
+- Move vchiq_bus_type definition to vchiq_device.[ch] as well
+- return error on bus_register() failure
+- drop dma_set_mask_and_coherent
+- trivial variable name change
+
+Changes in v5:
+- Fixup missing "staging: " in commits' subject line
+- No code changes from v4
+
+Changes in v4:
+- Introduce patches to drop include directives from Makefile
+
+Changes in v3:
+- Rework entirely to replace platform devices/driver model
+
+-v2:
+https://lore.kernel.org/all/20221222191500.515795-1-umang.jain@ideasonboard.com/
+
+-v1:
+https://lore.kernel.org/all/20221220084404.19280-1-umang.jain@ideasonboard.com/
+
+Umang Jain (5):
+  staging: vc04_services: vchiq_arm: Add new bus type and device type
+  staging: vc04_services: vchiq_arm: Register vchiq_bus_type
+  staging: bcm2835-camera: Register bcm2835-camera with vchiq_bus_type
+  staging: bcm2835-audio: Register bcm2835-audio with vchiq_bus_type
+  staging: vc04_services: vchiq_arm: Remove vchiq_register_child()
+
+ drivers/staging/vc04_services/Makefile        |   1 +
+ .../vc04_services/bcm2835-audio/bcm2835.c     |  29 +++--
+ .../bcm2835-camera/bcm2835-camera.c           |  26 +++--
+ .../interface/vchiq_arm/vchiq_arm.c           |  52 ++++-----
+ .../interface/vchiq_arm/vchiq_device.c        | 104 ++++++++++++++++++
+ .../interface/vchiq_arm/vchiq_device.h        |  54 +++++++++
+ 6 files changed, 219 insertions(+), 47 deletions(-)
+ create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+ create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+2.40.1
 
