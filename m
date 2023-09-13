@@ -2,135 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D3B79EC8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D6C79EC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbjIMPW3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 11:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S241574AbjIMPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbjIMPW1 (ORCPT
+        with ESMTP id S241820AbjIMPS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:22:27 -0400
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDED7CE;
-        Wed, 13 Sep 2023 08:22:23 -0700 (PDT)
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-770ef353b8fso326351585a.0;
-        Wed, 13 Sep 2023 08:22:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694618543; x=1695223343;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7YO1tPkDOEwQyc/Dv+HaOfcjogh4Es5EpVUGisTZOW4=;
-        b=sHTB26XNZ8teze6yZ9Ixw9kqdAyYVWnLlDSTGSBflM3o/T8d/XnR0ltTMjN15mwhMe
-         vAch7EnHtODeg9nb4fnZvSlCSxj0nMzfH0NA6iQn2K/AKhZHCUpd1uu4/cBDRMt4/Hx2
-         zw4Rp7dEaHm5T8mKrygsErZOCXUBcHeq0m/IHBMUuapBhjadQoptgQYqi3Se4dpyxn1D
-         ZkN7TiLaUjfZCH9dJUpSCuT0K33qCgrcPNjE1suEoU2X6PpWnp0VAUfraAy9RcfsQL/h
-         5eHFyugAlBv5blCIvJp9geqtNvPX5Usbjh8YdTWKlDqYvTqCfqS6Yc0aP3DE74SNi0u1
-         JIpQ==
-X-Gm-Message-State: AOJu0YwYWS6hYq5QxE0zM8N8KayeOi75z2kpba2NetgULvXQ8O36SDxe
-        QUiFn5RQiBCW5EYYAhW9sPfNcX2Pe5D5KQ==
-X-Google-Smtp-Source: AGHT+IEWLMHZWuUElViNkfPsqVJNkVnRs/obn/xLwb7A1rORq0QfqkXdEdSkStvIeU9CQexjOYe1kg==
-X-Received: by 2002:a0c:e147:0:b0:64a:131f:b214 with SMTP id c7-20020a0ce147000000b0064a131fb214mr2907571qvl.12.1694618542767;
-        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id a17-20020a05620a125100b0076f039d87c6sm3966650qkl.82.2023.09.13.08.22.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-76dc77fd01fso436119885a.3;
-        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
-X-Received: by 2002:a25:ad08:0:b0:d7f:8e1e:a95f with SMTP id
- y8-20020a25ad08000000b00d7f8e1ea95fmr2686664ybi.6.1694618224901; Wed, 13 Sep
- 2023 08:17:04 -0700 (PDT)
+        Wed, 13 Sep 2023 11:18:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC31A1BE
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694618231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wA/deTDyR3rOGKniPdSBTa4tEgxl+2pJ7p2k7fGC+MM=;
+        b=UHyQObB5uN70NcUdT/JUDnxMgL69vU7HH4u8eXzLRLT9jzQw0j0p/KOigKkjG2Oar+2rwS
+        jqr6rHfnuLAd+vG0iS1CkyS3C2ScoJIB6X3qqKOOVJ1qKhI7hZu3effHF3jlimt0QGifju
+        77boq91JtQFalJWg3ZL4+WzM0CbJlvE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-516-GaVubWuIPveFiQ1f0tTftQ-1; Wed, 13 Sep 2023 11:17:05 -0400
+X-MC-Unique: GaVubWuIPveFiQ1f0tTftQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6441E18056B4;
+        Wed, 13 Sep 2023 15:17:04 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1204E40C2009;
+        Wed, 13 Sep 2023 15:17:01 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Subject: [PATCH] x86/platform/uv: Use sysfs_match_string() for string parsing in param_set_action()
+Date:   Wed, 13 Sep 2023 17:16:56 +0200
+Message-ID: <20230913151656.52792-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-36-claudiu.beznea.uj@bp.renesas.com>
- <20230912161635.GA877089-robh@kernel.org> <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
-In-Reply-To: <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Sep 2023 17:16:52 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWntLTk9ZmAF1voE-tdB+4vVzE804h=qsfaoN-8_6RN_Q@mail.gmail.com>
-Message-ID: <CAMuHMdWntLTk9ZmAF1voE-tdB+4vVzE804h=qsfaoN-8_6RN_Q@mail.gmail.com>
-Subject: Re: [PATCH 35/37] dt-bindings: arm: renesas: document SMARC
- Carrier-II EVK
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc:     Rob Herring <robh@kernel.org>, mturquette@baylibre.com,
-        sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+Remove the custom, hard to read code to:
 
-On Wed, Sep 13, 2023 at 7:32 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
-> On 12.09.2023 19:16, Rob Herring wrote:
-> > On Tue, Sep 12, 2023 at 07:51:55AM +0300, Claudiu wrote:
-> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>
-> >> Document Renesas SMARC Carrier-II EVK board which is based on RZ/G3S
-> >> (R9A08G045) SoC. The SMARC Carrier-II EVK consists of RZ/G3S SoM module and
-> >> SMARC Carrier-II carrier board, the SoM module sits on top of carrier
-> >> board.
-> >>
-> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+1. Make a copy of "val" with any potential '\n' at the end stripped
+2. Compare the copy against an array of allowed string values
 
-Thanks for your patch!
+Linux has the sysfs_match_string() helper exactly for cases like this,
+switch to this.
 
-> >> --- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
-> >> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
-> >> @@ -476,6 +476,8 @@ properties:
-> >>
-> >>        - description: RZ/G3S (R9A08G045)
-> >>          items:
-> >> +          - enum:
-> >> +              - renesas,smarc2-evk # SMARC Carrier-II EVK
-> >
-> > You just changed the existing binding...
-> >
-> >>            - enum:
-> >>                - renesas,r9a08g045s33 # PCIe support
-> >
-> > This is the SoM module?
->
-> No, this is a SoC variant which supports PCIe.
+Cc: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ arch/x86/platform/uv/uv_nmi.c | 48 +++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 22 deletions(-)
 
-Ideally, we need a compatible value for the SoM as well, as the SoM
-can be used stand-alone, or plugged in a different carrier board.
-
-For iWave Systems RZ/G1E SODIMM, we have that.
-For the existing RZ/G2L variants, we forgot, but it can still be added...
-
->
-> > You either need to squash this change or add
-> > another case with 3 entries and maintain the 2 entry case. (there's no
-> > way to express any entry at the beginning or middle can be optional)
-> >
-> >>            - const: renesas,r9a08g045
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index 45d0c17ce77c..44bacb547c65 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -179,17 +179,27 @@ module_param_named(debug, uv_nmi_debug, int, 0644);
+ 
+ /* Valid NMI Actions */
+ #define	ACTION_LEN	16
+-static struct nmi_action {
+-	char	*action;
+-	char	*desc;
+-} valid_acts[] = {
+-	{	"kdump",	"do kernel crash dump"			},
+-	{	"dump",		"dump process stack for each cpu"	},
+-	{	"ips",		"dump Inst Ptr info for each cpu"	},
+-	{	"kdb",		"enter KDB (needs kgdboc= assignment)"	},
+-	{	"kgdb",		"enter KGDB (needs gdb target remote)"	},
+-	{	"health",	"check if CPUs respond to NMI"		},
++
++static const char * const valid_acts[] = {
++	"kdump",
++	"dump",
++	"ips",
++	"kdb",
++	"kgdb",
++	"health",
+ };
++
++static const char * const valid_acts_desc[] = {
++	"do kernel crash dump",
++	"dump process stack for each cpu",
++	"dump Inst Ptr info for each cpu",
++	"enter KDB (needs kgdboc= assignment)",
++	"enter KGDB (needs gdb target remote)",
++	"check if CPUs respond to NMI",
++};
++
++static_assert(ARRAY_SIZE(valid_acts) == ARRAY_SIZE(valid_acts_desc));
++
+ typedef char action_t[ACTION_LEN];
+ static action_t uv_nmi_action = { "dump" };
+ 
+@@ -202,25 +212,19 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+ {
+ 	int i;
+ 	int n = ARRAY_SIZE(valid_acts);
+-	char arg[ACTION_LEN];
+ 
+-	/* (remove possible '\n') */
+-	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
++	i = sysfs_match_string(valid_acts, val);
+ 
+-	for (i = 0; i < n; i++)
+-		if (!strcmp(arg, valid_acts[i].action))
+-			break;
+-
+-	if (i < n) {
+-		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
++	if (i >= 0) {
++		strscpy(uv_nmi_action, valid_acts[i], sizeof(uv_nmi_action));
+ 		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
+ 		return 0;
+ 	}
+ 
+-	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", arg);
++	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", val);
+ 	for (i = 0; i < n; i++)
+-		pr_err("UV: %-8s - %s\n",
+-			valid_acts[i].action, valid_acts[i].desc);
++		pr_err("UV: %-8s - %s\n", valid_acts[i], valid_acts_desc[i]);
++
+ 	return -EINVAL;
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.41.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
