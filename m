@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FE079EF6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F56179EF74
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjIMQyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S229705AbjIMQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIMQyi (ORCPT
+        with ESMTP id S229625AbjIMQ5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:54:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51280B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694624031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EUAQM9nUVDpynXNTWZkPqYipd38tYN+dKS0WVUg2qcc=;
-        b=VeTPCGHIsqZjnHz3UFDpzjbRcws5NXTSViA4/I4m8kj97VyeBZVmtnIhQ4n0pYGJPlerlD
-        lsngGchpti5dYDlomb1y/Yzx+pHLqYd2trsF89m7BuAsEd5rqqngJ0hOnniQhipiW8UycQ
-        Q9P70EydHuY6c8dJJOD1rjGMhI/SX9Q=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-141-Z7u4_OUeM9G3zYzju-YFOA-1; Wed, 13 Sep 2023 12:53:50 -0400
-X-MC-Unique: Z7u4_OUeM9G3zYzju-YFOA-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5009f4c933cso7543597e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:53:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694624028; x=1695228828;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUAQM9nUVDpynXNTWZkPqYipd38tYN+dKS0WVUg2qcc=;
-        b=CynT6LunMbxRGlwAa3LYMfphPojnTrMMRdKXARX1Ar8Cis68/6ceb9CFvOgWWDOP19
-         PPxhyAAupNj33bIh2lZcu74lpXT/r4Eo0c9cUGkSQfDAN65//+0+d35/miCjB6ZP8FAp
-         tzrgUTiJwOgGS7Z7N/Rh2nQR0IFMrlOKoz188DYBKfpRloL7kYEIRJfgpiJYLbLk2zRE
-         e6yR9OREkQHw3390IkAUHRvKM13ohrIiwbVi91Z78ZTjxs95V5Rn7e0hwLqS55xMO0ob
-         RNstQrHXWtvvvc4cp3Q0rm7W+dFsEvH7XHj7x7EbWfkEESExkefrHGZ06AH6uA5BKMhE
-         TN1w==
-X-Gm-Message-State: AOJu0YxBbouj7L+HIly3tkKykEBodBSGlHI88UbUNwOR+DeopoWQ93RT
-        2zalmXGOEp9kKyMQa5IfuQ0skibtYb9Wvx6wHvxjefTlQDxcXqkxRYIu1rbmgLfBwgwar7pkc3j
-        JqCCsGP7Sc2vskXiec7tBaI8Y
-X-Received: by 2002:a05:6512:3050:b0:4fe:49d:6ae2 with SMTP id b16-20020a056512305000b004fe049d6ae2mr3681520lfb.0.1694624028524;
-        Wed, 13 Sep 2023 09:53:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGp8B1gEI/3ZQ9C3N8IdbLVsl6t5HP7MRJGoKh3mgc6mi3ZCeY0JqdjSTaCUnx7fBbgv42XOQ==
-X-Received: by 2002:a05:6512:3050:b0:4fe:49d:6ae2 with SMTP id b16-20020a056512305000b004fe049d6ae2mr3681506lfb.0.1694624028147;
-        Wed, 13 Sep 2023 09:53:48 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id sb5-20020a170906edc500b0099bc0daf3d7sm8758990ejb.182.2023.09.13.09.53.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 09:53:47 -0700 (PDT)
-Message-ID: <50da04e3-5e12-89d3-e3ad-f2ff4533a615@redhat.com>
-Date:   Wed, 13 Sep 2023 18:53:46 +0200
+        Wed, 13 Sep 2023 12:57:13 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D401BE4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:57:09 -0700 (PDT)
+Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DGYwHK028385;
+        Wed, 13 Sep 2023 16:56:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=pVECDLxvzfx4s7I/ZnWducAjxQ0HjHhAJL3zG/uCzm4=;
+ b=UzbqRuJmipaj3TwFX9gAJPEC7clQAqsOL8hYY0MZcKjlEOYJ1d3Pl18Fi7tzuakeIlF7
+ 0DUMGxp36/jkqPCpt08u1IUbJt12ndRC5H7ofmXRjBzQMXaoCLzbaTHRLZFl8u9Ktd9D
+ hUvt0OONbco0FAduLon/CH795Gd7c4WIPtwhrjKFPmr1EgOSJOTlA8v4NntOB9jTpFSi
+ HwUe52KHKjb1r7akJ4FOjheh2oZqEYgwrYTaH0cd5MIazuP5ovx/tp6Mx1p3LBS/Mg6c
+ U5L8TT5PCJZf9sBLYwSoVbqDBGWyzCw73KzOE55yZ7sVoYMSH3rnQR0Mw8LxBwriV1UX EA== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3t3gqq06ha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 16:56:16 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id BE6781318C;
+        Wed, 13 Sep 2023 16:56:15 +0000 (UTC)
+Received: from swahl-linux (unknown [16.231.227.39])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 82F18804F51;
+        Wed, 13 Sep 2023 16:56:13 +0000 (UTC)
+Date:   Wed, 13 Sep 2023 11:56:11 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Subject: Re: [PATCH] x86/platform/uv: Use sysfs_match_string() for string
+ parsing in param_set_action()
+Message-ID: <ZQHpC/oKLwfJuvRu@swahl-linux>
+References: <20230913151656.52792-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: sysfs interface to auxmac
-To:     Mark Pearson <mpearson-lenovo@squebb.ca>,
-        Fernando Eckhardt Valle <fevalle@ipt.br>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>, linux-kernel@vger.kernel.org
-References: <20230906195204.4478-1-fevalle@ipt.br>
- <d26d4b15-765b-a444-b740-97f95f2db58d@redhat.com>
- <c05afb18-bca5-4500-877d-d44ef3abc310@app.fastmail.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <c05afb18-bca5-4500-877d-d44ef3abc310@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913151656.52792-1-hdegoede@redhat.com>
+X-Proofpoint-ORIG-GUID: a7cgYSSXsIntcacUm0yWmz98B41zcu13
+X-Proofpoint-GUID: a7cgYSSXsIntcacUm0yWmz98B41zcu13
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_10,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 suspectscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ clxscore=1011 lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=951
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309130140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark, Fernando,
-
-On 9/13/23 18:41, Mark Pearson wrote:
+On Wed, Sep 13, 2023 at 05:16:56PM +0200, Hans de Goede wrote:
+> Remove the custom, hard to read code to:
 > 
+> 1. Make a copy of "val" with any potential '\n' at the end stripped
+> 2. Compare the copy against an array of allowed string values
 > 
-> On Wed, Sep 13, 2023, at 11:58 AM, Hans de Goede wrote:
->> Hi Fernando,
->>
->> On 9/6/23 21:52, Fernando Eckhardt Valle wrote:
->>> Newer Thinkpads have a feature called Mac Address Passthrough.
->>> This patch provides a sysfs interface that userspace can use
->>> to get this auxiliary mac address.
->>>
->>> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
->>
->> Thank you for your patch. 
->>
->> At a minimum for this patch to be accepted you will need
->> to document the new sysfs interface in:
->>
->> Documentation/admin-guide/laptops/thinkpad-acpi.rst
->>
->> But I wonder if we should export this information to
->> userspace in this way ?
->>
->> The reason why I'm wondering is because mac-address passthrough
->> in case of using e.g. Lenovo Thunderbolt docks is already
->> supported by the kernel by code for this in drivers/net/usb/r8152.c :
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/usb/r8152.c#n1613
->>
->> So I'm wondering if we really need this, is there a planned
->> userspace API consumer of the new sysfs interface ?
->>
->> Or is this only intended as a way for a user to query this, iow
->> is this purely intended for informational purposes ?
->>
-> Hi Hans,
-> 
-> We've previously had strong pushback from the maintainers in the net tree that the MAC passthru should not be done there and should be done in user-space. I'd have to dig up the threads, but there was a preference for it to not be done in the kernel (and some frustrations at having vendor specific changes in the net driver).
-> 
-> We've also seen various timing issues (some related to ME FW doing it's thing) that makes it tricky to handle in the kernel - with added delays being needed leading to patches that can't be accepted.
-> 
-> This approach is one of the steps towards fixing this. Fernando did discuss and review this with me beforehand (apologies - I meant to add a note saying I'd been involved). If you think there is a better approach please let us know, but we figured as this is a Lenovo specific thing it made sense to have it here in thinkpad_acpi.
-> 
-> There will be a consumer (I think it's a script and udev rule) to update the MAC if a passthru-MAC address is provided via the BIOS. This will be open-source, but we haven't really figured out how to release it yet.
-> 
-> Fernando - please correct anything I've gotten wrong!
+> Linux has the sysfs_match_string() helper exactly for cases like this,
+> switch to this.
 
-Ah that is all good to know. That pretty much takes care of
-my objections / answers my questions.
+Hans,
 
-Fernando can you please submit a v2 which:
+I like this patch, compiling and testing now.
 
-1. Adds documentation as mentioned already
-2. Moves the special handling of "XXXXXXXXXXXX" from show()
-   to init() (writing to auxmac[] in show() is a bit weird,
-   also we only need to do this once, so it is init code)
+I was wondering, as long as we're in the neighborhood, how you feel
+about changing the stored variable uv_nmi_action to an int or enum
+rather than a string, since it can only be one of 6 values, and the
+string compare while processing an NMI strikes me as inefficent.
 
-Regards,
+It could extend this patch, or be done as a follow on.  And I'm
+willing to supply the effort if you want me to.
 
-Hans
+--> Steve Wahl
 
+-- 
+Steve Wahl, Hewlett Packard Enterprise
