@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 668E779E6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A6D79E6C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240202AbjIMLaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
+        id S240181AbjIMLaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240125AbjIMLaA (ORCPT
+        with ESMTP id S240129AbjIMLaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:30:00 -0400
-Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA4D1726
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:29:56 -0700 (PDT)
-Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-3a78c2cdd77so7512451b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:29:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694604596; x=1695209396;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yBAeX2/r2WMnT3DZO4I6YyM4BkG96XFH6v+pLg0qyP8=;
-        b=hLvuFPabvZU7KTNEkhgurdFYuN0LBdNk9cDeizQiZfqirLID2j1dRq6vvu9t6l0RmZ
-         YbGdgYk5oqKVbJATpD/w/GCQywdZ3DKFFWfNiEX72kxWOd5O11iBsFriYyhlvY7msmku
-         1ibUe2qLr1E+bh0FaES7quhXHXaPZvveeia+YZYPNU31n26OgyNNrDRK4O+wpMVC6x9h
-         A0PvNp7yZCyuT9VwR++ay2QmbvVieHOltJb9CSZaP9jEMW2FTlWNYNSYblGJnNdMk7h6
-         OEFmFP+vd+BH+tX+mZPsbAset/6oecjVptybH8V6i+FzVcvqPlr/ZiqgOKT+BqSfQPyi
-         tMxg==
-X-Gm-Message-State: AOJu0YyXpcKCvWsSwnByIGCsjVxxEoRtkyp+xOG/0VB2ojsEuT0KntYk
-        TBFyx4lifGrCqN2hSye7JrrDbcwZUS8jd1Z/uLeLb9hQmq01
-X-Google-Smtp-Source: AGHT+IEog6mIKmxlTm23PKm37ZN/P7mMR9cgXuzsCcN0tUAzMfVgZQRz6J+8l7eaOsWqRy7YaoDfbCx6uwtpVPdtQiL6gBDJpASh
+        Wed, 13 Sep 2023 07:30:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35F419AF;
+        Wed, 13 Sep 2023 04:30:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 99A4F1F390;
+        Wed, 13 Sep 2023 11:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694604608;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bqo0LMzZdAxqn5nqemfUNx3l7LfnmUF9NaJushiU/Rc=;
+        b=2BO6RbHWmysyd1EC8mYK9fXZSCzYK7OiUhk4ChVGLGJItm3OSvafRQMiosEPynAbANzCQc
+        nQf8vHPLlbz5LjXTAORbk8TRgv8dBxU7cAJ5jvXbYjxDIIkfqjd4ivPd1i0Y1i4+602A8v
+        aiam10YaBtoTvvhUixpuC14BjrRsYcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694604608;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bqo0LMzZdAxqn5nqemfUNx3l7LfnmUF9NaJushiU/Rc=;
+        b=pFWT22stwK94WXrjmUIwzgXUQgWosGBqJBEP5GNpI54UVyx8z2C9WZZm9CQ9PsHMgUV1fH
+        1Fn27wDu+5ersKCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63B4913582;
+        Wed, 13 Sep 2023 11:30:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k0x8F0CdAWUqBwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 11:30:08 +0000
+Date:   Wed, 13 Sep 2023 13:30:06 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] btrfs: Remove some unused functions
+Message-ID: <20230913113006.GI20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:20a5:b0:3a7:75cd:df40 with SMTP id
- s37-20020a05680820a500b003a775cddf40mr983907oiw.7.1694604596110; Wed, 13 Sep
- 2023 04:29:56 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 04:29:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fc6ba706053be013@google.com>
-Subject: [syzbot] [io-uring?] KCSAN: data-race in io_wq_activate_free_worker / io_wq_worker_running
-From:   syzbot <syzbot+a36975231499dc24df44@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 13, 2023 at 05:43:27PM +0800, Jiapeng Chong wrote:
+> These functions are defined in the qgroup.c file, but not called
+> elsewhere, so delete these unused functions.
+> 
+> fs/btrfs/qgroup.c:149:19: warning: unused function 'qgroup_to_aux'.
+> fs/btrfs/qgroup.c:154:36: warning: unused function 'unode_aux_to_qgroup'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6566
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    f97e18a3f2fb Merge tag 'gpio-updates-for-v6.6' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12864667a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe440f256d065d3b
-dashboard link: https://syzkaller.appspot.com/bug?extid=a36975231499dc24df44
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b1781aaff038/disk-f97e18a3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5b915468fd6d/vmlinux-f97e18a3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/abc8ece931f3/bzImage-f97e18a3.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a36975231499dc24df44@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in io_wq_activate_free_worker / io_wq_worker_running
-
-write to 0xffff888127f736c4 of 4 bytes by task 4731 on cpu 1:
- io_wq_worker_running+0x64/0xa0 io_uring/io-wq.c:668
- schedule_timeout+0xcc/0x230 kernel/time/timer.c:2167
- io_wq_worker+0x4b2/0x840 io_uring/io-wq.c:633
- ret_from_fork+0x2e/0x40 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-read to 0xffff888127f736c4 of 4 bytes by task 4719 on cpu 0:
- io_wq_get_acct io_uring/io-wq.c:168 [inline]
- io_wq_activate_free_worker+0xfa/0x280 io_uring/io-wq.c:267
- io_wq_enqueue+0x262/0x450 io_uring/io-wq.c:914
- io_queue_iowq+0x1d1/0x310 io_uring/io_uring.c:514
- io_queue_sqe_fallback+0x82/0xe0 io_uring/io_uring.c:2084
- io_submit_sqe io_uring/io_uring.c:2305 [inline]
- io_submit_sqes+0xbd3/0xfb0 io_uring/io_uring.c:2420
- __do_sys_io_uring_enter io_uring/io_uring.c:3628 [inline]
- __se_sys_io_uring_enter+0x1f8/0x1c10 io_uring/io_uring.c:3562
- __x64_sys_io_uring_enter+0x78/0x90 io_uring/io_uring.c:3562
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-value changed: 0x0000000d -> 0x0000000b
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 4719 Comm: syz-executor.1 Not tainted 6.5.0-syzkaller-01810-gf97e18a3f2fb #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Added to misc-next with some wording adjusments and reference to the
+patch that removed the last use, thanks.
