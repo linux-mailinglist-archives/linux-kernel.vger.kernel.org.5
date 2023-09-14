@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F657A0459
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B408B7A046F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238453AbjINMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 08:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        id S238464AbjINMwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 08:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238444AbjINMub (ORCPT
+        with ESMTP id S237762AbjINMwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:50:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E1F1FD9;
-        Thu, 14 Sep 2023 05:50:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E8BA4C433CB;
-        Thu, 14 Sep 2023 12:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694695827;
-        bh=TMjV6+bwe3vJb7gXPII+PE+nTcdt7ZxTl2b7WdEsK1k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pyHJ9QrlbwpiTunl1V3mw4XYCOct1HMqY7QD/YwJTIZ0srvS/6E4QcmQfUOMOKHcT
-         6Xxz9ZkxFNahPpOOmCOIPs5Wl57rSH6rFkWtNb2gakCc1Tg6pmgmCbv6OGnzV13p13
-         DPytoH9Vuc8jQQWTGJn+amdgvNZLArdupbhceALtH1rxEw5jeeqrH4/rjJvEhTViL5
-         r8axKoYdg8843ZzQB5tRXPHKEY/r8OLGt89xQWu35b21Cs6Mn7tBpFprC6MgGfuNkk
-         ih22v51TpOXgRKPAnC93QuT2zIwRoQHQZq+MpufU141eX5iGIVrn3Yyajjte0bTw5Y
-         i+jSvrPqghBLQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CAB5AE1C280;
-        Thu, 14 Sep 2023 12:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Sep 2023 08:52:00 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998BD1FD0;
+        Thu, 14 Sep 2023 05:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=oGvct0p3l/d8ADkXUGDi83fvWaNF4mvVZngHoQNceck=; b=FsFFxmTNoWLff43INVEaVTwIXk
+        g7VR7Sfld7K7NvuQCiHwFBHJYofA7EXPXphZdYFFTMXG+4/DZ+mqsCcynn6uKSiiOQ7NT9bdBRwS2
+        nV7T9K16aKVM5a4NLbGCxdG4wUJ2TCoaYoRimqGEFwyONKdy8OrjwpeaZEqU0DWXwFJ4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qglp1-006P9o-6v; Thu, 14 Sep 2023 14:51:51 +0200
+Date:   Thu, 14 Sep 2023 14:51:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luka.perkov@sartura.hr
+Subject: Re: [PATCH 2/2] arm64: dts: marvell: eDPU: add support for version
+ with external switch
+Message-ID: <5bcf3091-af8d-47de-b276-3dccc0997850@lunn.ch>
+References: <20230914094550.1519097-1-robert.marko@sartura.hr>
+ <20230914094550.1519097-2-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/3] Revert "selftests/bpf: Add selftest for allow_ptr_leaks"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169469582682.11653.11057987072443096277.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Sep 2023 12:50:26 +0000
-References: <20230913122514.89078-1-gerhorst@amazon.de>
-In-Reply-To: <20230913122514.89078-1-gerhorst@amazon.de>
-To:     Luis Gerhorst <gerhorst@amazon.de>
-Cc:     alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        laoar.shao@gmail.com, martin.lau@linux.dev, sdf@google.com,
-        song@kernel.org, yonghong.song@linux.dev, mykolal@fb.com,
-        shuah@kernel.org, iii@linux.ibm.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gerhorst@cs.fau.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914094550.1519097-2-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+> +&mdio {
+> +	status = "disabled";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&smi_pins>;
+> +
+> +	/* Actual device is MV88E6361 */
+> +	switch: switch@0 {
+> +		compatible = "marvell,mv88e6190";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <0>;
+> +		status = "disabled";
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				label = "cpu";
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +				ethernet = <&eth0>;
+> +			};
+> +
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+So ports 1 through 7 are completely unused? 
 
-On Wed, 13 Sep 2023 12:25:15 +0000 you wrote:
-> This reverts commit 0072e3624b463636c842ad8e261f1dc91deb8c78.
-> 
-> The test tests behavior which can not be permitted because of Spectre
-> v1. See the following commit
-> 
->   Revert "bpf: Fix issue in verifying allow_ptr_leaks"
-> 
-> [...]
+> +			port@9 {
+> +				reg = <9>;
+> +				label = "downlink";
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +			};
 
-Here is the summary with links:
-  - [1/3] Revert "selftests/bpf: Add selftest for allow_ptr_leaks"
-    https://git.kernel.org/bpf/bpf/c/cc7a599ca30f
-  - [2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
-    https://git.kernel.org/bpf/bpf/c/45f2aaba1079
-  - [3/3] selftests/bpf: Add selftest for packet-pointer Spectre v1 gadget
-    https://git.kernel.org/bpf/bpf/c/fc7274e42d14
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+	Andrew
