@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF1479FD50
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DC179FD58
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbjINHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S235859AbjINHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234268AbjINHgh (ORCPT
+        with ESMTP id S233798AbjINHlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:36:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA28CF1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:36:32 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A32566607314;
-        Thu, 14 Sep 2023 08:36:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694676990;
-        bh=pkIMXiRptScDhvFCBdvwd0NpQ5Qev1tICpMTya+WWpI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FKxmq59ZuoRhHYZFdfAwrVcr/Ve94wVOtJHlCv1DinSkF0KRkLNHitApEByep9TNJ
-         G+6FcVPGauUJetZvVukgeaQxDmoWWtKubg12VjSMf0otDAjn3yFz9wQmmowTb9qDFI
-         p77t7fXAijBt7S7VQHB2tibzKcy7Y0Yt2oId1JpHU6z3DHSu6DcqhvTCRRqqJIP2Rc
-         pKqzaqWVFCYiyv5yV1ob3F7vSNoKXHA0wwqgZx97f/nmI8KRZiZTlkmCXlDpdzktoQ
-         09biY3pbjNTMfECKYBnhpXl1Cgz2p623TI7jqq4RVnhsMoIyCydGbRI97fPdKxiI88
-         gCCSm8dT3SpRA==
-Date:   Thu, 14 Sep 2023 09:36:26 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
-Message-ID: <20230914093626.19692c24@collabora.com>
-In-Reply-To: <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
-        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
-        <20230905100306.3564e729@collabora.com>
-        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
-        <20230913094832.3317c2df@collabora.com>
-        <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 14 Sep 2023 03:41:12 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814E61BCC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:41:07 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso700493a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694677266; x=1695282066; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=BTTFLmHVcCEeGdB9PLCErU99zAFCDRERFukfsKEjoJU=;
+        b=TPGWPxo/HwC55K7gFK1Hzne034s+GePAsi6y6+4aj+k93EkuTSCqUWVG6J8mfBqLw3
+         NFyl6Wg/dedffREf2zs9E8wRwVnvTaLS+m6xdEw5+DeiT8pi7GJRcZwYbSRNE2WvkaCs
+         4M7ZLLnu2LsuDNrt7Ys5k4VkRasSkwFkMCepRZxTvYyxl76saTzL8UMsyd7iN1ZuJC7M
+         vQjAacrxQZPWwfD24Gfo1MNnbHsfrhhjoggjYFvEfkgmsa+Qc0WUHDpXvZ/So9ERs1lh
+         jJoq96JvayCZTH7val69lj3H3v58lXjbZOEmDRqQvnry1Dm0kEo/KNZ4ejRZzdy4KYiq
+         UMQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694677266; x=1695282066;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BTTFLmHVcCEeGdB9PLCErU99zAFCDRERFukfsKEjoJU=;
+        b=CXAGuHpAUuDhGBoY7V+WNF/lYoKwM0A8IlTffaE25Fk9i3iKfU+7Y31u693nWQ7XyY
+         4pTSrsp93CmA+G7/oerfLzQsX7n/PZ3rtYoF8whsAoVaZfQ2uOJ7Eu+sdrwi5S6Cek8z
+         dDJNMu+K8H4IRR1yVZX0R/aYagbKnZAJxlwAqR99vmzN7+U3pEDrKEmnMRyKJIMfgon2
+         YYKq4GuznAcw0vURvetsnwDZ4gJWgcdVJVHplsEE5e6ilVnl1NFHE72r8jETgIoFPwj3
+         E02oJRQIyzfnZu9A+Ybik0VY/izqhqdxp9kdP/xHH5RKfWr15+wDw6w/gvQ8eXYrDJlT
+         LHLw==
+X-Gm-Message-State: AOJu0Yy+KHzljTw01wEMRWfuSGpaFNrL0Nll3GyXawTnsdaayCVivCnR
+        7YJC1vii1Qj2HA6jnk7ORc7OuQ==
+X-Google-Smtp-Source: AGHT+IHlbblsKiu2gEtKrdgm90QMFr8E3CuYF/8VHvCB/T7LrlXyHxwj/f1cU1M0mOLP9SJFk3qWLQ==
+X-Received: by 2002:a17:906:3051:b0:99e:6a0:5f64 with SMTP id d17-20020a170906305100b0099e06a05f64mr3654818ejd.36.1694677265829;
+        Thu, 14 Sep 2023 00:41:05 -0700 (PDT)
+Received: from [192.168.37.232] (178235177172.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.172])
+        by smtp.gmail.com with ESMTPSA id v7-20020a1709064e8700b00977cad140a8sm589467eju.218.2023.09.14.00.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 00:41:05 -0700 (PDT)
+Message-ID: <098f0a07-a67a-4209-8dbb-ff8d5b699dfe@linaro.org>
+Date:   Thu, 14 Sep 2023 09:41:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/14] arm64: dts: qcom: sdm630: Drop RPM bus clocks
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
+ <70b2a9d7-1a3e-25da-3d78-7bfa5d3a1e05@linaro.org>
+ <c3dd5f68-af75-4880-83c2-ca7723561ae9@linaro.org>
+ <7796431f-ae52-58b6-499e-566a17292725@linaro.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <7796431f-ae52-58b6-499e-566a17292725@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 07:02:52 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> On 9/13/23 10:48, Boris Brezillon wrote:
-> > On Wed, 13 Sep 2023 03:56:14 +0300
-> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >   
-> >> On 9/5/23 11:03, Boris Brezillon wrote:  
-> >>>>                * But
-> >>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
-> >>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
-> >>>> +		 * and fs_reclaim.
-> >>>> +		 *
-> >>>> +		 * This deadlock is not actually possible, because no one should
-> >>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
-> >>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
-> >>>> +		 * refcount drops to zero, don't touch the reservation lock.
-> >>>> +		 */
-> >>>> +		if (shmem->got_pages_sgt &&
-> >>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
-> >>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
-> >>>> +			shmem->got_pages_sgt = false;
-> >>>>  		}    
-> >>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
-> >>> better to leak than having someone access memory it no longer owns), but
-> >>> I think it's worth mentioning in the above comment.    
-> >>
-> >> It's unlikely that it will be only a leak without a following up
-> >> use-after-free. Neither is acceptable.  
-> > 
-> > Not necessarily, if you have a page leak, it could be that the GPU has
-> > access to those pages, but doesn't need the GEM object anymore
-> > (pages are mapped by the iommu, which doesn't need shmem->sgt or
-> > shmem->pages after the mapping is created). Without a WARN_ON(), this
-> > can go unnoticed and lead to memory corruptions/information leaks.
-> >   
-> >>
-> >> The drm_gem_shmem_free() could be changed such that kernel won't blow up
-> >> on a refcnt bug, but that's not worthwhile doing because drivers
-> >> shouldn't have silly bugs.  
-> > 
-> > We definitely don't want to fix that, but we want to complain loudly
-> > (WARN_ON()), and make sure the risk is limited (preventing memory from
-> > being re-assigned to someone else by not freeing it).  
+On 14.09.2023 08:26, Krzysztof Kozlowski wrote:
+> On 13/09/2023 14:08, Konrad Dybcio wrote:
+>> On 13.09.2023 09:13, Krzysztof Kozlowski wrote:
+>>> On 12/09/2023 15:31, Konrad Dybcio wrote:
+>>>> These clocks are now handled from within the icc framework and are
+>>>> no longer registered from within the CCF. Remove them.
+>>>>
+>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>> ---
+>> [...]
+>>
+>>>>  		anoc2_smmu: iommu@16c0000 {
+>>>>  			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+>>>>  			reg = <0x016c0000 0x40000>;
+>>>> -
+>>>> -			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+>>>> -			assigned-clock-rates = <1000>;
+>>>> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+>>>> -			clock-names = "bus";
+>>>
+>>> This is also against bindings. After your patch #4, such bus clock (or
+>>> other combinations) is still required.
+>> So, we have 4 SMMU instances on this platform:
+>>
+>> MMSS (described, iface, mem, mem_iface)
+>> GPU (described, iface-mm, iface-smmu, bus-smmu)
+>>
+>> ANOC2 (this one, no clocks after removing rpmcc bus)
+>> LPASS (no clocks)
 > 
-> That's what the code did and continues to do here. Not exactly sure what
-> you're trying to say. I'm going to relocate the comment in v17 to
-> put_pages(), we can continue discussing it there if I'm missing yours point.
+> Ah, I did not notice it.
 > 
+>>
+>> Should I then create a new entry in the bindings, replicating
+>> what's there for msm8998[1] and dropping the entry with just "bus"
+>> from anyOf?
+> 
+> So this passes the bindings, right?
+Yes
 
-I'm just saying it would be worth mentioning that we're intentionally
-leaking memory if shmem->pages_use_count > 1. Something like:
+anyOf: in the binding should allow
+> also no match, so this should be fine. However indeed we need to drop
+> the "bus" entry, because it is not valid anymore.
+Actually, looks like the LPASS smmu may require a single
+clock. We can reuse that single-"bus"-clock entry for
+HLOS1_VOTE_LPASS_ADSP_SMMU_CLK.
 
-	/**
-	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
-	 * zero otherwise. If some users still hold a pages reference
-	 * that's a bug, and we intentionally leak the pages so they
-	 * can't be re-allocated to someone else while the GPU/CPU
-	 * still have access to it.
-	 */
-	drm_WARN_ON(drm,
-		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
-	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
-		drm_gem_shmem_free_pages(shmem);
+The device didn't crash when trying to access LPASS SMMU
+with that clock absent, but I guess it may have just
+been luck, things may change once more hardware is parked..
+
+Konrad
