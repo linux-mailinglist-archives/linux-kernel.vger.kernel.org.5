@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FFC7A0E5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6337A0E5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241467AbjINT3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        id S240948AbjINTa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 15:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjINT3N (ORCPT
+        with ESMTP id S239146AbjINTaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:29:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACEE26AB;
-        Thu, 14 Sep 2023 12:29:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A303FC433C7;
-        Thu, 14 Sep 2023 19:29:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694719748;
-        bh=hNAY8MGYf8YcUA4vUEpZaRVEM+yzGB604aBLvFxOsT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wxcrE226jsia0S3OIWHpfgtZ/AoKg0fTDExE9v9F1PNvhRw0uvpE8Va/msOBLScs9
-         gpOk7cXfKnBHScKDhQrGdrE5/hJtQaAx1W0vJXNKgxwzf3D3jpyD17hVbJC075Eqnx
-         +8JtylLCHswVV53CHy8hAp5JKHzgx/i6dR8lGuRw=
-Date:   Thu, 14 Sep 2023 21:29:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jinhui Guo <guojinhui.liam@bytedance.com>
-Cc:     rafael@kernel.org, lenb@kernel.org, lizefan.x@bytedance.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v4] driver core: platform: set numa_node before
- platform_add_device()
-Message-ID: <2023091440-worried-raider-7c85@gregkh>
-References: <20230914150612.3440-1-guojinhui.liam@bytedance.com>
+        Thu, 14 Sep 2023 15:30:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F7126B7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=AevdVbEeE/ZSF01htVC+Vg2ivg78mjd0b33rpJwaKrA=; b=l9JgvmXs7r6YikbpgfTBgQ47RP
+        cqt2jgiF3Ob76e2yBQU1LocTVzibO2vihmOugHJiq75Lt0osHrKLIqZ0YKut50tR9IndOLFQEremb
+        c4AlWRcGWob80bbmcmdUjyJyAqKvADJGLU9858haFK6TZ94NbMSowgwzZzkcPC+St7vYf7T/C8sWa
+        iHBntoZc8t/yeAZyerpeHTFeyosWEL9/eRse1MRXSXjvTvNvQ4Zh3JjiW88U9ZquUo5fGcLteHrjD
+        XrHXeaUPOnR8DiuE+UqnmXJ5Wb9EJZsTi8lEdE+rrdSTu4E90ZebCkYsIuWbugrzn2p4iXdyWl3pA
+        R6bAcapQ==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgs2a-009ANC-2s;
+        Thu, 14 Sep 2023 19:30:16 +0000
+Message-ID: <624f326b-919a-43a8-983d-63977cabd443@infradead.org>
+Date:   Thu, 14 Sep 2023 12:30:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914150612.3440-1-guojinhui.liam@bytedance.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc/82xx: Select FSL_SOC
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:06:12PM +0800, Jinhui Guo wrote:
-> platform_add_device() creates the numa_node attribute of sysfs according
-> to whether dev_to_node(dev) is equal to NUMA_NO_NODE. So set the numa node
-> of device before creating numa_node attribute of sysfs.
+
+
+On 9/14/23 08:23, Christophe Leroy wrote:
+> It used to be impossible to select CONFIG_CPM2 without selecting
+> CONFIG_FSL_SOC at the same time because CONFIG_CPM2 was dependent
+> on CONFIG_8260 and CONFIG_8260 was selecting CONFIG_FSL_SOC.
 > 
-> Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
-> Signed-off-by: Jinhui Guo <guojinhui.liam@bytedance.com>
+> But after commit eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260
+> and CONFIG_8272") CONFIG_CPM2 depends on CONFIG_MPC82xx instead
+> but CONFIG_MPC82xx doesn't directly selects CONFIG_FSL_SOC.
+> 
+> Fix it by forcing CONFIG_MPC82xx to select CONFIG_FSL_SOC just
+> like already done by MPC8xx, MPC512x, MPC83xx, PPC_86xx.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks for tracking this down.
+
 > ---
->  drivers/acpi/acpi_platform.c | 4 +---
->  drivers/base/platform.c      | 1 +
->  include/linux/acpi.h         | 5 +++++
->  3 files changed, 7 insertions(+), 3 deletions(-)
+>  arch/powerpc/platforms/82xx/Kconfig | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-> index 48d15dd785f6..adcbfbdc343f 100644
-> --- a/drivers/acpi/acpi_platform.c
-> +++ b/drivers/acpi/acpi_platform.c
-> @@ -178,11 +178,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
->  	if (IS_ERR(pdev))
->  		dev_err(&adev->dev, "platform device creation failed: %ld\n",
->  			PTR_ERR(pdev));
-> -	else {
-> -		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-> +	else
->  		dev_dbg(&adev->dev, "created platform device %s\n",
->  			dev_name(&pdev->dev));
-> -	}
+> diff --git a/arch/powerpc/platforms/82xx/Kconfig b/arch/powerpc/platforms/82xx/Kconfig
+> index d9f1a2a83158..1824536cf6f2 100644
+> --- a/arch/powerpc/platforms/82xx/Kconfig
+> +++ b/arch/powerpc/platforms/82xx/Kconfig
+> @@ -2,6 +2,7 @@
+>  menuconfig PPC_82xx
+>  	bool "82xx-based boards (PQ II)"
+>  	depends on PPC_BOOK3S_32
+> +	select FSL_SOC
 >  
->  	kfree(resources);
+>  if PPC_82xx
 >  
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 76bfcba25003..35c891075d95 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -841,6 +841,7 @@ struct platform_device *platform_device_register_full(
->  			goto err;
->  	}
+> @@ -9,7 +10,6 @@ config EP8248E
+>  	bool "Embedded Planet EP8248E (a.k.a. CWH-PPC-8248N-VE)"
+>  	select CPM2
+>  	select PPC_INDIRECT_PCI if PCI
+> -	select FSL_SOC
+>  	select PHYLIB if NETDEVICES
+>  	select MDIO_BITBANG if PHYLIB
+>  	help
+> @@ -22,7 +22,6 @@ config MGCOGE
+>  	bool "Keymile MGCOGE"
+>  	select CPM2
+>  	select PPC_INDIRECT_PCI if PCI
+> -	select FSL_SOC
+>  	help
+>  	  This enables support for the Keymile MGCOGE board.
 >  
-> +	set_dev_node(&pdev->dev, ACPI_NODE_GET(ACPI_COMPANION(&pdev->dev)));
->  	ret = platform_device_add(pdev);
->  	if (ret) {
->  err:
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index a73246c3c35e..6a349d53f19e 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -477,6 +477,10 @@ static inline int acpi_get_node(acpi_handle handle)
->  	return 0;
->  }
->  #endif
-> +
-> +#define ACPI_NODE_GET(adev) ((adev) && (adev)->handle ? \
-> +	acpi_get_node((adev)->handle) : NUMA_NO_NODE)
-> +
->  extern int pnpacpi_disabled;
->  
->  #define PXM_INVAL	(-1)
-> @@ -770,6 +774,7 @@ const char *acpi_get_subsystem_id(acpi_handle handle);
->  #define ACPI_COMPANION_SET(dev, adev)	do { } while (0)
->  #define ACPI_HANDLE(dev)		(NULL)
->  #define ACPI_HANDLE_FWNODE(fwnode)	(NULL)
-> +#define ACPI_NODE_GET(adev)		NUMA_NO_NODE
->  
->  #include <acpi/acpi_numa.h>
->  
-> -- 
-> 2.20.1
-> 
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documetnation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+-- 
+~Randy
