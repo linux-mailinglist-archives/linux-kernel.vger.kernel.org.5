@@ -2,198 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DF97A0B0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B57B7A0B02
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238645AbjINQzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S236714AbjINQub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238651AbjINQzW (ORCPT
+        with ESMTP id S229485AbjINQu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:55:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462812129;
-        Thu, 14 Sep 2023 09:55:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694710508; x=1726246508;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=tK70SRqKM92MqS7mgOlSYDTtQlgcppAt96yOf4AQOJc=;
-  b=VimRh0OoA+lUXmElKb9s3EL/GHeurWr7QR/GApvoCoQ6kLYPJfSs+L7v
-   i36UAz38HfBIHPhA3M6DSHeOY6k9icKBR1Bxz4Mql8uv29fcBBwS2HTCA
-   p6Fo3l9qaD1L7RVLCkrrZEizNwqEMyUdqSvEXXpch04O99TG6wXZzzeNc
-   gHrLvtygCz2fgpuZpj2Wo59gWbP3BcnF9EEVx1o4GWCvV+ak8Rb6ZWnmR
-   KUQ7AdbWznW1hBjOHb0YnaX4HmBh6ukywCtIDaukjSUs/FzqcoEGwlzAm
-   twm6fd+TKWujWVJi4zpChU04LNnsT3evMGmziTRNropFmfXSRcxXIRvM4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="359273932"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="359273932"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 09:55:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="737973405"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="737973405"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 09:55:07 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 14 Sep 2023 09:55:07 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 09:55:07 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 14 Sep 2023 09:55:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZECp3Pxqh2coLDV4Wabb1BsDdt4JPDbecZBaUXjCX6ZvL0bJpHhdX3vX+4T3XKEP9iDW686w3HBrvjVJU78UAHKTmcDFx6xU8ab/PbRH0FWucnxcJl1b5M5W4D4aTY5WQH6Bq+bZxym1ud8Jr29NHprdEHTADqSLDx9EEWaVHQFNlB4eSH0TdSpssvfSZ90OLvUq0l+SFZ5gxaw4b3dxNOTt9W0dctkMAJ6ThU4S1UaQ3e9UJb22G48XIsYNMCfoVwfGAbdox5WaarcuOS3tKUkHe+sZVwUyIUOCqegckQ0MAXT9pzCQww+tt66NU8GIn58ab04vTsTvuNrLJHxYJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IWYcQ9zeridtZt60V2sB3EnTvPiBCDtxrEoScsA3n9Q=;
- b=e2JJcTPZLCfP+WrwyiQAPCoh9xC78jCFqniH/sdzlPCYtgE+1sqcxz/ioAuiKn4juSUTgHu04wErjxFjaFgJ9AI1y8UGI/B2EBguYzbr0joqKt7C+/qxUzU6OoR93t0Pafy2AXSnhrdeKURAv+DhoGOKfmmQTzh4BbvajX5ADBv7+jVWYZh4BtwUenAk2JE3/A1GJa7m9XDCRxuZ+UC0UijTAcNe4U2inuUu6e8eYEvxRmO6znNhUUShL2vtRWXD2Ms8a6NNV+5RB22xQL6Y3R7cLYKeq27JmbN22R5oShbIcKPoGEIGq7LxrheS42V2IB4Z5sPQlButsn01vjM54g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by DM8PR11MB5589.namprd11.prod.outlook.com (2603:10b6:8:26::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.20; Thu, 14 Sep 2023 16:55:05 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d%3]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
- 16:55:05 +0000
-Date:   Thu, 14 Sep 2023 18:49:22 +0200
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Allow to use kfunc XDP hints and frags
- together
-Message-ID: <ZQM5kt8qHKUH0Iob@lincoln>
-References: <20230914083716.57443-1-larysa.zaremba@intel.com>
- <ZQM1BUzcZQtXusA3@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQM1BUzcZQtXusA3@google.com>
-X-ClientProxiedBy: FR3P281CA0044.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4a::7) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+        Thu, 14 Sep 2023 12:50:29 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A31BCB;
+        Thu, 14 Sep 2023 09:50:24 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmjwT5pVSz6K5yw;
+        Fri, 15 Sep 2023 00:49:45 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 17:50:22 +0100
+Date:   Thu, 14 Sep 2023 17:50:21 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 34/35] ACPI: Add _OSC bits to advertise OS
+ support for toggling CPU present/enabled
+Message-ID: <20230914175021.000018fd@Huawei.com>
+In-Reply-To: <20230913163823.7880-35-james.morse@arm.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-35-james.morse@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|DM8PR11MB5589:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7677332c-6aa6-4eb1-a29d-08dbb543583b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K67Pno4IjH8JdOhtfWRnQ0oWvI6KjTSbyTqN3TW/npSd/b3Rg4m9V/60B9wcfH4gDItYfo9RZHs3CyFkAXtJCLG/pTxwMhmHYy7OxaYJyN+Z0ZS1ov/gCV00tPfKTf3jPyU3TQPyC1Uvz/Jqpp4Z1hTvd8djVg9ONW1rk6ecQHL5xdEcWOp4zMYbUkExGAZkp07ED9auhaV+oc4S8hyX5KKk8BgA9p4Irx9f2t2BPT2ZszqNSTyWzsvrtnkZNMbkSJDRMN3/geQx6TVtM+psq10h2n7TBiBf5GNxItsJsC3zdQgFYiQCq4l9G4DVrtbfGfmgQVqPSP0Gn8DwWFFMZJDM4mWFWCVGC10TPFp+pbNsp4Zg9Z2BpLef69nfZuJK6DgcDYR/XwgPOdstbNTnXF++90P0qQJ7eqL0Gn6iQ6Wx8mM0QFwOOKk4IfFdh+6MuK6Mu8nSb6gZqDAbnb3yUtZxuJgzI1e5xwfOwZrRS4xJ1VcmnurdMUQCeAHzH5ayHc5SpDM8KTUCAJt3n38kXw3QGPwn22FFI4XLFJvHXbk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(136003)(39860400002)(376002)(396003)(186009)(1800799009)(451199024)(966005)(33716001)(316002)(66946007)(66476007)(66556008)(6916009)(6486002)(26005)(9686003)(6666004)(83380400001)(6506007)(6512007)(38100700002)(82960400001)(86362001)(478600001)(54906003)(2906002)(7416002)(5660300002)(41300700001)(4326008)(44832011)(8676002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?c9hyCL9gOzuxZsm3sc7BXodhsvDSFoJI1NZcFxIJBL/I3/lZ6pniz4e2Eq0r?=
- =?us-ascii?Q?jt0qZNxB/ADhAwqG3OZc2qfCQm23lsu8TyMC/ittmThzc2dDIefblU03lMgK?=
- =?us-ascii?Q?m2Rr+H883Jrt2Asarb2gllLKWZmG2IEGtorezOD9FwQtvlW2+rqAVg/Vamqt?=
- =?us-ascii?Q?0Qisrg0wI9jAZGxjxmSdvPy4xBnhDQpHtVjV766tz630XfJByLG3xwcaTJV0?=
- =?us-ascii?Q?9/V/tkCru/E96w7GYw71RdM/lY49CS7C4zE9gHYNjHqxR6pDFoMS3PIR3MSm?=
- =?us-ascii?Q?/+yGGA1mW+D3LX6ZTSnnspCg+ddlZqo8zCzaTXyu6gOfGLAw3j3o1//oNqJX?=
- =?us-ascii?Q?sFcru+tU5SDwA6e838BpCH/OLZMhssNdqTaPA9a71QgKy1Gza15O5qTEfwPl?=
- =?us-ascii?Q?yNUrwYwWM08i6oDXfna7yctJq+PjdX4vVeNoLouzFu6RQKOGXfIfMXHmMWfx?=
- =?us-ascii?Q?FQGAjvzhzADf5UjJavfugVkf2IlFdO77o9m7cx/0gL8/NOJ2PJnmN5l4a1qp?=
- =?us-ascii?Q?03G3uu9ZjwQxJtaeJEBfFAdgTvw1HrZGrLeALGDlXqTaoK7puw495FYlbL8U?=
- =?us-ascii?Q?/reAfv9GLXifFUbQ6oTgOQP3u1wmzcd42GxYaFtwuHGzAC97NMfHLt/ui4F8?=
- =?us-ascii?Q?SIo3cSC1DLt7lEMzzQy4fpNC2KRvkTYT5HJAlEpy4te0vN6zkpO09KLAIdJX?=
- =?us-ascii?Q?cDnCRiyvWq4RrMX+EGxn+NDgitky1K8JSuTx0H9dMJyGG9pmlznD5IMgCtxq?=
- =?us-ascii?Q?6JcrgyTzJW0IkM1ClPr8gSGfAjfBfbX7i/i+JXEDEIIxJ5VgkUZhwluIGVdI?=
- =?us-ascii?Q?wUI4HkxGsSjUVuTOpFe1s+amW8aNTbbvbraRbcvoGvpkRF1Bv45I09PvBLXf?=
- =?us-ascii?Q?KsSUk2tx9/8tsNSngqqikp+NmOWnL+U5ZulyiZNXiG1NMzpttcVyA7Ag7hNh?=
- =?us-ascii?Q?f7Fm/6NLWz4bsB64224tTF1QcGSsNDqdK/SuLIa3yS/Tej1mQttJarM/DZSg?=
- =?us-ascii?Q?RjSm/HypH3K+mAUQXSGFNCCRtoYwnHvtOIJgWZa7Xb37GnxowgdH2bTsEPoj?=
- =?us-ascii?Q?nNJvsLN9k1aQE2GcMX2cb+J69GHU5NQIhqM11HOcNDe4GUreuPalWQdm1sR7?=
- =?us-ascii?Q?YB1Ftp6kzsd/of1IaOU+/YYgAC52pWIDOmNjcmkLpU34CwXJrnxsyYbPxIgV?=
- =?us-ascii?Q?ekS4E6m6MfjzHuAEss/VRzMCdQguKIUmtxKrA4jU5MAEgD6okbpwxHG6nRfX?=
- =?us-ascii?Q?5ldTma5TEGkYkdb47GjQ8rQB9+tS+za7w1Xpf7eXke4hITmV2ofoIZx/dGEN?=
- =?us-ascii?Q?tVzo2Jbl1MwY8T7jN0I2TCh3OfQtPl5waArmalaisJNHyOHWFJ+3rG857qAR?=
- =?us-ascii?Q?rp9f+L0s359BZhllvT3mLqnTfbKEpAqMVy9NpLJ2DRwnpeD0zPsKQMyoIyh2?=
- =?us-ascii?Q?6DQfLmoPG5OvGXt0tlw4dGt2K04KtwtQtdzsUUuw3zJWR+hIjvX/BVsGPeDE?=
- =?us-ascii?Q?pQYsiq7RVbpxVANBKHPynY0fGzjSo0ahCK75Drwevs2AW9KEe+1vLi3WC2cW?=
- =?us-ascii?Q?Ocv4C1l4t/36d3y4E1UtxiEQuGu/VGGp3212PkZDWEQ7IQA27MhsfIwhRRAT?=
- =?us-ascii?Q?1g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7677332c-6aa6-4eb1-a29d-08dbb543583b
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 16:55:05.1585
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: guWO39UdH5rTfDqe9OL0EbznCDIRsDRRwk4yuWde9V9bAY4bZhwuClGwPe6+xvGj01Ee6OEKss+cMDGD+1BxUknxgWzwCZ1nQhYD0OD7rOw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR11MB5589
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:29:57AM -0700, Stanislav Fomichev wrote:
-> On 09/14, Larysa Zaremba wrote:
-> > There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX hints
-> > cannot coexist in a single program.
-> > 
-> > Allow those features to be used together by modifying the flags conditions.
-> > 
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=OKMdsxEkyML36VsAuZpcrsXcyqjdKXSJCBq=Q@mail.gmail.com/
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > ---
-> >  kernel/bpf/offload.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > index ee35f33a96d1..43aded96c79b 100644
-> > --- a/kernel/bpf/offload.c
-> > +++ b/kernel/bpf/offload.c
-> > @@ -232,7 +232,11 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >  	    attr->prog_type != BPF_PROG_TYPE_XDP)
-> >  		return -EINVAL;
-> >  
-> > -	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > +	if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-> > +		return -EINVAL;
-> > +
+On Wed, 13 Sep 2023 16:38:22 +0000
+James Morse <james.morse@arm.com> wrote:
+
+> Platform firmware can disabled a CPU, or make it not-present by making
+> an eject-request notification, then waiting for the os to make it offline
+> and call _EJx. After the firmware updates _STA with the new status.
 > 
-> [..]
+> Not all operating systems support this. For arm64 making CPUs not-present
+> has never been supported. For all ACPI architectures, making CPUs disabled
+> has recently been added. Firmware can't know what the OS has support for.
 > 
-> > +	if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-> > +	    !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
-> >  		return -EINVAL;
+> Add two new _OSC bits to advertise whether the OS supports the _STA enabled
+> or present bits being toggled for CPUs. This will be important for arm64
+> if systems that support physical CPU hotplug ever appear as arm64 linux
+> doesn't currently support this, so firmware shouldn't try.
+
+I'm not sure I like enabling this for all architectures though I guess
+everyone will ignore it on those that have long supported 
+changing the enabled bit. The hypervisors won't care if Linux claims
+to support it or not.  I can see the argument for architectures that might
+support it in the future.
+
+I need to think a bit more about this, but maybe just having the online
+capable bit OSC is safer in general. I guess it depends on whether there
+are hypervisors out there implementing the x86 version of that even though
+no one has yet posted patches for Linux.
+
+Perhaps we just call these out as hints that we 'definitely' support them.
+Otherwise we might for some architectures so poke it anyway.
+
+
+OSC is late in boot, so what advantage is there in preventing it working?
+We can't change any of the bring up / sizing etc as a result so might as
+well let it through.
+
 > 
-> Any reason we have 'attr->prog_flags & BPF_F_XDP_HAS_FRAGS' part here?
-> Seems like doing '!(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)' should
-> be enough, right? We only want to bail out here when BPF_F_XDP_DEV_BOUND_ONLY
-> is not set and we don't really care whether BPF_F_XDP_HAS_FRAGS is set
-> or not at this point.
+> Advertising this support to firmware is useful for cloud orchestrators
+> to know whether they can scale a particular VM by adding CPUs.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+> I'm assuming ia64 with physical hotplug machines once existed, and
+> that Loongarch machines with support for this don't.
+> ---
+>  arch/ia64/Kconfig             |  1 +
+>  arch/x86/Kconfig              |  1 +
+>  drivers/acpi/Kconfig          |  9 +++++++++
+>  drivers/acpi/acpi_processor.c | 14 +++++++++++++-
+>  drivers/acpi/bus.c            | 16 ++++++++++++++++
+>  include/linux/acpi.h          |  4 ++++
+>  6 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+> index 54972f9fe804..13df676bad67 100644
+> --- a/arch/ia64/Kconfig
+> +++ b/arch/ia64/Kconfig
+> @@ -17,6 +17,7 @@ config IA64
+>  	select ARCH_MIGHT_HAVE_PC_SERIO
+>  	select ACPI
+>  	select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
+> +	select ACPI_HOTPLUG_IGNORE_OSC  if ACPI
+>  	select ACPI_NUMA if NUMA
+>  	select ARCH_ENABLE_MEMORY_HOTPLUG
+>  	select ARCH_ENABLE_MEMORY_HOTREMOVE
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 295a7a3debb6..5fea3ce9594e 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -61,6 +61,7 @@ config X86
+>  	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+>  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+>  	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
+> +	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI && HOTPLUG_CPU
+>  	select ARCH_32BIT_OFF_T			if X86_32
+>  	select ARCH_CLOCKSOURCE_INIT
+>  	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index 417f9f3077d2..c49978b4b11f 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -310,6 +310,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
+>  	depends on ACPI_PROCESSOR && HOTPLUG_CPU
+>  	select ACPI_CONTAINER
+>  
+> +config ACPI_HOTPLUG_IGNORE_OSC
+> +	bool
+> +	depends on ACPI_HOTPLUG_PRESENT_CPU
+> +	help
+> +	  Ignore whether firmware acknowledged support for toggling the CPU
+> +	  present bit in _STA. Some architectures predate the _OSC bits, so
+> +	  firmware doesn't know to do this.
+> +
+> +
+>  config ACPI_PROCESSOR_AGGREGATOR
+>  	tristate "Processor Aggregator"
+>  	depends on ACPI_PROCESSOR
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index b49859eab01a..87926f22c857 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -181,6 +181,18 @@ static void __init acpi_pcc_cpufreq_init(void)
+>  static void __init acpi_pcc_cpufreq_init(void) {}
+>  #endif /* CONFIG_X86 */
+>  
+> +static bool acpi_processor_hotplug_present_supported(void)
+> +{
+> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> +		return false;
+> +
+> +	/* x86 systems pre-date the _OSC bit */
+> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
+> +		return true;
+> +
+> +	return osc_sb_hotplug_present_support_acked;
+> +}
+> +
+>  /* Initialization */
+>  static int acpi_processor_make_present(struct acpi_processor *pr)
+>  {
+> @@ -188,7 +200,7 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+>  	acpi_status status;
+>  	int ret;
+>  
+> -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
+> +	if (!acpi_processor_hotplug_present_supported()) {
 
-If !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY) at this point, program could 
-be requesting offload.
+I don't see the advantage of blocking on basis of what the firmware said.
+It was clearly lying or didn't understand the question ;)
 
-Now I have thought about those conditions once more and they could be reduced to 
-this:
+>  		pr_err_once("Changing CPU present bit is not supported\n");
+>  		return -ENODEV;
+>  	}
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index f41dda2d3493..123c28c2eda3 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -298,6 +298,13 @@ EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
+>  
+>  bool osc_sb_cppc2_support_acked;
+>  
+> +/*
+> + * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
+> + * present/enable.
+> + */
+> +bool osc_sb_hotplug_enabled_support_acked;
+> +bool osc_sb_hotplug_present_support_acked;
+> +
+>  static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
+>  static void acpi_bus_osc_negotiate_platform_control(void)
+>  {
+> @@ -346,6 +353,11 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+>  
+>  	if (!ghes_disable)
+>  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
+> +
+> +	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_ENABLED_SUPPORT;
+> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> +		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+> +
+>  	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
+>  		return;
+>  
+> @@ -383,6 +395,10 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+>  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
+>  		osc_cpc_flexible_adr_space_confirmed =
+>  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
+> +		osc_sb_hotplug_enabled_support_acked =
+> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_ENABLED_SUPPORT;
+> +		osc_sb_hotplug_present_support_acked =
+> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+>  	}
+>  
+>  	kfree(context.ret.pointer);
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 92cb25349a18..2ba7e0b10bcf 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -580,12 +580,16 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
+>  #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
+>  #define OSC_SB_PRM_SUPPORT			0x00200000
+>  #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
+> +#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
+> +#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
+>  
+>  extern bool osc_sb_apei_support_acked;
+>  extern bool osc_pc_lpi_support_confirmed;
+>  extern bool osc_sb_native_usb4_support_confirmed;
+>  extern bool osc_sb_cppc2_support_acked;
+>  extern bool osc_cpc_flexible_adr_space_confirmed;
+> +extern bool osc_sb_hotplug_enabled_support_acked;
+> +extern bool osc_sb_hotplug_present_support_acked;
+>  
+>  /* USB4 Capabilities */
+>  #define OSC_USB_USB3_TUNNELING			0x00000001
 
-if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY) &&
-    attr->prog_flags != (BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-	return -EINVAL;
-
-What do you think?
