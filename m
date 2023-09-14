@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFA37A0F73
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D92C7A0F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjINVFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S229601AbjINVHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjINVFb (ORCPT
+        with ESMTP id S229493AbjINVHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:05:31 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4682700
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:27 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b703a0453fso23669941fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1694725525; x=1695330325; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mi4VUf4gJCA6NveynZh2FFW5elFrdjQW2bjMwJLkbzQ=;
-        b=Ww4EVITliI6FPHoICZUDpEBVA51hwaScNcK/0JlRGcYISzgU2vckV09H2GCZqh9WIw
-         EYQja7Je/x0oApJ9yOB1fc9WLvFEJk7IdUi1KJWuGjfPI/vpQCep/BPuDIicv1c3wlUY
-         DSeQiHQ8c6Z3yTxwqnJ/IMS+rFIlXa6HSZI2s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694725525; x=1695330325;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=mi4VUf4gJCA6NveynZh2FFW5elFrdjQW2bjMwJLkbzQ=;
-        b=OzPGj92Ze+6uBXmm8Obv8hGeLNVx+U9e4vrigweKSkCxj9p0oiWlBhyClvzC87Rbym
-         /AtDVoAg7K5F2tU3NMsSsbG2tuH+J1aA4/88kxxY2VjgSpfFziYPe7Kv7hZ/63rqQSGi
-         36e/PNuIsUHeUDGOUt9CFqPAHN4syzj5lmB47o4lALKJGmhULSm6dLETJvylO9WgyI/U
-         gCD27bil7j32d8AtSjZMKgfA+p4RK74aV6XP0GhBXf5bYapNeAXKQh8HgqHV+JWv79Kd
-         Vy7npvB6V6K6uCEjDalHCgVZuP69i4cw5A/MO9L+p4jOXkMXJldq1PQoZqUzy1YWLdDY
-         iFZw==
-X-Gm-Message-State: AOJu0Yzbb+qI1F4weDGJ8sLwWBnYRMdSkHo4RxzEBOZrfj8zOWUaQ1dH
-        7KNNNAO+oBvkKAXBANMX2ai0hsx39BbzKYUM+nAP/w==
-X-Google-Smtp-Source: AGHT+IGpIoxvufotBG4tHYBQHVc3J5oCnnG46FrQfxYwsgRu7oFKFrZ8pufbyYpDTvOYejxPAaSGTQ==
-X-Received: by 2002:a19:e013:0:b0:500:7806:4f96 with SMTP id x19-20020a19e013000000b0050078064f96mr4863881lfg.28.1694725524921;
-        Thu, 14 Sep 2023 14:05:24 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id x12-20020ac25dcc000000b004fba077e654sm402614lfq.194.2023.09.14.14.05.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 14:05:23 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso23815731fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:22 -0700 (PDT)
-X-Received: by 2002:a05:6512:3703:b0:4fb:8f79:631 with SMTP id
- z3-20020a056512370300b004fb8f790631mr4518877lfr.46.1694725522393; Thu, 14 Sep
- 2023 14:05:22 -0700 (PDT)
+        Thu, 14 Sep 2023 17:07:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BBE6269D;
+        Thu, 14 Sep 2023 14:07:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82B791FB;
+        Thu, 14 Sep 2023 14:08:05 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 875B13F738;
+        Thu, 14 Sep 2023 14:07:24 -0700 (PDT)
+Message-ID: <8cfa9edb-67f9-80f9-0a5c-1920f95b338a@arm.com>
+Date:   Thu, 14 Sep 2023 23:07:12 +0200
 MIME-Version: 1.0
-References: <20230912201102.1012306-1-jarkko@kernel.org> <CAHk-=wgLB9_z5TcvRKVsSk3BWPfkDeWN0pDMdEv=-hnrnTgX1Q@mail.gmail.com>
- <CVI1GKA044I2.2A5GRO80ABMNN@suppilovahvero> <CAHk-=wiS2rHdPe9qQ4Ahzy6t6hbG18ihsOjBYxn3Nr88yen52A@mail.gmail.com>
-In-Reply-To: <CAHk-=wiS2rHdPe9qQ4Ahzy6t6hbG18ihsOjBYxn3Nr88yen52A@mail.gmail.com>
-From:   Justin Forbes <jforbes@fedoraproject.org>
-Date:   Thu, 14 Sep 2023 16:05:10 -0500
-X-Gmail-Original-Message-ID: <CAFbkSA1vh+PS7HxhdZ2jLer4ZPQJWTsSU5NEAwJW2Rp8CZwzZQ@mail.gmail.com>
-Message-ID: <CAFbkSA1vh+PS7HxhdZ2jLer4ZPQJWTsSU5NEAwJW2Rp8CZwzZQ@mail.gmail.com>
-Subject: Re: [GIT PULL] tpmdd changes for v6.6-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/4] energy_model: use a fixed reference frequency
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, viresh.kumar@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org
+References: <20230901130312.247719-1-vincent.guittot@linaro.org>
+ <20230901130312.247719-5-vincent.guittot@linaro.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230901130312.247719-5-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 4:02=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 13 Sept 2023 at 12:32, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> >
-> > Ok, I'll make something more reasonable.
->
-> Well, I took the pull already, just saying "tpm fix".
->
-> I assume the only thing the typo actually causes is printk's with a
-> typo in it. Maybe some sysfs name will be wrong?
->
-> That's the kind of information I would have _liked_ to see in the
-> merge message, but I didn't then delve into just where the class names
-> might actually be used.
+On 01/09/2023 15:03, Vincent Guittot wrote:
 
-Sorry, I should have been more clear. The typo causes misnamed sysfs
-files, which breaks some userspace tools.
+[...]
 
-Justin
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index b9caa01dfac4..7ee07be6928e 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -204,6 +204,20 @@ struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
+>  	return ps;
+>  }
+>  
+> +#ifdef arch_scale_freq_ref
+> +static __always_inline
+> +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
 
->                Linus
->
+Why is this function named with the arch prefix?
+
+So far we have 5 arch functions (arch_scale_freq_tick() <->
+arch_scale_freq_ref()) and e.g. Arm/Arm64 defines them with there
+topology_foo implementations.
+
+Isn't arch_scale_freq_ref_em() (as well as arch_scale_freq_ref_policy())
+different in this sense and so a proper EM function which should
+manifest in its name?
+
+> +{
+> +	return arch_scale_freq_ref(cpu);
+> +}
+> +#else
+> +static __always_inline
+> +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
+> +{
+> +	return pd->table[pd->nr_perf_states - 1].frequency;
+> +}
+> +#endif
+
+[...]
+
+> @@ -241,11 +255,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>  	 */
+>  	cpu = cpumask_first(to_cpumask(pd->cpus));
+>  	scale_cpu = arch_scale_cpu_capacity(cpu);
+> -	ps = &pd->table[pd->nr_perf_states - 1];
+> +	ref_freq = arch_scale_freq_ref_em(cpu, pd);
+
+Why not using existing `unsigned long freq` here like in schedutil's
+get_next_freq()?
+
+>  
+>  	max_util = map_util_perf(max_util);
+
+[...]
+
