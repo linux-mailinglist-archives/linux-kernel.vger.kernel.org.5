@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A047A0FB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388847A0FB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbjINVUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        id S229629AbjINVUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjINVUE (ORCPT
+        with ESMTP id S229677AbjINVUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:20:04 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC7C26BB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:20:00 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d816fa2404aso1781144276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:20:00 -0700 (PDT)
+        Thu, 14 Sep 2023 17:20:06 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C5326BB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:20:02 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cbf62bae8so18402917b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694726399; x=1695331199; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694726401; x=1695331201; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=H3jVQnyzaN1ERNCJQeHBDC5w9lFgMjdheWTQKUJ7noQ=;
-        b=LqH6s/1UW2CdNuFdOjRUHkkS910pLhX0+tt4o9vhPm97EUX+mqDQTtYawn2nhk5S2n
-         nxkunCZcwj6iAHQMbEgDNxc5k6TNwxDYMWHRjUbdv+LmyrafWvsNFGRIKygQMbSpa1ws
-         bru/3wVtMbA3vt9KVx4gTA2rbrhkF7yJS3oPalKWkiLsxLJeN9DpZqi8F3Z2jeGD2ZaL
-         EbZRSaL8Av5GOTaxKQuqg+Z28wc24cgpWSuRoM1NC1tUjJDdT47BnZDSkLWFbgOR+99e
-         SbzV25eHVm5PKCWNQ0weuuXAyuNDudOY9fazLUU66nWBvigYDSNnKe9/oEme4d3lNB+r
-         740w==
+        bh=lStqQ9ffAu7tg36ET64D7TH2ZuxYOmdso1Dvk1E923U=;
+        b=d0P9v8k9xEQq0Y9Zk/n8QCyBeDjPxurfah7KIkUmoZDlDtR0M+i/9gF+77SmhBMRDw
+         vDKBPZ+hLEIHLE/YUpqJZtY7hMPJdpulb1cchs6lMMQaP8Alc9H9+7mj1dDaSNfw5JjX
+         bk3doarLS6CsmdvANDoxwqU7yAaAFu/AKaGe/5ZiLEV6tNVtMzlcOUpi+szYuiU2KICY
+         YKUO6Uurhrz/bT1HfWM1Cuv3CHs6vL9mqRZqnTknPQzrEpI0bwjAmfj6G8OmIsfThEa3
+         WL6NVg9EzY1DdVFocj0ZTktJ2JrBHnZDQbxfYcoqiky6y/lofFgJ8pfG6Kpluln3AXwg
+         wJ1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694726399; x=1695331199;
+        d=1e100.net; s=20230601; t=1694726401; x=1695331201;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H3jVQnyzaN1ERNCJQeHBDC5w9lFgMjdheWTQKUJ7noQ=;
-        b=smwU4FN6Ivkaa+E9ycZf5OkcmF9lPHScATMFwE/HgVqRlmte/qdfxrnu82kQbZ0EL4
-         k45BPN6mKq+4urjw543HKUuDpsv2Cs1fgiAYENhxnuK3xoKLO9RWs+wlGOdsx5/Xr84v
-         GRug8dtcqDadly/K+cbG6p6ZX+HS9Y7NJiI8DxvhpChuBRbpY3gn0GTq05C0M8ag4m4S
-         AAalju/jYeITT786x06qDAjL3/9LTPYTw+XWxu/ufjVJ3DzNZ/qLLswoiKdGWMCc+rl+
-         B2JFCptyB9cbNCdQ9Zqpb1q/hYhejDs4jKIFxQ7svm87Gqr6lt7MMEG+dkuTd7og9RzP
-         HLXQ==
-X-Gm-Message-State: AOJu0YxB3TjFkqvL9FdTFXT+au2eIt9TaCfCWfTqfOaPlme+llrXw097
-        nfhjpT46G5KdB2s8usVg9SNOYzDqMhH6
-X-Google-Smtp-Source: AGHT+IFf8LiHETjdJOMkgyABGonPNfygVlLPcRmeIzrdeNSCgieUQG/MM4JXzNQp5a4GH33BKmh9TwiXvCaP
+        bh=lStqQ9ffAu7tg36ET64D7TH2ZuxYOmdso1Dvk1E923U=;
+        b=f5wsmcAtABejQBzJWOcTxD2o52zm+/KFEMwz3vd01jLVhqmyp6xZHPRHuOJka5hAmJ
+         gyyrIqqbp5bjaXUfmX+pQ0KDO5ue9Ts6Qv8Opdahq7mV5rEH2h0i9zORA5Y96Lssob5j
+         1EMeYKZG/SXjwCgM82mDZcnmA31KvivyZ1/yTR8MIVDC5DpmPy/Md/Kb/nuTKnybtXdA
+         CVUoWjf47UEfjoYf5xoNbHKY/yejiFLSZImKAbOeNRxkDtM2urTer5XP/yl6+5jBZ3ui
+         nR9G0Gy7bAWk+7iwMO6rEQtc+TtSg6Q3EN1oEyatr9Y6iWZPalsNdpq7AW4adLU619C3
+         OP+A==
+X-Gm-Message-State: AOJu0Yx+1sajavrE5OMgkVarxiRJgeMOActBg1a+JxsdScp3ipuzuTLQ
+        mgySxYNNGAmoUcmtSqZlbWezpY+uDnLO
+X-Google-Smtp-Source: AGHT+IFjRA5JUeGKSzOoa0TZAwd/2W6FhxzDTZAadOlCrpO4Vx/AQT0GBgpQR7QF6AbHQOEP6z9/0YF3A9DO
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5357:1d03:3084:aacb])
- (user=irogers job=sendgmr) by 2002:a05:6902:1102:b0:d0b:d8cd:e661 with SMTP
- id o2-20020a056902110200b00d0bd8cde661mr203768ybu.12.1694726399348; Thu, 14
- Sep 2023 14:19:59 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 14:19:44 -0700
+ (user=irogers job=sendgmr) by 2002:a25:ad87:0:b0:d80:eb4:9ca with SMTP id
+ z7-20020a25ad87000000b00d800eb409camr162274ybi.0.1694726401718; Thu, 14 Sep
+ 2023 14:20:01 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 14:19:45 -0700
 In-Reply-To: <20230914211948.814999-1-irogers@google.com>
-Message-Id: <20230914211948.814999-2-irogers@google.com>
+Message-Id: <20230914211948.814999-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20230914211948.814999-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Subject: [PATCH v1 1/5] perf version: Add status of bpf skeletons
+Subject: [PATCH v1 2/5] perf build: Default BUILD_BPF_SKEL, warn/disable for
+ missing deps
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,52 +80,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add status for BPF skeletons, to see if a build has them enabled:
-```
-$ perf version --build-options
-perf version 6.6.rc1.g0381ae36d1a6
-                 dwarf: [ OFF ]  # HAVE_DWARF_SUPPORT
-    dwarf_getlocations: [ OFF ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-                libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
-            debuginfod: [ OFF ]  # HAVE_DEBUGINFOD_SUPPORT
-                libelf: [ OFF ]  # HAVE_LIBELF_SUPPORT
-               libnuma: [ OFF ]  # HAVE_LIBNUMA_SUPPORT
-numa_num_possible_cpus: [ OFF ]  # HAVE_LIBNUMA_SUPPORT
-               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-             libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-             libunwind: [ OFF ]  # HAVE_LIBUNWIND_SUPPORT
-    libdw-dwarf-unwind: [ OFF ]  # HAVE_DWARF_SUPPORT
-                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-             get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                   bpf: [ OFF ]  # HAVE_LIBBPF_SUPPORT
-                   aio: [ on  ]  # HAVE_AIO_SUPPORT
-                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-               libpfm4: [ on  ]  # HAVE_LIBPFM
-         libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
-         bpf_skeletons: [ OFF ]  # HAVE_BPF_SKEL
-```
+LIBBPF is dependent on zlib so move the NO_ZLIB and feature check
+early to avoid statically building when zlib is disabled. This avoids
+a linkage failure with perf and static libbpf when zlib isn't
+specified.
+
+Move BUILD_BPF_SKEL logic to one place and if not defined set
+BUILD_BPF_SKEL to 1. Detect dependencies of building with BPF
+skeletons and warn/disable if the dependencies aren't present.
+
+Change Makefile.perf to contain BPF skeleton logic dependent on the
+Makefile.config result and refresh the comment about BUILD_BPF_SKEL.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-version.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/Makefile.config | 78 ++++++++++++++++++++++++--------------
+ tools/perf/Makefile.perf   |  8 ++--
+ 2 files changed, 53 insertions(+), 33 deletions(-)
 
-diff --git a/tools/perf/builtin-version.c b/tools/perf/builtin-version.c
-index e5859c70e195..ac20c2b9bbc2 100644
---- a/tools/perf/builtin-version.c
-+++ b/tools/perf/builtin-version.c
-@@ -81,6 +81,7 @@ static void library_status(void)
- 	STATUS(HAVE_ZSTD_SUPPORT, zstd);
- 	STATUS(HAVE_LIBPFM, libpfm4);
- 	STATUS(HAVE_LIBTRACEEVENT, libtraceevent);
-+	STATUS(HAVE_BPF_SKEL, bpf_skeletons);
- }
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index d66b52407e19..f5ccbfc1a444 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -216,12 +216,6 @@ ifeq ($(call get-executable,$(BISON)),)
+   dummy := $(error Error: $(BISON) is missing on this system, please install it)
+ endif
  
- int cmd_version(int argc, const char **argv)
+-ifeq ($(BUILD_BPF_SKEL),1)
+-  ifeq ($(call get-executable,$(CLANG)),)
+-    dummy := $(error $(CLANG) is missing on this system, please install it to be able to build with BUILD_BPF_SKEL=1)
+-  endif
+-endif
+-
+ ifneq ($(OUTPUT),)
+   ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
+     BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
+@@ -530,6 +524,16 @@ ifdef CORESIGHT
+   endif
+ endif
+ 
++ifndef NO_ZLIB
++  ifeq ($(feature-zlib), 1)
++    CFLAGS += -DHAVE_ZLIB_SUPPORT
++    EXTLIBS += -lz
++    $(call detected,CONFIG_ZLIB)
++  else
++    NO_ZLIB := 1
++  endif
++endif
++
+ ifndef NO_LIBELF
+   CFLAGS += -DHAVE_LIBELF_SUPPORT
+   EXTLIBS += -lelf
+@@ -571,22 +575,28 @@ ifndef NO_LIBELF
+ 
+   ifndef NO_LIBBPF
+     ifeq ($(feature-bpf), 1)
+-      CFLAGS += -DHAVE_LIBBPF_SUPPORT
+-      $(call detected,CONFIG_LIBBPF)
+-
+       # detecting libbpf without LIBBPF_DYNAMIC, so make VF=1 shows libbpf detection status
+       $(call feature_check,libbpf)
+ 
+       ifdef LIBBPF_DYNAMIC
+         ifeq ($(feature-libbpf), 1)
+           EXTLIBS += -lbpf
++          CFLAGS += -DHAVE_LIBBPF_SUPPORT
++          $(call detected,CONFIG_LIBBPF)
+           $(call detected,CONFIG_LIBBPF_DYNAMIC)
+         else
+           dummy := $(error Error: No libbpf devel library found or older than v1.0, please install/update libbpf-devel);
+         endif
+       else
+-        # Libbpf will be built as a static library from tools/lib/bpf.
+-	LIBBPF_STATIC := 1
++        ifeq ($(NO_ZLIB), 1)
++          dummy := $(warning Warning: Statically building libbpf not possible as zlib is missing)
++          NO_LIBBPF := 1
++        else
++          # Libbpf will be built as a static library from tools/lib/bpf.
++          LIBBPF_STATIC := 1
++          $(call detected,CONFIG_LIBBPF)
++          CFLAGS += -DHAVE_LIBBPF_SUPPORT
++        endif
+       endif
+     endif
+   endif # NO_LIBBPF
+@@ -663,16 +673,36 @@ ifndef NO_LIBBPF
+   endif
+ endif
+ 
+-ifdef BUILD_BPF_SKEL
+-  $(call feature_check,clang-bpf-co-re)
+-  ifeq ($(feature-clang-bpf-co-re), 0)
+-    dummy := $(error Error: clang too old/not installed. Please install recent clang to build with BUILD_BPF_SKEL)
+-  endif
++ifndef BUILD_BPF_SKEL
++  # BPF skeletons control a large number of perf features, by default
++  # they are enabled.
++  BUILD_BPF_SKEL := 1
++endif
++
++ifeq ($(BUILD_BPF_SKEL),1)
+   ifeq ($(filter -DHAVE_LIBBPF_SUPPORT, $(CFLAGS)),)
+-    dummy := $(error Error: BPF skeleton support requires libbpf)
++    dummy := $(warning Warning: Disabled BPF skeletons as libbpf is required)
++    BUILD_BPF_SKEL := 0
++  else ifeq ($(filter -DHAVE_LIBELF_SUPPORT, $(CFLAGS)),)
++    dummy := $(warning Warning: Disabled BPF skeletons as libelf is required by bpftool)
++    BUILD_BPF_SKEL := 0
++  else ifeq ($(filter -DHAVE_ZLIB_SUPPORT, $(CFLAGS)),)
++    dummy := $(warning Warning: Disabled BPF skeletons as zlib is required by bpftool)
++    BUILD_BPF_SKEL := 0
++  else ifeq ($(call get-executable,$(CLANG)),)
++    dummy := $(warning Warning: Disabled BPF skeletons as clang ($(CLANG)) is missing)
++    BUILD_BPF_SKEL := 0
++  else
++    $(call feature_check,clang-bpf-co-re)
++    ifeq ($(feature-clang-bpf-co-re), 0)
++      dummy := $(warning Warning: Disabled BPF skeletons as clang is too old)
++      BUILD_BPF_SKEL := 0
++    endif
++  endif
++  ifeq ($(BUILD_BPF_SKEL),1)
++    $(call detected,CONFIG_PERF_BPF_SKEL)
++    CFLAGS += -DHAVE_BPF_SKEL
+   endif
+-  $(call detected,CONFIG_PERF_BPF_SKEL)
+-  CFLAGS += -DHAVE_BPF_SKEL
+ endif
+ 
+ ifndef GEN_VMLINUX_H
+@@ -946,16 +976,6 @@ ifndef NO_DEMANGLE
+   endif
+ endif
+ 
+-ifndef NO_ZLIB
+-  ifeq ($(feature-zlib), 1)
+-    CFLAGS += -DHAVE_ZLIB_SUPPORT
+-    EXTLIBS += -lz
+-    $(call detected,CONFIG_ZLIB)
+-  else
+-    NO_ZLIB := 1
+-  endif
+-endif
+-
+ ifndef NO_LZMA
+   ifeq ($(feature-lzma), 1)
+     CFLAGS += -DHAVE_LZMA_SUPPORT
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 8d0f6d2bbc7a..98604e396ac3 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -120,7 +120,7 @@ include ../scripts/utilities.mak
+ #
+ # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
+ #
+-# Define BUILD_BPF_SKEL to enable BPF skeletons
++# Set BUILD_BPF_SKEL to 0 to override BUILD_BPF_SKEL and not build BPF skeletons
+ #
+ # Define BUILD_NONDISTRO to enable building an linking against libbfd and
+ # libiberty distribution license incompatible libraries.
+@@ -1042,7 +1042,7 @@ SKELETONS += $(SKEL_OUT)/augmented_raw_syscalls.skel.h
+ $(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT) $(LIBPERF_OUTPUT) $(LIBSUBCMD_OUTPUT) $(LIBSYMBOL_OUTPUT):
+ 	$(Q)$(MKDIR) -p $@
+ 
+-ifdef BUILD_BPF_SKEL
++ifeq ($(CONFIG_PERF_BPF_SKEL),y)
+ BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
+ # Get Clang's default includes on this system, as opposed to those seen by
+ # '--target=bpf'. This fixes "missing" files on some architectures/distros,
+@@ -1120,11 +1120,11 @@ bpf-skel: $(SKELETONS)
+ 
+ .PRECIOUS: $(SKEL_TMP_OUT)/%.bpf.o
+ 
+-else # BUILD_BPF_SKEL
++else # CONFIG_PERF_BPF_SKEL
+ 
+ bpf-skel:
+ 
+-endif # BUILD_BPF_SKEL
++endif # CONFIG_PERF_BPF_SKEL
+ 
+ bpf-skel-clean:
+ 	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
 -- 
 2.42.0.459.ge4e396fd5e-goog
 
