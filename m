@@ -2,258 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6765C7A07EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C6B7A0800
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240413AbjINOxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S240452AbjINOzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240356AbjINOxX (ORCPT
+        with ESMTP id S240347AbjINOzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:53:23 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F029AF9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:53:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFC651FB;
-        Thu, 14 Sep 2023 07:53:55 -0700 (PDT)
-Received: from [10.34.100.121] (e126645.nice.arm.com [10.34.100.121])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BECC3F738;
-        Thu, 14 Sep 2023 07:53:17 -0700 (PDT)
-Message-ID: <ea8da512-73df-59ed-6c47-912dd9ef9dba@arm.com>
-Date:   Thu, 14 Sep 2023 16:53:12 +0200
+        Thu, 14 Sep 2023 10:55:07 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F362DF9;
+        Thu, 14 Sep 2023 07:55:02 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmgMM5jtxz6FGPS;
+        Thu, 14 Sep 2023 22:54:23 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 15:54:59 +0100
+Date:   Thu, 14 Sep 2023 15:54:59 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     James Morse <james.morse@arm.com>, <linux-pm@vger.kernel.org>,
+        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
+ [code first?]
+Message-ID: <20230914155459.00002dba@Huawei.com>
+In-Reply-To: <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-28-james.morse@arm.com>
+        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] sched/fair: Skip cpus with no sched domain attached
- during NOHZ idle balance
-To:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "Lu, Aaron" <aaron.lu@intel.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "tj@kernel.org" <tj@kernel.org>
-References: <20230804090858.7605-1-rui.zhang@intel.com>
- <20230814031432.GA574314@ziqianlu-dell>
- <cb305abedea24980c93ce2b436e64039d3796812.camel@intel.com>
- <b886a9af-6c90-c12a-f700-1a9141e25e7a@arm.com>
- <20230911114218.GA334545@ziqianlu-dell>
- <0d1c440becca151db3f3b05b3fb2c63fe69c2904.camel@intel.com>
- <c8baa176-e4cd-41f6-35a9-c69f89b32e79@arm.com>
- <a2a16c0e198a6d722b8923b0eec15dd2b32e4320.camel@intel.com>
-Content-Language: en-US
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <a2a16c0e198a6d722b8923b0eec15dd2b32e4320.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 14 Sep 2023 09:57:44 +0200
+Ard Biesheuvel <ardb@kernel.org> wrote:
 
+> Hello James,
+> 
+> On Wed, 13 Sept 2023 at 18:41, James Morse <james.morse@arm.com> wrote:
+> >
+> > Add the new flag field to the MADT's GICC structure.
+> >
+> > 'Online Capable' indicates a disabled CPU can be enabled later.
+> >  
+> 
+> Why do we need a bit for this? What would be the point of describing
+> disabled CPUs that cannot be enabled (and are you are aware of
+> firmware doing this?).
 
-On 9/14/23 11:23, Zhang, Rui wrote:
-> Hi, Pierre,
-> 
->>
->> Yes right indeed,
->> This happens when putting a CPU offline (as you mentioned earlier,
->> putting a CPU offline clears the CPU in the idle_cpus_mask).
->>
->> The load balancing related variables
-> 
-> including?
+Enabled being not set is common at some similar ACPI tables at least.
 
-I meant the nohz idle variables in the load balancing, so I was referring to:
-(struct sched_domain_shared).nr_busy_cpus
-(struct sched_domain).nohz_idle
-nohz.idle_cpus_mask
-nohz.nr_cpus
-(struct rq).nohz_tick_stopped
+This is available in most ACPI tables to allow firmware to use 'nearly'
+static tables and just tweak the 'enabled' bit to say if the record should
+be ignored or not. Also _STA not present which is for same trick.
+If you are doing clever dynamic tables, then you can just not present 
+the entry.
 
-> 
->>   are unused if a CPU has a NULL
->> rq as it cannot pull any task. Ideally we should clear them once,
->> when attaching a NULL sd to the CPU.
-> 
-> This sounds good to me. But TBH, I don't have enough confidence to do
-> so because I'm not crystal clear about how these variables are used.
-> 
-> Some questions about the code below.
->>
->> The following snipped should do that and solve the issue you
->> mentioned:
->> --- snip ---
->> --- a/include/linux/sched/nohz.h
->> +++ b/include/linux/sched/nohz.h
->> @@ -9,8 +9,10 @@
->>    #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
->>    extern void nohz_balance_enter_idle(int cpu);
->>    extern int get_nohz_timer_target(void);
->> +extern void nohz_clean_sd_state(int cpu);
->>    #else
->>    static inline void nohz_balance_enter_idle(int cpu) { }
->> +static inline void nohz_clean_sd_state(int cpu) { }
->>    #endif
->>    
->>    #ifdef CONFIG_NO_HZ_COMMON
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index b3e25be58e2b..6fcabe5d08f5 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -11525,6 +11525,9 @@ void nohz_balance_exit_idle(struct rq *rq)
->>    {
->>           SCHED_WARN_ON(rq != this_rq());
->>    
->> +       if (on_null_domain(rq))
->> +               return;
->> +
->>           if (likely(!rq->nohz_tick_stopped))
->>                   return;
->>
-> if we force clearing rq->nohz_tick_stopped when detaching domain, why
-> bother adding the first check?
+With that existing use case in mind, need another bit to say this
+one might one day turn up.  Note this is copied from x86 though no
+one seems to have implemented the kernel support for them yet.
 
-Yes you're right. I added this check for safety, but this is not
-mandatory.
+Note as per my other reply - this isn't a code first proposal. It's in the
+spec already (via a code first proposal last year I think).
 
 > 
->>    
->> @@ -11551,6 +11554,17 @@ static void set_cpu_sd_state_idle(int cpu)
->>           rcu_read_unlock();
->>    }
->>    
->> +void nohz_clean_sd_state(int cpu) {
->> +       struct rq *rq = cpu_rq(cpu);
->> +
->> +       rq->nohz_tick_stopped = 0;
->> +       if (cpumask_test_cpu(cpu, nohz.idle_cpus_mask)) {
->> +               cpumask_clear_cpu(cpu, nohz.idle_cpus_mask);
->> +               atomic_dec(&nohz.nr_cpus);
->> +       }
->> +       set_cpu_sd_state_idle(cpu);
->> +}
->> +
-> 
-> detach_destroy_domains
-> 	cpu_attach_domain
-> 		update_top_cache_domain
-> 
-> as we clears per_cpu(sd_llc, cpu) for the isolated cpu in
-> cpu_attach_domain(), set_cpu_sd_state_idle() seems to be a no-op here,
-> no?
+> So why are we not able to assume that this new bit can always be treated as '1'?
 
-Yes you're right, cpu_attach_domain() and nohz_clean_sd_state() calls
-have to be inverted to avoid what you just described.
+Given above, need the extra bit to size stuff to allow for the CPU showing up
+late.
 
-It also seems that the current kernel doesn't decrease nr_busy_cpus
-when putting CPUs in an isolated partition. Indeed if a CPU is counted
-in nr_busy_cpus, putting the CPU in an isolated partition doesn't trigger
-any call to set_cpu_sd_state_idle().
-So it might an additional argument.
-
-Thanks for reading the patch,
-Regards,
-Pierre
 
 > 
-> thanks,
-> rui
->>    /*
->>     * This routine will record that the CPU is going idle with tick
->> stopped.
->>     * This info will be used in performing idle load balancing in the
->> future.
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index d3a3b2646ec4..d31137b5f0ce 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -2584,8 +2584,10 @@ static void detach_destroy_domains(const
->> struct cpumask *cpu_map)
->>                  
->> static_branch_dec_cpuslocked(&sched_asym_cpucapacity);
->>    
->>           rcu_read_lock();
->> -       for_each_cpu(i, cpu_map)
->> +       for_each_cpu(i, cpu_map) {
->>                   cpu_attach_domain(NULL, &def_root_domain, i);
->> +               nohz_clean_sd_state(i);
->> +       }
->>           rcu_read_unlock();
->>    }
->>
->> --- snip ---
->>
->> Regards,
->> Pierre
->>
->>>
->>>>
->>>>> +       }
->>>>> +
->>>>>            /*
->>>>>             * The tick is still stopped but load could have been
->>>>> added in the
->>>>>             * meantime. We set the nohz.has_blocked flag to trig
->>>>> a
->>>>> check of the
->>>>> @@ -11585,10 +11609,6 @@ void nohz_balance_enter_idle(int cpu)
->>>>>            if (rq->nohz_tick_stopped)
->>>>>                    goto out;
->>>>> -       /* If we're a completely isolated CPU, we don't play:
->>>>> */
->>>>> -       if (on_null_domain(rq))
->>>>> -               return;
->>>>> -
->>>>>            rq->nohz_tick_stopped = 1;
->>>>>            cpumask_set_cpu(cpu, nohz.idle_cpus_mask);
->>>>>
->>>>> Otherwise I could reproduce the issue and the patch was solving
->>>>> it,
->>>>> so:
->>>>> Tested-by: Pierre Gondois <pierre.gondois@arm.com>
->>>
->>> Thanks for testing, really appreciated!
->>>>>
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> Also, your patch doesn't aim to solve that, but I think there
->>>>> is an
->>>>> issue
->>>>> when updating cpuset.cpus when an isolated partition was
->>>>> already
->>>>> created:
->>>>>
->>>>> // Create an isolated partition containing CPU0
->>>>> # mkdir cgroup
->>>>> # mount -t cgroup2 none cgroup/
->>>>> # mkdir cgroup/Testing
->>>>> # echo "+cpuset" > cgroup/cgroup.subtree_control
->>>>> # echo "+cpuset" > cgroup/Testing/cgroup.subtree_control
->>>>> # echo 0 > cgroup/Testing/cpuset.cpus
->>>>> # echo isolated > cgroup/Testing/cpuset.cpus.partition
->>>>>
->>>>> // CPU0's sched domain is detached:
->>>>> # ls /sys/kernel/debug/sched/domains/cpu0/
->>>>> # ls /sys/kernel/debug/sched/domains/cpu1/
->>>>> domain0  domain1
->>>>>
->>>>> // Change the isolated partition to be CPU1
->>>>> # echo 1 > cgroup/Testing/cpuset.cpus
->>>>>
->>>>> // CPU[0-1] sched domains are not updated:
->>>>> # ls /sys/kernel/debug/sched/domains/cpu0/
->>>>> # ls /sys/kernel/debug/sched/domains/cpu1/
->>>>> domain0  domain1
->>>>>
->>> Interesting. Let me check and get back to you later on this. :)
->>>
->>> thanks,
->>> rui
 > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > ---
+> > This patch probably needs to go via the upstream acpica project,
+> > but is included here so the feature can be testd.
+> > ---
+> >  include/acpi/actbl2.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> > index 3751ae69432f..c433a079d8e1 100644
+> > --- a/include/acpi/actbl2.h
+> > +++ b/include/acpi/actbl2.h
+> > @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+> >  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
+> >  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1) /* 01: Performance Interrupt Mode */
+> >  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2) /* 02: VGIC Maintenance Interrupt mode */
+> > +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3) /* 03: CPU is online capable */
+> >
+> >  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
+> >
+> > --
+> > 2.39.2
+> >  
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+
