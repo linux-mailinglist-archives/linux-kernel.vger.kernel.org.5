@@ -2,149 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6140F7A0BDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627847A0BE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239596AbjINRgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S239899AbjINRhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239402AbjINRgv (ORCPT
+        with ESMTP id S239845AbjINRho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:36:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2B81FF0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:36:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A87BC433BB;
+        Thu, 14 Sep 2023 13:37:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E0431FF7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694713010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h4hzn4St1hDKvPdOxDMBMmAGTrFFy2dEQTx58ZE1Vlo=;
+        b=SkB6db0wpl16g2XcX3QnEsLY0Fus0LGd5c6jt+YwF4l1CfHUfseryhuqG6EseBQg/YuuQt
+        iJ2ZikWdsw1F2dRlOsyhfPYi6WcYnyY2XwjdjLfDh1CadOPBacPXyjasvnZKRnMhqj2Pzm
+        CK2ni8UHV4ezVUb3vhlVrB/+SmFEhZM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-684-K-EPic2lNueZ9FA-gCtQLA-1; Thu, 14 Sep 2023 13:36:47 -0400
+X-MC-Unique: K-EPic2lNueZ9FA-gCtQLA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F0C181D7A7;
+        Thu, 14 Sep 2023 17:36:46 +0000 (UTC)
+Received: from [10.22.34.133] (unknown [10.22.34.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D28721B20B1;
         Thu, 14 Sep 2023 17:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694713007;
-        bh=MfTowFu0cgVxPtElLh6QEI0r8tSGdg78qyoRUAdeEaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nUAFiqE4/C5R84NREb7Doj230NMDGpAT8Ddt2r0Ha6Er2OJJtzjj4h6fi0QVZf1Sp
-         Bex4tDKYwdEscrRY8UvrRTIKmsGAo9FTHxqnEwLbZsrb9D1BuGyT3r8i9mTb/4RJ0g
-         Qzt35R0HA/rqhO6moslvuC7bbSSQSqXjVM7rwrCr60NHsi4X5/w3/6HooY6YY29ns+
-         uFyCLep6/VBZACYKM61/o8uh2Hzos6YSm2J8Fz9YQ8c5uv2QMfgZ2d5JE9TlcqOhMy
-         WCsOSWe2+uHxz10ADY9N8g870415uRQtSQajyz5GdJBINMEfQNLIuo94hZov1IZut+
-         57p8K1bIwf3tg==
-Date:   Thu, 14 Sep 2023 18:36:42 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v4 4/5] riscv: Vector checksum library
-Message-ID: <20230914-scrawny-aviation-03ec222a46b2@spud>
-References: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
- <20230911-optimize_checksum-v4-4-77cc2ad9e9d7@rivosinc.com>
- <20230914-pennant-obligate-db3adf056281@wendy>
- <ZQMxWPczYeDMCokP@ghost>
- <20230914-hardiness-uninjured-6818bfb40b4f@spud>
- <ZQNC7mAYKfuWLUVr@ghost>
+Message-ID: <a58d757d-00a1-9872-9698-f613ff210ff5@redhat.com>
+Date:   Thu, 14 Sep 2023 13:36:44 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hdzLaaOULK3RtUdD"
-Content-Disposition: inline
-In-Reply-To: <ZQNC7mAYKfuWLUVr@ghost>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and
+ accuracy
+Content-Language: en-US
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        kernel-team@cloudflare.com, Wei Xu <weixugc@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com>
+ <cbad0762-892f-229e-280e-1faafbcb36b8@redhat.com>
+ <CAJD7tkYGaVVbMpd6RC7QreLGCWpvMEmwJ9LJAZHKqdsTGM22-Q@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAJD7tkYGaVVbMpd6RC7QreLGCWpvMEmwJ9LJAZHKqdsTGM22-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hdzLaaOULK3RtUdD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 9/14/23 13:23, Yosry Ahmed wrote:
+> On Thu, Sep 14, 2023 at 10:19 AM Waiman Long <longman@redhat.com> wrote:
+>>
+>> On 9/13/23 03:38, Yosry Ahmed wrote:
+>>> Stats flushing for memcg currently follows the following rules:
+>>> - Always flush the entire memcg hierarchy (i.e. flush the root).
+>>> - Only one flusher is allowed at a time. If someone else tries to flush
+>>>     concurrently, they skip and return immediately.
+>>> - A periodic flusher flushes all the stats every 2 seconds.
+>>>
+>>> The reason this approach is followed is because all flushes are
+>>> serialized by a global rstat spinlock. On the memcg side, flushing is
+>>> invoked from userspace reads as well as in-kernel flushers (e.g.
+>>> reclaim, refault, etc). This approach aims to avoid serializing all
+>>> flushers on the global lock, which can cause a significant performance
+>>> hit under high concurrency.
+>>>
+>>> This approach has the following problems:
+>>> - Occasionally a userspace read of the stats of a non-root cgroup will
+>>>     be too expensive as it has to flush the entire hierarchy [1].
+>>> - Sometimes the stats accuracy are compromised if there is an ongoing
+>>>     flush, and we skip and return before the subtree of interest is
+>>>     actually flushed. This is more visible when reading stats from
+>>>     userspace, but can also affect in-kernel flushers.
+>>>
+>>> This patch aims to solve both problems by reworking how flushing
+>>> currently works as follows:
+>>> - Without contention, there is no need to flush the entire tree. In this
+>>>     case, only flush the subtree of interest. This avoids the latency of a
+>>>     full root flush if unnecessary.
+>>> - With contention, fallback to a coalesced (aka unified) flush of the
+>>>     entire hierarchy, a root flush. In this case, instead of returning
+>>>     immediately if a root flush is ongoing, wait for it to finish
+>>>     *without* attempting to acquire the lock or flush. This is done using
+>>>     a completion. Compared to competing directly on the underlying lock,
+>>>     this approach makes concurrent flushing a synchronization point
+>>>     instead of a serialization point. Once  a root flush finishes, *all*
+>>>     waiters can wake up and continue at once.
+>>> - Finally, with very high contention, bound the number of waiters to the
+>>>     number of online cpus. This keeps the flush latency bounded at the tail
+>>>     (very high concurrency). We fallback to sacrificing stats freshness only
+>>>     in such cases in favor of performance.
+>>>
+>>> This was tested in two ways on a machine with 384 cpus:
+>>> - A synthetic test with 5000 concurrent workers doing allocations and
+>>>     reclaim, as well as 1000 readers for memory.stat (variation of [2]).
+>>>     No significant regressions were noticed in the total runtime.
+>>>     Note that if concurrent flushers compete directly on the spinlock
+>>>     instead of waiting for a completion, this test shows 2x-3x slowdowns.
+>>>     Even though subsequent flushers would have nothing to flush, just the
+>>>     serialization and lock contention is a major problem. Using a
+>>>     completion for synchronization instead seems to overcome this problem.
+>>>
+>>> - A synthetic stress test for concurrently reading memcg stats provided
+>>>     by Wei Xu.
+>>>     With 10k threads reading the stats every 100ms:
+>>>     - 98.8% of reads take <100us
+>>>     - 1.09% of reads take 100us to 1ms.
+>>>     - 0.11% of reads take 1ms to 10ms.
+>>>     - Almost no reads take more than 10ms.
+>>>     With 10k threads reading the stats every 10ms:
+>>>     - 82.3% of reads take <100us.
+>>>     - 4.2% of reads take 100us to 1ms.
+>>>     - 4.7% of reads take 1ms to 10ms.
+>>>     - 8.8% of reads take 10ms to 100ms.
+>>>     - Almost no reads take more than 100ms.
+>>>
+>>> [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
+>>> [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
+>>> [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
+>>>
+>>> [weixugc@google.com: suggested the fallback logic and bounding the
+>>> number of waiters]
+>>>
+>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>>> ---
+>>>    include/linux/memcontrol.h |   4 +-
+>>>    mm/memcontrol.c            | 100 ++++++++++++++++++++++++++++---------
+>>>    mm/vmscan.c                |   2 +-
+>>>    mm/workingset.c            |   8 ++-
+>>>    4 files changed, 85 insertions(+), 29 deletions(-)
+>>>
+>>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>>> index 11810a2cfd2d..4453cd3fc4b8 100644
+>>> --- a/include/linux/memcontrol.h
+>>> +++ b/include/linux/memcontrol.h
+>>> @@ -1034,7 +1034,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>>        return x;
+>>>    }
+>>>
+>>> -void mem_cgroup_flush_stats(void);
+>>> +void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+>>>    void mem_cgroup_flush_stats_ratelimited(void);
+>>>
+>>>    void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>>> @@ -1519,7 +1519,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>>        return node_page_state(lruvec_pgdat(lruvec), idx);
+>>>    }
+>>>
+>>> -static inline void mem_cgroup_flush_stats(void)
+>>> +static inline void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+>>>    {
+>>>    }
+>>>
+>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>> index d729870505f1..edff41e4b4e7 100644
+>>> --- a/mm/memcontrol.c
+>>> +++ b/mm/memcontrol.c
+>>> @@ -588,7 +588,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+>>>    static void flush_memcg_stats_dwork(struct work_struct *w);
+>>>    static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+>>>    static DEFINE_PER_CPU(unsigned int, stats_updates);
+>>> -static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
+>>>    /* stats_updates_order is in multiples of MEMCG_CHARGE_BATCH */
+>>>    static atomic_t stats_updates_order = ATOMIC_INIT(0);
+>>>    static u64 flush_last_time;
+>>> @@ -639,36 +638,87 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>>>        }
+>>>    }
+>>>
+>>> -static void do_flush_stats(void)
+>>> +/*
+>>> + * do_flush_stats - flush the statistics of a memory cgroup and its tree
+>>> + * @memcg: the memory cgroup to flush
+>>> + * @wait: wait for an ongoing root flush to complete before returning
+>>> + *
+>>> + * All flushes are serialized by the underlying rstat global lock. If there is
+>>> + * no contention, we try to only flush the subtree of the passed @memcg to
+>>> + * minimize the work. Otherwise, we coalesce multiple flushing requests into a
+>>> + * single flush of the root memcg. When there is an ongoing root flush, we wait
+>>> + * for its completion (unless otherwise requested), to get fresh stats. If the
+>>> + * number of waiters exceeds the number of cpus just skip the flush to bound the
+>>> + * flush latency at the tail with very high concurrency.
+>>> + *
+>>> + * This is a trade-off between stats accuracy and flush latency.
+>>> + */
+>>> +static void do_flush_stats(struct mem_cgroup *memcg, bool wait)
+>>>    {
+>>> +     static DECLARE_COMPLETION(root_flush_done);
+>>> +     static DEFINE_SPINLOCK(root_flusher_lock);
+>>> +     static DEFINE_MUTEX(subtree_flush_mutex);
+>>> +     static atomic_t waiters = ATOMIC_INIT(0);
+>>> +     static bool root_flush_ongoing;
+>>> +     bool root_flusher = false;
+>>> +
+>>> +     /* Ongoing root flush, just wait for it (unless otherwise requested) */
+>>> +     if (READ_ONCE(root_flush_ongoing))
+>>> +             goto root_flush_or_wait;
+>>> +
+>>>        /*
+>>> -      * We always flush the entire tree, so concurrent flushers can just
+>>> -      * skip. This avoids a thundering herd problem on the rstat global lock
+>>> -      * from memcg flushers (e.g. reclaim, refault, etc).
+>>> +      * Opportunistically try to only flush the requested subtree. Otherwise
+>>> +      * fallback to a coalesced flush below.
+>>>         */
+>>> -     if (atomic_read(&stats_flush_ongoing) ||
+>>> -         atomic_xchg(&stats_flush_ongoing, 1))
+>>> +     if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mutex)) {
+>>> +             cgroup_rstat_flush(memcg->css.cgroup);
+>>> +             mutex_unlock(&subtree_flush_mutex);
+>>>                return;
+>>> +     }
+>> If mutex_trylock() is the only way to acquire subtree_flush_mutex, you
+>> don't really need a mutex. Just a simple integer flag with xchg() call
+>> should be enough.
 
-On Thu, Sep 14, 2023 at 01:29:18PM -0400, Charlie Jenkins wrote:
-> On Thu, Sep 14, 2023 at 05:29:29PM +0100, Conor Dooley wrote:
-> > On Thu, Sep 14, 2023 at 12:14:16PM -0400, Charlie Jenkins wrote:
-> > > On Thu, Sep 14, 2023 at 01:46:29PM +0100, Conor Dooley wrote:
-> > > > On Mon, Sep 11, 2023 at 03:57:14PM -0700, Charlie Jenkins wrote:
-> > > > > This patch is not ready for merge as vector support in the kernel=
- is
-> > > > > limited. However, the code has been tested in QEMU so the algorit=
-hms
-> > > > > do work. This code requires the kernel to be compiled with C vect=
-or
-> > > > > support, but that is not yet possible. It is written in assembly
-> > > > > rather than using the GCC vector instrinsics because they did not
-> > > > > provide optimal code.
-> > > > >=20
-> > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > > ---
-> > > > >  arch/riscv/lib/csum.c | 92 +++++++++++++++++++++++++++++++++++++=
-++++++++++++++
-> > > > >  1 file changed, 92 insertions(+)
-> > > > >=20
-> > > > > diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
-> > > > > index 47d98c51bab2..eb4596fc7f5b 100644
-> > > > > --- a/arch/riscv/lib/csum.c
-> > > > > +++ b/arch/riscv/lib/csum.c
-> > > > > @@ -12,6 +12,10 @@
-> > > > > =20
-> > > > >  #include <net/checksum.h>
-> > > > > =20
-> > > > > +#ifdef CONFIG_RISCV_ISA_V
-> > > > > +#include <riscv_vector.h>
-> > > >=20
-> > > > What actually includes this header, I don't see it in either Andy's
-> > > > in-kernel vector series or Bjorn's blake2 one.
-> > > > Can you link to the pre-requisites in your cover letter please.
-> > > >=20
-> > > > Thanks,
-> > > > Conor.
-> > >=20
-> > > It is defined here:
-> > > https://github.com/riscv-non-isa/rvv-intrinsic-doc/blob/main/doc/rvv-=
-intrinsic-spec.adoc.
-> > > The header is for the vector intrinsics that are supported by llvm and
-> > > gcc.
-> >=20
-> > Well, whatever you're doing with it does not work, producing 3600 or so
-> > fatal errors during compilation, all saying:
-> > ../arch/riscv/include/asm/checksum.h:14:10: fatal error: riscv_vector.h=
-: No such file or directory
-> >=20
-> > Do you have some makefile hack somewhere that's not part of this
-> > patchset? Also, I'm dumb, but can you show me where are the actual
-> > intrinsics are being used in this patch anyway? I just seem some
-> > types & asm.
-> >=20
-> > Thanks,
-> > Conor.
-> >=20
->=20
-> Intrinsics are needed for the vector types. Vector types are needed to
-> get the inline asm to select vector registers at compile time. I could
-> manually select vector registers to use but that is not ideal. In order
-> to get this to work, vector has to be enabled in the compiler. This
-> patch will not compile right now, but since people are working on vector
-> I was hoping that it would be possible in the future. Palmer recommended
-> that I just put up this patch for now since I had the code, but only the
-> non-vector versions should be candidates for release for now.
+Equivalently test_and_set_bit() will work too.
 
-I see. I was pretty unclear to me anyway what the craic was, you should
-probably note that the build failures from here onwards are
-known-broken. If you want that header, I guess you probably need to
-have v set in -march?
-If so, the in-kernel vector patches that have been posted do not do that.
-Oh-so-far from an expert on what is a safe way to do these kinda things
-though, sadly.
+Cheers,
+Longman
 
---hdzLaaOULK3RtUdD
-Content-Type: application/pgp-signature; name="signature.asc"
+> Thanks for pointing this out. Agreed.
+>
+> If we keep this approach I will drop that mutex.
+>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQNEqgAKCRB4tDGHoIJi
-0vGnAQDdLVtUPskYP22nyMgFg01pnHFouvzBVON1b/5dYKCfWgEAhVTJTZTVePAi
-YoE3ZHxR2PNtYY+65BhcEqkil9Wg4gE=
-=lz5p
------END PGP SIGNATURE-----
-
---hdzLaaOULK3RtUdD--
