@@ -2,198 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEE17A0B1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C368A7A0B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbjINQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
+        id S238443AbjINQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238303AbjINQ7A (ORCPT
+        with ESMTP id S229705AbjINQyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:59:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A21FE2;
-        Thu, 14 Sep 2023 09:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694710736; x=1726246736;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=ttWsEG9I/e6vdlCdz2VaS6HXv2EdKKp38qH+zUGKDOU=;
-  b=QXZueWMPyZUOkBf+64vBZwbWPtVLPnqYHhktg3D7M7gsh/A1lFopUL4h
-   Eo81jmv+0dzLi50xnhRZ+VPsLE2YeX5+QPZUsbvKhqre+EChkEEAiPXcr
-   iZc7iNkIKEjworgkg7eeFsn1/Y20vklz7tGzhSiPaWYNaf/w1XXJqdMUj
-   ELc8zg1ZWdPXy6sAxxGheHox2BjC54fNbMX38SMtBYQvog4FK+LjjCa8Y
-   LdLgR8tkwW4bM1FV8qtcMgRoao020s8aUpmmEcS8ozAd5k2lLEIrV3O/x
-   Mgap7yLKDQopf60SA9S/Mr+gdGAjNa2387qaCqv3Gwz7WG32Qtb3acsR2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="364059845"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="364059845"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 09:58:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="834816568"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="834816568"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 09:58:55 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 14 Sep 2023 09:58:54 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 09:58:54 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 14 Sep 2023 09:58:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/MAXBGSKK637xK0YjamxLI6ZcERW0x1GGv081jBLiE/Zd+V5dAau7Zcrqxo25oCGu0rSO4rVPgcvS91oBTuLBWM6Td7N5Sj98H34D64FvhYff6toq/KShIrsqiWqh4DsA8pjKVChHE91oXFBnExiEmmL7aUkYkBsP+foM5TAI/zT9JqN5LcHbZqWzwC+AZdfqGFVuTpdU5VkwLPfEuP1dAMbHyWn3fMhJHfapfv6YT4xK6Uxh3Uf1kWu+ssOnIK7LSCHwOA/oEL/zc7CFp6UvyLfen7ZWjuvzTrmLP+o1GQIC7eDdvQzipkzKSbZYIvFtnN875s7oDtrjR3g9OpCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J2899Y8v4adOJ188fXuf6id4+6sIWSIfBTmd73ANN9A=;
- b=crNrDDbjPofiBWku2ZmZz3YJYqtJW0QPPk23frvU1hVlwvLesemy/lDgtGkiaL7Crx6Pkryg+S2lCWoDmYTZKANH6v16n5tsrfBVB9NrQgwKtiTLT5ylM62OxyiMa9o2gXTDLK3Zdi+VZV6Gm+hSL3i0wwzjKc5fTKysqeYhikl99vo7sp2Ah5LUJZ5HkXqAOdKK8dxvtVaRmsMc9E1b53SuwBIzJhfh/pW1Yunk0dV4kv46aMI5r7U1Kfp5IlNCW2ed9QmZ/onql63zTVzvGS/Z4cjrIUk7Aj4oSKd72VOR5x5SZXPhrCuD+mQE7V1zvNfnZbh/lk3xX0Oe0gFy/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by PH8PR11MB8063.namprd11.prod.outlook.com (2603:10b6:510:252::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Thu, 14 Sep
- 2023 16:58:52 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d%3]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
- 16:58:51 +0000
-Date:   Thu, 14 Sep 2023 18:53:11 +0200
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Allow to use kfunc XDP hints and frags
- together
-Message-ID: <ZQM6dy80CMl2AVzJ@lincoln>
-References: <20230914083716.57443-1-larysa.zaremba@intel.com>
- <ZQM293Gdx//GQPzA@boxer>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQM293Gdx//GQPzA@boxer>
-X-ClientProxiedBy: BE1P281CA0360.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:82::24) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+        Thu, 14 Sep 2023 12:54:51 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3381BCB;
+        Thu, 14 Sep 2023 09:54:47 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rmk1X02Syz6K66F;
+        Fri, 15 Sep 2023 00:54:07 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 17:54:44 +0100
+Date:   Thu, 14 Sep 2023 17:54:43 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 35/35] cpumask: Add enabled cpumask for present
+ CPUs that can be brought online
+Message-ID: <20230914175443.000038f6@Huawei.com>
+In-Reply-To: <20230913163823.7880-36-james.morse@arm.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-36-james.morse@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|PH8PR11MB8063:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77133fc6-6e9d-4e84-bbbe-08dbb543df36
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0a6ieQNpq8ZrsbZ+gkp30dw0kmVtRoFpQK4FqXF0BQmOjzXyuEnyxlcQ1Pg1qy6lGmwtdDutz9aP+qCpjBII2PI642V8ZkmOJkhqDuB7AeJ7f9HhMnsoTsA1A8bPkh6D+7lkvC3i3c1g0A746IghZeHKa6LXcoyBdn7d8ElB0ZeWkXni3Mq/SHJbPLdu0xT8sqeqDsUx/zEnqKrMdoOGuh+mxGBqN7sN79lx4AhTMqDamnANfVLL8ZmOkCdUJU/7rmJWrs+vMEXGopQxEqedNakyPdw/GXviWf/jfeT2YxBKuhGIPjhA8l3c6jTmw7/N6ZEALOGKa9Ll+Y0FvzXLfX6pOfw+naFWPYvCXJWoDaR3BYLBR1vdMjDv110ABc02T1GTh6+k/ZM39G4xc43IPD7TYBgIpdWheoRsQKBY/HejzvukOp6leN3Xue5enEcDyfQ45DIAqCiRzqS2VuQP1yKoTdOOTyB4keDMvSRaAOil9JNgDc5wJslABvgO2tSJXpdtuEsrWcbxSJKrJMqtUsKd8GkIBFJLENeKcBQbq44=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(346002)(376002)(136003)(366004)(451199024)(186009)(1800799009)(2906002)(7416002)(41300700001)(6636002)(316002)(54906003)(66946007)(66556008)(66476007)(44832011)(5660300002)(4326008)(6862004)(8676002)(8936002)(33716001)(86362001)(6486002)(478600001)(6506007)(966005)(6666004)(83380400001)(9686003)(6512007)(38100700002)(26005)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EA19Eqcav/ynB7en1I7DaCr8Dnet0VuJqCHQD0fd2iqXWbEk9gJJCy+Z9lt6?=
- =?us-ascii?Q?7+DnLCwn77lpiSr9GkXkRljMF383rWSWK1mO84lg4tBWXdLP3hEbP5Wf1r5W?=
- =?us-ascii?Q?qnKUXKLCIJ0HuhaFv3VVxIsslsYVJvulbrOBVSC87NHMh8IqRnLIfRx+Cbg4?=
- =?us-ascii?Q?yICW7WXCCBmOG6AuttPNAREutGkMBj7BgiJxR1orlEvsHc+vCEHnAeENLTBZ?=
- =?us-ascii?Q?RKf5OjeJLRvm2/dtiMop2t9n5fl/tGyy74KZ78h09isqsmdEGHai1qOZWqRy?=
- =?us-ascii?Q?RU+j9+JCyRDXckkgRzdfZCID6+haBNvNCFaQMbhjMQ7z++1nNfwqIahBAMMK?=
- =?us-ascii?Q?BNx/W6Em9UctisCakD9S5dG1FgKhA4K8MbiKwGMzlDOhIvhHq0BAaLMWUSfa?=
- =?us-ascii?Q?Chf+8+GKDhK+q+xToOlwayRKlEl6viddF1VWetgNtpgMiIvSAkdBpTMYfd5C?=
- =?us-ascii?Q?Vd9zsP/ckRhe5TTnlvEJmISJsrsrbB1hRE82vp//L3EudS3/iK4IsgcVBunj?=
- =?us-ascii?Q?3NRD+ueTOHGG0fRYbxQCgeaiFMqqSR8Yebft4CCzPCjMbzRkqyspVjvTJJ/2?=
- =?us-ascii?Q?ngiNDug/qJKH0V/G+LLee+Ursm/mStoYVDp8bBorbiQXoYxL7ePxcwC4/3rc?=
- =?us-ascii?Q?Hgqt+6M5/Ye5JbFdcY+uziAGGqIoYiT4AL3RgecMsdwR3lHXOBnlcNEjm8OZ?=
- =?us-ascii?Q?/snGj6EW0Mw4AOEOtxaWNFFH/Lq/3f/sqHadBKDdKmnKpPXsPHXe/IiASOcA?=
- =?us-ascii?Q?CYfXnsKK5GzZFvBW4R95JlL4lM5OytLfZWaxRRZbhPwHNDWG7mBLbQOT5zeS?=
- =?us-ascii?Q?ULwIo8VkZ6ABe7fvif+Df/6xccASQTrHcQul+7Lec4/1sz4uYteSsG9eEP+q?=
- =?us-ascii?Q?eY2iXpZOJxpfmPcgRpVLkTetca8RYnK+bom1gvVR96/4iL+goqYXGulDSnDr?=
- =?us-ascii?Q?tW0uiwkgHmCFxYus3046KctK4L1A8/nRR6JJ6PVMt80iMj4FLxJHe023SrPA?=
- =?us-ascii?Q?a072HYhSQlvJWu1DT/4eYvc2+bTUWbRh/MuyhtcUxkNbZ68doBSAgqYbtbn4?=
- =?us-ascii?Q?C2ed2K3K1JDD7dx+L3d7NHNKHf3r1L2IN94SkK2YW6JmaYAdBMnQx/89H8s3?=
- =?us-ascii?Q?xxIEPEdXTLFK6Sh2zR6NbDjriSWeaF7dziat3nHIpvwUS3E5Vg5xYqiH9M5Z?=
- =?us-ascii?Q?2UNSFtiDzJ5MIc7ammwxEIVHARONdK8LpHYFxoq6ZEInKeNu3ngUaZjrVDIk?=
- =?us-ascii?Q?6CRaRiI1+4zUNm6NF8eTbQEBQnT5vy73snfwG44DooGks+J6Cwdlgs0MiB2k?=
- =?us-ascii?Q?2bOEmLQwoTkK6aBc1OGmrR7sIEcssuBV7CcWWCOTxb92r4Q1aYhGK4QoBR6K?=
- =?us-ascii?Q?n7k76sLmKuusYdIkjIvmb5OWPb/+mQf7cV41+hsKR2Ev+LMChB5e8HmiMQ1W?=
- =?us-ascii?Q?0k6QrNEu5/bgDAdV8kkmoM0Bs0Zy/X35XJlMwN40e5WhCMwgDtlDZlzkycJT?=
- =?us-ascii?Q?8sKCKo+cP3yJUkN62X6xVe3/jgUzbTHAK4mhggy1R4jPOl32XTShg539XL0Y?=
- =?us-ascii?Q?6pTwCRLs6R8jZav1/c5glM2UrXzJYKNnv5oHF4oOPsVPmUAqAxzBfBzDuphs?=
- =?us-ascii?Q?ww=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77133fc6-6e9d-4e84-bbbe-08dbb543df36
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 16:58:51.6388
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XFM0jwDwTomYVRkzRreA5xJEY15HeXQgFUnL3RcT4JctEuugEzxe2Jo3D91JCY6rne782yDt/VcZF1nPZcjbyekqCffx1jbo7p4/nK/lGL8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8063
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 06:38:15PM +0200, Maciej Fijalkowski wrote:
-> On Thu, Sep 14, 2023 at 10:37:11AM +0200, Larysa Zaremba wrote:
-> > There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX hints
-> > cannot coexist in a single program.
-> > 
-> > Allow those features to be used together by modifying the flags conditions.
-> > 
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=OKMdsxEkyML36VsAuZpcrsXcyqjdKXSJCBq=Q@mail.gmail.com/
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+On Wed, 13 Sep 2023 16:38:23 +0000
+James Morse <james.morse@arm.com> wrote:
+
+> The 'offline' file in sysfs shows all offline CPUs, including those
+> that aren't present. User-space is expected to remove not-present CPUs
+> from this list to learn which CPUs could be brought online.
 > 
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> CPUs can be present but not-enabled. These CPUs can't be brought online
+> until the firmware policy changes, which comes with an ACPI notification
+> that will register the CPUs.
 > 
-> Though it would be worth spelling out something in the commit msg about
-> additional check you're adding (frags flag can't go without dev bound)
->
+> With only the offline and present files, user-space is unable to
+> determine which CPUs it can try to bring online. Add a new CPU mask
+> that shows this based on all the registered CPUs.
 
-Ok, I'll add to the commit message the below:
+Bikeshed should be blue.
 
-Frags are allowed only if program is dev-bound-only, but not if it is requesting 
-bpf offload.
+Enabled is a really confusing name for this - to the extent that I'm not sure
+what it means.  Assuming I have the sense right, how about the horrible
+onlineable or online_capable?
 
-> > ---
-> >  kernel/bpf/offload.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > index ee35f33a96d1..43aded96c79b 100644
-> > --- a/kernel/bpf/offload.c
-> > +++ b/kernel/bpf/offload.c
-> > @@ -232,7 +232,11 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >  	    attr->prog_type != BPF_PROG_TYPE_XDP)
-> >  		return -EINVAL;
-> >  
-> > -	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > +	if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-> > +		return -EINVAL;
-> > +
-> > +	if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-> > +	    !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
-> >  		return -EINVAL;
-> >  
-> >  	if (attr->prog_type == BPF_PROG_TYPE_SCHED_CLS &&
-> > -- 
-> > 2.41.0
-> > 
-> > 
+
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>  drivers/base/cpu.c      | 10 ++++++++++
+>  include/linux/cpumask.h | 25 +++++++++++++++++++++++++
+>  kernel/cpu.c            |  3 +++
+>  3 files changed, 38 insertions(+)
+> 
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index c709747c4a18..a19a8be93102 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -95,6 +95,7 @@ void unregister_cpu(struct cpu *cpu)
+>  {
+>  	int logical_cpu = cpu->dev.id;
+>  
+> +	set_cpu_enabled(logical_cpu, false);
+>  	unregister_cpu_under_node(logical_cpu, cpu_to_node(logical_cpu));
+>  
+>  	device_unregister(&cpu->dev);
+> @@ -273,6 +274,13 @@ static ssize_t print_cpus_offline(struct device *dev,
+>  }
+>  static DEVICE_ATTR(offline, 0444, print_cpus_offline, NULL);
+>  
+> +static ssize_t print_cpus_enabled(struct device *dev,
+> +				  struct device_attribute *attr, char *buf)
+> +{
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpu_enabled_mask));
+> +}
+> +static DEVICE_ATTR(enabled, 0444, print_cpus_enabled, NULL);
+> +
+>  static ssize_t print_cpus_isolated(struct device *dev,
+>  				  struct device_attribute *attr, char *buf)
+>  {
+> @@ -413,6 +421,7 @@ int register_cpu(struct cpu *cpu, int num)
+>  	register_cpu_under_node(num, cpu_to_node(num));
+>  	dev_pm_qos_expose_latency_limit(&cpu->dev,
+>  					PM_QOS_RESUME_LATENCY_NO_CONSTRAINT);
+> +	set_cpu_enabled(num, true);
+>  
+>  	return 0;
+>  }
+> @@ -494,6 +503,7 @@ static struct attribute *cpu_root_attrs[] = {
+>  	&cpu_attrs[2].attr.attr,
+>  	&dev_attr_kernel_max.attr,
+>  	&dev_attr_offline.attr,
+> +	&dev_attr_enabled.attr,
+>  	&dev_attr_isolated.attr,
+>  #ifdef CONFIG_NO_HZ_FULL
+>  	&dev_attr_nohz_full.attr,
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index f10fb87d49db..a29ee03f13ff 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -92,6 +92,7 @@ static inline void set_nr_cpu_ids(unsigned int nr)
+>   *
+>   *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
+>   *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
+> + *     cpu_enabled_mask  - has bit 'cpu' set iff cpu can be brought online
+>   *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
+>   *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
+>   *
+> @@ -124,11 +125,13 @@ static inline void set_nr_cpu_ids(unsigned int nr)
+>  
+>  extern struct cpumask __cpu_possible_mask;
+>  extern struct cpumask __cpu_online_mask;
+> +extern struct cpumask __cpu_enabled_mask;
+>  extern struct cpumask __cpu_present_mask;
+>  extern struct cpumask __cpu_active_mask;
+>  extern struct cpumask __cpu_dying_mask;
+>  #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
+>  #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
+> +#define cpu_enabled_mask   ((const struct cpumask *)&__cpu_enabled_mask)
+>  #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
+>  #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
+>  #define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
+> @@ -973,6 +976,7 @@ extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
+>  #else
+>  #define for_each_possible_cpu(cpu) for_each_cpu((cpu), cpu_possible_mask)
+>  #define for_each_online_cpu(cpu)   for_each_cpu((cpu), cpu_online_mask)
+> +#define for_each_enabled_cpu(cpu)   for_each_cpu((cpu), cpu_enabled_mask)
+>  #define for_each_present_cpu(cpu)  for_each_cpu((cpu), cpu_present_mask)
+>  #endif
+>  
+> @@ -995,6 +999,15 @@ set_cpu_possible(unsigned int cpu, bool possible)
+>  		cpumask_clear_cpu(cpu, &__cpu_possible_mask);
+>  }
+>  
+> +static inline void
+> +set_cpu_enabled(unsigned int cpu, bool can_be_onlined)
+> +{
+> +	if (can_be_onlined)
+> +		cpumask_set_cpu(cpu, &__cpu_enabled_mask);
+> +	else
+> +		cpumask_clear_cpu(cpu, &__cpu_enabled_mask);
+> +}
+> +
+>  static inline void
+>  set_cpu_present(unsigned int cpu, bool present)
+>  {
+> @@ -1074,6 +1087,7 @@ static __always_inline unsigned int num_online_cpus(void)
+>  	return raw_atomic_read(&__num_online_cpus);
+>  }
+>  #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
+> +#define num_enabled_cpus()	cpumask_weight(cpu_enabled_mask)
+>  #define num_present_cpus()	cpumask_weight(cpu_present_mask)
+>  #define num_active_cpus()	cpumask_weight(cpu_active_mask)
+>  
+> @@ -1082,6 +1096,11 @@ static inline bool cpu_online(unsigned int cpu)
+>  	return cpumask_test_cpu(cpu, cpu_online_mask);
+>  }
+>  
+> +static inline bool cpu_enabled(unsigned int cpu)
+> +{
+> +	return cpumask_test_cpu(cpu, cpu_enabled_mask);
+> +}
+> +
+>  static inline bool cpu_possible(unsigned int cpu)
+>  {
+>  	return cpumask_test_cpu(cpu, cpu_possible_mask);
+> @@ -1106,6 +1125,7 @@ static inline bool cpu_dying(unsigned int cpu)
+>  
+>  #define num_online_cpus()	1U
+>  #define num_possible_cpus()	1U
+> +#define num_enabled_cpus()	1U
+>  #define num_present_cpus()	1U
+>  #define num_active_cpus()	1U
+>  
+> @@ -1119,6 +1139,11 @@ static inline bool cpu_possible(unsigned int cpu)
+>  	return cpu == 0;
+>  }
+>  
+> +static inline bool cpu_enabled(unsigned int cpu)
+> +{
+> +	return cpu == 0;
+> +}
+> +
+>  static inline bool cpu_present(unsigned int cpu)
+>  {
+>  	return cpu == 0;
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 6de7c6bb74ee..2201a6a449b5 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -3101,6 +3101,9 @@ EXPORT_SYMBOL(__cpu_possible_mask);
+>  struct cpumask __cpu_online_mask __read_mostly;
+>  EXPORT_SYMBOL(__cpu_online_mask);
+>  
+> +struct cpumask __cpu_enabled_mask __read_mostly;
+> +EXPORT_SYMBOL(__cpu_enabled_mask);
+> +
+>  struct cpumask __cpu_present_mask __read_mostly;
+>  EXPORT_SYMBOL(__cpu_present_mask);
+>  
+
