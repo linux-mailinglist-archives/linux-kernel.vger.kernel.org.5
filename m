@@ -2,81 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF1D7A10FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7BA7A110F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjINWab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        id S229995AbjINWf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjINWaa (ORCPT
+        with ESMTP id S229543AbjINWfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:30:30 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE1026B7;
-        Thu, 14 Sep 2023 15:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mE3JHIhCLP538vF70ApFyIxbj6/Ip+yfsU0HW7Q8ym0=; b=gI4E7ch3g1U549Ro0Oc9WWvqBo
-        T+/9TjEGJIBe1n6qnhLWqqgGt7lTeRzzUyvCk5Lchww5EJSi53/MDYaY+4ljE99oyea6qKyng+pNW
-        PRoqoON2DIMhRkyNtEEoE5BYYgbWr3B+JHNDRXMb41kWMQmwLmFYbZTRMNuhwsWK6yXUZJvDrVBkq
-        sslFIFI0GpZeCu/7R7HzZHBl/yqkuQ2Cwz4oYAW4QBH7mgYKUkHehgmoqh/X3/gvxBoFl2LnLY7n8
-        yUKaWKmVc7f2EDY2nEALf+U9M9cOoMv5fyFxNhobmMg+1SX06aEFCB/n9Qny52I4yfEB/89eTLBFh
-        6My42hlg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qguqm-008ENg-2g;
-        Thu, 14 Sep 2023 22:30:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EA31630008D; Fri, 15 Sep 2023 00:30:17 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 00:30:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Mitchell Levy <levymitchell0@gmail.com>
-Subject: Re: guard coding style (was: Re: [PATCH v1 05/10] gpio: pca953x:
- Simplify code with cleanup helpers)
-Message-ID: <20230914223017.GC5492@noisy.programming.kicks-ass.net>
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
- <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
- <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org>
- <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
- <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
+        Thu, 14 Sep 2023 18:35:54 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CB82100
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:35:50 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d776e1f181bso1478751276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694730949; x=1695335749; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gOfdC8wV94SdkfFI9yJK6AfQ92EIW46yyM5znknoWWA=;
+        b=iWH+Zes1PAabuUYOOF7KN3cIeAJDVESbkX+fLMH1TTVRQCBquV7+C0LnCruNis8flt
+         Hx1i/+thRTd7ipBzxh8YO7aa/n4L5QdsB/kQu22agkujyxigaAexpB1RWG+o37v0W7Oc
+         JObHLyCrwB29Vwnb0FyrFskfIdLmlQ6GXBGAFdWkG7BS+JfYIvtW87yyLLdcgZhA26tp
+         SNRaaOWdX1uvcP2SUUKZprjvncEuQ3b0MfRkYZZLi4EW6fz9RPZewWoBcW8XSUT3TgBE
+         C9F8qVq8mGTQ0mnFjXR1Mvd5yhwUiwk4gVMGJcCe9WYNHJDhE0UPGyGcu9Qmzzik6s8m
+         a+sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694730949; x=1695335749;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gOfdC8wV94SdkfFI9yJK6AfQ92EIW46yyM5znknoWWA=;
+        b=NlJveJTYDNRZmPZZnWI+vaM/JkbXK/wAOjr7CmTKPvjSsta5CaVPiQO6SdNTvdECm7
+         hDnNZeUxzFVru808Z2OE1MqETNrE01XrFjsIU6Xyj/9sa1Q+mRh32RXjMrh6ZaF3Nd+t
+         3FfkgPYnem1lhbaTUXqdW2gHHn6GJpHXaXlU0QuV4qpzHZam9OUC7Zl+TlpNPw3r9pVH
+         zmSWMCzkF1diJatODj4oeaxbggyD0y2xIvjngGihFS7bH5fsti3BR1bA5iyzRAfJpcA+
+         /S4bCOO9bo9sAh94bEtOMjMFZ2CKlATLVSwHrNGHHRya2QqnkIJ/eZklvpL2unryq37s
+         BpWw==
+X-Gm-Message-State: AOJu0YyJ3RVtKDegcxV8k866VyAhV95VCwshIM5aoTheJr3C5JBOBr94
+        gX2OX/6TR65gVRn12Y0+CJiBzFVpdMcWghy7ONxyew==
+X-Google-Smtp-Source: AGHT+IFYYORUkay7OZUUV8hpvmKd3CBWn2xqwSr3h1Kz//lCK1gQvRLf0XfrZGWylaGKptPcvtoPFQRDMQ/QIjwaU9w=
+X-Received: by 2002:a25:4293:0:b0:d7e:8175:4fa9 with SMTP id
+ p141-20020a254293000000b00d7e81754fa9mr6560203yba.4.1694730949424; Thu, 14
+ Sep 2023 15:35:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
+References: <20230914111554.586438-1-ulf.hansson@linaro.org> <CAMuHMdU-0i34XiQTkjkzJrG7kFX8kdSQjG57WS+sW+OLTLH4eg@mail.gmail.com>
+In-Reply-To: <CAMuHMdU-0i34XiQTkjkzJrG7kFX8kdSQjG57WS+sW+OLTLH4eg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 15 Sep 2023 00:35:13 +0200
+Message-ID: <CAPDyKFoRYn0G0W2g4HhiVE3osmGuZHox=79J8o9bOfUe0Aq_oA@mail.gmail.com>
+Subject: Re: [PATCH 01/17] pmdomain: Prepare to move Kconfig files into the
+ pmdomain subsystem
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:47:07AM +0200, Geert Uytterhoeven wrote:
+On Thu, 14 Sept 2023 at 13:59, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+>
+> Hi Ulf,
+>
+> On Thu, Sep 14, 2023 at 1:17=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.o=
+rg> wrote:
+> > Rather than having the various Kconfig files for the genpd providers
+> > sprinkled across subsystems, let's prepare to move them into the pmdoma=
+in
+> > subsystem along with the implementations.
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/Kconfig
+> > +++ b/drivers/Kconfig
+> > @@ -175,6 +175,8 @@ source "drivers/soundwire/Kconfig"
+> >
+> >  source "drivers/soc/Kconfig"
+> >
+> > +source "drivers/genpd/Kconfig"
+>
+> drivers/pmdomain/Kconfig
 
-> > > > +     scoped_guard(mutex, &chip->i2c_lock)
-> > > > +             ret = regmap_read(chip->regmap, inreg, &reg_val);
-> > >
-> > > I can't say I'm thrilled about the lack of curly braces.  I was also
-> > > surprised to discover that checkpatch nor gcc W=1 complain about the
-> > > indentation change.
+Ohh, thanks for spotting this! I certainly failed in my internal re-base. :=
+-(
 
-So in my kernel/events/core.c changes (that I still need to re-post and
-aren't yet upstream) I have found a single instance where I've done the
-same lack of curlies:
+>
+> > +
+> >  source "drivers/devfreq/Kconfig"
+> >
+> >  source "drivers/extcon/Kconfig"
+> > diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
+> > new file mode 100644
+> > index 000000000000..c32a76b51840
+> > --- /dev/null
+> > +++ b/drivers/pmdomain/Kconfig
+> > @@ -0,0 +1,4 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +menu "Power Domains Support"
+>
+> PM Domains
 
-	scoped_guard (rcu)
-		pmu = idr_find(&pmu_idr, type);
+Yep, that is better as it has a wider meaning (it can incorporate
+clock-domains and performance-domains, for example). Let me change
+that, thanks!
 
-clearly self-consistency mandates I should not object to this style.
+I will follow this pattern for each of the submenus too.
 
-That said, I see the argument for having them, they do more clearly
-demarcate the scope.
+>
+> > +
+> > +endmenu
+>
+> "b4 am" cannot download the full series at once.
+> It looks like you didn't send it as a series, but as individual patches?
 
-As with everything, small variations in style are bound to happen from
-one maintainer to another... (or one self to itself over time).
+I screwed up when sending. Sorry. I will submit a new version!
+
+Thanks for reviewing!
+
+Kind regards
+Uffe
