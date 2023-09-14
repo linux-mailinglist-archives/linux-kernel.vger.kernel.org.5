@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDDF79FBB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B6279FBB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbjINGOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
+        id S234817AbjINGPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjINGOU (ORCPT
+        with ESMTP id S230255AbjINGPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:14:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D38FDF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694672056; x=1726208056;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Y3wKfPdCXsNeJ2WkONbQZoMRXCsRiwzJvyZSIbo4lzE=;
-  b=mWsLGTp+XAqbDDhYxRq+rI/UMZyOAOqi4ZIxLB8APdbYVFhA4iDJHl9n
-   zJjw3jgBKnuYMmgF4C/uyHcC0RMrF1nrkQ7KL1Cgk7LUXrG3tNfAiAI3c
-   /H6ihB8pfo5Z2JDkHipfQe3GITLWXH0UsoI3S4Sjer0BBQhJLcmgP9gJ3
-   nOBKlcbHAvBL3xdbUeWGVlMvleGUtV/jLgfQ+KQLL02AKL1sJK956JY6m
-   Z89SFpKBd1LKei0hwl8Bm1b0Sm+q46L8CAWtARuVu5IIw5BEnbR37OyiP
-   98NsxBfAcJSieM7V7fIGyFcqa4kg1ri/gfNkZXYd6QqEIEhqomSScn9uY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="381548943"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="381548943"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 23:14:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779510223"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="779510223"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 23:14:14 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgfcB-0001Ef-2h;
-        Thu, 14 Sep 2023 06:14:11 +0000
-Date:   Thu, 14 Sep 2023 14:13:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: ld.lld: error: relocation R_RISCV_HI20 cannot be used against symbol
- '.L.str.6'; recompile with -fPIC
-Message-ID: <202309141433.6gzJPSYA-lkp@intel.com>
+        Thu, 14 Sep 2023 02:15:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9507F5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:15:43 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ad810be221so76142966b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694672142; x=1695276942; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dGvyPuDXfJumH13lGGqN64P86dyDCoQjPGvMDx/fHQU=;
+        b=DLQQgPDEAaObTKNLdTw7Z/9rGBt/jvdZqSnKERdo+TGuRJ4qECLiOJ6UQaMsOSUhyc
+         ZvYCcv9Rv80J6hSAo7dE0li52dgQaMTkavf4spd7QjByTl1wHnjCSVkRO6DVQkkAxWaH
+         VPwg+hiEPLk9wMCe73wNwJ2zeRzOQQM6DgHAmPjL+EyK8K9uMwTlxXxfnMxIeu+nqH6B
+         2krsrZQKoC0rgrrZswHzWXIRMSBNuFd0OX0GhnNl319akWcvKhKc5wzZloMRlYNgbMj9
+         AqTAM7ZeQVgmgTRwuTGw7nDxcvRfkHWmdQMAanKBf5Bt9G0KaZZpiMcSSKz1lY5EyRsP
+         n3wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694672142; x=1695276942;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dGvyPuDXfJumH13lGGqN64P86dyDCoQjPGvMDx/fHQU=;
+        b=jrlxmuZ1K6pqZITpX3PfPoyvceyEgvTdUtITwYJpy7G+fG6Eg+YRZExDDgzo1IW3xX
+         72o2unJA8aOqaps3PTY0/0Jys+bBPaT3EO8wixUUaeo9qPyjHshqYnbDyj9h5lyWb9VF
+         i2uQBVh87HZud9b7fAWcdTNQ1WHV7IacLi+r+A1c65zvSVB847uE+iwQ/9IR26s6jVlw
+         PX0tOENlXASWljFMhkIu1rrdtNlP6n+Oshj3vlvUtNyk6WA0WboeAk0fQSV19UlIkkDg
+         oLhjx7RDR9VMl+wOQDAEBXfpLUhCHHB1btH9pM4c5K7nqi9fS0d//+rdy/2oHhMF1H87
+         WyZw==
+X-Gm-Message-State: AOJu0YyscZ2n49aG9JOZGlDJmnzFEhltj+x9MhL7zplNna+MBMVeKuJd
+        zM4CY/hLpaNJ1+EvgfglV1eOgA==
+X-Google-Smtp-Source: AGHT+IG1noJ5RA1ZmYbaJkfluW31QIPR0bzM86PlU4mJbJH0FwvIkxbeMJN40Jg1iBviRz4KoWnPTw==
+X-Received: by 2002:a17:907:b10:b0:9ad:ada4:bad4 with SMTP id h16-20020a1709070b1000b009adada4bad4mr1786445ejl.11.1694672142335;
+        Wed, 13 Sep 2023 23:15:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id uz3-20020a170907118300b0099cc36c4681sm507215ejb.157.2023.09.13.23.15.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 23:15:41 -0700 (PDT)
+Message-ID: <357805c5-bedb-8972-bcf1-fabaaaf90ad9@linaro.org>
+Date:   Thu, 14 Sep 2023 08:15:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v7 4/4] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230914054639.13075-1-quic_luoj@quicinc.com>
+ <20230914054639.13075-5-quic_luoj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230914054639.13075-5-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sami,
+On 14/09/2023 07:46, Luo Jie wrote:
+> The clock controller driver of qca8386/qca8084 is registered
+> as the MDIO device, the hardware register is accessed by MDIO bus
+> that is normally used to access general PHY device, which is
+> different from the current existed qcom clock controller drivers
+> using ioremap to access hardware clock registers.
+> 
+> MDIO bus is common utilized by both qca8386/qca8084 and other
+> PHY devices, so the mutex lock mdio_bus->mdio_lock should be
+> used instead of using the mutex lock of remap.
+> 
+> To access the hardware clock registers of qca8386/qca8084, there
+> is special MDIO frame sequence(three MDIO read/write operations)
+> need to be sent to device.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+>  drivers/clk/qcom/Kconfig       |    9 +
+>  drivers/clk/qcom/Makefile      |    1 +
+>  drivers/clk/qcom/nsscc-qca8k.c | 2178 ++++++++++++++++++++++++++++++++
+>  3 files changed, 2188 insertions(+)
+>  create mode 100644 drivers/clk/qcom/nsscc-qca8k.c
+> 
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 865db5202e4c..c95ada6a1385 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -203,6 +203,15 @@ config IPQ_GCC_9574
+>  	  i2c, USB, SD/eMMC, etc. Select this for the root clock
+>  	  of ipq9574.
+>  
+> +config IPQ_NSSCC_QCA8K
+> +	tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
+> +	depends on MDIO_BUS || COMPILE_TEST
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+This is SoC is for both ARM and ARM64 worlds?
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   aed8aee11130a954356200afa3f1b8753e8a9482
-commit: 74f8fc31feb4b756814ec0720f48ccdc1175f774 riscv: Allow CONFIG_CFI_CLANG to be selected
-date:   3 weeks ago
-config: riscv-randconfig-r002-20230912 (https://download.01.org/0day-ci/archive/20230914/202309141433.6gzJPSYA-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141433.6gzJPSYA-lkp@intel.com/reproduce)
+> +	help
+> +	  Support for NSS(Network SubSystem) clock controller on
+> +	  qca8386/qca8084 chip.
+> +	  Say Y or M if you want to use network features of switch or
+> +	  PHY device. Select this for the root clock of qca8k.
+> +
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309141433.6gzJPSYA-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+Best regards,
+Krzysztof
 
->> ld.lld: error: relocation R_RISCV_HI20 cannot be used against symbol '.L.str.6'; recompile with -fPIC
-   >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
-   >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
-   >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_patch_func) in archive vmlinux.a
---
->> ld.lld: error: relocation R_RISCV_LO12_I cannot be used against symbol '.L.str.6'; recompile with -fPIC
-   >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
-   >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
-   >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_patch_func) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
