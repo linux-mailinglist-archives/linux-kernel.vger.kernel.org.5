@@ -2,253 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35EF7A08AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF20C7A093F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240844AbjINPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S240926AbjINP3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240742AbjINPJg (ORCPT
+        with ESMTP id S240873AbjINP3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:09:36 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD0F1FC2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:09:31 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso17382841fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694704170; x=1695308970; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q0p2Fq5+hhl2cqW/SVj6LzHkxBEiQPEgkqZ0kedkzFo=;
-        b=C2kff7rxW5wQTbu3zC8mjVYevSf6f/20FZJMUIXG5rdvejQysR7zWaGVCHhCdtzhw/
-         Ahq2lkOx5LXFEB1a4n2Gx7Dxm957Lp+YJGr6SF+Ai4/nALUU30ysjqxQpisVJcm/9bFX
-         rmZzz4vI0a5hah3bgiwqJFRi291H1u3OL1cFfokAow31Vpe8BiZ3pQrnC8Q0p/jSoIWq
-         JjeJSrS8oBCQjaop7rL1ZSJSSvDpVaJC+Rzld+LYepII4qRO1wVWHBp125yOYTS+CJLT
-         2mUM//ekaJZhYtQFYeIngBHNkJ0mqOO6xYA1k5rzGNSNbRaZcnnwcY7bdr9wyUlBjncH
-         m+Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694704170; x=1695308970;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q0p2Fq5+hhl2cqW/SVj6LzHkxBEiQPEgkqZ0kedkzFo=;
-        b=h8o7Sd+YEVjT38OOIuaNLeitwCDqZ/omyDL3KjltiD75fo6NI9sZo3ruTBJq1y7b/S
-         QJ2hOWuMUP3Ss7zg6YqjlLs/S3t6DTlCRKe0Nv8PdgoeXIjKBdrAJCOfPTv1ehdmcF9t
-         ymCgNHAmJ3C6KYZckLXuJAtdlw5oRBKiNO7HuCq/UMCv9W2C41Em10n75fUnkiOqGOc4
-         OVM/AcL56gea0x90fgrSlPL/uuOmCHUkVTSo9WGFtPl0WajGkfVGbjvLvN1qglY4+Ljj
-         vDYwPqAkDc1I8YWC17UWVjSqIdR4IBOpsrICO+hul2zxIG0ghtYiB/zM47kQi3vm2BEQ
-         SmJg==
-X-Gm-Message-State: AOJu0YxPngxwygn+xOdgDW1+OeSFmr2GeX1jHjKCKaBBwlkeMA8bQViL
-        HBz7FohMbkp9AjxXCo2Ggz8=
-X-Google-Smtp-Source: AGHT+IH4YOeufwCrX/hbygxPlNKDg8361e4VDmQWvIJ0vsQn9E6uQVWHXteDHYpafcchB+dIAnqyDA==
-X-Received: by 2002:a05:651c:103b:b0:2b6:dc55:c3c7 with SMTP id w27-20020a05651c103b00b002b6dc55c3c7mr5758747ljm.20.1694704169528;
-        Thu, 14 Sep 2023 08:09:29 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id m18-20020a1709066d1200b00993a37aebc5sm1121294ejr.50.2023.09.14.08.09.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 08:09:29 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     joro@8bytes.org, will@kernel.org,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     wens@csie.org, samuel@sholland.org, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/sun50i: Convert to map_pages/unmap_pages
-Date:   Thu, 14 Sep 2023 17:09:28 +0200
-Message-ID: <5708623.DvuYhMxLoT@jernej-laptop>
-In-Reply-To: <157d5041-96ac-6bad-9137-19a78fbf3591@arm.com>
-References: <20230912181941.2971036-1-jernej.skrabec@gmail.com>
- <157d5041-96ac-6bad-9137-19a78fbf3591@arm.com>
+        Thu, 14 Sep 2023 11:29:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AE6C6;
+        Thu, 14 Sep 2023 08:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694705382; x=1726241382;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0fr240ORMzBKrdt86kXvonVWGI8VFRc1AiMvh/UgJSo=;
+  b=CsfLubl6Qdo6DyUVuL5+9nd8yuVxsUTY82/oH3Fk/t3sFe1s+AcmYGQ5
+   U77mBISa58YrrwgHjceAbVOXljpmlrXXEFCQVHJUDVo5nhCbuZglA1pPL
+   I0Oa4TZuAkLc7ADsYs+CNkvBa8g/GyWa7HFh9viP7q4azIJTCm9AxO1zX
+   w7GyZhXmeupE9tyEzBCosMfYUffMFSq4Sb0P1sJjkOUgQIY5QVQdaloXi
+   DcVCs9VY6+Va+cg8/mInayUaKcdGI3KQ+frQSlv35Tx2b4AHWafriXznu
+   6Jfmv565D0zCqg4eB5hqXOeGFbKCQEq42iVbLQnoRvQy0LDRvp67r36FL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381693667"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="381693667"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:14:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="773925924"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="773925924"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 08:14:37 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 08:14:37 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 08:14:36 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 08:14:36 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.42) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 14 Sep 2023 08:14:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f9corrYj988M+jvUM9KAWac21qeQy6u0drJmPIDpJFNCteDcA5Iail2hADBlQP0DiySBWxaAuQ82PcZKT6PQQa1sB2tRFfeh6roQ8B/gssOOnFw+fL7uif52GGxU1of4csG0+HbsK1M7YOlp8qRRIcQra9EiLmssGbxrdse3DpbxdWGwDBu52zoMH8eJtTozmz5a17K0GZ/IgsR1e9c1otmi5s1raPQoBLZlTjV3AxPop5BKNzWvalL5Ve4v9zlKm+ZYLWU0kdjNrWtKMXmykQS0SB/ZrmMj7g27m9gN/b1e8womLkKyivF9y/JcSC4B5K2ulrGSQFm+6A7x0Ayl7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XabtePTw7gpkikxX+ask+Ume8rA7f/1mewsyXinM298=;
+ b=SOVekzV5d3QyjKClYbKWFYv4C8QTTAvcoyTwLv5MCUw6Lt4sd4AEx97n851TWtT85WSuUru4EsD3hedcF+Km9l9sTEnqREGBN70xTieZsp60SitO3Ka3BpNuiyrfaZvtidwmH2fZkHWkejQpBsMQe11rtiOVNlrU7TbIsiC2xqZUW1MbtcxjuhHiRb+2ABUg7NpCurlqQC4Ji3ES9HlZkwrbgpkcuS6CkoqvwHEgZri6mLvxngKeqikKjLTeDXtfwxaVEKuEdFt99AViHt29CYoidwu13Cuvsu3GlDQNVoKRMX8b+O+377Lx+MnRTUQJLw6oNBZ54eX1lSqWcPhiDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by CH3PR11MB8444.namprd11.prod.outlook.com (2603:10b6:610:1ba::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 15:14:28 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::afd6:ce92:6244:7203]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::afd6:ce92:6244:7203%5]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
+ 15:14:28 +0000
+Message-ID: <6fbc0b65-0f02-3c7f-bd7a-5183d24a1fe5@intel.com>
+Date:   Thu, 14 Sep 2023 08:14:25 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH RESEND v3 1/2] selftests/resctrl: Fix schemata write error
+ check
+Content-Language: en-US
+To:     =?UTF-8?Q?Maciej_Wiecz=c3=b3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+CC:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+        <ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+References: <cover.1693575451.git.maciej.wieczor-retman@intel.com>
+ <960b5302cee8e5bb0e83dcf20cd2ef4d353b7b0b.1693575451.git.maciej.wieczor-retman@intel.com>
+ <99eabc5c-f5e3-27dd-0a29-ad0cdb7b4239@intel.com>
+ <sr6ana6d7ebtuxbhjuo6kcnhnn2zzvg3ivve6mndqeb3nxrzo7@mrfmtzlxlwdh>
+ <a7f0dfb9-c841-b240-fca9-b908517a44d0@intel.com>
+ <jyxp5mspjn7xbmclj5sumbsuwd424fqmdvntiiuq24tiz5yqb4@qunho7whbamf>
+ <6d6dba28-a7f0-1f49-3f59-4e0026d0c2b8@intel.com>
+ <ycbcan5wcxtz2mbywz6zdoyfus26vrhus6enipe543x2ejyt77@m3l4ksir7k2k>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <ycbcan5wcxtz2mbywz6zdoyfus26vrhus6enipe543x2ejyt77@m3l4ksir7k2k>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0209.namprd04.prod.outlook.com
+ (2603:10b6:303:86::34) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH3PR11MB8444:EE_
+X-MS-Office365-Filtering-Correlation-Id: f6d388eb-3ecd-498f-6c0a-08dbb5354a14
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ib/qEKO8sw8UmRTiQc5Wkps+w5oJkUiTaRoNZfUgkIpGF9ZC8FxVYLpBVAjsETGZfcqJGFzpsGGobIv+VOfdbxKdWsXFqH1yGVUC9K5F744G8TFjve9LIWTLv2OxTyzpvA6C/+BqTN0Sg4+YHstApAs6NFwV/hBOhUsA+52OeveWBA6zevNZ8g6MTlGwOLH/e8MpomKqE/njZVj6bquBzpP1jgPHgmtVqDWPOH7kWXi0Sso3CSI+rmqpcCHZ4QU0h+pYgYx5Ouoz21BbYB2H4z+mnivoTwOyEicVGd0Su/CI91FE+KqUFOnUoT4b+jWPIxTSO9G2VjuCbKjGaJTmz7PI0vWFjsb2NV6qqfCMU9422SSb5zksLiFtXbmamzOc5WfVUHzlobNSbyzGMpS1cPkM1A9ra8oB1klywAGFrjRq2yACEkeblggTCrMdDMin3OV0qj62jfZ9Mq4uWTkyhkbxtIwoAQeXbDWl7Hhs+mlXvkMQ9LZeeQqq5oAvr35q0+ZVTahYso+NY5gBXHBy2S2I+eQFfuq/5JCpnsndVwog2woFBPBRzHkdGZ5ZJ5AxhXOYm7bTxgglgkYSugW9x8+VVIQASe6NvREUhHjqQWrmTGQXUl48qyUTnvCrqr+zY7udksyyvtA5/aqBJ6hqKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(451199024)(1800799009)(186009)(31696002)(86362001)(36756003)(31686004)(66899024)(2906002)(966005)(478600001)(82960400001)(38100700002)(5660300002)(6506007)(66574015)(83380400001)(26005)(2616005)(6512007)(6666004)(41300700001)(53546011)(6486002)(66476007)(66556008)(44832011)(316002)(54906003)(66946007)(6636002)(37006003)(4326008)(8936002)(8676002)(6862004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YlAyeU1YRVdINXFIdW5vRW5TQ0l6a0FVU2ZvNU1TSGVIT1RBdmtxTzBTZXBK?=
+ =?utf-8?B?QXh0M2ppZ3BNOEdoREQ4WkxWMmdkWHVnWHRtTkQwV1krVmRrbVhVUnBsZjYy?=
+ =?utf-8?B?eUF1ZkFpa0NmZEVtYTBGc1hZa2VRcVJZdUhaQlNjZi9mUnVyODBmbGNaR0ow?=
+ =?utf-8?B?UW5DZHdNQ2thOWxtbXJvbHV0NU5xNGt5UE5sWmZkQXd1Tm5xam00TnZZeFZK?=
+ =?utf-8?B?L2FSUDJlanA2VlNkWGoydkNtRSt4ZzA0N3NxT0VQS0RpRU53Zkp5U2tWalNx?=
+ =?utf-8?B?ZmhPT3dtWHZOekt3WHZEL3h0TEc0VCt1YzNQN3hpaUt2cWI1YVVJSEdRS3pz?=
+ =?utf-8?B?cEtRcHJlSGt3U1p2NHR5L2hBUzRKZ0pGQ3BmVlc1T25ZSVJQUzZaZUFjTm84?=
+ =?utf-8?B?elNQdnh5ZEZENS9zSlZaNDYyaVBNelUrdmtuUERBam9xY1FLaTh4ZDFUVWY2?=
+ =?utf-8?B?bVNDTkF0alN5UWpPWGtxU05HeU9lV2QzYTZpVlNrTnNDL3V3SjFOVTRqVEZl?=
+ =?utf-8?B?SDVtUW5MdmtyaFVUS2t5djJLcXEwU2dPTENadGJxRXlyZDgzbzZxeEdpQzAz?=
+ =?utf-8?B?NVV4bmJUNVV4ZmVVM25VWlMvY3pEcWh6OTY0MXp2b2dyNUtKRks2MDQ1Vlpr?=
+ =?utf-8?B?dm1PWjZEZWw1NGI0NWxRQktxUEVhQjJ2WGJXV1k1ZTZGK0RVQm9qUEhvZVcz?=
+ =?utf-8?B?Snh3Y2QrbGViazRnWTREOWdRS3JCeVYxenJQUXhqRkZndlFYeFZSWkhWcDRD?=
+ =?utf-8?B?aXJhSS9PTmVHRTJ2M0x0QnNkaHUwTFBJaExqbG1tRVp4OGlqdDA3dmpwam1z?=
+ =?utf-8?B?OTBxRnZ3cjR0T2F5amNNNjF6cUhQQ3o0NXgwWHA1V3V0cG9rQkh1VjlTZjhq?=
+ =?utf-8?B?cXQyUThBZEpjZ2JTN0ZZK2g3UHBidnVLRzJScXlscm11UE1xSytualVTU0tk?=
+ =?utf-8?B?VVRjeEQ3c1psdGJtZGFjNE9Jd0Z5YUtiK29oS3ZlaWh6NjJhTUdMVFV5T1h6?=
+ =?utf-8?B?UnZoQ3lBVlhaNXRZd0J0S3BFN2FWMHhLRmNCdG1BRm1DS3ROZUd0U1kvZ0N4?=
+ =?utf-8?B?Nk42cE1RTU1lbGlnU2Q5L1kwVUFlK1dkeDVaK1lTVHBlQ1BLSGlIcURCQnJK?=
+ =?utf-8?B?YWtHekNtVWdSUlhDUDN2L3V3Y0MxbGZZZ2t0U3Fkd1J0cE5DaC9KRXZqZ2d2?=
+ =?utf-8?B?VFJrN3A2ZU9FY2JaMU8zUGNIeVVPeW5JWVF3bnBYZTh6eTBYajhadUZKdHBP?=
+ =?utf-8?B?RmdyZjFnTUJsTHJXbGpLQitUUE1DbUVOaFQvOTRNVWxZVkFpNVJxOTlGcWRC?=
+ =?utf-8?B?TjQyRjZER3pmdFpweXgxWnE3Y3d6QnZBb1NRQ1djb0grOHVsRC9FK0JWaGdJ?=
+ =?utf-8?B?MXIwNlBJWUVrQ3dJZTJMU3dnSlQ2K0VlbGY3SHU3OVptb1BLZEF5Z2pMZGQw?=
+ =?utf-8?B?RWdRbUx5L1daTGZRL0tEZUxqNmtJS2lKWFZaakY5TmVEWHYyN09IMGNCalRV?=
+ =?utf-8?B?ZUdWd1Y2engvalB2Z0NFTnUvTklKRWJGbitsdFh3Y21taTJZM0xFMlBBQUJw?=
+ =?utf-8?B?M1RONVR6M3ZnSkJJTG1KQXFKeVZYQWUzQm81QmN1cEdRbExGS1l6T1BFZ0ky?=
+ =?utf-8?B?c0VvTHZkcjhXSHhOSERMMHAxdCtoNHNXM1lIb1hZMy8wNU53czYyUjFTSnRx?=
+ =?utf-8?B?TUNIcCsvVktHYTYvbVVPc000cUdXNnRYbkppNHAyMGw0MjdYMnlZSGRPcmtX?=
+ =?utf-8?B?a09LaWNlRVk2R2pQTGJtOWxxZXdlNnQwWUhIVTBZalpTSnZkUURiOEZ4ODh1?=
+ =?utf-8?B?RVJGMjdoc2xzbUZ4dkRLSHY2THU1YjBSeHJnb2lTZDFpZUMyMHhxTzNiZzJy?=
+ =?utf-8?B?UnFjYzhXcDdkWHp3TzFFbURPdzMvRitXMDRvY21tMmlVRnc3ek1jVVJwL3ly?=
+ =?utf-8?B?cjI0YVpvaWpPYkh3VWY4Sk5XRFZ4RzkrTWd4ZEN5VG4yWWFGQWJoZmNyMDRD?=
+ =?utf-8?B?SjB0NVNTbWkzY29xTzNRUXI0azhuWTB6TkRKb3NVd2M3RjJlQWpydERPcGNQ?=
+ =?utf-8?B?aHN4cXh1b1N2eW9jMS85Zk8rYW9xUkhQTjFzMlY1OHZkNmRna3cwcHhXaWor?=
+ =?utf-8?B?Z254U20rcElKamlWZXFneS80Q1ppR2tsZ1VRNWs0allVSFpBQlk4bWRnK1pN?=
+ =?utf-8?B?bVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6d388eb-3ecd-498f-6c0a-08dbb5354a14
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 15:14:28.5306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UOyvI91pMdTEpcyqARfgX6GSRhOLDIUEE7AA0xRpnfyDAuwZBG4C5pe2zb3qLa0ebNENTKoF3eWpCoTtFK0NK+D9g3ntOxl13dW8aIe4/ow=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8444
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 13. september 2023 ob 22:20:15 CEST je Robin Murphy napisal(a):
-> On 2023-09-12 19:19, Jernej Skrabec wrote:
-> > Convert driver to use map_pages and unmap_pages. Since functions operate
-> > on page table, extend them to be able to operate on whole table, not
-> > just one entry.
-> > 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > ---
-> > Hi!
-> > 
-> > I'm not sure if it makes sense to check validity of page table entry when
-> > unmaping pages makes sense. What do you think?
+Hi Maciej,
+
+On 9/13/2023 11:01 PM, Maciej Wieczór-Retman wrote:
+> On 2023-09-13 at 11:49:19 -0700, Reinette Chatre wrote:
+>> On 9/12/2023 10:59 PM, Maciej Wieczór-Retman wrote:
+>>> On 2023-09-12 at 09:00:28 -0700, Reinette Chatre wrote:
+>>>> On 9/11/2023 11:32 PM, Maciej Wieczór-Retman wrote:
+>>>>> On 2023-09-11 at 09:59:06 -0700, Reinette Chatre wrote:
+>>>>>> Hi Maciej,
+>>>>>> When I build the tests with this applied I encounter the following:
+>>>>>>
+>>>>>> resctrlfs.c: In function ‘write_schemata’:
+>>>>>> resctrlfs.c:475:14: warning: implicit declaration of function ‘open’; did you mean ‘popen’? [-Wimplicit-function-declaration]
+>>>>>>  475 |         fd = open(controlgroup, O_WRONLY);
+>>>>>>      |              ^~~~
+>>>>>>      |              popen
+>>>>>> resctrlfs.c:475:33: error: ‘O_WRONLY’ undeclared (first use in this function)
+>>>>>>  475 |         fd = open(controlgroup, O_WRONLY);
+>>>>>>      |                                 ^~~~~~~~
+>>>>>> resctrlfs.c:475:33: note: each undeclared identifier is reported only once for each function it appears in
+>>>>>
+>>>>> Hmm, that's odd. How do you build the tests?
+>>>>
+>>>> I applied this series on top of kselftest repo's "next" branch.
+>>>>
+>>>> I use a separate build directory and first ran "make headers". After that,
+>>>> $ make O=<build dir> -C tools/testing/selftests/resctrl
+>>>
+>>> I do the same, just without the build directory, but that shouldn't
+>>> matter here I guess.
+>>>
+>>>>> I use "make -C tools/testing/selftests/resctrl" while in the root kernel
+>>>>> source directory. I tried to get the same error you experienced by
+>>>>> compiling some dummy test program with "open" and "O_WRONLY". From the
+>>>>> experiment I found that the "resctrl.h" header provides the declarations
+>>>>> that are causing your errors.
+>>>>
+>>> >From what I can tell resctrl.h does not include fcntl.h that provides
+>>>> what is needed.
+>>>
+>>> I found out you can run "gcc -M <file>" and it will recursively tell you
+>>> what headers are including other headers.
+>>>
+>>> Using this I found that "resctrl.h" includes <sys/mount.h> which in turn
+>>> includes <fcntl.h> out of /usr/include/sys directory. Is that also the
+>>> case on your system?
+>>>
+>>
+>> No. The test system I used is running glibc 2.35 and it seems that including
+>> fcntl.h was added to sys/mount.h in 2.36. See glibc commit
+>> 78a408ee7ba0 ("linux: Add open_tree")
+>>
+>> Generally we should avoid indirect inclusions and here I think certainly so
+>> since it cannot be guaranteed that fcntl.h would be available via 
+>> sys/mount.h.
 > 
-> As things currently stand it's largely a matter of opinion - some
-> drivers consider that unmapping something which hasn't been mapped is
-> nonsensical, and almost always represents the caller having gone wrong,
-> thus report it as an error; others take the view that as long as they
-> can achieve the requested end result, they're not going to think too
-> hard about how they got there. The same arguments apply to whether you'd
-> quietly replace an existing PTE or not when mapping, so I'd say the main
-> thing is to at least be self-consistent one way or the other.
+> Okay, would including the fcntl.h header to resctrl.h be okay in this
+> case? Or is there some other more sophisticated way of doing that (some
+> include guard or checking glibc version for example)?
 
-Ok, I preserved strict checks in this update, which is consistent and same as 
-before.
+Ideally fcntl.h would be included in the file it is used. Doing so you may
+encounter the same problems as Ilpo in [1]. If that is the case and that fix works
+for you then you may want to have this series depend on Ilpo's work.
 
-Best regards,
-Jernej
+Reinette
 
-> 
-> Cheers,
-> Robin.
-> 
-> > Best regards,
-> > Jernej
-> > 
-> >   drivers/iommu/sun50i-iommu.c | 55 +++++++++++++++++++++---------------
-> >   1 file changed, 33 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-> > index 74c5cb93e900..be6102730a56 100644
-> > --- a/drivers/iommu/sun50i-iommu.c
-> > +++ b/drivers/iommu/sun50i-iommu.c
-> > @@ -589,11 +589,12 @@ static u32 *sun50i_dte_get_page_table(struct
-> > sun50i_iommu_domain *sun50i_domain,> 
-> >   }
-> >   
-> >   static int sun50i_iommu_map(struct iommu_domain *domain, unsigned long
-> >   iova,> 
-> > -			    phys_addr_t paddr, size_t size, int 
-prot, gfp_t gfp)
-> > +			    phys_addr_t paddr, size_t pgsize, size_t 
-pgcount,
-> > +			    int prot, gfp_t gfp, size_t *mapped)
-> > 
-> >   {
-> >   
-> >   	struct sun50i_iommu_domain *sun50i_domain = 
-to_sun50i_domain(domain);
-> >   	struct sun50i_iommu *iommu = sun50i_domain->iommu;
-> > 
-> > -	u32 pte_index;
-> > +	u32 pte_index, count, i;
-> > 
-> >   	u32 *page_table, *pte_addr;
-> >   	int ret = 0;
-> > 
-> > @@ -604,45 +605,55 @@ static int sun50i_iommu_map(struct iommu_domain
-> > *domain, unsigned long iova,> 
-> >   	}
-> >   	
-> >   	pte_index = sun50i_iova_get_pte_index(iova);
-> > 
-> > -	pte_addr = &page_table[pte_index];
-> > -	if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> > -		phys_addr_t page_phys = 
-sun50i_pte_get_page_address(*pte_addr);
-> > -		dev_err(iommu->dev,
-> > -			"iova %pad already mapped to %pa cannot 
-remap to %pa prot: %#x\n",
-> > -			&iova, &page_phys, &paddr, prot);
-> > -		ret = -EBUSY;
-> > -		goto out;
-> > +	count = min(pgcount, (size_t)NUM_PT_ENTRIES - pte_index);
-> > +	for (i = 0; i < count; i++) {
-> > +		pte_addr = &page_table[pte_index + i];
-> > +		if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> > +			phys_addr_t page_phys = 
-sun50i_pte_get_page_address(*pte_addr);
-> > +
-> > +			dev_err(iommu->dev,
-> > +				"iova %pad already mapped to %pa 
-cannot remap to %pa prot: %#x\n",
-> > +				&iova, &page_phys, &paddr, prot);
-> > +			ret = -EBUSY;
-> > +			goto out;
-> > +		}
-> > +		*pte_addr = sun50i_mk_pte(paddr, prot);
-> > +		paddr += SPAGE_SIZE;
-> > 
-> >   	}
-> > 
-> > -	*pte_addr = sun50i_mk_pte(paddr, prot);
-> > -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> > +	sun50i_table_flush(sun50i_domain, &page_table[pte_index], i);
-> > +	*mapped = i * SPAGE_SIZE;
-> > 
-> >   out:
-> >   	return ret;
-> >   
-> >   }
-> >   
-> >   static size_t sun50i_iommu_unmap(struct iommu_domain *domain, unsigned
-> >   long iova,> 
-> > -				 size_t size, struct 
-iommu_iotlb_gather *gather)
-> > +				 size_t pgsize, size_t pgcount,
-> > +				 struct iommu_iotlb_gather 
-*gather)
-> > 
-> >   {
-> >   
-> >   	struct sun50i_iommu_domain *sun50i_domain = 
-to_sun50i_domain(domain);
-> > 
-> > +	u32 dte, count, i, pte_index;
-> > 
-> >   	phys_addr_t pt_phys;
-> >   	u32 *pte_addr;
-> > 
-> > -	u32 dte;
-> > 
-> >   	dte = sun50i_domain->dt[sun50i_iova_get_dte_index(iova)];
-> >   	if (!sun50i_dte_is_pt_valid(dte))
-> >   	
-> >   		return 0;
-> >   	
-> >   	pt_phys = sun50i_dte_get_pt_address(dte);
-> > 
-> > -	pte_addr = (u32 *)phys_to_virt(pt_phys) +
-> > sun50i_iova_get_pte_index(iova); +	pte_index =
-> > sun50i_iova_get_pte_index(iova);
-> > +	pte_addr = (u32 *)phys_to_virt(pt_phys) + pte_index;
-> > 
-> > -	if (!sun50i_pte_is_page_valid(*pte_addr))
-> > -		return 0;
-> > +	count = min(pgcount, (size_t)NUM_PT_ENTRIES - pte_index);
-> > +	for (i = 0; i < count; i++)
-> > +		if (!sun50i_pte_is_page_valid(pte_addr[i]))
-> > +			break;
-> > 
-> > -	memset(pte_addr, 0, sizeof(*pte_addr));
-> > -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> > +	memset(pte_addr, 0, sizeof(*pte_addr) * i);
-> > +	sun50i_table_flush(sun50i_domain, pte_addr, i);
-> > 
-> > -	return SZ_4K;
-> > +	return i * SPAGE_SIZE;
-> > 
-> >   }
-> >   
-> >   static phys_addr_t sun50i_iommu_iova_to_phys(struct iommu_domain
-> >   *domain,
-> > 
-> > @@ -838,8 +849,8 @@ static const struct iommu_ops sun50i_iommu_ops = {
-> > 
-> >   		.iotlb_sync_map = sun50i_iommu_iotlb_sync_map,
-> >   		.iotlb_sync	= sun50i_iommu_iotlb_sync,
-> >   		.iova_to_phys	= sun50i_iommu_iova_to_phys,
-> > 
-> > -		.map		= sun50i_iommu_map,
-> > -		.unmap		= sun50i_iommu_unmap,
-> > +		.map_pages	= sun50i_iommu_map,
-> > +		.unmap_pages	= sun50i_iommu_unmap,
-> > 
-> >   		.free		= sun50i_iommu_domain_free,
-> >   	
-> >   	}
-> >   
-> >   };
-
-
-
-
+[1] https://lore.kernel.org/lkml/dfc53e-3f92-82e4-6af-d1a28e8c199a@linux.intel.com/
+ 
