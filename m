@@ -2,174 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28C67A0937
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4A07A0949
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240966AbjINP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S240948AbjINPbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234523AbjINP2e (ORCPT
+        with ESMTP id S240912AbjINPbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:28:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A4F1FCC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694705310; x=1726241310;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=L4gVH/nE8hD33XsILwVZbvWxgJxwzY4MOeW+AdGhTrY=;
-  b=gBnuMw0Sv42jlwdWoI7bNRaiAl9wlqrHnXDkhpi1pFFYtknCOgSYFAr+
-   38cL25xg18neDSB9uHeeBHVjewnikgghiY+vMsDk1UPsayWAfHUXrMQA9
-   CpfSATIDWaTL8VuM28kpcLG/FNBJ+2yq0oCIGNHDD7BJHe2ejeHTcb6tj
-   zTOjeAdtSOnASkDNTkXYdL6OnrWGwku8ciPYRiTtN4uyvzIyUiIGHs47j
-   e8hK02TH4Z8etEKn69uQuhDCkn2mvqSoCUmO0b2HWVHX4o8GaNxdPFbQh
-   v+ff5vIfqxQ0rli33lTQwxEDVRE7fkWcABATJw24gD2vDsty/o71/E9SO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="364032605"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="364032605"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:28:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="747794907"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="747794907"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Sep 2023 08:28:28 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgoGX-0001jy-39;
-        Thu, 14 Sep 2023 15:28:25 +0000
-Date:   Thu, 14 Sep 2023 23:28:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: kernel/bpf/helpers.c:2325:18: warning: no previous declaration for
- 'bpf_dynptr_is_null'
-Message-ID: <202309142315.XvcXo6j1-lkp@intel.com>
+        Thu, 14 Sep 2023 11:31:16 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED779CE
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:31:11 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d8165e3b209so2384304276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:31:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694705471; x=1695310271; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N5V35/NnoM0NObnhOBjIuAND7i93+ooCq17R/5R/h7s=;
+        b=GYKQ1u2K7awF17oe2JiH44KKTijk0Ha54P+8FYeuNn3Zt/gFnKbj9dKXzFc+YhR4jd
+         qQ65CyZnvY1Ypu24hdji3LLuX/fy3eG76k42T7+ekBPaBhfbrOJGyd6Aj6OcHFs195FA
+         bEkK2jfQVGGCN/pdJgEkCPV9qT/uwv+Zc7z4eUBVINqq1j4z7TtUVGLnntweByaZGeCy
+         cOAJDz4sE9lSJQZw0DXvEwJebeQvzidc47pYcjMLYPQ3fJ7unEeFThX0Oer/gh9D5YdL
+         yPbTmiW8QvwJOUMcvXz144Z0/qSlEihi0oG1JTutlrIpPqFMHSTOeZ+ZzD+9UqUqMFM+
+         SSLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694705471; x=1695310271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N5V35/NnoM0NObnhOBjIuAND7i93+ooCq17R/5R/h7s=;
+        b=JLoE8Vy8YcbXT95MPOX35jsBqFlndMtQb6wqxUjpTajMDoakp7nLhgfUt5/dk2vegE
+         tVvn79qM715T91D3scHJoBKZhToNz8iThJXvKXHiN8zg0Uv8Sj6uihEu1//ultdFZcs2
+         bcI1ktvoei2IjiyM5hXwpLI7W1pV2zzJXnXantWcE6zf1Oeh+/GV5OCtmSmjXWt0D3hC
+         Z4vvw0R0aO/OmOn8l6bcc/HfVuY160es1paFC+sw6P6SonHNaLnuG3SQWsYnH2b0y+/o
+         vFXCaTIr41vs19ghP+i/5qHzun3IReo4Bu6/faOfJVjkVIQdrrw48mI7/yiBWs3LccjU
+         4xng==
+X-Gm-Message-State: AOJu0YyD+xIH1NnImYIFzzATdIaSq1JlBoksbQAv7EV1yZgr8kUeFtRv
+        eEOzPH9JsRBRa/+WVcJ6Bdt3/56/N/7x5Lm7TQ0m5w==
+X-Google-Smtp-Source: AGHT+IGRNemB3RXw5lnQojxPt4q242KuMa887wtWrMqT27slM3o1JOKUjJCDcbfpyv+vd90Hh7Cf4kuU/C2z32ljems=
+X-Received: by 2002:a25:a2c7:0:b0:d71:6835:c250 with SMTP id
+ c7-20020a25a2c7000000b00d716835c250mr1434596ybn.30.1694705470859; Thu, 14 Sep
+ 2023 08:31:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqxRCyjniNVjp0Aw@mail.gmail.com>
+ <ZC8BgFSFC3cDcAcS@x1n> <27ac2f51-e2bf-7645-7a76-0684248a5902@redhat.com>
+ <ZDbVMk0trT5UaqaA@x1n> <3059388f-1604-c326-c66f-c2e0f9bb6cbf@redhat.com>
+ <ZDghhTH2KtCeAwcZ@x1n> <6403a950-7367-0b00-8cd5-2f0a32dac953@suse.cz>
+ <CAJuCfpFddcMRH8pNOE816ZrQr5qvrccxFjJqNj5JRPWkv+u=uA@mail.gmail.com> <CA+EESO6NkpugZa7zh=mj+A0BEqMuS4TKL0cpTm4EWeHgUUVksg@mail.gmail.com>
+In-Reply-To: <CA+EESO6NkpugZa7zh=mj+A0BEqMuS4TKL0cpTm4EWeHgUUVksg@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 14 Sep 2023 08:30:59 -0700
+Message-ID: <CAJuCfpHEXDiUBGZ1RCiHRyewTQ_6NNG3+PvLQuhn99eCmPbgTA@mail.gmail.com>
+Subject: Re: RFC for new feature to move pages from one vma to another without split
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Nicolas Geoffray <ngeoffray@google.com>,
+        Jared Duke <jdduke@google.com>,
+        android-mm <android-mm@google.com>,
+        Blake Caldwell <blake.caldwell@colorado.edu>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   aed8aee11130a954356200afa3f1b8753e8a9482
-commit: 540ccf96ddbc173474c32e595787d5622253be3d bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
-date:   5 months ago
-config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230914/202309142315.XvcXo6j1-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309142315.XvcXo6j1-lkp@intel.com/reproduce)
+On Thu, Jun 8, 2023 at 3:05=E2=80=AFAM Lokesh Gidra <lokeshgidra@google.com=
+> wrote:
+>
+> On Tue, Jun 6, 2023 at 4:18=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+> >
+> > On Tue, Jun 6, 2023 at 1:15=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz>=
+ wrote:
+> > >
+> > > On 4/13/23 17:36, Peter Xu wrote:
+> > > > On Thu, Apr 13, 2023 at 10:10:44AM +0200, David Hildenbrand wrote:
+> > > >> So instead, we consider the whole address space as a virtual, anon=
+ file,
+> > > >> starting at offset 0. The pgoff of a VMA is then simply the offset=
+ in that
+> > > >> virtual file (easily computed from the start of the VMA), and VMA =
+merging is
+> > > >> just the same as for an ordinary file.
+> > > >
+> > > > Interesting point, thanks!
+> > >
+> > > FYI, I've advised a master thesis exploring how to update page->index=
+ during
+> > > mremap() to keep things mergeable:
+> > >
+> > > https://dspace.cuni.cz/bitstream/handle/20.500.11956/176288/120426800=
+.pdf
+> > >
+> > > I think the last RFC posting was:
+> > > https://lore.kernel.org/all/20220516125405.1675-1-matenajakub@gmail.c=
+om/
+> > >
+> > > It was really tricky for the general case. Maybe it would be more fea=
+sible
+> > > for the limited case Lokesh describes, if we could be sure the pages =
+that
+> > > are moved aren't mapped anywhere else.
+>
+> It's great that mremap is being improved for mereabilitly. However,
+> IIUC, it would still cause unnecessary splits and merges in the
+> private anonymous case. Also, mremap works with mmap_sem exclusively
+> held, thereby impacting scalability of concurrent mremap calls.
+>
+> IMHO, Andrea's userfaultfd REMAP patch is a better alternative as it
+> doesn't have these downsides.
+>
+> >
+> > Lokesh asked me to pick up this work and prepare patches for
+> > upstreaming. I'll start working on them after I finish with per-vma
+> > lock support for swap and userfaultd (targeting later this week).
+> > Thanks for all the input folks!
+>
+> Thanks so much, Suren!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309142315.XvcXo6j1-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/helpers.c:1889:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1919:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1927:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1962:17: warning: no previous declaration for 'bpf_list_push_front_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1972:17: warning: no previous declaration for 'bpf_list_push_back_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1998:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2003:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2008:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2054:17: warning: no previous declaration for 'bpf_rbtree_add_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                    ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2063:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2076:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2087:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2099:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2111:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2123:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2143:28: warning: no previous declaration for 'bpf_cgroup_from_id' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2160:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2199:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2276:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2307:17: warning: no previous declaration for 'bpf_dynptr_adjust' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-                    ^~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:2325:18: warning: no previous declaration for 'bpf_dynptr_is_null' [-Wmissing-declarations]
-    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:2330:18: warning: no previous declaration for 'bpf_dynptr_is_rdonly' [-Wmissing-declarations]
-    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2338:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2343:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2348:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2353:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
-
-
-vim +/bpf_dynptr_is_null +2325 kernel/bpf/helpers.c
-
-  2324	
-> 2325	__bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-  2326	{
-  2327		return !ptr->data;
-  2328	}
-  2329	
-> 2330	__bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-  2331	{
-  2332		if (!ptr->data)
-  2333			return false;
-  2334	
-  2335		return __bpf_dynptr_is_rdonly(ptr);
-  2336	}
-  2337	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I just posted the patchset at
+https://lore.kernel.org/all/20230914152620.2743033-1-surenb@google.com/.
+I tried to keep it as true to Andrea's original as possible but still
+had to make some sizable changes, which I described in the cover
+letter. Feedback would be much appreciated!
