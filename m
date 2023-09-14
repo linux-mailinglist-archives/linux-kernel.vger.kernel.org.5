@@ -2,210 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3E77A021E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D417A0221
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjINLFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S234381AbjINLGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINLF1 (ORCPT
+        with ESMTP id S229485AbjINLGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:05:27 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AF21BF8;
-        Thu, 14 Sep 2023 04:05:23 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmZF36jdgz6HJdP;
-        Thu, 14 Sep 2023 19:03:35 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 12:05:20 +0100
-Date:   Thu, 14 Sep 2023 12:05:19 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 03/35] drivers: base: Allow parts of
- GENERIC_CPU_DEVICES to be overridden
-Message-ID: <20230914120519.0000247e@Huawei.com>
-In-Reply-To: <20230913163823.7880-4-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-4-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 07:06:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F239B1BF8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=31Mk8LyxJ/i2+GjpPHSXdxRgP0SAQUj9tBvhJ35XS1Q=; b=pMq0MbCDyhC/AppRuT/3DlvLCr
+        b95eGXoEwxDyiyj/L9//DrjtXUWlf7+A3YaZn6tnPgzDwDXMpn2QJPUD1Wc7509exPNNsr3DFu6U/
+        sLOX5oTNucU4KpFcw/3OQSd2KmvzXNK9mq+JOhzKsw1dyJBBm4VBzTXwYhEZaWN6saslZT35DKFA5
+        SuZ+/ZmxlaB9iwo9N8NBFCZlhIYYSxDUnkwxLzpCsVeIb0nKKnSk03aZIHdff+FCLsQtnBY3Beavt
+        Nx14FlXYmC6CXursGkIUZQlHYOTVGGc3TvplR+7mPJ+bu9e1ErH1oQ9Lf3hZ6m+Utp3hDJoLGyA3i
+        TfCmlkdw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qgkAd-002XTv-O7; Thu, 14 Sep 2023 11:06:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 69D7930036C; Thu, 14 Sep 2023 13:06:03 +0200 (CEST)
+Date:   Thu, 14 Sep 2023 13:06:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lkp <lkp@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
+ __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
+ annotation
+Message-ID: <20230914110603.GA18948@noisy.programming.kicks-ass.net>
+References: <202309140828.9RdmlH2Z-lkp@intel.com>
+ <90f0a4d44704f9c296f3a4d8b72c57f2916aa09d.camel@intel.com>
+ <377b1ce2ecd390f4b6f8cdf68d22c708f7cef6d1.camel@intel.com>
+ <20230914072959.GC16631@noisy.programming.kicks-ass.net>
+ <9eb77be3a64c25b3264d5011a93242d006b88627.camel@intel.com>
+ <20230914085913.GD16631@noisy.programming.kicks-ass.net>
+ <560662b4dd5088164119e0d312f88ed97f6f94a7.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <560662b4dd5088164119e0d312f88ed97f6f94a7.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:37:51 +0000
-James Morse <james.morse@arm.com> wrote:
-
-> Architectures often have extra per-cpu work that needs doing
-> before a CPU is registered, often to determine if a CPU is
-> hotpluggable.
+On Thu, Sep 14, 2023 at 10:02:40AM +0000, Huang, Kai wrote:
+> On Thu, 2023-09-14 at 10:59 +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 14, 2023 at 07:54:10AM +0000, Huang, Kai wrote:
+> > 
+> > > > The point of noreturn is that the caller should know to stop generating
+> > > > code. For that the declaration needs the attribute, because call sites
+> > > > typically do not have access to the function definition in C.
+> > > 
+> > > Ah that makes perfect sense.  Thanks!
+> > > 
+> > > Then I assume we don't need to annotate __noreturn in the function body, but
+> > > only in the declaration?  Because the compiler must already have seen the
+> > > declaration when it generates the code for the function body.
+> > 
+> > I think so, I'm sure it'll tell you if it disagrees :-)
+> > 
+> > > Btw, I happened to notice that the objtool documentation suggests that we should
+> > > also add the the function to tools/objtool/noreturns.h:
+> > > 
+> > > 3. file.o: warning: objtool: foo+0x48c: bar() is missing a __noreturn annotation
+> > > 
+> > >    The call from foo() to bar() doesn't return, but bar() is missing the
+> > >    __noreturn annotation.  NOTE: In addition to annotating the function
+> > >    with __noreturn, please also add it to tools/objtool/noreturns.h.
+> > > 
+> > > Is it a behaviour that we still need to follow?
+> > 
+> > Yes. objtool has some heuristics to detect noreturn, but is is very
+> > difficult. Sadly noreturn is not something that is reflected in the ELF
+> > object file so we have to guess.
+> > 
+> > For now manually adding it to the objtool list is required, we're trying
+> > to get to the point where it is generated/validated by the compiler,
+> > perhaps with a plugin, but we're not there yet.
 > 
-> To allow the ACPI architectures to use GENERIC_CPU_DEVICES, move
-> the cpu_register() call into arch_register_cpu(), which is made __weak
-> so architectures with extra work can override it.
-> This aligns with the way x86, ia64 and loongarch register hotplug CPUs
-> when they become present.
+> Sorry one more question, do you know what Kconfig option triggers this
+> __noreturn objtool check?  I couldn't reproduce it on my own machine but have to
+> depend on LKP for now.
 
-Perhaps call out that you are also making cpu_devices visible outside
-of base/cpu.c
+Nope, sorry. Could be very GCC version specific through, this is all
+about a specific code-gen pattern.
 
-Note it isn't obvious to me why you do that in this patch. I assume
-it will be needed later...
-
-
-Otherwise seems sensible to me.
-
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
-> Changes since RFC:
->  * Dropped __init from x86/ia64 arch_register_cpu()
-> ---
->  arch/ia64/include/asm/cpu.h      |  1 -
->  arch/ia64/kernel/topology.c      |  2 +-
->  arch/loongarch/include/asm/cpu.h |  1 -
->  arch/x86/include/asm/cpu.h       |  1 -
->  arch/x86/kernel/topology.c       |  2 +-
->  drivers/base/cpu.c               | 14 ++++++++++----
->  include/linux/cpu.h              |  5 +++++
->  7 files changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/ia64/include/asm/cpu.h b/arch/ia64/include/asm/cpu.h
-> index db125df9e088..a3e690e685e5 100644
-> --- a/arch/ia64/include/asm/cpu.h
-> +++ b/arch/ia64/include/asm/cpu.h
-> @@ -16,7 +16,6 @@ DECLARE_PER_CPU(struct ia64_cpu, cpu_devices);
->  DECLARE_PER_CPU(int, cpu_state);
->  
->  #ifdef CONFIG_HOTPLUG_CPU
-> -extern int arch_register_cpu(int num);
->  extern void arch_unregister_cpu(int);
->  #endif
->  
-> diff --git a/arch/ia64/kernel/topology.c b/arch/ia64/kernel/topology.c
-> index 94a848b06f15..741863a187a6 100644
-> --- a/arch/ia64/kernel/topology.c
-> +++ b/arch/ia64/kernel/topology.c
-> @@ -59,7 +59,7 @@ void __ref arch_unregister_cpu(int num)
->  }
->  EXPORT_SYMBOL(arch_unregister_cpu);
->  #else
-> -static int __init arch_register_cpu(int num)
-> +int __init arch_register_cpu(int num)
->  {
->  	return register_cpu(&sysfs_cpus[num].cpu, num);
->  }
-> diff --git a/arch/loongarch/include/asm/cpu.h b/arch/loongarch/include/asm/cpu.h
-> index 7afe8cbb844e..b8568e637420 100644
-> --- a/arch/loongarch/include/asm/cpu.h
-> +++ b/arch/loongarch/include/asm/cpu.h
-> @@ -130,7 +130,6 @@ enum cpu_type_enum {
->  
->  #if !defined(__ASSEMBLY__)
->  #ifdef CONFIG_HOTPLUG_CPU
-> -int arch_register_cpu(int num);
->  void arch_unregister_cpu(int cpu);
->  #endif
->  #endif /* ! __ASSEMBLY__ */
-> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-> index 3a233ebff712..96dc4665e87d 100644
-> --- a/arch/x86/include/asm/cpu.h
-> +++ b/arch/x86/include/asm/cpu.h
-> @@ -28,7 +28,6 @@ struct x86_cpu {
->  };
->  
->  #ifdef CONFIG_HOTPLUG_CPU
-> -extern int arch_register_cpu(int num);
->  extern void arch_unregister_cpu(int);
->  extern void soft_restart_cpu(void);
->  #endif
-> diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
-> index ca004e2e4469..0bab03130033 100644
-> --- a/arch/x86/kernel/topology.c
-> +++ b/arch/x86/kernel/topology.c
-> @@ -54,7 +54,7 @@ void arch_unregister_cpu(int num)
->  EXPORT_SYMBOL(arch_unregister_cpu);
->  #else /* CONFIG_HOTPLUG_CPU */
->  
-> -static int __init arch_register_cpu(int num)
-> +int __init arch_register_cpu(int num)
->  {
->  	return register_cpu(&per_cpu(cpu_devices, num).cpu, num);
->  }
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 34b48f660b6b..579064fda97b 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -525,19 +525,25 @@ bool cpu_is_hotpluggable(unsigned int cpu)
->  EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
->  
->  #ifdef CONFIG_GENERIC_CPU_DEVICES
-> -static DEFINE_PER_CPU(struct cpu, cpu_devices);
-> +DEFINE_PER_CPU(struct cpu, cpu_devices);
-> +
-> +int __weak arch_register_cpu(int cpu)
-> +{
-> +	return register_cpu(&per_cpu(cpu_devices, cpu), cpu);
-> +}
->  #endif
->  
->  static void __init cpu_dev_register_generic(void)
->  {
-> -#ifdef CONFIG_GENERIC_CPU_DEVICES
->  	int i;
->  
-> +	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> +		return;
-> +
->  	for_each_present_cpu(i) {
-> -		if (register_cpu(&per_cpu(cpu_devices, i), i))
-> +		if (arch_register_cpu(i))
->  			panic("Failed to register CPU device");
->  	}
-> -#endif
->  }
->  
->  #ifdef CONFIG_GENERIC_CPU_VULNERABILITIES
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index 0abd60a7987b..a71691d7c2ca 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -80,12 +80,17 @@ extern __printf(4, 5)
->  struct device *cpu_device_create(struct device *parent, void *drvdata,
->  				 const struct attribute_group **groups,
->  				 const char *fmt, ...);
-> +extern int arch_register_cpu(int cpu);
->  #ifdef CONFIG_HOTPLUG_CPU
->  extern void unregister_cpu(struct cpu *cpu);
->  extern ssize_t arch_cpu_probe(const char *, size_t);
->  extern ssize_t arch_cpu_release(const char *, size_t);
->  #endif
->  
-> +#ifdef CONFIG_GENERIC_CPU_DEVICES
-> +DECLARE_PER_CPU(struct cpu, cpu_devices);
-> +#endif
-> +
->  /*
->   * These states are not related to the core CPU hotplug mechanism. They are
->   * used by various (sub)architectures to track internal state
-
+AFAICT we emit this warning when objtool finds this function is a
+noreturn but code-gen continued.
