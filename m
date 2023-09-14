@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11327A0C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2707A0C24
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240735AbjINSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
+        id S232699AbjINSCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240687AbjINSAI (ORCPT
+        with ESMTP id S229993AbjINSCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:00:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44051FFA;
-        Thu, 14 Sep 2023 11:00:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A71F1F7AB;
-        Thu, 14 Sep 2023 18:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694714402;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z+cFQ75Xsfc/y54rJKJbzF5p6/frJkSr0NvE88HD4UA=;
-        b=kvQhAmNiCLCILxAM325ISuNhdwiCfX0sVqip6k8SbMC8BzlO1OGP+7YDIA0l55aClSDUcT
-        rRtQtR64jSOl081FhP1/qGVc7/YtebQQZvegI2xFczpdXg0bYDfH9xM5CwQtaarBxvmUDb
-        L2AJp/DHWGpPRkBM5qA9Z3sKYNKQDf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694714402;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z+cFQ75Xsfc/y54rJKJbzF5p6/frJkSr0NvE88HD4UA=;
-        b=DoRpJ6IiGIj5zrcqIm48JbbFa0HxokrxtyNkH30MHUoDkWw3CCJM38b7jhnIPQix46b1di
-        OISxcTxTokZ1a/CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4BF1013580;
-        Thu, 14 Sep 2023 18:00:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yCDZESJKA2WsWQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 14 Sep 2023 18:00:02 +0000
-Date:   Thu, 14 Sep 2023 19:59:59 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 07/11] btrfs: zoned: allow zoned RAID
-Message-ID: <20230914175959.GA20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
- <20230914-raid-stripe-tree-v9-7-15d423829637@wdc.com>
+        Thu, 14 Sep 2023 14:02:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12142B9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:02:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E94FC433C8;
+        Thu, 14 Sep 2023 18:02:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694714553;
+        bh=u2uKvCKS3midq3haWQnJKbw1soML/UV33sJ4XPbBMH0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cNewOcqz4IYX15gybK4ltio6PlLFZBa6NN9tHoxcvJfKbppUVlS33bLQQ3ev3n7n3
+         5jeV1xOdPUqdMbyF+lacjzlKV+oCBGFiWQLfavlVVBnkPWr8W9obtKwGmkPLrL6jBB
+         HLPdQtP8IGVrTzZt0D42pwrlzGKj0KB9PKYoJ51XkU2DtkVzOa0X2MKtJTTbJ4/DOj
+         nmU9+dux0DUar3PEqDQStAv/VUR6LOesWGg8zQ9/VWSZN2oYxjdGqUX6IMDowKBSZo
+         Cty/e7i16lO3xVVUWKnFFUkLdBzlkYm/WbYIQbbi93RFYAbgJXB/IRncId/cKoG7FX
+         SUj/NOwqEbHag==
+Date:   Thu, 14 Sep 2023 19:02:29 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v4 2/5] riscv: Add checksum library
+Message-ID: <20230914-thinness-overtly-70c49b219c26@spud>
+References: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
+ <20230911-optimize_checksum-v4-2-77cc2ad9e9d7@rivosinc.com>
+ <20230914-mural-deskbound-0e37d0767f6f@wendy>
+ <ZQNJ0LQhZyJWlcSy@ghost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ChjGALr+r4z5FydN"
 Content-Disposition: inline
-In-Reply-To: <20230914-raid-stripe-tree-v9-7-15d423829637@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <ZQNJ0LQhZyJWlcSy@ghost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:07:02AM -0700, Johannes Thumshirn wrote:
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1397,9 +1397,11 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
->  				      struct zone_info *zone_info,
->  				      unsigned long *active)
->  {
-> -	if (map->type & BTRFS_BLOCK_GROUP_DATA) {
-> -		btrfs_err(bg->fs_info,
-> -			  "zoned: profile DUP not yet supported on data bg");
-> +	struct btrfs_fs_info *fs_info = bg->fs_info;
-> +
-> +	if (map->type & BTRFS_BLOCK_GROUP_DATA &&
-> +	    !fs_info->stripe_root) {
-> +		btrfs_err(fs_info, "zoned: data DUP profile needs stripe_root");
 
-Using stripe_root for identifier is ok so we don't have overly long ones
-but for user messages please use raid-stripe-tree. Fixed.
+--ChjGALr+r4z5FydN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> > > +#ifndef CONFIG_32BIT
+> >=20
+> > These can also be moved to IS_ENABLED() FYI, since there's no 32-bit
+> > stuff here that'd break the build for 64-bit. Ditto elsewhere where
+> > you've got similar stuff.
+> >=20
+> > Cheers,
+> > Conor.
+> This is an ifndef, so 32-bit compilation would throw a warning about
+> shifting by 32 bits if IS_ENABLED was used instead.
+
+ Fair enough. I did accidentally invert things in my mail, I did notice
+ the n, I just thought it did the elimination beforehand those checks,
+ sorry for the noise.
+
+--ChjGALr+r4z5FydN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQNKtAAKCRB4tDGHoIJi
+0hQIAP0TaJ5v9C2aA8jh9MwH/7topxwBBzwWIRbDvY/3q85ADwEAvxQzCaG4ICHq
+BiX5F2KfS/M6cJhJcXvBCcJrctFo8w0=
+=Sgyp
+-----END PGP SIGNATURE-----
+
+--ChjGALr+r4z5FydN--
