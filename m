@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F217A0D62
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF3F7A0D65
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242135AbjINSnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
+        id S242154AbjINSn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242154AbjINSlo (ORCPT
+        with ESMTP id S241107AbjINSl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:41:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA022D7E;
-        Thu, 14 Sep 2023 11:39:09 -0700 (PDT)
+        Thu, 14 Sep 2023 14:41:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F12C30CF;
+        Thu, 14 Sep 2023 11:39:10 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1694716748;
@@ -22,30 +22,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2MuEzqV2MApXOIyUF4YBrB1B536nPDREowgJZ2d68qA=;
-        b=xvmfPcPk/suTlgqjD+BtIaBilvzFLWj48bXIcjeOhIpaSNN1H51BfFuMizAILbEUldtvsc
-        YaDKtOC+rApZKGI8x1tmVp1KAfLX01Ln/iNU4eFwmRs3PX/njFbvcr3pCSWZ96T+bQ+pLd
-        muy+wsrO8q/xD8cB96W0qsqVxT4ekius3oPRBIpAmtZJhdRESWxv7o2v5+1J/Y3RDEiyal
-        T+QO7GHlT/3XjKbEd+sFLgpx4SU0ddET0VFeVaiUvgMGt7QbETrlJynegjawUD9v9R1oL7
-        QRrQKtwgIjIVdhlILqLy5m14I2aIa9fxjX9DvpCu4t5q8GGEZ/1Bj9DeA3fJ9A==
+        bh=ZfmijAtC3g1oYJPusPmN4eARviwbFrdwcagGmP/zuzk=;
+        b=R2v6uaMQ7CS6ZYHIZPSM59WMeA2cANUhi9CnTM0Q+Duf7YKQNnN2wOKSAsfEbnMWavbWDP
+        Jb/eDeirjaQ1SF+YR+/rwnARnLUtPdjYWm0WQ3Z9y8oGIidSsdYMJQ1jL5Bzkc9+c9PrhJ
+        Uec7tsI8SR8BZsy6G6Ntr48hN4RwmS5nRSZQMmcBKXUsEEBR1kABDz/PNircItNuiFC9Qw
+        M+2Fz5V0TZYL5dV7wEdsX9ZAQwnYC5Yu87oebcBbKUZBJdG4kibVw51vb6T8Ze13MzAX7M
+        RuK4JzT9fQ9xOR9hXdeFwQqP2NFtFJ5Z9HckO+QC+G0xaRLlWuu7LkgDQMc4hg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716748;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2MuEzqV2MApXOIyUF4YBrB1B536nPDREowgJZ2d68qA=;
-        b=zpHOCNIL8h8OfyKvzvhHyDV0VPI+SPQvDTgYSCYX1wQ696ErtKnfs5fE9Kq+yyxSN2uQJa
-        OaErNNxOxq2VSeBg==
+        bh=ZfmijAtC3g1oYJPusPmN4eARviwbFrdwcagGmP/zuzk=;
+        b=Pm8yyxP5/5v8PDUy4f7SgJldp6MTI6kgWYYQfNDw+CSvuHHQOu92wjI/bymXTaAvCPlf9d
+        1EX+IZ/ElO3HZ3BA==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: [PATCH tty v1 68/74] serial: sunsu: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:44:25 +0206
-Message-Id: <20230914183831.587273-69-john.ogness@linutronix.de>
+Subject: [PATCH tty v1 69/74] serial: sunzilog: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:44:26 +0206
+Message-Id: <20230914183831.587273-70-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -82,172 +82,130 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/sunsu.c | 46 +++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ drivers/tty/serial/sunzilog.c | 42 +++++++++++++++++------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/tty/serial/sunsu.c b/drivers/tty/serial/sunsu.c
-index 58a4342ad0f9..1e051cc2591c 100644
---- a/drivers/tty/serial/sunsu.c
-+++ b/drivers/tty/serial/sunsu.c
-@@ -212,9 +212,9 @@ static void enable_rsa(struct uart_sunsu_port *up)
- {
- 	if (up->port.type == PORT_RSA) {
- 		if (up->port.uartclk != SERIAL_RSA_BAUD_BASE * 16) {
--			spin_lock_irq(&up->port.lock);
-+			uart_port_lock_irq(&up->port);
- 			__enable_rsa(up);
--			spin_unlock_irq(&up->port.lock);
-+			uart_port_unlock_irq(&up->port);
+diff --git a/drivers/tty/serial/sunzilog.c b/drivers/tty/serial/sunzilog.c
+index c8c71c56264c..d3b5e864b727 100644
+--- a/drivers/tty/serial/sunzilog.c
++++ b/drivers/tty/serial/sunzilog.c
+@@ -531,7 +531,7 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
+ 		struct tty_port *port;
+ 		unsigned char r3;
+ 
+-		spin_lock(&up->port.lock);
++		uart_port_lock(&up->port);
+ 		r3 = read_zsreg(channel, R3);
+ 
+ 		/* Channel A */
+@@ -548,7 +548,7 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
+ 			if (r3 & CHATxIP)
+ 				sunzilog_transmit_chars(up, channel);
  		}
- 		if (up->port.uartclk == SERIAL_RSA_BAUD_BASE * 16)
- 			serial_outp(up, UART_RSA_FRR, 0);
-@@ -234,7 +234,7 @@ static void disable_rsa(struct uart_sunsu_port *up)
+-		spin_unlock(&up->port.lock);
++		uart_port_unlock(&up->port);
  
- 	if (up->port.type == PORT_RSA &&
- 	    up->port.uartclk == SERIAL_RSA_BAUD_BASE * 16) {
--		spin_lock_irq(&up->port.lock);
-+		uart_port_lock_irq(&up->port);
+ 		if (port)
+ 			tty_flip_buffer_push(port);
+@@ -557,7 +557,7 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
+ 		up = up->next;
+ 		channel = ZILOG_CHANNEL_FROM_PORT(&up->port);
  
- 		mode = serial_inp(up, UART_RSA_MSR);
- 		result = !(mode & UART_RSA_MSR_FIFO);
-@@ -247,7 +247,7 @@ static void disable_rsa(struct uart_sunsu_port *up)
+-		spin_lock(&up->port.lock);
++		uart_port_lock(&up->port);
+ 		port = NULL;
+ 		if (r3 & (CHBEXT | CHBTxIP | CHBRxIP)) {
+ 			writeb(RES_H_IUS, &channel->control);
+@@ -571,7 +571,7 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
+ 			if (r3 & CHBTxIP)
+ 				sunzilog_transmit_chars(up, channel);
+ 		}
+-		spin_unlock(&up->port.lock);
++		uart_port_unlock(&up->port);
  
- 		if (result)
- 			up->port.uartclk = SERIAL_RSA_BAUD_BASE_LO * 16;
--		spin_unlock_irq(&up->port.lock);
-+		uart_port_unlock_irq(&up->port);
- 	}
- }
- #endif /* CONFIG_SERIAL_8250_RSA */
-@@ -311,10 +311,10 @@ static void sunsu_enable_ms(struct uart_port *port)
- 		container_of(port, struct uart_sunsu_port, port);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 	up->ier |= UART_IER_MSI;
- 	serial_out(up, UART_IER, up->ier);
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- }
- 
- static void
-@@ -456,7 +456,7 @@ static irqreturn_t sunsu_serial_interrupt(int irq, void *dev_id)
- 	unsigned long flags;
+ 		if (port)
+ 			tty_flip_buffer_push(port);
+@@ -604,11 +604,11 @@ static unsigned int sunzilog_tx_empty(struct uart_port *port)
  	unsigned char status;
- 
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 
- 	do {
- 		status = serial_inp(up, UART_LSR);
-@@ -470,7 +470,7 @@ static irqreturn_t sunsu_serial_interrupt(int irq, void *dev_id)
- 
- 	} while (!(serial_in(up, UART_IIR) & UART_IIR_NO_INT));
- 
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- 
- 	return IRQ_HANDLED;
- }
-@@ -545,9 +545,9 @@ static unsigned int sunsu_tx_empty(struct uart_port *port)
- 	unsigned long flags;
  	unsigned int ret;
  
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 	ret = serial_in(up, UART_LSR) & UART_LSR_TEMT ? TIOCSER_TEMT : 0;
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
  
- 	return ret;
- }
-@@ -599,13 +599,13 @@ static void sunsu_break_ctl(struct uart_port *port, int break_state)
- 		container_of(port, struct uart_sunsu_port, port);
- 	unsigned long flags;
+ 	status = sunzilog_read_channel_status(port);
  
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 	if (break_state == -1)
- 		up->lcr |= UART_LCR_SBC;
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	if (status & Tx_BUF_EMP)
+ 		ret = TIOCSER_TEMT;
+@@ -764,7 +764,7 @@ static void sunzilog_break_ctl(struct uart_port *port, int break_state)
  	else
- 		up->lcr &= ~UART_LCR_SBC;
- 	serial_out(up, UART_LCR, up->lcr);
+ 		clear_bits |= SND_BRK;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	new_reg = (up->curregs[R5] | set_bits) & ~clear_bits;
+ 	if (new_reg != up->curregs[R5]) {
+@@ -774,7 +774,7 @@ static void sunzilog_break_ctl(struct uart_port *port, int break_state)
+ 		write_zsreg(channel, R5, up->curregs[R5]);
+ 	}
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static void __sunzilog_startup(struct uart_sunzilog_port *up)
+@@ -800,9 +800,9 @@ static int sunzilog_startup(struct uart_port *port)
+ 	if (ZS_IS_CONS(up))
+ 		return 0;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	__sunzilog_startup(up);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 	return 0;
+ }
+ 
+@@ -840,7 +840,7 @@ static void sunzilog_shutdown(struct uart_port *port)
+ 	if (ZS_IS_CONS(up))
+ 		return;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	channel = ZILOG_CHANNEL_FROM_PORT(port);
+ 
+@@ -853,7 +853,7 @@ static void sunzilog_shutdown(struct uart_port *port)
+ 	up->curregs[R5] &= ~SND_BRK;
+ 	sunzilog_maybe_update_regs(up, channel);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ /* Shared by TTY driver and serial console setup.  The port lock is held
+@@ -945,7 +945,7 @@ sunzilog_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	baud = uart_get_baud_rate(port, termios, old, 1200, 76800);
+ 
+-	spin_lock_irqsave(&up->port.lock, flags);
++	uart_port_lock_irqsave(&up->port, &flags);
+ 
+ 	brg = BPS_TO_BRG(baud, ZS_CLOCK / ZS_CLOCK_DIVISOR);
+ 
+@@ -962,7 +962,7 @@ sunzilog_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	uart_update_timeout(port, termios->c_cflag, baud);
+ 
 -	spin_unlock_irqrestore(&up->port.lock, flags);
 +	uart_port_unlock_irqrestore(&up->port, flags);
  }
  
- static int sunsu_startup(struct uart_port *port)
-@@ -683,12 +683,12 @@ static int sunsu_startup(struct uart_port *port)
- 	 */
- 	serial_outp(up, UART_LCR, UART_LCR_WLEN8);
- 
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 
- 	up->port.mctrl |= TIOCM_OUT2;
- 
- 	sunsu_set_mctrl(&up->port, up->port.mctrl);
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- 
- 	/*
- 	 * Finally, enable interrupts.  Note: Modem status interrupts
-@@ -731,7 +731,7 @@ static void sunsu_shutdown(struct uart_port *port)
- 	up->ier = 0;
- 	serial_outp(up, UART_IER, 0);
- 
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 	if (up->port.flags & UPF_FOURPORT) {
- 		/* reset interrupts on the AST Fourport board */
- 		inb((up->port.iobase & 0xfe0) | 0x1f);
-@@ -740,7 +740,7 @@ static void sunsu_shutdown(struct uart_port *port)
- 		up->port.mctrl &= ~TIOCM_OUT2;
- 
- 	sunsu_set_mctrl(&up->port, up->port.mctrl);
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- 
- 	/*
- 	 * Disable break condition and FIFOs
-@@ -826,7 +826,7 @@ sunsu_change_speed(struct uart_port *port, unsigned int cflag,
- 	 * Ok, we're now changing the port state.  Do it with
- 	 * interrupts disabled.
- 	 */
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 
- 	/*
- 	 * Update the per-port timeout.
-@@ -891,7 +891,7 @@ sunsu_change_speed(struct uart_port *port, unsigned int cflag,
- 
- 	up->cflag = cflag;
- 
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- }
- 
- static void
-@@ -1038,7 +1038,7 @@ static void sunsu_autoconfig(struct uart_sunsu_port *up)
- 	up->type_probed = PORT_UNKNOWN;
- 	up->port.iotype = UPIO_MEM;
- 
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 
- 	if (!(up->port.flags & UPF_BUGGY_UART)) {
- 		/*
-@@ -1173,7 +1173,7 @@ static void sunsu_autoconfig(struct uart_sunsu_port *up)
- 	serial_outp(up, UART_IER, 0);
- 
- out:
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- }
- 
- static struct uart_driver sunsu_reg = {
-@@ -1298,9 +1298,9 @@ static void sunsu_console_write(struct console *co, const char *s,
+ static const char *sunzilog_type(struct uart_port *port)
+@@ -1201,15 +1201,15 @@ sunzilog_console_write(struct console *con, const char *s, unsigned int count)
  	int locked = 1;
  
  	if (up->port.sysrq || oops_in_progress)
@@ -257,17 +215,51 @@ index 58a4342ad0f9..1e051cc2591c 100644
 -		spin_lock_irqsave(&up->port.lock, flags);
 +		uart_port_lock_irqsave(&up->port, &flags);
  
- 	/*
- 	 *	First save the UER then disable the interrupts
-@@ -1318,7 +1318,7 @@ static void sunsu_console_write(struct console *co, const char *s,
- 	serial_out(up, UART_IER, ier);
+ 	uart_console_write(&up->port, s, count, sunzilog_putchar);
+ 	udelay(2);
  
  	if (locked)
 -		spin_unlock_irqrestore(&up->port.lock, flags);
 +		uart_port_unlock_irqrestore(&up->port, flags);
  }
  
- /*
+ static int __init sunzilog_console_setup(struct console *con, char *options)
+@@ -1244,7 +1244,7 @@ static int __init sunzilog_console_setup(struct console *con, char *options)
+ 
+ 	brg = BPS_TO_BRG(baud, ZS_CLOCK / ZS_CLOCK_DIVISOR);
+ 
+-	spin_lock_irqsave(&up->port.lock, flags);
++	uart_port_lock_irqsave(&up->port, &flags);
+ 
+ 	up->curregs[R15] |= BRKIE;
+ 	sunzilog_convert_to_zs(up, con->cflag, 0, brg);
+@@ -1252,7 +1252,7 @@ static int __init sunzilog_console_setup(struct console *con, char *options)
+ 	sunzilog_set_mctrl(&up->port, TIOCM_DTR | TIOCM_RTS);
+ 	__sunzilog_startup(up);
+ 
+-	spin_unlock_irqrestore(&up->port.lock, flags);
++	uart_port_unlock_irqrestore(&up->port, flags);
+ 
+ 	return 0;
+ }
+@@ -1333,7 +1333,7 @@ static void sunzilog_init_hw(struct uart_sunzilog_port *up)
+ 
+ 	channel = ZILOG_CHANNEL_FROM_PORT(&up->port);
+ 
+-	spin_lock_irqsave(&up->port.lock, flags);
++	uart_port_lock_irqsave(&up->port, &flags);
+ 	if (ZS_IS_CHANNEL_A(up)) {
+ 		write_zsreg(channel, R9, FHWRES);
+ 		ZSDELAY_LONG();
+@@ -1383,7 +1383,7 @@ static void sunzilog_init_hw(struct uart_sunzilog_port *up)
+ 		write_zsreg(channel, R9, up->curregs[R9]);
+ 	}
+ 
+-	spin_unlock_irqrestore(&up->port.lock, flags);
++	uart_port_unlock_irqrestore(&up->port, flags);
+ 
+ #ifdef CONFIG_SERIO
+ 	if (up->flags & (SUNZILOG_FLAG_CONS_KEYB |
 -- 
 2.39.2
 
