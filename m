@@ -2,118 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4041E7A058C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92457A058D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbjINN1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        id S238988AbjINN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbjINN1F (ORCPT
+        with ESMTP id S235397AbjINN1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:27:05 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B191BEF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:27:01 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so14991761fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694698019; x=1695302819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ltHqz7sJ0v4Q+i/Z4aqTT31SnmE06twy+6dA1CwyTLk=;
-        b=rtZFztPw4h/mSEQGqUEa4pDAKZyf22VNuosysvFOrd/r2PHZMZ5+1DqDFyPyUNrkeM
-         TMa3f5F5+h91ROod8sqGTGaqvZReTjIr71Vb/KLXR0cjszbq+40BC5RKs6nM+DJDgCuD
-         QDZ0jidcCmZNiKnho+Yzetat3Rn1hpEg06fgI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694698019; x=1695302819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ltHqz7sJ0v4Q+i/Z4aqTT31SnmE06twy+6dA1CwyTLk=;
-        b=gtk2A9OnJUKfKfw9guWu61kHmTtbXKOfOBxHeRt3f6xg9BIuX2o+SdQuO48495H30F
-         v2DI4gfSw6aHUrnfAiYCW0J/3ldshrQi12OVuQpa+wo8M8xzwlQh5pChtbokuyMa1VAD
-         GLLWTfkBNIQaVP5pylLYrf1aQPYGxZ5bRsuCCGPYLPRS+krmDxVnuR1EwimMXx+zNTbl
-         rq9Q+bKRsJnQvSLCzQmDzMxV9v2kckj9hfJimDPMyQ9HtHxI7iXe/7dIlALizLFw5kiL
-         lND70ACl4zAPKIcfNlcySrBqL7FwhksnjQ0d0b5Uu5nW4TBeOBKzuiroiRDIkwCwaDAm
-         9XRw==
-X-Gm-Message-State: AOJu0YxnrlFb5oFX6qUy71j7iqSQ8iXIXGRd2C5JSAKmiX66DPNiRTVX
-        aLe4Bc1cXzCCqd83K/o9NqKtavHv1hDkxj7FlMFzZA==
-X-Google-Smtp-Source: AGHT+IGiJCk28LoPbESHsjLdhrJ0/gXo8cS0+4LSvHYL0id89l3yXfBskknMhP3BCFXXEOpLMcflSkrtQKNRVdE2N08=
-X-Received: by 2002:a2e:8887:0:b0:2bd:1fee:aacb with SMTP id
- k7-20020a2e8887000000b002bd1feeaacbmr5319566lji.14.1694698019603; Thu, 14 Sep
- 2023 06:26:59 -0700 (PDT)
+        Thu, 14 Sep 2023 09:27:12 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3CD1BEF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:27:08 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 661E8660734B;
+        Thu, 14 Sep 2023 14:27:06 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694698026;
+        bh=0NG0mHKcQ7KLf0/jfcYljD+vBWRaQV154x2ndB6bslY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RuUCDeNb/cM3xwCBxpJbt1OVmQ7CyKLn4SQAZgjafOMCAd2DFN+Qc1G/LmhMYBd1D
+         1aljSyjzMDOaFD56++IdOEMq6/2fEfLwB9nH+xMAcFs9gNrCpkOWc1+57vMPdv6bJ/
+         gHboE2VxTh0ZjpryN5Im72ZiiGyJJRRF1vzonJW4fSBsOyfx8qwWWuD3/WVVwSH9V6
+         M0GYFnHkEBW59aDjw4utqO24sSfhrKHje+uAXUFOOsYarv5aAgfgrf7am244sZlI4Z
+         V8gg0mD3ixgvVqO1rDUhfpHWUXPM/UEL7rlzk7QKudBWbF/bZennEq9QZoLH0KouxH
+         kZp8zFAlLeEKA==
+Date:   Thu, 14 Sep 2023 15:27:03 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+Message-ID: <20230914152703.78b1ac82@collabora.com>
+In-Reply-To: <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+        <20230905100306.3564e729@collabora.com>
+        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+        <20230913094832.3317c2df@collabora.com>
+        <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+        <20230914093626.19692c24@collabora.com>
+        <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
+        <20230914102737.08e61498@collabora.com>
+        <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
+        <20230914135840.5e0e11fe@collabora.com>
+        <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20230912104406.312185-1-frederic@kernel.org> <20230912104406.312185-4-frederic@kernel.org>
- <CAEXW_YTwzK9jkUdMUPY0t++yYvwSHx1EZiPX6NiSt7hPhHZbpA@mail.gmail.com> <ZQLShD1ujiuqLiJI@lothringen>
-In-Reply-To: <ZQLShD1ujiuqLiJI@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 14 Sep 2023 09:26:48 -0400
-Message-ID: <CAEXW_YTh2mC-v2aqMjZBJGM28w6x2DgfMO_Ma_gvQeZa3q0P-A@mail.gmail.com>
-Subject: Re: [PATCH 3/5] tick/nohz: Don't shutdown the lowres tick from itself
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, vineethrp@gmail.com,
-        Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 5:29=E2=80=AFAM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
->
-> On Wed, Sep 13, 2023 at 09:17:21PM -0400, Joel Fernandes wrote:
-> > On Tue, Sep 12, 2023 at 6:44=E2=80=AFAM Frederic Weisbecker <frederic@k=
-ernel.org> wrote:
-> > >
-> > > In lowres dynticks mode, just like in highres dynticks mode, when the=
-re
-> > > is no tick to program in the future, the tick eventually gets
-> > > deactivated either:
-> > >
-> > > * From the idle loop if in idle mode.
-> > > * From the IRQ exit if in full dynticks mode.
-> > >
-> > > Therefore there is no need to deactivate it from the tick itself. Thi=
-s
-> > > just just brings more overhead in the idle tick path for no reason.
-> > >
-> > > Fixes: 62c1256d5447 ("timers/nohz: Switch to ONESHOT_STOPPED in the l=
-ow-res handler when the tick is stopped")
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> >
-> > If on some weird hardware, say  ts->next_tick =3D KTIME_MAX but a
-> > spurious timer interrupt went off and tick_nohz_handler() did get
-> > called (yeah weird hypothetical situation), then in
-> > tick_nohz_stop_tick() we might early return from:
-> >
-> > /* Skip reprogram of event if its not changed */
-> > if (ts->tick_stopped && (expires =3D=3D ts->next_tick))
-> >
-> > without no "eventual" reprogramming.
-> >
-> > Maybe we should also reprogram with KTIME_MAX in such a situation?
-> > Then we can get rid of it from tick_nohz_handler() for the common case
-> > as you are doing.
-> >
-> > So for weird hardware, with this patch we are not doing an extra
-> > tick_program_event(KTIME_MAX, 1); like Nick was doing. That makes me a
-> > tad bit nervous.
->
-> So when a tick happens, ts->next_tick is reset to 0 (in tick_sched_handle=
-()).
-> This way if a timer interrupt fires too early, and that includes also tim=
-er
-> interrupts when next_tick is KTIME_MAX, the timer is always reprogrammed =
-upon
-> the next idle loop iteration. So this shouldn't happen.
+On Thu, 14 Sep 2023 16:01:37 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-Ah you are right, I missed that. So then I am good with it:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> On 9/14/23 14:58, Boris Brezillon wrote:
+> > On Thu, 14 Sep 2023 14:36:23 +0300
+> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >   
+> >> On 9/14/23 11:27, Boris Brezillon wrote:  
+> >>> On Thu, 14 Sep 2023 10:50:32 +0300
+> >>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >>>     
+> >>>> On 9/14/23 10:36, Boris Brezillon wrote:    
+> >>>>> On Thu, 14 Sep 2023 07:02:52 +0300
+> >>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >>>>>       
+> >>>>>> On 9/13/23 10:48, Boris Brezillon wrote:      
+> >>>>>>> On Wed, 13 Sep 2023 03:56:14 +0300
+> >>>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >>>>>>>         
+> >>>>>>>> On 9/5/23 11:03, Boris Brezillon wrote:        
+> >>>>>>>>>>                * But
+> >>>>>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+> >>>>>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+> >>>>>>>>>> +		 * and fs_reclaim.
+> >>>>>>>>>> +		 *
+> >>>>>>>>>> +		 * This deadlock is not actually possible, because no one should
+> >>>>>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+> >>>>>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+> >>>>>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
+> >>>>>>>>>> +		 */
+> >>>>>>>>>> +		if (shmem->got_pages_sgt &&
+> >>>>>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+> >>>>>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+> >>>>>>>>>> +			shmem->got_pages_sgt = false;
+> >>>>>>>>>>  		}          
+> >>>>>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+> >>>>>>>>> better to leak than having someone access memory it no longer owns), but
+> >>>>>>>>> I think it's worth mentioning in the above comment.          
+> >>>>>>>>
+> >>>>>>>> It's unlikely that it will be only a leak without a following up
+> >>>>>>>> use-after-free. Neither is acceptable.        
+> >>>>>>>
+> >>>>>>> Not necessarily, if you have a page leak, it could be that the GPU has
+> >>>>>>> access to those pages, but doesn't need the GEM object anymore
+> >>>>>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
+> >>>>>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
+> >>>>>>> can go unnoticed and lead to memory corruptions/information leaks.
+> >>>>>>>         
+> >>>>>>>>
+> >>>>>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+> >>>>>>>> on a refcnt bug, but that's not worthwhile doing because drivers
+> >>>>>>>> shouldn't have silly bugs.        
+> >>>>>>>
+> >>>>>>> We definitely don't want to fix that, but we want to complain loudly
+> >>>>>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
+> >>>>>>> being re-assigned to someone else by not freeing it).        
+> >>>>>>
+> >>>>>> That's what the code did and continues to do here. Not exactly sure what
+> >>>>>> you're trying to say. I'm going to relocate the comment in v17 to
+> >>>>>> put_pages(), we can continue discussing it there if I'm missing yours point.
+> >>>>>>      
+> >>>>>
+> >>>>> I'm just saying it would be worth mentioning that we're intentionally
+> >>>>> leaking memory if shmem->pages_use_count > 1. Something like:
+> >>>>>
+> >>>>> 	/**
+> >>>>> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
+> >>>>> 	 * zero otherwise. If some users still hold a pages reference
+> >>>>> 	 * that's a bug, and we intentionally leak the pages so they
+> >>>>> 	 * can't be re-allocated to someone else while the GPU/CPU
+> >>>>> 	 * still have access to it.
+> >>>>> 	 */
+> >>>>> 	drm_WARN_ON(drm,
+> >>>>> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
+> >>>>> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
+> >>>>> 		drm_gem_shmem_free_pages(shmem);      
+> >>>>
+> >>>> That may be acceptable, but only once there will a driver using this
+> >>>> feature.    
+> >>>
+> >>> Which feature? That's not related to a specific feature, that's just
+> >>> how drm_gem_shmem_get_pages_sgt() works, it takes a pages ref that can
+> >>> only be released in drm_gem_shmem_free(), because sgt users are not
+> >>> refcounted and the sgt stays around until the GEM object is freed or
+> >>> its pages are evicted. The only valid cases we have at the moment are:
+> >>>
+> >>> - pages_use_count == 1 && sgt != NULL
+> >>> - pages_use_count == 0
+> >>>
+> >>> any other situations are buggy.    
+> >>
+> >> sgt may belong to dma-buf for which pages_use_count=0, this can't be
+> >> done until sgt mess is sorted out  
+> > 
+> > No it can't, not in that path, because the code you're adding is in the
+> > if (!obj->import_branch) branch:
+> > 
+> > 
+> >  	if (obj->import_attach) {
+> >  		drm_prime_gem_destroy(obj, shmem->sgt);
+> >  	} else {
+> > 		...
+> > 		// Your changes are here.
+> > 		...  
+> 
+> This branch is taken for the dma-buf in the prime import error code path.
 
-thanks,
+I suggested a fix for this error that didn't involve adding a new flag,
+but that's orthogonal to the piece of code we're discussing anyway.
 
- - Joel
+> But yes, the pages_use_count=0 for the dma-buf and then it can be
+> written as:
+> 
+> 	if (obj->import_attach) {
+> 		drm_prime_gem_destroy(obj, shmem->sgt);
+> 	} else {
+> 		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+> 
+> 		if (shmem->sgt && refcount_read(&shmem->pages_use_count)) {
+
+You should drop the '&& refcount_read(&shmem->pages_use_count)',
+otherwise you'll never enter this branch (sgt allocation retained
+a ref, so pages_use_count > 0 when ->sgt != NULL).
+
+If you added this pages_use_count > 0 check to deal with the
+'free-partially-imported-GEM' case, I keep thinking this is not
+the right fix. You should just assume that obj->import_attach == NULL
+means not-a-prime-buffer, and then make sure
+partially-initialized-prime-GEMs have import_attach assigned (see the
+oneliner I suggested in my review of
+`[PATCH v15 01/23] drm/shmem-helper: Fix UAF in error path when
+freeing SGT of imported GEM`).
+
+> 			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+> 					  DMA_BIDIRECTIONAL, 0);
+> 			sg_free_table(shmem->sgt);
+> 			kfree(shmem->sgt);
+> 
+> 			__drm_gem_shmem_put_pages(shmem);
+
+You need to decrement pages_use_count:
+
+			/* shmem->pages_use_count should be 1 when ->sgt != NULL and
+			 * zero otherwise. If some users still hold a pages reference
+			 * that's a bug, and we intentionally leak the pages so they
+			 * can't be re-allocated to someone else while the GPU/CPU
+			 * still have access to it.
+		 	 */
+			if (refcount_dec_and_test(&shmem->pages_use_count))
+				__drm_gem_shmem_put_pages(shmem);
+
+> 		}
+> 
+> 		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+
+And now this WARN_ON() ^ should catch unexpected pages leak.
+
+> 
+> Alright, I'll check if it works as expected for fixing the error code path bug for v17
+> 
+
