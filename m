@@ -2,692 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742CB79FFEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E073779FFF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236744AbjINJ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        id S236831AbjINJ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjINJZ7 (ORCPT
+        with ESMTP id S235291AbjINJ0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:25:59 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AF0BB;
-        Thu, 14 Sep 2023 02:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1694683538; x=1695288338; i=quwenruo.btrfs@gmx.com;
- bh=Wn5OjQ6z0YmbUG6WVEtwMnIvcDQjDXBY9G2XAXDzlOw=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=OJixUUrqgqNOKWZJa7vhXxWdktgucer58BqkL2k0pw9KaM73kJbRhP/chU4LNmEb+x0F/hrhLFE
- HCHb2CQz2SBoR/SMqfeLJIzQtbm8EiUcOS7ECe8TDH5S1whdNthTqVmiOV1IqvEHww2Dc9Pdy84DQ
- UhCGvJdLlNDtKvfobf+QM9Nn7aPmzKLSJh9vCziCeU2aDwZjF5pF4LL6uYEO9IrcUiKgHBNlYcKXA
- 7rGz51secgATlVwM04ZzubsIICeltWe2coT9eekC1JkeRU53HUD16jpt6fkkwRW0Dt8sZRMCBofrD
- i0X99V5EGKtFnzUjKUflUOBxBSvkGJZ0I9SQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAONd-1qrUFe0nIB-00Bx2j; Thu, 14
- Sep 2023 11:25:38 +0200
-Message-ID: <a5d3a051-0b3e-4fc5-9df5-e70c94adb95e@gmx.com>
-Date:   Thu, 14 Sep 2023 18:55:31 +0930
+        Thu, 14 Sep 2023 05:26:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9651BF9;
+        Thu, 14 Sep 2023 02:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694683586; x=1726219586;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=A297AlCWjB6MRqqjMu2hx0qSLiGTcRlwSFgi1Ts2F1o=;
+  b=mw3vRhA0LnKfEJClJcZ+HWUB61K9miTVHCQGbvlYhJdS7oyCcLDabN/4
+   I2ewzUkW9iv2UgR8EByYZQWJiC8zdUP2bdH+wqlckATM0UtETaQPXFvEQ
+   24Gj9AEXX3d3dP5HViYyo/gF8Ahs7gS1ytEF/wvgbY0e/+doOVTZbAGLC
+   hE+fJFbdUnOAejcBylGNMSB2C2kbaYG+W/VWCTgQCtWIbtBTgIxbW4m6x
+   BOVUilweRBd5TILNB5wDcyyPJlaRLo0glTB1s6HztS5T+u5Nll5qmGREh
+   +VTewQa9kXz6RgRnW/gz4p8nI4YKRl5XeQGz9qqG0BLbHjO71mDwU4F5X
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="369174465"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="369174465"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 02:26:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="918188226"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="918188226"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga005.jf.intel.com with SMTP; 14 Sep 2023 02:26:17 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 14 Sep 2023 12:26:17 +0300
+Date:   Thu, 14 Sep 2023 12:26:16 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
+Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
+ corresponding Type-C connectors"
+Message-ID: <ZQLRuNkNBghjKRca@kuha.fi.intel.com>
+References: <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
+ <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
+ <ZPiAwOf00RREiYPr@kuha.fi.intel.com>
+ <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
+ <ZQBGD8CY5OVKYX63@kuha.fi.intel.com>
+ <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
+ <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com>
+ <CAA8EJpqaipCT66x698R6dKDTSMk-D2iNHv8NSnMzPy-X_jFJ1Q@mail.gmail.com>
+ <ZQG1zMbjWNLtx8lk@kuha.fi.intel.com>
+ <CAA8EJprSH1jTa74c2P91SEC84eM8w=ACC4o2xM8t9eShvC9UeQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/11] btrfs: add support for inserting raid stripe
- extents
-Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
- <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4L2g0Tv4Eg1FsuzDhUM7oAJQ/kcxYTzg3u9V2Mw9lQpDVAUZH7s
- IFAeS0lV8WbdWKnOfKbC7OYHSjv4H4ca8eAY8B2nkIO7+xojgbiXIru4RAM7Uu1F+g1/aG6
- vgeKEdrlZh7d3gjLTLxruIDPnw3c/RHwA7oYjVuQ/nF4QGOHWF7Ki10Vx/1sRHboXA7/l+u
- 6iqutxKDv4HbjhuesdEQQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:0xmIo187tfw=;WUDsohdJ+OowC+FvwxlUAEQV5n8
- eKBhZBPur/HTMmsxrLRN+Ev4jgnxDXyrHtzp3F1iue4Uc8SVEP2qNLunjZwKBvx9oY+0QOP25
- GbFeeoub0U3Yl7HvH7R40e0SAgKj02jv6bF4liSo0rjOuKtQ/sVd0jWd4yoGCg/nsHNOroeEv
- azkTfdaNYzpyo9hM4DHGcxNuRcAGfJQv/AE3i5BvJpc2u4E5d5CimJ/RLsieJ33V+jszeWadt
- DcSh1JV7F3Shz9Um3dG3Nk3AXz1P4F6DF2dAjCywHNwOZgTUQv+///Isz743fzCUzAXk/qlcs
- XyeydM1ybjVGb9ks7YtBt8Kf+alRX2fFTfRSU1sf3eWyi3HGokSSPkPiz41UxtMWcqQ+E0o0+
- GHjyx/mSuwcXpljwrRJBsa7pzMXYKsoTlWiPw/DXPV5k5xq+0RF4OuodlQpjX20rZEzqiO+jq
- OwPXl7zE3j2YKjyfxu4zrsIyQ+3rYiaQ0KDg9AG4QnMiL6tsnn9D19II4hQcQXpn3JDOpX+I+
- ITSenyy/jQybJOAQ87zx5gorSx9a+89q0BgMFCH5eGPd0FwqGYQAnfs9/lE++QcVz4y17qMmZ
- opjQUPSmR+rknwnFl6usCnsBsOyKGyfFMvqw8Bs52BBLNHl/23OYwXEGgu4w9NUWL2RyQU6Sr
- HMk+wn8AkPgd64SO19D6ih85pigRRV370ritcPxcgX/zJz1ah8aM9JOlChSeRxIcO3/UN+DoN
- BJJySWyLRLmJylHRzlB67+MysotGAyg6ujn9XsWGnVbU8JEyguGwiFBSJlkO5JP7y5+mSNYjf
- 9Otm0v0aM1t4kJHcOSW93Kifq8KmgI1ZHrx5KToGuS50GdX3aWCop21VfuqTRTXQLGDNTT3zQ
- egEht6I3EcL8QcOUrRTshreH6zLWmTfuwXhBX/ts6kzdfg6HtCp7A6rUNmz3F23rUx0sRsWmm
- yw4d73OOpZo/06yNV5jO4jxqEIo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJprSH1jTa74c2P91SEC84eM8w=ACC4o2xM8t9eShvC9UeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dmitry,
 
+On Wed, Sep 13, 2023 at 04:47:12PM +0300, Dmitry Baryshkov wrote:
+> On Wed, 13 Sept 2023 at 16:15, Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > On Wed, Sep 13, 2023 at 01:26:14PM +0300, Dmitry Baryshkov wrote:
+> > > Hi Heikki,
+> > >
+> > > On Wed, 13 Sept 2023 at 12:27, Heikki Krogerus
+> > > <heikki.krogerus@linux.intel.com> wrote:
+> > > > On Tue, Sep 12, 2023 at 08:39:45PM +0300, Dmitry Baryshkov wrote:
+> > > > > On 12/09/2023 14:05, Heikki Krogerus wrote:
+> > > > > > On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
+> > > > > > > On 06/09/2023 16:38, Heikki Krogerus wrote:
+> > > > > > > > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
+> > > > > > > > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
+> > > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
+> > > > > > > > > > > Hi Heikki,
+> > > > > > > > > > >
+> > > > > > > > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
+> > > > > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > Hi Dmitry,
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
+> > > > > > > > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
+> > > > > > > > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
+> > > > > > > > > > > >
+> > > > > > > > > > > > That's not true. The dev->fwnode is assigned when the device is
+> > > > > > > > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
+> > > > > > > > > > > > member is assigned before the device is registered, then that fwnode
+> > > > > > > > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
+> > > > > > > > > > > >
+> > > > > > > > > > > > But please note that even if drm_connector does not have anything in
+> > > > > > > > > > > > its fwnode member, the device may still be assigned fwnode, just based
+> > > > > > > > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
+> > > > > > > > > > > >
+> > > > > > > > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
+> > > > > > > > > > > > > breaks drivers already using components (as it was pointed at [1]),
+> > > > > > > > > > > > > resulting in a deadlock. Lockdep trace is provided below.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Granted these two issues, it seems impractical to fix this commit in any
+> > > > > > > > > > > > > sane way. Revert it instead.
+> > > > > > > > > > > >
+> > > > > > > > > > > > I think there is already user space stuff that relies on these links,
+> > > > > > > > > > > > so I'm not sure you can just remove them like that. If the component
+> > > > > > > > > > > > framework is not the correct tool here, then I think you need to
+> > > > > > > > > > > > suggest some other way of creating them.
+> > > > > > > > > > >
+> > > > > > > > > > > The issue (that was pointed out during review) is that having a
+> > > > > > > > > > > component code in the framework code can lead to lockups. With the
+> > > > > > > > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
+> > > > > > > > > > > for non-ACPI systems) probing of drivers which use components and set
+> > > > > > > > > > > drm_connector::fwnode breaks immediately.
+> > > > > > > > > > >
+> > > > > > > > > > > Can we move the component part to the respective drivers? With the
+> > > > > > > > > > > patch 2 in place, connector->fwnode will be copied to the created
+> > > > > > > > > > > kdev's fwnode pointer.
+> > > > > > > > > > >
+> > > > > > > > > > > Another option might be to make this drm_sysfs component registration optional.
+> > > > > > > > > >
+> > > > > > > > > > You don't need to use the component framework at all if there is
+> > > > > > > > > > a better way of determining the connection between the DP and its
+> > > > > > > > > > Type-C connector (I'm assuming that that's what this series is about).
+> > > > > > > > > > You just need the symlinks, not the component.
+> > > > > > > > >
+> > > > > > > > > The problem is that right now this component registration has become
+> > > > > > > > > mandatory. And if I set the kdev->fwnode manually (like in the patch
+> > > > > > > > > 2), the kernel hangs inside the component code.
+> > > > > > > > > That's why I proposed to move the components to the place where they
+> > > > > > > > > are really necessary, e.g. i915 and amd drivers.
+> > > > > > > >
+> > > > > > > > So why can't we replace the component with the method you are
+> > > > > > > > proposing in this series of finding out the Type-C port also with
+> > > > > > > > i915, AMD, or whatever driver and platform (that's the only thing that
+> > > > > > > > component is used for)?
+> > > > > > >
+> > > > > > > The drm/msm driver uses drm_bridge for the pipeline (including the last DP
+> > > > > > > entry) and the drm_bridge_connector to create the connector. I think that
+> > > > > > > enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
+> > > > > > > series.
+> > > > > > >
+> > > > > > >
+> > > > > > > > Determining the connection between a DP and its Type-C connector is
+> > > > > > > > starting to get really important, so ideally we have a common solution
+> > > > > > > > for that.
+> > > > > > >
+> > > > > > > Yes. This is what we have been discussing with Simon for quite some time on
+> > > > > > > #dri-devel.
+> > > > > > >
+> > > > > > > Unfortunately I think the solution that got merged was pretty much hastened
+> > > > > > > in instead of being well-thought. For example, it is also not always
+> > > > > > > possible to provide the drm_connector / typec_connector links (as you can
+> > > > > > > see from the patch7. Sometimes we can only express that this is a Type-C DP
+> > > > > > > connector, but we can not easily point it to the particular USB-C port.
+> > > > > > >
+> > > > > > > So, I'm not sure, how can we proceed here. Currently merged patch breaks
+> > > > > > > drm/msm if we even try to use it by setting kdef->fwnode to
+> > > > > > > drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
+> > > > > > > an ACPI-only thing, which is not expected to work in a non-ACPI cases.
+> > > > > >
+> > > > > > You really have to always supply not only the Type-C ports and partners,
+> > > > > > but also the alt modes. You need them, firstly to keep things sane
+> > > > > > inside kernel, but more importantly, so they are always exposed to the
+> > > > > > user space, AND, always the same way. We have ABIs for all this stuff,
+> > > > > > including the DP alt mode. Use them. No shortcuts.
+> > > > > >
+> > > > > > So here's what you need to do. UCSI does not seem to bring you
+> > > > > > anything useful, so just disable it for now. You don't need it. Your
+> > > > > > port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
+> > > > > > that's where you need to register all these components - the ports,
+> > > > > > partners and alt modes. You have all the needed information there.
+> > > > >
+> > > > > To make things even more complicate, UCSI is necessary for the USB part of
+> > > > > the story. It handles vbus and direction.
+> > > > >
+> > > > > > Only after you've done that we can start to look at how should the
+> > > > > > connection between the DPs and their USB Type-C connectors be handled.
+> > > > >
+> > > > > But sure enough, I can add typec port registration to the altmode driver.
+> > > > > This will solve the 'port not existing' part of the story.
+> > > > >
+> > > > > I'd like to hear your opinion on:
+> > > > >
+> > > > > - components. Using them breaks drm/msm. How can we proceed?
+> > > >
+> > > > I don't think replacing the components is going to be a problem once
+> > > > you have described everything properly in you DT. I'm fairly certain now
+> > > > that that is the main problem here. You don't have this connection
+> > > > described in your DT as it should.
+> > >
+> > > We have. See https://lore.kernel.org/linux-arm-msm/20230817145940.9887-1-dmitry.baryshkov@linaro.org/
+> > > (for non-PMIC-GLINK platform)
+> > > Or arch/arm64/boot/dts/qcom/sm8350-hdk.dts, which already has a full
+> > > description of USB-C connector and signal flow.
+> > >
+> > > In fact, thanks to this representation I can properly set
+> > > 'connector->fwnode' to point to the OF node corresponding to the
+> > > connector's drm_bridge. I can even propagate it to the kdef->fwnode /
+> > > kdev->of_node in drm_sysfs_connector_add(). But then a component_add()
+> > > call looks the kernel up.
+> > >
+> > > And to add on top of that, here is another reason why I think that
+> > > this sysfs links ABI/implementation was not well thought. The
+> > > typec_connector_ops are added to all fwnode-enabled connector devices.
+> > > It doesn't even bother checking that the device is really the DP
+> > > connector and that the device on the other side of fwnode link is a
+> > > typec port device. The symlink is named 'typec_connector', so one can
+> > > not easily extend this ABI to support SlimPort aka MyDP (which uses
+> > > micro-USB-B connectors instead of USB-C). Neither can we extend it to
+> > > represent MHL connections (again, micro-USB-B).
+> > >
+> > > > > - PATH property usage. This way we make USB-C DisplayPort behave like the
+> > > > > MST ports.
+> > > >
+> > > > That looks to me like an attempt to exploit a feature that is not
+> > > > designed for this purposes at all. Just drop all that.
+> > >
+> > > But why? From the docs: 'Connector path property to identify how this
+> > > sink is physically connected.'
+> > >
+> > > So far we have been using it for MST only. But the description above
+> > > also suits properly for the 'connected to the Type-C port0 device'
+> > > kind of data. Then the userspace can use this property to change the
+> > > representation of the controller. Or to rename it as it does for
+> > > DP-MST connectors. Or just add the USB-C icon in the UI.
+> > >
+> > > Having this data in sysfs only requires userspace first to map the
+> > > connector to the device under sysfs (which is not trivial since Xorg
+> > > renames DP-MST connectors), then to look for the symlink value. Quite
+> > > complicated compared to checking the DRM property.
+> > >
+> > > Moreover, once we get to the SlimPort / MyDP / MHL, we can extend the
+> > > schema to support 'microusb:something' values for this property.
+> > >
+> > > > The connection has to be first described in your DT, and the way you
+> > > > usually describe connections in DT is by using the device graph (OF
+> > > > graph). It seems that you have everything needed for that - the USB
+> > > > Type-C connectors have their own OF nodes (what you register as
+> > > > drm_bridges are in fact USB Type-C connectors), and presumable you
+> > > > also have OF nodes for all your video ports (DisplayPorts) - so
+> > > > applying the graph between the two really should not be a problem. The
+> > > > DP is endpoint for the USB Type-C connector, and vice versa.
+> > >
+> > > Not quite. There is no direct connection between the USB Type-C
+> > > connector and DP controller. The USB-C connector has three ports.
+> > >
+> > > port@0 goes to theHS-USB controller. This is simple.
+> > >
+> > > port@1 goes to the USB+DP PHY. All retimers and SS line muxes are
+> > > included in between. And it is the USB+DP PHY that is connected to the
+> > > DP and USB-SS controllers.
+> > >
+> > > port@2 goes to SBU lines mux (e.g. fsa4480).
+> > >
+> > > > After you have everything needed in your DT, the problem here isn't
+> > > > actually much of a problem at all. We will have options how to move
+> > > > forward after that.
+> > >
+> > > Could you please describe what is missing there?
+> >
+> > We are not after the direct connections here, we are after the final
+> > endpoints. So you are missing description of the logical connection
+> > between your DP and Type-C connector.
+> 
+> Adding Krzysztof, as one of DT maintainers, to the CC list.
+> 
+> >From what I understand, DT describes hardware. There is no description
+> for the 'logical' connections.
+> 
+> >
+> > I understand that the idea is to build the graph to describe only the
+> > physical connections, but with just the physical connections you are
+> > doomed to write separate software solution for almost every single
+> > platform, even though the final endpoints are always the same (DP to
+> > Type-C). You just can not generalise the components (muxes, phys,
+> > retimers, etc.) behind USB Type-C connectors (or anything else for
+> > that matter), it's not possible. The components and their order vary
+> > on almost every single platform. On some platforms the stack of parts
+> > after the connector is also incredibly complex.
+> 
+> Yes. And this is why we have a chain of DRM bridges, going from the DP
+> controller to the final drm_bridge at the Type-C port manager. When
+> there is the altmode event, it gets sent via this chain using the
+> normal DRM HPD event.
 
-On 2023/9/11 22:22, Johannes Thumshirn wrote:
-> Add support for inserting stripe extents into the raid stripe tree on
-> completion of every write that needs an extra logical-to-physical
-> translation when using RAID.
->
-> Inserting the stripe extents happens after the data I/O has completed,
-> this is done to a) support zone-append and b) rule out the possibility o=
-f
-> a RAID-write-hole.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/Makefile           |   2 +-
->   fs/btrfs/bio.c              |  23 ++++
->   fs/btrfs/extent-tree.c      |   1 +
->   fs/btrfs/inode.c            |   8 +-
->   fs/btrfs/ordered-data.c     |   1 +
->   fs/btrfs/ordered-data.h     |   2 +
->   fs/btrfs/raid-stripe-tree.c | 266 ++++++++++++++++++++++++++++++++++++=
-++++++++
->   fs/btrfs/raid-stripe-tree.h |  34 ++++++
->   fs/btrfs/volumes.c          |   4 +-
->   fs/btrfs/volumes.h          |  15 ++-
->   10 files changed, 347 insertions(+), 9 deletions(-)
->
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index c57d80729d4f..525af975f61c 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -33,7 +33,7 @@ btrfs-y +=3D super.o ctree.o extent-tree.o print-tree.=
-o root-tree.o dir-item.o \
->   	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o =
-\
->   	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
->   	   subpage.o tree-mod-log.o extent-io-tree.o fs.o messages.o bio.o \
-> -	   lru_cache.o
-> +	   lru_cache.o raid-stripe-tree.o
->
->   btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) +=3D acl.o
->   btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) +=3D ref-verify.o
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 31ff36990404..ddbe6f8d4ea2 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -14,6 +14,7 @@
->   #include "rcu-string.h"
->   #include "zoned.h"
->   #include "file-item.h"
-> +#include "raid-stripe-tree.h"
->
->   static struct bio_set btrfs_bioset;
->   static struct bio_set btrfs_clone_bioset;
-> @@ -415,6 +416,9 @@ static void btrfs_orig_write_end_io(struct bio *bio)
->   	else
->   		bio->bi_status =3D BLK_STS_OK;
->
-> +	if (bio_op(bio) =3D=3D REQ_OP_ZONE_APPEND && !bio->bi_status)
-> +		stripe->physical =3D bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +
->   	btrfs_orig_bbio_end_io(bbio);
->   	btrfs_put_bioc(bioc);
->   }
-> @@ -426,6 +430,8 @@ static void btrfs_clone_write_end_io(struct bio *bio=
-)
->   	if (bio->bi_status) {
->   		atomic_inc(&stripe->bioc->error);
->   		btrfs_log_dev_io_error(bio, stripe->dev);
-> +	} else if (bio_op(bio) =3D=3D REQ_OP_ZONE_APPEND) {
-> +		stripe->physical =3D bio->bi_iter.bi_sector << SECTOR_SHIFT;
->   	}
->
->   	/* Pass on control to the original bio this one was cloned from */
-> @@ -487,6 +493,7 @@ static void btrfs_submit_mirrored_bio(struct btrfs_i=
-o_context *bioc, int dev_nr)
->   	bio->bi_private =3D &bioc->stripes[dev_nr];
->   	bio->bi_iter.bi_sector =3D bioc->stripes[dev_nr].physical >> SECTOR_S=
-HIFT;
->   	bioc->stripes[dev_nr].bioc =3D bioc;
-> +	bioc->size =3D bio->bi_iter.bi_size;
->   	btrfs_submit_dev_bio(bioc->stripes[dev_nr].dev, bio);
->   }
->
-> @@ -496,6 +503,8 @@ static void __btrfs_submit_bio(struct bio *bio, stru=
-ct btrfs_io_context *bioc,
->   	if (!bioc) {
->   		/* Single mirror read/write fast path. */
->   		btrfs_bio(bio)->mirror_num =3D mirror_num;
-> +		if (bio_op(bio) !=3D REQ_OP_READ)
-> +			btrfs_bio(bio)->orig_physical =3D smap->physical;
->   		bio->bi_iter.bi_sector =3D smap->physical >> SECTOR_SHIFT;
->   		if (bio_op(bio) !=3D REQ_OP_READ)
->   			btrfs_bio(bio)->orig_physical =3D smap->physical;
-> @@ -688,6 +697,20 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bb=
-io, int mirror_num)
->   			bio->bi_opf |=3D REQ_OP_ZONE_APPEND;
->   		}
->
-> +		if (is_data_bbio(bbio) && bioc &&
-> +		    btrfs_need_stripe_tree_update(bioc->fs_info,
-> +						  bioc->map_type)) {
-> +			/*
-> +			 * No locking for the list update, as we only add to
-> +			 * the list in the I/O submission path, and list
-> +			 * iteration only happens in the completion path,
-> +			 * which can't happen until after the last submission.
-> +			 */
-> +			btrfs_get_bioc(bioc);
-> +			list_add_tail(&bioc->ordered_entry,
-> +				      &bbio->ordered->bioc_list);
-> +		}
-> +
->   		/*
->   		 * Csum items for reloc roots have already been cloned at this
->   		 * point, so they are handled as part of the no-checksum case.
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 6f6838226fe7..2e11a699ab77 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -42,6 +42,7 @@
->   #include "file-item.h"
->   #include "orphan.h"
->   #include "tree-checker.h"
-> +#include "raid-stripe-tree.h"
->
->   #undef SCRAMBLE_DELAYED_REFS
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index bafca05940d7..6f71630248da 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -71,6 +71,7 @@
->   #include "super.h"
->   #include "orphan.h"
->   #include "backref.h"
-> +#include "raid-stripe-tree.h"
->
->   struct btrfs_iget_args {
->   	u64 ino;
-> @@ -3091,6 +3092,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered=
-_extent *ordered_extent)
->
->   	trans->block_rsv =3D &inode->block_rsv;
->
-> +	ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
-> +	if (ret)
-> +		goto out;
-> +
->   	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
->   		compress_type =3D ordered_extent->compress_type;
->   	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
-> @@ -3224,7 +3229,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
-extent *ordered_extent)
->   int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
->   {
->   	if (btrfs_is_zoned(btrfs_sb(ordered->inode->i_sb)) &&
-> -	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags))
-> +	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags) &&
-> +	    list_empty(&ordered->bioc_list))
->   		btrfs_finish_ordered_zoned(ordered);
->   	return btrfs_finish_one_ordered(ordered);
->   }
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 345c449d588c..55c7d5543265 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -191,6 +191,7 @@ static struct btrfs_ordered_extent *alloc_ordered_ex=
-tent(
->   	INIT_LIST_HEAD(&entry->log_list);
->   	INIT_LIST_HEAD(&entry->root_extent_list);
->   	INIT_LIST_HEAD(&entry->work_list);
-> +	INIT_LIST_HEAD(&entry->bioc_list);
->   	init_completion(&entry->completion);
->
->   	/*
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index 173bd5c5df26..1c51ac57e5df 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -151,6 +151,8 @@ struct btrfs_ordered_extent {
->   	struct completion completion;
->   	struct btrfs_work flush_work;
->   	struct list_head work_list;
-> +
-> +	struct list_head bioc_list;
->   };
->
->   static inline void
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> new file mode 100644
-> index 000000000000..2415698a8fef
-> --- /dev/null
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -0,0 +1,266 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
-> + */
-> +
-> +#include <linux/btrfs_tree.h>
-> +
-> +#include "ctree.h"
-> +#include "fs.h"
-> +#include "accessors.h"
-> +#include "transaction.h"
-> +#include "disk-io.h"
-> +#include "raid-stripe-tree.h"
-> +#include "volumes.h"
-> +#include "misc.h"
-> +#include "print-tree.h"
-> +
-> +static u8 btrfs_bg_type_to_raid_encoding(u64 map_type)
-> +{
-> +	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-> +	case BTRFS_BLOCK_GROUP_DUP:
-> +		return BTRFS_STRIPE_DUP;
-> +	case BTRFS_BLOCK_GROUP_RAID0:
-> +		return BTRFS_STRIPE_RAID0;
-> +	case BTRFS_BLOCK_GROUP_RAID1:
-> +		return BTRFS_STRIPE_RAID1;
-> +	case BTRFS_BLOCK_GROUP_RAID1C3:
-> +		return BTRFS_STRIPE_RAID1C3;
-> +	case BTRFS_BLOCK_GROUP_RAID1C4:
-> +		return BTRFS_STRIPE_RAID1C4;
-> +	case BTRFS_BLOCK_GROUP_RAID5:
-> +		return BTRFS_STRIPE_RAID5;
-> +	case BTRFS_BLOCK_GROUP_RAID6:
-> +		return BTRFS_STRIPE_RAID6;
-> +	case BTRFS_BLOCK_GROUP_RAID10:
-> +		return BTRFS_STRIPE_RAID10;
-> +	default:
-> +		ASSERT(0);
-> +	}
-> +}
-> +
-> +static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *tran=
-s,
-> +				 int num_stripes,
-> +				 struct btrfs_io_context *bioc)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> +	struct btrfs_key stripe_key;
-> +	struct btrfs_root *stripe_root =3D btrfs_stripe_tree_root(fs_info);
-> +	u8 encoding =3D btrfs_bg_type_to_raid_encoding(bioc->map_type);
-> +	struct btrfs_stripe_extent *stripe_extent;
-> +	size_t item_size;
-> +	int ret;
-> +
-> +	item_size =3D struct_size(stripe_extent, strides, num_stripes);
+We will not have drm bridges between the thunderbolt controller and
+the connector, but you still need to be able to show the connector to
+the user when DisplayPort is tunneled over thunderbolt. DP alt mode is
+only one way of getting DisplayPort through USB Type-C. You just can't
+make any assumptions with USB Type-C.
 
-I guess David has already pointed out this can be done at initialization
-and make it const.
+The drm bridge chain could only solve the port/connector relationship
+problem from a single angle, but we need a common solution. The
+problem is after all completely generic. It is not DisplayPort
+specific or even USB Type-C specific problem. Those are just two of
+the many possible last endpoints for these connections that need to be
+aware of each other.
 
-> +
-> +	stripe_extent =3D kzalloc(item_size, GFP_NOFS);
-> +	if (!stripe_extent) {
-> +		btrfs_abort_transaction(trans, -ENOMEM);
-> +		btrfs_end_transaction(trans);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
-> +	for (int i =3D 0; i < num_stripes; i++) {
-> +		u64 devid =3D bioc->stripes[i].dev->devid;
-> +		u64 physical =3D bioc->stripes[i].physical;
-> +		u64 length =3D bioc->stripes[i].length;
-> +		struct btrfs_raid_stride *raid_stride =3D
-> +						&stripe_extent->strides[i];
-> +
-> +		if (length =3D=3D 0)
-> +			length =3D bioc->size;
-> +
-> +		btrfs_set_stack_raid_stride_devid(raid_stride, devid);
-> +		btrfs_set_stack_raid_stride_physical(raid_stride, physical);
-> +		btrfs_set_stack_raid_stride_length(raid_stride, length);
-> +	}
-> +
-> +	stripe_key.objectid =3D bioc->logical;
-> +	stripe_key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +	stripe_key.offset =3D bioc->size;
-> +
-> +	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_exte=
-nt,
-> +				item_size);
+So we really have to have a common way of getting this straight from
+the hardware description somehow.
 
-Have you tested in near-real-world on how continous the RST items could
-be for RAID0/RAID10?
+To me the obvious solution would be to just have a port in the graph
+that points directly the last endpoint regardless of what you have in
+between. But if that's not an option, then so be it. Then there just
+needs to be some other way of getting that information from DT.
 
-My concern here is, we may want to try our best to reduce the size of
-RST, due to the 64K BTRFS_STRIPE_LEN.
+Maybe DT could use similar physical location object/attribute like
+ACPI - the DP would have matching physical location with its connector?
 
+> > Having the logical final endpoint connection described in your DT/ACPI
+> > on top of the physical connections costs very little, but at the same
+> > time it's usually the only thing that the software needs (like in this
+> > case).
+> 
+> Maybe there is some misunderstanding here. We have this connection. We
+> have connector->fwnode and connector->of_node pointing to the correct
+> device - the last bridge in the chain. Each TCPM driver knows the
+> relationship between the in-built drm_bridge and the Type-C port. The
+> DP host controller port can be terminated with other endpoints, e.g.
+> eDP panel. Or there can be a non-DP host, which is then connected
+> through a series of bridges to the eDP or external DP port. This is
+> what anx78xx bridge does: it converts the HDMI link into an external
+> DP (SlimPort) connection. Bridge chains permit this to be handled in a
+> seamless way.
+> 
+> What you are asking for looks like a step backwards to me: it requires
+> the host to know that there is a USB-C connector.
+> 
+> > So, either you add one more port to your graph for the DP to Type-C
+> > connection, or, if that's not an option, then you need to describe
+> > that connection in some other way. Named references work also quite
+> > well in my experience.
+> 
+> Named references were considered and frowned upon by DT maintainers.
 
-> +	if (ret)
-> +		btrfs_abort_transaction(trans, ret);
-> +
-> +	kfree(stripe_extent);
-> +
-> +	return ret;
-> +}
-> +
-> +static int btrfs_insert_mirrored_raid_extents(struct btrfs_trans_handle=
- *trans,
-> +				      struct btrfs_ordered_extent *ordered,
-> +				      u64 map_type)
-> +{
-> +	int num_stripes =3D btrfs_bg_type_to_factor(map_type);
-> +	struct btrfs_io_context *bioc;
-> +	int ret;
-> +
-> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-> +		ret =3D btrfs_insert_one_raid_extent(trans, num_stripes, bioc);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int btrfs_insert_striped_mirrored_raid_extents(
-> +				      struct btrfs_trans_handle *trans,
-> +				      struct btrfs_ordered_extent *ordered,
-> +				      u64 map_type)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	struct btrfs_io_context *rbioc;
-> +	const int nstripes =3D list_count_nodes(&ordered->bioc_list);
-> +	const int index =3D btrfs_bg_flags_to_raid_index(map_type);
-> +	const int substripes =3D btrfs_raid_array[index].sub_stripes;
-> +	const int max_stripes =3D trans->fs_info->fs_devices->rw_devices / 2;
-> +	int left =3D nstripes;
-> +	int stripe =3D 0, j =3D 0;
-> +	int i =3D 0;
-> +	int ret =3D 0;
-> +	u64 stripe_end;
-> +	u64 prev_end;
-> +
-> +	if (nstripes =3D=3D 1)
-> +		return btrfs_insert_mirrored_raid_extents(trans, ordered, map_type);
-> +
-> +	rbioc =3D kzalloc(struct_size(rbioc, stripes, nstripes * substripes),
-> +			GFP_KERNEL);
-> +	if (!rbioc)
-> +		return -ENOMEM;
-> +
-> +	rbioc->map_type =3D map_type;
-> +	rbioc->logical =3D list_first_entry(&ordered->bioc_list, typeof(*rbioc=
-),
-> +					   ordered_entry)->logical;
-> +
-> +	stripe_end =3D rbioc->logical;
-> +	prev_end =3D stripe_end;
-> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-> +
-> +		rbioc->size +=3D bioc->size;
-> +		for (j =3D 0; j < substripes; j++) {
-> +			stripe =3D i + j;
-> +			rbioc->stripes[stripe].dev =3D bioc->stripes[j].dev;
-> +			rbioc->stripes[stripe].physical =3D bioc->stripes[j].physical;
-> +			rbioc->stripes[stripe].length =3D bioc->size;
-> +		}
-> +
-> +		stripe_end +=3D rbioc->size;
-> +		if (i >=3D nstripes ||
-> +		    (stripe_end - prev_end >=3D max_stripes * BTRFS_STRIPE_LEN)) {
-> +			ret =3D btrfs_insert_one_raid_extent(trans,
-> +							   nstripes * substripes,
-> +							   rbioc);
-> +			if (ret)
-> +				goto out;
-> +
-> +			left -=3D nstripes;
-> +			i =3D 0;
-> +			rbioc->logical +=3D rbioc->size;
-> +			rbioc->size =3D 0;
-> +		} else {
-> +			i +=3D substripes;
-> +			prev_end =3D stripe_end;
-> +		}
-> +	}
-> +
-> +	if (left) {
-> +		bioc =3D list_prev_entry(bioc, ordered_entry);
-> +		ret =3D btrfs_insert_one_raid_extent(trans, substripes, bioc);
-> +	}
-> +
-> +out:
-> +	kfree(rbioc);
-> +	return ret;
-> +}
-> +
-> +static int btrfs_insert_striped_raid_extents(struct btrfs_trans_handle =
-*trans,
-> +				     struct btrfs_ordered_extent *ordered,
-> +				     u64 map_type)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	struct btrfs_io_context *rbioc;
-> +	const int nstripes =3D list_count_nodes(&ordered->bioc_list);
-> +	int i =3D 0;
-> +	int ret =3D 0;
-> +
-> +	rbioc =3D kzalloc(struct_size(rbioc, stripes, nstripes), GFP_KERNEL);
-> +	if (!rbioc)
-> +		return -ENOMEM;
-> +	rbioc->map_type =3D map_type;
-> +	rbioc->logical =3D list_first_entry(&ordered->bioc_list, typeof(*rbioc=
-),
-> +					   ordered_entry)->logical;
-> +
-> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-> +		rbioc->size +=3D bioc->size;
-> +		rbioc->stripes[i].dev =3D bioc->stripes[0].dev;
-> +		rbioc->stripes[i].physical =3D bioc->stripes[0].physical;
-> +		rbioc->stripes[i].length =3D bioc->size;
-> +
-> +		if (i =3D=3D nstripes - 1) {
-> +			ret =3D btrfs_insert_one_raid_extent(trans, nstripes, rbioc);
-> +			if (ret)
-> +				goto out;
-> +
-> +			i =3D 0;
-> +			rbioc->logical +=3D rbioc->size;
-> +			rbioc->size =3D 0;
-> +		} else {
-> +			i++;
-> +		}
-> +	}
-> +
-> +	if (i && i < nstripes - 1)
-> +		ret =3D btrfs_insert_one_raid_extent(trans, i, rbioc);
-> +
-> +out:
-> +	kfree(rbioc);
-> +	return ret;
-> +}
-> +
-> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-> +			     struct btrfs_ordered_extent *ordered_extent)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	u64 map_type;
-> +	int ret;
-> +
-> +	if (!trans->fs_info->stripe_root)
-> +		return 0;
-> +
-> +	map_type =3D list_first_entry(&ordered_extent->bioc_list, typeof(*bioc=
-),
-> +				    ordered_entry)->map_type;
-> +
-> +	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-> +	case BTRFS_BLOCK_GROUP_DUP:
-> +	case BTRFS_BLOCK_GROUP_RAID1:
-> +	case BTRFS_BLOCK_GROUP_RAID1C3:
-> +	case BTRFS_BLOCK_GROUP_RAID1C4:
-> +		ret =3D btrfs_insert_mirrored_raid_extents(trans, ordered_extent,
-> +							 map_type);
-> +		break;
-> +	case BTRFS_BLOCK_GROUP_RAID0:
-> +		ret =3D btrfs_insert_striped_raid_extents(trans, ordered_extent,
-> +							map_type);
-> +		break;
-> +	case BTRFS_BLOCK_GROUP_RAID10:
-> +		ret =3D btrfs_insert_striped_mirrored_raid_extents(trans, ordered_ext=
-ent, map_type);
-> +		break;
-> +	default:
-> +		ret =3D -EINVAL;
+thanks,
 
-Maybe we want to be a little more noisy?
-
-Thanks,
-Qu
-
-> +		break;
-> +	}
-> +
-> +	while (!list_empty(&ordered_extent->bioc_list)) {
-> +		bioc =3D list_first_entry(&ordered_extent->bioc_list,
-> +					typeof(*bioc), ordered_entry);
-> +		list_del(&bioc->ordered_entry);
-> +		btrfs_put_bioc(bioc);
-> +	}
-> +
-> +	return ret;
-> +}
-> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-> new file mode 100644
-> index 000000000000..f36e4c2d46b0
-> --- /dev/null
-> +++ b/fs/btrfs/raid-stripe-tree.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
-> + */
-> +
-> +#ifndef BTRFS_RAID_STRIPE_TREE_H
-> +#define BTRFS_RAID_STRIPE_TREE_H
-> +
-> +#include "disk-io.h"
-> +
-> +struct btrfs_io_context;
-> +struct btrfs_io_stripe;
-> +
-> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-> +			     struct btrfs_ordered_extent *ordered_extent);
-> +
-> +static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *=
-fs_info,
-> +						 u64 map_type)
-> +{
-> +	u64 type =3D map_type & BTRFS_BLOCK_GROUP_TYPE_MASK;
-> +	u64 profile =3D map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-> +
-> +	if (!btrfs_stripe_tree_root(fs_info))
-> +		return false;
-> +
-> +	if (type !=3D BTRFS_BLOCK_GROUP_DATA)
-> +		return false;
-> +
-> +	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +#endif
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 871a55d36e32..0c0fd4eb4848 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5881,6 +5881,7 @@ static int find_live_mirror(struct btrfs_fs_info *=
-fs_info,
->   }
->
->   static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs=
-_info *fs_info,
-> +						       u64 logical,
->   						       u16 total_stripes)
->   {
->   	struct btrfs_io_context *bioc;
-> @@ -5900,6 +5901,7 @@ static struct btrfs_io_context *alloc_btrfs_io_con=
-text(struct btrfs_fs_info *fs_
->   	bioc->fs_info =3D fs_info;
->   	bioc->replace_stripe_src =3D -1;
->   	bioc->full_stripe_logical =3D (u64)-1;
-> +	bioc->logical =3D logical;
->
->   	return bioc;
->   }
-> @@ -6434,7 +6436,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
- enum btrfs_map_op op,
->   		goto out;
->   	}
->
-> -	bioc =3D alloc_btrfs_io_context(fs_info, num_alloc_stripes);
-> +	bioc =3D alloc_btrfs_io_context(fs_info, logical, num_alloc_stripes);
->   	if (!bioc) {
->   		ret =3D -ENOMEM;
->   		goto out;
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 576bfcb5b764..8604bfbbf510 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -390,12 +390,11 @@ struct btrfs_fs_devices {
->
->   struct btrfs_io_stripe {
->   	struct btrfs_device *dev;
-> -	union {
-> -		/* Block mapping */
-> -		u64 physical;
-> -		/* For the endio handler */
-> -		struct btrfs_io_context *bioc;
-> -	};
-> +	/* Block mapping */
-> +	u64 physical;
-> +	u64 length;
-> +	/* For the endio handler */
-> +	struct btrfs_io_context *bioc;
->   };
->
->   struct btrfs_discard_stripe {
-> @@ -428,6 +427,10 @@ struct btrfs_io_context {
->   	atomic_t error;
->   	u16 max_errors;
->
-> +	u64 logical;
-> +	u64 size;
-> +	struct list_head ordered_entry;
-> +
->   	/*
->   	 * The total number of stripes, including the extra duplicated
->   	 * stripe for replace.
->
+-- 
+heikki
