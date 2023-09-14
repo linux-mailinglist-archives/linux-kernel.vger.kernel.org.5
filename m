@@ -2,281 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7944D79F644
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1039A79F648
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbjINBYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
+        id S233632AbjINB2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjINBYG (ORCPT
+        with ESMTP id S233400AbjINB2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:24:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8931724
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:24:02 -0700 (PDT)
+        Wed, 13 Sep 2023 21:28:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FAD1BD1;
+        Wed, 13 Sep 2023 18:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694654642; x=1726190642;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=t7nK6/fYi/NgK3hWEhdUa/izz7bmy4gmW475a+gOl6Y=;
-  b=SYJ2ULgcQyRa5B3qqjKQJ92qcwhcBcQMZpYPTdNhk/x+o4CsQ7+Hyo6/
-   awLJrK5tTOohzEZWHVEvs1BhwbTisM3UWCGAA0zD5haNHEqiNVTv0Azzg
-   51D8QBgDB+x0H1Xn3wVUsBR/5ibCaaNDEMD3JvrsUf8+XGRlmNh4EdY51
-   Qcm64mYJZTEE47/NJGshfMb5qyiz8V+X4Y43FEVlppscgiLnSHNAcowQI
-   nN+ckCkiNGDvaJ7+b7HrcrlMErrNmqbgoCbtek49qI3V2jrViUalCFLh3
-   MkJ7R6u0S/5718n9obUKVdL2r8J841n4zyOOr/jFUBCINuLio2wdYfaNw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363863664"
+  t=1694654876; x=1726190876;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ueE/011k9DiwV0Anf9SWAZccz4IuGXFEGSyhfc+Fk0k=;
+  b=DfQuoVf5XhvkZwpdK1eoYwINamWBmIwKEM8v2zvkqyJvs0jRrukzeC1G
+   GLh7IVjm7cQaLit+KIUKVlImqK/7VQzcywhCA0FjENG52xqtivS2DdRyS
+   bVIQRcbm+4Dt8P1mWmWgSTILE+4wdP3eOogXAlPY4MQzI7Z56qirQpb+M
+   XoubkjgdATql7y8+S3w35PrJIugrA2jXs3ax266DfwU602BOdvxUclgXn
+   RYXszGcLCjH2/mOAs+LfUv+XpEXC6eZXWj+oh8a2lYqt+9tewvRV5TEUk
+   55qECN7f5eQGFefAyDzxcmuqhygpVayLugyqKdo9ia8yjVCVsZkEbfHDT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377733953"
 X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="363863664"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 18:23:59 -0700
+   d="scan'208";a="377733953"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 18:27:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="1075172411"
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="694048860"
 X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="1075172411"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Sep 2023 18:23:58 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 13 Sep 2023 18:23:58 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 13 Sep 2023 18:23:58 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 13 Sep 2023 18:23:58 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 13 Sep 2023 18:23:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WtoMH43U++FzfAcX4Wch2WPplpff1B19I7ZGV+c1cCWHyVrGz9N94ftODXZwR1MlFxWR4c8TAkNeXpfpJZZHXdc+L+683ccOlGNSSWfNJN3PF+iTONqEm1jvixCzURfAkWt6xu+GhGm7x6QE/hMycl6HZxr4wLgOCuIm2+Do10k8e7BOrktPeqe+KN4Q3VvIO9u4I3eKkRZAMWQhWFjrKbRLyawhrBl2C4bDB23PTcU9g46cgIPfHwxXvKfi/yOG4/cCnTa48AnI/af5eq7QiN3kKBN5C2vB1lgto6W286vvBUU2+c3ZwfxY16qNBduMcU3FNNsiiXzwOmi15xbSDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t7nK6/fYi/NgK3hWEhdUa/izz7bmy4gmW475a+gOl6Y=;
- b=hhH0Fnb1LC/tmvKIoMwbv+xX0YPf0BLSO190/uoAYylLuhixkfIq64e2Z5EV+cnn1ZcjHtAnkLv+Iq4PZnNg864Y7LSreKKPrWzkwTTy/pZKyyKfFNEaVu+M/LS1/ht1FLc+mHmOUjfCkciXo/33fAFwfsZWA5D2dHXRueFx0viD5Lb/HM0IpLojsmCYnbac3pfcn6o0D1PX5pKaVkKUIRg65Xr6B53YPzvy/Z1tTVLu1l9mVd/1qmbzaVPZQy2REP0I95vKO86JUq1k8jlUXlDrb4mA7V7Kci67gum3JSOjz9kf8oVk156rKSnQPgootfINXkp8uPYTBc/WEHLEuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CY8PR11MB7009.namprd11.prod.outlook.com (2603:10b6:930:57::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Thu, 14 Sep
- 2023 01:23:55 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6768.036; Thu, 14 Sep 2023
- 01:23:55 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     lkp <lkp@intel.com>
-CC:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
- __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
- annotation
-Thread-Topic: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
- __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
- annotation
-Thread-Index: AQHZ5qem7IU2VPrp+E+UjIKvurp2uLAZhucA
-Date:   Thu, 14 Sep 2023 01:23:55 +0000
-Message-ID: <90f0a4d44704f9c296f3a4d8b72c57f2916aa09d.camel@intel.com>
-References: <202309140828.9RdmlH2Z-lkp@intel.com>
-In-Reply-To: <202309140828.9RdmlH2Z-lkp@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CY8PR11MB7009:EE_
-x-ms-office365-filtering-correlation-id: b07979d2-0cbc-4814-f58d-08dbb4c14319
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3cLJk+hyhkQpd93g7YtGzC8Ymxv6gOPBn+t2lFHZlMqYQsOBnfvXhWV792p59e/xCAl5DXRy9GNeu6zsvghlZvcMmZ8g+VIQ/SBredcRBk/wDv83wcs4srlUQX4FzbqnRMxEmqWiIMzzaYuE7U5i47Twwk0v2zyqRZ8lG7FK3h7cnVT5e93b8e0+GKDmILveml472S2vGcErRD8wFFPlg/ppryW0L3gNmRyXf5K8Nson9dY+rGNGVb9D9N86BnbHWkKuCJk8cDSWXEpszXR4KXiTvqZrTOYXEglGyKWaIDT7vIWoIvD1ZudR2M66/PXwq75EXeOPRZ7Rb7bdlbIMCR99QlT3B4VYyJeyOYpGzR+bPs6cMMtrihhHSzZctjxjQV3BWzx7hCpvT3YO7i3CqaJKXIHqcjBnbGHUtbP9JA/s8k3dzqW9biKsE1C+WLfb8vdzmS9bM4+jlbosSL1semfnk3kKS442zbZ9zfwVmr+W+NWnHwIrM/7O3KL6TEp4gC84Wmr4ZjaYkfM6I88JjsBEJ+u0PZ/1XwOwsgMyil2RkFz7J9H2FBjPMRnUZ3mmBoNwxwHdaP+NI983IaTZG2Dpwt/iaabrIqKJ65GFOBI1tHWtBO1q4hVA0BlliFJG7d5AD3lqu8fkCsPEGXS4bw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(366004)(376002)(346002)(1800799009)(186009)(451199024)(2616005)(5660300002)(8936002)(8676002)(26005)(6862004)(4326008)(6486002)(6512007)(6506007)(71200400001)(83380400001)(966005)(478600001)(122000001)(66476007)(6636002)(316002)(76116006)(64756008)(66556008)(37006003)(41300700001)(54906003)(66446008)(91956017)(66946007)(36756003)(86362001)(2906002)(38100700002)(82960400001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RUxmZ3FncG9WMzJyc0dlTUxMdlJaMDFmVjVXSzlvQ1NKNy9JN2JvS0xUa0di?=
- =?utf-8?B?V3E0ak1DOGxqN2ZNWUtSQzNuZ3JVRVUxOUhqaEVLdW5pSlFZNnBKMGcrRHI2?=
- =?utf-8?B?OU5EWHdCaER1dmpWSmcrM2FKdWVlWU9vRTlhdGsvbDlNaXk0VmM5WjFaQ0I0?=
- =?utf-8?B?cUhtSFQ5c0tmWk8vUjJsWktOR1ZBaUhpRGpQNm5hZjZPL0g5Mk9BNG5MY1gr?=
- =?utf-8?B?L05mWXVYUUxJQTVJTUE0dWFBNUdjSlRRcU5oTnBGWHZBZ1FBNUVvSDRCcktq?=
- =?utf-8?B?bFNNVStTZnpsVEhzY2w2VkducmRLTThtVjNOVG8rc1R3RzVuakt6MXkwOER6?=
- =?utf-8?B?ME1KZnZ4K3Q4V2RBK2EzL0xKcURVUTJHdit6UStSYmRFSEZhTFRKODBSQ08r?=
- =?utf-8?B?WkJ2Q1ExNXVLUGpISzlmQ2laSzJ5UmJIbFdQRFRwT1pZeHg5R2VMSlR3SFRT?=
- =?utf-8?B?eEZiekEvQXNFZ0pFRW5hNGJTZ1hERm12VjJxVFBrcUp1YUUvMmtBRkNyZjJK?=
- =?utf-8?B?Y2xUWm5aaGNUVFQ2M2RNNTFJZFFwbDBEVnlvRDVEdTVBK2dsWHZuVFRnYVhx?=
- =?utf-8?B?NmZXV094VlFIRGt4MTJSVllEZzBkcG4zVllKZWlvZkU0U1pMNnFMWmhjZW9q?=
- =?utf-8?B?RjBLZ0NDc1hhS3M0Mk45dzFVb0JRM3FaTDBNdldHbVRVbmZhNXovMHFCTlda?=
- =?utf-8?B?VVRZTS83NThJQkFPQmdZWVcyRlg1R05wRHd6aHJZdlNrYVRzaDVvVmhWdzcw?=
- =?utf-8?B?M0p1NURFN1dGWDQ3RkRDeWNGVk5McGcvTzM5MGhrRlI1bUNTMVFpNmxaWU4x?=
- =?utf-8?B?MFFoRGlWRTJZdVVRb0VkbFoxWE5UV1ZjeG0vQURJc0RTVWZiNTdiaCtiYm5a?=
- =?utf-8?B?YjcyMkxHV3FBN1pYR3NlNWF0V1hWR0t2N0JBbXdmcjRaQTdUYWI3N0tKSnMy?=
- =?utf-8?B?TXA5YmFWbGZXenhROS9Gb29sVWlsWGU1aUFCQUd2enVHZm9zYnZTN3Zxc0dz?=
- =?utf-8?B?TFl6Q3kwTVRQMTNxdDFVck5TVGNpc1BGemE2WXlxWVZyWm9CRFlMeUJpajJj?=
- =?utf-8?B?MjlEelN2LzdsVGVhQWtvdmtVOW9xcmVrdzMxSjNhbTRNQTN6VytPbElLRTdp?=
- =?utf-8?B?Qlk2eVVDbVNSTG5MZXNGcmFDNTR1alM2aVZLQlJVN2Q4Y1pwV2IwQStXZkVX?=
- =?utf-8?B?ei9wdVNXUERpd3gzUDJQTnFjMHF3RTVOR1RJejRQekw4QVBrTTlUM1k1RWxl?=
- =?utf-8?B?RFBpNVI2L09MQkJnQnVYR08rY2R5QlBjKzFvMGE5ejRZdTNlamZ5Tk8vMHJX?=
- =?utf-8?B?bThuL3djR2dPUm5nNEV0MnVrc3hoV2dCbEdQRXJmbzZlYkNFVXloRWpLN0xw?=
- =?utf-8?B?YUIrUkFIV29sSnpsRklDbEZwcFhXYVhEUnpMaWlxaURsUG5ZWEc0cmZORG9j?=
- =?utf-8?B?NE82RmVrKzFnV3Z3QzRVUlM2NEFiazcwOXhzNUZzQlVMTWoyRWNJcHNicTQ5?=
- =?utf-8?B?eDlDSVBUYXREZTRyT0xZeWsxZ0lZaWpYNlJXZ2FQVXUwMno5VWZtMHdBNGM4?=
- =?utf-8?B?UUpGNW1jdE5RaUN4REVPdVZ1Qjd3M3RKdWdJdkNhK25LcE9GNXNDVkg2ZkRq?=
- =?utf-8?B?VWVvNWJnS0JyWU5sb3licis0akVqTytRZ0tYWThlWjJmZHhqNkcrRWdTZEU1?=
- =?utf-8?B?eFBDV0V2YUpNdGk3bWZWL25mbG1FdnVrWDU0dThYMGJSbFdlTGNFaFlwUmRE?=
- =?utf-8?B?UDBUNUJmMXJjZFhuTjlWMFFTSSt6aFBQSkFWOGlEcW1uajZZRWFWRXpTYWNa?=
- =?utf-8?B?VVdFUi8vTzJsYUtCZmtoNDBFZFA3cEdTdXEwakN2SFFKcGNxckxHWmZmazNy?=
- =?utf-8?B?UWpkWjBHNHhEY05yZ21KTCs0VVRLSlF0dXZnUDNrTks1SlI4ZnVnQlY1QVg1?=
- =?utf-8?B?S2RSaEFnMFJMMnZYUFV0OUVtYmxDL3M5WVJwNWhUSnBqOVhCSnBTR1lsVU5j?=
- =?utf-8?B?WXVWY2VXS3BJSVlheXRCcjVMY0RTVTNMZGx1dkNxUTVINWtjRHUyRGRaQ0x2?=
- =?utf-8?B?VFp3ekRKQ0RQdnJaY0JlclFkL1hmZjltek9SSG44NWliVDJiY05ZOXNUaVVh?=
- =?utf-8?B?T3VIWDVoUEY2T1RwK0c1TFFwSmtHcE5ieGlYRVk3NnZWbmpyNXp2VjArMXRH?=
- =?utf-8?B?ZFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AA60B9AD88EB904E825D2D2FFEA7DB1D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+   d="scan'208";a="694048860"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 18:27:48 -0700
+From:   Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: [PATCH v3 0/9] RISCV: Add kvm Sstc timer selftests
+Date:   Thu, 14 Sep 2023 09:36:54 +0800
+Message-Id: <cover.1694421911.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b07979d2-0cbc-4814-f58d-08dbb4c14319
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 01:23:55.0485
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /jyU9KHYNzeEe+dwEK4DleKIgKUX+1wpMKW7TzW++bQHa/MyZzusfJ25jmve1he0FkPU8v8NBDOT6EQ7tVaDBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7009
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA5LTE0IGF0IDA5OjA1ICswODAwLCBrZXJuZWwgdGVzdCByb2JvdCB3cm90
-ZToNCj4gdHJlZTogICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
-L2dpdC90aXAvdGlwLmdpdCB4ODYvdGR4DQo+IGhlYWQ6ICAgN2I4MDQxMzVkNGQxZjBhMmI5ZGRh
-NjljNjMwM2QzZjJkY2JlOWQzNw0KPiBjb21taXQ6IGM2NDFjZmI1YzE1N2I2YzMwNjJhODI0ZmQ4
-YmExOTBiZjA2ZmI5NTIgWzgvMTJdIHg4Ni90ZHg6IE1ha2UgVERYX0hZUEVSQ0FMTCBhc20gc2lt
-aWxhciB0byBURFhfTU9EVUxFX0NBTEwNCj4gY29uZmlnOiB4ODZfNjQtcmhlbC04LjMtYnBmICho
-dHRwczovL2Rvd25sb2FkLjAxLm9yZy8wZGF5LWNpL2FyY2hpdmUvMjAyMzA5MTQvMjAyMzA5MTQw
-ODI4LjlSZG1sSDJaLWxrcEBpbnRlbC5jb20vY29uZmlnKQ0KPiBjb21waWxlcjogZ2NjLTEyIChE
-ZWJpYW4gMTIuMi4wLTE0KSAxMi4yLjANCj4gcmVwcm9kdWNlICh0aGlzIGlzIGEgVz0xIGJ1aWxk
-KTogKGh0dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDIzMDkxNC8yMDIz
-MDkxNDA4MjguOVJkbWxIMlotbGtwQGludGVsLmNvbS9yZXByb2R1Y2UpDQo+IA0KPiBJZiB5b3Ug
-Zml4IHRoZSBpc3N1ZSBpbiBhIHNlcGFyYXRlIHBhdGNoL2NvbW1pdCAoaS5lLiBub3QganVzdCBh
-IG5ldyB2ZXJzaW9uIG9mDQo+IHRoZSBzYW1lIHBhdGNoL2NvbW1pdCksIGtpbmRseSBhZGQgZm9s
-bG93aW5nIHRhZ3MNCj4gPiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRl
-bC5jb20+DQo+ID4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxs
-LzIwMjMwOTE0MDgyOC45UmRtbEgyWi1sa3BAaW50ZWwuY29tLw0KPiANCj4gQWxsIHdhcm5pbmdz
-IChuZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6DQo+IA0KPiA+ID4gdm1saW51eC5vOiB3YXJuaW5n
-OiBvYmp0b29sOiBfX3RkeF9oeXBlcmNhbGwrMHgxMjg6IF9fdGR4X2h5cGVyY2FsbF9mYWlsZWQo
-KSBpcyBtaXNzaW5nIGEgX19ub3JldHVybiBhbm5vdGF0aW9uDQo+IA0KDQpIbW0uLiBUaGUgX190
-ZHhfaHlwZXJjYWxsX2ZhaWxlZCgpIGlzIGFscmVhZHkgYW5ub3RhdGVkIHdpdGggX19ub3JldHVy
-biAoSQ0KZXhwbGljaXRseSBhZGRlZCBpdCB0byBzaWxlbnQgc3VjaCB3YXJuaW5nKToNCg0KLyog
-Q2FsbGVkIGZyb20gX190ZHhfaHlwZXJjYWxsKCkgZm9yIHVucmVjb3ZlcmFibGUgZmFpbHVyZSAq
-Lw0Kbm9pbnN0ciB2b2lkIF9fbm9yZXR1cm4gX190ZHhfaHlwZXJjYWxsX2ZhaWxlZCh2b2lkKQ0K
-ew0KICAgICAgICBpbnN0cnVtZW50YXRpb25fYmVnaW4oKTsNCiAgICAgICAgcGFuaWMoIlREVk1D
-QUxMIGZhaWxlZC4gVERYIG1vZHVsZSBidWc/Iik7DQp9DQoNCk5vdCBzdXJlIHdoeSB0aGUgb2Jq
-dG9vbCBpcyBzdGlsbCBjb21wbGFpbmluZyB0aGlzPw0KDQo+IA0KPiBvYmpkdW1wLWZ1bmMgdm1s
-aW51eC5vIF9fdGR4X2h5cGVyY2FsbDoNCj4gMDAwMCAwMDAwMDAwMDAwMDAwMDUwIDxfX3RkeF9o
-eXBlcmNhbGxfZmFpbGVkPjoNCj4gMDAwMCAgICAgICA1MDoJZjMgMGYgMWUgZmEgICAgICAgICAg
-CWVuZGJyNjQNCj4gMDAwNCAgICAgICA1NDoJNDggYzcgYzcgMDAgMDAgMDAgMDAgCW1vdiAgICAk
-MHgwLCVyZGkJNTc6IFJfWDg2XzY0XzMyUwkucm9kYXRhLnN0cjEuOCsweGUxOA0KPiAwMDBiICAg
-ICAgIDViOgllOCAwMCAwMCAwMCAwMCAgICAgICAJY2FsbCAgIDYwIDxfX3RkeF9oeXBlcmNhbGw+
-CTVjOiBSX1g4Nl82NF9QTFQzMglwYW5pYy0weDQNCj4gMDAwMCAwMDAwMDAwMDAwMDAwMDYwIDxf
-X3RkeF9oeXBlcmNhbGw+Og0KPiAwMDAwICAgICAgIDYwOglmMyAwZiAxZSBmYSAgICAgICAgICAJ
-ZW5kYnI2NA0KPiAwMDA0ICAgICAgIDY0Ogk1MyAgICAgICAgICAgICAgICAgICAJcHVzaCAgICVy
-YngNCj4gMDAwNSAgICAgICA2NToJNDggODkgZmIgICAgICAgICAgICAgCW1vdiAgICAlcmRpLCVy
-YngNCj4gMDAwOCAgICAgICA2ODoJNDggODMgZWMgNzAgICAgICAgICAgCXN1YiAgICAkMHg3MCwl
-cnNwDQo+IDAwMGMgICAgICAgNmM6CTY1IDQ4IDhiIDA0IDI1IDI4IDAwIDAwIDAwIAltb3YgICAg
-JWdzOjB4MjgsJXJheA0KPiAwMDE1ICAgICAgIDc1Ogk0OCA4OSA0NCAyNCA2OCAgICAgICAJbW92
-ICAgICVyYXgsMHg2OCglcnNwKQ0KPiAwMDFhICAgICAgIDdhOgkzMSBjMCAgICAgICAgICAgICAg
-ICAJeG9yICAgICVlYXgsJWVheA0KPiAwMDFjICAgICAgIDdjOgk0OCA4YiA0NyA1OCAgICAgICAg
-ICAJbW92ICAgIDB4NTgoJXJkaSksJXJheA0KPiAwMDIwICAgICAgIDgwOgk0OCA4OSBlNiAgICAg
-ICAgICAgICAJbW92ICAgICVyc3AsJXJzaQ0KPiAwMDIzICAgICAgIDgzOgk0OCBjNyAwNCAyNCBj
-YyBmZiAwMCAwMCAJbW92cSAgICQweGZmY2MsKCVyc3ApDQo+IDAwMmIgICAgICAgOGI6CTQ4IDg5
-IDQ0IDI0IDA4ICAgICAgIAltb3YgICAgJXJheCwweDgoJXJzcCkNCj4gMDAzMCAgICAgICA5MDoJ
-NDggOGIgMDcgICAgICAgICAgICAgCW1vdiAgICAoJXJkaSksJXJheA0KPiAwMDMzICAgICAgIDkz
-Ogk0OCA4OSA0NCAyNCAxMCAgICAgICAJbW92ICAgICVyYXgsMHgxMCglcnNwKQ0KPiAwMDM4ICAg
-ICAgIDk4Ogk0OCA4YiA0NyAwOCAgICAgICAgICAJbW92ICAgIDB4OCglcmRpKSwlcmF4DQo+IDAw
-M2MgICAgICAgOWM6CTQ4IDg5IDQ0IDI0IDE4ICAgICAgIAltb3YgICAgJXJheCwweDE4KCVyc3Ap
-DQo+IDAwNDEgICAgICAgYTE6CTQ4IDhiIDQ3IDEwICAgICAgICAgIAltb3YgICAgMHgxMCglcmRp
-KSwlcmF4DQo+IDAwNDUgICAgICAgYTU6CTQ4IDg5IDQ0IDI0IDIwICAgICAgIAltb3YgICAgJXJh
-eCwweDIwKCVyc3ApDQo+IDAwNGEgICAgICAgYWE6CTQ4IDhiIDQ3IDE4ICAgICAgICAgIAltb3Yg
-ICAgMHgxOCglcmRpKSwlcmF4DQo+IDAwNGUgICAgICAgYWU6CTQ4IDg5IDQ0IDI0IDI4ICAgICAg
-IAltb3YgICAgJXJheCwweDI4KCVyc3ApDQo+IDAwNTMgICAgICAgYjM6CTQ4IDhiIDQ3IDIwICAg
-ICAgICAgIAltb3YgICAgMHgyMCglcmRpKSwlcmF4DQo+IDAwNTcgICAgICAgYjc6CTQ4IDg5IDQ0
-IDI0IDMwICAgICAgIAltb3YgICAgJXJheCwweDMwKCVyc3ApDQo+IDAwNWMgICAgICAgYmM6CTQ4
-IDhiIDQ3IDI4ICAgICAgICAgIAltb3YgICAgMHgyOCglcmRpKSwlcmF4DQo+IDAwNjAgICAgICAg
-YzA6CTQ4IDg5IDQ0IDI0IDM4ICAgICAgIAltb3YgICAgJXJheCwweDM4KCVyc3ApDQo+IDAwNjUg
-ICAgICAgYzU6CTQ4IDhiIDQ3IDMwICAgICAgICAgIAltb3YgICAgMHgzMCglcmRpKSwlcmF4DQo+
-IDAwNjkgICAgICAgYzk6CTQ4IDg5IDQ0IDI0IDQwICAgICAgIAltb3YgICAgJXJheCwweDQwKCVy
-c3ApDQo+IDAwNmUgICAgICAgY2U6CTQ4IDhiIDQ3IDM4ICAgICAgICAgIAltb3YgICAgMHgzOCgl
-cmRpKSwlcmF4DQo+IDAwNzIgICAgICAgZDI6CTQ4IDg5IDQ0IDI0IDQ4ICAgICAgIAltb3YgICAg
-JXJheCwweDQ4KCVyc3ApDQo+IDAwNzcgICAgICAgZDc6CTQ4IDhiIDQ3IDUwICAgICAgICAgIAlt
-b3YgICAgMHg1MCglcmRpKSwlcmF4DQo+IDAwN2IgICAgICAgZGI6CTQ4IDg5IDQ0IDI0IDUwICAg
-ICAgIAltb3YgICAgJXJheCwweDUwKCVyc3ApDQo+IDAwODAgICAgICAgZTA6CTQ4IDhiIDQ3IDQw
-ICAgICAgICAgIAltb3YgICAgMHg0MCglcmRpKSwlcmF4DQo+IDAwODQgICAgICAgZTQ6CTQ4IDg5
-IDQ0IDI0IDU4ICAgICAgIAltb3YgICAgJXJheCwweDU4KCVyc3ApDQo+IDAwODkgICAgICAgZTk6
-CTQ4IDhiIDQ3IDQ4ICAgICAgICAgIAltb3YgICAgMHg0OCglcmRpKSwlcmF4DQo+IDAwOGQgICAg
-ICAgZWQ6CTMxIGZmICAgICAgICAgICAgICAgIAl4b3IgICAgJWVkaSwlZWRpDQo+IDAwOGYgICAg
-ICAgZWY6CTQ4IDg5IDQ0IDI0IDYwICAgICAgIAltb3YgICAgJXJheCwweDYwKCVyc3ApDQo+IDAw
-OTQgICAgICAgZjQ6CWU4IDAwIDAwIDAwIDAwICAgICAgIAljYWxsICAgZjkgPF9fdGR4X2h5cGVy
-Y2FsbCsweDk5PglmNTogUl9YODZfNjRfUExUMzIJX190ZGNhbGxfaHlwZXJjYWxsLTB4NA0KPiAw
-MDk5ICAgICAgIGY5Ogk0OCA4NSBjMCAgICAgICAgICAgICAJdGVzdCAgICVyYXgsJXJheA0KPiAw
-MDljICAgICAgIGZjOgkwZiA4NSA4MSAwMCAwMCAwMCAgICAJam5lICAgIDE4MyA8X190ZHhfaHlw
-ZXJjYWxsKzB4MTIzPg0KPiAwMGEyICAgICAgMTAyOgk0OCA4YiA1NCAyNCAyOCAgICAgICAJbW92
-ICAgIDB4MjgoJXJzcCksJXJkeA0KPiAwMGE3ICAgICAgMTA3Ogk0OCA4YiA0NCAyNCAxMCAgICAg
-ICAJbW92ICAgIDB4MTAoJXJzcCksJXJheA0KPiAwMGFjICAgICAgMTBjOgk0OCA4OSA1MyAxOCAg
-ICAgICAgICAJbW92ICAgICVyZHgsMHgxOCglcmJ4KQ0KPiAwMGIwICAgICAgMTEwOgk0OCA4YiA1
-NCAyNCAzMCAgICAgICAJbW92ICAgIDB4MzAoJXJzcCksJXJkeA0KPiAwMGI1ICAgICAgMTE1Ogk0
-OCA4OSAwMyAgICAgICAgICAgICAJbW92ICAgICVyYXgsKCVyYngpDQo+IDAwYjggICAgICAxMTg6
-CTQ4IDhiIDQ0IDI0IDE4ICAgICAgIAltb3YgICAgMHgxOCglcnNwKSwlcmF4DQo+IDAwYmQgICAg
-ICAxMWQ6CTQ4IDg5IDUzIDIwICAgICAgICAgIAltb3YgICAgJXJkeCwweDIwKCVyYngpDQo+IDAw
-YzEgICAgICAxMjE6CTQ4IDhiIDU0IDI0IDM4ICAgICAgIAltb3YgICAgMHgzOCglcnNwKSwlcmR4
-DQo+IDAwYzYgICAgICAxMjY6CTQ4IDg5IDQzIDA4ICAgICAgICAgIAltb3YgICAgJXJheCwweDgo
-JXJieCkNCj4gMDBjYSAgICAgIDEyYToJNDggOGIgNDQgMjQgMjAgICAgICAgCW1vdiAgICAweDIw
-KCVyc3ApLCVyYXgNCj4gMDBjZiAgICAgIDEyZjoJNDggODkgNTMgMjggICAgICAgICAgCW1vdiAg
-ICAlcmR4LDB4MjgoJXJieCkNCj4gMDBkMyAgICAgIDEzMzoJNDggOGIgNTQgMjQgNDAgICAgICAg
-CW1vdiAgICAweDQwKCVyc3ApLCVyZHgNCj4gMDBkOCAgICAgIDEzODoJNDggODkgNDMgMTAgICAg
-ICAgICAgCW1vdiAgICAlcmF4LDB4MTAoJXJieCkNCj4gMDBkYyAgICAgIDEzYzoJNDggODkgNTMg
-MzAgICAgICAgICAgCW1vdiAgICAlcmR4LDB4MzAoJXJieCkNCj4gMDBlMCAgICAgIDE0MDoJNDgg
-OGIgNTQgMjQgNDggICAgICAgCW1vdiAgICAweDQ4KCVyc3ApLCVyZHgNCj4gMDBlNSAgICAgIDE0
-NToJNDggODkgNTMgMzggICAgICAgICAgCW1vdiAgICAlcmR4LDB4MzgoJXJieCkNCj4gMDBlOSAg
-ICAgIDE0OToJNDggOGIgNTQgMjQgNTggICAgICAgCW1vdiAgICAweDU4KCVyc3ApLCVyZHgNCj4g
-MDBlZSAgICAgIDE0ZToJNDggODkgNTMgNDAgICAgICAgICAgCW1vdiAgICAlcmR4LDB4NDAoJXJi
-eCkNCj4gMDBmMiAgICAgIDE1MjoJNDggOGIgNTQgMjQgNjAgICAgICAgCW1vdiAgICAweDYwKCVy
-c3ApLCVyZHgNCj4gMDBmNyAgICAgIDE1NzoJNDggODkgNTMgNDggICAgICAgICAgCW1vdiAgICAl
-cmR4LDB4NDgoJXJieCkNCj4gMDBmYiAgICAgIDE1YjoJNDggOGIgNTQgMjQgNTAgICAgICAgCW1v
-diAgICAweDUwKCVyc3ApLCVyZHgNCj4gMDEwMCAgICAgIDE2MDoJNDggODkgNTMgNTAgICAgICAg
-ICAgCW1vdiAgICAlcmR4LDB4NTAoJXJieCkNCj4gMDEwNCAgICAgIDE2NDoJNDggOGIgNTQgMjQg
-MDggICAgICAgCW1vdiAgICAweDgoJXJzcCksJXJkeA0KPiAwMTA5ICAgICAgMTY5Ogk0OCA4OSA1
-MyA1OCAgICAgICAgICAJbW92ICAgICVyZHgsMHg1OCglcmJ4KQ0KPiAwMTBkICAgICAgMTZkOgk0
-OCA4YiA1NCAyNCA2OCAgICAgICAJbW92ICAgIDB4NjgoJXJzcCksJXJkeA0KPiAwMTEyICAgICAg
-MTcyOgk2NSA0OCAyYiAxNCAyNSAyOCAwMCAwMCAwMCAJc3ViICAgICVnczoweDI4LCVyZHgNCj4g
-MDExYiAgICAgIDE3YjoJNzUgMTAgICAgICAgICAgICAgICAgCWpuZSAgICAxOGQgPF9fdGR4X2h5
-cGVyY2FsbCsweDEyZD4NCj4gMDExZCAgICAgIDE3ZDoJNDggODMgYzQgNzAgICAgICAgICAgCWFk
-ZCAgICAkMHg3MCwlcnNwDQo+IDAxMjEgICAgICAxODE6CTViICAgICAgICAgICAgICAgICAgIAlw
-b3AgICAgJXJieA0KPiAwMTIyICAgICAgMTgyOgljMyAgICAgICAgICAgICAgICAgICAJcmV0DQo+
-IDAxMjMgICAgICAxODM6CWU4IDAwIDAwIDAwIDAwICAgICAgIAljYWxsICAgMTg4IDxfX3RkeF9o
-eXBlcmNhbGwrMHgxMjg+CTE4NDogUl9YODZfNjRfUExUMzIJX190ZHhfaHlwZXJjYWxsX2ZhaWxl
-ZC0weDQNCj4gMDEyOCAgICAgIDE4ODoJZTkgNzUgZmYgZmYgZmYgICAgICAgCWptcCAgICAxMDIg
-PF9fdGR4X2h5cGVyY2FsbCsweGEyPg0KPiAwMTJkICAgICAgMThkOgllOCAwMCAwMCAwMCAwMCAg
-ICAgICAJY2FsbCAgIDE5MiA8X190ZHhfaHlwZXJjYWxsKzB4MTMyPgkxOGU6IFJfWDg2XzY0X1BM
-VDMyCV9fc3RhY2tfY2hrX2ZhaWwtMHg0DQo+IDAxMzIgICAgICAxOTI6CTY2IDJlIDBmIDFmIDg0
-IDAwIDAwIDAwIDAwIDAwIAljcyBub3B3IDB4MCglcmF4LCVyYXgsMSkNCj4gMDEzYyAgICAgIDE5
-YzoJMGYgMWYgNDAgMDAgICAgICAgICAgCW5vcGwgICAweDAoJXJheCkNCj4gDQoNCg==
+The RISC-V arch_timer selftests is used to validate Sstc timer
+functionality in a guest, which sets up periodic timer interrupts
+and check the basic interrupt status upon its receipt.
+
+This KVM selftests was ported from aarch64 arch_timer and tested
+with Linux v6.6-rc1 on a Qemu riscv64 virt machine.
+
+---
+Changed since v2:
+  * Rebase to Linux 6.6-rc1
+  * Add separate patch for kvm/Makefile improvement
+  * Move aarch64 specific macros to aarch64/arch_timer.c
+  * Add -DCONFIG_64BIT to kvm/Makefile CFLAGS to ensure
+    only 64bit registers were available in csr.h
+  * Avoid some #ifdef in kvm/arch_timer.c by setting some
+    aarch64 specific variable to 0 on risc-v
+
+Haibo Xu (9):
+  KVM: selftests: Unify the codes for guest exception handling
+  KVM: selftests: Unify the makefile rule for split targets
+  KVM: arm64: selftests: Split arch_timer test code
+  tools: riscv: Add header file csr.h
+  KVM: riscv: selftests: Switch to use macro from csr.h
+  KVM: riscv: selftests: Add exception handling support
+  KVM: riscv: selftests: Add guest helper to get vcpu id
+  KVM: riscv: selftests: Change vcpu_has_ext to a common function
+  KVM: riscv: selftests: Add sstc timer test
+
+ tools/arch/riscv/include/asm/csr.h            | 521 ++++++++++++++++++
+ tools/testing/selftests/kvm/Makefile          |  14 +-
+ .../selftests/kvm/aarch64/arch_timer.c        | 291 +---------
+ .../selftests/kvm/aarch64/debug-exceptions.c  |   4 +-
+ .../selftests/kvm/aarch64/page_fault_test.c   |   4 +-
+ .../testing/selftests/kvm/aarch64/vgic_irq.c  |   4 +-
+ tools/testing/selftests/kvm/arch_timer.c      | 250 +++++++++
+ .../selftests/kvm/include/aarch64/processor.h |  12 +-
+ .../selftests/kvm/include/kvm_util_base.h     |   9 +
+ .../selftests/kvm/include/riscv/arch_timer.h  |  80 +++
+ .../selftests/kvm/include/riscv/processor.h   |  63 ++-
+ .../testing/selftests/kvm/include/test_util.h |   2 +
+ .../selftests/kvm/include/timer_test.h        |  43 ++
+ .../selftests/kvm/include/x86_64/processor.h  |   5 -
+ .../selftests/kvm/lib/aarch64/processor.c     |   6 +-
+ .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++
+ .../selftests/kvm/lib/riscv/processor.c       |  86 +++
+ .../selftests/kvm/lib/x86_64/processor.c      |   4 +-
+ .../testing/selftests/kvm/riscv/arch_timer.c  | 107 ++++
+ .../selftests/kvm/riscv/get-reg-list.c        |  16 +-
+ tools/testing/selftests/kvm/x86_64/amx_test.c |   4 +-
+ .../selftests/kvm/x86_64/fix_hypercall_test.c |   4 +-
+ .../selftests/kvm/x86_64/hyperv_evmcs.c       |   4 +-
+ .../selftests/kvm/x86_64/hyperv_features.c    |   8 +-
+ .../testing/selftests/kvm/x86_64/hyperv_ipi.c |   6 +-
+ .../selftests/kvm/x86_64/kvm_pv_test.c        |   4 +-
+ .../selftests/kvm/x86_64/monitor_mwait_test.c |   4 +-
+ .../kvm/x86_64/pmu_event_filter_test.c        |   8 +-
+ .../smaller_maxphyaddr_emulation_test.c       |   4 +-
+ .../selftests/kvm/x86_64/svm_int_ctl_test.c   |   4 +-
+ .../kvm/x86_64/svm_nested_shutdown_test.c     |   4 +-
+ .../kvm/x86_64/svm_nested_soft_inject_test.c  |   4 +-
+ .../kvm/x86_64/ucna_injection_test.c          |   8 +-
+ .../kvm/x86_64/userspace_msr_exit_test.c      |   4 +-
+ .../vmx_exception_with_invalid_guest_state.c  |   4 +-
+ .../selftests/kvm/x86_64/vmx_pmu_caps_test.c  |   4 +-
+ .../selftests/kvm/x86_64/xapic_ipi_test.c     |   4 +-
+ .../selftests/kvm/x86_64/xcr0_cpuid_test.c    |   4 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |   4 +-
+ 39 files changed, 1338 insertions(+), 374 deletions(-)
+ create mode 100644 tools/arch/riscv/include/asm/csr.h
+ create mode 100644 tools/testing/selftests/kvm/arch_timer.c
+ create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.h
+ create mode 100644 tools/testing/selftests/kvm/include/timer_test.h
+ create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
+ create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
+
+-- 
+2.34.1
+
