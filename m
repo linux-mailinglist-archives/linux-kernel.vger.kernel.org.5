@@ -2,278 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB597A0191
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2D87A015D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237075AbjINKXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S238095AbjINKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjINKXQ (ORCPT
+        with ESMTP id S237639AbjINKOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:23:16 -0400
-X-Greylist: delayed 537 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 03:23:10 PDT
-Received: from m84-178.qiye.163.com (m84-178.qiye.163.com [123.58.178.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FE91BEC;
-        Thu, 14 Sep 2023 03:23:09 -0700 (PDT)
-Received: from [192.168.0.100] (unknown [113.87.233.110])
-        by mail-m11873.qiye.163.com (Hmail) with ESMTPA id B107890036D;
-        Thu, 14 Sep 2023 18:13:30 +0800 (CST)
-Message-ID: <a0bd3ed9-afe7-49a4-a394-949bd5831d6d@sangfor.com.cn>
-Date:   Thu, 14 Sep 2023 18:13:27 +0800
+        Thu, 14 Sep 2023 06:14:14 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFAC1BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:14:09 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9adb9fa7200so106510766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1694686448; x=1695291248; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TPuDwD4ZrkyAZ/NBOLS8VaQLWjoMvPUnZLd4ZQdk17o=;
+        b=QLPVbta0mIgsVHxTB342Kfkc6P5mkwpvc8LRZIviHrsloFuQwMwZ0sM6jGWy9nCBOT
+         uTUyoG8ex9Jy1lIJaB8zz4u0JxQthyFIW0HmvV7XCC5pkgb/0nUKcjHwgc4G15a6EL2C
+         eVC25wejuY9fv1OJMSV8kXuBjt6XPECvgOaMA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694686448; x=1695291248;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TPuDwD4ZrkyAZ/NBOLS8VaQLWjoMvPUnZLd4ZQdk17o=;
+        b=bNSy13yPgxF0PyYMEUTt4DJOtKYO5ZiKvnCUKKft+oz5kjEoJHpHfijPvIJ7emA+KR
+         jBVY0z70qjb1PeAxFqOQGpZddP5eXlb78JkQYQ6xpUieRyuGl9Eu2OEJKIECIOANAUnj
+         sgjS/vNmXQDL3HpmW6Jdt3VBbsh8NwXTqbSf+Cqcn14Uj46cq7U618CDDGgHvs41FXfq
+         Va20D74WrYN28NmAUfV/i7Y77oGUA38s+hZdVdhGRt3soXwdClKIcll/Z/plySdSvco7
+         h0klV/hcUljC+2qYioPaVj2XWukjaI/GZ/9Tjimo90QAryYlSowf8eJZLejco1ehkAi5
+         mj1g==
+X-Gm-Message-State: AOJu0Yw3PXZqjFhURILhhrHXJtPYJKueJ2IWNg4c4k4n0aS2DQKvrW/r
+        SRryf1cG8ae/6wg+XvSh22klelSQUt4sQppm1EHIgg==
+X-Google-Smtp-Source: AGHT+IGWbiyTK876nyDnSZchKAdndIJh+WgEikVLilcv45driRsG8+782uLgZQcb00o4mLm3qnrfRcUzbWyYeD/tVxI=
+X-Received: by 2002:a17:906:51c5:b0:9ad:a46c:66a2 with SMTP id
+ v5-20020a17090651c500b009ada46c66a2mr2033508ejk.11.1694686448127; Thu, 14 Sep
+ 2023 03:14:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
- <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
- <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
- <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
- <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
- <CAADnVQLMHUNE95eBXdy6=+gHoFHRsihmQ75GZvGy-hSuHoaT5A@mail.gmail.com>
- <5f8d82c3-838e-4d75-bb25-7d98a6d0a37c@sangfor.com.cn>
- <e564b0e9-3497-a133-3094-afefc0cd1f7e@oracle.com>
-From:   pengdonglin <pengdonglin@sangfor.com.cn>
-In-Reply-To: <e564b0e9-3497-a133-3094-afefc0cd1f7e@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaGBkaVkNIGEkeHkJIGkJOTFUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpKSFVDTFVJSEhVSkpLWVdZFhoPEhUdFFlBWU9LSFVKSEpCSE9VSktLVUtZBg++
-X-HM-Tid: 0a8a932e79542eafkusnb107890036d
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDo6KBw4ST1PAQwNCgoQMClL
-        IzMwCRlVSlVKTUJPTUNNT0pKTE5DVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
-        WRILWUFZSkpIVUNMVUlISFVKSktZV1kIAVlBSklNSEo3Bg++
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
+ <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+In-Reply-To: <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 14 Sep 2023 12:13:54 +0200
+Message-ID: <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/13 21:34, Alan Maguire wrote:
-> On 13/09/2023 11:32, pengdonglin wrote:
->> On 2023/9/13 2:46, Alexei Starovoitov wrote:
->>> On Tue, Sep 12, 2023 at 10:03 AM Eduard Zingerman <eddyz87@gmail.com>
->>> wrote:
->>>>
->>>> On Tue, 2023-09-12 at 09:40 -0700, Alexei Starovoitov wrote:
->>>>> On Tue, Sep 12, 2023 at 7:19 AM Eduard Zingerman <eddyz87@gmail.com>
->>>>> wrote:
->>>>>>
->>>>>> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
->>>>>>> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
->>>>>>>> Currently, we are only using the linear search method to find the
->>>>>>>> type id
->>>>>>>> by the name, which has a time complexity of O(n). This change
->>>>>>>> involves
->>>>>>>> sorting the names of btf types in ascending order and using
->>>>>>>> binary search,
->>>>>>>> which has a time complexity of O(log(n)). This idea was inspired
->>>>>>>> by the
->>>>>>>> following patch:
->>>>>>>>
->>>>>>>> 60443c88f3a8 ("kallsyms: Improve the performance of
->>>>>>>> kallsyms_lookup_name()").
->>>>>>>>
->>>>>>>> At present, this improvement is only for searching in vmlinux's and
->>>>>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or
->>>>>>>> BTF_KIND_STRUCT.
->>>>>>>>
->>>>>>>> Another change is the search direction, where we search the BTF
->>>>>>>> first and
->>>>>>>> then its base, the type id of the first matched btf_type will be
->>>>>>>> returned.
->>>>>>>>
->>>>>>>> Here is a time-consuming result that finding all the type ids of
->>>>>>>> 67,819 kernel
->>>>>>>> functions in vmlinux's BTF by their names:
->>>>>>>>
->>>>>>>> Before: 17000 ms
->>>>>>>> After:     10 ms
->>>>>>>>
->>>>>>>> The average lookup performance has improved about 1700x at the
->>>>>>>> above scenario.
->>>>>>>>
->>>>>>>> However, this change will consume more memory, for example,
->>>>>>>> 67,819 kernel
->>>>>>>> functions will allocate about 530KB memory.
->>>>>>>
->>>>>>> Hi Donglin,
->>>>>>>
->>>>>>> I think this is a good improvement. However, I wonder, why did you
->>>>>>> choose to have a separate name map for each BTF kind?
->>>>>>>
->>>>>>> I did some analysis for my local testing kernel config and got
->>>>>>> such numbers:
->>>>>>> - total number of BTF objects: 97350
->>>>>>> - number of FUNC and STRUCT objects: 51597
->>>>>>> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC
->>>>>>> objects: 56817
->>>>>>>     (these are all kinds for which lookup by name might make sense)
->>>>>>> - number of named objects: 54246
->>>>>>> - number of name collisions:
->>>>>>>     - unique names: 53985 counts
->>>>>>>     - 2 objects with the same name: 129 counts
->>>>>>>     - 3 objects with the same name: 3 counts
->>>>>>>
->>>>>>> So, it appears that having a single map for all named objects makes
->>>>>>> sense and would also simplify the implementation, what do you think?
->>>>>>
->>>>>> Some more numbers for my config:
->>>>>> - 13241 types (struct, union, typedef, enum), log2 13241 = 13.7
->>>>>> - 43575 funcs, log2 43575 = 15.4
->>>>>> Thus, having separate map for types vs functions might save ~1.7
->>>>>> search iterations. Is this a significant slowdown in practice?
->>>>>
->>>>> What do you propose to do in case of duplicates ?
->>>>> func and struct can have the same name, but they will have two
->>>>> different
->>>>> btf_ids. How do we store them ?
->>>>> Also we might add global vars to BTF. Such request came up several
->>>>> times.
->>>>> So we need to make sure our search approach scales to
->>>>> func, struct, vars. I don't recall whether we search any other kinds.
->>>>> Separate arrays for different kinds seems ok.
->>>>> It's a bit of code complexity, but it's not an increase in memory.
->>>>
->>>> Binary search gives, say, lowest index of a thing with name A, then
->>>> increment index while name remains A looking for correct kind.
->>>> Given the name conflicts info from above, 99% of times there would be
->>>> no need to iterate and in very few cases there would a couple of
->>>> iterations.
->>>>
->>>> Same logic would be necessary with current approach if different BTF
->>>> kinds would be allowed in BTF_ID_NAME_* cohorts. I figured that these
->>>> cohorts are mainly a way to split the tree for faster lookups, but
->>>> maybe that is not the main intent.
->>>>
->>>>> With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyte
->>>>> extra memory. That's quite a bit. Anything we can do to compress it?
->>>>
->>>> That's an interesting question, from the top of my head:
->>>> pre-sort in pahole (re-assign IDs so that increasing ID also would
->>>> mean "increasing" name), shouldn't be that difficult.
->>>
->>> That sounds great. kallsyms are pre-sorted at build time.
->>> We should do the same with BTF.
->>> I think GCC can emit BTF directly now and LLVM emits it for bpf progs
->>> too,
->>> but since vmlinux and kernel module BTFs will keep being processed
->>> through pahole we don't have to make gcc/llvm sort things right away.
->>> pahole will be enough. The kernel might do 'is it sorted' check
->>> during BTF validation and then use binary search or fall back to linear
->>> when not-sorted == old pahole.
->>>
->>
->> Yeah, I agree and will attempt to modify the pahole and perform a test.
->> Do we need
->> to introduce a new macro to control the behavior when the BTF is not
->> sorted? If
->> it is not sorted, we can use the method mentioned in this patch or use
->> linear
->> search.
->>
->>
-> 
-> One challenge with pahole is that it often runs in parallel mode, so I
-> suspect any sorting would have to be done after merging across threads.
-> Perhaps BTF deduplication time might be a useful time to re-sort by
-> name? BTF dedup happens after BTF has been merged, and a new "sorted"
-> btf_dedup_opts option could be added and controlled by a pahole
-> option. However dedup is pretty complicated already..
-> 
-> One thing we should weigh up though is if there are benefits to the
-> way BTF is currently laid out. It tends to start with base types,
-> and often-encountered types end up being located towards the start
-> of the BTF data. For example
-> 
-> 
-> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
-> [2] CONST '(anon)' type_id=1
-> [3] VOLATILE '(anon)' type_id=1
-> [4] ARRAY '(anon)' type_id=1 index_type_id=21 nr_elems=2
-> [5] PTR '(anon)' type_id=8
-> [6] CONST '(anon)' type_id=5
-> [7] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
-> [8] CONST '(anon)' type_id=7
-> [9] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> [10] CONST '(anon)' type_id=9
-> [11] TYPEDEF '__s8' type_id=12
-> [12] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
-> [13] TYPEDEF '__u8' type_id=14
-> 
-> So often-used types will be found quickly, even under linear search
-> conditions.
+On Thu, 14 Sept 2023 at 11:28, Christian Brauner <brauner@kernel.org> wrote:
+>
+> On Wed, Sep 13, 2023 at 05:22:35PM +0200, Miklos Szeredi wrote:
+> > Add a way to query attributes of a single mount instead of having to parse
+> > the complete /proc/$PID/mountinfo, which might be huge.
+> >
+> > Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+> > needs to be queried based on path, then statx(2) can be used to first query
+> > the mount ID belonging to the path.
+> >
+> > Design is based on a suggestion by Linus:
+> >
+> >   "So I'd suggest something that is very much like "statfsat()", which gets
+> >    a buffer and a length, and returns an extended "struct statfs" *AND*
+> >    just a string description at the end."
+>
+> So what we agreed to at LSFMM was that we split filesystem option
+> retrieval into a separate system call and just have a very focused
+> statx() for mounts with just binary and non-variable sized information.
+> We even gave David a hard time about this. :) I would really love if we
+> could stick to that.
+>
+> Linus, I realize this was your suggestion a long time ago but I would
+> really like us to avoid structs with variable sized fields at the end of
+> a struct. That's just so painful for userspace and universally disliked.
+> If you care I can even find the LSFMM video where we have users of that
+> api requesting that we please don't do this. So it'd be great if you
+> wouldn't insist on it.
 
-I found that there seems to be no code in the kernel that get the ID of the
-basic data type by calling btf_find_by_name_kind directly. The general usage
-of this function is to obtain the ID of a structure or function. After we got
-the ID of a structure or function, it is O(1) to get the IDs of its members
-or parameters.
+I completely missed that.
 
-./kernel/trace/trace_probe.c:383:       id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-./kernel/bpf/btf.c:3523:        id = btf_find_by_name_kind(btf, value_type, BTF_KIND_STRUCT);
-./kernel/bpf/btf.c:5504:                id = btf_find_by_name_kind(btf, alloc_obj_fields[i], BTF_KIND_STRUCT);
-./kernel/bpf/bpf_struct_ops.c:128:      module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
-./net/ipv4/bpf_tcp_ca.c:28:     type_id = btf_find_by_name_kind(btf, "sock", BTF_KIND_STRUCT);
-./net/ipv4/bpf_tcp_ca.c:33:     type_id = btf_find_by_name_kind(btf, "tcp_sock", BTF_KIND_STRUCT);
-./net/netfilter/nf_bpf_link.c:181:      type_id = btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
+What I'm thinking is making it even simpler for userspace:
 
-> 
-> When we look at how many lookups by id (which are O(1), since they are
-> done via the btf->types[] array) versus by name, we see:
-> 
-> $ grep btf_type_by_id kernel/bpf/*.c|wc -l
-> 120
-> $ grep btf_find_by_nam kernel/bpf/*.c|wc -l
-> 15
-> 
-> I don't see a huge number of name-based lookups, and I think most are
-> outside of the hotter codepaths, unless I'm missing some. All of which
-> is to say it would be a good idea to have a clear sense of what will get
-> faster with sorted-by-name BTF. Thanks!
+struct statmnt {
+  ...
+  char *mnt_root;
+  char *mountpoint;
+  char *fs_type;
+  u32 num_opts;
+  char *opts;
+};
 
-The story goes like this.
+I'd still just keep options nul delimited.
 
-I have added a new feature to the function graph called "funcgraph_retval",
-here is the link:
+Is there a good reason not to return pointers (pointing to within the
+supplied buffer obviously) to userspace?
 
-https://lore.kernel.org/all/1fc502712c981e0e6742185ba242992170ac9da8.1680954589.git.pengdonglin@sangfor.com.cn/
+>
+> This will also allow us to turn statmnt() into an extensible argument
+> system call versioned by size just like we do any new system calls with
+> struct arguments (e.g., mount_setattr(), clone3(), openat2() and so on).
+> Which is how we should do things like that.
 
-We can obtain the return values of almost every function during the execution
-of kernel through this feature, it can help us analyze problems.
+The mask mechanism also allow versioning of the struct.
 
-However, this feature has two main drawbacks.
+>
+> Other than that I really think this is on track for what we ultimately
+> want.
+>
+> > +struct stmt_str {
+> > +     __u32 off;
+> > +     __u32 len;
+> > +};
+> > +
+> > +struct statmnt {
+> > +     __u64 mask;             /* What results were written [uncond] */
+> > +     __u32 sb_dev_major;     /* Device ID */
+> > +     __u32 sb_dev_minor;
+> > +     __u64 sb_magic;         /* ..._SUPER_MAGIC */
+> > +     __u32 sb_flags;         /* MS_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME} */
+> > +     __u32 __spare1;
+> > +     __u64 mnt_id;           /* Unique ID of mount */
+> > +     __u64 mnt_parent_id;    /* Unique ID of parent (for root == mnt_id) */
+> > +     __u32 mnt_id_old;       /* Reused IDs used in proc/.../mountinfo */
+> > +     __u32 mnt_parent_id_old;
+> > +     __u64 mnt_attr;         /* MOUNT_ATTR_... */
+> > +     __u64 mnt_propagation;  /* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} */
+> > +     __u64 mnt_peer_group;   /* ID of shared peer group */
+> > +     __u64 mnt_master;       /* Mount receives propagation from this ID */
+> > +     __u64 propagate_from;   /* Propagation from in current namespace */
+> > +     __u64 __spare[20];
+> > +     struct stmt_str mnt_root;       /* Root of mount relative to root of fs */
+> > +     struct stmt_str mountpoint;     /* Mountpoint relative to root of process */
+> > +     struct stmt_str fs_type;        /* Filesystem type[.subtype] */
+>
+> I think if we want to do this here we should add:
+>
+> __u64 fs_type
+> __u64 fs_subtype
+>
+> fs_type can just be our filesystem magic number and we introduce magic
 
-1. Even if a function's return type is void,  a return value will still be printed.
+It's already there: sb_magic.
 
-2. The return value printed may be incorrect when the width of the return type is
-smaller than the generic register.
+However it's not a 1:1 mapping (ext* only has one magic).
 
-I think if we can get this return type of the function, then the drawbacks mentioned
-above can be eliminated. The function btf_find_by_name_kind can be used to get the ID of
-the kernel function, then we can get its return type easily. If the return type is
-void, the return value recorded will not be printed. If the width of the return type
-is smaller than the generic register, then the value stored in the upper bits will be
-trimmed. I have written a demo and these drawbacks were resolved.
+> numbers for sub types as well. So we don't need to use strings here.
 
-However, during my test, I found that it took too much time when read the trace log
-with this feature enabled, because the trace log consists of 200,000 lines. The
-majority of the time was consumed by the btf_find_by_name_kind, which is called
-200,000 times.
+Ugh.
 
-So I think the performance of btf_find_by_name_kind  may need to be improved.
-
-> 
-> Alan
-> 
-
+Thanks,
+Miklos
