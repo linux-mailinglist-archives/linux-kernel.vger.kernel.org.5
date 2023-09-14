@@ -2,296 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BFC7A031A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A1B7A031D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237414AbjINLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
+        id S238120AbjINLzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235777AbjINLyt (ORCPT
+        with ESMTP id S235777AbjINLzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:54:49 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65029E3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:54:45 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0C1D6607348;
-        Thu, 14 Sep 2023 12:54:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694692483;
-        bh=+5pltS7z2ba3JQSXIwFn+ZjjvvXmVE9701npREXOwk4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lrMMIHf6u8RZ5h5WZoY3JP3WoHD1zug82gzuERIi2x49H4wxnmNtI0nIQrcyQ4AC+
-         pgKCeQVjKl7SIKqKd3mjSNjfbo3hAq04TYdV1oQh9Flnf0tAZv0npe1Fy9NdTj//q/
-         G4ns6sZduNLoPgTbUS4x/WrMc/voheXC2/dRaIDamVOiZOHbP98QY8l1LQS32gJK+7
-         QEEml6ZAz7fMV7tKErZZ/eAemKJVC3VTEqfMQoX2bU8bHP16JgQNtoLa0MpacdRjwS
-         e135Vg+a59gfJ2btlP9hGj21NQKDzTqi9kk0k3TB73MWiw26X2toRJE4XuxTRsyVjt
-         dsoyfUAOYpOUw==
-Date:   Thu, 14 Sep 2023 13:54:39 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
-        matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Message-ID: <20230914135439.3bec8eca@collabora.com>
-In-Reply-To: <c32bb890-b06e-6b5d-1ff8-b67f6c9d92a6@linux.intel.com>
-References: <20230909153125.30032-1-dakr@redhat.com>
-        <20230909153125.30032-7-dakr@redhat.com>
-        <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
-        <20230913090311.5eeb026a@collabora.com>
-        <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
-        <20230913091918.62c06a30@collabora.com>
-        <df85257a-02ed-4869-2421-0039a9c97db5@linux.intel.com>
-        <20230913133318.15edec7c@collabora.com>
-        <6f4c047d-0e6d-c45b-3092-cd0bc84849dc@linux.intel.com>
-        <20230914102010.628ea823@collabora.com>
-        <c32bb890-b06e-6b5d-1ff8-b67f6c9d92a6@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 14 Sep 2023 07:55:17 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB46E3;
+        Thu, 14 Sep 2023 04:55:13 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EBiT3R013415;
+        Thu, 14 Sep 2023 11:55:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=qv8ul9qQjGubmVSXhL931AFvYLaXJ7qK+LHGmtEZ6F0=;
+ b=BFDpkXHGhC49cMJg1Lk4jxH4MsJRi9H4JQ655Xj31nu+Ls9uGNNrBTC8mP1uvn0wGwJT
+ Kzm55jbH7JprQ9TcURvZWNVfwnlEtA14f33vROr4QmCD84doags8V7/VAthZLjYeAH+5
+ 3TAND6ELSbxXRvDScXYxEegFXgIowIPhckLb9npfN/rGvp6sQLk6lDppRCKCOkMYOVae
+ PovEcB+8Xo56blota7ejF/VDFdhTz7SuX2l9lHZtpYFjmubz9KpuCqh+ea6+MWnoWcCX
+ p6iKdd/NjKg1SA2rz+5TncyxreOH9rd1ziEej8tfWGaS9GnL5aKpjnlObsArW11KzRga +Q== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t41aqrxtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:54:59 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38EAe9dq023152;
+        Thu, 14 Sep 2023 11:54:59 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t141p2n26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:54:58 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38EBsvJo22020632
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 11:54:57 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA28A2004D;
+        Thu, 14 Sep 2023 11:54:56 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC03B20040;
+        Thu, 14 Sep 2023 11:54:54 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.169])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 14 Sep 2023 11:54:54 +0000 (GMT)
+Date:   Thu, 14 Sep 2023 17:24:52 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ext4: Mark buffer new if it is unwritten to avoid
+ stale data exposure
+Message-ID: <ZQL0jETgd8sA9rkI@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1693909504.git.ojaswin@linux.ibm.com>
+ <c307579df7e109eb4eedaaf07ebdc98b15d8b7ff.1693909504.git.ojaswin@linux.ibm.com>
+ <20230905135629.wdjl2b6s3pzh7idg@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905135629.wdjl2b6s3pzh7idg@quack3>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: shgmotWdIawyi3nR8qT9VSC_CNH8ZIq0
+X-Proofpoint-GUID: shgmotWdIawyi3nR8qT9VSC_CNH8ZIq0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 phishscore=0 mlxlogscore=686 mlxscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309140098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 12:45:44 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+On Tue, Sep 05, 2023 at 03:56:29PM +0200, Jan Kara wrote:
+> On Tue 05-09-23 15:58:01, Ojaswin Mujoo wrote:
+> > ** Short Version **
+> > 
+> > In ext4 with dioread_nolock, we could have a scenario where the bh returned by
+> > get_blocks (ext4_get_block_unwritten()) in __block_write_begin_int() has
+> > UNWRITTEN and MAPPED flag set. Since such a bh does not have NEW flag set we
+> > never zero out the range of bh that is not under write, causing whatever stale
+> > data is present in the folio at that time to be written out to disk. To fix this
+> > mark the buffer as new in _ext4_get_block(), in case it is unwritten.
+> > 
+> > -----
+> > ** Long Version **
+> > 
+> > The issue mentioned above was resulting in two different bugs:
+> > 
+> > 1. On block size < page size case in ext4, generic/269 was reliably
+> > failing with dioread_nolock. The state of the write was as follows:
+> > 
+> >   * The write was extending i_size.
+> >   * The last block of the file was fallocated and had an unwritten extent
+> >   * We were near ENOSPC and hence we were switching to non-delayed alloc
+> >     allocation.
+> > 
+> > In this case, the back trace that triggers the bug is as follows:
+> > 
+> >   ext4_da_write_begin()
+> >     /* switch to nodelalloc due to low space */
+> >     ext4_write_begin()
+> >       ext4_should_dioread_nolock() // true since mount flags still have delalloc
+> >       __block_write_begin(..., ext4_get_block_unwritten)
+> >         __block_write_begin_int()
+> >           for(each buffer head in page) {
+> >             /* first iteration, this is bh1 which contains i_size */
+> >             if (!buffer_mapped)
+> >               get_block() /* returns bh with only UNWRITTEN and MAPPED */
+> >             /* second iteration, bh2 */
+> >               if (!buffer_mapped)
+> >                 get_block() /* we fail here, could be ENOSPC */
+> >           }
+> >           if (err)
+> >             /*
+> >              * this would zero out all new buffers and mark them uptodate.
+> >              * Since bh1 was never marked new, we skip it here which causes
+> >              * the bug later.
+> >              */
+> >             folio_zero_new_buffers();
+> >       /* ext4_wrte_begin() error handling */
+> >       ext4_truncate_failed_write()
+> >         ext4_truncate()
+> >           ext4_block_truncate_page()
+> >             __ext4_block_zero_page_range()
+> 	>               if(!buffer_uptodate())
+> >                 ext4_read_bh_lock()
+> >                   ext4_read_bh() -> ... ext4_submit_bh_wbc()
+> >                     BUG_ON(buffer_unwritten(bh)); /* !!! */
+> > 
+> > 2. The second issue is stale data exposure with page size >= blocksize
+> > with dioread_nolock. The conditions needed for it to happen are same as
+> > the previous issue ie dioread_nolock around ENOSPC condition. The issue
+> > is also similar where in __block_write_begin_int() when we call
+> > ext4_get_block_unwritten() on the buffer_head and the underlying extent
+> > is unwritten, we get an unwritten and mapped buffer head. Since it is
+> > not new, we never zero out the partial range which is not under write,
+> > thus writing stale data to disk. This can be easily observed with the
+> > following reporducer:
+> > 
+> >  fallocate -l 4k testfile
+> >  xfs_io -c "pwrite 2k 2k" testfile
+> >  # hexdump output will have stale data in from byte 0 to 2k in testfile
+> >  hexdump -C testfile
+> > 
+> > NOTE: To trigger this, we need dioread_nolock enabled and write
+> > happening via ext4_write_begin(), which is usually used when we have -o
+> > nodealloc. Since dioread_nolock is disabled with nodelalloc, the only
+> > alternate way to call ext4_write_begin() is to fill make sure dellayed
+> > alloc switches to nodelalloc (ext4_da_write_begin() calls
+> > ext4_write_begin()).  This will usually happen when FS is almost full
+> > like the way generic/269 was triggering it in Issue 1 above. This might
+> > make this issue harder to replicate hence for reliable replicate, I used
+> > the below patch to temporarily allow dioread_nolock with nodelalloc and
+> > then mount the disk with -o nodealloc,dioread_nolock. With this you can
+> > hit the stale data issue 100% of times:
+> > 
+> > @@ -508,8 +508,8 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
+> >   if (ext4_should_journal_data(inode))
+> >     return 0;
+> >   /* temporary fix to prevent generic/422 test failures */
+> > - if (!test_opt(inode->i_sb, DELALLOC))
+> > -   return 0;
+> > + // if (!test_opt(inode->i_sb, DELALLOC))
+> > + //  return 0;
+> >   return 1;
+> >  }
+> > 
+> > -------
+> > 
+> > After applying this patch to mark buffer as NEW, both the above issues are
+> > fixed.
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> 
+> Good catch! But I'm wondering whether this is really the right fix. For
+> example in ext4_block_truncate_page() shouldn't we rather be checking
+> whether the buffer isn't unwritten and if yes then bail because there's
+> nothing to zero out in the block? That would seem like a more logical
+> and robust solution of the first problem to me.
 
-> On 9/14/23 10:20, Boris Brezillon wrote:
-> > On Wed, 13 Sep 2023 15:22:56 +0200
-> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> > =20
-> >> On 9/13/23 13:33, Boris Brezillon wrote: =20
-> >>> On Wed, 13 Sep 2023 12:39:01 +0200
-> >>> Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> >>>    =20
-> >>>> Hi,
-> >>>>
-> >>>> On 9/13/23 09:19, Boris Brezillon wrote: =20
-> >>>>> On Wed, 13 Sep 2023 17:05:42 +1000
-> >>>>> Dave Airlie <airlied@gmail.com> wrote:
-> >>>>>       =20
-> >>>>>> On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
-> >>>>>> <boris.brezillon@collabora.com> wrote: =20
-> >>>>>>> On Tue, 12 Sep 2023 18:20:32 +0200
-> >>>>>>> Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> >>>>>>>          =20
-> >>>>>>>>> +/**
-> >>>>>>>>> + * get_next_vm_bo_from_list() - get the next vm_bo element
-> >>>>>>>>> + * @__gpuvm: The GPU VM
-> >>>>>>>>> + * @__list_name: The name of the list we're iterating on
-> >>>>>>>>> + * @__local_list: A pointer to the local list used to store al=
-ready iterated items
-> >>>>>>>>> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_g=
-et_next_cached_vm_bo()
-> >>>>>>>>> + *
-> >>>>>>>>> + * This helper is here to provide lockless list iteration. Loc=
-kless as in, the
-> >>>>>>>>> + * iterator releases the lock immediately after picking the fi=
-rst element from
-> >>>>>>>>> + * the list, so list insertion deletion can happen concurrentl=
-y. =20
-> >>>>>>>> Are the list spinlocks needed for that async state update from w=
-ithin
-> >>>>>>>> the dma-fence critical section we've discussed previously? =20
-> >>>>>>> Any driver calling _[un]link() from its drm_gpu_scheduler::run_jo=
-b()
-> >>>>>>> hook will be in this situation (Panthor at the moment, PowerVR so=
-on). I
-> >>>>>>> get that Xe and Nouveau don't need that because they update the VM
-> >>>>>>> state early (in the ioctl path), but I keep thinking this will hu=
-rt us
-> >>>>>>> if we don't think it through from the beginning, because once you=
-'ve
-> >>>>>>> set this logic to depend only on resv locks, it will be pretty ha=
-rd to
-> >>>>>>> get back to a solution which lets synchronous VM_BINDs take prece=
-dence
-> >>>>>>> on asynchronous request, and, with vkQueueBindSparse() passing ex=
-ternal
-> >>>>>>> deps (plus the fact the VM_BIND queue might be pretty deep), it c=
-an
-> >>>>>>> take a long time to get your synchronous VM_BIND executed... =20
-> >>>> So this would boil down to either (possibly opt-in) keeping the spin=
-lock
-> >>>> approach or pushing the unlink out to a wq then? =20
-> >>> Deferred _unlink() would not be an issue, since I already defer the
-> >>> drm_gpuva destruction to a wq, it would just a be a matter of moving =
-the
-> >>> _unlink() call there as well. But _link() also takes the GEM gpuva li=
-st
-> >>> lock, and that one is bit tricky, in that sm_map() can trigger 2 more
-> >>> _link() calls for the prev/next mappings, which we can't guess until =
-we
-> >>> get to execute the VM update. If we mandate the use of the GEM resv
-> >>> lock, that simply means async VM updates (AKA calling
-> >>> drm_gpuvm_sm_[un]map()) are not an option. And if this is what everyo=
-ne
-> >>> agrees on, then I'd like the APIs that make this sort of async VM
-> >>> update possible (drm_gpuvm_sm_[un]map(), the drm_gpuvm_ops::sm_step*
-> >>> methods, and probably other things) to be dropped, so we don't make it
-> >>> look like it's something we support.
-> >>>    =20
-> >>>> BTW, as also asked in a reply to Danilo, how do you call unlink from
-> >>>> run_job() when it was requiring the obj->dma_resv lock, or was that =
-a WIP? =20
-> >>> _unlink() makes sure the GEM gpuva list lock is taken, but this can be
-> >>> a custom lock (see drm_gem_gpuva_set_lock()). In panthor we have
-> >>> panthor_gem_object::gpuva_list_lock that's dedicated the gpuva list
-> >>> protection. We make sure we never take this lock while allocating
-> >>> memory to guarantee the dma-signalling path can't deadlock.
-> >>>    =20
-> >>>>>>>          =20
-> >>>>>> btw what is the use case for this? do we have actual vulkan
-> >>>>>> applications we know will have problems here? =20
-> >>>>> I don't, but I think that's a concern Faith raised at some point (d=
-ates
-> >>>>> back from when I was reading threads describing how VM_BIND on i915
-> >>>>> should work, and I was clearly discovering this whole VM_BIND thing=
- at
-> >>>>> that time, so maybe I misunderstood).
-> >>>>>       =20
-> >>>>>> it feels like a bit of premature optimisation, but maybe we have u=
-se cases. =20
-> >>>>> Might be, but that's the sort of thing that would put us in a corne=
-r if
-> >>>>> we don't have a plan for when the needs arise. Besides, if we don't
-> >>>>> want to support that case because it's too complicated, I'd recomme=
-nd
-> >>>>> dropping all the drm_gpuvm APIs that let people think this mode is
-> >>>>> valid/supported (map/remap/unmap hooks in drm_gpuvm_ops,
-> >>>>> drm_gpuvm_sm_[un]map helpers, etc). Keeping them around just adds t=
-o the
-> >>>>> confusion. =20
-> >>>> Xe allows bypassing the bind-queue with another bind-queue, but to
-> >>>> completely avoid dependencies between queues the Operations may not
-> >>>> overlap. =20
-> >>> So, you check the VM state with some VM lock held (would be the VM re=
-sv
-> >>> in my case), and if the mapping is new (no overlaps with pre-existing
-> >>> mappings), you queue it to the fast-track/sync-VM_BIND queue. What wo=
-uld
-> >>> be missing I guess is a way to know if the mapping is active (MMU has
-> >>> been updated) or pending (MMU update queued to the bind-queue), so I =
-can
-> >>> fast-track mapping/unmapping of active mappings. =20
-> > Ok, so I started modifying the implementation, and quickly realized the
-> > overlap test can't be done without your xe_range_fence tree because of
-> > unmaps. Since we call drm_gpuva_unmap() early/in the IOCTL path (IOW,
-> > before the mapping teardown is effective), we lose track of this
-> > yet-to-be-executed-unmap operation, and if we do our
-> > va_range_overlaps_with_existing_mappings() test after such an unmap has
-> > been queued using just the drm_gpuvm tree, we might get false even if
-> > the mapping still exists and is expected to be torn down when the
-> > VM_BIND(unmap) job is executed on the bind-queue. As a result, this
-> > might execute the VM_BIND(map,sync) immediately (because the dependency
-> > went undetected), and then the vm_bind_run_job() function kicks in and
-> > undoes what the synchronous VM_BIND(map) did. Am I missing something?
-> >
-> > If I'm correct, that means I'm back to having synchronous VM_BIND ops
-> > queued after all asynchronous ones unless I use something like your
-> > xe_range_fence solution (which I was hoping I could postpone until we
-> > decide to expose multiple bind queues). =20
->=20
-> Yes, unfortunately fine-granular async range-tracking comes with a cost.=
-=20
-> Still, if you are doing page-table updates solely with the CPU, you=20
-> could probably short-circuit the fence part of the fenced ranges?
+Hey Jan,
 
-I'm doing it with the CPU, but asynchronously (bind-queue), so I'm
-facing pretty much the same problems, I think.
+So I was looking into this to understand the code paths and it seems
+like ext4_truncate doesn't really impose that a unwritten buffer does
+not have any data in its corresponding folio, which might sometimes be
+the case. 
 
->=20
->=20
-> >
-> > I'm still a bit skeptical about this 'update VM mappings tree early,
-> > defer MMU page table updates' approach, where the VM state and the
-> > actual page table tree are temporarily out of sync until all operations
-> > have been flushed on all queues targeting a VM. This means any test we
-> > do on the gpuvm, like, 'give me the BO mapped at VA xxx', is subject to
-> > 'is this the current state or the future state?' questioning. Note that
-> > we can't even get the current VM state anymore, because all the
-> > drm_gpuvm::tree stores with this solution is the future state, and
-> > to-be-unmapped mappings are lost during the transitioning period (when
-> > vm_bind jobs are queued but not executed yet). =20
->=20
-> Understandable. But this is the way we historically have been doing=20
-> things, (I think the whole async atomic page-flipping is using the same=20
-> concept), but rather than refering to it as current state and future=20
-> state, I'd like to think it as Synchronous CPU state (What an API user=20
-> sees) vs GPU state (What the GPU sees where it's currently executing).
+For example, imagine a case where we get the last block of a file via
+ext4_da_get_block_prep() which returns a bh that is unwritten, mapped
+and new. During the write, we'll copy data in this folio and then 
+adjust i_size in write_end, release the folio lock and ultimately the
+inode_lock().
 
-Actually, the latency incurred by the fact the page table updates are
-done by the GPU is one thing, and I guess I could agree with you if that
-was the only difference between the GPU and CPU view. But the fact
-VM_BIND jobs can have external dependencies makes things a lot more
-confusing. I might be wrong, but I think atomic page-flip is simpler.
-Yes you can have implicit deps on your scanout buffer, and yes the HW
-will wait for these fences to signal before updating the plane pointer,
-but that's still just a simple pipeline with one resource to deal with.
-A VM is a whole range with virtual memory regions being attached
-physical mem chunks, possibly with each range having its own lifecycle,
-etc. It'd make more sense to me to have a way to know the current
-state, and the future state.
+In this intermediate state, before writeback happens, the buffer is
+unwritten but has data which will be written. At this point, if we call
+ext4_block_truncate_page() and have the logic to exit early for bh_unwritten, the
+we will never actually zero out the folio which might cause stale data to be
+written during writeback (?)
 
-Just one example, say you have a GPU job that triggers some fault
-that's supposed to be handled by the kernel driver to unblock the
-situation. In order to have some context, the kernel driver needs to
-read a GPU buffer that's passed back as a virtual address by the GPU/FW,
-so it calls drm_gpuvm_bo_find(), and now it might potentially get a BO
-that's not the current BO being mapped at this address, but the future
-BO after some asynchronous VM_BIND(map) has been executed, and of
-course, the VM_BIND job leading to this future state, could have a
-dependency on the GPU job, because this GPU job was using the old
-mapping. It might sound completely hypothetical, but that's actually
-the sort of things the Mali FW does in a few occasions.
+Now, most of the calls to ext4_block_truncate_page() happen via ext4_truncate ( like via ext4_setattr,
+ext4_truncate_failed_write() etc) call truncate_inode_pages() which
+seems to handle zeroing the partial folio beyond i_size. However, if we
+add the logic to skip unwritten blocks in this function then:
 
-So yeah, I'm still not convinced we can always get away with just the
-future representation of the VM. Sometimes you have to know what's
-mapped at the moment.
+1. We create an implicit dependency in ext4_block_truncate_page() that the folio
+needs to not have any data if its unwritten ie some other function has
+taken care of by some other function called before it.
 
-> To bring them in sync you need to wait for fences.
+2. Additionally, that other function will also need to mark the relevant buffer dirty,
+which is done in this function.
 
-Wouldn't solve the case I mentioned above, AFAICT.
+3. There are some other paths that call ext4_block_truncate_page()
+without turncating the pagecache like ext4_zero_range(). Im not sure if
+this will cause any issues as I've not gone through the function
+completely though but yes, other functions that later call truncate
+in future might need to keep this implicit dependency in mind.
 
-> And ideally the async=20
-> work should never fail.
+This just makes me think that adding this particular if() to skip
+bh_unwritten might not be as straightforward as I was initially thinking
+it to be. I think for now I'll atleast post the patch to mark buffer_new
+so that the immediate stale data issue and this bug on is taken care
+of. This particular patch might need more through of the existing call
+sites.
 
-Sure, that I considered for granted. If async VM_BIND fails, we just
-flag the VM as unusable, and cancel any GPU job submission happening on
-the VM. The user then has to recreate the VM to take a fresh start
-(DEVICE_LOST situation).
+Let me know if I miss understood something here or if you have any inputs on this.
 
-It a bit tricky when we want to clean things up after a failure,
-because we might have lost track of some of mappings (early
-gpuva_unmap(), but the MMU page tables are still lying around). In our
-case (Panthor) that's not really an issue though, because
-free_io_pgtable_ops() will take care of that for us.
+Thanks again!
+Ojaswin
 
->=20
-> If one wants to push async work out to be handled solely by the GPU,=20
-> this is the way things must be done since the GPU can't take locks or=20
-> allocate memory, but as part or all of async work is sometimes done=20
-> using the CPU, it might make sense to challenge that to some extent.=20
-
-I think updating the VM state in the run_job() with drm_gpuva_[un]map()
-would still account for the GPU-is-executing-pgtable-updates latency,
-and that's not really the sort of desynchronization I'm worried about,
-because when you get to submit your VM_BIND job, you know all the job
-deps are met, and the VM update is about to happen. What I'm worried
-about is the desynchronization incurred by complex VM_BIND job deps
-that make it hard to know what's the diff between the drm_gpuvm state
-(predicting the future) and the VM state a GPU job expects (the
-present).
+> 
+> Regarding the second issue I agree that using buffer_new flag makes the
+> most sense. But it would make most sense to me to put this special logic
+> directly into ext4_get_block_unwritten() because it is really special logic
+> when preparing buffered write via unwritten extent (and it relies on
+> __block_write_begin_int() logic to interpret buffer_new flag in the right
+> way). Putting in _ext4_get_block() seems confusing to me because it raises
+> questions like why should we set it for reads? And why not set it already
+> in ext4_map_blocks() which is also used by iomap?
+> 
+> 								Honza
+> 
+> 
+> > ---
+> >  fs/ext4/inode.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 6c490f05e2ba..a30bfec0b525 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -765,6 +765,10 @@ static int _ext4_get_block(struct inode *inode, sector_t iblock,
+> >  	if (ret > 0) {
+> >  		map_bh(bh, inode->i_sb, map.m_pblk);
+> >  		ext4_update_bh_state(bh, map.m_flags);
+> > +
+> > +		if (buffer_unwritten(bh))
+> > +			set_buffer_new(bh);
+> > +
+> >  		bh->b_size = inode->i_sb->s_blocksize * map.m_len;
+> >  		ret = 0;
+> >  	} else if (ret == 0) {
+> > -- 
+> > 2.31.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
