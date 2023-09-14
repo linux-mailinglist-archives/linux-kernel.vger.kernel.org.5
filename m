@@ -2,404 +2,551 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBB57A0803
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A687A0809
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240430AbjINOzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        id S240472AbjINOzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240347AbjINOzX (ORCPT
+        with ESMTP id S240320AbjINOzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:55:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D1D1BE1;
-        Thu, 14 Sep 2023 07:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694703319; x=1726239319;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IX8csOUZtZhVCvFkzraGMVULgq4/R0ymMMJl+NKS5Ss=;
-  b=bbVJkM4jiO0kDulNJZ9lImGypl7R8sq05GRZO7U1D+6LDqMqiiOSLiHY
-   IyDwjL1UBLaZu0f46BWydVAHxtIJe0gBKLrviyCOIOEBQKUSEC0xWOOTP
-   hmNT9CRzSjr724PvUrxTRjnTF+GWLpOFGdLewXQKahuWwZPjwYZ9mX4Wx
-   jxAHCxNBZK6aJanAv2RBSpYsgIaZ+o4e4EngTeu6uqH3CVZ5tzPVOlh+f
-   qLH5HqavtqBzMZpsO1o3cyHtef7ywk2flDbfT0qKwSSrCct4tibOqrhJ6
-   4V826mAlJ3RawcbG4xQLfSq29Wc1ykZFrHfljb93PA1P3DtJt5r4rIDXb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="359231112"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="359231112"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 07:55:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="779640342"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="779640342"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga001.jf.intel.com with SMTP; 14 Sep 2023 07:55:10 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 14 Sep 2023 17:55:09 +0300
-Date:   Thu, 14 Sep 2023 17:55:09 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-Message-ID: <ZQMezTQItvG5bsRl@kuha.fi.intel.com>
-References: <ZPiAwOf00RREiYPr@kuha.fi.intel.com>
- <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
- <ZQBGD8CY5OVKYX63@kuha.fi.intel.com>
- <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
- <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com>
- <CAA8EJpqaipCT66x698R6dKDTSMk-D2iNHv8NSnMzPy-X_jFJ1Q@mail.gmail.com>
- <ZQG1zMbjWNLtx8lk@kuha.fi.intel.com>
- <CAA8EJprSH1jTa74c2P91SEC84eM8w=ACC4o2xM8t9eShvC9UeQ@mail.gmail.com>
- <ZQLRuNkNBghjKRca@kuha.fi.intel.com>
- <CAA8EJpoTpyPeyo07dRTY-+MxwE7RCdBb0nmbbRO8QEskBihVGA@mail.gmail.com>
+        Thu, 14 Sep 2023 10:55:42 -0400
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB91FC7;
+        Thu, 14 Sep 2023 07:55:37 -0700 (PDT)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id CC20242476;
+        Thu, 14 Sep 2023 19:55:31 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1694703332; bh=gQQSA/XEl5S5zxwFxwTbK7wyUcy96sHjrbNaBrvMoBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g24bTRyvRmmgQq9WOMXr9+aQEQ5+MlVV2975jOiq5zzJa5bGW5wwh10nvbWfehUr/
+         NL7huGUlhc0J2bnySSW4DJNWHBFkk0XthNKmiCgzHw1CcQR61iynqM+3BE+B62SiBy
+         ykK18pJWUWYsHLsx95wXeCwq3wKJC/bzCbfv27wrt4V83sSVzAW3gFY6ZLVtmG6i96
+         FRUs8xsrkPhnVya19wIS8WNMS9ZRNPaItHTGcco8FjWkA4/62t4Db7OWfXmk07L9cE
+         0roPHcgIA6jUgTt9Y9VYUv+DF4e4OG5FxztjGG6a5aK/n7Zix0AQYRGbQ7yZkVAL3n
+         dJJ1Zzzm/M55Q==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoTpyPeyo07dRTY-+MxwE7RCdBb0nmbbRO8QEskBihVGA@mail.gmail.com>
+Date:   Thu, 14 Sep 2023 19:55:30 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] power: supply: Add driver for pm8916 lbc
+In-Reply-To: <20230914142558.4pvwxneyz7hg4hhp@mercury.elektranox.org>
+References: <20230731-pm8916-bms-lbc-v2-0-82a4ebb39c16@trvn.ru>
+ <20230731-pm8916-bms-lbc-v2-4-82a4ebb39c16@trvn.ru>
+ <20230914142558.4pvwxneyz7hg4hhp@mercury.elektranox.org>
+Message-ID: <ea1a002e18bbe9ef7aa2a238737a0c8c@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
-
-On Thu, Sep 14, 2023 at 01:40:49PM +0300, Dmitry Baryshkov wrote:
-> On Thu, 14 Sept 2023 at 12:26, Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > On Wed, Sep 13, 2023 at 04:47:12PM +0300, Dmitry Baryshkov wrote:
-> > > On Wed, 13 Sept 2023 at 16:15, Heikki Krogerus
-> > > <heikki.krogerus@linux.intel.com> wrote:
-> > > >
-> > > > On Wed, Sep 13, 2023 at 01:26:14PM +0300, Dmitry Baryshkov wrote:
-> > > > > Hi Heikki,
-> > > > >
-> > > > > On Wed, 13 Sept 2023 at 12:27, Heikki Krogerus
-> > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > On Tue, Sep 12, 2023 at 08:39:45PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > On 12/09/2023 14:05, Heikki Krogerus wrote:
-> > > > > > > > On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > On 06/09/2023 16:38, Heikki Krogerus wrote:
-> > > > > > > > > > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
-> > > > > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > > > > > > >
-> > > > > > > > > > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > > > > Hi Heikki,
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> > > > > > > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Hi Dmitry,
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > > > > > > > > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > That's not true. The dev->fwnode is assigned when the device is
-> > > > > > > > > > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
-> > > > > > > > > > > > > > member is assigned before the device is registered, then that fwnode
-> > > > > > > > > > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > But please note that even if drm_connector does not have anything in
-> > > > > > > > > > > > > > its fwnode member, the device may still be assigned fwnode, just based
-> > > > > > > > > > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > > > > > > > > > > > > > breaks drivers already using components (as it was pointed at [1]),
-> > > > > > > > > > > > > > > resulting in a deadlock. Lockdep trace is provided below.
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > Granted these two issues, it seems impractical to fix this commit in any
-> > > > > > > > > > > > > > > sane way. Revert it instead.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > I think there is already user space stuff that relies on these links,
-> > > > > > > > > > > > > > so I'm not sure you can just remove them like that. If the component
-> > > > > > > > > > > > > > framework is not the correct tool here, then I think you need to
-> > > > > > > > > > > > > > suggest some other way of creating them.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > The issue (that was pointed out during review) is that having a
-> > > > > > > > > > > > > component code in the framework code can lead to lockups. With the
-> > > > > > > > > > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
-> > > > > > > > > > > > > for non-ACPI systems) probing of drivers which use components and set
-> > > > > > > > > > > > > drm_connector::fwnode breaks immediately.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Can we move the component part to the respective drivers? With the
-> > > > > > > > > > > > > patch 2 in place, connector->fwnode will be copied to the created
-> > > > > > > > > > > > > kdev's fwnode pointer.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Another option might be to make this drm_sysfs component registration optional.
-> > > > > > > > > > > >
-> > > > > > > > > > > > You don't need to use the component framework at all if there is
-> > > > > > > > > > > > a better way of determining the connection between the DP and its
-> > > > > > > > > > > > Type-C connector (I'm assuming that that's what this series is about).
-> > > > > > > > > > > > You just need the symlinks, not the component.
-> > > > > > > > > > >
-> > > > > > > > > > > The problem is that right now this component registration has become
-> > > > > > > > > > > mandatory. And if I set the kdev->fwnode manually (like in the patch
-> > > > > > > > > > > 2), the kernel hangs inside the component code.
-> > > > > > > > > > > That's why I proposed to move the components to the place where they
-> > > > > > > > > > > are really necessary, e.g. i915 and amd drivers.
-> > > > > > > > > >
-> > > > > > > > > > So why can't we replace the component with the method you are
-> > > > > > > > > > proposing in this series of finding out the Type-C port also with
-> > > > > > > > > > i915, AMD, or whatever driver and platform (that's the only thing that
-> > > > > > > > > > component is used for)?
-> > > > > > > > >
-> > > > > > > > > The drm/msm driver uses drm_bridge for the pipeline (including the last DP
-> > > > > > > > > entry) and the drm_bridge_connector to create the connector. I think that
-> > > > > > > > > enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
-> > > > > > > > > series.
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > > Determining the connection between a DP and its Type-C connector is
-> > > > > > > > > > starting to get really important, so ideally we have a common solution
-> > > > > > > > > > for that.
-> > > > > > > > >
-> > > > > > > > > Yes. This is what we have been discussing with Simon for quite some time on
-> > > > > > > > > #dri-devel.
-> > > > > > > > >
-> > > > > > > > > Unfortunately I think the solution that got merged was pretty much hastened
-> > > > > > > > > in instead of being well-thought. For example, it is also not always
-> > > > > > > > > possible to provide the drm_connector / typec_connector links (as you can
-> > > > > > > > > see from the patch7. Sometimes we can only express that this is a Type-C DP
-> > > > > > > > > connector, but we can not easily point it to the particular USB-C port.
-> > > > > > > > >
-> > > > > > > > > So, I'm not sure, how can we proceed here. Currently merged patch breaks
-> > > > > > > > > drm/msm if we even try to use it by setting kdef->fwnode to
-> > > > > > > > > drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
-> > > > > > > > > an ACPI-only thing, which is not expected to work in a non-ACPI cases.
-> > > > > > > >
-> > > > > > > > You really have to always supply not only the Type-C ports and partners,
-> > > > > > > > but also the alt modes. You need them, firstly to keep things sane
-> > > > > > > > inside kernel, but more importantly, so they are always exposed to the
-> > > > > > > > user space, AND, always the same way. We have ABIs for all this stuff,
-> > > > > > > > including the DP alt mode. Use them. No shortcuts.
-> > > > > > > >
-> > > > > > > > So here's what you need to do. UCSI does not seem to bring you
-> > > > > > > > anything useful, so just disable it for now. You don't need it. Your
-> > > > > > > > port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
-> > > > > > > > that's where you need to register all these components - the ports,
-> > > > > > > > partners and alt modes. You have all the needed information there.
-> > > > > > >
-> > > > > > > To make things even more complicate, UCSI is necessary for the USB part of
-> > > > > > > the story. It handles vbus and direction.
-> > > > > > >
-> > > > > > > > Only after you've done that we can start to look at how should the
-> > > > > > > > connection between the DPs and their USB Type-C connectors be handled.
-> > > > > > >
-> > > > > > > But sure enough, I can add typec port registration to the altmode driver.
-> > > > > > > This will solve the 'port not existing' part of the story.
-> > > > > > >
-> > > > > > > I'd like to hear your opinion on:
-> > > > > > >
-> > > > > > > - components. Using them breaks drm/msm. How can we proceed?
-> > > > > >
-> > > > > > I don't think replacing the components is going to be a problem once
-> > > > > > you have described everything properly in you DT. I'm fairly certain now
-> > > > > > that that is the main problem here. You don't have this connection
-> > > > > > described in your DT as it should.
-> > > > >
-> > > > > We have. See https://lore.kernel.org/linux-arm-msm/20230817145940.9887-1-dmitry.baryshkov@linaro.org/
-> > > > > (for non-PMIC-GLINK platform)
-> > > > > Or arch/arm64/boot/dts/qcom/sm8350-hdk.dts, which already has a full
-> > > > > description of USB-C connector and signal flow.
-> > > > >
-> > > > > In fact, thanks to this representation I can properly set
-> > > > > 'connector->fwnode' to point to the OF node corresponding to the
-> > > > > connector's drm_bridge. I can even propagate it to the kdef->fwnode /
-> > > > > kdev->of_node in drm_sysfs_connector_add(). But then a component_add()
-> > > > > call looks the kernel up.
-> > > > >
-> > > > > And to add on top of that, here is another reason why I think that
-> > > > > this sysfs links ABI/implementation was not well thought. The
-> > > > > typec_connector_ops are added to all fwnode-enabled connector devices.
-> > > > > It doesn't even bother checking that the device is really the DP
-> > > > > connector and that the device on the other side of fwnode link is a
-> > > > > typec port device. The symlink is named 'typec_connector', so one can
-> > > > > not easily extend this ABI to support SlimPort aka MyDP (which uses
-> > > > > micro-USB-B connectors instead of USB-C). Neither can we extend it to
-> > > > > represent MHL connections (again, micro-USB-B).
-> > > > >
-> > > > > > > - PATH property usage. This way we make USB-C DisplayPort behave like the
-> > > > > > > MST ports.
-> > > > > >
-> > > > > > That looks to me like an attempt to exploit a feature that is not
-> > > > > > designed for this purposes at all. Just drop all that.
-> > > > >
-> > > > > But why? From the docs: 'Connector path property to identify how this
-> > > > > sink is physically connected.'
-> > > > >
-> > > > > So far we have been using it for MST only. But the description above
-> > > > > also suits properly for the 'connected to the Type-C port0 device'
-> > > > > kind of data. Then the userspace can use this property to change the
-> > > > > representation of the controller. Or to rename it as it does for
-> > > > > DP-MST connectors. Or just add the USB-C icon in the UI.
-> > > > >
-> > > > > Having this data in sysfs only requires userspace first to map the
-> > > > > connector to the device under sysfs (which is not trivial since Xorg
-> > > > > renames DP-MST connectors), then to look for the symlink value. Quite
-> > > > > complicated compared to checking the DRM property.
-> > > > >
-> > > > > Moreover, once we get to the SlimPort / MyDP / MHL, we can extend the
-> > > > > schema to support 'microusb:something' values for this property.
-> > > > >
-> > > > > > The connection has to be first described in your DT, and the way you
-> > > > > > usually describe connections in DT is by using the device graph (OF
-> > > > > > graph). It seems that you have everything needed for that - the USB
-> > > > > > Type-C connectors have their own OF nodes (what you register as
-> > > > > > drm_bridges are in fact USB Type-C connectors), and presumable you
-> > > > > > also have OF nodes for all your video ports (DisplayPorts) - so
-> > > > > > applying the graph between the two really should not be a problem. The
-> > > > > > DP is endpoint for the USB Type-C connector, and vice versa.
-> > > > >
-> > > > > Not quite. There is no direct connection between the USB Type-C
-> > > > > connector and DP controller. The USB-C connector has three ports.
-> > > > >
-> > > > > port@0 goes to theHS-USB controller. This is simple.
-> > > > >
-> > > > > port@1 goes to the USB+DP PHY. All retimers and SS line muxes are
-> > > > > included in between. And it is the USB+DP PHY that is connected to the
-> > > > > DP and USB-SS controllers.
-> > > > >
-> > > > > port@2 goes to SBU lines mux (e.g. fsa4480).
-> > > > >
-> > > > > > After you have everything needed in your DT, the problem here isn't
-> > > > > > actually much of a problem at all. We will have options how to move
-> > > > > > forward after that.
-> > > > >
-> > > > > Could you please describe what is missing there?
-> > > >
-> > > > We are not after the direct connections here, we are after the final
-> > > > endpoints. So you are missing description of the logical connection
-> > > > between your DP and Type-C connector.
-> > >
-> > > Adding Krzysztof, as one of DT maintainers, to the CC list.
-> > >
-> > > >From what I understand, DT describes hardware. There is no description
-> > > for the 'logical' connections.
-> > >
-> > > >
-> > > > I understand that the idea is to build the graph to describe only the
-> > > > physical connections, but with just the physical connections you are
-> > > > doomed to write separate software solution for almost every single
-> > > > platform, even though the final endpoints are always the same (DP to
-> > > > Type-C). You just can not generalise the components (muxes, phys,
-> > > > retimers, etc.) behind USB Type-C connectors (or anything else for
-> > > > that matter), it's not possible. The components and their order vary
-> > > > on almost every single platform. On some platforms the stack of parts
-> > > > after the connector is also incredibly complex.
-> > >
-> > > Yes. And this is why we have a chain of DRM bridges, going from the DP
-> > > controller to the final drm_bridge at the Type-C port manager. When
-> > > there is the altmode event, it gets sent via this chain using the
-> > > normal DRM HPD event.
-> >
-> > We will not have drm bridges between the thunderbolt controller and
-> > the connector, but you still need to be able to show the connector to
-> > the user when DisplayPort is tunneled over thunderbolt. DP alt mode is
-> > only one way of getting DisplayPort through USB Type-C. You just can't
-> > make any assumptions with USB Type-C.
+Sebastian Reichel писал(а) 14.09.2023 19:25:
+> Hi,
 > 
-> In the end the drm bridge chain is just a funny way to create a
-> drm_connector. The rest of the system sees just drm_connector, no
-> matter if internally it is intel_drm_connecttor or
-> drm_bridge_connector.
+> On Mon, Jul 31, 2023 at 10:06:27PM +0500, Nikita Travkin wrote:
+>> pm8916 LBC is a Linear Battery Charger hardware block in pm8916 PMIC.
+>>
+>> This block implements simple CC/CV charging for Li-Po batteries.
+>> The hardware has internal state machine to switch between modes and
+>> works mostly autonomously, only needing the limits and targets to be
+>> set to operate.
+>>
+>> This driver allows setting limits and enabling the LBC block, monitoring
+>> it's state.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>> v2: Fix missed warnings, get irq by name
+>> ---
 > 
-> >
-> > The drm bridge chain could only solve the port/connector relationship
-> > problem from a single angle, but we need a common solution. The
-> > problem is after all completely generic. It is not DisplayPort
-> > specific or even USB Type-C specific problem. Those are just two of
-> > the many possible last endpoints for these connections that need to be
-> > aware of each other.
-> >
-> > So we really have to have a common way of getting this straight from
-> > the hardware description somehow.
+> Looks mostly good, but I have a few small requests.
 > 
-> I'd quite disagree with you here. This works in the x86 world, where
-> the hardware is more or less standard. In the embedded world it is not
-> that easy. This is why we opted for the software transcribing the
-> hardware description. In case of ACPI the software part can be common
-> to all the drivers. But in the embedded systems... I fear is is just
-> not possible.
+>>  drivers/power/supply/Kconfig      |  11 ++
+>>  drivers/power/supply/Makefile     |   1 +
+>>  drivers/power/supply/pm8916_lbc.c | 383 ++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 395 insertions(+)
+>>
+>> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+>> index e93a5a4d03e2..a2ea249a57c6 100644
+>> --- a/drivers/power/supply/Kconfig
+>> +++ b/drivers/power/supply/Kconfig
+>> @@ -640,6 +640,17 @@ config BATTERY_PM8916_BMS_VM
+>>  	  To compile this driver as module, choose M here: the
+>>  	  module will be called pm8916_bms_vm.
+>>
+>> +config CHARGER_PM8916_LBC
+>> +	tristate "Qualcomm PM8916 Linear Battery Charger support"
+>> +	depends on MFD_SPMI_PMIC || COMPILE_TEST
+>> +	help
+>> +	  Say Y here to add support for Linear Battery Charger block
+>> +	  found in some Qualcomm PMICs such as PM8916. This hardware
+>> +	  blokc provides simple CC/CV battery charger.
+>> +
+>> +	  To compile this driver as module, choose M here: the
+>> +	  module will be called pm8916_lbc.
+>> +
+>>  config CHARGER_BQ2415X
+>>  	tristate "TI BQ2415x battery charger driver"
+>>  	depends on I2C
+>> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
+>> index fdf7916f80ed..e4bd9eb1261b 100644
+>> --- a/drivers/power/supply/Makefile
+>> +++ b/drivers/power/supply/Makefile
+>> @@ -85,6 +85,7 @@ obj-$(CONFIG_CHARGER_MT6360)	+= mt6360_charger.o
+>>  obj-$(CONFIG_CHARGER_MT6370)	+= mt6370-charger.o
+>>  obj-$(CONFIG_CHARGER_QCOM_SMBB)	+= qcom_smbb.o
+>>  obj-$(CONFIG_BATTERY_PM8916_BMS_VM)	+= pm8916_bms_vm.o
+>> +obj-$(CONFIG_CHARGER_PM8916_LBC)	+= pm8916_lbc.o
+>>  obj-$(CONFIG_CHARGER_BQ2415X)	+= bq2415x_charger.o
+>>  obj-$(CONFIG_CHARGER_BQ24190)	+= bq24190_charger.o
+>>  obj-$(CONFIG_CHARGER_BQ24257)	+= bq24257_charger.o
+>> diff --git a/drivers/power/supply/pm8916_lbc.c b/drivers/power/supply/pm8916_lbc.c
+>> new file mode 100644
+>> index 000000000000..490cb7064dbf
+>> --- /dev/null
+>> +++ b/drivers/power/supply/pm8916_lbc.c
+>> @@ -0,0 +1,383 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2023, Nikita Travkin <nikita@trvn.ru>
+>> + */
+>> +
+>> +#include <linux/errno.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_device.h>
 > 
-> > To me the obvious solution would be to just have a port in the graph
-> > that points directly the last endpoint regardless of what you have in
-> > between. But if that's not an option, then so be it. Then there just
-> > needs to be some other way of getting that information from DT.
+> It should be fine to remove the of headers after my proposed
+> changes.
 > 
-> Could you please point out what is wrong with generating this
-> information on the fly? We are going to work on fixing the
-> pmic_glink_altmode in the next couple of weeks, so that the typec port
-> device will be always present, as you suggested.
-> Are there any other obstacles?
+
+Will switch to the device_* and drop.
+
+>> +#include <linux/platform_device.h>
+>> +#include <linux/power_supply.h>
+>> +#include <linux/property.h>
+>> +#include <linux/regmap.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/extcon-provider.h>
+>> +
+>> +/* Two bytes: type + subtype */
+>> +#define PM8916_PERPH_TYPE 0x04
+>> +#define PM8916_LBC_CHGR_TYPE 0x1502
+>> +#define PM8916_LBC_BAT_IF_TYPE 0x1602
+>> +#define PM8916_LBC_USB_TYPE 0x1702
+>> +#define PM8916_LBC_MISC_TYPE 0x1802
+>> +
+>> +#define PM8916_LBC_CHGR_CHG_OPTION 0x08
+>> +#define PM8916_LBC_CHGR_PMIC_CHARGER BIT(7)
+>> +
+>> +#define PM8916_LBC_CHGR_CHG_STATUS 0x09
+>> +
+>> +#define PM8916_INT_RT_STS 0x10
+>> +
+>> +#define PM8916_LBC_USB_USBIN_VALID BIT(1)
+>> +
+>> +#define PM8916_LBC_CHGR_VDD_MAX 0x40
+>> +#define PM8916_LBC_CHGR_VDD_SAFE 0x41
+>> +#define PM8916_LBC_CHGR_IBAT_MAX 0x44
+>> +#define PM8916_LBC_CHGR_IBAT_SAFE 0x45
+>> +
+>> +#define PM8916_LBC_CHGR_TCHG_MAX_EN 0x60
+>> +#define PM8916_LBC_CHGR_TCHG_MAX_ENABLED BIT(7)
+>> +#define PM8916_LBC_CHGR_TCHG_MAX 0x61
+>> +
+>> +#define PM8916_LBC_CHGR_CHG_CTRL 0x49
+>> +#define PM8916_LBC_CHGR_CHG_EN BIT(7)
+>> +#define PM8916_LBC_CHGR_PSTG_EN BIT(5)
+>> +
+>> +#define PM8916_LBC_CHGR_MIN_CURRENT 90000
+>> +#define PM8916_LBC_CHGR_MAX_CURRENT 1440000
+>> +
+>> +#define PM8916_LBC_CHGR_MIN_VOLTAGE 4000000
+>> +#define PM8916_LBC_CHGR_MAX_VOLTAGE 4775000
+>> +#define PM8916_LBC_CHGR_VOLTAGE_STEP 25000
+>> +
+>> +#define PM8916_LBC_CHGR_MIN_TIME 4
+>> +#define PM8916_LBC_CHGR_MAX_TIME 256
+>> +
+>> +struct pm8916_lbc_charger {
+>> +	struct device *dev;
+>> +	struct extcon_dev *edev;
+>> +	struct power_supply *charger;
+>> +	struct power_supply_battery_info *info;
+>> +	struct regmap *regmap;
+>> +	unsigned int reg[4];
+>> +	bool online;
+>> +	unsigned int charge_voltage_max;
+>> +	unsigned int charge_voltage_safe;
+>> +	unsigned int charge_current_max;
+>> +	unsigned int charge_current_safe;
+>> +};
+>> +
+>> +static const unsigned int pm8916_lbc_charger_cable[] = {
+>> +	EXTCON_USB,
+>> +	EXTCON_NONE,
+>> +};
+>> +
+>> +enum {
+>> +	LBC_CHGR = 0,
+>> +	LBC_BAT_IF,
+>> +	LBC_USB,
+>> +	LBC_MISC,
+>> +};
+>> +
+>> +static int pm8916_lbc_charger_configure(struct pm8916_lbc_charger *chg)
+>> +{
+>> +	int ret = 0;
+>> +	unsigned int tmp;
+>> +
+>> +	chg->charge_voltage_max = clamp_t(u32, chg->charge_voltage_max,
+>> +					  PM8916_LBC_CHGR_MIN_VOLTAGE, chg->charge_voltage_safe);
+>> +
+>> +	tmp = chg->charge_voltage_max - PM8916_LBC_CHGR_MIN_VOLTAGE;
+>> +	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
+>> +	chg->charge_voltage_max = PM8916_LBC_CHGR_MIN_VOLTAGE + tmp * PM8916_LBC_CHGR_VOLTAGE_STEP;
+>> +
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_MAX, tmp);
+>> +	if (ret)
+>> +		goto error;
+>> +
+>> +	chg->charge_current_max = min(chg->charge_current_max, chg->charge_current_safe);
+>> +
+>> +	tmp = clamp_t(u32, chg->charge_current_max,
+>> +		      PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
+>> +
+>> +	tmp = chg->charge_current_max / PM8916_LBC_CHGR_MIN_CURRENT - 1;
+>> +	chg->charge_current_max = (tmp + 1) * PM8916_LBC_CHGR_MIN_CURRENT;
+>> +
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_MAX, tmp);
+>> +	if (ret)
+>> +		goto error;
+>> +
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_CTRL,
+>> +			   PM8916_LBC_CHGR_CHG_EN | PM8916_LBC_CHGR_PSTG_EN);
+>> +	if (ret)
+>> +		goto error;
+>> +
+>> +	return ret;
+>> +
+>> +error:
+>> +	dev_err(chg->dev, "Failed to configure charging: %pe\n", ERR_PTR(ret));
+>> +	return ret;
+>> +}
+>> +
+>> +static int pm8916_lbc_charger_get_property(struct power_supply *psy,
+>> +					   enum power_supply_property psp,
+>> +					   union power_supply_propval *val)
+>> +{
+>> +	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
+>> +
+>> +	switch (psp) {
+>> +	case POWER_SUPPLY_PROP_ONLINE:
+>> +		val->intval = chg->online;
+>> +		return 0;
+>> +
+>> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
+>> +		val->intval = chg->charge_voltage_max;
+>> +		return 0;
+>> +
+>> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+>> +		val->intval = chg->charge_current_max;
+>> +		return 0;
+>> +
+>> +	default:
+>> +		return -EINVAL;
+>> +	};
+>> +}
+>> +
+>> +static int pm8916_lbc_charger_set_property(struct power_supply *psy,
+>> +					   enum power_supply_property prop,
+>> +					   const union power_supply_propval *val)
+>> +{
+>> +	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
+>> +
+>> +	switch (prop) {
+>> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+>> +		chg->charge_current_max = val->intval;
+>> +		return pm8916_lbc_charger_configure(chg);
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +}
+>> +
+>> +static int pm8916_lbc_charger_property_is_writeable(struct power_supply *psy,
+>> +						    enum power_supply_property psp)
+>> +{
+>> +	switch (psp) {
+>> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+>> +		return true;
+>> +	default:
+>> +		return false;
+>> +	}
+>> +}
+>> +
+>> +static enum power_supply_property pm8916_lbc_charger_properties[] = {
+>> +	POWER_SUPPLY_PROP_ONLINE,
+>> +	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
+>> +	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+>> +};
 > 
-> > Maybe DT could use similar physical location object/attribute like
-> > ACPI - the DP would have matching physical location with its connector?
-> >
-> > > > Having the logical final endpoint connection described in your DT/ACPI
-> > > > on top of the physical connections costs very little, but at the same
-> > > > time it's usually the only thing that the software needs (like in this
-> > > > case).
-> > >
-> > > Maybe there is some misunderstanding here. We have this connection. We
-> > > have connector->fwnode and connector->of_node pointing to the correct
-> > > device - the last bridge in the chain. Each TCPM driver knows the
-> > > relationship between the in-built drm_bridge and the Type-C port. The
-> > > DP host controller port can be terminated with other endpoints, e.g.
-> > > eDP panel. Or there can be a non-DP host, which is then connected
-> > > through a series of bridges to the eDP or external DP port. This is
-> > > what anx78xx bridge does: it converts the HDMI link into an external
-> > > DP (SlimPort) connection. Bridge chains permit this to be handled in a
-> > > seamless way.
+> POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT is about the charger input,
+> e.g. 500mA limit for a USB based charger. The variable names you are
+> using suggests, that you want to expose
+> POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT instead.
+> 
 
-I'm sorry, I did not read this comment carefully enough earlier. I
-probable have misunderstood something related to the drm bridges.
+Hm yes, I was not sure which one is more appropriate but CHARGE_CURRENT
+seems more appropriate indeed. Will switch to that.
 
-I'm still not sure why would it be a problem to try to hook up the
-port and connector device nodes - you seem to have them ready in any
-case, no?
-But maybe it's best that you guys just prepare the next version at
-this point. Let's continue then.
+>> +static irqreturn_t pm8916_lbc_charger_state_changed_irq(int irq, void *data)
+>> +{
+>> +	struct pm8916_lbc_charger *chg = data;
+>> +	unsigned int tmp;
+>> +	int ret;
+>> +
+>> +	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
+>> +	if (ret)
+>> +		return IRQ_HANDLED;
+>> +
+>> +	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
+>> +	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
+>> +
+>> +	power_supply_changed(chg->charger);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static int pm8916_lbc_charger_probe_dt(struct pm8916_lbc_charger *chg)
+>> +{
+>> +	struct device *dev = chg->dev;
+>> +	struct device_node *np = dev->of_node;
+>> +	int ret = 0;
+>> +	unsigned int tmp;
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,fast-charge-safe-voltage", &chg->charge_voltage_safe);
+> 
+> device_property_read_u32(...)
+> 
+>> +	if (ret)
+>> +		return ret;
+>> +	if (chg->charge_voltage_safe < PM8916_LBC_CHGR_MIN_VOLTAGE)
+>> +		return -EINVAL;
+>> +
+>> +	chg->charge_voltage_safe = clamp_t(u32, chg->charge_voltage_safe,
+>> +					PM8916_LBC_CHGR_MIN_VOLTAGE, PM8916_LBC_CHGR_MAX_VOLTAGE);
+>> +
+>> +	tmp = chg->charge_voltage_safe - PM8916_LBC_CHGR_MIN_VOLTAGE;
+>> +	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_SAFE, tmp);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,fast-charge-safe-current", &chg->charge_current_safe);
+> 
+> device_property_read_u32(...)
+> 
+>> +	if (ret)
+>> +		return ret;
+>> +	if (chg->charge_current_safe < PM8916_LBC_CHGR_MIN_CURRENT)
+>> +		return -EINVAL;
+>> +
+>> +	chg->charge_current_safe = clamp_t(u32, chg->charge_current_safe,
+>> +					PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
+>> +
+>> +	chg->charge_current_max = chg->charge_current_safe;
+>> +
+>> +	tmp = chg->charge_current_safe / PM8916_LBC_CHGR_MIN_CURRENT - 1;
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_SAFE, tmp);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/* Disable charger timeout. */
+>> +	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_TCHG_MAX_EN, 0x00);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static const struct power_supply_desc pm8916_lbc_charger_psy_desc = {
+>> +	.name = "pm8916-lbc-chgr",
+>> +	.type = POWER_SUPPLY_TYPE_USB,
+>> +	.properties = pm8916_lbc_charger_properties,
+>> +	.num_properties = ARRAY_SIZE(pm8916_lbc_charger_properties),
+>> +	.get_property = pm8916_lbc_charger_get_property,
+>> +	.set_property = pm8916_lbc_charger_set_property,
+>> +	.property_is_writeable = pm8916_lbc_charger_property_is_writeable,
+>> +};
+>> +
+>> +static int pm8916_lbc_charger_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct pm8916_lbc_charger *chg;
+>> +	struct power_supply_config psy_cfg = {};
+>> +	int ret, len, irq;
+>> +	unsigned int tmp;
+>> +
+>> +	chg = devm_kzalloc(dev, sizeof(*chg), GFP_KERNEL);
+>> +	if (!chg)
+>> +		return -ENOMEM;
+>> +
+>> +	chg->dev = dev;
+>> +
+>> +	chg->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+>> +	if (!chg->regmap)
+>> +		return -ENODEV;
+>> +
+>> +	len = of_property_count_u32_elems(dev->of_node, "reg");
+> 
+> device_property_count_u32(...)
+> 
+>> +	if (len < 0)
+>> +		return len;
+>> +	if (len != 4)
+>> +		return dev_err_probe(dev, -EINVAL,
+>> +				     "Wrong amount of reg values: %d (4 expected)\n", len);
+>> +
+>> +	irq = platform_get_irq_byname(pdev, "usb_vbus");
+>> +	if (irq < 0)
+>> +		return irq;
+>> +
+>> +	ret = devm_request_threaded_irq(dev, irq, NULL, pm8916_lbc_charger_state_changed_irq,
+>> +					IRQF_ONESHOT, "pm8916_lbc", chg);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = of_property_read_u32_array(dev->of_node, "reg", chg->reg, len);
+> 
+> device_property_read_u32_array(...)
+> 
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_PERPH_TYPE, &tmp, 2);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +	if (tmp != PM8916_LBC_CHGR_TYPE)
+>> +		goto type_error;
+>> +
+>> +	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_BAT_IF] + PM8916_PERPH_TYPE, &tmp, 2);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +	if (tmp != PM8916_LBC_BAT_IF_TYPE)
+>> +		goto type_error;
+>> +
+>> +	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_USB] + PM8916_PERPH_TYPE, &tmp, 2);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +	if (tmp != PM8916_LBC_USB_TYPE)
+>> +		goto type_error;
+>> +
+>> +	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_MISC] + PM8916_PERPH_TYPE, &tmp, 2);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +	if (tmp != PM8916_LBC_MISC_TYPE)
+>> +		goto type_error;
+>> +
+>> +	ret = regmap_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_OPTION, &tmp);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +	if (tmp != PM8916_LBC_CHGR_PMIC_CHARGER)
+>> +		dev_err_probe(dev, -ENODEV, "The system is using an external charger\n");
+>> +
+>> +	ret = pm8916_lbc_charger_probe_dt(chg);
+>> +	if (ret)
+>> +		dev_err_probe(dev, ret, "Error while parsing device tree\n");
+>> +
+>> +	psy_cfg.drv_data = chg;
+>> +	psy_cfg.of_node = dev->of_node;
+>> +
+>> +	chg->charger = devm_power_supply_register(dev, &pm8916_lbc_charger_psy_desc, &psy_cfg);
+>> +	if (IS_ERR(chg->charger))
+>> +		return dev_err_probe(dev, PTR_ERR(chg->charger), "Unable to register charger\n");
+>> +
+>> +	ret = power_supply_get_battery_info(chg->charger, &chg->info);
+>> +	if (ret)
+>> +		return dev_err_probe(dev, ret, "Unable to get battery info\n");
+>> +
+>> +	chg->edev = devm_extcon_dev_allocate(dev, pm8916_lbc_charger_cable);
+>> +	if (IS_ERR(chg->edev))
+>> +		return PTR_ERR(chg->edev);
+>> +
+>> +	ret = devm_extcon_dev_register(dev, chg->edev);
+>> +	if (ret < 0)
+>> +		return dev_err_probe(dev, ret, "failed to register extcon device\n");
+>> +
+>> +	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
+>> +	if (ret)
+>> +		goto comm_error;
+>> +
+>> +	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
+>> +	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
+>> +
+>> +	chg->charge_voltage_max = chg->info->voltage_max_design_uv;
+>> +	ret = pm8916_lbc_charger_configure(chg);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return 0;
+>> +
+>> +comm_error:
+>> +	return dev_err_probe(dev, ret, "Unable to communicate with device\n");
+>> +
+>> +type_error:
+>> +	return dev_err_probe(dev, -ENODEV, "Device reported wrong type: 0x%X\n", tmp);
+>> +}
+>> +
+>> +static const struct of_device_id pm8916_lbc_charger_of_match[] = {
+>> +	{ .compatible = "qcom,pm8916-lbc", },
+>> +	{ },
+> 
+> {},
+> 
+> (i.e. remove space and trailing, for the terminator entry)
+> 
 
-> > > What you are asking for looks like a step backwards to me: it requires
-> > > the host to know that there is a USB-C connector.
-> > >
-> > > > So, either you add one more port to your graph for the DP to Type-C
-> > > > connection, or, if that's not an option, then you need to describe
-> > > > that connection in some other way. Named references work also quite
-> > > > well in my experience.
-> > >
-> > > Named references were considered and frowned upon by DT maintainers.
+Ack, will remove inner space and trailing comma.
 
-thanks,
+>> +};
+>> +MODULE_DEVICE_TABLE(of, pm8916_lbc_charger_of_match);
+>> +
+>> +static struct platform_driver pm8916_lbc_charger_driver = {
+>> +	.driver = {
+>> +		.name = "pm8916-lbc",
+>> +		.of_match_table = of_match_ptr(pm8916_lbc_charger_of_match),
+> 
+> .of_match_table = pm8916_lbc_charger_of_match,
+> 
 
--- 
-heikki
+Ack
+
+Thanks for the review!
+
+Nikita
+
+>> +	},
+>> +	.probe = pm8916_lbc_charger_probe,
+>> +};
+>> +module_platform_driver(pm8916_lbc_charger_driver);
+>> +
+>> +MODULE_DESCRIPTION("pm8916 LBC driver");
+>> +MODULE_AUTHOR("Nikita Travkin <nikita@trvn.ru>");
+>> +MODULE_LICENSE("GPL");
+> 
+> Thanks and sorry for the slow review.
+> 
+> -- Sebastian
