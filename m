@@ -2,166 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BB27A02C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9137A02C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbjINLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S233717AbjINLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237909AbjINLe3 (ORCPT
+        with ESMTP id S233393AbjINLfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:34:29 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D51FEA
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:34:23 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a9f139cd94so119266466b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1694691262; x=1695296062; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lV1vLMgIGx4rvSnOJBSF85XJaepjxLerEmm9st1yuuc=;
-        b=M8jdaMwpYsUGNprr4R1C6mpHdu7BaMbT47YAoIQFAqDBHKBd+mY9P02ziI7Ex6Fh5N
-         I9cgeLhD8ZYtnuV2dg/07rbnTRKBextdyt9+4aHFCHDDnfoatuHbvSj1JBz6bKGipg8f
-         nvH0dkT4jA4in/lcOMCzWD5+PRoyCJBd3/2omF+8XL6740jp7jWH8+6+TiVSpnyzgqxE
-         saz2rYgGEm8hP1u5P4nGTCapybkvd3zOVP4kng30wnNzn7xZjkh2vTjJK3nqq04Q3h2Q
-         TpzyjDVutanyoFRaUASssJ20EvTL1Cu+nQ+OERhGobTqqDGIBOwj0RWla/VueGGVDsZ5
-         /C7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694691262; x=1695296062;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lV1vLMgIGx4rvSnOJBSF85XJaepjxLerEmm9st1yuuc=;
-        b=V9dKqUBGgYS9cgR+l6pLYM/Xm9hpSJdJGokf6s4+TvZBedVLtuVLeFuVnxgbG5BCtJ
-         pF2udw0bOqu5vMsgNM/r+50gtLCipaKL7ENaOIzBZkLO7+wGKhwHHr/A9yoBzKT1cHpI
-         x4uHiUALj11jw37NjIwbQIfpXf8VHGM8/nAhT3h9Le3slI/xJXntboUZoM6fxQgr3C7X
-         9Ck1fEbyHFRxItGtiNIyacxjCXSf2k29gR/hv8Xxm6cNS27uZ3cPBzQ/AZt9f5spmCAV
-         TVhEY8IUH0as3bvFsi/U23P4ytCR+zRwaNfVt6f3dcZGEr+c/PxIYAENIZRIoIpFMz6m
-         nTlQ==
-X-Gm-Message-State: AOJu0Yxlny0GYp3Ew64jTu+ZkdJf7FJ11nUntDZhMWkvpU9Dbg/o6g9T
-        J/FOTTnOBax2uHhUoh0p8W59zg==
-X-Google-Smtp-Source: AGHT+IEiO6lUl1syd4gFkJfKzwtfdKEUnNw0/c9PW9DPf2xh/ND4dxFbxRHsrctmMEooYdA1DFFwkA==
-X-Received: by 2002:a17:907:789a:b0:9aa:1e2f:7a9c with SMTP id ku26-20020a170907789a00b009aa1e2f7a9cmr4421990ejc.8.1694691262042;
-        Thu, 14 Sep 2023 04:34:22 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id h11-20020a170906854b00b0099ccee57ac2sm875119ejy.194.2023.09.14.04.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 04:34:21 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] i2c: muxes: pca954x: Enable features on MAX7357/MAX7358
-Date:   Thu, 14 Sep 2023 13:34:15 +0200
-Message-ID: <20230914113416.1285518-2-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230914113416.1285518-1-naresh.solanki@9elements.com>
-References: <20230914113416.1285518-1-naresh.solanki@9elements.com>
+        Thu, 14 Sep 2023 07:35:48 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717C3CC3;
+        Thu, 14 Sep 2023 04:35:44 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EAoVTL026571;
+        Thu, 14 Sep 2023 11:35:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=RjZZyJ/Se3E0TQ3jLCr+da6k3IlxB/LfHfaGLcvsi7I=;
+ b=B9+4TZrto6zNGoK7VetoALXrY2WytvaNYfmSUgd4J4vT/wCoitGPSg/AhLPT0pyudrGR
+ YtCOG3M6HX3Npq/eL9K8I6Otk+B65X+Lr1YUmoL/Pnb6QF0Ec+ZDD1hVnW1hc9yLZgSB
+ QBxukN0VMIl4O2tYu18d5Q6KzzY2nfE9MtkXiHJaxVrhagsjg1QMtUgF4QJ/K0g7RH0D
+ 37Pb69Pk+OErmnynrmTH7Da0ZTPjRdxCLtFs66F2NxfwFiVxgYGC0oTJiCDcqppidVY9
+ OwNFmfGW0CpvQ6IhEYEClvHJTQWl24EOtUY2xFOi42YH1ux5slte8TUa9Wad/UyTuf2C Jw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3h0dj9bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:35:36 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EBZabK032324
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:35:36 GMT
+Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
+ 2023 04:35:32 -0700
+Message-ID: <8d95d169-452f-e426-938f-ccadf26de9ca@quicinc.com>
+Date:   Thu, 14 Sep 2023 17:05:29 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH 6/6] scsi: ufs: ufs-sysfs: Introduce UFS power info sysfs
+ nodes
+Content-Language: en-US
+To:     Can Guo <quic_cang@quicinc.com>, <mani@kernel.org>,
+        <quic_nguyenb@quicinc.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, Bart Van Assche <bvanassche@acm.org>,
+        "Bean Huo" <beanhuo@micron.com>, Lu Hongfei <luhongfei@vivo.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: I3NxTihUEE4BksUB7IsrAuudxKQSsCyP
+X-Proofpoint-GUID: I3NxTihUEE4BksUB7IsrAuudxKQSsCyP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=967 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Detect that max7357 is being used and run custom init sequence.
-Enable additional features based on DT settings and unconditionally
-release the shared interrupt pin after 1.6 seconds and allow to use
-it as reset.
 
-These features aren't enabled by default & its up to board designer
-to enable the same as it may have unexpected side effects.
+On 9/11/2023 11:29 AM, Can Guo wrote:
+> Having UFS power info available in sysfs makes it easier to tell the state
+> of the link during runtime considering we have a bounch of power saving
+> features and various combinations for backward compatiblity.
 
-These should be validated for proper functioning & detection of devices
-in secondary bus as sometimes it can cause secondary bus being disabled.
+Please fix spelling mistake *bounch -> bunch
+> 
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>   Documentation/ABI/testing/sysfs-driver-ufs | 48 ++++++++++++++++++++++++++----
+>   1 file changed, 43 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+> index 0c7efaf..25169f2 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-ufs
+> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
+> @@ -1214,12 +1214,50 @@ Description:	This file shows the average latency (in micro seconds) of write
+>   
+>   		The file is read only.
+>   
+> -What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
+> -What:		/sys/bus/platform/devices/*.ufs/monitor/write_req_latency_sum
+> -Date:		January 2021
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/gear
+> +Date:		September 2023
+>   Contact:	Can Guo <quic_cang@quicinc.com>
+> -Description:	This file shows the total latency (in micro seconds) of write
+> -		requests after monitor gets started.
+> +Description:	This file shows the gear of UFS link.
+> +
+> +		The file is read only.
+> +
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/lane
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/lane
+> +Date:		September 2023
+> +Contact:	Can Guo <quic_cang@quicinc.com>
+> +Description:	This file shows how many lanes are enabled on the UFS link.
+> +
+> +		The file is read only.
+> +
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/mode
+> +Date:		September 2023
+> +Contact:	Can Guo <quic_cang@quicinc.com>
+> +Description:	This file shows the power mode of UFS link.
+> +
+> +		The file is read only.
+> +
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/rate
+> +Date:		September 2023
+> +Contact:	Can Guo <quic_cang@quicinc.com>
+> +Description:	This file shows the high speed rate of UFS link.
+> +
+> +		The file is read only.
+> +
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
+> +Date:		September 2023
+> +Contact:	Can Guo <quic_cang@quicinc.com>
+> +Description:	This file shows the UFS device power mode, i.e., the power mode
+> +		set to UFS device via the Start Stop Unit command.
+> +
+> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
+> +What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
+> +Date:		September 2023
+> +Contact:	Can Guo <quic_cang@quicinc.com>
+> +Description:	This file shows the the state of the UFS link.
+>   
+>   		The file is read only.
+>   
 
-The init sequence is not run for max7358 that needs to be unlocked
-first, but that would need the unimplemented function
-i2c_probe_func_quick_write().
-
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
----
-Changes in V3:
-- Delete unused #define
-- Update pca954x_init
-- Update commit message
-
-Changes in V2:
-- Update comments
-- Update check for DT properties
----
- drivers/i2c/muxes/i2c-mux-pca954x.c | 38 ++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 2219062104fb..91c7c1d13c89 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -57,6 +57,20 @@
- 
- #define PCA954X_IRQ_OFFSET 4
- 
-+/*
-+ * MAX7357's configuration register is writeable after POR, but
-+ * can be locked by setting the basic mode bit. MAX7358 configuration
-+ * register is locked by default and needs to be unlocked first.
-+ * The configuration register holds the following settings:
-+ */
-+#define MAX7357_CONF_INT_ENABLE			BIT(0)
-+#define MAX7357_CONF_FLUSH_OUT			BIT(1)
-+#define MAX7357_CONF_RELEASE_INT		BIT(2)
-+#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
-+#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
-+
-+#define MAX7357_POR_DEFAULT_CONF		BIT(0)
-+
- enum pca_type {
- 	max_7356,
- 	max_7357,
-@@ -463,6 +477,7 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
- 
- static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- {
-+	u8 conf = MAX7357_POR_DEFAULT_CONF;
- 	int ret;
- 
- 	if (data->idle_state >= 0)
-@@ -470,7 +485,28 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- 	else
- 		data->last_chan = 0; /* Disconnect multiplexer */
- 
--	ret = i2c_smbus_write_byte(client, data->last_chan);
-+	if (device_is_compatible(&client->dev, "maxim,max7357") &&
-+	    i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
-+		/*
-+		 * The interrupt signal is shared with the reset pin. Release the
-+		 * interrupt after 1.6 seconds to allow using the pin as reset.
-+		 * The interrupt isn't serviced yet.
-+		 */
-+		conf |= MAX7357_CONF_RELEASE_INT;
-+
-+		if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
-+			conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
-+		if (device_property_read_bool(&client->dev, "maxim,send-flush-out-sequence"))
-+			conf |= MAX7357_CONF_FLUSH_OUT;
-+		if (device_property_read_bool(&client->dev,
-+					      "maxim,preconnection-wiggle-test-enable"))
-+			conf |= MAX7357_CONF_PRECONNECT_TEST;
-+
-+		ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
-+	} else {
-+		ret = i2c_smbus_write_byte(client, data->last_chan);
-+	}
-+
- 	if (ret < 0)
- 		data->last_chan = 0;
- 
--- 
-2.41.0
-
+Thanks,
+nitin
