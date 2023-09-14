@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A747A05FE
+	by mail.lfdr.de (Postfix) with ESMTP id 570837A05FD
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239558AbjINNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
+        id S239866AbjINNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239402AbjINNeI (ORCPT
+        with ESMTP id S239296AbjINNeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 09:34:08 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536AC2129;
-        Thu, 14 Sep 2023 06:33:47 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667ED212C;
+        Thu, 14 Sep 2023 06:33:48 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 43469660737D;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C8FBF660737E;
         Thu, 14 Sep 2023 14:33:46 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694698426;
-        bh=vej0xyoaRLN25qHgld1P1pTyfPCEtxO7zlLcrG23sig=;
+        s=mail; t=1694698427;
+        bh=cxYwkj/F6kj42Kfzns0GGyq/E2dEjF9Je+84qllCmIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nhuItNLeE/eHshL9NqkSa3ui7vNLCle4BfyDm9HwWNOf8qU6fu9ZHVbz+qM7AUO2+
-         hjtFv2xfyIYnj36Jr5UkggkUfKEpG+u+CpDaGy+jvdb5cRM8cdW/BFr1DmyBh8ykgZ
-         A+onhe5XfI6fnEPoYo5B4XEKGDou1F9nCi2P0ZGTG2IJYyGu7BSjmOQmM+Q8TVGRfd
-         ZvmgpyITYotiJO2Okdgp887wYJBeNEufXuTVMaC3wUFk7JbYR2wLd5IiKKWEStrlUP
-         DD5WHQhVEn3UcvTuhg0gqOU/EBFU9gDBrKKgVfQ7duL809XOFrYLLYdikpK+LbTCkE
-         Td8EeFZsBaUjg==
+        b=HpCcDjwIzbu/CFpkbHzElKPkqKLgrYNOoIw0sHPR+JiGA/xYLs71WQOC1eJ1pPVFx
+         Ae20c+bd06EakvdwkNEm0rciFoLMRdX7qE9vKLHHhtAXhN3zERt8K0oJZU1CD9RKwM
+         R5EaqiY4AefrXlaYthIIS9w4VWVAI8g7GuNGLM6/b4bwQ1Pb/mh0cyt8BqvD03WE7A
+         Xdoyfmq+KrpIZ2LyYgdW6M95sa6/tklcHf2ugKxMG9jzqKxIjiXgMJAso4EbnBKlvf
+         4y3vTKB1f8NsRAdNKLMucjH0GX1cJazDjz8jCRbaEDTMKdar2s0FQVIZmn+YEhcidV
+         yjpJz2EwdszbQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 29/49] media: coda: Stop direct calls to queue num_buffers field
-Date:   Thu, 14 Sep 2023 15:33:03 +0200
-Message-Id: <20230914133323.198857-30-benjamin.gaignard@collabora.com>
+Subject: [PATCH v7 30/49] media: mediatek: vcodec: Stop direct calls to queue num_buffers field
+Date:   Thu, 14 Sep 2023 15:33:04 +0200
+Message-Id: <20230914133323.198857-31-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
 References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
@@ -59,22 +59,36 @@ Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/platform/chips-media/coda-common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c | 2 +-
+ drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/chips-media/coda-common.c b/drivers/media/platform/chips-media/coda-common.c
-index cc4892129aaf..f1d85758f6dd 100644
---- a/drivers/media/platform/chips-media/coda-common.c
-+++ b/drivers/media/platform/chips-media/coda-common.c
-@@ -794,7 +794,7 @@ static int coda_s_fmt(struct coda_ctx *ctx, struct v4l2_format *f,
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+index 3d2ae0e1b5b6..a04003d20b1d 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+@@ -1695,7 +1695,7 @@ static int vdec_vp9_slice_setup_core_buffer(struct vdec_vp9_slice_instance *inst
+ 		return -EINVAL;
  
- 	if (vb2_is_busy(vq)) {
- 		v4l2_err(&ctx->dev->v4l2_dev, "%s: %s queue busy: %d\n",
--			 __func__, v4l2_type_names[f->type], vq->num_buffers);
-+			 __func__, v4l2_type_names[f->type], vb2_get_num_buffers(vq));
- 		return -EBUSY;
- 	}
+ 	/* update internal buffer's width/height */
+-	for (i = 0; i < vq->num_buffers; i++) {
++	for (i = 0; i < VB2_MAX_FRAME; i++) {
+ 		if (vb == vb2_get_buffer(vq, i)) {
+ 			instance->dpb[i].width = w;
+ 			instance->dpb[i].height = h;
+diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
+index 04948d3eb011..ff183c9142a3 100644
+--- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
++++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
+@@ -923,7 +923,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
+ 		mtk_v4l2_venc_err(ctx, "pm_runtime_put fail %d", pm_ret);
  
+ err_start_stream:
+-	for (i = 0; i < q->num_buffers; ++i) {
++	for (i = 0; i < q->max_allowed_buffers; ++i) {
+ 		struct vb2_buffer *buf = vb2_get_buffer(q, i);
+ 
+ 		/*
 -- 
 2.39.2
 
