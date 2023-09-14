@@ -2,270 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED9E79F974
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A6079F977
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbjINEMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 00:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S234607AbjINEOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 00:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbjINEMj (ORCPT
+        with ESMTP id S233796AbjINEOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 00:12:39 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2117.outbound.protection.outlook.com [40.107.215.117])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193AEEC;
-        Wed, 13 Sep 2023 21:12:35 -0700 (PDT)
+        Thu, 14 Sep 2023 00:14:11 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2059.outbound.protection.outlook.com [40.107.93.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF80FA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 21:14:07 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IdCTSfaG4wcgv0CwZ2oyV356Jn6D8+7B9zdEZK9u+C0ni7/EYaO4rbrWZ/5SkeLF4Cmyga7G37WO4TmL2nUUscI5zzMbDXdBOCRpVDO6WvO1UPPyPg327KsrmmBqHZcENZfMkfo5hQ3dN7ZwtnnIdv1GcBzfPlICe4oLASViF+4rNlf0E+5D1EghBp7b1HCCGe9ScRTnaOPihDVxK3b79S59neMGkmrrdAzDCm7PKno3X23qhzoA71LArfL4bSwwMfdoUmdjUGg5eiIspoP3buotIR3szq//71ITa+eh/NeWUKkw3uf9muZGrh6crAXbz0igd7LppsB34pkmazOjkA==
+ b=EfAYnDlU6xz1+JUI/x0lReOBaJBczcwcTJxAQmSPmg+GdTVQWKMhJYWLStO09LmBGxeygdsN7V9JtSqkTymgFLW4QVYkHbYO75anz+nulWbi0zMIaHm49J5lqQ1ac8eJMEu2i+Q/YFa2eXBzzsDZ6wujOWVjTbJQkWOu9jFt8rrpzmNoecrWdpxsjYtILtQZ1k0SPqUCXajnIO0664eDbcgoi7E8MJneFW51SwkxQaYCBL11JSvj3nXc8n1n+KJ56hEk74f4mYqJQrMXRZjV6Z3JtHjSJMyBqoprKfkZVaoZ9U8AC7+Ahs73DI02YlX18SsDSij+12HKtl/JarHn5w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oU4h1Sd4nXEYgTsc2qjQ7NTaMHhLCeVm7xPyRooOjjE=;
- b=ZdTSVivZ0SV8EQUB2PB2+dg/B9Ywt8sl3fKKKtgJGTkds/cgOKvYRRjRzIIomrXqIZRXO6SYJspRJv+qRqXTRJM8TuAI0RbHmLPHv5+73Ti8Dat/H6sTg22hVtyxAkwtUS9ufxUL9NjvQ8udr9fFa5PQGbfuLYmlQJeYn87vZZxnxrJ76/2bmxNxTO5JMFWd8ic5uMVf9+WK9zqytQr0k72Kg7nwEaxoveskx2+2tHzcNOFAOn6H/HA0WEPn2OPloTp3d/AYfv4r+GBk5ZepZ9J3pjcN08M54UWKaGkzJJOBt04u3uYIfljxg7hjbhVfK/UtLBR0AV7jah4YFweg7g==
+ bh=16VqBKhadZ9GwbQBij2s/seC/bse7y4+a14O3366p4c=;
+ b=E46qT9O1B2PvYthueNtNt90C/OwdTOw6BC4HqAQOd/FIYQNUzEREbBw6Hs0lIfEmsiOGyPBtJoBx/v/o8wlA+/sVVJVeiXaA4mFu+pG37TM0puyJ9stcOAYNbsldO15M3T1X1UYVNAdrtYS74v7GkKS4QeVMKT1v+xtVX8Pi956xoQM/SiGaHU76K6s6SOJtAzFd0UJrvZ57kHKQ/tJeiMZNVgSz1bWtqcpP/MmJ/a8cPYLtECQyFj7PCGjWy5XrS9VK/ae6jwellSpm6ffvNwyNtNss/4ZcYQiHuPNtVzxcv74LYZR9gzXruqqRTjeQ+lvCw66Ar+o6bvHCFJaLgw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oU4h1Sd4nXEYgTsc2qjQ7NTaMHhLCeVm7xPyRooOjjE=;
- b=p+hckXvSrwUO+6XvtcwG1Nvu3AzgHMcBBKQzk89eCAApYwmenuYrDHhoIfu86/QTeJxB7R4oYy9tHw8V9GMiHWMUeU8/hYcI+dzmyP/Ub8PhvnRXZth8RqJZ+tmqedTOsTSSWNJrG+13hVQ2QnNBhw8KeVXryw/TN45E7St25EQZBQ8r3Rj6/YHht7yQSOHMJgTvU5nhksguEE1bbiY4JLSv/kQKb5mkMSjZyjo9TdrV0mps8W5U5s+GiDPt7hv1jeoEOlw6KcckUZB7+tkgiRrPDL980NWSKx62g7W3mRErWWyWfDBri6c3kSwEQFvc9vR8hShe/l3rZ7OdjDEj9g==
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
- by KL1PR0601MB3972.apcprd06.prod.outlook.com (2603:1096:820:25::12) with
+ bh=16VqBKhadZ9GwbQBij2s/seC/bse7y4+a14O3366p4c=;
+ b=yvDpfeUwi4UPvR8nNSBSEniQDIKr0hY40spGjMb24noQegWYAtXql1P5vT4yUG2hebgVvMEQPOdYBcDV83TsVMB9wGLuIjZc9vtsDDiz09mXToLcGGzDnKFDI7fFdJ6hYcgLv/kD2S1laaRPDQiq0sIH/7jnIZyhbMejQctkVKU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by CY8PR12MB8315.namprd12.prod.outlook.com (2603:10b6:930:7e::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Thu, 14 Sep
- 2023 04:12:31 +0000
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959]) by TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959%4]) with mapi id 15.20.6792.019; Thu, 14 Sep 2023
- 04:12:31 +0000
-From:   =?gb2312?B?ufm0v7qj?= <guochunhai@vivo.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     "chao@kernel.org" <chao@kernel.org>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBmcy13cml0ZWJhY2s6IHdyaXRlYmFja19zYl9pbm9k?=
- =?gb2312?B?ZXM6IERvIG5vdCBpbmNyZWFzZSAndG90YWxfd3JvdGUnIHdoZW4gbm90aGlu?=
- =?gb2312?Q?g_is_written?=
-Thread-Topic: [PATCH] fs-writeback: writeback_sb_inodes: Do not increase
- 'total_wrote' when nothing is written
-Thread-Index: AQHZ5kM0QQWhEHqxKU2SqgBmGPZZhbAY3h6AgADYO8A=
-Date:   Thu, 14 Sep 2023 04:12:31 +0000
-Message-ID: <TY2PR06MB3342ED6EB614563BCC4FD23FBEF7A@TY2PR06MB3342.apcprd06.prod.outlook.com>
-References: <20230913131501.478516-1-guochunhai@vivo.com>
- <20230913151651.gzmyjvqwan3euhwi@quack3>
-In-Reply-To: <20230913151651.gzmyjvqwan3euhwi@quack3>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR06MB3342:EE_|KL1PR0601MB3972:EE_
-x-ms-office365-filtering-correlation-id: 141fad6a-0e13-4719-8ead-08dbb4d8d127
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SwjFMLF96Uh8qun4HJek+wM/PhooSlA6XFt+RRFdQEQVK/BQfVUP2+gUaVudZrXztIJON1iStfLNasPQbMTAzxT8a3rkEuXpy2qz/DD+nfZYQ4JvJMF1dOrOyWw4ls9EmU2KzaR2/uebVoU6vRkDQIWVtTHkDlV4WWkP7jXod3OzjNzUI4ShCtF3m/tGLGNeK+4OVVVpd6u3tKAOelRkL01qDaBXjBRywNcZAYWSV3ABAORUb+2mUncaG57xAHcB6wAr3x7wBqTFyH38Df1B0uJGQrjEccwuhMnBFO4x4CKdl3UE/LT2VwNUVnjs8OprdnGKzj9+MVUTo9K6wwGxmwYPRBzkjQgO9wDh0rqxuTZ+hsKWh6npWqYNQWt5WuhbWIc7dnP1BAG3XcZ55M2SBtEPV8JhHXu4rrEJ4T84wseb/DAR9HwqfCiwhxBDSXRDZb5v5RR1fR8LZnWZl8nvMGfpld7q7Xu50Et5akosM0DzQhexucj3Cn83xNYNuLVyD1RLGsKp0BLP5+KXlb5w6qCCgkzQIGyThEyJTlupURPMNaqH/wKKBaT1QWy/nmaZWg4gDyjox07CWg3J+HE0g+Pa01sHHYNZkZPrl8PveFZ1wLLYRl4IYAOw28opPDm9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3342.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(346002)(366004)(451199024)(1800799009)(186009)(83380400001)(5660300002)(52536014)(4326008)(26005)(8936002)(9686003)(7696005)(71200400001)(6506007)(478600001)(122000001)(6916009)(64756008)(66446008)(66556008)(54906003)(66476007)(316002)(41300700001)(66946007)(55016003)(76116006)(85182001)(86362001)(33656002)(2906002)(224303003)(38100700002)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?NEl2Z3ErbE1wUThqN3NsLzJxaW5nd2hmenoxSkdISzdZaW0rWWNjWXorM2JJ?=
- =?gb2312?B?UWJ2Mmg2aXVoSVJpZHB6WndLNnpJK2ZIUk5zandxNWhRYmU3dFZwYVRJdUNk?=
- =?gb2312?B?enBSeVZHdFRmeXRwQkp6bHo1eC9xZ0pxUmxpbzQrOC9DRGticldFSWlrUFJC?=
- =?gb2312?B?WEVlNzVJWEpTQXQrQUo5bWR4akZwQWZzSUx3Q05aMFB0cnZTV2d4ZGtCaE9a?=
- =?gb2312?B?aDUrTy9wU1o5aDBoemdGdHR4UDFKV0ttT2pQZUhxamJVTWVkclQvaHVHbkVU?=
- =?gb2312?B?UnhTeFVoU3Rvb3liNUg0V2hrVGRGZVMxN3pRekEvTDFMeFFBeFNDcUNXa2V3?=
- =?gb2312?B?ZEg5WU9uTktmNEdSNUQzaGhBOFovQjN3TDh6V2h5aEFiNE9mQTJmUjZ4L09q?=
- =?gb2312?B?SXVkNEVZUG1vdUFQbHd4SXdoQ1Q3SkV5akNMdkZoOXVwT0kwVE52TFBXWmVE?=
- =?gb2312?B?NEFvbnYxalRKQitUSkV4NlhGS0hpOTlpT3NZMzIzYjhCM1R5SjZtV1FZUkc1?=
- =?gb2312?B?SzhzZGpwczJWd3BIbzVKaHY0eWI5NTdXc3lQUGhKcXRuVE1EV3lOb20raGtX?=
- =?gb2312?B?RDdNU2s0Y0FHeDM4S3g1R0M2aDNJc0djYTc1TFVUUDB4Q3YzZk5rZzROa3Fy?=
- =?gb2312?B?RzdldDhCM3ZTOGN4UE9UcjQwYzVqY294cjladHMxRWtqRVlRckw2Z0hGYjlx?=
- =?gb2312?B?OVZ0ZjArRzl1TWpQbkVnamFQYW94M2RyOWtEQy9iTklHWDFRY2dpRlJCLy9U?=
- =?gb2312?B?YnArcm90VEpFWVJtZGFWemdEaVdHTU96OVVSUTlHZENPamZFYnJtMW1oM0xp?=
- =?gb2312?B?akd4ZThyMTNvZ3g2VU1FZG9RbUJzWjJ2d05uTnowc3hVZUdRSnpvL3Fwb1pQ?=
- =?gb2312?B?MzNLSkplK0k0bzhjVHB4KzI4Nzc4dXJYRW5xSVZYbXVyVmlLSlk3dllGMVpp?=
- =?gb2312?B?TnJtVFNPbkc3QzRuMVBVeDBjVEw3QXIvV3cxVjVvL0srMkltWGxlcTB2VEhs?=
- =?gb2312?B?WWlXeG1TMjI5N2ZIbm0yemQvalVRRm82bjFEYVlDZWt4TnpOdUtmQUxiZnFI?=
- =?gb2312?B?TkNOUkgvY3FxbnNLb3dtcXRFS2xHSEFOZlEyTHVDMnhrbTl0Z0wvZEpuOGE5?=
- =?gb2312?B?UysrT3FDVEhEL1Z4NmlWN0YvaTlJUlJJNjBsRURHeEpPcDNDcWhSdXBFZ24r?=
- =?gb2312?B?RzIxdkhKYTdYTlZFNndLUHdhRHFoOG5iMmt1bTQyTjhSV2NzYnBCUjE1VDFj?=
- =?gb2312?B?bWFveDQwTEFtVWl1dndMajJtZ3MrT2E4dkx0eFk2V1B6ZzFobVJJc01iNXNZ?=
- =?gb2312?B?cyszWDB1K1N4ZTJxZTRZYmJiLzJsM1pBNnFvN2x6eFoySzFJVXFxV3p1MzNM?=
- =?gb2312?B?bEpjUyttbms4eFIxcUVMZDlqM3RUM1EvM1RsVWRkWUY5aVNqaG9KeWZwUFJz?=
- =?gb2312?B?Tkd0YWY3R3AzRjN6bjFRTHQ5YmRHN2NJSFZqSVJITnZ5bmJodUR1Nk9lQ09O?=
- =?gb2312?B?Q0dtdlhIZXVxT2hycFErQWZwRGgzRlBDdC9yRmNsQTF2RE9NSDhwM29tVTVC?=
- =?gb2312?B?ZU1yMVdQakJoMzZiVTVqS0prcjFDTHMrYlk1Y055dC9JVUJMUVNNT1BDSFNw?=
- =?gb2312?B?Z2NqN2lxMzFpQmo2YUFjR0N3YytaVExzUGRvUlVROUdZdVhJN0VvRUhGZksy?=
- =?gb2312?B?cThDdzJMaUhINUd3NVhKT2kyVEVRR1AySHNSVHFYRXUxR1YzWGZzeEZCUmNv?=
- =?gb2312?B?MmQ4WEMwcWgzTEtwdjZGcU1LOUx2eFRtRjNyUGM1OGlkeC8yMzNKbURqL0Zq?=
- =?gb2312?B?U0Q1ZktKS2FUM0U1MTJpckgzanNKTUc3UnVCQVUwZ014cmk5ck02Nm1VU1dT?=
- =?gb2312?B?UEVKM2ZFV0ZpaS9BYWpHdXFtMDA5Z2RxZ2pZaGlUVVM1WVUxbTBhUmR4QWxF?=
- =?gb2312?B?QzM1N1RPZ0llaGp0S0RZSHR5YXJSV3ZhZnFBYW1iOWltVkNQWEt5d2FmRDR6?=
- =?gb2312?B?QTc0ZnM5U1NJU0dZVmFPL0phTWZmOXFveTVPMEhDdlNMRm5BcDlhY2tMY0Ix?=
- =?gb2312?B?SDJ3a2MvS1lZZDRsY2JQZ1NCTVhETzA3dzBEQlVsRTJkdjlWc1o1UHNxK1o2?=
- =?gb2312?Q?vM+o=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Thu, 14 Sep
+ 2023 04:14:04 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::319e:591f:38a0:6bbb]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::319e:591f:38a0:6bbb%6]) with mapi id 15.20.6768.036; Thu, 14 Sep 2023
+ 04:14:04 +0000
+Message-ID: <86f761a4-9805-c704-9c23-ec96065fa389@amd.com>
+Date:   Thu, 14 Sep 2023 09:43:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [RFC PATCH 2/2] sched/fair: skip the cache hot CPU in
+ select_idle_cpu()
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <cover.1694397335.git.yu.c.chen@intel.com>
+ <d49cf5748aa7c6d69580315d2373a9eafa21c21f.1694397335.git.yu.c.chen@intel.com>
+ <31c910c2-717d-b86c-4e08-5c94383682e8@amd.com>
+ <ZP7ptt70uF10wxlg@chenyu5-mobl2>
+ <5b35ae2b-a401-2489-4b3a-a03e8284d138@amd.com>
+ <ZQBaWRCmMOvIGmem@chenyu5-mobl2.ccr.corp.intel.com>
+ <229069c1-3d61-53bb-fff7-691942c48d21@amd.com>
+ <ZQElEM5GAn/Vq0tM@chenyu5-mobl2.ccr.corp.intel.com>
+From:   K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <ZQElEM5GAn/Vq0tM@chenyu5-mobl2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0127.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:bf::17) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 MIME-Version: 1.0
-X-OriginatorOrg: vivo.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|CY8PR12MB8315:EE_
+X-MS-Office365-Filtering-Correlation-Id: 75171c80-53e1-49cd-b807-08dbb4d907d5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vbOTjqBJIwloTSvN4DixM6i8zoNzAA+iAUry8QFN0T9Zi9Bfo2e4rOx8Chci6G+ssngWWOTiTAAA1TTTwPCKIIGgGgSAd0dyeRhNktQN/ODtgo3FMs4YE3XwGrgnbhHI3ykNwYIt9BNSFSjdafr1D4g6f7hHsB2NlMNWrQ7NpLkZVuIQAYP08eU7m+jcmi9ZZXbrQioZ/jJVA7Au94jmXS1SVEjAN3G8ljNG2WBWS484AbiY8ZguuQPvM89GjNdvsiZyk4VFtv00pa7jKBleQk3Geh3rMZNEbMwRISOTYQ4JFTeKlUgOhGeFSNmybXCAB3KI1ACtPyW1csuQ9fwQZtm/8Mq8DF9tPeW7HoDF8fQ+aYbqPfGt5ULTFCLGMG6ljMWSqagMb0UgP4Pr9uItvUd4xFMgrcv9ZrLfd3TdCklJuqW7gBfJAXn7cpYaFQTvn9ItfTM4N+9vLU28pvedMXeuuqXDopVog3f/O3qXl9ilVFihUSATZxYfBSV4GXYxVYl+xVqqCkRZji/+QaVsQagJflCNhxSjb2N2CEeSnMbbbq0bLCkNXIX/f0fYZVregBgCVi8/nGgSrVyWrQVlChvUyOYchnNWwUBpIqLjn5ZAb89OXnm+dvLV3zuq6X0KD5J+PbjIEirtQtPtTe02Sw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(346002)(396003)(376002)(186009)(1800799009)(451199024)(6506007)(66946007)(66476007)(54906003)(6486002)(66556008)(316002)(31686004)(6916009)(53546011)(6512007)(6666004)(41300700001)(478600001)(8936002)(2616005)(8676002)(4326008)(86362001)(26005)(5660300002)(38100700002)(36756003)(2906002)(83380400001)(7416002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1dLd1p1MFgrbzB4NjdFeUlDa25SOWpWRUI1ckhWSTNmTTdyMVhYUzFSUmNK?=
+ =?utf-8?B?bDU0Vlo3SmM0TnZ6a1lEVE05RWx5TWpVRjhSUFRaRy9XamxSakJBZWN3Zzds?=
+ =?utf-8?B?NEtDY0IrQ2gxamRxQTJkVDF6Yi9qK2szMDY1dFJkVWw2MGMycW0veVNWam8x?=
+ =?utf-8?B?TWdPeWpMRTd1NnE4SXJ4R3k4S2JwN2FVL3YyUHBjNjBtaHY2elFXWGJZemhN?=
+ =?utf-8?B?UmVLeGVMOXZueEx1dDYwc3lJVXZQdHVyc2VXMEo3cEUyN2FsMUtHVzZqMkpw?=
+ =?utf-8?B?NXVxcVJxbUNwUjQ2Z3BGTDBxMERsYUxRaXRlMmo4dnllL0Qzbkc0QWx6U2gr?=
+ =?utf-8?B?YjJDSm56SktyQkNJK0ZTTDYzNjNEVVFOZlFNU3pFZnZCRE9qTy83R3hWWjZn?=
+ =?utf-8?B?QW91dHpGeDBHNmhHZmNLZEFOc1RnS1RKZERDckgvb0szdFl4SGlvSlYwTTI1?=
+ =?utf-8?B?TUlMN0hucEhIczVxZFJZdjVMeTRKaUxjenlRMHMzUlp6T1orQkJVMWxyeVJD?=
+ =?utf-8?B?cFFCYWhSbFV6VXR1M05UMU1YTDduMkhIdjJuRFpHZmEyS3dzbDg0a2czb0N4?=
+ =?utf-8?B?bkdpVDVQdUlLbG9VelhuSCtUcURiMEUxRkJid01uM1dHbTBtUE9ZWUM5SW9s?=
+ =?utf-8?B?V2k4MFFrcHVUaTNvNDUzem1CVm53dmpTSzFIQmRqZXVNcGczYkZ6UVdmcjRQ?=
+ =?utf-8?B?SnhIUHoyYnhBVnpmT01ZK3laaWk3V3ZudGRuc3pyU1hKTEcyVWlXV3BIMzJQ?=
+ =?utf-8?B?dFd5WnZTemJwUElINm41S1pkRVdJU2pPWmNOZDBCSWdCODJnU1hsZGZJQ1VF?=
+ =?utf-8?B?TndZSUgrcEYrYVBvK0YvVFJKd3hUZ0ZwY2FOQytxK3lmWnhzUHc3Tk1CQnd1?=
+ =?utf-8?B?UFpyZ3o3ekNkWVp0TkpzRStaV2lNZGNaTXdQcy93bHFYaUg3RmxEZzZFQzhL?=
+ =?utf-8?B?NHVBeThDQlRkUzZnS1dmRUpPVEttcFFBR0VBd0ZjOW04dGxNT0VnVmlDcDZH?=
+ =?utf-8?B?b1dzUTl2Vk9QZm54Q29BZHRaNnBrYXVOQzJHVkw1VmFYRUk4bXJLRytSMzEx?=
+ =?utf-8?B?bDVBMlZvZi9zSGFtMFE3N0hReEt1SWdqNmZtOFU0eFRZY2tINkZSNWx3YVNq?=
+ =?utf-8?B?WURyK2hMb251OHIyNzY2biszVTkxeUY3RVgyMUFFamNhUzdhNGF1M1p4VHcw?=
+ =?utf-8?B?UHZ4REJFT2xmSVEyZk1wNHpaWkZCNkZVT21NbGZCZWU3UmJqdHc5N09VZkd3?=
+ =?utf-8?B?eE82VzcvV3EzWEd0TWFzdzJHdlhPN3h3VkR5SlpCajhhakxiTHRIbEMwVnZz?=
+ =?utf-8?B?NE1FclJJUC9RbVIvKys4RUEyeVJ0TCtnNVkySThFVng0WWFQWDhjQ1ZNNEQ4?=
+ =?utf-8?B?L3FaeEdyMVNCdjFlckdEZzFHOCtiMllNaWtTOWh1dm84TkZFTkZuWG4xSUlZ?=
+ =?utf-8?B?L1U0bWNobG1IZWNuVlo3K2RnZ0lXeWpWNjhLR21YcVR2TXJocnRwajJVVlRi?=
+ =?utf-8?B?N0RKTW5iVmRXY2tzZ0pWbHoxVXpLNU81Uy9LaWFSQTNGelBRYmk0TWtaelFG?=
+ =?utf-8?B?NkNkSGJnY2ZZbDY2TCs1VmN5ZTQrVFNYd0k5LzMxZGlqTU9scTNCa2ZxY2Zs?=
+ =?utf-8?B?azRVQU4rQ3Z5Z3RsUmhGbHkxN2RrTklMWnBvS29wWnU2T3A0T1ViZ3pyWFRj?=
+ =?utf-8?B?Zms3SlBvUktHVmFlRS92UUJOK3MzOWJYUzU5T29CYnVVcnpOUHBCUmNJZlVG?=
+ =?utf-8?B?YnBkZi9tY3FGZTJGemJiUkt5Ukw0ZWo3MjdsUmVqeVY2ZVdDUS9ldFlOV282?=
+ =?utf-8?B?UWhFZDU5b1BRNm1Rc3RLNEo3Zlk0eXFtdnRLM2JnS3lZd243ZzY2ZUJUa3k3?=
+ =?utf-8?B?SE9NN2Q0Y3ZNcFNidEtaNEhuanF5dVpBZnJ5RXpUWldQdW0wcDB0ci9KejdD?=
+ =?utf-8?B?QzZTZElWRjBMWEIrNDAwb2pBYzdMWXR3ZGxwVEVUWEs4MTJNYUIrMVgydEFk?=
+ =?utf-8?B?TkU0TDg1KzVaSWs0b0RhVkZHNlpVWnF6TEdWK0xPeTlGaklxblROMEtLSVQ4?=
+ =?utf-8?B?RUlEU0RlUG8vNXpEa3psSENOaXhTeXRzQk8zSFVlaG1EdGExbTlMTDlTWTVV?=
+ =?utf-8?Q?1c+keaPEhT87Xb87GJ+vMC5eG?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75171c80-53e1-49cd-b807-08dbb4d907d5
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3342.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 141fad6a-0e13-4719-8ead-08dbb4d8d127
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 04:12:31.7777
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 04:14:03.9344
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PT6/Q4fKRcFwW+ROPBlytY9Q6tLxbOF3L7GYSsZU2N6KvKBbyu2gNYu6QwzgythrAO7Bs0qGld0hd5//TEuBjQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB3972
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u5uB6ViC2vUqHvAFLeJInyvevw4ERioap3RkDxjUCtSiv0XrXjxT1LMlnOJpD+jvFRw7AZExSWROvGxK2ByCRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8315
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBXZWQgMTMtMDktMjMgMDc6MTU6MDEsIENodW5oYWkgR3VvIHdyb3RlOg0KPiA+ID4gT24g
-V2VkIDEzLTA5LTIzIDEwOjQyOjIxLCBDaHJpc3RpYW4gQnJhdW5lciB3cm90ZToNCj4gPiA+ID4g
-WytDYyBKYW5dDQo+ID4gPg0KPiA+ID4gVGhhbmtzIQ0KPiA+ID4NCj4gPiA+ID4gT24gVHVlLCBT
-ZXAgMTIsIDIwMjMgYXQgMDg6MjA6NDNBTSAtMDYwMCwgQ2h1bmhhaSBHdW8gd3JvdGU6DQo+ID4g
-PiA+ID4gSSBhbSBlbmNvdW50ZXJpbmcgYSBkZWFkbG9jayBpc3N1ZSBhcyBzaG93biBiZWxvdy4g
-VGhlcmUgaXMgYQ0KPiA+ID4gPiA+IGNvbW1pdCAzNDQxNTA5OTliN2YgKCJmMmZzOiBmaXggdG8g
-YXZvaWQgcG90ZW50aWFsIGRlYWRsb2NrIikNCj4gPiA+ID4gPiBjYW4gZml4IHRoaXMgaXNzdWUu
-DQo+ID4gPiA+ID4gSG93ZXZlciwgZnJvbSBsb2cgYW5hbHlzaXMsIGl0IGFwcGVhcnMgdGhhdCB0
-aGlzIGlzIG1vcmUgbGlrZWx5DQo+ID4gPiA+ID4gYSBmYWtlIHByb2dyZXNzIGlzc3VlIHNpbWls
-YXIgdG8gY29tbWl0IDY4ZjRjNmViYTcwZCAoImZzLXdyaXRlYmFjazoNCj4gPiA+ID4gPiB3cml0
-ZWJhY2tfc2JfaW5vZGVzOiBSZWNhbGN1bGF0ZSAnd3JvdGUnIGFjY29yZGluZyBza2lwcGVkIHBh
-Z2VzIikuDQo+ID4gPiA+ID4gSW4gZWFjaCB3cml0ZWJhY2sgaXRlcmF0aW9uLCBub3RoaW5nIGlz
-IHdyaXR0ZW4sIHdoaWxlDQo+ID4gPiA+ID4gd3JpdGViYWNrX3NiX2lub2RlcygpIGluY3JlYXNl
-cyAndG90YWxfd3JvdGUnIGVhY2ggdGltZSwgY2F1c2luZw0KPiA+ID4gPiA+IGFuIGluZmluaXRl
-IGxvb3AuIFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBpc3N1ZSBieSBub3QgaW5jcmVhc2luZw0KPiA+
-ID4gPiA+ICd0b3RhbF93cm90ZScgd2hlbiBub3RoaW5nIGlzIHdyaXR0ZW4uDQo+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiAgICAgd2Jfd3JpdGViYWNrICAgICAgICBmc3luYyAoaW5vZGUtWSkNCj4gPiA+
-ID4gPiBibGtfc3RhcnRfcGx1ZygmcGx1ZykNCj4gPiA+ID4gPiBmb3IgKDs7KSB7DQo+ID4gPiA+
-ID4gICBpdGVyIGktMTogc29tZSByZXFzIHdpdGggcGFnZS1YIGFkZGVkIGludG8gcGx1Zy0+bXFf
-bGlzdCAvLyBmMmZzIG5vZGUNCj4gPiA+ID4gPiAgIHBhZ2UtWCB3aXRoIFBHX3dyaXRlYmFjaw0K
-PiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGVtYXBfZmRhdGF3cml0ZQ0KPiA+
-ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgX19maWxlbWFwX2ZkYXRhd3JpdGVfcmFu
-Z2UgLy8gd3JpdGUgaW5vZGUtWQ0KPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-d2l0aCBzeW5jX21vZGUgV0JfU1lOQ19BTEwNCj4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBkb193cml0ZXBhZ2VzDQo+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGYyZnNfd3JpdGVfZGF0YV9wYWdlcw0KPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgX19mMmZzX3dyaXRlX2RhdGFfcGFnZXMgLy8NCj4gPiA+ID4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHdiX3N5bmNfcmVxW0RBVEFdKysgZm9yIFdCX1NZTkNfQUxMDQo+
-ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZjJmc193cml0ZV9jYWNoZV9w
-YWdlcw0KPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmMmZzX3dyaXRl
-X3NpbmdsZV9kYXRhX3BhZ2UNCj4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGYyZnNfZG9fd3JpdGVfZGF0YV9wYWdlDQo+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgZjJmc19vdXRwbGFjZV93cml0ZV9kYXRhDQo+ID4gPiA+ID4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGYyZnNfdXBkYXRlX2RhdGFfYmxrYWRkcg0KPiA+
-ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZjJmc193YWl0X29uX3Bh
-Z2Vfd3JpdGViYWNrDQo+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHdhaXRfb25fcGFnZV93cml0ZWJhY2sgLy8gd2FpdCBmb3INCj4gPiA+ID4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZjJmcyBub2RlIHBhZ2UtWA0KPiA+ID4gPiA+
-ICAgaXRlciBpOg0KPiA+ID4gPiA+ICAgICBwcm9ncmVzcyA9IF9fd3JpdGViYWNrX2lub2Rlc193
-Yih3Yiwgd29yaykNCj4gPiA+ID4gPiAgICAgLiB3cml0ZWJhY2tfc2JfaW5vZGVzDQo+ID4gPiA+
-ID4gICAgIC4gICBfX3dyaXRlYmFja19zaW5nbGVfaW5vZGUgLy8gd3JpdGUgaW5vZGUtWSB3aXRo
-IHN5bmNfbW9kZQ0KPiA+ID4gPiA+ICAgICBXQl9TWU5DX05PTkUNCj4gPiA+ID4gPiAgICAgLiAg
-IC4gZG9fd3JpdGVwYWdlcw0KPiA+ID4gPiA+ICAgICAuICAgLiAgIGYyZnNfd3JpdGVfZGF0YV9w
-YWdlcw0KPiA+ID4gPiA+ICAgICAuICAgLiAgIC4gIF9fZjJmc193cml0ZV9kYXRhX3BhZ2VzIC8v
-IHNraXAgd3JpdGVwYWdlcyBkdWUgdG8NCj4gPiA+ID4gPiAgICAgKHdiX3N5bmNfcmVxW0RBVEFd
-PjApDQo+ID4gPiA+ID4gICAgIC4gICAuICAgLiAgIHdiYy0+cGFnZXNfc2tpcHBlZCArPSBnZXRf
-ZGlydHlfcGFnZXMoaW5vZGUpIC8vDQo+ID4gPiA+ID4gICAgIHdiYy0+cGFnZXNfc2tpcHBlZCA9
-IDENCj4gPiA+ID4gPiAgICAgLiAgIGlmICghKGlub2RlLT5pX3N0YXRlICYgSV9ESVJUWV9BTEwp
-KSAvLyBpX3N0YXRlID0gSV9TWU5DIHwNCj4gPiA+ID4gPiAgICAgSV9TWU5DX1FVRVVFRA0KPiA+
-ID4gPiA+ICAgICAuICAgIHRvdGFsX3dyb3RlKys7ICAvLyB0b3RhbF93cm90ZSA9IDENCj4gPiA+
-ID4gPiAgICAgLiAgIHJlcXVldWVfaW5vZGUgLy8gcmVxdWV1ZSBpbm9kZS1ZIHRvIHdiLT5iX2Rp
-cnR5IHF1ZXVlIGR1ZSB0bw0KPiA+ID4gPiA+ICAgICBub24temVybyBwYWdlc19za2lwcGVkDQo+
-ID4gPiA+ID4gICAgIGlmIChwcm9ncmVzcykgLy8gcHJvZ3Jlc3MgPSAxDQo+ID4gPiA+ID4gICAg
-ICAgY29udGludWU7DQo+ID4gPiA+ID4gICBpdGVyIGkrMToNCj4gPiA+ID4gPiAgICAgICBxdWV1
-ZV9pbw0KPiA+ID4gPiA+ICAgICAgIC8vIHNpbWlsYXIgcHJvY2VzcyB3aXRoIGl0ZXIgaSwgaW5m
-aW5pdGUgZm9yLWxvb3AgIQ0KPiA+ID4gPiA+IH0NCj4gPiA+ID4gPiBibGtfZmluaXNoX3BsdWco
-JnBsdWcpICAgLy8gZmx1c2ggcGx1ZyB3b24ndCBiZSBjYWxsZWQNCj4gPiA+ID4gPg0KPiA+ID4g
-PiA+IFNpZ25lZC1vZmYtYnk6IENodW5oYWkgR3VvIDxndW9jaHVuaGFpQHZpdm8uY29tPg0KPiA+
-ID4NCj4gPiA+IFRoYW5rcyBmb3IgdGhlIHBhdGNoIGJ1dCBkaWQgeW91IHRlc3QgdGhpcyBwYXRj
-aCBmaXhlZCB5b3VyIGRlYWRsb2NrPw0KPiA+ID4gQmVjYXVzZSB0aGUgcGF0Y2ggc2VlbXMgbGlr
-ZSBhIG5vb3AgdG8gbWUuIExvb2s6DQo+ID4NCj4gPiBZZXMuIEkgaGF2ZSB0ZXN0ZWQgdGhpcyBw
-YXRjaCBhbmQgaXQgaW5kZWVkIGZpeGVkIHRoaXMgZGVhZGxvY2sgaXNzdWUsIHRvby4NCj4gDQo+
-IE9LLCB0aGFua3MgZm9yIGxldHRpbmcgbWUga25vdyENCj4gDQo+ID4gPiA+ID4gZGlmZiAtLWdp
-dCBhL2ZzL2ZzLXdyaXRlYmFjay5jIGIvZnMvZnMtd3JpdGViYWNrLmMgaW5kZXgNCj4gPiA+ID4g
-PiA5NjljZTk5MWIwYjAuLjU0Y2RlZTkwNmJlOSAxMDA2NDQNCj4gPiA+ID4gPiAtLS0gYS9mcy9m
-cy13cml0ZWJhY2suYw0KPiA+ID4gPiA+ICsrKyBiL2ZzL2ZzLXdyaXRlYmFjay5jDQo+ID4gPiA+
-ID4gQEAgLTE4MjAsNiArMTgyMCw3IEBAIHN0YXRpYyBsb25nIHdyaXRlYmFja19zYl9pbm9kZXMo
-c3RydWN0DQo+ID4gPiA+ID4gc3VwZXJfYmxvY2sgKnNiLA0KPiA+ID4gPiA+ICAgICAgICAgICAg
-IHN0cnVjdCBpbm9kZSAqaW5vZGUgPSB3Yl9pbm9kZSh3Yi0+Yl9pby5wcmV2KTsNCj4gPiA+ID4g
-PiAgICAgICAgICAgICBzdHJ1Y3QgYmRpX3dyaXRlYmFjayAqdG1wX3diOw0KPiA+ID4gPiA+ICAg
-ICAgICAgICAgIGxvbmcgd3JvdGU7DQo+ID4gPiA+ID4gKyAgICAgICAgICAgYm9vbCBpc19kaXJ0
-eV9iZWZvcmU7DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiAgICAgICAgICAgICBpZiAoaW5vZGUtPmlf
-c2IgIT0gc2IpIHsNCj4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgIGlmICh3b3JrLT5zYikg
-eyBAQCAtMTg4MSw2ICsxODgyLDcgQEAgc3RhdGljDQo+ID4gPiA+ID4gbG9uZyB3cml0ZWJhY2tf
-c2JfaW5vZGVzKHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsDQo+ID4gPiA+ID4gICAgICAgICAgICAg
-ICAgICAgICBjb250aW51ZTsNCj4gPiA+ID4gPiAgICAgICAgICAgICB9DQo+ID4gPiA+ID4gICAg
-ICAgICAgICAgaW5vZGUtPmlfc3RhdGUgfD0gSV9TWU5DOw0KPiA+ID4gPiA+ICsgICAgICAgICAg
-IGlzX2RpcnR5X2JlZm9yZSA9IGlub2RlLT5pX3N0YXRlICYgSV9ESVJUWV9BTEw7DQo+ID4gPg0K
-PiA+ID4gaXNfZGlydHlfYmVmb3JlIGlzIGdvaW5nIHRvIGJlIHNldCBpZiB0aGVyZSdzIGFueXRo
-aW5nIGRpcnR5IC0NCj4gPiA+IGlub2RlLCBwYWdlLCB0aW1lc3RhbXAuIFNvIGl0IGNhbiBiZSB1
-bnNldCBvbmx5IGlmIHRoZXJlIGFyZSBubw0KPiA+ID4gZGlydHkgcGFnZXMsIGluIHdoaWNoIGNh
-c2UgdGhlcmUgYXJlIG5vIHBhZ2VzIHRoYXQgY2FuIGJlIHNraXBwZWQNCj4gPiA+IGR1cmluZyBw
-YWdlIHdyaXRlYmFjaywgd2hpY2ggbWVhbnMgdGhhdCByZXF1ZXVlX2lub2RlKCkgd2lsbCBnbyBh
-bmQNCj4gPiA+IHJlbW92ZSBpbm9kZSBmcm9tIGJfaW8vYl9kaXJ0eSBsaXN0cyBhbmQgaXQgd2ls
-bCBub3QgcGFydGljaXBhdGUgaW4gd3JpdGViYWNrDQo+IGFueW1vcmUuDQo+ID4gPg0KPiA+ID4g
-U28gSSBkb24ndCBzZWUgaG93IHRoaXMgcGF0Y2ggY2FuIGJlIGhlbHBpbmcgYW55dGhpbmcuLi4g
-UGxlYXNlDQo+ID4gPiBjb3JyZWN0IG1lIGlmIEknbSBtaXNzaW5nIGFueXRoaW5nLg0KPiA+ID4N
-Cj4gPiA+IEhvbnphDQo+ID4NCj4gPiBGcm9tIHRoZSBkdW1wIGluZm8sIHRoZXJlIGFyZSBvbmx5
-IHR3byBwYWdlcyBhcyBzaG93biBiZWxvdy4gT25lIGlzDQo+ID4gdXBkYXRlZCBhbmQgYW5vdGhl
-ciBpcyB1bmRlciB3cml0ZWJhY2suIE1heWJlIGYyZnMgY291bnRzIHRoZQ0KPiA+IHdyaXRlYmFj
-ayBwYWdlIGFzIGEgZGlydHkgb25lLCBzbyBnZXRfZGlydHlfcGFnZXMoKSBnb3Qgb25lLiBBcyB5
-b3UNCj4gPiBzYWlkLCBtYXliZSB0aGlzIGlzIHVucmVhc29uYWJsZS4NCj4gPg0KPiA+IEphZWdl
-dWsgJiBDaGFvLCB3aGF0IGRvIHlvdSB0aGluayBvZiB0aGlzPw0KPiA+DQo+ID4NCj4gPiBjcmFz
-aF8zMj4gZmlsZXMgLXAgMHhFNUE0NDY3OA0KPiA+ICBJTk9ERSAgICBOUlBBR0VTDQo+ID4gZTVh
-NDQ2NzggICAgICAgIDINCj4gPg0KPiA+ICAgUEFHRSAgICBQSFlTSUNBTCAgIE1BUFBJTkcgICAg
-SU5ERVggQ05UIEZMQUdTDQo+ID4gZThkMGUzMzggIDY0MWRlMDAwICBlNWE0NDgxMCAgICAgICAg
-IDAgIDUgYTA5NQ0KPiBsb2NrZWQsd2FpdGVycyx1cHRvZGF0ZSxscnUscHJpdmF0ZSx3cml0ZWJh
-Y2sNCj4gPiBlOGFkNTlhMCAgNTQ1MjgwMDAgIGU1YTQ0ODEwICAgICAgICAgMSAgMiAyMDM2DQo+
-IHJlZmVyZW5jZWQsdXB0b2RhdGUsbHJ1LGFjdGl2ZSxwcml2YXRlDQo+IA0KPiBJbmRlZWQsIGlu
-Y3JlbWVudGluZyBwYWdlc19za2lwcGVkIHdoZW4gdGhlcmUncyBubyBkaXJ0eSBwYWdlIGlzIGEg
-Yml0IG9kZC4NCj4gVGhhdCBiZWluZyBzYWlkIHdlIGNvdWxkIGFsc28gaGFyZGVuIHJlcXVldWVf
-aW5vZGUoKSAtIGluIHBhcnRpY3VsYXIgd2UgY291bGQgZG8NCj4gdGhlcmU6DQo+IA0KPiAgICAg
-ICAgIGlmICh3YmMtPnBhZ2VzX3NraXBwZWQpIHsNCj4gICAgICAgICAgICAgICAgIC8qDQo+ICAg
-ICAgICAgICAgICAgICAgKiBXcml0ZWJhY2sgaXMgbm90IG1ha2luZyBwcm9ncmVzcyBkdWUgdG8g
-bG9ja2VkIGJ1ZmZlcnMuDQo+ICAgICAgICAgICAgICAgICAgKiBTa2lwIHRoaXMgaW5vZGUgZm9y
-IG5vdy4gQWx0aG91Z2ggaGF2aW5nIHNraXBwZWQgcGFnZXMNCj4gICAgICAgICAgICAgICAgICAq
-IGlzIG9kZCBmb3IgY2xlYW4gaW5vZGVzLCBpdCBjYW4gaGFwcGVuIGZvciBzb21lDQo+ICAgICAg
-ICAgICAgICAgICAgKiBmaWxlc3lzdGVtcyBzbyBoYW5kbGUgdGhhdCBncmFjZWZ1bGx5Lg0KPiAg
-ICAgICAgICAgICAgICAgICovDQo+ICAgICAgICAgICAgICAgICBpZiAoaW5vZGUtPmlfc3RhdGUg
-JiBJX0RJUlRZX0FMTCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgcmVkaXJ0eV90YWlsX2xv
-Y2tlZChpbm9kZSwgd2IpOw0KPiAgICAgICAgICAgICAgICAgZWxzZQ0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgICBpbm9kZV9jZ3diX21vdmVfdG9fYXR0YWNoZWQoaW5vZGUsIHdiKTsNCj4gICAg
-ICAgICB9DQo+IA0KPiBEb2VzIHRoaXMgZml4IHlvdXIgcHJvYmxlbSBhcyB3ZWxsPw0KPiANCj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIEhvbnphDQoNClRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4gRGlkIHlvdSBmb3JnZXQg
-dGhlICdyZXR1cm4nIHN0YXRlbWVudD8gU2luY2UgSSBlbmNvdW50ZXJlZCB0aGlzIGlzc3VlIG9u
-IHRoZSA0LjE5IGtlcm5lbCBhbmQgdGhlcmUgaXMgbm90IGlub2RlX2Nnd2JfbW92ZV90b19hdHRh
-Y2hlZCgpIHlldCwgSSByZXBsYWNlZCBpdCB3aXRoIGlub2RlX2lvX2xpc3RfZGVsX2xvY2tlZCgp
-LiBTbywgYmVsb3cgaXMgdGhlIHRlc3QgcGF0Y2ggSSBhbSBhcHBseWluZy4gUGxlYXNlIGhhdmUg
-YSBjaGVjay4gQnkgdGhlIHdheSwgdGhlIHRlc3Qgd2lsbCB0YWtlIHNvbWUgdGltZS4gSSB3aWxs
-IHByb3ZpZGUgZmVlZGJhY2sgd2hlbiBpdCBpcyBmaW5pc2hlZC4gVGhhbmtzLg0KDQoJaWYgKHdi
-Yy0+cGFnZXNfc2tpcHBlZCkgew0KCQkvKg0KCQkgKiB3cml0ZWJhY2sgaXMgbm90IG1ha2luZyBw
-cm9ncmVzcyBkdWUgdG8gbG9ja2VkDQoJCSAqIGJ1ZmZlcnMuIFNraXAgdGhpcyBpbm9kZSBmb3Ig
-bm93Lg0KCQkgKi8NCi0JCXJlZGlydHlfdGFpbF9sb2NrZWQoaW5vZGUsIHdiKTsNCisJCWlmIChp
-bm9kZS0+aV9zdGF0ZSAmIElfRElSVFlfQUxMKQ0KKwkJCXJlZGlydHlfdGFpbF9sb2NrZWQoaW5v
-ZGUsIHdiKTsNCisJCWVsc2UNCisJCQlpbm9kZV9pb19saXN0X2RlbF9sb2NrZWQoaW5vZGUsIHdi
-KTsNCiAJCXJldHVybjsNCiAJfQ0KDQo+ID4NCj4gPiBUaGFua3MsDQo+ID4NCj4gPiA+DQo+ID4g
-Pg0KPiA+ID4gPiA+ICAgICAgICAgICAgIHdiY19hdHRhY2hfYW5kX3VubG9ja19pbm9kZSgmd2Jj
-LCBpbm9kZSk7DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiAgICAgICAgICAgICB3cml0ZV9jaHVuayA9
-IHdyaXRlYmFja19jaHVua19zaXplKHdiLCB3b3JrKTsgQEANCj4gPiA+ID4gPiAtMTkxOCw3DQo+
-ID4gPiA+ID4gKzE5MjAsNyBAQCBzdGF0aWMgbG9uZyB3cml0ZWJhY2tfc2JfaW5vZGVzKHN0cnVj
-dCBzdXBlcl9ibG9jaw0KPiA+ID4gPiA+ICsqc2IsDQo+ID4gPiA+ID4gICAgICAgICAgICAgICov
-DQo+ID4gPiA+ID4gICAgICAgICAgICAgdG1wX3diID0gaW5vZGVfdG9fd2JfYW5kX2xvY2tfbGlz
-dChpbm9kZSk7DQo+ID4gPiA+ID4gICAgICAgICAgICAgc3Bpbl9sb2NrKCZpbm9kZS0+aV9sb2Nr
-KTsNCj4gPiA+ID4gPiAtICAgICAgICAgICBpZiAoIShpbm9kZS0+aV9zdGF0ZSAmIElfRElSVFlf
-QUxMKSkNCj4gPiA+ID4gPiArICAgICAgICAgICBpZiAoIShpbm9kZS0+aV9zdGF0ZSAmIElfRElS
-VFlfQUxMKSAmJg0KPiA+ID4gPiA+ICsgaXNfZGlydHlfYmVmb3JlKQ0KPiA+ID4gPiA+ICAgICAg
-ICAgICAgICAgICAgICAgdG90YWxfd3JvdGUrKzsNCj4gPiA+ID4gPiAgICAgICAgICAgICByZXF1
-ZXVlX2lub2RlKGlub2RlLCB0bXBfd2IsICZ3YmMpOw0KPiA+ID4gPiA+ICAgICAgICAgICAgIGlu
-b2RlX3N5bmNfY29tcGxldGUoaW5vZGUpOw0KPiA+ID4gPiA+IC0tDQo+ID4gPiA+ID4gMi4yNS4x
-DQo+ID4gPiA+ID4NCj4gPiA+IC0tDQo+ID4gPiBKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4NCj4g
-PiA+IFNVU0UgTGFicywgQ1INCj4gPg0KPiAtLQ0KPiBKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4N
-Cj4gU1VTRSBMYWJzLCBDUg0K
+Hello Chenyu,
+
+On 9/13/2023 8:27 AM, Chen Yu wrote:
+> On 2023-09-12 at 19:56:37 +0530, K Prateek Nayak wrote:
+>> Hello Chenyu,
+>>
+>> On 9/12/2023 6:02 PM, Chen Yu wrote:
+>>> [..snip..]
+>>>
+>>>>> If I understand correctly, WF_SYNC is to let the wakee to woken up
+>>>>> on the waker's CPU, rather than the wakee's previous CPU, because
+>>>>> the waker goes to sleep after wakeup. SIS_CACHE mainly cares about
+>>>>> wakee's previous CPU. We can only restrict that other wakee does not
+>>>>> occupy the previous CPU, but do not enhance the possibility that
+>>>>> wake_affine_idle() chooses the previous CPU.
+>>>>
+>>>> Correct me if I'm wrong here,
+>>>>
+>>>> Say a short sleeper, is always woken up using WF_SYNC flag. When the
+>>>> task is dequeued, we mark the previous  CPU where it ran as "cache-hot"
+>>>> and restrict any wakeup happening until the "cache_hot_timeout" is
+>>>> crossed. Let us assume a perfect world where the task wakes up before
+>>>> the "cache_hot_timeout" expires. Logically this CPU was reserved all
+>>>> this while for the short sleeper but since the wakeup bears WF_SYNC
+>>>> flag, the whole reservation is ignored and waker's LLC is explored.
+>>>>
+>>>
+>>> Ah, I see your point. Do you mean, because the waker has a WF_SYNC, wake_affine_idle()
+>>> forces the short sleeping wakee to be woken up on waker's CPU rather the
+>>> wakee's previous CPU, but wakee's previous has been marked as cache hot
+>>> for nothing?
+>>
+>> Precisely :)
+>>
+>>>
+>>>> Should the timeout be cleared if the wakeup decides to not target the
+>>>> previous CPU? (The default "sysctl_sched_migration_cost" is probably
+>>>> small enough to curb any side effect that could possibly show here but
+>>>> if a genuine use-case warrants setting "sysctl_sched_migration_cost" to
+>>>> a larger value, the wakeup path might be affected where lot of idle
+>>>> targets are overlooked since the CPUs are marked cache-hot forr longer
+>>>> duration)
+>>>>
+>>>> Let me know what you think.
+>>>>
+>>>
+>>> This makes sense. In theory the above logic can be added in
+>>> select_idle_sibling(), if target CPU is chosen rather than
+>>> the previous CPU, the previous CPU's cache hot flag should be
+>>> cleared.
+>>>
+>>> But this might bring overhead. Because we need to grab the rq
+>>> lock and write to other CPU's rq, which could be costly. It
+>>> seems to be a trade-off of current implementation.
+>>
+>> I agree, it will not be pretty. Maybe the other way is to have a
+>> history of the type of wakeup the task experiences (similar to
+>> wakee_flips but for sync and non-syn wakeups) and only reserve
+>> the CPU if the task wakes up more via non-sync wakeups? Thinking
+>> out loud here.
+>>
+> 
+> This looks good to consider the task's attribute, or maybe something
+> like this:
+> 
+> new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
+> if (new_cpu != prev_cpu)
+> 	p->burst_sleep_avg >>= 1;
+> So the duration of reservation could be shrinked.
+
+That seems like a good approach.
+
+Meanwhile, here is result for the current series without any
+modifications:
+
+tl;dr
+
+- There seems to be a noticeable increase in hackbench runtime with a
+  single group but big gains beyond that. The regression could possibly
+  be because of added searching but let me do some digging to confirm
+  that. 
+
+- Small regressions (~2%) noticed in ycsb-mongodb (medium utilization)
+  and DeathStarBench (High Utilization)
+
+- Other benchmarks are more of less perf neutral with the changes.
+
+More information below:
+
+o System information
+
+  - Dual socket 3rd Generation EPYC System (2 x 64C/128T)
+  - NPS1 mode (each socket is a NUMA node)
+  - Boost Enabled
+  - C2 disabled (MWAIT based C1 is still enabled)
+
+
+o Kernel information
+
+base		:   tip:sched/core at commit b41bbb33cf75 ("Merge branch
+		    'sched/eevdf' into sched/core")
+		  + cheery-pick commit 63304558ba5d ("sched/eevdf: Curb
+		    wakeup-preemption")
+
+SIS_CACHE	:   base
+		  + this series as is
+
+
+o Benchmark results
+
+==================================================================
+Test          : hackbench
+Units         : Normalized time in seconds
+Interpretation: Lower is better
+Statistic     : AMean
+==================================================================
+Case:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+ 1-groups     1.00 [ -0.00]( 1.89)     1.10 [-10.28]( 2.03)
+ 2-groups     1.00 [ -0.00]( 2.04)     0.98 [  1.57]( 2.04)
+ 4-groups     1.00 [ -0.00]( 2.38)     0.95 [  4.70]( 0.88)
+ 8-groups     1.00 [ -0.00]( 1.52)     0.93 [  7.18]( 0.76)
+16-groups     1.00 [ -0.00]( 3.44)     0.90 [  9.76]( 1.04)
+
+
+==================================================================
+Test          : tbench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+    1     1.00 [  0.00]( 0.18)     0.98 [ -1.61]( 0.27)
+    2     1.00 [  0.00]( 0.63)     0.98 [ -1.58]( 0.09)
+    4     1.00 [  0.00]( 0.86)     0.99 [ -0.52]( 0.42)
+    8     1.00 [  0.00]( 0.22)     0.98 [ -1.77]( 0.65)
+   16     1.00 [  0.00]( 1.99)     1.00 [ -0.10]( 1.55)
+   32     1.00 [  0.00]( 4.29)     0.98 [ -1.73]( 1.55)
+   64     1.00 [  0.00]( 1.71)     0.97 [ -2.77]( 3.74)
+  128     1.00 [  0.00]( 0.65)     1.00 [ -0.14]( 0.88)
+  256     1.00 [  0.00]( 0.19)     0.97 [ -2.65]( 0.49)
+  512     1.00 [  0.00]( 0.20)     0.99 [ -1.10]( 0.33)
+ 1024     1.00 [  0.00]( 0.29)     0.99 [ -0.70]( 0.16)
+
+
+==================================================================
+Test          : stream-10
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+ Copy     1.00 [  0.00]( 4.32)     0.90 [ -9.82](10.72)
+Scale     1.00 [  0.00]( 5.21)     1.01 [  0.59]( 1.83)
+  Add     1.00 [  0.00]( 6.25)     0.99 [ -0.91]( 4.49)
+Triad     1.00 [  0.00](10.74)     1.02 [  2.28]( 6.07)
+
+
+==================================================================
+Test          : stream-100
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+ Copy     1.00 [  0.00]( 0.70)     0.98 [ -1.79]( 2.26)
+Scale     1.00 [  0.00]( 6.55)     1.03 [  2.80]( 0.74)
+  Add     1.00 [  0.00]( 6.53)     1.02 [  2.05]( 1.82)
+Triad     1.00 [  0.00]( 6.66)     1.04 [  3.54]( 1.04)
+
+
+==================================================================
+Test          : netperf
+Units         : Normalized Througput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+ 1-clients     1.00 [  0.00]( 0.46)     0.99 [ -0.55]( 0.49)
+ 2-clients     1.00 [  0.00]( 0.38)     0.99 [ -1.23]( 1.19)
+ 4-clients     1.00 [  0.00]( 0.72)     0.98 [ -1.91]( 1.21)
+ 8-clients     1.00 [  0.00]( 0.98)     0.98 [ -1.61]( 1.08)
+16-clients     1.00 [  0.00]( 0.70)     0.98 [ -1.80]( 1.04)
+32-clients     1.00 [  0.00]( 0.74)     0.98 [ -1.55]( 1.20)
+64-clients     1.00 [  0.00]( 2.24)     1.00 [ -0.04]( 2.77)
+128-clients    1.00 [  0.00]( 1.72)     1.03 [  3.22]( 1.99)
+256-clients    1.00 [  0.00]( 4.44)     0.99 [ -1.33]( 4.71)
+512-clients    1.00 [  0.00](52.42)     0.98 [ -1.61](52.72)
+
+
+==================================================================
+Test          : schbench (old)
+Units         : Normalized 99th percentile latency in us
+Interpretation: Lower is better
+Statistic     : Median
+==================================================================
+#workers:          base[pct imp](CV)     SIS_CACHE[pct imp](CV)
+  1     1.00 [ -0.00]( 2.28)     0.96 [  4.00](15.68)
+  2     1.00 [ -0.00]( 6.42)     1.00 [ -0.00](10.96)
+  4     1.00 [ -0.00]( 3.77)     0.97 [  3.33]( 7.61)
+  8     1.00 [ -0.00](13.83)     1.08 [ -7.89]( 2.86)
+ 16     1.00 [ -0.00]( 4.37)     1.00 [ -0.00]( 2.13)
+ 32     1.00 [ -0.00]( 8.69)     0.95 [  4.94]( 2.73)
+ 64     1.00 [ -0.00]( 2.30)     1.05 [ -5.13]( 1.26)
+128     1.00 [ -0.00](12.12)     1.03 [ -3.41]( 5.08)
+256     1.00 [ -0.00](26.04)     0.91 [  8.88]( 2.59)
+512     1.00 [ -0.00]( 5.62)     0.97 [  3.32]( 0.37)
+
+
+==================================================================
+Test          : Unixbench
+Units         : Various, Throughput
+Interpretation: Higher is better
+Statistic     : AMean, Hmean (Specified)
+==================================================================
+Metric		variant                      base		     SIS_CACHE
+Hmean     unixbench-dhry2reg-1            41248390.97 (   0.00%)    41485503.82 (   0.57%)
+Hmean     unixbench-dhry2reg-512        6239969914.15 (   0.00%)  6233919689.40 (  -0.10%)
+Amean     unixbench-syscall-1              2968518.27 (   0.00%)     2841236.43 *   4.29%*
+Amean     unixbench-syscall-512            7790656.20 (   0.00%)     7631558.00 *   2.04%*
+Hmean     unixbench-pipe-1                 2535689.01 (   0.00%)     2598208.16 *   2.47%*
+Hmean     unixbench-pipe-512             361385055.25 (   0.00%)   368566373.76 *   1.99%*
+Hmean     unixbench-spawn-1                   4506.26 (   0.00%)        4551.67 (   1.01%)
+Hmean     unixbench-spawn-512                69380.09 (   0.00%)       69264.30 (  -0.17%)
+Hmean     unixbench-execl-1                   3824.57 (   0.00%)        3822.67 (  -0.05%)
+Hmean     unixbench-execl-512                12288.64 (   0.00%)       11728.12 (  -4.56%)
+
+
+==================================================================
+Test          : ycsb-mongodb
+Units         : Throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+base            : 309589.33 (var: 1.41%) 
+SIS_CACHE       : 304931.33 (var: 1.29%) [diff: -1.50%]
+
+
+==================================================================
+Test          : DeathStarBench
+Units         : Normalized Throughput, relative to base
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Pinning         base     SIS_CACHE
+1 CCD           100%      99.18% [%diff: -0.82%]
+2 CCD           100%      97.46% [%diff: -2.54%]
+4 CCD           100%      97.22% [%diff: -2.78%]
+8 CCD           100%      99.01% [%diff: -0.99%]
+
+--
+
+Regression observed could either be because of the larger search time to
+find a non cache-hot idle CPU, or perhaps just the larger search time in
+general adding to utilization and curbing the SIS_UTIL limits further.
+I'll go gather some stats to back my suspicion (particularly for
+hackbench).
+
+> 
+> [..snip..]
+ 
+--
+Thanks and Regards,
+Prateek
