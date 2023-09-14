@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A887A0CF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FA17A0CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241826AbjINSjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
+        id S241908AbjINSjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241609AbjINSix (ORCPT
+        with ESMTP id S241612AbjINSix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871682101;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76262103;
         Thu, 14 Sep 2023 11:38:45 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,31 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LC6ee95LLgICXwmE0USSEBuHjBCWJtZsDUgyx/Ctu9I=;
-        b=R1TuVbNostHa0wM4yepEE7v6WHYuLqdxHUqaYn+qB5pl6tCd4QoP0ouCPBj/gYuUjWU2Hl
-        qZSxgx+XXc/VQiIbUuVilNn3nM35W92GRgdyC6GzHPzgXIzngraczIF+lQGD9zNMwJBoVE
-        orO2MdWxWEsso3g+/W+4DPjj1PAxTEk4Ngx2Oi+rIWTZF+orsNP2nKu4Q3yVlYIW1gI/to
-        QdnLyyvD3oIXml7AgZqrVHTRaq5qTQuWRRt2xEKRNBtXo5LM/raiC8Fp2QnzPPv8+4HCmj
-        PiYmbhKFmSLs+5ksgnA4L6VU/drWEG5TNzjchepMiTwFo+4Ae8GZ2/3YVbPhzw==
+        bh=VtioS1TmKY7HP/T4E5ia6bLpeGsG2aqw7oKrLcODTps=;
+        b=KzR11aI9gMRB+jNxh73zf08f5zfu/h94i8WcA/3/y5qkyCNVrXvChwPbdJM9x207DuYSdm
+        5TnoMRJFSM0tSm8kxtFH60dMK6ATrKgzPAOqhAs/T5VKADPi7G0F8X0rcZWIPSN7uXsNMf
+        xSeERMiAJPhFGYUXTISrHOmpAwvkN4GxihRhtbV/aBe2bqoUhBydbMagg2zV6sBnhZsm8o
+        9VQ3VavmlDH64IhR4lxTvzRanxQk1621jItnGZdIz7FBiyYLIrfZMG5X73rfXfrAZyaA4O
+        0tNytbsl8jFu9CQaJmYt4hcEHUm3VIWtDCl7OqYda7AOsn2bA/cDl9csUv19dA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716724;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LC6ee95LLgICXwmE0USSEBuHjBCWJtZsDUgyx/Ctu9I=;
-        b=CZYVJekgCab/O5x5km8To1UaDf+NZCMKRy3KHKXP+YTu0UQJ7PUVdCpMdSS2HphSeJTuVJ
-        /2B0cSEgLlc3bHDA==
+        bh=VtioS1TmKY7HP/T4E5ia6bLpeGsG2aqw7oKrLcODTps=;
+        b=r8qMy4Di9mr9YJgshOb2oXJhJVt0iIfP10UKioSN1o0mLawjFrtLrNOaRqGeDH1l6nHA1q
+        UsuEvV98gwDm4PAQ==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
-        Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>
-Subject: [PATCH tty v1 13/74] serial: 8250_pci1xxxx: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:30 +0206
-Message-Id: <20230914183831.587273-14-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>
+Subject: [PATCH tty v1 14/74] serial: altera_jtaguart: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:31 +0206
+Message-Id: <20230914183831.587273-15-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -83,39 +81,106 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/8250/8250_pci1xxxx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/serial/altera_jtaguart.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
-index a3b25779d921..53e238c8cc89 100644
---- a/drivers/tty/serial/8250/8250_pci1xxxx.c
-+++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
-@@ -225,10 +225,10 @@ static bool pci1xxxx_port_suspend(int line)
- 	if (port->suspended == 0 && port->dev) {
- 		wakeup_mask = readb(up->port.membase + UART_WAKE_MASK_REG);
+diff --git a/drivers/tty/serial/altera_jtaguart.c b/drivers/tty/serial/altera_jtaguart.c
+index 5fab4c978891..7090b251dd4d 100644
+--- a/drivers/tty/serial/altera_jtaguart.c
++++ b/drivers/tty/serial/altera_jtaguart.c
+@@ -147,14 +147,14 @@ static irqreturn_t altera_jtaguart_interrupt(int irq, void *data)
+ 	isr = (readl(port->membase + ALTERA_JTAGUART_CONTROL_REG) >>
+ 	       ALTERA_JTAGUART_CONTROL_RI_OFF) & port->read_status_mask;
  
--		spin_lock_irqsave(&port->lock, flags);
-+		uart_port_lock_irqsave(port, &flags);
- 		port->mctrl &= ~TIOCM_OUT2;
- 		port->ops->set_mctrl(port, port->mctrl);
--		spin_unlock_irqrestore(&port->lock, flags);
-+		uart_port_unlock_irqrestore(port, flags);
+-	spin_lock(&port->lock);
++	uart_port_lock(port);
  
- 		ret = (wakeup_mask & UART_WAKE_SRCS) != UART_WAKE_SRCS;
- 	}
-@@ -251,10 +251,10 @@ static void pci1xxxx_port_resume(int line)
- 	writeb(UART_WAKE_SRCS, port->membase + UART_WAKE_REG);
+ 	if (isr & ALTERA_JTAGUART_CONTROL_RE_MSK)
+ 		altera_jtaguart_rx_chars(port);
+ 	if (isr & ALTERA_JTAGUART_CONTROL_WE_MSK)
+ 		altera_jtaguart_tx_chars(port);
  
- 	if (port->suspended == 0) {
--		spin_lock_irqsave(&port->lock, flags);
-+		uart_port_lock_irqsave(port, &flags);
- 		port->mctrl |= TIOCM_OUT2;
- 		port->ops->set_mctrl(port, port->mctrl);
--		spin_unlock_irqrestore(&port->lock, flags);
-+		uart_port_unlock_irqrestore(port, flags);
- 	}
- 	mutex_unlock(&tport->mutex);
+-	spin_unlock(&port->lock);
++	uart_port_unlock(port);
+ 
+ 	return IRQ_RETVAL(isr);
  }
+@@ -180,14 +180,14 @@ static int altera_jtaguart_startup(struct uart_port *port)
+ 		return ret;
+ 	}
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Enable RX interrupts now */
+ 	port->read_status_mask = ALTERA_JTAGUART_CONTROL_RE_MSK;
+ 	writel(port->read_status_mask,
+ 			port->membase + ALTERA_JTAGUART_CONTROL_REG);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	return 0;
+ }
+@@ -196,14 +196,14 @@ static void altera_jtaguart_shutdown(struct uart_port *port)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Disable all interrupts now */
+ 	port->read_status_mask = 0;
+ 	writel(port->read_status_mask,
+ 			port->membase + ALTERA_JTAGUART_CONTROL_REG);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	free_irq(port->irq, port);
+ }
+@@ -264,33 +264,33 @@ static void altera_jtaguart_console_putc(struct uart_port *port, unsigned char c
+ 	unsigned long flags;
+ 	u32 status;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	while (!altera_jtaguart_tx_space(port, &status)) {
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 
+ 		if ((status & ALTERA_JTAGUART_CONTROL_AC_MSK) == 0) {
+ 			return;	/* no connection activity */
+ 		}
+ 
+ 		cpu_relax();
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 	}
+ 	writel(c, port->membase + ALTERA_JTAGUART_DATA_REG);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ #else
+ static void altera_jtaguart_console_putc(struct uart_port *port, unsigned char c)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	while (!altera_jtaguart_tx_space(port, NULL)) {
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 		cpu_relax();
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 	}
+ 	writel(c, port->membase + ALTERA_JTAGUART_DATA_REG);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ #endif
+ 
 -- 
 2.39.2
 
