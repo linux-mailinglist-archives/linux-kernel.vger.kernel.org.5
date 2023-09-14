@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75B07A10C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFAC7A10D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjINWRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S230056AbjINWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjINWRO (ORCPT
+        with ESMTP id S230369AbjINWSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:17:14 -0400
-Received: from mail-oa1-x4a.google.com (mail-oa1-x4a.google.com [IPv6:2001:4860:4864:20::4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EB12720
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:17:10 -0700 (PDT)
-Received: by mail-oa1-x4a.google.com with SMTP id 586e51a60fabf-1bf00f8cf77so2111197fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694729829; x=1695334629; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NmiSL1hPoXorfA2q6qNOq7ioFso4QUSjYQj36GecrTE=;
-        b=xkngvD2Ibfn8w03jxth/IdNDuHUov2S9wEE3mKAgK6Q1mChzRVyw499SXq0AUo289Y
-         +JKqJd5TxrL2PO0QKNR23nWlvl+MrmwriQSqIDEvCUnQd7Uo1p0lI6XDj9OYqGoIkXck
-         J52jeUoyaC9rVgZDVdETfWrEwEszVZ7TSIDG2h37hl9k13Tq+YmW9EiDJUA51/nf10WK
-         BZVMls7AVpXNkoY3o0KpqXGp6n2kd1H6koJZTJ4EMOE2GfZ8txQDffzrlTUlK6yqOwur
-         qV+YJoBcWV7/tAxy6NAzSig4O+Rx095bL6zYNVPjmsp0kcIPm3buw0KK2lkdTG32viMt
-         KB+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694729829; x=1695334629;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NmiSL1hPoXorfA2q6qNOq7ioFso4QUSjYQj36GecrTE=;
-        b=U/kESbmecpBxT9QWOsdzhGkrnQU6k3hg5D3+9YkFDEDGHsn5hUFVmFWluaBpKWJ1jy
-         93vZWiduuBGdGNOIhG51Qv/tkdqH2LyBIEaLw4BQrq72SDlZuseWw1oCkzfPeBjWcVru
-         5uNt/KMDIizwKrZMhiGM3eFeaht/FAbsii1K9JD+FLyYa8QRHt4brRb5WP1+0XTajqlz
-         viEVEZh3OF//5V3p1WbAsRBCUSNBkoy1HsXZEROEWddZxDF0zWxG8A09RYqyk0ZakcuL
-         FDtNOZzSJPsOzS0T/LRfUjwOhyREB8eTNRpyhtRtq+7+UXZoHLhommDTAH2Qn8BJX0Zx
-         zClw==
-X-Gm-Message-State: AOJu0YzI+comCUVerUziMYny8qq9zaX/W/DC/jdStUvDioWxC4VuuP/m
-        KJiREBIvff+Hy7PUvhpvsoOgLHqtYwUc7QT/oA==
-X-Google-Smtp-Source: AGHT+IFwcROu4zar64CAvXwI9J0nMFhba4+cLsta+BCeiKNlxnKo7O4A0MBXBGcuyAHHg0RNV0zPR7a2HtcCyI3FeQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:5b17:b0:1d6:6175:e8b7 with
- SMTP id ds23-20020a0568705b1700b001d66175e8b7mr704oab.4.1694729829605; Thu,
- 14 Sep 2023 15:17:09 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 22:17:08 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGOGA2UC/x2NQQqDMBAAvyI5dyFqodqvlB6SuEmXkjXsamgR/
- 97Q28xl5jCKQqjm3h1GsJLSyk36S2fCy3FCoKW5Geww2rm/gm7CoXxhEaooCqnsjTPwuld0O3B 9Z0BOxAglg3eKEGCcfJzDbfLBRtPaRTDS5/99PM/zB65MP5KHAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694729828; l=2319;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=RxOj2KRPJoHaPbd44NSfvp7xlYOfBBUfmUGMt4NplWM=; b=DjqYwwhRW21CQ5QMz9Kq/kMZK/2XQMBC1ojIhEn54/lvBB1ZMdiXQOPyCP7EYWc+wzaWYIxZw
- urNwQ6OfNmeAjWVrv9S1uYW4YBYQvugcZXBlGnwgHVmMTJgXi8klaNc
-X-Mailer: b4 0.12.3
-Message-ID: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-v1-1-4b09ed453f84@google.com>
-Subject: [PATCH] drm/nouveau/pm: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Sep 2023 18:18:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3372D49;
+        Thu, 14 Sep 2023 15:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Q/TYaYSuVqsQSjwryAM4z4+U7qrtWTJeyMiMA4yjJmI=; b=seN2zUIEhbEiw4+xT7dHrB+HiQ
+        X6laKSRDDOLQp8xPDa/26qm6dqmYB0UjEnG4UGF84bdOaaUI5O7pLWWvNDVUbeDpjlsfafAZvR0B/
+        vjLjqWu/u5tsyQD0YhLTqYI69gjWOcsW9E4dh4FUNOLo82OkUAZHIuGZllArz0Es70Y3vTtJUhOu6
+        lJ0olPbtWblPpRDMiGJXhE4euSXyNbnCL7PiWuLBOwLuAjC31y0PabEHTzMZ5ndA5QfrNprlV5J0T
+        SREXT1YZ2qYjVUVl22yGmhVTL6zwfrbwwxTDMOezUNm2yaT1JaoDxLDW5gfMF2lpGXrMQyXxs2D9J
+        OPI9Gfzw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qguet-005XBo-5G; Thu, 14 Sep 2023 22:17:59 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CC29230036C; Fri, 15 Sep 2023 00:17:58 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 00:17:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Mitchell Levy <levymitchell0@gmail.com>
+Subject: Re: guard coding style (was: Re: [PATCH v1 05/10] gpio: pca953x:
+ Simplify code with cleanup helpers)
+Message-ID: <20230914221758.GA5492@noisy.programming.kicks-ass.net>
+References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
+ <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
+ <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org>
+ <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
+ <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Sep 14, 2023 at 09:47:07AM +0200, Geert Uytterhoeven wrote:
 
-We should prefer more robust and less ambiguous string interfaces.
+> > Only compound statements need curly braces in the kernel and it has
+> > been like this forever. I don't really see a need to make it an
+> > exception.
 
-A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-NUL-termination on the destination buffer without unnecessarily NUL-padding.
+Kernel coding style is a little different from what C demands.
+Specifically, kernel style demands { } for anything multi-line.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Specifically:
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
-index 8fe0444f761e..131db2645f84 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
-@@ -462,7 +462,7 @@ nvkm_perfmon_mthd_query_domain(struct nvkm_perfmon *perfmon,
- 
- 		args->v0.id         = di;
- 		args->v0.signal_nr  = nvkm_perfdom_count_perfsig(dom);
--		strncpy(args->v0.name, dom->name, sizeof(args->v0.name) - 1);
-+		strscpy(args->v0.name, dom->name, sizeof(args->v0.name));
- 
- 		/* Currently only global counters (PCOUNTER) are implemented
- 		 * but this will be different for local counters (MP). */
-@@ -513,8 +513,7 @@ nvkm_perfmon_mthd_query_signal(struct nvkm_perfmon *perfmon,
- 			snprintf(args->v0.name, sizeof(args->v0.name),
- 				 "/%s/%02x", dom->name, si);
- 		} else {
--			strncpy(args->v0.name, sig->name,
--				sizeof(args->v0.name) - 1);
-+			strscpy(args->v0.name, sig->name, sizeof(args->v0.name));
- 		}
- 
- 		args->v0.signal = si;
-@@ -572,7 +571,7 @@ nvkm_perfmon_mthd_query_source(struct nvkm_perfmon *perfmon,
- 
- 		args->v0.source = sig->source[si];
- 		args->v0.mask   = src->mask;
--		strncpy(args->v0.name, src->name, sizeof(args->v0.name) - 1);
-+		strscpy(args->v0.name, src->name, sizeof(args->v0.name));
- 	}
- 
- 	if (++si < source_nr) {
+	for (;;) {
+		/* a comment */
+		foo();
+	}
 
----
-base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-change-id: 20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-38bf9c78bc0f
+or
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+	for (;;) {
+		foo(a, very, long,
+		    arg, chain);
+	}
+
+do both warrant a pile of curlies in kernel style where C does not
+demand it.
+
+> > That being said - I don't think the coding style for guard has ever
+> > been addressed yet, so maybe bring it up with Peter Zijlstra?
+> 
+> That's a good idea!
+> 
+> I see Peter always used curly braces (but he didn't have any
+> single-statement blocks, except for one with an "if", and we do tend
+> to use curly braces in "for"-statements containing a single "if", too),
+> but he does put a space after the "scoped_guard", as is also
+> shown in the template in include/linux/cleanup.h:
+> 
+>     scoped_guard (name, args...) { }:
+> 
+
+Right, per scope_guard being a for loop I added the extra space. Our
+coding style does;
+
+	if (cond) { }
+
+	while (cond) { }
+
+	for (;;) { }
+
+etc.. so I too did:
+
+	scoped_guard (name, args...) { }
+
+> Then, "guard" does not get a space (but it is funny syntax
+> anyway, with the double set of parentheses ;-).  The template in
+> include/linux/cleanup.h doesn't match actual usage as it lacks the
+> second set of parentheses:
+> 
+>     guard(name):
+> 
+> Peter: care to comment?
+> Or do you have a different bikeshed to paint today? ;-)
+
+For guard I read the first pair as if it were a C++ template, that is, I
+pretend, it is actually written like:
+
+	guard<name>(args..);
+
+Both are 'odd' in numerous ways and inconsistent vs where the 'args...'
+go, but alas, we're trying to wrangle this inside the constraints
+imposed upon us by C and CPP our dear pre-processor.
+
+
 
