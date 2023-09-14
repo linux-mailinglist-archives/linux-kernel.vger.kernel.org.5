@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591AE7A0711
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1267A0716
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239882AbjINORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S239919AbjINOSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239493AbjINOR2 (ORCPT
+        with ESMTP id S239493AbjINOSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:17:28 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA923DD;
-        Thu, 14 Sep 2023 07:17:23 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmfRD5nVkz6D8gq;
-        Thu, 14 Sep 2023 22:12:40 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 15:17:21 +0100
-Date:   Thu, 14 Sep 2023 15:17:20 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 20/35] ACPI: Rename acpi_processor_hotadd_init
- and remove pre-processor guards
-Message-ID: <20230914151720.00007105@Huawei.com>
-In-Reply-To: <20230913163823.7880-21-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-21-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 10:18:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549A0B9;
+        Thu, 14 Sep 2023 07:18:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE83BC433C7;
+        Thu, 14 Sep 2023 14:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694701100;
+        bh=O0Vdo75uGuQ70r2R2tPq6kz4JrAy5xHqML/ZtLJgtv0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmAOOQtmHbVUufqL3SindTElEfz7B4/drHCv7tui7JsAlw3gKPsTtr3iHKt3MeeK9
+         HgbLY9d/0tE3N0sIXPQNuf5kjviENlSUtiK7v24bq3uvjZsXjwLQHZngjOINy65MSa
+         BPz5FeozhwN+XhFRal2oHtg++2DC+veSc10+M848z0xgnq5eoMHLmaDivQ58/v+qft
+         TMYboF0fIU9XV0M3tormeFx4M/s4qrXbmZEomLZn6cKnU4LdGIlAcTWWGOudsWHSA1
+         lzYnZ4vG9t6ESnD0AF/CWFhNAjWQgRfYu+36UCly8mTZ3CpQshY1G+qF4ivVRsEU40
+         ZDk2Cf+eRZkew==
+Date:   Thu, 14 Sep 2023 15:18:14 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, Andy Chiu <andy.chiu@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Samuel Neves <sneves@dei.uc.pt>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/6] RISC-V BLAKE2s Vector implementation
+Message-ID: <20230914-squad-ripping-e8c98e2d336b@spud>
+References: <20230912115728.172982-1-bjorn@kernel.org>
+ <20230914-roaming-plunging-948c78d9831c@wendy>
+ <87pm2kap1p.fsf@all.your.base.are.belong.to.us>
+ <20230914-float-uneven-7cd1a18b3978@wendy>
+ <87zg1o3kpd.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BoFtOlqfEEGc0sg6"
+Content-Disposition: inline
+In-Reply-To: <87zg1o3kpd.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:08 +0000
-James Morse <james.morse@arm.com> wrote:
 
-> acpi_processor_hotadd_init() will make a CPU present by mapping it
-> based on its hardware id.
-> 
-> 'hotadd_init' is ambiguous once there are two different behaviours
-> for cpu hotplug. This is for toggling the _STA present bit. Subsequent
-> patches will add support for toggling the _STA enabled bit, named
-> acpi_processor_make_enabled().
-> 
-> Rename it acpi_processor_make_present() to make it clear this is
-> for CPUs that were not previously present.
-> 
-> Expose the function prototypes it uses to allow the preprocessor
-> guards to be removed. The IS_ENABLED() check will let the compiler
-> dead-code elimination pass remove this if it isn't going to be
-> used.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  drivers/acpi/acpi_processor.c | 14 +++++---------
->  include/linux/acpi.h          |  2 --
->  2 files changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 75257fae10e7..22a15a614f95 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -182,13 +182,15 @@ static void __init acpi_pcc_cpufreq_init(void) {}
->  #endif /* CONFIG_X86 */
->  
->  /* Initialization */
-> -#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
-> -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> +static int acpi_processor_make_present(struct acpi_processor *pr)
->  {
->  	unsigned long long sta;
->  	acpi_status status;
->  	int ret;
->  
-> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-> +		return -ENODEV;
-> +
->  	if (invalid_phys_cpuid(pr->phys_id))
->  		return -ENODEV;
->  
-> @@ -222,12 +224,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
->  	cpu_maps_update_done();
->  	return ret;
->  }
-> -#else
-> -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> -{
-> -	return -ENODEV;
-> -}
-> -#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
->  
->  static int acpi_processor_get_info(struct acpi_device *device)
->  {
-> @@ -335,7 +331,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
->  	 *  because cpuid <-> apicid mapping is persistent now.
->  	 */
->  	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> -		int ret = acpi_processor_hotadd_init(pr);
-> +		int ret = acpi_processor_make_present(pr);
->  
->  		if (ret)
->  			return ret;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 651dd43976a9..b7ab85857bb7 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -316,12 +316,10 @@ static inline int acpi_processor_evaluate_cst(acpi_handle handle, u32 cpu,
->  }
->  #endif
->  
-> -#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
->  /* Arch dependent functions for cpu hotplug support */
->  int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
->  		 int *pcpu);
->  int acpi_unmap_cpu(int cpu);
+--BoFtOlqfEEGc0sg6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I've lost track somewhat but I think the definitions of these are still under ifdefs
-which is messy if nothing else and might cause build issues.
+On Thu, Sep 14, 2023 at 04:15:10PM +0200, Bj=F6rn T=F6pel wrote:
+> Conor Dooley <conor.dooley@microchip.com> writes:
+>=20
+> > On Thu, Sep 14, 2023 at 02:59:30PM +0200, Bj=F6rn T=F6pel wrote:
+> >> Conor Dooley <conor.dooley@microchip.com> writes:
+> >>=20
+> >> > On Tue, Sep 12, 2023 at 01:57:22PM +0200, Bj=F6rn T=F6pel wrote:
+> >> >> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
+> >> >>=20
+> >> >> Hi,
+> >> >>=20
+> >> >> This is Andy's kernel mode vector V2 series [1], with my BLAKE2s
+> >> >> AVX-512-to-RISC-V translation patch appended.
+> >> >>=20
+> >> >> I've tagged it as RFC, since Andy's series is still not in-tree yet.
+> >> >>=20
+> >> >> It's a first step towards a Vector aided Wireguard! ;-)
+> >> >
+> >> > This has the same problems as Andy's stuff & doesn't build properly =
+for the
+> >> > automation. What is the plan between yourself and Andy for submittin=
+g a
+> >> > version of the in-kernel vector support that passes build testing?
+> >>=20
+> >> I'll synch up with Andy! I'm not even sure the blake2s patch should pa=
+rt
+> >> of the "in-kernel vector" series at all.
+> >
+> > The in-kernel vector stuff should come with a user, otherwise it's dead
+> > code :)
+>=20
+> Sure, just so we're on the same page; Patch 3 (Vector XOR) is a user
+> from my perspective, no?
 
-> -#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
->  
->  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
->  int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
+D'oh
 
+--BoFtOlqfEEGc0sg6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMWJgAKCRB4tDGHoIJi
+0mSZAP9QxZxEOa2w5PdNwZc4V1YJq0no6zTaa5YmzIbEImXKBwEAzXGzM8jb/VBR
+mo1rZ4gmHUV8MTurBVpK8FYf9j+bLAo=
+=vx8E
+-----END PGP SIGNATURE-----
+
+--BoFtOlqfEEGc0sg6--
