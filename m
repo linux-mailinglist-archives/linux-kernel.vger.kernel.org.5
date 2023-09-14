@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719067A09A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAEA7A09A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241215AbjINPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S241229AbjINPsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241065AbjINPsH (ORCPT
+        with ESMTP id S241218AbjINPsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:48:07 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D1E99;
-        Thu, 14 Sep 2023 08:48:03 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so999237f8f.1;
-        Thu, 14 Sep 2023 08:48:03 -0700 (PDT)
+        Thu, 14 Sep 2023 11:48:13 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF93DD;
+        Thu, 14 Sep 2023 08:48:09 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso960116f8f.0;
+        Thu, 14 Sep 2023 08:48:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694706482; x=1695311282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ONgl35cyTuTloZEtJw37EUccE7G4fFk4/1kXTlAThVg=;
-        b=A7kjyFYYUFkJnjkRuZVDUN7T8WNHjXjKoPW3+i/MOwC+BSy6yJKSuTAN7WPBa/+gyg
-         p3flOppSTXGiUEraJVkjC4dG4y0kJsWnip86DIaRr1hzq6ee7Pt0P4SsWxaBN8FvvRZz
-         NYvgZnm3idZLxdEe9guvp+IIhMu4/h/yv8uts5dlDk0qfyMEcFC9apqR0rKhrAGxYe64
-         I5XZxFcIVaNMOXaUwS+jEQEMNSZSe6/97z3mT7olIFh+hGd/A+mTwQS5dVVRMCCDMurT
-         Z3T0szVGJNTJu+DEyvFXFOkUW80iRNLgjnE0MDGdgtKL8HLXrafOWGnM/5yXvwiDCJq8
-         sf5w==
+        d=gmail.com; s=20221208; t=1694706488; x=1695311288; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=173yD9VjwXTBKZr7qMJ/4Ufdnz2W816dljbeIsZNNJE=;
+        b=WrnzjoC33WeYGdNGgn35Wh6m92DaACtpZ69Q1tOCE7koxOhwL817R5DHaocmBqkuYt
+         /2FGU/wAh9Bjy+0dXTf6U2ii8jCtRUEZA1Z324W0L0XADiO+uHBELM8aushwVrOglcZ8
+         VO52KogniC0yGEtWtEBK5Q+oJNdkSQWg6b2/n5UCZySqJzQllA1n1Q4gwDfGsYpLSiGq
+         LVH6AzF9cz2jOR9/Kwr4cLMFHDv4Vzd+aeEQET95H2DZ9f7MqRNMNT8NGimk7+HzTpuR
+         ZrOrr7Z+zRd6gxsCy7K5fIm/moeJwPQ9L6ebD4S2ml0oPbGVK8AEi9AeawE1XhYFe+u6
+         jN5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694706482; x=1695311282;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ONgl35cyTuTloZEtJw37EUccE7G4fFk4/1kXTlAThVg=;
-        b=wEuHJAKUF1jzsTYzREumNg6/0NuY9lkDL/3BDWh8iTn+UyfrqVxOn/gc+lVBOLcK39
-         MfyFE9wtrKp8XeCJVOs8glm0yY3rofvFThtTjukBVX6zRcYVDB8NjDsYt0VrvtHf++d8
-         bomUDMbNFRZUIqpmDdaDFtJFmzD3M9l8r5OI8tblYSJUmterSfvQLeSrPrLS2ZDA3Y2u
-         rbPyVlDw6U82PUfuuzVi/lzuSGm6olQ8juEuy+/4eYV7Ff/M+Niiv6zaQefULMQhYDcH
-         MQZ3ZXICQumXVl+hWMecbXvmbDwYnxQ4aQ9isXHVMeL3/liN/wUV4TsjJ83Rtyc6N5oY
-         bV3w==
-X-Gm-Message-State: AOJu0YzIbEIz0HDRxjw/DCSVLURQqkb9gZCWkG4hiZ9tHPgBYWkPBeBZ
-        XnrQNJPaSdeViuqEGiF45ps=
-X-Google-Smtp-Source: AGHT+IH8JftPMCQzejNi3579EryjIIi2ielENx0BePtQ+HJX1wxhOxxg8PIsva0nRaybUDOrPKzt8A==
-X-Received: by 2002:adf:ce04:0:b0:317:ef76:b776 with SMTP id p4-20020adfce04000000b00317ef76b776mr5094389wrn.68.1694706481548;
-        Thu, 14 Sep 2023 08:48:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694706488; x=1695311288;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=173yD9VjwXTBKZr7qMJ/4Ufdnz2W816dljbeIsZNNJE=;
+        b=ef6h1lx2GVKOKga97c6/PJFe7VWUji7JMkFeKsdY9CS7u327JngqgSspqOpIWc+jdt
+         pXx2A4Yv0589X1aE5XHS67hA50rEM6FNpdSIjT15kZDP008UJUec9Bzh7Zo/v2FMI/b+
+         Ej/KjbOYOCPqOKomIpQo11CgWm7hAMfx9JVolp38Ns5yDdrNo1AZUskuMosVMdcsiTFH
+         KYiW3/W+9ldu1k/dp+WF0uM8YQGylCovNYJzKUSZNh1ugMfXvcBdMdiF3XtN8Fwh3Htb
+         q7NQSU8ePMY4v62x9v7Ipr7zh/3wVKcgzWqBRLlSV/3kNu1rsVFwZKMrvIDeqj1jYVYx
+         x9hQ==
+X-Gm-Message-State: AOJu0YysHXWc5JF9rT2MxK2f54ahAwCmFDfd07uZPlA+qeZIu8i5d5y+
+        dRQJgX3pqcOxVhJ5PBgiejA=
+X-Google-Smtp-Source: AGHT+IExFJBi9Q/weXMg9QbYK5aU/ZB8UO7tgl1uqyFTBjDeP5xJo3SlFUOuek25Ef8mJ+0llrnpzA==
+X-Received: by 2002:a5d:5587:0:b0:315:a17d:dbc6 with SMTP id i7-20020a5d5587000000b00315a17ddbc6mr5250564wrv.14.1694706487552;
+        Thu, 14 Sep 2023 08:48:07 -0700 (PDT)
 Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-54-79.cust.vodafonedsl.it. [188.217.54.79])
-        by smtp.gmail.com with ESMTPSA id f13-20020adff44d000000b0031c79de4d8bsm2071169wrp.106.2023.09.14.08.48.00
+        by smtp.gmail.com with ESMTPSA id f13-20020adff44d000000b0031c79de4d8bsm2071169wrp.106.2023.09.14.08.48.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 08:48:01 -0700 (PDT)
+        Thu, 14 Sep 2023 08:48:07 -0700 (PDT)
 From:   Tommaso Merciai <tomm.merciai@gmail.com>
 Cc:     jacopo.mondi@ideasonboard.com, laurent.pinchart@ideasonboard.com,
         linuxfancy@googlegroups.com, hdegoede@redhat.com,
         Tommaso Merciai <tomm.merciai@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Martin Hecht <martin.hecht@avnet.eu>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Yang Xiwen <forbidden405@foxmail.com>,
+        Icenowy Zheng <uwu@icenowy.me>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
         Marco Felsch <m.felsch@pengutronix.de>,
         Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Nicholas Roth <nicholas@rothemail.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
         Shawn Tu <shawnx.tu@intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v8 0/3] media: i2c: Add support for alvium camera
-Date:   Thu, 14 Sep 2023 17:47:52 +0200
-Message-Id: <20230914154758.1795663-1-tomm.merciai@gmail.com>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v8 1/3] dt-bindings: vendor-prefixes: Add prefix alliedvision
+Date:   Thu, 14 Sep 2023 17:47:53 +0200
+Message-Id: <20230914154758.1795663-2-tomm.merciai@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230914154758.1795663-1-tomm.merciai@gmail.com>
+References: <20230914154758.1795663-1-tomm.merciai@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -79,66 +95,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-Back on topic :).
+Add a vendor prefix entry for Allied Vision Technologies GmbH
+(https://www.alliedvision.com)
 
-This series add support for Allied Vision Alvium camera.
-The Alvium camera is shipped with sensor + isp in the same housing.
-The camera can be equipped with one out of various sensor and abstract
-the user from this. Camera is connected via MIPI CSI-2.
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Changes since v3:
+ - Collected tags from LPinchart, CDooley, KKozlowski
 
-I have rebase v8 on top of media-stage branch [1].
-Test was done taking as refence last build tooling from
-HVerkuil[2]. Thanks to this tool I'm able to fix the following
-warnings:
+Changes since v7:
+ - Fix company legal entity from Inc. to GmbH
 
-drivers/media/i2c/alvium-csi2.c:398:18: warning: incorrect type in assignment (different base types)
-drivers/media/i2c/alvium-csi2.c:398:18:    expected unsigned short [usertype] minor
-drivers/media/i2c/alvium-csi2.c:398:18:    got restricted __le16 [usertype]
-drivers/media/i2c/alvium-csi2.c:399:18: warning: incorrect type in assignment (different base types)
-drivers/media/i2c/alvium-csi2.c:399:18:    expected unsigned short [usertype] major
-drivers/media/i2c/alvium-csi2.c:399:18:    got restricted __le16 [usertype]
-drivers/media/i2c/alvium-csi2.c:416:21: warning: incorrect type in assignment (different base types)
-drivers/media/i2c/alvium-csi2.c:416:21:    expected unsigned short [usertype] minor
-drivers/media/i2c/alvium-csi2.c:416:21:    got restricted __le16 [usertype]
-drivers/media/i2c/alvium-csi2.c:417:21: warning: incorrect type in assignment (different base types)
-drivers/media/i2c/alvium-csi2.c:417:21:    expected unsigned int [usertype] patch
-drivers/media/i2c/alvium-csi2.c:417:21:    got restricted __le32 [usertype]
-drivers/media/usb/siano/smsusb.c:53:38: warning: array of flexible structures
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-drivers/media/i2c/alvium-csi2.c:2665 alvium_probe() warn: missing error code? 'ret'
-drivers/media/i2c/alvium-csi2.c:2671 alvium_probe() warn: ignoring unreachable code.
-drivers/media/usb/siano/smsusb.c:53:38: warning: array of flexible structures.
-
-
-Driver use last v4l2 CCI API.
-This driver has been tested on the following scenario:
-
- alvium-csi2 -> imx8mp-evk (isi pixel pipeline)
-
-Thanks & Regards,
-Tommaso
-
-[1] - https://git.linuxtv.org/media_stage.git/tree/Documentation/devicetree/bindings/vendor-prefixes.yaml
-[2] - https://git.linuxtv.org/hverkuil/build-scripts.git
-
-Tommaso Merciai (3):
-  dt-bindings: vendor-prefixes: Add prefix alliedvision
-  media: dt-bindings: alvium: add document YAML binding
-  media: i2c: Add support for alvium camera
-
- .../media/i2c/alliedvision,alvium-csi2.yaml   |   97 +
- .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
- MAINTAINERS                                   |    9 +
- drivers/media/i2c/Kconfig                     |   11 +
- drivers/media/i2c/Makefile                    |    1 +
- drivers/media/i2c/alvium-csi2.c               | 2761 +++++++++++++++++
- drivers/media/i2c/alvium-csi2.h               |  474 +++
- 7 files changed, 3355 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/alliedvision,alvium-csi2.yaml
- create mode 100644 drivers/media/i2c/alvium-csi2.c
- create mode 100644 drivers/media/i2c/alvium-csi2.h
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index af60bf1a6664..0a1d75c5a302 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -77,6 +77,8 @@ patternProperties:
+     description: ALFA Network Inc.
+   "^allegro,.*":
+     description: Allegro DVT
++  "^alliedvision,.*":
++    description: Allied Vision Technologies GmbH
+   "^allo,.*":
+     description: Allo.com
+   "^allwinner,.*":
 -- 
 2.34.1
 
