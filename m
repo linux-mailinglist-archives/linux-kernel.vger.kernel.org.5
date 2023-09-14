@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885047A0009
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BA47A000F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236861AbjINJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S237048AbjINJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbjINJaS (ORCPT
+        with ESMTP id S236984AbjINJax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:30:18 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C039CF3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:14 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7a512434bc9so1217265241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694683813; x=1695288613; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p2ppFbBJ6eSrXngOvBl4Cb6zXMC/U2RNI6NUtLKD4qk=;
-        b=A5qFBXPuNfXapaDc1ES++K3Rar679LuNluYnHoBx4L14PSGbpK9ddRuMsWEoL7+Vee
-         lP3zM0IkQoM8uljFn+F4dbxumEu0ueiQgIq9/W4yvjXJM33GBy2/1L1yjrM4Ln5c1IZH
-         AvjAeo+h+ZuaKdmy0Aklm3m5XRVm0RyOmpTqwzRjoOOvstR1lQrb7r0vCkO3gmp/t5ie
-         l4wOVi6LbbOIoZGzd8Tv1Kim6pHPelF41P8+6SMPS5JV7ghq4kdx3Tftj/XGv/Jdwapd
-         IViDH4k83ORDqoNusi2GSdur//QOznyHDy7gZZR53WsNi0YeTMyYeWlNVgAO0l06PIfc
-         0pZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694683813; x=1695288613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p2ppFbBJ6eSrXngOvBl4Cb6zXMC/U2RNI6NUtLKD4qk=;
-        b=OZ5vl2Wnk7wZ7bjWqsqflJFxQrfLESWdBvEaND9BJD04HHSOXuYt/E4VzFS4o0y0Bc
-         hKJ9aFGmxxz5xkVTpbxaKABb8r3YqC/8pv62ksHzQ4bqb8meClQGGoQgf11GIbYbVD1b
-         5oPhRgrcxnRvjUlui8dqKjA2qLykljAXE8Ul/Q1NzeCSn2Wv7xlTklCSPz5MQaRAYeKN
-         l+KFsoESx3ek/JwijjVzazj+3BklhEq0k0O7k53xTzb6Y/iFyhdqAana5mARNzYGEfUW
-         +44tClqTmd+E0Ag1YKQe3eetIR8dFwVYYmkf9gnxIAi5UxKaUtlJbY3Cmtq/GhNyLfzN
-         wd7g==
-X-Gm-Message-State: AOJu0YxfpNBOTZOiXQSgRBrqfBLHcvXTtgdOsPj7plkn5HiH34xDn2Qf
-        oOdVxKkIceKvNheGSk3wJfLpXnwyJ5nqzYY2yTT0IA==
-X-Google-Smtp-Source: AGHT+IFdpKc86Ba4+Ce1Kw+37JilCE4JPGPOzMp6WOHfoT2BLvKGNI+DWUjLDVVh+a1NN/cT820cMVMpi35QbT24b9U=
-X-Received: by 2002:a05:6102:3169:b0:450:6ef1:e415 with SMTP id
- l9-20020a056102316900b004506ef1e415mr582724vsm.13.1694683813313; Thu, 14 Sep
- 2023 02:30:13 -0700 (PDT)
+        Thu, 14 Sep 2023 05:30:53 -0400
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B3B1BFB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1694683846; x=1697275846;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BikrMtESuNp+DgxwHDrljdpsjzQ302FVUhgX7muuOUk=;
+        b=lpkXwOUT0ck26Q2lbH75Gdhzvt+BV2lyGyqcC6WEEGpNfk2Yi7tAk2i8kJYN2YCR
+        Hs62PkMQrQ5ot15wAwoMXnvQNV7sMJzvJkHCHbbg/tKuQFqBU+4q1H88ogyTQHeJ
+        V+by2xr+dXJztt4bJGsLHlKOQTwRCKB2rFJp1FMGK0g=;
+X-AuditID: ac14000a-6e25770000001e37-f1-6502d2c626ef
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id B9.F2.07735.6C2D2056; Thu, 14 Sep 2023 11:30:46 +0200 (CEST)
+Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
+ (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 14 Sep
+ 2023 11:30:46 +0200
+From:   Wadim Egorov <w.egorov@phytec.de>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <upstream@lists.phytec.de>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: dts: ti: phycore-am64: Add RTC interrupt pin
+Date:   Thu, 14 Sep 2023 11:30:27 +0200
+Message-ID: <20230914093027.3901602-1-w.egorov@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-3-brgl@bgdev.pl>
- <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
- <CACRpkdYtYDJa6fo6RnizHNzUsyazBQxEaNMznaij8rBF4ie+ew@mail.gmail.com>
- <20230913222338.07d1625b@xps-13> <CAHp75Vd2a06rnGCEiJW0reN00amso0RyvgLT516nZiYLYZ-xcQ@mail.gmail.com>
- <4de724a1630eda74f4f304dc224dc981eb3b0875.camel@crapouillou.net>
-In-Reply-To: <4de724a1630eda74f4f304dc224dc981eb3b0875.camel@crapouillou.net>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 14 Sep 2023 11:30:02 +0200
-Message-ID: <CAMRc=MfnPdr66OPSkkjjpZY2VY7wN4WO2uBPbpyExFH0F6e=1Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWyRpKBR/fYJaZUg9ZFShZr9p5jsph/5Byr
+        xfLPs9kt+l48ZLbY9Pgaq8XlXXPYLN78OMtk0br3CLtF9zt1i/9nP7A7cHlsWtXJ5nHn2h42
+        j81L6j36u1tYPY7f2M7k8XmTXABbFJdNSmpOZllqkb5dAlfGiXWn2QvecFbcPPeQvYGxj6OL
+        kZNDQsBE4uXRTqYuRi4OIYElTBLn19xghXCeMErcmXCXDaSKTUBd4s6Gb2AJEYFuRomTB5Yx
+        gzjMAm2MEof2rmEEqRIWcJFY9fYNK4jNIqAqceH3axYQm1fAUuLz01NsEPvkJWZe+s4OEReU
+        ODnzCVgNM1C8eetsZghbQuLgixdgthBQ/MWl5SwwvdPOvWaGsEMljmxazTSBUWAWklGzkIya
+        hWTUAkbmVYxCuZnJ2alFmdl6BRmVJanJeimpmxhBkSDCwLWDsW+OxyFGJg7GQ4wSHMxKIrxs
+        tkypQrwpiZVVqUX58UWlOanFhxilOViUxHnv9zAlCgmkJ5akZqemFqQWwWSZODilGhitpIKv
+        lzAErJdyeXFTJPrhhM0lBSeNPXZM8FT35wxa4dvMe9NturTfJN9zej8v3/At5V8ZkSl/wL+O
+        8UxwdEz3HKUuZQ0lvQyR0zMF/9k+tsz738Q968XMrM1OVfZ9hYdCuRsXPD0gJMSz4iTLXNfn
+        tXVWB/+90lv4Xp5Z5dXc7+ZZUwq/pyixFGckGmoxFxUnAgDh8L4rcgIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:30=E2=80=AFAM Paul Cercueil <paul@crapouillou.ne=
-t> wrote:
->
-> Hi,
->
-> Le jeudi 14 septembre 2023 =C3=A0 10:02 +0300, Andy Shevchenko a =C3=A9cr=
-it :
-> > On Wed, Sep 13, 2023 at 11:23=E2=80=AFPM Miquel Raynal
-> > <miquel.raynal@bootlin.com> wrote:
-> > > linus.walleij@linaro.org wrote on Wed, 13 Sep 2023 22:12:40 +0200:
-> > > > On Wed, Sep 13, 2023 at 10:05=E2=80=AFPM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Wed, Sep 13, 2023 at 2:50=E2=80=AFPM Bartosz Golaszewski
-> > > > > <brgl@bgdev.pl> wrote:
-> >
-> > ...
-> >
-> > > > > Why not moving this quirk to gpiolib-of.c?
-> > > >
-> > > > That's a better idea here I think, it's clearly a quirk for a
-> > > > buggy device tree.
-> > >
-> > > Agreed, it's just for backward compatibility purposes in a single
-> > > driver. I believe it should stay here.
-> >
-> > I believe Linus was for moving.
->
-> Which Linus? Because the one who's also the gpio maintainer just wrote
-> above that it was better to keep it in the driver.
->
+Wth commit 16b26f602758 ("rtc: rv3028: Use IRQ flags obtained from device
+tree if available") we can now use the interrupt pin of the RTC.
+Let's add interrupt pin definitions to the SoM RTC.
 
-I'm also under the impression that Linus meant moving it to gpiolib-of.c. L=
-et's
+Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
+---
+ arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Linus: Could you clarify?
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+index 1c2c8f0daca9..f87f09d83c95 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+@@ -126,6 +126,12 @@ AM64X_IOPAD(0x0028, PIN_INPUT, 0)	/* (M17) OSPI0_D7 */
+ 			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0)	/* (L19) OSPI0_CSn0 */
+ 		>;
+ 	};
++
++	rtc_pins_default: rtc-defaults-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0278, PIN_INPUT, 7)	/* (C19) EXTINTn.GPIO1_70 */
++		>;
++	};
+ };
+ 
+ &cpsw3g {
+@@ -177,6 +183,11 @@ eeprom@50 {
+ 	i2c_som_rtc: rtc@52 {
+ 		compatible = "microcrystal,rv3028";
+ 		reg = <0x52>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&rtc_pins_default>;
++		interrupt-parent = <&main_gpio1>;
++		interrupts = <70 IRQ_TYPE_EDGE_FALLING>;
++		wakeup-source;
+ 	};
+ };
+ 
+-- 
+2.25.1
 
-Bart
-
-> Cheers,
-> -Paul
->
-> >
-> > gpiolib-of.c contains a lot of quirks, including this one. Calling
-> > these new (or old) APIs for overriding polarity in many cases
-> > shouldn't be needed if were no issues with DT or something like that.
-> >
->
