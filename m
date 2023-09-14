@@ -2,146 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B53237A0F51
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750C7A0F59
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjINUw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
+        id S229805AbjINUyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjINUw4 (ORCPT
+        with ESMTP id S229449AbjINUyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:52:56 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2133.outbound.protection.outlook.com [40.107.95.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53412698;
-        Thu, 14 Sep 2023 13:52:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJW8qd0bsLBtXZF8riXj7X24mB/IEHF7J4n2tLuuUn0MF8ngktqH9Kr4VZiMn1cYqXun/oWqbkb+xTXDmkrtdXQjwnDxMYkmjIPPo8Ztyfv38NpZ06WKL87ewzrXWEqiHaSaiIq1YaUquap/tf+u13T8f0hOAGuzmDWF92Ku7/pc2MT5wW1dtYes3nC2b5a4DlJiiVJaon9a+oVQVKo5yD3sQIPrlf/xg71Ral8WnczkEp6ZMrExhbz6CpbxxC5iGmqICEVVft92NwLzz6QfgFRgZxMnlAUT1RwinvlkGbp9n0lRaJVAvscFcI6H2QR4OcGOpjmBc1NkfHcam19DYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z8dd6wS2s6sD86zeFAiyLqlPMp5vaHMGNOTrE0XVEA4=;
- b=Q87joT8OnyVdzv5ZIILgix9Gg2kBJA9PdVWOmdFCOjjz7YkxL0xK2N00YvXW3fTCkRG+L60fPoQaRtfRR/5i0k+Pf4jLJm139Je6oOFnZUhySc1BZSFam0Tv/tOFB/aKIxTsridK/I44qwqxfcpEXEeF0723y04OLxSJiOOOoxvJwhDVFphicq+rvq4IH3b+mn/Xi916bQ1VPW3Fh8HCbtEH2ZYNraEzMCunZuG1tOj93mD7B9Xrd2g5bvnMUjsDDqVPKlVyGrwvRNpasdX6tP6fk5h7vsRTTwUDs1ByniD2j3CCmpm9mNEvn2OQCMv1ZEtOLNRIiKY1GuTYN2f/pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Thu, 14 Sep 2023 16:54:17 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9104E1BEF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:54:13 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-58c92a2c52dso15646837b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z8dd6wS2s6sD86zeFAiyLqlPMp5vaHMGNOTrE0XVEA4=;
- b=FBnWiMW8htwwlHYY+Y8bgFNedCR3roYx8hUc0Q4tQdO6z+jAq7Zw3ulWbkE03zRIs8cLMzK54QD2bwTEOZ4ORqr7DV6ThRZbX4/1rUC7FzLOACvEuYDArsRcLgMZESTQ87aquy/fDpcbjjCcxFAaK0TUDadQnqTAiVRIpmFE+V4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM6PR01MB4044.prod.exchangelabs.com (2603:10b6:5:2c::17) by
- PH0PR01MB6747.prod.exchangelabs.com (2603:10b6:510:7b::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.20; Thu, 14 Sep 2023 20:52:46 +0000
-Received: from DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2]) by DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2%6]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 20:52:45 +0000
-Message-ID: <07ea65c7-752a-42eb-b28d-d7a84f174321@os.amperecomputing.com>
-Date:   Thu, 14 Sep 2023 13:52:41 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalrayinc.com>
-References: <20230913232938.420423-1-janb@os.amperecomputing.com>
- <ZQNVCVHLQvA8s9F9@smile.fi.intel.com> <ZQNVNfnJ56XOv+hS@smile.fi.intel.com>
-From:   Jan Bottorff <janb@os.amperecomputing.com>
-In-Reply-To: <ZQNVNfnJ56XOv+hS@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR03CA0243.namprd03.prod.outlook.com
- (2603:10b6:610:e5::8) To DM6PR01MB4044.prod.exchangelabs.com
- (2603:10b6:5:2c::17)
+        d=google.com; s=20230601; t=1694724853; x=1695329653; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UKqdJpEhXaeQzQWCZBTpv9uWAL/fOLXY3yRJZGmhuG4=;
+        b=UsoH84UakKh1w0iRggqwt52thpyelaHQldRQGUWWB/r+qKyFeBjovW+00jurBoXZcH
+         DjTKjBFLugfOIbOG1xpRu5WqdMgi7HI23IzAgBi0SPYE1wR64SywnwAutgXiNcFRQLnH
+         NGFd/hz8osZnpyseMp82kEHJKSxrngEupGeSrPR2mBViG7TVzxgJtFev1DXiV4r663ja
+         IGqD/LwTXG0L5DWj91AwULcwEaUXcmy6hcS7w5CYhI9qY6tqVv30OlCGHvvMJw8Bjr4V
+         wwifs/IOjYlev6kd6qw7WUHXcf8WH4hB6qauPloUMkXcr2t1ylUzsyw+r5qlTqJT5dte
+         fLkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694724853; x=1695329653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UKqdJpEhXaeQzQWCZBTpv9uWAL/fOLXY3yRJZGmhuG4=;
+        b=VhL98JUrE0NFR99LYCsPm5J2DOfObY0F3P7EQBMBflOq5WeqMd3nbCWGp47M/R95Yr
+         odEGq445xaZ9GFqJHmI0QokmaAD0rXFPrHCpDAEumrWCKMWdISKz7di2OzIbG4XXUCWQ
+         rkafFutuOqr6hdJ0SFSxfGXu2XDneaYP1drl0AbvA4JtG4Ng7btC/ilHwd5izD/zzAuc
+         cWK52WQUQalWynINZ3Vd/5+8LfyvidVtMsNzTtkB6f0dmaUF6EelWKO+6P3N/mbeWeph
+         w/UWdPYnXWKqjF9ACITnPp4Erq/MKDUd3s8iMbGhj/i7BuS2ugjDn0FK4GqzyNboyZJS
+         xRtg==
+X-Gm-Message-State: AOJu0Yyz/M8az2wOkMQLw0f7kG3TkR1UeF4+RkSlouLdAjsIBmzhLj5N
+        wWt17QlUqguz+Ul7RCE2G5DzVcWxkRhHQe9kLjZ76gtTuSxg6kabtiCReA==
+X-Google-Smtp-Source: AGHT+IF4DvWD3xJkF2IOcbdqofMhRhruqJm2atUAe2XDNeL27MYzjsKYmgYMjt6xJog9bazLiMekC3zpQjze/QrotIY=
+X-Received: by 2002:a0d:ca97:0:b0:59b:d351:60cd with SMTP id
+ m145-20020a0dca97000000b0059bd35160cdmr5897145ywd.38.1694724852506; Thu, 14
+ Sep 2023 13:54:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4044:EE_|PH0PR01MB6747:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82ae4932-3bb4-488c-5810-08dbb5648c29
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fRdgVRY1El2arTc5ERdeJdwYbMV/SfHR3CrQS4UA7gS3aIZMlm6QfaU3C6kPEwo6EuFgrlZiINDTR4BN+3Cr4Ze7ZikFdo5MusZXNtEWzpZDZdjwmqIkrAc8i+H8Nzxofmc/o2Yc2RkqzA7u+bS0o8q66ZXVb2P70NSv+YwkHq9zN0Z1N7cPgmMFHMr/g2fLqH+u6qmGcD57RzT5rFixdsCeiCtGExFAYsuK1v8v3z01tu+0RF8Thkk+1RGT4sZZh1C2OaO+yRdludf3fe9BsvaEyjpd5KXNgQCcPcx5mgqJ8A/0aAujvDj+MvJ19OTayZZl4viHBYWtKfV56qKwnGbw73MznXMzU23qozl3eYwnp/zAejRHS3KanxUooWJneY6jCu2rfDoZd4Ylz4CeINMk72Fg/xvks2PVNZRw//mr6F9Mp/vPtJV94JDCEeNEw05xPOG6vhwuNu6tIhTLk71Zm7G47ojZZISgilvigYUXgYg15MtyT2rdYeym8a3zxysYPAK9Ww4PLnS/mXIKt2ZIn1jsUtWuqn2XP+qwuiEz4Eihkr/RTthAMymayBomcmvD4Al9rRfHGGnugEu0a+IwTzMhcGuXfHLlixD8F2WcJZjVdauVUrNEwgW7+zaO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4044.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39850400004)(346002)(136003)(366004)(1800799009)(451199024)(186009)(31696002)(86362001)(4744005)(8936002)(8676002)(2906002)(4326008)(5660300002)(53546011)(6486002)(6512007)(6506007)(6666004)(2616005)(26005)(38100700002)(478600001)(83380400001)(31686004)(66476007)(41300700001)(54906003)(6916009)(66946007)(316002)(66556008)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFAvcFIxdS9tekxwRktxNC9lODcwZ01IdTF3UTRmUGJzMnZiU3gzSi9WcFB4?=
- =?utf-8?B?TjM1ZWhpS25CSHAzNzlSaFNzSk1JVzdQOGgwcHhJaldHeUR0RjYxcnY1WlMv?=
- =?utf-8?B?OE83RFd2S0t3bi9GVnNCbG9ZVXFLRUhRV3BZMUN4TUpoaHlYTXN5cHM0WG40?=
- =?utf-8?B?TDNSWVBESEhaVFZlZGlvdHFRblI3aGNxZVU1c0NoQjF0L0ZISmNYNldEMTM1?=
- =?utf-8?B?MmtrbTRCRTVIYXc0aHJHb1VXZWd0aHV4VDY5SEVNNmp6SU45NjAyRFUyVUVu?=
- =?utf-8?B?eFVwQzhlMktoRDhPcU5NQ0hETmQ3OVFJUHIyaWd5djRhUW9qaEROM0x4SENp?=
- =?utf-8?B?bSt0eGkxY1ZDWEZHUEsyRG91UVRUcGpKSjZvK3AweTdGMXpJVWhiN3dpZW1a?=
- =?utf-8?B?eXBuVW0zU1I1STRLQkk0QnBZQkl5QVNpVzFBYysyaGNUUWliRHk3cmE2c29P?=
- =?utf-8?B?akZNUVhNLzJ5eWZVUGRRb3hsYzV0UTVvWTh1UHZoc2RyK3FscTdWdkExc2kz?=
- =?utf-8?B?QmdnK2pyeThwREZoQUdsWGtIQUR0M0NuUUtFNDBZcHIxOWIvYTJ4NGxmd2pX?=
- =?utf-8?B?NVM5dmkzQUJLcHdOVXNicTNEMTVPT3dtYng0OWM5aGRCTUgycWNRTUpzL1NI?=
- =?utf-8?B?c1I4VmhMUFBoUGlWWEEyQ0RaM01LUlRMZ3lHanB4dXlBSzAwRUNnYkhjdUxk?=
- =?utf-8?B?OTB1dlo0MnEzcGc0Q1RNUzVhc01BVWFVcW1uelJmQVc2SXFiV04wT2ZBNzR2?=
- =?utf-8?B?bEgvVmJBS003Zzlvc1Uwd1VpYytnQ1hNSEpNNnY4ZFFwSEJvRXAzMDA0aHVL?=
- =?utf-8?B?ZkhiVTY2SVRRNS9HNlQ3NnkyZDNxWTBTcFZ5VG1ESTlEMEdvaXkxOXJxZmov?=
- =?utf-8?B?cmRITjlYTlZ3Y2h6dW1jekVGbm5ybU5xNS9QRlBvTTNEZzVMU1hWcmFQMnBK?=
- =?utf-8?B?bGNBRUZ1NVV2azBxK05HNmhZRlJYRGZHM1pCOU5pT3ZpeWpUWmppaW9DVVdn?=
- =?utf-8?B?dktxZlR2MVVqdFYyTXFSbjBNY2VJMXhNSHdTSkhxN1hwSllKZFdxTkliNXhU?=
- =?utf-8?B?WlBaSWUxeS9ndTRueWNzTUp5ZUJDM3BBOWE5QkUzOG4vYWdvYmxkd2NjYlpB?=
- =?utf-8?B?TVlPVFc3ODcyeC9Bam5BN1NzSGcxbkN1emJnM0NhUGZ6QWdnckNlYnFCaWRM?=
- =?utf-8?B?Z1U1UXErYlJSQzRFS3E1MlQzOVh0MG5BUkppbGpSZ2NZOENtQ0JkditvUnFo?=
- =?utf-8?B?UlNsZktLZnhScmdTUitHL0RUb2gzMUZkVmp6RXpMUmNPajQrSnhsOXFEL3I5?=
- =?utf-8?B?YnI2YlNDRXZsZkczakFRZjdkc3JxdGZQTE1TdmZxYTlDYmNJRWxrS1pQalc3?=
- =?utf-8?B?MnlqZjA5QXBlNE1mSzVRc0d0cVIxZU5TRnhkUjRDQUVtcEQrckJyZm1oVTAw?=
- =?utf-8?B?SW1MVllZQWg2eXVlbFFsd211M2VXUnpNL1B2VmZtSlJWT3FKWjZyV3VBVFkr?=
- =?utf-8?B?WWZvZDAwWFQzbCtOSXB3ZVM0bDg3OVBxb3RRNHVoY0l2TTh5U01mZGV0cW8z?=
- =?utf-8?B?SlF2NVZLUTJmQmFTaXRHOGhQUGU1cWFtYUlYbDRRTGIzK1dZUmJyNlRLMTFH?=
- =?utf-8?B?a21RYmRENmM5dWJmWjJyaVhvMFFsa1RURGhzcDAvdUpkZk5yVUlnVG1KRTNv?=
- =?utf-8?B?c1VtNWs4dUMzYW93YXRIa25MWTFCY0lZUVVsOHc4WWt6ekkzNVI0U0I3ZWhm?=
- =?utf-8?B?akdsdTlJWlIyeGlVTUtLajNIV1A1bHQ0N2hoVUI0RjZ4NVJ4WGhZWk1hbkRj?=
- =?utf-8?B?TjRsNk5IYUtJQzE4cDhHS1N4Yzllby9DcjF0THZYQ1I4YXFXQU4wT0E2V1o5?=
- =?utf-8?B?d2hnN2pPWFZ6Q01WK3FaL0FDSnY0MHhBU29UT2NGSTBOREFVdG1uVjVnRmdi?=
- =?utf-8?B?LzJGKzZDSXhpY0xnb0VMdVVoQ0s3N2x1anlBMG93RHdkUXRpeDFScjVhK1NE?=
- =?utf-8?B?YXNnb2o0dlRGRFh1K3hxdnZKZ092N2gvemVRZFhDTGoya2lwbFdPVG9GWTZa?=
- =?utf-8?B?cXJmay9VUFlyb0Q5eGZTMWtwVXM0dVl3TVJFMEZ4dXR6NXJwd0gvc3JTNzVX?=
- =?utf-8?B?U2NSMisxUlhmditRczJ4SmlocS85SnV4cG4wYWFPV0RReUU3MjBmK3BLYXFP?=
- =?utf-8?Q?crF7onLm3pLAVOanNCEaRUs=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82ae4932-3bb4-488c-5810-08dbb5648c29
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4044.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 20:52:45.7402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oehPJJ3y9pPxe7j8L6MPMTeq0msRY7joq/Lz1c2BuxOmeic3lT4Wt70JX5z9QtPn7z74Hb0ybNU9OzRgcJi0KzeKY+HpbN2zZ5/ux5bNypg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6747
+References: <000000000000f392a60604a65085@google.com> <ZP/3hgDCXeceE9uU@casper.infradead.org>
+ <ZQB76G/6NxVgoE9u@casper.infradead.org> <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com>
+ <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
+ <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com>
+ <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com>
+ <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com>
+ <ZQNaT/3xPxATKJVR@casper.infradead.org> <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com>
+In-Reply-To: <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 14 Sep 2023 20:53:59 +0000
+Message-ID: <CAJuCfpGp2CwGJmmwzK7WdudOyL1CCWVaERRK9qTtNA8SZ365SA@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/2023 11:47 AM, Andy Shevchenko wrote:
-> On Thu, Sep 14, 2023 at 09:46:34PM +0300, Andy Shevchenko wrote:
->> On Wed, Sep 13, 2023 at 04:29:38PM -0700, Jan Bottorff wrote:
-> 
->>> ---
->>
->> Changelog?
-> 
-> No need to resend, just reply with a bullet list of what has been done
-> in v1 --> v2.
-> 
+On Thu, Sep 14, 2023 at 8:00=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Thu, Sep 14, 2023 at 7:09=E2=80=AFPM Matthew Wilcox <willy@infradead.o=
+rg> wrote:
+> >
+> > On Thu, Sep 14, 2023 at 06:20:56PM +0000, Suren Baghdasaryan wrote:
+> > > I think I found the problem and the explanation is much simpler. Whil=
+e
+> > > walking the page range, queue_folios_pte_range() encounters an
+> > > unmovable page and queue_folios_pte_range() returns 1. That causes a
+> > > break from the loop inside walk_page_range() and no more VMAs get
+> > > locked. After that the loop calling mbind_range() walks over all VMAs=
+,
+> > > even the ones which were skipped by queue_folios_pte_range() and that
+> > > causes this BUG assertion.
+> > >
+> > > Thinking what's the right way to handle this situation (what's the
+> > > expected behavior here)...
+> > > I think the safest way would be to modify walk_page_range() and make
+> > > it continue calling process_vma_walk_lock() for all VMAs in the range
+> > > even when __walk_page_range() returns a positive err. Any objection o=
+r
+> > > alternative suggestions?
+> >
+> > So we only return 1 here if MPOL_MF_MOVE* & MPOL_MF_STRICT were
+> > specified.  That means we're going to return an error, no matter what,
+> > and there's no point in calling mbind_range().  Right?
+> >
+> > +++ b/mm/mempolicy.c
+> > @@ -1334,6 +1334,8 @@ static long do_mbind(unsigned long start, unsigne=
+d long len,
+> >         ret =3D queue_pages_range(mm, start, end, nmask,
+> >                           flags | MPOL_MF_INVERT, &pagelist, true);
+> >
+> > +       if (ret =3D=3D 1)
+> > +               ret =3D -EIO;
+> >         if (ret < 0) {
+> >                 err =3D ret;
+> >                 goto up_out;
+> >
+> > (I don't really understand this code, so it can't be this simple, can
+> > it?  Why don't we just return -EIO from queue_folios_pte_range() if
+> > this is the right answer?)
+>
+> Yeah, I'm trying to understand the expected behavior of this function
+> to make sure we are not missing anything. I tried a simple fix that I
+> suggested in my previous email and it works but I want to understand a
+> bit more about this function's logic before posting the fix.
 
-Hi Andy,
+So, current functionality is that after queue_pages_range() encounters
+an unmovable page, terminates the loop and returns 1, mbind_range()
+will still be called for the whole range
+(https://elixir.bootlin.com/linux/latest/source/mm/mempolicy.c#L1345),
+all pages in the pagelist will be migrated
+(https://elixir.bootlin.com/linux/latest/source/mm/mempolicy.c#L1355)
+and only after that the -EIO code will be returned
+(https://elixir.bootlin.com/linux/latest/source/mm/mempolicy.c#L1362).
+So, if we follow Matthew's suggestion we will be altering the current
+behavior which I assume is not what we want to do.
+The simple fix I was thinking about that would not alter this behavior
+is smth like this:
 
-No code changes between v1 and v2, just improvements to the commit 
-message based on feedback.
+diff --git a/mm/pagewalk.c b/mm/pagewalk.c
+index b7d7e4fcfad7..c37a7e8be4cb 100644
+--- a/mm/pagewalk.c
++++ b/mm/pagewalk.c
+@@ -493,11 +493,17 @@ int walk_page_range(struct mm_struct *mm,
+unsigned long start,
+                 if (!vma) { /* after the last vma */
+                         walk.vma =3D NULL;
+                         next =3D end;
++                        if (err)
++                                continue;
++
+                         if (ops->pte_hole)
+                                 err =3D ops->pte_hole(start, next, -1, &wa=
+lk);
+                 } else if (start < vma->vm_start) { /* outside vma */
+                         walk.vma =3D NULL;
+                         next =3D min(end, vma->vm_start);
++                        if (err)
++                                continue;
++
+                         if (ops->pte_hole)
+                                 err =3D ops->pte_hole(start, next, -1, &wa=
+lk);
+                 } else { /* inside vma */
+@@ -505,6 +511,8 @@ int walk_page_range(struct mm_struct *mm, unsigned
+long start,
+                         walk.vma =3D vma;
+                         next =3D min(end, vma->vm_end);
+                         vma =3D find_vma(mm, vma->vm_end);
++                        if (err)
++                                continue;
 
-Thanks,
-Jan
+                         err =3D walk_page_test(start, next, &walk);
+                         if (err > 0) {
+@@ -520,8 +528,6 @@ int walk_page_range(struct mm_struct *mm, unsigned
+long start,
+                                 break;
+                         err =3D __walk_page_range(start, next, &walk);
+                 }
+-                if (err)
+-                        break;
+         } while (start =3D next, start < end);
+         return err;
+ }
 
+WDYT?
