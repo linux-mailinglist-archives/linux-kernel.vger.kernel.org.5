@@ -2,96 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF947A04BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548307A04BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238500AbjINNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S238533AbjINNBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237706AbjINNBn (ORCPT
+        with ESMTP id S238514AbjINNBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:01:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C307F1FDA
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:38 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-404539209ffso6419345e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1694696497; x=1695301297; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ddiGkE6j5Yqjx2YChUyXAKUMjOfVYGR2wU1BDa/uOVM=;
-        b=R/7QQUfIOihU7dGQ6BLubDNlHg4kFo2L3RePq6XZ9UzkbShQ72beoYkykdPtNO9ojO
-         hOi7dAks7mgoG/wxJR4kvEWG1ZNr3QcSdYw4xWD4k3oDGO+9xgWVlnqXDnDxVQPu7jx3
-         FvCAIOzKqJjiMBjCK7g4R7Ctiafan+9onbcyE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694696497; x=1695301297;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ddiGkE6j5Yqjx2YChUyXAKUMjOfVYGR2wU1BDa/uOVM=;
-        b=gNB6eD69n0TEC+dIpigzRytvrgkJJ7nNhFnss46bn5XOgwpZUeATdHIzvsL+e+96fz
-         p+ZtHqJ4PhRXsgFf00sBljXWIBQlnhk4tH5KxLrS6Fwg3U/W0miuC5/hgedmaar5R7cL
-         OfdszQrDSQYv1kXqJlLsGFBmbDrZ9HO8FsbYs9ggzicdZwUzDwdUf0QZg5W14rzRGsih
-         11K/H2VmRzxXVWFDe33VFaicrZym83LU0nKQIY0G7f+gQmVyMYg/PG2v28U8rAHytM3E
-         YfSzbxZ+BcaH7jarps7evp9xbJ2l/Be6WxLVNfc10MgQaclUOvuzNXLggTyT0QKbZjlr
-         aFaA==
-X-Gm-Message-State: AOJu0YxKlvk2/O10N4xoNWIW61T9lDrHpIA+CLkqk13hK5j7nUjnp0ip
-        FeDXydkOc/my3iKxbzo+6atKWg==
-X-Google-Smtp-Source: AGHT+IGu9ZokynanEidxo6b4ugwjHDqKzn9EMgeKgnKUXWugWLtEAMgf7RA8IhMPo5oq1q9TPG+E9Q==
-X-Received: by 2002:a05:600c:b5a:b0:401:eb0:a98d with SMTP id k26-20020a05600c0b5a00b004010eb0a98dmr4538194wmr.24.1694696496369;
-        Thu, 14 Sep 2023 06:01:36 -0700 (PDT)
-Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id c20-20020a7bc854000000b003fee6f027c7sm4769165wml.19.2023.09.14.06.01.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 06:01:35 -0700 (PDT)
-Message-ID: <b894ba89-27b2-88a9-6adf-7d53e2c51c02@citrix.com>
-Date:   Thu, 14 Sep 2023 14:01:35 +0100
+        Thu, 14 Sep 2023 09:01:48 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EBF1FD5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:43 -0700 (PDT)
+Received: from [192.168.2.134] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BA1766607343;
+        Thu, 14 Sep 2023 14:01:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694696502;
+        bh=v7DarGRquMfyLEjGWgeGuwbNfFGcYNditgZ8c3FOQkc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MuOydnq9IblIDeVrXJoWXbCc90YL4c+0X+qvYlSpCQSNtCHdfkykV9fyMKZ1v7osv
+         9r0arWbahiqks3T9c/BmCN9p22Q7YYbf/dzdTApio/+o3PMEBora1NYlTMA40yUVRx
+         1ipiGfyY9Evi7G7X2sXiahvygnSAug+BskUIgUv85lIk9F1erwyL0NYKrkk1T3TUGu
+         ll8RQ9toWpzZ4WmNy2tHwLiJZqlUGbJiF3svdASEI4JeiftdBMwLeZNfcE3evFplEx
+         0MCNIrbj5vIC/R+UjT0403wA2dCudHcG4ZK+W837YV5ImNkP2R3HW6qlbipmqpVXRe
+         B/Lz+QTRBjkew==
+Message-ID: <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
+Date:   Thu, 14 Sep 2023 16:01:37 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   andrew.cooper3@citrix.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-GB
-To:     Juergen Gross <jgross@suse.com>, Xin Li <xin3.li@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
-In-Reply-To: <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+ <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+ <20230905100306.3564e729@collabora.com>
+ <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+ <20230913094832.3317c2df@collabora.com>
+ <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+ <20230914093626.19692c24@collabora.com>
+ <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
+ <20230914102737.08e61498@collabora.com>
+ <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
+ <20230914135840.5e0e11fe@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230914135840.5e0e11fe@collabora.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 7:02 am, Juergen Gross wrote:
-> On 14.09.23 06:47, Xin Li wrote:
->> Add an always inline API __wrmsrns() to embed the WRMSRNS instruction
->> into the code.
+On 9/14/23 14:58, Boris Brezillon wrote:
+> On Thu, 14 Sep 2023 14:36:23 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> On 9/14/23 11:27, Boris Brezillon wrote:
+>>> On Thu, 14 Sep 2023 10:50:32 +0300
+>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>   
+>>>> On 9/14/23 10:36, Boris Brezillon wrote:  
+>>>>> On Thu, 14 Sep 2023 07:02:52 +0300
+>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>>>     
+>>>>>> On 9/13/23 10:48, Boris Brezillon wrote:    
+>>>>>>> On Wed, 13 Sep 2023 03:56:14 +0300
+>>>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>>>>>       
+>>>>>>>> On 9/5/23 11:03, Boris Brezillon wrote:      
+>>>>>>>>>>                * But
+>>>>>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+>>>>>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+>>>>>>>>>> +		 * and fs_reclaim.
+>>>>>>>>>> +		 *
+>>>>>>>>>> +		 * This deadlock is not actually possible, because no one should
+>>>>>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+>>>>>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+>>>>>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
+>>>>>>>>>> +		 */
+>>>>>>>>>> +		if (shmem->got_pages_sgt &&
+>>>>>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+>>>>>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+>>>>>>>>>> +			shmem->got_pages_sgt = false;
+>>>>>>>>>>  		}        
+>>>>>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+>>>>>>>>> better to leak than having someone access memory it no longer owns), but
+>>>>>>>>> I think it's worth mentioning in the above comment.        
+>>>>>>>>
+>>>>>>>> It's unlikely that it will be only a leak without a following up
+>>>>>>>> use-after-free. Neither is acceptable.      
+>>>>>>>
+>>>>>>> Not necessarily, if you have a page leak, it could be that the GPU has
+>>>>>>> access to those pages, but doesn't need the GEM object anymore
+>>>>>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
+>>>>>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
+>>>>>>> can go unnoticed and lead to memory corruptions/information leaks.
+>>>>>>>       
+>>>>>>>>
+>>>>>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+>>>>>>>> on a refcnt bug, but that's not worthwhile doing because drivers
+>>>>>>>> shouldn't have silly bugs.      
+>>>>>>>
+>>>>>>> We definitely don't want to fix that, but we want to complain loudly
+>>>>>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
+>>>>>>> being re-assigned to someone else by not freeing it).      
+>>>>>>
+>>>>>> That's what the code did and continues to do here. Not exactly sure what
+>>>>>> you're trying to say. I'm going to relocate the comment in v17 to
+>>>>>> put_pages(), we can continue discussing it there if I'm missing yours point.
+>>>>>>    
+>>>>>
+>>>>> I'm just saying it would be worth mentioning that we're intentionally
+>>>>> leaking memory if shmem->pages_use_count > 1. Something like:
+>>>>>
+>>>>> 	/**
+>>>>> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
+>>>>> 	 * zero otherwise. If some users still hold a pages reference
+>>>>> 	 * that's a bug, and we intentionally leak the pages so they
+>>>>> 	 * can't be re-allocated to someone else while the GPU/CPU
+>>>>> 	 * still have access to it.
+>>>>> 	 */
+>>>>> 	drm_WARN_ON(drm,
+>>>>> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
+>>>>> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
+>>>>> 		drm_gem_shmem_free_pages(shmem);    
+>>>>
+>>>> That may be acceptable, but only once there will a driver using this
+>>>> feature.  
+>>>
+>>> Which feature? That's not related to a specific feature, that's just
+>>> how drm_gem_shmem_get_pages_sgt() works, it takes a pages ref that can
+>>> only be released in drm_gem_shmem_free(), because sgt users are not
+>>> refcounted and the sgt stays around until the GEM object is freed or
+>>> its pages are evicted. The only valid cases we have at the moment are:
+>>>
+>>> - pages_use_count == 1 && sgt != NULL
+>>> - pages_use_count == 0
+>>>
+>>> any other situations are buggy.  
 >>
->> Tested-by: Shan Kang <shan.kang@intel.com>
->> Signed-off-by: Xin Li <xin3.li@intel.com>
->
-> In order to avoid having to add paravirt support for WRMSRNS I think
-> xen_init_capabilities() should gain:
->
-> +    setup_clear_cpu_cap(X86_FEATURE_WRMSRNS);
+>> sgt may belong to dma-buf for which pages_use_count=0, this can't be
+>> done until sgt mess is sorted out
+> 
+> No it can't, not in that path, because the code you're adding is in the
+> if (!obj->import_branch) branch:
+> 
+> 
+>  	if (obj->import_attach) {
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>  	} else {
+> 		...
+> 		// Your changes are here.
+> 		...
 
-Xen PV guests will never ever see WRMSRNS.  Operating in CPL3, they have
-no possible way of adjusting an MSR which isn't serialising, because
-even the hypercall forms are serialising.
+This branch is taken for the dma-buf in the prime import error code path. But yes, the pages_use_count=0 for the dma-buf and then it can be written as:
 
-Xen only exposes the bit for HVM guests.
+	if (obj->import_attach) {
+		drm_prime_gem_destroy(obj, shmem->sgt);
+	} else {
+		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
 
-~Andrew
+		if (shmem->sgt && refcount_read(&shmem->pages_use_count)) {
+			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+					  DMA_BIDIRECTIONAL, 0);
+			sg_free_table(shmem->sgt);
+			kfree(shmem->sgt);
+
+			__drm_gem_shmem_put_pages(shmem);
+		}
+
+		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+
+Alright, I'll check if it works as expected for fixing the error code path bug for v17
+
+-- 
+Best regards,
+Dmitry
+
