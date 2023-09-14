@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC6A79F9B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A1879F9BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbjINFDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S234661AbjINFGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 01:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbjINFDm (ORCPT
+        with ESMTP id S233781AbjINFF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:03:42 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DE51BCA;
-        Wed, 13 Sep 2023 22:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694667816;
-        bh=zaJQ9ZymV5taIz5m4T4i5glZ2wKz2JIJ1ijQFw1ecAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oS+i8l1oRw5IVtAyeOFJ5jLSSqQfMyauPSiPgXdtawKBKwoqBP+7e/yAxd3fuIKgK
-         YUJ0Vtqrac0UIDasp63PQVwWnGVFrIcu26Jlp4kXXQal8Bm+K1B/0qLHgmERfQKf0n
-         iBf6LR0fMI233OYe2bCrnXXiAlA1sdlZ9275YVZs=
-Date:   Thu, 14 Sep 2023 07:03:35 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Dennis Bonke <admin@dennisbonke.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Take mutex in hotkey_resume
-Message-ID: <2ef51572-3a41-4088-8630-b474f5b8feae@t-8ch.de>
-References: <20230913231829.192842-1-admin@dennisbonke.com>
- <900bedba-378e-4215-8b88-27dcc6353164@t-8ch.de>
- <b5246c7e2b81afe99bd146dd1209b1971b196a0b.camel@dennisbonke.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b5246c7e2b81afe99bd146dd1209b1971b196a0b.camel@dennisbonke.com>
+        Thu, 14 Sep 2023 01:05:57 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50A798;
+        Wed, 13 Sep 2023 22:05:53 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id DFAAA5C0261;
+        Thu, 14 Sep 2023 01:05:52 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 14 Sep 2023 01:05:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694667952; x=1694754352; bh=r+
+        8a9VVUj2+14lVyHMEam/cUuRe70jim+0p47BeFLEo=; b=Z+7/WfF47uX4rMiGTP
+        BKb5hgzeV8oSsQZXaP9YScBOcQQSRMJU5zaMimcqYwGFzGYSOhUo0UNIpR4IDdic
+        DU7vdcKaGttl7h3PVaZGUvlS1s9pgoMiKaeeeHue20FuaBbPV2kyFIWdYGMf5S6s
+        zZ/2TIB+wZqdlEsv9PrRq3iUQanKCcnHUOdpzbkW4AFi8z8GtID5J+A1GQjd8int
+        owBpw09EKPYQ3FpgV+/B7JpVq18h4l6zBg1CUf0M+bBR7AaJzk1kwFCilk4b/DnY
+        DnYHmdF6qMdOI3BWSEPKB+2lT2Fb+wJvXRrcFXhI44JkImI6GRaAJb4dEaXkAGw4
+        Nymg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1694667952; x=1694754352; bh=r+8a9VVUj2+14
+        lVyHMEam/cUuRe70jim+0p47BeFLEo=; b=Tqvu/v3f27xMzAX2a3I635BaKPhVm
+        XxB0STDguy2nwdAKjrj6PC4bTMsDnWwJGOnBZIZFfZhpP4+AeRN1ZuGm1lS5KU5A
+        5i7Gv0R1g6NDtsMiqMNduPN5XlvhBq7t9lJ7JK8BBGN4BkvEYefL4GD2luuWgHAB
+        hZwG4C3lGXKVUDZoK2BTKyFnwWfFUcrWx0JIAUxI1hBTItpes8ZslN8ElI2k13ph
+        f4BSB/rp3s0eX2wvZteO1KxiP2asuwWCnI6IdnXeVH6KDl4OEYNEHTUU2QXwkpGM
+        1DGe7FDdCCEt/X7+0V1t9UIGv8NN57UCrd2bl7T0/OUZWAA2erQshbd0w==
+X-ME-Sender: <xms:sJQCZbVjdHvnk_y5ZhCNzItfpRkrlaRFR7juq1dVnIekICAOcn5Ulg>
+    <xme:sJQCZTku9Up6M9Xy8VuMzF8L9JSEhMeG8Cxu4JM-5tcKmq4-3tsp0VrqdyHlZhmit
+    mvkVjYpnYyViWsysFM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiledgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:sJQCZXY82DOye0Fvun6cebJSaGPrTcRqlFXXy1wy0BNxwjANoAyY9A>
+    <xmx:sJQCZWUuD6-If8jHENHwGXPz9681UYFjnEo4GUH0ThBWrZB90kP1_A>
+    <xmx:sJQCZVlDhcS3p7JtF8sxq55vZniiP9tCeGcr1IHMFMFcWv55SiOUyQ>
+    <xmx:sJQCZX4uh7fgGWKnss4HJWk2Xy-hUQSRBm5eSW5h_lqjY_0jDj1DFg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 09712B60089; Thu, 14 Sep 2023 01:05:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <82dfa2eb-1867-4cdc-b7b8-918d426575ed@app.fastmail.com>
+In-Reply-To: <ZQKDRANlIWGqTA/9@bergen.fjasle.eu>
+References: <20230913113801.1901152-1-arnd@kernel.org>
+ <ZQISGujwlH00B8KJ@fjasle.eu>
+ <b234530c-88fe-4a2a-993c-f1733fe4d0c1@app.fastmail.com>
+ <ZQIcuVgaDmA+VdV0@fjasle.eu>
+ <c7c6de7b-4adf-4625-8f09-8f419869161d@app.fastmail.com>
+ <ZQKDRANlIWGqTA/9@bergen.fjasle.eu>
+Date:   Thu, 14 Sep 2023 07:05:31 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Nicolas Schier" <nicolas@fjasle.eu>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Sakari Ailus" <sakari.ailus@iki.fi>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional dependencies
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dennis,
+On Thu, Sep 14, 2023, at 05:51, Nicolas Schier wrote:
+> On Wed 13 Sep 2023 23:16:47 GMT, Arnd Bergmann wrote:
+>> On Wed, Sep 13, 2023, at 22:34, Nicolas Schier wrote:
+>> >
+>> > BAR=y  => FOO={N/m/y}
+>> > BAR=m  => FOO is not selectable
+>> > BAR=n  => FOO={N/m/y}
+>> 
+>> That is indeed the point: if BAR=m, we want to be able to pick FOO=m
+>> here, otherwise it is impossible to enabled everything as modules.
+>
+> oh, I misinterpreted your very first sentence; thanks for clarifying it to me
+> and sorry for the noise.
+> With the minor fixes:
+>
+> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+>
 
-On 2023-09-14 02:36:44+0200, Dennis Bonke (admin) wrote:
-> On Thu, 2023-09-14 at 01:33 +0200, Thomas Weißschuh wrote:
-> > thanks for the fix!
-> Hello Thomas,
-> 
-> Thank you for the quick review!
+Ok, thanks!
 
-The least I can do if somebody else has to clean up my mess :-)
+I understand that the text is still confusing, so if anyone has an
+idea for how to improve it further, let me know, otherwise
+I'll send what I have now with type fixes as v2.
 
-> I apologize for the messy V2 that I seem to have posted.
-> It's my first time working with a mailing list and it seems that something went wrong.
-
-No need to apologize.
-
-
-Some more notes:
-
-You should also CC LKML (linux-kernel@vger.kernel.org) and the
-subsystems maintainers as per MAINTAINERS / get_maintainers.pl on all
-your patches.
-
-And now that I have worked with you on a patch also CC me on new
-revisions.
-
-I can also recommend the usage of the "b4"[0] tool to prepare your
-patches. It takes care of some of the chores.
-
-[0] https://b4.docs.kernel.org/en/latest/
-
-Some more comments below.
-
-> > 
-> > On 2023-09-14 01:18:29+0200, admin@dennisbonke.com wrote:
-> > > From: Dennis Bonke <admin@dennisbonke.com>
-> > > 
-> > > hotkey_status_{set,get} expect the hotkey_mutex to be held.
-> > > It seems like it was missed here and that gives warnings while resuming.
-> > 
-> > Which kind of warnings?
-> > 
-> > If it's from lockdep then it's triggered by hotkey_mask_set() and the
-> > commit message is a bit off.
-> It is indeed from lockdep. I've changed the commit message to reflect your comment.
-
-Thanks!
-
-> > 
-> > Also then the patch needs:
-> > 
-> > Fixes: 38831eaf7d4c ("platform/x86: thinkpad_acpi: use lockdep annotations")
-> > Cc: stable@vger.kernel.org
-> > 
-> > With those:
-> > 
-> > Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-
-> About those tags, do I add them to the patch? Just double checking
-> before I accidentally CC the stable list with an incorrect patch.
-
-Yes, please add them to the patch.
-The CC stable will only have any effect after your patch is in Linus'
-tree at which point multiple people will have looked at it.
-If an incorrect patch makes it that far it's not your fault.
-
-> > > 
-> > > Signed-off-by: Dennis Bonke <admin@dennisbonke.com>
-> > > ---
-> > >  drivers/platform/x86/thinkpad_acpi.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> > > index d70c89d32534..de5859a5eb0d 100644
-> > > --- a/drivers/platform/x86/thinkpad_acpi.c
-> > > +++ b/drivers/platform/x86/thinkpad_acpi.c
-> > > @@ -4116,9 +4116,11 @@ static void hotkey_resume(void)
-> > >  {
-> > >         tpacpi_disable_brightness_delay();
-> > >  
-> > > +       mutex_lock(&hotkey_mutex)
-> > >         if (hotkey_status_set(true) < 0 ||
-> > >             hotkey_mask_set(hotkey_acpi_mask) < 0)
-> > >                 pr_err("error while attempting to reset the event firmware interface\n");
-> > > +       mutex_unlock(&hotkey_mutex);
-> > >  
-> > >         tpacpi_send_radiosw_update();
-> > >         tpacpi_input_send_tabletsw();
-> > > -- 
-> > > 2.40.1
-> > > 
-> 
-
-Thomas
+     Arnd
