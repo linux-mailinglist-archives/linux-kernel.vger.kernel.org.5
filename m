@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F0B79F5CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 02:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A2C79F5CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 02:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbjINADw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 20:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60520 "EHLO
+        id S233262AbjINAEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 20:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbjINADv (ORCPT
+        with ESMTP id S229996AbjINAEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 20:03:51 -0400
-Received: from out28-219.mail.aliyun.com (out28-219.mail.aliyun.com [115.124.28.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C828E6A;
-        Wed, 13 Sep 2023 17:03:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1061964|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0164707-0.000140752-0.983389;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.UeWrPh0_1694649822;
-Received: from SunxiBot.allwinnertech.com(mailfrom:michael@allwinnertech.com fp:SMTPD_---.UeWrPh0_1694649822)
-          by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 08:03:44 +0800
-From:   Michael Wu <michael@allwinnertech.com>
-To:     ulf.hansson@linaro.org, CLoehle@hyperstone.com,
-        adrian.hunter@intel.com, jinpu.wang@ionos.com, hare@suse.de,
-        victor.shih@genesyslogic.com.tw, avri.altman@wdc.com,
-        asuk4.q@gmail.com
-Cc:     axboe@kernel.dk, brauner@kernel.org, f.fainelli@gmail.com,
-        beanhuo@micron.com, linux-mmc@vger.kernel.org,
+        Wed, 13 Sep 2023 20:04:39 -0400
+Received: from out-217.mta1.migadu.com (out-217.mta1.migadu.com [IPv6:2001:41d0:203:375::d9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55442E6A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 17:04:35 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 00:04:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694649873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kfv4Zhx1bwbtVJ2Jm5wO4ve633QMh2KTeWELK3A6p6w=;
+        b=EkjUA9C2vZhCis33BkatvJsmHMcE1KLe7dGi3Nt1OT2o9Tupl61AJHhh6y2YeC3C31PwGF
+        4284oBDu7yFUrVmO/1zQO7/2K+kvNbOOR66xDE7O7pt0oDzqr3jpZFCB28ZER9VodQDeut
+        GANLbUAdtod/774vv0kRmU7VY7Y3vd4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: core: Add new flag to force hardware reset
-Date:   Thu, 14 Sep 2023 08:03:48 +0800
-Message-Id: <20230914000348.25790-1-michael@allwinnertech.com>
-X-Mailer: git-send-email 2.29.0
+Subject: Re: [PATCH] KVM: arm64: Only default to enabling SVE when present
+Message-ID: <ZQJODdfwZLxc9o1l@linux.dev>
+References: <20230913-kvm-arm64-fp-init-v1-1-8ce9ba1cc4c4@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913-kvm-arm64-fp-init-v1-1-8ce9ba1cc4c4@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Entering the recovery system itself indicates a transmission error.
-In this situation, we intend to execute the mmc_blk_reset function
-to clear any anomalies that may be caused by errors. We have previously
-discussed with several MMC device manufacturers, and they expressed
-their desire for us to reset the device when errors occur to ensure
-stable operation. We aim to make this code compatible with all devices
-and ensure its stable performance, so we would like to add this patch
+Hi Mark,
 
-Signed-off-by: Michael Wu <michael@allwinnertech.com>
----
- drivers/mmc/core/block.c | 2 +-
- include/linux/mmc/host.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+On Wed, Sep 13, 2023 at 07:34:16PM +0100, Mark Brown wrote:
+> For unclear reasons our handling of SVE and SME when setting the default
+> value of CPTR_EL2 for VHE mode is inconsistent. For normal VHE we
+> unconditionally set CPTR_EL2.ZEN to 0b01 but only set the equivalent
+> field CPTR_EL2.SMEN to 0b01 if SME is present, for hVHE we will always
+> set the field 0b11 if SVE is not supported. Given the similarities
+> between the two extensions it would generally be expected that the code
+> handling SVE and SME would be very similar.
+> 
+> Since CPTR_ELx.ZEN is RES0 when SVE is not implemented it is probably not
+> harmful to try to set the bits but it is better practice to not set
+> unimplemented bits so resolve the inconsistency in favour of checking if
+> SVE is present too.
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index b5b414a71e0b..29fbe0ddeadb 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1503,7 +1503,7 @@ void mmc_blk_cqe_recovery(struct mmc_queue *mq)
- 	pr_debug("%s: CQE recovery start\n", mmc_hostname(host));
- 
- 	err = mmc_cqe_recovery(host);
--	if (err)
-+	if (err || host->cqe_recovery_reset_always)
- 		mmc_blk_reset(mq->blkdata, host, MMC_BLK_CQE_RECOVERY);
- 	mmc_blk_reset_success(mq->blkdata, MMC_BLK_CQE_RECOVERY);
- 
-diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index 62a6847a3b6f..f578541a06b5 100644
---- a/include/linux/mmc/host.h
-+++ b/include/linux/mmc/host.h
-@@ -518,6 +518,7 @@ struct mmc_host {
- 	int			cqe_qdepth;
- 	bool			cqe_enabled;
- 	bool			cqe_on;
-+	bool			cqe_recovery_reset_always;
- 
- 	/* Inline encryption support */
- #ifdef CONFIG_MMC_CRYPTO
+It is entirely possible that implementers 'disable' a feature by hiding
+it from the ID register, leaving the control bits completely functional.
+These systems are at odds with the architecture, though we probably
+shouldn't engage in _deliberately_ hostile programming patterns in the
+kernel :)
+
+> FPSIMD is also in theory optional though there's probably much more work to
+> handle the case where it is not implemented properly and that is not
+> something we see in practical systems.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/arm64/include/asm/kvm_emulate.h | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 3d6725ff0bf6..4cf53b4aa226 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -584,15 +584,17 @@ static __always_inline u64 kvm_get_reset_cptr_el2(struct kvm_vcpu *vcpu)
+>  	u64 val;
+>  
+>  	if (has_vhe()) {
+> -		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN |
+> -		       CPACR_EL1_ZEN_EL1EN);
+> +		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN);
+> +		if (cpus_have_final_cap(ARM64_SVE))
+> +			val |= CPACR_EL1_ZEN_EL1EN;
+>  		if (cpus_have_final_cap(ARM64_SME))
+>  			val |= CPACR_EL1_SMEN_EL1EN;
+>  	} else if (has_hvhe()) {
+>  		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN);
+>  
+> -		if (!vcpu_has_sve(vcpu) ||
+> -		    (vcpu->arch.fp_state != FP_STATE_GUEST_OWNED))
+> +		if (cpus_have_final_cap(ARM64_SVE) &&
+> +		    (!vcpu_has_sve(vcpu) ||
+> +		     (vcpu->arch.fp_state != FP_STATE_GUEST_OWNED)))
+
+vcpu_has_sve() already tests system_supports_sve(), so I don't believe
+this hunk is necessary.
+
 -- 
-2.29.0
-
+Thanks,
+Oliver
