@@ -2,124 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D548A79FD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B7A79FD37
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjINH2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        id S232484AbjINH3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjINH2c (ORCPT
+        with ESMTP id S230120AbjINH3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:28:32 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65888F3;
-        Thu, 14 Sep 2023 00:28:27 -0700 (PDT)
-X-QQ-mid: bizesmtp79t1694676492t0544ov9
-Received: from [192.168.70.112] ( [125.75.40.56])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 14 Sep 2023 15:28:09 +0800 (CST)
-X-QQ-SSF: 00200000000000907000000A0000000
-X-QQ-FEAT: 3M0okmaRx3jQ9noJY66yaYJvkJXFnbgsdEZI1asK0MlB7FwsNXfv04+JHxl9F
-        qs0x4AFc0pXcGQX2RaRC9LGWOjQVSd+u1WcU1GzlPWguyVZVaKtagorRMSFcrbcx1rjJmEQ
-        38OzNXD4kXw1FAjkRhdjoJprmXw+v+HAY6BeQJOiP9rGf9crweakAwxw+on3mlIjPsuvZ/W
-        IBq564arAmfC5Ch4sIrlfFbeRUBR1E7ZYFAulX7JmcdVvtvx00oEtDO+caDA5+0k04AbZMs
-        t3F+UQEdG/20aJ91U2Vi+cm8w1wEzkwSAR6NOM2pgiBybRUBXVyURu9Yo/brhEbr4CKmYv9
-        AjizP0Jl5Jk8KAbl2Ikly7GRHIc/+SZXrlei+Yr
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1315330674948568726
-Message-ID: <CC0BEFC206BD350A+3248d7e5-8b0d-4d7e-a008-49ddaf8351ff@tinylab.org>
-Date:   Thu, 14 Sep 2023 15:28:10 +0800
+        Thu, 14 Sep 2023 03:29:14 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E8AF3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:29:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1751D21842;
+        Thu, 14 Sep 2023 07:29:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694676549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XDEA/X6zv4BDt+KQZpV3IhgSyRZdkJ8Xl7rT59OeU9o=;
+        b=qM+agAQcoGoG66TpgqQ/00ummhfZFJjyuf9auoNoJBdRSwbshdxxMny+b4tGQo+9GbBrvq
+        HdzViv3j84jNx4OTjcyHFXYZNLdytBXHbBYRAQNPxdpMgQtEeuwoKCtRGRiU0wV1Xn7A5m
+        vqVTI1+AGw5VvPdVY6w25o9SxnRqQKQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694676549;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XDEA/X6zv4BDt+KQZpV3IhgSyRZdkJ8Xl7rT59OeU9o=;
+        b=hSbb1oUopQsNq2T/IPs37CTwU5bzOKXgVp4nvlLlH4K2WW79N0gTtAmcCyZtrerenZYqsn
+        6WRXb31jU8CWS9AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E335E139DB;
+        Thu, 14 Sep 2023 07:29:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0+XGNkS2AmUECwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 14 Sep 2023 07:29:08 +0000
+Message-ID: <dbdece9a-9963-c425-f67f-01432ad5b271@suse.cz>
+Date:   Thu, 14 Sep 2023 09:29:08 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
- malta
-Content-Language: en-GB
-To:     =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
-        tglx@linutronix.de, mingo@redhat.com, tsbogend@alpha.franken.de,
-        hdegoede@redhat.com
-Cc:     linux@weissschuh.net, w@1wt.eu, falcon@tinylab.org,
-        linux-mips@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1693535514.git.tanyuan@tinylab.org>
- <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
- <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
- <55C9BDEDAB4E0B76+838dbd4f-425d-4f2e-94ee-f2bc3092ae13@tinylab.org>
- <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
-From:   Yuan Tan <tanyuan@tinylab.org>
-In-Reply-To: <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230911195023.247694-2-hannes@cmpxchg.org>
+ <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
+ <20230912150320.GB3228@cmpxchg.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230912150320.GB3228@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/12/23 17:03, Johannes Weiner wrote:
+> On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
+>> I think after this change we should [...]
+> 
+> Speaking of follow-ups, AFAICS we no longer need those either:
 
-On 9/4/2023 6:51 PM, Philippe Mathieu-Daudé wrote:
-> On 4/9/23 11:24, Yuan Tan wrote:
->> Hi,
->>
->> On 9/4/2023 3:40 PM, Philippe Mathieu-Daudé wrote:
->>> Hi,
->>>
->>> On 1/9/23 04:42, Yuan Tan wrote:
->>>> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
->>>> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET is 
->>>> set
->>>> for convenience.
->>>>
->>>> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
->>>> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
->>>> ---
->>>>   arch/mips/Kconfig | 3 +++
->>>>   1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->>>> index bc8421859006..13bacbd05125 100644
->>>> --- a/arch/mips/Kconfig
->>>> +++ b/arch/mips/Kconfig
->>>> @@ -547,6 +547,9 @@ config MIPS_MALTA
->>>>       select MIPS_L1_CACHE_SHIFT_6
->>>>       select MIPS_MSC
->>>>       select PCI_GT64XXX_PCI0
->>>> +    select PCI if POWER_RESET
->>>> +    select PCI_QUIRKS if POWER_RESET
->>>> +    select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
->>>>       select SMP_UP if SMP
->>>>       select SWAP_IO_SPACE
->>>>       select SYS_HAS_CPU_MIPS32_R1
->>>
->>> Shouldn't we also update the _defconfig files?
->>>
->> Sorry, in my last email, I forgot to reply to all. So I am now 
->> resending this email.
->>
->> In malta_defconfig, PCI and POWER_RESET_PIIX4_POWEROFF have already 
->> been set and PCI_QUIRKS is also selected by FSL_PCI [=n].
->>
->> So shutdown and reboot with malta_defconfig is working and there is 
->> no need to update the malta_defconfig 🙂
->
-> Since the dependency is now enforced by Kconfig, the defconfig can
-> be simplified:
->
-> --- a/arch/mips/configs/malta_defconfig
-> +++ b/arch/mips/configs/malta_defconfig
-> @@ -306,3 +306,2 @@ CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_POWER_RESET=y
-> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
->  CONFIG_POWER_RESET_SYSCON=y
->
-> But maybe we don't care, I don't know.
-After testing, I found that "savedefconfig" will automatically generate 
-the simplified configuration.
+Seems so, but the comments do talk about races, so once those are sorted out :)
 
-As I have to use "savedefconfig" on the latest branch of the three 
-architectures, in v3, I will send a separate patch for each architecture.
-
-Thanks to your advice.
-
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 9cad31de1bf5..bea499fbca58 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1751,13 +1751,6 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
+>  
+>  	old_block_type = get_pageblock_migratetype(page);
+>  
+> -	/*
+> -	 * This can happen due to races and we want to prevent broken
+> -	 * highatomic accounting.
+> -	 */
+> -	if (is_migrate_highatomic(old_block_type))
+> -		goto single_page;
+> -
+>  	/* Take ownership for orders >= pageblock_order */
+>  	if (current_order >= pageblock_order) {
+>  		change_pageblock_range(page, current_order, start_type);
+> @@ -1926,24 +1919,15 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
+>  				continue;
+>  
+>  			/*
+> -			 * In page freeing path, migratetype change is racy so
+> -			 * we can counter several free pages in a pageblock
+> -			 * in this loop although we changed the pageblock type
+> -			 * from highatomic to ac->migratetype. So we should
+> -			 * adjust the count once.
+> +			 * It should never happen but changes to
+> +			 * locking could inadvertently allow a per-cpu
+> +			 * drain to add pages to MIGRATE_HIGHATOMIC
+> +			 * while unreserving so be safe and watch for
+> +			 * underflows.
+>  			 */
+> -			if (is_migrate_highatomic_page(page)) {
+> -				/*
+> -				 * It should never happen but changes to
+> -				 * locking could inadvertently allow a per-cpu
+> -				 * drain to add pages to MIGRATE_HIGHATOMIC
+> -				 * while unreserving so be safe and watch for
+> -				 * underflows.
+> -				 */
+> -				zone->nr_reserved_highatomic -= min(
+> -						pageblock_nr_pages,
+> -						zone->nr_reserved_highatomic);
+> -			}
+> +			zone->nr_reserved_highatomic -= min(
+> +				pageblock_nr_pages,
+> +				zone->nr_reserved_highatomic);
+>  
+>  			/*
+>  			 * Convert to ac->migratetype and avoid the normal
+> 
+> I think they were only in place because we could change the highatomic
+> status of pages on the pcplist, and those pages would then end up on
+> some other freelist due to the stale pcppage cache.
+> 
+> I replaced them locally with WARNs and ran an hour or so of kernel
+> builds under pressure. It didn't trigger. So I would send a follow up
+> to remove them.
+> 
+> Unless you point me to a good reason why they're definitely still
+> needed - in which case this is a moot proposal - but then we should
+> make the comments more specific.
 
