@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD357A0F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A5F7A0FA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjINVNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        id S229628AbjINVOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjINVNH (ORCPT
+        with ESMTP id S229495AbjINVOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:13:07 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D51226BB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:13:03 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7fd4c23315so1603030276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694725982; x=1695330782; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YWn+iYLCIPAaljxTAu+WVnTCSLTqlK32IcDZuLI0g0M=;
-        b=wL1o/q4BCXCtRvbEtrI/BOVIfJbYEavLefKV/WVTSKB/o1139vhSnH3AdGghuMPQq4
-         0vGjdsjmL1ApT+lTcUgKu7G8Bx/P3iMqeLMb9Gf7/SI7krnw/qmq64aRXUm7lbWgZdZq
-         U+RfURxoDPxPWRUKS9o4aAvE3VPg+7Suk6LKh/OCMhS0czAxARKjbln8KK00XuTPVzML
-         ZjKPlWEP/GKQCF+acm8OvSgXtScHnYiuvHXw5Oxot9SX+GvGxKGdTJF7CANqTJUnwHZ0
-         zD3+5hRzqk0p/6Qq18T0f2Uz+5s3OchIlDDreP1MQnhgHeQ4XxovkWuvVIG0gQcL/jVj
-         jdWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694725982; x=1695330782;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YWn+iYLCIPAaljxTAu+WVnTCSLTqlK32IcDZuLI0g0M=;
-        b=DS7VcTyJfLxJ7/kzkHOEH0SFOMo9v2nWmZKkxdGur7EuYMvh7nr6fJbaR+35R3i34k
-         f9PmY8653S2o0T+98oaglW4gWCC68uB46qhU37Uie/H/ONK/Zfl460mC0c3TpvZxF35Z
-         Q7swWilR5fkDZiUkARTKrju1My31LMj5hdQcWGoJaGT9cVRO2SUyRaqwldD/I1R8jL6O
-         2/jHjfql4p1a9aEym5mby0+kq1Ka8Bv7iH9FI3b1I8u4LraiZhW94yT4uT3ya91jhlXw
-         uEldvj9lddkV6jH7MGroPTBaZzkoDaLjcFhDqyUummYA1bo8AwZ6Zs57T76zSC/3L7r2
-         7kZg==
-X-Gm-Message-State: AOJu0YxMAyvTQhUVh9urvmfDWhav40P4hRATC1lr9wUPBzojKtQF/Xnj
-        AxRitCjPuOgVjmt2u3EfKRjoPEyS5R0=
-X-Google-Smtp-Source: AGHT+IHUX88Dl7zdyWRqWv7GNZ3j9/vn8QPn/8bKSqAChRlqrniiHB31EofcnWXeLao+6RSFKGDhpfO0HTY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:571:b0:d7f:d239:596 with SMTP id
- a17-20020a056902057100b00d7fd2390596mr176100ybt.0.1694725982701; Thu, 14 Sep
- 2023 14:13:02 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 14:13:01 -0700
-In-Reply-To: <f2c0907c-9e30-e01b-7d65-a20e6be4bf49@amd.com>
+        Thu, 14 Sep 2023 17:14:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3568E26B2;
+        Thu, 14 Sep 2023 14:14:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADEC1C433C7;
+        Thu, 14 Sep 2023 21:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694726049;
+        bh=L/MzC7ioV9UUQjtz4gA9VmoBaXGgFXYV9zbRrFAiiFw=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=Ewp1ys3K6A4pyPc53Gx06gClHlc24FZ88ldRltat23EhQEUdBKzj3JnQUJPYDRABc
+         cTHeiDHrwYJtBrQ7O/StXRmkqaagwfZeLYnu9XjfXXlwtu23OhU323F9tCysqO8Dxs
+         DomnnOwA8iM7Tsk60cCPys+QHnZIHw7MbeLwnOKTO3/00W+l55rmSvqfC8webDEL2l
+         KvojDtjH3+kE+fMbv5kWrG7j1nHSlw+1pTCuxcnN0EGjly4oaa/d2ji9U+frrb50LE
+         hSMRcJej1x5vQ86ur2dO0tzPGYhMCtaW/YaxODSl6gmmm1W9PozWX9nvqdbyr8TdVN
+         7hKYJEyHFnsIQ==
 Mime-Version: 1.0
-References: <cover.1694721045.git.thomas.lendacky@amd.com> <8a5c1d2637475c7fb9657cdd6cb0e86f2bb3bab6.1694721045.git.thomas.lendacky@amd.com>
- <ZQNs7uo8F62XQawJ@google.com> <f2c0907c-9e30-e01b-7d65-a20e6be4bf49@amd.com>
-Message-ID: <ZQN3Xbi5bEqlSkY3@google.com>
-Subject: Re: [PATCH 1/2] KVM: SVM: Fix TSC_AUX virtualization setup
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Babu Moger <babu.moger@amd.com>
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 15 Sep 2023 00:14:04 +0300
+Message-Id: <CVIY8SX1DPRH.J1EE2T4RDZZ4@suppilovahvero>
+Cc:     <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <x86@kernel.org>, <tglx@linutronix.de>, <dhowells@redhat.com>,
+        <vgoyal@redhat.com>, <keyrings@vger.kernel.org>,
+        <akpm@linux-foundation.org>, "Baoquan He" <bhe@redhat.com>,
+        <bhelgaas@google.com>, "Luca Boccassi" <bluca@debian.org>,
+        <mjg59@google.com>, <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jan Hendrik Farr" <kernel@jfarr.cc>,
+        "Lennart Poettering" <mzxreary@0pointer.de>,
+        "Philipp Rudo" <prudo@redhat.com>
+X-Mailer: aerc 0.14.0
+References: <20230911052535.335770-1-kernel@jfarr.cc>
+ <20230913160045.40d377f9@rotkaeppchen> <ZQLTJFb3S/xn5CWo@gardel-login>
+ <CVIN0M3IHRKL.3U005Y5QTOJL5@suppilovahvero>
+ <CVIR0BGHX3VS.39FY5QL8KXR0F@suppilovahvero>
+ <e215acd4-52fd-429c-a569-a20ba5a49d7e@app.fastmail.com>
+In-Reply-To: <e215acd4-52fd-429c-a569-a20ba5a49d7e@app.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023, Tom Lendacky wrote:
-> On 9/14/23 15:28, Sean Christopherson wrote:
-> > On Thu, Sep 14, 2023, Tom Lendacky wrote:
-> > > The checks for virtualizing TSC_AUX occur during the vCPU reset processing
-> > > path. However, at the time of initial vCPU reset processing, when the vCPU
-> > > is first created, not all of the guest CPUID information has been set. In
-> > > this case the RDTSCP and RDPID feature support for the guest is not in
-> > > place and so TSC_AUX virtualization is not established.
-> > > 
-> > > This continues for each vCPU created for the guest. On the first boot of
-> > > an AP, vCPU reset processing is executed as a result of an APIC INIT
-> > > event, this time with all of the guest CPUID information set, resulting
-> > > in TSC_AUX virtualization being enabled, but only for the APs. The BSP
-> > > always sees a TSC_AUX value of 0 which probably went unnoticed because,
-> > > at least for Linux, the BSP TSC_AUX value is 0.
-> > > 
-> > > Move the TSC_AUX virtualization enablement into the vcpu_after_set_cpuid()
-> > > path to allow for proper initialization of the support after the guest
-> > > CPUID information has been set.
-> > > 
-> > > Fixes: 296d5a17e793 ("KVM: SEV-ES: Use V_TSC_AUX if available instead of RDTSC/MSR_TSC_AUX intercepts")
-> > > Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> > > ---
-> > >   arch/x86/kvm/svm/sev.c | 27 +++++++++++++++++++--------
-> > >   arch/x86/kvm/svm/svm.c |  3 +++
-> > >   arch/x86/kvm/svm/svm.h |  1 +
-> > >   3 files changed, 23 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > > index b9a0a939d59f..565c9de87c6d 100644
-> > > --- a/arch/x86/kvm/svm/sev.c
-> > > +++ b/arch/x86/kvm/svm/sev.c
-> > > @@ -2962,6 +2962,25 @@ int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in)
-> > >   				    count, in);
-> > >   }
-> > > +static void sev_es_init_vmcb_after_set_cpuid(struct vcpu_svm *svm)
-> > 
-> > I would rather name this sev_es_after_set_cpuid() and call it directly from
-> > svm_vcpu_after_set_cpuid().  Or I suppose bounce through sev_after_set_cpuid(),
-> > but that seems gratuitous.
-> 
-> There is a sev_guest() check in svm_vcpu_after_set_cpuid(), so I can move
-> that into sev_vcpu_after_set_cpuid() and keep the separate
-> sev_es_vcpu_after_set_cpuid().
+On Thu Sep 14, 2023 at 7:11 PM EEST, Jan Hendrik Farr wrote:
+> > BTW, would not be a bad idea to extend CC list to at least Matthew and
+> > James Bottomley on this patch.
+>
+> Sure. Added Matthew and James in CC
+>
+> Also, I already made some minor changes. cmdline is now used from the
+> syscall if there is no .cmdline section included in the UKI.
+> find_section now returns the section_header as an ERR_PTR. You can
+> find them in the uki-v3-wip branch at
+> https://github.com/Cydox/linux/commits/uki-v3-wip
 
-Works for me.
+Hey, I discussed about IKU at the Linux Linux security module
+maintainers monthly meeting and we concluded that it would be nice if
+this had a spread to linux-integrity and linux-security-module mailing
+lists.
 
-> And it looks like you would prefer to not have "vcpu" in the function name?
-> Might be better search-wise if vcpu remains part of the name?
+It is x86 feature at this point but obviously that will work as
+reference model to other architectures too.  So it would be nice
+if those mailing lists would be also included to the loop.
 
-Oh, that was just a typo/oversight, not intentional.
+I do not have time to check if this is relevant but this I think
+the last version seen of encrypted hibernate:
 
-> > AFAICT, there's no point in calling this from init_vmcb(); guest_cpuid_has() is
-> > guaranteed to be false when called during vCPU creation and so the intercept
-> > behavior will be correct, and even if SEV-ES called init_vmcb() from
-> > shutdown_interception(), which it doesn't, guest_cpuid_has() wouldn't change,
-> > i.e. the intercepts wouldn't need to be changed.
-> 
-> Ok, I thought that's how it worked, but wasn't 100% sure. I'll move it out
-> of the init_vmcb() path.
-> 
-> > 
-> > init_vmcb_after_set_cpuid() is a special snowflake because it handles both SVM's
-> > true defaults *and* guest CPUID updates.
-> > 
-> > > +{
-> > > +	struct kvm_vcpu *vcpu = &svm->vcpu;
-> > > +
-> > > +	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX) &&
-> > > +	    (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
-> > > +	     guest_cpuid_has(vcpu, X86_FEATURE_RDPID))) {
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_TSC_AUX, 1, 1);
-> > 
-> > This needs to toggled interception back on if RDTSCP and RDPID are hidden from
-> > the guest.  KVM's wonderful ABI doesn't disallow multiple calls to KVM_SET_CPUID2
-> > before KVM_RUN.
-> 
-> Do you want that as a separate patch with the first patch purely addressing
-> the current issue? Or combine them?
+https://lore.kernel.org/linux-integrity/20221111231636.3748636-1-evgreen@ch=
+romium.org/
 
-Hmm, now that you mention it, probably a seperate patch on top.
+Just adding it as a reference since I mentioned it earlier.
+
+I'm on holiday for the next week but will look forward to the next
+version after I'm back.
+
+BR, Jarkko
