@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C607A061D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FDF7A0622
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239405AbjINNfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        id S240078AbjINNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239912AbjINNfA (ORCPT
+        with ESMTP id S239594AbjINNfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 09:35:00 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D192D46;
-        Thu, 14 Sep 2023 06:33:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280FA2D4F;
+        Thu, 14 Sep 2023 06:33:55 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1ACA66607393;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A69746607394;
         Thu, 14 Sep 2023 14:33:53 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694698433;
-        bh=1yOSfZ9zOJdZRwLwPAMdW6zHS4PIxiSGQkrNrnzD9t8=;
+        s=mail; t=1694698434;
+        bh=qUxQMObFxpiy3pFolAat/Lsgv4wZ2hZHcdle7SRl8Pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eWvZTK2amSzpVpq8ZFpot/0uWStFAjTJ7f+V847lmGPS215Rf+yO9QYPKO9vKFQuc
-         S9ipLbYMNFYdeKqNpB2X4x2LrASQMR9lZW3n01IbkkOYQRxUYLhFX1gS/ReLT+tXMo
-         78lscaZDs1HkBh8wflnmMc0qEjDWP730gmvCiBed16h1PHb6qgdeAXT5I86QF58V0U
-         Xg+VOaPOnHZ98itUCPGQtBw7qTYvrOXLwezu37SdqEP6F6nlCr8XZEO8af50mE19Nx
-         S3haDqIwuCyxT5B7LRJR7Ln3iYHhhxWAsg3C7hiOTT6nRGfvkDjJ6jKjanbg5FByUn
-         AHraGykhh/h6Q==
+        b=eX9HPb3F0XG0gWIqEzdqo1JuCQk+1T5cSP5loYaPm2hT3jBZ4pf1li6gLpqSo5LAm
+         BlwGFyX3ssHkT1LNdS858TgUdf7Lj6vRz5qWet4kfA2XqtPD4GDHlwejGuNN//FPlM
+         etgV1owR/w4SyjHd3eSsf4Dab3lrPTGat9OZCFs6J9WWAZ+XXVXuI+FCMmWh8we3eU
+         hdwqMxk5k/sDDBmthNK5ADpwGcIzkuOav0X4YWogslj5ukliigIfgy5ICXLz5wBdct
+         5evWbWUGrEv0IL8bdW4pD8Z3GOZ6cYuRzwAHYxn3J5jkIukKI8hhdnA+sbr25kDMW2
+         7kEBNEOLNMQ4A==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 42/49] media: imx: Stop direct calls to queue num_buffers field
-Date:   Thu, 14 Sep 2023 15:33:16 +0200
-Message-Id: <20230914133323.198857-43-benjamin.gaignard@collabora.com>
+Subject: [PATCH v7 43/49] media: meson: vdec: Stop direct calls to queue num_buffers field
+Date:   Thu, 14 Sep 2023 15:33:17 +0200
+Message-Id: <20230914133323.198857-44-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
 References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
@@ -59,38 +59,42 @@ Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/staging/media/imx/imx-media-capture.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/staging/media/meson/vdec/vdec.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-capture.c b/drivers/staging/media/imx/imx-media-capture.c
-index 4846078315ff..ce02199e7b1b 100644
---- a/drivers/staging/media/imx/imx-media-capture.c
-+++ b/drivers/staging/media/imx/imx-media-capture.c
-@@ -605,6 +605,7 @@ static int capture_queue_setup(struct vb2_queue *vq,
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index 219185aaa588..1e2369f104c8 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -167,22 +167,23 @@ static void process_num_buffers(struct vb2_queue *q,
+ 				bool is_reqbufs)
  {
- 	struct capture_priv *priv = vb2_get_drv_priv(vq);
- 	struct v4l2_pix_format *pix = &priv->vdev.fmt;
-+	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
- 	unsigned int count = *nbuffers;
+ 	const struct amvdec_format *fmt_out = sess->fmt_out;
+-	unsigned int buffers_total = q->num_buffers + *num_buffers;
++	unsigned int q_num_bufs = vb2_get_num_buffers(q);
++	unsigned int buffers_total = q_num_bufs + *num_buffers;
+ 	u32 min_buf_capture = v4l2_ctrl_g_ctrl(sess->ctrl_min_buf_capture);
  
- 	if (vq->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
-@@ -613,14 +614,14 @@ static int capture_queue_setup(struct vb2_queue *vq,
- 	if (*nplanes) {
- 		if (*nplanes != 1 || sizes[0] < pix->sizeimage)
- 			return -EINVAL;
--		count += vq->num_buffers;
-+		count += q_num_bufs;
- 	}
+-	if (q->num_buffers + *num_buffers < min_buf_capture)
+-		*num_buffers = min_buf_capture - q->num_buffers;
++	if (q_num_bufs + *num_buffers < min_buf_capture)
++		*num_buffers = min_buf_capture - q_num_bufs;
+ 	if (is_reqbufs && buffers_total < fmt_out->min_buffers)
+-		*num_buffers = fmt_out->min_buffers - q->num_buffers;
++		*num_buffers = fmt_out->min_buffers - q_num_bufs;
+ 	if (buffers_total > fmt_out->max_buffers)
+-		*num_buffers = fmt_out->max_buffers - q->num_buffers;
++		*num_buffers = fmt_out->max_buffers - q_num_bufs;
  
- 	count = min_t(__u32, VID_MEM_LIMIT / pix->sizeimage, count);
- 
- 	if (*nplanes)
--		*nbuffers = (count < vq->num_buffers) ? 0 :
--			count - vq->num_buffers;
-+		*nbuffers = (count < q_num_bufs) ? 0 :
-+			count - q_num_bufs;
- 	else
- 		*nbuffers = count;
+ 	/* We need to program the complete CAPTURE buffer list
+ 	 * in registers during start_streaming, and the firmwares
+ 	 * are free to choose any of them to write frames to. As such,
+ 	 * we need all of them to be queued into the driver
+ 	 */
+-	sess->num_dst_bufs = q->num_buffers + *num_buffers;
++	sess->num_dst_bufs = q_num_bufs + *num_buffers;
+ 	q->min_buffers_needed = max(fmt_out->min_buffers, sess->num_dst_bufs);
+ }
  
 -- 
 2.39.2
