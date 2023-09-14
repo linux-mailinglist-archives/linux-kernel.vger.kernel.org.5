@@ -2,165 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F567A0BCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106557A0BCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239329AbjINRcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        id S239606AbjINRcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbjINRcD (ORCPT
+        with ESMTP id S239028AbjINRcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:32:03 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2042.outbound.protection.outlook.com [40.107.92.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90B59B;
-        Thu, 14 Sep 2023 10:31:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T7m6P628o36NRi1lAVrT7ge1u6nmsOyxNgtW4CgDXmRdwZxI9Tj+gQVDNXx7C6E8ZRqG6N8WPumLDDYWxA+g5h1KppPFCga0w+cXkOi8Bn+OH3qYrZrjn6AOb5DjTAj4TGSZgwHmgnhBiDjRb20sozkTLCZtgZgGmN/OSBK1AMhNpnb6b8kxfZ7SMomOixyYXik7LuaBMlL4PzwMGUxKP3n8pMOdSoB7HkUt3ulB8jLc7PPULjODXue919EUGRwE1yJn/D6AHmjvUCuzZ11Cxa0cID3NK9avrmmctLvhNu+Wrlh0JM3PFvEz71hGTPpFz3628+FGmuzORqhfgDjeuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ju7DBkHVThJ1aNIxhtSMONfc6y6/YfGIYo5m4YyRJgk=;
- b=k0pzVqD+RZHGm3M4+SYHwwdwPBZcFXKkgc60ahKza7q8SmYVPdmXrDsSZ58Tkvpztl7HPK2LbDg91RY/LJIfVryHU8GYfCVJXCchmRbNTaj6qNHK7C+vhrqj3mRKQNXbuYKpIlHZz2npMydkDOAedX99OK2EqRLtyn+j9HMamBhog4B/54jKEda45IG1g6ZwsgOA3t90B1O7IlpQ/AJBFgHi6MjcJtL9VGnunrfbZ1i6tjysijs4flFSywuxSmrZSjp3M2Z6rvtLaXDD5yfvi6EbjU4yQdZc+2+s4QOIGH733QDsSE7sl0JRTzHd7/NGrvZtVtYqOtUi+piYq5yrPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ju7DBkHVThJ1aNIxhtSMONfc6y6/YfGIYo5m4YyRJgk=;
- b=VUsJsD+ai2GnqT6v1E0GI0gCWk3O2BNFh1QJ6U5eF5+MrLpS+N9bmBtnhqgYr/S+sDz2dctycA8NAazGVYDGagT5xoGWFP8RjMm5YIygiJvkKY+GlIjIfbKj7axrt2tg7+h1zFEVqfYMb8bwpyCZzfCod71braz1vjPfRzta0k0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
- by SA1PR12MB7038.namprd12.prod.outlook.com (2603:10b6:806:24d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
- 2023 17:31:55 +0000
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::ee63:b5d6:340c:63b2]) by PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::ee63:b5d6:340c:63b2%5]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
- 17:31:55 +0000
-Message-ID: <08009a16-f6b6-f644-406e-ea3dd0a858f1@amd.com>
-Date:   Thu, 14 Sep 2023 10:31:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] vfio/pds: Use proper PF device access helper
-Content-Language: en-US
-To:     oushixiong <oushixiong@kylinos.cn>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
-From:   Brett Creeley <bcreeley@amd.com>
-In-Reply-To: <20230914021332.1929155-1-oushixiong@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0117.namprd05.prod.outlook.com
- (2603:10b6:a03:334::32) To PH0PR12MB7982.namprd12.prod.outlook.com
- (2603:10b6:510:28d::5)
+        Thu, 14 Sep 2023 13:32:43 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582791FF0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:32:39 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4046f7d49a9so2579875e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694712758; x=1695317558; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NIcgENX7e2e7T7UAPxVNsw3jDCyvIv8ff6aQ3AhHiGc=;
+        b=MkSqlnaHepoTr+Hjf/5V7ynsEhlfVHcb5UovHDOrDG8prr0MN4Lc+MVfWHpTW2b1Ye
+         ikue4EfPQNEc9K3cAa6DdJR8FyzE/wCei4qprjr1xL5rhFi0Mm/BkqwwLPOl9XudxylJ
+         Tnl7KWTgx2uuq3w4VYiQxwjLAzjGf1CCgQEgRrvRKjh4zQcpsrU2y9VE2S2qXheilg91
+         DU3HXrXNfUjFDwEHZVjHzQiLqIRzpE4isll3E6Toqfpq2rgX0MRSa40scaUARkobu7Z/
+         DYxRU246xWKoaWcfVstT0lxaNJRuVjQPPM1ZnDStimsEjQlIqT+/AKUG06lfkDHr2yvD
+         YmFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694712758; x=1695317558;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NIcgENX7e2e7T7UAPxVNsw3jDCyvIv8ff6aQ3AhHiGc=;
+        b=iZOucv6fdLtqEFz6hRA2+hqojoH/CDSszpg7SehWCggCP+Tb7hQ/kb17bzu1FHBbYl
+         cylLvUCfdBRpiCcBSpH6Y0zKmZMPxDe/Vphlwv5xrPKDkbkQk4gwKofZWb5k0hhzoUPb
+         ndkaBPku/4zW/JBXKVA+0wNf1+IzeTwyD5KDyKQawDxr4TiltUgTOqIoXoc///D3hXgn
+         0sMhF5bThA2+obpZ2c5kqKCBjGtJ8cxd8460IXMfRAtvG2ZKE033S/F6ziFPDahBAZBB
+         k9hJ9xxTR/cyqlw7IyGsmrceOscxOU38heRVOtPfNtcoQDi7dzzK/0Y9BL1W73HJTER2
+         w1aA==
+X-Gm-Message-State: AOJu0YxvB81SmAIKdWA/ero/T6rbhos3f7Qg7Tx1aWGH8MRuhSL0/G6k
+        tl+4Y0KlGM70AIZIcpowd8NgSESBlgt5JK0CF8dYWQ==
+X-Google-Smtp-Source: AGHT+IEqIVJX+CNjKGy50laq3XjUoP6KTYYjJAvaLKEMt33y1ybi3gEJ/x3twhrlaDVilnhjwjVvjQ==
+X-Received: by 2002:a05:600c:3c8f:b0:401:faf5:85c3 with SMTP id bg15-20020a05600c3c8f00b00401faf585c3mr5372619wmb.0.1694712757702;
+        Thu, 14 Sep 2023 10:32:37 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:9f43:3ca4:162c:d540? ([2a01:e0a:999:a3a0:9f43:3ca4:162c:d540])
+        by smtp.gmail.com with ESMTPSA id z7-20020a05600c220700b00403038d7652sm2535191wml.39.2023.09.14.10.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 10:32:37 -0700 (PDT)
+Message-ID: <1fcb00f4-f8b0-4c98-88d5-16895066d222@rivosinc.com>
+Date:   Thu, 14 Sep 2023 19:32:35 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|SA1PR12MB7038:EE_
-X-MS-Office365-Filtering-Correlation-Id: 62859b52-b507-43e7-eccb-08dbb5487d94
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K6DmhzhNBYrjEM3ML2dNeooM6nsxPHKqAQLeWzqVy/8lL2MPiXeW+ScteGiortTND6W4RfN98U7coe8924/zWvSI/lb1dw0bwHMEurmWCOnDvLUfEDEbSaA+cDjXVGO2q6bxapm2b1pQ+K+jl4Zy8VINN8pnQHCB5VbQjOMEql0RWjIa9kIx+/9SPmW2OW61B/5aIjKM1SfMVwY9djBwiN2clM6jKvQPhFUzuJUScZfNtMSzk/yopDeznf0ZjkEk4FmtwtzwHTcKtpBX4MxdEbYcfFBK7Br1gvo5+A9AQRK8kj1sHX3gazCLzY90mWs62KUOwvRmg68zVoTtt9VVVrnk5AztSdMelRNfNMq9fA3jAu9w3OsCUK8bv2FYztQmpnxKX/sopvquFcl8TPZrMREM7npjj8ER2dsnh6yzx73Z0Iu3pINIZ7pBZL5NrZUC/4MujMgn/BtpjAvon8dCddA6Ne5U+m3TQXPy9EuPZwyX/DPS3H+prmA61cHwGZikR+8KhiqUwZBXO0OXoxl/6/QEBeiLTwhPUiy+7sPCmA09Gh2eCxKPZzMnttp+HlHju0m+w6h3V7kTrFTYAzA1v3vD02tfsq6pbNwc8rp5zD7rZRJqlYveU5EsBSO3wcwA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(39860400002)(376002)(451199024)(186009)(1800799009)(478600001)(6506007)(53546011)(6486002)(6512007)(26005)(83380400001)(2906002)(8936002)(54906003)(66556008)(66476007)(66946007)(2616005)(316002)(110136005)(5660300002)(41300700001)(4326008)(8676002)(38100700002)(31696002)(36756003)(966005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUZsV0JhN2Z3aTRIRzZibnM2TXptVjVDTzVYVXRNNzVKVGgxd2ZUNXVKT2xD?=
- =?utf-8?B?b2lLRzJ2VWFQcFVlSGhnV1ljRkJ1VUx0cVRhZFV1d0QxSEEzQVQxZHlFbVZS?=
- =?utf-8?B?eFBFa0w1WGYwZitVMk5lejd1ME53YjNBbGExYUdFbnJuNndPK3dFdFdJeG1l?=
- =?utf-8?B?ZUhTVEkySnVKcE5BcDFudk90bldSczh4MXRPMWdFaVliYjR1QTFaSndGRFFo?=
- =?utf-8?B?Q0gyZkxKS1BFbE9TVUlueW5remdBSnNTa0FhWHdnbXRRZEZRRUtrY1RHMHp5?=
- =?utf-8?B?ZklNazM0YXBoNUxDWjdReERCMTFQZTVwRTY4eXA5S3c5eG56Q25xYVFwWUlJ?=
- =?utf-8?B?RDJlUE5KY3NBZUhUOExtSzJLVkNDblRlSUJSV3RWK2Q5eDFYRUo2Vlkrcml6?=
- =?utf-8?B?NTBFeGRiUmV2Q0ZHbXVtMXRSdmJJYWhwTzdWWUtTWW40UWYxbTIvV0pHY05F?=
- =?utf-8?B?OTg0WnlXYUJ3NWF2ckxydlkxWGFRZnZOVGRkZUdQb3l5SnlVMHRJcHZlTFF1?=
- =?utf-8?B?VHBJSUdVYmxVRVp4bGRNdUo5TTg2Z1J0L1FkTjlrVEhiQnJCRGUyVVRMME4y?=
- =?utf-8?B?a08wRzEzSXFETXFNM3NzZnlOdDhSajJuWXVYbndlZGFFUjdTMk8zVHdLcDJ0?=
- =?utf-8?B?K2V1aXpiMG82cmVKZ3VyNjlPNkNPSHBrM2FWWTBkN1NKeVU5M2FRekFzNEFo?=
- =?utf-8?B?WnZTWTBYU2ZpSnkvYUNSL0JEd2lMZTdMUklSTUpUeStaM0hnMStzZEtZTDZm?=
- =?utf-8?B?WC9hamV6Nmh2Z1dHNUZuWFQwWnRCa25LV0h3QVhJS0lJQVhXYjRhbkYvUG1n?=
- =?utf-8?B?OFBqSVZYZU5BcWtrY0xHVjZGSFM5VHd6WlhlZ1BxWjdGd0NOTk5PeVhXYTcv?=
- =?utf-8?B?bEIxUXVFZlNTVlEwUHM5WXg1cit3WjhwajJLRGNWRXc2blJhRDFCM2VndmRW?=
- =?utf-8?B?d1NmUk1hbFZCNW5SUXp4aTJrQmd2ejE4NnRQMUN3QWZJV2IxbUhLb21mS3J1?=
- =?utf-8?B?QllXVSsyL1A3cUtvT21kQXBINnNBWGVXTitSYVoyZjcrQUlVYmozQXI2Q0k4?=
- =?utf-8?B?TjZ2cXN3NFQ1S0kxeXFSRWt6QXQ2TU5Cc3p5eGQ5MGJXbytwRGdQQ3U1cGVl?=
- =?utf-8?B?anNpMkRacUF3MnVrNHI5dGZpd05OaEdVSHRsVkdLcGxUR1h3V0ZBei9aTHhs?=
- =?utf-8?B?UExPRGJIQXlJQnVCUy9uVUVHSG0yMURqY2RjSHdJb3VJbVNjVkg0NjlaVTNC?=
- =?utf-8?B?eWxMUHU4c3MyZzZuTmJzREhoYS8yM000ZERZaThaWnhWSXNHQjBFMDJnWUpY?=
- =?utf-8?B?Q2loSGpUcVR5WXN1RGZWdFhrckx2NDBhK2Q4azhxUHNpeTJnUzZVYkxTcXVG?=
- =?utf-8?B?c2tCNy84ZjNrRkw3SUxVR21sWVZsMFlSa1VZMlgySWdrdlRVWWpXWnNtL0Qx?=
- =?utf-8?B?VlNZWWRhcDU5NmNtblRwWDRUVXFtdjRHRjlGQzlQbnNPMnMrRDlYYWMzT2xp?=
- =?utf-8?B?SW1oUDIzSmFiU29xcmsvaEhOQXVYUXBIdTQ4bk9NeHZ2YXI1SlVVdTNUdWRi?=
- =?utf-8?B?Q1pncDEvWE16N05CWVVKRW1rcmJWb1BXSnFwSWVDcmJWQ1J1YzhTNERJRTVn?=
- =?utf-8?B?c3pKNzdwN1h3UFMreGdVc2YvSmplZVNMamJMejZrNGNhbTBWOEk3UGlOUVRi?=
- =?utf-8?B?QTNSQTdkYjY3a2IybTcydGtIUzZJRUdVMC8vRmhTeUUvWXB1eWhaeFIwaEZH?=
- =?utf-8?B?T0xsTDZrSWsxdnZVSENhTCtjK25jNXBucFQ1ZkJrSDN6QmNZeTVUUSs3QjZU?=
- =?utf-8?B?b01aTWtlSFRPZCthOFFudHVCUGtxUlVnVkZLd2xydE51ZlpwVXVNL29RUThL?=
- =?utf-8?B?am8wZk5iTHZNQUpSdWM5N1BCY3pzQVRVblU2QWl5ZlNYME5Vb28vdzZJMVpH?=
- =?utf-8?B?b2lTaEJPN20wdHFSczFaZkVMTzZEMXFNa2hYWG1OdTZJWXdwaWIxWXErS24x?=
- =?utf-8?B?VnpTeTlWbzBSWHUrbU55Q0tCVWJZcXBRVWVMWStobzQvZGQ0QU1ONVVmUzlT?=
- =?utf-8?B?eDRzb1prdWZDcHJWQ3VhV0dBN0FZTjg1Z3JzZXovd0hlZ1ZRYXhRaWpTOUJP?=
- =?utf-8?Q?9bI9HykKzfAlq4TMVp8c3R4iA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62859b52-b507-43e7-eccb-08dbb5487d94
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 17:31:55.3406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8Vp3Cm4AvcBFYNs/xIwDpoVMSipevF3CaPTbbuAlXfO3fXTv3uwFhATfKRrf+eC9CMODx9qPH+lwVPjIkFJPxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7038
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Beau Belgrave <beaub@linux.microsoft.com>
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <20230914131700.0ba3ee80@gandalf.local.home>
+ <20230914132956.569dad45@gandalf.local.home>
+Content-Language: en-US
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230914132956.569dad45@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/2023 7:13 PM, oushixiong wrote:
-> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> 
-> 
-> From: Shixiong Ou <oushixiong@kylinos.cn>
-> 
-> The pci_physfn() helper exists to support cases where the physfn
-> field may not be compiled into the pci_dev structure. We've
-> declared this driver dependent on PCI_IOV to avoid this problem,
-> but regardless we should follow the precedent not to access this
-> field directly.
-> 
-> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> ---
-> 
-> This patch changes the subject line and commit log, and the previous
-> patch's links is:
->          https://patchwork.kernel.org/project/kvm/patch/20230911080828.635184-1-oushixiong@kylinos.cn/
-> 
->   drivers/vfio/pci/pds/vfio_dev.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-> index b46174f5eb09..649b18ee394b 100644
-> --- a/drivers/vfio/pci/pds/vfio_dev.c
-> +++ b/drivers/vfio/pci/pds/vfio_dev.c
-> @@ -162,7 +162,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
->          pci_id = PCI_DEVID(pdev->bus->number, pdev->devfn);
->          dev_dbg(&pdev->dev,
->                  "%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
-> -               __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
-> +               __func__, pci_dev_id(pci_physfn(pdev)), pci_id, vf_id,
->                  pci_domain_nr(pdev->bus), pds_vfio);
-> 
->          return 0;
-> --
-> 2.25.1
-> 
 
-LGTM! Thanks again.
 
-Reviewed-by: Brett Creeley <brett.creeley@amd.com>
+On 14/09/2023 19:29, Steven Rostedt wrote:
+> On Thu, 14 Sep 2023 13:17:00 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>> Now lets look at big endian layout:
+>>
+>>  uaddr = 0xbeef0004
+>>  enabler = 1;
+>>
+>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>                                     ^
+>>                                     addr: 0xbeef0004
+>>
+>> 				(enabler is set )
+>>
+>> 	bitoffset = uaddr & (sizeof(unsigned long) - 1); bitoffset = 4
+>> 	bit_offset *= 8;				 bitoffset = 32
+>> 	uaddr &= ~(sizeof(unsigned long) - 1);		 uaddr = 0xbeef0000
+>>
+>> 	ptr = kaddr + (uaddr & ~PAGE_MASK);
+>>
+>> 	clear_bit(1 + 32, ptr);
+>>
+>>  memory at 0xbeef0000:  00 00 00 00 00 00 00 02
+>>                                   ^
+>> 				bit 33 of 0xbeef0000
+>>
+>> I don't think that's what you expected!
+> 
+> I believe the above can be fixed with:
+> 
+> 	bit_offset = uaddr & (sizeof(unsigned long) - 1);
+> 	if (bit_offset) {
+> #ifdef CONFIG_CPU_BIG_ENDIAN
+> 		bit_offest = 0;
+> #else
+> 		bit_offset *= BITS_PER_BYTE;
+> #endif
+> 		uaddr &= ~(sizeof(unsigned long) - 1);
+> 	}
+
+Hi Steven,
+
+Nice catch ! I don't have big endian at end but I'll check that.
+
+Thanks,
+
+> 
+> -- Steve
