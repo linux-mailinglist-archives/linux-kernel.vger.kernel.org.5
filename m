@@ -2,173 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A2B7A0D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1A7A0D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242048AbjINSwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        id S241612AbjINSx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242331AbjINSvb (ORCPT
+        with ESMTP id S241928AbjINSxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:51:31 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9762711;
-        Thu, 14 Sep 2023 11:48:51 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EI1txs018514;
-        Thu, 14 Sep 2023 18:48:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=qcppdkim1;
- bh=euYiftLWcNaTMXljNh0KbWO1rVNZGb5RAvVpWOo8c54=;
- b=VkCOQyjM83TMRRszAWnmmg2Vf5xz4TXqPEUG4/O2SQqPiAxlx4XUSH1RGYIhO6OiGvEX
- UkMikwycpvp8pZTTzgb5DEUdyhi43hRTYeI4Xcu0EmA2jZN+GItXXZ59d5I7VOAiicGs
- 6rN0grRTAzemIk4st+GGtWeFmcDjVmTUli3QVCAzAXJd2H9SVKY/BBr08MmZ2G4ZbzzP
- M4h1rnAvSMjOj/hqkSbL1mGYniR7ULSclEAolJSiGmLuv8FEo8KfAQcYuFuflnGPPx2Y
- Bmxm4/ocNZz4+0UbjFG62XzP9YV9ZtUwoHQKfHmwxj9jyP3/ZDTQ0I9d1VUmKlZvBfVq 6Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3wx19ubf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 18:48:44 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EImgaI008711
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 18:48:43 GMT
-Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 11:48:42 -0700
-From:   Oza Pawandeep <quic_poza@quicinc.com>
-To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     Oza Pawandeep <quic_poza@quicinc.com>
-Subject: [PATCH v6] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-Date:   Thu, 14 Sep 2023 11:48:39 -0700
-Message-ID: <20230914184840.649412-1-quic_poza@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Sep 2023 14:53:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFAAB26B5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694717519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iu+JS5SuMu+Jb9YHdE7JVS58pPUJ1Oe641flT3ImSMA=;
+        b=hfUsnhQWUjmY7kl/SYtglmTCTwzv3zmMTLzfx9066rFocU49F5a1vIiobPSTzvXcvJowVw
+        V81ABgsPs5m5ixyUJm2OrxshN3k6ZGmOrvm6UaLLsXoIM3ujZKpqqkGx7vFl6ndZRQewUf
+        Q2b8YFp0KmHhNMgUmofwvkDPTG5I7f8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-202-FJE1Tg3ROKupQEIU_u9tlA-1; Thu, 14 Sep 2023 14:51:56 -0400
+X-MC-Unique: FJE1Tg3ROKupQEIU_u9tlA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1C86D9700AF;
+        Thu, 14 Sep 2023 18:51:54 +0000 (UTC)
+Received: from rotkaeppchen (unknown [10.39.194.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C5C2640C6EA8;
+        Thu, 14 Sep 2023 18:51:51 +0000 (UTC)
+Date:   Thu, 14 Sep 2023 20:51:49 +0200
+From:   Philipp Rudo <prudo@redhat.com>
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     Jan Hendrik Farr <kernel@jfarr.cc>, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
+        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, bhe@redhat.com, bhelgaas@google.com,
+        bluca@debian.org
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+Message-ID: <20230914205149.51031bc9@rotkaeppchen>
+In-Reply-To: <ZQLTJFb3S/xn5CWo@gardel-login>
+References: <20230911052535.335770-1-kernel@jfarr.cc>
+        <20230913160045.40d377f9@rotkaeppchen>
+        <ZQLTJFb3S/xn5CWo@gardel-login>
+Organization: Red Hat inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RiHjGaHHx4KR_0FBIOfqM7Orz7MaTYga
-X-Proofpoint-ORIG-GUID: RiHjGaHHx4KR_0FBIOfqM7Orz7MaTYga
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_10,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=25 spamscore=25
- priorityscore=1501 mlxscore=25 bulkscore=0 adultscore=0 clxscore=1015
- phishscore=0 mlxlogscore=47 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140163
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm® Functional Fixed Hardware Specification defines LPI states,
-which provide an architectural context loss flags field that can
-be used to describe the context that might be lost when an LPI
-state is entered.
+Hi Lennart,
 
-- Core context Lost
-        - General purpose registers.
-        - Floating point and SIMD registers.
-        - System registers, include the System register based
-        - generic timer for the core.
-        - Debug register in the core power domain.
-        - PMU registers in the core power domain.
-        - Trace register in the core power domain.
-- Trace context loss
-- GICR
-- GICD
+On Thu, 14 Sep 2023 11:32:20 +0200
+Lennart Poettering <mzxreary@0pointer.de> wrote:
 
-Qualcomm's custom CPUs preserves the architectural state,
-including keeping the power domain for local timers active.
-when core is power gated, the local timers are sufficient to
-wake the core up without needing broadcast timer.
+> On Mi, 13.09.23 16:00, Philipp Rudo (prudo@redhat.com) wrote:
+> 
+> > For example there are two definitions for the UKI which contradict each other.
+> > The dedicated one [1] you have cited earlier and the one in the BLS for type #2
+> > entries [2]. In [1] the .linux and .initrd sections are mandatory and the
+> > .osrel and .cmdline sections are optional while in [2] it is the other way
+> > round. Which definition should the kernel follow?
+> >
+> > Furthermore, I absolutely don't understand how the spec should be read. All
+> > the spec does is defining some file formats. There is no word about which
+> > component in the boot chain is supposed to handle them and what exactly this
+> > component is supposed to do with it. But that is crucial if we want to add UKI
+> > support for kexec as the kexec systemcall will replace the stub. So we need to
+> > know what tasks the stub is supposed to perform. Currently this is only some
+> > implementation detail of the systemd-stub [3] that can change any moment and I
+> > strongly oppose to base any uapi on it.
+> >
+> > In the end the only benefit this series brings is to extend the signature
+> > checking on the whole UKI except of just the kernel image. Everything else can
+> > also be done in user space. Compared to the problems described above this is a
+> > very small gain for me.
+> >
+> > Until the spec got fixed I don't see a chance to add UKI support for kexec.  
+> 
+> So that spec is initially just a generalization of what
+> systemd-stub/systemd-boot/ukify does. The descrepancies between the
+> cited specs mostly come from the that generalization. If you want to
+> enumerate kernels and order them the ".osrel" stuff for example is
+> necessary, hence the boot loader spec really wants it. If you don't
+> care about the boot loader spec though and just want to register the
+> kernel UKI PE directly in BootXXX efi vars for example, then there's
+> no need to include .osrel. That all said we should certainly make the
+> two specs align better, and clarify the situation. Suggestions/patches
+> more than welcome.
 
-The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-broadcast timer if core context lost is defined in ACPI LPI.
+Thanks for the explanation. I know that writing a spec isn't easy and
+no matter how hard you try it will never be "perfect". That's why I
+think it's important to have a proper Introduction at the beginning of
+the spec that gives a context to the reader on the problem the spec is
+trying to solve, the different use cases/environments considered
+while writing the spec, the different components involved and how they
+interact with each other, which limitations there are, etc.. The BLS
+sort of has it (if you also consider the "Additional discussion") but
+for the UKI the introduction basically boils down to "it's a file that
+contains stuff", which isn't very helpful. Having such a context not
+only makes it easier to understand where such contradictions come from
+but also help to prevent problems where people from different
+backgrounds interpret the spec differently because they look at it from
+their context.
 
-Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
----
+An other thing I don't understand is, why the Extension Images (I
+assume describe the "Companion Files" in the systmd-stub man pages) are
+a separate spec. With the initrd and cmdline being part of the UKI and
+thus fixed you take away a lot of flexibility users have today. These
+extensions bring back part of the flexibility which IMHO is needed by
+general purpose distros as for them a simple one-size-fits-all solution
+doesn't work. That's why for me both belong together and thus should be
+described in the same spec.
 
-Notes:
-    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+The extensions are also a good example why you need to properly define
+the different components and their responsibility. In a secureboot
+environment these extensions need to be signed and verified during
+boot. But wich component is responsible to check the signature? Is it
+the stub? The kernel? or even the initrd? If you don't define that in
+the spec you will eventually end up in situations where nobody checks
+the signature because everybody is sure it's "someone else's job".
 
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 4d537d56eb84..269d21209723 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -9,6 +9,7 @@
- #ifndef _ASM_ACPI_H
- #define _ASM_ACPI_H
- 
-+#include <linux/cpuidle.h>
- #include <linux/efi.h>
- #include <linux/memblock.h>
- #include <linux/psci.h>
-@@ -44,6 +45,23 @@
- 
- #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	trbe_interrupt) + sizeof(u16))
-+/*
-+ * Arm® Functional Fixed Hardware Specification Version 1.2.
-+ * Table 2: Arm Architecture context loss flags
-+ */
-+#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
-+
-+static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
-+							unsigned int *sflags)
-+{
-+	if (arch_flags & CPUIDLE_CORE_CTXT)
-+		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
-+}
-+#define arch_update_idle_state_flags _arch_update_idle_state_flags
-+
-+#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-+#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-+#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
- 
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index dc615ef6550a..5c1d13eecdd1 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
- 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
- 		state->exit_latency = lpi->wake_latency;
- 		state->target_residency = lpi->min_residency;
--		if (lpi->arch_flags)
--			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-+		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
- 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
- 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
- 		state->enter = acpi_idle_lpi_enter;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index a73246c3c35e..f8c561a4215e 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1480,6 +1480,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
- }
- #endif
- 
-+#ifndef arch_update_idle_state_flags
-+#define arch_update_idle_state_flags(af, sf)	do {} while (0)
-+#endif
-+
- #ifdef CONFIG_ACPI_PPTT
- int acpi_pptt_cpu_is_thread(unsigned int cpu);
- int find_acpi_cpu_topology(unsigned int cpu, int level);
--- 
-2.25.1
+> Ultimately, I think a spec written as description with a single
+> implementation in mind (i.e. systemd) is a generally a bad spec. Hence
+> if kexec in the Linux kernel wants to add support for it, that'd be
+> great but I'd see that as an opportunity to adjust the spec to the
+> needs of the Linux kernel in this area, so that it reflects well more
+> than just one backend implementation.
+
+Fully agree. I must admit my first mail sounds pretty negative. But I
+don't oppose the UKI. All I wanted to say that at the moment the spec
+doesn't work for the kernel. But it can (and should) be fixed.
+
+In this context I hope it is also clear to you that when more and more
+people rely on the spec you need a more formal process when including
+changes. Especially when the change might break the implementation of
+others. So no more making the .cmdline optional and allowing it to be
+overwritten all on the same day.
+
+Having that said, what does "local override" exactly mean? Does that
+mean a distro can allow a user to freely choose the cmdline without
+checking any signatures? I.e. does that mean we can get rid of this
+https://github.com/systemd/systemd/issues/24539
+
+> Hence, seeing the spec as set in stone and as inherently low quality
+> is the wrong way to see it I am sure. Instead, the goal here is to
+> adjust the spec to make it work really nicely for *both* systemd and
+> the kernel.
+
+Sorry, I never wanted to intend that the spec inherently low quality.
+Just that it doesn't meat my expectations, yet. But that is fine. The
+spec isn't even a year old and there's only a single implementation,
+yet. So it's more documentation rather than a spec.
+
+Furthermore I don't expect the spec to be ever "set in stone". A spec
+always needs to adjust to an ever changing world. If it doesn't it's
+dead. But once other people rely on it you mustn't break backward
+compatibility. Meaning the more people rely on it the more careful you
+have to be which changes you make.
+
+Anyway, I hope I could make clear what my pain points are and by
+that help to make it work for both sides.
+
+Thanks
+Philipp
+
+> Lennart
+> 
+> --
+> Lennart Poettering, Berlin
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
