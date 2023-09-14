@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 759107A0EF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78707A0EF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjINUaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        id S229484AbjINUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjINUaY (ORCPT
+        with ESMTP id S229721AbjINUbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:30:24 -0400
-X-Greylist: delayed 1206 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 13:30:19 PDT
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1E826B2;
-        Thu, 14 Sep 2023 13:30:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694723417; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=W0g/ZLB0LHM9tx+MqAX/wMSrMPKe2YlW4ErmpsO+RU9+/xuFdONuCpFg6PNd3KPPXW
-    gtfhkFoYADd0UTq7yP5419xLg+9aug4CxPQbyUJt6akwVQo6FpKgtKzp/LG5pya0ySY+
-    JFTdJtNvTq0wGBHFb5SR/kDtfNbYdcwG0dc46pQ5v1AU7QAm1BFV6y+hYTgQb2wTjUHq
-    SGYubJySIA8To0MBrCzTGE5452us+KqPhGwQSoIoEIqnmXqwKcmnpNSB3QAJfiSuJAXx
-    AcClkLGFx5qNmhsJoSKB+izHu0UskU2wp6xE32uBNcvG6MBEfoPRyfN8Jqt6ZyH1Ve8Y
-    NfrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723417;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Qm6cwWzKtshyoFGnpStu0NB/ynnONWUDquxu6ya0YbE=;
-    b=eViYGkG569sjAFNSVhu5QwVYCmjiOHioL1WFoyFPXdRrK8Eu8Ck87xEGKLVORfCuu9
-    csVFV1BcitWnYriyQS0DnBu9gyeE6oswOg25l6Ad4SvPc9yWoXMGMRBvbv/QuI1T7Ka3
-    FuAGuXZUVH59D/BCuHYSDlAm1CmAZiugNFioD9Swuz1mEMg1b/zb3zL4UeTDqhY6MIZz
-    hPJ3Sa25ySLqRqKpluRn1jZiFSKU4ygVN0fxo3/9OkG3HObWDzr55VTuhcK7/xL3cKyj
-    FawHcFu57Olsghn3QHxWkqYwF9qWt89BnjHPBZATKLsaJjaB7Eb+p8wNu0r8+QGDm4pd
-    cfWQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723417;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Qm6cwWzKtshyoFGnpStu0NB/ynnONWUDquxu6ya0YbE=;
-    b=bjBckR7WgKFXDGMTYAkGocIxWS36sQBPPNHLhTxlyBKlvgS3eThohwLqSwp7PoetDC
-    rYceV9I8EXODAuju3MaSL4VcHMOIPMfakAzPDYHNCticvn29rHG5T1/yqIR/wuRaHxk1
-    rFivUDRUADJ40sqhlH+PTR7HpX35RIw4KXTI2yyqJRsfLQRhMbkWdPRP46z/KxemXJkk
-    w/AJifRjLA7vWsZ0q2iCixeEWJujwDUwWsmnOTzvbEHQKnMMFaAdTw+XaRjqxBa/IKeA
-    rdKEqi7H2xM0i0lYAZIFxVpayq+AXzKVNsgrG8sDEmf6d18Iyazb05gs8Dfmun11EwAL
-    yaEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694723417;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Qm6cwWzKtshyoFGnpStu0NB/ynnONWUDquxu6ya0YbE=;
-    b=L2UO5p2RTTxOd4T4tbiU+x0mUjpoDt3KgVCODRcBkc0BcTZ5uwzvlAL4PLzB7DOaV5
-    xuOJAfim+vdfADJl7PDA==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JyMI1zXvWpofGAbhC22VTSyB8cMmLdLpWPYurOsVc7IfjM2CVzE="
-Received: from p200300c58703581babbe27afdf2433f1.dip0.t-ipconnect.de
-    by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id V04024z8EKUHDZZ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 14 Sep 2023 22:30:17 +0200 (CEST)
-Message-ID: <03a08d4c9f49287fe2d52862c78b59b6fd02e580.camel@iokpp.de>
-Subject: Re: [PATCH v1] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for
- Micron eMMC Q2J54A
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
-        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Thu, 14 Sep 2023 22:30:17 +0200
-In-Reply-To: <CAPDyKFrt4r88RhCg1XigFtd8xSrLLbHeD31ZAEA0aUDkNzRxGQ@mail.gmail.com>
-References: <20230913185735.459661-1-beanhuo@iokpp.de>
-         <CAPDyKFrt4r88RhCg1XigFtd8xSrLLbHeD31ZAEA0aUDkNzRxGQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Thu, 14 Sep 2023 16:31:15 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88732698
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:31:11 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id gszUqMvFz7mcCgszUqSuhP; Thu, 14 Sep 2023 22:31:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694723469;
+        bh=Sb61MGbLqsf+CsIMkkDke3Cvm/shDI295oG39gW+CtY=;
+        h=From:To:Cc:Subject:Date;
+        b=UwON7NmSvg7mtEanY+4I6YQv7qqLAI1G+Uy0/Q/THiamTR7s3nbj+HcQ0M5V17DqS
+         nZ+75/D30Rq03k2eDlNrK90bw2b8OGG7I9a/35Ot4rVad6FwXxNe1dVlquOZmdF/vP
+         FaSPjlLYiceEv/qdn/Etd8FnJHWXpSarWzW8X8ov+QDxcu0Ach0bkowQ4juoDGzRi1
+         SLZHcYvX+PbIw3QZNIWD2CMaLeMbZWrU3g4cDzDCsVzalCU8Vh1o4LfmjRxcW+qQzI
+         aHz+so4vGspS4P7bO9ENAqtd5zMYLgm8MdoZR18KZQSrtmWX6rtc2y6crgaPkDRTKk
+         t79GaoGvxY6JQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 14 Sep 2023 22:31:09 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
+        sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        shengjiu.wang@nxp.com
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH v2 0/5] clk: imx: imx8: Fix some error handling paths
+Date:   Thu, 14 Sep 2023 22:31:01 +0200
+Message-Id: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ulf,=20
+This serie fix some error handling paths. It is split in different patches to
+ease review because the issues are unrelated and the proposed fixes are maybe
+wrong (I don't have the hardware to test anything)
 
-I just updated v2, please have a check, let me know if you need any
-change, and you have the new suggestton, thanks.
+Some of v1 patches had been incorrectly hand modified. There was a extra ')' in
+patch 3 and 4 that prevented the merge.
 
-Kind regards,
-Bean
+This v2 is a cleanly regenarated serie, compile tested at each step. This
+time, git format-patch did all the work and the patches have NOT been hand
+modified afterwards.
+
+
+Some log messages have also been slightly tweaked.
+R-b tags have been added.
+
+v1: https://lore.kernel.org/all/cover.1693126687.git.christophe.jaillet@wanadoo.fr/
+
+Christophe JAILLET (5):
+  clk: imx: imx8: Fix an error handling path in
+    clk_imx_acm_attach_pm_domains()
+  clk: imx: imx8: Fix an error handling path if
+    devm_clk_hw_register_mux_parent_data_table() fails
+  clk: imx: imx8: Fix an error handling path in imx8_acm_clk_probe()
+  clk: imx: imx8: Add a message in case of
+    devm_clk_hw_register_mux_parent_data_table() error
+  clk: imx: imx8: Simplify clk_imx_acm_detach_pm_domains()
+
+ drivers/clk/imx/clk-imx8-acm.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
+
+-- 
+2.34.1
+
