@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A337A0565
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1D87A056C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbjINNTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
+        id S239060AbjINNTq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 09:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239097AbjINNTK (ORCPT
+        with ESMTP id S239125AbjINNTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:19:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE5C211D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:18:33 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B7A2E660734B;
-        Thu, 14 Sep 2023 14:18:30 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694697511;
-        bh=QLmIOvyMYsAHwE/swB9g81iNqJ/lVTegnNyDspfyz+g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VCs+qGRYLlMKOSjV+9fS140xdhCFeaqPjV3BKdWXlFqvXe7dC6joaklTBoTlSvIM6
-         KCx+ce8lmOWb25unXHIJ6l0a8n5+/Ut426yH6aaY0x0w0SfuJW0BqXoCDV5v4Yuruw
-         1h/HV5XOzXXwVE6n/nH5cGfYAZlt6/UH1ycjfQijScPSjLrl5Ug0+q759+XZMA7jty
-         e+VJng58d/asb4lTza4+FCYDQxMinCXxvDiCPw428DFK9wA4gejvjyMy3uWBopzBT2
-         cov8zHvsAdN9vciHLkpUu+DEfKCQQ4hdb2EnY76yhiuzeIRbZxJoZWuOMwPSQaINmy
-         nqz9SaeF1FUqw==
-Message-ID: <982d201a-bcf2-f856-00e7-8807ca5a006a@collabora.com>
-Date:   Thu, 14 Sep 2023 15:18:28 +0200
+        Thu, 14 Sep 2023 09:19:32 -0400
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E94D2118;
+        Thu, 14 Sep 2023 06:19:26 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-59be6bcf408so10975147b3.2;
+        Thu, 14 Sep 2023 06:19:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694697565; x=1695302365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4uZJSTJpkTY7WDoLQQFFp+wNWgzUgYBYIubQOSDA1p4=;
+        b=d+GDl4HmOQuJucCMgKLXtlTYAaHozUBNEUHJfhAcLc9IA5olrnIdUAg18YKSUzPnTL
+         FtKp7FTb2lXFSUl1NTI0Msa0kzCpWzYdSveGz/I4KDoVqv6+Z7wXz2Oqnd0QSKGGasHc
+         spB1vnPynvMGzp9FePbu67aLbCZ4fT1GRE6hFn5POUMuvEnYoJHybHdKb197k87v5FxO
+         43C4sb7wxnrLbzaeIbxd9YGSfRSuKsaumkKxjzlNovdlFsTCSbFkJJ8fp44n+z9/EYu1
+         BdGcKfNZE1YnsDrHJANHtwwq8u+uaaC/28RVCyKOzn2cYi7cm5q2o3EkU3TI8VEcPmPj
+         bKvQ==
+X-Gm-Message-State: AOJu0YxSOtJ91M/+m8Eh/MFmaG109gAXcDnqrWU8O23ei7i3T4h7+5oP
+        6Sdok6pH53rBLA2YNPB+61RcivhJz1cKpg==
+X-Google-Smtp-Source: AGHT+IGeOj+7TvsOg0sYCahslHPaDV6RS/lHn+S2/o3KDQ6yeDkCQErAC2LuLGLdyhY61hcyAAcypA==
+X-Received: by 2002:a0d:c087:0:b0:599:da80:e1e6 with SMTP id b129-20020a0dc087000000b00599da80e1e6mr5484264ywd.34.1694697565168;
+        Thu, 14 Sep 2023 06:19:25 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id f4-20020a0ddc04000000b005869ca8da8esm307222ywe.146.2023.09.14.06.19.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 06:19:24 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d7ecdb99b7aso974501276.3;
+        Thu, 14 Sep 2023 06:19:24 -0700 (PDT)
+X-Received: by 2002:a5b:cca:0:b0:d7f:9215:6869 with SMTP id
+ e10-20020a5b0cca000000b00d7f92156869mr5228632ybr.55.1694697564530; Thu, 14
+ Sep 2023 06:19:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 13/15] drm/mediatek: Add missing plane settings when async
- update
-Content-Language: en-US
-To:     =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-References: <20230823151332.28811-1-shawn.sung@mediatek.com>
- <20230823151332.28811-14-shawn.sung@mediatek.com>
- <d43e0d7b-1e93-f9ae-df3f-cbf8a3381a70@collabora.com>
- <e1f07420c9d7abf26cf9ce111c063224001ba561.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <e1f07420c9d7abf26cf9ce111c063224001ba561.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-14-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20230912045157.177966-14-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Sep 2023 15:19:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWkOOPrwUX4iJCA5SqDGB+0WgU5yx_XzuoexKYu0Y=zkw@mail.gmail.com>
+Message-ID: <CAMuHMdWkOOPrwUX4iJCA5SqDGB+0WgU5yx_XzuoexKYu0Y=zkw@mail.gmail.com>
+Subject: Re: [PATCH 13/37] clk: renesas: rzg2l: use FIELD_GET() for PLL
+ register fields
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/09/23 15:45, Shawn Sung (宋孝謙) ha scritto:
-> Hi Angelo,
-> 
-> On Thu, 2023-09-07 at 14:33 +0200, AngeloGioacchino Del Regno wrote:
->> Il 23/08/23 17:13, Hsiao Chien Sung ha scritto:
->>> Fix an issue that plane coordinate was not saved when
->>> calling async update.
->>>
->>> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
->>
->>   From what I understand, this is a fix for an issue that was present
->> before
->> your newly introduced code.
->>
->> This means that you want to add a Fixes tag, and that you should also
->> send
->> this commit separately from the IGT series. Please do that.
-> 
-> Got it, will add a fix tag in the next version. But since without this
-> patch, IGT will fail at some test cases, could we still send them in
-> the same series so IGT can pass out-of-the-box?
-> 
+On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Use FIELD_GET() for PLL register fields. This is its purpose.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Fixes are applied before new features, so if you send this patch outside
-of the IGT series, this will most likely be applied *before* that series.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v6.7.
 
-When the IGT series will be applied, this patch will already be present,
-so, please send this one separately.
+Gr{oetje,eeting}s,
 
-Regards,
-Angelo
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
