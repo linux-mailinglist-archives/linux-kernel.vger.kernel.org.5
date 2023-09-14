@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECD479FC0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE24A79FC0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235344AbjINGdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S235438AbjINGdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232856AbjINGdG (ORCPT
+        with ESMTP id S232856AbjINGdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:33:06 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6571BB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:33:02 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgfuH-0002S0-Ns; Thu, 14 Sep 2023 08:32:53 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgfuD-006EyS-B7; Thu, 14 Sep 2023 08:32:49 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgfuD-001WMf-1c; Thu, 14 Sep 2023 08:32:49 +0200
-Date:   Thu, 14 Sep 2023 08:32:48 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Myunguk Kim <mwkim@gaonchips.com>
-Cc:     broonie@kernel.org, alsa-devel@alsa-project.org, fido_max@inbox.ru,
-        kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
-        xingyu.wu@starfivetech.com
-Subject: Re: [PATCH] [v2] ASoC: dwc: fix typo in comment
-Message-ID: <20230914063248.rquitqthmddgm5oa@pengutronix.de>
-References: <64683b6c-1e31-4037-a47d-b8a19ea77c72@sirena.org.uk>
- <20230914005633.2423696-1-mwkim@gaonchips.com>
+        Thu, 14 Sep 2023 02:33:49 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A44C1BB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:33:45 -0700 (PDT)
+Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38E6Xhrr082763;
+        Thu, 14 Sep 2023 15:33:43 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
+ Thu, 14 Sep 2023 15:33:43 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38E6XhTd082760
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 14 Sep 2023 15:33:43 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <167ee2ad-6a7e-876c-f5c9-f0a227070a78@I-love.SAKURA.ne.jp>
+Date:   Thu, 14 Sep 2023 15:33:41 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tnq7qun57gracq7w"
-Content-Disposition: inline
-In-Reply-To: <20230914005633.2423696-1-mwkim@gaonchips.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: drm/vkms: deadlock between dev->event_lock and timer
+Content-Language: en-US
+To:     Maira Canal <mairacanal@riseup.net>,
+        Arthur Grillo <arthurgrillo@riseup.net>
+Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        syzkaller@googlegroups.com, LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20230913110709.6684-1-hdanton@sina.com>
+ <99d99007-8385-31df-a659-665bf50193bc@I-love.SAKURA.ne.jp>
+ <CAHk-=wgb9ccWN3Nks5STYUDqQUeHZdCLsK4kA37SdDJuGZfukg@mail.gmail.com>
+ <87pm2lzsqi.ffs@tglx>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <87pm2lzsqi.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/09/14 6:08, Thomas Gleixner wrote:
+> Maybe the VKMS people need to understand locking in the first place. The
+> first thing I saw in this code is:
+> 
+> static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+> {
+>    ...
+>    mutex_unlock(&output->enabled_lock);
+> 
+> What?
+> 
+> Unlocking a mutex in the context of a hrtimer callback is simply
+> violating all mutex locking rules.
+> 
+> How has this code ever survived lock debugging without triggering a big
+> fat warning?
 
---tnq7qun57gracq7w
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit a0e6a017ab56936c ("drm/vkms: Fix race-condition between the hrtimer
+and the atomic commit") in 6.6-rc1 replaced spinlock with mutex. So we haven't
+tested with the lock debugging yet...
 
-On Thu, Sep 14, 2023 at 09:56:34AM +0900, Myunguk Kim wrote:
-> > The patch is obviously corrupted, the { there should be on the prior
-> > line and even fixing that by hand there appear to be some other issues.
->=20
-> The patch file should have been attached as shown below.=20
-> Is there a problem with my git send-email?
->=20
-> ---
->  sound/soc/dwc/dwc-i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-> index 22c004179214..c71c17ef961d 100644
-> --- a/sound/soc/dwc/dwc-i2s.c
-> +++ b/sound/soc/dwc/dwc-i2s.c
-> @@ -138,7 +138,7 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev=
-_id)
->  			irq_valid =3D true;
->  		}
-> =20
-> -		/* Error Handling: TX */
-> +		/* Error Handling: RX */
->  		if (isr[i] & ISR_RXFO)=20
-> { 			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=3D%d)\n", i);
->  			irq_valid =3D true;
+Maíra and Arthur, mutex_unlock() from interrupt context is not permitted.
+Please revert that patch immediately.
+I guess that a semaphore (down()/up()) could be used instead of a mutex.
 
-FTR: I get this mail directly (so no mailing list server involved), and
-the patch is mangled in the same way as broonie pointed out in his mail
-earlier in this thread.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---tnq7qun57gracq7w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUCqRAACgkQj4D7WH0S
-/k6/MAf+I/52SaIDC1qZLMYxlnyDxUjH539VR2QRgRXO7DXBqXvj68ubzhtEuFwM
-SZZxtZucf7jjCjpu6IW64QpuZ8JoTZhlf6u5LBn008ADG0juzr4bNsMbP8R5M+ra
-kqPd2n1kLRPf9G1BSiwnPDpL7Lfj0jjMZBHG88VRYsypYfbzK9zxPfeYi71wK52q
-1IYtflj9ZlHbmSdcpNrKj7jXo4+FeBZzT8e8xcHgI0S2QBKK0WUdBgzzgLcCXKQD
-J2uWgCChBfBrGn8FMMsB1OBtENbca0zcKPswZ0LKLDqwV2/OC8GIU+tpRxluCEw7
-m9vSAczJxZVEAaJPNFOEbNyGGvT4MQ==
-=PYSR
------END PGP SIGNATURE-----
-
---tnq7qun57gracq7w--
