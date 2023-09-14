@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C6F79FD4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF1479FD50
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbjINHfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        id S235282AbjINHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbjINHfa (ORCPT
+        with ESMTP id S234268AbjINHgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:35:30 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BAFF3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:35:26 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68fc081cd46so613682b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694676926; x=1695281726; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xubQqDqE3MPUGgTOZQ+MDnXD04/AvVIaIiqtNTzF60E=;
-        b=jEpLWD8c2mtpTE9V5bsGQSYVv6oEQuq23yXkZvTqM+YFyZ/aVOrSLQp8hiwRhtb6gp
-         sd54+uN+TZ3jK/iZYX55mZL/fF46Ni6j8R+HFUm+rCJeSgt16dGvouVRqndZAEkBbE4d
-         cgn/FfBANec92hdaqmwGEHi9sUiTDSVxnQ2vP8yv+41dFxVA5LSj9Dd4opKBPE5sGQxU
-         gsuupiVTCK1QMfv6+9rgRjVvUrP1FbWgkF0Fq84B//iSjqZSIcF8niXlc29OQDeu3+3T
-         afK5F/h1SzOSLnDbRLb0Sy/Az7+FJYnBkiy1gJBtMXUw08oHLkLL1/ARhKLUuC2VRRGL
-         p6NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694676926; x=1695281726;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xubQqDqE3MPUGgTOZQ+MDnXD04/AvVIaIiqtNTzF60E=;
-        b=ApEgRTiKbpD3ilNSGelr8FIitOs8nMYSYMufg4UWQMbCSHVa+mYaIfRrjZVl3Ktuc6
-         P9yXaqhdSgUYE99HxkY7+Nb2SCJljGHmb9/NjMI0FOA1AlYv3IF4ci7pvefCapNzO/Sw
-         bop/eEIqqwFH9F9Y4+iU74Tz52xGe7ZmWDE1HzZe6zXVEOeXD7pRJqw3HFLquqFfsM+a
-         4qrCPI+xMVWJEObLkem7465QXYEQp7mC6THXllNPIC03Tu4b5OswSl/GKEM+/Mo6hw76
-         3vJWtw1uuPR5jV+l4KxrOYD3TbVj3xgKshSeTuWrUThy3sDwGS++J2hYR/B3xW8C114s
-         HHeg==
-X-Gm-Message-State: AOJu0Ywhne/PG/cEkgYcFrypkQDimi1gz89addv60ylErmUivOilrUqc
-        qU6u4Duc83PvQXJcJpIfvQ==
-X-Google-Smtp-Source: AGHT+IGoxtU3KMYfSUOaFc3lKNFVicrbEL82z6S8UyrdTcbFH0kl7EI5wwDzRpvPrFpAUN+rndftHQ==
-X-Received: by 2002:a05:6a20:840c:b0:153:78c1:c40f with SMTP id c12-20020a056a20840c00b0015378c1c40fmr5434699pzd.15.1694676925639;
-        Thu, 14 Sep 2023 00:35:25 -0700 (PDT)
-Received: from svr-pkl-eng-01.pkl.mentorg.com ([110.93.212.98])
-        by smtp.gmail.com with ESMTPSA id jg13-20020a17090326cd00b001c0aa301703sm859840plb.63.2023.09.14.00.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 00:35:24 -0700 (PDT)
-From:   "Arsalan H. Awan" <arsalanhassanawan@gmail.com>
-X-Google-Original-From: "Arsalan H. Awan" <arsalan.awan@siemens.com>
-To:     ssantosh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     arsalan.awan@siemens.com
-Subject: Re: [PATCH] soc: ti: pm33xx: fix resume from non-rtc suspend modes
-Date:   Thu, 14 Sep 2023 12:34:21 +0500
-Message-Id: <20230914073421.3065114-1-arsalan.awan@siemens.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230831151232.4169624-1-arsalan.awan@siemens.com>
-References: <20230831151232.4169624-1-arsalan.awan@siemens.com>
+        Thu, 14 Sep 2023 03:36:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA28CF1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:36:32 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A32566607314;
+        Thu, 14 Sep 2023 08:36:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694676990;
+        bh=pkIMXiRptScDhvFCBdvwd0NpQ5Qev1tICpMTya+WWpI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FKxmq59ZuoRhHYZFdfAwrVcr/Ve94wVOtJHlCv1DinSkF0KRkLNHitApEByep9TNJ
+         G+6FcVPGauUJetZvVukgeaQxDmoWWtKubg12VjSMf0otDAjn3yFz9wQmmowTb9qDFI
+         p77t7fXAijBt7S7VQHB2tibzKcy7Y0Yt2oId1JpHU6z3DHSu6DcqhvTCRRqqJIP2Rc
+         pKqzaqWVFCYiyv5yV1ob3F7vSNoKXHA0wwqgZx97f/nmI8KRZiZTlkmCXlDpdzktoQ
+         09biY3pbjNTMfECKYBnhpXl1Cgz2p623TI7jqq4RVnhsMoIyCydGbRI97fPdKxiI88
+         gCCSm8dT3SpRA==
+Date:   Thu, 14 Sep 2023 09:36:26 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+Message-ID: <20230914093626.19692c24@collabora.com>
+In-Reply-To: <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+        <20230905100306.3564e729@collabora.com>
+        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+        <20230913094832.3317c2df@collabora.com>
+        <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 14 Sep 2023 07:02:52 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-Any feedback on this will be greatly appreciated.
+> On 9/13/23 10:48, Boris Brezillon wrote:
+> > On Wed, 13 Sep 2023 03:56:14 +0300
+> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >   
+> >> On 9/5/23 11:03, Boris Brezillon wrote:  
+> >>>>                * But
+> >>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+> >>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+> >>>> +		 * and fs_reclaim.
+> >>>> +		 *
+> >>>> +		 * This deadlock is not actually possible, because no one should
+> >>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+> >>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+> >>>> +		 * refcount drops to zero, don't touch the reservation lock.
+> >>>> +		 */
+> >>>> +		if (shmem->got_pages_sgt &&
+> >>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+> >>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+> >>>> +			shmem->got_pages_sgt = false;
+> >>>>  		}    
+> >>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+> >>> better to leak than having someone access memory it no longer owns), but
+> >>> I think it's worth mentioning in the above comment.    
+> >>
+> >> It's unlikely that it will be only a leak without a following up
+> >> use-after-free. Neither is acceptable.  
+> > 
+> > Not necessarily, if you have a page leak, it could be that the GPU has
+> > access to those pages, but doesn't need the GEM object anymore
+> > (pages are mapped by the iommu, which doesn't need shmem->sgt or
+> > shmem->pages after the mapping is created). Without a WARN_ON(), this
+> > can go unnoticed and lead to memory corruptions/information leaks.
+> >   
+> >>
+> >> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+> >> on a refcnt bug, but that's not worthwhile doing because drivers
+> >> shouldn't have silly bugs.  
+> > 
+> > We definitely don't want to fix that, but we want to complain loudly
+> > (WARN_ON()), and make sure the risk is limited (preventing memory from
+> > being re-assigned to someone else by not freeing it).  
+> 
+> That's what the code did and continues to do here. Not exactly sure what
+> you're trying to say. I'm going to relocate the comment in v17 to
+> put_pages(), we can continue discussing it there if I'm missing yours point.
+> 
 
-Regards,
-Arsalan H. Awan
-Technical Lead | Embedded Linux
-Siemens
+I'm just saying it would be worth mentioning that we're intentionally
+leaking memory if shmem->pages_use_count > 1. Something like:
+
+	/**
+	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
+	 * zero otherwise. If some users still hold a pages reference
+	 * that's a bug, and we intentionally leak the pages so they
+	 * can't be re-allocated to someone else while the GPU/CPU
+	 * still have access to it.
+	 */
+	drm_WARN_ON(drm,
+		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
+	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
+		drm_gem_shmem_free_pages(shmem);
