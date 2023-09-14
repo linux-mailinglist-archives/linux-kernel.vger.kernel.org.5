@@ -2,158 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413B87A06DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C297A06DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239594AbjINOFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
+        id S239661AbjINOGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239606AbjINOFs (ORCPT
+        with ESMTP id S239455AbjINOGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:05:48 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8576A1FD0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:05:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-403004a96a4so10876675e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1694700343; x=1695305143; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4vYOPKXU60d+VwTOR7zcpHoS7EW3RwNwXYL0thebH04=;
-        b=BP6Wcb2AOM+ZA1fjpijwFsP3sdHAJoKEYJJcOiEAuw9Bv5822B60aaTu/r1wMLw38r
-         2QIMywqGQDP5+byc5UXoS/bedwfxn27igOXZukvL3E96JQI+CJ4/JdA+eludBI2x8sDH
-         LkYwexu+hF0RruyxCEybcA2ChsTCmNRU56SmQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694700343; x=1695305143;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4vYOPKXU60d+VwTOR7zcpHoS7EW3RwNwXYL0thebH04=;
-        b=Joq9OKoSCgN3zI0dNmjMQHWtVOsJLeCC4Yx6yEiEiVHTsvZ4kIyCntFxKVmDKEkz06
-         IYGuWwc/I2ycNMQ9veS8P3v8iWV6g5L2/EGRgQsJFyXhzYTREYlPk4S/WfDed6AW2Els
-         hCPflO0RBV5ybG//4GdekjhgShlhQh+24kH8DuseYzFSYtJlsUHyp59QMYHrgQJF9CgL
-         JDlLkFaGV01tHFLE5Eaca2HRYEeTj2HCqKPXcFRTTNnrEigOf8ZwQphlwD8D6MUF/5ik
-         stTw/o/v+r6oRaIu8Vy1CuKhsfOkH05HVnEPvtIeSCguljUsk+8lfmHN6vK39Bq5P8d7
-         f5pQ==
-X-Gm-Message-State: AOJu0YxWGHmR+9JgqW9cC9dFFmu7v2Gni0pguIVEZ7OU4nC8zUuucgf8
-        JQz+uoOX0cv3Dn6CSWQKqF4v/A==
-X-Google-Smtp-Source: AGHT+IEyocHSn+uMmNECVz8ii8zQMuIDZmm28KTVIUinAogCrqYkG9ProhxotsEPQjJrSGm8ruhh3w==
-X-Received: by 2002:a7b:c44b:0:b0:3f7:f2d0:b904 with SMTP id l11-20020a7bc44b000000b003f7f2d0b904mr4542256wmi.8.1694700342824;
-        Thu, 14 Sep 2023 07:05:42 -0700 (PDT)
-Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id z16-20020adfe550000000b0031980294e9fsm1839303wrm.116.2023.09.14.07.05.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 07:05:42 -0700 (PDT)
-Message-ID: <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com>
-Date:   Thu, 14 Sep 2023 15:05:41 +0100
+        Thu, 14 Sep 2023 10:06:34 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2043.outbound.protection.outlook.com [40.107.100.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F36DF;
+        Thu, 14 Sep 2023 07:06:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e9WyXbe9qQnM+h4JWTamiH+xlAUQ0B/eHV5F+MgAG5jZvd51I2Y+I4CZkw3BxVGrUVTMGvWuQSv1bTHTyDxKP/iXdHsA9lfq+/qikLE0QSYvKUJs/Rq4t/xtYJ7pQTXYxPYzlU/102VVuUxmuIaFfQ+C7BSqDPSsKr6NYf6qlNGbIrp/eG4INIL6REEcBSeHL/nTYsxuqY1F+1kCf4VEwIpjEcgGGGzKv1xLCzvSXYRhulps3aVJTjavNTHl/KL9W+I+04qae0urCy+Km1AYvHmeE6kTd+hC4Gp+owAS6kCdR6cMzAV0mZuXkA9X79uCEsqCK30A5XuBPVAcyHumAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nZgE92FxSI6CdmJ3uDQcJ1f/CA0xCp7hvNvwN175yQY=;
+ b=ecQ5BCHN7TuZP+vC3fqWJSVC4BQ1FsayI3nXoxojsioeQkJJUFBPk8bMpof0NdhOT2i6Tp4WyOlhHI5sOL6IxrKn0gIlbX29V2Qw3/LZJ+6OqWU/JvcDeXcPxzXJvI4lp4LcxghUQ1MFzxaibQ6FuLfvTC5oCV9RTshSaLpmTe4nQgmfSV6W49RORBtHG/2KPNLKNM8fj5sWqKS+Srvn1OHKfgOMnQj939x7k+IYCeW0V0ks9xefyQmCKA7jWsvsfMKpPptmb3M/VYb3Y+JvxPPKcXJlHlQKiMF6Eh07cBPlpH+1DxgQfsxlpU+UsLyfrd+aFAMTO/qBfe3C10DqnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nZgE92FxSI6CdmJ3uDQcJ1f/CA0xCp7hvNvwN175yQY=;
+ b=ffOr6IV5Oyb7rwcBHumgeFqVJD5wt/m0LL5Gkw0pCT/7AueZjvAOaFEQrzbjd8ppwnSWJJhNCQKnOPOlD/fz21NvaP4YBDETdV+YMnLpOuyvKuMRKMMunqqQrVy1Fhg944+bx4ZwU0S5YTZMSKxHWBCIybOkIu/xckHMqrtDs18=
+Received: from BYAPR07CA0019.namprd07.prod.outlook.com (2603:10b6:a02:bc::32)
+ by SA1PR12MB7103.namprd12.prod.outlook.com (2603:10b6:806:2b0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.38; Thu, 14 Sep
+ 2023 14:06:26 +0000
+Received: from CO1PEPF000044F3.namprd05.prod.outlook.com
+ (2603:10b6:a02:bc:cafe::b5) by BYAPR07CA0019.outlook.office365.com
+ (2603:10b6:a02:bc::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20 via Frontend
+ Transport; Thu, 14 Sep 2023 14:06:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044F3.mail.protection.outlook.com (10.167.241.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.19 via Frontend Transport; Thu, 14 Sep 2023 14:06:25 +0000
+Received: from sindhu.amdval.net (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Sep
+ 2023 09:06:18 -0500
+From:   Sandipan Das <sandipan.das@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+CC:     <x86@kernel.org>, <peterz@infradead.org>, <leitao@debian.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <tglx@linutronix.de>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <leit@fb.com>,
+        <dcostantino@meta.com>, <jhladky@redhat.com>, <eranian@google.com>,
+        <ananth.narayan@amd.com>, <ravi.bangoria@amd.com>,
+        <santosh.shukla@amd.com>, <sandipan.das@amd.com>
+Subject: rom 3540f985652f41041e54ee82aa53e7dbd55739ae Mon Sep 17 00:00:00 2001
+Date:   Thu, 14 Sep 2023 19:36:03 +0530
+Message-ID: <20230914140604.267672-1-sandipan.das@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   andrew.cooper3@citrix.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-GB
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
-In-Reply-To: <20230914044805.301390-4-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F3:EE_|SA1PR12MB7103:EE_
+X-MS-Office365-Filtering-Correlation-Id: 370f1951-f801-4dd1-4ca7-08dbb52bc8dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cczQuWTnQOw8oFpUt7wd+Pha5B1ouqVVgGZiyUifhWewv5QA7kfZt/SY0xNJRLcKpQhgoskLcVL+qwVMtdTu9r9ZsBF8aivO8ilcgZbevxv9etycOQGygPdU+8EvsC6BLdxLOebsdi66MD6Jd5ZHrDn7aUZFmuGZlJYf/AeYCiuRQSTR+MrhAHTBMvhwOQiqPoJJUAvIvnBPYATUBthpBPhIcmqt+iMLnXzIDeOuhfO6dLNhRbSU8q2EIMDGxSaO2qQd9ZjfcGet/PweZGrvb/x2u14T2Vx+us65f41Fc8julR+k81tTHNWqE3V9NjbMxeqPidferC9GNaaV4DFDgVAH+r3Zk6uUPR9VvzlzMkPZJKoDNyPFbU+qqWCGAu1ke6LQiV1Or1GlOtkvCZdb6rEMKOqoBzpN5vwV8Su72KTYj6C8n6Lc8okRdaFJce6hHpzP6h2chmWEmHRo0m5c6kMh/z/S/LulBsPbehv8sXtgxjqXc1F5RYbRQ/FKvaArUzMH8HWi2mIyAyRWWOaEKF9fJNv/p+Hh83e6kYpq2i5Thp9eqZopF0O3kmO2vd5LvnGcwEBL/+i+7x0kPDSQ79VCdSSIQ9iFgkxKfSl7UoSXmNnzj2LCevfuYazOBQUJeMRMQXkQXRRlJ1AvJhkwFkeKHi8lrbV7DVfb0CH/w7kJHmpxqF7IPhiCUQITlDbH8x9t2dsA+PW8DU6IWU7I6zwRtJxLy3l3z95lb3P67DePXVhGp4JmrT+GfEvbr68BFCqbfHhlXvaqTiwj2/IvO49OaIUWuLrYNTkuULMX4Kc=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(186009)(1800799009)(82310400011)(451199024)(40470700004)(36840700001)(46966006)(83380400001)(336012)(82740400003)(6666004)(356005)(81166007)(16526019)(2616005)(36756003)(36860700001)(41300700001)(426003)(26005)(1076003)(478600001)(54906003)(47076005)(70206006)(110136005)(70586007)(316002)(966005)(7416002)(5660300002)(4326008)(44832011)(8676002)(8936002)(86362001)(40480700001)(40460700003)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 14:06:25.9752
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 370f1951-f801-4dd1-4ca7-08dbb52bc8dc
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 5:47 am, Xin Li wrote:
-> Add an always inline API __wrmsrns() to embed the WRMSRNS instruction
-> into the code.
->
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> ---
->  arch/x86/include/asm/msr.h | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-> index 65ec1965cd28..c284ff9ebe67 100644
-> --- a/arch/x86/include/asm/msr.h
-> +++ b/arch/x86/include/asm/msr.h
-> @@ -97,6 +97,19 @@ static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
->  		     : : "c" (msr), "a"(low), "d" (high) : "memory");
->  }
->  
-> +/*
-> + * WRMSRNS behaves exactly like WRMSR with the only difference being
-> + * that it is not a serializing instruction by default.
-> + */
-> +static __always_inline void __wrmsrns(u32 msr, u32 low, u32 high)
-> +{
-> +	/* Instruction opcode for WRMSRNS; supported in binutils >= 2.40. */
-> +	asm volatile("1: .byte 0x0f,0x01,0xc6\n"
-> +		     "2:\n"
-> +		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_WRMSR)
-> +		     : : "c" (msr), "a"(low), "d" (high));
-> +}
-> +
->  #define native_rdmsr(msr, val1, val2)			\
->  do {							\
->  	u64 __val = __rdmsr((msr));			\
-> @@ -297,6 +310,11 @@ do {							\
->  
->  #endif	/* !CONFIG_PARAVIRT_XXL */
->  
-> +static __always_inline void wrmsrns(u32 msr, u64 val)
-> +{
-> +	__wrmsrns(msr, val, val >> 32);
-> +}
+Zen 4 systems running buggy microcode can hit a WARN_ON() in the PMI
+handler, as shown below, several times while perf runs. A simple
+`perf top` run is enough to render the system unusable.
 
-This API works in terms of this series where every WRMSRNS is hidden
-behind a FRED check, but it's an awkward interface to use anywhere else
-in the kernel.
+WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu_v2_handle_irq+0x1be/0x2b0
 
-I fully understand that you expect all FRED capable systems to have
-WRMSRNS, but it is not a hard requirement and you will end up with
-simpler (and therefore better) logic by deleting the dependency.
+This happens because the Performance Counter Global Status Register
+(PerfCntGlobalStatus) has one or more bits set which are considered
+reserved according to the "AMD64 Architecture Programmer’s Manual,
+Volume 2: System Programming, 24593". The document can be found at
+https://www.amd.com/system/files/TechDocs/24593.pdf
 
-As a "normal" user of the WRMSR APIs, the programmer only cares about:
+To make this less intrusive, warn just once if any reserved bit is set
+and prompt the user to update the microcode. Also sanitize the value to
+what the code is handling, so that the overflow events continue to be
+handled for the number of counters that are known to be sane.
 
-1) wrmsr() -> needs to be serialising
-2) wrmsr_ns() -> safe to be non-serialising
+Going forward, the following microcode patch levels are recommended
+for Zen 4 processors in order to avoid such issues with reserved bits.
 
+  Family=0x19 Model=0x11 Stepping=0x01: Patch=0x0a10113e
+  Family=0x19 Model=0x11 Stepping=0x02: Patch=0x0a10123e
+  Family=0x19 Model=0xa0 Stepping=0x01: Patch=0x0aa00116
+  Family=0x19 Model=0xa0 Stepping=0x02: Patch=0x0aa00212
 
-In Xen, I added something of the form:
+Commit f2eb058afc57 ("linux-firmware: Update AMD cpu microcode") from
+the linux-firmware tree has binaries that meet the minimum required
+patch levels.
 
-/* Non-serialising WRMSR, when available.  Falls back to a serialising
-WRMSR. */
-static inline void wrmsr_ns(uint32_t msr, uint32_t lo, uint32_t hi)
-{
-    /*
-     * WRMSR is 2 bytes.  WRMSRNS is 3 bytes.  Pad WRMSR with a redundant CS
-     * prefix to avoid a trailing NOP.
-     */
-    alternative_input(".byte 0x2e; wrmsr",
-                      ".byte 0x0f,0x01,0xc6", X86_FEATURE_WRMSRNS,
-                      "c" (msr), "a" (lo), "d" (hi));
-}
+Fixes: 7685665c390d ("perf/x86/amd/core: Add PerfMonV2 overflow handling")
+Reported-by: Jirka Hladky <jhladky@redhat.com>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+[sandipan: add message to prompt users to update microcode]
+[sandipan: rework commit message and call out required microcode levels]
+Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+---
 
-and despite what Juergen said, I'm going to recommend that you do wire
-this through the paravirt infrastructure, for the benefit of regular
-users having a nice API, not because XenPV is expecting to do something
-wildly different here.
+v1: https://lore.kernel.org/all/20230616115316.3652155-1-leitao@debian.org/
 
+v2:
+ - Use pr_warn_once() instead of WARN_ON_ONCE() to prompt users to
+   update microcode
+ - Rework commit message and add details of minimum required microcode
+   patch levels.
 
-I'd actually go as far as suggesting that you break patches 1-3 into
-different series and e.g. update the regular context switch path to use
-the WRMSRNS-falling-back-to-WRMSR helpers, just to get started.
+---
+ arch/x86/events/amd/core.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-~Andrew
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index abadd5f23425..b04956cbd085 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -884,7 +884,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+ 	struct hw_perf_event *hwc;
+ 	struct perf_event *event;
+ 	int handled = 0, idx;
+-	u64 status, mask;
++	u64 reserved, status, mask;
+ 	bool pmu_enabled;
+ 
+ 	/*
+@@ -909,6 +909,14 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+ 		status &= ~GLOBAL_STATUS_LBRS_FROZEN;
+ 	}
+ 
++	reserved = status & ~amd_pmu_global_cntr_mask;
++	if (reserved)
++		pr_warn_once("Reserved PerfCntrGlobalStatus bits are set (0x%llx), please consider updating microcode\n",
++			     reserved);
++
++	/* Clear any reserved bits set by buggy microcode */
++	status &= amd_pmu_global_cntr_mask;
++
+ 	for (idx = 0; idx < x86_pmu.num_counters; idx++) {
+ 		if (!test_bit(idx, cpuc->active_mask))
+ 			continue;
+-- 
+2.34.1
+
