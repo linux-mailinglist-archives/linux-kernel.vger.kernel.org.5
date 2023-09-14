@@ -2,178 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C53C7A0D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458397A0D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241189AbjINSwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        id S236376AbjINSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239845AbjINSvq (ORCPT
+        with ESMTP id S241925AbjINSvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:51:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D58604ECB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:45:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694717149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yvl0oZS06u+Mc5pUy8196yl56j2FK2OsnzUd+32T3ds=;
-        b=h3GSZFjV/bL4Q4zfYfuI02e0Zs4HeXTkmOsD/kPjqzcu4f98VhA5ZcUkMJuEbxcRkFhbew
-        orJ6/RFTULF62dGSPz/2s2Q7Z5r1AA4MWOda3oAhegY6BhwSxdxDIaHRZ/doQ+w909cevZ
-        lrCDLcrHMI+XrTW3jNpTmJzQSuxpFOY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-10-9BPaw4yKOuGJpDk54c7j6w-1; Thu, 14 Sep 2023 14:45:47 -0400
-X-MC-Unique: 9BPaw4yKOuGJpDk54c7j6w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-402cba95486so10301895e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:45:47 -0700 (PDT)
+        Thu, 14 Sep 2023 14:51:15 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6288B55BC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:46:25 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso10709465e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:46:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694717184; x=1695321984; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kIZovquInIL74DbQjfgBZgPlunuh9zGf95Z8S/ooNDg=;
+        b=QYHZqaNpezYBGk6OGK3K6m4VbH7SfnULqezfHtDvf7PB91oxxo1l2DDfY+/WWYqK8n
+         6mfLwZ3sOx29Y5ezx//R3tocP9wvcDGk6+fT11e2PcHepox1cw3ZJGaguRpIUs+8GUfO
+         7PeugPV3kwrp3TbmObDXlQN/98f3KQaKPFNKRAzsXqJNEGCmUJ1av0wr4aFLMDeXhjCf
+         G6HloF/jhuocXimEvYWhPg5TfuNMLK7dZMyF6HMqno9nDLwY29BA7vGHC4UKP7qaZIN6
+         3GQKhRvY1OHG+tZRrlsGdE0jeWEgrGDqG6TWGQqzu35znyYBWb+cRXf5H7IwBGJSa462
+         WBlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694717146; x=1695321946;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yvl0oZS06u+Mc5pUy8196yl56j2FK2OsnzUd+32T3ds=;
-        b=K9P6hWTTum8ByMcbhPyI+X/yCNQhZom1ACqndf3D19YvnQ/Sf/GeTRFRtS4JHkwfnu
-         jjl3FJQQm0tpUGcnfc5nRj2YwtMMBB89qwaxVxAz5/Ycp3IbKnvG82DZdywUM+jBLFuF
-         /GSIZw4pCF7KewcgRSPZdjeynsdq7BvoxOPR9lFoxK+JpN99jD1GGgbQEeKzgCCKlHH+
-         FV9QBHNOhKhvo1BNd1hT/uXb3KZE2zVigHVaYX+YN7IbbK5oVamXVd82AueW1h/03370
-         rF+juQYXXJOTOJKg7Pb+wosVBnqX/kNmvOkI/np3MC6TKjzUkzIACBsnREVwIXM9DVhR
-         HHWQ==
-X-Gm-Message-State: AOJu0Yz9AF2TbXNuyuxQyLAa3TH7hWULPTY2MWxAocTpaAyYeSS5ZWUG
-        refxRp47/byGqis9deinV1/rsx7xpPviRyt/SFshFJ2Op6MO62ZC51IIEey/AuT6fj5iXpCkRmz
-        r70uLIIi4ckugyHzcjKU5qSYn
-X-Received: by 2002:a5d:6603:0:b0:317:5e5e:60e0 with SMTP id n3-20020a5d6603000000b003175e5e60e0mr5665414wru.28.1694717146326;
-        Thu, 14 Sep 2023 11:45:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF5Q3PlMjzGnGFHx6HU3sWTqn5GaqBgVvM4/5Qktf8taBcPNuKuptBpP34W65Xvm7xkb6quGg==
-X-Received: by 2002:a5d:6603:0:b0:317:5e5e:60e0 with SMTP id n3-20020a5d6603000000b003175e5e60e0mr5665391wru.28.1694717145824;
-        Thu, 14 Sep 2023 11:45:45 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71c:600:4630:4a91:d07:7095? (p200300cbc71c060046304a910d077095.dip0.t-ipconnect.de. [2003:cb:c71c:600:4630:4a91:d07:7095])
-        by smtp.gmail.com with ESMTPSA id j15-20020a5d604f000000b0031779a6b451sm2408478wrt.83.2023.09.14.11.45.44
+        d=1e100.net; s=20230601; t=1694717184; x=1695321984;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kIZovquInIL74DbQjfgBZgPlunuh9zGf95Z8S/ooNDg=;
+        b=WOTpCY2xSLgN/GOmKHIkwmbQpw5XoQqJXmYO+AiXAibGXmR5UB8rCbUvEYMs8D7HsZ
+         MuVKp/LiabQwYYA660cbp1CCflMV+oCx9N3MNmKJh/ma7Bq3rc4ycK4m3rTtUH7N6GE8
+         jb3tywulvGLcPX1IpMQSFRiU1QE7NS1BC2VXxmoMcNiSMqEFL5qJzUFDHwauG1xIvqCi
+         S8gSDgqT63DVp41uqZIPb4V9RF1ssug1T79vdQ9S3zQwFVlimPF5vEeN9mqK0EZ2spY5
+         6US7uVktwYLpOsaaEusNC4SDN0tZS14rg+rwl7phToPdH8Ihwa+k4yNVB9lSwHe5s1a5
+         dm9A==
+X-Gm-Message-State: AOJu0YzS0fUMmAakWgDV7zAtrK0RlxORY5iIXHg8mDzvEVwvlYjU0xCb
+        K017UM31YBTJLQu7gF8aFpdvLg==
+X-Google-Smtp-Source: AGHT+IHepuPWdsuiYR2oi1IwB/1DPQW73hMmiXEXagum6xwLJRh7Tnno1d2aZCEgN4NgYG4HRn/k/w==
+X-Received: by 2002:adf:f981:0:b0:319:8430:f80f with SMTP id f1-20020adff981000000b003198430f80fmr5343316wrr.49.1694717183627;
+        Thu, 14 Sep 2023 11:46:23 -0700 (PDT)
+Received: from [192.168.37.232] (178235177003.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.3])
+        by smtp.gmail.com with ESMTPSA id g8-20020a50ee08000000b00521d2f7459fsm1232748eds.49.2023.09.14.11.46.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 11:45:45 -0700 (PDT)
-Message-ID: <f6e350f4-1bf3-ca10-93f8-c11db44ce62b@redhat.com>
-Date:   Thu, 14 Sep 2023 20:45:44 +0200
+        Thu, 14 Sep 2023 11:46:23 -0700 (PDT)
+Message-ID: <36287e2f-ddff-4323-bbc2-e7a07a9283e7@linaro.org>
+Date:   Thu, 14 Sep 2023 20:46:21 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v2 3/3] power: supply: Introduce MM8013 fuel gauge
+ driver
 Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-References: <20230914152620.2743033-1-surenb@google.com>
- <20230914152620.2743033-3-surenb@google.com>
- <ZQNMze6SXdIm13CW@casper.infradead.org>
- <e77b75f9-ab9e-f20b-6484-22f73524c159@redhat.com>
-Organization: Red Hat
-In-Reply-To: <e77b75f9-ab9e-f20b-6484-22f73524c159@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20230621-topic-mm8013-v2-0-9f1b41f4bc06@linaro.org>
+ <20230621-topic-mm8013-v2-3-9f1b41f4bc06@linaro.org>
+ <20230913154552.okinfq6gdxf2d7ab@mercury.elektranox.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230913154552.okinfq6gdxf2d7ab@mercury.elektranox.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.23 20:43, David Hildenbrand wrote:
-> On 14.09.23 20:11, Matthew Wilcox wrote:
->> On Thu, Sep 14, 2023 at 08:26:12AM -0700, Suren Baghdasaryan wrote:
->>> +++ b/include/linux/userfaultfd_k.h
->>> @@ -93,6 +93,23 @@ extern int mwriteprotect_range(struct mm_struct *dst_mm,
->>>    extern long uffd_wp_range(struct vm_area_struct *vma,
->>>    			  unsigned long start, unsigned long len, bool enable_wp);
->>>    
->>> +/* remap_pages */
->>> +extern void double_pt_lock(spinlock_t *ptl1, spinlock_t *ptl2);
->>> +extern void double_pt_unlock(spinlock_t *ptl1, spinlock_t *ptl2);
->>> +extern ssize_t remap_pages(struct mm_struct *dst_mm,
->>> +			   struct mm_struct *src_mm,
->>> +			   unsigned long dst_start,
->>> +			   unsigned long src_start,
->>> +			   unsigned long len, __u64 flags);
->>> +extern int remap_pages_huge_pmd(struct mm_struct *dst_mm,
->>> +				struct mm_struct *src_mm,
->>> +				pmd_t *dst_pmd, pmd_t *src_pmd,
->>> +				pmd_t dst_pmdval,
->>> +				struct vm_area_struct *dst_vma,
->>> +				struct vm_area_struct *src_vma,
->>> +				unsigned long dst_addr,
->>> +				unsigned long src_addr);
->>
->> Drop the 'extern' markers from function declarations.
->>
->>> +int remap_pages_huge_pmd(struct mm_struct *dst_mm,
->>> +			 struct mm_struct *src_mm,
->>> +			 pmd_t *dst_pmd, pmd_t *src_pmd,
->>> +			 pmd_t dst_pmdval,
->>> +			 struct vm_area_struct *dst_vma,
->>> +			 struct vm_area_struct *src_vma,
->>> +			 unsigned long dst_addr,
->>> +			 unsigned long src_addr)
->>> +{
->>> +	pmd_t _dst_pmd, src_pmdval;
->>> +	struct page *src_page;
->>> +	struct anon_vma *src_anon_vma, *dst_anon_vma;
->>> +	spinlock_t *src_ptl, *dst_ptl;
->>> +	pgtable_t pgtable;
->>> +	struct mmu_notifier_range range;
->>> +
->>> +	src_pmdval = *src_pmd;
->>> +	src_ptl = pmd_lockptr(src_mm, src_pmd);
->>> +
->>> +	BUG_ON(!pmd_trans_huge(src_pmdval));
->>> +	BUG_ON(!pmd_none(dst_pmdval));
->>> +	BUG_ON(!spin_is_locked(src_ptl));
->>> +	mmap_assert_locked(src_mm);
->>> +	mmap_assert_locked(dst_mm);
->>> +	BUG_ON(src_addr & ~HPAGE_PMD_MASK);
->>> +	BUG_ON(dst_addr & ~HPAGE_PMD_MASK);
->>> +
->>> +	src_page = pmd_page(src_pmdval);
->>> +	BUG_ON(!PageHead(src_page));
->>> +	BUG_ON(!PageAnon(src_page));
->>
->> Better to add a src_folio = page_folio(src_page);
->> and then folio_test_anon() here.
->>
->>> +	if (unlikely(page_mapcount(src_page) != 1)) {
->>
->> Brr, this is going to miss PTE mappings of this folio.  I think you
->> actually want folio_mapcount() instead, although it'd be more efficient
->> to look at folio->_entire_mapcount == 1 and _nr_pages_mapped == 0.
->> Not wure what a good name for that predicate would be.
+On 13.09.2023 17:45, Sebastian Reichel wrote:
+> Hi,
 > 
-> We have
+> On Wed, Aug 23, 2023 at 04:36:15PM +0200, Konrad Dybcio wrote:
+>> Add a driver for the Mitsumi MM8013 fuel gauge. The driver is a vastly
+>> cleaned up and improved version of the one that shipped in some obscure
+>> Lenovo downstream kernel [1], with some register definitions borrowed from
+>> ChromeOS EC platform code [2].
+>>
+>> [1] https://github.com/adazem009/kernel_lenovo_bengal/commit/b6b346427a871715709bd22aae449b9383f3b66b
+>> [2] https://chromium.googlesource.com/chromiumos/platform/ec/+/master/driver/battery/mm8013.h
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+[...]
+
 > 
->    * It only works on non shared anonymous pages because those can
->    * be relocated without generating non linear anon_vmas in the rmap
->    * code.
->    *
->    * It provides a zero copy mechanism to handle userspace page faults.
->    * The source vma pages should have mapcount == 1, which can be
->    * enforced by using madvise(MADV_DONTFORK) on src vma.
+> Please use regmap.
+Ack
+
+[...]
+
+>> +	switch (psp) {
+>> +	case POWER_SUPPLY_PROP_CAPACITY:
 > 
-> Use PageAnonExclusive(). As long as KSM is not involved and you don't
-> use fork(), that flag should be good enough for that use case here.
->
-... and similarly don't do any of that swapcount stuff and only check if 
-the swap pte is anon exclusive.
+> this is in %, while the next two are in uAh. So the fuel gauge does
+> not provide the current capacity in uAh
+> (POWER_SUPPLY_PROP_CHARGE_NOW)?
+Yes. Doesn't seem like raw values are supported.
 
--- 
-Cheers,
+[...]
 
-David / dhildenb
+> 
+> this is just 'val->intval = (s16) ret;'.
+> 
+>> +		val->intval *= -1000;
+Ack
 
+> 
+> and this seems to be the only property, that properly scales its
+> values, assuming the hardware reports data in mA.
+> 
+
+[...]
+
+> 
+> that's in **micro** volts
+Oh, I didn't read enough docs..
+
+> 
+>> +		ret = mm8013_read_reg(client, REG_VOLTAGE);
+> 
+> this effectively does i2c_smbus_read_word_data() and thus the
+> maximum is is 65536. 65536uV = 65mV. I have serious doubts, that
+> this code does what you want. The same is true for a couple of
+> the other properties.
+Ack
+
+[...]
+
+> With the next submission please include a dump of the uevent
+> in sysfs in the cover letter or below the fold, so that its
+> easy to validty check if the reported values look sensible.
+State of what-will-be-sent in v(n+1), with additional fixups:
+
+POWER_SUPPLY_NAME=mm8013
+POWER_SUPPLY_TYPE=Battery
+POWER_SUPPLY_CAPACITY=100
+POWER_SUPPLY_CHARGE_FULL=7124
+POWER_SUPPLY_CHARGE_FULL_DESIGN=7500
+POWER_SUPPLY_CURRENT_NOW=-122000
+POWER_SUPPLY_CYCLE_COUNT=27
+POWER_SUPPLY_HEALTH=Good
+POWER_SUPPLY_PRESENT=1
+POWER_SUPPLY_STATUS=Full
+POWER_SUPPLY_TEMP=324
+POWER_SUPPLY_VOLTAGE_NOW=4407000
+
+
+> 
+> Thanks and sorry for the slow processing,
+No worries
+
+Konrad
