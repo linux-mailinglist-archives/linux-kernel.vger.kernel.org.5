@@ -2,189 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97F7A0F18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9EA7A0F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjINUlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        id S229742AbjINUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjINUlD (ORCPT
+        with ESMTP id S229473AbjINUol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:41:03 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2059.outbound.protection.outlook.com [40.107.95.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742F9115;
-        Thu, 14 Sep 2023 13:40:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mQoVhNJkR9rABz9i9N6j2XZdXe9a2wL9gF6vigSRglykB5+Q1cWDdSzJ7JuTkO0My4CMMyMUr//gVVeYMnkUXov/wpf0MWmgxZMlfVlC79dI/tawLgPch3+0pNxDi0gH1Nar1bLyemhz9yPjTy0mYKSr3msWJU1mOPZfCEqwINLRoHXKM9gnyO45YMjayz0G4bjqoVOHGPV8MUCPi7xmRZrxelXx+1vLrJ1u1fvfpgzunblIELR+orsf9nJO0oF7GGqT7x5l+ycZs3eYuPMyvrmWK5kTQM17rx8eiB4aaYDOb6M11C5r6MWXI/ecK2SNNCSWpaLx4Jhl/TEK+iy2ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BlCSwCVttT4GpQ+N7oP90coj5rZVKKb2G3tUooi1puI=;
- b=AIrtbCkJJYVxQofwryZVodi2PAPoYH+8hNkmq7//oyosG0IIMfYFMpfYjm2lpOysDgB0ccmwS97i2ykco1s5f/QXPUwa6ZWJWsrSQ7XrSi16tlJLGH5l0KGiDLqH9b7t0Ijs/JEgVtmunvPQy08rZToaH6fRv/O1/1RWQ0w5zSu6JphpmjpsLgrp61TCabpyNon+58myeugyJU/D07NDI+53zNmJB1m0jgDpexaGTDgURZrDl74USjjWsIwD2QXSbwUhtfWvXAZMlxGngOCN/fK/sf9CasJzYEoVw1ffiqefFpn5K9G/niIbx6CY6aE2wItdiCTvzZr8PecmpO9hYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BlCSwCVttT4GpQ+N7oP90coj5rZVKKb2G3tUooi1puI=;
- b=MOJakMXELxzSy8LqXL5IU4S/SQXe8g2LXetB4U2yFh7DY6sQAyAhMc1jhIc6OA3/IATb5qoeoa2SZn+ZXdzsSs0Jh97lomQ3+VI8x/E1/jBuv5YzG204ApwS7SuqiyeIrO2cetJxcRFcde/lg/JehNoUrbZCZKSR3TKcM9YthlM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by DS0PR12MB7996.namprd12.prod.outlook.com (2603:10b6:8:14f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Thu, 14 Sep
- 2023 20:40:57 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 20:40:57 +0000
-Message-ID: <3630bc42-c04c-4c22-99f2-5dc6bd5d8e2f@amd.com>
-Date:   Thu, 14 Sep 2023 16:40:52 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: fix the ability to use lower resolution
- modes on eDP
-Content-Language: en-US
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     stable@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Wayne Lin <wayne.lin@amd.com>, Alan Liu <haoping.liu@amd.com>,
-        Joshua Ashton <joshua@froggi.es>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230914175354.102709-1-hamza.mahfooz@amd.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230914175354.102709-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT4PR01CA0127.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:d5::29) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        Thu, 14 Sep 2023 16:44:41 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CB42120;
+        Thu, 14 Sep 2023 13:44:37 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bfb17435e4so22512061fa.0;
+        Thu, 14 Sep 2023 13:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694724275; x=1695329075; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hGJpt2wJkIR4MQJAzc96tFmQzqc/CQBVOhIv8wDwAYE=;
+        b=ruPE46ibVme2AXEW7PXuvSASUTj6essHetQQJr7sDYMXJV2yFO+MEWvu9oYhn/jn6/
+         uxbsDhuh3FFHZ7xtIL5QnoXd3KWk35JknbvaF0UrZwsIJ/mloXKYkUDxgPFqZrfDvsDW
+         9uPg+cGIiQ90uo4qAGdyXPBZcbMXtOXBnKL7eSm6ryCTsyTvc8sxl1iPE1flVz6wubQ4
+         BUKLfIMQYVnhzFSbtVyljJsEp5cAxKlPEjD3moY23oMcFtkmi4M7QI9hk5tkpNHRx021
+         jcuI5KYKQ9RBBK64m0Mj53msMmJdO7H2QFApj91NfyAWq0EF3FTpkkGtAsaNQJLf0RtU
+         3Cig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694724275; x=1695329075;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hGJpt2wJkIR4MQJAzc96tFmQzqc/CQBVOhIv8wDwAYE=;
+        b=aw0ah4nwwk9bIiuhr6HlldJMxN+mjgkS3YuhQNZS91ZB8SP8syfFksfmNeIOv4252g
+         LQqg3Y1Xw3qgscRvRYPwgOTAQGwZF72DGy33a6Jns53yswIda/8y2VYs31DOBGqYaNb7
+         jbdPp6QlXaW+d3OBjdztsLn3II0riYZUVLDmcq6OqlUvE0fyXaZcLtw5UhQS4e57q9cZ
+         XMB6i+qcC/Jt6agCdBUDpnGOxkzXD31QxoMpYaUiNoJauQylo/utaqZbig1PKw6BNnHS
+         yMAR3Ay55+Lt31mr505vA9mqpQL3qBHYI/gn3OOILzqd1a1jWB3wtdBXi2NfDP4N4wOs
+         2/iA==
+X-Gm-Message-State: AOJu0YzFBvdDoqWC2OSiCiKBonwEfwC9+ZBNnlZCbe2mBx6BvTSx7yno
+        w/5EFAtUTFSXKGkGeSZgSyEME8zkJmGzznc+
+X-Google-Smtp-Source: AGHT+IETPtOzXU0Nd+S8djM58NlJ+Sc+WunET0zuRYBwPOgezcTukkxAzx0/GQwvAzZVYB8A6arxmw==
+X-Received: by 2002:a05:6512:3e0a:b0:4f8:e4e9:499e with SMTP id i10-20020a0565123e0a00b004f8e4e9499emr6230360lfv.12.1694724274569;
+        Thu, 14 Sep 2023 13:44:34 -0700 (PDT)
+Received: from localhost.localdomain ([2a05:3580:f312:6c00:826c:ae47:61a7:8af8])
+        by smtp.gmail.com with ESMTPSA id a28-20020ac2521c000000b005008cd93961sm396848lfl.192.2023.09.14.13.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 13:44:34 -0700 (PDT)
+From:   Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hilda Wu <hildawu@realtek.com>, Max Chou <max.chou@realtek.com>
+Cc:     Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Subject: [PATCH] Bluetooth: btrtl: reuse define enumeration values
+Date:   Thu, 14 Sep 2023 23:44:04 +0300
+Message-Id: <20230914204404.1253141-1-andrej.skvortzov@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DS0PR12MB7996:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9117f9ae-e3c6-40e5-dd1c-08dbb562e5dd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jPmA9PO1yWbqQsdZ06/Kaj9k3gUAWzywSA81VnZFhXTXdLA5ui2q8Lp5woi0QCP2gvhQHqX0kzSEe+aCniNgSVnfD9uTItxskXneXFJzp3wS0yPSzwS1TNrpsCfMQ98Ro2UQQYTQC30wqjqjKiUtcWK80BNfMIlX/z56zWhFJCNGqVDUjL66iMQ8SzR7JkK+T6IyTAut6OWCeg3yz65LQo83fBp+kWsaZqJuPwrAHpKwfKhrL1reLX3xAkKKhUdARHFFXfgGKbt91uVnNPK7OeORMk666QOaDglL464nyi793clg6ahxrqBmI6jZdgct0JQVPLBoRxV5BhqGuuVIm+6u1h2AQav7Rn9NcY3DuFJGTjXveMuqDWquYfED25PuJXseody3cQpWx+yz4OtxnCdz8clVxh4UMNdTc/djbPqAM+qM8TcqnSt15UUkCSNz5HFNOB1U27jqp9MTjJaDBM2RNtMzhV3GAZHU89GLgDovBCxRf0x/cvU6CUgF/UHGFB3jI+87/IsqQFt6NBBDqh95PG2GNjhnXT1RS1kTGxehgsW91pS0nzLCEy0DF+3SdPcxFcrTog0BV4O/FhkN7PdTdG/DTD3f45d9bFg/NEfuNb4Rqu257X9cQT9Bgn93
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(39860400002)(376002)(186009)(1800799009)(451199024)(36756003)(31686004)(316002)(41300700001)(86362001)(66476007)(66946007)(66556008)(4326008)(5660300002)(31696002)(8676002)(38100700002)(44832011)(8936002)(54906003)(83380400001)(478600001)(26005)(966005)(2616005)(2906002)(6666004)(6512007)(6486002)(53546011)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VzJmN05xTGlFSmkzS29BcHVOSkpRTjVhSnJNcDhCTitPRWFFQjhhU2p6THN3?=
- =?utf-8?B?UWRqTkRSRFI0NkF1UXg2dkNueGhsMHpSUytHa2hPN0xKbUYyUEJDR3NkOXZD?=
- =?utf-8?B?SEFNUitLTmRYc2c5R1E5OUFTbUROcklwK3hHWDZWRTBRT0lucnpTWkdaeHlW?=
- =?utf-8?B?ZktFenNWM2RQVnRSV0QyMGZoMEx6NjUvQXJFb3g0dzRYVVNFelJxZ2dLM2NG?=
- =?utf-8?B?bk1abmR6TGVOcURPU3JuYW5hMHpvUnJleVhiSzMrWEk2YmU2RG9GMTR6bUQ4?=
- =?utf-8?B?QURONGFROUt4ekhpZG94cnFwN01lZWJoMmg3VzZ0ZWtiSmNQR0NTeHg3Zy9n?=
- =?utf-8?B?T1ZFcTJmK3lEZ21waFV1ZnNFRTRjWnZzOUJQWlhBOC95cERjLzJ4NzhlNGpj?=
- =?utf-8?B?MnVUSlk0MHRLeW13QXFEMGQxMytKNFF1WHcvN29WYmxkSlVTMitqRlhGNXha?=
- =?utf-8?B?ckFnUjcxYkN0dEVaQWFSZy9id2pJZ1VuWkxNcElnSTNsTFRwKzZ6RFNXeTF2?=
- =?utf-8?B?aURlK1h4UXkwWjJxUjdzdm5YN3ZLLzF0Q3hPYTY1eFZPOWNoQ003WDlzajJ3?=
- =?utf-8?B?WHoxOW9xOWR0cTg3MHRMZXUrWlkxRGtFdWh0ZlVUb3NPVUJ5dmNTRk9TMWE4?=
- =?utf-8?B?SjQ3ZjdHdVhmT3FScWRXa3B4VG4xRzloK2ZXRHhoeE1BMS9WYXllNEZOMExB?=
- =?utf-8?B?elNjOGx5UXp0a1VKaTFZWW9LTlhLcEVGcitFYngzWCt3eUhNekt0NDJHVm96?=
- =?utf-8?B?RWV4ck85TjlkVlcvbXFmcTZUWnMvZUt5dTJzS0FlVHZsNTNnUXlLNHlpcTF3?=
- =?utf-8?B?bWpNbmNsOHhlZ3dtanAzS25Qb1poRzdvV0ZwR0FORU5LTlFyZXB6TnV1ajV0?=
- =?utf-8?B?aGg5V2xxUVhqaVFNT1piRGJ1K1BWTUFQRkF0ZlEzS1FRL3B2MmM1MkFsRlJq?=
- =?utf-8?B?cU9tQnBOSDFEamdQdURENjUyb015YmpQczA4dHAxT2dFVWs2T0R1L01VclJD?=
- =?utf-8?B?QWhzamJhUm9pUmlLdEt2SjBVM2RlMXM3Z0lGbVBPeFpJaW1oNERqVVVuaE04?=
- =?utf-8?B?clhZeW1lUWNmVUF2RjNsK0ZSaGQ3bFFNazFKUDRiZ1BZNC9ZZjVMUXlyRDlJ?=
- =?utf-8?B?ZVVxV3Yvb0lkRk9yaXhXdjRSSUIzUlZTTG1IU0c1UEtlVVlCQVJDd0lDMVVB?=
- =?utf-8?B?cHpDeXB3R0dud2I3cmwvOXhBUDZ2NU9vMWowbXUyQXZhRnQxaXk4TmdHdmw4?=
- =?utf-8?B?a0pNZ1ZkcFZWS2p0MC9RdHlkM056Q1grRWxkUFRvUXRZdW53eDRJOXVWNDB6?=
- =?utf-8?B?eFVGeDFDQ1BqUEdicEFnSG1OU1BoUmJTYnRjdFM2c2dZbWwzSmt0VnowWjhk?=
- =?utf-8?B?Z2E3clhoTHJ1dGZ4Wk9FdzFRVUtSYVJad1RYcGwyQVBVTE9Ca0JqVHl1S0Rs?=
- =?utf-8?B?dzFGcXJKNTM5RFhOKzJsK1plckY3ZDh5enA5aGlkSU5QTkNJNytTM2VzanFH?=
- =?utf-8?B?YllnM3cxZFZIY1BTZG14bkRRYzNFMWFGRVVtMFF5amdZQndxNnNta1Q1aS9O?=
- =?utf-8?B?aE5Tc0tJdHFEN2hjNnRucjhZeFhDbEozc1lkUUM2ZUh6ZG5IZmgvUXVTMkRr?=
- =?utf-8?B?SDZTZXMzU1EyR2Ixd2o0clVLczU5Q0FvbjgrSWtEdFpMTTloTVQzNUhpSHRY?=
- =?utf-8?B?eUF1UGtYRFVETGduNFUzdDltMFZGL0d4dG1kYXRPNndCR0tWS2FWcitUcURm?=
- =?utf-8?B?cXhSVk9yNDlXbHFnbzBJTW9LcHhKVXhPN3g4elV2VVRWQkt2QU5sTXNLaW1r?=
- =?utf-8?B?MG00S1R3YTZmK2RkOVoyeHMxRHdwZEFvZW5sWTltZDhtbFYzNzBLUVV6NGN6?=
- =?utf-8?B?N21CVmJYUjI0MUJhd2hTQlVHVGRGQ0c4V0ZNelVIRldGRkNpOVhlLzFwUktl?=
- =?utf-8?B?YnhPeXJaRWV1eVJTZis3MzYvKzdjNDIvVzZkK3RJeFpqdlUyVitiZkprL2Ni?=
- =?utf-8?B?czcvV080cmtYUVRBYVZndlRLVENYbFpnOEhQWS9GRmlrQVA3ZG91ODVPa3Uv?=
- =?utf-8?B?SVJYSTRaLzdLdDhzRXZJLzNpbnBJaG9ibTM4Qkdma25ZMHFYVmJpSzZIVUJF?=
- =?utf-8?Q?wOYNM2t7tHH2UV3cfbDCwLmN5?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9117f9ae-e3c6-40e5-dd1c-08dbb562e5dd
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 20:40:57.2861
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w9mcZXEU+NKQE1vQV5NwTUjtVnVoBWxtt9oPueGZzK6SixPoMFCcET/jxN6NooXNXDv36HKKRX2QJU0neiIERA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7996
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-14 13:53, Hamza Mahfooz wrote:
-> On eDP we can receive invalid modes from dm_update_crtc_state() for
-> entirely new streams for which drm_mode_set_crtcinfo() shouldn't be
-> called on. So, instead of calling drm_mode_set_crtcinfo() from within
-> create_stream_for_sink() we can instead call it from
-> amdgpu_dm_connector_mode_valid(). Since, we are guaranteed to only call
-> drm_mode_set_crtcinfo() for valid modes from that function (invalid
-> modes are rejected by that callback) and that is the only user
-> of create_validate_stream_for_sink() that we need to call
-> drm_mode_set_crtcinfo() for (as before commit cb841d27b876
-> ("drm/amd/display: Always pass connector_state to stream validation"),
-> that is the only place where create_validate_stream_for_sink()'s
-> dm_state was NULL).
-> 
+rtlbt_parse_firmware function sets project_id defined like unnamed
+integer constant. But later in the code (btrtl_set_quirks) project_id
+is compared against values in btrtl_chip_id enumeration.
 
-I don't seem to see how a NULL dm_state in
-create_validate_stream_for_sink() (or create_stream_for_sink() for that
-matter) has an impact on the drm_mode_set_crtcinfo() call. That one depends
-on !old_stream and &mode.
+Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+---
+ drivers/bluetooth/btrtl.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-It does look like &mode is an empty mode if we can't find a preferred_mode,
-though. Not sure if that can cause an issue.
-
-Harry
-
-> Cc: stable@vger.kernel.org
-> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2693
-> Fixes: cb841d27b876 ("drm/amd/display: Always pass connector_state to stream validation")
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 933c9b5d5252..beef4fef7338 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6128,8 +6128,6 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
->  
->  	if (recalculate_timing)
->  		drm_mode_set_crtcinfo(&saved_mode, 0);
-> -	else if (!old_stream)
-> -		drm_mode_set_crtcinfo(&mode, 0);
->  
->  	/*
->  	 * If scaling is enabled and refresh rate didn't change
-> @@ -6691,6 +6689,8 @@ enum drm_mode_status amdgpu_dm_connector_mode_valid(struct drm_connector *connec
->  		goto fail;
->  	}
->  
-> +	drm_mode_set_crtcinfo(mode, 0);
-> +
->  	stream = create_validate_stream_for_sink(aconnector, mode,
->  						 to_dm_connector_state(connector->state),
->  						 NULL);
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 84c2c2e1122f..018d86410b88 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -60,7 +60,8 @@ enum btrtl_chip_id {
+ 	CHIP_ID_8723B,
+ 	CHIP_ID_8821A,
+ 	CHIP_ID_8761A,
+-	CHIP_ID_8822B = 8,
++	CHIP_ID_8703B = 7,
++	CHIP_ID_8822B,
+ 	CHIP_ID_8723D,
+ 	CHIP_ID_8821C,
+ 	CHIP_ID_8822C = 13,
+@@ -631,20 +632,20 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
+ 		__u16 lmp_subver;
+ 		__u8 id;
+ 	} project_id_to_lmp_subver[] = {
+-		{ RTL_ROM_LMP_8723A, 0 },
+-		{ RTL_ROM_LMP_8723B, 1 },
+-		{ RTL_ROM_LMP_8821A, 2 },
+-		{ RTL_ROM_LMP_8761A, 3 },
+-		{ RTL_ROM_LMP_8703B, 7 },
+-		{ RTL_ROM_LMP_8822B, 8 },
+-		{ RTL_ROM_LMP_8723B, 9 },	/* 8723D */
+-		{ RTL_ROM_LMP_8821A, 10 },	/* 8821C */
+-		{ RTL_ROM_LMP_8822B, 13 },	/* 8822C */
+-		{ RTL_ROM_LMP_8761A, 14 },	/* 8761B */
+-		{ RTL_ROM_LMP_8852A, 18 },	/* 8852A */
+-		{ RTL_ROM_LMP_8852A, 20 },	/* 8852B */
+-		{ RTL_ROM_LMP_8852A, 25 },	/* 8852C */
+-		{ RTL_ROM_LMP_8851B, 36 },	/* 8851B */
++		{ RTL_ROM_LMP_8723A, CHIP_ID_8723A },
++		{ RTL_ROM_LMP_8723B, CHIP_ID_8723B },
++		{ RTL_ROM_LMP_8821A, CHIP_ID_8821A },
++		{ RTL_ROM_LMP_8761A, CHIP_ID_8761A },
++		{ RTL_ROM_LMP_8703B, CHIP_ID_8703B },
++		{ RTL_ROM_LMP_8822B, CHIP_ID_8822B },
++		{ RTL_ROM_LMP_8723B, CHIP_ID_8723D },
++		{ RTL_ROM_LMP_8821A, CHIP_ID_8821C },
++		{ RTL_ROM_LMP_8822B, CHIP_ID_8822C },
++		{ RTL_ROM_LMP_8761A, CHIP_ID_8761B },
++		{ RTL_ROM_LMP_8852A, CHIP_ID_8852A },
++		{ RTL_ROM_LMP_8852A, CHIP_ID_8852B },
++		{ RTL_ROM_LMP_8852A, CHIP_ID_8852C },
++		{ RTL_ROM_LMP_8851B, CHIP_ID_8851B },
+ 	};
+ 
+ 	if (btrtl_dev->fw_len <= 8)
+-- 
+2.40.1
 
