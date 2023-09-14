@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634187A039F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BDF7A039B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbjINMTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 08:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S238401AbjINMTH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 08:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234522AbjINMTX (ORCPT
+        with ESMTP id S234522AbjINMTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:19:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DB3B1FC0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 05:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694693913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m16z/ewKg95tn0la0oT2JApF9/p4f/9Xhfy6GUGRCOQ=;
-        b=a+bt7OMiYjHEpE3AlHftal/GpvyGudzInjYpPtVqwaHDR74NYIc0yhEeg4uPhpOk9pYOqC
-        zRuoW5cyF5YqDEomxHX4vvdakH0Ly5/YoRUAESqHu3diHW27EIKFJgHFeRB77TIRfjcsS3
-        bsOdGKi3dByYXktr9uZpWIKbVQ2vw8Y=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-1VCuauvkMpe93HRVcQwUfA-1; Thu, 14 Sep 2023 08:18:31 -0400
-X-MC-Unique: 1VCuauvkMpe93HRVcQwUfA-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4121c086963so9090011cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 05:18:31 -0700 (PDT)
+        Thu, 14 Sep 2023 08:19:06 -0400
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502EE1FC9;
+        Thu, 14 Sep 2023 05:19:02 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-59b4ec8d9c1so10295017b3.0;
+        Thu, 14 Sep 2023 05:19:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694693911; x=1695298711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m16z/ewKg95tn0la0oT2JApF9/p4f/9Xhfy6GUGRCOQ=;
-        b=dCXy6Mpbd3B9XIDVtA81oMTWA5GhfeOn8VdoWUJELrtV0rMo2/+3Xx6jT6YTDS8JDj
-         v7OsF+lat/YohjEJPc8jsM0rGs+6WHQlqCMKKGLKO6aev/7nZlQ0qVN7x+E3GA07QpvT
-         hpcwYlgs+uhmXjXtxkBnlSzGsN845oVLvDuEtUm1g+wLE03mWtgAU7j9YjddhT+WIzv1
-         +94/1oqo7qUmEazh39r7T1cUQKmhJbaJ3gj0HBvmYD9AuoscZU3v3lASDpI23hOSPGPz
-         MWMn4ax9ZGq/lRXZ84NUfSqazmPc0cguKKZX5Z74ZkmW/YA7SPO6yTPMBJedBVBKeScD
-         yXMw==
-X-Gm-Message-State: AOJu0Yx4yQ3/n5y/5Ewkzg0jT5/6kjEDXURLUxyt8rZpZcndRQ92WVSi
-        innVxbhfcVoa6uTPSh4fiBPJirpIKZ2GF2X/TiBM32eo9I/7DA8fwTlxtePd4tmg9/cT7sxareX
-        8+iJbU/3HUCgRA8OP6vxfsX41
-X-Received: by 2002:a05:622a:1b89:b0:412:6e6:b45b with SMTP id bp9-20020a05622a1b8900b0041206e6b45bmr4606195qtb.38.1694693911313;
-        Thu, 14 Sep 2023 05:18:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEYwG9newgxoh8ajW4pGLxXSkaK0lHXU3KRPfceQZ6yon65N2SSR0jrRAhaTv6Z1H8bjQH/Qw==
-X-Received: by 2002:a05:622a:1b89:b0:412:6e6:b45b with SMTP id bp9-20020a05622a1b8900b0041206e6b45bmr4606184qtb.38.1694693911083;
-        Thu, 14 Sep 2023 05:18:31 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id j14-20020ac84f8e000000b004009f6e7e7csm417491qtw.31.2023.09.14.05.18.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 05:18:30 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 08:18:42 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH 9/9] bcachefs: Modify mismatched function name
-Message-ID: <ZQL6ItDgXFgJyU+M@bfoster>
-References: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
+        d=1e100.net; s=20230601; t=1694693941; x=1695298741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MY7JVFz1bNlrjVrnjoxD6/0CcvRhM6TdVrF+6BcMksE=;
+        b=q5y1sKPpwLX0KM2RNEmFA4MB8YIF3vDdXnCO5DAmkLVtpNhsZVmiD90bsy19l1GnqN
+         xpNOJn9PoMNi2dfOKrMMhZOw+yIjR5KeYdpvn8VjwabRVE8+FQIGvbgRaOlmlb6iHyRp
+         h4xMp3F/cmphQLK9LT1HuQ1l1YTRS+huAZQYJkGLbW5uKcwEHaYFrYclqPELe7AFFUKG
+         he+1tvylE0uXa8i74Bmq9elCpaSZ6aIojRTtjGuq64dlBkED4Dt3O/KKkOEAamOSNGDO
+         unGZ+IWgovNveXFT1kRf6VC9WG5w5c8BDgl/RmbrIHBNR9uaLdbCoKoOZZOHTUn89SJE
+         G5dg==
+X-Gm-Message-State: AOJu0YxQP2t5u+4oHSheHOpS9v5WvH38TGoT01QtIpZ1s73EF+qOFL7U
+        KW4bxOF3uB3yHYfWKk88rg1jH7ay+Y+miA==
+X-Google-Smtp-Source: AGHT+IHDI3/+al5HUi8dKZXgD8BiFrxrHJDWa02JY2zlc6bSiAMHxJR/bBXKHYSah2mzcXOoyULAYg==
+X-Received: by 2002:a81:6c53:0:b0:592:1bab:52bd with SMTP id h80-20020a816c53000000b005921bab52bdmr5423379ywc.39.1694693941331;
+        Thu, 14 Sep 2023 05:19:01 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id i130-20020a0ddf88000000b0056d51c39c1fsm291307ywe.23.2023.09.14.05.18.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 05:18:59 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d801c83325fso936861276.0;
+        Thu, 14 Sep 2023 05:18:58 -0700 (PDT)
+X-Received: by 2002:a25:7497:0:b0:d78:3a4e:c19e with SMTP id
+ p145-20020a257497000000b00d783a4ec19emr5260394ybc.24.1694693938512; Thu, 14
+ Sep 2023 05:18:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914090457.32325-1-jiapeng.chong@linux.alibaba.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-9-claudiu.beznea.uj@bp.renesas.com> <8490f909-c0ad-5a6d-7a97-03c80a8b47ba@omp.ru>
+In-Reply-To: <8490f909-c0ad-5a6d-7a97-03c80a8b47ba@omp.ru>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Sep 2023 14:18:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXjhCth125PHKxrWJENFUhrvXfFJPLhL2ZRY6++azzczA@mail.gmail.com>
+Message-ID: <CAMuHMdXjhCth125PHKxrWJENFUhrvXfFJPLhL2ZRY6++azzczA@mail.gmail.com>
+Subject: Re: [PATCH 08/37] clk: renesas: rzg2l: trust value returned by hardware
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     Claudiu <claudiu.beznea@tuxon.dev>, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 05:04:49PM +0800, Jiapeng Chong wrote:
-> No functional modification involved.
-> 
-> fs/bcachefs/alloc_foreground.c:514: warning: expecting prototype for bch_bucket_alloc(). Prototype was for bch2_bucket_alloc_trans() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6584
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
+On Tue, Sep 12, 2023 at 6:43 PM Sergey Shtylyov <s.shtylyov@omp.ru> wrote:
+> On 9/12/23 7:51 AM, Claudiu wrote:
+>
+> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > Initial value of CPG_PL2SDHI_DSEL bits 0..1 or 4..6 is 01b. Hardware user's
+> > manual (r01uh0914ej0130-rzg2l-rzg2lc.pdf) specifies that setting 0 is
+> > prohibited. The rzg2l_cpg_sd_clk_mux_get_parent() should just read
+> > CPG_PL2SDHI_DSEL, trust the value and return the proper clock parent index
+> > based on the read value. Do this.
+> >
+> > Fixes: eaff33646f4cb ("clk: renesas: rzg2l: Add SDHI clk mux support")
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-JFYI, it seems like the patch series is oddly threaded with patch 9/9
-being the "cover letter..?"
+> > --- a/drivers/clk/renesas/rzg2l-cpg.c
+> > +++ b/drivers/clk/renesas/rzg2l-cpg.c
+> > @@ -239,14 +239,8 @@ static u8 rzg2l_cpg_sd_clk_mux_get_parent(struct clk_hw *hw)
+> >
+> >       val >>= GET_SHIFT(hwdata->conf);
+> >       val &= GENMASK(GET_WIDTH(hwdata->conf) - 1, 0);
+> > -     if (val) {
+> > -             val--;
+> > -     } else {
+> > -             /* Prohibited clk source, change it to 533 MHz(reset value) */
+> > -             rzg2l_cpg_sd_clk_mux_set_parent(hw, 0);
+> > -     }
+> >
+> > -     return val;
+> > +     return val ? --val : val;
+>
+>         return val ? val - 1 : 0;
 
-Also, what's the granularity of the patches here? Per robot filed bug?
-Per source file? I don't think it really matters for this particular
-series, though personally I would probably squash these down into one
-upon merge (and prefer to see any further patches of this nature
-similarly condensed).
+Definitely, mixing multiple users of the same variable and pre-decrement
+is ill-defined.
 
-Brian
+Gr{oetje,eeting}s,
 
->  fs/bcachefs/alloc_foreground.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/alloc_foreground.c b/fs/bcachefs/alloc_foreground.c
-> index e02749ddc362..10a7979707ef 100644
-> --- a/fs/bcachefs/alloc_foreground.c
-> +++ b/fs/bcachefs/alloc_foreground.c
-> @@ -502,7 +502,7 @@ static struct open_bucket *bch2_bucket_alloc_freelist(struct btree_trans *trans,
->  }
->  
->  /**
-> - * bch_bucket_alloc - allocate a single bucket from a specific device
-> + * bch2_bucket_alloc_trans - allocate a single bucket from a specific device
->   *
->   * Returns index of bucket on success, 0 on failure
->   */
-> -- 
-> 2.20.1.7.g153144c
-> 
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
