@@ -2,335 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 677D579F632
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EC979F635
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbjINBPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S233436AbjINBQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjINBPv (ORCPT
+        with ESMTP id S232647AbjINBQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:15:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A296F1713;
-        Wed, 13 Sep 2023 18:15:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3789DC433C9;
-        Thu, 14 Sep 2023 01:15:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694654147;
-        bh=5U5cK6ZpNHdgOgOmSIv4oY4hGuQ7p9U8DGE8f43yB8w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bg20L/e7wmZS6i/Mp0I4uY/ZjtllbVKNznqHTl4Q33g6pcRvaV4IiO2tRnlWNm01H
-         sCOCeA6p8iMqgdbhvW1MiZfq4ZlaE6xENDNhNhiC6g3FZCTfm96KZRLRudBaePxBU3
-         l3hAE5eH7MygMssDsVoOyHEMCV1lLK9H8JnNw+DhuMbV/K5wR2guK2JA7edxicsgAC
-         c1yQ4Q2V1y0r80ugWWATjlPncczyuoI2aY97wVQGBUwhKTozQ/CjNUt/7USJvEYGbY
-         ZbeplIFC3gAFhJewDjhPS+2bGoxXmXHV0oSj2BHdDy2dlaOddhe1+kroynNmg3Fkq9
-         XZyzTSwasS4pg==
-Message-ID: <b22facb6-ddc8-9834-a237-4b35e566d980@kernel.org>
-Date:   Thu, 14 Sep 2023 10:15:45 +0900
+        Wed, 13 Sep 2023 21:16:42 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03941713;
+        Wed, 13 Sep 2023 18:16:38 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DJG0vI015364;
+        Thu, 14 Sep 2023 01:16:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=DH4o36rFvJWDjMj2ew6Glk0/lNgA4vmJi+mJX3RDrUE=;
+ b=uXJ6zkxgLWe5ZBuXPJ6bAcZPPP843UJTkQg961oY7VMM2zP23NuZpNpIKlhGwp1Ft2bx
+ /i/wEk2DvNJaliVGDisvTXnYCWlM+CWPtOVKRlR1PwJLB+FNiR+neCLdvij+ITv+LQ8S
+ W+zYfydQ1t+U99FfN4TDBJI73fShbtcGWABKYyDOkDjWAa4jAZVApe5kdvhWl7MZEAwV
+ TveubdTJHMZ8OVYUwPPuV+r6kCtMKzjFvtKLL6GAYra46Sp8FdK7oVwWatViyPRLRPTd
+ dKdRRD1h52XWbE6TvjYo9XqL3y0ADWlyZ/4n1UiWLwTRIvXe9BxRFkK+mm3m+YP4WHz2 XQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t37jr2x7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 01:16:32 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38E10Ltx002351;
+        Thu, 14 Sep 2023 01:16:31 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f5e9m68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 01:16:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CdHghhijFe/BipZfQDpbeGvNjh+rzwj4RkMXYANRREhfWDf3UBkdeiK8D8Mr8o6zq9L0WW5ADOLflMl4zijqo1OZdEtw58ndx+5EL5QJt2jtGAIvX1/nTnxwY92OeA1wVMU95Rqkeg9dmpPk0dWaNApHJED9Cz7hU4q9+CEuNehgsCEwVeMwHl4Ptcbj5xOOSa+7O5007P8gQVQu4+mR74+9JCfZ1jMupimLR0jbQAAb5NAZHoQNE34NiS0ENDlDUderCMQYSif3PUr8OJiUdqJNqN3/XkwLZ7aPNUuzSIAFX4eP79mmOjJH9iS7yr1AKmbna01XLLIWJaP54O1ECw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DH4o36rFvJWDjMj2ew6Glk0/lNgA4vmJi+mJX3RDrUE=;
+ b=BJM7ZkbD4ALMqAhvztICvt8RqzHZ9huZD5WLzA7GKcCD4qobFZcrkkVkOy5XieL2vE6R/s+UHqyFu0XYlHmdIwrNOORLICMa5mMiTvvlywq0jF9choLYzZwnw3gdop7od+8KMoB4EPLfocdhr29/VDrrRWi7d4wWF95kp6kPugOX3F/LY3/LGa5NUpWlYka0SQ2IMi1bZzb+CdTC1L7ggkzvhFvU4Q8NWHx0XpcEjwHIl+yoiV0LOeQeZYXIvqbL9SbbkxEns0DqrCqgTts+yaIXJHLaBH4TUP+0cLf3UlSP/4yQxxh0gZDr7vH32yY3LYI8DZNkaBpvPn1+pLca7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DH4o36rFvJWDjMj2ew6Glk0/lNgA4vmJi+mJX3RDrUE=;
+ b=esGdEaojfsPrev0vNccAl2ND6eCrn0IccfajotxS53fxD7dFUxbMvorMj/SYHOOKBmENz86C8kLrzEZWRuzrzC8UTJpfL+O6RmUMCHxLjFHwIj3LaBKzJWKaD7RjirZigC8VIX8Jt6DxvtCQYBdNHuRzkaQ1JU8nioMI18X/JeA=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SJ0PR10MB4589.namprd10.prod.outlook.com (2603:10b6:a03:2d0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.36; Thu, 14 Sep
+ 2023 01:16:24 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be%7]) with mapi id 15.20.6792.019; Thu, 14 Sep 2023
+ 01:16:24 +0000
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, quic_cang@quicinc.com,
+        quic_nguyenb@quicinc.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V8 0/5] scsi: ufs: qcom: Align programming sequence as
+ per HW spec
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1led9eeqr.fsf@ca-mkp.ca.oracle.com>
+References: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
+Date:   Wed, 13 Sep 2023 21:16:21 -0400
+In-Reply-To: <20230905052400.13935-1-quic_nitirawa@quicinc.com> (Nitin Rawat's
+        message of "Tue, 5 Sep 2023 10:53:55 +0530")
+Content-Type: text/plain
+X-ClientProxiedBy: DM6PR05CA0064.namprd05.prod.outlook.com
+ (2603:10b6:5:335::33) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] linux/export: fix reference to exported functions for
- parisc64
-Content-Language: en-US
-To:     John David Anglin <dave.anglin@bell.net>,
-        Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20230905190828.790400-1-masahiroy@kernel.org>
- <c8a92dc8-de78-7484-bcc8-d4a91bec77de@bell.net>
- <c6568683-86b4-c48d-ed37-f1f87677eb44@bell.net>
- <97859bf1-c8c3-7294-8322-b0c9c408ba5e@bell.net>
- <CAK7LNAR_4rVgAQToSoYmbgYnWoSpowcrKi2ciiH9HyhJUGdmWg@mail.gmail.com>
- <CAK7LNAQQ1Vp4YtvU8Bq9aE+NWxnnOTX2dcZ5Gc9fC+vjRmCe4w@mail.gmail.com>
- <CAK7LNATktSBFe=7cE8kHEGx2R90iVV6AJsCfgg5ZD2+ssMmzow@mail.gmail.com>
- <040a0941-936b-87ab-aedd-5a933383b500@bell.net>
- <b919c7fd-babb-5557-dd8d-c2b8bb428d54@bell.net>
- <4fee8886-daa3-fb03-f9e7-89358fb5fc38@bell.net>
- <b9ceba24-345e-20dc-783b-3759a9819359@bell.net>
- <10887293-fa2e-83e1-9305-487905a8afd2@kernel.org>
- <3e4040cf-bb54-7652-72cc-0ad2d1288cb8@bell.net>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <3e4040cf-bb54-7652-72cc-0ad2d1288cb8@bell.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SJ0PR10MB4589:EE_
+X-MS-Office365-Filtering-Correlation-Id: bdd76212-b717-4827-71e1-08dbb4c0363c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vzYNXOX037rV7jhJr4sbPjWB7UnG03q8HsZ3Xa+chZPccKkTsevHSd1uW8efwIxDuXeTl0uPQL6LEkPG9DeM7NocETJY+HynrlOFf9H0OYqGrbWG08mpumAOnx4qDPMDJ+fqvaUd+xQAEW61s0XVml+OykVpkuFbIT++/g3jADEv2+Wcu6d5fDwbaUUFjbZpBTkp6IYnT2UWs29E54A6EphDakOz0AIu1QdzCVerJmHMIzNOk1oKodRGSta+kwpBfw9jv5fubJxmbnt+40NBWixed9mBrI1aFPAtdEKFhl9TVXeS458F4grnqOCkG4KEKFwkiJTLfjZISMItDi8gjnt6TYDior+B5CveZ896XKh7h+ep8W4tLeqL+i36pRUjytlgVoi/MwOSYXSH3gp9Uu+YoGQjTz9zggwziT62kp6K8dhbFRVjDpAWqzVKLWq2E+lrJdOrKD92PoMsxlP4pf7wQqI1H8eKMJCosIi0WECMv37WK16GOJq3Y/91G1sDv4RKi5FqbXqQJoNmWGn4pUuW3KuB0Q+K0oQqg8XupDgrXpKlMGntj97ljqGI8S2A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(376002)(39860400002)(451199024)(1800799009)(186009)(6666004)(26005)(316002)(8936002)(8676002)(4326008)(5660300002)(7416002)(41300700001)(66476007)(558084003)(6506007)(6486002)(86362001)(36916002)(66556008)(66946007)(6916009)(2906002)(6512007)(478600001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0udxdymAskTkwfl1/0Zf0N5iOP8copSamx9QzKMTxu4nW7PeYGDYbL0s8ma2?=
+ =?us-ascii?Q?vo+41k3R0pwN2EgdrgFj3F2URXtOaL9ACPdfqrCevhWATOAiVcTU6tCMP5UP?=
+ =?us-ascii?Q?9lQyq1zEPuX/yO+DotG6K0qpcNrx8Md6yO0O4/R7EXSvR06FgYWjOjI0FBDn?=
+ =?us-ascii?Q?0m/EtEmgFZN59yMYQmDnf3sLaEgjzBxbWgnp1ri+DQVMH0C3wPSBv7dNiK1O?=
+ =?us-ascii?Q?KQJGEVBNCM/XrpvpX5q69oRDcW2snOhZieVYbobX2M87xdpeAm1Gu3K8cUjK?=
+ =?us-ascii?Q?K2GkR6aQ4gVrnKWyzePQMYr3y0aUSL58jIx7TKOYmI9SDqE2au5D0LLq3lFL?=
+ =?us-ascii?Q?qofOyvugd8/nHOTjyEIMHWU37ogGlyTCXNKkFkcp9FjFx822JO8J6GW0hcLz?=
+ =?us-ascii?Q?/yZgIjBJLipR5RYHPp6EXc9HFtGkMZylZsZrDUbOy/WK4VORANFQ9p5GRdAC?=
+ =?us-ascii?Q?RQb+9WbqLn+D0+SgZSPmiZaGYahbGd+0uMzWONTku8iZK2lABwQGO/VSyEft?=
+ =?us-ascii?Q?e3kqzOlQ6r9RBPcE8jxTBDMMwZAaZpex/5+teafHCg63W8nokOx9JqBKrxiZ?=
+ =?us-ascii?Q?kunBmCllIPoG3XooAaUm99dwdFPf1BDLROms/zkHMS5wE7oFbaiTkmzyeCDH?=
+ =?us-ascii?Q?1yIYFg2rIr+7CYpTWR4ck88RU1pqQs9gEpFVP1wDXoXN8s5iyyzxs/vZ2pIq?=
+ =?us-ascii?Q?HeGOU0yfGyXjR/cffSbXmFUBqNWI96O8cs/f2AqByMCHpT3wZRtW3hTTKDox?=
+ =?us-ascii?Q?P+6uzF7tAWWU/owaVitH/y5hTppJ+FYWVUl0wqH1yuzOSy/HWJpHbFTh+660?=
+ =?us-ascii?Q?rHLUPq4ts058g1/iae29x0F0VKsjFnQPh53UDpcdO/I+lF4p+4a6PXuLPZSq?=
+ =?us-ascii?Q?QKmxs8xYXkIebqLFk2B+bY24Kz3xp4kcrzUN7wuUpeT9/LMH0ANNsXhMAnp3?=
+ =?us-ascii?Q?fF2oBUD0U44J+ubjZTFw5tkDmYlKi5Rlionyy5OolgDezasTKPSyNBySYoI+?=
+ =?us-ascii?Q?LQ876xN/EgDeBLk+stJhVQxOTAgROTCSlj6oZJjFIeuoLP0tdteC6eSaNjNz?=
+ =?us-ascii?Q?/J6ly7/85hDXJGCxCG3qNyS8r+TgRXT5b6+yvU4VREBZ35reFfn8A2ymvmYY?=
+ =?us-ascii?Q?l5wuJTiixm6YRor00Cp0Q83lsH8jFPXVB5rqCYqmLUEaXpYZsncK+4RjHfCR?=
+ =?us-ascii?Q?P2E68XLOfAXb/uS0sn8ehiKhadet7lfWp9hN7H7PB534PpXBRb3uLijjz+FP?=
+ =?us-ascii?Q?8KnZw8dtI6PvF1UNbMcfSmIcuQob+7iCJxQkTKdHJ1SMmhDvcbe+ZEevvWW4?=
+ =?us-ascii?Q?9ge+adFyRDGpNiAe98UDkghhJQW1VuOCV9RT5KDOit6Yx2ria932kW92K/D4?=
+ =?us-ascii?Q?i0QUefumFsnAKgPOp/tH3gyX27UqMOx+wLmG4g6lJv7qW8XR6U9+71S8D31J?=
+ =?us-ascii?Q?l4Qo/dXz2BfC/V6yOtCquF2OH8jQgOgK2/mEOFQV5cZCdfog/DRptKhmAybc?=
+ =?us-ascii?Q?nQ0uxyMwQQy5X7vf468XJfDQpL/6v4aoF2wfmhxvTF/N0TWaKZG43347TsGx?=
+ =?us-ascii?Q?swoR0dZOk3Xvfoq11rcmWxqwJL9m8wbN/m9sy1mX3LH72KxZoepquhv6v1bl?=
+ =?us-ascii?Q?oQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: VAd7cIZAcz0HpL/WAZpyzav1K9Skl35w16NUqdFj8SYdl3A/HCVauIscSKfew0PRFN+fZOCTZ8PmkuspmZBns+XqNafz7DsSaDPeu+yr+J7OnmjLjvZq2Jvs266dUNcoiaGnSl9j3b05NkttBx7a+FAQMHxDwyVy9LJL203yXV2StHJSrdQuPTJy6PBPtSzmS40iQgxs6PDFRliS+ade02NKS94XHEq1+XVP6n6xEDj3J8oVW1Vuq+t075120/3vTGZMGkj/KGYf4zIoDDIiO2CYZpKhncy5YFWSLHSyQbM30r99MlNiFhZTirPm9dIJ7SoaryQgJpLQjJ1tKIllJzxN0O6PK0EOlfRTxXRejosrQU3+qVMpAaCUdmORIUqLDhspf8KxT7I9rruhZLbzYCgjMLx5dQHdh6XvDOI8wV/a/N4f3ADusEMvrItB3UuZvlhSpyY5mIVJsCnWK0b/A67cqcvz/9DKWt8oz00A6nw7M8B7MfXpawZ1u+YF0dn+fueai1MJ3KwfmPb+A51S9yvjyl/iCz59Nw3lSyaMY966tbTWCqfl0qKskT9k8VgK9fr3SPyU78WkMcjKdS2fBsHAePLrN9SIxIQYPN+8mml0hx1Qr4H4gaT/UTt5bZXj9fFwq5I09OvOjoCtm9krU3Ldl2HtRSTa+j6ZBsv+0mDIRkfXDawhpS5DuqpRntwpyft75kHMSJyYIzCxOIVJgdJXRC4d6+2BhTif16EplI6m5oTkDljCxVIIDkdbUxuEw5Eh7H/Lim6seTQlh29UI8pkDb5YWR6Yn/cwImg70B14+fpN1GDH2Py2SlUSNXguiG7d1PHYP85I5f6KH/xzx+8vUJjK71LurdB7aV3IOlMTi4++3GbIhmBTYxyKiC45VAGsBuLkhhDmhwleTlkECg==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdd76212-b717-4827-71e1-08dbb4c0363c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 01:16:24.1120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9ccWNAZMRV5vHNI9c2Tc2S8WraB31xWeJdPV2eIB9hubypmoE2dthhpbyoZ2t/y+mRc/ixKyV0u8hx18WwU0Dsdg2g4VhJyJNcJRLE59xB4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4589
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_19,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 phishscore=0 spamscore=0 mlxlogscore=488 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309140009
+X-Proofpoint-ORIG-GUID: GSysL6jLxETVG6gj8dH6y1fTiWkrLFI9
+X-Proofpoint-GUID: GSysL6jLxETVG6gj8dH6y1fTiWkrLFI9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 09:29, John David Anglin wrote:
-> On 2023-09-13 7:45 p.m., Damien Le Moal wrote:
->> On 9/14/23 06:22, John David Anglin wrote:
->>> On 2023-09-13 1:58 p.m., John David Anglin wrote:
->>>> On 2023-09-12 5:53 p.m., John David Anglin wrote:
->>>>> On 2023-09-10 5:30 p.m., John David Anglin wrote:
->>>>>> Hi Masahiro,
->>>>>>
->>>>>> The attached change fixed boot at ddb5cdbafaaa 😁
->>>>>>
->>>>>> However, v6.5.x boot is still broken:
->>>>>>
->>>>>> Run /init as init process
->>>>>> process '/usr/bin/sh' started with executable stack
->>>>>> Loading, please wait...
->>>>>> Starting systemd-udevd version 254.1-3
->>>>>> e1000 alternatives: applied 0 out of 569 patches
->>>>>> e1000: Intel(R) PRO/1000 Network Driver
->>>>>> e1000: Copyright (c) 1999-2006 Intel Corporation.
->>>>>> scsi_mod alternatives: applied 0 out of 7 patches
->>>>>> SCSI subsystem initialized
->>>>>> usbcore alternatives: applied 0 out of 18 patches
->>>>>> usbcore: registered new interface driver usbfs
->>>>>> libata alternatives: applied 0 out of 3 patches
->>>>>> usbcore: registered new interface driver hub
->>>>>> usbcore: registered new device driver usb
->>>>>> mptbase alternatives: applied 0 out of 73 patches
->>>>>> ehci_hcd alternatives: applied 0 out of 114 patches
->>>>>> sata_sil24 alternatives: applied 0 out of 56 patches
->>>>>> Fusion MPT base driver 3.04.20
->>>>>> Copyright (c) 1999-2008 LSI Corporation
->>>>>> sata_sil24 0000:00:01.0: Applying completion IRQ loss on PCI-X errata fix
->>>>>> scsi host0: sata_sil24
->>>>>> scsi host1: sata_sil24
->>>>>> pata_sil680 0000:60:02.0: sil680: 133MHz clock.
->>>>>> scsi host2: sata_sil24
->>>>>> ehci_pci alternatives: applied 0 out of 2 patches
->>>>>> ohci_hcd alternatives: applied 0 out of 144 patches
->>>>>> ehci-pci 0000:60:01.2: EHCI Host Controller
->>>>>> scsi host3: pata_sil680
->>>>>> ehci-pci 0000:60:01.2: new USB bus registered, assigned bus number 1
->>>>>> scsi host4: sata_sil24
->>>>>> ata1: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80080000 ir6
->>>>>> ata2: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80082000 ir6
->>>>>> ata3: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80084000 ir6
->>>>>> ata4: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80086000 ir6
->>>>>> e1000 0000:60:03.0 eth0: (PCI:33MHz:32-bit) 00:11:0a:31:8a:77
->>>>>> ehci-pci 0000:60:01.2: irq 71, io mem 0xffffffffb00a1000
->>>>>> scsi host5: pata_sil680
->>>>>> ata5: PATA max UDMA/133 cmd 0x26058 ctl 0x26064 bmdma 0x26040 irq 72
->>>>>> ata6: PATA max UDMA/133 cmd 0x26050 ctl 0x26060 bmdma 0x26048 irq 72
->>>>>> e1000 0000:60:03.0 eth0: Intel(R) PRO/1000 Network Connection
->>>>>> ehci-pci 0000:60:01.2: USB 2.0 started, EHCI 0.95
->>>>>> usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.05
->>>>>> usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
->>>>>> usb usb1: Product: EHCI Host Controller
->>>>>> usb usb1: Manufacturer: Linux 6.5.2-dirty ehci_hcd
->>>>>> usb usb1: SerialNumber: 0000:60:01.2
->>>>>> hub 1-0:1.0: USB hub found
->>>>>> hub 1-0:1.0: 5 ports detected
->>>>>> ata1: SATA link down (SStatus 0 SControl 0)
->>>>>> ata2: SATA link down (SStatus 0 SControl 0)
->>>>>> ata3: SATA link down (SStatus 0 SControl 0)
->>>>>> ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 0)
->>>>>> ata4.00: ATA-10: ST4000VN008-2DR166, SC60, max UDMA/133
->>>>>> ata4.00: 7814037168 sectors, multi 0: LBA48 NCQ (depth 31/32)
->>>>>> ata4.00: configured for UDMA/100
->>>>>> scsi 4:0:0:0: Direct-Access     ATA      ST4000VN008-2DR1 SC60 PQ: 0 ANSI: 5
->>>>>> ata6.00: ATAPI: HL-DT-STDVD+-RW GSA-H21L, 1.04, max UDMA/44
->>>>>> scsi 5:0:0:0: CD-ROM            HL-DT-ST DVD+-RW GSA-H21L 1.04 PQ: 0 ANSI: 5
->>>>>> random: crng init done
->>>>>> Timed out for waiting the udev queue being empty.
->>>>>> Begin: Loading essential drivers ... done.
->>>>>> Begin: Running /scripts/init-premount ... done.
->>>>>> Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
->>>>>> Begin: Running /scripts/local-premount ... done.
->>>>>> Timed out for waiting the udev queue being empty.
->>>>>> Begin: Waiting for root file system ... Begin: Running /scripts/local-block ....
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> Begin: Running /scripts/local-block ... done.
->>>>>> done.
->>>>>> Gave up waiting for root file system device.  Common problems:
->>>>>>   - Boot args (cat /proc/cmdline)
->>>>>>     - Check rootdelay= (did the system wait long enough?)
->>>>>>   - Missing modules (cat /proc/modules; ls /dev)
->>>>>> ALERT!  LABEL=ROOT does not exist.  Dropping to a shell!
->>>>>> Rebooting automatically due to panic= boot argument
->>>>>>
->>>>>> I'll see if I can find the commit that breaks 6.5.
->>>>> I've traced this to the following merge commit:
->>>>>
->>>>> dave@atlas:~/linux/linux$ git bisect good
->>>>> ca7ce08d6a063e0ccb91dc57f9bc213120d0d1a7 is the first bad commit
->>>>> commit ca7ce08d6a063e0ccb91dc57f9bc213120d0d1a7
->>>>> Merge: 1546cd4bfda4 af92c02fb209
->>>>> Author: Linus Torvalds <torvalds@linux-foundation.org>
->>>>> Date:   Fri Jun 30 11:57:07 2023 -0700
->>>>>
->>>>>      Merge tag 'scsi-misc' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi
->>>>>
->>>>>      Pull SCSI updates from James Bottomley:
->>>>>       "Updates to the usual drivers (ufs, pm80xx, libata-scsi, smartpqi,
->>>>>        lpfc, qla2xxx).
->>>>>
->>>>>        We have a couple of major core changes impacting other systems:
->>>>>
->>>>>         - Command Duration Limits, which spills into block and ATA
->>>>>
->>>>>         - block level Persistent Reservation Operations, which touches block,
->>>>>           nvme, target and dm
->>>>>
->>>>>        Both of these are added with merge commits containing a cover letter
->>>>>        explaining what's going on"
->>>>>
->>>>>      * tag 'scsi-misc' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi: (187 commits)
->>>>>        scsi: core: Improve warning message in scsi_device_block()
->>>>>        scsi: core: Replace scsi_target_block() with scsi_block_targets()
->>>>>        scsi: core: Don't wait for quiesce in scsi_device_block()
->>>>>        scsi: core: Don't wait for quiesce in scsi_stop_queue()
->>>>>        scsi: core: Merge scsi_internal_device_block() and device_block()
->>>>>        scsi: sg: Increase number of devices
->>>>>        scsi: bsg: Increase number of devices
->>>>>        scsi: qla2xxx: Remove unused nvme_ls_waitq wait queue
->>>>>        scsi: ufs: ufs-pci: Add support for Intel Arrow Lake
->>>>>        scsi: sd: sd_zbc: Use PAGE_SECTORS_SHIFT
->>>>>        scsi: ufs: wb: Add explicit flush_threshold sysfs attribute
->>>>>        scsi: ufs: ufs-qcom: Switch to the new ICE API
->>>>>        scsi: ufs: dt-bindings: qcom: Add ICE phandle
->>>>>        scsi: ufs: ufs-mediatek: Set UFSHCD_QUIRK_MCQ_BROKEN_RTC quirk
->>>>>        scsi: ufs: ufs-mediatek: Set UFSHCD_QUIRK_MCQ_BROKEN_INTR quirk
->>>>>        scsi: ufs: core: Add host quirk UFSHCD_QUIRK_MCQ_BROKEN_RTC
->>>>>        scsi: ufs: core: Add host quirk UFSHCD_QUIRK_MCQ_BROKEN_INTR
->>>>>        scsi: ufs: core: Remove dedicated hwq for dev command
->>>>>        scsi: ufs: core: mcq: Fix the incorrect OCS value for the device command
->>>>>        scsi: ufs: dt-bindings: samsung,exynos: Drop unneeded quotes
->>>>>        ...
->>>>>
->>>>> dave@atlas:~/linux/linux$ lspci
->>>>> 00:01.0 RAID bus controller: Silicon Image, Inc. SiI 3124 PCI-X Serial ATA Controller (rev 02)
->>>>> 40:01.0 SCSI storage controller: Broadcom / LSI 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI (rev 07)
->>>>> 40:01.1 SCSI storage controller: Broadcom / LSI 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI (rev 07)
->>>>> 60:01.0 USB controller: NEC Corporation OHCI USB Controller (rev 41)
->>>>> 60:01.1 USB controller: NEC Corporation OHCI USB Controller (rev 41)
->>>>> 60:01.2 USB controller: NEC Corporation uPD72010x USB 2.0 Controller (rev 02)
->>>>> 60:02.0 IDE interface: Silicon Image, Inc. PCI0680 Ultra ATA-133 Host Controller (rev 02)
->>>>> 60:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 02)
->>>> This was introduced by the following commit:
->>>>
->>>> dave@atlas:~/linux/linux$ git bisect good
->>>> 624885209f31eb9985bf51abe204ecbffe2fdeea is the first bad commit
->>>> commit 624885209f31eb9985bf51abe204ecbffe2fdeea
->>>> Author: Damien Le Moal <dlemoal@kernel.org>
->>>> Date:   Thu May 11 03:13:41 2023 +0200
->>>>
->>>>      scsi: core: Detect support for command duration limits
->>>>
->>>>      Introduce the function scsi_cdl_check() to detect if a device supports
->>>>      command duration limits (CDL). Support for the READ 16, WRITE 16, READ 32
->>>>      and WRITE 32 commands are checked using the function scsi_report_opcode()
->>>>      to probe the rwcdlp and cdlp bits as they indicate the mode page defining
->>>>      the command duration limits descriptors that apply to the command being
->>>>      tested.
->>>>
->>>>      If any of these commands support CDL, the field cdl_supported of struct
->>>>      scsi_device is set to 1 to indicate that the device supports CDL.
->>>>
->>>>      Support for CDL for a device is advertizes through sysfs using the new
->>>>      cdl_supported device attribute. This attribute value is 1 for a device
->>>>      supporting CDL and 0 otherwise.
->>>>
->>>>      Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
->>>>      Reviewed-by: Hannes Reinecke <hare@suse.de>
->>>>      Co-developed-by: Niklas Cassel <niklas.cassel@wdc.com>
->>>>      Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
->>>>      Link: https://lore.kernel.org/r/20230511011356.227789-9-nks@flawful.org
->>>>      Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
->>>>
->>>>   Documentation/ABI/testing/sysfs-block-device |  9 ++++
->>>>   drivers/scsi/scsi.c                          | 81 ++++++++++++++++++++++++++++
->>>>   drivers/scsi/scsi_scan.c                     |  3 ++
->>>>   drivers/scsi/scsi_sysfs.c                    |  2 +
->>>>   include/scsi/scsi_device.h                   |  3 ++
->>>>   5 files changed, 98 insertions(+)
->>>>
->>>> Sometimes I see when booting a bad commit:
->>>> [...]
->>>> Begin: Running /scripts/local-block ... done.
->>>> Begin: Running /scripts/local-block ... done.
->>>> Begin: Running /scripts/local-block ... done.
->>>> done.
->>>> Gave up waiting for root file system device.  Common problems:
->>>>   - Boot args (cat /proc/cmdline)
->>>>     - Check rootdelay= (did the system wait long enough?)
->>>>   - Missing modules (cat /proc/modules; ls /dev)
->>>> ALERT!  LABEL=ROOT does not exist.  Dropping to a shell!
->>>> Rebooting automatically due to panic= boot argument
->>>> ata4: SATA link down (SStatus 0 SControl 0)
->>>> ata5: SATA link down (SStatus 0 SControl 0)
->>>> ata6: SATA link up 3.0 Gbps (SStatus 123 SControl 0)
->>>> ata6.00: ATA-10: ST4000VN008-2DR166, SC60, max UDMA/133
->>>> ata6.00: 7814037168 sectors, multi 0: LBA48 NCQ (depth 31/32)
->>>> ata6.00: configured for UDMA/100
->>>> scsi 5:0:0:0: Direct-Access     ATA      ST4000VN008-2DR1 SC60 PQ: 0 ANSI: 5
->>> System boots master at e56b2b605799 if I disable CDL:
->>>
->>> dave@atlas:~/linux/linux$ git diff drivers/scsi/scsi.c
->>> diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
->>> index d0911bc28663..dc3a283ebd75 100644
->>> --- a/drivers/scsi/scsi.c
->>> +++ b/drivers/scsi/scsi.c
->>> @@ -578,6 +578,8 @@ static bool scsi_cdl_check_cmd(struct scsi_device *sdev, u8 opcode, u16 sa,
->>>           int ret;
->>>           u8 cdlp;
->>>
->>> +       return false;
->>> +
->>>           /* Check operation code */
->>>           ret = scsi_report_opcode(sdev, buf, SCSI_CDL_CHECK_BUF_LEN, opcode, sa);
->>>           if (ret <= 0)
->> It is weird that this solves anything... the MAINTENANCE_IN command issued by
->> scsi_report_opcode() ends up being emulated in libata with
->> ata_scsiop_maint_in(). There are no actual commands issued to the drive, so
->> nothing that could actually fail/cause issues. By the time this is issued, the
->> ATA drive is also fully probed...
->>
->> Or is the drive connected to the Broadcom HBA you have ? In that case, libata is
->> not used and the HBA FW SAT (scsi-ata-translation) is likely to blame.
-> /boot, / and swap partitions reside on a ST373207LW drive connected to a Broadcom HBA.  A
-> ST4000VN008-2DR1 drive is connected to the  Silicon Image, Inc. SiI 3124 PCI-X Serial
-> ATA Controller.  It mounts on /home.  There's also a cdrom connected to the Silicon
-> Image, Inc. PCI0680 Ultra ATA-133 Host Controller and another ST4000VN008-2DR1 drive
-> connected to a Broadcom HBA.  There are two Broadcom HBAs.
-> 
-> I think the issue is with the root ST373207LW drive.  The console output indicates that the
-> ROOT drive doesn't exist when the boot fails.
-> 
-> Your change only appeared to affect actual SCSI drives.  That's why I tried disabling CDL.
->>
->> Could you send a full dmesg output for a clean boot and for a failed one so that
->> I can compare ?
-> I'll try to get this together tomorrow.
 
-Please also tell me the scsi_level reported for that drive (cat
-/sys/block/sdX/device/scsi_level and output of sg_inq /dev/sdX).
+Nitin,
 
-Thanks !
+> This patch series adds programming support for Qualcomm UFS V4 and
+> above to align avoid with Hardware Specification. This patch series
+> will address stability and performance issues.
 
-> 
-> Dave
-> 
+Applied to 6.7/scsi-staging, thanks!
 
 -- 
-Damien Le Moal
-Western Digital Research
-
+Martin K. Petersen	Oracle Linux Engineering
