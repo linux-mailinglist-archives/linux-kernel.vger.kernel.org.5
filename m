@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0627A0597
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266B97A059A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238992AbjINNaA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 09:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        id S233185AbjINNav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbjINN36 (ORCPT
+        with ESMTP id S230174AbjINNau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:29:58 -0400
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7001FD8;
-        Thu, 14 Sep 2023 06:29:54 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5925e580f12so11411447b3.3;
-        Thu, 14 Sep 2023 06:29:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694698193; x=1695302993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MMgnSEID+xkECrUs/n98woQl+ojuPd0/IiG5nfXIn2c=;
-        b=XzOelWPkiVoyl5RggkTcRd3uA415Z162tBB3CDrInXacj6nPzpABWMzAnB4PpROIua
-         nR2OvbrozuiwByoF79OQHRDCan6qXryQHUomw5kleQQzv29QBpZtP3sYxbss6G4i3LxE
-         97Xg53EqVldYoAxzJM//+QVFXFWZevXujZSnY9zxdP3K/1DfM/4A9plmlOmrCB0+GBm3
-         XA5jHgzZxV0WAX1y8GFy/NYTrvbiYOfLTy50/dM7PZ31+aHSyVJvDMF/gkRAk9DKGQX9
-         6qxmEiymL97L0V71FfS1AZwdmxa+3sYzzO1KCXZXT4U4ChqHnnShTZnSMbjZMvIGn/Dp
-         +OWg==
-X-Gm-Message-State: AOJu0YxRn2nJ1IhFRaj4ClhPlBwSXh4h7ibZXqSkuyZMCKL2ThaE198N
-        QZMCbJOix1H0a/ZZQ7wH85OUT6gcwbaAjw==
-X-Google-Smtp-Source: AGHT+IEqkaYIojyrujrVO1BiGM9aV1qiSgkX3ciD/0/s2n379RnWi+PZW1+3eZyfAzTGGaaNUj5fuw==
-X-Received: by 2002:a81:7287:0:b0:59b:8da4:dc1 with SMTP id n129-20020a817287000000b0059b8da40dc1mr5820380ywc.38.1694698193125;
-        Thu, 14 Sep 2023 06:29:53 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id h125-20020a816c83000000b00582fae92aa7sm318186ywc.93.2023.09.14.06.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 06:29:52 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59bd2e19c95so11653557b3.0;
-        Thu, 14 Sep 2023 06:29:52 -0700 (PDT)
-X-Received: by 2002:a0d:fe43:0:b0:589:c065:b419 with SMTP id
- o64-20020a0dfe43000000b00589c065b419mr5624958ywf.34.1694698192345; Thu, 14
- Sep 2023 06:29:52 -0700 (PDT)
+        Thu, 14 Sep 2023 09:30:50 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629B51AB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:30:46 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7EE7B660734B;
+        Thu, 14 Sep 2023 14:30:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694698245;
+        bh=s4vst/Ez8mUQ4XmFnXcyatF86C+jChenHUTOQpxRlaY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FpeatmoC/rpQA8OrdxxYeSUlOGPtksLLxBhfwRgzMQS9Kl4VqEma2uMnZaZE+Uhtg
+         p7OTKJe72Xey/UI2zds6wfY+hRnSUjCXPIqX7ZqCMj3LuC9jstK9t0UXhYoP8BNIr+
+         tKOay4D3yzf9wWawNrNNFFWsfn1Di1QBybmoig0mSc2PV3mDokVl+e12uvYTydG2T+
+         iSWSwYDe87vV5ks2xn5YIHE86Tioh0YZQuUf1Q4b7OzY1e5Rtfa7GkZ4xQAFr1gBJ7
+         Q3aHYFrPkTeFe/oufa/TZ50SqibVOxh1uAEMg1X2pea9SCx+24KyZ4aZnT/ldBCuDd
+         xsjR/5qN8KZpA==
+Date:   Thu, 14 Sep 2023 15:30:41 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+Message-ID: <20230914153041.569f39bb@collabora.com>
+In-Reply-To: <20230914152703.78b1ac82@collabora.com>
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+        <20230905100306.3564e729@collabora.com>
+        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+        <20230913094832.3317c2df@collabora.com>
+        <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+        <20230914093626.19692c24@collabora.com>
+        <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
+        <20230914102737.08e61498@collabora.com>
+        <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
+        <20230914135840.5e0e11fe@collabora.com>
+        <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
+        <20230914152703.78b1ac82@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-15-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20230912045157.177966-15-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 14 Sep 2023 15:29:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWRxaBsPAn0OR15WFua_5HZVPTmWabFnnex5gDLKjE9Cw@mail.gmail.com>
-Message-ID: <CAMuHMdWRxaBsPAn0OR15WFua_5HZVPTmWabFnnex5gDLKjE9Cw@mail.gmail.com>
-Subject: Re: [PATCH 14/37] clk: renesas: rzg2l: use u32 for flag and mux_flags
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+On Thu, 14 Sep 2023 15:27:03 +0200
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> flag and mux_flags are intended to keep bit masks. Use u32 type for it.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> You should drop the '&& refcount_read(&shmem->pages_use_count)',
+> otherwise you'll never enter this branch (sgt allocation retained
+> a ref, so pages_use_count > 0 when ->sgt != NULL).
 
-Thanks for your patch!
-
-> --- a/drivers/clk/renesas/rzg2l-cpg.h
-> +++ b/drivers/clk/renesas/rzg2l-cpg.h
-> @@ -92,8 +92,8 @@ struct cpg_core_clk {
->         unsigned int conf;
->         const struct clk_div_table *dtable;
->         const char * const *parent_names;
-> -       int flag;
-> -       int mux_flags;
-> +       u32 flag;
-
-"flag" is used for several purposes, which expected different types:
-    - clk_init_data.flags is unsigned long,
-    - The clk_divider_flags parameter of clk_hw_register_divider_table() is u8,
-    - The clk_divider_flags parameter of __clk_hw_register_divider() is u8,
-    - The flags parameter of __devm_clk_hw_register_mux() is unsigned long.
-
-> +       u32 mux_flags;
-
-Actually the clk_mux_flags parameter of __devm_clk_hw_register_mux() is u8.
-
->         int num_parents;
->  };
-
-I guess u32 is fine for all.
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Sorry for the brain fart. You can drop this extra test because its
+redundant (->sgt != NULL implies pages_use_count > 0), but it shouldn't
+prevent you from entering the branch.
