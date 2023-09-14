@@ -2,520 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D2F79FFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF6E79FFBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236946AbjINJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S236840AbjINJKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236903AbjINJJp (ORCPT
+        with ESMTP id S237028AbjINJJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:09:45 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F2C1FE7;
-        Thu, 14 Sep 2023 02:09:12 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RmWcG356PztSfw;
-        Thu, 14 Sep 2023 17:05:02 +0800 (CST)
-Received: from localhost.huawei.com (10.50.163.32) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 14 Sep 2023 17:09:10 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-Subject: [PATCH 2/2] crypto: hisilicon/zip - remove zlib and gzip
-Date:   Thu, 14 Sep 2023 17:09:08 +0800
-Message-ID: <20230914090908.3849318-3-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230914090908.3849318-1-shenyang39@huawei.com>
-References: <20230914090908.3849318-1-shenyang39@huawei.com>
+        Thu, 14 Sep 2023 05:09:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EF01FF9;
+        Thu, 14 Sep 2023 02:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3ap8YNeHPeKAntPLpmd/Ty2H0unMBRgd5XPgyUgJj1Y=; b=PmJ1kPP1I7UU6BkpWRkoow94Bk
+        h1o0NRQNMZlvWueMR4OCg529hT7IbHt2Buxa351v6WFkn4J0ggb6UROsV9RLqkZFapFHD9sXKqlfP
+        UUXGZJKyBkdLR5Um0xfpzkgxrvUv8072SRzTzx/YAEFgXHlRPMunpZX3663l7Q7Q5LvDrlFMNrnTV
+        I7l/rjIXQE038Fj8dBYHWpfvPJUZKhmQxog9zKbBBV5TC4h90bhk+aywwGWVWwtDeK4RxGtUg6p9N
+        tQZoIkkD3uHqSnxHSkCOOb+NN8tKCs62U9jiC+XeQfet7qNd6Yj6S2Do1rgxnWASUxBLuAdVjCzXq
+        6WrmEuRQ==;
+Received: from [54.239.6.190] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qgiLd-0020Rj-3V; Thu, 14 Sep 2023 09:09:17 +0000
+Message-ID: <340cf9f24c85b17a1fe752715d95b2c3b84ac700.camel@infradead.org>
+Subject: Re: [PATCH 8/8] KVM: xen: automatically use the vcpu_info embedded
+ in shared_info
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Date:   Thu, 14 Sep 2023 11:09:15 +0200
+In-Reply-To: <20230914084946.200043-9-paul@xen.org>
+References: <20230914084946.200043-1-paul@xen.org>
+         <20230914084946.200043-9-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-OoGb/RLmU27qv3gP2fwN"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the support of zlib-deflate and gzip.
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
----
- drivers/crypto/hisilicon/zip/zip_crypto.c | 308 ++--------------------
- drivers/crypto/hisilicon/zip/zip_main.c   |   2 +-
- 2 files changed, 22 insertions(+), 288 deletions(-)
+--=-OoGb/RLmU27qv3gP2fwN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 09f60f786779..636ac794ebb7 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -17,38 +17,14 @@
- /* hisi_zip_sqe dw9 */
- #define HZIP_REQ_TYPE_M				GENMASK(7, 0)
- #define HZIP_ALG_TYPE_DEFLATE			0x01
--#define HZIP_ALG_TYPE_ZLIB			0x02
--#define HZIP_ALG_TYPE_GZIP			0x03
- #define HZIP_BUF_TYPE_M				GENMASK(11, 8)
--#define HZIP_PBUFFER				0x0
- #define HZIP_SGL				0x1
- 
--#define HZIP_ZLIB_HEAD_SIZE			2
--#define HZIP_GZIP_HEAD_SIZE			10
--
--#define GZIP_HEAD_FHCRC_BIT			BIT(1)
--#define GZIP_HEAD_FEXTRA_BIT			BIT(2)
--#define GZIP_HEAD_FNAME_BIT			BIT(3)
--#define GZIP_HEAD_FCOMMENT_BIT			BIT(4)
--
--#define GZIP_HEAD_FLG_SHIFT			3
--#define GZIP_HEAD_FEXTRA_SHIFT			10
--#define GZIP_HEAD_FEXTRA_XLEN			2UL
--#define GZIP_HEAD_FHCRC_SIZE			2
--
--#define HZIP_GZIP_HEAD_BUF			256
- #define HZIP_ALG_PRIORITY			300
- #define HZIP_SGL_SGE_NR				10
- 
--#define HZIP_ALG_ZLIB				GENMASK(1, 0)
--#define HZIP_ALG_GZIP				GENMASK(3, 2)
- #define HZIP_ALG_DEFLATE			GENMASK(5, 4)
- 
--static const u8 zlib_head[HZIP_ZLIB_HEAD_SIZE] = {0x78, 0x9c};
--static const u8 gzip_head[HZIP_GZIP_HEAD_SIZE] = {
--	0x1f, 0x8b, 0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x03
--};
--
- enum hisi_zip_alg_type {
- 	HZIP_ALG_TYPE_COMP = 0,
- 	HZIP_ALG_TYPE_DECOMP = 1,
-@@ -61,22 +37,10 @@ enum {
- };
- 
- #define COMP_NAME_TO_TYPE(alg_name)					\
--	(!strcmp((alg_name), "deflate") ? HZIP_ALG_TYPE_DEFLATE :	\
--	(!strcmp((alg_name), "zlib-deflate") ? HZIP_ALG_TYPE_ZLIB :	\
--	 !strcmp((alg_name), "gzip") ? HZIP_ALG_TYPE_GZIP : 0))		\
--
--#define TO_HEAD_SIZE(req_type)						\
--	(((req_type) == HZIP_ALG_TYPE_ZLIB) ? sizeof(zlib_head) :	\
--	 ((req_type) == HZIP_ALG_TYPE_GZIP) ? sizeof(gzip_head) : 0)	\
--
--#define TO_HEAD(req_type)						\
--	(((req_type) == HZIP_ALG_TYPE_ZLIB) ? zlib_head :		\
--	 ((req_type) == HZIP_ALG_TYPE_GZIP) ? gzip_head : NULL)		\
-+	(!strcmp((alg_name), "deflate") ? HZIP_ALG_TYPE_DEFLATE : 0)
- 
- struct hisi_zip_req {
- 	struct acomp_req *req;
--	u32 sskip;
--	u32 dskip;
- 	struct hisi_acc_hw_sgl *hw_src;
- 	struct hisi_acc_hw_sgl *hw_dst;
- 	dma_addr_t dma_src;
-@@ -141,85 +105,8 @@ static u16 sgl_sge_nr = HZIP_SGL_SGE_NR;
- module_param_cb(sgl_sge_nr, &sgl_sge_nr_ops, &sgl_sge_nr, 0444);
- MODULE_PARM_DESC(sgl_sge_nr, "Number of sge in sgl(1-255)");
- 
--static u32 get_extra_field_size(const u8 *start)
--{
--	return *((u16 *)start) + GZIP_HEAD_FEXTRA_XLEN;
--}
--
--static u32 get_name_field_size(const u8 *start)
--{
--	return strlen(start) + 1;
--}
--
--static u32 get_comment_field_size(const u8 *start)
--{
--	return strlen(start) + 1;
--}
--
--static u32 __get_gzip_head_size(const u8 *src)
--{
--	u8 head_flg = *(src + GZIP_HEAD_FLG_SHIFT);
--	u32 size = GZIP_HEAD_FEXTRA_SHIFT;
--
--	if (head_flg & GZIP_HEAD_FEXTRA_BIT)
--		size += get_extra_field_size(src + size);
--	if (head_flg & GZIP_HEAD_FNAME_BIT)
--		size += get_name_field_size(src + size);
--	if (head_flg & GZIP_HEAD_FCOMMENT_BIT)
--		size += get_comment_field_size(src + size);
--	if (head_flg & GZIP_HEAD_FHCRC_BIT)
--		size += GZIP_HEAD_FHCRC_SIZE;
--
--	return size;
--}
--
--static u32 __maybe_unused get_gzip_head_size(struct scatterlist *sgl)
--{
--	char buf[HZIP_GZIP_HEAD_BUF];
--
--	sg_copy_to_buffer(sgl, sg_nents(sgl), buf, sizeof(buf));
--
--	return __get_gzip_head_size(buf);
--}
--
--static int add_comp_head(struct scatterlist *dst, u8 req_type)
--{
--	int head_size = TO_HEAD_SIZE(req_type);
--	const u8 *head = TO_HEAD(req_type);
--	int ret;
--
--	ret = sg_copy_from_buffer(dst, sg_nents(dst), head, head_size);
--	if (unlikely(ret != head_size)) {
--		pr_err("the head size of buffer is wrong (%d)!\n", ret);
--		return -ENOMEM;
--	}
--
--	return head_size;
--}
--
--static int get_comp_head_size(struct acomp_req *acomp_req, u8 req_type)
--{
--	if (unlikely(!acomp_req->src || !acomp_req->slen))
--		return -EINVAL;
--
--	if (unlikely(req_type == HZIP_ALG_TYPE_GZIP &&
--		     acomp_req->slen < GZIP_HEAD_FEXTRA_SHIFT))
--		return -EINVAL;
--
--	switch (req_type) {
--	case HZIP_ALG_TYPE_ZLIB:
--		return TO_HEAD_SIZE(HZIP_ALG_TYPE_ZLIB);
--	case HZIP_ALG_TYPE_GZIP:
--		return TO_HEAD_SIZE(HZIP_ALG_TYPE_GZIP);
--	default:
--		pr_err("request type does not support!\n");
--		return -EINVAL;
--	}
--}
--
--static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,
--						struct hisi_zip_qp_ctx *qp_ctx,
--						size_t head_size, bool is_comp)
-+static struct hisi_zip_req *hisi_zip_create_req(struct hisi_zip_qp_ctx *qp_ctx,
-+						struct acomp_req *req)
- {
- 	struct hisi_zip_req_q *req_q = &qp_ctx->req_q;
- 	struct hisi_zip_req *q = req_q->q;
-@@ -242,14 +129,6 @@ static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,
- 	req_cache->req_id = req_id;
- 	req_cache->req = req;
- 
--	if (is_comp) {
--		req_cache->sskip = 0;
--		req_cache->dskip = head_size;
--	} else {
--		req_cache->sskip = head_size;
--		req_cache->dskip = 0;
--	}
--
- 	return req_cache;
- }
- 
-@@ -275,10 +154,8 @@ static void hisi_zip_fill_buf_size(struct hisi_zip_sqe *sqe, struct hisi_zip_req
- {
- 	struct acomp_req *a_req = req->req;
- 
--	sqe->input_data_length = a_req->slen - req->sskip;
--	sqe->dest_avail_out = a_req->dlen - req->dskip;
--	sqe->dw7 = FIELD_PREP(HZIP_IN_SGE_DATA_OFFSET_M, req->sskip);
--	sqe->dw8 = FIELD_PREP(HZIP_OUT_SGE_DATA_OFFSET_M, req->dskip);
-+	sqe->input_data_length = a_req->slen;
-+	sqe->dest_avail_out = a_req->dlen;
- }
- 
- static void hisi_zip_fill_buf_type(struct hisi_zip_sqe *sqe, u8 buf_type)
-@@ -299,12 +176,7 @@ static void hisi_zip_fill_req_type(struct hisi_zip_sqe *sqe, u8 req_type)
- 	sqe->dw9 = val;
- }
- 
--static void hisi_zip_fill_tag_v1(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
--{
--	sqe->dw13 = req->req_id;
--}
--
--static void hisi_zip_fill_tag_v2(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-+static void hisi_zip_fill_tag(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
- {
- 	sqe->dw26 = req->req_id;
- }
-@@ -333,8 +205,8 @@ static void hisi_zip_fill_sqe(struct hisi_zip_ctx *ctx, struct hisi_zip_sqe *sqe
- 	ops->fill_sqe_type(sqe, ops->sqe_type);
- }
- 
--static int hisi_zip_do_work(struct hisi_zip_req *req,
--			    struct hisi_zip_qp_ctx *qp_ctx)
-+static int hisi_zip_do_work(struct hisi_zip_qp_ctx *qp_ctx,
-+			    struct hisi_zip_req *req)
- {
- 	struct hisi_acc_sgl_pool *pool = qp_ctx->sgl_pool;
- 	struct hisi_zip_dfx *dfx = &qp_ctx->zip_dev->dfx;
-@@ -386,12 +258,7 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
- 	return ret;
- }
- 
--static u32 hisi_zip_get_tag_v1(struct hisi_zip_sqe *sqe)
--{
--	return sqe->dw13;
--}
--
--static u32 hisi_zip_get_tag_v2(struct hisi_zip_sqe *sqe)
-+static u32 hisi_zip_get_tag(struct hisi_zip_sqe *sqe)
- {
- 	return sqe->dw26;
- }
-@@ -417,8 +284,8 @@ static void hisi_zip_acomp_cb(struct hisi_qp *qp, void *data)
- 	u32 tag = ops->get_tag(sqe);
- 	struct hisi_zip_req *req = req_q->q + tag;
- 	struct acomp_req *acomp_req = req->req;
--	u32 status, dlen, head_size;
- 	int err = 0;
-+	u32 status;
- 
- 	atomic64_inc(&dfx->recv_cnt);
- 	status = ops->get_status(sqe);
-@@ -430,13 +297,10 @@ static void hisi_zip_acomp_cb(struct hisi_qp *qp, void *data)
- 		err = -EIO;
- 	}
- 
--	dlen = ops->get_dstlen(sqe);
--
- 	hisi_acc_sg_buf_unmap(dev, acomp_req->src, req->hw_src);
- 	hisi_acc_sg_buf_unmap(dev, acomp_req->dst, req->hw_dst);
- 
--	head_size = (qp->alg_type == 0) ? TO_HEAD_SIZE(qp->req_type) : 0;
--	acomp_req->dlen = dlen + head_size;
-+	acomp_req->dlen = ops->get_dstlen(sqe);
- 
- 	if (acomp_req->base.complete)
- 		acomp_request_complete(acomp_req, err);
-@@ -450,24 +314,13 @@ static int hisi_zip_acompress(struct acomp_req *acomp_req)
- 	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_COMP];
- 	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
- 	struct hisi_zip_req *req;
--	int head_size = 0;
- 	int ret;
- 
--	/* let's output compression head now */
--	if (qp_ctx->qp->req_type != HZIP_ALG_TYPE_DEFLATE) {
--		head_size = add_comp_head(acomp_req->dst, qp_ctx->qp->req_type);
--		if (unlikely(head_size < 0)) {
--			dev_err_ratelimited(dev, "failed to add comp head (%d)!\n",
--					head_size);
--			return head_size;
--		}
--	}
--
--	req = hisi_zip_create_req(acomp_req, qp_ctx, head_size, true);
-+	req = hisi_zip_create_req(qp_ctx, acomp_req);
- 	if (IS_ERR(req))
- 		return PTR_ERR(req);
- 
--	ret = hisi_zip_do_work(req, qp_ctx);
-+	ret = hisi_zip_do_work(qp_ctx, req);
- 	if (unlikely(ret != -EINPROGRESS)) {
- 		dev_info_ratelimited(dev, "failed to do compress (%d)!\n", ret);
- 		hisi_zip_remove_req(qp_ctx, req);
-@@ -482,22 +335,13 @@ static int hisi_zip_adecompress(struct acomp_req *acomp_req)
- 	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_DECOMP];
- 	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
- 	struct hisi_zip_req *req;
--	int head_size = 0, ret;
--
--	if (qp_ctx->qp->req_type != HZIP_ALG_TYPE_DEFLATE) {
--		head_size = get_comp_head_size(acomp_req, qp_ctx->qp->req_type);
--		if (unlikely(head_size < 0)) {
--			dev_err_ratelimited(dev, "failed to get comp head size (%d)!\n",
--					head_size);
--			return head_size;
--		}
--	}
-+	int ret;
- 
--	req = hisi_zip_create_req(acomp_req, qp_ctx, head_size, false);
-+	req = hisi_zip_create_req(qp_ctx, acomp_req);
- 	if (IS_ERR(req))
- 		return PTR_ERR(req);
- 
--	ret = hisi_zip_do_work(req, qp_ctx);
-+	ret = hisi_zip_do_work(qp_ctx, req);
- 	if (unlikely(ret != -EINPROGRESS)) {
- 		dev_info_ratelimited(dev, "failed to do decompress (%d)!\n",
- 				     ret);
-@@ -534,28 +378,15 @@ static void hisi_zip_release_qp(struct hisi_zip_qp_ctx *qp_ctx)
- 	hisi_qm_free_qps(&qp_ctx->qp, 1);
- }
- 
--static const struct hisi_zip_sqe_ops hisi_zip_ops_v1 = {
--	.sqe_type		= 0,
--	.fill_addr		= hisi_zip_fill_addr,
--	.fill_buf_size		= hisi_zip_fill_buf_size,
--	.fill_buf_type		= hisi_zip_fill_buf_type,
--	.fill_req_type		= hisi_zip_fill_req_type,
--	.fill_tag		= hisi_zip_fill_tag_v1,
--	.fill_sqe_type		= hisi_zip_fill_sqe_type,
--	.get_tag		= hisi_zip_get_tag_v1,
--	.get_status		= hisi_zip_get_status,
--	.get_dstlen		= hisi_zip_get_dstlen,
--};
--
--static const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
-+static const struct hisi_zip_sqe_ops hisi_zip_ops = {
- 	.sqe_type		= 0x3,
- 	.fill_addr		= hisi_zip_fill_addr,
- 	.fill_buf_size		= hisi_zip_fill_buf_size,
- 	.fill_buf_type		= hisi_zip_fill_buf_type,
- 	.fill_req_type		= hisi_zip_fill_req_type,
--	.fill_tag		= hisi_zip_fill_tag_v2,
-+	.fill_tag		= hisi_zip_fill_tag,
- 	.fill_sqe_type		= hisi_zip_fill_sqe_type,
--	.get_tag		= hisi_zip_get_tag_v2,
-+	.get_tag		= hisi_zip_get_tag,
- 	.get_status		= hisi_zip_get_status,
- 	.get_dstlen		= hisi_zip_get_dstlen,
- };
-@@ -591,10 +422,7 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
- 		qp_ctx->zip_dev = hisi_zip;
- 	}
- 
--	if (hisi_zip->qm.ver < QM_HW_V3)
--		hisi_zip_ctx->ops = &hisi_zip_ops_v1;
--	else
--		hisi_zip_ctx->ops = &hisi_zip_ops_v2;
-+	hisi_zip_ctx->ops = &hisi_zip_ops;
- 
- 	return 0;
- }
-@@ -788,106 +616,12 @@ static void hisi_zip_unregister_deflate(struct hisi_qm *qm)
- 	crypto_unregister_acomp(&hisi_zip_acomp_deflate);
- }
- 
--static struct acomp_alg hisi_zip_acomp_zlib = {
--	.init			= hisi_zip_acomp_init,
--	.exit			= hisi_zip_acomp_exit,
--	.compress		= hisi_zip_acompress,
--	.decompress		= hisi_zip_adecompress,
--	.base			= {
--		.cra_name		= "zlib-deflate",
--		.cra_driver_name	= "hisi-zlib-acomp",
--		.cra_module		= THIS_MODULE,
--		.cra_priority           = HZIP_ALG_PRIORITY,
--		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
--	}
--};
--
--static int hisi_zip_register_zlib(struct hisi_qm *qm)
--{
--	int ret;
--
--	if (!hisi_zip_alg_support(qm, HZIP_ALG_ZLIB))
--		return 0;
--
--	ret = crypto_register_acomp(&hisi_zip_acomp_zlib);
--	if (ret)
--		dev_err(&qm->pdev->dev, "failed to register to zlib (%d)!\n", ret);
--
--	return ret;
--}
--
--static void hisi_zip_unregister_zlib(struct hisi_qm *qm)
--{
--	if (!hisi_zip_alg_support(qm, HZIP_ALG_ZLIB))
--		return;
--
--	crypto_unregister_acomp(&hisi_zip_acomp_zlib);
--}
--
--static struct acomp_alg hisi_zip_acomp_gzip = {
--	.init			= hisi_zip_acomp_init,
--	.exit			= hisi_zip_acomp_exit,
--	.compress		= hisi_zip_acompress,
--	.decompress		= hisi_zip_adecompress,
--	.base			= {
--		.cra_name		= "gzip",
--		.cra_driver_name	= "hisi-gzip-acomp",
--		.cra_module		= THIS_MODULE,
--		.cra_priority           = HZIP_ALG_PRIORITY,
--		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
--	}
--};
--
--static int hisi_zip_register_gzip(struct hisi_qm *qm)
--{
--	int ret;
--
--	if (!hisi_zip_alg_support(qm, HZIP_ALG_GZIP))
--		return 0;
--
--	ret = crypto_register_acomp(&hisi_zip_acomp_gzip);
--	if (ret)
--		dev_err(&qm->pdev->dev, "failed to register to gzip (%d)!\n", ret);
--
--	return ret;
--}
--
--static void hisi_zip_unregister_gzip(struct hisi_qm *qm)
--{
--	if (!hisi_zip_alg_support(qm, HZIP_ALG_GZIP))
--		return;
--
--	crypto_unregister_acomp(&hisi_zip_acomp_gzip);
--}
--
- int hisi_zip_register_to_crypto(struct hisi_qm *qm)
- {
--	int ret = 0;
--
--	ret = hisi_zip_register_deflate(qm);
--	if (ret)
--		return ret;
--
--	ret = hisi_zip_register_zlib(qm);
--	if (ret)
--		goto err_unreg_deflate;
--
--	ret = hisi_zip_register_gzip(qm);
--	if (ret)
--		goto err_unreg_zlib;
--
--	return 0;
--
--err_unreg_zlib:
--	hisi_zip_unregister_zlib(qm);
--err_unreg_deflate:
--	hisi_zip_unregister_deflate(qm);
--	return ret;
-+	return hisi_zip_register_deflate(qm);
- }
- 
- void hisi_zip_unregister_from_crypto(struct hisi_qm *qm)
- {
- 	hisi_zip_unregister_deflate(qm);
--	hisi_zip_unregister_zlib(qm);
--	hisi_zip_unregister_gzip(qm);
- }
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index da7a23c0e594..0d5d1ee363e4 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -236,7 +236,7 @@ static struct hisi_qm_cap_info zip_basic_cap_info[] = {
- 	{ZIP_CLUSTER_DECOMP_NUM_CAP, 0x313C, 0, GENMASK(7, 0), 0x6, 0x6, 0x3},
- 	{ZIP_DECOMP_ENABLE_BITMAP, 0x3140, 16, GENMASK(15, 0), 0xFC, 0xFC, 0x1C},
- 	{ZIP_COMP_ENABLE_BITMAP, 0x3140, 0, GENMASK(15, 0), 0x3, 0x3, 0x3},
--	{ZIP_DRV_ALG_BITMAP, 0x3144, 0, GENMASK(31, 0), 0xF, 0xF, 0x3F},
-+	{ZIP_DRV_ALG_BITMAP, 0x3144, 0, GENMASK(31, 0), 0x0, 0x0, 0x30},
- 	{ZIP_DEV_ALG_BITMAP, 0x3148, 0, GENMASK(31, 0), 0xF, 0xF, 0x3F},
- 	{ZIP_CORE1_ALG_BITMAP, 0x314C, 0, GENMASK(31, 0), 0x5, 0x5, 0xD5},
- 	{ZIP_CORE2_ALG_BITMAP, 0x3150, 0, GENMASK(31, 0), 0x5, 0x5, 0xD5},
--- 
-2.33.0
+On Thu, 2023-09-14 at 08:49 +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
+>=20
+> Add a KVM_XEN_HVM_CONFIG_DEFAULT_VCPU_INFO flag so that the VMM knows it
+> need only set the KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO attribute in response =
+to
+> a VCPUOP_register_vcpu_info hypercall, and modify get_vcpu_info_cache()
+> to pass back a pointer to the shared info pfn cache (and appropriate
+> offset) for any of the first 32 vCPUs if the attribute has not been set.
 
+Might be simpler just to link this behaviour to the
+KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA support? If userspace sets the
+shared_info as an HVA, then the default vcpu_info will be used therein.
+
+--=-OoGb/RLmU27qv3gP2fwN
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE0MDkwOTE1WjAvBgkqhkiG9w0BCQQxIgQgqVkZdmOT
+K690bi0Xc7GaTSk4WggrlVEjnDkW/GZg5Xowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgALVHEe62nDOzxdmBDkyY+yaG/ikG7vkwPC
+F8LSkSFTfIXA/7YLWX8LYyfOu9zpMlYrJuWZMOmzhUhRD5qi/XLYry/7FRy9WdxCYL79lJ6gpiWP
+zH9xavV8NdSq/hDiUggZzsJtFFKUKVpRw3HOLn9uOmPk0VsiYqAYEmd9zRdexxrSoJ3K26xEagRe
+n3ZuLj531ygUMvS7iRfXLw+MxF2DKYpvv00XR9kX2IkXihGSTVrEALNfs0k8DSz4xs8EQC+XgmMM
+uy1DKR+94Lz6nX2FRln5PZJpjGTl8iok//yQGKenJ/4MjiI9MVSF0OwrZmXovj0nhDqgJEZ5maC4
+4hCE88cGl/RB7/cMbYCnTsJBPVl7cdb/FzTC+uj42gtxLkR7v1QuGZaBLNf04mG+GG/i/Jpa/dVG
+zGo8RZpaNJlh0U5x93+RndRCf4HIVYjoXJNTaQHpLSbLGSxDiMLbLr5asrBrSvME+vC+Ic+dkNcG
+vd8z2VJJ3dCS0rg4mr32ScoN2/8cr2Kdj0RMQAFpfAsgsEBtU5eZmBOMIto/w/z+gRrWdVuzv0At
+PGdur8jpsrMzFAPN0yykg28N695gI96VvC25RxMsg1WgQlCc6Zd6vvloLeZwe26FzsJ9fqDKuB41
+2v2EhTgkWeKo0p4vRrsrm2RplDQq4GArp7imuVEihgAAAAAAAA==
+
+
+--=-OoGb/RLmU27qv3gP2fwN--
