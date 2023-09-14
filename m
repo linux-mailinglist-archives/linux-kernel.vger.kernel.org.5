@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 967097A1011
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758A67A101E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjINVwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S229721AbjINV5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjINVwS (ORCPT
+        with ESMTP id S229447AbjINV5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:52:18 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E08D1BFA;
-        Thu, 14 Sep 2023 14:52:14 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-271914b8aa4so1097626a91.1;
-        Thu, 14 Sep 2023 14:52:14 -0700 (PDT)
+        Thu, 14 Sep 2023 17:57:22 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C321BFA;
+        Thu, 14 Sep 2023 14:57:18 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0d5b16aacso12418325ad.1;
+        Thu, 14 Sep 2023 14:57:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694728334; x=1695333134; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gHdSXUe2YO9OjLwFdWgsvV1wdj09sbciRHGaU5xVoJs=;
-        b=S/uVCLwkOg/8fs95EUeYN+UodRWH/0sTOrPco0h37xqlhKmpWRPwqt4aPIVz0d6u+u
-         9OCxI9wkVGG7jDVr92reSEKEls/GQBikRaFYr8O19ZZCz+I2Zf5Jax4KuIZHhmfYNUsi
-         5XzhCy1nNGghk/GPC7ic/e5iDnXbTsivGO9GRvL1SOHfrQuODa+7YZ3S+TGICI4dXA2a
-         xNJi0jfGIqIbHyxrFCc6tRgxIhwswkooa9MnhMJVxHcXtUkrEjduwbXss1wxLGP7hOue
-         xT9YtlhA/sodn7Z8Ums4n23LbNf1HdnCCz8oNitiGAsJkJ+rfPVAsvTR1vN6wHM0EfX1
-         rt6Q==
+        d=gmail.com; s=20221208; t=1694728638; x=1695333438; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X34N50NaiDX+PBJtKJBqu0HsGsPzsSqdEPNcf7aeIrs=;
+        b=PX2VQQqAiWTaBfzhNszo/To7XsEfIzIpKOBNFVhclk15Ev+P8MYg3cD5ngxpZKFNKH
+         /9V3JJDtBfQwkwOzxW3WplbkYp55+pEXM55fEOCM1ZuDQPUEFrsYgYe+mQ8ae+1wLF/5
+         IIHi2f1Rcg03TIrsFfpkyjRO/uHjz4aFzhCZSxzd/qNksGpV0zsv8uVr5MR83oTrvyeL
+         p+ovLEkuckafvMBWiCH4+p5XDkOZMmRUGtuz44/m+qS7AHoDqKOGtEut6cQoldMyNVAG
+         TacqQZzSCt5KOvoIJbouYvc4YaSbt+mK6OMstpVI4PBYxwtg8m1fFVXIUOF7B4Cu6cTM
+         h5Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694728334; x=1695333134;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gHdSXUe2YO9OjLwFdWgsvV1wdj09sbciRHGaU5xVoJs=;
-        b=mka6VC6Uqe5nhZPrq7I1L9om3poG0C0xOSz2qHXIHNUN+iWy+2kP/PGDZ7/2IGt8p/
-         Wm+tK2z69lhDR3R7CP2oYpVn6SSJshgMqxF6AhkAUIZxJ7I0mT4+2kkyULrv/HhKw170
-         /yhsiArjjJHqDA+soK8hxmwMFAT1foodUePiBuE0c+KPUtiuC4veSraSa5a+GgLLQcxG
-         dShOLhl8XcgIDm7FQMXCHCxEqqCA0q2YAAe8e8R/MJgHqBA7vPqSKk8hEtMt1ytJexCs
-         rBCslTP2F1fZp8x49097Jr17jLkRi6ZEjE+fybv5xu7NND/SXwAXPlTX1nIRcV4t4+Zh
-         MELQ==
-X-Gm-Message-State: AOJu0Yzfde+KEUcsH59kYTmbJ5Iq4jwjTWMNZVFQEELA7WF3kjVIPmmd
-        ht4ti98CSEeE4ZATL7zoUEs=
-X-Google-Smtp-Source: AGHT+IHkVYJPEorfPQ8KAPWgvo1j0blda6r6Vu03J32w1cBLrnmwap8eY+BMOr0QV0YqAeIv2BpvIg==
-X-Received: by 2002:a17:90b:f04:b0:274:6d36:5b32 with SMTP id br4-20020a17090b0f0400b002746d365b32mr2736464pjb.30.1694728333969;
-        Thu, 14 Sep 2023 14:52:13 -0700 (PDT)
-Received: from [10.67.51.148] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id t14-20020a17090ae50e00b002676e961261sm3834685pjy.1.2023.09.14.14.52.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 14:52:13 -0700 (PDT)
-Message-ID: <41d02786-ffcb-89b0-4087-bd8fb138177f@gmail.com>
-Date:   Thu, 14 Sep 2023 14:52:11 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH tty v1 22/74] serial: bcm63xx-uart: Use port lock wrappers
-Content-Language: en-US
-To:     John Ogness <john.ogness@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Yangtao Li <frank.li@vivo.com>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>
-References: <20230914183831.587273-1-john.ogness@linutronix.de>
- <20230914183831.587273-23-john.ogness@linutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230914183831.587273-23-john.ogness@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        d=1e100.net; s=20230601; t=1694728638; x=1695333438;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X34N50NaiDX+PBJtKJBqu0HsGsPzsSqdEPNcf7aeIrs=;
+        b=SvVWCdufCR/8/7KP1NlAUj7oLfRWaq1cq4JBaFIGkwO6meKGrlkRoJ85HSjHquwPVM
+         8olVUlPFt04sAc9CiKCjtH9LQ86FoYzLSjsqJgfY7xZ01A6GN2f7+SV02gQPw5BiA4kK
+         fmhzL03469LO35MN9T7hciN15806X9jEZuo6sbIaVbdlWeE4pcslmoAUO6usITqoyUs9
+         zYLQ57fISy1lVc7iqXbk9qjYt/1/094ahRCfplBiLpWveKZ9pJWpsQvlCiOUGAz5bEc2
+         w0PB8zAKuDXoY+Luan9SjKAkzK4P9vDZTq3+rJEZfRsd5oIS6n8d3KlI37hifA/OhofP
+         E3ug==
+X-Gm-Message-State: AOJu0YxMDdjYddPkBe4dDchIu4LIr+sGqNlVllO7jUWArbbfK9KT+ig/
+        qYUbTL1ILaRQETn3nYCosb8=
+X-Google-Smtp-Source: AGHT+IGIaI/uWkQLliCTRlQFV1QfmbwrrxnMWQ0mT8W+Jdap0w9HAyjlgBEZRZvbgXVCbtXJ8c4H3g==
+X-Received: by 2002:a17:903:2284:b0:1bc:8fca:9d59 with SMTP id b4-20020a170903228400b001bc8fca9d59mr7882429plh.29.1694728638036;
+        Thu, 14 Sep 2023 14:57:18 -0700 (PDT)
+Received: from smtpclient.apple (c-73-162-233-46.hsd1.ca.comcast.net. [73.162.233.46])
+        by smtp.gmail.com with ESMTPSA id bb6-20020a170902bc8600b001bba7aab822sm2049158plb.5.2023.09.14.14.57.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Sep 2023 14:57:17 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20230914152620.2743033-3-surenb@google.com>
+Date:   Thu, 14 Sep 2023 14:57:04 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>, lokeshgidra@google.com,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>, mhocko@suse.com,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, Liam.Howlett@oracle.com,
+        Jann Horn <jannh@google.com>, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
 Content-Transfer-Encoding: 7bit
+Message-Id: <4F9BBE45-22D0-4F8D-BA56-CA3459998DC4@gmail.com>
+References: <20230914152620.2743033-1-surenb@google.com>
+ <20230914152620.2743033-3-surenb@google.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+X-Mailer: Apple Mail (2.3731.700.6)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 11:37, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> When a serial port is used for kernel console output, then all
-> modifications to the UART registers which are done from other contexts,
-> e.g. getty, termios, are interference points for the kernel console.
-> 
-> So far this has been ignored and the printk output is based on the
-> principle of hope. The rework of the console infrastructure which aims to
-> support threaded and atomic consoles, requires to mark sections which
-> modify the UART registers as unsafe. This allows the atomic write function
-> to make informed decisions and eventually to restore operational state. It
-> also allows to prevent the regular UART code from modifying UART registers
-> while printk output is in progress.
-> 
-> All modifications of UART registers are guarded by the UART port lock,
-> which provides an obvious synchronization point with the console
-> infrastructure.
-> 
-> To avoid adding this functionality to all UART drivers, wrap the
-> spin_[un]lock*() invocations for uart_port::lock into helper functions
-> which just contain the spin_[un]lock*() invocations for now. In a
-> subsequent step these helpers will gain the console synchronization
-> mechanisms.
-> 
-> Converted with coccinelle. No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+> On Sep 14, 2023, at 8:26 AM, Suren Baghdasaryan <surenb@google.com> wrote:
+> 
+> + 	if (!pte_same(ptep_clear_flush(src_vma, src_addr, src_pte),
+> +       	orig_src_pte))
+> + 		BUG_ON(1);
 
+Just a minor detail regarding these few lines:
+
+Besides the less-than-ideal use of BUG_ON() here, I think that this code
+assumes that the PTE cannot change at this point. However, as the PTE was
+still mapped at this point, I think the access and dirty bits can be set.
+
+tl;dr: this appears to be triggerable by userspace.
+
+[ as for the performance of this code, the lack of batching would mean
+  that for multithreaded applications where more than a single page is
+  remapped, performance would suffer ]
