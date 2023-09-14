@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A547A043E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836647A0442
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235041AbjINMra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 08:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S237117AbjINMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 08:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINMr3 (ORCPT
+        with ESMTP id S229485AbjINMrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:47:29 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C301FCC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 05:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694695644; x=1726231644;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tMp3otj0E3N1naQgnjsWYmftiJNjCbwcCEIwK3540lA=;
-  b=g+xI9VjIvRdUNb9EocDLqFfUCFIaA1HpTJiR84m2RJnz4nEweEOEigO8
-   /2evzxF+Iw06ajZF4w3ghD34lInDgW0RRCrwdlPpeV1YhFuWBXN2ZULXD
-   VAnCrojXnBiLMeTORdZ2im1Gy2kr7gpHNrFyxMEGZuxsQxurW6TqLG1tj
-   mB9TWDFtGTRsDg5CTncaR8iJz9WL0kGBgcYEfX98+KLDjANN2UHLFyzMd
-   y6SGO3fatjQkfWgsg4LYlZg9CEnuyAoWcGNsVmy5j28zK/W4H2P8CbW2Q
-   zp9Bd8maY+xoBcBvNBmyHnsaka0TzM6vqmr12V0hMRjEfLgDVsb+z5kx8
-   g==;
-X-CSE-ConnectionGUID: lkrc8tYBQW+sSqrl8F8mbg==
-X-CSE-MsgGUID: vLu6P7iFQCiOKWUeCiVYmQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="asc'?scan'208";a="4824435"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 05:47:24 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 14 Sep 2023 05:46:47 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 14 Sep 2023 05:46:45 -0700
-Date:   Thu, 14 Sep 2023 13:46:29 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-CC:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v4 4/5] riscv: Vector checksum library
-Message-ID: <20230914-pennant-obligate-db3adf056281@wendy>
-References: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
- <20230911-optimize_checksum-v4-4-77cc2ad9e9d7@rivosinc.com>
+        Thu, 14 Sep 2023 08:47:52 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF4B1FCC;
+        Thu, 14 Sep 2023 05:47:48 -0700 (PDT)
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 717C386940;
+        Thu, 14 Sep 2023 14:47:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1694695667;
+        bh=E43S9VBhjuwYwLYR+zQD8HsSCmgwf9f6i9kez2c5CxY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZY0QW8HaGSTPGuNgJzhWV4HYojM0LbS50NUK1MHm1asJfFKYyokbmPS0jeqSrtp99
+         +17rxQPdxDLj6cQbbTF3IrX2ziNPg/+6BTWA2jIYKHQ5yt74aWnpnp+o0Sybx3L0ti
+         9JtyA/LeGAwG9bOxPkMBS5jy3SJLpes0cUsOKGlfbko3GbzYXyagC6jBvlm2fN4O7n
+         qF6iOJdVOrRIiFi9HQ9Oy6WPd/scWn3E82GarIsTnPD2gmfiX6lKk6isuelWiMH0PN
+         Hqqqy5tKsnJPqMzju2LYK1vmhwaFeIH0NOJm5JQjcLyE4vFHftU5eP1im7iFoFeaot
+         dQuJE0seO+dQw==
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kristian Overskeid <koverskeid@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH v2 net-next] net: hsr: Provide fix for HSRv1 supervisor frames decoding
+Date:   Thu, 14 Sep 2023 14:47:30 +0200
+Message-Id: <20230914124731.1654059-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KDMf+6JZIfT6eNsC"
-Content-Disposition: inline
-In-Reply-To: <20230911-optimize_checksum-v4-4-77cc2ad9e9d7@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---KDMf+6JZIfT6eNsC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Provide fix to decode correctly supervisory frames when HSRv1 version of
+the HSR protocol is used.
 
-On Mon, Sep 11, 2023 at 03:57:14PM -0700, Charlie Jenkins wrote:
-> This patch is not ready for merge as vector support in the kernel is
-> limited. However, the code has been tested in QEMU so the algorithms
-> do work. This code requires the kernel to be compiled with C vector
-> support, but that is not yet possible. It is written in assembly
-> rather than using the GCC vector instrinsics because they did not
-> provide optimal code.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/lib/csum.c | 92 +++++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 92 insertions(+)
->=20
-> diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
-> index 47d98c51bab2..eb4596fc7f5b 100644
-> --- a/arch/riscv/lib/csum.c
-> +++ b/arch/riscv/lib/csum.c
-> @@ -12,6 +12,10 @@
-> =20
->  #include <net/checksum.h>
-> =20
-> +#ifdef CONFIG_RISCV_ISA_V
-> +#include <riscv_vector.h>
+Without this patch console is polluted with:
+ksz-switch spi1.0 lan1: hsr_addr_subst_dest: Unknown node
 
-What actually includes this header, I don't see it in either Andy's
-in-kernel vector series or Bjorn's blake2 one.
-Can you link to the pre-requisites in your cover letter please.
+as a result of destination node's A MAC address equals to:
+00:00:00:00:00:00.
 
-Thanks,
-Conor.
+cat /sys/kernel/debug/hsr/hsr0/node_table
+Node Table entries for (HSR) device
+MAC-Address-A,    MAC-Address-B,    time_in[A], time_in[B], Address-B
+00:00:00:00:00:00 00:10:a1:94:77:30      400bf,       399c,	        0
 
---KDMf+6JZIfT6eNsC
-Content-Type: application/pgp-signature; name="signature.asc"
+It was caused by wrong frames decoding in the hsr_handle_sup_frame().
 
------BEGIN PGP SIGNATURE-----
+As the supervisor frame is encapsulated in HSRv1 frame:
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMApQAKCRB4tDGHoIJi
-0mhkAQCXmf4t51iUccwMbirqaRqdZmk8Yzcti0AGOXOg+2IUZQD/UOoVsc8T1wQw
-644D6sgHFMl2lPtyh7o/BcKqkMHoYgA=
-=61Sl
------END PGP SIGNATURE-----
+SKB_I100000000: 01 15 4e 00 01 2d 00 10 a1 94 77 30 89 2f 00 34
+SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
+SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+SKB_I100000040: 00 00
 
---KDMf+6JZIfT6eNsC--
+The code had to be adjusted accordingly and the MAC-Address-A now
+has the proper address (the MAC-Address-B now has all 0's).
+
+Fixes: eafaa88b3eb7 ("net: hsr: Add support for redbox supervision frames")'
+
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+Changes for v2:
+- Use the proper parsing code altered with eafaa88b3eb7f
+---
+ net/hsr/hsr_framereg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+index b77f1189d19d..6d14d935ee82 100644
+--- a/net/hsr/hsr_framereg.c
++++ b/net/hsr/hsr_framereg.c
+@@ -288,13 +288,13 @@ void hsr_handle_sup_frame(struct hsr_frame_info *frame)
+ 
+ 	/* And leave the HSR tag. */
+ 	if (ethhdr->h_proto == htons(ETH_P_HSR)) {
+-		pull_size = sizeof(struct ethhdr);
++		pull_size = sizeof(struct hsr_tag);
+ 		skb_pull(skb, pull_size);
+ 		total_pull_size += pull_size;
+ 	}
+ 
+ 	/* And leave the HSR sup tag. */
+-	pull_size = sizeof(struct hsr_tag);
++	pull_size = sizeof(struct hsr_sup_tag);
+ 	skb_pull(skb, pull_size);
+ 	total_pull_size += pull_size;
+ 
+-- 
+2.20.1
+
