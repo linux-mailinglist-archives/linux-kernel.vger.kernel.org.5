@@ -2,164 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4420079F87D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E5F79F885
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 05:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbjINCyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
+        id S233846AbjINDDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 23:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjINCyt (ORCPT
+        with ESMTP id S233617AbjINDDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:54:49 -0400
+        Wed, 13 Sep 2023 23:03:53 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDD7B10CC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:53:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2435F19BB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 20:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694660038;
+        s=mimecast20190719; t=1694660582;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=79Pt1h07snqQgLqURn+X2LUbFiUGOvFlgIEpyAPEPwA=;
-        b=PGLDo9+UbINTkJkYntelr378T7dEbRC93YoS/weWtMEdhv1s52BpmcWDIBajUpzXT33PJr
-        yJkYqU/mLzKpdaeBXlb+AjGRHapiMJ4dXgOOtaEFh8S9cEyyrcfNWuq4jx6dgWvmB9gHeG
-        /TRClzCnuUNMwQtDb/mXOS5jUezfafc=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-183-CJ_HSQmDN-Czg3KoLomsow-1; Wed, 13 Sep 2023 22:53:56 -0400
-X-MC-Unique: CJ_HSQmDN-Czg3KoLomsow-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-273983789adso431952a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:53:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694660034; x=1695264834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=79Pt1h07snqQgLqURn+X2LUbFiUGOvFlgIEpyAPEPwA=;
-        b=MFGovkfS04NPVmPV7ajTcg9TbqugHJm/VyyLJWDp2hcm79Q00c+minmsp2ZbcRbfMe
-         wtHdYWfuMxMz7ltKaYrzixn8KOSnpOKpF5qilZY6A6stwbWoo9FpPvOPz+1e9Udxd8o6
-         BIJc6k8jxE9g9WskkK1H/MELF4sc0vgh/xucubm2rG3nlvNc6SXwfMAj+7pEtfAnxmpX
-         VK54WIWi2q2PecsHU3BMyZ6isDeSOd+VY+c3mzXouUOc5LEL+WYZ4RqV6pMboR0G/pEk
-         eMnmKVmMn6/VnWR+AK0JQoisasrcRVBFm48e+xLKU4PyloQR6YdEKnwkHqBvu/0eDosY
-         gcAg==
-X-Gm-Message-State: AOJu0YwGQhLMT3A4D21isAKLHr9fEiNv9MU7GC2IpXAIMyRv5o6CLC2B
-        ai5EZHKG7qoe+Axxnmi9yHo+i9SvGuRE7goojlGlESqerktRQZxLiO4hDmXitllz0g2hGKgSqvE
-        ws/XwoxpITN0V/n/ksaUQnOn2IdIKCnIuyPjKd6Ui
-X-Received: by 2002:a17:90b:e91:b0:268:f987:305d with SMTP id fv17-20020a17090b0e9100b00268f987305dmr4020244pjb.5.1694660034366;
-        Wed, 13 Sep 2023 19:53:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHi2VFjCUSN7OBpxQVIme3+SE2HYZ6exMH5klV6ao7jQvDUKQlgbnRiJ1efcAAWy6Z8PoxjrXE7/8b1wykrEIQ=
-X-Received: by 2002:a17:90b:e91:b0:268:f987:305d with SMTP id
- fv17-20020a17090b0e9100b00268f987305dmr4020231pjb.5.1694660034080; Wed, 13
- Sep 2023 19:53:54 -0700 (PDT)
+        bh=UXtvq22RuUnui291PBHqsVhY7kw5Dyzk5oxMDCx8dAE=;
+        b=IhxmoWTJrCvO9qJcguVjAAJUKJOPWXN1OhoPELtsx5mj4mZgddbCKmw9zuuQntHNLyNNzZ
+        o95vtc+1Kfz14SPKOz4E0yZgyRlw7ZSiRPV3HlLMgD2PYu0GKr8oMTQUcW/HYVJ56+Dc/q
+        xi5FD+zgCNFiEQC66cOQcQRX7cKmuGg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-139-igfauOtOMGWXEcwKSPoaCA-1; Wed, 13 Sep 2023 23:02:56 -0400
+X-MC-Unique: igfauOtOMGWXEcwKSPoaCA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A0C4800159;
+        Thu, 14 Sep 2023 03:02:55 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FD37200A391;
+        Thu, 14 Sep 2023 03:02:53 +0000 (UTC)
+Date:   Thu, 14 Sep 2023 11:02:47 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 7/9] mm: vmalloc: Support multiple nodes in vread_iter
+Message-ID: <ZQJ31y70KNWamtcz@MiWiFi-R3L-srv>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-8-urezki@gmail.com>
+ <ZP6QVTQmDGx7tx1a@MiWiFi-R3L-srv>
+ <ZP9ZdRc4FDSH2ej4@pc636>
+ <ZQBqyDxVuCphprk2@MiWiFi-R3L-srv>
+ <ZQHYfO0GTco4qPEF@pc636>
 MIME-Version: 1.0
-References: <20230828020021.2489641-1-yukuai1@huaweicloud.com> <20230828020021.2489641-2-yukuai1@huaweicloud.com>
-In-Reply-To: <20230828020021.2489641-2-yukuai1@huaweicloud.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Thu, 14 Sep 2023 10:53:41 +0800
-Message-ID: <CALTww28MiiWTOyLYHErAZWTzn8iGif5=adY7yohxmn1OxrpK=w@mail.gmail.com>
-Subject: Re: [PATCH -next v2 01/28] md: use READ_ONCE/WRITE_ONCE for
- 'suspend_lo' and 'suspend_hi'
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
-        song@kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQHYfO0GTco4qPEF@pc636>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:04=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
-wrote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Because reading 'suspend_lo' and 'suspend_hi' from md_handle_request()
-> is not protected, use READ_ONCE/WRITE_ONCE to prevent reading abnormal
-> value.
+On 09/13/23 at 05:42pm, Uladzislau Rezki wrote:
+> On Tue, Sep 12, 2023 at 09:42:32PM +0800, Baoquan He wrote:
+> > On 09/11/23 at 08:16pm, Uladzislau Rezki wrote:
+> > > On Mon, Sep 11, 2023 at 11:58:13AM +0800, Baoquan He wrote:
+> > > > On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> > > > > Extend the vread_iter() to be able to perform a sequential
+> > > > > reading of VAs which are spread among multiple nodes. So a
+> > > > > data read over the /dev/kmem correctly reflects a vmalloc
+> > > > > memory layout.
+> > > > > 
+> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > ---
+> > > > >  mm/vmalloc.c | 67 +++++++++++++++++++++++++++++++++++++++++-----------
+> > > > >  1 file changed, 53 insertions(+), 14 deletions(-)
+> > > > > 
+> > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > > index 4fd4915c532d..968144c16237 100644
+> > > > > --- a/mm/vmalloc.c
+> > > > > +++ b/mm/vmalloc.c
+> > > > ......  
+> > > > > @@ -4057,19 +4093,15 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+> > > > >  
+> > > > >  	remains = count;
+> > > > >  
+> > > > > -	/* Hooked to node_0 so far. */
+> > > > > -	vn = addr_to_node(0);
+> > > > > -	spin_lock(&vn->busy.lock);
+> > > > 
+> > > > This could change the vread behaviour a little bit. Before, once we take
+> > > > vmap_area_lock, the vread will read out the content of snapshot at the
+> > > > moment. Now, reading out in one node's tree won't disrupt other nodes'
+> > > > tree accessing. Not sure if this matters when people need access
+> > > > /proc/kcore, e.g dynamic debugging.
+> > > >
+> > > With one big tree you anyway drop the lock after one cycle of reading.
+> > > As far as i see, kcore.c's read granularity is a PAGE_SIZE.
+> > 
+> > With my understanding, kcore reading on vmalloc does read page by page,
+> > it will continue after one page reading if the required size is bigger
+> > than one page. Please see aligned_vread_iter() code. During the complete
+> > process, vmap_area_lock is held before this patch.
+> > 
+> > > 
+> > > > 
+> > > > And, the reading will be a little slower because each va finding need
+> > > > iterate all vmap_nodes[].
+> > > > 
+> > > Right. It is a bit tough here, because we have multiple nodes which
+> > > represent zones(address space), i.e. there is an offset between them,
+> > > it means that, reading fully one tree, will not provide a sequential
+> > > reading.
+> > 
+> > Understood. Suppose the kcore reading on vmalloc is not critical. If I
+> > get chance to test on a machine with 256 cpu, I will report here.
+> > 
+> It would be great! Unfortunately i do not have an access to such big
+> systems. What i have is 64 CPUs max system. If you, by chance can test
+> on bigger systems or can provide a temporary ssh access that would be
+> awesome.
 
-Hi Kuai
-
-If we don't use READ_ONCE/WRITE_ONCE, What's the risk here? Could you
-explain in detail or give an example?
-
-Regards
-Xiao
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 46badd13a687..9d8dff9d923c 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -359,11 +359,11 @@ static bool is_suspended(struct mddev *mddev, struc=
-t bio *bio)
->                 return true;
->         if (bio_data_dir(bio) !=3D WRITE)
->                 return false;
-> -       if (mddev->suspend_lo >=3D mddev->suspend_hi)
-> +       if (READ_ONCE(mddev->suspend_lo) >=3D READ_ONCE(mddev->suspend_hi=
-))
->                 return false;
-> -       if (bio->bi_iter.bi_sector >=3D mddev->suspend_hi)
-> +       if (bio->bi_iter.bi_sector >=3D READ_ONCE(mddev->suspend_hi))
->                 return false;
-> -       if (bio_end_sector(bio) < mddev->suspend_lo)
-> +       if (bio_end_sector(bio) < READ_ONCE(mddev->suspend_lo))
->                 return false;
->         return true;
->  }
-> @@ -5171,7 +5171,8 @@ __ATTR(sync_max, S_IRUGO|S_IWUSR, max_sync_show, ma=
-x_sync_store);
->  static ssize_t
->  suspend_lo_show(struct mddev *mddev, char *page)
->  {
-> -       return sprintf(page, "%llu\n", (unsigned long long)mddev->suspend=
-_lo);
-> +       return sprintf(page, "%llu\n",
-> +                      (unsigned long long)READ_ONCE(mddev->suspend_lo));
->  }
->
->  static ssize_t
-> @@ -5191,7 +5192,7 @@ suspend_lo_store(struct mddev *mddev, const char *b=
-uf, size_t len)
->                 return err;
->
->         mddev_suspend(mddev);
-> -       mddev->suspend_lo =3D new;
-> +       WRITE_ONCE(mddev->suspend_lo, new);
->         mddev_resume(mddev);
->
->         mddev_unlock(mddev);
-> @@ -5203,7 +5204,8 @@ __ATTR(suspend_lo, S_IRUGO|S_IWUSR, suspend_lo_show=
-, suspend_lo_store);
->  static ssize_t
->  suspend_hi_show(struct mddev *mddev, char *page)
->  {
-> -       return sprintf(page, "%llu\n", (unsigned long long)mddev->suspend=
-_hi);
-> +       return sprintf(page, "%llu\n",
-> +                      (unsigned long long)READ_ONCE(mddev->suspend_hi));
->  }
->
->  static ssize_t
-> @@ -5223,7 +5225,7 @@ suspend_hi_store(struct mddev *mddev, const char *b=
-uf, size_t len)
->                 return err;
->
->         mddev_suspend(mddev);
-> -       mddev->suspend_hi =3D new;
-> +       WRITE_ONCE(mddev->suspend_hi, new);
->         mddev_resume(mddev);
->
->         mddev_unlock(mddev);
-> --
-> 2.39.2
->
+I got one with 288 cpus, have sent you ip address in private mail.
 
