@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EDD7A0E6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594517A0E6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjINTiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
+        id S231213AbjINTkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 15:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjINTiP (ORCPT
+        with ESMTP id S229462AbjINTkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:38:15 -0400
-Received: from out-223.mta1.migadu.com (out-223.mta1.migadu.com [IPv6:2001:41d0:203:375::df])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F7526AB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:38:11 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 15:38:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694720290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 14 Sep 2023 15:40:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C5726AB;
+        Thu, 14 Sep 2023 12:40:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E52C22185C;
+        Thu, 14 Sep 2023 19:39:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694720399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=N0uPCiRAY/wk+OsCSsV4Qn54HTT3/j5koYS/Evo6weg=;
-        b=ndegDqVm/nPasw22OjMVjwca9VMr7jNbEtOPasd7L1k/zvw0P5Q9WzzRcZtq9GAp8lIiph
-        gLp+PIslF+6Mbcp6vptFAp7HyV031HzaJcAZ78wtqC2j8fPAuMbHyoYp6onFOSpnpD8Qqv
-        spmgHAiUf+blNDZy9JcwX+tQRqPhl2A=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: linux-next: Tree for Sep 12 (bcachefs)
-Message-ID: <20230914193807.ozcmylp6n6dsqkbi@moria.home.lan>
-References: <20230912152645.0868a96a@canb.auug.org.au>
- <202309131803.6A3C1D05A@keescook>
+        bh=lYluOBaH1EHWk8SrAv7BsePqVdzKSF7hvQZ8jrr6zOA=;
+        b=hLv8Q2h+K2BGrnxA69yqxfRxRgvWqDBU5/7xCauJ1LNGdVDe0LlDNnAbTNBRZ7vFbt9uwa
+        oaCUGqEHWfh9PcGEm7O76Zd9a0CpWesj/vj2u4+HRY3WIBI+Z/t0zmN9BykdWaQgW0JT/C
+        6vEr4GDHDT5MeJAgSxh5K0GcN+YuyHA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA4E413580;
+        Thu, 14 Sep 2023 19:39:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ifydK49hA2VeBQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 14 Sep 2023 19:39:59 +0000
+Date:   Thu, 14 Sep 2023 21:39:58 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jean Delvare <jdelvare@suse.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] module: print module name on refcount error
+Message-ID: <ZQNhjhhpG2aN8Xi6@dhcp22.suse.cz>
+References: <20230626123252.73dbc139@endymion.delvare>
+ <ZJ9fvQZ4k+zFfXbN@bombadil.infradead.org>
+ <ZKLRaq3pzzE2gfws@dhcp22.suse.cz>
+ <ZKhf8bi/eBDhaihD@bombadil.infradead.org>
+ <ZKuaZepw51Nriqr8@dhcp22.suse.cz>
+ <ZMGJGlJ7XSG+2vjY@bombadil.infradead.org>
+ <20230828141830.02de4d90@endymion.delvare>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202309131803.6A3C1D05A@keescook>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20230828141830.02de4d90@endymion.delvare>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 06:17:00PM -0700, Kees Cook wrote:
-> On Tue, Sep 12, 2023 at 03:26:45PM +1000, Stephen Rothwell wrote:
-> > New tree: bcachefs
+On Mon 28-08-23 14:18:30, Jean Delvare wrote:
+[...]
+> > > It would likely be better to use refcount_t instead of atomic_t.  
+> > 
+> > Patches welcomed.
 > 
-> Thanks for going through and fixing all the fake flexible array members.
-> It looks much nicer. :)
-> 
-> I have some questions about the remaining "markers", for example:
-> 
-> $ git grep -A8 '\bkey_start\b' -- fs/bcachefs
-> fs/bcachefs/bcachefs_format.h:  __u8            key_start[0];
-> ...
-> fs/bcachefs/bcachefs_format.h-  __u8            pad[sizeof(struct bkey) - 3];
-> --
-> fs/bcachefs/bkey.c:     u8 *l = k->key_start;
-> 
-> Why isn't this just:
-> 
-> 			u8 *l = k->pad
-> 
-> and you can drop the marker?
+> Michal, do I understand correctly that this would prevent the case our
+> customer had (too many gets), but won't make a difference for actual
+> too-many-puts situations?
 
-In this case, it's documentation. &k->pad tells us nothing; why is pad
-significant? k->key_start documents the intent better.
 
-> And some seem entirely unused, like all of "struct bch_reflink_v".
-
-No, those aren't unused :)
-
-bcachefs does the "list of variable size items" a lot - see vstructs.h.
-start[] is the type of the item being stored, _data is what we use for
-pointer arithmetic - because we always store sizes in units of u64s, for
-alignment.
-
-> 
-> And some are going to fail at runtime, since they're still zero-sized
-> and being used as an actual array:
-> 
-> struct bch_sb_field_journal_seq_blacklist {
->         struct bch_sb_field     field;
-> 
->         struct journal_seq_blacklist_entry start[0];
->         __u64                   _data[];
-> };
-> ...
->                 memmove(&bl->start[i],
->                         &bl->start[i + 1],
->                         sizeof(bl->start[0]) * (nr - i));
-> 
-> It looks like you just want a type union for the flexible array.
-> This can be done like this:
-> 
-> struct bch_sb_field_journal_seq_blacklist {
->         struct bch_sb_field     field;
-> 
-> 	union {
-> 		DECLARE_FLEX_ARRAY(struct journal_seq_blacklist_entry, start);
-> 		DECLARE_FLEX_ARRAY(__u64, _data);
-> 	};
-> };
-
-Eesh, why though?
-
-Honestly, I'm not a fan of the change to get rid of zero size arrays,
-this seems to be adding a whole lot of macro layering and indirection
-for nothing.
-
-The only thing a zero size array could possibly be is a flexible array
-member or a marker, why couldn't we have just kept treating zero size
-arrays like flexible array members?
+yes, refcount_t cannot protect from too-many-puts because there is not
+real way to protect from those AFAICS. At a certain moment you just drop
+to 0 and lose your object and all following that is a UAF. But I do not
+think this is actually the interesting case at all.
+-- 
+Michal Hocko
+SUSE Labs
