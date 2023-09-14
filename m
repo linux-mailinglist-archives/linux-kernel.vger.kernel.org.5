@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8D87A01A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695FA7A01B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237207AbjINK1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S237274AbjINK3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjINK1V (ORCPT
+        with ESMTP id S230141AbjINK31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:27:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2311BE9;
-        Thu, 14 Sep 2023 03:27:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B139DC433C7;
-        Thu, 14 Sep 2023 10:27:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694687237;
-        bh=yDQqvovGnrf78EMpc8cz+BBi0k2m4AVQSZyr7l9ADW8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=W8iroKkhg69TCpAdNcxe1oKdo6zlrTDglMSICWBpFyn+hx4P99OZLodtxCREF+OuE
-         RmsWOlcLaAJxSidY2Vx2Ai9hGDnD3AEvKpycGqNpyqRSnvK9WqIJyBHggxpyL9UlH6
-         +w7KmRAJlE+wKbRe0tW92UUFOOdzRqorS/m2ZIlLQ/pB3p6Cmzi5GnbAVt8kdl3TDO
-         K675pl4gmKZ1n3jklLYyQERAbtFEBvSdzB+bVACAYFT443vPFQvbsTcP33GtY4ffYY
-         wg8bIgRstAFQ2aK0qDWcrzo1SQLlOfMF27u2ZjN7x97LJc8dcsUznh1MPgob3qWY2q
-         Tr6jSJaZ8JMBg==
-Message-ID: <b107db96b12f4ab5b2edfbaa42bc0032205d24cc.camel@kernel.org>
-Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 14 Sep 2023 06:27:15 -0400
-In-Reply-To: <CAOQ4uxhYRnX0NChCU2tsEi7eUPqbqQDeOwQT4ubWUgtCN0OVfA@mail.gmail.com>
-References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
-         <CAOQ4uxhYRnX0NChCU2tsEi7eUPqbqQDeOwQT4ubWUgtCN0OVfA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 14 Sep 2023 06:29:27 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140791BE9;
+        Thu, 14 Sep 2023 03:29:22 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EADAR6009551;
+        Thu, 14 Sep 2023 10:29:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=tDkkOsocqls0t+Q5ELLs9Xlf48gqtWqdENRZHsKALys=;
+ b=s3PBRqjZdZxyUyh3YAa4pFcEEr+axzEf8LcU15PQ/9WLuwDtZRqUK9QX3HftB3ayoPiD
+ n8DbCGUn0JD9uNvz7DVapZJ94elga0WRjRzPLG4cFsmiN/U89AHyEZq+zDuVna2JwIfk
+ DV0s9G/YEzEfNyL+ce1WdW0iJCHG7bm4q15iZKV8PZF3Ci15nPknr0/LqriAqdvYvbuI
+ 5B+rmXGxzw7ThJ/raCK75XPSglDSdrh1Ow5AaYMS79z+RXEdyPaub7iqZKa0tDAsWTY8
+ eSG3wSBEoPvVAot6qVVG334YsLEQE/ukAuScaF3YjRkz1eAPeM7XvlYb16ZMaMMiO07m 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3yvms0g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 10:29:19 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38E9nn4L007950;
+        Thu, 14 Sep 2023 10:29:19 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3yvms0fn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 10:29:19 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38E8bvLi002755;
+        Thu, 14 Sep 2023 10:29:18 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hma24p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 10:29:17 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38EATEgf63504642
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 10:29:14 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A78F2004B;
+        Thu, 14 Sep 2023 10:29:14 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3746420043;
+        Thu, 14 Sep 2023 10:29:14 +0000 (GMT)
+Received: from [9.152.224.42] (unknown [9.152.224.42])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Sep 2023 10:29:14 +0000 (GMT)
+Message-ID: <30bbcc92-f5ff-cbda-7a3b-cc801aa560ed@linux.ibm.com>
+Date:   Thu, 14 Sep 2023 12:29:14 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC PATCH net-next] net/smc: Introduce SMC-related proc files
+To:     Wen Gu <guwen@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1694416820-60340-1-git-send-email-guwen@linux.alibaba.com>
+ <2b1d129c-06e2-0161-7c8a-1e930150d797@linux.ibm.com>
+ <a0a4567e-07f1-91db-50cb-bbfc803f5969@linux.alibaba.com>
+Content-Language: en-US
+From:   Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <a0a4567e-07f1-91db-50cb-bbfc803f5969@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4fx-3ooD91c3ydo1CMa1Lpm2-ZiD0jFe
+X-Proofpoint-ORIG-GUID: Q_MUuDzbxZRPe2jKpigVVMnUXad3vX-m
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_08,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 mlxlogscore=727 clxscore=1011
+ suspectscore=0 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309140085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-13 at 20:36 +0300, Amir Goldstein wrote:
-> On Wed, Sep 13, 2023 at 4:33=E2=80=AFPM Jeff Layton <jlayton@kernel.org> =
-wrote:
-> >=20
-> > Nathan reported that he was seeing the new warning in
-> > setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-> > trying to set the atime and mtime via notify_change without also
-> > setting the ctime.
-> >=20
-> > POSIX states that when the atime and mtime are updated via utimes() tha=
-t
-> > we must also update the ctime to the current time. The situation with
-> > overlayfs copy-up is analogous, so add ATTR_CTIME to the bitmask.
-> > notify_change will fill in the value.
-> >=20
->=20
-> IDGI, if ctime always needs to be set along with ATIME / MTIME, why not
-> let notify_change() set the bit instead of assert and fix all the callers=
-?
-> But maybe I am missing something.
->=20
 
-Traditionally notify_change has always been given an explicit mask of
-attrs to change by the caller. I'm a little hesitant to start putting
-POSIX policy in there.
 
-Still, that may be the better thing to do over the long haul. I think
-that there are some other bugs in the notify_change callers as well: for
-instance, cachefiles_adjust_size truncates files, but doesn't update the
-timestamps. I'm pretty sure that's wrong.
-
-I think if we want to change how setattr ctime updates work, we'll
-probably need to do it in the context of a larger notify_change
-overhaul.
-
-> Anyway, I have no objection to the ovl patch.
-> It's fine by me if Christian applies it to the vfs.ctime branch with my A=
-CK.
->=20
-
-Many thanks!
-
+On 13.09.23 11:53, Wen Gu wrote:
+> 
+> 
+> On 2023/9/11 19:54, Wenjia Zhang wrote:
+>>
+>>
+>>
+>> Hi Wen,
+>>
+>> I can understand your problem and frustration. However, there are two reasons I'm not really convinced by the proc file method:
+>> 1) AFAI, the proc method could consume many CPU time especially in case with a log of sockets to read the pseudo files.
+>> 2) We have already implemented the complex netlink method on the same purpose. I see the double expense to main the code.
+>>
+>> Then the question is if the lack of dependency issue can be handle somehow, or the proc method is the only way to achieve this purpose?
+>>
+>> Any opinion is welcome!
+>>
+>> Thanks,
+>> Wenjia
+> 
+> Hi, Wenjia. I agree with your concerns.
+> 
+> My initial intention is to make these proc files serve as a supplement to netlink to conveniently
+> check smc connections in an environment where smc-tools cannot be easily obtained.
+> 
+> Yes, proc files won't be the first choice for diagnosis, but can be a convenient backup.
+> 
 > Thanks,
-> Amir.
->=20
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> > The new WARN_ON_ONCE in setattr_copy_mgtime caught a bug! Fix up
-> > overlayfs to ensure that the ctime on the upper inode is also updated
-> > when copying up the atime and mtime.
-> > ---
-> >  fs/overlayfs/copy_up.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-> > index d1761ec5866a..ada3fcc9c6d5 100644
-> > --- a/fs/overlayfs/copy_up.c
-> > +++ b/fs/overlayfs/copy_up.c
-> > @@ -337,7 +337,7 @@ static int ovl_set_timestamps(struct ovl_fs *ofs, s=
-truct dentry *upperdentry,
-> >  {
-> >         struct iattr attr =3D {
-> >                 .ia_valid =3D
-> > -                    ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MT=
-IME_SET,
-> > +                    ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MT=
-IME_SET | ATTR_CTIME,
-> >                 .ia_atime =3D stat->atime,
-> >                 .ia_mtime =3D stat->mtime,
-> >         };
-> >=20
-> > ---
-> > base-commit: 9cb8e7c86ac793862e7bea7904b3426942bbd7ef
-> > change-id: 20230913-ctime-299173760dd9
-> >=20
-> > Best regards,
-> > --
-> > Jeff Layton <jlayton@kernel.org>
-> >=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
+> Wen Gu
+> 
+> 
+As /proc is an interface to userface,  we would have to maintain the 2 redundant methods basically forever.
+I personally don't think we should implement another interface without a very strong reason.
