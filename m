@@ -2,199 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 548307A04BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26697A04DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238533AbjINNBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
+        id S238598AbjINNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238514AbjINNBs (ORCPT
+        with ESMTP id S238558AbjINNE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:01:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EBF1FD5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:43 -0700 (PDT)
-Received: from [192.168.2.134] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BA1766607343;
-        Thu, 14 Sep 2023 14:01:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694696502;
-        bh=v7DarGRquMfyLEjGWgeGuwbNfFGcYNditgZ8c3FOQkc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MuOydnq9IblIDeVrXJoWXbCc90YL4c+0X+qvYlSpCQSNtCHdfkykV9fyMKZ1v7osv
-         9r0arWbahiqks3T9c/BmCN9p22Q7YYbf/dzdTApio/+o3PMEBora1NYlTMA40yUVRx
-         1ipiGfyY9Evi7G7X2sXiahvygnSAug+BskUIgUv85lIk9F1erwyL0NYKrkk1T3TUGu
-         ll8RQ9toWpzZ4WmNy2tHwLiJZqlUGbJiF3svdASEI4JeiftdBMwLeZNfcE3evFplEx
-         0MCNIrbj5vIC/R+UjT0403wA2dCudHcG4ZK+W837YV5ImNkP2R3HW6qlbipmqpVXRe
-         B/Lz+QTRBjkew==
-Message-ID: <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
-Date:   Thu, 14 Sep 2023 16:01:37 +0300
+        Thu, 14 Sep 2023 09:04:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659211FD8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694696663; x=1726232663;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=GDQbhU9Gg8rlal0S/MQt01JWyA68WcGgPdEM+GOQN6Q=;
+  b=RamRvnl8DRmFKR74YyvFgCeJCtxVnNj+AkHf0bEw4gr//Th9zy6NbfIt
+   NFJSPevLUA1WAkcDxH4XGrcuDGaiNlCm2OD2dtj+bJIezSXrd6Ij981PD
+   SrgNyJCt0yliX5v0BjhPlpnBVNZE0fimUk1mobykSS7lQAMNOjWjd13rJ
+   n3q6QYWmhWFprdMvAuCMceQjNyZrKIFFjhoUEwCp4yCY+BTRj4OS7bD5B
+   FIEtIZRPCSPSbu+212cmhJjoFAnpfRDlEUfqs5HECwnRun3C1FdSlmZ7i
+   wTvt0hDLMeadErJ6zY+8CgrZ2naES6C+vZMyDkekO5yk/3jAn6sWfbHTi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465313713"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="465313713"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:03:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="737914838"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="737914838"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 14 Sep 2023 06:03:34 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgm04-0001bd-1q;
+        Thu, 14 Sep 2023 13:03:31 +0000
+Date:   Thu, 14 Sep 2023 21:02:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: kernel/bpf/helpers.c:2307:17: warning: no previous declaration for
+ 'bpf_dynptr_adjust'
+Message-ID: <202309142045.CbO5iFUB-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
- <20230903170736.513347-16-dmitry.osipenko@collabora.com>
- <20230905100306.3564e729@collabora.com>
- <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
- <20230913094832.3317c2df@collabora.com>
- <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
- <20230914093626.19692c24@collabora.com>
- <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
- <20230914102737.08e61498@collabora.com>
- <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
- <20230914135840.5e0e11fe@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230914135840.5e0e11fe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 14:58, Boris Brezillon wrote:
-> On Thu, 14 Sep 2023 14:36:23 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> On 9/14/23 11:27, Boris Brezillon wrote:
->>> On Thu, 14 Sep 2023 10:50:32 +0300
->>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>>   
->>>> On 9/14/23 10:36, Boris Brezillon wrote:  
->>>>> On Thu, 14 Sep 2023 07:02:52 +0300
->>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>>>>     
->>>>>> On 9/13/23 10:48, Boris Brezillon wrote:    
->>>>>>> On Wed, 13 Sep 2023 03:56:14 +0300
->>>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>>>>>>       
->>>>>>>> On 9/5/23 11:03, Boris Brezillon wrote:      
->>>>>>>>>>                * But
->>>>>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
->>>>>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
->>>>>>>>>> +		 * and fs_reclaim.
->>>>>>>>>> +		 *
->>>>>>>>>> +		 * This deadlock is not actually possible, because no one should
->>>>>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
->>>>>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
->>>>>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
->>>>>>>>>> +		 */
->>>>>>>>>> +		if (shmem->got_pages_sgt &&
->>>>>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
->>>>>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
->>>>>>>>>> +			shmem->got_pages_sgt = false;
->>>>>>>>>>  		}        
->>>>>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
->>>>>>>>> better to leak than having someone access memory it no longer owns), but
->>>>>>>>> I think it's worth mentioning in the above comment.        
->>>>>>>>
->>>>>>>> It's unlikely that it will be only a leak without a following up
->>>>>>>> use-after-free. Neither is acceptable.      
->>>>>>>
->>>>>>> Not necessarily, if you have a page leak, it could be that the GPU has
->>>>>>> access to those pages, but doesn't need the GEM object anymore
->>>>>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
->>>>>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
->>>>>>> can go unnoticed and lead to memory corruptions/information leaks.
->>>>>>>       
->>>>>>>>
->>>>>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
->>>>>>>> on a refcnt bug, but that's not worthwhile doing because drivers
->>>>>>>> shouldn't have silly bugs.      
->>>>>>>
->>>>>>> We definitely don't want to fix that, but we want to complain loudly
->>>>>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
->>>>>>> being re-assigned to someone else by not freeing it).      
->>>>>>
->>>>>> That's what the code did and continues to do here. Not exactly sure what
->>>>>> you're trying to say. I'm going to relocate the comment in v17 to
->>>>>> put_pages(), we can continue discussing it there if I'm missing yours point.
->>>>>>    
->>>>>
->>>>> I'm just saying it would be worth mentioning that we're intentionally
->>>>> leaking memory if shmem->pages_use_count > 1. Something like:
->>>>>
->>>>> 	/**
->>>>> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
->>>>> 	 * zero otherwise. If some users still hold a pages reference
->>>>> 	 * that's a bug, and we intentionally leak the pages so they
->>>>> 	 * can't be re-allocated to someone else while the GPU/CPU
->>>>> 	 * still have access to it.
->>>>> 	 */
->>>>> 	drm_WARN_ON(drm,
->>>>> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
->>>>> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
->>>>> 		drm_gem_shmem_free_pages(shmem);    
->>>>
->>>> That may be acceptable, but only once there will a driver using this
->>>> feature.  
->>>
->>> Which feature? That's not related to a specific feature, that's just
->>> how drm_gem_shmem_get_pages_sgt() works, it takes a pages ref that can
->>> only be released in drm_gem_shmem_free(), because sgt users are not
->>> refcounted and the sgt stays around until the GEM object is freed or
->>> its pages are evicted. The only valid cases we have at the moment are:
->>>
->>> - pages_use_count == 1 && sgt != NULL
->>> - pages_use_count == 0
->>>
->>> any other situations are buggy.  
->>
->> sgt may belong to dma-buf for which pages_use_count=0, this can't be
->> done until sgt mess is sorted out
-> 
-> No it can't, not in that path, because the code you're adding is in the
-> if (!obj->import_branch) branch:
-> 
-> 
->  	if (obj->import_attach) {
->  		drm_prime_gem_destroy(obj, shmem->sgt);
->  	} else {
-> 		...
-> 		// Your changes are here.
-> 		...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   aed8aee11130a954356200afa3f1b8753e8a9482
+commit: 987d0242d189661f78b77cc4d77f843b15600fed bpf: Add bpf_dynptr_adjust
+date:   5 months ago
+config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230914/202309142045.CbO5iFUB-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309142045.CbO5iFUB-lkp@intel.com/reproduce)
 
-This branch is taken for the dma-buf in the prime import error code path. But yes, the pages_use_count=0 for the dma-buf and then it can be written as:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309142045.CbO5iFUB-lkp@intel.com/
 
-	if (obj->import_attach) {
-		drm_prime_gem_destroy(obj, shmem->sgt);
-	} else {
-		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+All warnings (new ones prefixed by >>):
 
-		if (shmem->sgt && refcount_read(&shmem->pages_use_count)) {
-			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
-					  DMA_BIDIRECTIONAL, 0);
-			sg_free_table(shmem->sgt);
-			kfree(shmem->sgt);
+   kernel/bpf/helpers.c:1889:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1919:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1927:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1962:17: warning: no previous declaration for 'bpf_list_push_front_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1972:17: warning: no previous declaration for 'bpf_list_push_back_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1998:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2003:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2008:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2054:17: warning: no previous declaration for 'bpf_rbtree_add_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
+                    ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2063:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2076:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
+    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2087:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_task_release(struct task_struct *p)
+                     ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2099:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2111:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2123:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
+                               ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2143:28: warning: no previous declaration for 'bpf_cgroup_from_id' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2160:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
+    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2199:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2276:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/helpers.c:2307:17: warning: no previous declaration for 'bpf_dynptr_adjust' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
+                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2325:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+                      ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2330:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2335:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_rcu_read_lock(void)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2340:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_rcu_read_unlock(void)
+                     ^~~~~~~~~~~~~~~~~~~
 
-			__drm_gem_shmem_put_pages(shmem);
-		}
 
-		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+vim +/bpf_dynptr_adjust +2307 kernel/bpf/helpers.c
 
-Alright, I'll check if it works as expected for fixing the error code path bug for v17
+  2306	
+> 2307	__bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
+  2308	{
+  2309		u32 size;
+  2310	
+  2311		if (!ptr->data || start > end)
+  2312			return -EINVAL;
+  2313	
+  2314		size = bpf_dynptr_get_size(ptr);
+  2315	
+  2316		if (start > size || end > size)
+  2317			return -ERANGE;
+  2318	
+  2319		ptr->offset += start;
+  2320		bpf_dynptr_set_size(ptr, end - start);
+  2321	
+  2322		return 0;
+  2323	}
+  2324	
 
 -- 
-Best regards,
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
