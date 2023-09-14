@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D11A7A0F71
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFA37A0F73
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjINVFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        id S229771AbjINVFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjINVFA (ORCPT
+        with ESMTP id S229634AbjINVFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:05:00 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AE52704;
-        Thu, 14 Sep 2023 14:04:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id DF75D5C0244;
-        Thu, 14 Sep 2023 17:04:53 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Thu, 14 Sep 2023 17:04:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694725493; x=1694811893; bh=Q8
-        C93Gk0ScZhXMgVCWiaWrSwELvWnPJr1AijyyP5Y4I=; b=XWjyVE3DCe4iMswqXJ
-        esrgCVjVi5KmZXD6Lc1k/sQ8AQ2LvgvA8qYuIJb9AYqXXYIn3OJJlyMHAiiAYO3n
-        eOfBluBhCE1Cy3AFTZ8y9qiIC42NoFVtqHouPLTRbk0vZMxgduhXxAIihoivxqmL
-        CT8Pc4JIdqujm8ACii4V5Yr0jcZu/mIDVmqf47qs1z9IEtQpj18DaPUY/qlWeMgs
-        xFIRF540lpUhCtAKjjT5msjrbamE14o4IC/ibzGEt7gRmZieSozSuZXjPH+OKhGS
-        AxMg1HRH+MjQDermTbQRCrlsj2tk75JzmMJz1AO8F3QpbpWwj8mEYgMxx8dn2nxJ
-        Ijhg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1694725493; x=1694811893; bh=Q8C93Gk0ScZhX
-        MgVCWiaWrSwELvWnPJr1AijyyP5Y4I=; b=mBsewF8sV8xnObt4tQGPqBiS4mdM4
-        0r1KkYPvIE71sp+eRb6fN/ZKecV/HI4MrrjT0z0/1iv4uqrERN3rbJ5BAzPYY2rN
-        K02rYyS1Q02XXJZiP5JBnrVMrBoqM0dYMd1WpTxmQW2H/ZmcDGMj2Scgr0W5YuC5
-        +l+LfccrvdL8alf/wVYNJG6nQwzdE0oqlvhN/84MfF+Te7m3SIsQ/fhyYdXct/cj
-        F4ip+GaSV1GSZDKKSmJ+QjfkN0miVX49d5yRUB7KDL3G5phXm3SrwrF9SxlhTXjh
-        icdq3E/IRaCgolp9R//E/r/AVOyccesU8tWM0fb6sEOiaPYaTAsi+l+7g==
-X-ME-Sender: <xms:dXUDZWs_USnV_xkhdH8zmhPq0aAd4RKGuxW95sKRVhMQxkkleQzvSQ>
-    <xme:dXUDZbc-LB_bmHRIvgdWkSi5v17yiv0H5qLNTFTjrWFKYbBNAihsPXLVmmnxEPPB0
-    Ik5CyHpvy70i2uHUBA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejtddgudehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdduhedmnecujfgurhepofgfggfkjghffffhvfevufgtsehttder
-    tderredtnecuhfhrohhmpedflfgrnhcujfgvnhgurhhikhcuhfgrrhhrfdcuoehkvghrnh
-    gvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpedujefhffdvffeikedvkeef
-    ieeutdffteelgeetfffhkeffheeiheehvedtheetieenucffohhmrghinhepghhithhhuh
-    gsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
-X-ME-Proxy: <xmx:dXUDZRx2Q4BCN-PN8IriM9hElbF5IzORT1b6b99-40b-yMSNSKTXgQ>
-    <xmx:dXUDZRPeiaeLI_c0zl6kxWjYKmwTWZtU_-wZMagL2vemImgZV2TUUw>
-    <xmx:dXUDZW9kAKOyfEzUeR8xUY2UJiQcAUM5MJaIq3Tj3GqpjoMArkfPNQ>
-    <xmx:dXUDZX3wlBbJdMAmS6l5brjZqTkoNGU7LKttm1Q6qHZREdWzF1QWCw>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0856E15A0092; Thu, 14 Sep 2023 17:04:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <0e1984af-88ca-4908-a5ca-3191d96aa63f@app.fastmail.com>
-In-Reply-To: <20230914205149.51031bc9@rotkaeppchen>
-References: <20230911052535.335770-1-kernel@jfarr.cc>
- <20230913160045.40d377f9@rotkaeppchen> <ZQLTJFb3S/xn5CWo@gardel-login>
- <20230914205149.51031bc9@rotkaeppchen>
-Date:   Thu, 14 Sep 2023 23:04:32 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Philipp Rudo" <prudo@redhat.com>,
-        "Lennart Poettering" <mzxreary@0pointer.de>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
-        vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
-        bhelgaas@google.com, "Luca Boccassi" <bluca@debian.org>
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-Content-Type: text/plain
+        Thu, 14 Sep 2023 17:05:31 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4682700
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:27 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b703a0453fso23669941fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1694725525; x=1695330325; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mi4VUf4gJCA6NveynZh2FFW5elFrdjQW2bjMwJLkbzQ=;
+        b=Ww4EVITliI6FPHoICZUDpEBVA51hwaScNcK/0JlRGcYISzgU2vckV09H2GCZqh9WIw
+         EYQja7Je/x0oApJ9yOB1fc9WLvFEJk7IdUi1KJWuGjfPI/vpQCep/BPuDIicv1c3wlUY
+         DSeQiHQ8c6Z3yTxwqnJ/IMS+rFIlXa6HSZI2s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694725525; x=1695330325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mi4VUf4gJCA6NveynZh2FFW5elFrdjQW2bjMwJLkbzQ=;
+        b=OzPGj92Ze+6uBXmm8Obv8hGeLNVx+U9e4vrigweKSkCxj9p0oiWlBhyClvzC87Rbym
+         /AtDVoAg7K5F2tU3NMsSsbG2tuH+J1aA4/88kxxY2VjgSpfFziYPe7Kv7hZ/63rqQSGi
+         36e/PNuIsUHeUDGOUt9CFqPAHN4syzj5lmB47o4lALKJGmhULSm6dLETJvylO9WgyI/U
+         gCD27bil7j32d8AtSjZMKgfA+p4RK74aV6XP0GhBXf5bYapNeAXKQh8HgqHV+JWv79Kd
+         Vy7npvB6V6K6uCEjDalHCgVZuP69i4cw5A/MO9L+p4jOXkMXJldq1PQoZqUzy1YWLdDY
+         iFZw==
+X-Gm-Message-State: AOJu0Yzbb+qI1F4weDGJ8sLwWBnYRMdSkHo4RxzEBOZrfj8zOWUaQ1dH
+        7KNNNAO+oBvkKAXBANMX2ai0hsx39BbzKYUM+nAP/w==
+X-Google-Smtp-Source: AGHT+IGpIoxvufotBG4tHYBQHVc3J5oCnnG46FrQfxYwsgRu7oFKFrZ8pufbyYpDTvOYejxPAaSGTQ==
+X-Received: by 2002:a19:e013:0:b0:500:7806:4f96 with SMTP id x19-20020a19e013000000b0050078064f96mr4863881lfg.28.1694725524921;
+        Thu, 14 Sep 2023 14:05:24 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id x12-20020ac25dcc000000b004fba077e654sm402614lfq.194.2023.09.14.14.05.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 14:05:23 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso23815731fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:05:22 -0700 (PDT)
+X-Received: by 2002:a05:6512:3703:b0:4fb:8f79:631 with SMTP id
+ z3-20020a056512370300b004fb8f790631mr4518877lfr.46.1694725522393; Thu, 14 Sep
+ 2023 14:05:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912201102.1012306-1-jarkko@kernel.org> <CAHk-=wgLB9_z5TcvRKVsSk3BWPfkDeWN0pDMdEv=-hnrnTgX1Q@mail.gmail.com>
+ <CVI1GKA044I2.2A5GRO80ABMNN@suppilovahvero> <CAHk-=wiS2rHdPe9qQ4Ahzy6t6hbG18ihsOjBYxn3Nr88yen52A@mail.gmail.com>
+In-Reply-To: <CAHk-=wiS2rHdPe9qQ4Ahzy6t6hbG18ihsOjBYxn3Nr88yen52A@mail.gmail.com>
+From:   Justin Forbes <jforbes@fedoraproject.org>
+Date:   Thu, 14 Sep 2023 16:05:10 -0500
+X-Gmail-Original-Message-ID: <CAFbkSA1vh+PS7HxhdZ2jLer4ZPQJWTsSU5NEAwJW2Rp8CZwzZQ@mail.gmail.com>
+Message-ID: <CAFbkSA1vh+PS7HxhdZ2jLer4ZPQJWTsSU5NEAwJW2Rp8CZwzZQ@mail.gmail.com>
+Subject: Re: [GIT PULL] tpmdd changes for v6.6-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023, at 8:51 PM, Philipp Rudo wrote:
-> [...]
+On Thu, Sep 14, 2023 at 4:02=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> In this context I hope it is also clear to you that when more and more
-> people rely on the spec you need a more formal process when including
-> changes. Especially when the change might break the implementation of
-> others. So no more making the .cmdline optional and allowing it to be
-> overwritten all on the same day.
+> On Wed, 13 Sept 2023 at 12:32, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >
+> > Ok, I'll make something more reasonable.
 >
-> Having that said, what does "local override" exactly mean? Does that
-> mean a distro can allow a user to freely choose the cmdline without
-> checking any signatures?
-
-The behavior of systemd-stub is to allow the bootloader (or whatever
-called sd-stub) supplied cmdline when there is no .cmdline section in
-the UKI. That's how I understand "local override" here. For WIP v3 of
-this patch the behavior is to use the cmdline supplied by userspace to
-the kexec_file_load syscall if no .cmdline section is in the UKI.
-
-empty .cmdline section -> empty cmdline always passed to kernel
-.cmdline section -> use bootloader/user supplied cmdline (which would
-be empty by default)
-
-This setup does not make sense for a locked down / secure system though.
-
-Maybe the word "override" is not ideal. There is nothing actually being
-overridden as there is no cmdline in the UKI in the first place.
-
-sd-stub also allows the bootloader supplied cmdline if not using secure
-boot. So maybe the kernel could allow user supplied cmdline if not in
-lockdown mode for kexec maybe? If not in lockdown mode somebody can just
-kexec an unsigned kernel + unsigned cmdline using the kexec_load syscall
-anyways. For this case the word "override" makes sense.
-
-The logic for all of this in sd-stub is in [1].
-
-> I.e. does that mean we can get rid of this
->      https://github.com/systemd/systemd/issues/24539
-
-This is a different usecase IMO.
-
-
->> Hence, seeing the spec as set in stone and as inherently low quality
->> is the wrong way to see it I am sure. Instead, the goal here is to
->> adjust the spec to make it work really nicely for *both* systemd and
->> the kernel.
+> Well, I took the pull already, just saying "tpm fix".
 >
-> Sorry, I never wanted to intend that the spec inherently low quality.
-> Just that it doesn't meat my expectations, yet. But that is fine. The
-> spec isn't even a year old and there's only a single implementation,
-> yet. So it's more documentation rather than a spec.
+> I assume the only thing the typo actually causes is printk's with a
+> typo in it. Maybe some sysfs name will be wrong?
+>
+> That's the kind of information I would have _liked_ to see in the
+> merge message, but I didn't then delve into just where the class names
+> might actually be used.
 
-Let's make it happen.
+Sorry, I should have been more clear. The typo causes misnamed sysfs
+files, which breaks some userspace tools.
 
+Justin
 
-[1] https://github.com/systemd/systemd/blob/5898cef22a35ceefa068d5f46929eced2baab0ed/src/boot/efi/stub.c#L140
+>                Linus
+>
