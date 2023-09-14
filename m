@@ -2,193 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8014279FB9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391C179FBA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbjINGHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
+        id S235255AbjINGKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbjINGHn (ORCPT
+        with ESMTP id S232171AbjINGJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:07:43 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1A3E3;
-        Wed, 13 Sep 2023 23:07:39 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bf04263dc8so343935a34.3;
-        Wed, 13 Sep 2023 23:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694671659; x=1695276459; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gku+wBib/CGo0C7ZubXdhdqL37D/jrXhwRwbctlzppw=;
-        b=D9YCtyqJaWwonIlbTg2sDPHbySix1425AKiTY4/f4rUiQuy59SBiL70/KFXgYq3Qpz
-         3fJ9ySQ4uWAsFTzEfNwHuBXIUDJ0xjZ79RYjXZ+wUsUQSv4+f+Z+//n/YtEiNLUdOyS/
-         /LzfuoHAQTuk1Usp11tfRsBWDErfYpe8CK6O8sCzyhmgRm/4XCPPJA4L5ZwtCJkyu98K
-         MqvPHeESST/jqyqsK9dzrG2JhlB+NbSmbNDZ3pha4fL2fN6qkCb7aseaDQ0aEHZSVL/9
-         yPBKBbWGE0RPzhrsmZkqEAWbbQc27ZYzFyqF27HXLAwBjFeENVtCiE+28+AOLGM6KGEK
-         MfxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694671659; x=1695276459;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gku+wBib/CGo0C7ZubXdhdqL37D/jrXhwRwbctlzppw=;
-        b=J8Fgj6PSmQXeQZf2EFnvTAL6TuBmFWyFKK+V8UiLCZYZH1PYhZzvHccILGqcy4AOHj
-         Ct3BZoBGzSIwfP1Iby4Es9a2VZHl3IS83i8gst7MLQNoPivVyLqirObyiMW6deVQG6I/
-         IzrGIsXmXaz6YkjFSnH7yphK8vQa+OGF+OUg0ErZrKXXq3qR62037gLjHAgy+TjsPhSl
-         aOK2VIAqaa1NMo7JHCLTxckGG6OT/v5A4Wsa6q0K8/s5hhO+YbPN7I+exXu6LPV6H4BB
-         J6/j8QCQZ8AhyJ+hxKP9nnVpL5UrsRZRAVT9LRP4sVFgitCwP6r8WtWPwyaoD621R9sk
-         D7vQ==
-X-Gm-Message-State: AOJu0YxPNuW4Of1Mi5wLxfZoXo9pSOslQeNfWzjWiQO/G45+V4QZhGiq
-        W5I2L/6/92lXR4HK5BM6guzFe457LfE=
-X-Google-Smtp-Source: AGHT+IG5gCNqXEgX7N1IDqPGoZOxmQCsj/HAtAHyh1WRx3672wz1s+mLn7BSM7jQofrLPYIRtRGfLA==
-X-Received: by 2002:a05:6358:719:b0:139:cdc2:e618 with SMTP id e25-20020a056358071900b00139cdc2e618mr4177975rwj.8.1694671658832;
-        Wed, 13 Sep 2023 23:07:38 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z16-20020a656650000000b00565dd935938sm395039pgv.85.2023.09.13.23.07.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 23:07:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <19c6413c-8837-d4cf-a692-b2846ea47a2c@roeck-us.net>
-Date:   Wed, 13 Sep 2023 23:07:36 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 2/4] dt-bindings: hwmon: Added new properties to the
- devicetree
+        Thu, 14 Sep 2023 02:09:58 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2075.outbound.protection.outlook.com [40.107.241.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB55E3;
+        Wed, 13 Sep 2023 23:09:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JP0GegTz4V6VSkM1M0qD7/p6xGap6aazw7EAB92YM6xWtcnC2bUtsBvBXElfSlHBt325F9KJDBz2H/iROxp8ZNC43ka0M8AdnW5TCk6Qs9UmnYkfsk+E12Gag4Dq7sgUFza4GV8NxLqdmcTZMFPDqTKfNZ5cNRTWNLkgBv6boNXEuH3JVWfYieo5AfP0i37WcDgYFk2JHtECZEW/3S2PyPSD0POXzVNe06b2tMZbQDvLOkZHhmAHdYXP6NoQOyylXwB7VZxLp90NLbquIf05u1BM74XvWG5kvXhx/mSxeyH6O0n4L05qsoR77AsZ5FKWwCMqfVBey3faPgZcpAElCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MEy4IUaf5cUi8IK0G4opsT0gBczRJ/R2VnGDqT/kfVo=;
+ b=W7fuyHHTfvJg9BATNmCfI0hyAYWa72n0xPYMj06ZKJBJkeSIIdR3FugWVLMNHCAOBL/f7k9hnDoCLs395/XnKK7YIh3qLbT3JMfCOvesbGjOsfVBKVdPESk3/U38hRZbNyAIxyLbqzMGtyHRo7uiGKLVMuy6AO8dxZL7/UYh7/Ie54QkEE684nyyRYcbapkvjg671/lTgC4JIWhUBINPbEzazRmlrW3Gwb8yWs8gCV9B0kREm/pyHbsCtcWBqLn+NS/JeLu25/4c37yrlVpC4HbROKD/JS6DO0nhKIM+5FZ3mZM43UDREJ36I0ZM5ayKna9Rrsz6n13HZmY6PXxQ9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MEy4IUaf5cUi8IK0G4opsT0gBczRJ/R2VnGDqT/kfVo=;
+ b=d5Y8QqABosnmDze9p4pXnlRmQ2p2+beecoVBrfGVmaRDs9fFRgPSghZt7pUta8VSCQ9mMGMwyB8WPSIK0uUY24SuxZ/HyYoFsv/3YImJaq0ebiGHu5l24TbLMK1ZULuHZVJLKMjkS/dodkBGxSFByNO+H4108Fq9VczD3jBdeoyHQ1nhU6bSeeVYUS1QZl/pWsgK8SIPszDAXl50CT1Y1PTyiDhLfP6XNrnRWLN8so90kvc8ZP/3jn6LdWEJlDC8L+INu0YVDbTBuSWYcFEhyxHWtY6fkWHBGiec03moDnxxhvF2oPTrGBtaoPWbIPbeun+TpiMXMsN0RRVn16JCuQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DU2PR04MB8790.eurprd04.prod.outlook.com (2603:10a6:10:2e1::23)
+ by PA4PR04MB7871.eurprd04.prod.outlook.com (2603:10a6:102:c2::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 06:09:50 +0000
+Received: from DU2PR04MB8790.eurprd04.prod.outlook.com
+ ([fe80::f749:b27f:2187:6654]) by DU2PR04MB8790.eurprd04.prod.outlook.com
+ ([fe80::f749:b27f:2187:6654%6]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
+ 06:09:50 +0000
+Message-ID: <77ca8680-02e2-cdaa-a919-61058e2d5245@suse.com>
+Date:   Thu, 14 Sep 2023 08:09:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v10 08/38] x86/cpufeatures: Add the cpu feature bit for
+ FRED
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Daniel Matyas <daniel.matyas@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230913152135.457892-1-daniel.matyas@analog.com>
- <20230913152135.457892-3-daniel.matyas@analog.com>
- <177ef05b-0cca-be25-afad-ac518d9f6473@linaro.org>
- <823b9820-9225-fc24-ff86-1056a1a43cc3@roeck-us.net>
- <c05d0ae9-1711-867e-2595-d5e542d4fa18@linaro.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <c05d0ae9-1711-867e-2595-d5e542d4fa18@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Juergen Gross <jgross@suse.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, andrew.cooper3@citrix.com,
+        jiangshanlai@gmail.com, Xin Li <xin3.li@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-9-xin3.li@intel.com>
+ <d98a362d-d806-4458-9473-be5bea254db7@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+In-Reply-To: <d98a362d-d806-4458-9473-be5bea254db7@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0261.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b5::15) To DU2PR04MB8790.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e1::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8790:EE_|PA4PR04MB7871:EE_
+X-MS-Office365-Filtering-Correlation-Id: 806d7972-93e4-4ab2-4e95-08dbb4e93449
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KWaEJDUOoRD2yo+953anBmMLZ4WDoPaZ2xIfPS/XzrcXk/umUQti5z6zSPyXvMLCa91RWmtti2UEIS/lmQaT//owF77Z5jANJ1ERwcWgMrKYONESnkK+0oTudEIxcpf0We8Ambu4/hc6G1migmQNsppG+zQ1ifD8OIiYS7nsyK5gkA79dUv6EuYtt1RJuSKJlVVX86VCP2gGH6S5i7vIVikzpP/4PIuPoN18xhcW7GPJ2Yvvc4HSRMbsh3EnrTnidIxgQ6ah7dKaTrd1KunxWyrmNJLRHOIzr+mqOAstmd0CshS+VAiBrq6Dhe7QAHGOnTWrPa8aDKpqowp2ku6JK32/dyPDhrxxBQBBu6kQ22i8UVyUuKFdfl7jTRrFGqbHG+LUFOdyqEJfKdxOwFTrzC3mzFZjOMJ6H6wNRQ3v1rM5fktzxKocBUSFQTQiReDb5LfEEJ/g4S0ypO1mUaX7TsLHS2CraCpbbHik8SBp5aT77iGiprsr0KDqa/jDno5NhuktxJoKRcaBbKfpQJiTME7vBba8CD1aUDQLxtljLwkNGDBkdCMWI/w5iJmSxrZgoio55PEZwhtXqz+ZST6O7Qzp+EMe2+b8ViZGKXruMsJicHtS80/aaw4xmxUJZGd+pGV7I6KXk8N3gepMqWzqNw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(376002)(346002)(451199024)(186009)(1800799009)(478600001)(31686004)(6666004)(6506007)(53546011)(6512007)(6486002)(38100700002)(31696002)(86362001)(26005)(2616005)(83380400001)(8676002)(6862004)(5660300002)(4326008)(8936002)(6636002)(66476007)(41300700001)(37006003)(316002)(2906002)(66556008)(7416002)(4744005)(36756003)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UjBvTi9Ja2pMK1M2bUlCeC9qdk8vbkF4Qm4vK0UxelI3TXlmazhUTHQ1blY5?=
+ =?utf-8?B?bjB2dmR5SklaN3RVaDRMcmpDeXB2My9SSzNYSEtxZFNvV29Cb1FRRWg0bjhY?=
+ =?utf-8?B?dmU2WlZFTncyVTdmSkR6VUgzTjdaNEo1OVdMSFhhaVYzSTB2N3hqRUp0dmJq?=
+ =?utf-8?B?dGVNN29oSms3ZSsycmtsMG5jbnZhS2MwVEVOZnB4YkhqeDM3L2pFNGRTSjhX?=
+ =?utf-8?B?UElibDRtTGxVWkpyRkh5UUlRUU1JK0dMclNLVVRrWGhVQmxjSzlYUlNPWEEz?=
+ =?utf-8?B?T1ZEd1c1RUpkWWZWamVQLzNMT1ZMQ3A5M2FDbjdaKzJXM1AvNGxLZXBiZWE1?=
+ =?utf-8?B?dXE2cHF1SENsTFA5VmNiQnJxeE5hNmxrTlhtYks3SjJqYkpwS3NOUmdORURh?=
+ =?utf-8?B?bWZBbVpXbEw1VXNSelRnV1JuUnFjei8xUDBDYURsU1JydE5jWXRoam5KSXdP?=
+ =?utf-8?B?S0puTDlmNHhseTNCaWRuOUZqbGV5YUQ2ZzlWVmY1aUJGK1d5U1VCVnlaY0to?=
+ =?utf-8?B?RWVrSnhNTC9FUHhvc3VQWWVUVXJLZlMvaXJOWTdFTzV2MTVXL1lGMGZkM0Nu?=
+ =?utf-8?B?d3QzUUhQK1J2cjRheGpjRDFlWlY5NXVYSUxLdHZJOURMa1BNbUsvY0dTQ3py?=
+ =?utf-8?B?UmJEMDJwQXdHaXdzZ0U3ZW8vVVV3NjR6am4ybDA1VUNsZzNDaE0zQm15V3Rl?=
+ =?utf-8?B?dURYWHFQQTBDb0tTb3NsSzdpVVZjYXFXcHJiOE5wc1NKN3VqUnJDR2tvUXJY?=
+ =?utf-8?B?SElPZGFQOVdSQmQrODVQRmZBV2V5WHJaSnNJUjRiWDB2cjVOelZibGdDMEIv?=
+ =?utf-8?B?eXN0aWs0dGoxdHIwaGlrRVhtOVV4NE9ObmNWeU9PTHhPUGR6UHN1dmtUdjJD?=
+ =?utf-8?B?V3NlQ2NrL0lZNGJEMkpmTVdwekZ0RmQzSFdHUVdqR09MUFZEVk02WlF4Q0xo?=
+ =?utf-8?B?ZTFCMW1lbHVTdWtKODBiUTEycGt5UUFJVU9obkdGejd5S1MrQlNPcG5hbndv?=
+ =?utf-8?B?RlZ2ZThtb3J3cWlDNzl0N1RBTHB3R3kxektlYUFvclZ0UmpIQnR5TEVqdHh2?=
+ =?utf-8?B?VGNRaUxtSmxmZHVZM3VXcklYR2VTR3FpbU43RVg2NEZROEpaNFFQNWRXSUNp?=
+ =?utf-8?B?b3JsQU5ST0dHZVVpeWdYYzJKZDhPV3c0Q3ZrdFFoQmQvWkZMNW1FWmFkMWQ0?=
+ =?utf-8?B?ZGFpbzhtOHVPdWJHVUszMVNFTDIvbW1SblZaN3lRMENZdmJYM2xMRnY3TnRI?=
+ =?utf-8?B?K1VKQUxtTGJzSWdNSWJybGYwbFFsdEhIQzkxOWw3cTE5VE1YQklkeDhjaE5v?=
+ =?utf-8?B?dkV3bGh0QzRxZUhPaWUyQ2ZxZkliT2RsM3pIQVBnb09MNmlpcVZSSXl6UzhV?=
+ =?utf-8?B?MnpUOG9QeVVsRWtQRFFvUTRWVEdvNXRIZmlJZkdTYWs2am5IVVhWYi92bk45?=
+ =?utf-8?B?eXIyTFU3Q1hzTGtXa21TdkppVGtjSDQzcHpsd3dtMC93TE4xaDV4Z05FVUVl?=
+ =?utf-8?B?QlBScWNwckxLQVQ3S0FmT3JiM1dwUEl1T1BjZ3lhMFRXai81b0hQTlZPOVZm?=
+ =?utf-8?B?SmsydjZoMVVoRnF2clhuZ1A3clk0czZmNDIwOUdwVVBSZ215UWZJTmZIVDVn?=
+ =?utf-8?B?K1I1N2wyeFgrWERSc21temU0MW5QS2ptTzJXZGVoV0dPdVRDNkdZNEVzbG80?=
+ =?utf-8?B?U3RZYWwyeElvdVQ2T2ZKcXM0dyt3VFUwRHdHSHZrOWswbzV4Y0kyRWhFRjk4?=
+ =?utf-8?B?S0JnTS9pUmZZSkM4NjJRSzU5VktLMThCajk5VXZZTGNwK1JlSDhxeVI0TUo5?=
+ =?utf-8?B?RnhHRlR0c0hBYmw0OUdldFlXN29Lc0xaWGxjZFFrWnBrRkdneHA5OWUreGdk?=
+ =?utf-8?B?UHlKSE0vYTVycWZnS0hJWVc4a1EwUGkvU3BueU9BUWc0bWFmaDRDVjF5V0Mx?=
+ =?utf-8?B?WStCN1JTellrb3EyY3c1Q2kzVVIwS2F4SmJmU0gzcVFYeEVjZDlzc1k0ZkhU?=
+ =?utf-8?B?R3l2aDIrbFVSQ3pDUnFrUHI0U1dOemlYVnU2dW9qQnhvUjN0TytxaGZ0ZlF6?=
+ =?utf-8?B?MmpxRTJrVlFQOWFVNm9mekZqazNzc2pFZ1VMTnVLTDJLeHF2WVg4dmx1T24v?=
+ =?utf-8?Q?53FhIdYCMZcIQOduW3exKBz4O?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 806d7972-93e4-4ab2-4e95-08dbb4e93449
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8790.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 06:09:50.1963
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BCLw+CAFW1aJcU55mlZhikd/VPGevQAhTJlQ27gFTAGyd6fa7md5ugy3nz5mrsfoT7ss/+annV760dKj50+lWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7871
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/23 22:41, Krzysztof Kozlowski wrote:
-> On 13/09/2023 18:43, Guenter Roeck wrote:
->> On 9/13/23 08:40, Krzysztof Kozlowski wrote:
->>> On 13/09/2023 17:21, Daniel Matyas wrote:
->>>
->>> Subject: not much improved. I am sorry, but you are not adding new
->>> properties to entire devicetree of entire world. You are actually not
->>> adding anything to any devicetree, because these are bindings (which is
->>> obvious, as said by prefix).
->>>
->>> You got comments on this.
->>>
->>>> These attributes are:
->>>> 	- adi,comp-int - boolean property
->>>> 	- adi,alrm-pol - can be 0, 1 (if not present, default value)
->>>> 	- adi,flt-q - can be 1, 2, 4, 8 (if not present, default value)
->>>> 	- adi,timeout-enable - boolean property
->>>
->>> Don't repeat what the code does. Explain why you are adding it, what is
->>> the purpose.
->>>
->>>>
->>>> These modify the corresponding bits in the configuration register.
->>>>
->>>> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
->>>> ---
->>>>    .../bindings/hwmon/adi,max31827.yaml          | 35 +++++++++++++++++++
->>>>    1 file changed, 35 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
->>>> index 2dc8b07b4d3b..6bde71bdb8dd 100644
->>>> --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
->>>> +++ b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
->>>> @@ -32,6 +32,37 @@ properties:
->>>>          Must have values in the interval (1.6V; 3.6V) in order for the device to
->>>>          function correctly.
->>>>    
->>>> +  adi,comp-int:
->>>> +    description:
->>>> +      If present interrupt mode is used. If not present comparator mode is used
->>>> +      (default).
->>>
->>> Why this is a property of hardware?
->>>
+On 14.09.2023 08:03, Juergen Gross wrote:
+> On 14.09.23 06:47, Xin Li wrote:
+>> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 >>
->> Because it affects the behavior of the interrupt signal and whatever
->> it is connected to. For example, it could be connected to an interrupt
->> controller (interupt mode), or it could be connected to a fan which is
->> enabled while the signal is active (comparator mode).
+>> Any FRED CPU will always have the following features as its baseline:
+>>    1) LKGS, load attributes of the GS segment but the base address into
+>>       the IA32_KERNEL_GS_BASE MSR instead of the GS segment’s descriptor
+>>       cache.
+>>    2) WRMSRNS, non-serializing WRMSR for faster MSR writes.
+>>
+>> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+>> Tested-by: Shan Kang <shan.kang@intel.com>
+>> Signed-off-by: Xin Li <xin3.li@intel.com>
 > 
-> That makes sense. Pardon my naive questions, I just could not figure out
-> use case out of the field description. Based on this very short
-> description itself, I could imagine sysfs entry.
+> In order to avoid having to add paravirt support for FRED I think
+> xen_init_capabilities() should gain:
 > 
->>
->>>> +    type: boolean
->>>> +
->>>> +  adi,alrm-pol:
->>>> +    description:
->>>> +      Sets the alarms active state.
->>>> +            - 0 = active low
->>>> +            - 1 = active high
->>>> +      For max31827 and max31828 the default alarm polarity is low. For max31829
->>>> +      it is high.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    enum: [0, 1]
->>>> +
->>>> +  adi,flt-q:
->>>> +    description:
->>>> +      Select how many consecutive temperature faults must occur before
->>>> +      overtemperature or undertemperature faults are indicated in the
->>>> +      corresponding status bits.
->>>> +      For max31827 default fault queue is 1. For max31828 and max31829 it is 4.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    enum: [1, 2, 4, 8]
->>>> +
->>>> +  adi,timeout-enable:
->>>> +    description:
->>>> +      Enables timeout. Bus timeout resets the I2C-compatible interface when SCL
->>>> +      is low for more than 30ms (nominal).
->>>
->>> Why this is a property of hardware?
->>>
->>
->> Because it affects i2c bus operation.
->>
->> I am not sure I understand what you are trying to say here.
->> This is a much a "hardware" property as the i2c bus speed
->> and many similar properties, and the need for it is system
->> dependent (for example, a system with many devices on the
->> i2c bus or with a less than perfect i2c controller may need
->> it because the bus tends to get stuck).
->>
->> Those are not properties where one would, at runtime,
->> decide to enable bus timeout or the interrupt mode or
->> the bus speed. Typically that kind of functionality
->> has to be configured early when the system is started.
->> If devicetree must not or no longer be used to describe the
->> system to a point where it can be configured to get it
->> to a working state, what is the suggested alternative ?
-> 
-> I could imagine enabling it always, unconditionally. I wanted to
-> understand why different boards with this chip will have it enabled or
-> disabled.
-> 
+> +    setup_clear_cpu_cap(X86_FEATURE_FRED);
 
-Some boards may need a larger timeout, for example if there is
-a chip on the same bus which supports clock stretching.
+I don't view it as very likely that Xen would expose FRED to PV guests
+(Andrew?), at which point such a precaution may not be necessary.
 
-Guenter
-
+Jan
