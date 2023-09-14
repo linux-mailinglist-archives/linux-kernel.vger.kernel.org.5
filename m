@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0243B7A0B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2107A0B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239051AbjINRWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        id S239216AbjINRWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjINRWD (ORCPT
+        with ESMTP id S238865AbjINRWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:22:03 -0400
+        Thu, 14 Sep 2023 13:22:06 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 362551FFB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:21:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48FA31BFE
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:02 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C7821007;
-        Thu, 14 Sep 2023 10:22:36 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BFD312FC;
+        Thu, 14 Sep 2023 10:22:39 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 288AC3F5A1;
-        Thu, 14 Sep 2023 10:21:56 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36FDD3F5A1;
+        Thu, 14 Sep 2023 10:21:59 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -38,9 +38,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com, amitsinght@marvell.com
-Subject: [PATCH v6 01/24] tick/nohz: Move tick_nohz_full_mask declaration outside the #ifdef
-Date:   Thu, 14 Sep 2023 17:21:15 +0000
-Message-Id: <20230914172138.11977-2-james.morse@arm.com>
+Subject: [PATCH v6 02/24] x86/resctrl: kfree() rmid_ptrs from rdtgroup_exit()
+Date:   Thu, 14 Sep 2023 17:21:16 +0000
+Message-Id: <20230914172138.11977-3-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230914172138.11977-1-james.morse@arm.com>
 References: <20230914172138.11977-1-james.morse@arm.com>
@@ -50,54 +50,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
-needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
-a specific CPU to be tested against the mask, and evaluates to false
-when CONFIG_NO_HZ_FULL is not defined.
+rmid_ptrs[] is allocated from dom_data_init() but never free()d.
 
-The resctrl code needs to pick a CPU to run some work on, a new helper
-prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
-the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
-be behind an ifdef too.
+While the exit text ends up in the linker script's DISCARD section,
+the direction of travel is for resctrl to be/have loadable modules.
 
-Move the tick_nohz_full_mask declaration, this lets callers drop the
-ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
-something like tick_nohz_full_cpu().
+Add resctrl_exit_mon_l3_config() to cleanup any memory allocated
+by rdt_get_mon_l3_config().
 
-The definition does not need to be moved as any callers should be
-removed at compile time unless CONFIG_NO_HZ_FULL is defined.
+There is no reason to backport this to a stable kernel.
 
-CC: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-Tested-By: Peter Newman <peternewman@google.com>
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- include/linux/tick.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Changes since v5:
+ * This patch is new
+---
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 10 ++++++++++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  5 +++++
+ 3 files changed, 16 insertions(+)
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index 9459fef5b857..65af90ca409a 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -174,9 +174,16 @@ static inline u64 get_cpu_iowait_time_us(int cpu, u64 *unused) { return -1; }
- static inline void tick_nohz_idle_stop_tick_protected(void) { }
- #endif /* !CONFIG_NO_HZ_COMMON */
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 85ceaf9a31ac..57cf1e6a57bd 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -537,6 +537,7 @@ void closid_free(int closid);
+ int alloc_rmid(void);
+ void free_rmid(u32 rmid);
+ int rdt_get_mon_l3_config(struct rdt_resource *r);
++void resctrl_exit_mon_l3_config(struct rdt_resource *r);
+ bool __init rdt_cpu_has(int flag);
+ void mon_event_count(void *info);
+ int rdtgroup_mondata_show(struct seq_file *m, void *arg);
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index ded1fc7cb7cb..cfb3f632a4b2 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -741,6 +741,16 @@ static int dom_data_init(struct rdt_resource *r)
+ 	return 0;
+ }
  
-+/*
-+ * Mask of CPUs that are nohz_full.
-+ *
-+ * Users should be guarded by CONFIG_NO_HZ_FULL or a tick_nohz_full_cpu()
-+ * check.
-+ */
-+extern cpumask_var_t tick_nohz_full_mask;
++void resctrl_exit_mon_l3_config(struct rdt_resource *r)
++{
++	mutex_lock(&rdtgroup_mutex);
 +
- #ifdef CONFIG_NO_HZ_FULL
- extern bool tick_nohz_full_running;
--extern cpumask_var_t tick_nohz_full_mask;
++	kfree(rmid_ptrs);
++	rmid_ptrs = NULL;
++
++	mutex_unlock(&rdtgroup_mutex);
++}
++
+ static struct mon_evt llc_occupancy_event = {
+ 	.name		= "llc_occupancy",
+ 	.evtid		= QOS_L3_OCCUP_EVENT_ID,
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 725344048f85..a2158c266e41 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3867,6 +3867,11 @@ int __init rdtgroup_init(void)
  
- static inline bool tick_nohz_full_enabled(void)
+ void __exit rdtgroup_exit(void)
  {
++	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++
++	if (r->mon_capable)
++		resctrl_exit_mon_l3_config(r);
++
+ 	debugfs_remove_recursive(debugfs_resctrl);
+ 	unregister_filesystem(&rdt_fs_type);
+ 	sysfs_remove_mount_point(fs_kobj, "resctrl");
 -- 
 2.39.2
 
