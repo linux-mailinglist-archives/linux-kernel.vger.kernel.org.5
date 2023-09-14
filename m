@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6597A0681
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3367A0657
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239258AbjINNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
+        id S239339AbjINNqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239107AbjINNxy (ORCPT
+        with ESMTP id S239324AbjINNpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:53:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C98B1AE;
-        Thu, 14 Sep 2023 06:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694699630; x=1726235630;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NEKocQoGfcfZKQftz4/7uTx3WA4f8EK2S6Mq45SyuhI=;
-  b=MCAlWSpQxmUGpvKeDHE6KwFPz5yOyjByNV7iHxaFenZV4R0GybF3bktc
-   js8q9/eqxQXv3JmNzdXYIEaIu3PEi8RNrZQd/ZG0gULpncEIfd0XfbYbs
-   9pyEQDfrHp8lp18WFi3eIWLBDddejWR0O9+3NKm9ITVq72P+QzN/4ocbU
-   V4T7Uznyrrfb7VfB1PZZ2uYmoEWOWuwg3JtexDOmJ08ZH/94RaG6ZqzmK
-   uOSkVidtP7RRr4N5QxbhuWBC1eYlY5G6LdgzOe8KSF3Si4kjSWzUhsBmr
-   g+1oF4os88mSCQg599EDdPjbMsQWoqbmGzicNveAiX6EmEBRIfHnarVaS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="364000235"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="364000235"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:36:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="991389372"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="991389372"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Sep 2023 06:36:02 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgmVO-0001dF-0q;
-        Thu, 14 Sep 2023 13:36:00 +0000
-Date:   Thu, 14 Sep 2023 21:34:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Matyas <daniel.matyas@analog.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Daniel Matyas <daniel.matyas@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 4/4] hwmon: max31827: Add custom attribute for resolution
-Message-ID: <202309142140.qvHsiLc3-lkp@intel.com>
-References: <20230913152135.457892-5-daniel.matyas@analog.com>
+        Thu, 14 Sep 2023 09:45:49 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F922707
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:37:34 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-404314388ceso7971715e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694698653; x=1695303453; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UtEDLGrLEJ6Yf0BlzG31NFuV4f9+Z2ng7sP9jomSPgM=;
+        b=pIWuhaNBIDi7szqefVU+F+ne+2YflreFExbq95b6zRS+uaqcP4l34xMBi/0klcbhCB
+         drE1R1fPaeDqJ4zEZee3kcb1AgWtzKOW8jQwvF1+ygUmSldOVPf+N637rurUd5srFVkl
+         dX5DY9RN9cjdPC5UxVTjgaM4wml9o6eRuLvptAoI82UZf6uWOWgFR9dVsQaZtVvsBBtg
+         fSbF1IjHsHwOI1NY1NJYBFunLf8fCcFvERtkgOeMgKR2O2xOOHZC+lailtlbkL7zlfdn
+         kWLq3enmIUZcfGhQEWUf26by9KhBzn6CfoWDASWVcJCdLpvVqGhMLdvPozOnqY1Gz/zu
+         AunA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694698653; x=1695303453;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UtEDLGrLEJ6Yf0BlzG31NFuV4f9+Z2ng7sP9jomSPgM=;
+        b=aDCqIX0u96AywQzGmaOGQ3yOrvG3YfYueOlJQQnXgczu8MFrb1ItIy+djbpnTyBLvV
+         nT+zLfHxrABqtQW31ylFL9/ouO/Xc828tZB34i5TiuuFgbXF3TBZQBPz5VWAzNU6ufJn
+         FW5/fA3nJgUFgWBRo0zPpGrXlYF7W12At9AraBAzR2f84WzF6khGTocvOS7sHdqq4Ofc
+         N2NkPe67uOfMA4bGpIlm87UxRySx1HvEzQDbViJaa9jKVi5h5dR1nfF83oq0MdxT/wVQ
+         ChVaDviq9YebsLaZe4s/q8/4dJPXDoqu4kXhpkoJSNFpUuWuhUg5R12jvEUZdk2EbIHW
+         ecSw==
+X-Gm-Message-State: AOJu0Yyt5ztewRFnVj0BjNXfrdlSOLeVjEpMZBjbFMRGrlCTwyPw2i58
+        AeW2cSGyIkCE8UilJo0yhIFidQ==
+X-Google-Smtp-Source: AGHT+IEpMsWeTM1Aa8jmxIP5P65K/mbegu/VOKs43KIrqswYDTztiwkAzB/UX/3KB10SAajS1EkwbA==
+X-Received: by 2002:a7b:c44b:0:b0:3f7:f2d0:b904 with SMTP id l11-20020a7bc44b000000b003f7f2d0b904mr4478679wmi.8.1694698652704;
+        Thu, 14 Sep 2023 06:37:32 -0700 (PDT)
+Received: from ta2.c.googlers.com.com (206.39.187.35.bc.googleusercontent.com. [35.187.39.206])
+        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b0031c5dda3aedsm1824865wrs.95.2023.09.14.06.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 06:37:32 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        corbet@lwn.net
+Cc:     linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 1/2] docs: pstore-blk.rst: use "about" as a preposition after "care"
+Date:   Thu, 14 Sep 2023 13:37:28 +0000
+Message-ID: <20230914133729.1956907-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913152135.457892-5-daniel.matyas@analog.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Reword the sentence to "care about the {oops/panic, pmsg, console} log."
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ Documentation/admin-guide/pstore-blk.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.6-rc1 next-20230914]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Matyas/hwmon-max31827-Make-code-cleaner/20230913-232729
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230913152135.457892-5-daniel.matyas%40analog.com
-patch subject: [PATCH 4/4] hwmon: max31827: Add custom attribute for resolution
-reproduce: (https://download.01.org/0day-ci/archive/20230914/202309142140.qvHsiLc3-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309142140.qvHsiLc3-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/hwmon/max31827.rst:107: WARNING: Bullet list ends without a blank line; unexpected unindent.
-
-vim +107 Documentation/hwmon/max31827.rst
-
-    93	
-    94	The conversion time doubles with every bit of increased resolution. The
-    95	available resolutions are:
-    96		- 8 bit -> 8.75 ms conversion time
-    97		- 9 bit -> 17.5 ms conversion time
-    98		- 10 bit -> 35 ms conversion time
-    99		- 12 bit (default) -> 140 ms conversion time
-   100	
-   101	There is a temp1_resolution attribute which indicates the unit change in the
-   102	input temperature in milli-degrees C.
-   103		- 1000 mC -> 8 bit
-   104		- 500 mC -> 9 bit
-   105		- 250 mC -> 10 bit
-   106		- 62 mC -> 12 bit (default) - actually this is 62.5, but the file
- > 107		returns 62
-   108	
-
+diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
+index 2d22ead9520e..1df5d4f93219 100644
+--- a/Documentation/admin-guide/pstore-blk.rst
++++ b/Documentation/admin-guide/pstore-blk.rst
+@@ -76,7 +76,7 @@ kmsg_size
+ ~~~~~~~~~
+ 
+ The chunk size in KB for oops/panic front-end. It **MUST** be a multiple of 4.
+-It's optional if you do not care oops/panic log.
++It's optional if you do not care about the oops/panic log.
+ 
+ There are multiple chunks for oops/panic front-end depending on the remaining
+ space except other pstore front-ends.
+@@ -88,7 +88,7 @@ pmsg_size
+ ~~~~~~~~~
+ 
+ The chunk size in KB for pmsg front-end. It **MUST** be a multiple of 4.
+-It's optional if you do not care pmsg log.
++It's optional if you do not care about the pmsg log.
+ 
+ Unlike oops/panic front-end, there is only one chunk for pmsg front-end.
+ 
+@@ -100,7 +100,7 @@ console_size
+ ~~~~~~~~~~~~
+ 
+ The chunk size in KB for console front-end.  It **MUST** be a multiple of 4.
+-It's optional if you do not care console log.
++It's optional if you do not care about the console log.
+ 
+ Similar to pmsg front-end, there is only one chunk for console front-end.
+ 
+@@ -111,7 +111,7 @@ ftrace_size
+ ~~~~~~~~~~~
+ 
+ The chunk size in KB for ftrace front-end. It **MUST** be a multiple of 4.
+-It's optional if you do not care console log.
++It's optional if you do not care about the console log.
+ 
+ Similar to oops front-end, there are multiple chunks for ftrace front-end
+ depending on the count of cpu processors. Each chunk size is equal to
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.459.ge4e396fd5e-goog
+
