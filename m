@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BA97A080D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8D67A0811
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240516AbjINOzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
+        id S240481AbjINO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234000AbjINOzs (ORCPT
+        with ESMTP id S234000AbjINO4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:55:48 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCB61FC9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:55:44 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a88fd9ef66so2525183b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:55:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694703344; x=1695308144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UniBWXhjoIRRH+Lbg5RT6divqoiHPEl+OKkmkBBM0Rk=;
-        b=qPHZxbeN/SuJTAIw50h5gZJwxfVv3QmjXKWj2Tw+NTSg7xFPeWu0Hpj3p+gJK0Zgc2
-         0Cfb1Jq2OclSovuBQNQpRzrbh6jlIr+VMjWowrd9Qolf9IZPpg0KxGJvpWw9VgyrWCzf
-         YJPIcJraCAFg14AWFnPcqmwTxdmGVq2EjOicyUQU9e9h+QjumCD/djUa6Hgc9BGivxzZ
-         vFHhWcgglSAU8bGja6kcpxI8ChgDmdXE5hTuQptTEs5PtXoiqxVu1ZjMzO8zmRmhxx8P
-         82PhopRgpgFH79C3E9SEG1BeVf28as8nIqr9VpApHcg9uBmwKjuACMXXmbu/Hm9xGHyV
-         vYQw==
-X-Gm-Message-State: AOJu0YwRQYoYtsUcXqCooVs+MK0PFtU17AvoHO5ssHMhPNzuewXXMdO8
-        xiZ7oaW6Dtva7H/saZM2jn4bU/koMKJPstKH8dWrU7ywJZ2v
-X-Google-Smtp-Source: AGHT+IHhg/1FtlbZgxc9UKz3Z5Ng8JG/tDtDrVnWE1ITPoaHT8ro5bQO5sHUNjuGBe0wZmQ0oE4LU3chmPYC95RsXY9+KrPQYl+M
+        Thu, 14 Sep 2023 10:56:39 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81E11FC4;
+        Thu, 14 Sep 2023 07:56:35 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmgP90gY1z67Q1Y;
+        Thu, 14 Sep 2023 22:55:57 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 15:56:33 +0100
+Date:   Thu, 14 Sep 2023 15:56:32 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     James Morse <james.morse@arm.com>, <linux-pm@vger.kernel.org>,
+        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 06/35] arm64: setup: Switch over to
+ GENERIC_CPU_DEVICES using arch_register_cpu()
+Message-ID: <20230914155632.00003ca9@Huawei.com>
+In-Reply-To: <ZQMTmi7blj/4FpbI@shell.armlinux.org.uk>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-7-james.morse@arm.com>
+        <20230914122715.000076be@Huawei.com>
+        <ZQMTmi7blj/4FpbI@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1992:b0:3a1:c163:6022 with SMTP id
- bj18-20020a056808199200b003a1c1636022mr874984oib.4.1694703342442; Thu, 14 Sep
- 2023 07:55:42 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 07:55:42 -0700
-In-Reply-To: <864c84f9-5acc-132d-0cd8-826d041cff96@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9dd47060552decb@google.com>
-Subject: Re: [syzbot] [io-uring?] UBSAN: array-index-out-of-bounds in io_setup_async_msg
-From:   syzbot <syzbot+a4c6e5ef999b68b26ed1@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 14 Sep 2023 15:07:22 +0100
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+> On Thu, Sep 14, 2023 at 12:27:15PM +0100, Jonathan Cameron wrote:
+> > On Wed, 13 Sep 2023 16:37:54 +0000
+> > James Morse <james.morse@arm.com> wrote:
+> >   
+> > > To allow ACPI's _STA value to hide CPUs that are present, but not
+> > > available to online right now due to VMM or firmware policy, the
+> > > register_cpu() call needs to be made by the ACPI machinery when ACPI
+> > > is in use. This allows it to hide CPUs that are unavailable from sysfs.
+> > > 
+> > > Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
+> > > five ACPI architectures to be modified at once.
+> > > 
+> > > Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
+> > > that populates the hotpluggable flag. arch_register_cpu() is also the
+> > > interface the ACPI machinery expects.
+> > > 
+> > > The struct cpu in struct cpuinfo_arm64 is never used directly, remove
+> > > it to use the one GENERIC_CPU_DEVICES provides.
+> > > 
+> > > This changes the CPUs visible in sysfs from possible to present, but
+> > > on arm64 smp_prepare_cpus() ensures these are the same.
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>  
+> > 
+> > After this the earlier question about ordering of cpu_dev_init()
+> > and node_dev_init() is relevant.   
+> > 
+> > Why won't node_dev_init() call
+> > get_cpu_devce() which queries per_cpu(cpu_sys_devices)
+> > and get NULL as we haven't yet filled that in?
+> > 
+> > Or does it do so but that doesn't matter as well create the
+> > relevant links later?  
+> 
+> node_dev_init() will walk through the nodes calling register_one_node()
+> on each. This will trickle down to __register_one_node() which walks
+> all present CPUs, calling register_cpu_under_node() on each.
+> 
+> register_cpu_under_node() will call get_cpu_device(cpu) for each and
+> will return NULL until the CPU is registered using register_cpu(),
+> which will now happen _after_ node_dev_init().
+> 
+> So, at this point, CPUs won't get registered, and initially one might
+> think that's a problem.
+> 
+> However, register_cpu() will itself call register_cpu_under_node(),
+> where get_cpu_device() will return the now populated entry, and the
+> sysfs links will be created.
+> 
+> So, I think what you've spotted is a potential chunk of code that
+> isn't necessary when using GENERIC_CPU_DEVICES after this change!
+> 
 
-failed to checkout kernel repo https://github.com/isilence/linux.git/netmsg-init-base: failed to run ["git" "fetch" "--force" "2335d1373be159a02254ea7a962dfc5bc7a540d3" "netmsg-init-base"]: exit status 128
-fatal: couldn't find remote ref netmsg-init-base
+Makes sense thanks. I was just being too lazy to check and bouncing it back
+at James! *looks guilty*
 
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       https://github.com/isilence/linux.git netmsg-init-base
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f4894cf58531f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4c6e5ef999b68b26ed1
-compiler:       
-
-Note: no patches were applied.
+Jonathan
