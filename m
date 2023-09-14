@@ -2,176 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A9F79FABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547C479F9B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbjINFVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
+        id S234628AbjINE7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 00:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235356AbjINFUF (ORCPT
+        with ESMTP id S233796AbjINE7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:20:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20AB2134;
-        Wed, 13 Sep 2023 22:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694668767; x=1726204767;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=24bZxrNwN6mEn31ObZA79OqggozStalI8dlLgDZYX38=;
-  b=FcOJKbkI2JxS0MuL1xkMWMFKkzmaXpJh5Wek5BaOChLRVlSUpttnyDgi
-   0tLtQpYumIvj6+c7Qhgyp2LbTF882dvvjtPRwSzdnLUL+ezPgZafXcFdh
-   u1H8ElVmng/Q1PbApNxPfuemnCb8SMyvToe162WSDC2SfEgLhcmddK9pD
-   K/bSt0uZ8KsHINHNIkLjldk8U82VDFx603cVgpO9C4Yooc5vdDXtav3h7
-   gSvSplb6Gax+HPYSoY7VcjpimXBNTV/uCoBJ8vvPtUJnsS/o1iVOvH3r2
-   +qRz0+htpsWhTy+Dng91D2svXNSfM3QWhhBQZZJxoJCPYU7b+zA/tje9r
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="382661561"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="382661561"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 22:17:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779488853"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="779488853"
-Received: from unknown (HELO fred..) ([172.25.112.68])
-  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 22:17:48 -0700
-From:   Xin Li <xin3.li@intel.com>
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com
-Subject: [PATCH v10 38/38] x86/fred: Invoke FRED initialization code to enable FRED
-Date:   Wed, 13 Sep 2023 21:48:05 -0700
-Message-Id: <20230914044805.301390-39-xin3.li@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230914044805.301390-1-xin3.li@intel.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
+        Thu, 14 Sep 2023 00:59:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657641BCA;
+        Wed, 13 Sep 2023 21:59:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41CBC433CB;
+        Thu, 14 Sep 2023 04:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694667542;
+        bh=wLkWD04B2xa7TQx0D5bra1Q6voiVSSnJawGwOHhDU5o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p/CeThb8Ogiec2Ix26s9RcxL50HMIXOLb/uw3MU/sv5Zm3HvbEDs7imVbs+V5VeBM
+         V27rUnWRAGwzPbXCnfU/eC0NWDhruNVLl4YeuTTpDLswR7GsFVSm9UTR13JdVIs9b7
+         jbwsbvsmNG2Kdx4qxRU6iCeQ/lmgYY6lWE6N9DHX+U5RU2oagTTEwxSnaihF/v4sEL
+         dQzLhktxDTY1TLGY3Fdzb2Uw57oDwqtNhvb8DfyFnlIxyiRvv6LNeqDSt60xtAAxBK
+         D6wJT9A8GOnbUf/wKWjOaZ1ncIf6XjoantUNdbLV7L4rnEs2xdPe5ZxGzfJeUSB/Jg
+         ChhJiIWTe8FPw==
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3a9f87adfe1so317842b6e.1;
+        Wed, 13 Sep 2023 21:59:02 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxDpz0yL/QoYqXyAtLFxDWIpXMuXAauyCrbYQGidqqB048P3EPd
+        q0KxpeRu0UnAAa1w7Ux/VaSGaxcH6QVJsAo3R2Q=
+X-Google-Smtp-Source: AGHT+IHZXwwODW3Y9+QVD8PZUEWVkMRt30jsX95KeliUBIRj3Lz5NQiQAY870OUDAhQW02cRCea/+dky6t2nPwzEVpA=
+X-Received: by 2002:a05:6870:9726:b0:1d5:b9e1:d378 with SMTP id
+ n38-20020a056870972600b001d5b9e1d378mr5460840oaq.24.1694667542260; Wed, 13
+ Sep 2023 21:59:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230722044806.3867434-1-masahiroy@kernel.org>
+ <20230722044806.3867434-11-masahiroy@kernel.org> <4780dc94-653b-7ae4-0f50-45af625726e7@hisilicon.com>
+In-Reply-To: <4780dc94-653b-7ae4-0f50-45af625726e7@hisilicon.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 14 Sep 2023 13:58:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASvgVBZ+zdPX4ExjbYc9rzSFm-VNoN_L=Q2aWj+t_mrnA@mail.gmail.com>
+Message-ID: <CAK7LNASvgVBZ+zdPX4ExjbYc9rzSFm-VNoN_L=Q2aWj+t_mrnA@mail.gmail.com>
+Subject: Re: [PATCH 11/19] kbuild: rpm-pkg: use a dummy string for _arch when undefined
+To:     "chenxiang (M)" <chenxiang66@hisilicon.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+On Tue, Sep 12, 2023 at 4:09=E2=80=AFPM chenxiang (M) <chenxiang66@hisilico=
+n.com> wrote:
+>
+> Hi,
+>
+> I build the latest kernel (6.6-rc1) for arm64 platform on x86 server
+> (with cross complile), and the complile command is as following:
+>
+> export
+> PATH=3D$PATH:/opt/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/
+> export ARCH=3Darm64
+> export CROSS_COMPILE=3Daarch64-linux-gnu-
+>
+> make -j64 Image (ok)
+>
+> make binrpm-pkg -j64 (failed)
+>
+> But when complile binrpm-pkg, it is failed and the error info is as
+> following:
+>
+> rpmbuild -bb kernel.spec --define=3D'_topdir
+> /home/chenxiang/kernel/mainline/linux-next/rpmbuild' --target
+> aarch64-linux --build-in-place --noprep --define=3D'_smp_mflags %{nil}'
+> $(rpm -q rpm >/dev/null 2>&1 || echo --nodeps) --without devel
+> rpmbuild: --build-in-place: unknown option
 
-Let cpu_init_exception_handling() call cpu_init_fred_exceptions() to
-initialize FRED. However if FRED is unavailable or disabled, it falls
-back to set up TSS IST and initialize IDT.
 
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Co-developed-by: Xin Li <xin3.li@intel.com>
-Tested-by: Shan Kang <shan.kang@intel.com>
-Signed-off-by: Xin Li <xin3.li@intel.com>
----
+I cannot reproduce it on my build environment,
+but the error message:
 
-Changes since v8:
-* Move this patch after all required changes are in place (Thomas
-  Gleixner).
----
- arch/x86/kernel/cpu/common.c | 17 ++++++++++++-----
- arch/x86/kernel/irqinit.c    |  7 ++++++-
- arch/x86/kernel/traps.c      |  5 ++++-
- 3 files changed, 22 insertions(+), 7 deletions(-)
+  rpmbuild: --build-in-place: unknown option
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 4cb36e241c9a..e230d3f4c556 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -61,6 +61,7 @@
- #include <asm/microcode.h>
- #include <asm/intel-family.h>
- #include <asm/cpu_device_id.h>
-+#include <asm/fred.h>
- #include <asm/uv/uv.h>
- #include <asm/set_memory.h>
- #include <asm/traps.h>
-@@ -2128,7 +2129,10 @@ void syscall_init(void)
- 	/* The default user and kernel segments */
- 	wrmsr(MSR_STAR, 0, (__USER32_CS << 16) | __KERNEL_CS);
- 
--	idt_syscall_init();
-+	if (cpu_feature_enabled(X86_FEATURE_FRED))
-+		fred_syscall_init();
-+	else
-+		idt_syscall_init();
- }
- 
- #else	/* CONFIG_X86_64 */
-@@ -2244,8 +2248,9 @@ void cpu_init_exception_handling(void)
- 	/* paranoid_entry() gets the CPU number from the GDT */
- 	setup_getcpu(cpu);
- 
--	/* IST vectors need TSS to be set up. */
--	tss_setup_ist(tss);
-+	/* For IDT mode, IST vectors need to be set in TSS. */
-+	if (!cpu_feature_enabled(X86_FEATURE_FRED))
-+		tss_setup_ist(tss);
- 	tss_setup_io_bitmap(tss);
- 	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
- 
-@@ -2254,8 +2259,10 @@ void cpu_init_exception_handling(void)
- 	/* GHCB needs to be setup to handle #VC. */
- 	setup_ghcb();
- 
--	/* Finally load the IDT */
--	load_current_idt();
-+	if (cpu_feature_enabled(X86_FEATURE_FRED))
-+		cpu_init_fred_exceptions();
-+	else
-+		load_current_idt();
- }
- 
- /*
-diff --git a/arch/x86/kernel/irqinit.c b/arch/x86/kernel/irqinit.c
-index c683666876f1..f79c5edc0b89 100644
---- a/arch/x86/kernel/irqinit.c
-+++ b/arch/x86/kernel/irqinit.c
-@@ -28,6 +28,7 @@
- #include <asm/setup.h>
- #include <asm/i8259.h>
- #include <asm/traps.h>
-+#include <asm/fred.h>
- #include <asm/prom.h>
- 
- /*
-@@ -96,7 +97,11 @@ void __init native_init_IRQ(void)
- 	/* Execute any quirks before the call gates are initialised: */
- 	x86_init.irqs.pre_vector_init();
- 
--	idt_setup_apic_and_irq_gates();
-+	if (cpu_feature_enabled(X86_FEATURE_FRED))
-+		fred_complete_exception_setup();
-+	else
-+		idt_setup_apic_and_irq_gates();
-+
- 	lapic_assign_system_vectors();
- 
- 	if (!acpi_ioapic && !of_ioapic && nr_legacy_irqs()) {
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 848c85208a57..0ee78a30e14a 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1411,7 +1411,10 @@ void __init trap_init(void)
- 
- 	/* Initialize TSS before setting up traps so ISTs work */
- 	cpu_init_exception_handling();
-+
- 	/* Setup traps as cpu_init() might #GP */
--	idt_setup_traps();
-+	if (!cpu_feature_enabled(X86_FEATURE_FRED))
-+		idt_setup_traps();
-+
- 	cpu_init();
- }
--- 
-2.34.1
+describes the issue.
 
+
+Which version of rpmbuild did you use?
+
+Using a newer version fixes the issue?
+
+
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
