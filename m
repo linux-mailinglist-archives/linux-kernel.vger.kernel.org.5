@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE9F79FEBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C8379FEBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbjINIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S236494AbjINIrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236539AbjINIqh (ORCPT
+        with ESMTP id S236342AbjINIrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:46:37 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF5B106
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:46:33 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31aeef88a55so572384f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1694681191; x=1695285991; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KQEPjdH4Gli9KAKRohOP4WFvJ7BvjQDzxENQGkakYUo=;
-        b=akqB3OZmyrYPrr/2AkSGvD93rHAXS+FRk5BVzmf8wBaG6o33cIZAeJVxQAJ4aOgLgC
-         ODJLzw/M7HRGg+Bc5/Rxu/z35r0SJ3t2/MyBM9/hWRI6ONHlRkT0Z8gEd7ufyj0yB88U
-         u2FnVScOUwu9REAnC0s5ZS5LMRzY53Xuq2TjWlWb1dUDm+aY2Xot+A+81SbbO0GXYaM3
-         gFXysm9D1b/J/0DqOvOCYOP2xlGPi2SbsUUoAem3z8z6tJ+uwcs6xzUYydHF9nqSXkjO
-         IAXfgKVaAYzmOYVFtb73AISpAyf2VGV6xT4hNJqe3+zRdUg99BnLMZCND8iFNJsMNvLY
-         pNMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694681191; x=1695285991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KQEPjdH4Gli9KAKRohOP4WFvJ7BvjQDzxENQGkakYUo=;
-        b=AcHH7dj0Tn7ogdR7wWSqjM7RrTc1wLoIVXH3HMaylru4ELSeFzCdTsRBklz/NMNIMj
-         8HhCw3l4DJc6BfMejRPsT3reGtizk5JxMoYVajwEUO0s1tLIO67kTgWmehHmtBOMbPwI
-         HukDrv2eJ5FUjq4uc34KJYB51UE7y+gd5Bjmqs1pcTTzJ19Y2NSHheOixd3VU3MJV07V
-         EX3AKhPDM5UgevKN8LTHSGfvneE+lh4DEZdXsoj6kNzOJxA3uxFXTMPwxKFmh2aXAY1F
-         /e5qCmkvs1MtBxu2h2SOsmaZ4Th+kPQX+3sZlcDforup4Lh9FIK5sNXw3Qb9aB+98T68
-         fwNA==
-X-Gm-Message-State: AOJu0YxOemld8cG1if0p0Y6Mt4DQph3fwhulbVXgrf60Dbtu2yWp0Fy3
-        FcoJqNagJjxPU9mOajF9IjEd3A==
-X-Google-Smtp-Source: AGHT+IEirTjVMIzTLjC7sB1QXwQuxnOxm1+1fH/gEKNI6n9l8wkInADFzO37/+IpdsjO1bWWulPatg==
-X-Received: by 2002:a5d:6105:0:b0:319:8427:d221 with SMTP id v5-20020a5d6105000000b003198427d221mr4297904wrt.62.1694681191504;
-        Thu, 14 Sep 2023 01:46:31 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b003176eab8868sm1157269wrs.82.2023.09.14.01.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 01:46:31 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 10:46:30 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thu, 14 Sep 2023 04:47:10 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9BDE91
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:47:05 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-236-xJwBvLsLMwuuTmppwXLEdw-1; Thu, 14 Sep 2023 09:46:57 +0100
+X-MC-Unique: xJwBvLsLMwuuTmppwXLEdw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 14 Sep
+ 2023 09:46:54 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 14 Sep 2023 09:46:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
+        Evan Green <evan@rivosinc.com>
+CC:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Sia Jee Heng" <jeeheng.sia@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Simon Hosie <shosie@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 2/9] KVM: selftests: Unify the makefile rule for split
- targets
-Message-ID: <20230914-393dcb077c664af16c4830e4@orel>
-References: <cover.1694421911.git.haibo1.xu@intel.com>
- <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
+        "Alexandre Ghiti" <alexghiti@rivosinc.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "Andy Chiu" <andy.chiu@sifive.com>
+Subject: RE: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+Thread-Topic: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+Thread-Index: AQHZ5t2uDoI3R+Ee30ay/cEMVFilT7AaADQQ
+Date:   Thu, 14 Sep 2023 08:46:54 +0000
+Message-ID: <de95229a14614198894a8ce421c30d94@AcuMS.aculab.com>
+References: <20230818194136.4084400-1-evan@rivosinc.com>
+ <20230818194136.4084400-2-evan@rivosinc.com>
+ <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
+ <CALs-Hsvu7BsK8P0+xeuLmKEqg-q=kQANbf8FkiPGPhwhnSXpmA@mail.gmail.com>
+ <CAMuHMdV594xA1UoTeVixpXm3i5LDFO5cT=dd_iRwWLwvxQctZg@mail.gmail.com>
+In-Reply-To: <CAMuHMdV594xA1UoTeVixpXm3i5LDFO5cT=dd_iRwWLwvxQctZg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:36:56AM +0800, Haibo Xu wrote:
-> A separate makefile rule was used for split targets which was added
-> in patch(KVM: arm64: selftests: Split get-reg-list test code). This
-> could be avoided by minor changes to the recipes of current rule.
-> 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/testing/selftests/kvm/Makefile | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index a3bb36fb3cfc..7972269e8c5f 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -249,13 +249,10 @@ TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
->  -include $(TEST_DEP_FILES)
->  
->  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
-> -	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) $(LDLIBS) -o $@
-> +	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
->  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
->  	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
->  
-> -$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
-> -	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
-> -
->  EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLIT_TESTS_OBJS) cscope.*
->  
->  x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
-> @@ -274,6 +271,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
->  x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
->  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
->  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
-> +$(SPLIT_TESTS_TARGETS): $(OUTPUT)/%: $(ARCH_DIR)/%.o
->  
->  cscope: include_paths = $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) include lib ..
->  cscope:
-> -- 
-> 2.34.1
->
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDE0IFNlcHRlbWJlciAyMDIzIDA4OjMz
+DQouLi4NCj4gPiA+ICAgICByemZpdmU6DQo+ID4gPiAgICAgICAgIGNwdTA6IFJhdGlvIG9mIGJ5
+dGUgYWNjZXNzIHRpbWUgdG8gdW5hbGlnbmVkIHdvcmQgYWNjZXNzIGlzDQo+ID4gPiAxLjA1LCB1
+bmFsaWduZWQgYWNjZXNzZXMgYXJlIGZhc3QNCj4gPg0KPiA+IEhybSwgSSdtIGEgbGl0dGxlIHN1
+cnByaXNlZCB0byBiZSBzZWVpbmcgdGhpcyBudW1iZXIgY29tZSBvdXQgc28gY2xvc2UNCj4gPiB0
+byAxLiBJZiB5b3UgcmVib290IGEgZmV3IHRpbWVzLCB3aGF0IGtpbmQgb2YgdmFyaWFuY2UgZG8g
+eW91IGdldCBvbg0KPiA+IHRoaXM/DQo+IA0KPiBSb2NrLXNvbGlkIGF0IDEuMDUgKGV2ZW4gd2l0
+aCBpbmNyZWFzZWQgcmVzb2x1dGlvbjogMS4wNTg1MyBvbiAzIHRyaWVzKQ0KDQpXb3VsZCB0aGF0
+IG1hdGNoIHplcm8gb3ZlcmhlYWQgdW5sZXNzIHRoZSBhY2Nlc3MgY3Jvc3NlcyBhDQpjYWNoZSBs
+aW5lIGJvdW5kYXJ5Pw0KKEkgY2FuJ3QgcmVtZW1iZXIgd2hldGhlciB0aGUgdGVzdCBpcyB1c2lu
+ZyBpbmNyZWFzaW5nIGFkZHJlc3Nlcy4pDQoNCi4uLg0KPiA+ID4gICAgIHZleHJpc2N2L29yYW5n
+ZWNyYWI6DQo+ID4gPg0KPiA+ID4gICAgICAgICBjcHUwOiBSYXRpbyBvZiBieXRlIGFjY2VzcyB0
+aW1lIHRvIHVuYWxpZ25lZCB3b3JkIGFjY2VzcyBpcw0KPiA+ID4gMC4wMCwgdW5hbGlnbmVkIGFj
+Y2Vzc2VzIGFyZSBzbG93DQo+IA0KPiBjcHUwOiBSYXRpbyBvZiBieXRlIGFjY2VzcyB0aW1lIHRv
+IHVuYWxpZ25lZCB3b3JkIGFjY2VzcyBpcyAwLjAwNDE3LA0KPiB1bmFsaWduZWQgYWNjZXNzZXMg
+YXJlIHNsb3cNCj4gDQo+ID4gPiBJIGFtIGEgYml0IHN1cnByaXNlZCBieSB0aGUgbmVhci16ZXJv
+IHZhbHVlcy4gIEFyZSB0aGVzZSBleHBlY3RlZD8NCj4gPg0KPiA+IFRoaXMgY291bGQgYmUgZXhw
+ZWN0ZWQsIGlmIGZpcm13YXJlIGlzIHRyYXBwaW5nIHRoZSB1bmFsaWduZWQgYWNjZXNzZXMNCj4g
+PiBhbmQgY29taW5nIG91dCA+MTAweCBzbG93ZXIgdGhhbiBhIG5hdGl2ZSBhY2Nlc3MuIElmIHlv
+dSdyZSBpbnRlcmVzdGVkDQo+ID4gaW4gZ2V0dGluZyBhIGxpdHRsZSBtb3JlIHJlc29sdXRpb24s
+IHlvdSBjb3VsZCB0cnkgdG8gcHJpbnQgYSBmZXcgbW9yZQ0KPiA+IGRlY2ltYWwgcGxhY2VzIHdp
+dGggc29tZXRoaW5nIGxpa2UgKHNvcnJ5IGdtYWlsIG1hbmdsZXMgdGhlIHdoaXRlc3BhY2UNCj4g
+PiBvbiB0aGlzKToNCg0KSSdkIGV4cGVjdCBvbmUgb2YgdGhyZWUgcG9zc2libGUgdmFsdWVzOg0K
+LSAxLjB4OiBCYXNpY2FsbHkgemVybyBjb3N0IGV4Y2VwdCBmb3IgY2FjaGUgbGluZS9wYWdlIGJv
+dW5kYXJpZXMuDQotIH4yOiBIYXJkd2FyZSBkb2VzIHR3byByZWFkcyBhbmQgbWVyZ2VzIHRoZSB2
+YWx1ZXMuDQotID4xMDA6IFRyYXAgZml4ZWQgdXAgaW4gc29mdHdhcmUuDQoNCkknZCB0aGluayB0
+aGUgJzInIGNhc2UgY291bGQgYmUgY29uc2lkZXJlZCBmYXN0Lg0KWW91IG9ubHkgbmVlZCB0byB0
+aW1lIG9uZSBhY2Nlc3MgdG8gc2VlIGlmIGl0IHdhcyBhIGZhdWx0Lg0KDQoJRGF2aWQNCg0KLQ0K
+UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
+bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
+KQ0K
 
-Nice.
-
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
-Thanks,
-drew
