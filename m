@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BD579FEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293A179FEAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbjINIoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        id S236420AbjINIoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236560AbjINIns (ORCPT
+        with ESMTP id S236575AbjINIn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:43:48 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E2C1FDC;
-        Thu, 14 Sep 2023 01:43:43 -0700 (PDT)
-X-QQ-mid: bizesmtp89t1694681001t8iqu5hy
+        Thu, 14 Sep 2023 04:43:58 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A170E1FE0;
+        Thu, 14 Sep 2023 01:43:52 -0700 (PDT)
+X-QQ-mid: bizesmtp81t1694681014t16evqhx
 Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 14 Sep 2023 16:43:19 +0800 (CST)
-X-QQ-SSF: 01200000000000907000000A0000000
-X-QQ-FEAT: ILHsT53NKPhLiNYdg+snuvAFgd9JaqpqWaM7ZIdOCi0ym8WsfHzl5jY6irFd0
-        RRvUFHm/99csf0fZOfTiYc1wJWhql4mMqCqGIK1bv2rm1WEDtv+oFe4rhH7Q0Bk3pqaWefy
-        8KuvLjgp2lBFVwovwzMYaij17uWqtCvKS1dQ/oPH27wwTEnHJuDBuQssDyIBauRzR56KD9l
-        EqyKe0B4ahV4u/CFPAFM2JRx6FZpmLTJ5GOgtuuaC1uq52PYZ+4IGnojNTr2d/dgp96JZ65
-        NAoaB2zJTo6/cS82eBV9Lt/jwSntlH14gvtujnXftu3MGENJeuheRYAfS18BFr0H2Y55Epi
-        WqKAUYzSHA5N/GoplAZLbmPi7IDLUfcyBcFf+/M9q62mx3SSEA=
+        id ; Thu, 14 Sep 2023 16:43:32 +0800 (CST)
+X-QQ-SSF: 00200000000000907000000A0000000
+X-QQ-FEAT: oAZ4GxcAC/VI+ncbe/WqybxXh1XLEZFy2YK7qRtVv2+fw7xXSYHohLX83MT8d
+        mEoTgvURjNRAYPiadjffRz5EeFgJS6n1Q5mC80c3KI3jso9spEaqrM7ARb4oLBeaugqU0xQ
+        bsrRdtjd5LKA71ZjXTkOI4R+0ZUHWDnc6Bcyd1KYFDPvDynTfpgjUj82mFRaOBCioXVG88u
+        jV/7l2WX1Z5ALc9Rwo84S6VIdyW2NkRH7IfHP4X+dHMQXE3yVwLXG4GmgsyMlyDokarg0Yo
+        rEVi1DH2q8C72V5jL0x1NpW3OVxn776Z18tkajgDtxI5ymnmikx9bNLi9xM5m21FJoX4IJD
+        PnJ3N10yEFT3NPULCsB3qy+xJ815b0hFIvtQBvmtfiNhAufmaw=
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18177791329312529309
+X-BIZMAIL-ID: 10233896525640872337
 From:   Yuan Tan <tanyuan@tinylab.org>
 To:     tsbogend@alpha.franken.de, 42.hyeyoo@gmail.com, philmd@linaro.org
 Cc:     linux-mips@vger.kernel.org, christophe.leroy@csgroup.eu,
         linux-kernel@vger.kernel.org, falcon@tinylab.org, w@1wt.eu,
         linux@weissschuh.net, tanyuan@tinylab.org
-Subject: [PATCH v3 0/3] Add dependencies of POWER_RESET for MIPS Malta
-Date:   Thu, 14 Sep 2023 16:43:17 +0800
-Message-Id: <cover.1694680448.git.tanyuan@tinylab.org>
+Subject: [PATCH v3 1/3] MIPS: Cleanup malta_defconfig
+Date:   Thu, 14 Sep 2023 16:43:31 +0800
+Message-Id: <0b4450f083b612f78207e17499fc6ea6c65c6f3b.1694680448.git.tanyuan@tinylab.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694680448.git.tanyuan@tinylab.org>
+References: <cover.1694680448.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,64 +48,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches are to add dependencies of POWER_RESET for MIPS Malta.
+Use 'make savedefconfig' to cleanup malta_defconfig.
 
-As I have to use "savedefconfig" on the latest branch of different
-architectures, I am sending separate patches for each architecture in v3.
-
-To simplify the enablement of the poweroff support, selecting the
-required options for CONFIG_POWER_RESET=y may make many people happy
-especially when they are using a customized config (maybe tinyconfig
-based) for a target qemu board. Without normal poweroff support from the
-kernel side, qemu will simply hang[1] there after a 'poweroff' command,
-which is a very bad experience for the automatical tests.
-
-However, CONFIG_POWER_RESET is ineffective if there are no
-dependencies that enable certain devices in Kconfig.
-
-Currently, based on tinyconfig, it is very hard to find the exact
-poweroff related option[2]. Some architectures' poweroff works well without
-any dependence, the others' poweroff options are hidden deeply, which
-make things hard.
-
-After multiple verifications, these options have been identified as the
-minimum dependencies required for poweroff to function normally.
-Additionally, 'make savedefconfig' simplifies the defconfig
-automatically.
-
-Zhangjin and I invested a significant amount of time in searching for
-the current options on these devices. We hope that this set of patches
-will save time for others. If community like it, we will consider adding
-dependencies for POWER_RESET on other devices.
-
-We hope every device's CONFIG_POWER_RESET will have proper dependencies. :)
-
+Suggested-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
 ---
-[1]: https://lore.kernel.org/lkml/511b2f6009fb830b3f32b4be3dca99596c684fa3.1689759351.git.falcon@tinylab.org/
-[2]: https://lore.kernel.org/all/983843582e52e83fba79ad45cea6c79e1f62ec6c.1690489039.git.falcon@tinylab.org/
+ arch/mips/configs/malta_defconfig | 39 +++++++------------------------
+ 1 file changed, 8 insertions(+), 31 deletions(-)
 
-v1: https://lore.kernel.org/all/20230831201727.3177853-1-tanyuan@tinylab.org/
-v2: https://lore.kernel.org/all/cover.1693535514.git.tanyuan@tinylab.org/
-
----
-Changes in v2:
-- Fix the mistake of using spaces instead of tabs in kconfig.
-
-Changes in v3:
-- Enable POWER_RESET and simplify the deconfig.
-- Select ADB_CUDA in PPC_PMAC32 only.
-
-Yuan Tan (3):
-  MIPS: Cleanup malta_defconfig
-  Kconfig: add dependencies of POWER_RESET for mips malta
-  MIPS: Simplify malta_defconfig
-
- arch/mips/Kconfig                 |  3 +++
- arch/mips/configs/malta_defconfig | 39 ++++++-------------------------
- 2 files changed, 10 insertions(+), 32 deletions(-)
-
-
-base-commit: e7513eccb7d7f82e28f4730210b42da71edaa6a6
+diff --git a/arch/mips/configs/malta_defconfig b/arch/mips/configs/malta_defconfig
+index ae1a7793e810..7ae07d57b79a 100644
+--- a/arch/mips/configs/malta_defconfig
++++ b/arch/mips/configs/malta_defconfig
+@@ -6,18 +6,17 @@ CONFIG_NAMESPACES=y
+ CONFIG_RELAY=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
+-# CONFIG_COMPAT_BRK is not set
+ CONFIG_MIPS_MALTA=y
+ CONFIG_CPU_LITTLE_ENDIAN=y
+ CONFIG_CPU_MIPS32_R2=y
+ CONFIG_PAGE_SIZE_16KB=y
+ CONFIG_NR_CPUS=8
+ CONFIG_HZ_100=y
+-CONFIG_PCI=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_MODVERSIONS=y
+ CONFIG_MODULE_SRCVERSION_ALL=y
++# CONFIG_COMPAT_BRK is not set
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+ CONFIG_UNIX=y
+@@ -133,19 +132,6 @@ CONFIG_IP_NF_RAW=m
+ CONFIG_IP_NF_ARPTABLES=m
+ CONFIG_IP_NF_ARPFILTER=m
+ CONFIG_IP_NF_ARP_MANGLE=m
+-CONFIG_IP6_NF_MATCH_AH=m
+-CONFIG_IP6_NF_MATCH_EUI64=m
+-CONFIG_IP6_NF_MATCH_FRAG=m
+-CONFIG_IP6_NF_MATCH_OPTS=m
+-CONFIG_IP6_NF_MATCH_HL=m
+-CONFIG_IP6_NF_MATCH_IPV6HEADER=m
+-CONFIG_IP6_NF_MATCH_MH=m
+-CONFIG_IP6_NF_MATCH_RT=m
+-CONFIG_IP6_NF_TARGET_HL=m
+-CONFIG_IP6_NF_FILTER=m
+-CONFIG_IP6_NF_TARGET_REJECT=m
+-CONFIG_IP6_NF_MANGLE=m
+-CONFIG_IP6_NF_RAW=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+ CONFIG_BRIDGE_EBT_T_FILTER=m
+@@ -177,7 +163,6 @@ CONFIG_IPDDP=m
+ CONFIG_IPDDP_ENCAP=y
+ CONFIG_PHONET=m
+ CONFIG_NET_SCHED=y
+-CONFIG_NET_SCH_CBQ=m
+ CONFIG_NET_SCH_HTB=m
+ CONFIG_NET_SCH_HFSC=m
+ CONFIG_NET_SCH_PRIO=m
+@@ -186,16 +171,12 @@ CONFIG_NET_SCH_SFQ=m
+ CONFIG_NET_SCH_TEQL=m
+ CONFIG_NET_SCH_TBF=m
+ CONFIG_NET_SCH_GRED=m
+-CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+-CONFIG_NET_CLS_RSVP=m
+-CONFIG_NET_CLS_RSVP6=m
+ CONFIG_NET_CLS_FLOW=m
+ CONFIG_NET_CLS_ACT=y
+ CONFIG_NET_ACT_POLICE=y
+@@ -211,6 +192,7 @@ CONFIG_CFG80211=m
+ CONFIG_MAC80211=m
+ CONFIG_MAC80211_MESH=y
+ CONFIG_RFKILL=m
++CONFIG_PCI=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_CONNECTOR=m
+ CONFIG_MTD=y
+@@ -220,7 +202,6 @@ CONFIG_MTD_CFI=y
+ CONFIG_MTD_CFI_INTELEXT=y
+ CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_MTD_CFI_STAA=y
+-CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_UBI=m
+ CONFIG_MTD_UBI_GLUEBI=m
+ CONFIG_BLK_DEV_FD=m
+@@ -396,20 +377,16 @@ CONFIG_NLS_ISO8859_15=m
+ CONFIG_NLS_KOI8_R=m
+ CONFIG_NLS_KOI8_U=m
+ CONFIG_CRYPTO_CRYPTD=m
+-CONFIG_CRYPTO_LRW=m
+-CONFIG_CRYPTO_PCBC=m
+-CONFIG_CRYPTO_HMAC=y
+-CONFIG_CRYPTO_XCBC=m
+-CONFIG_CRYPTO_MD4=m
+-CONFIG_CRYPTO_SHA512=m
+-CONFIG_CRYPTO_WP512=m
+-CONFIG_CRYPTO_ANUBIS=m
+ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
+ CONFIG_CRYPTO_FCRYPT=m
+-CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SERPENT=m
+-CONFIG_CRYPTO_TEA=m
+ CONFIG_CRYPTO_TWOFISH=m
++CONFIG_CRYPTO_LRW=m
++CONFIG_CRYPTO_PCBC=m
++CONFIG_CRYPTO_HMAC=y
++CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_WP512=m
++CONFIG_CRYPTO_XCBC=m
 -- 
 2.34.1
 
