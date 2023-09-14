@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA82C7A023B
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDD87A0238
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbjINLQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S232883AbjINLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbjINLQI (ORCPT
+        with ESMTP id S237403AbjINLQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:16:08 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FB31FD6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:16:03 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-500c37d479aso1370715e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694690161; x=1695294961; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NwwwwfCX71CGPY+4m/B/8JB1FGVXzFuLpjf50GP33WM=;
-        b=mrUrG3F5waGhxnAVEni2chuXNhbBacCWpm1UWN9GnGnGIyjKEIl9AMhz3vaVIYfqAU
-         52UAQCtuRDCrY27EghvtvGI7DKS72gloiMmBMm7hM9s+Jos4TLPaIWS58eFxEpcu6D3e
-         NPN98y71v6LNGg7L2YVGtg6aQvFswLdsbsiJIyd+i/pHklzD+03pCjJ2bh4sXC8b/URT
-         zL/v74Bi4RrsIqzhhJjn/asE9gPXKZlQzSH3DVoBrcObsPNsbL4VGHKhAoZalyyv/w70
-         NcZZv/M90AXS7pxXdRSJ03YU0lpG0jmgxSh8oXAgMQd090wXs8YBf3WWkP6G1uabZJ3a
-         m+ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694690161; x=1695294961;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NwwwwfCX71CGPY+4m/B/8JB1FGVXzFuLpjf50GP33WM=;
-        b=Ga/aC9Moe4AqpVedKWJRxaHM1VAp87zcetxNhxDD6uczyF/ahf4Av9JW534SQ8lFNq
-         CvInrU/ZNBVXvwrL13CLyAfe+FxaxK0i++SS6eIrDHXAbU8RGF9mDURLVB10Y+wEw0Nz
-         vNzRXDMOIFiDsGWHBhKI1aEHhUhN91/3XtcNpUddBV1ZbIfJAAafvRpP2Xw6cR0ScUMB
-         KUtG+xmOH5kR20PJ55WOS0Un9VyBg9BMRZc2pZjGzfBMqpjYsS11nwpMsjI4UhDAIeui
-         Oq37UfOpeq21iSqAkifuvWQeOblKoabG6C0a/AIAxhsTCu9Q2ipoPzTixRhjPpjZpz0p
-         S6lA==
-X-Gm-Message-State: AOJu0YxfeSDrFwAubGCa9wHyL263E//oP24mzPFGXNWP3dDFG3Y03nNN
-        FBU1T9neY8fe8mUOTZJwqdtK3n2ZSIgnayRfRDhICw==
-X-Google-Smtp-Source: AGHT+IGNDq1+kGv5ZTcP0wVAqFgUnsmaefZprk/wPO9nW3ABND+2s7KXW5rp8cCLBWwqxo4DDvNGnA==
-X-Received: by 2002:a05:6512:20cc:b0:500:75e5:a2f0 with SMTP id u12-20020a05651220cc00b0050075e5a2f0mr3775138lfr.51.1694690160982;
-        Thu, 14 Sep 2023 04:16:00 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b00500ba43a43asm236197lfm.86.2023.09.14.04.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 04:16:00 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/17] pmdomain: Prepare to move Kconfig files into the pmdomain subsystem
-Date:   Thu, 14 Sep 2023 13:15:54 +0200
-Message-Id: <20230914111554.586438-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <pmdomain_move_kconfig/0002-pmdomain-actions-Move-Kconfig-file-to-the-pmdomain-s.patch>
-References: <pmdomain_move_kconfig/0002-pmdomain-actions-Move-Kconfig-file-to-the-pmdomain-s.patch>
+        Thu, 14 Sep 2023 07:16:21 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175071A5;
+        Thu, 14 Sep 2023 04:16:17 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmZTc4Qg3z6HJdP;
+        Thu, 14 Sep 2023 19:14:28 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 12:16:13 +0100
+Date:   Thu, 14 Sep 2023 12:16:12 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 04/35] drivers: base: Move cpu_dev_init() after
+ node_dev_init()
+Message-ID: <20230914121612.00006ac7@Huawei.com>
+In-Reply-To: <20230913163823.7880-5-james.morse@arm.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-5-james.morse@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than having the various Kconfig files for the genpd providers
-sprinkled across subsystems, let's prepare to move them into the pmdomain
-subsystem along with the implementations.
+On Wed, 13 Sep 2023 16:37:52 +0000
+James Morse <james.morse@arm.com> wrote:
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/Kconfig          | 2 ++
- drivers/pmdomain/Kconfig | 4 ++++
- 2 files changed, 6 insertions(+)
- create mode 100644 drivers/pmdomain/Kconfig
+> NUMA systems require the node descriptions to be ready before CPUs are
+> registered. This is so that the node symlinks can be created in sysfs.
+> 
+> Currently no NUMA platform uses GENERIC_CPU_DEVICES, meaning that CPUs
+> are registered by arch code, instead of cpu_dev_init().
 
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index efb66e25fa2d..045c469cb438 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -175,6 +175,8 @@ source "drivers/soundwire/Kconfig"
- 
- source "drivers/soc/Kconfig"
- 
-+source "drivers/genpd/Kconfig"
-+
- source "drivers/devfreq/Kconfig"
- 
- source "drivers/extcon/Kconfig"
-diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
-new file mode 100644
-index 000000000000..c32a76b51840
---- /dev/null
-+++ b/drivers/pmdomain/Kconfig
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menu "Power Domains Support"
-+
-+endmenu
--- 
-2.34.1
+Worth saying why this matters I think.  I wrote a nice note on that being a possible
+problem path as node_dev_init() uses the results of cpu_dev_init() if
+CONFIG_GENERIC_CPU_DEVICES before seeing this comment and realizing you
+had it covered (sort of anyway).
+
+> 
+> Move cpu_dev_init() after node_dev_init() so that NUMA architectures
+> can use GENERIC_CPU_DEVICES.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>  drivers/base/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/init.c b/drivers/base/init.c
+> index 397eb9880cec..c4954835128c 100644
+> --- a/drivers/base/init.c
+> +++ b/drivers/base/init.c
+> @@ -35,8 +35,8 @@ void __init driver_init(void)
+>  	of_core_init();
+>  	platform_bus_init();
+>  	auxiliary_bus_init();
+> -	cpu_dev_init();
+>  	memory_dev_init();
+>  	node_dev_init();
+> +	cpu_dev_init();
+>  	container_dev_init();
+>  }
 
