@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 203A479F621
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E02F79F62C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjINBGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
+        id S233352AbjINBLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233350AbjINBGo (ORCPT
+        with ESMTP id S231935AbjINBLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:06:44 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F721BCE
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:06:40 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81503de9c9so548468276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:06:40 -0700 (PDT)
+        Wed, 13 Sep 2023 21:11:01 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43360170F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:10:57 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c39a4f14bcso3556405ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:10:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694653599; x=1695258399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2k/uDSMMkxzMgxotysOQ1I84LqRn/bUax7yAixLpqCc=;
-        b=lzYK9szfFMR/skBd7EWiGnbfbrK7oawEVT3fgrS0+WZI56uBIdqMjTSFIzVDfbcgDu
-         yUqXnMmAMaydCDSaQ/E5y+yJHqxUdIcyyqZHslmastkKAXef33nc2eeW6F6aTsHUXY/d
-         iyHvVkFxKTtb36aIvb+ztzAJYeA9ZOCTvthq8rnh2JFeX1AY0ueijqjNFGF2fI7hfAPX
-         eGu/3AWXCPNcajNEpTypoiywkCDhlpvgSTeE0nVv1NkBYedoevVFQBhP9PahRbwUOq0d
-         ezO9gyeo8Qgi/RrrY8hCEpUUEx7s8VZSAqmgzJ2yqL9FXUNcsMqHe7A2ke7BI+QwDKqZ
-         dZbw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694653857; x=1695258657; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=14DxahOjQVITg89U+rNjNpjXPaY0eKHfBvvG2rNIDbQ=;
+        b=FqFeWH7meXXVtdKOUvdQ0QCa4o4gdQyoklXwOBMoCSJMa+yY1gHhLHU0xCVPOwamVb
+         BEJfaFBHdGqL8Qo4f8m9Jcc2Uo13AwtomtztMszabxIeO6914KdTNrFakAdX1mPFiTAu
+         xP932guEhuTzL9mjqEELwclK/N7gVa0s2jY1N4ep3/6qNYa9upwOi2jVBr+6MVSjsv4V
+         LDKtVs03UfcipJYL1Rzm8JXW9s2YgvTsDfrSteBQRY9xhEc0Uco2/FaYs5JYnAnB/r2z
+         cLP84Q67L7lbnaVJeLbQLqoy/etprYT8JqmSHxAbhvTUxNBG2SuxmaNaCcvYkDwilaMT
+         5TIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694653599; x=1695258399;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:reply-to:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2k/uDSMMkxzMgxotysOQ1I84LqRn/bUax7yAixLpqCc=;
-        b=jGLh6QE7TXGQUqGhphVefWKG81Wvl0Sa2qvY0JnrNNonfJ9Ou4FpWILI4D9IqSG7R9
-         HJncM/GGPmyoUycXuMOG+TbtlEEsR2Pcr9+NKiD8GP04Ngp+4gYKFzaA9z8sHmAoFtkZ
-         +9G2BTTmFsSyVwJT8qqIi3dFDs7585ynkNk/6YM6LYx1Eobq7ciMAgYSXfwvrGZ+uMaC
-         Vo7ByOX8jbtyJOvOuRx/pp60k5Xl1Q5JcsfIXLHEmA7mlhvPnC4k/s5vLUZIVnBhqz/F
-         HxStl7/6lfksWvovK0sewqnWLiEGeyMvCn60/c0d5eoBMNA0c9CnZEDajB2nObyCTvcj
-         bMGg==
-X-Gm-Message-State: AOJu0Yz3XmqCz6QiHT1G0aUG/5JkL8LIhv2N87JSH/7jS5q6T1Is+Iye
-        D3jZVa/TmBSKHgAfWbxhoLToAvUxl4M=
-X-Google-Smtp-Source: AGHT+IEw9ZZhn0YdLMZxCCvSGbD9b5eWAH0z/RlOk+yU7xV5M++q8FPZWEHXTjqqB0hL5ZdTs5KmrrqsBlA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1816:b0:d0e:e780:81b3 with SMTP id
- cf22-20020a056902181600b00d0ee78081b3mr101657ybb.2.1694653599563; Wed, 13 Sep
- 2023 18:06:39 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Sep 2023 18:06:36 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230914010636.1391735-1-seanjc@google.com>
-Subject: [PATCH] KVM: selftests: Assert that vasprintf() is successful
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Anup Patel <anup@brainfault.org>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1694653857; x=1695258657;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14DxahOjQVITg89U+rNjNpjXPaY0eKHfBvvG2rNIDbQ=;
+        b=QSO22/AO21wZxHSZRnnVkQLyJZFs1Nnli7NdYDAujHyljWlrs4qmz68Iwd5tck2dKK
+         ZJ2TM9qCPmXszgeku5st5KxpiTW/v3Ijbye51BzzvKkuIFxHQHbs8SzYB5vJXy8UoVUY
+         qnIkGKMBfqZ4jNdlY6EhPN4VLT0OraFh6UnCTXYwFdWtKi97+eT5qiZsBJZ4DUDlnA0j
+         hQVbwB9gwevmyvu2GpUwYkNgVzlTK/zGHFRnVVxH2hh997TZc4Lx8EQU7Eh9f9sSEzCT
+         uc5pUMWqcTnoYS18o7tF0dOISPAI/MJMqYvmYg3ba4zfqsUnpd9VdyQMyZ8LTXJBRaNV
+         SCvg==
+X-Gm-Message-State: AOJu0YyUREx2WvAA+LAxv1LORZGHo51EPodwsmgXrrcLu+uiGXbj9J/d
+        x42/jq4cxkFd0CwwrlHTtx2d9Q==
+X-Google-Smtp-Source: AGHT+IEY+/BKNCHPHuaKMXDV/8l1HaolfYgSVJTHDIJZEnBg1zJunOBNTfLVDJIkmH+IRBGj/Nwl5Q==
+X-Received: by 2002:a17:902:bf03:b0:1b6:6e3a:77fb with SMTP id bi3-20020a170902bf0300b001b66e3a77fbmr3944820plb.2.1694653856720;
+        Wed, 13 Sep 2023 18:10:56 -0700 (PDT)
+Received: from ghost ([50.168.177.73])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170903100b00b001bdc664ecd3sm228824plb.307.2023.09.13.18.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 18:10:56 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 21:10:52 -0400
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
+Message-ID: <ZQJdnCwf99Glggin@ghost>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230914001144.GA924@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914001144.GA924@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assert that vasprintf() succeeds as the "returned" string is undefined
-on failure.  Checking the result also eliminates the only warning with
-default options in KVM selftests, i.e. is the only thing getting in the
-way of compile with -Werror.
+On Wed, Sep 13, 2023 at 05:11:44PM -0700, Eric Biggers wrote:
+> On Tue, Jul 11, 2023 at 05:37:31PM +0200, Heiko Stuebner wrote:
+> > From: Heiko Stuebner <heiko.stuebner@vrull.eu>
+> > 
+> > This series provides cryptographic implementations using the vector
+> > crypto extensions.
+> > 
+> > v13 of the vector patchset dropped the patches for in-kernel usage of
+> > vector instructions, I picked the ones from v12 over into this series
+> > for now.
+> > 
+> > My basic goal was to not re-invent cryptographic code, so the heavy
+> > lifting is done by those perl-asm scripts used in openssl and the perl
+> > code used here-in stems from code that is targetted at openssl [0] and is
+> > unmodified from there to limit needed review effort.
+> > 
+> > With a matching qemu (there are patches for vector-crypto flying around)
+> > the in-kernel crypto-selftests (also the extended ones) are very happy
+> > so far.
+> 
+> Hi Heiko!  Are you still working on this patchset?  And which of its
+> prerequisites still haven't been merged upstream?
+> 
+> - Eric
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+It is my understanding that Heiko is taking a break from development, I
+don't think he will be working on this soon.
 
-  lib/test_util.c: In function =E2=80=98strdup_printf=E2=80=99:
-  lib/test_util.c:390:9: error: ignoring return value of =E2=80=98vasprintf=
-=E2=80=99
-  declared with attribute =E2=80=98warn_unused_result=E2=80=99 [-Werror=3Du=
-nused-result]
-  390 |         vasprintf(&str, fmt, ap);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-
-Don't bother capturing the return value, allegedly vasprintf() can only
-fail due to a memory allocation failure.
-
-Fixes: dfaf20af7649 ("KVM: arm64: selftests: Replace str_with_index with st=
-rdup_printf")
-Cc: Andrew Jones <ajones@ventanamicro.com>
-Cc: Haibo Xu <haibo1.xu@intel.com>
-Cc: Anup Patel <anup@brainfault.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
-
-I haven't actually run the relevant tests, someone should probably do so on
-ARM and/or RISC-V to make sure I didn't do something stupid.
-
- tools/testing/selftests/kvm/lib/test_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/se=
-lftests/kvm/lib/test_util.c
-index 3e36019eeb4a..5d7f28b02d73 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -387,7 +387,7 @@ char *strdup_printf(const char *fmt, ...)
- 	char *str;
-=20
- 	va_start(ap, fmt);
--	vasprintf(&str, fmt, ap);
-+	TEST_ASSERT(vasprintf(&str, fmt, ap) >=3D 0, "vasprintf() failed");
- 	va_end(ap);
-=20
- 	return str;
-
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
---=20
-2.42.0.283.g2d96d420d3-goog
-
+- Charlie
