@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28197A0D14
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8737A0D16
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242017AbjINSkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S241832AbjINSkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241778AbjINSi7 (ORCPT
+        with ESMTP id S241785AbjINSi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148E8213A;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78948213D;
         Thu, 14 Sep 2023 11:38:53 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716731;
+        s=2020; t=1694716732;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UlpF/H9lKMDrxmXTuNUKsAvkYnpqtMAZIidKoYfk2m8=;
-        b=OvnQvp6FrSEUwDayVfCSyaTaDBzuc0qDHdbES+H9OAPO6Ha87bRKvDnKy+aUS4pdZFLLmB
-        jDxwD/L3qDChRCkKs0q+jzzmJmJZiwqpSy8A1vQM9uRhSkNw2idhoRuvvgsJxrK+wZx4QG
-        XqxrNYbAK6u7sE1Tzcyz/LRQvnyD2tzuxG6rvJL6EQObHJpanuV55slsCsY84hl6Zyio/3
-        pQD3+PfXQ3qkNC9MvbiF4uH2PApwczoZNDT9+YaqQDJfAN6RMTd8Q0wfobK08utaA6SImc
-        QzGgZlJy1nebH8t5hloy88cBPuR+IEjxhUWo45LfVr3WtSj7eG3UDcwTb/G12w==
+        bh=6sKB+PLTgb55D62jcsgEwGhi+y+KWY1sggt5DCPfvKw=;
+        b=CAomZRAW4ioAoHdhdXE1bVpyrGKaTnvn8Cq29md8PRBiDOnSBUbDSiMq137oB3HKlxwNEf
+        R8HRvdEP5f14bu6O2Rr5/iz88OJF6VlrhJOlwQLCKLxm86UMAktCYEZ7bMUdHclHpVcZRs
+        2Qnrpu4EipFdUOiXbQdiJazGtYSUbNtN5CSQwHRnnFwq+0v1r5Uzl1fkRNB9eQzve1ZQmf
+        0tt4KFBW2Cj6a+XeqF+AQvrQWlwjnwqsjvlq4BRWMB//MDfRrDUYKiQlfW9Xb9IFwQkyVb
+        qJZaZ3tQBAkXdIf3q2qdS75F933SGK3oPvdZexLcDwbHhA6yE8pDCVXMQAZIkg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716731;
+        s=2020e; t=1694716732;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UlpF/H9lKMDrxmXTuNUKsAvkYnpqtMAZIidKoYfk2m8=;
-        b=NkoS64+YSQlVmh/kcYnHAvKRouOJW5bYLm3LDjq5+uZbRS0+LZRledqxXPhj4J2guP/ZOw
-        dmliYWM9jDfA5hBA==
+        bh=6sKB+PLTgb55D62jcsgEwGhi+y+KWY1sggt5DCPfvKw=;
+        b=omvzL+BfuAFX72SI72UqLTsm+PZORhrEQrnn9HysvZwhKfsA5pjsOE1v/su7/IqFmFA67i
+        mfMeFlZPH2SMzoCA==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>, Joel Stanley <joel@jms.id.au>
-Subject: [PATCH tty v1 32/74] serial: liteuart: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:49 +0206
-Message-Id: <20230914183831.587273-33-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH tty v1 33/74] serial: lpc32xx_hs: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:50 +0206
+Message-Id: <20230914183831.587273-34-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -83,82 +83,121 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/liteuart.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/tty/serial/lpc32xx_hs.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-index d881cdd2a58f..a25ab1efe38f 100644
---- a/drivers/tty/serial/liteuart.c
-+++ b/drivers/tty/serial/liteuart.c
-@@ -139,13 +139,13 @@ static irqreturn_t liteuart_interrupt(int irq, void *data)
- 	 * if polling, the context would be "in_serving_softirq", so use
- 	 * irq[save|restore] spin_lock variants to cover all possibilities
- 	 */
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	isr = litex_read8(port->membase + OFF_EV_PENDING) & uart->irq_reg;
- 	if (isr & EV_RX)
- 		liteuart_rx_chars(port);
- 	if (isr & EV_TX)
- 		liteuart_tx_chars(port);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+diff --git a/drivers/tty/serial/lpc32xx_hs.c b/drivers/tty/serial/lpc32xx_hs.c
+index b38fe4728c26..5149a947b7fe 100644
+--- a/drivers/tty/serial/lpc32xx_hs.c
++++ b/drivers/tty/serial/lpc32xx_hs.c
+@@ -140,15 +140,15 @@ static void lpc32xx_hsuart_console_write(struct console *co, const char *s,
+ 	if (up->port.sysrq)
+ 		locked = 0;
+ 	else if (oops_in_progress)
+-		locked = spin_trylock(&up->port.lock);
++		locked = uart_port_trylock(&up->port);
+ 	else
+-		spin_lock(&up->port.lock);
++		uart_port_lock(&up->port);
  
- 	return IRQ_RETVAL(isr);
+ 	uart_console_write(&up->port, s, count, lpc32xx_hsuart_console_putchar);
+ 	wait_for_xmit_empty(&up->port);
+ 
+ 	if (locked)
+-		spin_unlock(&up->port.lock);
++		uart_port_unlock(&up->port);
+ 	local_irq_restore(flags);
  }
-@@ -195,10 +195,10 @@ static int liteuart_startup(struct uart_port *port)
- 		}
+ 
+@@ -298,7 +298,7 @@ static irqreturn_t serial_lpc32xx_interrupt(int irq, void *dev_id)
+ 	struct tty_port *tport = &port->state->port;
+ 	u32 status;
+ 
+-	spin_lock(&port->lock);
++	uart_port_lock(port);
+ 
+ 	/* Read UART status and clear latched interrupts */
+ 	status = readl(LPC32XX_HSUART_IIR(port->membase));
+@@ -333,7 +333,7 @@ static irqreturn_t serial_lpc32xx_interrupt(int irq, void *dev_id)
+ 		__serial_lpc32xx_tx(port);
  	}
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	/* only enabling rx irqs during startup */
- 	liteuart_update_irq_reg(port, true, EV_RX);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+-	spin_unlock(&port->lock);
++	uart_port_unlock(port);
  
- 	if (!port->irq) {
- 		timer_setup(&uart->timer, liteuart_timer, 0);
-@@ -213,9 +213,9 @@ static void liteuart_shutdown(struct uart_port *port)
- 	struct liteuart_port *uart = to_liteuart_port(port);
+ 	return IRQ_HANDLED;
+ }
+@@ -404,14 +404,14 @@ static void serial_lpc32xx_break_ctl(struct uart_port *port,
  	unsigned long flags;
+ 	u32 tmp;
  
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
- 	liteuart_update_irq_reg(port, false, EV_RX | EV_TX);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	if (port->irq)
- 		free_irq(port->irq, port);
-@@ -229,13 +229,13 @@ static void liteuart_set_termios(struct uart_port *port, struct ktermios *new,
- 	unsigned int baud;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	/* update baudrate */
- 	baud = uart_get_baud_rate(port, new, old, 0, 460800);
- 	uart_update_timeout(port, new->c_cflag, baud);
- 
+ 	tmp = readl(LPC32XX_HSUART_CTRL(port->membase));
+ 	if (break_state != 0)
+ 		tmp |= LPC32XX_HSU_BREAK;
+ 	else
+ 		tmp &= ~LPC32XX_HSU_BREAK;
+ 	writel(tmp, LPC32XX_HSUART_CTRL(port->membase));
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
  }
  
- static const char *liteuart_type(struct uart_port *port)
-@@ -382,9 +382,9 @@ static void liteuart_console_write(struct console *co, const char *s,
- 	uart = (struct liteuart_port *)xa_load(&liteuart_array, co->index);
- 	port = &uart->port;
+ /* port->lock is not held.  */
+@@ -421,7 +421,7 @@ static int serial_lpc32xx_startup(struct uart_port *port)
+ 	unsigned long flags;
+ 	u32 tmp;
  
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
- 	uart_console_write(port, s, count, liteuart_putchar);
+ 
+ 	__serial_uart_flush(port);
+ 
+@@ -441,7 +441,7 @@ static int serial_lpc32xx_startup(struct uart_port *port)
+ 
+ 	lpc32xx_loopback_set(port->mapbase, 0); /* get out of loopback mode */
+ 
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
- }
  
- static int liteuart_console_setup(struct console *co, char *options)
+ 	retval = request_irq(port->irq, serial_lpc32xx_interrupt,
+ 			     0, MODNAME, port);
+@@ -458,7 +458,7 @@ static void serial_lpc32xx_shutdown(struct uart_port *port)
+ 	u32 tmp;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	tmp = LPC32XX_HSU_TX_TL8B | LPC32XX_HSU_RX_TL32B |
+ 		LPC32XX_HSU_OFFSET(20) | LPC32XX_HSU_TMO_INACT_4B;
+@@ -466,7 +466,7 @@ static void serial_lpc32xx_shutdown(struct uart_port *port)
+ 
+ 	lpc32xx_loopback_set(port->mapbase, 1); /* go to loopback mode */
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	free_irq(port->irq, port);
+ }
+@@ -491,7 +491,7 @@ static void serial_lpc32xx_set_termios(struct uart_port *port,
+ 
+ 	quot = __serial_get_clock_div(port->uartclk, baud);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Ignore characters? */
+ 	tmp = readl(LPC32XX_HSUART_CTRL(port->membase));
+@@ -505,7 +505,7 @@ static void serial_lpc32xx_set_termios(struct uart_port *port,
+ 
+ 	uart_update_timeout(port, termios->c_cflag, baud);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	/* Don't rewrite B0 */
+ 	if (tty_termios_baud_rate(termios))
 -- 
 2.39.2
 
