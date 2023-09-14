@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B1279FBB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6C279FBB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjINGMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S233040AbjINGNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjINGMF (ORCPT
+        with ESMTP id S230198AbjINGNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:12:05 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCB4F5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:12:00 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso5619815e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694671919; x=1695276719; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2a/PHWqxsvCjYvw/PrGstkPwApGUDTH1LI40pfCDPVU=;
-        b=WyH8FAFbkA33GCBtaxJNxOd3NtHQfvMjpBVZLBhH87u4tT32p54ddHDYsL33JRrYZk
-         iVAo3kxs/4SXHUuDgqZuWZSA/A7EtSZ9LoTbFz1tAItuoEVU8M9MNXAiCabW3dZWFQUh
-         Ax8jKOkNqWBgboFrIvP6FaG85PHCZ4Ae01UR4bVd1rLlLV7wt8aNywNnzKybYPx+bfJh
-         Vf/uI3NRbxQQvp5un2THZGjNKB8BKNjpzpaaMmXMyJji1pUWeSJGice5Fz9HOjpKEVD3
-         XwxGkRJQ4aRFL42uLIt0HVyR+8ZKRIAwgzyH4PVvO3s7RfdMInLOw3Hu1NeC1w4a5OQl
-         s86A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694671919; x=1695276719;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2a/PHWqxsvCjYvw/PrGstkPwApGUDTH1LI40pfCDPVU=;
-        b=C4GFl3Xy6d0YW4B66kCXQZmWjeGzBJbUgk7WDHln7r+aqHW91C+TWcEPIp/iC0jk4Z
-         F6J0dOryfOaotjfPsC4j8XsdbJ8Crv6zOojF+L5qNWIna92qhGW2kVlf6TiW5Z9pWAka
-         bVo3uAj5betoKYAqDMVQi3LkF4OlN6JeZT1rDDc/tKaw6LIJvWn4cfge69jS8ExBWNxp
-         AFYC9q3lEL07GhPr5Sf1aDyL94luU1BKpinqv5OMM+eI54GdVpniOcikF+viCdpkjatn
-         7kgY6/rC2H3luNJukIuwRFor74aJGJ34daI3mwbIDQ5y2UrDa+D8hN8lgeJtv/x8UmfC
-         FKkQ==
-X-Gm-Message-State: AOJu0Yy+XuuteMI5s/IM/vh26RXawmfWArpfFYMCUKjIJG7fCHKpHBmx
-        YLfClXNqrIiit/xgnejH5TBfVw==
-X-Google-Smtp-Source: AGHT+IGw6rLBiZ/VZp782H6iiBB72aJIj5bR1ullvx8HbEIzsNDjz5tNRHSmEU1mgTSDc50+cIZokQ==
-X-Received: by 2002:a05:600c:204c:b0:401:db82:3edf with SMTP id p12-20020a05600c204c00b00401db823edfmr3487074wmg.39.1694671918950;
-        Wed, 13 Sep 2023 23:11:58 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id c20-20020a7bc854000000b003fee6f027c7sm3840112wml.19.2023.09.13.23.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 23:11:58 -0700 (PDT)
-Message-ID: <f4dc58b3-b721-3081-6fed-66976b694217@linaro.org>
-Date:   Thu, 14 Sep 2023 08:11:56 +0200
+        Thu, 14 Sep 2023 02:13:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E45DF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:13:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85377C433C8;
+        Thu, 14 Sep 2023 06:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694672009;
+        bh=hxjVQjecSSBe4DgtU67qykRXre0HLHIWQ7IopGfkXIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JMZ42zVuZeVBPvF/ovSnME9MEwonKV0Q8UIOkcNbr3tfciVQbjrR4AkwdJeT4gTxe
+         xAHTUJGLWfpECZvE5RC6RTKQkZxWi3Jyq8SAUnb5IFTiw3+sVapzz0DNEJBmq0A81E
+         OV6wLOsAtH2exc5S2F2VmxKlyOJ+CddmobuQpEmKuN8iSRbFOe4AApDxkFpJ2RpERU
+         Wz3uaszxFyEPyAVBEARffhTgwURrUHL8F8bfk83wLtZ46sDU02Y077crT1DL9Y9Zrx
+         PHA+vEhOuHpaemgoV8q2AjasocHfOlVWkjxEz/+S4C5BSSVoGxpcwxrzSEv6WTc2AD
+         8kUYtQbb9D7pw==
+Date:   Thu, 14 Sep 2023 09:12:54 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     rongtao@cestc.cn, open list <linux-kernel@vger.kernel.org>,
+        "open list:MEMBLOCK AND MEMORY MANAGEMENT INITIALIZATION" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH] memblock tests: Fix compilation errors.
+Message-ID: <20230914061254.GB3303@kernel.org>
+References: <tencent_6F19BC082167F15DF2A8D8BEFE8EF220F60A@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm-smmu: Add SM7150 GPU SMMUv2
-Content-Language: en-US
-To:     Danila Tikhonov <danila@jiaxyga.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dmitry.baryshkov@linaro.org, konrad.dybcio@linaro.org,
-        quic_saipraka@quicinc.com, quic_bjorande@quicinc.com,
-        a39.skl@gmail.com, robdclark@chromium.org, mani@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913184526.20016-1-danila@jiaxyga.com>
- <20230913184526.20016-2-danila@jiaxyga.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913184526.20016-2-danila@jiaxyga.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_6F19BC082167F15DF2A8D8BEFE8EF220F60A@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 20:45, Danila Tikhonov wrote:
-> SM7150 has a qcom,smmu-v2-style SMMU just for Adreno and friends.
-> Document it.
+On Mon, Sep 11, 2023 at 10:32:56PM +0800, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 > 
-> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+> This patch fix the follow errors.
+> 
+> commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()") pass nid
+> parameter to reserve_bootmem_region(),
+> 
+>     $ make -C tools/testing/memblock/
+>     ...
+>     memblock.c: In function ‘memmap_init_reserved_pages’:
+>     memblock.c:2111:25: error: too many arguments to function ‘reserve_bootmem_region’
+>     2111 |                         reserve_bootmem_region(start, end, nid);
+>          |                         ^~~~~~~~~~~~~~~~~~~~~~
+>     ../../include/linux/mm.h:32:6: note: declared here
+>     32 | void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+>        |      ^~~~~~~~~~~~~~~~~~~~~~
+>     memblock.c:2122:17: error: too many arguments to function ‘reserve_bootmem_region’
+>     2122 |                 reserve_bootmem_region(start, end, nid);
+>          |                 ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> commit dcdfdd40fa82("mm: Add support for unaccepted memory") call
+> accept_memory() in memblock.c
+> 
+>     $ make -C tools/testing/memblock/
+>     ...
+>     cc -fsanitize=address -fsanitize=undefined  main.o memblock.o \
+>      lib/slab.o mmzone.o slab.o tests/alloc_nid_api.o \
+>      tests/alloc_helpers_api.o tests/alloc_api.o tests/basic_api.o \
+>      tests/common.o tests/alloc_exact_nid_api.o   -o main
+>     /usr/bin/ld: memblock.o: in function `memblock_alloc_range_nid':
+>     memblock.c:(.text+0x7ae4): undefined reference to `accept_memory'
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+
+Applied, thanks!
+
 > ---
+>  tools/include/linux/mm.h          | 2 +-
+>  tools/testing/memblock/internal.h | 4 ++++
+>  tools/testing/memblock/mmzone.c   | 2 +-
+>  3 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
+> index a03d9bba5151..2bc94079d616 100644
+> --- a/tools/include/linux/mm.h
+> +++ b/tools/include/linux/mm.h
+> @@ -29,7 +29,7 @@ static inline void *phys_to_virt(unsigned long address)
+>  	return __va(address);
+>  }
+>  
+> -void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+> +void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid);
+>  
+>  static inline void totalram_pages_inc(void)
+>  {
+> diff --git a/tools/testing/memblock/internal.h b/tools/testing/memblock/internal.h
+> index fdb7f5db7308..f6c6e5474c3a 100644
+> --- a/tools/testing/memblock/internal.h
+> +++ b/tools/testing/memblock/internal.h
+> @@ -20,4 +20,8 @@ void memblock_free_pages(struct page *page, unsigned long pfn,
+>  {
+>  }
+>  
+> +static inline void accept_memory(phys_addr_t start, phys_addr_t end)
+> +{
+> +}
+> +
+>  #endif
+> diff --git a/tools/testing/memblock/mmzone.c b/tools/testing/memblock/mmzone.c
+> index 7b0909e8b759..d3d58851864e 100644
+> --- a/tools/testing/memblock/mmzone.c
+> +++ b/tools/testing/memblock/mmzone.c
+> @@ -11,7 +11,7 @@ struct pglist_data *next_online_pgdat(struct pglist_data *pgdat)
+>  	return NULL;
+>  }
+>  
+> -void reserve_bootmem_region(phys_addr_t start, phys_addr_t end)
+> +void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid)
+>  {
+>  }
+>  
+> -- 
+> 2.41.0
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+-- 
+Sincerely yours,
+Mike.
