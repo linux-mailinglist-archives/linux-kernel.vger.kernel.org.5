@@ -2,125 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB827A072A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290057A072C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239833AbjINOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S240010AbjINOWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbjINOW0 (ORCPT
+        with ESMTP id S239861AbjINOWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:22:26 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43368D7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:22 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d81b803b09aso160725276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694701341; x=1695306141; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=siGnD8mv7ZGXDqoYiiYARYvMo2BIyjZLHIMQhwKWqcc=;
-        b=S3/VHlF5AHxXvFgxZwKe3dknSP5arWJLuu001HyBnTOOV3zGRk4NfFUotMuT2HKUn5
-         nTceucGXLK9BT2iVEXVETBCcS+Yd4L3lQRIUHiAc60Bir9pJln3XgtSJFTd1nTtGgBQY
-         WgrGu5F2poTuTW2KtOtoGDK70zx8gTq666ROhq+yOM1J2QiH6egC6LgCvVOChYxgsgUz
-         zHxuhZGeIHrRx/L6z35BHhIKo7s0JHczqC2S6rNThzNUYex5PI2Qw5KzTWmwedZr8AEZ
-         k1eQsHd7yeDyIS2wOZIyHJNakb0s6L6XVqtAuvNRPgICN86Wh3x+HA8rU2a2AVYqAvDc
-         EHjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694701341; x=1695306141;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=siGnD8mv7ZGXDqoYiiYARYvMo2BIyjZLHIMQhwKWqcc=;
-        b=dEtJu+kRVreEm3EO8tZi6cy4wpIRCi6ngIYfVgBfPdoVAE0XTOOVOnwxEkQm9AzCDC
-         bhAEXbHEuBtpyQj40R7Vkb0NspttmWgifnb67QjxPiZ1cSENQNDUfDpAVbYVsdAu7TmF
-         AKaKcFVJbaVWveWSc6LG2tGG/5uOznqAe4j4SQZfK4PO5fWAgb3Bmry4APM12pADroms
-         MYKBj42fruxWo/meY3p+Dv/MYCvFVX6NtOP6bGteXhTMa8agsIZXRgXpShfbv+1O1BKd
-         X+ipUK6yy31sVCorTZU0cpZyf0qINkcV4LI2W1q0td4wAFp48j6E5zfSOv7q+kFTP15g
-         K3Iw==
-X-Gm-Message-State: AOJu0YwiO2HpiirrDQw0tp2f/kW7I19Eg8SIOTR65+pXxO8qeNAAok7v
-        K1rSK8Z9ETgKQySVGoj/rLbTLHWy1VYbN7Kahgg8VA==
-X-Google-Smtp-Source: AGHT+IHFAuCP2uoju7CksC5vowKm4+oiBG/gIKeINeuHZ1dgl5os9uYw2gNvRW4Ksk+sIbkGzJA8617U5zKwvSPW0vY=
-X-Received: by 2002:a05:6902:705:b0:d71:6b6e:1071 with SMTP id
- k5-20020a056902070500b00d716b6e1071mr7252852ybt.32.1694701341482; Thu, 14 Sep
- 2023 07:22:21 -0700 (PDT)
+        Thu, 14 Sep 2023 10:22:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62541D7;
+        Thu, 14 Sep 2023 07:22:29 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 14:22:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694701347;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o44G06hAJziml8pp0cuaTUEtEYfmyNkmKHXY38oO1WM=;
+        b=RMsZxdwU0Mj2Rk539pjdzWvKAWrCLvdESw/Ncy+zz5ApNm2i8NPsi+zszMmwSlECgrJVH8
+        8Rxw+bTSsZn6+ovHmIiVsY63EW4CYfv41MIdeMgHn8sCTHm4bz7hxI0E8o7LNeRvF9ajYn
+        v9xmKMsz98ujOa21UPVWO4n4RFVRzjvOEFgST6CC1MxFmQGUdbDXJYjW0qGGtxtEABHDbc
+        P6fAs6DZ5+Pb7XUhnD8lBpdfTs/C58c7DceCviY9GaXQDUVQgofovCXKmuS4ND2PvX8QKZ
+        TTrymiRZok1/8kdGMXeyBK70icWTshGIPuITKxI2CJD5l+A/IoVnVdp4UVquEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694701347;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o44G06hAJziml8pp0cuaTUEtEYfmyNkmKHXY38oO1WM=;
+        b=Ho8CWlgGmZiQAYPycuqAmvGz+WOk7HTNgg87JaqsLjE9UPyG8/YVucIgUO+uC11fu+b3/K
+        NruSPm/CozCYutCw==
+From:   "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/boot/compressed: Reserve more memory for page tables
+Cc:     Aaron Lu <aaron.lu@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230914123001.27659-1-kirill.shutemov@linux.intel.com>
+References: <20230914123001.27659-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-References: <20230911153246.137148-1-aubin.constans@microchip.com> <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
-In-Reply-To: <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 14 Sep 2023 16:21:45 +0200
-Message-ID: <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
- MICROCHIP DRIVERS
-To:     aubin.constans@microchip.com, Ludovic.Desroches@microchip.com
-Cc:     adrian.hunter@intel.com, eugen.hristev@collabora.com,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com,
-        Hari.PrasathGE@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <169470134628.27769.10667514395726055409.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
->
-> On 9/11/23 17:32, Aubin Constans wrote:
-> > On the one hand Eugen has taken responsibilities outside Microchip,
-> > on the other hand I have some experience with the Microchip SDMMC
-> > SDHCI controller.
-> > Change Eugen as reviewer and take over maintainership of the SDHCI
-> > MICROCHIP DRIVER.
-> > Also, take over maintainership of its predecessor, that is the MCI
-> > MICROCHIP DRIVER.
-> >
-> > Cc: Eugen Hristev <eugen.hristev@collabora.com>
-> > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
->
-> For atmel-mci:
-> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Sounds like the patch could be split up, as there is an agreement on
-the atmel-mci part.
+Commit-ID:     7362132a6408d23244b95025ea85dd3dc41e5332
+Gitweb:        https://git.kernel.org/tip/7362132a6408d23244b95025ea85dd3dc41e5332
+Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+AuthorDate:    Thu, 14 Sep 2023 15:30:01 +03:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 14 Sep 2023 16:12:28 +02:00
 
-Aubin, can you make a separate patch for the atmel-mci part and add
-Ludovic's ack to it?
+x86/boot/compressed: Reserve more memory for page tables
 
-In regards to the sdhci driver, I suggest you just add yourself as a
-maintainer too, along with Eugen.
+The decompressor has a hard limit on the number of page tables it can
+allocate. This limit is defined at compile-time and will cause boot
+failure if it is reached.
 
-Kind regards
-Uffe
+The kernel is very strict and calculates the limit precisely for the
+worst-case scenario based on the current configuration. However, it is
+easy to forget to adjust the limit when a new use-case arises. The
+worst-case scenario is rarely encountered during sanity checks.
 
->
-> > ---
-> >   MAINTAINERS | 5 +++--
-> >   1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 2833e2da63e0..52beaf4f7fbb 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14022,7 +14022,7 @@ F:    Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
-> >   F:  drivers/iio/adc/mcp3911.c
-> >
-> >   MICROCHIP MMC/SD/SDIO MCI DRIVER
-> > -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
-> > +M:   Aubin Constans <aubin.constans@microchip.com>
-> >   S:  Maintained
-> >   F:  drivers/mmc/host/atmel-mci.c
-> >
-> > @@ -19235,7 +19235,8 @@ F:    Documentation/devicetree/bindings/mmc/sdhci-common.yaml
-> >   F:  drivers/mmc/host/sdhci*
-> >
-> >   SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
-> > -M:   Eugen Hristev <eugen.hristev@microchip.com>
-> > +M:   Aubin Constans <aubin.constans@microchip.com>
-> > +R:   Eugen Hristev <eugen.hristev@collabora.com>
-> >   L:  linux-mmc@vger.kernel.org
-> >   S:  Supported
-> >   F:  drivers/mmc/host/sdhci-of-at91.c
->
+In the case of enabling 5-level paging, a use-case was overlooked. The
+limit needs to be increased by one to accommodate the additional level.
+This oversight went unnoticed until Aaron attempted to run the kernel
+via kexec with 5-level paging and unaccepted memory enabled.
+
+To address this issue, let's allocate some extra space for page tables.
+128K should be sufficient for any use-case. The logic can be simplified
+by using a single value for all kernel configurations.
+
+Fixes: 34bbb0009f3b ("x86/boot/compressed: Enable 5-level paging during decompression stage")
+Reported-by: Aaron Lu <aaron.lu@intel.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20230914123001.27659-1-kirill.shutemov@linux.intel.com
+---
+ arch/x86/include/asm/boot.h | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
+index 4ae1433..d2caae2 100644
+--- a/arch/x86/include/asm/boot.h
++++ b/arch/x86/include/asm/boot.h
+@@ -40,23 +40,20 @@
+ #ifdef CONFIG_X86_64
+ # define BOOT_STACK_SIZE	0x4000
+ 
++/*
++ * Used by decompressor's startup_32() to allocate page tables for identity
++ * mapping of the 4G of RAM in 4-level paging mode.
++ *
++ * The additional page table needed for 5-level paging is allocated from
++ * trampoline_32bit memory.
++ */
+ # define BOOT_INIT_PGT_SIZE	(6*4096)
+-# ifdef CONFIG_RANDOMIZE_BASE
++
+ /*
+- * Assuming all cross the 512GB boundary:
+- * 1 page for level4
+- * (2+2)*4 pages for kernel, param, cmd_line, and randomized kernel
+- * 2 pages for first 2M (video RAM: CONFIG_X86_VERBOSE_BOOTUP).
+- * Total is 19 pages.
++ * Total number of page table kernel_add_identity_map() can allocate,
++ * including page tables consumed by startup_32().
+  */
+-#  ifdef CONFIG_X86_VERBOSE_BOOTUP
+-#   define BOOT_PGT_SIZE	(19*4096)
+-#  else /* !CONFIG_X86_VERBOSE_BOOTUP */
+-#   define BOOT_PGT_SIZE	(17*4096)
+-#  endif
+-# else /* !CONFIG_RANDOMIZE_BASE */
+-#  define BOOT_PGT_SIZE		BOOT_INIT_PGT_SIZE
+-# endif
++# define BOOT_PGT_SIZE		(32*4096)
+ 
+ #else /* !CONFIG_X86_64 */
+ # define BOOT_STACK_SIZE	0x1000
