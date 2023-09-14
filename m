@@ -2,140 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC42779FCB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2277879FCB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbjINHDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        id S235280AbjINHDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232119AbjINHD3 (ORCPT
+        with ESMTP id S234722AbjINHDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:03:29 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EE6BD
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:03:25 -0700 (PDT)
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 08E273F672
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694675002;
-        bh=goSxu7HgsxTeodjXmJUH/TuD0k0hgtAzYq7xYOspA+4=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=WDk8FWMNg5jCyhP66uwB/GzZoWK53265q8Nh/hjEvdwTi4QTZhb/JgAi75PLin8wm
-         vzJFFV0/JfHF7m5U4DM61117z60pWT7oCKUktAFXkBdZUTAGStCOyHPDTu8uk1FQN3
-         roMJ6Aaf7TWs5BSG0zWmMRWFYhsmVNgh3EnaMefNq4OBB4R9h7MzBi9hougcLdPhI1
-         QcGTzbpSXSk92+fmLDo3ddWaDDvo1eYJ2p9KDq0Fxnadcj1dVMY0FODKE4iidExKwz
-         wFZWdm/plh+NKKbf2BSYbEGr+lqXdOgnlN9uiX8zB725I0yof9xFKOcK7OgWWiXOUv
-         oV6on9m27CVdg==
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bd132e84b2so7954461fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:03:22 -0700 (PDT)
+        Thu, 14 Sep 2023 03:03:14 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2468EE4D;
+        Thu, 14 Sep 2023 00:03:10 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bf6ea270b2so4597315ad.0;
+        Thu, 14 Sep 2023 00:03:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694674989; x=1695279789; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e25qQ9p0C2P5SWU0KD60Ifyzn1bMFGxGkmDRK1NWFGg=;
+        b=KKNVBA8J48n2ViTOcprnlEkjhrx7cdlc1HpbPN2E3h1rCqtnwlV6wwtwQLzoj+NW5c
+         04JQK5xxFBxqhVUQAUJCky/iN/nD6y8bMFr8vklZIzPO1Ve6tNxtXDv3nQmPJmPoNyen
+         EY8dpv28EJDDkplVXPHtuOnIrrGI58r/7xfP6PnPJlIHt6kceSmxe6SjHA/dT0QuI23f
+         UFB2TxiqIHCWF6DHVABrPE2SMfALwCX47lLkdaTmXpLFk8r67/+ivk0xs61mtezJCnb3
+         Irbfe9hoSuKuHTo2oQlmrbUpH4O1YJ915eOzFqoTJJRtLKUCQtwc9tzE+t8jursKB3u7
+         Wbyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694675001; x=1695279801;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=goSxu7HgsxTeodjXmJUH/TuD0k0hgtAzYq7xYOspA+4=;
-        b=Hn7OApw0lQlazWhyPgaMj1ffGbUKMshOFtGnwGFX8BvgrGejjg74fGMJINwPk8UlZq
-         vnEY1+cJWPic6xaUyOO5XrSMrCk+ONDYyEzQ9L/8w+xObinv2FJNKMGMu+vif5o8cixi
-         2tRcRHRWFaM5u/214sOoCd/ddxju57XLbPcPgy1WXIgMa8i6dMBGyFRYkjGSBB3QxirW
-         SGbd7At49WrlvL+iOlpJovlOrR3YKOBaSKJqWNMmoMiClnkC5qaL16ISdfFCGMZuNaeb
-         HPpQw1Q/7PiD+OGqj28cYYxSm4IpOL2QbEyQ5glEUjQINHJhRh7rdZCUmqX87WhM/OAw
-         VuwQ==
-X-Gm-Message-State: AOJu0YwjyH2Jb0lDP7KgeSQ8/SJJAs8ZTko2QLgdOTE7/2LPrHC4zcL3
-        hkquaOQKh6yvswI3B4QPYFB6JhgR0pTyfqyw0WFriUBTLDmnGdnNF9u7OpaFlBbGnw0oRql3fB9
-        U5jmeQSHQ6+ZIAPvqmyKdX7VTUM3Dnqv9UsqKXezSWg==
-X-Received: by 2002:a2e:9ed9:0:b0:2bc:e32f:6fb0 with SMTP id h25-20020a2e9ed9000000b002bce32f6fb0mr4263143ljk.9.1694675000782;
-        Thu, 14 Sep 2023 00:03:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2lvudBipBhYKFL0V/AUGrG/NPYxifvLzmEnbyiurqOzZt4iA6jNQCUaoQ+l2QV7FAleBBwA==
-X-Received: by 2002:a2e:9ed9:0:b0:2bc:e32f:6fb0 with SMTP id h25-20020a2e9ed9000000b002bce32f6fb0mr4263113ljk.9.1694675000394;
-        Thu, 14 Sep 2023 00:03:20 -0700 (PDT)
-Received: from localhost ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id y14-20020a7bcd8e000000b004030e8ff964sm3981698wmj.34.2023.09.14.00.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 00:03:19 -0700 (PDT)
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-To:     juerg.haefliger@canonical.com
-Cc:     SHA-cyfmac-dev-list@infineon.com, aspriel@gmail.com,
-        brcm80211-dev-list.pdl@broadcom.com, franky.lin@broadcom.com,
-        gustavoars@kernel.org, hante.meuleman@broadcom.com,
-        hdegoede@redhat.com, keescook@chromium.org, kvalo@kernel.org,
-        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, marcan@marcan.st,
-        ryohei.kondo@cypress.com, stable@vger.kernel.org
-Subject: [PATCH v2] wifi: brcmfmac: Replace 1-element arrays with flexible arrays
-Date:   Thu, 14 Sep 2023 09:02:27 +0200
-Message-Id: <20230914070227.12028-1-juerg.haefliger@canonical.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230913065421.12615-1-juerg.haefliger@canonical.com>
-References: <20230913065421.12615-1-juerg.haefliger@canonical.com>
+        d=1e100.net; s=20230601; t=1694674989; x=1695279789;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e25qQ9p0C2P5SWU0KD60Ifyzn1bMFGxGkmDRK1NWFGg=;
+        b=wHank93O9CgEXSG01Gppnn7LohPk6yDZ/igzvGIJndx+danOSsyVUQDkuBrWHB92ZN
+         1K/ZXT5qcFpyAdsOWzLhi9YWi2RhMqQAydQKIinTKUMmUsEE2kyIGlGsdDtl+UiJYwda
+         dmIii1baoOEv6vvioFA/k4wd4grAL5rMS7an0usSOPv8A5hwlS1XAHLqWd3sEit0Ke4U
+         8R4J+XEo7Ctrd6MESnkrzPStmcIqlbGUdVlZX7FSYSCnoZW5Gh7rctu3qazCpBHUBVU7
+         a/MUQleICvKiAuZXj055MCbV34dsA0YshYDVZysMy+rqiVRsDh7a49bp54w76NSdnUzl
+         6vaA==
+X-Gm-Message-State: AOJu0Yz5NzL4iShEfrCcpReY9dZ5X18xCe5xekcWlyDUPSFWhOTzLkWN
+        w/RDj4SlSJyvZNgLeMs5oDY=
+X-Google-Smtp-Source: AGHT+IE0akRhGk0UGa1FvuBd3BoNxwOFbDloyRSrs4PXKBf116lOnoKRNJaEkHoGyQTfVQgFFg8VSw==
+X-Received: by 2002:a17:903:11c4:b0:1c0:b17a:754f with SMTP id q4-20020a17090311c400b001c0b17a754fmr4779020plh.63.1694674989443;
+        Thu, 14 Sep 2023 00:03:09 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170903100b00b001bdc664ecd3sm780083plb.307.2023.09.14.00.03.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 00:03:08 -0700 (PDT)
+Message-ID: <2bc62c07-2195-e378-c057-f28e8d4a6034@gmail.com>
+Date:   Thu, 14 Sep 2023 14:03:00 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Tester47 <e598@gmx.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux TTY & Serial <linux-serial@vger.kernel.org>,
+        Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Kernel 6.6-rc1 fails to reboot or shutdown Ryzen 5825U
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
-UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
-'element' and 'channel_list' will trigger warnings, so make them proper
-flexible arrays.
+Hi,
 
-False positive warnings were:
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-  UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:6984:20
-  index 1 is out of range for type '__le32 [1]'
+> The Kernel stalls at boot very long with a drm-amdgpu message, but fails to restart or shutdown with secure boot enabled or not. Magic key works to exit. Nothing wrong in the Kernel 6.5 cycle.
 
-  UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1126:27
-  index 1 is out of range for type '__le16 [1]'
+Later, the reporter (Cc'ed) described the regression:
 
-for these lines of code:
+> Let me be clearer, it does not shutdown at all: magic key for shut down has no effect (o or b). The keyboard is dead. Plus, $ shutdown -r now hangs too. Restart works when using Alt+PrtSc+b. Same when booting stalls for long.
+> 
+> We started bisecting with 20230903 daily kernel, the bug was there. 6.6-rc1 has been removed. Take good note that next boot log after shutdown may or may not be the same log. Plus, booting requires now and then magic key to restart, because the Kernel hangs.  In this case, we must click enter twice + Esc to boot in desktop. 
+> 
+> It booted ok after a cold shutdown with enter twice and ESC ounce + backspace. 
+> ...
+> In all cases, tpm and secure boot are enabled. If secure boot is disabled, when we shut down, magic key works to restart.
 
-  6884  ch.chspec = (u16)le32_to_cpu(list->element[i]);
+He then pasted journalctl excerpt at the point where the hang occured:
 
-  1126  params_le->channel_list[i] = cpu_to_le16(chanspec);
+> This where it stalls for restart. Shut down hangs at the Lenovo image:
+> 
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: SE 1, SH per SE 1, CU per SH 8, active_cu_number 8
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring gfx uses VM inv eng 0 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring gfx_low uses VM inv eng 1 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring gfx_high uses VM inv eng 4 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.0.0 uses VM inv eng 5 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.1.0 uses VM inv eng 6 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.2.0 uses VM inv eng 7 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.3.0 uses VM inv eng 8 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.0.1 uses VM inv eng 9 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.1.1 uses VM inv eng 10 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.2.1 uses VM inv eng 11 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring comp_1.3.1 uses VM inv eng 12 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring kiq_0.2.1.0 uses VM inv eng 13 on hub 0
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring sdma0 uses VM inv eng 0 on hub 8
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring vcn_dec uses VM inv eng 1 on hub 8
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring vcn_enc0 uses VM inv eng 4 on hub 8
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring vcn_enc1 uses VM inv eng 5 on hub 8
+> Sep 13 21:43:08 mm kernel: amdgpu 0000:04:00.0: amdgpu: ring jpeg_dec uses VM inv eng 6 on hub 8
+> Sep 13 21:43:08 mm kernel: [drm] Initialized amdgpu 3.54.0 20150101 for 0000:04:00.0 on minor 0
+> Sep 13 21:43:08 mm kernel: fbcon: amdgpudrmfb (fb0) is primary device
+> Sep 13 21:43:08 mm kernel: [drm] DSC precompute is not needed.
 
-Cc: stable@vger.kernel.org # 6.5+
-Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+See Bugzilla for the full thread and links to complete journalctl log.
 
----
-v2:
-  - Use element[] instead of DFA() in brcmf_chanspec_list.
-  - Add Cc: stable tag
----
- .../wireless/broadcom/brcm80211/brcmfmac/fwil_types.h    | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Anyway, I'm adding this regression to regzbot:
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index bece26741d3a..611d1a6aabb9 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-@@ -442,7 +442,12 @@ struct brcmf_scan_params_v2_le {
- 				 * fixed parameter portion is assumed, otherwise
- 				 * ssid in the fixed portion is ignored
- 				 */
--	__le16 channel_list[1];	/* list of chanspecs */
-+	union {
-+		__le16 padding;	/* Reserve space for at least 1 entry for abort
-+				 * which uses an on stack brcmf_scan_params_v2_le
-+				 */
-+		DECLARE_FLEX_ARRAY(__le16, channel_list);	/* chanspecs */
-+	};
- };
- 
- struct brcmf_scan_results {
-@@ -702,7 +707,7 @@ struct brcmf_sta_info_le {
- 
- struct brcmf_chanspec_list {
- 	__le32	count;		/* # of entries */
--	__le32	element[1];	/* variable length uint32 list */
-+	__le32  element[];	/* variable length uint32 list */
- };
- 
- /*
+#regzbot introduced: v6.5..v6.6 https://bugzilla.kernel.org/show_bug.cgi?id=217905
+#regzbot title: shutdown/reboot hang on Ryzen 5825U (stuck on amdgpu initialization)
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217905
+
 -- 
-2.39.2
-
+An old man doll... just what I always wanted! - Clara
