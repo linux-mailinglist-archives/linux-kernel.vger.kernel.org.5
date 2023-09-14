@@ -2,135 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB5779F944
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D386F79F945
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbjINEAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 00:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        id S234254AbjINEDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 00:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjINEAm (ORCPT
+        with ESMTP id S233285AbjINEDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 00:00:42 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5907E4B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 21:00:16 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c1e780aa95so3628885ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 21:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694664016; x=1695268816; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ebM0c0pS7Yj9AcYD8iD0tO6tSr15uXr4K+UiJ03c4A8=;
-        b=i5eoJQuLTt28JafLqM7yeHwq1skXkkJlm9ZUouVxHMjH5EDKKNaiE1fAGnA7VnlS6D
-         0v8bjvnFR/LCWAhsAkWOmRlXyl7VpjTTqO7dmSpbC7Rbhk+eyoIa9SRj6EHKqPmJz0kQ
-         QMe5/zyGQIqum2IQtpCJD1xUVZ+KpIii3Ta82n3Y/HgXhH1Qkn2q8nBO+GE+6y6YeblF
-         gfoKqd6xW+1Nt71jF13QNQohlP4GMxX3l/VjFmsvyGyhPnfqa4I8Dn49UQ9wBMihN+xu
-         zQzA5NXHCQNVxU/w7rFMpGWtGT4DX5WTIffLzgpvfaqQ+NkcQTOrJjqAJu6MJz6sqHG0
-         3h9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694664016; x=1695268816;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ebM0c0pS7Yj9AcYD8iD0tO6tSr15uXr4K+UiJ03c4A8=;
-        b=EcFYyoqLHnjq1BGsrrXsVe5d3pSFUFv3r04gPkot73OM1QUld6TmK3DVwvDsGQm5CH
-         mxI2PgiRhXGbGOmOxp4Hznccfkq0juCwDjtxNGzSx54FtUjfrpEKNVSPUQOaTptdPoof
-         7r+Y47WSo3vlG8ie05GYsp740m3R8GT3CncyhIROIUv4Gg96iv2W6za8RRnXZCwEphPP
-         nqa6AHQLaz3JIpM6iPh+9OXj23wdae9e2GnenCBTnh/tUpEofeVbIcStLd1sQxpjOPCS
-         7wzM3E2xsFLL0m/N8fyZQLilAshNDb0SZbM4v06a3l5fwQKOKWh8jgmN1tyw+/RkA2eg
-         sYEg==
-X-Gm-Message-State: AOJu0Yy8JA83A2bY7vjDbk/lw118A5G6N8ve9GZcDQHGp/gxIpKYzQ2r
-        WUsbQEqVogpLY+a+PFW2a841qw==
-X-Google-Smtp-Source: AGHT+IHRpSheJScTlD5DYKPkeJzbIF3TnBdI+/aU5C/ZTP3GhoZlMMrEUZqQA5E6VoUw3Qviqug/vw==
-X-Received: by 2002:a17:902:be12:b0:1c4:abc:b84c with SMTP id r18-20020a170902be1200b001c40abcb84cmr917910pls.6.1694664016125;
-        Wed, 13 Sep 2023 21:00:16 -0700 (PDT)
-Received: from PF2LML5M-SMJ.bytedance.net ([220.243.131.6])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170902d90300b001bc45408d26sm403681plz.36.2023.09.13.21.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 21:00:14 -0700 (PDT)
-From:   Jinhui Guo <guojinhui.liam@bytedance.com>
-To:     gregkh@linuxfoundation.org
-Cc:     guojinhui.liam@bytedance.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, lkp@intel.com, rafael@kernel.org
-Subject: Re: [PATCH v2] driver core: platform: set numa_node before platform_add_device()
-Date:   Thu, 14 Sep 2023 12:00:07 +0800
-Message-Id: <20230914040007.3196-1-guojinhui.liam@bytedance.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <2023091351-clarify-prototype-710c@gregkh>
-References: <2023091351-clarify-prototype-710c@gregkh>
+        Thu, 14 Sep 2023 00:03:02 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C270E6C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 21:02:58 -0700 (PDT)
+Received: from [192.168.2.134] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8B2C46607326;
+        Thu, 14 Sep 2023 05:02:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694664175;
+        bh=XNbZvDNPElbhAVe9CVrAb1FFndRQKl4kGYWIY9PJnVE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=g1jdrQkYXRLrocVXUWPIylg1LMihLjE3ojWdlAwpK60zyHWOZPap+U0EQn4jMNjm1
+         S/XQ7xRi7W2kFJhAfMUxpe/HHGKTRLbIT/xmLYJroouiSMGha1IqDeuTO2XDsaSrmq
+         etfqJHhcmE4n9/yfr6B9mFjTRG0aaHsP6kZGvA/tnMOQBCqEw8C0DYfKiSPWXlZ2FE
+         xlzS4jxYvZl32ffvAxz8WsP73OEnaNEQnj0TDp+nK4BBnYEU/xMgZ2sWbIhqki0RfB
+         zD8+7Gyx35ydMcGwMD9kCtxIyf+Tu1sNc2YS4yE9LlNy0tJij60X5c5sNeYfsvlEEG
+         QY5AGcQ3gmbGw==
+Message-ID: <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+Date:   Thu, 14 Sep 2023 07:02:52 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+ <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+ <20230905100306.3564e729@collabora.com>
+ <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+ <20230913094832.3317c2df@collabora.com>
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230913094832.3317c2df@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 06:37:03PM +0200, Greg KH wrote:
-> On Wed, Sep 13, 2023 at 04:38:25PM +0800, guojinhui wrote:
-> > From: "guojinhui" <guojinhui.liam@bytedance.com>
-> > 
-> > platform_add_device creates numa_node attribute of sysfs according to
-> > whether dev_to_node(dev) is equal to NUMA_NO_NODE. So set the numa node
-> > of the device before creating numa_node attribute of sysfs.
-> > 
-> > Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
-> > Signed-off-by: guojinhui <guojinhui.liam@bytedance.com>
-> > ---
-> >  drivers/acpi/acpi_platform.c |  4 +---
-> >  drivers/base/platform.c      | 13 +++++++++++++
-> >  2 files changed, 14 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-> > index 48d15dd785f6..adcbfbdc343f 100644
-> > --- a/drivers/acpi/acpi_platform.c
-> > +++ b/drivers/acpi/acpi_platform.c
-> > @@ -178,11 +178,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
-> >  	if (IS_ERR(pdev))
-> >  		dev_err(&adev->dev, "platform device creation failed: %ld\n",
-> >  			PTR_ERR(pdev));
-> > -	else {
-> > -		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-> > +	else
-> >  		dev_dbg(&adev->dev, "created platform device %s\n",
-> >  			dev_name(&pdev->dev));
-> > -	}
-> >  
-> >  	kfree(resources);
-> >  
-> > diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> > index 76bfcba25003..206dc7b020cd 100644
-> > --- a/drivers/base/platform.c
-> > +++ b/drivers/base/platform.c
-> > @@ -795,6 +795,18 @@ void platform_device_unregister(struct platform_device *pdev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(platform_device_unregister);
-> >  
-> > +#ifdef CONFIG_ACPI
+On 9/13/23 10:48, Boris Brezillon wrote:
+> On Wed, 13 Sep 2023 03:56:14 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 > 
-> #ifdef do not belong in .c files if at all possible.
+>> On 9/5/23 11:03, Boris Brezillon wrote:
+>>>>                * But
+>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+>>>> +		 * and fs_reclaim.
+>>>> +		 *
+>>>> +		 * This deadlock is not actually possible, because no one should
+>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+>>>> +		 * refcount drops to zero, don't touch the reservation lock.
+>>>> +		 */
+>>>> +		if (shmem->got_pages_sgt &&
+>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+>>>> +			shmem->got_pages_sgt = false;
+>>>>  		}  
+>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+>>> better to leak than having someone access memory it no longer owns), but
+>>> I think it's worth mentioning in the above comment.  
+>>
+>> It's unlikely that it will be only a leak without a following up
+>> use-after-free. Neither is acceptable.
 > 
-> Why can't this be an acpi call instead?  Why does this have to be in the
-> driver core?  Platform drivers shouldn't know anything about acpi, this
-> feels really odd.
+> Not necessarily, if you have a page leak, it could be that the GPU has
+> access to those pages, but doesn't need the GEM object anymore
+> (pages are mapped by the iommu, which doesn't need shmem->sgt or
+> shmem->pages after the mapping is created). Without a WARN_ON(), this
+> can go unnoticed and lead to memory corruptions/information leaks.
 > 
-> > +static inline void platform_set_dev_node(struct platform_device *pdev)
+>>
+>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+>> on a refcnt bug, but that's not worthwhile doing because drivers
+>> shouldn't have silly bugs.
 > 
-> Also, it's not "platform_set", it is acpi-specifc, right?  Again, the
-> ACPI core should handle this for its ACPI-platform devices, the driver
-> core shouldn't care at all.
-> 
-> thanks,
-> 
-> greg k-h
->
+> We definitely don't want to fix that, but we want to complain loudly
+> (WARN_ON()), and make sure the risk is limited (preventing memory from
+> being re-assigned to someone else by not freeing it).
 
-I agree with that. I will try to fix it in the ACPI code which call the platform function
-soon.
+That's what the code did and continues to do here. Not exactly sure what
+you're trying to say. I'm going to relocate the comment in v17 to
+put_pages(), we can continue discussing it there if I'm missing yours point.
 
-thanks,
+-- 
+Best regards,
+Dmitry
 
-Jinhui Guo
