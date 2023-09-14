@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FDF7A0622
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01BF7A0626
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240078AbjINNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
+        id S240102AbjINNfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239594AbjINNfA (ORCPT
+        with ESMTP id S239567AbjINNfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:35:00 -0400
+        Thu, 14 Sep 2023 09:35:09 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280FA2D4F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC1D1FE5;
         Thu, 14 Sep 2023 06:33:55 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A69746607394;
-        Thu, 14 Sep 2023 14:33:53 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2AD386607397;
+        Thu, 14 Sep 2023 14:33:54 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1694698434;
-        bh=qUxQMObFxpiy3pFolAat/Lsgv4wZ2hZHcdle7SRl8Pw=;
+        bh=yoC4Zwhq5KTur5ZjSqFZrMNs6UvSbNFXWhR9MCqzlE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eX9HPb3F0XG0gWIqEzdqo1JuCQk+1T5cSP5loYaPm2hT3jBZ4pf1li6gLpqSo5LAm
-         BlwGFyX3ssHkT1LNdS858TgUdf7Lj6vRz5qWet4kfA2XqtPD4GDHlwejGuNN//FPlM
-         etgV1owR/w4SyjHd3eSsf4Dab3lrPTGat9OZCFs6J9WWAZ+XXVXuI+FCMmWh8we3eU
-         hdwqMxk5k/sDDBmthNK5ADpwGcIzkuOav0X4YWogslj5ukliigIfgy5ICXLz5wBdct
-         5evWbWUGrEv0IL8bdW4pD8Z3GOZ6cYuRzwAHYxn3J5jkIukKI8hhdnA+sbr25kDMW2
-         7kEBNEOLNMQ4A==
+        b=EN1kyPC5ZKZ0JvmFCHlIc1mglG9qMNrLetcPCcD67N4xE1hTklCKDCBTvVfTSBYtU
+         4VNAqqLMDJojsiDBr9PfSg4Kt/L5wOkzMHIp7Usvkg/OS+8DY4qa1pvR2N7afmXPyC
+         NPow5YjSKRGIxTyvDgTgfOMCCa1zzZFqt6bl9BATFAck5lp7Bimj7Aas9Pf+8xC0Tq
+         3NLcbDX6LdHM4Xmh6JOa78HIpfZYGLmJWaZHRQGjuXwOpDpMKaH5y5+d9U+DCk+m8K
+         9ABes+Pt0cxXhdedx+kGDyyVz/RVHpy946pJKhtX/sNhAZUv13kdwss33nLLep2094
+         cH5Qa5D0y4jKg==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 43/49] media: meson: vdec: Stop direct calls to queue num_buffers field
-Date:   Thu, 14 Sep 2023 15:33:17 +0200
-Message-Id: <20230914133323.198857-44-benjamin.gaignard@collabora.com>
+Subject: [PATCH v7 44/49] media: cedrus: Stop direct calls to queue num_buffers field
+Date:   Thu, 14 Sep 2023 15:33:18 +0200
+Message-Id: <20230914133323.198857-45-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
 References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
@@ -59,43 +59,48 @@ Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/staging/media/meson/vdec/vdec.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 4 +++-
+ drivers/staging/media/sunxi/cedrus/cedrus_h265.c | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
-index 219185aaa588..1e2369f104c8 100644
---- a/drivers/staging/media/meson/vdec/vdec.c
-+++ b/drivers/staging/media/meson/vdec/vdec.c
-@@ -167,22 +167,23 @@ static void process_num_buffers(struct vb2_queue *q,
- 				bool is_reqbufs)
- {
- 	const struct amvdec_format *fmt_out = sess->fmt_out;
--	unsigned int buffers_total = q->num_buffers + *num_buffers;
-+	unsigned int q_num_bufs = vb2_get_num_buffers(q);
-+	unsigned int buffers_total = q_num_bufs + *num_buffers;
- 	u32 min_buf_capture = v4l2_ctrl_g_ctrl(sess->ctrl_min_buf_capture);
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+index dfb401df138a..bbe5802ea861 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+@@ -649,11 +649,13 @@ static void cedrus_h264_stop(struct cedrus_ctx *ctx)
+ 	struct cedrus_dev *dev = ctx->dev;
+ 	struct cedrus_buffer *buf;
+ 	struct vb2_queue *vq;
++	unsigned int q_num_bufs;
+ 	unsigned int i;
  
--	if (q->num_buffers + *num_buffers < min_buf_capture)
--		*num_buffers = min_buf_capture - q->num_buffers;
-+	if (q_num_bufs + *num_buffers < min_buf_capture)
-+		*num_buffers = min_buf_capture - q_num_bufs;
- 	if (is_reqbufs && buffers_total < fmt_out->min_buffers)
--		*num_buffers = fmt_out->min_buffers - q->num_buffers;
-+		*num_buffers = fmt_out->min_buffers - q_num_bufs;
- 	if (buffers_total > fmt_out->max_buffers)
--		*num_buffers = fmt_out->max_buffers - q->num_buffers;
-+		*num_buffers = fmt_out->max_buffers - q_num_bufs;
+ 	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
++	q_num_bufs = vb2_get_num_buffers(vq);
  
- 	/* We need to program the complete CAPTURE buffer list
- 	 * in registers during start_streaming, and the firmwares
- 	 * are free to choose any of them to write frames to. As such,
- 	 * we need all of them to be queued into the driver
- 	 */
--	sess->num_dst_bufs = q->num_buffers + *num_buffers;
-+	sess->num_dst_bufs = q_num_bufs + *num_buffers;
- 	q->min_buffers_needed = max(fmt_out->min_buffers, sess->num_dst_bufs);
- }
+-	for (i = 0; i < vq->num_buffers; i++) {
++	for (i = 0; i < q_num_bufs; i++) {
+ 		buf = vb2_to_cedrus_buffer(vb2_get_buffer(vq, i));
  
+ 		if (buf->codec.h264.mv_col_buf_size > 0) {
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+index fc9297232456..533a38316686 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+@@ -865,11 +865,13 @@ static void cedrus_h265_stop(struct cedrus_ctx *ctx)
+ 	struct cedrus_dev *dev = ctx->dev;
+ 	struct cedrus_buffer *buf;
+ 	struct vb2_queue *vq;
++	unsigned int q_num_bufs;
+ 	unsigned int i;
+ 
+ 	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
++	q_num_bufs = vb2_get_num_buffers(vq);
+ 
+-	for (i = 0; i < vq->num_buffers; i++) {
++	for (i = 0; i < q_num_bufs; i++) {
+ 		buf = vb2_to_cedrus_buffer(vb2_get_buffer(vq, i));
+ 
+ 		if (buf->codec.h265.mv_col_buf_size > 0) {
 -- 
 2.39.2
 
