@@ -2,234 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92457A058D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60FA7A0590
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbjINN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S238981AbjINN3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbjINN1M (ORCPT
+        with ESMTP id S235397AbjINN3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:27:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3CD1BEF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:27:08 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 14 Sep 2023 09:29:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321B41BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:29:15 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B5B2521845;
+        Thu, 14 Sep 2023 13:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694698153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PprJmMWm7Zpy5eHQl8DCLwo+he03ayOcv9Lbh57Ziuw=;
+        b=gIexI2rRF6o0piVDVAa74M1gLvUm54yoFk087GRhMhbjZHG8XqFohbQ5je6qNz7mwNBZj5
+        kZsUDOe+0/0ea0ILEnINqWkEly8KsQdnylpD8UrfVbOMWxUmwHeCCum+QqjRPpB1FWhf6w
+        j6xbOiHj8gc4IudWWriyGp/C0J2RNhk=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 661E8660734B;
-        Thu, 14 Sep 2023 14:27:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694698026;
-        bh=0NG0mHKcQ7KLf0/jfcYljD+vBWRaQV154x2ndB6bslY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RuUCDeNb/cM3xwCBxpJbt1OVmQ7CyKLn4SQAZgjafOMCAd2DFN+Qc1G/LmhMYBd1D
-         1aljSyjzMDOaFD56++IdOEMq6/2fEfLwB9nH+xMAcFs9gNrCpkOWc1+57vMPdv6bJ/
-         gHboE2VxTh0ZjpryN5Im72ZiiGyJJRRF1vzonJW4fSBsOyfx8qwWWuD3/WVVwSH9V6
-         M0GYFnHkEBW59aDjw4utqO24sSfhrKHje+uAXUFOOsYarv5aAgfgrf7am244sZlI4Z
-         V8gg0mD3ixgvVqO1rDUhfpHWUXPM/UEL7rlzk7QKudBWbF/bZennEq9QZoLH0KouxH
-         kZp8zFAlLeEKA==
-Date:   Thu, 14 Sep 2023 15:27:03 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
-Message-ID: <20230914152703.78b1ac82@collabora.com>
-In-Reply-To: <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
-        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
-        <20230905100306.3564e729@collabora.com>
-        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
-        <20230913094832.3317c2df@collabora.com>
-        <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
-        <20230914093626.19692c24@collabora.com>
-        <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
-        <20230914102737.08e61498@collabora.com>
-        <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
-        <20230914135840.5e0e11fe@collabora.com>
-        <ca7e905b-2809-fce4-1b56-7909efb1a229@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        by relay2.suse.de (Postfix) with ESMTPS id 8C67C2C142;
+        Thu, 14 Sep 2023 13:29:13 +0000 (UTC)
+Date:   Thu, 14 Sep 2023 15:29:13 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v4 3/8] printk: Make static printk buffers
+ available to nbcon
+Message-ID: <ZQMKqWWcFLVLt3cn@alley>
+References: <20230908185008.468566-1-john.ogness@linutronix.de>
+ <20230908185008.468566-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908185008.468566-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 16:01:37 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> On 9/14/23 14:58, Boris Brezillon wrote:
-> > On Thu, 14 Sep 2023 14:36:23 +0300
-> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >   
-> >> On 9/14/23 11:27, Boris Brezillon wrote:  
-> >>> On Thu, 14 Sep 2023 10:50:32 +0300
-> >>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >>>     
-> >>>> On 9/14/23 10:36, Boris Brezillon wrote:    
-> >>>>> On Thu, 14 Sep 2023 07:02:52 +0300
-> >>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >>>>>       
-> >>>>>> On 9/13/23 10:48, Boris Brezillon wrote:      
-> >>>>>>> On Wed, 13 Sep 2023 03:56:14 +0300
-> >>>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >>>>>>>         
-> >>>>>>>> On 9/5/23 11:03, Boris Brezillon wrote:        
-> >>>>>>>>>>                * But
-> >>>>>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
-> >>>>>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
-> >>>>>>>>>> +		 * and fs_reclaim.
-> >>>>>>>>>> +		 *
-> >>>>>>>>>> +		 * This deadlock is not actually possible, because no one should
-> >>>>>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
-> >>>>>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
-> >>>>>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
-> >>>>>>>>>> +		 */
-> >>>>>>>>>> +		if (shmem->got_pages_sgt &&
-> >>>>>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
-> >>>>>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
-> >>>>>>>>>> +			shmem->got_pages_sgt = false;
-> >>>>>>>>>>  		}          
-> >>>>>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
-> >>>>>>>>> better to leak than having someone access memory it no longer owns), but
-> >>>>>>>>> I think it's worth mentioning in the above comment.          
-> >>>>>>>>
-> >>>>>>>> It's unlikely that it will be only a leak without a following up
-> >>>>>>>> use-after-free. Neither is acceptable.        
-> >>>>>>>
-> >>>>>>> Not necessarily, if you have a page leak, it could be that the GPU has
-> >>>>>>> access to those pages, but doesn't need the GEM object anymore
-> >>>>>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
-> >>>>>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
-> >>>>>>> can go unnoticed and lead to memory corruptions/information leaks.
-> >>>>>>>         
-> >>>>>>>>
-> >>>>>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
-> >>>>>>>> on a refcnt bug, but that's not worthwhile doing because drivers
-> >>>>>>>> shouldn't have silly bugs.        
-> >>>>>>>
-> >>>>>>> We definitely don't want to fix that, but we want to complain loudly
-> >>>>>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
-> >>>>>>> being re-assigned to someone else by not freeing it).        
-> >>>>>>
-> >>>>>> That's what the code did and continues to do here. Not exactly sure what
-> >>>>>> you're trying to say. I'm going to relocate the comment in v17 to
-> >>>>>> put_pages(), we can continue discussing it there if I'm missing yours point.
-> >>>>>>      
-> >>>>>
-> >>>>> I'm just saying it would be worth mentioning that we're intentionally
-> >>>>> leaking memory if shmem->pages_use_count > 1. Something like:
-> >>>>>
-> >>>>> 	/**
-> >>>>> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
-> >>>>> 	 * zero otherwise. If some users still hold a pages reference
-> >>>>> 	 * that's a bug, and we intentionally leak the pages so they
-> >>>>> 	 * can't be re-allocated to someone else while the GPU/CPU
-> >>>>> 	 * still have access to it.
-> >>>>> 	 */
-> >>>>> 	drm_WARN_ON(drm,
-> >>>>> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
-> >>>>> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
-> >>>>> 		drm_gem_shmem_free_pages(shmem);      
-> >>>>
-> >>>> That may be acceptable, but only once there will a driver using this
-> >>>> feature.    
-> >>>
-> >>> Which feature? That's not related to a specific feature, that's just
-> >>> how drm_gem_shmem_get_pages_sgt() works, it takes a pages ref that can
-> >>> only be released in drm_gem_shmem_free(), because sgt users are not
-> >>> refcounted and the sgt stays around until the GEM object is freed or
-> >>> its pages are evicted. The only valid cases we have at the moment are:
-> >>>
-> >>> - pages_use_count == 1 && sgt != NULL
-> >>> - pages_use_count == 0
-> >>>
-> >>> any other situations are buggy.    
-> >>
-> >> sgt may belong to dma-buf for which pages_use_count=0, this can't be
-> >> done until sgt mess is sorted out  
-> > 
-> > No it can't, not in that path, because the code you're adding is in the
-> > if (!obj->import_branch) branch:
-> > 
-> > 
-> >  	if (obj->import_attach) {
-> >  		drm_prime_gem_destroy(obj, shmem->sgt);
-> >  	} else {
-> > 		...
-> > 		// Your changes are here.
-> > 		...  
+On Fri 2023-09-08 20:56:03, John Ogness wrote:
+> The nbcon boot consoles also need printk buffers that are available
+> very early. Since the nbcon boot consoles will also be serialized
+> by the console_lock, they can use the same static printk buffers
+> that the legacy consoles are using.
 > 
-> This branch is taken for the dma-buf in the prime import error code path.
-
-I suggested a fix for this error that didn't involve adding a new flag,
-but that's orthogonal to the piece of code we're discussing anyway.
-
-> But yes, the pages_use_count=0 for the dma-buf and then it can be
-> written as:
+> Make the legacy static printk buffers available outside of printk.c
+> so they can be used by nbcon.c.
 > 
-> 	if (obj->import_attach) {
-> 		drm_prime_gem_destroy(obj, shmem->sgt);
-> 	} else {
-> 		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
-> 
-> 		if (shmem->sgt && refcount_read(&shmem->pages_use_count)) {
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-You should drop the '&& refcount_read(&shmem->pages_use_count)',
-otherwise you'll never enter this branch (sgt allocation retained
-a ref, so pages_use_count > 0 when ->sgt != NULL).
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-If you added this pages_use_count > 0 check to deal with the
-'free-partially-imported-GEM' case, I keep thinking this is not
-the right fix. You should just assume that obj->import_attach == NULL
-means not-a-prime-buffer, and then make sure
-partially-initialized-prime-GEMs have import_attach assigned (see the
-oneliner I suggested in my review of
-`[PATCH v15 01/23] drm/shmem-helper: Fix UAF in error path when
-freeing SGT of imported GEM`).
-
-> 			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
-> 					  DMA_BIDIRECTIONAL, 0);
-> 			sg_free_table(shmem->sgt);
-> 			kfree(shmem->sgt);
-> 
-> 			__drm_gem_shmem_put_pages(shmem);
-
-You need to decrement pages_use_count:
-
-			/* shmem->pages_use_count should be 1 when ->sgt != NULL and
-			 * zero otherwise. If some users still hold a pages reference
-			 * that's a bug, and we intentionally leak the pages so they
-			 * can't be re-allocated to someone else while the GPU/CPU
-			 * still have access to it.
-		 	 */
-			if (refcount_dec_and_test(&shmem->pages_use_count))
-				__drm_gem_shmem_put_pages(shmem);
-
-> 		}
-> 
-> 		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
-
-And now this WARN_ON() ^ should catch unexpected pages leak.
-
-> 
-> Alright, I'll check if it works as expected for fixing the error code path bug for v17
-> 
-
+Best Regards,
+Petr
