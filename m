@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA9679FFB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C7979FFB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237187AbjINJKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        id S237137AbjINJJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237228AbjINJJk (ORCPT
+        with ESMTP id S237147AbjINJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:09:40 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8412139;
-        Thu, 14 Sep 2023 02:09:01 -0700 (PDT)
-X-UUID: 1c10806fc6a2477797bbdc4a75863193-20230914
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:c6b0fdcc-ab64-4c5c-8592-8d6db75f07b6,IP:10,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.31,REQID:c6b0fdcc-ab64-4c5c-8592-8d6db75f07b6,IP:10,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:0ad78a4,CLOUDID:b2eaee13-4929-4845-9571-38c601e9c3c9,B
-        ulkID:230914170851LIPAIP83,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|102,
-        TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 1c10806fc6a2477797bbdc4a75863193-20230914
-X-User: liucong2@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw
-        (envelope-from <liucong2@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 901895803; Thu, 14 Sep 2023 17:08:50 +0800
-From:   Cong Liu <liucong2@kylinos.cn>
-To:     jgg@ziepe.ca, Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liucong2@kylinos.cn
-Subject: [PATCH v2] vfio: Fix uninitialized symbol and potential dereferencing errors in vfio_combine_iova_ranges
-Date:   Thu, 14 Sep 2023 17:08:39 +0800
-Message-Id: <20230914090839.196314-1-liucong2@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZQGs6F5y3YzlAJaL@ziepe.ca>
-References: <ZQGs6F5y3YzlAJaL@ziepe.ca>
+        Thu, 14 Sep 2023 05:09:37 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2276B3A89;
+        Thu, 14 Sep 2023 02:08:57 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so10622901fa.3;
+        Thu, 14 Sep 2023 02:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694682535; x=1695287335; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=myXNrdTUEfnJ2uywIxDILlGjQxJb0RUxKt0pQrpz5qA=;
+        b=lmqSjLo4QTX694lvfaLsxMDWJlGp+M8sbgox0UW4uuRYVGHxD2rHmeM1kmuqsXBQjl
+         t+nZ82KZCLJfGNV3fR7nOvHSc3KDT951uVOlsPdDPAd8kAjhffQfXVH3LVp2901AmntY
+         xgcdb2kLDCqFwIPwkbSKDVRBDWCLLlNj3LhV+yO0XQh+0SpNxp8om36vRn2pwKsvoORC
+         sG1AZGznuKUZHCzkIJuFq3dlvOJ/wEYUWcq1L/w+PvJ+0c0yaKi94M1P386cZs2WVlc0
+         G3s9dP8WOCQgVV48XkJ2r6djxS0cjOwHZfzQ8/5KC7Qr/N241qo/WD++VX3MJ5nTqZMt
+         SUTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694682535; x=1695287335;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=myXNrdTUEfnJ2uywIxDILlGjQxJb0RUxKt0pQrpz5qA=;
+        b=iOcmAnBkaOzSLDpqjUfE1kmou8VbFfXfWO8F/nx7U/O4Arc6e0UBi9gRPpOjoHS0xk
+         hgbTNxNFnda99Sjiz0HM4Yu4aW3dTvu78+8eIjRhbIbQeZnS2RW0Vl/t3J8AAj3S2HqX
+         lsUQuyx3Mv7GF87O2m1olIC58J/HsetX5NZ4ukplT54xaw1bf1tdoS8+7xoSvZelTnJ9
+         PdXmWlH86S08cD7OdN3dXLqsQExl8w8XE9+u369stoverdPrqGkEp4MM096cMbrLYTXL
+         DN9LjaQiW/k80tnTqR/AUQWTvh30RSc5leDJJcfdvp7o5C/f5yF/2KQ1JN9819Ml06dp
+         Koww==
+X-Gm-Message-State: AOJu0YwnCaPyMozBD0k1sjj8LyMF8qA2BunV4Xdx6oCMb+AfGUtM1pkZ
+        hDy8u5qh1iWM5cBt6W3RmiOESMqO2QRJig==
+X-Google-Smtp-Source: AGHT+IFp2fWyTGFQ1Fj84/0q9IqOqinfqhJAJgpqjCg4C+5joAjuLN3cMBtNNAgv69Rv6rPZaNe/pg==
+X-Received: by 2002:a2e:9517:0:b0:2be:4d3a:ad6a with SMTP id f23-20020a2e9517000000b002be4d3aad6amr4114996ljh.26.1694682535015;
+        Thu, 14 Sep 2023 02:08:55 -0700 (PDT)
+Received: from [172.24.134.61] ([193.205.131.2])
+        by smtp.gmail.com with ESMTPSA id s24-20020a7bc398000000b003feee8d8011sm4277553wmj.41.2023.09.14.02.08.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 02:08:54 -0700 (PDT)
+Message-ID: <65ec6171-b47e-4d1e-9bd7-a61f2acfb959@gmail.com>
+Date:   Thu, 14 Sep 2023 11:08:52 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, regressions@lists.linux.dev,
+        Shyam-sundar.S-k@amd.com, Basavaraj.Natikar@amd.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230829165627.156542-1-mario.limonciello@amd.com>
+ <20230829165627.156542-4-mario.limonciello@amd.com>
+ <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
+ <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com>
+ <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
+ <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com>
+ <6734c409-89f1-89a1-3096-4054be29faf1@redhat.com>
+ <f0ceff1c-ba5f-4c6b-ac0e-c4195f477500@amd.com>
+ <CACRpkdYGxreyD8NVuKs2G44htR8EixdvGr3+ma=HrxHUP3NDQg@mail.gmail.com>
+ <4246946d-40e3-7df7-3fc4-9aa10e1dee10@redhat.com>
+ <b9f879d5-55b8-401d-b154-8066cb66d20f@amd.com>
+ <0522393f-9f0c-4c59-b961-9b8d865a645d@amd.com>
+ <CACRpkdamAs=c6YBW2jgQ48kUPHqUGT=b89NSXYYttf0RbnpctQ@mail.gmail.com>
+Content-Language: en-US
+From:   Luca Pigliacampo <lucapgl2001@gmail.com>
+In-Reply-To: <CACRpkdamAs=c6YBW2jgQ48kUPHqUGT=b89NSXYYttf0RbnpctQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when compiling with smatch check, the following errors were encountered:
+On 9/14/23 10:43, Linus Walleij wrote:
 
-drivers/vfio/vfio_main.c:957 vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
-drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
-drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
+> On Wed, Sep 13, 2023 at 11:21 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>
+>> 2. In better news updating the BIOS fixed the issue in both Linux and
+>> Windows, no kernel patches needed.
+>>
+>> So no further work will be done on this series.
+> Is it easy for users to update BIOS? I.e. does
+> fwupdmgr update work?
+>
+> Or does it require flashing special USB drives with FAT filesystems...?
+>
+> Because I'm not sure all users will do that. Or even be aware that
+> they should. In that case detecting the situation and emitting
+> a dev_err() telling the user to update their BIOS would be
+> desirable I think?
+>
+> Yours,
+> Linus Walleij
 
-this patch fix these error.
+sadly it's not convenient,
 
-Signed-off-by: Cong Liu <liucong2@kylinos.cn>
----
- drivers/vfio/vfio_main.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+the only way lenovo offers to update the bios
 
-diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-index 40732e8ed4c6..96d2f3030ebb 100644
---- a/drivers/vfio/vfio_main.c
-+++ b/drivers/vfio/vfio_main.c
-@@ -938,14 +938,17 @@ static int vfio_ioctl_device_feature_migration(struct vfio_device *device,
- void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- 			      u32 req_nodes)
- {
--	struct interval_tree_node *prev, *curr, *comb_start, *comb_end;
-+	struct interval_tree_node *prev, *curr;
-+	struct interval_tree_node *comb_start = NULL, *comb_end = NULL;
- 	unsigned long min_gap, curr_gap;
- 
- 	/* Special shortcut when a single range is required */
- 	if (req_nodes == 1) {
--		unsigned long last;
-+		unsigned long last = 0;
- 
- 		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
-+		if (!comb_start)
-+			return;
- 		curr = comb_start;
- 		while (curr) {
- 			last = curr->last;
-@@ -963,6 +966,10 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- 		prev = NULL;
- 		min_gap = ULONG_MAX;
- 		curr = interval_tree_iter_first(root, 0, ULONG_MAX);
-+		if (!curr) {
-+			/* No more ranges to combine */
-+			break;
-+		}
- 		while (curr) {
- 			if (prev) {
- 				curr_gap = curr->start - prev->last;
-@@ -975,6 +982,10 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- 			prev = curr;
- 			curr = interval_tree_iter_next(curr, 0, ULONG_MAX);
- 		}
-+		if (!comb_start || !comb_end) {
-+			/* No more ranges to combine */
-+			break;
-+		}
- 		comb_start->last = comb_end->last;
- 		interval_tree_remove(comb_end, root);
- 		cur_nodes--;
--- 
-2.34.1
-While this may seem somewhat verbose, I am unsure how to refactor this function.
+is an executable to run on windows.
+
+
+So a user should either have a dual boot
+
+or install windows on an external drive and boot from that,
+
+also the update process might wipe every boot entry beside windows.
+
+
+I read that some bios updaters also run on freedos, but i didn't try
+
