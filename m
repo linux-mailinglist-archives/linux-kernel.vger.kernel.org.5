@@ -2,178 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DC179FD58
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D27979FD67
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbjINHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
+        id S235576AbjINHox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbjINHlM (ORCPT
+        with ESMTP id S230120AbjINHow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:41:12 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814E61BCC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:41:07 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso700493a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694677266; x=1695282066; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTTFLmHVcCEeGdB9PLCErU99zAFCDRERFukfsKEjoJU=;
-        b=TPGWPxo/HwC55K7gFK1Hzne034s+GePAsi6y6+4aj+k93EkuTSCqUWVG6J8mfBqLw3
-         NFyl6Wg/dedffREf2zs9E8wRwVnvTaLS+m6xdEw5+DeiT8pi7GJRcZwYbSRNE2WvkaCs
-         4M7ZLLnu2LsuDNrt7Ys5k4VkRasSkwFkMCepRZxTvYyxl76saTzL8UMsyd7iN1ZuJC7M
-         vQjAacrxQZPWwfD24Gfo1MNnbHsfrhhjoggjYFvEfkgmsa+Qc0WUHDpXvZ/So9ERs1lh
-         jJoq96JvayCZTH7val69lj3H3v58lXjbZOEmDRqQvnry1Dm0kEo/KNZ4ejRZzdy4KYiq
-         UMQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694677266; x=1695282066;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BTTFLmHVcCEeGdB9PLCErU99zAFCDRERFukfsKEjoJU=;
-        b=CXAGuHpAUuDhGBoY7V+WNF/lYoKwM0A8IlTffaE25Fk9i3iKfU+7Y31u693nWQ7XyY
-         4pTSrsp93CmA+G7/oerfLzQsX7n/PZ3rtYoF8whsAoVaZfQ2uOJ7Eu+sdrwi5S6Cek8z
-         dDJNMu+K8H4IRR1yVZX0R/aYagbKnZAJxlwAqR99vmzN7+U3pEDrKEmnMRyKJIMfgon2
-         YYKq4GuznAcw0vURvetsnwDZ4gJWgcdVJVHplsEE5e6ilVnl1NFHE72r8jETgIoFPwj3
-         E02oJRQIyzfnZu9A+Ybik0VY/izqhqdxp9kdP/xHH5RKfWr15+wDw6w/gvQ8eXYrDJlT
-         LHLw==
-X-Gm-Message-State: AOJu0Yy+KHzljTw01wEMRWfuSGpaFNrL0Nll3GyXawTnsdaayCVivCnR
-        7YJC1vii1Qj2HA6jnk7ORc7OuQ==
-X-Google-Smtp-Source: AGHT+IHlbblsKiu2gEtKrdgm90QMFr8E3CuYF/8VHvCB/T7LrlXyHxwj/f1cU1M0mOLP9SJFk3qWLQ==
-X-Received: by 2002:a17:906:3051:b0:99e:6a0:5f64 with SMTP id d17-20020a170906305100b0099e06a05f64mr3654818ejd.36.1694677265829;
-        Thu, 14 Sep 2023 00:41:05 -0700 (PDT)
-Received: from [192.168.37.232] (178235177172.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.172])
-        by smtp.gmail.com with ESMTPSA id v7-20020a1709064e8700b00977cad140a8sm589467eju.218.2023.09.14.00.41.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 00:41:05 -0700 (PDT)
-Message-ID: <098f0a07-a67a-4209-8dbb-ff8d5b699dfe@linaro.org>
-Date:   Thu, 14 Sep 2023 09:41:01 +0200
+        Thu, 14 Sep 2023 03:44:52 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3361BF6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:44:48 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38E7iTu9084729;
+        Thu, 14 Sep 2023 02:44:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694677469;
+        bh=Lmp+Sv5KtwP/e6oUt44wYhCkiQA/joeML8/drHnPWVY=;
+        h=From:To:CC:Subject:Date;
+        b=YLD2WMOT/uQgUdHb8rQ58RgsEhQQ26F+yDB/HqdcidZ75R4oyrGttztD53LAsuNvm
+         Sy22w3/LaX/MNIYpaPjV9nrNAU13t8BreYNMhvfkLjsJSZG9wesnW14wQEVihcNq72
+         dt92yw5zLY8q7451oOwWnCYMPggO8Ff7FgIUw0B8=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38E7iT59025279
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 Sep 2023 02:44:29 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
+ Sep 2023 02:44:28 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 14 Sep 2023 02:44:29 -0500
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38E7iQ31004904;
+        Thu, 14 Sep 2023 02:44:27 -0500
+From:   Neha Malcom Francis <n-francis@ti.com>
+To:     <nm@ti.com>, <ssantosh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <n-francis@ti.com>,
+        <u-kumar1@ti.com>
+Subject: [PATCH] soc: ti: k3-socinfo: Revamp driver to accommodate different rev structs
+Date:   Thu, 14 Sep 2023 13:14:26 +0530
+Message-ID: <20230914074426.1901226-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/14] arm64: dts: qcom: sdm630: Drop RPM bus clocks
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
- <70b2a9d7-1a3e-25da-3d78-7bfa5d3a1e05@linaro.org>
- <c3dd5f68-af75-4880-83c2-ca7723561ae9@linaro.org>
- <7796431f-ae52-58b6-499e-566a17292725@linaro.org>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <7796431f-ae52-58b6-499e-566a17292725@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2023 08:26, Krzysztof Kozlowski wrote:
-> On 13/09/2023 14:08, Konrad Dybcio wrote:
->> On 13.09.2023 09:13, Krzysztof Kozlowski wrote:
->>> On 12/09/2023 15:31, Konrad Dybcio wrote:
->>>> These clocks are now handled from within the icc framework and are
->>>> no longer registered from within the CCF. Remove them.
->>>>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> ---
->> [...]
->>
->>>>  		anoc2_smmu: iommu@16c0000 {
->>>>  			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
->>>>  			reg = <0x016c0000 0x40000>;
->>>> -
->>>> -			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
->>>> -			assigned-clock-rates = <1000>;
->>>> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
->>>> -			clock-names = "bus";
->>>
->>> This is also against bindings. After your patch #4, such bus clock (or
->>> other combinations) is still required.
->> So, we have 4 SMMU instances on this platform:
->>
->> MMSS (described, iface, mem, mem_iface)
->> GPU (described, iface-mm, iface-smmu, bus-smmu)
->>
->> ANOC2 (this one, no clocks after removing rpmcc bus)
->> LPASS (no clocks)
-> 
-> Ah, I did not notice it.
-> 
->>
->> Should I then create a new entry in the bindings, replicating
->> what's there for msm8998[1] and dropping the entry with just "bus"
->> from anyOf?
-> 
-> So this passes the bindings, right?
-Yes
+k3-socinfo.c driver assumes silicon revisions to be 1.0, 2.0 etc. for
+every platform. However this typical style is not followed by J721E
+(1.0, 1.1) and need not be followed by upcoming silicon revisions as
+well. Adapt the driver to be similar to its U-Boot counterpart
+(drivers/soc/soc_ti_k3.c) that accounts for this difference on the basis
+of partno/family. While at it, modify driver to be more understandable.
 
-anyOf: in the binding should allow
-> also no match, so this should be fine. However indeed we need to drop
-> the "bus" entry, because it is not valid anymore.
-Actually, looks like the LPASS smmu may require a single
-clock. We can reuse that single-"bus"-clock entry for
-HLOS1_VOTE_LPASS_ADSP_SMMU_CLK.
+Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+---
+This patch tries to revive an earlier attempt [1] and also works off of
+those review comments, sending it as a new patch since the approach is
+slightly different.
 
-The device didn't crash when trying to access LPASS SMMU
-with that clock absent, but I guess it may have just
-been luck, things may change once more hardware is parked..
+[1] https://lore.kernel.org/all/20230607080349.26671-1-t-konduru@ti.com/
 
-Konrad
+ drivers/soc/ti/k3-socinfo.c | 112 +++++++++++++++++++++++++-----------
+ 1 file changed, 80 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
+index 6ea9b8c7d335..1e7a32b5b63f 100644
+--- a/drivers/soc/ti/k3-socinfo.c
++++ b/drivers/soc/ti/k3-socinfo.c
+@@ -20,7 +20,7 @@
+  *  31-28 VARIANT	Device variant
+  *  27-12 PARTNO	Part number
+  *  11-1  MFG		Indicates TI as manufacturer (0x17)
+- *  1			Always 1
++ *  0			Always 1
+  */
+ #define CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT	(28)
+ #define CTRLMMR_WKUP_JTAGID_VARIANT_MASK	GENMASK(31, 28)
+@@ -33,33 +33,81 @@
+ 
+ #define CTRLMMR_WKUP_JTAGID_MFG_TI		0x17
+ 
+-static const struct k3_soc_id {
+-	unsigned int id;
+-	const char *family_name;
+-} k3_soc_ids[] = {
+-	{ 0xBB5A, "AM65X" },
+-	{ 0xBB64, "J721E" },
+-	{ 0xBB6D, "J7200" },
+-	{ 0xBB38, "AM64X" },
+-	{ 0xBB75, "J721S2"},
+-	{ 0xBB7E, "AM62X" },
+-	{ 0xBB80, "J784S4" },
+-	{ 0xBB8D, "AM62AX" },
+-	{ 0xBB9D, "AM62PX" },
++#define JTAG_ID_PARTNO_AM65X		0xBB5A
++#define JTAG_ID_PARTNO_J721E		0xBB64
++#define JTAG_ID_PARTNO_J7200		0xBB6D
++#define JTAG_ID_PARTNO_AM64X		0xBB38
++#define JTAG_ID_PARTNO_J721S2		0xBB75
++#define JTAG_ID_PARTNO_AM62X		0xBB7E
++#define JTAG_ID_PARTNO_J784S4		0xBB80
++#define JTAG_ID_PARTNO_AM62AX		0xBB8D
++#define JTAG_ID_PARTNO_AM62PX		0xBB9D
++
++static char *j721e_rev_string_map[] = {
++	"1.0", "1.1",
++};
++
++static char *typical_rev_string_map[] = {
++	"1.0", "2.0", "3.0",
+ };
+ 
+ static int
+ k3_chipinfo_partno_to_names(unsigned int partno,
+ 			    struct soc_device_attribute *soc_dev_attr)
+ {
+-	int i;
++	switch (partno) {
++	case JTAG_ID_PARTNO_AM62AX:
++		soc_dev_attr->family = "AM62AX";
++		break;
++	case JTAG_ID_PARTNO_AM62PX:
++		soc_dev_attr->family = "AM62PX";
++		break;
++	case JTAG_ID_PARTNO_AM62X:
++		soc_dev_attr->family = "AM62X";
++		break;
++	case JTAG_ID_PARTNO_AM64X:
++		soc_dev_attr->family = "AM64X";
++		break;
++	case JTAG_ID_PARTNO_AM65X:
++		soc_dev_attr->family = "AM65X";
++		break;
++	case JTAG_ID_PARTNO_J7200:
++		soc_dev_attr->family = "J7200";
++		break;
++	case JTAG_ID_PARTNO_J721E:
++		soc_dev_attr->family = "J721E";
++		break;
++	case JTAG_ID_PARTNO_J721S2:
++		soc_dev_attr->family = "J721S2";
++		break;
++	case JTAG_ID_PARTNO_J784S4:
++		soc_dev_attr->family = "J784S4";
++		break;
++	default:
++		return -EINVAL;
++	};
++	return 0;
++};
+ 
+-	for (i = 0; i < ARRAY_SIZE(k3_soc_ids); i++)
+-		if (partno == k3_soc_ids[i].id) {
+-			soc_dev_attr->family = k3_soc_ids[i].family_name;
+-			return 0;
+-		}
++static int k3_chipinfo_variant_to_sr(unsigned int partno, unsigned int variant,
++				     struct soc_device_attribute *soc_dev_attr)
++{
++	switch (partno) {
++	case JTAG_ID_PARTNO_J721E:
++		if (variant >= ARRAY_SIZE(j721e_rev_string_map))
++			goto bail;
++		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%s",
++						   j721e_rev_string_map[variant]);
++		break;
++	default:
++		if (variant >= ARRAY_SIZE(typical_rev_string_map))
++			goto bail;
++		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%s",
++						   typical_rev_string_map[variant]);
++	}
++	return 0;
+ 
++bail:
+ 	return -EINVAL;
+ }
+ 
+@@ -70,10 +118,10 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct soc_device *soc_dev;
+ 	struct regmap *regmap;
+-	u32 partno_id;
+-	u32 variant;
+ 	u32 jtag_id;
+ 	u32 mfg;
++	u32 partno_id;
++	u32 variant;
+ 	int ret;
+ 
+ 	regmap = device_node_to_regmap(node);
+@@ -92,28 +140,28 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
+-		  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
+-	variant++;
+-
+ 	partno_id = (jtag_id & CTRLMMR_WKUP_JTAGID_PARTNO_MASK) >>
+ 		 CTRLMMR_WKUP_JTAGID_PARTNO_SHIFT;
+ 
++	variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
++		  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
++
+ 	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+ 	if (!soc_dev_attr)
+ 		return -ENOMEM;
+ 
+-	soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%x.0", variant);
+-	if (!soc_dev_attr->revision) {
+-		ret = -ENOMEM;
++	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
++	if (ret) {
++		dev_err(dev, "Unknown SoC JTAGID[0x%08X]\n", jtag_id);
++		ret = -ENODEV;
+ 		goto err;
+ 	}
+ 
+-	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
++	ret = k3_chipinfo_variant_to_sr(partno_id, variant, soc_dev_attr);
+ 	if (ret) {
+-		dev_err(dev, "Unknown SoC JTAGID[0x%08X]\n", jtag_id);
++		dev_err(dev, "Unknown revision for %s\n", soc_dev_attr->family);
+ 		ret = -ENODEV;
+-		goto err_free_rev;
++		goto err;
+ 	}
+ 
+ 	node = of_find_node_by_path("/");
+-- 
+2.34.1
+
