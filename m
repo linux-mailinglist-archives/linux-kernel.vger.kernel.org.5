@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E80479FB97
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA3B79FB9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbjINGGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
+        id S234884AbjINGHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbjINGGJ (ORCPT
+        with ESMTP id S232171AbjINGHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:06:09 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466D7EB;
-        Wed, 13 Sep 2023 23:06:05 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vs159pw_1694671557;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vs159pw_1694671557)
-          by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 14:06:03 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     kent.overstreet@linux.dev
-Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] bcachefs: Remove duplicate include
-Date:   Thu, 14 Sep 2023 14:05:54 +0800
-Message-Id: <20230914060554.39823-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Thu, 14 Sep 2023 02:07:33 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B663DF;
+        Wed, 13 Sep 2023 23:07:29 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id F063B8088;
+        Thu, 14 Sep 2023 06:07:27 +0000 (UTC)
+Date:   Thu, 14 Sep 2023 09:07:26 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] serial: core: Add support for DEVNAME:0.0 style
+ naming for kernel console
+Message-ID: <20230914060726.GN5285@atomide.com>
+References: <20230912110350.14482-1-tony@atomide.com>
+ <20230912110350.14482-3-tony@atomide.com>
+ <4c9c637a-9117-4f43-a64f-892fa33958c1@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c9c637a-9117-4f43-a64f-892fa33958c1@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./fs/bcachefs/btree_update.h: journal.h is included more than once.
+* Jiri Slaby <jirislaby@kernel.org> [230914 05:43]:
+> On 12. 09. 23, 13:03, Tony Lindgren wrote:
+> > +/*
+> > + * The "console=" option is handled by console_setup() in printk. We can't use
+> > + * early_param() as do_early_param() checks for "console" and "earlycon" options
+> > + * so console_setup() potentially handles console also early. Use parse_args().
+> 
+> So why not concentrate console= handling on one place, ie. in
+> console_setup()? The below (second time console= handling) occurs quite
+> illogical to me.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6573
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/bcachefs/btree_update.h | 1 -
- 1 file changed, 1 deletion(-)
+Well console_setup() knows nothing about the probing serial port controller
+device, tries to call __add_preferred_console() based on a few hardcoded
+device names and some attempted guessing, and is stuffed into printk.c :)
 
-diff --git a/fs/bcachefs/btree_update.h b/fs/bcachefs/btree_update.h
-index 901c42b57c35..8f5f0a753797 100644
---- a/fs/bcachefs/btree_update.h
-+++ b/fs/bcachefs/btree_update.h
-@@ -4,7 +4,6 @@
- 
- #include "btree_iter.h"
- #include "journal.h"
--#include "journal.h"
- 
- struct bch_fs;
- struct btree;
--- 
-2.20.1.7.g153144c
+I don't think we should pile on more stuff into printk.c for this.
 
+If we wanted to do something, let's set up the console list somewhere else,
+and then just have console_setup() add every console option to that list
+and leave the rest of console_setup in place to avoid breaking things all
+over the place.
+
+Then we can export some find_named_console() type function for serial core
+to use. Or do you have some better ideas in mind?
+
+Regards,
+
+Tony
