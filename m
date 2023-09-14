@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B20687A07C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79BC7A07C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240417AbjINOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        id S240462AbjINOs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240386AbjINOsP (ORCPT
+        with ESMTP id S240415AbjINOsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:48:15 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EDA1FDE;
-        Thu, 14 Sep 2023 07:48:10 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmgCS0cnFz6K5mL;
-        Thu, 14 Sep 2023 22:47:32 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 15:48:08 +0100
-Date:   Thu, 14 Sep 2023 15:48:07 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
- [code first?]
-Message-ID: <20230914154807.0000710d@Huawei.com>
-In-Reply-To: <20230913163823.7880-28-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-28-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 10:48:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B3B1BFC;
+        Thu, 14 Sep 2023 07:48:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E03C433C7;
+        Thu, 14 Sep 2023 14:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694702892;
+        bh=XlH2++cozlMCXeR9EvUckhmVWrwhR2yKc6Vvzh31WCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mvSBW9JAqDrz6UWIPcFcklUoKB8kHwI/5dWtybKDRXOdLDJTCLwouG0s902rAirPm
+         Wql9iXKt+kKfwbKSvsWsT2yx0tKQNVDOKVtR1MFjky+IXIxinawVoF3GIi+Ol6rWPF
+         Yp2TGaF2YE9xDE0fUr8Hnt64md6qHOgygQYzXMiqWapAy2ihvhl9mDDx6NZkz3ZDIL
+         HzvYiU+HoZpxlVH+y8lUy7Lh6wTOXCAUVTGSsvSY5GQTU+MqB8p8zb2acxI7QJLhdp
+         w7dBT5RHBaM3h2FBncEux2uO7SofWur4Gcwtqbpnj4NECdQhA1qTrWXKpy20Wavooz
+         sMBoitRfxuizQ==
+Date:   Thu, 14 Sep 2023 15:48:08 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: serial: document esp32-uart bindings
+Message-ID: <20230914-stumbling-smother-2b048381952c@spud>
+References: <20230913211449.668796-1-jcmvbkbc@gmail.com>
+ <20230913211449.668796-2-jcmvbkbc@gmail.com>
+ <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="w5dGWB6bqtjegC91"
+Content-Disposition: inline
+In-Reply-To: <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:15 +0000
-James Morse <james.morse@arm.com> wrote:
 
-> Add the new flag field to the MADT's GICC structure.
-> 
-> 'Online Capable' indicates a disabled CPU can be enabled later.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-Why [code first?] it's in ACPI 6.5
-https://uefi.org/sites/default/files/resources/ACPI_Spec_6_5_Aug29.pdf
+--w5dGWB6bqtjegC91
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Spec reference would be good though. It's 6.5 Tabel 5.37: GICC CPU Interface Flags
-I think
+On Thu, Sep 14, 2023 at 07:55:35AM +0200, Krzysztof Kozlowski wrote:
+> On 13/09/2023 23:14, Max Filippov wrote:
+> > Add documentation for the ESP32xx UART controllers.
+> >=20
+> > Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> > ---
+> >  .../bindings/serial/esp,esp32-uart.yaml       | 48 +++++++++++++++++++
+> >  1 file changed, 48 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-=
+uart.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/serial/esp,esp32-uart.ya=
+ml b/Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
+> > new file mode 100644
+> > index 000000000000..8b45ef808107
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
+> > @@ -0,0 +1,48 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/serial/esp,esp32-uart.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ESP32 UART controller
+> > +
+> > +maintainers:
+> > +  - Max Filippov <jcmvbkbc@gmail.com>
+> > +
+> > +description: |
+> > +  ESP32 UART controller is a part of ESP32 SoC series.
+>=20
+> 1. Company name?
+> 2. ESP32 SoC series suggests esp32 is a series.
+>=20
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - description: UART controller for the ESP32 SoC
+> > +        const: esp,esp32-uart
+>=20
+> Also, the vendor prefix looks incorrect, so again - what is the company
+> name?
 
-> ---
-> This patch probably needs to go via the upstream acpica project,
-> but is included here so the feature can be testd.
-tested
-
-> ---
->  include/acpi/actbl2.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 3751ae69432f..c433a079d8e1 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
->  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
->  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1)	/* 01: Performance Interrupt Mode */
->  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2)	/* 02: VGIC Maintenance Interrupt mode */
-> +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
-bikeshed colour time....
-
-It's capable of being a CPU?
-
-ACPI_MADT_GICC_ONLINE_CAPABLE 
-
-GICC already tells us it's a CPU (last C) despite the table in ACPI being labeled
-Table 5.37: GICC CPU Interface table
+esp32 is made by expressif, which would match with "esp" as a vendor
+prefix.
 
 
 
->  
->  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
->  
+--w5dGWB6bqtjegC91
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMdKAAKCRB4tDGHoIJi
+0jdGAP4sUKNXkMwoIScWfBLsAsvhasgz8yvWr3ZT714K8R9RTgD+K5NqOOlcTqGa
+7guFL9U09dCkKLI+vEoOgY4PtJ3gCwQ=
+=ENOh
+-----END PGP SIGNATURE-----
+
+--w5dGWB6bqtjegC91--
