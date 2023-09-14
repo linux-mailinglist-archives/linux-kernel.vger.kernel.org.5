@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFFA79FFF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BEB7A0014
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbjINJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        id S236961AbjINJby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbjINJ05 (ORCPT
+        with ESMTP id S235604AbjINJbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:26:57 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBA3BB;
-        Thu, 14 Sep 2023 02:26:52 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38E9QY3g018173;
-        Thu, 14 Sep 2023 04:26:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694683594;
-        bh=eEIP6g3WUf3TQBj8ApjPXdEEcx+uvs6CLOZcEbUAbH4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=mM32chzzVnpSjGBceymyRQrMtkQW6PJ3CXh537DKY3Lkt9I62dOSYoGcT7RJzi68+
-         cLlcH5Gzg7wgWXZh8pkewuY5gMaI9NezCHzVsmkD36MJaC1957o3NcxVAs/RcOIKbj
-         IYXDHMRrqoKioodVzwCKZweovtXl/GuZ3FyDDMYQ=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38E9QY1r091700
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 Sep 2023 04:26:34 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Sep 2023 04:26:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Sep 2023 04:26:34 -0500
-Received: from [10.24.69.29] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38E9QT3s117455;
-        Thu, 14 Sep 2023 04:26:30 -0500
-Message-ID: <f7bebc22-d494-f54d-5543-db75f5714a52@ti.com>
-Date:   Thu, 14 Sep 2023 14:56:29 +0530
+        Thu, 14 Sep 2023 05:31:52 -0400
+Received: from out-222.mta0.migadu.com (out-222.mta0.migadu.com [IPv6:2001:41d0:1004:224b::de])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B089CC7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:31:48 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 19:27:03 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1694683906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vmPa+r4UrqSI4OyMQhsi2Wq5TKQmIhNTWv2ugXVReZk=;
+        b=mqea8Dco5GkiVp3d+wmxmrg67/ao1nY64YhP2JCR+VosQ6HsA5pdF5EP+IMKNcOfvAkHDh
+        JSbCKG24sH0K2Gbc1pwDeCvd2Y+kIS1DOdjSkSX3BkXvArTN36u1OTiDRr5KvQrz1def6i
+        YoPsCEptgGxC/s4Ep7cAwC7qVtq3CTmGWiHLmEgmqzGAG08iJCsLq/ykteyK2nxamCfhwQ
+        3xi4D3moJXUHTs7IGutAy/+oNofpaZjLQMsb8FBUKaMj4y+YeFpIbj5ZngStaPQgkavLma
+        ayx+AH+lwFfUGuOZhiMtJtID6PAQIpVYb1FgRTtkA5/wvvd1pfvKrC55Awm/ng==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   John Watts <contact@jookia.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] ASoC: wm8782: Handle maximum audio rate at runtime
+Message-ID: <ZQLR50CAzr0VDpeh@titan>
+References: <20230913171552.92252-1-contact@jookia.org>
+ <20230913171552.92252-2-contact@jookia.org>
+ <20230914092107.GR103419@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <nm@ti.com>,
-        <vigneshr@ti.com>, <rogerq@ti.com>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230913114711.2937844-1-n-yadav@ti.com>
- <20230913114711.2937844-2-n-yadav@ti.com>
- <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
-From:   Nitin Yadav <n-yadav@ti.com>
-In-Reply-To: <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914092107.GR103419@ediswmail.ad.cirrus.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Thu, Sep 14, 2023 at 09:21:07AM +0000, Charles Keepax wrote:
+> On Thu, Sep 14, 2023 at 03:15:50AM +1000, John Watts wrote:
+> > The wm8782 supports up to 192kHz audio when pins are set correctly.
+> > Instead of hardcoding which rates are supported enable them all
+> > then refer to a max_rate variable at runtime.
+> > 
+> > Signed-off-by: John Watts <contact@jookia.org>
+> > ---
+> > +static int wm8782_dai_hw_params(struct snd_pcm_substream *component,
+> > +			    struct snd_pcm_hw_params *params,
+> > +			    struct snd_soc_dai *dai)
+> > +{
+> > +	struct wm8782_priv *priv =
+> > +		snd_soc_component_get_drvdata(dai->component);
+> > +
+> > +	if (params_rate(params) > priv->max_rate)
+> > +		return -EINVAL;
+> > +
+> > +	return 0;
+> > +}
+> 
+> We should be setting this as a constraint in startup, rather
+> than returning an error in hw_params. That will let user-space
+> know the supported rates and allow it to resample if necessary.
 
-On 14/09/23 11:57, Krzysztof Kozlowski wrote:
-> On 13/09/2023 13:47, Nitin Yadav wrote:
->> Add support for AM62Q NAND card: X8 NAND EXPANSION
->> BOARD card (PROC143E1) for AM62x LP SK board.
->>
->> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
->> ---
->>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
->>  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
->>  2 files changed, 31 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> index 284b90c94da8..e93e79d8083f 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
->>  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->>  		status = "disabled";
->>  	};
->> +	gpmc0: memory-controller@3b000000 {
->> +		status = "disabled";
-> 
-> status is never first in DTSI. Really, where did you see such code?
-Thank for pointing out, Will send a revised version.
-> 
->> +		compatible = "ti,am64-gpmc";
->> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
-> 
-> First is compatible, second is reg/reg-names/ranges.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+How do you do this? The struct with the rate is statically defined.
 
--- 
-Regards,
-Nitin
+> 
+> Thanks,
+> Charles
+
+John.
