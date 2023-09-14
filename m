@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3AB7A0B8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592F77A0B8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239730AbjINRXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        id S240342AbjINRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239447AbjINRXX (ORCPT
+        with ESMTP id S239550AbjINRXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:23:23 -0400
+        Thu, 14 Sep 2023 13:23:33 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F7682712
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 68F672D79
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:57 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E98C1476;
-        Thu, 14 Sep 2023 10:23:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BF1511FB;
+        Thu, 14 Sep 2023 10:23:34 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C8C33F5A1;
-        Thu, 14 Sep 2023 10:22:51 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 592203F5A1;
+        Thu, 14 Sep 2023 10:22:54 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -38,9 +38,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com, amitsinght@marvell.com
-Subject: [PATCH v6 19/24] x86/resctrl: Add helpers for system wide mon/alloc capable
-Date:   Thu, 14 Sep 2023 17:21:33 +0000
-Message-Id: <20230914172138.11977-20-james.morse@arm.com>
+Subject: [PATCH v6 20/24] x86/resctrl: Add CPU online callback for resctrl work
+Date:   Thu, 14 Sep 2023 17:21:34 +0000
+Message-Id: <20230914172138.11977-21-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230914172138.11977-1-james.morse@arm.com>
 References: <20230914172138.11977-1-james.morse@arm.com>
@@ -50,281 +50,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl reads rdt_alloc_capable or rdt_mon_capable to determine
-whether any of the resources support the corresponding features.
-resctrl also uses the static-keys that affect the architecture's
-context-switch code to determine the same thing.
+The resctrl architecture specific code may need to create a domain when
+a CPU comes online, it also needs to reset the CPUs PQR_ASSOC register.
+The resctrl filesystem code needs to update the rdtgroup_default CPU
+mask when CPUs are brought online.
 
-This forces another architecture to have the same static-keys.
+Currently this is all done in one function, resctrl_online_cpu().
+This will need to be split into architecture and filesystem parts
+before resctrl can be moved to /fs/.
 
-As the static-key is enabled based on the capable flag, and none of
-the filesystem uses of these are in the scheduler path, move the
-capable flags behind helpers, and use these in the filesystem
-code instead of the static-key.
+Pull the rdtgroup_default update work out as a filesystem specific
+cpu_online helper. resctrl_online_cpu() is the obvious name for this,
+which means the version in core.c needs renaming.
 
-After this change, only the architecture code manages and uses
-the static-keys to ensure __resctrl_sched_in() does not need
-runtime checks.
+resctrl_online_cpu() is called by the arch code once it has done the
+work to add the new CPU to any domains.
 
-This avoids multiple architectures having to define the same
-static-keys.
+In future patches, resctrl_online_cpu() will take the rdtgroup_mutex
+itself.
 
-Cases where the static-key implicitly tested if the resctrl
-filesystem was mounted all have an explicit check added by a
-previous patch.
-
-Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Tested-By: Peter Newman <peternewman@google.com>
 Signed-off-by: James Morse <james.morse@arm.com>
-
 ---
-Changes since v1:
- * Added missing conversion in mkdir_rdt_prepare_rmid_free()
-
 Changes since v3:
- * Expanded the commit message.
----
- arch/x86/include/asm/resctrl.h            | 13 +++++++++
- arch/x86/kernel/cpu/resctrl/internal.h    |  2 --
- arch/x86/kernel/cpu/resctrl/monitor.c     |  4 +--
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  6 ++--
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 34 +++++++++++------------
- 5 files changed, 35 insertions(+), 24 deletions(-)
+ * Renamed err to ret
 
-diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
-index b74aa34dc9e8..12dbd2588ca7 100644
---- a/arch/x86/include/asm/resctrl.h
-+++ b/arch/x86/include/asm/resctrl.h
-@@ -38,10 +38,18 @@ struct resctrl_pqr_state {
+Changes since v4:
+ * Changes in capitalisation.
+
+Changes since v5:
+ * More changes in capitalisation.
+ * Made resctrl_online_cpu() return void.
+---
+ arch/x86/kernel/cpu/resctrl/core.c     | 8 ++++----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 ++++++++
+ include/linux/resctrl.h                | 1 +
+ 3 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index eaadf6f20900..5b4c719ac129 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -604,16 +604,16 @@ static void clear_closid_rmid(int cpu)
+ 	      RESCTRL_RESERVED_CLOSID);
+ }
  
- DECLARE_PER_CPU(struct resctrl_pqr_state, pqr_state);
+-static int resctrl_online_cpu(unsigned int cpu)
++static int resctrl_arch_online_cpu(unsigned int cpu)
+ {
+ 	struct rdt_resource *r;
  
-+extern bool rdt_alloc_capable;
-+extern bool rdt_mon_capable;
+ 	mutex_lock(&rdtgroup_mutex);
+ 	for_each_capable_rdt_resource(r)
+ 		domain_add_cpu(cpu, r);
+-	/* The cpu is set in default rdtgroup after online. */
+-	cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask);
+ 	clear_closid_rmid(cpu);
 +
- DECLARE_STATIC_KEY_FALSE(rdt_enable_key);
- DECLARE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
- DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
- 
-+static inline bool resctrl_arch_alloc_capable(void)
-+{
-+	return rdt_alloc_capable;
-+}
-+
- static inline void resctrl_arch_enable_alloc(void)
- {
- 	static_branch_enable_cpuslocked(&rdt_alloc_enable_key);
-@@ -54,6 +62,11 @@ static inline void resctrl_arch_disable_alloc(void)
- 	static_branch_dec_cpuslocked(&rdt_enable_key);
- }
- 
-+static inline bool resctrl_arch_mon_capable(void)
-+{
-+	return rdt_mon_capable;
-+}
-+
- static inline void resctrl_arch_enable_mon(void)
- {
- 	static_branch_enable_cpuslocked(&rdt_mon_enable_key);
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index ef50789e2b44..c54fa86e4ef9 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -136,8 +136,6 @@ struct rmid_read {
- 	void			*arch_mon_ctx;
- };
- 
--extern bool rdt_alloc_capable;
--extern bool rdt_mon_capable;
- extern unsigned int rdt_mon_features;
- extern struct list_head resctrl_schema_all;
- extern bool resctrl_mounted;
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 7bbe3d91b1f1..9c6d4b0970e2 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -840,7 +840,7 @@ void mbm_handle_overflow(struct work_struct *work)
- 	 * If the filesystem has been unmounted this work no longer needs to
- 	 * run.
- 	 */
--	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
-+	if (!resctrl_mounted || !resctrl_arch_mon_capable())
- 		goto out_unlock;
- 
- 	r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
-@@ -877,7 +877,7 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
- 	 * When a domain comes online there is no guarantee the filesystem is
- 	 * mounted. If not, there is no need to catch counter overflow.
- 	 */
--	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
-+	if (!resctrl_mounted || !resctrl_arch_mon_capable())
- 		return;
- 	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
- 	dom->mbm_work_cpu = cpu;
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index d8f44113ed1f..8056bed033cc 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -581,7 +581,7 @@ static int rdtgroup_locksetup_user_restrict(struct rdtgroup *rdtgrp)
- 	if (ret)
- 		goto err_cpus;
- 
--	if (rdt_mon_capable) {
-+	if (resctrl_arch_mon_capable()) {
- 		ret = rdtgroup_kn_mode_restrict(rdtgrp, "mon_groups");
- 		if (ret)
- 			goto err_cpus_list;
-@@ -628,7 +628,7 @@ static int rdtgroup_locksetup_user_restore(struct rdtgroup *rdtgrp)
- 	if (ret)
- 		goto err_cpus;
- 
--	if (rdt_mon_capable) {
-+	if (resctrl_arch_mon_capable()) {
- 		ret = rdtgroup_kn_mode_restore(rdtgrp, "mon_groups", 0777);
- 		if (ret)
- 			goto err_cpus_list;
-@@ -776,7 +776,7 @@ int rdtgroup_locksetup_exit(struct rdtgroup *rdtgrp)
- {
- 	int ret;
- 
--	if (rdt_mon_capable) {
-+	if (resctrl_arch_mon_capable()) {
- 		ret = alloc_rmid(rdtgrp->closid);
- 		if (ret < 0) {
- 			rdt_last_cmd_puts("Out of RMIDs\n");
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index a2391cc05f20..dfaef047dead 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -630,13 +630,13 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
- 
- static bool is_closid_match(struct task_struct *t, struct rdtgroup *r)
- {
--	return (rdt_alloc_capable && (r->type == RDTCTRL_GROUP) &&
-+	return (resctrl_arch_alloc_capable() && (r->type == RDTCTRL_GROUP) &&
- 		resctrl_arch_match_closid(t, r->closid));
- }
- 
- static bool is_rmid_match(struct task_struct *t, struct rdtgroup *r)
- {
--	return (rdt_mon_capable && (r->type == RDTMON_GROUP) &&
-+	return (resctrl_arch_mon_capable() && (r->type == RDTMON_GROUP) &&
- 		resctrl_arch_match_rmid(t, r->mon.parent->closid,
- 					r->mon.rmid));
- }
-@@ -2519,7 +2519,7 @@ static int rdt_get_tree(struct fs_context *fc)
- 	if (ret < 0)
- 		goto out_schemata_free;
- 
--	if (rdt_mon_capable) {
-+	if (resctrl_arch_mon_capable()) {
- 		ret = mongroup_create_dir(rdtgroup_default.kn,
- 					  &rdtgroup_default, "mon_groups",
- 					  &kn_mongrp);
-@@ -2541,12 +2541,12 @@ static int rdt_get_tree(struct fs_context *fc)
- 	if (ret < 0)
- 		goto out_psl;
- 
--	if (rdt_alloc_capable)
-+	if (resctrl_arch_alloc_capable())
- 		resctrl_arch_enable_alloc();
--	if (rdt_mon_capable)
-+	if (resctrl_arch_mon_capable())
- 		resctrl_arch_enable_mon();
- 
--	if (rdt_alloc_capable || rdt_mon_capable)
-+	if (resctrl_arch_alloc_capable() || resctrl_arch_mon_capable())
- 		resctrl_mounted = true;
- 
- 	if (is_mbm_enabled()) {
-@@ -2560,10 +2560,10 @@ static int rdt_get_tree(struct fs_context *fc)
- out_psl:
- 	rdt_pseudo_lock_release();
- out_mondata:
--	if (rdt_mon_capable)
-+	if (resctrl_arch_mon_capable())
- 		kernfs_remove(kn_mondata);
- out_mongrp:
--	if (rdt_mon_capable)
-+	if (resctrl_arch_mon_capable())
- 		kernfs_remove(kn_mongrp);
- out_info:
- 	kernfs_remove(kn_info);
-@@ -2815,9 +2815,9 @@ static void rdt_kill_sb(struct super_block *sb)
- 	rdt_pseudo_lock_release();
- 	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
- 	schemata_list_destroy();
--	if (rdt_alloc_capable)
-+	if (resctrl_arch_alloc_capable())
- 		resctrl_arch_disable_alloc();
--	if (rdt_mon_capable)
-+	if (resctrl_arch_mon_capable())
- 		resctrl_arch_disable_mon();
- 	resctrl_mounted = false;
- 	kernfs_kill_sb(sb);
-@@ -3197,7 +3197,7 @@ static int mkdir_rdt_prepare_rmid_alloc(struct rdtgroup *rdtgrp)
- {
- 	int ret;
- 
--	if (!rdt_mon_capable)
-+	if (!resctrl_arch_mon_capable())
- 		return 0;
- 
- 	ret = alloc_rmid(rdtgrp->closid);
-@@ -3219,7 +3219,7 @@ static int mkdir_rdt_prepare_rmid_alloc(struct rdtgroup *rdtgrp)
- 
- static void mkdir_rdt_prepare_rmid_free(struct rdtgroup *rgrp)
- {
--	if (rdt_mon_capable)
-+	if (resctrl_arch_mon_capable())
- 		free_rmid(rgrp->closid, rgrp->mon.rmid);
- }
- 
-@@ -3385,7 +3385,7 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node *parent_kn,
- 
- 	list_add(&rdtgrp->rdtgroup_list, &rdt_all_groups);
- 
--	if (rdt_mon_capable) {
-+	if (resctrl_arch_mon_capable()) {
- 		/*
- 		 * Create an empty mon_groups directory to hold the subset
- 		 * of tasks and cpus to monitor.
-@@ -3440,14 +3440,14 @@ static int rdtgroup_mkdir(struct kernfs_node *parent_kn, const char *name,
- 	 * allocation is supported, add a control and monitoring
- 	 * subdirectory
- 	 */
--	if (rdt_alloc_capable && parent_kn == rdtgroup_default.kn)
-+	if (resctrl_arch_alloc_capable() && parent_kn == rdtgroup_default.kn)
- 		return rdtgroup_mkdir_ctrl_mon(parent_kn, name, mode);
- 
- 	/*
- 	 * If RDT monitoring is supported and the parent directory is a valid
- 	 * "mon_groups" directory, add a monitoring subdirectory.
- 	 */
--	if (rdt_mon_capable && is_mon_groups(parent_kn, name))
-+	if (resctrl_arch_mon_capable() && is_mon_groups(parent_kn, name))
- 		return rdtgroup_mkdir_mon(parent_kn, name, mode);
- 
- 	return -EPERM;
-@@ -3779,7 +3779,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	 * If resctrl is mounted, remove all the
- 	 * per domain monitor data directories.
- 	 */
--	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
-+	if (resctrl_mounted && resctrl_arch_mon_capable())
- 		rmdir_mondata_subdir_allrdtgrp(r, d->id);
- 
- 	if (is_mbm_enabled())
-@@ -3862,7 +3862,7 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	 * by rdt_get_tree() calling mkdir_mondata_all().
- 	 * If resctrl is mounted, add per domain monitor data directories.
- 	 */
--	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
-+	if (resctrl_mounted && resctrl_arch_mon_capable())
- 		mkdir_mondata_subdir_allrdtgrp(r, d);
++	resctrl_online_cpu(cpu);
+ 	mutex_unlock(&rdtgroup_mutex);
  
  	return 0;
+@@ -966,7 +966,7 @@ static int __init resctrl_late_init(void)
+ 
+ 	state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+ 				  "x86/resctrl/cat:online:",
+-				  resctrl_online_cpu, resctrl_offline_cpu);
++				  resctrl_arch_online_cpu, resctrl_offline_cpu);
+ 	if (state < 0)
+ 		return state;
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index dfaef047dead..0c609cdfe7e5 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3868,6 +3868,14 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
+ 	return 0;
+ }
+ 
++void resctrl_online_cpu(unsigned int cpu)
++{
++	lockdep_assert_held(&rdtgroup_mutex);
++
++	/* The CPU is set in default rdtgroup after online. */
++	cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask);
++}
++
+ /*
+  * rdtgroup_init - rdtgroup initialization
+  *
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 5e4b4df9610b..9d5f75a4e192 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -223,6 +223,7 @@ u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
+ 			    u32 closid, enum resctrl_conf_type type);
+ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d);
+ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
++void resctrl_online_cpu(unsigned int cpu);
+ 
+ /**
+  * resctrl_arch_rmid_read() - Read the eventid counter corresponding to rmid
 -- 
 2.39.2
 
