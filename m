@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CD879F68D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FC879F690
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjINByy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S233551AbjINBzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbjINByw (ORCPT
+        with ESMTP id S232970AbjINBzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:54:52 -0400
+        Wed, 13 Sep 2023 21:55:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E271BCB;
-        Wed, 13 Sep 2023 18:54:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11370C433C7;
-        Thu, 14 Sep 2023 01:54:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93271BCF;
+        Wed, 13 Sep 2023 18:55:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 321D8C433C8;
+        Thu, 14 Sep 2023 01:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694656488;
-        bh=G1EV1d5/fuH1zb/5FxsrxauST3cT3okfTbj6X3rQ55Q=;
+        s=k20201202; t=1694656503;
+        bh=gFr1Z0t8lDWElOFrhucMKK+wTDT9agGBysTTIRiyjWI=;
         h=From:To:Cc:Subject:Date:From;
-        b=JJnp7C+dSP4j2NsSucOVDq+LcB+kOs1pG50D1DxcW8P4DpJlsPrvOFNvnz0+RNO6B
-         DESB29LHOUXgGUDNMHM9lbEARi94/DXMBHJzuhgR+0sw+UQQHJPsLB2wqiiY998Yru
-         R2lyIF40yRPPjRTaHU0Iv8DzNHjOs3nljjCBn5wOGN2IKieHytXtzZUW0v3XIEu912
-         oq/Kpg+bPPecQKlTwhUpOeCuaE9EDbCK35IaqVok34CHmec4c2B7ZoxNCAEjImUOIa
-         1COCTt4hfLGvBedU1XlwDDa0mnhmoSjCcxZ0Exy3W1VN1PsdD66vsYH6qlynDtva4t
-         sHLdUZhZch5hg==
+        b=PbJW1V59ZwgXRoS7IRcpRXGd7J2y2ufjX9akdAN4IZQNP756itdOJBYkCb1ONnR7b
+         U3siMpRichKCogyZ16zc2E2pml+mwfrDjHtKYlGBvVz2uu1epIJ60iIufzaZ0nfqeJ
+         2KL4EJuDMnKR1XppyyZ8pvtajb1LOBlM9SelhT2Qep+uxREtK3nTKZP9jkIaaBcpo9
+         YhuuF1iMhbS9mLMp2zcGct/61lMEdFWmY3vq5m8uuIzY8dkR6xv6B16MHo8HBcG5YQ
+         Uulkvjf3xb7eQHzyWh8QpwAdjv3mLnFIAc06tO76Azkk6cXUs67Nz0+GaJGIvzHkHT
+         J73Wq6MDZUGQQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com,
-        Sasha Levin <sashal@kernel.org>, rpeterso@redhat.com,
-        gfs2@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.5] gfs2: Stop using gfs2_make_fs_ro for withdraw
-Date:   Wed, 13 Sep 2023 21:54:44 -0400
-Message-Id: <20230914015445.51657-1-sashal@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, pbonzini@redhat.com, akpm@linux-foundation.org,
+        bhe@redhat.com, eric.devolder@oracle.com, hbathini@linux.ibm.com,
+        sourabhjain@linux.ibm.com, bhelgaas@google.com,
+        kai.huang@intel.com, peterz@infradead.org, jpoimboe@kernel.org,
+        tiwai@suse.de, kvm@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 1/7] x86/reboot: VMCLEAR active VMCSes before emergency reboot
+Date:   Wed, 13 Sep 2023 21:54:45 -0400
+Message-Id: <20230914015459.51740-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-stable: review
@@ -46,130 +51,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit f66af88e33212b57ea86da2c5d66c0d9d5c46344 ]
+[ Upstream commit b23c83ad2c638420ec0608a9de354507c41bec29 ]
 
-[   81.372851][ T5532] CPU: 1 PID: 5532 Comm: syz-executor.0 Not tainted 6.2.0-rc1-syzkaller-dirty #0
-[   81.382080][ T5532] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
-[   81.392343][ T5532] Call Trace:
-[   81.395654][ T5532]  <TASK>
-[   81.398603][ T5532]  dump_stack_lvl+0x1b1/0x290
-[   81.418421][ T5532]  gfs2_assert_warn_i+0x19a/0x2e0
-[   81.423480][ T5532]  gfs2_quota_cleanup+0x4c6/0x6b0
-[   81.428611][ T5532]  gfs2_make_fs_ro+0x517/0x610
-[   81.457802][ T5532]  gfs2_withdraw+0x609/0x1540
-[   81.481452][ T5532]  gfs2_inode_refresh+0xb2d/0xf60
-[   81.506658][ T5532]  gfs2_instantiate+0x15e/0x220
-[   81.511504][ T5532]  gfs2_glock_wait+0x1d9/0x2a0
-[   81.516352][ T5532]  do_sync+0x485/0xc80
-[   81.554943][ T5532]  gfs2_quota_sync+0x3da/0x8b0
-[   81.559738][ T5532]  gfs2_sync_fs+0x49/0xb0
-[   81.564063][ T5532]  sync_filesystem+0xe8/0x220
-[   81.568740][ T5532]  generic_shutdown_super+0x6b/0x310
-[   81.574112][ T5532]  kill_block_super+0x79/0xd0
-[   81.578779][ T5532]  deactivate_locked_super+0xa7/0xf0
-[   81.584064][ T5532]  cleanup_mnt+0x494/0x520
-[   81.593753][ T5532]  task_work_run+0x243/0x300
-[   81.608837][ T5532]  exit_to_user_mode_loop+0x124/0x150
-[   81.614232][ T5532]  exit_to_user_mode_prepare+0xb2/0x140
-[   81.619820][ T5532]  syscall_exit_to_user_mode+0x26/0x60
-[   81.625287][ T5532]  do_syscall_64+0x49/0xb0
-[   81.629710][ T5532]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+VMCLEAR active VMCSes before any emergency reboot, not just if the kernel
+may kexec into a new kernel after a crash.  Per Intel's SDM, the VMX
+architecture doesn't require the CPU to flush the VMCS cache on INIT.  If
+an emergency reboot doesn't RESET CPUs, cached VMCSes could theoretically
+be kept and only be written back to memory after the new kernel is booted,
+i.e. could effectively corrupt memory after reboot.
 
-In this backtrace, gfs2_quota_sync() takes quota data references and
-then calls do_sync().  Function do_sync() encounters filesystem
-corruption and withdraws the filesystem, which (among other things) calls
-gfs2_quota_cleanup().  Function gfs2_quota_cleanup() wrongly assumes
-that nobody is holding any quota data references anymore, and destroys
-all quota data objects.  When gfs2_quota_sync() then resumes and
-dereferences the quota data objects it is holding, those objects are no
-longer there.
+Opportunistically remove the setting of the global pointer to NULL to make
+checkpatch happy.
 
-Function gfs2_quota_cleanup() deals with resource deallocation and can
-easily be delayed until gfs2_put_super() in the case of a filesystem
-withdraw.  In fact, most of the other work gfs2_make_fs_ro() does is
-unnecessary during a withdraw as well, so change signal_our_withdraw()
-to skip gfs2_make_fs_ro() and perform the necessary steps directly
-instead.
-
-Thanks to Edward Adam Davis <eadavis@sina.com> for the initial patches.
-
-Link: https://lore.kernel.org/all/0000000000002b5e2405f14e860f@google.com
-Reported-by: syzbot+3f6a670108ce43356017@syzkaller.appspotmail.com
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Andrew Cooper <Andrew.Cooper3@citrix.com>
+Link: https://lore.kernel.org/r/20230721201859.2307736-2-seanjc@google.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/super.c |  9 ++-------
- fs/gfs2/util.c  | 19 ++++++++++++++++++-
- 2 files changed, 20 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/kexec.h  |  2 --
+ arch/x86/include/asm/reboot.h |  2 ++
+ arch/x86/kernel/crash.c       | 31 -------------------------------
+ arch/x86/kernel/reboot.c      | 22 ++++++++++++++++++++++
+ arch/x86/kvm/vmx/vmx.c        | 10 +++-------
+ 5 files changed, 27 insertions(+), 40 deletions(-)
 
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 9f4d5d6549ee6..2382c755362d7 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -580,15 +580,8 @@ void gfs2_make_fs_ro(struct gfs2_sbd *sdp)
- 				   gfs2_log_is_empty(sdp),
- 				   HZ * 5);
- 		gfs2_assert_warn(sdp, gfs2_log_is_empty(sdp));
--	} else {
--		wait_event_timeout(sdp->sd_log_waitq,
--				   gfs2_log_is_empty(sdp),
--				   HZ * 5);
- 	}
- 	gfs2_quota_cleanup(sdp);
+diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
+index 5b77bbc28f969..819046974b997 100644
+--- a/arch/x86/include/asm/kexec.h
++++ b/arch/x86/include/asm/kexec.h
+@@ -205,8 +205,6 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
+ #endif
+ #endif
+ 
+-typedef void crash_vmclear_fn(void);
+-extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+ extern void kdump_nmi_shootdown_cpus(void);
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/x86/include/asm/reboot.h b/arch/x86/include/asm/reboot.h
+index 9177b4354c3f5..dc201724a6433 100644
+--- a/arch/x86/include/asm/reboot.h
++++ b/arch/x86/include/asm/reboot.h
+@@ -25,6 +25,8 @@ void __noreturn machine_real_restart(unsigned int type);
+ #define MRR_BIOS	0
+ #define MRR_APM		1
+ 
++typedef void crash_vmclear_fn(void);
++extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+ void cpu_emergency_disable_virtualization(void);
+ 
+ typedef void (*nmi_shootdown_cb)(int, struct pt_regs*);
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index cdd92ab43cda4..54cd959cb3160 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -48,38 +48,12 @@ struct crash_memmap_data {
+ 	unsigned int type;
+ };
+ 
+-/*
+- * This is used to VMCLEAR all VMCSs loaded on the
+- * processor. And when loading kvm_intel module, the
+- * callback function pointer will be assigned.
+- *
+- * protected by rcu.
+- */
+-crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss = NULL;
+-EXPORT_SYMBOL_GPL(crash_vmclear_loaded_vmcss);
 -
--	if (!log_write_allowed)
--		sdp->sd_vfs->s_flags |= SB_RDONLY;
+-static inline void cpu_crash_vmclear_loaded_vmcss(void)
+-{
+-	crash_vmclear_fn *do_vmclear_operation = NULL;
+-
+-	rcu_read_lock();
+-	do_vmclear_operation = rcu_dereference(crash_vmclear_loaded_vmcss);
+-	if (do_vmclear_operation)
+-		do_vmclear_operation();
+-	rcu_read_unlock();
+-}
+-
+ #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
+ 
+ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+ {
+ 	crash_save_cpu(regs, cpu);
+ 
+-	/*
+-	 * VMCLEAR VMCSs loaded on all cpus if needed.
+-	 */
+-	cpu_crash_vmclear_loaded_vmcss();
+-
+ 	/*
+ 	 * Disable Intel PT to stop its logging
+ 	 */
+@@ -133,11 +107,6 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
+ 
+ 	crash_smp_send_stop();
+ 
+-	/*
+-	 * VMCLEAR VMCSs loaded on this cpu if needed.
+-	 */
+-	cpu_crash_vmclear_loaded_vmcss();
+-
+ 	cpu_emergency_disable_virtualization();
+ 
+ 	/*
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index 3adbe97015c13..3fa4c6717a1db 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -787,6 +787,26 @@ void machine_crash_shutdown(struct pt_regs *regs)
+ }
+ #endif
+ 
++/*
++ * This is used to VMCLEAR all VMCSs loaded on the
++ * processor. And when loading kvm_intel module, the
++ * callback function pointer will be assigned.
++ *
++ * protected by rcu.
++ */
++crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
++EXPORT_SYMBOL_GPL(crash_vmclear_loaded_vmcss);
++
++static inline void cpu_crash_vmclear_loaded_vmcss(void)
++{
++	crash_vmclear_fn *do_vmclear_operation = NULL;
++
++	rcu_read_lock();
++	do_vmclear_operation = rcu_dereference(crash_vmclear_loaded_vmcss);
++	if (do_vmclear_operation)
++		do_vmclear_operation();
++	rcu_read_unlock();
++}
+ 
+ /* This is the CPU performing the emergency shutdown work. */
+ int crashing_cpu = -1;
+@@ -798,6 +818,8 @@ int crashing_cpu = -1;
+  */
+ void cpu_emergency_disable_virtualization(void)
+ {
++	cpu_crash_vmclear_loaded_vmcss();
++
+ 	cpu_emergency_vmxoff();
+ 	cpu_emergency_svm_disable();
+ }
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index df461f387e20d..f60fb79fea881 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -41,7 +41,7 @@
+ #include <asm/idtentry.h>
+ #include <asm/io.h>
+ #include <asm/irq_remapping.h>
+-#include <asm/kexec.h>
++#include <asm/reboot.h>
+ #include <asm/perf_event.h>
+ #include <asm/mmu_context.h>
+ #include <asm/mshyperv.h>
+@@ -754,7 +754,6 @@ static int vmx_set_guest_uret_msr(struct vcpu_vmx *vmx,
+ 	return ret;
  }
  
- /**
-@@ -622,6 +615,8 @@ static void gfs2_put_super(struct super_block *sb)
- 	if (!sb_rdonly(sb)) {
- 		gfs2_make_fs_ro(sdp);
+-#ifdef CONFIG_KEXEC_CORE
+ static void crash_vmclear_local_loaded_vmcss(void)
+ {
+ 	int cpu = raw_smp_processor_id();
+@@ -764,7 +763,6 @@ static void crash_vmclear_local_loaded_vmcss(void)
+ 			    loaded_vmcss_on_cpu_link)
+ 		vmcs_clear(v->vmcs);
+ }
+-#endif /* CONFIG_KEXEC_CORE */
+ 
+ static void __loaded_vmcs_clear(void *arg)
+ {
+@@ -8622,10 +8620,9 @@ static void __vmx_exit(void)
+ {
+ 	allow_smaller_maxphyaddr = false;
+ 
+-#ifdef CONFIG_KEXEC_CORE
+ 	RCU_INIT_POINTER(crash_vmclear_loaded_vmcss, NULL);
+ 	synchronize_rcu();
+-#endif
++
+ 	vmx_cleanup_l1d_flush();
+ }
+ 
+@@ -8674,10 +8671,9 @@ static int __init vmx_init(void)
+ 		pi_init_cpu(cpu);
  	}
-+	if (gfs2_withdrawn(sdp))
-+		gfs2_quota_cleanup(sdp);
- 	WARN_ON(gfs2_withdrawing(sdp));
  
- 	/*  At this point, we're through modifying the disk  */
-diff --git a/fs/gfs2/util.c b/fs/gfs2/util.c
-index dac22b1c1a2e1..b3086a9baf001 100644
---- a/fs/gfs2/util.c
-+++ b/fs/gfs2/util.c
-@@ -9,6 +9,7 @@
- #include <linux/spinlock.h>
- #include <linux/completion.h>
- #include <linux/buffer_head.h>
-+#include <linux/kthread.h>
- #include <linux/crc32.h>
- #include <linux/gfs2_ondisk.h>
- #include <linux/delay.h>
-@@ -150,7 +151,23 @@ static void signal_our_withdraw(struct gfs2_sbd *sdp)
- 	if (!sb_rdonly(sdp->sd_vfs)) {
- 		bool locked = mutex_trylock(&sdp->sd_freeze_mutex);
+-#ifdef CONFIG_KEXEC_CORE
+ 	rcu_assign_pointer(crash_vmclear_loaded_vmcss,
+ 			   crash_vmclear_local_loaded_vmcss);
+-#endif
++
+ 	vmx_check_vmcs12_offsets();
  
--		gfs2_make_fs_ro(sdp);
-+		if (sdp->sd_quotad_process &&
-+		    current != sdp->sd_quotad_process) {
-+			kthread_stop(sdp->sd_quotad_process);
-+			sdp->sd_quotad_process = NULL;
-+		}
-+
-+		if (sdp->sd_logd_process &&
-+		    current != sdp->sd_logd_process) {
-+			kthread_stop(sdp->sd_logd_process);
-+			sdp->sd_logd_process = NULL;
-+		}
-+
-+		wait_event_timeout(sdp->sd_log_waitq,
-+				   gfs2_log_is_empty(sdp),
-+				   HZ * 5);
-+
-+		sdp->sd_vfs->s_flags |= SB_RDONLY;
- 
- 		if (locked)
- 			mutex_unlock(&sdp->sd_freeze_mutex);
+ 	/*
 -- 
 2.40.1
 
