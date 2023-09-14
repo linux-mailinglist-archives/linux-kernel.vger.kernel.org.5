@@ -2,50 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4567A0D6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EA57A0D6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242126AbjINSoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60836 "EHLO
+        id S242044AbjINSoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241770AbjINSm3 (ORCPT
+        with ESMTP id S242184AbjINSmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:42:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8CF30F0;
+        Thu, 14 Sep 2023 14:42:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C532430F6;
         Thu, 14 Sep 2023 11:39:11 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716749;
+        s=2020; t=1694716750;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h4vNSSSfbKzMTl5dIaX+nKFLqtsf/7qFsjWyC6l0EH0=;
-        b=Btvxqnk4X2os6S5PrOaEvdQj5QO8ypBR/vcabWe3Gj5lhywtI34HkX9oqmk/uN8pbMIMfW
-        I36GzlO0wMYRThI7KH1lMM/7nxcrYd1F9UhOwQDEjh8Ro10ODzExtzippTDQ7xkrpGTQ8R
-        /afpljVJSX4wsuCyOws5j7Ay2eYLJtPePh3JpHOCtohYDUa24cIVB6b+2rSG/THHGoxEo1
-        2yJvl9M2jPGFBw6rEt9JljlPfa80dVAzz7Tk3ynReIsFt0hbRYD3tY6LfhhqbzzK8gEI+b
-        2P2Z7R5JL0rdoozdGeXCuCLpQ6NHXbmemuyVTCAScZ9i7ZcbmJfp99qRUiG8Jw==
+        bh=rrDPhfR+hcH2ulqT+tmz0NkOOAInrrikJFQ9+rrgXq4=;
+        b=KfjPbYSme07Uy0HtarpcBzSFQ1/rLTznLPx3w1c4fArr0Y5kGtKzI/Ul9ouwJRXdZeU/J2
+        nadN6L18ZJIEZd4/qd77a5MMYgHznr/VdEX4YaV6YEVQg226CMthIInseqEgsZrt2JU/SM
+        hrvtG4v2A0Aab0JSgQ/X2uc19tg5cN7/KsBEEnvqHijZr/ddzu7OZp4NR0MuQksSw5xf4H
+        1FvccofeL0vCGlTQQkCd1W6zru71arQ7y6L7TSn3XqKLX1H/RoT2P0vGRJJ8EmEGrSaGYG
+        fykGh54wuVQ019BCJGhN5qdhXCIQatyCIpCafbGGWbvjoPvfFCdXRsxKA0zSAQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716749;
+        s=2020e; t=1694716750;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h4vNSSSfbKzMTl5dIaX+nKFLqtsf/7qFsjWyC6l0EH0=;
-        b=skOOWWSloirPh2qLF10hQ5qRfe3vdZMKCUw5YKRzGtn51G9SzuSd9vTdeNuK3ueDbstJiR
-        QFsCirT45QgYgiBA==
+        bh=rrDPhfR+hcH2ulqT+tmz0NkOOAInrrikJFQ9+rrgXq4=;
+        b=zw8NaAfgbtDwAq7EKORtMTWehRQcY0jJ9It/03eZCA4UwTMGL31oJD/g86N0no8XkSo7er
+        qKWevdh86PM28vAg==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Timur Tabi <timur@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH tty v1 72/74] serial: ucc_uart: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:44:29 +0206
-Message-Id: <20230914183831.587273-73-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Yangtao Li <frank.li@vivo.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH tty v1 73/74] serial: vt8500: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:44:30 +0206
+Message-Id: <20230914183831.587273-74-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -82,31 +87,49 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/ucc_uart.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/vt8500_serial.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/ucc_uart.c b/drivers/tty/serial/ucc_uart.c
-index b06661b80f41..ed7a6bb5596a 100644
---- a/drivers/tty/serial/ucc_uart.c
-+++ b/drivers/tty/serial/ucc_uart.c
-@@ -931,7 +931,7 @@ static void qe_uart_set_termios(struct uart_port *port,
- 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk / 16);
+diff --git a/drivers/tty/serial/vt8500_serial.c b/drivers/tty/serial/vt8500_serial.c
+index c5d5c2765119..78a1c1eea11b 100644
+--- a/drivers/tty/serial/vt8500_serial.c
++++ b/drivers/tty/serial/vt8500_serial.c
+@@ -227,7 +227,7 @@ static irqreturn_t vt8500_irq(int irq, void *dev_id)
+ 	struct uart_port *port = dev_id;
+ 	unsigned long isr;
  
- 	/* Do we really need a spinlock here? */
+-	spin_lock(&port->lock);
++	uart_port_lock(port);
+ 	isr = vt8500_read(port, VT8500_URISR);
+ 
+ 	/* Acknowledge active status bits */
+@@ -240,7 +240,7 @@ static irqreturn_t vt8500_irq(int irq, void *dev_id)
+ 	if (isr & TCTS)
+ 		handle_delta_cts(port);
+ 
+-	spin_unlock(&port->lock);
++	uart_port_unlock(port);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -342,7 +342,7 @@ static void vt8500_set_termios(struct uart_port *port,
+ 	unsigned int baud, lcr;
+ 	unsigned int loops = 1000;
+ 
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
  
- 	/* Update the per-port timeout. */
- 	uart_update_timeout(port, termios->c_cflag, baud);
-@@ -949,7 +949,7 @@ static void qe_uart_set_termios(struct uart_port *port,
- 		qe_setbrg(qe_port->us_info.tx_clock, baud, 16);
- 	}
+ 	/* calculate and set baud rate */
+ 	baud = uart_get_baud_rate(port, termios, old, 900, 921600);
+@@ -410,7 +410,7 @@ static void vt8500_set_termios(struct uart_port *port,
+ 	vt8500_write(&vt8500_port->uart, 0x881, VT8500_URFCR);
+ 	vt8500_write(&vt8500_port->uart, vt8500_port->ier, VT8500_URIER);
  
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
  }
  
- /*
+ static const char *vt8500_type(struct uart_port *port)
 -- 
 2.39.2
 
