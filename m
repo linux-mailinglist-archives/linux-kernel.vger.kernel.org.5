@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D739D7A0EE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA7B7A0EEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjINUXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
+        id S229639AbjINU1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjINUXH (ORCPT
+        with ESMTP id S229473AbjINU1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:23:07 -0400
+        Thu, 14 Sep 2023 16:27:19 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078D226BC;
-        Thu, 14 Sep 2023 13:23:02 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EKEMgW026050;
-        Thu, 14 Sep 2023 20:22:51 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D8A26B2;
+        Thu, 14 Sep 2023 13:27:15 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EKFtA6000787;
+        Thu, 14 Sep 2023 20:27:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=qcppdkim1;
- bh=csdRelKfaDXqcZhgkZqpANLqD87tkq2pL9dztAw3FcY=;
- b=RE6ZEuM1hWblVrFzEPZj3BkBkT5iEcuslUxpHncaLELlXK+rL+5jQNTm+oK7XsqXwvag
- YqX+x+vKIhfH+ASp+eapYoBQuIinjuISP7Mx/j/Z5OBknnT5wn1t4IbuvKtS1J181qkO
- gLiWrJV1b65TdfXofURMsM375ZCT0vz5WgL8cZ1w6OQH4sxD/pRjeAXGQIftyTf03G3S
- scxnJIXxelYmIYjbx8OlmrC1pWA+KBpKqi1xSLGeh8lbGJNu5p8iY8fRFnS8D3OCTHnw
- NaaaKbaiMb/Qrg7g1pWlo09l+OnoEqJiKog03WDcOLDCncJd63NTztSo+bnOSMzGiMBN hg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3re32t3s-1
+ bh=spiH3gFH19/jm7I7++wwwkP9fPV76kgclzFFFCYsQDE=;
+ b=jsPwM167QYqmHfbMdY1iB3rysmBZ66EGCRyCo75Fs/Akm1oLnc6PaAb1/1rqsUyGkuoN
+ x5PnmZFfmBU9HfOR7cwNC2pU86OtO4Ov0Magd50J+lioJhr4OMj/bx3tNVMTzXcMStO/
+ 0izSyPWjH0EHVp/6qOdVw6SDuTX2/iwkHXIl3U3w2M2Cq2R8wRXoAgpMi5XvQvsEgcGj
+ FxUGOESFlAyUsvcRiP+wpfO+mUo3TmjVaArufMoUGs67bVDG10mNo1Vgdlb+8ucCGmL8
+ OhccPgK7PTLkR9t/lvePeMgHuC9Qjjm9n79tPhfN8bA4y7zVzkdYo8MOOKorkZMf0kDP AQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3v4gabh6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 20:22:51 +0000
+        Thu, 14 Sep 2023 20:27:02 +0000
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EKMoiA011937
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EKR1qQ000788
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 20:22:50 GMT
+        Thu, 14 Sep 2023 20:27:01 GMT
 Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
  (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 13:22:50 -0700
-Message-ID: <00e791f2-ee77-018d-275f-29793d6eb136@quicinc.com>
-Date:   Thu, 14 Sep 2023 13:22:37 -0700
+ 2023 13:27:00 -0700
+Message-ID: <2d49a4a2-01f0-1625-0cbf-d414499e47ca@quicinc.com>
+Date:   Thu, 14 Sep 2023 13:27:00 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/8] drm/panel: nv3052c: Allow specifying registers
- per panel
+Subject: Re: [RFC PATCH 1/8] drm/panel: nv3052c: Document known register names
 Content-Language: en-US
 To:     John Watts <contact@jookia.org>
 CC:     <dri-devel@lists.freedesktop.org>,
@@ -57,10 +56,10 @@ CC:     <dri-devel@lists.freedesktop.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Shawn Guo <shawnguo@kernel.org>
 References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-6-contact@jookia.org>
- <d46ee183-a010-e585-c47c-fa3229eafb33@quicinc.com> <ZQKHcDZ-mxNaSe0j@titan>
+ <20230911090206.3121440-2-contact@jookia.org>
+ <977a8de9-26ec-1789-4c72-fd36f34480c3@quicinc.com> <ZQKIED7jCc1FuPP1@titan>
 From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <ZQKHcDZ-mxNaSe0j@titan>
+In-Reply-To: <ZQKIED7jCc1FuPP1@titan>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
@@ -68,44 +67,51 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KPDkt9EDQx8A0Kx3USw1mPiColUdJjZc
-X-Proofpoint-ORIG-GUID: KPDkt9EDQx8A0Kx3USw1mPiColUdJjZc
+X-Proofpoint-ORIG-GUID: oN9uX6SQC4NWwccyzUfTryGXaPcoKS8n
+X-Proofpoint-GUID: oN9uX6SQC4NWwccyzUfTryGXaPcoKS8n
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-14_12,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 malwarescore=0 mlxscore=0 mlxlogscore=691
- lowpriorityscore=0 spamscore=0 clxscore=1015 suspectscore=0
- impostorscore=0 adultscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309140177
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=973
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140178
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/13/2023 9:09 PM, John Watts wrote:
-> On Wed, Sep 13, 2023 at 02:34:38PM -0700, Jessica Zhang wrote:
+On 9/13/2023 9:12 PM, John Watts wrote:
+> On Wed, Sep 13, 2023 at 02:43:43PM -0700, Jessica Zhang wrote:
 >> Hi John,
 >>
->> Having a separate panel_regs_len field seems a bit unnecessary to me.
+>> Just curious, what do you mean by these registers being mostly unknown?
 >>
->> Looks like it's only being called in the panel prepare() and I don't seen
->> any reason why we shouldn't just call the ARRAY_SIZE() macro there.
+>> I do see them specified in the online specs -- some even seem to map to
+>> existing MIPI_DCS_* enums (ex. 0x01 to MIPI_DCS_SOFT_RESET, and 0x04 to
+>> MIPI_DCS_GET_DISPLAY_ID).
+>>
+>> Thanks,
+>>
+>> Jessica Zhang
 > 
-> Can you call ARRAY_SIZE on an an array pointer?
+> Hi Jessica,
+> 
+> Unfortunately these registers are not MIPI ones, but on a separate page of
+> registers. So page 2 register 1 isn't MIPI_DCS_SOFT_RESET, that is page 0
+> register 1.
 
-Ah, I'd missed the array pointer declaration. This field is fine then.
+Got it -- thanks for the explanation.
+
+In that case,
+
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
 Thanks,
 
 Jessica Zhang
 
-> 
->>
->> Thanks,
->>
->> Jessica Zhang
 > 
 > John.
