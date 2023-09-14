@@ -2,249 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B57B7A0B02
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77327A0B04
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236714AbjINQub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S236956AbjINQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINQu3 (ORCPT
+        with ESMTP id S231588AbjINQvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:50:29 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A31BCB;
-        Thu, 14 Sep 2023 09:50:24 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmjwT5pVSz6K5yw;
-        Fri, 15 Sep 2023 00:49:45 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 17:50:22 +0100
-Date:   Thu, 14 Sep 2023 17:50:21 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 34/35] ACPI: Add _OSC bits to advertise OS
- support for toggling CPU present/enabled
-Message-ID: <20230914175021.000018fd@Huawei.com>
-In-Reply-To: <20230913163823.7880-35-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-35-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 12:51:42 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9886C1BCB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:51:38 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c337aeefbdso10657255ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694710298; x=1695315098; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kwWvVl8aOTD5MluoXekdmrqRM+dRNHxbE45XnwaB2gw=;
+        b=C9zntzdFcoblYjLzyZqQ2T3AWK08feI2T3ILWTxEU1Y1hRewCdrVgsthJ1PEy4aaUq
+         vVFf5NSTTJQ+/utw1HYaYBUFHYGQ9FUJl++YOz83Ao20/TrNqTim/rqGTSUKrA8afp6y
+         h/T8eUpHOwKArCSF7aPgJOhK+fOzWnLjASZQY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694710298; x=1695315098;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kwWvVl8aOTD5MluoXekdmrqRM+dRNHxbE45XnwaB2gw=;
+        b=ZJ4HShn+0qaQtiZoTAGV3kXfkpEmC1y4YW160OX5SjnKDrt7ggHbxYI4dudKL6rTF0
+         P4RPJ6IydM+/9bl1J7K9W37xFtnV9Efk59vP5d9M/aAT3DnjUEx7jJ4wocNW2DojwdGI
+         8J3Edf6IXtlet5DuWg3QjlUQRTm6vvvuvEKPyxiNgH0XOwtcaHQoqS4iVAnTdlLq1gBm
+         /lpluLE7V1A4l8tNIAeC63N1cBRBWez8WXbZ5XfL5iP4+g1YWCKpMysVNLyXMFpn/dGD
+         XVh9uS0lIdtjKsR17FIEklhQHlKaFV9WxXvVNlC7iFvwvCaqq/M4wS6ao6jMh23Bqcw9
+         8HWQ==
+X-Gm-Message-State: AOJu0YydrcYnmwTzXAQMivsploOOpJFMnjpCGwfNsLit4XKtGhO7b0Q4
+        I3d74gaRTVgK1/RvBuI0om/Iyg==
+X-Google-Smtp-Source: AGHT+IENvFzKbwvG52UCB+3+11WvzZEDrnoeO9yw/RS4+FeRTRUqvTGWRBdn6zOo+KywzJ4NOuL2EA==
+X-Received: by 2002:a17:902:650d:b0:1c3:d9ed:d16e with SMTP id b13-20020a170902650d00b001c3d9edd16emr5531650plk.39.1694710298093;
+        Thu, 14 Sep 2023 09:51:38 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902d2c100b001c322a41188sm1817053plc.117.2023.09.14.09.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 09:51:37 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 09:51:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Sep 12 (bcachefs, objtool)
+Message-ID: <202309140951.F73B5557D6@keescook>
+References: <20230912152645.0868a96a@canb.auug.org.au>
+ <d60dac60-1e38-4a8c-98ad-a769ab1dfccd@infradead.org>
+ <20230913210829.zkxv6qqlamymhatr@treble>
+ <202309131758.208804F4@keescook>
+ <20230914135144.udwf3lmhh5zael5e@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914135144.udwf3lmhh5zael5e@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:22 +0000
-James Morse <james.morse@arm.com> wrote:
-
-> Platform firmware can disabled a CPU, or make it not-present by making
-> an eject-request notification, then waiting for the os to make it offline
-> and call _EJx. After the firmware updates _STA with the new status.
+On Thu, Sep 14, 2023 at 03:51:44PM +0200, Josh Poimboeuf wrote:
+> On Wed, Sep 13, 2023 at 06:01:42PM -0700, Kees Cook wrote:
+> > > +++ b/fs/bcachefs/buckets.h
+> > > @@ -180,7 +180,7 @@ static inline u64 bch2_dev_buckets_reserved(struct bch_dev *ca, enum bch_waterma
+> > >  
+> > >  	switch (watermark) {
+> > >  	case BCH_WATERMARK_NR:
+> > > -		unreachable();
+> > > +		BUG();
+> > 
+> > Linus gets really upset about new BUG() usage (takes out the entire
+> > system):
+> > https://docs.kernel.org/process/deprecated.html#bug-and-bug-on
+> > 
+> > It'd be nicer to actually handle the impossible case. (WARN and return
+> > 0?)
 > 
-> Not all operating systems support this. For arm64 making CPUs not-present
-> has never been supported. For all ACPI architectures, making CPUs disabled
-> has recently been added. Firmware can't know what the OS has support for.
-> 
-> Add two new _OSC bits to advertise whether the OS supports the _STA enabled
-> or present bits being toggled for CPUs. This will be important for arm64
-> if systems that support physical CPU hotplug ever appear as arm64 linux
-> doesn't currently support this, so firmware shouldn't try.
+> Sure, see below.
 
-I'm not sure I like enabling this for all architectures though I guess
-everyone will ignore it on those that have long supported 
-changing the enabled bit. The hypervisors won't care if Linux claims
-to support it or not.  I can see the argument for architectures that might
-support it in the future.
+Looks good to me; thanks!
 
-I need to think a bit more about this, but maybe just having the online
-capable bit OSC is safer in general. I guess it depends on whether there
-are hypervisors out there implementing the x86 version of that even though
-no one has yet posted patches for Linux.
-
-Perhaps we just call these out as hints that we 'definitely' support them.
-Otherwise we might for some architectures so poke it anyway.
-
-
-OSC is late in boot, so what advantage is there in preventing it working?
-We can't change any of the bring up / sizing etc as a result so might as
-well let it through.
+-Kees
 
 > 
-> Advertising this support to firmware is useful for cloud orchestrators
-> to know whether they can scale a particular VM by adding CPUs.
+> BTW, I'm about to go off grid for 1.5 weeks, so there will be no v3
+> coming from me anytime soon :-)
 > 
-> Signed-off-by: James Morse <james.morse@arm.com>
+> ---8<---
+> 
+> From: Josh Poimboeuf <jpoimboe@kernel.org>
+> Subject: [PATCH v2] bcachefs: Remove undefined behavior in bch2_dev_buckets_reserved()
+> 
+> In general it's a good idea to avoid using bare unreachable() because it
+> introduces undefined behavior in compiled code.  In this case it even
+> confuses GCC into emitting an empty unused
+> bch2_dev_buckets_reserved.part.0() function.
+> 
+> Use WARN_ON(1) instead, which is nice and defined.  While in theory it
+> should never trigger, if something were to go awry and the
+> BCH_WATERMARK_NR case were to actually hit, the failure mode is more
+> robust.
+> 
+> Fixes the following warnings:
+> 
+>   vmlinux.o: warning: objtool: bch2_bucket_alloc_trans() falls through to next function bch2_reset_alloc_cursors()
+>   vmlinux.o: warning: objtool: bch2_dev_buckets_reserved.part.0() is missing an ELF size annotation
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 > ---
-> I'm assuming ia64 with physical hotplug machines once existed, and
-> that Loongarch machines with support for this don't.
-> ---
->  arch/ia64/Kconfig             |  1 +
->  arch/x86/Kconfig              |  1 +
->  drivers/acpi/Kconfig          |  9 +++++++++
->  drivers/acpi/acpi_processor.c | 14 +++++++++++++-
->  drivers/acpi/bus.c            | 16 ++++++++++++++++
->  include/linux/acpi.h          |  4 ++++
->  6 files changed, 44 insertions(+), 1 deletion(-)
+>  fs/bcachefs/buckets.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-> index 54972f9fe804..13df676bad67 100644
-> --- a/arch/ia64/Kconfig
-> +++ b/arch/ia64/Kconfig
-> @@ -17,6 +17,7 @@ config IA64
->  	select ARCH_MIGHT_HAVE_PC_SERIO
->  	select ACPI
->  	select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-> +	select ACPI_HOTPLUG_IGNORE_OSC  if ACPI
->  	select ACPI_NUMA if NUMA
->  	select ARCH_ENABLE_MEMORY_HOTPLUG
->  	select ARCH_ENABLE_MEMORY_HOTREMOVE
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 295a7a3debb6..5fea3ce9594e 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -61,6 +61,7 @@ config X86
->  	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
->  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
->  	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
-> +	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI && HOTPLUG_CPU
->  	select ARCH_32BIT_OFF_T			if X86_32
->  	select ARCH_CLOCKSOURCE_INIT
->  	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index 417f9f3077d2..c49978b4b11f 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -310,6 +310,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
->  	depends on ACPI_PROCESSOR && HOTPLUG_CPU
->  	select ACPI_CONTAINER
+> diff --git a/fs/bcachefs/buckets.h b/fs/bcachefs/buckets.h
+> index f192809f50cf..211f054bf83d 100644
+> --- a/fs/bcachefs/buckets.h
+> +++ b/fs/bcachefs/buckets.h
+> @@ -180,7 +180,8 @@ static inline u64 bch2_dev_buckets_reserved(struct bch_dev *ca, enum bch_waterma
 >  
-> +config ACPI_HOTPLUG_IGNORE_OSC
-> +	bool
-> +	depends on ACPI_HOTPLUG_PRESENT_CPU
-> +	help
-> +	  Ignore whether firmware acknowledged support for toggling the CPU
-> +	  present bit in _STA. Some architectures predate the _OSC bits, so
-> +	  firmware doesn't know to do this.
-> +
-> +
->  config ACPI_PROCESSOR_AGGREGATOR
->  	tristate "Processor Aggregator"
->  	depends on ACPI_PROCESSOR
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index b49859eab01a..87926f22c857 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -181,6 +181,18 @@ static void __init acpi_pcc_cpufreq_init(void)
->  static void __init acpi_pcc_cpufreq_init(void) {}
->  #endif /* CONFIG_X86 */
->  
-> +static bool acpi_processor_hotplug_present_supported(void)
-> +{
-> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-> +		return false;
-> +
-> +	/* x86 systems pre-date the _OSC bit */
-> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
-> +		return true;
-> +
-> +	return osc_sb_hotplug_present_support_acked;
-> +}
-> +
->  /* Initialization */
->  static int acpi_processor_make_present(struct acpi_processor *pr)
->  {
-> @@ -188,7 +200,7 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
->  	acpi_status status;
->  	int ret;
->  
-> -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-> +	if (!acpi_processor_hotplug_present_supported()) {
+>  	switch (watermark) {
+>  	case BCH_WATERMARK_NR:
+> -		unreachable();
+> +		WARN_ON(1);
+> +		break;
+>  	case BCH_WATERMARK_stripe:
+>  		reserved += ca->mi.nbuckets >> 6;
+>  		fallthrough;
+> -- 
+> 2.41.0
+> 
 
-I don't see the advantage of blocking on basis of what the firmware said.
-It was clearly lying or didn't understand the question ;)
-
->  		pr_err_once("Changing CPU present bit is not supported\n");
->  		return -ENODEV;
->  	}
-> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> index f41dda2d3493..123c28c2eda3 100644
-> --- a/drivers/acpi/bus.c
-> +++ b/drivers/acpi/bus.c
-> @@ -298,6 +298,13 @@ EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
->  
->  bool osc_sb_cppc2_support_acked;
->  
-> +/*
-> + * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
-> + * present/enable.
-> + */
-> +bool osc_sb_hotplug_enabled_support_acked;
-> +bool osc_sb_hotplug_present_support_acked;
-> +
->  static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
->  static void acpi_bus_osc_negotiate_platform_control(void)
->  {
-> @@ -346,6 +353,11 @@ static void acpi_bus_osc_negotiate_platform_control(void)
->  
->  	if (!ghes_disable)
->  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
-> +
-> +	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_ENABLED_SUPPORT;
-> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-> +		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_PRESENT_SUPPORT;
-> +
->  	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
->  		return;
->  
-> @@ -383,6 +395,10 @@ static void acpi_bus_osc_negotiate_platform_control(void)
->  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
->  		osc_cpc_flexible_adr_space_confirmed =
->  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
-> +		osc_sb_hotplug_enabled_support_acked =
-> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_ENABLED_SUPPORT;
-> +		osc_sb_hotplug_present_support_acked =
-> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_PRESENT_SUPPORT;
->  	}
->  
->  	kfree(context.ret.pointer);
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 92cb25349a18..2ba7e0b10bcf 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -580,12 +580,16 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
->  #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
->  #define OSC_SB_PRM_SUPPORT			0x00200000
->  #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
-> +#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
-> +#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
->  
->  extern bool osc_sb_apei_support_acked;
->  extern bool osc_pc_lpi_support_confirmed;
->  extern bool osc_sb_native_usb4_support_confirmed;
->  extern bool osc_sb_cppc2_support_acked;
->  extern bool osc_cpc_flexible_adr_space_confirmed;
-> +extern bool osc_sb_hotplug_enabled_support_acked;
-> +extern bool osc_sb_hotplug_present_support_acked;
->  
->  /* USB4 Capabilities */
->  #define OSC_USB_USB3_TUNNELING			0x00000001
-
+-- 
+Kees Cook
