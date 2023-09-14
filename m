@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC867A11E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734C17A11EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbjINXhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        id S230420AbjINXiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjINXhw (ORCPT
+        with ESMTP id S230369AbjINXiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:37:52 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293631FE5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:37:48 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-529fb2c6583so1873120a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:37:48 -0700 (PDT)
+        Thu, 14 Sep 2023 19:38:21 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD771FE5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fac16ee5fso1434490b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694734665; x=1695339465; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WUQ7K1Uj3M2Ku8c5LZFJY/v14ESPAzqXsk3sQ7d9n6g=;
-        b=GoIzRtGfQuh1LB1IL86nKXB2nOyl1/5BFtCWCMCli++2yiWxwWmrWfSCDmGZ4iEm4a
-         hTR+2pJIZVA21FhWAumgLDowIufe0I50b8CTejUsAYwyF/5KDvf9vvgbQJr6XVyDuof9
-         RAVlCgoIQ/EDbfF6+dOnB7uxEc3n38wrERnlc=
+        d=chromium.org; s=google; t=1694734697; x=1695339497; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QVyuGB/xvHjbsQ6Zy6WC5UERFVDAMx/lplVOWzlB7nk=;
+        b=Bb1gd0oCn0kV4ULdPhXKK99PK8gVenpWGW9KDzmBileH9K41rHs1rZESe632EcuKPU
+         EVjE2Jzv8r6n2pnoD6m6VHvQy9X1HjocaHkie1wJ6Fe+s9BiY1iwqhnvTNpZH0A8UAvZ
+         +ftpp737dtCN7uk+jTlKhgI3zyvujzln3697Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694734665; x=1695339465;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WUQ7K1Uj3M2Ku8c5LZFJY/v14ESPAzqXsk3sQ7d9n6g=;
-        b=CRhufYdLhjEF70e9q+AjAPB9TzpGA79LFiO7NVpUt0DgYHrPvqKKkxNk+cn5ZQXtJO
-         CYJ+lLgKR7gFlwDDwk2od65RP/bM2+dC04YQ4sKY1Q/sSKBzy6SODQz3KPvwJNVj7pTf
-         KPVtZE8XMUnQ4vpDMdutRp3wpd8Yo3Gyjfb95dpz3t+YBYdmBNXRUt+kiNsNkw9hFrtJ
-         bss7LakXgc9tve86Dd3bNj4iA9Nzm4NbHUPlL7OZcj535DFfyHw7FZ7vyEyK+c8T6fQT
-         Bj6w0Pfbm5MAeWsXz1SX8A8RxoPZaIZgDjRJv8brmXkA331GDg8XOnrwbl2AHP/TNjTc
-         BjXg==
-X-Gm-Message-State: AOJu0YzQlHzlSBAvtpTzphoVil3KMmTfH61rIVGpX8EAh+01ZN4QZHc1
-        0ZEQPm8tpUYpy2vC7hjPFAzyeOZDs0LExQTXaBwgJw==
-X-Google-Smtp-Source: AGHT+IGxZU3U1LfWcbKdHfWM1lxrKXEeSqt4q+8IFZ/OjlVZrV6f9sqMuSasd5JRS9POfXYtL6HHXQ==
-X-Received: by 2002:a05:6402:5141:b0:523:102f:3ce1 with SMTP id n1-20020a056402514100b00523102f3ce1mr19836edd.10.1694734665585;
-        Thu, 14 Sep 2023 16:37:45 -0700 (PDT)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id t18-20020a056402021200b0052fdfd8870bsm1501337edv.89.2023.09.14.16.37.45
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1694734697; x=1695339497;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QVyuGB/xvHjbsQ6Zy6WC5UERFVDAMx/lplVOWzlB7nk=;
+        b=Dz0imdCbYzx0FiNdP3BHo/zpZmTXA/2xEB6TnQrnpDNqwBn+z6XnFGlLlBnJxgtMdj
+         QR7eeSLwMmeQggfSoXDbChl/VH39WoACZiADJcT/so4oQYSGFs5Puxm0ps82Ze3CIKBU
+         FL9i6xvgTfXcNFK7taCNi7/pPO/YaFTRDayLvXwo8BIAOcSZAgoNAKc/troz3asYaeXk
+         sjj5E+NBGn5BUaw2XfsJb8/RhIZc6ryl5KXTnSn5J9T/AsHTRIN7Kph6u0KibLjwgfzF
+         NHPjrTGyeQlzV9c86vmG1mMKINE/It3YW1xJZ5NHURW2S6a58tThJKM6txf5aJqsaBwn
+         VYkA==
+X-Gm-Message-State: AOJu0YxkdkyvpDq5BpyThNxGqW4fhKX+kJOezg9P2+/+h6S+NbzIAiaE
+        tQHwj6vnPsExF+lib7HD+Mbbzg==
+X-Google-Smtp-Source: AGHT+IEavKprO9EKeotlIDh1wQtMwXnrWhscNhhuioVis4w+5F1efm6qbgrdiJJhGjthFuyMn0czcg==
+X-Received: by 2002:a05:6a00:22d1:b0:68e:3772:4e40 with SMTP id f17-20020a056a0022d100b0068e37724e40mr135414pfj.3.1694734697224;
+        Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:79c3:9a77:bfee:9881])
+        by smtp.gmail.com with UTF8SMTPSA id n21-20020aa79055000000b0068a54866ca8sm1796533pfo.134.2023.09.14.16.38.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 16:37:45 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4047c6ec21dso895e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:37:45 -0700 (PDT)
-X-Received: by 2002:a05:600c:6027:b0:3fe:eb42:7ec with SMTP id
- az39-20020a05600c602700b003feeb4207ecmr35638wmb.1.1694734664702; Thu, 14 Sep
- 2023 16:37:44 -0700 (PDT)
+        Thu, 14 Sep 2023 16:38:16 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 16:38:13 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Pin-yen Lin <treapking@chromium.org>
+Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
+        Polaris Pi <pinkperfect2021@gmail.com>,
+        Matthew Wang <matthewmwang@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] wifi: mwifiex: Fix oob check condition in
+ mwifiex_process_rx_packet
+Message-ID: <ZQOZZZgHP2EeDNix@google.com>
+References: <20230908104308.1546501-1-treapking@chromium.org>
+ <ZQIcDWKrmgoPkwlN@google.com>
+ <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
-In-Reply-To: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 14 Sep 2023 16:37:29 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U4jmFcZRP0HoyOFbsBwahvsC8xiTkgQX6FhisVw8ubNg@mail.gmail.com>
-Message-ID: <CAD=FV=U4jmFcZRP0HoyOFbsBwahvsC8xiTkgQX6FhisVw8ubNg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits
- to a fragment
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Thu, Sep 14, 2023 at 03:09:47PM +0800, Pin-yen Lin wrote:
+> On Thu, Sep 14, 2023 at 4:31 AM Brian Norris <briannorris@chromium.org> wrote:
+> > I'd appreciate another review/test from one of the others here
+> > (Matthew?), even though I know y'all are already working together.
 
-On Wed, Aug 16, 2023 at 11:23=E2=80=AFAM Douglas Anderson <dianders@chromiu=
-m.org> wrote:
->
-> Several trogdor boards have moved from the older rt5862i to the newer
-> rt5862s, at least on newer revisions of boards. Let's get rid of the
-> dts duplication across boards and promote this to a fragment.
->
-> Note: The old boards used to override the "compatible" in the "sound"
-> node with the exact same thing that was in "sc7180-trogdor.dtsi"
-> ("google,sc7180-trogdor"). I got rid of that.
->
-> This is validated to produce the same result when taking the dtbs
-> generated by the kernel build and then doing:
->
->   for dtb in *trogdor*.dtb; do
->     dtc -I dtb -O dts $dtb -o out/$dtb.dts;
->   done
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  .../boot/dts/qcom/sc7180-trogdor-kingoftown.dts | 13 +------------
->  .../dts/qcom/sc7180-trogdor-pazquel360.dtsi     | 13 +------------
->  .../dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi    | 17 +++++++++++++++++
->  ...180-trogdor-wormdingler-rev1-boe-rt5682s.dts | 13 +------------
->  ...180-trogdor-wormdingler-rev1-inx-rt5682s.dts | 13 +------------
->  5 files changed, 21 insertions(+), 48 deletions(-)
+I'd still appreciate some comment here.
 
-If you agree, it would be a wonderful time to land this patch now.
-Please let me know if there is anything outstanding you want me to
-change.
+> > > -     if ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
+> > > -                  sizeof(bridge_tunnel_header))) ||
+> > > -         (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
+> > > -                  sizeof(rfc1042_header)) &&
+> > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_AARP &&
+> > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_IPX)) {
+> > > +     if (sizeof(*rx_pkt_hdr) + rx_pkt_off <= skb->len &&
+> >
+> > Are you sure you want this length check to fall back to the non-802.3
+> > codepath? Isn't it an error to look like an 802.3 frame but to be too
+> > small? I'd think we want to drop such packets, not process them as-is.
+> 
+> I did that because I saw other drivers (e.g., [1], [2]) use similar
+> approaches, and I assumed that the rest of the pipeline will
+> eventually drop it if the packet cannot be recognized. But, yes, we
+> can just drop the packet here if it doesn't look good.
+> 
+> [1]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c#L1035
+> [2]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireless/intel/ipw2x00/libipw_rx.c#L735
 
-NOTE: if it were me, I'd land _just_ patch #1 in this series (AKA
-${SUBJECT} patch) and skip patch #2. I don't mattery a ton either way,
-but it seemed like Konrad agreed with me that the benefits of patch #2
-were questionable and, unless someone loves it, I vote for less churn
-instead of more churn. :-P
+Hmm, I suppose. I'm frankly not sure how exactly all upper layers handle
+this, but at least in a non-raw mode, we'll drop them. (We might be
+delivering awfully weird packets to tcpdump though, but this is already
+a weird situation, if it's such a weird-looking packet.)
 
--Doug
+> > If I'm correct, then this check should move inside the 'if' branch of
+> > this if/else.
+> 
+> We can't simply move the check inside the if branch because the
+> condition also checks rx_pkt_hdr->rfc1042_hdr.snap_type. Though, of
+> course, it is doable by adding another `if` conditions.
+
+Right.
+
+I guess this is probably OK as-is:
+
+Acked-by: Brian Norris <briannorris@chromium.org>
