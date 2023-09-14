@@ -2,160 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C47B7A0724
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB827A072A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239998AbjINOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
+        id S239833AbjINOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239945AbjINOUD (ORCPT
+        with ESMTP id S233954AbjINOW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:20:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7D8DF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:19:59 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d818e01823aso1038494276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:19:59 -0700 (PDT)
+        Thu, 14 Sep 2023 10:22:26 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43368D7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:22 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d81b803b09aso160725276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694701199; x=1695305999; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OinN3M2z4I/Qg8aCda0iI1MRdyz332KlEPPYu5muKwI=;
-        b=xr88NZ3hWTH3lnvGOdBo9NgKqtBG+RfRf+Ma5OOyyYFnq+jFzL65M+V4WoaB9eRMHm
-         971zh2UCBLYdP76uV+Mq30FSgo6lprEyIAHWM6SBOSR9aKHFIc5lP5hALT7lI7DW6hc3
-         2tZv6v0YmnnxQkLA7ALzjmjCaSIA/hUFh0usopy9109tuTlYRCtAakmcXQ/bUatDDHbU
-         h5CBK2/vAkKySfz1KsqCjlBwoLMQf8sHXlk0K2SGK3ckc7R6E0h0vvWF8riWY0TWrINA
-         Zq48Rcr1pRGc9ZQz2lqK1ZZMhdG35Thg67A8WQXciGYHbeYiyMYi5tFD6yK2xNXXqIYv
-         i2IQ==
+        d=linaro.org; s=google; t=1694701341; x=1695306141; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=siGnD8mv7ZGXDqoYiiYARYvMo2BIyjZLHIMQhwKWqcc=;
+        b=S3/VHlF5AHxXvFgxZwKe3dknSP5arWJLuu001HyBnTOOV3zGRk4NfFUotMuT2HKUn5
+         nTceucGXLK9BT2iVEXVETBCcS+Yd4L3lQRIUHiAc60Bir9pJln3XgtSJFTd1nTtGgBQY
+         WgrGu5F2poTuTW2KtOtoGDK70zx8gTq666ROhq+yOM1J2QiH6egC6LgCvVOChYxgsgUz
+         zHxuhZGeIHrRx/L6z35BHhIKo7s0JHczqC2S6rNThzNUYex5PI2Qw5KzTWmwedZr8AEZ
+         k1eQsHd7yeDyIS2wOZIyHJNakb0s6L6XVqtAuvNRPgICN86Wh3x+HA8rU2a2AVYqAvDc
+         EHjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694701199; x=1695305999;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OinN3M2z4I/Qg8aCda0iI1MRdyz332KlEPPYu5muKwI=;
-        b=HWktG6OD7kHYnaxm2/2cnpUZUvRg7UMqAsevM64LMxy17VY8ET8WFfsiM5nVC6ABfm
-         8oALACHgKhfU31aCBKSWxZu27WfTlC3xQMGaCbq0JI71BDhZN4yI1wJOAfKr2OoV5DEJ
-         Z7iz0JC7SO0GhEqFp1QISyawAH+8/5nwKbYSw2Dg1to82h1CXtqKt9AB2W3IFhQYxe4r
-         zVqtVOXvxvWrcEeWSjhAkblpKvhXGA0ccf8tJAB4JeZW999EJ8+z5rGghyAmlWEi10dL
-         Ta0KpU4UyiY8vZMhSEfNsV0Qg3r3Mwg7PB2mqa4F7e/zgEqO315jA0CiA1FiorQuH3L9
-         3W3g==
-X-Gm-Message-State: AOJu0YwUPT57hNm0AQo8MaB52YXMqmAKkWTh/RV9yoFu+Eqym1ca1Pd8
-        JZoMLeQSctxIBvz1gsTQtoijJWqPby0=
-X-Google-Smtp-Source: AGHT+IEn69IOl2rxglDVCjXW4KTdScyqCw6tLi48MQpyb+nW1MjRKbjq1lfqPgEextp+IedkDxkiKrdOCXU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:e6c4:0:b0:d78:f45:d7bd with SMTP id
- d187-20020a25e6c4000000b00d780f45d7bdmr129688ybh.4.1694701199053; Thu, 14 Sep
- 2023 07:19:59 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 07:19:57 -0700
-In-Reply-To: <54d3e6bf-d374-caa5-0920-bb2fe3b7595c@linux.intel.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-3-seanjc@google.com>
- <54d3e6bf-d374-caa5-0920-bb2fe3b7595c@linux.intel.com>
-Message-ID: <ZQMWjbt/SzKvag2K@google.com>
-Subject: Re: [RFC PATCH v12 02/33] KVM: Use gfn instead of hva for mmu_notifier_retry
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1694701341; x=1695306141;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=siGnD8mv7ZGXDqoYiiYARYvMo2BIyjZLHIMQhwKWqcc=;
+        b=dEtJu+kRVreEm3EO8tZi6cy4wpIRCi6ngIYfVgBfPdoVAE0XTOOVOnwxEkQm9AzCDC
+         bhAEXbHEuBtpyQj40R7Vkb0NspttmWgifnb67QjxPiZ1cSENQNDUfDpAVbYVsdAu7TmF
+         AKaKcFVJbaVWveWSc6LG2tGG/5uOznqAe4j4SQZfK4PO5fWAgb3Bmry4APM12pADroms
+         MYKBj42fruxWo/meY3p+Dv/MYCvFVX6NtOP6bGteXhTMa8agsIZXRgXpShfbv+1O1BKd
+         X+ipUK6yy31sVCorTZU0cpZyf0qINkcV4LI2W1q0td4wAFp48j6E5zfSOv7q+kFTP15g
+         K3Iw==
+X-Gm-Message-State: AOJu0YwiO2HpiirrDQw0tp2f/kW7I19Eg8SIOTR65+pXxO8qeNAAok7v
+        K1rSK8Z9ETgKQySVGoj/rLbTLHWy1VYbN7Kahgg8VA==
+X-Google-Smtp-Source: AGHT+IHFAuCP2uoju7CksC5vowKm4+oiBG/gIKeINeuHZ1dgl5os9uYw2gNvRW4Ksk+sIbkGzJA8617U5zKwvSPW0vY=
+X-Received: by 2002:a05:6902:705:b0:d71:6b6e:1071 with SMTP id
+ k5-20020a056902070500b00d716b6e1071mr7252852ybt.32.1694701341482; Thu, 14 Sep
+ 2023 07:22:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230911153246.137148-1-aubin.constans@microchip.com> <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
+In-Reply-To: <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 14 Sep 2023 16:21:45 +0200
+Message-ID: <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
+ MICROCHIP DRIVERS
+To:     aubin.constans@microchip.com, Ludovic.Desroches@microchip.com
+Cc:     adrian.hunter@intel.com, eugen.hristev@collabora.com,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com,
+        Hari.PrasathGE@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023, Binbin Wu wrote:
-> 
-> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
-> > +void kvm_mmu_invalidate_end(struct kvm *kvm)
-> >   {
-> >   	/*
-> >   	 * This sequence increase will notify the kvm page fault that
-> > @@ -833,6 +848,13 @@ void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
-> >   	 * in conjunction with the smp_rmb in mmu_invalidate_retry().
-> >   	 */
-> >   	kvm->mmu_invalidate_in_progress--;
-> > +
-> > +	/*
-> > +	 * Assert that at least one range must be added between start() and
-> > +	 * end().  Not adding a range isn't fatal, but it is a KVM bug.
-> > +	 */
-> > +	WARN_ON_ONCE(kvm->mmu_invalidate_in_progress &&
-> > +		     kvm->mmu_invalidate_range_start == INVALID_GPA);
-> Should the check happen before the decrease of kvm->mmu_invalidate_in_progress?
-> Otherwise, KVM calls kvm_mmu_invalidate_begin(), then kvm_mmu_invalidate_end()
-> the check will not take effect.
+On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
+>
+> On 9/11/23 17:32, Aubin Constans wrote:
+> > On the one hand Eugen has taken responsibilities outside Microchip,
+> > on the other hand I have some experience with the Microchip SDMMC
+> > SDHCI controller.
+> > Change Eugen as reviewer and take over maintainership of the SDHCI
+> > MICROCHIP DRIVER.
+> > Also, take over maintainership of its predecessor, that is the MCI
+> > MICROCHIP DRIVER.
+> >
+> > Cc: Eugen Hristev <eugen.hristev@collabora.com>
+> > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
+>
+> For atmel-mci:
+> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 
-Indeed.  I'm pretty sure I added this code, not sure what I was thinking.  There's
-no reason to check mmu_invalidate_in_progress, it's not like KVM allows
-mmu_invalidate_in_progress to go negative.  The comment is also a bit funky.  I'll
-post a fixup patch to make it look like this (assuming I'm not forgetting a subtle
-reason for guarding the check with the in-progress flag):
+Sounds like the patch could be split up, as there is an agreement on
+the atmel-mci part.
 
-	/*
-	 * Assert that at least one range was added between start() and end().
-	 * Not adding a range isn't fatal, but it is a KVM bug.
-	 */
-	WARN_ON_ONCE(kvm->mmu_invalidate_range_start == INVALID_GPA);
+Aubin, can you make a separate patch for the atmel-mci part and add
+Ludovic's ack to it?
 
-Regarding kvm->mmu_invalidate_in_progress, this would be a good opportunity to
-move the BUG_ON() into the common end(), e.g. as is, an end() without a start()
-from something other than the generic mmu_notifier would go unnoticed.  And I
-_think_ we can replace the BUG_ON() with a KVM_BUG_ON() without putting the
-kernel at risk.  E.g.
+In regards to the sdhci driver, I suggest you just add yourself as a
+maintainer too, along with Eugen.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index dd948276e5d6..54480655bcce 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -870,6 +870,7 @@ void kvm_mmu_invalidate_end(struct kvm *kvm)
-         * in conjunction with the smp_rmb in mmu_invalidate_retry().
-         */
-        kvm->mmu_invalidate_in_progress--;
-+       KVM_BUG_ON(kvm->mmu_invalidate_in_progress < 0, kvm);
- 
-        /*
-         * Assert that at least one range was added between start() and end().
-@@ -905,8 +906,6 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
-         */
-        if (wake)
-                rcuwait_wake_up(&kvm->mn_memslots_update_rcuwait);
--
--       BUG_ON(kvm->mmu_invalidate_in_progress < 0);
- }
- 
- static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+Kind regards
+Uffe
 
+>
+> > ---
+> >   MAINTAINERS | 5 +++--
+> >   1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 2833e2da63e0..52beaf4f7fbb 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14022,7 +14022,7 @@ F:    Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+> >   F:  drivers/iio/adc/mcp3911.c
+> >
+> >   MICROCHIP MMC/SD/SDIO MCI DRIVER
+> > -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
+> > +M:   Aubin Constans <aubin.constans@microchip.com>
+> >   S:  Maintained
+> >   F:  drivers/mmc/host/atmel-mci.c
+> >
+> > @@ -19235,7 +19235,8 @@ F:    Documentation/devicetree/bindings/mmc/sdhci-common.yaml
+> >   F:  drivers/mmc/host/sdhci*
+> >
+> >   SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
+> > -M:   Eugen Hristev <eugen.hristev@microchip.com>
+> > +M:   Aubin Constans <aubin.constans@microchip.com>
+> > +R:   Eugen Hristev <eugen.hristev@collabora.com>
+> >   L:  linux-mmc@vger.kernel.org
+> >   S:  Supported
+> >   F:  drivers/mmc/host/sdhci-of-at91.c
+>
