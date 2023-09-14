@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06B7A0297
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFFB7A029B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237644AbjINL1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        id S237868AbjINL1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbjINL1J (ORCPT
+        with ESMTP id S236561AbjINL1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:27:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BDCE3;
-        Thu, 14 Sep 2023 04:27:05 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 11:27:03 -0000
+        Thu, 14 Sep 2023 07:27:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B158FE3;
+        Thu, 14 Sep 2023 04:27:06 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 11:27:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694690823;
+        s=2020; t=1694690825;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kf6VRRqhWvA8boUZqcpc/MRGoYGxVjM8NNnYnSRa7uE=;
-        b=CFGjwNmpuAEgdme0vO3/8C5kjhVlOdBwx1SCCv3WN9GXKSRctzUa87ktHzkq2LnzkzBUqp
-        RaEnxkzgT3zLzCstadjbBb/7YSq0M5fCpyxPyV0GBcnM1lMRkS5hfovlzyLrFuprA7Jtw8
-        xjEFw9KxtUwMt835UcKDwb21OAdY5hzweNlh0KJcN8OPqoOK2d3QmB4UvRsjQtOBN3zQ3u
-        pm0ux8mUBaViQa1AiyiZIZuPDQzTOjNEmy3henLYyRtUetnQcxcXQwnIGSsFiXCv222aeK
-        6QOz19yia53lQLEnophDST1AZdqhLhagsvAuTv1wYGzcYsn0zbGl+m+KYvfPzQ==
+        bh=8HdXGUSJKQbHfnEXB2jRQSQa/65gSLcEGBjb3RqZL44=;
+        b=1LQNxdTUjWiGLgXQlkJET2MljmbHWE2l+akz8PrlfepF7/AFpIhjxUM79f8GyTw9TLxCYt
+        fBVNnOMgm3o3TO+7fWULi76C6BhihZ4pJFT7gEXiDviraxm0cUBB22JmLM7TwR61WFWkEn
+        Y39fwBnH/JyKU1uBA5gOF1CA56ndP4QQydVmB1IuZT+ZgMhs4kwQ3nHr55Rt4QDGsV3gWi
+        zGvBIB73QsQ81clCDqpRZuU6wjiTEaBNk9IPVNWQODMs7AwMsEY23eKveemOgbxu31d37h
+        g6VpdaKJKANwyyvW6cLdSUFhr3JKYkfH1HNnTE4Y0h9EfwUtMvr4YWz8vq/KFw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694690823;
+        s=2020e; t=1694690825;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kf6VRRqhWvA8boUZqcpc/MRGoYGxVjM8NNnYnSRa7uE=;
-        b=0eR8CZANFYxxd4f1bwmyTDhWKgt7CqauMWpMQBgiO/tpvNHiTxqgfY0Z019FUkyUTd4rQk
-        Xuf6jDCnc1h/aBBA==
+        bh=8HdXGUSJKQbHfnEXB2jRQSQa/65gSLcEGBjb3RqZL44=;
+        b=lgtKJaclaFfIvSNdckQgY2lL9LItv259m5pg+Hl4jZnVgm+gIiADyLvPOwSgbiYyp3RZFk
+        C75nuh/7EnARaWAQ==
 From:   "tip-bot2 for Nikolay Borisov" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/elf: Make loading of 32bit processes depend on
- ia32_enabled()
+Subject: [tip: x86/entry] x86: Introduce ia32_enabled()
 Cc:     Nikolay Borisov <nik.borisov@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230623111409.3047467-5-nik.borisov@suse.com>
-References: <20230623111409.3047467-5-nik.borisov@suse.com>
+In-Reply-To: <20230623111409.3047467-2-nik.borisov@suse.com>
+References: <20230623111409.3047467-2-nik.borisov@suse.com>
 MIME-Version: 1.0
-Message-ID: <169469082322.27769.6028739507798340170.tip-bot2@tip-bot2>
+Message-ID: <169469082483.27769.779107571531413575.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,47 +61,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     5ae2702d7c482edbf002499e23a2e22ac4047af1
-Gitweb:        https://git.kernel.org/tip/5ae2702d7c482edbf002499e23a2e22ac4047af1
+Commit-ID:     1da5c9bc119d3a749b519596b93f9b2667e93c4a
+Gitweb:        https://git.kernel.org/tip/1da5c9bc119d3a749b519596b93f9b2667e93c4a
 Author:        Nikolay Borisov <nik.borisov@suse.com>
-AuthorDate:    Fri, 23 Jun 2023 14:14:07 +03:00
+AuthorDate:    Fri, 23 Jun 2023 14:14:04 +03:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 14 Sep 2023 13:19:53 +02:00
 
-x86/elf: Make loading of 32bit processes depend on ia32_enabled()
+x86: Introduce ia32_enabled()
 
-Major aspect of ia32 emulation is the ability to load 32bit processes.
-That's currently decided (among others) by compat_elf_check_arch().
+IA32 support on 64bit kernels depends on whether CONFIG_IA32_EMULATION
+is selected or not. As it is a compile time option it doesn't
+provide the flexibility to have distributions set their own policy for
+IA32 support and give the user the flexibility to override it.
 
-Make the macro use ia32_enabled() to decide if IA32 compat is
-enabled before loading a 32bit process.
+As a first step introduce ia32_enabled() which abstracts whether IA32
+compat is turned on or off. Upcoming patches will implement
+the ability to set IA32 compat state at boot time.
 
 Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20230623111409.3047467-5-nik.borisov@suse.com
+Link: https://lore.kernel.org/r/20230623111409.3047467-2-nik.borisov@suse.com
 
 ---
- arch/x86/include/asm/elf.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/entry/common.c     |  4 ++++
+ arch/x86/include/asm/ia32.h | 16 +++++++++++++++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 18fd06f..a0234df 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -7,6 +7,7 @@
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 6c28264..cfbd3ae 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -96,6 +96,10 @@ static __always_inline int syscall_32_enter(struct pt_regs *regs)
+ 	return (int)regs->orig_ax;
+ }
+ 
++#ifdef CONFIG_IA32_EMULATION
++bool __ia32_enabled __ro_after_init = true;
++#endif
++
+ /*
+  * Invoke a 32-bit syscall.  Called with IRQs on in CONTEXT_KERNEL.
   */
- #include <linux/thread_info.h>
+diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
+index fada857..5a2ae24 100644
+--- a/arch/x86/include/asm/ia32.h
++++ b/arch/x86/include/asm/ia32.h
+@@ -68,6 +68,20 @@ extern void ia32_pick_mmap_layout(struct mm_struct *mm);
  
-+#include <asm/ia32.h>
- #include <asm/ptrace.h>
- #include <asm/user.h>
- #include <asm/auxvec.h>
-@@ -149,7 +150,7 @@ do {						\
- 	((x)->e_machine == EM_X86_64)
+ #endif
  
- #define compat_elf_check_arch(x)					\
--	(elf_check_arch_ia32(x) ||					\
-+	((elf_check_arch_ia32(x) && ia32_enabled()) ||			\
- 	 (IS_ENABLED(CONFIG_X86_X32_ABI) && (x)->e_machine == EM_X86_64))
+-#endif /* CONFIG_IA32_EMULATION */
++extern bool __ia32_enabled;
++
++static inline bool ia32_enabled(void)
++{
++	return __ia32_enabled;
++}
++
++#else /* !CONFIG_IA32_EMULATION */
++
++static inline bool ia32_enabled(void)
++{
++	return IS_ENABLED(CONFIG_X86_32);
++}
++
++#endif
  
- static inline void elf_common_init(struct thread_struct *t,
+ #endif /* _ASM_X86_IA32_H */
