@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5781E7A0B1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584087A0B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbjINQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S237340AbjINRB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbjINQ6l (ORCPT
+        with ESMTP id S230502AbjINRBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:58:41 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270858E;
-        Thu, 14 Sep 2023 09:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OegaqNYe7r/8g+jxupTPdfeZq9KJj2OTDDvHBPIaVRM=; b=RaDan93BbmgqvP/klzEFdds2eX
-        b7IkvPoHF6e1c3Qwa5SEuXQNKpqse3rk12yT18ICKdfI7a3VckJMEILdWLlbPuVYu2ikn++I4wXvt
-        w+i7SX8a1a6dW7cMTedrWSnk40HFt49t9T/tHHEsDSZTulc9VAD6mfnRu95MdKXU6o+4gx8ccOYCl
-        tzR3nVCHyShKKJCvDGpl2tGT/4EnlVLt+glK08TUPmS5nCJyZcU67evdh1flfJb6C4+28BCONKdlH
-        o2QcR8W9m9qZ3e3/lEoYnSGID6WJVx2XavJ6wJ2qDN3BMDjs3iQqHL/hIjEVtRJN3bEfYNC532EZP
-        98mkJSUw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgpfJ-0064a2-0E;
-        Thu, 14 Sep 2023 16:58:05 +0000
-Date:   Thu, 14 Sep 2023 17:58:05 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230914165805.GJ800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
- <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
+        Thu, 14 Sep 2023 13:01:25 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C0A1BD4;
+        Thu, 14 Sep 2023 10:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694710881; x=1726246881;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=yov59rydmM1ThqfKefv5Dcrw5UeV0DPLP7DnyRwF+AA=;
+  b=bIJ9/uWSF5CzdbU2YdRi/LZcGPL7akeKRyw+P/Rqfazu7BVYv3PwKlUG
+   ek15nV4OXUSUxlb49dTDB4Is0VN3bOv2Wzqb0Wu/Lg5MM15l+2yf0j2Zi
+   PqwVgGvmWHdcp7FmEksMbkqatvfNR+Oz+8+/CTck4QHkIvEUughiD1IAa
+   3YnmjMnBQKDBQvYPte2MEEFYONfh2+p2uHW/phIH+03BkD9wANzmZ/Kuv
+   8X99VnfVeQbyILKaioYF9YTWYr7EOXKMwhWpq2Fdj1rh1lo9sRAgwSm3w
+   /OpzoIMG6aEyIZYaVaABpk9l2mE+OZQLW+8viGe+pzBsc6UzcUC5ha86S
+   Q==;
+X-CSE-ConnectionGUID: JQlUMCvpQce13Qxt80qbKA==
+X-CSE-MsgGUID: KsoXbAzCR/OtOpU1VYmw5w==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="171694120"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 10:01:19 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 14 Sep 2023 10:01:19 -0700
+Received: from [10.171.246.25] (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Thu, 14 Sep 2023 10:01:16 -0700
+Message-ID: <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
+Date:   Thu, 14 Sep 2023 19:01:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
+ MICROCHIP DRIVERS
+Content-Language: en-US, fr-FR
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        <eugen.hristev@collabora.com>, <aubin.constans@microchip.com>,
+        <Ludovic.Desroches@microchip.com>
+CC:     <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Hari.PrasathGE@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>
+References: <20230911153246.137148-1-aubin.constans@microchip.com>
+ <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
+ <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 04:02:25PM +0200, Christian Brauner wrote:
-
-> Yes, you're right that making the superblock and not the filesytem type
-> the bd_holder changes the logic and we are aware of that of course. And
-> it requires changes such as moving additional block device closing from
-> where some callers currently do it.
-
-Details, please?
-
-> But the filesytem type is not a very useful holder itself and has other
-> drawbacks. The obvious one being that it requires us to wade through all
-> superblocks on the system trying to find the superblock associated with
-> a given block device continously grabbing and dropping sb_lock and
-> s_umount. None of that is very pleasant nor elegant and it is for sure
-> not very easy to understand (Plus, it's broken for btrfs freezing and
-> syncing via block level ioctls.).
-
-"Constantly" is a bit of a stretch - IIRC, we grabbed sb_lock once, then
-went through the list comparing ->s_bdev (without any extra locking),
-then bumped ->s_count on the found superblock, dropped sb_lock,
-grabbed ->s_umount on the sucker and verified it's still alive.
-
-Repeated grabbing of any lock happened only on a race with fs shutdown;
-normal case is one spin_lock, one spin_unlock, one down_read().
-
-Oh, well...
-
-> Using the superblock as holder makes this go away and is overall a lot
-> more useful and intuitive and can be extended to filesystems with
-> multiple devices (Of which we apparently are bound to get more.).
->
-> So I think this change is worth the pain.
+On 14/09/2023 at 16:21, Ulf Hansson wrote:
+> On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
+>>
+>> On 9/11/23 17:32, Aubin Constans wrote:
+>>> On the one hand Eugen has taken responsibilities outside Microchip,
+>>> on the other hand I have some experience with the Microchip SDMMC
+>>> SDHCI controller.
+>>> Change Eugen as reviewer and take over maintainership of the SDHCI
+>>> MICROCHIP DRIVER.
+>>> Also, take over maintainership of its predecessor, that is the MCI
+>>> MICROCHIP DRIVER.
+>>>
+>>> Cc: Eugen Hristev <eugen.hristev@collabora.com>
+>>> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+>>> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
+>>
+>> For atmel-mci:
+>> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 > 
-> It's a fair point that these lifetime rules should be documented in
-> Documentation/filesystems/. The old lifetime documentation is too sparse
-> to be useful though.
+> Sounds like the patch could be split up, as there is an agreement on
+> the atmel-mci part.
+> 
+> Aubin, can you make a separate patch for the atmel-mci part and add
+> Ludovic's ack to it?
+> 
+> In regards to the sdhci driver, I suggest you just add yourself as a
+> maintainer too, along with Eugen.
 
-What *are* these lifetime rules?  Seriously, you have 3 chunks of
-fs-dependent actions at the moment:
-	* the things needed to get rid of internal references pinning
-inodes/dentries + whatever else we need done before generic_shutdown_super()
-	* the stuff to be done between generic_shutdown_super() and
-making the sucker invisible to sget()/sget_fc()
-	* the stuff that must be done after we are sure that sget
-callbacks won't be looking at this instance.
+For adding more background to this patch, in fact it was created in 
+coordination with Eugen. We can wait a bit for him to catch-up with 
+emails, no hurry there as Aubin won't have access to emails for a few 
+days anyway.
 
-Note that Christoph's series has mashed (2) and (3) together, resulting
-in UAF in a bunch of places.  And I'm dead serious about
-Documentation/filesystems/porting being the right place; any development
-tree of any filesystem (in-tree one or not) will have to go through the
-changes and figure out WTF to do with their existing code.  We are
-going to play whack-a-mole for at least several years as development
-branches get rebased and merged.
+If it has an interest you can add my:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+But definitively, no problem to delay this change.
 
-Incidentally, I'm going to add a (belated by 10 years) chunk in porting.rst
-re making sure that anything in superblock that might be needed by methods
-called in RCU mode should *not* be freed without an RCU delay...  Should've
-done that back in 3.12 merge window when RCU'd vfsmounts went in; as it
-is, today we have several filesystems with exact same kind of breakage.
-hfsplus and affs breakage had been there in 3.13 (missed those two), exfat
-and ntfs3 - introduced later, by initial merges of filesystems in question.
-Missed on review...
+Thanks for your understanding. Best regards,
+   Nicolas
 
-Hell knows - perhaps Documentation/filesystems/whack-a-mole might be a good
-idea...
+>>> ---
+>>>    MAINTAINERS | 5 +++--
+>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 2833e2da63e0..52beaf4f7fbb 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -14022,7 +14022,7 @@ F:    Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+>>>    F:  drivers/iio/adc/mcp3911.c
+>>>
+>>>    MICROCHIP MMC/SD/SDIO MCI DRIVER
+>>> -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
+>>> +M:   Aubin Constans <aubin.constans@microchip.com>
+>>>    S:  Maintained
+>>>    F:  drivers/mmc/host/atmel-mci.c
+>>>
+>>> @@ -19235,7 +19235,8 @@ F:    Documentation/devicetree/bindings/mmc/sdhci-common.yaml
+>>>    F:  drivers/mmc/host/sdhci*
+>>>
+>>>    SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
+>>> -M:   Eugen Hristev <eugen.hristev@microchip.com>
+>>> +M:   Aubin Constans <aubin.constans@microchip.com>
+>>> +R:   Eugen Hristev <eugen.hristev@collabora.com>
+>>>    L:  linux-mmc@vger.kernel.org
+>>>    S:  Supported
+>>>    F:  drivers/mmc/host/sdhci-of-at91.c
+>>
+
