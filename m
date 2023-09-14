@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBA479F78E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6685779F78F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbjINCIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        id S234462AbjINCIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbjINCHn (ORCPT
+        with ESMTP id S233858AbjINCIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:07:43 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0233A1FE2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:03:29 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1694656943t2war4ew
+        Wed, 13 Sep 2023 22:08:18 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCDD2D76
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:04:34 -0700 (PDT)
+X-QQ-mid: bizesmtp66t1694657009t7proppp
 Received: from localhost.localdomain ( [221.226.144.218])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 14 Sep 2023 10:02:20 +0800 (CST)
+        id ; Thu, 14 Sep 2023 10:03:26 +0800 (CST)
 X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: sZx41+LhwKMN4X+ckNyWsqr3pmmHR1EyEypd5C1FeimxA3NO+3Iq9GAJBdluY
-        8lltAcMhNUqolpBYj+4+aDyU7mTxymZ+ZMBDxSe81QwZdmF6j63o68CAgd3aVrUoNKkopMR
-        hq2S51D0TV3Crl3pASg4cl0kGHlUrgD4ypF9D1TUk+9pJ6ggeVRLls+tMNEleCe+jguhUHo
-        CQEs9up/vNjTVEABvAqChWHa3iT5dFmpetmLntMHqxhVJ9AhfIyurpYMJ30tTWmWTu3q29V
-        RllRhBy7I7R18L4NXEfjIdPwKsoDocsoqdouZ4Q3dpHrxUD1bmt5Niqwb1FSMF9FQtYINl1
-        GCd3BpvlhCcG+vr+vDXbAZO6qqCW1VAANgZ+hwTzC8bp9O7iA7wMSL0qiO3mg==
+X-QQ-FEAT: JaBgqeDEvbUHWJAjg96BHZRrDBfTtM+Q5gAR3+eQHlcQOirxbSNE8O46Lm6d/
+        b8wBWaBnBiRA2XaIz7s3qFvCgDunQM2IfEK+mNkY+3SQNsAB1ppYibkiRvlaJDig9P2fEXs
+        YK7LIobQfSJoxz8cMwgwxOh6lQwikTy2qQh4z9eEgchUMv/yg4g0oalfMAZXRd/7aoPJeL2
+        lQQx4biBBKOObg/v5RikVBwYHlD8Y09fwCBN71RIcK8uN+a8m3aleyIeNTnE7YkEOeX5b9y
+        TZpRa23dxLyW+WSQI9X2bVc2Sk7A/ss7rnTPrGLWEz4vSL/+7jKUKBRjGhQ+GyvsK2/uGCC
+        FAF63lHFbG0pFJtA1q8Nc/WAwCzCg8d4uoB+/proTAt3EmYzVDQ75aTwoun8A==
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 11972096091068691395
+X-BIZMAIL-ID: 806983590891785498
 From:   Song Shuai <songshuaishuai@tinylab.org>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, lihuafei1@huawei.com,
@@ -39,9 +39,9 @@ To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         duwe@suse.de, eric.devolder@oracle.com
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         Song Shuai <songshuaishuai@tinylab.org>
-Subject: [PATCH 1/2] riscv: kexec_file: Split the loading of kernel and others
-Date:   Thu, 14 Sep 2023 10:00:43 +0800
-Message-Id: <20230914020044.1397356-2-songshuaishuai@tinylab.org>
+Subject: [PATCH 2/2] riscv: kexec_file: Support loading Image binary file
+Date:   Thu, 14 Sep 2023 10:00:44 +0800
+Message-Id: <20230914020044.1397356-3-songshuaishuai@tinylab.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230914020044.1397356-1-songshuaishuai@tinylab.org>
 References: <20230914020044.1397356-1-songshuaishuai@tinylab.org>
@@ -53,701 +53,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the preparative patch for kexec_file_load Image support.
-
-It separates the elf_kexec_load() as two parts:
-- the first part loads the vmlinux (or Image)
-- the second part loads other segments (e.g. initrd,fdt,purgatory)
-
-And the second part is exported as the load_extra_segments() function
-which would be used in both kexec-elf.c and kexec-image.c.
+This patch creates image_kexec_ops to load Image binary file
+for kexec_file_load() syscall.
 
 Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
 ---
- arch/riscv/include/asm/kexec.h         |   5 +
- arch/riscv/kernel/Makefile             |   2 +-
- arch/riscv/kernel/elf_kexec.c          | 469 -------------------------
- arch/riscv/kernel/kexec_elf.c          | 147 ++++++++
- arch/riscv/kernel/machine_kexec_file.c |   7 +
- 5 files changed, 160 insertions(+), 470 deletions(-)
- delete mode 100644 arch/riscv/kernel/elf_kexec.c
- create mode 100644 arch/riscv/kernel/kexec_elf.c
+ arch/riscv/include/asm/image.h         |  2 +
+ arch/riscv/include/asm/kexec.h         |  1 +
+ arch/riscv/kernel/Makefile             |  2 +-
+ arch/riscv/kernel/kexec_image.c        | 97 ++++++++++++++++++++++++++
+ arch/riscv/kernel/machine_kexec_file.c |  1 +
+ 5 files changed, 102 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/kernel/kexec_image.c
 
+diff --git a/arch/riscv/include/asm/image.h b/arch/riscv/include/asm/image.h
+index e0b319af3681..8927a6ea1127 100644
+--- a/arch/riscv/include/asm/image.h
++++ b/arch/riscv/include/asm/image.h
+@@ -30,6 +30,8 @@
+ 			      RISCV_HEADER_VERSION_MINOR)
+ 
+ #ifndef __ASSEMBLY__
++#define riscv_image_flag_field(flags, field)\
++			       (((flags) >> field##_SHIFT) & field##_MASK)
+ /**
+  * struct riscv_image_header - riscv kernel image header
+  * @code0:		Executable code
 diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
-index 2b56769cb530..518825fe4160 100644
+index 518825fe4160..b9ee8346cc8c 100644
 --- a/arch/riscv/include/asm/kexec.h
 +++ b/arch/riscv/include/asm/kexec.h
-@@ -67,6 +67,11 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
- struct kimage;
- int arch_kimage_file_post_load_cleanup(struct kimage *image);
- #define arch_kimage_file_post_load_cleanup arch_kimage_file_post_load_cleanup
-+
-+int load_extra_segments(struct kimage *image, unsigned long kernel_start,
-+			unsigned long kernel_len, char *initrd,
-+			unsigned long initrd_len, char *cmdline,
-+			unsigned long cmdline_len);
- #endif
+@@ -56,6 +56,7 @@ extern riscv_kexec_method riscv_kexec_norelocate;
  
- #endif
+ #ifdef CONFIG_KEXEC_FILE
+ extern const struct kexec_file_ops elf_kexec_ops;
++extern const struct kexec_file_ops image_kexec_ops;
+ 
+ struct purgatory_info;
+ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
 diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 95cf25d48405..1c62c639e875 100644
+index 1c62c639e875..9ecba3231a36 100644
 --- a/arch/riscv/kernel/Makefile
 +++ b/arch/riscv/kernel/Makefile
 @@ -86,7 +86,7 @@ endif
  obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
  obj-$(CONFIG_KGDB)		+= kgdb.o
  obj-$(CONFIG_KEXEC_CORE)	+= kexec_relocate.o crash_save_regs.o machine_kexec.o
--obj-$(CONFIG_KEXEC_FILE)	+= elf_kexec.o machine_kexec_file.o
-+obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o machine_kexec_file.o
+-obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o machine_kexec_file.o
++obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o kexec_image.o machine_kexec_file.o
  obj-$(CONFIG_CRASH_DUMP)	+= crash_dump.o
  obj-$(CONFIG_CRASH_CORE)	+= crash_core.o
  
-diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-deleted file mode 100644
-index e60fbd8660c4..000000000000
---- a/arch/riscv/kernel/elf_kexec.c
-+++ /dev/null
-@@ -1,469 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Load ELF vmlinux file for the kexec_file_load syscall.
-- *
-- * Copyright (C) 2021 Huawei Technologies Co, Ltd.
-- *
-- * Author: Liao Chang (liaochang1@huawei.com)
-- *
-- * Based on kexec-tools' kexec-elf-riscv.c, heavily modified
-- * for kernel.
-- */
--
--#define pr_fmt(fmt)	"kexec_image: " fmt
--
--#include <linux/elf.h>
--#include <linux/kexec.h>
--#include <linux/slab.h>
--#include <linux/of.h>
--#include <linux/libfdt.h>
--#include <linux/types.h>
--#include <linux/memblock.h>
--#include <asm/setup.h>
--
--int arch_kimage_file_post_load_cleanup(struct kimage *image)
--{
--	kvfree(image->arch.fdt);
--	image->arch.fdt = NULL;
--
--	vfree(image->elf_headers);
--	image->elf_headers = NULL;
--	image->elf_headers_sz = 0;
--
--	return kexec_image_post_load_cleanup_default(image);
--}
--
--static int riscv_kexec_elf_load(struct kimage *image, struct elfhdr *ehdr,
--				struct kexec_elf_info *elf_info, unsigned long old_pbase,
--				unsigned long new_pbase)
--{
--	int i;
--	int ret = 0;
--	size_t size;
--	struct kexec_buf kbuf;
--	const struct elf_phdr *phdr;
--
--	kbuf.image = image;
--
--	for (i = 0; i < ehdr->e_phnum; i++) {
--		phdr = &elf_info->proghdrs[i];
--		if (phdr->p_type != PT_LOAD)
--			continue;
--
--		size = phdr->p_filesz;
--		if (size > phdr->p_memsz)
--			size = phdr->p_memsz;
--
--		kbuf.buffer = (void *) elf_info->buffer + phdr->p_offset;
--		kbuf.bufsz = size;
--		kbuf.buf_align = phdr->p_align;
--		kbuf.mem = phdr->p_paddr - old_pbase + new_pbase;
--		kbuf.memsz = phdr->p_memsz;
--		kbuf.top_down = false;
--		ret = kexec_add_buffer(&kbuf);
--		if (ret)
--			break;
--	}
--
--	return ret;
--}
--
--/*
-- * Go through the available phsyical memory regions and find one that hold
-- * an image of the specified size.
-- */
--static int elf_find_pbase(struct kimage *image, unsigned long kernel_len,
--			  struct elfhdr *ehdr, struct kexec_elf_info *elf_info,
--			  unsigned long *old_pbase, unsigned long *new_pbase)
--{
--	int i;
--	int ret;
--	struct kexec_buf kbuf;
--	const struct elf_phdr *phdr;
--	unsigned long lowest_paddr = ULONG_MAX;
--	unsigned long lowest_vaddr = ULONG_MAX;
--
--	for (i = 0; i < ehdr->e_phnum; i++) {
--		phdr = &elf_info->proghdrs[i];
--		if (phdr->p_type != PT_LOAD)
--			continue;
--
--		if (lowest_paddr > phdr->p_paddr)
--			lowest_paddr = phdr->p_paddr;
--
--		if (lowest_vaddr > phdr->p_vaddr)
--			lowest_vaddr = phdr->p_vaddr;
--	}
--
--	kbuf.image = image;
--	kbuf.buf_min = lowest_paddr;
--	kbuf.buf_max = ULONG_MAX;
--
--	/*
--	 * Current riscv boot protocol requires 2MB alignment for
--	 * RV64 and 4MB alignment for RV32
--	 *
--	 */
--	kbuf.buf_align = PMD_SIZE;
--	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
--	kbuf.memsz = ALIGN(kernel_len, PAGE_SIZE);
--	kbuf.top_down = false;
--	ret = arch_kexec_locate_mem_hole(&kbuf);
--	if (!ret) {
--		*old_pbase = lowest_paddr;
--		*new_pbase = kbuf.mem;
--		image->start = ehdr->e_entry - lowest_vaddr + kbuf.mem;
--	}
--	return ret;
--}
--
--static int get_nr_ram_ranges_callback(struct resource *res, void *arg)
--{
--	unsigned int *nr_ranges = arg;
--
--	(*nr_ranges)++;
--	return 0;
--}
--
--static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
--{
--	struct crash_mem *cmem = arg;
--
--	cmem->ranges[cmem->nr_ranges].start = res->start;
--	cmem->ranges[cmem->nr_ranges].end = res->end;
--	cmem->nr_ranges++;
--
--	return 0;
--}
--
--static int prepare_elf_headers(void **addr, unsigned long *sz)
--{
--	struct crash_mem *cmem;
--	unsigned int nr_ranges;
--	int ret;
--
--	nr_ranges = 1; /* For exclusion of crashkernel region */
--	walk_system_ram_res(0, -1, &nr_ranges, get_nr_ram_ranges_callback);
--
--	cmem = kmalloc(struct_size(cmem, ranges, nr_ranges), GFP_KERNEL);
--	if (!cmem)
--		return -ENOMEM;
--
--	cmem->max_nr_ranges = nr_ranges;
--	cmem->nr_ranges = 0;
--	ret = walk_system_ram_res(0, -1, cmem, prepare_elf64_ram_headers_callback);
--	if (ret)
--		goto out;
--
--	/* Exclude crashkernel region */
--	ret = crash_exclude_mem_range(cmem, crashk_res.start, crashk_res.end);
--	if (!ret)
--		ret = crash_prepare_elf64_headers(cmem, true, addr, sz);
--
--out:
--	kfree(cmem);
--	return ret;
--}
--
--static char *setup_kdump_cmdline(struct kimage *image, char *cmdline,
--				 unsigned long cmdline_len)
--{
--	int elfcorehdr_strlen;
--	char *cmdline_ptr;
--
--	cmdline_ptr = kzalloc(COMMAND_LINE_SIZE, GFP_KERNEL);
--	if (!cmdline_ptr)
--		return NULL;
--
--	elfcorehdr_strlen = sprintf(cmdline_ptr, "elfcorehdr=0x%lx ",
--		image->elf_load_addr);
--
--	if (elfcorehdr_strlen + cmdline_len > COMMAND_LINE_SIZE) {
--		pr_err("Appending elfcorehdr=<addr> exceeds cmdline size\n");
--		kfree(cmdline_ptr);
--		return NULL;
--	}
--
--	memcpy(cmdline_ptr + elfcorehdr_strlen, cmdline, cmdline_len);
--	/* Ensure it's nul terminated */
--	cmdline_ptr[COMMAND_LINE_SIZE - 1] = '\0';
--	return cmdline_ptr;
--}
--
--static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
--			    unsigned long kernel_len, char *initrd,
--			    unsigned long initrd_len, char *cmdline,
--			    unsigned long cmdline_len)
--{
--	int ret;
--	unsigned long old_kernel_pbase = ULONG_MAX;
--	unsigned long new_kernel_pbase = 0UL;
--	unsigned long initrd_pbase = 0UL;
--	unsigned long headers_sz;
--	unsigned long kernel_start;
--	void *fdt, *headers;
--	struct elfhdr ehdr;
--	struct kexec_buf kbuf;
--	struct kexec_elf_info elf_info;
--	char *modified_cmdline = NULL;
--
--	ret = kexec_build_elf_info(kernel_buf, kernel_len, &ehdr, &elf_info);
--	if (ret)
--		return ERR_PTR(ret);
--
--	ret = elf_find_pbase(image, kernel_len, &ehdr, &elf_info,
--			     &old_kernel_pbase, &new_kernel_pbase);
--	if (ret)
--		goto out;
--	kernel_start = image->start;
--	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
--
--	/* Add the kernel binary to the image */
--	ret = riscv_kexec_elf_load(image, &ehdr, &elf_info,
--				   old_kernel_pbase, new_kernel_pbase);
--	if (ret)
--		goto out;
--
--	kbuf.image = image;
--	kbuf.buf_min = new_kernel_pbase + kernel_len;
--	kbuf.buf_max = ULONG_MAX;
--
--	/* Add elfcorehdr */
--	if (image->type == KEXEC_TYPE_CRASH) {
--		ret = prepare_elf_headers(&headers, &headers_sz);
--		if (ret) {
--			pr_err("Preparing elf core header failed\n");
--			goto out;
--		}
--
--		kbuf.buffer = headers;
--		kbuf.bufsz = headers_sz;
--		kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
--		kbuf.memsz = headers_sz;
--		kbuf.buf_align = ELF_CORE_HEADER_ALIGN;
--		kbuf.top_down = true;
--
--		ret = kexec_add_buffer(&kbuf);
--		if (ret) {
--			vfree(headers);
--			goto out;
--		}
--		image->elf_headers = headers;
--		image->elf_load_addr = kbuf.mem;
--		image->elf_headers_sz = headers_sz;
--
--		pr_debug("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
--			 image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
--
--		/* Setup cmdline for kdump kernel case */
--		modified_cmdline = setup_kdump_cmdline(image, cmdline,
--						       cmdline_len);
--		if (!modified_cmdline) {
--			pr_err("Setting up cmdline for kdump kernel failed\n");
--			ret = -EINVAL;
--			goto out;
--		}
--		cmdline = modified_cmdline;
--	}
--
--#ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
--	/* Add purgatory to the image */
--	kbuf.top_down = true;
--	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
--	ret = kexec_load_purgatory(image, &kbuf);
--	if (ret) {
--		pr_err("Error loading purgatory ret=%d\n", ret);
--		goto out;
--	}
--	ret = kexec_purgatory_get_set_symbol(image, "riscv_kernel_entry",
--					     &kernel_start,
--					     sizeof(kernel_start), 0);
--	if (ret)
--		pr_err("Error update purgatory ret=%d\n", ret);
--#endif /* CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY */
--
--	/* Add the initrd to the image */
--	if (initrd != NULL) {
--		kbuf.buffer = initrd;
--		kbuf.bufsz = kbuf.memsz = initrd_len;
--		kbuf.buf_align = PAGE_SIZE;
--		kbuf.top_down = true;
--		kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
--		ret = kexec_add_buffer(&kbuf);
--		if (ret)
--			goto out;
--		initrd_pbase = kbuf.mem;
--		pr_notice("Loaded initrd at 0x%lx\n", initrd_pbase);
--	}
--
--	/* Add the DTB to the image */
--	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_pbase,
--					   initrd_len, cmdline, 0);
--	if (!fdt) {
--		pr_err("Error setting up the new device tree.\n");
--		ret = -EINVAL;
--		goto out;
--	}
--
--	fdt_pack(fdt);
--	kbuf.buffer = fdt;
--	kbuf.bufsz = kbuf.memsz = fdt_totalsize(fdt);
--	kbuf.buf_align = PAGE_SIZE;
--	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
--	kbuf.top_down = true;
--	ret = kexec_add_buffer(&kbuf);
--	if (ret) {
--		pr_err("Error add DTB kbuf ret=%d\n", ret);
--		goto out_free_fdt;
--	}
--	/* Cache the fdt buffer address for memory cleanup */
--	image->arch.fdt = fdt;
--	pr_notice("Loaded device tree at 0x%lx\n", kbuf.mem);
--	goto out;
--
--out_free_fdt:
--	kvfree(fdt);
--out:
--	kfree(modified_cmdline);
--	kexec_free_elf_info(&elf_info);
--	return ret ? ERR_PTR(ret) : NULL;
--}
--
--#define RV_X(x, s, n)  (((x) >> (s)) & ((1 << (n)) - 1))
--#define RISCV_IMM_BITS 12
--#define RISCV_IMM_REACH (1LL << RISCV_IMM_BITS)
--#define RISCV_CONST_HIGH_PART(x) \
--	(((x) + (RISCV_IMM_REACH >> 1)) & ~(RISCV_IMM_REACH - 1))
--#define RISCV_CONST_LOW_PART(x) ((x) - RISCV_CONST_HIGH_PART(x))
--
--#define ENCODE_ITYPE_IMM(x) \
--	(RV_X(x, 0, 12) << 20)
--#define ENCODE_BTYPE_IMM(x) \
--	((RV_X(x, 1, 4) << 8) | (RV_X(x, 5, 6) << 25) | \
--	(RV_X(x, 11, 1) << 7) | (RV_X(x, 12, 1) << 31))
--#define ENCODE_UTYPE_IMM(x) \
--	(RV_X(x, 12, 20) << 12)
--#define ENCODE_JTYPE_IMM(x) \
--	((RV_X(x, 1, 10) << 21) | (RV_X(x, 11, 1) << 20) | \
--	(RV_X(x, 12, 8) << 12) | (RV_X(x, 20, 1) << 31))
--#define ENCODE_CBTYPE_IMM(x) \
--	((RV_X(x, 1, 2) << 3) | (RV_X(x, 3, 2) << 10) | (RV_X(x, 5, 1) << 2) | \
--	(RV_X(x, 6, 2) << 5) | (RV_X(x, 8, 1) << 12))
--#define ENCODE_CJTYPE_IMM(x) \
--	((RV_X(x, 1, 3) << 3) | (RV_X(x, 4, 1) << 11) | (RV_X(x, 5, 1) << 2) | \
--	(RV_X(x, 6, 1) << 7) | (RV_X(x, 7, 1) << 6) | (RV_X(x, 8, 2) << 9) | \
--	(RV_X(x, 10, 1) << 8) | (RV_X(x, 11, 1) << 12))
--#define ENCODE_UJTYPE_IMM(x) \
--	(ENCODE_UTYPE_IMM(RISCV_CONST_HIGH_PART(x)) | \
--	(ENCODE_ITYPE_IMM(RISCV_CONST_LOW_PART(x)) << 32))
--#define ENCODE_UITYPE_IMM(x) \
--	(ENCODE_UTYPE_IMM(x) | (ENCODE_ITYPE_IMM(x) << 32))
--
--#define CLEAN_IMM(type, x) \
--	((~ENCODE_##type##_IMM((uint64_t)(-1))) & (x))
--
--int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
--				     Elf_Shdr *section,
--				     const Elf_Shdr *relsec,
--				     const Elf_Shdr *symtab)
--{
--	const char *strtab, *name, *shstrtab;
--	const Elf_Shdr *sechdrs;
--	Elf64_Rela *relas;
--	int i, r_type;
--
--	/* String & section header string table */
--	sechdrs = (void *)pi->ehdr + pi->ehdr->e_shoff;
--	strtab = (char *)pi->ehdr + sechdrs[symtab->sh_link].sh_offset;
--	shstrtab = (char *)pi->ehdr + sechdrs[pi->ehdr->e_shstrndx].sh_offset;
--
--	relas = (void *)pi->ehdr + relsec->sh_offset;
--
--	for (i = 0; i < relsec->sh_size / sizeof(*relas); i++) {
--		const Elf_Sym *sym;	/* symbol to relocate */
--		unsigned long addr;	/* final location after relocation */
--		unsigned long val;	/* relocated symbol value */
--		unsigned long sec_base;	/* relocated symbol value */
--		void *loc;		/* tmp location to modify */
--
--		sym = (void *)pi->ehdr + symtab->sh_offset;
--		sym += ELF64_R_SYM(relas[i].r_info);
--
--		if (sym->st_name)
--			name = strtab + sym->st_name;
--		else
--			name = shstrtab + sechdrs[sym->st_shndx].sh_name;
--
--		loc = pi->purgatory_buf;
--		loc += section->sh_offset;
--		loc += relas[i].r_offset;
--
--		if (sym->st_shndx == SHN_ABS)
--			sec_base = 0;
--		else if (sym->st_shndx >= pi->ehdr->e_shnum) {
--			pr_err("Invalid section %d for symbol %s\n",
--			       sym->st_shndx, name);
--			return -ENOEXEC;
--		} else
--			sec_base = pi->sechdrs[sym->st_shndx].sh_addr;
--
--		val = sym->st_value;
--		val += sec_base;
--		val += relas[i].r_addend;
--
--		addr = section->sh_addr + relas[i].r_offset;
--
--		r_type = ELF64_R_TYPE(relas[i].r_info);
--
--		switch (r_type) {
--		case R_RISCV_BRANCH:
--			*(u32 *)loc = CLEAN_IMM(BTYPE, *(u32 *)loc) |
--				 ENCODE_BTYPE_IMM(val - addr);
--			break;
--		case R_RISCV_JAL:
--			*(u32 *)loc = CLEAN_IMM(JTYPE, *(u32 *)loc) |
--				 ENCODE_JTYPE_IMM(val - addr);
--			break;
--		/*
--		 * With no R_RISCV_PCREL_LO12_S, R_RISCV_PCREL_LO12_I
--		 * sym is expected to be next to R_RISCV_PCREL_HI20
--		 * in purgatory relsec. Handle it like R_RISCV_CALL
--		 * sym, instead of searching the whole relsec.
--		 */
--		case R_RISCV_PCREL_HI20:
--		case R_RISCV_CALL_PLT:
--		case R_RISCV_CALL:
--			*(u64 *)loc = CLEAN_IMM(UITYPE, *(u64 *)loc) |
--				 ENCODE_UJTYPE_IMM(val - addr);
--			break;
--		case R_RISCV_RVC_BRANCH:
--			*(u32 *)loc = CLEAN_IMM(CBTYPE, *(u32 *)loc) |
--				 ENCODE_CBTYPE_IMM(val - addr);
--			break;
--		case R_RISCV_RVC_JUMP:
--			*(u32 *)loc = CLEAN_IMM(CJTYPE, *(u32 *)loc) |
--				 ENCODE_CJTYPE_IMM(val - addr);
--			break;
--		case R_RISCV_ADD32:
--			*(u32 *)loc += val;
--			break;
--		case R_RISCV_SUB32:
--			*(u32 *)loc -= val;
--			break;
--		/* It has been applied by R_RISCV_PCREL_HI20 sym */
--		case R_RISCV_PCREL_LO12_I:
--		case R_RISCV_ALIGN:
--		case R_RISCV_RELAX:
--			break;
--		default:
--			pr_err("Unknown rela relocation: %d\n", r_type);
--			return -ENOEXEC;
--		}
--	}
--	return 0;
--}
--
--const struct kexec_file_ops elf_kexec_ops = {
--	.probe = kexec_elf_probe,
--	.load  = elf_kexec_load,
--};
-diff --git a/arch/riscv/kernel/kexec_elf.c b/arch/riscv/kernel/kexec_elf.c
+diff --git a/arch/riscv/kernel/kexec_image.c b/arch/riscv/kernel/kexec_image.c
 new file mode 100644
-index 000000000000..f41272da6b2f
+index 000000000000..b6aa7f59bd53
 --- /dev/null
-+++ b/arch/riscv/kernel/kexec_elf.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/arch/riscv/kernel/kexec_image.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Load ELF vmlinux file for the kexec_file_load syscall.
++ * RISC-V Kexec image loader
 + *
-+ * Copyright (C) 2021 Huawei Technologies Co, Ltd.
-+ *
-+ * Author: Liao Chang (liaochang1@huawei.com)
-+ *
-+ * Based on kexec-tools' kexec-elf-riscv.c, heavily modified
-+ * for kernel.
 + */
 +
-+#define pr_fmt(fmt)	"kexec_image: " fmt
++#define pr_fmt(fmt)	"kexec_file(Image): " fmt
 +
-+#include <linux/elf.h>
++#include <linux/err.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
 +#include <linux/kexec.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/libfdt.h>
-+#include <linux/types.h>
-+#include <linux/memblock.h>
-+#include <asm/setup.h>
++#include <linux/pe.h>
++#include <linux/string.h>
++#include <asm/byteorder.h>
++#include <asm/image.h>
 +
-+static int riscv_kexec_elf_load(struct kimage *image, struct elfhdr *ehdr,
-+				struct kexec_elf_info *elf_info, unsigned long old_pbase,
-+				unsigned long new_pbase)
++static int image_probe(const char *kernel_buf, unsigned long kernel_len)
 +{
-+	int i;
-+	int ret = 0;
-+	size_t size;
-+	struct kexec_buf kbuf;
-+	const struct elf_phdr *phdr;
++	const struct riscv_image_header *h =
++		(const struct riscv_image_header *)(kernel_buf);
 +
-+	kbuf.image = image;
++	if (!h || (kernel_len < sizeof(*h)))
++		return -EINVAL;
 +
-+	for (i = 0; i < ehdr->e_phnum; i++) {
-+		phdr = &elf_info->proghdrs[i];
-+		if (phdr->p_type != PT_LOAD)
-+			continue;
-+
-+		size = phdr->p_filesz;
-+		if (size > phdr->p_memsz)
-+			size = phdr->p_memsz;
-+
-+		kbuf.buffer = (void *) elf_info->buffer + phdr->p_offset;
-+		kbuf.bufsz = size;
-+		kbuf.buf_align = phdr->p_align;
-+		kbuf.mem = phdr->p_paddr - old_pbase + new_pbase;
-+		kbuf.memsz = phdr->p_memsz;
-+		kbuf.top_down = false;
-+		ret = kexec_add_buffer(&kbuf);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Go through the available phsyical memory regions and find one that hold
-+ * an image of the specified size.
-+ */
-+static int elf_find_pbase(struct kimage *image, unsigned long kernel_len,
-+			  struct elfhdr *ehdr, struct kexec_elf_info *elf_info,
-+			  unsigned long *old_pbase, unsigned long *new_pbase)
-+{
-+	int i;
-+	int ret;
-+	struct kexec_buf kbuf;
-+	const struct elf_phdr *phdr;
-+	unsigned long lowest_paddr = ULONG_MAX;
-+	unsigned long lowest_vaddr = ULONG_MAX;
-+
-+	for (i = 0; i < ehdr->e_phnum; i++) {
-+		phdr = &elf_info->proghdrs[i];
-+		if (phdr->p_type != PT_LOAD)
-+			continue;
-+
-+		if (lowest_paddr > phdr->p_paddr)
-+			lowest_paddr = phdr->p_paddr;
-+
-+		if (lowest_vaddr > phdr->p_vaddr)
-+			lowest_vaddr = phdr->p_vaddr;
-+	}
-+
-+	kbuf.image = image;
-+	kbuf.buf_min = lowest_paddr;
-+	kbuf.buf_max = ULONG_MAX;
-+
-+	/*
-+	 * Current riscv boot protocol requires 2MB alignment for
-+	 * RV64 and 4MB alignment for RV32
-+	 *
++	/* According to Documentation/riscv/boot-image-header.rst,
++	 * use "magic2" field to check when version >= 0.2.
 +	 */
-+	kbuf.buf_align = PMD_SIZE;
-+	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+	kbuf.memsz = ALIGN(kernel_len, PAGE_SIZE);
-+	kbuf.top_down = false;
-+	ret = arch_kexec_locate_mem_hole(&kbuf);
-+	if (!ret) {
-+		*old_pbase = lowest_paddr;
-+		*new_pbase = kbuf.mem;
-+		image->start = ehdr->e_entry - lowest_vaddr + kbuf.mem;
-+	}
-+	return ret;
++
++	if (h->version >= RISCV_HEADER_VERSION &&
++	    memcmp(&h->magic2, RISCV_IMAGE_MAGIC2, sizeof(h->magic2)))
++		return -EINVAL;
++
++	return 0;
 +}
 +
-+static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-+			    unsigned long kernel_len, char *initrd,
-+			    unsigned long initrd_len, char *cmdline,
-+			    unsigned long cmdline_len)
++static void *image_load(struct kimage *image,
++				char *kernel, unsigned long kernel_len,
++				char *initrd, unsigned long initrd_len,
++				char *cmdline, unsigned long cmdline_len)
 +{
++	struct riscv_image_header *h;
++	u64 flags;
++	bool be_image, be_kernel;
++	struct kexec_buf kbuf;
 +	int ret;
-+	unsigned long old_kernel_pbase = ULONG_MAX;
-+	unsigned long new_kernel_pbase = 0UL;
-+	struct elfhdr ehdr;
-+	struct kexec_elf_info elf_info;
 +
-+	ret = kexec_build_elf_info(kernel_buf, kernel_len, &ehdr, &elf_info);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = elf_find_pbase(image, kernel_len, &ehdr, &elf_info,
-+			     &old_kernel_pbase, &new_kernel_pbase);
-+	if (ret)
++	/* Check Image header */
++	h = (struct riscv_image_header *)kernel;
++	if (!h->image_size) {
++		ret = -EINVAL;
 +		goto out;
++	}
 +
-+	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
-+
-+	/* Add the kernel binary to the image */
-+	ret = riscv_kexec_elf_load(image, &ehdr, &elf_info,
-+				   old_kernel_pbase, new_kernel_pbase);
-+	if (ret)
++	/* Check endianness */
++	flags = le64_to_cpu(h->flags);
++	be_image = riscv_image_flag_field(flags, RISCV_IMAGE_FLAG_BE);
++	be_kernel = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
++	if (be_image != be_kernel) {
++		ret = -EINVAL;
 +		goto out;
++	}
 +
-+	ret = load_extra_segments(image, image->start, kernel_len,
++	/* Load the kernel image */
++	kbuf.image = image;
++	kbuf.buf_min = 0;
++	kbuf.buf_max = ULONG_MAX;
++	kbuf.top_down = false;
++
++	kbuf.buffer = kernel;
++	kbuf.bufsz = kernel_len;
++	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
++	kbuf.memsz = le64_to_cpu(h->image_size);
++	kbuf.buf_align = le64_to_cpu(h->text_offset);
++
++	ret = kexec_add_buffer(&kbuf);
++	if (ret) {
++		pr_err("Error add kernel image ret=%d\n", ret);
++		goto out;
++	}
++
++	image->start = kbuf.mem;
++
++	pr_info("Loaded kernel at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
++				kbuf.mem, kbuf.bufsz, kbuf.memsz);
++
++	ret = load_extra_segments(image, kbuf.mem, kbuf.memsz,
 +				  initrd, initrd_len, cmdline, cmdline_len);
++
 +out:
-+	kexec_free_elf_info(&elf_info);
 +	return ret ? ERR_PTR(ret) : NULL;
 +}
 +
-+
-+const struct kexec_file_ops elf_kexec_ops = {
-+	.probe = kexec_elf_probe,
-+	.load  = elf_kexec_load,
++const struct kexec_file_ops image_kexec_ops = {
++	.probe = image_probe,
++	.load = image_load,
 +};
 diff --git a/arch/riscv/kernel/machine_kexec_file.c b/arch/riscv/kernel/machine_kexec_file.c
-index 6ebd3ab5a9eb..aedb8c16a283 100644
+index aedb8c16a283..5dc700834f1e 100644
 --- a/arch/riscv/kernel/machine_kexec_file.c
 +++ b/arch/riscv/kernel/machine_kexec_file.c
-@@ -7,6 +7,13 @@
-  * Author: Liao Chang (liaochang1@huawei.com)
-  */
- #include <linux/kexec.h>
-+#include <linux/elf.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/libfdt.h>
-+#include <linux/types.h>
-+#include <linux/memblock.h>
-+#include <asm/setup.h>
+@@ -17,6 +17,7 @@
  
  const struct kexec_file_ops * const kexec_file_loaders[] = {
  	&elf_kexec_ops,
++	&image_kexec_ops,
+ 	NULL
+ };
+ 
 -- 
 2.20.1
 
