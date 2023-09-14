@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2627A0CBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39167A0CC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241303AbjINScD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        id S241360AbjINSfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239446AbjINScC (ORCPT
+        with ESMTP id S240824AbjINSfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:32:02 -0400
-Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713EC1FEB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:31:58 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id gr87qJd7OVPLSgr87qVaza; Thu, 14 Sep 2023 20:31:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694716316;
-        bh=v/TDaIRxJKGlPY3fpIXLuEW+O/pJ/KGfg3MooNqWmPg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=DDU0oPPSHjTHHZulF/fW8fttRhxzZMW45GPSWMZEF8ewpK5IIDxMHhJmvdzC76/JX
-         +EskoztytTE1jMet+dGErWhFeMv5qguonENn2WH14VXr80uVgD6wmo5BcUn/Bo8Q4K
-         IF+gJD+Ich4nTiC0W9cuD49BAf0kZwQAJENdSWp4s8Pu+9OBCB7XJIUBN4Hbwxe4VL
-         FV/2VN0zY3yKtI5MawaU/KOoACGUmZO0OVuJ49UJTC8b859b6ZpD3ss8S5kgeVNHtS
-         M+5ucGSyopZqnJINrUUvkLtwinG3nwsmtbm8OobXPbVWHhWbiH7//C7bTSSRxKvL4Y
-         PlYEIj1yTCBSg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 14 Sep 2023 20:31:56 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <b3b54c2a-e567-a4fe-d022-eae04aa07354@wanadoo.fr>
-Date:   Thu, 14 Sep 2023 20:31:55 +0200
+        Thu, 14 Sep 2023 14:35:14 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6311FE5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:35:10 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-58c92a2c52dso14310117b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694716509; x=1695321309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v4Q3FdiJ3V5TocPUmywGK8xhOPCwVplUhl/7cc56tKs=;
+        b=kjALx/etTmLiSyiLT31097blLcerEyRDJsb0feaKDDDoUJdqYz0zLiBYZEwnQ8sPP8
+         3XlCrzX9zy1hJxMxJ5U0fmuof8VoWDADBzC3sNWLFqj6aLT3YBA+TWV4e85cXkqIXkrP
+         7Z25HmN4BO4cjTEMOd1oSC03ohP8DeTUp23T4/f+N2YqurA6kWBvYSJ0WuE8Ncg4rTyE
+         mNsu0cFIosfsJ3Ll6TgKL8fRJ8HXHs3tzTMPIuq9AcUvsmo3WDDouD/HIzeKPy9aB0nv
+         8pH2tVNrxqnoFnbGyRKexkZs5/dLZlg+9vcv5WuyqnJzrfZwgRd+6l/WeiF3UIkha+3H
+         mn/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694716509; x=1695321309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v4Q3FdiJ3V5TocPUmywGK8xhOPCwVplUhl/7cc56tKs=;
+        b=fCsEVBu6ZXKzI9K6FWTzoUBIywg+umkLhmKgGUHyIo/tVdRRTDke5Jw1XGXN6EFaMa
+         k5LfV2PoKWV6afPnwmh42/j2tjj1DgHiWcxhtYLk6dpwxMgxzMqxBmgg8BMKazH8nIne
+         WQYqwAlZmup2k+rH9pXvB+fNHs+/DkoGHKR3RJ5ciT9fV3jZR93FdUVqVIIxxz0ZqI9k
+         YvNXN/KKKjsegfVNm9n9S/Ja/dY2T1FqBCpzG7jOeuOi++WA4dnHo2npnLfiK4yU/bFU
+         5s0V/szlqQvkVh/XRaZUa4NnKaQqr+f4Dt4OifpQwLIrAlXtrdrBZkNuUVkQ5OLvDc68
+         1fSA==
+X-Gm-Message-State: AOJu0YzcLZPrkgiIvwwuU35X2IULAL0m5nYUtERt0ZmpXqQBRLN+iY0T
+        lHwgF+cgMh+31XUQgo8DOw7bYmtUWb7tTwpm+OKVrQ==
+X-Google-Smtp-Source: AGHT+IE9ZnOpWrcwxwpcgRXYoq7Lu7MkOeyawrED+id/g0j10DlEQ3H2jkxDCgAOPvVd5t4gWKjWUV4ooJs+LIiPMy8=
+X-Received: by 2002:a25:cc12:0:b0:d81:9612:46fe with SMTP id
+ l18-20020a25cc12000000b00d81961246femr2646408ybf.57.1694716507971; Thu, 14
+ Sep 2023 11:35:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: RE: [PATCH 0/5] clk: imx: imx8: Fix some error handling paths
-To:     "S.J. Wang" <shengjiu.wang@nxp.com>,
-        "abelvesa@kernel.org" <abelvesa@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>
-Cc:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-References: <cover.1693126687.git.christophe.jaillet@wanadoo.fr>
- <AS1PR04MB92641B7B3944C2CF9F3DA3B3E3F7A@AS1PR04MB9264.eurprd04.prod.outlook.com>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <AS1PR04MB92641B7B3944C2CF9F3DA3B3E3F7A@AS1PR04MB9264.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-2-surenb@google.com>
+ <ZQNJU67eDoZqffEQ@casper.infradead.org>
+In-Reply-To: <ZQNJU67eDoZqffEQ@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 14 Sep 2023 11:34:54 -0700
+Message-ID: <CAJuCfpGEVhag8zsC1zA0acZna9vRhe9vnWHWW+ozE42atv9OOA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 14/09/2023 à 12:22, S.J. Wang a écrit :
->>
->> This serie fix some error handling paths. It is split in different patches to ease
->> review because the issues are unrelated and the proposed fixes are maybe
->> wrong (I don't have the hardware to test anything)
->>
->> Patch 2 and 3 are more speculative than the 3 oher ones. Review with care.
->>
->>
->> Finally, I got some problem when generating the serie, and some patches
->> have been hand-modified afterwards.
->> They look good to me, but I hope have not screwed up things...
-> 
-> 
->  From the 3rd patch,  it can't be applied, maybe there is generating issue.
+On Thu, Sep 14, 2023 at 10:56=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Thu, Sep 14, 2023 at 08:26:11AM -0700, Suren Baghdasaryan wrote:
+> > From: Andrea Arcangeli <aarcange@redhat.com>
+> >
+> > As far as the rmap code is concerned, UFFDIO_REMAP only alters the
+> > page->mapping and page->index. It does it while holding the page
+>
+> folio->mapping and folio->index.  It does it while holding the folio
 
-I will resend.
+Ack.
 
-CJ
+>
+> No other objections ...
 
-> 
-> Best regards
-> Wang Shengjiu
-> 
->>
->> Christophe JAILLET (5):
->>    clk: imx: imx8: Fix an error handling path in
->>      clk_imx_acm_attach_pm_domains()
->>    clk: imx: imx8: Fix an error handling path if
->>      devm_clk_hw_register_mux_parent_data_table() fails
->>    clk: imx: imx8: Fix an error handling path in imx8_acm_clk_probe()
->>    clk: imx: imx8: Add a message in case of
->>      devm_clk_hw_register_mux_parent_data_table() error
->>    clk: imx: imx8: Simplify clk_imx_acm_detach_pm_domains()
->>
->>   drivers/clk/imx/clk-imx8-acm.c | 27 +++++++++++++++------------
->>   1 file changed, 15 insertions(+), 12 deletions(-)
->>
->> --
->> 2.34.1
-> 
-> 
-
+Thanks for the review!
