@@ -2,482 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4227A0B63
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18017A0B5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238942AbjINRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S238507AbjINRQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238893AbjINRQu (ORCPT
+        with ESMTP id S230502AbjINRQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:16:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 960B2CC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694711761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/q/Sy0/eN2qa7j0HeayAAvNr+Dyhvjz3gRGDl0Q1/Q=;
-        b=VLoJcYnf7j2q9Si9AN40sVvvo2NDykLpQiUDroUG/JXGOENjQivQvemxM77CbuO5cUCUbS
-        NWy9L85vBRD3FPwr7XLmYbGzf/z73BXg7JN55LJjzLW0YbjMduZOhOoRstL9VW+7HUUYra
-        WcImql+4BduCinT7sdAzfzJtJFSPe10=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-9Kk_bhjLN3eMNCWvzxs1Tw-1; Thu, 14 Sep 2023 13:16:00 -0400
-X-MC-Unique: 9Kk_bhjLN3eMNCWvzxs1Tw-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2bfadc70950so15218481fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:15:59 -0700 (PDT)
+        Thu, 14 Sep 2023 13:16:24 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97531CF;
+        Thu, 14 Sep 2023 10:16:20 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-530196c780dso1077334a12.1;
+        Thu, 14 Sep 2023 10:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694711779; x=1695316579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wR8njeDBhvSDtR6lVlpBWKsc/TiwJI5inQMLli8IvXE=;
+        b=nQJeEWkB+r1rSts6S53Kz9LEBZCCrZ/+qfTPzGQpQZjAPZ5BoUcKQCSimEzzZpudgj
+         gcig6NIseLRg0hO5b4Fl3OlllB9rSIg2JAuK3G5tNgMnQQpnDrfT2DzV8ro3lNdGlKAB
+         c/IMLkytIAgNaJr62BvEbbQ6Ag7pcZ52aQs1ezXeHjdzaLupaMQabTpr5li0arXwfsWj
+         VcV9psWe6iTNhX1eGBQWcvIxsu/Mrz08u4XEb4NjW/SUHR3rc+cTNMBEB06ANCCmgsxB
+         skax4ZX4ppkGzSyGEz0U9+3AWngUxV29/OjIojn85qhO2w1D+w/r581Oo4QCYFturNtW
+         KT+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694711758; x=1695316558;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J/q/Sy0/eN2qa7j0HeayAAvNr+Dyhvjz3gRGDl0Q1/Q=;
-        b=qWr3uZs+0vaU7ffB7L0kgMYt2o6DDEQ4hzkxNakhV9f7qtNDp2cHGdq3UxrBeOlURS
-         x6HflCGDmgEGAzIBO00s2RpYdKgaB/G92EZoviJTMuD/sCEgFXSNU41iTGZPkI7JjgJ/
-         9j+mPCaWZSL1V7gt4cI6aP2/XNBhVDNywPrsA4k1eJ1rOoTVvkc029rLUFz7+E8RzGDu
-         9UYlrsw04//Wxe5zWHM4JiCXJ63T6rcTLs9MKtQRxXk8gvavI87WShXoI41y3OBogat5
-         1oC3iQGi1OEVV2ATUmtohcWC/oZOcHw0v3m0bxWPu/DrtkSg520YBa1ZN+F5uPk/Hwm+
-         FG8Q==
-X-Gm-Message-State: AOJu0YyEruHkjm350MTFnoUmOv1EOJ5Y/Wa/wFak3Rqw1z0/4ZFULxTi
-        Qyg8m/QMZoBlgm3slgSBM2m5h6mwIBwMD28icEF8gU/cuxjhy2/lSglTdMPo08/SEGm74ZCsKim
-        d2zn/yAqitUX9wgRo5mKVK6mX
-X-Received: by 2002:a05:6512:3b86:b0:502:eccb:4420 with SMTP id g6-20020a0565123b8600b00502eccb4420mr2130367lfv.15.1694711758537;
-        Thu, 14 Sep 2023 10:15:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH8ddQzyr3jBplkW5qka5R/O5PCJk4Id+4xRwqKfy1BpCGtHRBS+FYXIij3NVtYlg5FFWR6Fw==
-X-Received: by 2002:a05:6512:3b86:b0:502:eccb:4420 with SMTP id g6-20020a0565123b8600b00502eccb4420mr2130346lfv.15.1694711758117;
-        Thu, 14 Sep 2023 10:15:58 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id r21-20020a056402035500b0052fc251ffd7sm1176852edw.17.2023.09.14.10.15.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 10:15:57 -0700 (PDT)
-Message-ID: <2c4bbd8c-ec2c-91ad-9f27-5476b7e65b4f@redhat.com>
-Date:   Thu, 14 Sep 2023 19:15:55 +0200
+        d=1e100.net; s=20230601; t=1694711779; x=1695316579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wR8njeDBhvSDtR6lVlpBWKsc/TiwJI5inQMLli8IvXE=;
+        b=M7ial1aC0cxWWQwzF2J2fqAvF2uK3sghgX3AdVLdkACIcXL1osDeYuYaxd4WfgQTem
+         G00uMHHvd1GENfzFU3PQpN8UtufeVBE3Ww4hwJgVurigQdl3q4exVr3XlZINsnQwT7Oa
+         CQyP5iMXhhCqeiKKsVVnzSG5tSnhlUbdjoRUaffb10V98RbjUOQJAIrcxJxJ/TOFp/wy
+         SqXdaR+BNOY8z9x56Fn5maFLGwCgQdmpzq18WIfBUTcl7OGlBjXbV+5YoiRt32jjj6+G
+         5BW6BCA9Uw9Z0wQgBLBjmeUbkJTbK9KjNAMFM9CXxz73SHKE3XEVpd7a6isVIXwzGXx+
+         vuIw==
+X-Gm-Message-State: AOJu0YyjB9hhRri/D6i+ysJr81117y6zTUYYWyjwQxOlzH9POV1ayypR
+        C763y0gJ9lEEQ9IfCXikDaMic+8P1ZoCM36Zwmw=
+X-Google-Smtp-Source: AGHT+IG7AECGJCQlEUvPgHVZQrQ8QYcBqANrfXJzC9D4NyMNu7aYNrTVzEh+oErPxr/zoB/QsSAcX2ThZYlCrMlytaQ=
+X-Received: by 2002:aa7:c1d1:0:b0:525:6588:b624 with SMTP id
+ d17-20020aa7c1d1000000b005256588b624mr5479932edp.37.1694711778617; Thu, 14
+ Sep 2023 10:16:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Nouveau] [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     matthew.brost@intel.com, sarah.walker@imgtec.com,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, boris.brezillon@collabora.com,
-        donald.robson@imgtec.com, daniel@ffwll.ch,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com
-References: <20230909153125.30032-1-dakr@redhat.com>
- <20230909153125.30032-7-dakr@redhat.com>
- <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
- <ZQCW6wzHYVdxl/IV@pollux>
- <701dfead-e240-b3fb-422c-d49fc7e04595@linux.intel.com>
- <ZQD2FFLP28bFgHXT@pollux>
- <cbff08ca845655dee44fbf498cdb37a3d5251bf3.camel@linux.intel.com>
- <ZQGoNovGz/4Y3xvf@pollux> <ef29b21d-157c-ead7-4b09-edf763d1f8b0@redhat.com>
- <e8b9a298-d4ea-9ee7-69fe-eb8ea1f9dc3d@linux.intel.com>
- <bdca7ebe-bc65-1db1-a247-490286a31307@redhat.com>
- <7c8c606dbf515bfe9aa3dc3ed6c23ae00d84ef9d.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <7c8c606dbf515bfe9aa3dc3ed6c23ae00d84ef9d.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
+ <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
+ <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com> <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
+ <CAEf4BzaEg5CieQKQxvRGnwnyeK_2MZqr8ROVjg-Tftg-0vpntg@mail.gmail.com> <CAP01T77cWxWNwq5HLr+Woiu7k4-P3QQfJWX1OeQJUkxW3=P4bA@mail.gmail.com>
+In-Reply-To: <CAP01T77cWxWNwq5HLr+Woiu7k4-P3QQfJWX1OeQJUkxW3=P4bA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 14 Sep 2023 10:16:06 -0700
+Message-ID: <CAEf4BzY+BuTfLfamUVCGk+3kY2O5BtTvWiXQRn5OcXt4P2md2g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
+ iterator kfuncs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 19:13, Thomas Hellström wrote:
-> On Thu, 2023-09-14 at 17:27 +0200, Danilo Krummrich wrote:
->> On 9/14/23 13:32, Thomas Hellström wrote:
->>>
->>> On 9/14/23 12:57, Danilo Krummrich wrote:
->>>> On 9/13/23 14:16, Danilo Krummrich wrote:
->>>>
->>>> <snip>
->>>>
->>>>>>> And validate() can remove it while still holding all dma-
->>>>>>> resv locks,
->>>>>>> neat!
->>>>>>> However, what if two tasks are trying to lock the VA space
->>>>>>> concurrently? What
->>>>>>> do we do when the drm_gpuvm_bo's refcount drops to zero in
->>>>>>> drm_gpuva_unlink()?
->>>>>>> Are we guaranteed that at this point of time the
->>>>>>> drm_gpuvm_bo is not
->>>>>>> on the
->>>>>>> evicted list? Because otherwise we would call
->>>>>>> drm_gpuvm_bo_destroy()
->>>>>>> with the
->>>>>>> dma-resv lock held, which wouldn't be allowed, since
->>>>>>> drm_gpuvm_bo_destroy()
->>>>>>> might drop the last reference to the drm_gem_object and
->>>>>>> hence we'd
->>>>>>> potentially
->>>>>>> free the dma-resv lock while holding it, at least if it's
->>>>>>> an external
->>>>>>> object.
->>>>>>
->>>>>> Easiest way in this scheme is to think of the lists as being
->>>>>> protected
->>>>>> by the vm's resv lock. That means anybody calling unlink()
->>>>>> must also
->>>>>> hold the vm's resv lock. (Which is OK from an UAF point of
->>>>>> view, but
->>>>>> perhaps not from a locking inversion POW from an async list
->>>>>> update).
->>>>>
->>>>> This would mean that on unlink() we'd need to hold the VM's
->>>>> resv lock and the
->>>>> corresponding GEM's resv lock (in case they're not the same
->>>>> anyways) because the
->>>>> VM's resv lock would protect the external / evicted object
->>>>> lists and the GEM
->>>>> objects resv lock protects the GEM's list of drm_gpuvm_bos and
->>>>> the
->>>>> drm_gpuvm_bo's list of drm_gpuvas.
->>>>
->>>> As mentioned below the same applies for drm_gpuvm_bo_put() since
->>>> it might
->>>> destroy the vm_bo, which includes removing the vm_bo from
->>>> external / evicted
->>>> object lists and the GEMs list of vm_bos.
->>>>
->>>> As mentioned, if the GEM's dma-resv is different from the VM's
->>>> dma-resv we need
->>>> to take both locks. Ultimately, this would mean we need a
->>>> drm_exec loop, because
->>>> we can't know the order in which to take these locks. Doing a
->>>> full drm_exec loop
->>>> just to put() a vm_bo doesn't sound reasonable to me.
->>>>
->>>> Can we instead just have an internal mutex for locking the lists
->>>> such that we
->>>> avoid taking and dropping the spinlocks, which we use currently,
->>>> in a loop?
->>>
->>> You'd have the same locking inversion problem with a mutex, right?
->>> Since in the eviction path you have resv->mutex, from exec you have
->>> resv->mutex->resv because validate would attempt to grab resv.
->>
->> Both lists, evict and extobj, would need to have a separate mutex,
->> not a common one.
->> We'd also need a dedicated GEM gpuva lock. Then the only rule would
->> be that you can't
->> hold the dma-resv lock when calling put(). Which I admit is not that
->> nice.
->>
->> With the current spinlock solution drivers wouldn't need to worry
->> about anything locking
->> related though. So maybe I come back to your proposal of having a
->> switch for external
->> locking with dma-resv locks entirely. Such that with external dma-
->> resv locking I skip
->> all the spinlocks and add lockdep checks instead.
->>
->> I think that makes the most sense in terms of taking advantage of
->> external dma-resv locking
->> where possible and on the other hand having a self-contained solution
->> if not. This should
->> get all concerns out of the way, yours, Christian's and Boris'.
-> 
-> If we need additional locks yes, I'd prefer the opt-in/opt-out spinlock
-> solution, and check back after a while to see if we can remove either
-> option once most pitfalls are hit.
+On Tue, Sep 12, 2023 at 3:21=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Wed, 13 Sept 2023 at 00:12, Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Sep 6, 2023 at 10:18=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
+e.com> wrote:
+> > > >
+> > > > Hello, Alexei.
+> > > >
+> > > > =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
+> > > > > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@by=
+tedance.com> wrote:
+> > > > >>
+> > > > >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which=
+ allow
+> > > > >> creation and manipulation of struct bpf_iter_process in open-cod=
+ed iterator
+> > > > >> style. BPF programs can use these kfuncs or through bpf_for_each=
+ macro to
+> > > > >> iterate all processes in the system.
+> > > > >>
+> > > > >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> > > > >> ---
+> > > > >>   include/uapi/linux/bpf.h       |  4 ++++
+> > > > >>   kernel/bpf/helpers.c           |  3 +++
+> > > > >>   kernel/bpf/task_iter.c         | 31 ++++++++++++++++++++++++++=
++++++
+> > > > >>   tools/include/uapi/linux/bpf.h |  4 ++++
+> > > > >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
+> > > > >>   5 files changed, 47 insertions(+)
+> > > > >>
+> > > > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > >> index 2a6e9b99564b..cfbd527e3733 100644
+> > > > >> --- a/include/uapi/linux/bpf.h
+> > > > >> +++ b/include/uapi/linux/bpf.h
+> > > > >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
+> > > > >>          __u64 __opaque[1];
+> > > > >>   } __attribute__((aligned(8)));
+> > > > >>
+> > > > >> +struct bpf_iter_process {
+> > > > >> +       __u64 __opaque[1];
+> > > > >> +} __attribute__((aligned(8)));
+> > > > >> +
+> > > > >>   #endif /* _UAPI__LINUX_BPF_H__ */
+> > > > >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > > >> index cf113ad24837..81a2005edc26 100644
+> > > > >> --- a/kernel/bpf/helpers.c
+> > > > >> +++ b/kernel/bpf/helpers.c
+> > > > >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, K=
+F_ITER_DESTROY)
+> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_R=
+ET_NULL)
+> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
+> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET=
+_NULL)
+> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
+> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> > > > >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> > > > >> index b1bdba40b684..a6717a76c1e0 100644
+> > > > >> --- a/kernel/bpf/task_iter.c
+> > > > >> +++ b/kernel/bpf/task_iter.c
+> > > > >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(=
+struct bpf_iter_css_task *it)
+> > > > >>          kfree(kit->css_it);
+> > > > >>   }
+> > > > >>
+> > > > >> +struct bpf_iter_process_kern {
+> > > > >> +       struct task_struct *tsk;
+> > > > >> +} __attribute__((aligned(8)));
+> > > > >> +
+> > > > >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *i=
+t)
+> > > > >> +{
+> > > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> > > > >> +
+> > > > >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D s=
+izeof(struct bpf_iter_process));
+> > > > >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=
+=3D
+> > > > >> +                                       __alignof__(struct bpf_i=
+ter_process));
+> > > > >> +
+> > > > >> +       rcu_read_lock();
+> > > > >> +       kit->tsk =3D &init_task;
+> > > > >> +       return 0;
+> > > > >> +}
+> > > > >> +
+> > > > >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bp=
+f_iter_process *it)
+> > > > >> +{
+> > > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> > > > >> +
+> > > > >> +       kit->tsk =3D next_task(kit->tsk);
+> > > > >> +
+> > > > >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
+> > > > >> +}
+> > > > >> +
+> > > > >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_proce=
+ss *it)
+> > > > >> +{
+> > > > >> +       rcu_read_unlock();
+> > > > >> +}
+> > > > >
+> > > > > This iter can be used in all ctx-s which is nice, but let's
+> > > > > make the verifier enforce rcu_read_lock/unlock done by bpf prog
+> > > > > instead of doing in the ctor/dtor of iter, since
+> > > > > in sleepable progs the verifier won't recognize that body is RCU =
+CS.
+> > > > > We'd need to teach the verifier to allow bpf_iter_process_new()
+> > > > > inside in_rcu_cs() and make sure there is no rcu_read_unlock
+> > > > > while BPF_ITER_STATE_ACTIVE.
+> > > > > bpf_iter_process_destroy() would become a nop.
+> > > >
+> > > > Thanks for your review!
+> > > >
+> > > > I think bpf_iter_process_{new, next, destroy} should be protected b=
+y
+> > > > bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable o=
+r
+> > > > not, right?
+> > >
+> > > Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
+> > > or just by using them in normal bpf progs that have implicit rcu_read=
+_lock()
+> > > done before calling into them.
+> > >
+> > > > I'm not very familiar with the BPF verifier, but I believe
+> > > > there is still a risk in directly calling these kfuns even if
+> > > > in_rcu_cs() is true.
+> > > >
+> > > > Maby what we actually need here is to enforce BPF verifier to check
+> > > > env->cur_state->active_rcu_lock is true when we want to call these =
+kfuncs.
+> > >
+> > > active_rcu_lock means explicit bpf_rcu_read_lock.
+> > > Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's po=
+intless.
+> > >
+> > > Technically we can extend the check:
+> > >                 if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
+> > > rcu_unlock)) {
+> > >                         verbose(env, "Calling
+> > > bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
+> > >                         return -EACCES;
+> > >                 }
+> > > to discourage their use in all non-sleepable, but it will break some =
+progs.
+> > >
+> > > I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
+> > > If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
+> > > the iter ops it won't do any harm.
+> > > Just need to make sure that rcu unlock logic:
+> > >                 } else if (rcu_unlock) {
+> > >                         bpf_for_each_reg_in_vstate(env->cur_state,
+> > > state, reg, ({
+> > >                                 if (reg->type & MEM_RCU) {
+> > >                                         reg->type &=3D ~(MEM_RCU |
+> > > PTR_MAYBE_NULL);
+> > >                                         reg->type |=3D PTR_UNTRUSTED;
+> > >                                 }
+> > >                         }));
+> > > clears iter state that depends on rcu.
+> > >
+> > > I thought about changing mark_stack_slots_iter() to do
+> > > st->type =3D PTR_TO_STACK | MEM_RCU;
+> > > so that the above clearing logic kicks in,
+> > > but it might be better to have something iter specific.
+> > > is_iter_reg_valid_init() should probably be changed to
+> > > make sure reg->type is not UNTRUSTED.
+> > >
+> > > Andrii,
+> > > do you have better suggestions?
+> >
+> > What if we just remember inside bpf_reg_state.iter state whether
+> > iterator needs to be RCU protected (it's just one bit if we don't
+> > allow nesting rcu_read_lock()/rcu_read_unlock(), or we'd need to
+> > remember RCU nestedness level), and then when validating iter_next and
+> > iter_destroy() kfuncs, check that we are still in RCU-protected region
+> > (if we have nestedness, then iter->rcu_nest_level <=3D
+> > cur_rcu_nest_level, if I understand correctly). And if not, provide a
+> > clear and nice message.
+> >
+> > That seems straightforward enough, but am I missing anything subtle?
+> >
+>
+> We also need to ensure one does not do a bpf_rcu_read_unlock and
+> bpf_rcu_read_lock again between the iter_new and
+> iter_next/iter_destroy calls. Simply checking we are in an RCU
+> protected region will pass the verifier in such a case.
 
-Sounds good, I'll prepare this for a V4.
+Yep, you are right, what I proposed is too naive, of course.
 
-- Danilo
+>
+> A simple solution might be associating an ID with the RCU CS, so make
+> active_rcu_lock a 32-bit ID which is monotonically increasing for each
+> new RCU region. Ofcourse, all of this only matters for sleepable
+> programs. Then check if id recorded in iter state is same on next and
+> destroy.
 
-> 
-> Thanks,
-> /Thomas
-> 
-> 
->>
->>>
->>> That said, xe currently indeed does the vm+bo exec dance on vma
->>> put.
->>>
->>> One reason why that seemingly horrible construct is good, is that
->>> when evicting an extobj and you need to access individual vmas to
->>> Zap page table entries or TLB flush, those VMAs are not allowed to
->>> go away (we're not refcounting them). Holding the bo resv on gpuva
->>> put prevents that from happening. Possibly one could use another
->>> mutex to protect the gem->vm_bo list to achieve the same, but we'd
->>> need to hold it on gpuva put.
->>>
->>> /Thomas
->>>
->>>
->>>>
->>>> - Danilo
->>>>
->>>>>
->>>>>>
->>>>>>>
->>>>>>>>>
->>>>>>>>> For extobjs an outer lock would be enough in case of
->>>>>>>>> Xe, but I
->>>>>>>>> really would not
->>>>>>>>> like to add even more complexity just to get the
->>>>>>>>> spinlock out of
->>>>>>>>> the way in case
->>>>>>>>> the driver already has an outer lock protecting this
->>>>>>>>> path.
->>>>>>>>
->>>>>>>> I must disagree here. These spinlocks and atomic
->>>>>>>> operations are
->>>>>>>> pretty
->>>>>>>> costly and as discussed earlier this type of locking was
->>>>>>>> the reason
->>>>>>>> (at
->>>>>>>> least according to the commit message) that made
->>>>>>>> Christian drop the
->>>>>>>> XArray
->>>>>>>> use in drm_exec for the same set of objects: "The locking
->>>>>>>> overhead
->>>>>>>> is
->>>>>>>> unecessary and measurable". IMHO the spinlock is the
->>>>>>>> added
->>>>>>>> complexity and a
->>>>>>>> single wide lock following the drm locking guidelines set
->>>>>>>> out by
->>>>>>>> Daniel and
->>>>>>>> David should really be the default choice with an opt-in
->>>>>>>> for a
->>>>>>>> spinlock if
->>>>>>>> needed for async and pushing out to a wq is not an
->>>>>>>> option.
->>>>>>>
->>>>>>> For the external object list an outer lock would work as
->>>>>>> long as it's
->>>>>>> not the
->>>>>>> dma-resv lock of the corresponding GEM object, since here
->>>>>>> we actually
->>>>>>> need to
->>>>>>> remove the list entry from the external object list on
->>>>>>> drm_gpuvm_bo_destroy().
->>>>>>> It's just a bit weird design wise that drivers would need
->>>>>>> to take
->>>>>>> this outer
->>>>>>> lock on:
->>>>>>>
->>>>>>> - drm_gpuvm_bo_extobj_add()
->>>>>>> - drm_gpuvm_bo_destroy()        (and hence also
->>>>>>> drm_gpuvm_bo_put())
->>>>>>> - drm_gpuva_unlink()            (because it needs to call
->>>>>>> drm_gpuvm_bo_put())
->>>>>>> - drm_gpuvm_exec_lock()
->>>>>>> - drm_gpuvm_exec_lock_array()
->>>>>>> - drm_gpuvm_prepare_range()
->>>>>>>
->>>>>>> Given that it seems reasonable to do all the required
->>>>>>> locking
->>>>>>> internally.
->>>>>>
->>>>>>   From a design POW, there has been a clear direction in XE to
->>>>>> make
->>>>>> things similar to mmap() / munmap(), so this outer lock,
->>>>>> which in Xe is
->>>>>> an rwsem, is used in a similar way as the mmap_lock. It's
->>>>>> protecting
->>>>>> the page-table structures and vma rb tree, the userptr
->>>>>> structures and
->>>>>> the extobj list. Basically it's taken early in the exec
->>>>>> IOCTL, the
->>>>>> VM_BIND ioctl, the compute rebind worker and the pagefault
->>>>>> handler, so
->>>>>> all of the above are just asserting that it is taken in the
->>>>>> correct
->>>>>> mode.
->>>>>>
->>>>>> But strictly with this scheme one could also use the vm's
->>>>>> dma_resv for
->>>>>> the extobj list since with drm_exec, it's locked before
->>>>>> traversing the
->>>>>> list.
->>>>>>
->>>>>> The whole point of this scheme is to rely on locks that you
->>>>>> already are
->>>>>> supposed to be holding for various reasons and is simple to
->>>>>> comprehend.
->>>>>
->>>>> I don't agree that we're supposed to hold the VM's resv lock
->>>>> anyways for
->>>>> functions like drm_gpuvm_bo_put() or drm_gpuva_unlink(), but
->>>>> I'm fine using it
->>>>> for that purpose nevertheless.
->>>>>
->>>>>>
->>>>>>>
->>>>>>> In order to at least place lockdep checks, the driver would
->>>>>>> need to
->>>>>>> supply the
->>>>>>> corresponding lock's lockdep_map, because the GPUVM
->>>>>>> otherwise doesn't
->>>>>>> know about
->>>>>>> the lock.
->>>>>>
->>>>>> Yes, that sounds reasonable. One lockdep map per list.
->>>>>
->>>>> I'd really like to avoid that, especially now that everything
->>>>> got simpler. We
->>>>> should define the actual locks to take instead.
->>>>>
->>>>>>
->>>>>>>
->>>>>>> Out of curiosity, what is the overhead of a spin_lock()
->>>>>>> that doesn't
->>>>>>> need to
->>>>>>> spin?
->>>>>>
->>>>>> I guess it's hard to tell exactly, but it is much lower on
->>>>>> modern x86
->>>>>> than what it used to be. Not sure about ARM, which is the
->>>>>> other
->>>>>> architecture important to us. I figure if there is little
->>>>>> cache-line
->>>>>> bouncing the main overhead comes from the implied barriers.
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> A pretty simple way that would not add much code would be
->>>>>>>>
->>>>>>>> static void gpuvm_cond_spin_lock(const struct drm_gpuvm
->>>>>>>> *gpuvm,
->>>>>>>> spinlock_t
->>>>>>>> *lock)
->>>>>>>>
->>>>>>>> {
->>>>>>>>
->>>>>>>>       if (!gpuvm->resv_protected_lists)
->>>>>>>>           spin_lock(lock);
->>>>>>>>
->>>>>>>> }
->>>>>>>>
->>>>>>>>>> For such drivers, that would require anybody calling
->>>>>>>>>> unlink to
->>>>>>>>>> hold the vm's
->>>>>>>>>> resv, though.
->>>>>>>>> In V4 I want to go back to having a dedicated lock for
->>>>>>>>> the GEMs
->>>>>>>>> gpuva list (or
->>>>>>>>> VM_BO list to be more precise). We can't just use the
->>>>>>>>> dma-resv
->>>>>>>>> lock for that
->>>>>>>>> with VM_BO abstractions, because on destruction of a
->>>>>>>>> VM_BO we
->>>>>>>>> otherwise wouldn't
->>>>>>>>> be allowed to already hold the dma-resv lock. That's
->>>>>>>>> the fix I
->>>>>>>>> was referring to
->>>>>>>>> earlier.
->>>>>>>>
->>>>>>>> Yeah, I can see the need for a dedicated lock for the
->>>>>>>> GEM's gpuva
->>>>>>>> list, but
->>>>>>>> holding the vm's dma-resv lock across the unlink
->>>>>>>> shouldn't be a
->>>>>>>> problem. We
->>>>>>>> may free the object and a pointer to the vm's resv during
->>>>>>>> unlink
->>>>>>>> but we
->>>>>>>> don't free the vm's resv.  It'd be a matter of ensuring
->>>>>>>> that any
->>>>>>>> calls to
->>>>>>>> unlink from *within* drm_gpuvm allows it to be held.
->>>>>>>
->>>>>>> Drivers calling unlink() from the fence signaling path
->>>>>>> can't use the
->>>>>>> VM's
->>>>>>> dma-resv lock.
->>>>>>
->>>>>> Yes, that made me a bit curious because in the current
->>>>>> version the code
->>>>>> required the object's dma_resv for unlink() which can't be
->>>>>> grabbed
->>>>>> either from the fence signaling path. So are there any
->>>>>> drivers actually
->>>>>> wanting to do that? If so, they will either need to resort to
->>>>>> the
->>>>>> current spinlock solution or they will need to call unlink
->>>>>> from a
->>>>>> workqueue item.
->>>>>
->>>>> As Boris already mentioned we have the dma-resv lock by default
->>>>> or a driver
->>>>> specific GEM gpuva lock as opt-in. Now, we can get rid of the
->>>>> latter.
->>>>>
->>>>>>>
->>>>>>> Also, what if the object is an external object? We can't
->>>>>>> use the VM's
->>>>>>> dma-resv
->>>>>>> lock here.
->>>>>>
->>>>>> Why? Typically (sync) unlink is only ever called from an
->>>>>> unbind-like
->>>>>> operation where it should be trivial to grab the vm's resv.
->>>>>> Or, for
->>>>>> that matter any outer lock protecting the extobj list. Rule
->>>>>> would be
->>>>>> the drm_gpuvm_bo::entry::extobj  and
->>>>>> drm_gpuvm_bo::entry::evict would
->>>>>> be protected by either the vm's dma_resv (or possibly an
->>>>>> outer lock in
->>>>>> the case of the extobj list).
->>>>>
->>>>> Outer lock wouldn't have been working for updates in the async
->>>>> path, but
->>>>> shouldn't be relevant anymore. We could use the VM's resv for
->>>>> that.
->>>>>
->>>>>>
->>>>>>>    And we can't have the GEM objs dma-resv lock held when
->>>>>>> calling
->>>>>>> unlink(), since unlink() calls drm_gpuvm_bo_put(), which if
->>>>>>> the
->>>>>>> refcount drops
->>>>>>> to zero calls drm_gpuvm_bo_destroy() and
->>>>>>> drm_gpuvm_bo_destroy() might
->>>>>>> drop the
->>>>>>> last reference of the GEM object.
->>>>>>
->>>>>> Yes, but this is a different problem as to what exactly
->>>>>> protects
->>>>>> drm_gpuvm_bo::entry::gem. Either as you suggest an internal
->>>>>> per bo list
->>>>>> lock, or if we want to keep the bo's dma_resv we need to
->>>>>> ensure that
->>>>>> the caller of dma_resv_unlock(obj->resv) actually refcounts
->>>>>> its obj
->>>>>> pointer, and doesn't implicitly rely on the gpuvm_bo's
->>>>>> refcount (I know
->>>>>> Boris didn't like that, but requiring an explicit refcount
->>>>>> for a
->>>>>> pointer you dereference unless you're under a lock that
->>>>>> ensures keeping
->>>>>> the object alive is pretty much required?) But anyway for the
->>>>>> drm_gpuvm_bo::entry::gem list protection (bo resv or internal
->>>>>> spinlock)
->>>>>> I don't have a strong preference.
->>>>>
->>>>> We can keep the GEM objects dma-resv lock, however as mentioned
->>>>> above
->>>>> drm_gpuva_unlink() and drm_gpuvm_bo_put() then requires both
->>>>> the VM's resv lock
->>>>> and the GEM's resv lock in case they differ.
->>>>>
->>>>
->>>>>>>>
->>>>
->>>
->>
-> 
-
+Yep, I think each RCU region should ideally be tracked separately and
+get a unique ID. Kind of like a ref. It is some lifetime/scope, not
+necessarily an actual kernel object. And if/when we have it, we can
+grab the ID of most nested RCU scope, associate it with RCU-protected
+iter, and then make sure that this RCU scope is active at every
+next/destroy invocation.
