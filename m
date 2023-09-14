@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D79BC7A07C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663767A07DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240462AbjINOs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
+        id S240814AbjINOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240415AbjINOsR (ORCPT
+        with ESMTP id S240663AbjINOtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:48:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B3B1BFC;
-        Thu, 14 Sep 2023 07:48:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E03C433C7;
-        Thu, 14 Sep 2023 14:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694702892;
-        bh=XlH2++cozlMCXeR9EvUckhmVWrwhR2yKc6Vvzh31WCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mvSBW9JAqDrz6UWIPcFcklUoKB8kHwI/5dWtybKDRXOdLDJTCLwouG0s902rAirPm
-         Wql9iXKt+kKfwbKSvsWsT2yx0tKQNVDOKVtR1MFjky+IXIxinawVoF3GIi+Ol6rWPF
-         Yp2TGaF2YE9xDE0fUr8Hnt64md6qHOgygQYzXMiqWapAy2ihvhl9mDDx6NZkz3ZDIL
-         HzvYiU+HoZpxlVH+y8lUy7Lh6wTOXCAUVTGSsvSY5GQTU+MqB8p8zb2acxI7QJLhdp
-         w7dBT5RHBaM3h2FBncEux2uO7SofWur4Gcwtqbpnj4NECdQhA1qTrWXKpy20Wavooz
-         sMBoitRfxuizQ==
-Date:   Thu, 14 Sep 2023 15:48:08 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: serial: document esp32-uart bindings
-Message-ID: <20230914-stumbling-smother-2b048381952c@spud>
-References: <20230913211449.668796-1-jcmvbkbc@gmail.com>
- <20230913211449.668796-2-jcmvbkbc@gmail.com>
- <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org>
+        Thu, 14 Sep 2023 10:49:32 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50941FFF;
+        Thu, 14 Sep 2023 07:49:12 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EE8ZlM027382;
+        Thu, 14 Sep 2023 14:48:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aL++Hd0s2d7IrNOsxWTei1ji/pjM+JhOfFszoIJYSMA=;
+ b=Nh3IfxgSoU46L4p9ldF3wIAOzk7Fofe5fxlElC3vnWaZcPRM+z9J5kyt+Toc//f3b6kT
+ A9p2ax0nLIm2ndL+WGPeKj3OCUdn35YHrZYSbwAgo2hlaEqda51YXS3UBfJZonZ+NfPe
+ 67q2jklcWHSTcrjLcJc+gX7i+JJfdhW5TB8iArslR2IjLquqS2X8qXprjOPRsZrP5Sgg
+ YAdgEgXffFiWpEOlsJVxh36nlUC4XeAjWl4IgWcImrvdI6PccDkfLDI57bqKCHW+7MVY
+ dullUEjq/Cms3fhaxmLfFU7nF5eZutZhq52SKf5coBk1fabU+qaMr08m143EX8AGjQIY Mw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t40tart0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 14:48:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EEmuLj018476
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 14:48:56 GMT
+Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
+ 2023 07:48:55 -0700
+Message-ID: <7855cee1-c554-40b7-885f-d7f8d3d90979@quicinc.com>
+Date:   Thu, 14 Sep 2023 07:48:54 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w5dGWB6bqtjegC91"
-Content-Disposition: inline
-In-Reply-To: <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless-next 6/9] wifi: ath10k: Remove unnecessary
+ (void*) conversions
+Content-Language: en-US
+To:     Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>,
+        <toke@toke.dk>
+CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <20230914040517.1170024-1-yunchuan@nfschina.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230914040517.1170024-1-yunchuan@nfschina.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
+X-Proofpoint-ORIG-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=611 phishscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/13/2023 9:05 PM, Wu Yunchuan wrote:
+> No need cast (void*) to (struct htt_rx_ring_setup_ring32 *),
+> (struct htt_rx_ring_setup_ring64 *), (struct ath_softc *)
+> or (struct ath_hw *).
+> 
+> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++----
+>   drivers/net/wireless/ath/ath9k/pci.c     | 6 +++---
 
---w5dGWB6bqtjegC91
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ath9k change should be in a separate patch since it has a different 
+maintainer than ath10k
 
-On Thu, Sep 14, 2023 at 07:55:35AM +0200, Krzysztof Kozlowski wrote:
-> On 13/09/2023 23:14, Max Filippov wrote:
-> > Add documentation for the ESP32xx UART controllers.
-> >=20
-> > Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-> > ---
-> >  .../bindings/serial/esp,esp32-uart.yaml       | 48 +++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-=
-uart.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/serial/esp,esp32-uart.ya=
-ml b/Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
-> > new file mode 100644
-> > index 000000000000..8b45ef808107
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
-> > @@ -0,0 +1,48 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/serial/esp,esp32-uart.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: ESP32 UART controller
-> > +
-> > +maintainers:
-> > +  - Max Filippov <jcmvbkbc@gmail.com>
-> > +
-> > +description: |
-> > +  ESP32 UART controller is a part of ESP32 SoC series.
->=20
-> 1. Company name?
-> 2. ESP32 SoC series suggests esp32 is a series.
->=20
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - description: UART controller for the ESP32 SoC
-> > +        const: esp,esp32-uart
->=20
-> Also, the vendor prefix looks incorrect, so again - what is the company
-> name?
-
-esp32 is made by expressif, which would match with "esp" as a vendor
-prefix.
-
-
-
---w5dGWB6bqtjegC91
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMdKAAKCRB4tDGHoIJi
-0jdGAP4sUKNXkMwoIScWfBLsAsvhasgz8yvWr3ZT714K8R9RTgD+K5NqOOlcTqGa
-7guFL9U09dCkKLI+vEoOgY4PtJ3gCwQ=
-=ENOh
------END PGP SIGNATURE-----
-
---w5dGWB6bqtjegC91--
