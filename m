@@ -2,174 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F83379F66B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A23679F670
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjINBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        id S233760AbjINBk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbjINBkn (ORCPT
+        with ESMTP id S233625AbjINBk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:40:43 -0400
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C091BD0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:40:38 -0700 (PDT)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 38E1eVM3060589;
-        Thu, 14 Sep 2023 09:40:31 +0800 (+08)
-        (envelope-from peterlin@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Thu, 14 Sep 2023
- 09:40:31 +0800
-From:   Yu Chien Peter Lin <peterlin@andestech.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <david@redhat.com>,
-        <akpm@linux-foundation.org>, <alexghiti@rivosinc.com>,
-        <bjorn@rivosinc.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ycliang@andestech.com>,
-        Yu Chien Peter Lin <peterlin@andestech.com>
-Subject: [PATCH v2 1/3] riscv: Improve PTDUMP to show RSW with non-zero value
-Date:   Thu, 14 Sep 2023 09:40:25 +0800
-Message-ID: <20230914014027.273002-1-peterlin@andestech.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 13 Sep 2023 21:40:56 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA3B1BD3;
+        Wed, 13 Sep 2023 18:40:52 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DKbOIb005535;
+        Thu, 14 Sep 2023 01:40:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=bYGqFxi1OHfFB/skcVZcSNk2thtjUMw9RD2mRaKfX10=;
+ b=wYRgWChSINdnbpKSsFZ4P28BgOyIW6W8w/TfqRyJ3QZiSqd0ZV3DmX+dgXyFN6yLFwqU
+ 6Ei0F9Ptwng7uPc9GG+B8XExq+V0WAZ4SMSVPnkotZQm7TbG/4rgg+UFxCSDmhbKzQb3
+ cSjQIzLGKwmjuhXR7eJ0UPXlOZ0J/CgLYYv7SioS5bZapuWVaxSIfxiYbdcVxluYiJHX
+ lUBZwtBjIIfPH5H3OsgiGPy5+dvjaGcUuX855ZHpRDv2f5xMsXwhMRuX92G/suzxYc5K
+ mXWJwowCLYHNCHAzVpdzWcMl9MBpm2m23jwbqd4cMLnLPDWodtYOwEnzKKdVgh/XpWau Gg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y9kujut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 01:40:44 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38E15njl007764;
+        Thu, 14 Sep 2023 01:40:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f581r12-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 01:40:43 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38E1efpP038417;
+        Thu, 14 Sep 2023 01:40:42 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3t0f581qyy-2;
+        Thu, 14 Sep 2023 01:40:42 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scsi: target: Replace strlcpy with strscpy
+Date:   Wed, 13 Sep 2023 21:40:25 -0400
+Message-Id: <169465549434.730690.14253964357330620522.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230831143638.232596-1-azeemshaikh38@gmail.com>
+References: <20230831143638.232596-1-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 38E1eVM3060589
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_19,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=717 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140013
+X-Proofpoint-GUID: OL_8MbQxqPqPazGAf-Yn2ihlsF1JXjHb
+X-Proofpoint-ORIG-GUID: OL_8MbQxqPqPazGAf-Yn2ihlsF1JXjHb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RSW field can be used to encode 2 bits of software defined
-information, currently PTDUMP only prints RSW when its value
-is 1 or 3.
+On Thu, 31 Aug 2023 14:36:38 +0000, Azeem Shaikh wrote:
 
-To fix this issue and enhance the debug experience with PTDUMP,
-we use _PAGE_SOFT as the RSW mask and redefine _PAGE_SPECIAL to
-(1 << 8), allow it to print the RSW with any non-zero value,
-otherwise, it will print an empty string for each row.
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> 
+> [...]
 
-This patch also removes the val from the struct prot_bits as
-it is no longer needed.
+Applied to 6.6/scsi-fixes, thanks!
 
-Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
----
- arch/riscv/include/asm/pgtable-bits.h |  4 +--
- arch/riscv/mm/ptdump.c                | 36 +++++++++++----------------
- 2 files changed, 17 insertions(+), 23 deletions(-)
+[1/1] scsi: target: Replace strlcpy with strscpy
+      https://git.kernel.org/mkp/scsi/c/5c584fe6098a
 
-diff --git a/arch/riscv/include/asm/pgtable-bits.h b/arch/riscv/include/asm/pgtable-bits.h
-index f896708e8331..99e60fd3eb72 100644
---- a/arch/riscv/include/asm/pgtable-bits.h
-+++ b/arch/riscv/include/asm/pgtable-bits.h
-@@ -16,9 +16,9 @@
- #define _PAGE_GLOBAL    (1 << 5)    /* Global */
- #define _PAGE_ACCESSED  (1 << 6)    /* Set by hardware on any access */
- #define _PAGE_DIRTY     (1 << 7)    /* Set by hardware on any write */
--#define _PAGE_SOFT      (1 << 8)    /* Reserved for software */
-+#define _PAGE_SOFT      (3 << 8)    /* Reserved for software */
- 
--#define _PAGE_SPECIAL   _PAGE_SOFT
-+#define _PAGE_SPECIAL   (1 << 8)
- #define _PAGE_TABLE     _PAGE_PRESENT
- 
- /*
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 20a9f991a6d7..85686652f342 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -129,7 +129,6 @@ static struct ptd_mm_info efi_ptd_info = {
- /* Page Table Entry */
- struct prot_bits {
- 	u64 mask;
--	u64 val;
- 	const char *set;
- 	const char *clear;
- };
-@@ -137,47 +136,38 @@ struct prot_bits {
- static const struct prot_bits pte_bits[] = {
- 	{
- 		.mask = _PAGE_SOFT,
--		.val = _PAGE_SOFT,
--		.set = "RSW",
--		.clear = "   ",
-+		.set = "RSW(%d)",
-+		.clear = "      ",
- 	}, {
- 		.mask = _PAGE_DIRTY,
--		.val = _PAGE_DIRTY,
- 		.set = "D",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_ACCESSED,
--		.val = _PAGE_ACCESSED,
- 		.set = "A",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_GLOBAL,
--		.val = _PAGE_GLOBAL,
- 		.set = "G",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_USER,
--		.val = _PAGE_USER,
- 		.set = "U",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_EXEC,
--		.val = _PAGE_EXEC,
- 		.set = "X",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_WRITE,
--		.val = _PAGE_WRITE,
- 		.set = "W",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_READ,
--		.val = _PAGE_READ,
- 		.set = "R",
- 		.clear = ".",
- 	}, {
- 		.mask = _PAGE_PRESENT,
--		.val = _PAGE_PRESENT,
- 		.set = "V",
- 		.clear = ".",
- 	}
-@@ -208,15 +198,19 @@ static void dump_prot(struct pg_state *st)
- 	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(pte_bits); i++) {
--		const char *s;
--
--		if ((st->current_prot & pte_bits[i].mask) == pte_bits[i].val)
--			s = pte_bits[i].set;
--		else
--			s = pte_bits[i].clear;
--
--		if (s)
--			pt_dump_seq_printf(st->seq, " %s", s);
-+		char s[7];
-+		unsigned long val;
-+
-+		val = st->current_prot & pte_bits[i].mask;
-+		if (val) {
-+			if (pte_bits[i].mask == _PAGE_SOFT)
-+				sprintf(s, pte_bits[i].set, val >> 8);
-+			else
-+				sprintf(s, "%s", pte_bits[i].set);
-+		} else
-+			sprintf(s, "%s", pte_bits[i].clear);
-+
-+		pt_dump_seq_printf(st->seq, " %s", s);
- 	}
- }
- 
 -- 
-2.34.1
-
+Martin K. Petersen	Oracle Linux Engineering
