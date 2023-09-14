@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C977A09CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691BB7A09D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241241AbjINPxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
+        id S241251AbjINPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241019AbjINPxb (ORCPT
+        with ESMTP id S241221AbjINPzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:53:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0191BDD;
-        Thu, 14 Sep 2023 08:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694706807; x=1726242807;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+Iq4mvDCPkc5NX/TTMSnD5WIVQgpzL/9/gki1RmIoCo=;
-  b=kv/Om4kGfPmxvQO5jd41RRf6lnzI/h9NFFeFRjJDR+zeub7wy/2MIDSN
-   zKHQ3lnuSEJljkPWWbbvtFW8QWRRKOt3gfohTDDnqWlXhU9SPhP0c7FJp
-   FiE+rzIVs7zTsLxfxjZE3NHDm/NCaOcKHISX22Ftj/3dp+/Rhi2PO8doB
-   8FfF7SsZHYTy/xCnIWcclpjKfXaccQohCJvO7tP57Ts1NGvZ2fmRE+a0a
-   4QijMe2SHedzU9AzvoPON3VjP+6vfaq2oH5+eeF5ut0PWm2YTy11LjDdV
-   IQWXLPtdVe0zZZPimEDnHnxZRR62LiuK0xJXUcqLk83bMczITJ5tK3h0G
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="382809810"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="382809810"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:53:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="991445022"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="991445022"
-Received: from jnikula-mobl4.fi.intel.com (HELO localhost) ([10.237.66.162])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:53:23 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Jani Nikula <jani.nikula@intel.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Guillaume Ranquet <granquet@baylibre.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Bo-Chen Chen <rex-bc.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH] drm/mediatek/dp: fix memory leak on ->get_edid callback audio detection
-Date:   Thu, 14 Sep 2023 18:53:17 +0300
-Message-Id: <20230914155317.2511876-1-jani.nikula@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230914131058.2472260-1-jani.nikula@intel.com>
-References: <20230914131058.2472260-1-jani.nikula@intel.com>
+        Thu, 14 Sep 2023 11:55:23 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E661BE5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:55:19 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76e09202322so77314185a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694706918; x=1695311718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ed6kMFIrr+f+xn9dsqgZ7eRcJZoA4HQQQ41J7y4ud6w=;
+        b=pEXchg2u8svKoSQNz0fHbMPNsgy6dlftmrtNZlrrIeIQc4EHM7MNlefMH7xLXMhPOU
+         DHakgv8FLYp2O8FEjo4DtDZwixQEgUEHicwmf1agy3XSH68Y3nwrYZHckJfHRA09jYxE
+         BJsHqusZreI7iCLDWLTfSylUJmIGT0OsVNHmKZgw1g6e6fYzgORAMVX5ccopSCPF8Agn
+         MtVqpgLSTW1cubGzNN9qlpLK069+5Xlq5Fdp0ScRgdyHu9WzbKjA3qHt6viGwEOJsZLk
+         AvGiTGjvGH0O5poS+nxzxfEcIq/6pKSiYZEnCfWm7CUx1hR1UYiP+MTwdMxh6yZNArZU
+         iAYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694706918; x=1695311718;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ed6kMFIrr+f+xn9dsqgZ7eRcJZoA4HQQQ41J7y4ud6w=;
+        b=VjINibk7jmsYoq15cJsdp6Lt34wf+FNoW0d3eypzm77VDRxcMDUszBErX7uDuVloum
+         KLdIj0YtiLLEh7JGBYnPCGA4H9VRAGYf0ylGNefyRzwe9TT1m3YraWMUjqXAvbFPwJgW
+         hP+uaQ1M8oiBB56ToNQbq1LFyuX5/10E/OX4cadYQdC97YPzLGNz50q7QKj9tbUumjgW
+         ZQFgL/OPTS3tnAyKUmtiepS6UemA6Gy7b3Yg2bN3WMFzl3DP2lXHtAYdqMfjHWwOMtpm
+         vCg59pcolHLEjyd5HVZNLYNlACkqDESQvijFzaf2iqWb2qj8raVrrayoEw6BBw4hieQN
+         FZ9A==
+X-Gm-Message-State: AOJu0Yywy9aKxhZgfN7Ie28qAsvW6lZJ7VAN9PB0KlEOUwbZ/hoBvDav
+        TErYneL6jGSxo+IWLqm6HSX9jWNxAfYn/CjHcRPA/A==
+X-Google-Smtp-Source: AGHT+IGeUfpfIHksy/bSpNhD0SpKxU/8ki6nZfCPY8OfuV8JRGkANdn9lKVe20GsF1utajayE7ecn4avCnOFbJp7XDI=
+X-Received: by 2002:a0c:c212:0:b0:649:869c:8dfc with SMTP id
+ l18-20020a0cc212000000b00649869c8dfcmr6543602qvh.50.1694706918155; Thu, 14
+ Sep 2023 08:55:18 -0700 (PDT)
 MIME-Version: 1.0
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Transfer-Encoding: 8bit
+References: <20230914131225.13415-1-will@kernel.org> <20230914131225.13415-3-will@kernel.org>
+In-Reply-To: <20230914131225.13415-3-will@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 Sep 2023 08:55:03 -0700
+Message-ID: <CAKwvOd=z5pjr2Y=jxYU=Y10EKniWd4w8YV_yhZRvVBoon8TRLQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] scripts/faddr2line: Use LLVM addr2line and readelf
+ if LLVM=1
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sads returned by drm_edid_to_sad() needs to be freed.
+On Thu, Sep 14, 2023 at 6:12=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> GNU utilities cannot necessarily parse objects built by LLVM, which can
+> result in confusing errors when using 'faddr2line':
+>
+> $ CROSS_COMPILE=3Daarch64-linux-gnu- ./scripts/faddr2line vmlinux do_one_=
+initcall+0xf4/0x260
+> aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.=
+dyn'
+> aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value=
+: 0x25
+> do_one_initcall+0xf4/0x260:
+> aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.=
+dyn'
+> aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value=
+: 0x25
+> $x.73 at main.c:?
+>
+> Although this can be worked around by setting CROSS_COMPILE to "llvm=3D-"=
+,
+> it's cleaner to follow the same syntax as the top-level Makefile and
+> accept LLVM=3D as an indication to use the llvm- tools, optionally
+> specifying their location or specific version number.
+>
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-Fixes: e71a8ebbe086 ("drm/mediatek: dp: Audio support for MT8195")
-Cc: Guillaume Ranquet <granquet@baylibre.com>
-Cc: Bo-Chen Chen <rex-bc.chen@mediatek.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: <stable@vger.kernel.org> # v6.1+
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Thanks for the patch series!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
----
+> ---
+>  scripts/faddr2line | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/faddr2line b/scripts/faddr2line
+> index a35a420d0f26..6b8206802157 100755
+> --- a/scripts/faddr2line
+> +++ b/scripts/faddr2line
+> @@ -58,8 +58,21 @@ die() {
+>         exit 1
+>  }
+>
+> -READELF=3D"${CROSS_COMPILE:-}readelf"
+> -ADDR2LINE=3D"${CROSS_COMPILE:-}addr2line"
+> +UTIL_SUFFIX=3D""
+> +if [[ "${LLVM:-}" =3D=3D "" ]]; then
+> +       UTIL_PREFIX=3D${CROSS_COMPILE:-}
+> +else
+> +       UTIL_PREFIX=3Dllvm-
+> +
+> +       if [[ "${LLVM}" =3D=3D *"/" ]]; then
+> +               UTIL_PREFIX=3D${LLVM}${UTIL_PREFIX}
+> +       elif [[ "${LLVM}" =3D=3D "-"* ]]; then
+> +               UTIL_SUFFIX=3D${LLVM}
+> +       fi
+> +fi
+> +
+> +READELF=3D"${UTIL_PREFIX}readelf${UTIL_SUFFIX}"
+> +ADDR2LINE=3D"${UTIL_PREFIX}addr2line${UTIL_SUFFIX}"
+>  AWK=3D"awk"
+>  GREP=3D"grep"
+>
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
 
-Found another one. UNTESTED.
----
- drivers/gpu/drm/mediatek/mtk_dp.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index 8fc6eff68e30..0e285df6577e 100644
---- a/drivers/gpu/drm/mediatek/mtk_dp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -2034,7 +2034,6 @@ static struct edid *mtk_dp_get_edid(struct drm_bridge *bridge,
- 	bool enabled = mtk_dp->enabled;
- 	struct edid *new_edid = NULL;
- 	struct mtk_dp_audio_cfg *audio_caps = &mtk_dp->info.audio_cur_cfg;
--	struct cea_sad *sads;
- 
- 	if (!enabled) {
- 		drm_atomic_bridge_chain_pre_enable(bridge, connector->state->state);
-@@ -2054,7 +2053,11 @@ static struct edid *mtk_dp_get_edid(struct drm_bridge *bridge,
- 	}
- 
- 	if (new_edid) {
-+		struct cea_sad *sads;
-+
- 		audio_caps->sad_count = drm_edid_to_sad(new_edid, &sads);
-+		kfree(sads);
-+
- 		audio_caps->detect_monitor = drm_detect_monitor_audio(new_edid);
- 	}
- 
--- 
-2.39.2
-
+--=20
+Thanks,
+~Nick Desaulniers
