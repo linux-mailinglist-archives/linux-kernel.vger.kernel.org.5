@@ -2,232 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC417A0AE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637DE7A0AE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjINQh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S234660AbjINQhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINQh2 (ORCPT
+        with ESMTP id S234485AbjINQhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:37:28 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78661FDE
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:37:23 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bf78950354so18985511fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694709442; x=1695314242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=INzY5mzDJkNITQ5vOtkJ6OyVulyDxlKzw3k+lMybVJM=;
-        b=guAlihucWu1zM4rFx9cXRd2Y0cikYetfxeCc7beCXaHTgQc5vSYzUi9zTL5XWBLrkh
-         LOualqFxGKP9ZUBF/xBhCXb2pJbFw1LCpBHNGMbeSoHUcrF4NacXpG9NhG69n/L8u1ut
-         uHJEHLW0TBvW4Js6Cb4Uj3FPpcIxYrYzlZwkDUChUKYlkRJzVAt3J53fdRJ49Xb2Q+L/
-         R6O7IhJoB6LzLfsjkTjWxbdQHETXzf5/lqJqRmKb1A+wA1wERxQsXAsLiHixhy03WL7J
-         lWwORo0YZEwEeg4VDgC3jazrMrrhdVMuRcv+b5EqbfKBARIL1orYNm35VSa7o3/IWIyS
-         2EuQ==
+        Thu, 14 Sep 2023 12:37:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5802E1FD7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694709418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o5/7FW8+bpep4lR+GR+4sw7+o+hytEZYZa/XT16JWK0=;
+        b=PzWkPyIgRf8yb8vZi4T3539R6HNel+5p8IdX+42DVrdU2NdUteAIvDmC65m7hQiu3SdxsO
+        Uef1eATRFjUV3XBazlvypkCvspQoiF1kbYgIzjBKHXW1dGG0kjLRSOXuyQFidecT1YKrN3
+        G1FuLDZBtLlgqr3YKvnNkdkclNWEZjE=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117--q7uqNmKNp227QZ9T00b3A-1; Thu, 14 Sep 2023 12:36:55 -0400
+X-MC-Unique: -q7uqNmKNp227QZ9T00b3A-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2bcba79cedfso14900301fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:36:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694709442; x=1695314242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=INzY5mzDJkNITQ5vOtkJ6OyVulyDxlKzw3k+lMybVJM=;
-        b=CLqpesS+Zd9SciRlHKhpi6eyO3So2bs9bNd6s5w7Z+EIzFrANO+syIn2cMCcDroLav
-         EPGezLm+lD13gbsiNbNrjR+UlP2QWbjN4DOVKfiMIEtt3iKxm6iUiEnceX31GrTTDiGW
-         xRbjWLv7PtUWuir1qXoGE3ymhzzrv3q/E+uy8cl0WGILtIE3x5RLftqWTd3FKBWOLYkw
-         VJMZqd6lNRQej6ZhOM4jZH4PVV645BYDtBSWSP78uqksONnz6CWrTup8bXjV3JJpKcx8
-         Fmgs9zftjmGMIFmppKP5tf1f3SMYn39ojRM0PCrC+oymkcIehDd4OWxesK8JbilwQrMN
-         Xk4A==
-X-Gm-Message-State: AOJu0YzQY1f+Nac6wzxQSSBR9kWiVJ8LXA240qC3jv6Zv+hpdyW03zpI
-        aw01jzm8iYkkJ6IyqbmTktzoNQPXPYSgkaGSuHIZ8w==
-X-Google-Smtp-Source: AGHT+IGXhAInxFKQbKfHLY9/qgI04l1AFAvp7t0z7LIBOucUx5X+JWNDSTLpNWQ3GuOUiWNkbDCKY1C8vRn4pJDvDqg=
-X-Received: by 2002:a2e:9455:0:b0:2bc:c11c:4471 with SMTP id
- o21-20020a2e9455000000b002bcc11c4471mr5726081ljh.21.1694709441979; Thu, 14
- Sep 2023 09:37:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694709413; x=1695314213;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o5/7FW8+bpep4lR+GR+4sw7+o+hytEZYZa/XT16JWK0=;
+        b=mgFt72y6/lyhIr2rc5Yfe2o6HoeJAEUM51d4AL7lx/LlmtflapQPDurgtIAgq6C7IS
+         yPXBEotZxMTAJgdLtXN8lG+3Hts/nuskXtV10vt3iFosBxJWxtYXBZjuBWXYglhx9eAe
+         sHeopAxFu45/d1R6TrzfU0XeBDGG9h5aGD4uXSgwXjH5jA9/y5Lkpfl5rOaLVX2nvuHY
+         9xjVQRtd7M7mwmA4xysG08/fp0s460+pYCtcI2cGo0STGwEGKmKUq11OWlzOkV6d7dIl
+         /pqL8QVwDIK8enjr8yvxosM3OQTFFPR9+dxsKuU4Q2SxY2qKuOxh/pEjF9nbVC+0nBW4
+         Abiw==
+X-Gm-Message-State: AOJu0Ywzd8ncg3qYJLVObGwWZcxqqglwzDS1ZifHZmdBwUSjt6ACUytC
+        uvG8RXLTtF4lN3+GFohIMEoXSjUgJewRR68jvCWLcdk78mUoqDUEIouItgtaSBpPlxFNnW1l7KO
+        Nmt4Yjba9DQ6sRlk+qUma6hOc
+X-Received: by 2002:ac2:52b1:0:b0:500:b74b:e53 with SMTP id r17-20020ac252b1000000b00500b74b0e53mr4823596lfm.46.1694709413615;
+        Thu, 14 Sep 2023 09:36:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEVaI6opWgDsECNDnnBgI/exiVhz0yXejEnk7Rp0fMRo7GWclXor2y5jgxkilHEFPELP8iqRg==
+X-Received: by 2002:ac2:52b1:0:b0:500:b74b:e53 with SMTP id r17-20020ac252b1000000b00500b74b0e53mr4823584lfm.46.1694709413215;
+        Thu, 14 Sep 2023 09:36:53 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id wj18-20020a170907051200b009adc5802d30sm336701ejb.21.2023.09.14.09.36.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 09:36:52 -0700 (PDT)
+Message-ID: <c620c142-ea38-415d-729e-2561f1f4bae3@redhat.com>
+Date:   Thu, 14 Sep 2023 18:36:50 +0200
 MIME-Version: 1.0
-References: <20230818194136.4084400-1-evan@rivosinc.com> <20230818194136.4084400-2-evan@rivosinc.com>
- <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
- <CALs-Hsvu7BsK8P0+xeuLmKEqg-q=kQANbf8FkiPGPhwhnSXpmA@mail.gmail.com>
- <CAMuHMdV594xA1UoTeVixpXm3i5LDFO5cT=dd_iRwWLwvxQctZg@mail.gmail.com>
- <de95229a14614198894a8ce421c30d94@AcuMS.aculab.com> <CALs-Hstcz3OAxUi80nm+U0R56VBUUPQT=+XMOLpVJsn2ZOcM1A@mail.gmail.com>
- <172bc43cc2ac45239ec40477d53d263a@AcuMS.aculab.com>
-In-Reply-To: <172bc43cc2ac45239ec40477d53d263a@AcuMS.aculab.com>
-From:   Evan Green <evan@rivosinc.com>
-Date:   Thu, 14 Sep 2023 09:36:45 -0700
-Message-ID: <CALs-HsvMfrsPsG2b9imLNOJFH6Xk45G0=UPWGtExePiMKV6+1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Simon Hosie <shosie@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andy Chiu <andy.chiu@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-7-dakr@redhat.com>
+ <62d9b00a-547a-2106-5ec3-6f6a88023496@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <62d9b00a-547a-2106-5ec3-6f6a88023496@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 8:55=E2=80=AFAM David Laight <David.Laight@aculab.c=
-om> wrote:
->
-> From: Evan Green
-> > Sent: 14 September 2023 16:01
-> >
-> > On Thu, Sep 14, 2023 at 1:47=E2=80=AFAM David Laight <David.Laight@acul=
-ab.com> wrote:
-> > >
-> > > From: Geert Uytterhoeven
-> > > > Sent: 14 September 2023 08:33
-> > > ...
-> > > > > >     rzfive:
-> > > > > >         cpu0: Ratio of byte access time to unaligned word acces=
-s is
-> > > > > > 1.05, unaligned accesses are fast
-> > > > >
-> > > > > Hrm, I'm a little surprised to be seeing this number come out so =
-close
-> > > > > to 1. If you reboot a few times, what kind of variance do you get=
- on
-> > > > > this?
-> > > >
-> > > > Rock-solid at 1.05 (even with increased resolution: 1.05853 on 3 tr=
-ies)
-> > >
-> > > Would that match zero overhead unless the access crosses a
-> > > cache line boundary?
-> > > (I can't remember whether the test is using increasing addresses.)
-> >
-> > Yes, the test does use increasing addresses, it copies across 4 pages.
-> > We start with a warmup, so caching effects beyond L1 are largely not
-> > taken into account.
->
-> That seems entirely excessive.
-> If you want to avoid data cache issues (which probably do)
-> then just repeating a single access would almost certainly
-> suffice.
-> Repeatedly using a short buffer (say 256 bytes) won't add
-> much loop overhead.
-> Although you may want to do a test that avoids transfers
-> that cross cache line and especially page boundaries.
-> Either of those could easily be much slower than a read
-> that is entirely within a cache line.
+On 9/14/23 15:48, Thomas Hellström wrote:
+> Hi, Danilo
+> 
+> Some additional minor comments as xe conversion progresses.
+> 
+> On 9/9/23 17:31, Danilo Krummrich wrote:
+>> So far the DRM GPUVA manager offers common infrastructure to track GPU VA
+>> allocations and mappings, generically connect GPU VA mappings to their
+>> backing buffers and perform more complex mapping operations on the GPU VA
+>> space.
+>>
+>> However, there are more design patterns commonly used by drivers, which
+>> can potentially be generalized in order to make the DRM GPUVA manager
+>> represent a basic GPU-VM implementation. In this context, this patch aims
+>> at generalizing the following elements.
+>>
+>> 1) Provide a common dma-resv for GEM objects not being used outside of
+>>     this GPU-VM.
+>>
+>> 2) Provide tracking of external GEM objects (GEM objects which are
+>>     shared with other GPU-VMs).
+>>
+>> 3) Provide functions to efficiently lock all GEM objects dma-resv the
+>>     GPU-VM contains mappings of.
+>>
+>> 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
+>>     of, such that validation of evicted GEM objects is accelerated.
+>>
+>> 5) Provide some convinience functions for common patterns.
+>>
+>> Rather than being designed as a "framework", the target is to make all
+>> features appear as a collection of optional helper functions, such that
+>> drivers are free to make use of the DRM GPUVA managers basic
+>> functionality and opt-in for other features without setting any feature
+>> flags, just by making use of the corresponding functions.
+>>
+>> Big kudos to Boris Brezillon for his help to figure out locking for drivers
+>> updating the GPU VA space within the fence signalling path.
+>>
+>> Suggested-by: Matthew Brost <matthew.brost@intel.com>
+>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>> ---
+>>
+>> +/**
+>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gem_object to / from a
+>> + * &drm_gpuvms evicted list
+>> + * @obj: the &drm_gem_object to add or remove
+>> + * @evict: indicates whether the object is evicted
+>> + *
+>> + * Adds a &drm_gem_object to or removes it from all &drm_gpuvms evicted
+>> + * list containing a mapping of this &drm_gem_object.
+>> + */
+>> +void
+>> +drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict)
+>> +{
+>> +    struct drm_gpuvm_bo *vm_bo;
+>> +
+>> +    drm_gem_for_each_gpuvm_bo(vm_bo, obj) {
+>> +        if (evict)
+>> +            drm_gpuvm_bo_list_add(vm_bo, evict);
+>> +        else
+>> +            drm_gpuvm_bo_list_del(vm_bo, evict);
+>> +    }
+>> +}
+>> +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_evict);
+>> +
+> 
+> We need a drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, ...) that puts a single gpuvm_bo on the list, the above function could perhaps be renamed as drm_gpuvm_gem_obj_evict(obj, ....).
 
-We won't be faulting on any of these pages, and they should remain in
-the TLB, so I don't expect many page boundary specific effects. If
-there is a steep penalty for misaligned loads across a cache line,
-such that it's worse than doing byte accesses, I want the test results
-to be dinged for that.
+Makes sense - gonna change that.
 
->
-> ...
-> > > > > >     vexriscv/orangecrab:
-> > > > > >
-> > > > > >         cpu0: Ratio of byte access time to unaligned word acces=
-s is
-> > > > > > 0.00, unaligned accesses are slow
-> > > >
-> > > > cpu0: Ratio of byte access time to unaligned word access is 0.00417=
-,
-> > > > unaligned accesses are slow
-> > > >
-> > > > > > I am a bit surprised by the near-zero values.  Are these expect=
-ed?
-> > > > >
-> > > > > This could be expected, if firmware is trapping the unaligned acc=
-esses
-> > > > > and coming out >100x slower than a native access. If you're inter=
-ested
-> > > > > in getting a little more resolution, you could try to print a few=
- more
-> > > > > decimal places with something like (sorry gmail mangles the white=
-space
-> > > > > on this):
-> > >
-> > > I'd expect one of three possible values:
-> > > - 1.0x: Basically zero cost except for cache line/page boundaries.
-> > > - ~2: Hardware does two reads and merges the values.
-> > > - >100: Trap fixed up in software.
-> > >
-> > > I'd think the '2' case could be considered fast.
-> > > You only need to time one access to see if it was a fault.
-> >
-> > We're comparing misaligned word accesses with byte accesses of the
-> > same total size. So 1.0 means a misaligned load is basically no
-> > different from 8 byte loads. The goal was to help people that are
-> > forced to do odd loads and stores decide whether they are better off
-> > moving by bytes or by misaligned words. (In contrast, the answer to
-> > "should I do a misaligned word load or an aligned word load" is
-> > generally always "do the aligned one if you can", so comparing those
-> > two things didn't seem as useful).
->
-> Ah, I'd have compared the cost of aligned accesses with misaligned ones.
-> That would tell you whether you really need to avoid them.
-> The cost of byte and aligned word accesses should be much the same
-> (for each access that is) - if not you've got a real bottleneck.
->
-> If a misaligned access is 8 times slower than an aligned one
-> it is still 'quite slow'.
-> I'd definitely call that 8 not 1 - even if you treat it as 'fast'.
+> 
+> Reason is some vm's are faulting vms which don't have an evict list, but validate from the pagefault handler. Also evict == false is dangerous because if called from within an exec, it might remove the obj from other vm's evict list before they've had a chance to rebind their VMAs.
+> 
+>>   static int
+>>   __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+>>              struct drm_gpuva *va)
+>> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+>> index afa50b9059a2..834bb6d6617e 100644
+>> --- a/include/drm/drm_gpuvm.h
+>> +++ b/include/drm/drm_gpuvm.h
+>> @@ -26,10 +26,12 @@
+>>    */
+>>   #include <linux/list.h>
+>> +#include <linux/dma-resv.h>
+>>   #include <linux/rbtree.h>
+>>   #include <linux/types.h>
+>>   #include <drm/drm_gem.h>
+>> +#include <drm/drm_exec.h>
+>>   struct drm_gpuvm;
+>>   struct drm_gpuvm_bo;
+>> @@ -259,6 +261,38 @@ struct drm_gpuvm {
+>>        * space
+>>        */
+>>       struct dma_resv *resv;
+>> +
+>> +    /**
+>> +     * @extobj: structure holding the extobj list
+>> +     */
+>> +    struct {
+>> +        /**
+>> +         * @list: &list_head storing &drm_gpuvm_bos serving as
+>> +         * external object
+>> +         */
+>> +        struct list_head list;
+>> +
+>> +        /**
+>> +         * @lock: spinlock to protect the extobj list
+>> +         */
+>> +        spinlock_t lock;
+>> +    } extobj;
+>> +
+>> +    /**
+>> +     * @evict: structure holding the evict list and evict list lock
+>> +     */
+>> +    struct {
+>> +        /**
+>> +         * @list: &list_head storing &drm_gpuvm_bos currently being
+>> +         * evicted
+>> +         */
+>> +        struct list_head list;
+>> +
+>> +        /**
+>> +         * @lock: spinlock to protect the evict list
+>> +         */
+>> +        spinlock_t lock;
+>> +    } evict;
+>>   };
+>>   void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
+>> @@ -268,6 +302,21 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
+>>               const struct drm_gpuvm_ops *ops);
+>>   void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
+>> +/**
+>> + * drm_gpuvm_is_extobj() - indicates whether the given &drm_gem_object is an
+>> + * external object
+>> + * @gpuvm: the &drm_gpuvm to check
+>> + * @obj: the &drm_gem_object to check
+>> + *
+>> + * Returns: true if the &drm_gem_object &dma_resv differs from the
+>> + * &drm_gpuvms &dma_resv, false otherwise
+>> + */
+>> +static inline bool drm_gpuvm_is_extobj(struct drm_gpuvm *gpuvm,
+>> +                       struct drm_gem_object *obj)
+>> +{
+>> +    return obj && obj->resv != gpuvm->resv;
+>> +}
+>> +
+>>   static inline struct drm_gpuva *
+>>   __drm_gpuva_next(struct drm_gpuva *va)
+>>   {
+>> @@ -346,6 +395,128 @@ __drm_gpuva_next(struct drm_gpuva *va)
+>>   #define drm_gpuvm_for_each_va_safe(va__, next__, gpuvm__) \
+>>       list_for_each_entry_safe(va__, next__, &(gpuvm__)->rb.list, rb.entry)
+>> +/**
+>> + * struct drm_gpuvm_exec - &drm_gpuvm abstraction of &drm_exec
+>> + *
+>> + * This structure should be created on the stack as &drm_exec should be.
+>> + *
+>> + * Optionally, @extra can be set in order to lock additional &drm_gem_objects.
+>> + */
+>> +struct drm_gpuvm_exec {
+>> +    /**
+>> +     * @exec: the &drm_exec structure
+>> +     */
+>> +    struct drm_exec exec;
+>> +
+>> +    /**
+>> +     * @vm: the &drm_gpuvm to lock its DMA reservations
+>> +     */
+>> +    struct drm_gpuvm *vm;
+>> +
+>> +    /**
+>> +     * @extra: Callback and corresponding private data for the driver to
+>> +     * lock arbitrary additional &drm_gem_objects.
+>> +     */
+>> +    struct {
+>> +        /**
+>> +         * @fn: The driver callback to lock additional &drm_gem_objects.
+>> +         */
+>> +        int (*fn)(struct drm_gpuvm_exec *vm_exec,
+>> +              unsigned int num_fences);
+>> +
+>> +        /**
+>> +         * @priv: driver private data for the @fn callback
+>> +         */
+>> +        void *priv;
+>> +    } extra;
+>> +};
+>> +
+>> +/**
+>> + * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
+>> + * @gpuvm: the &drm_gpuvm
+>> + * @exec: the &drm_exec context
+>> + * @num_fences: the amount of &dma_fences to reserve
+>> + *
+>> + * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
+>> + *
+>> + * Using this function directly, it is the drivers responsibility to call
+>> + * drm_exec_init() and drm_exec_fini() accordingly.
+>> + *
+>> + * Returns: 0 on success, negative error code on failure.
+>> + */
+>> +static inline int
+>> +drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
+>> +             struct drm_exec *exec,
+>> +             unsigned int num_fences)
+>> +{
+>> +    return drm_exec_prepare_obj(exec, &gpuvm->d_obj, num_fences);
+>> +}
+>> +
+>> +int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
+>> +                  struct drm_exec *exec,
+>> +                  unsigned int num_fences);
+>> +
+>> +int drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm,
+>> +                struct drm_exec *exec,
+>> +                u64 addr, u64 range,
+>> +                unsigned int num_fences);
+>> +
+>> +int drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
+>> +            unsigned int num_fences,
+>> +            bool interruptible);
+>> +
+>> +int drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
+>> +                  struct drm_gem_object **objs,
+>> +                  unsigned int num_objs,
+>> +                  unsigned int num_fences,
+>> +                  bool interruptible);
+>> +
+>> +int drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
+>> +                  u64 addr, u64 range,
+>> +                  unsigned int num_fences,
+>> +                  bool interruptible);
+>> +
+>> +/**
+>> + * drm_gpuvm_lock() - lock all dma-resv of all assoiciated BOs
+>> + * @gpuvm: the &drm_gpuvm
+>> + *
+>> + * Releases all dma-resv locks of all &drm_gem_objects previously acquired
+>> + * through drm_gpuvm_lock() or its variants.
+>> + *
+>> + * Returns: 0 on success, negative error code on failure.
+>> + */
+>> +static inline void
+>> +drm_gpuvm_exec_unlock(struct drm_gpuvm_exec *vm_exec)
+>> +{
+>> +    drm_exec_fini(&vm_exec->exec);
+>> +}
+>> +
+>> +int drm_gpuvm_validate(struct drm_gpuvm *gpuvm);
+>> +void drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
+>> +                  struct drm_exec *exec,
+>> +                  struct dma_fence *fence,
+>> +                  enum dma_resv_usage private_usage,
+>> +                  enum dma_resv_usage extobj_usage);
+>> +
+>> +/**
+>> + * drm_gpuvm_exec_resv_add_fence()
+>> + * @vm_exec: the &drm_gpuvm_exec abstraction
+>> + * @fence: fence to add
+>> + * @private_usage: private dma-resv usage
+>> + * @extobj_usage: extobj dma-resv usage
+>> + *
+>> + * See drm_gpuvm_resv_add_fence().
+>> + */
+>> +static inline void
+>> +drm_gpuvm_exec_resv_add_fence(struct drm_gpuvm_exec *vm_exec,
+>> +                  struct dma_fence *fence,
+>> +                  enum dma_resv_usage private_usage,
+>> +                  enum dma_resv_usage extobj_usage)
+>> +{
+>> +    drm_gpuvm_resv_add_fence(vm_exec->vm, &vm_exec->exec, fence,
+>> +                 private_usage, extobj_usage);
+>> +}
+>> +
+>>   /**
+>>    * struct drm_gpuvm_bo - structure representing a &drm_gpuvm and
+>>    * &drm_gem_object combination
+>> @@ -398,6 +569,18 @@ struct drm_gpuvm_bo {
+>>                * gpuva list.
+>>                */
+>>               struct list_head gem;
+>> +
+>> +            /**
+>> +             * @evict: List entry to attach to the &drm_gpuvms
+>> +             * extobj list.
+>> +             */
+>> +            struct list_head extobj;
+>> +
+>> +            /**
+>> +             * @evict: List entry to attach to the &drm_gpuvms evict
+>> +             * list.
+>> +             */
+>> +            struct list_head evict;
+>>           } entry;
+>>       } list;
+>>   };
+>> @@ -432,6 +615,9 @@ struct drm_gpuvm_bo *
+>>   drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
+>>             struct drm_gem_object *obj);
+>> +void drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict);
+>> +void drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo);
+>> +
+>>   /**
+>>    * drm_gpuvm_bo_for_each_va() - iterator to walk over a list of &drm_gpuva
+>>    * @va__: &drm_gpuva structure to assign to in each iteration step
+>> @@ -837,6 +1023,17 @@ struct drm_gpuvm_ops {
+>>        * used.
+>>        */
+>>       int (*sm_step_unmap)(struct drm_gpuva_op *op, void *priv);
+>> +
+>> +    /**
+>> +     * @bo_validate: called from drm_gpuvm_validate()
+>> +     *
+>> +     * Drivers receive this callback for every evicted &drm_gem_object being
+>> +     * mapped in the corresponding &drm_gpuvm.
+>> +     *
+>> +     * Typically, drivers would call their driver specific variant of
+>> +     * ttm_bo_validate() from within this callback.
+>> +     */
+>> +    int (*bo_validate)(struct drm_gem_object *obj);
+> 
+> Same here. Could we have a vm_bo as an argument instead, so that the callback knows what gpuvm we're targeting and can mark all its gpu_vas for revalidation? Or is that intended to be done elsewhere?
 
-The number itself isn't exported or saved anywhere, it's just printed
-as diagnostic explanation into the final fast/slow designation.
+Makes sense as well. I'll change that too.
 
-Misaligned word loads are never going to be faster than aligned ones,
-and aren't really going to be equal either. It's also generally not
-something that causes software a lot of angst: we align most of our
-buffers and structures with help from the compiler, and generally do
-an aligned access whenever possible. It's the times when we're forced
-to do odd sizes or accesses we know are already misaligned that this
-hwprobe bit was designed to help. In those cases, users are forced to
-decide if they should do a misaligned word access or byte accesses, so
-we aim to provide that result.
+> 
+>>   };
+>>   int drm_gpuvm_sm_map(struct drm_gpuvm *gpuvm, void *priv,
+> 
+> Thanks,
+> 
+> Thomas
+> 
+> 
 
-If there's a use case for knowing "misaligned accesses are exactly as
-fast as aligned ones", we could detect this threshold in the same
-test, and add another hwprobe bit for it.
-
--Evan
-
->
-> For comparison you (well I) can write x64-64 asm for the ip-checksum
-> loop that will execute 1 memory read every clock (8 bytes/clock).
-> It is very slightly slower for misaligned buffers, but by less
-> than 1 clock per cache line.
-> That's what I'd call 1.0 :-)
->
-> I'd expect even simple hardware to do misaligned reads as two
-> reads and then merge the data - so should really be no slower
-> than two separate aligned reads.
-> Since you'd expect a cpu to do an L1 data cache read every clock
-> (probably pipelined) the misaligned read should just add 1 clock.
->
->         David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
