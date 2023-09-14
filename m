@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CF479FF32
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C0979FF9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbjINI5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
+        id S236938AbjINJHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236116AbjINI46 (ORCPT
+        with ESMTP id S236930AbjINJHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:56:58 -0400
-X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 01:56:53 PDT
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8331BEF;
-        Thu, 14 Sep 2023 01:56:53 -0700 (PDT)
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id 5DD2AE801F5;
-        Thu, 14 Sep 2023 10:48:56 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id 0FC7C160258; Thu, 14 Sep 2023 10:48:55 +0200 (CEST)
-Date:   Thu, 14 Sep 2023 10:48:55 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Jan Hendrik Farr <kernel@jfarr.cc>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
-        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>
-Subject: Re: [PATCH 0/1] x86/kexec: UKI support
-Message-ID: <ZQLI92sQrnTC9Wel@gardel-login>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
- <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
- <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
- <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
- <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
+        Thu, 14 Sep 2023 05:07:18 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C661FC7;
+        Thu, 14 Sep 2023 02:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:Cc:To:From; bh=BiwMgQGY2JFvget57tuuYB87rQmZEJZVNSqu4ha4SDA=; b=rs0LqA
+        fxERVgwCdNrEmy5exr1sg3XV55Rmw/aK/2Hf6sP2+/9i/i3n/rUm7eW1EAIA+v7IFy49dw/ayqohq
+        xfriMtmYPHZ4B8EYEeVyozaZsDpF6VLjpxF3JIfEBpIv2fERgE8JBMWnJ9XfrqnbihzD/dLbKO0Zs
+        FPBqHcqiQ2k=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qgi35-0001iL-QQ; Thu, 14 Sep 2023 08:50:07 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qgi35-0002T9-FU; Thu, 14 Sep 2023 08:50:07 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: [PATCH 0/8] KVM: xen: update shared_info and vcpu_info handling
+Date:   Thu, 14 Sep 2023 08:49:38 +0000
+Message-Id: <20230914084946.200043-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Di, 12.09.23 17:32, Jan Hendrik Farr (kernel@jfarr.cc) wrote:
+From: Paul Durrant <pdurrant@amazon.com>
 
-> >> The format itself is rather simple. It's just a PE file (as required
-> >> by the UEFI spec) that contains a small stub application in the .text,
-> >> .data, etc sections that is responsible for invoking the contained
-> >> kernel and initrd with the contained cmdline. The kernel image is
-> >> placed into a .kernel section, the initrd into a .initrd section, and
-> >> the cmdline into a .cmdline section in the PE executable.
-> >
-> > How does this interact with the existing EFI stub support in
-> > linux?
->
-> It doesn't. During normal boot of a UKI the stub in it is used
-> (systemd-stub, see:
-> https://www.freedesktop.org/software/systemd/man/systemd-stub.html). The
-> kernel's own EFI stub will still be in the binary inside the .linux
-> section but not used.
+Currently we treat the shared_info page as guest memory and the VMM informs
+KVM of its location using a GFN. However it is not guest memory as such;
+it's an overlay page. So we pointlessly invalidate and re-cache a mapping
+to the *same page* of memory every time the guest requests that shared_info
+be mapped into its address space. Let's avoid doing that by modifying the
+pfncache code to allow activation using a fixed userspace HVA as well as
+a GPA.
 
-That's not true actually, if the inner kernel supports the EFI stub
-then systemd-stub actually defers to that for kernel execution. It's
-more portable that way, since the kernel then deals with the
-differences in the boot protocol on different architectures.
+Also, if the guest does not hypercall to explicitly set a pointer to a
+vcpu_info in its own memory, the default vcpu_info embedded in the
+shared_info page should be used. At the moment the VMM has to set up a
+pointer to the structure explicitly (again treating it like it's in
+guest memory, despite being in an overlay page). Let's also avoid the
+need for that. We already have a cached mapping for the shared_info
+page so just use that directly by default.
 
-Lennart
+Paul Durrant (8):
+  KVM: pfncache: add a map helper function
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: add a helper to get the gpa
+  KVM: pfncache: base offset check on khva rather than gpa
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: prepare for using 'default' vcpu_info
+  KVM: xen: automatically use the vcpu_info embedded in shared_info
 
---
-Lennart Poettering, Berlin
+ arch/x86/include/asm/kvm_host.h |   4 +
+ arch/x86/kvm/x86.c              |  18 ++---
+ arch/x86/kvm/xen.c              | 121 ++++++++++++++++++++++--------
+ arch/x86/kvm/xen.h              |   6 +-
+ include/linux/kvm_host.h        |  43 +++++++++++
+ include/linux/kvm_types.h       |   3 +-
+ include/uapi/linux/kvm.h        |   7 +-
+ virt/kvm/pfncache.c             | 129 +++++++++++++++++++++++---------
+ 8 files changed, 251 insertions(+), 80 deletions(-)
+---
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: x86@kernel.org
+-- 
+2.39.2
+
