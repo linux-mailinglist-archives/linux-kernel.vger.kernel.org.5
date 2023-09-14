@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C6F79F958
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5011A79F95B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbjINEFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 00:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S234935AbjINEF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 00:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234661AbjINEFJ (ORCPT
+        with ESMTP id S234746AbjINEFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 00:05:09 -0400
+        Thu, 14 Sep 2023 00:05:24 -0400
 Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id D55AD1BE3;
-        Wed, 13 Sep 2023 21:05:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 441A81FD0;
+        Wed, 13 Sep 2023 21:05:13 -0700 (PDT)
 Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 91E4A606080E2;
-        Thu, 14 Sep 2023 12:05:01 +0800 (CST)
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 4C3C2606080EF;
+        Thu, 14 Sep 2023 12:05:11 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From:   Wu Yunchuan <yunchuan@nfschina.com>
-To:     jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org,
-        kvalo@kernel.org
+To:     kvalo@kernel.org
 Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org,
         Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH wireless-next 4/9] wifi: ath5k: remove unnecessary (void*) conversions
-Date:   Thu, 14 Sep 2023 12:04:59 +0800
-Message-Id: <20230914040459.1169785-1-yunchuan@nfschina.com>
+Subject: [PATCH wireless-next 5/9] ath6kl: remove unnecessary (void*) conversions
+Date:   Thu, 14 Sep 2023 12:05:10 +0800
+Message-Id: <20230914040510.1169941-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -36,56 +35,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need cast (void *) to (struct ath5k_hw *).
+No need cast (void *) to (struct ath6kl *) or
+(struct ath6kl_cookie *).
 
 Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
 ---
- drivers/net/wireless/ath/ath5k/base.c | 4 ++--
- drivers/net/wireless/ath/ath5k/pci.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath6kl/main.c | 4 ++--
+ drivers/net/wireless/ath/ath6kl/txrx.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath5k/base.c b/drivers/net/wireless/ath/ath5k/base.c
-index c59c14483177..597d1f916dfd 100644
---- a/drivers/net/wireless/ath/ath5k/base.c
-+++ b/drivers/net/wireless/ath/ath5k/base.c
-@@ -230,13 +230,13 @@ ath5k_chip_name(enum ath5k_srev_type type, u_int16_t val)
- }
- static unsigned int ath5k_ioread32(void *hw_priv, u32 reg_offset)
- {
--	struct ath5k_hw *ah = (struct ath5k_hw *) hw_priv;
-+	struct ath5k_hw *ah = hw_priv;
- 	return ath5k_hw_reg_read(ah, reg_offset);
- }
+diff --git a/drivers/net/wireless/ath/ath6kl/main.c b/drivers/net/wireless/ath/ath6kl/main.c
+index d3aa9e7a37c2..8f9fe23e9755 100644
+--- a/drivers/net/wireless/ath/ath6kl/main.c
++++ b/drivers/net/wireless/ath/ath6kl/main.c
+@@ -852,14 +852,14 @@ void ath6kl_tgt_stats_event(struct ath6kl_vif *vif, u8 *ptr, u32 len)
  
- static void ath5k_iowrite32(void *hw_priv, u32 val, u32 reg_offset)
+ void ath6kl_wakeup_event(void *dev)
  {
--	struct ath5k_hw *ah = (struct ath5k_hw *) hw_priv;
-+	struct ath5k_hw *ah = hw_priv;
- 	ath5k_hw_reg_write(ah, val, reg_offset);
+-	struct ath6kl *ar = (struct ath6kl *) dev;
++	struct ath6kl *ar = dev;
+ 
+ 	wake_up(&ar->event_wq);
  }
  
-diff --git a/drivers/net/wireless/ath/ath5k/pci.c b/drivers/net/wireless/ath/ath5k/pci.c
-index 86b8cb975b1a..b51fce5ae260 100644
---- a/drivers/net/wireless/ath/ath5k/pci.c
-+++ b/drivers/net/wireless/ath/ath5k/pci.c
-@@ -54,7 +54,7 @@ MODULE_DEVICE_TABLE(pci, ath5k_pci_id_table);
- /* return bus cachesize in 4B word units */
- static void ath5k_pci_read_cachesize(struct ath_common *common, int *csz)
+ void ath6kl_txpwr_rx_evt(void *devt, u8 tx_pwr)
  {
--	struct ath5k_hw *ah = (struct ath5k_hw *) common->priv;
-+	struct ath5k_hw *ah = common->priv;
- 	u8 u8tmp;
+-	struct ath6kl *ar = (struct ath6kl *) devt;
++	struct ath6kl *ar = devt;
  
- 	pci_read_config_byte(ah->pdev, PCI_CACHE_LINE_SIZE, &u8tmp);
-@@ -76,7 +76,7 @@ static void ath5k_pci_read_cachesize(struct ath_common *common, int *csz)
- static bool
- ath5k_pci_eeprom_read(struct ath_common *common, u32 offset, u16 *data)
- {
--	struct ath5k_hw *ah = (struct ath5k_hw *) common->ah;
-+	struct ath5k_hw *ah = common->ah;
- 	u32 status, timeout;
+ 	ar->tx_pwr = tx_pwr;
+ 	wake_up(&ar->event_wq);
+diff --git a/drivers/net/wireless/ath/ath6kl/txrx.c b/drivers/net/wireless/ath/ath6kl/txrx.c
+index a56fab6232a9..80e66acc5cf6 100644
+--- a/drivers/net/wireless/ath/ath6kl/txrx.c
++++ b/drivers/net/wireless/ath/ath6kl/txrx.c
+@@ -708,7 +708,7 @@ void ath6kl_tx_complete(struct htc_target *target,
+ 				 packet->endpoint >= ENDPOINT_MAX))
+ 			continue;
  
- 	/*
+-		ath6kl_cookie = (struct ath6kl_cookie *)packet->pkt_cntxt;
++		ath6kl_cookie = packet->pkt_cntxt;
+ 		if (WARN_ON_ONCE(!ath6kl_cookie))
+ 			continue;
+ 
 -- 
 2.30.2
 
