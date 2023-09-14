@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6C279FBB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDDF79FBB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbjINGNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S234220AbjINGOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjINGNd (ORCPT
+        with ESMTP id S230198AbjINGOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:13:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E45DF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:13:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85377C433C8;
-        Thu, 14 Sep 2023 06:13:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694672009;
-        bh=hxjVQjecSSBe4DgtU67qykRXre0HLHIWQ7IopGfkXIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JMZ42zVuZeVBPvF/ovSnME9MEwonKV0Q8UIOkcNbr3tfciVQbjrR4AkwdJeT4gTxe
-         xAHTUJGLWfpECZvE5RC6RTKQkZxWi3Jyq8SAUnb5IFTiw3+sVapzz0DNEJBmq0A81E
-         OV6wLOsAtH2exc5S2F2VmxKlyOJ+CddmobuQpEmKuN8iSRbFOe4AApDxkFpJ2RpERU
-         Wz3uaszxFyEPyAVBEARffhTgwURrUHL8F8bfk83wLtZ46sDU02Y077crT1DL9Y9Zrx
-         PHA+vEhOuHpaemgoV8q2AjasocHfOlVWkjxEz/+S4C5BSSVoGxpcwxrzSEv6WTc2AD
-         8kUYtQbb9D7pw==
-Date:   Thu, 14 Sep 2023 09:12:54 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     rongtao@cestc.cn, open list <linux-kernel@vger.kernel.org>,
-        "open list:MEMBLOCK AND MEMORY MANAGEMENT INITIALIZATION" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH] memblock tests: Fix compilation errors.
-Message-ID: <20230914061254.GB3303@kernel.org>
-References: <tencent_6F19BC082167F15DF2A8D8BEFE8EF220F60A@qq.com>
+        Thu, 14 Sep 2023 02:14:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D38FDF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694672056; x=1726208056;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Y3wKfPdCXsNeJ2WkONbQZoMRXCsRiwzJvyZSIbo4lzE=;
+  b=mWsLGTp+XAqbDDhYxRq+rI/UMZyOAOqi4ZIxLB8APdbYVFhA4iDJHl9n
+   zJjw3jgBKnuYMmgF4C/uyHcC0RMrF1nrkQ7KL1Cgk7LUXrG3tNfAiAI3c
+   /H6ihB8pfo5Z2JDkHipfQe3GITLWXH0UsoI3S4Sjer0BBQhJLcmgP9gJ3
+   nOBKlcbHAvBL3xdbUeWGVlMvleGUtV/jLgfQ+KQLL02AKL1sJK956JY6m
+   Z89SFpKBd1LKei0hwl8Bm1b0Sm+q46L8CAWtARuVu5IIw5BEnbR37OyiP
+   98NsxBfAcJSieM7V7fIGyFcqa4kg1ri/gfNkZXYd6QqEIEhqomSScn9uY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="381548943"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="381548943"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 23:14:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="779510223"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="779510223"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2023 23:14:14 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgfcB-0001Ef-2h;
+        Thu, 14 Sep 2023 06:14:11 +0000
+Date:   Thu, 14 Sep 2023 14:13:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: ld.lld: error: relocation R_RISCV_HI20 cannot be used against symbol
+ '.L.str.6'; recompile with -fPIC
+Message-ID: <202309141433.6gzJPSYA-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_6F19BC082167F15DF2A8D8BEFE8EF220F60A@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 10:32:56PM +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> This patch fix the follow errors.
-> 
-> commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()") pass nid
-> parameter to reserve_bootmem_region(),
-> 
->     $ make -C tools/testing/memblock/
->     ...
->     memblock.c: In function ‘memmap_init_reserved_pages’:
->     memblock.c:2111:25: error: too many arguments to function ‘reserve_bootmem_region’
->     2111 |                         reserve_bootmem_region(start, end, nid);
->          |                         ^~~~~~~~~~~~~~~~~~~~~~
->     ../../include/linux/mm.h:32:6: note: declared here
->     32 | void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
->        |      ^~~~~~~~~~~~~~~~~~~~~~
->     memblock.c:2122:17: error: too many arguments to function ‘reserve_bootmem_region’
->     2122 |                 reserve_bootmem_region(start, end, nid);
->          |                 ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> commit dcdfdd40fa82("mm: Add support for unaccepted memory") call
-> accept_memory() in memblock.c
-> 
->     $ make -C tools/testing/memblock/
->     ...
->     cc -fsanitize=address -fsanitize=undefined  main.o memblock.o \
->      lib/slab.o mmzone.o slab.o tests/alloc_nid_api.o \
->      tests/alloc_helpers_api.o tests/alloc_api.o tests/basic_api.o \
->      tests/common.o tests/alloc_exact_nid_api.o   -o main
->     /usr/bin/ld: memblock.o: in function `memblock_alloc_range_nid':
->     memblock.c:(.text+0x7ae4): undefined reference to `accept_memory'
-> 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Hi Sami,
 
-Applied, thanks!
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-> ---
->  tools/include/linux/mm.h          | 2 +-
->  tools/testing/memblock/internal.h | 4 ++++
->  tools/testing/memblock/mmzone.c   | 2 +-
->  3 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
-> index a03d9bba5151..2bc94079d616 100644
-> --- a/tools/include/linux/mm.h
-> +++ b/tools/include/linux/mm.h
-> @@ -29,7 +29,7 @@ static inline void *phys_to_virt(unsigned long address)
->  	return __va(address);
->  }
->  
-> -void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
-> +void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid);
->  
->  static inline void totalram_pages_inc(void)
->  {
-> diff --git a/tools/testing/memblock/internal.h b/tools/testing/memblock/internal.h
-> index fdb7f5db7308..f6c6e5474c3a 100644
-> --- a/tools/testing/memblock/internal.h
-> +++ b/tools/testing/memblock/internal.h
-> @@ -20,4 +20,8 @@ void memblock_free_pages(struct page *page, unsigned long pfn,
->  {
->  }
->  
-> +static inline void accept_memory(phys_addr_t start, phys_addr_t end)
-> +{
-> +}
-> +
->  #endif
-> diff --git a/tools/testing/memblock/mmzone.c b/tools/testing/memblock/mmzone.c
-> index 7b0909e8b759..d3d58851864e 100644
-> --- a/tools/testing/memblock/mmzone.c
-> +++ b/tools/testing/memblock/mmzone.c
-> @@ -11,7 +11,7 @@ struct pglist_data *next_online_pgdat(struct pglist_data *pgdat)
->  	return NULL;
->  }
->  
-> -void reserve_bootmem_region(phys_addr_t start, phys_addr_t end)
-> +void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid)
->  {
->  }
->  
-> -- 
-> 2.41.0
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   aed8aee11130a954356200afa3f1b8753e8a9482
+commit: 74f8fc31feb4b756814ec0720f48ccdc1175f774 riscv: Allow CONFIG_CFI_CLANG to be selected
+date:   3 weeks ago
+config: riscv-randconfig-r002-20230912 (https://download.01.org/0day-ci/archive/20230914/202309141433.6gzJPSYA-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141433.6gzJPSYA-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309141433.6gzJPSYA-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: relocation R_RISCV_HI20 cannot be used against symbol '.L.str.6'; recompile with -fPIC
+   >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
+   >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
+   >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_patch_func) in archive vmlinux.a
+--
+>> ld.lld: error: relocation R_RISCV_LO12_I cannot be used against symbol '.L.str.6'; recompile with -fPIC
+   >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
+   >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
+   >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_patch_func) in archive vmlinux.a
 
 -- 
-Sincerely yours,
-Mike.
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
