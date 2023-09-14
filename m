@@ -2,114 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2297A0BA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E67A0BA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbjINRZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
+        id S238940AbjINRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239798AbjINRZM (ORCPT
+        with ESMTP id S240675AbjINRZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:25:12 -0400
-X-Greylist: delayed 80218 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 10:23:59 PDT
-Received: from kozue.soulik.info (kozue.soulik.info [108.61.200.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DBE30D2;
-        Thu, 14 Sep 2023 10:23:59 -0700 (PDT)
-Received: from ritsuko.sh.sumomo.pri (unknown [10.0.12.132])
-        by kozue.soulik.info (Postfix) with ESMTPSA id 8A939300227;
-        Fri, 15 Sep 2023 02:23:43 +0900 (JST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info 8A939300227
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
-        t=1694712224; bh=j3cXdDXlXtGM24L87BIaZF4xE90ce3LP9T6Em1o+1lQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f7HQiwHVtd/ry7I6rWuDVwqBBhIOJNqxgPOfm5OUGNQBvyUtJGWlR/GWnTxayr8jS
-         87hNlsfs/8WJRmeEhNfOtKNJYebCPtHmnpZ6V25MWweUUau2Do2oSpMQsHwFshOMdE
-         pJ8Z1uvfTYn/EpR4KbSliash7sZsl23+qvtrtzNg=
-From:   Randy Li <ayaka@soulik.info>
-To:     linux-usb@vger.kernel.org
-Cc:     Randy Li <ayaka@soulik.info>, stern@rowland.harvard.edu,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: [PATCH 2/2] docs: driver-api: usb: update dma info
-Date:   Fri, 15 Sep 2023 01:23:24 +0800
-Message-ID: <20230914172336.18761-3-ayaka@soulik.info>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230914172336.18761-1-ayaka@soulik.info>
-References: <20230914172336.18761-1-ayaka@soulik.info>
+        Thu, 14 Sep 2023 13:25:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A646BA;
+        Thu, 14 Sep 2023 10:24:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80430C433CA;
+        Thu, 14 Sep 2023 17:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694712242;
+        bh=ZhpxjopJ3z7akt/jZEVl/F9TEAnY0hg7X8xCLV/k4O4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wqui1O5qsQOM/LFdsntH0+UWUe/39BdypVs0luN1i69deScv28jm3hrnsmhl23i1k
+         7viCHzhArkfZxTF7+1SzNq0Ah82tRT1enVRzTj4NO1lX2YhLNbkyY+2PuaZoOQf38c
+         kqwaSQflYbmRzOrJyMd93qebTd+AF89+YVrObDprNnleECdpVXtIO8UEb9OIdzQeKl
+         seZ5vZwS4VjuUlZjEqD40C7kzblInnLqNWwymqnuOnaBUB5OCagNHapwfb8QRc5pGW
+         KV/X0vYq79lXvsg6YpahUg+Q8/jse6tl2TjmDGJuD3MM0K8C1RDMqYzxNllZ3MVTVw
+         iq6bYM+2zmRSQ==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-570e63f5224so1252278eaf.0;
+        Thu, 14 Sep 2023 10:24:02 -0700 (PDT)
+X-Gm-Message-State: AOJu0YytmxBJIvVzljYUiQqEc02RzSef2UDIdAhXsqNGLLo/pICfWwJL
+        svZyxg4BdrNl9yC+o9dWMSUCM1Fpqbw1Uwq20BY=
+X-Google-Smtp-Source: AGHT+IEO0pCi2Heoq31RzLUH6a3auyQTpjglealoYA8QM+kxLMPJWJszSOXGY1R4oz8Es4NeOaAF6lXfBGI8KPhP+PY=
+X-Received: by 2002:a05:6870:9691:b0:1a6:cfcc:befd with SMTP id
+ o17-20020a056870969100b001a6cfccbefdmr1544368oaq.5.1694712241904; Thu, 14 Sep
+ 2023 10:24:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230913113801.1901152-1-arnd@kernel.org> <874jjwx44g.fsf@intel.com>
+ <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
+In-Reply-To: <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 15 Sep 2023 02:23:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR9Jt0FQNRidcxY-OxMh7N238Xs33Tyj+dpTZ5wGow0wQ@mail.gmail.com>
+Message-ID: <CAK7LNAR9Jt0FQNRidcxY-OxMh7N238Xs33Tyj+dpTZ5wGow0wQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional dependencies
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should not hide the recommend APIs in a obscure place.
+On Thu, Sep 14, 2023 at 11:57=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrot=
+e:
+>
+> On Thu, Sep 14, 2023, at 15:42, Jani Nikula wrote:
+> > On Wed, 13 Sep 2023, Arnd Bergmann <arnd@kernel.org> wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> +Optional dependencies
+> >> +~~~~~~~~~~~~~~~~~~~~~
+> >> +
+> >> +Some drivers are able to optionally use a feature from another module
+> >> +or build cleanly with that module disabled, but cause a link failure
+> >> +when trying to use that loadable module from a built-in driver.
+> >> +
+> >> +The most common way to express this optional dependency in Kconfig lo=
+gic
+> >> +uses the slighly counterintuitive
+> >> +
+> >> +  config FOO
+> >> +    bool "Support for foo hardware"
+> >> +    depends on BAR || !BAR
+> >
+> >       depends on BAR || BAR=3Dn
+> >
+> > seems to be an alternative that's about as common:
+> >
+> > $ git grep "depends on \([A-Z0-9_]\+\) || \!\1" | wc -l
+> > 109
+> > $ git grep "depends on \([A-Z0-9_]\+\) || \1=3Dn" | wc -l
+> > 107
+> >
+> > Maybe worth mentioning both?
+>
+> I fear that would add more confusion than it avoids:
+> "!BAR" is actually different from "BAR=3Dn", but
+> "BAR || !BAR" is the same as "BAR || BAR=3Dn" here, and
+> trying to explain this in the documentation would either
+> make it incorrect or unhelpfully complicated.
 
-Signed-off-by: Randy Li <ayaka@soulik.info>
----
- Documentation/driver-api/usb/dma.rst | 48 +++++++---------------------
- 1 file changed, 11 insertions(+), 37 deletions(-)
 
-diff --git a/Documentation/driver-api/usb/dma.rst b/Documentation/driver-api/usb/dma.rst
-index d32c27e11b90..02f6825ff830 100644
---- a/Documentation/driver-api/usb/dma.rst
-+++ b/Documentation/driver-api/usb/dma.rst
-@@ -93,44 +93,18 @@ DMA address space of the device.  However, most buffers passed to your
- driver can safely be used with such DMA mapping.  (See the first section
- of Documentation/core-api/dma-api-howto.rst, titled "What memory is DMA-able?")
- 
--- When you're using scatterlists, you can map everything at once.  On some
--  systems, this kicks in an IOMMU and turns the scatterlists into single
--  DMA transactions::
-+- When you have the scatterlists which have been mapped for the USB controller,
-+  you could use the new ``usb_sg_*()`` calls, which would turn scatterlist
-+  into URBs::
- 
--	int usb_buffer_map_sg (struct usb_device *dev, unsigned pipe,
--		struct scatterlist *sg, int nents);
-+	int usb_sg_init(struct usb_sg_request *io, struct usb_device *dev,
-+		unsigned pipe, unsigned	period, struct scatterlist *sg,
-+		int nents, size_t length, gfp_t mem_flags);
- 
--	void usb_buffer_dmasync_sg (struct usb_device *dev, unsigned pipe,
--		struct scatterlist *sg, int n_hw_ents);
-+	void usb_sg_wait(struct usb_sg_request *io);
- 
--	void usb_buffer_unmap_sg (struct usb_device *dev, unsigned pipe,
--		struct scatterlist *sg, int n_hw_ents);
-+	void usb_sg_cancel(struct usb_sg_request *io);
- 
--  It's probably easier to use the new ``usb_sg_*()`` calls, which do the DMA
--  mapping and apply other tweaks to make scatterlist i/o be fast.
--
--- Some drivers may prefer to work with the model that they're mapping large
--  buffers, synchronizing their safe re-use.  (If there's no re-use, then let
--  usbcore do the map/unmap.)  Large periodic transfers make good examples
--  here, since it's cheaper to just synchronize the buffer than to unmap it
--  each time an urb completes and then re-map it on during resubmission.
--
--  These calls all work with initialized urbs:  ``urb->dev``, ``urb->pipe``,
--  ``urb->transfer_buffer``, and ``urb->transfer_buffer_length`` must all be
--  valid when these calls are used (``urb->setup_packet`` must be valid too
--  if urb is a control request)::
--
--	struct urb *usb_buffer_map (struct urb *urb);
--
--	void usb_buffer_dmasync (struct urb *urb);
--
--	void usb_buffer_unmap (struct urb *urb);
--
--  The calls manage ``urb->transfer_dma`` for you, and set
--  ``URB_NO_TRANSFER_DMA_MAP`` so that usbcore won't map or unmap the buffer.
--  They cannot be used for setup_packet buffers in control requests.
--
--Note that several of those interfaces are currently commented out, since
--they don't have current users.  See the source code.  Other than the dmasync
--calls (where the underlying DMA primitives have changed), most of them can
--easily be commented back in if you want to use them.
-+  When the USB controller doesn't support DMA, the ``usb_sg_init()`` would try
-+  to submit URBs in PIO way as long as the page in scatterlists is not in the
-+  Highmem, which could be very rare in modern architectures.
--- 
-2.41.0
 
+The rules are already explained in line 231-278
+of Documentation/kbuild/kconfig-language.rst
+
+
+y, m, n are internally 2, 1, 0.
+
+!A returns (2 - A).
+A=3DB returns 2 if the equation is true, 0 otherwise.
+A||B returns max(A,B)
+
+
+Given those in my mind, this is simple math.
+
+For each case of BAR=3Dy, =3Dm, =3Dn,
+
+BAR               2       1       0
+!BAR              0       1       2
+BAR=3Dn             0       0       2
+BAR||!BAR         2       1       2
+BAR||BAR=3Dn        2       1       2
+BAR!=3Dm||m         2       1       2
+
+
+So, the last three are equivalent.
+They are equally complicated and confusing, though.
+
+
+After all, what we are doing is to create this matrix:
+
+          |   WIREGUARD
+          |   y     m     n
+----------------------------
+        y |   O     O     O
+IPV6    m |   X     O     O
+        n |   O     O     O
+
+
+
+It is unclear why WIREGUARD must be entirely disabled
+just because of the optional feature being modular.
+
+
+
+My preference is to use IS_REACHABLE(CONFIG_IPV6)
+instead of IS_ENABLED(CONFIG_IPV6)
+under drivers/net/wireguard, then
+get rid of "depends on IPV6 || !IPV6)
+
+
+
+
+If you want to make it clearer on the Kconfig level,
+perhaps the following is also possible.
+
+
+config WIREGUARD
+       tristate "WireGuard"
+
+config WIREGUARD_IPV6
+       def_bool y
+       depends on WIREGUARD
+       depends on IPV6 >=3D WIREGUARD
+
+config IPV6
+       tristate "IPV6"
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
