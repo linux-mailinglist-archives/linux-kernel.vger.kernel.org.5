@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601A57A0CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C95A7A0CFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241641AbjINSj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
+        id S241911AbjINSjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241638AbjINSix (ORCPT
+        with ESMTP id S241641AbjINSix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:53 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EC52106;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDB42108;
         Thu, 14 Sep 2023 11:38:46 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716724;
+        s=2020; t=1694716725;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EEsVj/D77ms6nq6XAzujZvjYPk4w6pPMN5gfYUu1uwE=;
-        b=LA7fdwe+El9NWhgb0luA7qJcYedEH/jJ1J2ruvAn2QzhkX4ENhknKvcPfr6zsEzFKubTgS
-        iV5QrvnCSUdmtnD1W3B1XpkzrL/5Ux7xf8qCJoQg9MGxwOwPwY73PV0oU1Ns5etfhEM7dN
-        22kvwKonDlSZiYUYffSMW2qcBg7eIs7r2Gbbvk4iyFNlfV+FqWI7eVvy4Tvlvq9EBEpuRl
-        wAeVw2ocXlPOx5PkyCFcOKKZNe392UAjcjG8H0phFiTuw6JgoETyzNdCEi1EslSBrjjAX5
-        qW1lxJLPjZIhtUzmOG4rxi75fV/2TPwIIL2tlZ+fKhkF2P29vQY/7DKenK7/TQ==
+        bh=C/K94+x3VFE0qetYCzTIZYxK3St4nQt/7CBPmZkbDy0=;
+        b=uXRvCbL7vfpBV5pZH3vtwjfrVzht6pNDjcB+IJ3mBgRurMU50xvCNJEblOFTzf5irLDRjL
+        pK76Su5YXYdA96s7uTDL+TFhhIFShdvVvONxSYP8omoCujJKqeMxXR1eyZRSFbobsWrIUy
+        PuruvXaJ+DSg6ucY45X9NISbI6TdO8NKvT7EaEN0vq/wjQpTOyIpE1dcb3b8Labtt7mgRP
+        Z2gy2rBsZLF+77grTxPukz/I4i9bhDYeGjM164jFavZhuLVZBbvs1yKX5To7smV47VRwCg
+        +pjT5c+alUEEPBMvhp2oaxk0qX/zXSVkiWZCDQktM/QzpgMdFU6AHyBmufwnTQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716724;
+        s=2020e; t=1694716725;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EEsVj/D77ms6nq6XAzujZvjYPk4w6pPMN5gfYUu1uwE=;
-        b=YwwhM9vN6g8+vsx/509OyoWLuq7JDeBCPnJ3cH+n7xiLAvO6j//gLDZ3bji5emR8fH05j1
-        UY8ZKgukj15DJdBQ==
+        bh=C/K94+x3VFE0qetYCzTIZYxK3St4nQt/7CBPmZkbDy0=;
+        b=0eCUUL3vP8dQK2rfMC19TJ15tM6G1CJryy1OXDnP7smmbsbckCADcGIX4LYSmlXekjyfbx
+        1PiS2o1fQDOXmFCg==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>
-Subject: [PATCH tty v1 15/74] serial: altera_uart: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:32 +0206
-Message-Id: <20230914183831.587273-16-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: [PATCH tty v1 16/74] serial: amba-pl010: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:33 +0206
+Message-Id: <20230914183831.587273-17-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -81,89 +84,85 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/altera_uart.c | 20 ++++++++++----------
+ drivers/tty/serial/amba-pl010.c | 20 ++++++++++----------
  1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/altera_uart.c b/drivers/tty/serial/altera_uart.c
-index a9c41942190c..77835ac68df2 100644
---- a/drivers/tty/serial/altera_uart.c
-+++ b/drivers/tty/serial/altera_uart.c
-@@ -164,13 +164,13 @@ static void altera_uart_break_ctl(struct uart_port *port, int break_state)
- 	struct altera_uart *pp = container_of(port, struct altera_uart, port);
- 	unsigned long flags;
+diff --git a/drivers/tty/serial/amba-pl010.c b/drivers/tty/serial/amba-pl010.c
+index b5a7404cbacb..eabbf8afc9b5 100644
+--- a/drivers/tty/serial/amba-pl010.c
++++ b/drivers/tty/serial/amba-pl010.c
+@@ -207,7 +207,7 @@ static irqreturn_t pl010_int(int irq, void *dev_id)
+ 	unsigned int status, pass_counter = AMBA_ISR_PASS_LIMIT;
+ 	int handled = 0;
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	if (break_state == -1)
- 		pp->imr |= ALTERA_UART_CONTROL_TRBK_MSK;
- 	else
- 		pp->imr &= ~ALTERA_UART_CONTROL_TRBK_MSK;
- 	altera_uart_update_ctrl_reg(pp);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
+-	spin_lock(&port->lock);
++	uart_port_lock(port);
  
- static void altera_uart_set_termios(struct uart_port *port,
-@@ -187,10 +187,10 @@ static void altera_uart_set_termios(struct uart_port *port,
- 		tty_termios_copy_hw(termios, old);
- 	tty_termios_encode_baud_rate(termios, baud, baud);
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	uart_update_timeout(port, termios->c_cflag, baud);
- 	altera_uart_writel(port, baudclk, ALTERA_UART_DIVISOR_REG);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	/*
- 	 * FIXME: port->read_status_mask and port->ignore_status_mask
-@@ -264,12 +264,12 @@ static irqreturn_t altera_uart_interrupt(int irq, void *data)
- 
- 	isr = altera_uart_readl(port, ALTERA_UART_STATUS_REG) & pp->imr;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	if (isr & ALTERA_UART_STATUS_RRDY_MSK)
- 		altera_uart_rx_chars(port);
- 	if (isr & ALTERA_UART_STATUS_TRDY_MSK)
- 		altera_uart_tx_chars(port);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	return IRQ_RETVAL(isr);
- }
-@@ -313,13 +313,13 @@ static int altera_uart_startup(struct uart_port *port)
- 		}
+ 	status = readb(port->membase + UART010_IIR);
+ 	if (status) {
+@@ -228,7 +228,7 @@ static irqreturn_t pl010_int(int irq, void *dev_id)
+ 		handled = 1;
  	}
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
+-	spin_unlock(&port->lock);
++	uart_port_unlock(port);
  
- 	/* Enable RX interrupts now */
- 	pp->imr = ALTERA_UART_CONTROL_RRDY_MSK;
- 	altera_uart_update_ctrl_reg(pp);
- 
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	return 0;
+ 	return IRQ_RETVAL(handled);
  }
-@@ -329,13 +329,13 @@ static void altera_uart_shutdown(struct uart_port *port)
- 	struct altera_uart *pp = container_of(port, struct altera_uart, port);
+@@ -270,14 +270,14 @@ static void pl010_break_ctl(struct uart_port *port, int break_state)
  	unsigned long flags;
+ 	unsigned int lcr_h;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	lcr_h = readb(port->membase + UART010_LCRH);
+ 	if (break_state == -1)
+ 		lcr_h |= UART01x_LCRH_BRK;
+ 	else
+ 		lcr_h &= ~UART01x_LCRH_BRK;
+ 	writel(lcr_h, port->membase + UART010_LCRH);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static int pl010_startup(struct uart_port *port)
+@@ -385,7 +385,7 @@ pl010_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	if (port->fifosize > 1)
+ 		lcr_h |= UART01x_LCRH_FEN;
  
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
  
- 	/* Disable all interrupts now */
- 	pp->imr = 0;
- 	altera_uart_update_ctrl_reg(pp);
+ 	/*
+ 	 * Update the per-port timeout.
+@@ -438,22 +438,22 @@ pl010_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	writel(lcr_h, port->membase + UART010_LCRH);
+ 	writel(old_cr, port->membase + UART010_CR);
  
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
+ }
  
- 	if (port->irq)
- 		free_irq(port->irq, port);
+ static void pl010_set_ldisc(struct uart_port *port, struct ktermios *termios)
+ {
+ 	if (termios->c_line == N_PPS) {
+ 		port->flags |= UPF_HARDPPS_CD;
+-		spin_lock_irq(&port->lock);
++		uart_port_lock_irq(port);
+ 		pl010_enable_ms(port);
+-		spin_unlock_irq(&port->lock);
++		uart_port_unlock_irq(port);
+ 	} else {
+ 		port->flags &= ~UPF_HARDPPS_CD;
+ 		if (!UART_ENABLE_MS(port, termios->c_cflag)) {
+-			spin_lock_irq(&port->lock);
++			uart_port_lock_irq(port);
+ 			pl010_disable_ms(port);
+-			spin_unlock_irq(&port->lock);
++			uart_port_unlock_irq(port);
+ 		}
+ 	}
+ }
 -- 
 2.39.2
 
