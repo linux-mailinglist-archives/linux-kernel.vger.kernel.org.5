@@ -2,321 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D2C7A109F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD987A10A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjINWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
+        id S229840AbjINWQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjINWP0 (ORCPT
+        with ESMTP id S229447AbjINWQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:15:26 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D27F9CCD;
-        Thu, 14 Sep 2023 15:15:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 959BA1FB;
-        Thu, 14 Sep 2023 15:15:57 -0700 (PDT)
-Received: from [10.57.93.68] (unknown [10.57.93.68])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE2723F738;
-        Thu, 14 Sep 2023 15:15:17 -0700 (PDT)
-Message-ID: <f4601452-061f-203e-6c05-3e03977eb7f9@arm.com>
-Date:   Thu, 14 Sep 2023 23:15:09 +0100
+        Thu, 14 Sep 2023 18:16:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1B36270D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694729735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qbzfkB6XDeg+lyjll9b1bWAHm6ZrCh25IkF3gmIpS/A=;
+        b=VIlTBVmfvvJ4WD9odY7VRvXwjMnYv8B+1Xc4P4WEgxL8/7ow9CJrFozeQqOMJ2VQGGM6zs
+        fx7o4MbAjP4q8JBAikNUXUUulW3LfVdf5EXXyAwbf3uTKfXCS3e5SgWBrB5I9FmigK/yLq
+        xUtBgcVBH1h3YoGNnWcJ4uIgef83TOY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-593-0e1tLjckMi63woBcMf-5IA-1; Thu, 14 Sep 2023 18:15:31 -0400
+X-MC-Unique: 0e1tLjckMi63woBcMf-5IA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 80B2E857A9E;
+        Thu, 14 Sep 2023 22:15:30 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 76C5410F1BE7;
+        Thu, 14 Sep 2023 22:15:28 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/9] iov_iter: kunit: Cleanup, abstraction and more tests
+Date:   Thu, 14 Sep 2023 23:15:17 +0100
+Message-ID: <20230914221526.3153402-1-dhowells@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v11 1/5] staging: vc04_services: vchiq_arm: Add new bus
- type and device type
-Content-Language: en-GB
-To:     Stefan Wahren <wahrenst@gmx.net>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrien Thierry <athierry@redhat.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20230913195354.835884-1-umang.jain@ideasonboard.com>
- <20230913195354.835884-2-umang.jain@ideasonboard.com>
- <5e7aff1e-82de-2ec4-4d30-2b1f37ed2eed@gmx.net>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <5e7aff1e-82de-2ec4-4d30-2b1f37ed2eed@gmx.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-13 21:58, Stefan Wahren wrote:
-> Hi Umang,
-> 
-> Am 13.09.23 um 21:53 schrieb Umang Jain:
->> The devices that the vchiq interface registers (bcm2835-audio,
->> bcm2835-camera) are implemented and exposed by the VC04 firmware.
->> The device tree describes the VC04 itself with the resources required
->> to communicate with it through a mailbox interface. However, the
->> vchiq interface registers these devices as platform devices. This
->> also means the specific drivers for these devices are getting
->> registered as platform drivers. This is not correct and a blatant
->> abuse of platform device/driver.
->>
->> Add a new bus type, vchiq_bus_type and device type (struct vchiq_device)
->> which will be used to migrate child devices that the vchiq interfaces
->> creates/registers from the platform device/driver.
->>
->> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
->> ---
->>   drivers/staging/vc04_services/Makefile        |   1 +
->>   .../interface/vchiq_arm/vchiq_device.c        | 111 ++++++++++++++++++
->>   .../interface/vchiq_arm/vchiq_device.h        |  54 +++++++++
->>   3 files changed, 166 insertions(+)
->>   create mode 100644 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
->>   create mode 100644 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
->>
->> diff --git a/drivers/staging/vc04_services/Makefile 
->> b/drivers/staging/vc04_services/Makefile
->> index 44794bdf6173..2d071e55e175 100644
->> --- a/drivers/staging/vc04_services/Makefile
->> +++ b/drivers/staging/vc04_services/Makefile
->> @@ -5,6 +5,7 @@ vchiq-objs := \
->>      interface/vchiq_arm/vchiq_core.o  \
->>      interface/vchiq_arm/vchiq_arm.o \
->>      interface/vchiq_arm/vchiq_debugfs.o \
->> +   interface/vchiq_arm/vchiq_device.o \
->>      interface/vchiq_arm/vchiq_connected.o \
->>
->>   ifdef CONFIG_VCHIQ_CDEV
->> diff --git 
->> a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c 
->> b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
->> new file mode 100644
->> index 000000000000..aad55c461905
->> --- /dev/null
->> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
->> @@ -0,0 +1,111 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * vchiq_device.c - VCHIQ generic device and bus-type
->> + *
->> + * Copyright (c) 2023 Ideas On Board Oy
->> + */
->> +
->> +#include <linux/device/bus.h>
->> +#include <linux/dma-mapping.h>
->> +#include <linux/of_device.h>
->> +#include <linux/slab.h>
->> +#include <linux/string.h>
->> +
->> +#include "vchiq_device.h"
->> +
->> +static int vchiq_bus_type_match(struct device *dev, struct 
->> device_driver *drv)
->> +{
->> +    if (dev->bus == &vchiq_bus_type &&
->> +        strcmp(dev_name(dev), drv->name) == 0)
->> +        return 1;
->> +
->> +    return 0;
->> +}
->> +
->> +static int vchiq_bus_uevent(const struct device *dev, struct 
->> kobj_uevent_env *env)
->> +{
->> +    const struct vchiq_device *device = container_of_const(dev, 
->> struct vchiq_device, dev);
->> +
->> +    return add_uevent_var(env, "MODALIAS=%s", dev_name(&device->dev));
->> +}
->> +
->> +static int vchiq_bus_probe(struct device *dev)
->> +{
->> +    struct vchiq_device *device = to_vchiq_device(dev);
->> +    struct vchiq_driver *driver = to_vchiq_driver(dev->driver);
->> +    int ret;
->> +
->> +    ret = driver->probe(device);
->> +    if (ret == 0)
->> +        return 0;
->> +
->> +    return ret;
->> +}
->> +
->> +struct bus_type vchiq_bus_type = {
->> +    .name   = "vchiq-bus",
->> +    .match  = vchiq_bus_type_match,
->> +    .uevent = vchiq_bus_uevent,
->> +    .probe  = vchiq_bus_probe,
->> +};
->> +
->> +static void vchiq_device_release(struct device *dev)
->> +{
->> +    struct vchiq_device *device = to_vchiq_device(dev);
->> +
->> +    kfree(device);
->> +}
->> +
->> +struct vchiq_device *
->> +vchiq_device_register(struct device *parent, const char *name)
->> +{
->> +    struct vchiq_device *device;
->> +    int ret;
->> +
->> +    device = kzalloc(sizeof(*device), GFP_KERNEL);
->> +    if (!device) {
->> +        dev_err(parent, "Cannot register %s: Insufficient memory\n",
->> +            name);
-> AFAIK kzalloc already logs an error in case of insufficient memory, so
-> there is no need for this.
->> +        return NULL;
->> +    }
->> +
->> +    device->dev.init_name = name;
->> +    device->dev.parent = parent;
->> +    device->dev.bus = &vchiq_bus_type;
->> +    device->dev.release = vchiq_device_release;
->> +
->> +    of_dma_configure(&device->dev, parent->of_node, true);
->> +    ret = dma_set_mask_and_coherent(&device->dev, DMA_BIT_MASK(32));
->  From my understand Robin suggested to drop dma_set_mask_and_coherent()
-> here, too. In case this cause a regression until patch 3 & 4 are
-> applied. The DMA mask parts should be applied separately before this patch.
+Hi Al, Linus,
 
-Indeed, here we should have "device->dev.dma_mask = 
-&device->dev.dma_coherent_mask;", unconditionally, before 
-of_dma_configure() is called, and we should *not* be calling 
-dma_set_mask_and_coherent() at all. That will then be equivalent to what 
-the platform bus code was previously doing for these devices.
+These patches make some changes to the kunit tests previously added for
+iov_iter testing, in particular adding support for testing UBUF/IOVEC
+iterators:
 
-The vchiq_device drivers can then call dma_set_mask_and_coherent() if 
-they need to (AFAICS I'm not sure if they're actually using DMA at the 
-moment?) and should not touch dev->dma_mask directly. That does not need 
-to be done in any particular order relative to this patch, since the 
-truth is that of_dma_configure() will still initialise the masks to 32 
-bits by default anyway (as it currently does for the platform devices), 
-however it is still correct to add explicit calls (and handle their 
-potential failure if DMA is entirely unusable), and not simply assume 
-that the default masks are OK.
+ (1) Clean up a couple of checkpatch style complaints.
 
-Hope that's clear.
+ (2) Consolidate some repeated bits of code into helper functions and use
+     the same struct to represent straight offset/address ranges and
+     partial page lists.
 
-Thanks,
-Robin.
+ (3) Add a function to set up a userspace VM, attach the VM to the kunit
+     testing thread, create an anonymous file, stuff some pages into the
+     file and map the file into the VM to act as a buffer that can be used
+     with UBUF/IOVEC iterators.
 
->> +    if (ret) {
->> +        dev_err(&device->dev, "32-bit DMA enable failed\n");
->> +        return NULL;
->> +    }
->> +
->> +    ret = device_register(&device->dev);
->> +    if (ret) {
->> +        dev_err(parent, "Cannot register %s: %d\n", name, ret);
->> +        put_device(&device->dev);
-> Also Robin pointed out that there is a memory leak in the error path,
-> because the "device" get lost.
-> 
-> Thanks Stefan
->> +        return NULL;
->> +    }
->> +
->> +    return device;
->> +}
->> +
->> +void vchiq_device_unregister(struct vchiq_device *vchiq_dev)
->> +{
->> +    device_unregister(&vchiq_dev->dev);
->> +}
->> +
->> +int vchiq_driver_register(struct vchiq_driver *vchiq_drv)
->> +{
->> +    vchiq_drv->driver.bus = &vchiq_bus_type;
->> +
->> +    return driver_register(&vchiq_drv->driver);
->> +}
->> +EXPORT_SYMBOL_GPL(vchiq_driver_register);
->> +
->> +void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv)
->> +{
->> +    driver_unregister(&vchiq_drv->driver);
->> +}
->> +EXPORT_SYMBOL_GPL(vchiq_driver_unregister);
->> diff --git 
->> a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h 
->> b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
->> new file mode 100644
->> index 000000000000..7eaaf9a91cda
->> --- /dev/null
->> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
->> @@ -0,0 +1,54 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (c) 2023 Ideas On Board Oy
->> + */
->> +
->> +#ifndef _VCHIQ_DEVICE_H
->> +#define _VCHIQ_DEVICE_H
->> +
->> +#include <linux/device.h>
->> +
->> +struct vchiq_device {
->> +    struct device dev;
->> +};
->> +
->> +struct vchiq_driver {
->> +    int        (*probe)(struct vchiq_device *device);
->> +    void        (*remove)(struct vchiq_device *device);
->> +    int        (*resume)(struct vchiq_device *device);
->> +    int        (*suspend)(struct vchiq_device *device,
->> +                   pm_message_t state);
->> +    struct device_driver driver;
->> +};
->> +
->> +static inline struct vchiq_device *to_vchiq_device(struct device *d)
->> +{
->> +    return container_of(d, struct vchiq_device, dev);
->> +}
->> +
->> +static inline struct vchiq_driver *to_vchiq_driver(struct 
->> device_driver *d)
->> +{
->> +    return container_of(d, struct vchiq_driver, driver);
->> +}
->> +
->> +extern struct bus_type vchiq_bus_type;
->> +
->> +struct vchiq_device *
->> +vchiq_device_register(struct device *parent, const char *name);
->> +void vchiq_device_unregister(struct vchiq_device *dev);
->> +
->> +int vchiq_driver_register(struct vchiq_driver *vchiq_drv);
->> +void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv);
->> +
->> +/**
->> + * module_vchiq_driver() - Helper macro for registering a vchiq driver
->> + * @__vchiq_driver: vchiq driver struct
->> + *
->> + * Helper macro for vchiq drivers which do not do anything special in
->> + * module init/exit. This eliminates a lot of boilerplate. Each 
->> module may only
->> + * use this macro once, and calling it replaces module_init() and 
->> module_exit()
->> + */
->> +#define module_vchiq_driver(__vchiq_driver) \
->> +    module_driver(__vchiq_driver, vchiq_driver_register, 
->> vchiq_driver_unregister)
->> +
->> +#endif /* _VCHIQ_DEVICE_H */
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+     I map an anonymous file with pages attached rather than using MAP_ANON
+     so that I can check the pages obtained from iov_iter_extract_pages()
+     without worrying about them changing due to swap, migrate, etc..
+
+     [?] Is this the best way to do things?  Mirroring execve, it requires
+     a number of extra core symbols to be exported.  Should this be done in
+     the core code?
+
+ (4) Add tests for copying into and out of UBUF and IOVEC iterators.
+
+ (5) Add tests for extracting pages from UBUF and IOVEC iterators.
+
+ (6) Add tests to benchmark copying 256MiB to UBUF, IOVEC, KVEC, BVEC and
+     XARRAY iterators.
+
+     [!] Note that this requires 256MiB of memory for UBUF and IOVEC; the
+     KVEC, BVEC and XARRAY benchmarking maps a single page multiple times.
+     I might be able to shrink that if I can add the same page multiple
+     times to the anon file's pagecache.  I'm sure this is not recommended,
+     but I might be able to get away with it for this particular
+     application.
+
+ (7) Add a test to benchmark copying 256MiB through dynamically allocated
+     256-page bvecs to simulate bio construction.
+
+Example benchmarks output:
+
+ iov_kunit_benchmark_ubuf: avg 26899 uS, stddev 142 uS
+ iov_kunit_benchmark_iovec: avg 26897 uS, stddev 74 uS
+ iov_kunit_benchmark_kvec: avg 2688 uS, stddev 35 uS
+ iov_kunit_benchmark_bvec: avg 3139 uS, stddev 21 uS
+ iov_kunit_benchmark_bvec_split: avg 3379 uS, stddev 15 uS
+ iov_kunit_benchmark_xarray: avg 3582 uS, stddev 13 uS
+
+I've pushed the patches here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=iov-kunit
+
+David
+
+David Howells (9):
+  iov_iter: Fix some checkpatch complaints in kunit tests
+  iov_iter: Consolidate some of the repeated code into helpers
+  iov_iter: Consolidate the test vector struct in the kunit tests
+  iov_iter: Consolidate bvec pattern checking
+  iov_iter: Create a function to prepare userspace VM for UBUF/IOVEC
+    tests
+  iov_iter: Add copy kunit tests for ITER_UBUF and ITER_IOVEC
+  iov_iter: Add extract kunit tests for ITER_UBUF and ITER_IOVEC
+  iov_iter: Add benchmarking kunit tests
+  iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
+
+ fs/anon_inodes.c     |    1 +
+ kernel/fork.c        |    2 +
+ lib/kunit_iov_iter.c | 1211 +++++++++++++++++++++++++++++++++++-------
+ mm/mmap.c            |    1 +
+ mm/util.c            |    1 +
+ 5 files changed, 1024 insertions(+), 192 deletions(-)
+
