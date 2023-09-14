@@ -2,114 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734C17A11EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0694D7A11F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbjINXiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S230428AbjINXkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjINXiV (ORCPT
+        with ESMTP id S230194AbjINXkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:38:21 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD771FE5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fac16ee5fso1434490b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
+        Thu, 14 Sep 2023 19:40:08 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1A11FE5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:40:04 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so5724672a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:40:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694734697; x=1695339497; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QVyuGB/xvHjbsQ6Zy6WC5UERFVDAMx/lplVOWzlB7nk=;
-        b=Bb1gd0oCn0kV4ULdPhXKK99PK8gVenpWGW9KDzmBileH9K41rHs1rZESe632EcuKPU
-         EVjE2Jzv8r6n2pnoD6m6VHvQy9X1HjocaHkie1wJ6Fe+s9BiY1iwqhnvTNpZH0A8UAvZ
-         +ftpp737dtCN7uk+jTlKhgI3zyvujzln3697Q=
+        d=chromium.org; s=google; t=1694734800; x=1695339600; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=20RRzKZLtjTRYGrIOvHQDuGLhkZQtE0VsAgSgkickKw=;
+        b=BMR683HUJujNfUzFXbJhPk0Rp/IwHqn+5393dS7Eh7HHtuv1al2nzMeLilAONnf/cE
+         0gkxGAV9aolELuj8kwHihgvk+vGw4Ll4S4uzsCljs1rwy+7QyLK0YBNBBt01wkfsnxyA
+         3H0yYCPRV9wRwkwDaV8ZcnPPOuTJywYERLSeQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694734697; x=1695339497;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVyuGB/xvHjbsQ6Zy6WC5UERFVDAMx/lplVOWzlB7nk=;
-        b=Dz0imdCbYzx0FiNdP3BHo/zpZmTXA/2xEB6TnQrnpDNqwBn+z6XnFGlLlBnJxgtMdj
-         QR7eeSLwMmeQggfSoXDbChl/VH39WoACZiADJcT/so4oQYSGFs5Puxm0ps82Ze3CIKBU
-         FL9i6xvgTfXcNFK7taCNi7/pPO/YaFTRDayLvXwo8BIAOcSZAgoNAKc/troz3asYaeXk
-         sjj5E+NBGn5BUaw2XfsJb8/RhIZc6ryl5KXTnSn5J9T/AsHTRIN7Kph6u0KibLjwgfzF
-         NHPjrTGyeQlzV9c86vmG1mMKINE/It3YW1xJZ5NHURW2S6a58tThJKM6txf5aJqsaBwn
-         VYkA==
-X-Gm-Message-State: AOJu0YxkdkyvpDq5BpyThNxGqW4fhKX+kJOezg9P2+/+h6S+NbzIAiaE
-        tQHwj6vnPsExF+lib7HD+Mbbzg==
-X-Google-Smtp-Source: AGHT+IEavKprO9EKeotlIDh1wQtMwXnrWhscNhhuioVis4w+5F1efm6qbgrdiJJhGjthFuyMn0czcg==
-X-Received: by 2002:a05:6a00:22d1:b0:68e:3772:4e40 with SMTP id f17-20020a056a0022d100b0068e37724e40mr135414pfj.3.1694734697224;
-        Thu, 14 Sep 2023 16:38:17 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:79c3:9a77:bfee:9881])
-        by smtp.gmail.com with UTF8SMTPSA id n21-20020aa79055000000b0068a54866ca8sm1796533pfo.134.2023.09.14.16.38.15
+        d=1e100.net; s=20230601; t=1694734800; x=1695339600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=20RRzKZLtjTRYGrIOvHQDuGLhkZQtE0VsAgSgkickKw=;
+        b=dAkd+JpskECftmAF2/LwftcYND7O8qLo2OCyNLQdo71f8k0YP3lIsEkldlpaxKPRH4
+         PIfApzIX7JjScVfz+hPY7V/OIobjWmHAqb94WMCXEaOLHdF9qnSyE2wicEtVOjN+zY/0
+         m9W2qCxgjJvPyS2t5L4Dzk7W5UZYq6iZCtKlicMmQ5VBazVKTnWf7qY7nS1K57n6prvR
+         he1tILUycWqfFlFDLifFiOMy3tTy3QzwqwdEoInOAayyEG4WSsGYhf8yKf0tsRks7Apt
+         Ytvh/DuJC7v8oiyiV+97zM2sDsKrXICgP2M4uTudCR5FqDKHNXzHLw+hNT1KvjuqnF+W
+         Km7w==
+X-Gm-Message-State: AOJu0YyPgAEEADqDpYXsWLmvoHjnbc2n2gBTWGQUj7ds9bmciEq03kCK
+        gyKT6UePVoXKEakcLAMOZO+FNu0x8ngjgD7n18nElA==
+X-Google-Smtp-Source: AGHT+IGNR1TcxDylCIi6+M678wfMB8bw16xmGIi09K4xK+PXEARajpILw3KHnCTwOFK+5OzT6ZtRIA==
+X-Received: by 2002:a17:906:8a6b:b0:9a9:d5d1:35a4 with SMTP id hy11-20020a1709068a6b00b009a9d5d135a4mr121838ejc.7.1694734799829;
+        Thu, 14 Sep 2023 16:39:59 -0700 (PDT)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id bj26-20020a170906b05a00b00997e99a662bsm1609105ejb.20.2023.09.14.16.39.59
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 16:38:16 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 16:38:13 -0700
-From:   Brian Norris <briannorris@chromium.org>
-To:     Pin-yen Lin <treapking@chromium.org>
-Cc:     linux-wireless@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
-        Polaris Pi <pinkperfect2021@gmail.com>,
-        Matthew Wang <matthewmwang@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] wifi: mwifiex: Fix oob check condition in
- mwifiex_process_rx_packet
-Message-ID: <ZQOZZZgHP2EeDNix@google.com>
-References: <20230908104308.1546501-1-treapking@chromium.org>
- <ZQIcDWKrmgoPkwlN@google.com>
- <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
+        Thu, 14 Sep 2023 16:39:59 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso15395e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:39:59 -0700 (PDT)
+X-Received: by 2002:a05:600c:22d4:b0:3fe:ef25:8b86 with SMTP id
+ 20-20020a05600c22d400b003feef258b86mr64827wmg.4.1694734798662; Thu, 14 Sep
+ 2023 16:39:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXTbpc=QC6wC-W2VZCaRCp6rSpyNSsq5M6cxNcqAQxciNj0vg@mail.gmail.com>
+References: <20230823071306.131373-1-sheng-liang.pan@quanta.corp-partner.google.com>
+In-Reply-To: <20230823071306.131373-1-sheng-liang.pan@quanta.corp-partner.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 14 Sep 2023 16:39:46 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XUW+9F-gUV57bBYMn0wgM4Axr9MM5X8kBXoDekJo3AfA@mail.gmail.com>
+Message-ID: <CAD=FV=XUW+9F-gUV57bBYMn0wgM4Axr9MM5X8kBXoDekJo3AfA@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add no-esim sku for sc7180-lazor family and new
+ board version for audio codec ALC5682i-VS
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 03:09:47PM +0800, Pin-yen Lin wrote:
-> On Thu, Sep 14, 2023 at 4:31 AM Brian Norris <briannorris@chromium.org> wrote:
-> > I'd appreciate another review/test from one of the others here
-> > (Matthew?), even though I know y'all are already working together.
+Hi Bjorn,
 
-I'd still appreciate some comment here.
+On Wed, Aug 23, 2023 at 12:13=E2=80=AFAM Sheng-Liang Pan
+<sheng-liang.pan@quanta.corp-partner.google.com> wrote:
+>
+>
+>
+> Changes in v6:
+> - commit update, add dependent patch link
+> - remove unnecessary symbol
+> - sort out the order of properties
+>
+> Changes in v5:
+> - rebased on patch moving rt5682s to a fragment
+>
+> Changes in v4:
+> - combine pathc2 and patch3
+>
+> Changes in v3:
+> - correct corresponding of new board and new sku
+> - sort out the node order alphabetically
+>
+> Changes in v2:
+> - add new entry rev9 with Parade bridge chip
+> - correct newly create dts files
+>
+> Sheng-Liang Pan (2):
+>   dt-bindings: arm: qcom: add sc7180-lazor board bindings
+>   arm64: dts: qcom: sc7180: Add sku_id and board id for lazor/limozeen
+>
+>  .../devicetree/bindings/arm/qcom.yaml         | 31 +++++++++++++
+>  arch/arm64/boot/dts/qcom/Makefile             |  5 +++
+>  ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 29 ++++++++++++
+>  .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  6 +--
+>  .../sc7180-trogdor-lazor-limozeen-r10.dts     | 45 +++++++++++++++++++
+>  .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts | 10 ++---
+>  .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 23 ++++++++++
+>  .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 27 +++++++++++
+>  .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 19 ++++++++
+>  .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
+>  .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
+>  .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
+>  12 files changed, 193 insertions(+), 14 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozee=
+n-nots-r10.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozee=
+n-r10.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.=
+dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte=
+.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
 
-> > > -     if ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
-> > > -                  sizeof(bridge_tunnel_header))) ||
-> > > -         (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
-> > > -                  sizeof(rfc1042_header)) &&
-> > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_AARP &&
-> > > -          ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_IPX)) {
-> > > +     if (sizeof(*rx_pkt_hdr) + rx_pkt_off <= skb->len &&
-> >
-> > Are you sure you want this length check to fall back to the non-802.3
-> > codepath? Isn't it an error to look like an 802.3 frame but to be too
-> > small? I'd think we want to drop such packets, not process them as-is.
-> 
-> I did that because I saw other drivers (e.g., [1], [2]) use similar
-> approaches, and I assumed that the rest of the pipeline will
-> eventually drop it if the packet cannot be recognized. But, yes, we
-> can just drop the packet here if it doesn't look good.
-> 
-> [1]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c#L1035
-> [2]: https://elixir.bootlin.com/linux/latest/source/drivers/net/wireless/intel/ipw2x00/libipw_rx.c#L735
+This patch series would also be keen to get landed. As mentioned in
+the dts commit, it depends on the other patch I just pinged, AKA:
 
-Hmm, I suppose. I'm frankly not sure how exactly all upper layers handle
-this, but at least in a non-raw mode, we'll drop them. (We might be
-delivering awfully weird packets to tcpdump though, but this is already
-a weird situation, if it's such a weird-looking packet.)
+https://lore.kernel.org/r/20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3=
+e01923220@changeid
 
-> > If I'm correct, then this check should move inside the 'if' branch of
-> > this if/else.
-> 
-> We can't simply move the check inside the if branch because the
-> condition also checks rx_pkt_hdr->rfc1042_hdr.snap_type. Though, of
-> course, it is doable by adding another `if` conditions.
+If there is something outstanding that needs to be changed, please yell! :-=
+)
 
-Right.
-
-I guess this is probably OK as-is:
-
-Acked-by: Brian Norris <briannorris@chromium.org>
+-Doug
