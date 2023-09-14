@@ -2,254 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D7079F6D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E88679F781
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjINB4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
+        id S234808AbjINCDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbjINB4D (ORCPT
+        with ESMTP id S234837AbjINCDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:56:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9582127;
-        Wed, 13 Sep 2023 18:55:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B94BDC433C7;
-        Thu, 14 Sep 2023 01:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694656546;
-        bh=LZ6DzAt5mVz1QiKYVFmaZ9L+EBTYTuGsjlufbB5PfBc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TNhCUyPMFdmf4ldrxH2gpfnSez5Dxozru0j13G/IqzTtos6IOPc98JhzJV4YRiQla
-         aplc+YwA47KFoi3dnedH1Tgugl+CZCJ9bTOQ7zQ6y4OEFdiIzQGXuZx70J9bgL6B3y
-         nAqvCHfBiUukznAOA7lNXxuOuwOpMOmdNydaqZ68XUmELoWevfdasIh+PsfBP6pdyh
-         kYqHu3+CiMcPRRUKNfxBkr+WixHN+AkJhF0SXrnnHuqoft4jGGyeXkYr0WlmYTqWtz
-         1ksErfHk4Zak435oO1PObnAvt1ULaezzg8WyTEUQoNdt5p3G9dJ87CqYLT9V1Q2I9b
-         wZI0c9g4X6Nyg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, m.szyprowski@samsung.com,
-        iommu@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10] dma-debug: don't call __dma_entry_alloc_check_leak() under free_entries_lock
-Date:   Wed, 13 Sep 2023 21:55:43 -0400
-Message-Id: <20230914015543.52035-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Wed, 13 Sep 2023 22:03:21 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956405FD4;
+        Wed, 13 Sep 2023 18:58:10 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 38E1viQB007448;
+        Thu, 14 Sep 2023 09:57:44 +0800 (+08)
+        (envelope-from xingxing.luo@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RmL3f1Nrpz2Rssxt;
+        Thu, 14 Sep 2023 09:54:38 +0800 (CST)
+Received: from zebjkernups01.spreadtrum.com (10.0.93.153) by
+ shmbx06.spreadtrum.com (10.0.1.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 14 Sep 2023 09:57:43 +0800
+From:   Xingxing Luo <xingxing.luo@unisoc.com>
+To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
+        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
+        <zhang.lyra@gmail.com>
+Subject: [PATCH] usb: musb: Get the musb_qh poniter after musb_giveback
+Date:   Thu, 14 Sep 2023 09:56:56 +0800
+Message-ID: <20230914015656.20856-1-xingxing.luo@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.0.93.153]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx06.spreadtrum.com (10.0.1.11)
+X-MAIL: SHSQR01.spreadtrum.com 38E1viQB007448
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+When multiple threads are performing USB transmission, musb->lock will be
+unlocked when musb_giveback is executed. At this time, qh may be released
+in the dequeue process in other threads, resulting in a wild pointer, so
+it needs to be here get qh again, and judge whether qh is NULL, and when
+dequeue, you need to set qh to NULL.
 
-[ Upstream commit fb5a4315591dae307a65fc246ca80b5159d296e1 ]
-
-__dma_entry_alloc_check_leak() calls into printk -> serial console
-output (qcom geni) and grabs port->lock under free_entries_lock
-spin lock, which is a reverse locking dependency chain as qcom_geni
-IRQ handler can call into dma-debug code and grab free_entries_lock
-under port->lock.
-
-Move __dma_entry_alloc_check_leak() call out of free_entries_lock
-scope so that we don't acquire serial console's port->lock under it.
-
-Trimmed-down lockdep splat:
-
- The existing dependency chain (in reverse order) is:
-
-               -> #2 (free_entries_lock){-.-.}-{2:2}:
-        _raw_spin_lock_irqsave+0x60/0x80
-        dma_entry_alloc+0x38/0x110
-        debug_dma_map_page+0x60/0xf8
-        dma_map_page_attrs+0x1e0/0x230
-        dma_map_single_attrs.constprop.0+0x6c/0xc8
-        geni_se_rx_dma_prep+0x40/0xcc
-        qcom_geni_serial_isr+0x310/0x510
-        __handle_irq_event_percpu+0x110/0x244
-        handle_irq_event_percpu+0x20/0x54
-        handle_irq_event+0x50/0x88
-        handle_fasteoi_irq+0xa4/0xcc
-        handle_irq_desc+0x28/0x40
-        generic_handle_domain_irq+0x24/0x30
-        gic_handle_irq+0xc4/0x148
-        do_interrupt_handler+0xa4/0xb0
-        el1_interrupt+0x34/0x64
-        el1h_64_irq_handler+0x18/0x24
-        el1h_64_irq+0x64/0x68
-        arch_local_irq_enable+0x4/0x8
-        ____do_softirq+0x18/0x24
-        ...
-
-               -> #1 (&port_lock_key){-.-.}-{2:2}:
-        _raw_spin_lock_irqsave+0x60/0x80
-        qcom_geni_serial_console_write+0x184/0x1dc
-        console_flush_all+0x344/0x454
-        console_unlock+0x94/0xf0
-        vprintk_emit+0x238/0x24c
-        vprintk_default+0x3c/0x48
-        vprintk+0xb4/0xbc
-        _printk+0x68/0x90
-        register_console+0x230/0x38c
-        uart_add_one_port+0x338/0x494
-        qcom_geni_serial_probe+0x390/0x424
-        platform_probe+0x70/0xc0
-        really_probe+0x148/0x280
-        __driver_probe_device+0xfc/0x114
-        driver_probe_device+0x44/0x100
-        __device_attach_driver+0x64/0xdc
-        bus_for_each_drv+0xb0/0xd8
-        __device_attach+0xe4/0x140
-        device_initial_probe+0x1c/0x28
-        bus_probe_device+0x44/0xb0
-        device_add+0x538/0x668
-        of_device_add+0x44/0x50
-        of_platform_device_create_pdata+0x94/0xc8
-        of_platform_bus_create+0x270/0x304
-        of_platform_populate+0xac/0xc4
-        devm_of_platform_populate+0x60/0xac
-        geni_se_probe+0x154/0x160
-        platform_probe+0x70/0xc0
-        ...
-
-               -> #0 (console_owner){-...}-{0:0}:
-        __lock_acquire+0xdf8/0x109c
-        lock_acquire+0x234/0x284
-        console_flush_all+0x330/0x454
-        console_unlock+0x94/0xf0
-        vprintk_emit+0x238/0x24c
-        vprintk_default+0x3c/0x48
-        vprintk+0xb4/0xbc
-        _printk+0x68/0x90
-        dma_entry_alloc+0xb4/0x110
-        debug_dma_map_sg+0xdc/0x2f8
-        __dma_map_sg_attrs+0xac/0xe4
-        dma_map_sgtable+0x30/0x4c
-        get_pages+0x1d4/0x1e4 [msm]
-        msm_gem_pin_pages_locked+0x38/0xac [msm]
-        msm_gem_pin_vma_locked+0x58/0x88 [msm]
-        msm_ioctl_gem_submit+0xde4/0x13ac [msm]
-        drm_ioctl_kernel+0xe0/0x15c
-        drm_ioctl+0x2e8/0x3f4
-        vfs_ioctl+0x30/0x50
-        ...
-
- Chain exists of:
-   console_owner --> &port_lock_key --> free_entries_lock
-
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(free_entries_lock);
-                                lock(&port_lock_key);
-                                lock(free_entries_lock);
-   lock(console_owner);
-
-                *** DEADLOCK ***
-
- Call trace:
-  dump_backtrace+0xb4/0xf0
-  show_stack+0x20/0x30
-  dump_stack_lvl+0x60/0x84
-  dump_stack+0x18/0x24
-  print_circular_bug+0x1cc/0x234
-  check_noncircular+0x78/0xac
-  __lock_acquire+0xdf8/0x109c
-  lock_acquire+0x234/0x284
-  console_flush_all+0x330/0x454
-  console_unlock+0x94/0xf0
-  vprintk_emit+0x238/0x24c
-  vprintk_default+0x3c/0x48
-  vprintk+0xb4/0xbc
-  _printk+0x68/0x90
-  dma_entry_alloc+0xb4/0x110
-  debug_dma_map_sg+0xdc/0x2f8
-  __dma_map_sg_attrs+0xac/0xe4
-  dma_map_sgtable+0x30/0x4c
-  get_pages+0x1d4/0x1e4 [msm]
-  msm_gem_pin_pages_locked+0x38/0xac [msm]
-  msm_gem_pin_vma_locked+0x58/0x88 [msm]
-  msm_ioctl_gem_submit+0xde4/0x13ac [msm]
-  drm_ioctl_kernel+0xe0/0x15c
-  drm_ioctl+0x2e8/0x3f4
-  vfs_ioctl+0x30/0x50
-  ...
-
-Reported-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: dbac5d07d13e ("usb: musb: host: don't start next rx urb if current one failed")
+Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
 ---
- kernel/dma/debug.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/usb/musb/musb_host.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index ae9fc1ee6d206..0263983089097 100644
---- a/kernel/dma/debug.c
-+++ b/kernel/dma/debug.c
-@@ -606,15 +606,19 @@ static struct dma_debug_entry *__dma_entry_alloc(void)
- 	return entry;
- }
+diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
+index a02c29216955..9df27db5847a 100644
+--- a/drivers/usb/musb/musb_host.c
++++ b/drivers/usb/musb/musb_host.c
+@@ -321,10 +321,16 @@ static void musb_advance_schedule(struct musb *musb, struct urb *urb,
+ 	musb_giveback(musb, urb, status);
+ 	qh->is_ready = ready;
  
--static void __dma_entry_alloc_check_leak(void)
-+/*
-+ * This should be called outside of free_entries_lock scope to avoid potential
-+ * deadlocks with serial consoles that use DMA.
-+ */
-+static void __dma_entry_alloc_check_leak(u32 nr_entries)
- {
--	u32 tmp = nr_total_entries % nr_prealloc_entries;
-+	u32 tmp = nr_entries % nr_prealloc_entries;
- 
- 	/* Shout each time we tick over some multiple of the initial pool */
- 	if (tmp < DMA_DEBUG_DYNAMIC_ENTRIES) {
- 		pr_info("dma_debug_entry pool grown to %u (%u00%%)\n",
--			nr_total_entries,
--			(nr_total_entries / nr_prealloc_entries));
-+			nr_entries,
-+			(nr_entries / nr_prealloc_entries));
- 	}
- }
- 
-@@ -625,8 +629,10 @@ static void __dma_entry_alloc_check_leak(void)
-  */
- static struct dma_debug_entry *dma_entry_alloc(void)
- {
-+	bool alloc_check_leak = false;
- 	struct dma_debug_entry *entry;
- 	unsigned long flags;
-+	u32 nr_entries;
- 
- 	spin_lock_irqsave(&free_entries_lock, flags);
- 	if (num_free_entries == 0) {
-@@ -636,13 +642,17 @@ static struct dma_debug_entry *dma_entry_alloc(void)
- 			pr_err("debugging out of memory - disabling\n");
- 			return NULL;
- 		}
--		__dma_entry_alloc_check_leak();
-+		alloc_check_leak = true;
-+		nr_entries = nr_total_entries;
- 	}
- 
- 	entry = __dma_entry_alloc();
- 
- 	spin_unlock_irqrestore(&free_entries_lock, flags);
- 
-+	if (alloc_check_leak)
-+		__dma_entry_alloc_check_leak(nr_entries);
++	/*
++	 * musb->lock had been unlocked in musb_giveback, so somtimes qh
++	 * may freed, need get it again
++	 */
++	qh = musb_ep_get_qh(hw_ep, is_in);
 +
- #ifdef CONFIG_STACKTRACE
- 	entry->stack_len = stack_trace_save(entry->stack_entries,
- 					    ARRAY_SIZE(entry->stack_entries),
+ 	/* reclaim resources (and bandwidth) ASAP; deschedule it, and
+ 	 * invalidate qh as soon as list_empty(&hep->urb_list)
+ 	 */
+-	if (list_empty(&qh->hep->urb_list)) {
++	if (qh != NULL && list_empty(&qh->hep->urb_list)) {
+ 		struct list_head	*head;
+ 		struct dma_controller	*dma = musb->dma_controller;
+ 
+@@ -2398,6 +2404,7 @@ static int musb_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
+ 		 * and its URB list has emptied, recycle this qh.
+ 		 */
+ 		if (ready && list_empty(&qh->hep->urb_list)) {
++			musb_ep_set_qh(qh->hw_ep, is_in, NULL);
+ 			qh->hep->hcpriv = NULL;
+ 			list_del(&qh->ring);
+ 			kfree(qh);
 -- 
-2.40.1
+2.17.1
 
