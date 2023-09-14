@@ -2,221 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106897A06BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C237A06CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239192AbjINOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        id S239483AbjINOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbjINOBM (ORCPT
+        with ESMTP id S231720AbjINOCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:01:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50D51A2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694700068; x=1726236068;
-  h=date:from:to:cc:subject:message-id;
-  bh=cOVo9n2YWfENWS3DmsMKmyxqhnBSeocOkLTThS4yFkU=;
-  b=HDPwVkp3PoPXUI5d2DpleG7eaOi2J2NJ0RAivngkzO1RawvZrdzCXtmX
-   RipgxxnUvRspKyK27lT5f1GBFfs7eEDGGN2ZwFNxU78GeV4+0H4JFC/Al
-   0FoY/TXB/SMU9B2Zw1J1eeU0Whl7dQe9c96earLXHxThl1HXYea7F1qNg
-   oH2RppOGkPU7+pIXPOWJuPe1SyNCWnmZCO0JUBFmSehmTjtSNRHnoxrSf
-   duQHRjE1vBW4RzeHi8f8k1Su2/0N02z4Bpf7lTy5xP5xhuZZoIeTVXfFJ
-   QTFgaZ13P8bcxZ7/VAiOVco46Wj5ApLpOMhiKDAoEqlMN/30XY9WvWlEl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="376294283"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="376294283"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 07:00:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="810069395"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="810069395"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Sep 2023 07:00:47 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgmth-0001eq-1C;
-        Thu, 14 Sep 2023 14:00:45 +0000
-Date:   Thu, 14 Sep 2023 22:00:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 0e34600ac9317dbe5f0a7bfaa3d7187d757572ed
-Message-ID: <202309142222.Oc2FWd1H-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Thu, 14 Sep 2023 10:02:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AA2DF;
+        Thu, 14 Sep 2023 07:02:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC42C433C7;
+        Thu, 14 Sep 2023 14:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694700153;
+        bh=UbILtaDX6YaX9dgq96QTqXtymCmpeldgjR+T2oK3xaM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PNO+aHUgNDxHMtKVOjlzcOL7tLf+z9y1Iq9XnBkmWBc2p/Apxp3ZmIFvKQ7+UYpIj
+         vGqVGuRuqwz0WOI8F1gzCKpdQPNfFHmxOHmz3dSp8GqSj3cE46pwgm94yOyHfEGDiv
+         t9y7eUZSydl/+7e2w+r2yGmTZg5C3zcJTsLzrZROns45s7RhKOT5/mOoOYhEY9tIY0
+         aW5X29QrkwlJ6PisxRbW4j8ftjNKzQ2NS5JZkV/8+DbW86yP6ME2DQBOHUELgyT2nn
+         rGGSMchIIOuzQfCiLakKwcTxGR0UeiFBwERYJSLsssW7J/ySM61igFF7UL6hlSMHj2
+         OLKep8D3SXHCA==
+Date:   Thu, 14 Sep 2023 16:02:25 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230914023705.GH800259@ZenIV>
+ <20230914053843.GI800259@ZenIV>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230914053843.GI800259@ZenIV>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 0e34600ac9317dbe5f0a7bfaa3d7187d757572ed  sched: Misc cleanups
+> Christoph, could you explain what the hell do we need that for?  It does
+> create the race in question and AFAICS 2c18a63b760a (and followups trying
+> to plug holes in it) had been nothing but headache.
+> 
+> Old logics: if mount attempt with a different fs type happens, -EBUSY
+> is precisely corrent - we would've gotten just that if mount() came
+> before umount().  If the type matches, we might
+> 	1) come before deactivate_locked_super() by umount(2).
+> No problem, we succeed.
+> 	2) come after the beginning of shutdown, but before the
+> removal from the list; fine, we'll wait for the sucker to be
+> unlocked (which happens in the end of generic_shutdown_super()),
+> notice it's dead and create a new superblock.  Since the only
+> part left on the umount side is closing the device, we are
+> just fine.
+> 	3) come after the removal from the list.  So we won't
+> wait for the old superblock to be unlocked, other than that
+> it's exactly the same as (2).  It doesn't matter whether we
+> open the device before or after close by umount - same owner
+> anyway, no -EBUSY.
+> 
+> Your "owner shall be the superblock" breaks that...
+> 
+> If you want to mess with _three_-way split of ->kill_sb(),
+> please start with writing down the rules re what should
+> go into each of those parts; such writeup should go into
+> Documentation/filesystems/porting anyway, even if the
+> split is a two-way one, BTW.
 
-elapsed time: 1490m
+Hm, I think that characterization of Christoph's changes is a bit harsh.
 
-configs tested: 150
-configs skipped: 2
+Yes, you're right that making the superblock and not the filesytem type
+the bd_holder changes the logic and we are aware of that of course. And
+it requires changes such as moving additional block device closing from
+where some callers currently do it.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+But the filesytem type is not a very useful holder itself and has other
+drawbacks. The obvious one being that it requires us to wade through all
+superblocks on the system trying to find the superblock associated with
+a given block device continously grabbing and dropping sb_lock and
+s_umount. None of that is very pleasant nor elegant and it is for sure
+not very easy to understand (Plus, it's broken for btrfs freezing and
+syncing via block level ioctls.).
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230913   gcc  
-arc                  randconfig-r016-20230913   gcc  
-arc                  randconfig-r032-20230913   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230913   gcc  
-arm                   randconfig-001-20230914   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon               randconfig-001-20230913   clang
-hexagon               randconfig-002-20230913   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230914   gcc  
-i386         buildonly-randconfig-002-20230914   gcc  
-i386         buildonly-randconfig-003-20230914   gcc  
-i386         buildonly-randconfig-004-20230914   gcc  
-i386         buildonly-randconfig-005-20230914   gcc  
-i386         buildonly-randconfig-006-20230914   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230914   gcc  
-i386                  randconfig-002-20230914   gcc  
-i386                  randconfig-003-20230914   gcc  
-i386                  randconfig-004-20230914   gcc  
-i386                  randconfig-005-20230914   gcc  
-i386                  randconfig-006-20230914   gcc  
-i386                  randconfig-011-20230914   gcc  
-i386                  randconfig-012-20230914   gcc  
-i386                  randconfig-013-20230914   gcc  
-i386                  randconfig-014-20230914   gcc  
-i386                  randconfig-015-20230914   gcc  
-i386                  randconfig-016-20230914   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230913   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r012-20230913   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r035-20230913   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc             randconfig-r031-20230913   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r015-20230913   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230913   gcc  
-riscv                randconfig-r033-20230913   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230913   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   randconfig-r011-20230913   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230914   gcc  
-sparc                randconfig-r014-20230913   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r034-20230913   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230914   gcc  
-x86_64       buildonly-randconfig-002-20230914   gcc  
-x86_64       buildonly-randconfig-003-20230914   gcc  
-x86_64       buildonly-randconfig-004-20230914   gcc  
-x86_64       buildonly-randconfig-005-20230914   gcc  
-x86_64       buildonly-randconfig-006-20230914   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230914   gcc  
-x86_64                randconfig-002-20230914   gcc  
-x86_64                randconfig-003-20230914   gcc  
-x86_64                randconfig-004-20230914   gcc  
-x86_64                randconfig-005-20230914   gcc  
-x86_64                randconfig-006-20230914   gcc  
-x86_64                randconfig-011-20230914   gcc  
-x86_64                randconfig-012-20230914   gcc  
-x86_64                randconfig-013-20230914   gcc  
-x86_64                randconfig-014-20230914   gcc  
-x86_64                randconfig-015-20230914   gcc  
-x86_64                randconfig-016-20230914   gcc  
-x86_64                randconfig-071-20230914   gcc  
-x86_64                randconfig-072-20230914   gcc  
-x86_64                randconfig-073-20230914   gcc  
-x86_64                randconfig-074-20230914   gcc  
-x86_64                randconfig-075-20230914   gcc  
-x86_64                randconfig-076-20230914   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa               randconfig-r013-20230913   gcc  
+Using the superblock as holder makes this go away and is overall a lot
+more useful and intuitive and can be extended to filesystems with
+multiple devices (Of which we apparently are bound to get more.).
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So I think this change is worth the pain.
+
+It's a fair point that these lifetime rules should be documented in
+Documentation/filesystems/. The old lifetime documentation is too sparse
+to be useful though.
