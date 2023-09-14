@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D05E7A0D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856267A0D3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242066AbjINSli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        id S241974AbjINSll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241918AbjINSjg (ORCPT
+        with ESMTP id S241971AbjINSjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:39:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92DB2701;
-        Thu, 14 Sep 2023 11:39:01 -0700 (PDT)
+        Thu, 14 Sep 2023 14:39:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235D52705;
+        Thu, 14 Sep 2023 11:39:02 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1694716740;
@@ -22,32 +22,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wEqDaVJQVqGX9YVn2BD87JacVQ7J8Oaoh/OqCs9R0Bw=;
-        b=M8E4l2ZSQCM+fzelBT40soSJQ49RE94oh76LR7unQ9Qr0D1BTamTJxsfaxIOrIyKsXqM4Q
-        TZnzsgOR+e4jrE3czEBVY62d/bvRppdl/gMx1sZMzfhbJGm8ZD99i9YBq2wUB1FEMKug58
-        yEx4CnYWkntZEq66h9/jYqXVrpAOIVAAAFH2813wX+XmjlPWeQLOsmD29taNXz8+KmOS8y
-        nKkXYxhsFzW9HpzVfZfzZ3huMy2RbFAb9ulGkycMpoOGPsUKY9rLN8sI+2PmvU1oxhglLy
-        xttwahzwecqnnG5T4YCPFNyQucl9GVL7HK9hol4BmmUg5u7QjTwjiQZH1IRxnw==
+        bh=4go78jqQjBoLjBGzmCHOv9NrC20UwwVa764/6PmFVf4=;
+        b=KycCGl+Z0tSDZryL3lQvmTDKcENvZ0bElfbOFWqhLIP3byAP8mJeI8s7trSAyJ04mQsP2N
+        1/M3CFlEDWRY4Z5SF8LpTdGxlleEfdxtDAci9kbM93yX+OoCLRndlWnDkjX9SKjrnzp/5r
+        lorsjYHtyFt5l2tvoeCNi95kjntjmBRR2DCVB41fw2zUWbr1VVIhrzZ9cEfdmvwIGCQfMN
+        /tQ3hy7AwDUhqDzBhBfrALwSGfKsBc6a3fEJAD01Miv3D8x8TQnVNgKkBI7QOpEW0GQGtN
+        DLVoatFnfmYeO9QruW6684ou7F878JmG8Kr9OaSmLDT6TYpvas/aNOo7t/Q32w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716740;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wEqDaVJQVqGX9YVn2BD87JacVQ7J8Oaoh/OqCs9R0Bw=;
-        b=481xDhaTxt22pkHVkWf5eB+vMa1cJVph7J/xdQcvkLU87hhOwi8Og7JNujmxumwgWas9+5
-        p8Uaq4O5e8uTatBA==
+        bh=4go78jqQjBoLjBGzmCHOv9NrC20UwwVa764/6PmFVf4=;
+        b=0CSYNn68lqfVz1Tm7+KGTJLruBkCCmjvrxg4X3MZa6H8cRhjyOQ8S2f5ycLq3ZJtfVSNjo
+        aLXikOoIdOkjNHCA==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Thierry Reding <treding@nvidia.com>,
-        Richard GENOUD <richard.genoud@gmail.com>
-Subject: [PATCH tty v1 51/74] serial: rp2: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:44:08 +0206
-Message-Id: <20230914183831.587273-52-john.ogness@linutronix.de>
+        Tobias Klauser <tklauser@distanz.ch>
+Subject: [PATCH tty v1 52/74] serial: sa1100: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:44:09 +0206
+Message-Id: <20230914183831.587273-53-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -84,87 +84,90 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/rp2.c | 20 ++++++++++----------
+ drivers/tty/serial/sa1100.c | 20 ++++++++++----------
  1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/rp2.c b/drivers/tty/serial/rp2.c
-index de220ac8ca54..d46a81cddfcd 100644
---- a/drivers/tty/serial/rp2.c
-+++ b/drivers/tty/serial/rp2.c
-@@ -276,9 +276,9 @@ static unsigned int rp2_uart_tx_empty(struct uart_port *port)
- 	 * But the TXEMPTY bit doesn't seem to work unless the TX IRQ is
- 	 * enabled.
- 	 */
--	spin_lock_irqsave(&up->port.lock, flags);
-+	uart_port_lock_irqsave(&up->port, &flags);
- 	tx_fifo_bytes = readw(up->base + RP2_TX_FIFO_COUNT);
--	spin_unlock_irqrestore(&up->port.lock, flags);
-+	uart_port_unlock_irqrestore(&up->port, flags);
- 
- 	return tx_fifo_bytes ? 0 : TIOCSER_TEMT;
- }
-@@ -323,10 +323,10 @@ static void rp2_uart_break_ctl(struct uart_port *port, int break_state)
- {
+diff --git a/drivers/tty/serial/sa1100.c b/drivers/tty/serial/sa1100.c
+index ad011f1e2f4d..be7bcd75d9f4 100644
+--- a/drivers/tty/serial/sa1100.c
++++ b/drivers/tty/serial/sa1100.c
+@@ -115,9 +115,9 @@ static void sa1100_timeout(struct timer_list *t)
  	unsigned long flags;
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	rp2_rmw(port_to_up(port), RP2_TXRX_CTL, RP2_TXRX_CTL_BREAK_m,
- 		break_state ? RP2_TXRX_CTL_BREAK_m : 0);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+ 	if (sport->port.state) {
+-		spin_lock_irqsave(&sport->port.lock, flags);
++		uart_port_lock_irqsave(&sport->port, &flags);
+ 		sa1100_mctrl_check(sport);
+-		spin_unlock_irqrestore(&sport->port.lock, flags);
++		uart_port_unlock_irqrestore(&sport->port, flags);
+ 
+ 		mod_timer(&sport->timer, jiffies + MCTRL_TIMEOUT);
+ 	}
+@@ -247,7 +247,7 @@ static irqreturn_t sa1100_int(int irq, void *dev_id)
+ 	struct sa1100_port *sport = dev_id;
+ 	unsigned int status, pass_counter = 0;
+ 
+-	spin_lock(&sport->port.lock);
++	uart_port_lock(&sport->port);
+ 	status = UART_GET_UTSR0(sport);
+ 	status &= SM_TO_UTSR0(sport->port.read_status_mask) | ~UTSR0_TFS;
+ 	do {
+@@ -276,7 +276,7 @@ static irqreturn_t sa1100_int(int irq, void *dev_id)
+ 		status &= SM_TO_UTSR0(sport->port.read_status_mask) |
+ 			  ~UTSR0_TFS;
+ 	} while (status & (UTSR0_TFS | UTSR0_RFS | UTSR0_RID));
+-	spin_unlock(&sport->port.lock);
++	uart_port_unlock(&sport->port);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -321,14 +321,14 @@ static void sa1100_break_ctl(struct uart_port *port, int break_state)
+ 	unsigned long flags;
+ 	unsigned int utcr3;
+ 
+-	spin_lock_irqsave(&sport->port.lock, flags);
++	uart_port_lock_irqsave(&sport->port, &flags);
+ 	utcr3 = UART_GET_UTCR3(sport);
+ 	if (break_state == -1)
+ 		utcr3 |= UTCR3_BRK;
+ 	else
+ 		utcr3 &= ~UTCR3_BRK;
+ 	UART_PUT_UTCR3(sport, utcr3);
+-	spin_unlock_irqrestore(&sport->port.lock, flags);
++	uart_port_unlock_irqrestore(&sport->port, flags);
  }
  
- static void rp2_uart_enable_ms(struct uart_port *port)
-@@ -383,7 +383,7 @@ static void rp2_uart_set_termios(struct uart_port *port, struct ktermios *new,
- 	if (tty_termios_baud_rate(new))
- 		tty_termios_encode_baud_rate(new, baud, baud);
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	/* ignore all characters if CREAD is not set */
- 	port->ignore_status_mask = (new->c_cflag & CREAD) ? 0 : RP2_DUMMY_READ;
-@@ -391,7 +391,7 @@ static void rp2_uart_set_termios(struct uart_port *port, struct ktermios *new,
- 	__rp2_uart_set_termios(up, new->c_cflag, new->c_iflag, baud_div);
- 	uart_update_timeout(port, new->c_cflag, baud);
- 
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
- 
- static void rp2_rx_chars(struct rp2_uart_port *up)
-@@ -440,7 +440,7 @@ static void rp2_ch_interrupt(struct rp2_uart_port *up)
- {
- 	u32 status;
- 
--	spin_lock(&up->port.lock);
-+	uart_port_lock(&up->port);
- 
+ static int sa1100_startup(struct uart_port *port)
+@@ -354,9 +354,9 @@ static int sa1100_startup(struct uart_port *port)
  	/*
- 	 * The IRQ status bits are clear-on-write.  Other status bits in
-@@ -456,7 +456,7 @@ static void rp2_ch_interrupt(struct rp2_uart_port *up)
- 	if (status & RP2_CHAN_STAT_MS_CHANGED_MASK)
- 		wake_up_interruptible(&up->port.state->port.delta_msr_wait);
+ 	 * Enable modem status interrupts
+ 	 */
+-	spin_lock_irq(&sport->port.lock);
++	uart_port_lock_irq(&sport->port);
+ 	sa1100_enable_ms(&sport->port);
+-	spin_unlock_irq(&sport->port.lock);
++	uart_port_unlock_irq(&sport->port);
  
--	spin_unlock(&up->port.lock);
-+	uart_port_unlock(&up->port);
+ 	return 0;
+ }
+@@ -423,7 +423,7 @@ sa1100_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	del_timer_sync(&sport->timer);
+ 
+-	spin_lock_irqsave(&sport->port.lock, flags);
++	uart_port_lock_irqsave(&sport->port, &flags);
+ 
+ 	sport->port.read_status_mask &= UTSR0_TO_SM(UTSR0_TFS);
+ 	sport->port.read_status_mask |= UTSR1_TO_SM(UTSR1_ROR);
+@@ -485,7 +485,7 @@ sa1100_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	if (UART_ENABLE_MS(&sport->port, termios->c_cflag))
+ 		sa1100_enable_ms(&sport->port);
+ 
+-	spin_unlock_irqrestore(&sport->port.lock, flags);
++	uart_port_unlock_irqrestore(&sport->port, flags);
  }
  
- static int rp2_asic_interrupt(struct rp2_card *card, unsigned int asic_id)
-@@ -516,10 +516,10 @@ static void rp2_uart_shutdown(struct uart_port *port)
- 
- 	rp2_uart_break_ctl(port, 0);
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	rp2_mask_ch_irq(up, up->idx, 0);
- 	rp2_rmw(up, RP2_CHAN_STAT, 0, 0);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
- 
- static const char *rp2_uart_type(struct uart_port *port)
+ static const char *sa1100_type(struct uart_port *port)
 -- 
 2.39.2
 
