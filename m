@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BB77A0124
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0217A0129
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237531AbjINKDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S237959AbjINKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237747AbjINKDr (ORCPT
+        with ESMTP id S237811AbjINKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:03:47 -0400
-Received: from outbound-smtp55.blacknight.com (outbound-smtp55.blacknight.com [46.22.136.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49881BE3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:03:42 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id ECF89FAC41
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:03:40 +0100 (IST)
-Received: (qmail 9226 invoked from network); 14 Sep 2023 10:03:40 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Sep 2023 10:03:40 -0000
-Date:   Thu, 14 Sep 2023 11:03:39 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] mm: page_alloc: fix move_freepages_block() range
- error
-Message-ID: <20230914100339.3dhgvsc6aprb5bbx@techsingularity.net>
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-5-hannes@cmpxchg.org>
+        Thu, 14 Sep 2023 06:03:58 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543C21BE3;
+        Thu, 14 Sep 2023 03:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=B6RnEXIYDtUw6JnmrPx9u+Y1Ptj1s48sSYqiRgozYj8=; b=JMuyF2HYa2ahrFynGeiT4letpJ
+        egbDnqzEYvKA38hOiMNTrIBVNsM9TyjW8BdZCaREg5Qb9/MqrLW7dhyVlaiRYqZUQzCF+zmAtz8Kd
+        1xWzA24/N68lesZyur9s/Lasqjwm5u7C3IgBoqCliaWhgs1b6nJTLYpbZFwktTF5KuzYVjDcFawv9
+        XcJ1e91OLAi+dqHiPcSbsqZkk4vgBy/P8b5B9bjgt/1mmMZTHeXRr9JzpoZ8ODYjbVqwXypram10j
+        c8qjJmSMD1BfGHCsck5bXiyMNAZMvxIkkIqGzfaEDBte4KHIU08IYgGx5qrkHpOXLB4worlNrNHP3
+        X085S91w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41812)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qgjCR-0003r2-16;
+        Thu, 14 Sep 2023 11:03:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qgjCR-0004f9-Ts; Thu, 14 Sep 2023 11:03:51 +0100
+Date:   Thu, 14 Sep 2023 11:03:51 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     James Morse <james.morse@arm.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+Subject: Re: [RFC PATCH v2 09/35] LoongArch: Switch over to
+ GENERIC_CPU_DEVICES
+Message-ID: <ZQLah+HBx8TuDaJQ@shell.armlinux.org.uk>
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-10-james.morse@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230911195023.247694-5-hannes@cmpxchg.org>
+In-Reply-To: <20230913163823.7880-10-james.morse@arm.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 03:41:45PM -0400, Johannes Weiner wrote:
-> When a block is partially outside the zone of the cursor page, the
-> function cuts the range to the pivot page instead of the zone
-> start. This can leave large parts of the block behind, which
-> encourages incompatible page mixing down the line (ask for one type,
-> get another), and thus long-term fragmentation.
+On Wed, Sep 13, 2023 at 04:37:57PM +0000, James Morse wrote:
+> Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
+> overridden by the arch code, switch over to this to allow common code
+> to choose when the register_cpu() call is made.
 > 
-> This triggers reliably on the first block in the DMA zone, whose
-> start_pfn is 1. The block is stolen, but everything before the pivot
-> page (which was often hundreds of pages) is left on the old list.
+> This allows topology_init() to be removed.
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> This is an intermediate step to the logic being moved to drivers/acpi,
+> where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
 
-Oops
-
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Same comment as x86 (moving the point at which cpus are registered
+ought to be mentioned in the commit message.)
 
 -- 
-Mel Gorman
-SUSE Labs
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
