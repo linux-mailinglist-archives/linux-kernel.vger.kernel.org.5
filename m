@@ -2,161 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F337A04E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D097A04E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238621AbjINNEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
+        id S238608AbjINNFB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 09:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238525AbjINNEg (ORCPT
+        with ESMTP id S238629AbjINNE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:04:36 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1E61FD5;
-        Thu, 14 Sep 2023 06:04:32 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 672F724E1D4;
-        Thu, 14 Sep 2023 21:04:17 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 14 Sep
- 2023 21:04:17 +0800
-Received: from [192.168.125.113] (113.72.145.181) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 14 Sep
- 2023 21:04:16 +0800
-Message-ID: <1a9d2905-b0e8-1775-e44f-39d3693a1dad@starfivetech.com>
-Date:   Thu, 14 Sep 2023 21:04:16 +0800
+        Thu, 14 Sep 2023 09:04:58 -0400
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF041FDD;
+        Thu, 14 Sep 2023 06:04:54 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d81b42a3108so150176276.1;
+        Thu, 14 Sep 2023 06:04:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694696693; x=1695301493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MKZM3IUDKJvPoIca4YBGFuMY+PB7MhRe0/Yx688KnKo=;
+        b=KhmfUy2QRV2s7ju8uNn65nSvainfdisVM9ZkyTKnsvpNTYZVl0roMj+fzb4LLrZ96z
+         mtWahyDsPmpsJIbgNazemNz4lbrYIuThgEugf99IKN8A0JBPmdLcdaC0oY24TeJgdoJZ
+         2SpK2uHIq1kkewJalBIfG92KENq0jhcIDlPnm+UYOM2YY1+gr9ekhHRbhykhDgRPiqBC
+         doJFhOctQ1nS2w0764rsDeQFLe53bommwAE3we+LYMP0SMjimSOPaGL10wUdLyUuNQdq
+         2do/SF/xMzyC9kksn/CvpK51wf0xS123etic57z7EVZXP84g7sPS54lnxOyuUy1GeYu8
+         Sfug==
+X-Gm-Message-State: AOJu0YzBjlC5L8iLTPklkd3q8pY+tKFPw9nUKqKv5LgQfGgL32t2s6Iz
+        yURX2gG3umsaXJnByvihCdAkNCyco8DWxA==
+X-Google-Smtp-Source: AGHT+IEt+gT+n3aIcPy92qL7mJOuB5BABqv+BivtLt7q9aZJYpGW1boxq0BymCIM3FRg2/tQztNVBw==
+X-Received: by 2002:a05:6902:1149:b0:d78:3492:3333 with SMTP id p9-20020a056902114900b00d7834923333mr6188948ybu.7.1694696693314;
+        Thu, 14 Sep 2023 06:04:53 -0700 (PDT)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
+        by smtp.gmail.com with ESMTPSA id y126-20020a253284000000b00d7bb3c4893fsm321844yby.8.2023.09.14.06.04.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 06:04:52 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59be6bcf408so10777267b3.2;
+        Thu, 14 Sep 2023 06:04:52 -0700 (PDT)
+X-Received: by 2002:a25:d28b:0:b0:d81:b499:2e85 with SMTP id
+ j133-20020a25d28b000000b00d81b4992e85mr365829ybg.47.1694696691965; Thu, 14
+ Sep 2023 06:04:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 13/17] pmdomain: starfive: Move Kconfig file to the
- pmdomain subsystem
-To:     Conor Dooley <conor.dooley@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
-References: <20230914111904.586744-1-ulf.hansson@linaro.org>
- <20230914-delegator-dimple-51b9414caa28@wendy>
-Content-Language: en-US
-From:   Walker Chen <walker.chen@starfivetech.com>
-In-Reply-To: <20230914-delegator-dimple-51b9414caa28@wendy>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-11-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20230912045157.177966-11-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Sep 2023 15:04:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV+54heFxPGmN53OMmP0cu4+3-t0ARZWH0c+qgZA_G73g@mail.gmail.com>
+Message-ID: <CAMuHMdV+54heFxPGmN53OMmP0cu4+3-t0ARZWH0c+qgZA_G73g@mail.gmail.com>
+Subject: Re: [PATCH 10/37] clk: renesas: rzg2l: use core->name for clock name
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.145.181]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Claudiu,
 
-On 2023/9/14 19:59, Conor Dooley wrote:
-> Hey,
-> 
-> 
-> On Thu, Sep 14, 2023 at 01:19:04PM +0200, Ulf Hansson wrote:
->> The Kconfig belongs closer to the corresponding implementation, hence let's
->> move it from the soc subsystem to the pmdomain subsystem.
->> 
->> Cc: Walker Chen <walker.chen@starfivetech.com>
->> Cc: Conor Dooley <conor@kernel.org>
->> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> 
-> Thanks for doing this, saved me having to!
-> The series appears to have broken threading though, which can be seen
-> pretty easily on lore:
-> https://lore.kernel.org/all/20230914111904.586744-1-ulf.hansson@linaro.org/
-> Dunno if something is borked with your process while sending patches to
-> only a subset of the total recipient list.
-> 
->> ---
->>  MAINTAINERS                                | 2 +-
->>  drivers/pmdomain/Kconfig                   | 1 +
->>  drivers/{soc => pmdomain}/starfive/Kconfig | 0
->>  drivers/soc/Kconfig                        | 1 -
->>  4 files changed, 2 insertions(+), 2 deletions(-)
->>  rename drivers/{soc => pmdomain}/starfive/Kconfig (100%)
->> 
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 6b491ebcf790..b8eae18f0fb1 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -20523,7 +20523,7 @@ M:	Conor Dooley <conor@kernel.org>
->>  S:	Maintained
->>  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/
->>  F:	Documentation/devicetree/bindings/soc/starfive/
->> -F:	drivers/soc/starfive/
->> +F:	drivers/pmdomain/starfive/
-> 
-> This isn't the correct change, just remove the drivers/soc/starfive
-> bit entirely from this entry. 
-> I've just been doing some review & sending PRs to Arnd for this stuff
-> (or failing to send the PRs as you saw), I don't have particular
-> interest in this driver other than helping out the starfive people with
-> actually getting the code merged.
-> Instead I think you should generalise the existing entry for the driver
-> to cover the whole directory, so that it includes the Kconfig bits too:
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fa7487b7729b..22c1a5e5b130 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20564,7 +20564,7 @@ M:      Walker Chen <walker.chen@starfivetech.com>
->  M:     Changhuang Liang <changhuang.liang@starfivetech.com>
->  S:     Supported
->  F:     Documentation/devicetree/bindings/power/starfive*
-> -F:     drivers/pmdomain/starfive/jh71xx-pmu.c
-> +F:     drivers/pmdomain/starfive/
->  F:     include/dt-bindings/power/starfive,jh7110-pmu.h
->  
->  STARFIVE SOC DRIVERS
-> 
+On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> core->name already contains the clock name thus, there is no
+> need to check the GET_SHIFT(core->conf) to decide on it.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi Conor,
+Thanks for your patch!
 
-Anyway, thank you for helping maintain this driver as starfive people lack of experience in this area. 
-You have indeed helped us a lot during this period.
+> --- a/drivers/clk/renesas/rzg2l-cpg.c
+> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+> @@ -266,7 +266,7 @@ rzg2l_cpg_sd_mux_clk_register(const struct cpg_core_clk *core,
+>         clk_hw_data->priv = priv;
+>         clk_hw_data->conf = core->conf;
+>
+> -       init.name = GET_SHIFT(core->conf) ? "sd1" : "sd0";
+> +       init.name = core->name;
 
-Best regards,
-Walker
+Note that this does change the case of the names (e.g. "SD0" => "sd0").
+I guess no one cares...
 
-> Thanks,
-> Conor.
-> 
->>  
->>  STARFIVE TRNG DRIVER
->>  M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
->> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
->> index cfe9ea754062..67049ebf7265 100644
->> --- a/drivers/pmdomain/Kconfig
->> +++ b/drivers/pmdomain/Kconfig
->> @@ -12,5 +12,6 @@ source "drivers/pmdomain/renesas/Kconfig"
->>  source "drivers/pmdomain/rockchip/Kconfig"
->>  source "drivers/pmdomain/samsung/Kconfig"
->>  source "drivers/pmdomain/st/Kconfig"
->> +source "drivers/pmdomain/starfive/Kconfig"
->>  
->>  endmenu
->> diff --git a/drivers/soc/starfive/Kconfig b/drivers/pmdomain/starfive/Kconfig
->> similarity index 100%
->> rename from drivers/soc/starfive/Kconfig
->> rename to drivers/pmdomain/starfive/Kconfig
->> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
->> index 8b46da40f107..10a9ff84ff41 100644
->> --- a/drivers/soc/Kconfig
->> +++ b/drivers/soc/Kconfig
->> @@ -23,7 +23,6 @@ source "drivers/soc/renesas/Kconfig"
->>  source "drivers/soc/rockchip/Kconfig"
->>  source "drivers/soc/samsung/Kconfig"
->>  source "drivers/soc/sifive/Kconfig"
->> -source "drivers/soc/starfive/Kconfig"
->>  source "drivers/soc/sunxi/Kconfig"
->>  source "drivers/soc/tegra/Kconfig"
->>  source "drivers/soc/ti/Kconfig"
->> -- 
->> 2.34.1
->> 
+>         init.ops = &rzg2l_cpg_sd_clk_mux_ops;
+>         init.flags = 0;
+>         init.num_parents = core->num_parents;
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
