@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0647A00FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DB37A00FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbjINJ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S237657AbjINJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237662AbjINJ4Q (ORCPT
+        with ESMTP id S237872AbjINJ4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:56:16 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD06CEB;
-        Thu, 14 Sep 2023 02:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nP1pXEvfpRxVMRlVL6GZ7KmnP0/koUCsxjP2bUE3Dxs=; b=QZN1Uv6McwaU/rZKUdGG+Y8SPi
-        B7dnxNB7rM/FkA9uhd63tATvdH6mrqT6waXq7aOUCocqJjW2XSorFVS04zOfhFgKbmRXAGOk7vnIB
-        NO9BnLrIGOkMT+hbqOg4lH3DBGFYGMiycW0wWo2D92yyBUaiXSPF+bkNUMCt2e/XPLlZuAx5q1LAn
-        BBoybYriHPVqqXfM38rdRmxfE1JXJzNhK55UdWpTQnpQeogylo394JV6RPh5eTElanDlyddNiVKkP
-        KS/2YVx5DItjEt1IbDBbx3X7N9CacN8OVAJD3QidDGfzAZSsQl6mCsnCrYoq+4ODxRpFm8VZxux05
-        wi7tKYNQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57224)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgj4z-0003pl-34;
-        Thu, 14 Sep 2023 10:56:09 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgj50-0004eo-LY; Thu, 14 Sep 2023 10:56:10 +0100
-Date:   Thu, 14 Sep 2023 10:56:10 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 06/35] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
-Message-ID: <ZQLYuo0J1WWunb5R@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-7-james.morse@arm.com>
+        Thu, 14 Sep 2023 05:56:20 -0400
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3143C83
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:56:16 -0700 (PDT)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6c22d8a0cecso888858a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:56:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694685375; x=1695290175;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Clse5DI82DtBJ0IVRAQzwIhAgCK2TZ8yb3+J49Z8Veo=;
+        b=Iz0q1g3RP60fbgBk8ArJeQhkuEdJ5MvXR2QFJbGLw5zA92xVLO5XUNKE8IPUGKBa6L
+         nt9k5NiwFp+VQYLI5kXtq8cRVJFb/IGmSLj0F7jdCg/74QboUtZTtQIxnOfdkm3IaOnV
+         JjY4lw6OUPcg5cazYyh0DoNUX9CF47WHEtdMkHeChR/1jvF86CRtAdnCe8sB6OpR3vFo
+         pgLTAyiR1ExyRG9ZC3T2if6urOk+uvMZODcA+iwToJcec4XdjqXXDjbUD7qDEucROCPh
+         G0pwiBclCfg2FjNEVpkYT4yfWaSa91ss8SznJIsL0pxAluBlV934lFTPJwioJCE8K4gE
+         Q3BQ==
+X-Gm-Message-State: AOJu0YyfpiCje5xlRcyc+o/sqpMVUyFeVh4r+si5Hn0XSSw1i4EtYiKW
+        ArXV/gbtwG6042bzcM+4U7PYiBdacg09wtvlkxl94O9IAoVK
+X-Google-Smtp-Source: AGHT+IFeDeAVe1Zf3g2+zu0uzG4Yot4BD28QCZA7+iLEov/ZbixlKbc+osjG7mq3irTbQBFNmEVkOv4eLtd0bclwMMlYZ6UbD0LN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913163823.7880-7-james.morse@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Received: by 2002:a05:6808:1688:b0:3a7:b648:f0a7 with SMTP id
+ bb8-20020a056808168800b003a7b648f0a7mr2246452oib.0.1694685375523; Thu, 14 Sep
+ 2023 02:56:15 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 02:56:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d0711706054eaf4d@google.com>
+Subject: [syzbot] Monthly input report (Sep 2023)
+From:   syzbot <syzbot+list01720608ef93799f4654@syzkaller.appspotmail.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:37:54PM +0000, James Morse wrote:
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
-> 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
-> 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
-> 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
+Hello input maintainers/developers,
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+This is a 31-day syzbot report for the input subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/input
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+During the period, 1 new issues were detected and 2 were fixed.
+In total, 12 issues are still open and 50 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 3172    Yes   WARNING in input_mt_init_slots
+                  https://syzkaller.appspot.com/bug?extid=0122fa359a69694395d5
+<2> 105     Yes   WARNING in cm109_urb_irq_callback/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=2d6d691af5ab4b7e66df
+<3> 35      Yes   INFO: task hung in uhid_char_release
+                  https://syzkaller.appspot.com/bug?extid=8fe2d362af0e1cba8735
+<4> 34      Yes   WARNING in bcm5974_start_traffic/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
+<5> 14      Yes   KASAN: use-after-free Read in powermate_config_complete (4)
+                  https://syzkaller.appspot.com/bug?extid=0434ac83f907a1dbdd1e
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
