@@ -2,155 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9137A02C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4757A02C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbjINLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
+        id S233606AbjINLge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbjINLfs (ORCPT
+        with ESMTP id S233700AbjINLgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:35:48 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717C3CC3;
-        Thu, 14 Sep 2023 04:35:44 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EAoVTL026571;
-        Thu, 14 Sep 2023 11:35:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=RjZZyJ/Se3E0TQ3jLCr+da6k3IlxB/LfHfaGLcvsi7I=;
- b=B9+4TZrto6zNGoK7VetoALXrY2WytvaNYfmSUgd4J4vT/wCoitGPSg/AhLPT0pyudrGR
- YtCOG3M6HX3Npq/eL9K8I6Otk+B65X+Lr1YUmoL/Pnb6QF0Ec+ZDD1hVnW1hc9yLZgSB
- QBxukN0VMIl4O2tYu18d5Q6KzzY2nfE9MtkXiHJaxVrhagsjg1QMtUgF4QJ/K0g7RH0D
- 37Pb69Pk+OErmnynrmTH7Da0ZTPjRdxCLtFs66F2NxfwFiVxgYGC0oTJiCDcqppidVY9
- OwNFmfGW0CpvQ6IhEYEClvHJTQWl24EOtUY2xFOi42YH1ux5slte8TUa9Wad/UyTuf2C Jw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3h0dj9bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 11:35:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EBZabK032324
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 11:35:36 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 04:35:32 -0700
-Message-ID: <8d95d169-452f-e426-938f-ccadf26de9ca@quicinc.com>
-Date:   Thu, 14 Sep 2023 17:05:29 +0530
+        Thu, 14 Sep 2023 07:36:33 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CE91FC4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:36:28 -0700 (PDT)
+Received: from [192.168.2.134] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A24C566072F4;
+        Thu, 14 Sep 2023 12:36:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694691387;
+        bh=KKRr3QRoXfs9h4KLZZCvnHd2t1SHoRelo5ZZj4mKFRc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PI6tF4GRy9jTSIly3Ui11F3i9pjjY7m5VatsHWyVr0dkZchGEtpceFjuCVQachom/
+         wnZk4pS5FfbeTTUzAXmTSo5CXtjQTg2bQpaOyHybspNSsRjiq0f3giFjv6Fixx1bJJ
+         +BJPTxlDIkV7geZfV+kOMNsWOMnjDx1oIDUIBQ+8e545EkmDRDUaY9bHJwM1aw1MOV
+         3chB6CYfoirdXE83bzWO155OrF+m2YCM+zZE5P4aCgKFP/D2WOIHMPjcc8X8vA+2IT
+         iqMG1ZtERVpwkycMTbIn/hL9HM8HG9DYeqy5PiGguotZwA2cgBu4pj6JknfYNgjFTT
+         P2y14RVWCuQgQ==
+Message-ID: <a89cc9c1-5054-e45f-edec-819fdbfef2b5@collabora.com>
+Date:   Thu, 14 Sep 2023 14:36:23 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH 6/6] scsi: ufs: ufs-sysfs: Introduce UFS power info sysfs
- nodes
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
 Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, <mani@kernel.org>,
-        <quic_nguyenb@quicinc.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, Bart Van Assche <bvanassche@acm.org>,
-        "Bean Huo" <beanhuo@micron.com>, Lu Hongfei <luhongfei@vivo.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+ <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+ <20230905100306.3564e729@collabora.com>
+ <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+ <20230913094832.3317c2df@collabora.com>
+ <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+ <20230914093626.19692c24@collabora.com>
+ <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
+ <20230914102737.08e61498@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230914102737.08e61498@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: I3NxTihUEE4BksUB7IsrAuudxKQSsCyP
-X-Proofpoint-GUID: I3NxTihUEE4BksUB7IsrAuudxKQSsCyP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=967 phishscore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/11/2023 11:29 AM, Can Guo wrote:
-> Having UFS power info available in sysfs makes it easier to tell the state
-> of the link during runtime considering we have a bounch of power saving
-> features and various combinations for backward compatiblity.
-
-Please fix spelling mistake *bounch -> bunch
+On 9/14/23 11:27, Boris Brezillon wrote:
+> On Thu, 14 Sep 2023 10:50:32 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 > 
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> ---
->   Documentation/ABI/testing/sysfs-driver-ufs | 48 ++++++++++++++++++++++++++----
->   1 file changed, 43 insertions(+), 5 deletions(-)
+>> On 9/14/23 10:36, Boris Brezillon wrote:
+>>> On Thu, 14 Sep 2023 07:02:52 +0300
+>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>   
+>>>> On 9/13/23 10:48, Boris Brezillon wrote:  
+>>>>> On Wed, 13 Sep 2023 03:56:14 +0300
+>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>>>     
+>>>>>> On 9/5/23 11:03, Boris Brezillon wrote:    
+>>>>>>>>                * But
+>>>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+>>>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+>>>>>>>> +		 * and fs_reclaim.
+>>>>>>>> +		 *
+>>>>>>>> +		 * This deadlock is not actually possible, because no one should
+>>>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+>>>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+>>>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
+>>>>>>>> +		 */
+>>>>>>>> +		if (shmem->got_pages_sgt &&
+>>>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+>>>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+>>>>>>>> +			shmem->got_pages_sgt = false;
+>>>>>>>>  		}      
+>>>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+>>>>>>> better to leak than having someone access memory it no longer owns), but
+>>>>>>> I think it's worth mentioning in the above comment.      
+>>>>>>
+>>>>>> It's unlikely that it will be only a leak without a following up
+>>>>>> use-after-free. Neither is acceptable.    
+>>>>>
+>>>>> Not necessarily, if you have a page leak, it could be that the GPU has
+>>>>> access to those pages, but doesn't need the GEM object anymore
+>>>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
+>>>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
+>>>>> can go unnoticed and lead to memory corruptions/information leaks.
+>>>>>     
+>>>>>>
+>>>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+>>>>>> on a refcnt bug, but that's not worthwhile doing because drivers
+>>>>>> shouldn't have silly bugs.    
+>>>>>
+>>>>> We definitely don't want to fix that, but we want to complain loudly
+>>>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
+>>>>> being re-assigned to someone else by not freeing it).    
+>>>>
+>>>> That's what the code did and continues to do here. Not exactly sure what
+>>>> you're trying to say. I'm going to relocate the comment in v17 to
+>>>> put_pages(), we can continue discussing it there if I'm missing yours point.
+>>>>  
+>>>
+>>> I'm just saying it would be worth mentioning that we're intentionally
+>>> leaking memory if shmem->pages_use_count > 1. Something like:
+>>>
+>>> 	/**
+>>> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
+>>> 	 * zero otherwise. If some users still hold a pages reference
+>>> 	 * that's a bug, and we intentionally leak the pages so they
+>>> 	 * can't be re-allocated to someone else while the GPU/CPU
+>>> 	 * still have access to it.
+>>> 	 */
+>>> 	drm_WARN_ON(drm,
+>>> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
+>>> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
+>>> 		drm_gem_shmem_free_pages(shmem);  
+>>
+>> That may be acceptable, but only once there will a driver using this
+>> feature.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-> index 0c7efaf..25169f2 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-ufs
-> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
-> @@ -1214,12 +1214,50 @@ Description:	This file shows the average latency (in micro seconds) of write
->   
->   		The file is read only.
->   
-> -What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
-> -What:		/sys/bus/platform/devices/*.ufs/monitor/write_req_latency_sum
-> -Date:		January 2021
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/gear
-> +Date:		September 2023
->   Contact:	Can Guo <quic_cang@quicinc.com>
-> -Description:	This file shows the total latency (in micro seconds) of write
-> -		requests after monitor gets started.
-> +Description:	This file shows the gear of UFS link.
-> +
-> +		The file is read only.
-> +
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/lane
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/lane
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows how many lanes are enabled on the UFS link.
-> +
-> +		The file is read only.
-> +
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/mode
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the power mode of UFS link.
-> +
-> +		The file is read only.
-> +
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/rate
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the high speed rate of UFS link.
-> +
-> +		The file is read only.
-> +
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the UFS device power mode, i.e., the power mode
-> +		set to UFS device via the Start Stop Unit command.
-> +
-> +What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
-> +What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
-> +Date:		September 2023
-> +Contact:	Can Guo <quic_cang@quicinc.com>
-> +Description:	This file shows the the state of the UFS link.
->   
->   		The file is read only.
->   
+> Which feature? That's not related to a specific feature, that's just
+> how drm_gem_shmem_get_pages_sgt() works, it takes a pages ref that can
+> only be released in drm_gem_shmem_free(), because sgt users are not
+> refcounted and the sgt stays around until the GEM object is freed or
+> its pages are evicted. The only valid cases we have at the moment are:
+> 
+> - pages_use_count == 1 && sgt != NULL
+> - pages_use_count == 0
+> 
+> any other situations are buggy.
 
-Thanks,
-nitin
+sgt may belong to dma-buf for which pages_use_count=0, this can't be
+done until sgt mess is sorted out
+
+-- 
+Best regards,
+Dmitry
+
