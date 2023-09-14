@@ -2,131 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47F87A1194
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77D67A1193
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbjINXTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
+        id S230061AbjINXTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjINXTm (ORCPT
+        with ESMTP id S230187AbjINXTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 19:19:42 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9510D2707;
-        Thu, 14 Sep 2023 16:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694733573;
-        bh=5rDkQLDZ7KY1y8OYYwwbj5hV/LWNM7lyOf4IRDHyA2E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Anb3k86T8y7NywcfuTVM+pXmC8XIPSYYmnZTkirsqcidhgWbKHTKaI8ev5VGWqABD
-         liA4Wl1IOjVNlrWwId1ILpRqsxxmVMplnE/SiLfxqC4T49gLzIRBG+q+JywM91vWl+
-         V3h/P5mYyjpR9Ao4bKT4c1GoU78P0eZ6yfSOWMrmxmMxzTx5HlSf2HDnFWyheKmOSE
-         vgdcp7e/zmaiekPhza1tFWecGKC0ZMJsKqxcebN3V1h18xvdETAfBRQ4KVV15gd0gD
-         e64r+28m4sENjqTukKAQD+2ZIYKpEBlBPY3NFT2s2SEgA9OZQCwNvhsSinAEZPlJoD
-         PpIyXJdRphW2g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmtZF0LYCz4x3C;
-        Fri, 15 Sep 2023 09:19:32 +1000 (AEST)
-Date:   Fri, 15 Sep 2023 09:19:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jinjie Ruan <ruanjinjie@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Luo Jiaxing <luojiaxing@huawei.com>,
-        Xingui Yang <yangxingui@huawei.com>
-Subject: Re: linux-next: manual merge of the scsi-mkp tree with the mm tree
-Message-ID: <20230915091931.62f860f9@canb.auug.org.au>
-In-Reply-To: <20230906103905.0752736e@canb.auug.org.au>
-References: <20230906103905.0752736e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9KcqI=VU0O8m6CD9gVtQm0_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D108C2711
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:19:37 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d814634fe4bso1870972276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694733577; x=1695338377; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4dPufiPQCtPzWz5WHSfvhHWIcWm8zH/JZg221REQo40=;
+        b=BE71Wxnxf9TXA4uEG1U0seh2vfYltm/8zcCFo5uV0eHujhfmKpQ6viEb+NNBb6Dwhc
+         P8bs3PYzSbe3D4fPu4d+k7pb0gvCNTZ/skyj5fMz59hs2XZDM9Iu8EIT2QGUj8CwD2hF
+         VhP+MTv0bFqBaHPQ1155wjxTqW899a7knVyzkqvEyTb10+GMcMamfhqMH+ycTMc3nHO3
+         6TpxZWCJ3/7kuA/983/tRwmmq72d/RwcxFAXY8BXaGPZVMoy3HoUsXsh/WP+ZEUko9kB
+         uumFQJq+gwCpW4SLi2GtEJ/RodOlKnZ/i0sCV5zSDbqp6z708wVn/Y3sxijCTb3ibSzT
+         MMzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694733577; x=1695338377;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4dPufiPQCtPzWz5WHSfvhHWIcWm8zH/JZg221REQo40=;
+        b=DLZJK1ulbEGOXc73Ku2NaEEcMUGF5dYEGRNHGOTV2Rikdrl7/I6pJotYWL+wkIYozf
+         m5HUs5Q1bVszm1W/yKdnbztYcfhbDaB1iJC8EVnN0jJWH3qsJLII88KKVLudcvFkcIYw
+         y21NvP7BI86DGNRgySBucQ6AmSEzCpJNyicE9G66xtVIMAVBLuFCfciaENuo/2b8s6bM
+         XLlBxmIwCuQmRZ8D1H3dTs4T7nLoKSjf6MAZilwww3nvjKhbv3TMj18l146PNSJbD7Sp
+         sj2oY2+SH1A6+ArVj4RcPOFMy9PPStsDxHgAttTwbRvyE1Eu1UbH2N8oTzS4XzsyY1Eh
+         ka/Q==
+X-Gm-Message-State: AOJu0YzNqmRh30iapSdQJsqDA6A4Vy9eHa5eRbSFqvRMhI8EyaMy2RB1
+        s80l5vaP14M+B6+NuIlBp4nyPJNSDJlkrXSShA==
+X-Google-Smtp-Source: AGHT+IGXEzZPfzBJslkSHoMTui4zDBSgnXtUGummxt07D80J/zY1rCAlKy2IgGo0zSECxNr/ULgwmLbLuPQoPz0S1A==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a25:aa83:0:b0:d77:984e:c770 with SMTP
+ id t3-20020a25aa83000000b00d77984ec770mr158034ybi.5.1694733576882; Thu, 14
+ Sep 2023 16:19:36 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 23:19:34 +0000
+In-Reply-To: <ZQNN2AyDJ8dF0/6D@google.com>
+Mime-Version: 1.0
+References: <ZOO782YGRY0YMuPu@google.com> <diqzttsiu67n.fsf@ackerleytng-ctop.c.googlers.com>
+ <ZQNN2AyDJ8dF0/6D@google.com>
+Message-ID: <diqzv8ccjqbd.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
+        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
+        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9KcqI=VU0O8m6CD9gVtQm0_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Sean Christopherson <seanjc@google.com> writes:
 
-Hi all,
-
-On Wed, 6 Sep 2023 10:39:05 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+> On Mon, Aug 28, 2023, Ackerley Tng wrote:
+>> Sean Christopherson <seanjc@google.com> writes:
+>> >> If we track struct kvm with the inode, then I think (a), (b) and (c) can
+>> >> be independent of the refcounting method. What do you think?
+>> >
+>> > No go.  Because again, the inode (physical memory) is coupled to the virtual machine
+>> > as a thing, not to a "struct kvm".  Or more concretely, the inode is coupled to an
+>> > ASID or an HKID, and there can be multiple "struct kvm" objects associated with a
+>> > single ASID.  And at some point in the future, I suspect we'll have multiple KVM
+>> > objects per HKID too.
+>> >
+>> > The current SEV use case is for the migration helper, where two KVM objects share
+>> > a single ASID (the "real" VM and the helper).  I suspect TDX will end up with
+>> > similar behavior where helper "VMs" can use the HKID of the "real" VM.  For KVM,
+>> > that means multiple struct kvm objects being associated with a single HKID.
+>> >
+>> > To prevent use-after-free, KVM "just" needs to ensure the helper instances can't
+>> > outlive the real instance, i.e. can't use the HKID/ASID after the owning virtual
+>> > machine has been destroyed.
+>> >
+>> > To put it differently, "struct kvm" is a KVM software construct that _usually_,
+>> > but not always, is associated 1:1 with a virtual machine.
+>> >
+>> > And FWIW, stashing the pointer without holding a reference would not be a complete
+>> > solution, because it couldn't guard against KVM reusing a pointer.  E.g. if a
+>> > struct kvm was unbound and then freed, KVM could reuse the same memory for a new
+>> > struct kvm, with a different ASID/HKID, and get a false negative on the rebinding
+>> > check.
+>> 
+>> I agree that inode (physical memory) is coupled to the virtual machine
+>> as a more generic concept.
+>> 
+>> I was hoping that in the absence of CC hardware providing a HKID/ASID,
+>> the struct kvm pointer could act as a representation of the "virtual
+>> machine". You're definitely right that KVM could reuse a pointer and so
+>> that idea doesn't stand.
+>> 
+>> I thought about generating UUIDs to represent "virtual machines" in the
+>> absence of CC hardware, and this UUID could be transferred during
+>> intra-host migration, but this still doesn't take host userspace out of
+>> the TCB. A malicious host VMM could just use the migration ioctl to copy
+>> the UUID to a malicious dumper VM, which would then pass checks with a
+>> gmem file linked to the malicious dumper VM. This is fine for HKID/ASIDs
+>> because the memory is encrypted; with UUIDs there's no memory
+>> encryption.
 >
-> Today's linux-next merge of the scsi-mkp tree got a conflict in:
->=20
->   drivers/scsi/qla2xxx/qla_dfs.c
->=20
-> between commit:
->=20
->   d16e04dc79ed ("scsi: qla2xxx: use DEFINE_SHOW_STORE_ATTRIBUTE() helper =
-for debugfs")
+> I don't understand what problem you're trying to solve.  I don't see a need to
+> provide a single concrete representation/definition of a "virtual machine".  E.g.
+> there's no need for a formal definition to securely perform intrahost migration,
+> KVM just needs to ensure that the migration doesn't compromise guest security,
+> functionality, etc.
+>
+> That gets a lot more complex if the target KVM instance (module, not "struct kvm")
+> is a different KVM, e.g. when migrating to a different host.  Then there needs to
+> be a way to attest that the target is trusted and whatnot, but that still doesn't
+> require there to be a formal definition of a "virtual machine".
+>
+>> Circling back to the original topic, was associating the file with
+>> struct kvm at gmem file creation time meant to constrain the use of the
+>> gmem file to one struct kvm, or one virtual machine, or something else?
+>
+> It's meant to keep things as simple as possible (relatively speaking).  A 1:1
+> association between a KVM instance and a gmem instance means we don't have to
+> worry about the edge cases and oddities I pointed out earlier in this thread.
+>
 
-now
-  edcac2e0d679 ("scsi: qla2xxx: use DEFINE_SHOW_STORE_ATTRIBUTE() helper fo=
-r debugfs")
+I looked through this thread again and re-read the edge cases and
+oddities that was pointed out earlier (last paragraph at [1]) and I
+think I understand better, and I have just one last clarification.
 
-> from the mm tree and commit:
->=20
->   d0b0822e32db ("scsi: qla2xxx: Fix NULL vs IS_ERR() bug for debugfs_crea=
-te_dir()")
->=20
-> from the scsi-mkp tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc drivers/scsi/qla2xxx/qla_dfs.c
-> index debb14d71e8a,a7a364760b80..000000000000
-> --- a/drivers/scsi/qla2xxx/qla_dfs.c
-> +++ b/drivers/scsi/qla2xxx/qla_dfs.c
-> @@@ -662,8 -707,8 +662,8 @@@ create_nodes
->  =20
->   	if (IS_QLA27XX(ha) || IS_QLA83XX(ha) || IS_QLA28XX(ha)) {
->   		ha->tgt.dfs_naqp =3D debugfs_create_file("naqp",
->  -		    0400, ha->dfs_dir, vha, &dfs_naqp_ops);
->  +		    0400, ha->dfs_dir, vha, &qla_dfs_naqp_fops);
-> - 		if (!ha->tgt.dfs_naqp) {
-> + 		if (IS_ERR(ha->tgt.dfs_naqp)) {
->   			ql_log(ql_log_warn, vha, 0xd011,
->   			       "Unable to create debugFS naqp node.\n");
->   			goto out;
+It was previously mentioned that binding on creation time simplifies the
+lifecycle of memory:
 
-This is now a conflict between the mm tree and the scsi-fixes tree.
+"(a) prevent a different VM from *ever* binding to the gmem instance" [1]
 
---=20
-Cheers,
-Stephen Rothwell
+Does this actually mean
 
---Sig_/9KcqI=VU0O8m6CD9gVtQm0_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+"prevent a different struct kvm from *ever* binding to this gmem file"
 
------BEGIN PGP SIGNATURE-----
+?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDlQMACgkQAVBC80lX
-0Gydngf9FVDu2XWBKDn8wZGAqjKggJDLK3s1iuFV/52YWnRf4M/diJjdnIVal3mp
-m3q5KP/vRRhzncMN+sz37S8+nMQhHrLxlErQl0m60KrNrAC1tZKJOnXqT/s8pBCh
-Pb63hdVMrGDP1Af8mKfsLkEXhHsOWP2MmMoGkrSUOVCzxYgMvkMHIxE4mdSLkGCh
-9T18g3+xfuKFiX/6BNozFGQCOUi/4gw6KRbRPeCRCjuQLy4y7SLk5D23id2fdMN/
-sndqKrTHwoX4gF6NOs+ezKC4mhf/gG6pcYnYZAiFnOa0WF9X/DuIRGpW7WDk0K5+
-HSnsjsOP6dnOURVOwg1cyFSn0u61pw==
-=YdFl
------END PGP SIGNATURE-----
+If so, then binding on creation
 
---Sig_/9KcqI=VU0O8m6CD9gVtQm0_--
++ Makes the gmem *file* (and just not the bindings xarray) the binding
+  between struct kvm and the file.
++ Simplifies the KVM-userspace contract to "this gmem file can only be
+  used with this struct kvm"
+
+Binding on creation doesn't offer any way to block the contents of the
+inode from being used with another "virtual machine" though, since we
+can have more than one gmem file pointing to the same inode, and the
+other gmem file is associated with another struct kvm. (And a strut kvm
+isn't associated 1:1 with a virtual machine [2])
+
+The point about an inode needing to be coupled to a virtual machine as a
+thing [2] led me to try to find a single concrete representation of a
+"virtual machine".
+
+Is locking inode contents to a "virtual machine" outside the scope of
+gmem? If so, then it is fine to bind on creation time, use a VM ioctl
+over a system ioctl, and the method of refcounting in gmem v12 is okay.
+
+[1] https://lore.kernel.org/lkml/ZNKv9ul2I7A4V7IF@google.com/
+[2] https://lore.kernel.org/lkml/ZOO782YGRY0YMuPu@google.com/
+
+> <snip>
