@@ -2,125 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FD97A0BE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6207F7A0BE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239945AbjINRlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S240012AbjINRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239124AbjINRlp (ORCPT
+        with ESMTP id S239679AbjINRm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:41:45 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC631FDA
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:41:41 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-65618fb71a2so6340506d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:41:41 -0700 (PDT)
+        Thu, 14 Sep 2023 13:42:28 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66BF1FD6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:42:24 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401ef656465so3117515e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694713300; x=1695318100; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/EpZ1GWHc4x/nG0Kx2s7S+DQIRkgyoK7g5ng753eM0=;
-        b=otj8EEYOTxzY2J8tIJeEUFhUCbiBA/COTW9HfzlGmihnfPeqL3HjGZOtCgEc9PtDZX
-         CmBCSIiABEKuyapEGIXbZz8wD3mJoG4A0mVDDXckiTKqWqKjpNvMcKUBHWNJ+nrlPdis
-         pWoQunUKK1i1MhVhmDHocB5hfSs4oNs9MC14B5L8p7nMa63C3jL3DEYbnpYa8UOJDxNn
-         2R4BAXMX78OILx+2/hPg5d2Nqhhh09lstIHWezNXcoBY6OI6cw/fuDUhvzyO9mc/Xi1G
-         IH/jO3vP2ijJgny4tY/2G3LtTbiGum+rVUpzIyr42k7aE/kjiuss44nWMDyGFci98AJV
-         ihYA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694713343; x=1695318143; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DLq4gTAMQUNXxLZTkpUDOrOkY4rGIcpbYoF8xB6HKFM=;
+        b=Vc8ROuAzKtDKViQooBc3/JQbBm8sCF8iNhPbABsLwRct3315512ou757YC1cXa722b
+         1nabBHNemIIDMWweXrljIynnU6PhxHfqW4O9/nJY14UFAVQ5ZkiW6gTKNardlRVtNM7t
+         K+8W+g2Twyk+DtNvG3u7xqeHRAVvPjCZ1/I5Z8LwqcZyqOXUA0YV9RWujt8o4wHWixpE
+         P63uxQ+l0Fpqyimz+S/jCCDz9H9DqGT0G98H6YWjoVRaBtNc4DyWlZrsNTHuTFfF+6gy
+         LSpuOA1lCd8yWoEd7GmPaoP5WjSU9kPU2OZGzQVh7CVk1UXaXGn1grqnYZya1fFukm4C
+         mQaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694713300; x=1695318100;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8/EpZ1GWHc4x/nG0Kx2s7S+DQIRkgyoK7g5ng753eM0=;
-        b=iN1BykGtPFtdYHGXeGFPXAB4rzpHyc9TCZiv7sEkj1TOJXNLUtsA8diAHVrG84YHFK
-         RzIbbFH7/RNPAAKJzAbctDldDAA23/aOretOlaLWbRSWoz/SJUl3kuidrW2Yu/F4tnNf
-         +VhJTX1/eOvij6seC7BF2x5vHcLZ7ewvf/wmzu4FKmLBSYvOvrzT7wjoMmTNj/HkYBwH
-         eo+3EutcHry5ZUiWFFpF2ikA7d32hHBa6F6ah7Yy6wwM8nlUfIiOKK3KrLqvkxSdpAg/
-         Xkuu6wCx41/HhTyPY/RiLs1KtlT67CHCLkSa97sW3jK2vpjT0vbzUYX5vf04a8l4BusL
-         uxcA==
-X-Gm-Message-State: AOJu0Yx87Z1BY7JSI21mlHuN6zlfGSUl9G3+z7ATDXOt0b01psy7LIbi
-        QzSfUO9n8BQJHhNHpHKu2Z0NfVh+Iv3+T+o23lPX6w==
-X-Google-Smtp-Source: AGHT+IGrRQUd9vGZgOD7XJuFKtsEk06aXUbUmblrVes6BRVOnec7PqkFsbqyvZZKUVdAqUve111n932fyZemZTPEoJE=
-X-Received: by 2002:a0c:cc03:0:b0:656:2f3f:852f with SMTP id
- r3-20020a0ccc03000000b006562f3f852fmr1005291qvk.28.1694713300087; Thu, 14 Sep
- 2023 10:41:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694713343; x=1695318143;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DLq4gTAMQUNXxLZTkpUDOrOkY4rGIcpbYoF8xB6HKFM=;
+        b=jLbokKT69M1E2HmOkgQdLl+mzgdQ+hGGu3nkp+AymL+YUvnuFHTby5G/qGjo7sgt0t
+         7j8La8LfsH/rPfQZt2m+LXV09NL/MpuG121k7AdCAMFK0uNGgnkKuqM+815LgCZoIX0Y
+         6U/QIcYz3Iuk1aE/rOYM8g2DSE6dZQ5k9lWCqiNNr0FVgD9R25uX9QQ5qwx9Y9g9djN+
+         ySQKDU9CdjyHyZ5z0qpPy+WxrurqIzQrA1LgBTcxhMmndZcJ6fmEpWYkX0aFW87En7XK
+         9fo388lMYM4w1dWYbhG4XfJqtsLV1KJfPU9fvJA7cp3X+gqPgXH742ahMflG4GNt6fw4
+         dhOg==
+X-Gm-Message-State: AOJu0Yy5Mp8lI/tozCnEGFdjaVYWrQWDQ3NlGLMsP6DCRe5Ahx2AgByj
+        /eiYsjmV1D2NJIW23V61Xd2qm05iw1ghIS4VVchY6Q==
+X-Google-Smtp-Source: AGHT+IE6BPY12TchbzdXQm6qGz00ZV9M74r4RAvvvVEipM5FQl50j/cEJCYPGVhHTu8HXSsmHvI/Vg==
+X-Received: by 2002:a05:600c:1da2:b0:401:7d3b:cc84 with SMTP id p34-20020a05600c1da200b004017d3bcc84mr5350644wms.0.1694713342992;
+        Thu, 14 Sep 2023 10:42:22 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:9f43:3ca4:162c:d540? ([2a01:e0a:999:a3a0:9f43:3ca4:162c:d540])
+        by smtp.gmail.com with ESMTPSA id 7-20020a05600c020700b003fe2de3f94fsm2526696wmi.12.2023.09.14.10.42.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 10:42:22 -0700 (PDT)
+Message-ID: <8bf013fa-0fa8-4ebc-9776-0cd6c134972e@rivosinc.com>
+Date:   Thu, 14 Sep 2023 19:42:21 +0200
 MIME-Version: 1.0
-References: <202309141433.6gzJPSYA-lkp@intel.com>
-In-Reply-To: <202309141433.6gzJPSYA-lkp@intel.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 14 Sep 2023 10:41:01 -0700
-Message-ID: <CABCJKuck=4TKdTjKqu6Qd6ZhqrtS+=a=zOz+G=vFuiMoyfXerA@mail.gmail.com>
-Subject: Re: ld.lld: error: relocation R_RISCV_HI20 cannot be used against
- symbol '.L.str.6'; recompile with -fPIC
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing/user_events: align uaddr on unsigned long
+ alignment
+Content-Language: en-US
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230914131102.179100-1-cleger@rivosinc.com>
+ <20230914164218.GA450-beaub@linux.microsoft.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230914164218.GA450-beaub@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 11:14=E2=80=AFPM kernel test robot <lkp@intel.com> =
-wrote:
->
-> Hi Sami,
->
-> FYI, the error/warning was bisected to this commit, please ignore it if i=
-t's irrelevant.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   aed8aee11130a954356200afa3f1b8753e8a9482
-> commit: 74f8fc31feb4b756814ec0720f48ccdc1175f774 riscv: Allow CONFIG_CFI_=
-CLANG to be selected
-> date:   3 weeks ago
-> config: riscv-randconfig-r002-20230912 (https://download.01.org/0day-ci/a=
-rchive/20230914/202309141433.6gzJPSYA-lkp@intel.com/config)
-> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git =
-4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20230914/202309141433.6gzJPSYA-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309141433.6gzJPSYA-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
-> >> ld.lld: error: relocation R_RISCV_HI20 cannot be used against symbol '=
-.L.str.6'; recompile with -fPIC
->    >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
->    >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
->    >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_pat=
-ch_func) in archive vmlinux.a
-> --
-> >> ld.lld: error: relocation R_RISCV_LO12_I cannot be used against symbol=
- '.L.str.6'; recompile with -fPIC
->    >>> defined in vmlinux.a(arch/riscv/errata/sifive/errata.o)
->    >>> referenced by errata.c:94 (arch/riscv/errata/sifive/errata.c:94)
->    >>>               arch/riscv/errata/sifive/errata.o:(sifive_errata_pat=
-ch_func) in archive vmlinux.a
 
-This randconfig builds a fairly large 64-bit kernel with
-CONFIG_CMODEL_MEDLOW=3Dy. Switching to CMODEL_MEDANY fixed the linker
-error for me, although the laterr BTFIDS step still fails:
 
-  BTFIDS  vmlinux
-WARN: resolve_btfids: unresolved symbol bpf_cpumask
-FAILED elf_update(WRITE): no error
-make[3]: *** [../scripts/Makefile.vmlinux:36: vmlinux] Error 255
+On 14/09/2023 18:42, Beau Belgrave wrote:
+> On Thu, Sep 14, 2023 at 03:11:02PM +0200, Clément Léger wrote:
+>> enabler->uaddr can be aligned on 32 or 64 bits. If aligned on 32 bits,
+>> this will result in a misaligned access on 64 bits architectures since
+>> set_bit()/clear_bit() are expecting an unsigned long (aligned) pointer.
+>> On architecture that do not support misaligned access, this will crash
+>> the kernel. Align uaddr on unsigned long size to avoid such behavior.
+>> This bug was found while running kselftests on RISC-V.
+>>
+>> Fixes: 7235759084a4 ("tracing/user_events: Use remote writes for event enablement")
+>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+> 
+> Thanks for fixing! I have a few comments on this.
+> 
+> I unfortunately do not have RISC-V hardware to validate this on.
+> 
+>> ---
+>>  kernel/trace/trace_events_user.c | 12 +++++++++---
+>>  1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+>> index 6f046650e527..580c0fe4b23e 100644
+>> --- a/kernel/trace/trace_events_user.c
+>> +++ b/kernel/trace/trace_events_user.c
+>> @@ -479,7 +479,7 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+>>  				    bool fixup_fault, int *attempt)
+>>  {
+>>  	unsigned long uaddr = enabler->addr;
+>> -	unsigned long *ptr;
+>> +	unsigned long *ptr, bit_offset;
+>>  	struct page *page;
+>>  	void *kaddr;
+>>  	int ret;
+>> @@ -511,13 +511,19 @@ static int user_event_enabler_write(struct user_event_mm *mm,
+>>  	}
+>>  
+>>  	kaddr = kmap_local_page(page);
+>> +
+>> +	bit_offset = uaddr & (sizeof(unsigned long) - 1);
+>> +	if (bit_offset) {
+>> +		bit_offset *= 8;
+> 
+> I think for future readers of this code it would be more clear to use
+> BITS_PER_BYTE instead of the hardcoded 8. Given we always align on a
+> "natural" boundary, I believe the bit_offset will always be 32 bits.
+> 
+> A comment here might help clarify why we do this as well in case folks
+> don't see the change description.
 
-64-bit defconfig with CFI+CMODEL_MEDLOW works just fine and I can also
-reproduce the linker errors by building allyesconfig+CMODEL_MEDLOW
-without CFI, for example, so I assume the build failure with this
-config is expected. Is there anything we should do here?
+Hi Beau,
 
-Sami
+Yes sure, I'll add a comment and use the define as well.
+
+> 
+>> +		uaddr &= ~(sizeof(unsigned long) - 1);
+> 
+> Shouldn't this uaddr change be done before calling pin_user_pages_remote()
+> to ensure things cannot go bad? (I don't think they can, but it looks a
+> little odd).
+
+Indeed, I don't think that will cause any problem since pin_user_pages
+will return a page aligned address anyway and that aligning uaddr will
+not yield any page crossing. But I'll check to be sure and move that
+before the call if needed.
+
+Clément
+
+> 
+> Thanks,
+> -Beau
+> 
+>> +	}
+>>  	ptr = kaddr + (uaddr & ~PAGE_MASK);
+>>  
+>>  	/* Update bit atomically, user tracers must be atomic as well */
+>>  	if (enabler->event && enabler->event->status)
+>> -		set_bit(ENABLE_BIT(enabler), ptr);
+>> +		set_bit(ENABLE_BIT(enabler) + bit_offset, ptr);
+>>  	else
+>> -		clear_bit(ENABLE_BIT(enabler), ptr);
+>> +		clear_bit(ENABLE_BIT(enabler) + bit_offset, ptr);
+>>  
+>>  	kunmap_local(kaddr);
+>>  	unpin_user_pages_dirty_lock(&page, 1, true);
+>> -- 
+>> 2.40.1
