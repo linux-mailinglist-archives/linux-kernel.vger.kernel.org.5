@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C147A07A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279237A07C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240306AbjINOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S240335AbjINOsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240293AbjINOqe (ORCPT
+        with ESMTP id S240366AbjINOsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:46:34 -0400
+        Thu, 14 Sep 2023 10:48:14 -0400
 Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680361FC8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:46:30 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d7e741729a2so1116161276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:46:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A99F1FD4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:48:10 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d7f1bc4ece3so1113254276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694702789; x=1695307589; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694702889; x=1695307689; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4qtZmBwwjpiJ1Z7K5tiJyvsgnf0O0Obv1kjqllyr8Pc=;
-        b=kpJdpyULMiebQx8arQdUZrjCegUNeyZ3VjdNDHMSLx8MphuoQk7wSDuuW3otYilR5n
-         /F/6LNGmvVDZ7cmfHRTXrwZdDF/aGCCefIbA1U8DBBf8ofMOvzbp3oZ2F0qaQCuYVFR1
-         qepD8+fA5Yd822ug0NfaxuaDVJlylAQvONKplwMjQ/0ia7aB4s0meWWROq1Ioxzo83f8
-         9HwCOMjzZViAACXA+MK3aU1PrYrRKUFOaUWFXN9fxXD/ekdkGy0n6xI5KRGdzSqE9/05
-         Z0xD0hrUkhW3EZFprsFX3uus7UxYSY0LygbYU67g7RxrxzLo+8zoxtrmeYL1jPoiO0M7
-         sfxw==
+        bh=LAoj84R+cdt6r63oSpEd3ofgiXFXi8340REgdMcMGZQ=;
+        b=pQyn1PtD0FhDPMsoXJ6ld6AEL/M7IdP3hyaKarKwYbWhT4h2bB1fHtARrwWf3DOiMJ
+         +qvKPpU3AMROslYYb2B/uXND2jUUux4ikPM2aBu29eoRwrfUDKmDBD4T/Mq5XgxNNkkX
+         5aaxf5UYfU77lcLu8RgGpkI9LprY3EWrZPsOXFfPDtbIIoT5lrFZB02peXeYu0Bjvt+7
+         FxszvC9CNN9aT1H2ZqJoYIs9qKYH1qF8MpCKwlOqEIqUnO3e3Sc6fhBnK7PsVxhod6ay
+         UWsr1GKsbWjEBtaxfACej8Qngp+DHCgoD6bIJTtYgE8MRDSulKHtZTuOVUXxk/CcjR2g
+         4J4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694702789; x=1695307589;
+        d=1e100.net; s=20230601; t=1694702889; x=1695307689;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4qtZmBwwjpiJ1Z7K5tiJyvsgnf0O0Obv1kjqllyr8Pc=;
-        b=A8VEmgfNkC/NAkG3oWUlhNA4DoB7xY2ZQSNlX2EwMdj3Gqf1bfmLfAKnwzKmERZCE1
-         awZpfFZY2erEIz4rdUJPU5whMcxiclkni1mavQ86jV3/NZd2OQomhtDFUf+d3cncjOg8
-         IWLKCLLlarY5TBJBWBM0kq7ak10MeePE3maAo4QOPE8eRIO4hytWht7+gAZCEjjPrPjY
-         7fQ/2cMHLZDKlbw2e+Vrn/8XFhPf0CQsxWjID+cMtsc0sjr36UpmaEOQZs44Hqdpc49g
-         TgIqYbzo+0sXweSUWuedSlGlgMzJ70d2CWOWhsU/d/ootjupYiMRc5urLLeEniCXviWf
-         6nZA==
-X-Gm-Message-State: AOJu0YwkVshArvRkwBPChFWCr8BaBH7HLqMwY+Xkmqf+vd4AGzHkFaap
-        nr78lPM6HeaI80HqQlrTU3c6+3uGNX0C9krV/yPQGw==
-X-Google-Smtp-Source: AGHT+IGf1v5b0F0uzbAyJ1jj+d9Q8GYVHSjjTlKHADrRvbsB5zOjl01k8leJ2gfqNujX8IM/MTANKn4OHcIM7UCTJvk=
-X-Received: by 2002:a25:760c:0:b0:d7b:9d44:76dc with SMTP id
- r12-20020a25760c000000b00d7b9d4476dcmr5924626ybc.38.1694702789586; Thu, 14
- Sep 2023 07:46:29 -0700 (PDT)
+        bh=LAoj84R+cdt6r63oSpEd3ofgiXFXi8340REgdMcMGZQ=;
+        b=xFOPoLPE34r7aQ750nmb+K+bqXWjj08Xvvdtl+oZIH6//Z2utcq8LMPsoCzCatyAHJ
+         oKYuBxLg+yZ6A3geJV4XbQe+5gGHqnY7jFhUsx640kc3HUF0ydqBnd33uYJoWK13Fhr2
+         QrE6+KRsBFqbr5oQKodAZ8CSimFr+DNosY7DXTkGSv254XL4j2/s1QYx1R4cXrwLRqW1
+         RERkzeygMFXRWFg3Sf2lDTLnrdXs89CqNL0bG1ya3c/YkywlDu8XLAMpbyjY32ykagu1
+         QYf2CuTJsvgf54QQw0q3qZDsimtGdMolhXBJWKLmZzT+NLLVTuciRcQF9RszwPX8gzFE
+         COsw==
+X-Gm-Message-State: AOJu0YwQ6m0kfhs8kHcCnyZZwdunwiFkkzGqUN7Hmmk6HNHIDkVJAhG1
+        v4ZSudgtZcWVNFguqvpB9APnlxs+jZWx5gupq/YLwA==
+X-Google-Smtp-Source: AGHT+IFvsc4Ea2G3pqJdL8LyxH3L0mP0pPNEevh9udmDSypx4IHG2mDMMHJ1a4jrYC+yt5OF3rwn+NH6F+ltbgPCs4E=
+X-Received: by 2002:a25:26cf:0:b0:d81:b483:87c4 with SMTP id
+ m198-20020a2526cf000000b00d81b48387c4mr705543ybm.33.1694702889427; Thu, 14
+ Sep 2023 07:48:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-In-Reply-To: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+References: <2ce258f371234b1f8a1a470d5488d00e@realtek.com>
+In-Reply-To: <2ce258f371234b1f8a1a470d5488d00e@realtek.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 14 Sep 2023 16:45:53 +0200
-Message-ID: <CAPDyKFqyi97kjdiNM60WYK+cs4pw5pW3AyfiWKnsCRXd5BXUww@mail.gmail.com>
-Subject: Re: [PATCH] mmc: meson-mx-sdhc: Fix initialization frozen issue
-To:     Ziyang Huang <hzyitc@outlook.com>,
-        martin.blumenstingl@googlemail.com,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     neil.armstrong@linaro.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Thu, 14 Sep 2023 16:47:33 +0200
+Message-ID: <CAPDyKFoCHtN9jK3A9YkoQC+e_3XNKJNp7-w1WkNMFBp6n-PH=g@mail.gmail.com>
+Subject: Re: [PATCH] misc: rtsx: Fix an error access Page fault
+To:     Ricky WU <ricky_wu@realtek.com>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Thorsten
-
-On Mon, 19 Jun 2023 at 19:36, Ziyang Huang <hzyitc@outlook.com> wrote:
+On Wed, 6 Sept 2023 at 10:03, Ricky WU <ricky_wu@realtek.com> wrote:
 >
-> Commit 4bc31edebde5 ("mmc: core: Set HS clock speed before sending
-> HS CMD13") set HS clock (52MHz) before switching to HS mode. For this
-> freq, FCLK_DIV5 will be selected and div value is 10 (reg value is 9).
-> Then we set rx_clk_phase to 11 or 15 which is out of range and make
-> hardware frozen. After we send command request, no irq will be
-> interrupted and the mmc driver will keep to wait for request finished,
-> even durning rebooting.
+> an error occurs on insert SD7.0 card.
+> The pci slot of rtsx_pci will Link Down when the SD7.0 card inserted,
+> but the rtsx_pci not exit from runtime_idle at that time,
+> then do the power_saving function to access the wrong resource
 >
-> So let's set a common value - 1 just for initialization. Then let
-> meson_mx_sdhc_execute_tuning() to find the accurate value for data
-> transfer.
->
-> Fixes: e4bf1b0970ef ("mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host")
-> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+> Fixes: 597568e8df04 ("misc: rtsx: Rework runtime power management flow")
+> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
 
-I don't quite understand if this patch is ok for everybody for me to apply?
+Applied for fixes, thanks!
 
-It seems like it solves at least some part of the problems that
-Martin/Thorsten were looking at too [1], right?
+Greg/Arnd, please let me know if you prefer to funnel this via your
+trees instead.
 
 Kind regards
 Uffe
 
-[1]
-https://lore.kernel.org/all/CAFBinCD0RT0p-jk86W0JuMT3ufohRh1RqWCcM35DKZJpuc10HQ@mail.gmail.com/#r
 
 > ---
->  drivers/mmc/host/meson-mx-sdhc-mmc.c | 26 +++-----------------------
->  1 file changed, 3 insertions(+), 23 deletions(-)
+>  drivers/misc/cardreader/rtsx_pcr.c | 14 ++++++++------
+>  drivers/mmc/host/rtsx_pci_sdmmc.c  |  1 +
+>  include/linux/rtsx_pci.h           |  1 +
+>  3 files changed, 10 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/mmc/host/meson-mx-sdhc-mmc.c b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> index da85c2f2..a01090a2 100644
-> --- a/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> +++ b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> @@ -269,7 +269,6 @@ static int meson_mx_sdhc_enable_clks(struct mmc_host *mmc)
->  static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
->  {
->         struct meson_mx_sdhc_host *host = mmc_priv(mmc);
-> -       u32 rx_clk_phase;
->         int ret;
+> diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+> index a3f4b52bb159..536a3681fd5e 100644
+> --- a/drivers/misc/cardreader/rtsx_pcr.c
+> +++ b/drivers/misc/cardreader/rtsx_pcr.c
+> @@ -1526,6 +1526,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+>         pcr->host_sg_tbl_addr = pcr->rtsx_resv_buf_addr + HOST_CMDS_BUF_LEN;
+>         pcr->card_inserted = 0;
+>         pcr->card_removed = 0;
+> +       pcr->is_sd_express = false;
+>         INIT_DELAYED_WORK(&pcr->carddet_work, rtsx_pci_card_detect);
 >
->         meson_mx_sdhc_disable_clks(mmc);
-> @@ -290,31 +289,12 @@ static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
->                 mmc->actual_clock = clk_get_rate(host->sd_clk);
+>         pcr->msi_en = msi_en;
+> @@ -1735,12 +1736,13 @@ static int rtsx_pci_runtime_idle(struct device *device)
 >
->                 /*
-> -                * according to Amlogic the following latching points are
-> -                * selected with empirical values, there is no (known) formula
-> -                * to calculate these.
-> +                * This value is just for initialization. For data transmission,
-> +                * meson_mx_sdhc_execute_tuning() will find a accurate value
->                  */
-> -               if (mmc->actual_clock > 100000000) {
-> -                       rx_clk_phase = 1;
-> -               } else if (mmc->actual_clock > 45000000) {
-> -                       if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_330)
-> -                               rx_clk_phase = 15;
-> -                       else
-> -                               rx_clk_phase = 11;
-> -               } else if (mmc->actual_clock >= 25000000) {
-> -                       rx_clk_phase = 15;
-> -               } else if (mmc->actual_clock > 5000000) {
-> -                       rx_clk_phase = 23;
-> -               } else if (mmc->actual_clock > 1000000) {
-> -                       rx_clk_phase = 55;
-> -               } else {
-> -                       rx_clk_phase = 1061;
-> -               }
+>         pcr->state = PDEV_STAT_IDLE;
+>
+> -       if (pcr->ops->disable_auto_blink)
+> -               pcr->ops->disable_auto_blink(pcr);
+> -       if (pcr->ops->turn_off_led)
+> -               pcr->ops->turn_off_led(pcr);
 > -
->                 regmap_update_bits(host->regmap, MESON_SDHC_CLK2,
->                                    MESON_SDHC_CLK2_RX_CLK_PHASE,
-> -                                  FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE,
-> -                                             rx_clk_phase));
-> +                                  FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE, 1));
->         } else {
->                 mmc->actual_clock = 0;
->         }
+> -       rtsx_pm_power_saving(pcr);
+> +       if (!pcr->is_sd_express) {
+> +               if (pcr->ops->disable_auto_blink)
+> +                       pcr->ops->disable_auto_blink(pcr);
+> +               if (pcr->ops->turn_off_led)
+> +                       pcr->ops->turn_off_led(pcr);
+> +               rtsx_pm_power_saving(pcr);
+> +       }
+>
+>         mutex_unlock(&pcr->pcr_mutex);
+>
+> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+> index 87d78432a1e0..80b2f2a31fdc 100644
+> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
+> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+> @@ -1393,6 +1393,7 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
+>                 RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
+>                 | RTS5261_DRIVER_ENABLE_FW,
+>                 RTS5261_MCU_CLOCK_SEL_16M | RTS5261_DRIVER_ENABLE_FW);
+> +       pcr->is_sd_express = true;
+>         host->eject = true;
+>         return 0;
+>  }
+> diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+> index 534038d962e4..295e92224fd0 100644
+> --- a/include/linux/rtsx_pci.h
+> +++ b/include/linux/rtsx_pci.h
+> @@ -1262,6 +1262,7 @@ struct rtsx_pcr {
+>         u8                      ocp_stat;
+>         u8                      ocp_stat2;
+>         u8                      rtd3_en;
+> +       bool                    is_sd_express;
+>  };
+>
+>  #define PID_524A       0x524A
 > --
-> 2.34.1
+> 2.25.1
 >
