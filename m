@@ -2,317 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B187A0748
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2D07A071A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240115AbjINO16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
+        id S239931AbjINOTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbjINO14 (ORCPT
+        with ESMTP id S239870AbjINOTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:27:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2958DB9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:27:52 -0700 (PDT)
+        Thu, 14 Sep 2023 10:19:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E72DD;
+        Thu, 14 Sep 2023 07:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694701672; x=1726237672;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Mwvn+8K5Z//+Fo+X/R66aFFkyFXx7zfFT9yQyYyAo3Y=;
-  b=c9nvrm8oo9JhKoJAz2MWbLzvHwq73iD28wSq6mSofE9dpQBF86AqvSbM
-   oVRWfWxkm/nClV9PFnNQ0wBSOnhtRLXmboihlg8XL9iVu9BlW+rYQyoPY
-   FHi2+T/wvCelbg7eH4lZqQ9rJI05y824Xa99HB1OXt4mZJKwCW1Qm48aA
-   i61/AxH2qsAfjD+gKxqZegn3AIWb14EGTT2Hdp0F0tgMMJHh3NiC2I5Zx
-   7Ecyqpr2iP0EZ+x65Bt1DZE8h8RdRxNpSpJFR1rPrzr1d8z9V7/eG2+Bq
-   gBAY6xBAVNdUKoKBm3f10Lp7h1VAtUX9Y0b/apzO5is/uSUA6sURpNeM6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="369250495"
+  t=1694701150; x=1726237150;
+  h=message-id:date:from:subject:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=jnMvQjcsqHHv5b19Oy0JoEvHf70PhN/YFrOKIU5eBuY=;
+  b=Vit+/KVfmmBuGWKf63xx5QAYFf4Og9+7Lh1B4n9P55MoIbJizimTc2bn
+   f4P5HkqxSLFrCkiofcZ9xW1S+eI2YVDSQw2kcOQ8SqG8Fsf1fBcYSRekS
+   9Ekt25WZTFD9nO/jnr8cErcSPhiMQfb/2vUFz6ziuXc7BtIrjz6pO3LzR
+   /8KU+NHbTmA8KbhpzYcnmhT4U05PjUAmbc/wyt9oVziFTVfRvoKKFyj1Q
+   uOjHOfgCIB1fQWs+EcYgmhsZRa8R9RCnf6WewIJMLyI0ZaedqS/SkpDnp
+   phtI081dQ0/KW7YMt2hbIFGsbSICvb7WE9pgeDLCSY00XsOIQWkgYMqqZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="382776088"
 X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="369250495"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:33:55 -0700
+   d="scan'208";a="382776088"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 07:01:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="747733344"
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="737923712"
 X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="747733344"
-Received: from skallurr-mobl1.ger.corp.intel.com (HELO [10.249.254.49]) ([10.249.254.49])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:33:51 -0700
-Message-ID: <d06a667e-145d-5aab-d31b-8b87742c4a56@linux.intel.com>
-Date:   Thu, 14 Sep 2023 15:33:50 +0200
-MIME-Version: 1.0
+   d="scan'208";a="737923712"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 07:01:57 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 07:01:57 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 07:01:57 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.48) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 14 Sep 2023 07:01:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iERBajyJDMVvPpEVk7RMDK3Ndq24k4PFfaBsglNl+lYXG6IN9bOBEAcGnuSA+wRa80TBG6lUW7qc3TypWbAzKqn40Ragf6QLyzmiUYltOba0p2GEVvLNZjIce4C6dfDGTdWxbIpxdH0EYj68MdqVvUpaP0Ner2LgXt1nSIgCa5WIb5+AMmWjOyYoi1d5XsJDl0qCtCne6gjOw5Y+jocjrTUwKkfqH9B28owACVeIRAuwOb+RnCIaR0mJWE0cBeufRB2SAbNBmpFl8duIhLWDF0Ka8Xz/pL9Dz6uYC5gvSOMXw6an451hBIZ9RlUzoj/rUat11cRc4HqgNS0xmhAIdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=950CCQhai4LIcRncRSEBtfLPUoV+gDbpYfd1aco6jgE=;
+ b=f4tRLEUNaRhQeNt6UOkk5PnfTf4qMog92OpFDnDyRggUmJghzKdtGY/YnLRZ2wLjlkZB5yUAH0uScH/BnDIdvYjRXF00K045FM+RO3isrJqv0jSVlPJwoT3O+cXYnHbFX6Ycp738oGdFIw0Or3HVM+P3xVkT1tIqQjh8tXpiwu/VG2E3goFRtdRuMe8GTrVmF8eUggmU46OynaZwoK+t2fRmugFFeY9D6trW2JKx0Tymj+MyW3hhN69TU99ZsqCzx69g3ik3zvu1GNS6Voz9hJi75tcO2NYMHV1cf7H5QIes8DnqEgyJgotoY3SnL/ECNTQ2dOQp01gMQocfJcVC7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by PH8PR11MB6609.namprd11.prod.outlook.com (2603:10b6:510:1cc::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Thu, 14 Sep
+ 2023 14:01:23 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
+ 14:01:23 +0000
+Message-ID: <38b363e7-0ffc-a319-0003-97fbfb0c7501@intel.com>
+Date:   Thu, 14 Sep 2023 16:01:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
+ Thunderbird/102.3.1
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: Re: [PATCH v2 1/1] net: core: Use the bitmap API to allocate bitmaps
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Simon Horman <horms@kernel.org>
+References: <20230913110957.485237-1-andriy.shevchenko@linux.intel.com>
 Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
-        matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230909153125.30032-1-dakr@redhat.com>
- <20230909153125.30032-7-dakr@redhat.com>
- <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
- <20230913090311.5eeb026a@collabora.com>
- <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
- <20230913091918.62c06a30@collabora.com>
- <df85257a-02ed-4869-2421-0039a9c97db5@linux.intel.com>
- <20230913133318.15edec7c@collabora.com>
- <6f4c047d-0e6d-c45b-3092-cd0bc84849dc@linux.intel.com>
- <20230914102010.628ea823@collabora.com>
- <c32bb890-b06e-6b5d-1ff8-b67f6c9d92a6@linux.intel.com>
- <20230914135439.3bec8eca@collabora.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <20230914135439.3bec8eca@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913110957.485237-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0122.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b9::6) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|PH8PR11MB6609:EE_
+X-MS-Office365-Filtering-Correlation-Id: a749e6b9-d545-45f4-d2ae-08dbb52b1466
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: etxqdaxEM3qLe8zBvo5tePhsIsREud/fRneKGeHMlArekZB+UsOM6zWhHRfOQ0RW/gEpykaM1DL7qMuj91/9CLChik50Q9C5ylGNQt61cH0aHpZFa9fhJHoaHRmvXkf0+k4sVnU/hPH2XNydh8BE99hzEz/V2I/E+W3cqsRsxfwLtJXOgkW00yziVJBtxe6gX538JPSBqCSnNJY4P050q1m88XcCAK1+ATbLAJ/l/cNSAZDiW5RRUj0pOLSsgs8VLUYZ2yMtjEd7SIsKXpKpRy2ahNIKNMl5ECOTLF8nN0oEXjDj0cAhfN3QNBRIuARUpOj+yJ1brzH9ZmtKCWMubXF3E7jivJNjyr28CTAendRJyQc0sbJkknh9fRcT1xaU4pZQaGyqu0NUXKgKdTjxcLyDJJh0oAB5xsdu9AaQhb01Ea4derrAl15iyBXXRwRuZycG8JjB0wdbO4nHSREog3mYZGa1Tn6ilSLnTjBshSYUOAHIiDA/9KzKbb0MLWujaXdvCiJOPmCHRTbAe96Z4twRyfhbsqRtnty2T2NjwInpBIXb+aVGHXVAQtC8LSROapMX8LCcyaHcqBsVLX2R7mo7B9a1bnc/dNvMWnOx5Co2s77ux8e0d/iJ7s02Z+hgADbY2uN4YvljvXp4ov0gjA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(366004)(376002)(1800799009)(186009)(451199024)(66946007)(53546011)(6666004)(6506007)(6486002)(6512007)(83380400001)(478600001)(316002)(2616005)(966005)(54906003)(8676002)(26005)(66556008)(5660300002)(8936002)(4326008)(2906002)(66476007)(31696002)(36756003)(86362001)(38100700002)(82960400001)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDlkdUJaVGNYTU93Z3UwYmYwcUc2TDhrNWw2ZnluOUpJQ0VXTUJOOEtSOGhE?=
+ =?utf-8?B?ZlQyeWtOMDR4Qmw0MVZ0OGVUR0YzeElSTWNCVzl0c2pBdGpMTjFOUTZScnNO?=
+ =?utf-8?B?N0dtMFB4aDExVnN6UXBOSk9GUGpHSE82SmVOL242eEszWHZ5RFc0WmlQMGRQ?=
+ =?utf-8?B?V1JIWkdjU24wY3ZFUU5yMXJOZEdKU1RnS0R3ODNHRlE2MURjeHNMc1Z4R0E1?=
+ =?utf-8?B?SlNySGNKcGNvc09wNUcxbVBrVFVEZS91Y0N5cGd2dVlVejZ5bHlYK2VvZHN3?=
+ =?utf-8?B?dVhLUWRJN2F4bFNDYUxSUWYvSDRTRFJOQkFHQmIwU29ucEJESkt3eTJaVTZL?=
+ =?utf-8?B?SnVKOFV2MTA4ZVprWE1WcllPNGY1R0loZ0xkaHFNdGFnaHUrNFJoKzdMNDFD?=
+ =?utf-8?B?cytVOWNKWGVxRitMYzNoN2xNK2YxcGJJeXlTd1pQMG52a2NweGQ0enR0OFJk?=
+ =?utf-8?B?QkZGSTV3V0pPSEVQMmNtbjVGdmlBZzNIMTc3R2hYSXp3UFFvYVhnNkNsNEhY?=
+ =?utf-8?B?L3VBeXlnbG9HQTZZRytpbWsvOHgxZGpRTURBTTRXOTZWRTAzWGZsdTlPUGxX?=
+ =?utf-8?B?bGJodjhDWWZpdDR2ZXBOYUE0OUhJNGIwM0ltQUY1eDlVNmZTRVdhM2t3T3Bh?=
+ =?utf-8?B?NERmQ1JGMVdzc1BYWjZ2SXlEak9RNSs4V25kdER5K3EyV3VCVllmVTl6TjRy?=
+ =?utf-8?B?eStLR2ZGbnltWnhORXRmcG03RFZMTEFqV0pDS1Vuak5BVENFbHNDVnBaRDhD?=
+ =?utf-8?B?aEc1THREc0ZkenlYTkpGTi9RTFppK3FvRXpKWXI1UDJpeWR1TVlqMXU5UmU5?=
+ =?utf-8?B?dHp0YTVCOEZOUGZhOWNTY3NmV2JZdnJncE40Smg2em1neEhsUS81NTFQY3ZE?=
+ =?utf-8?B?YUwrT2ZLWHptLy96WkFwZmt1VVk5L3RaRE1IMkNKR1NaTjFQendIT0tScDVm?=
+ =?utf-8?B?aTJLVWpva0x2S2pGN0dVa0VkVXNFaUx6UDEzRHl0eHJnZGk1K293QkFNeXdX?=
+ =?utf-8?B?ZDAxcFJRWkE0VTd3eGg5OWl0NERqcXFjN3d2Uzd2M0QzNnJpVGdScVZWaThr?=
+ =?utf-8?B?d211VG4xZjZVRGtlYzF6WnZ3a1J6MHFvM2JpVVNFTERaYmVjbUwzd2wwTWFL?=
+ =?utf-8?B?dkhYUnFLQ0R2SlVLekwrTEpUWmN5Q0crT2NjU3FHTzRmeEZmN1JrSEFWSlMx?=
+ =?utf-8?B?YXpYN1pOM1g2RTF0RmViRzUyalRBNGc3bkhGS1V6azRPenA1b0grNndHb3hX?=
+ =?utf-8?B?aE52bTVwY1g5OXp6eDB6dDcwZERaNE1aVDFReXZJM0RIdHY1STI1Ly9LSmZ2?=
+ =?utf-8?B?US9OTjNuaHFPUXVrbSs0R1JsNWx2RVFHV1Y4YlVzY2taNm9KNThGUTMvb2hs?=
+ =?utf-8?B?NFErQnU3T3FoTWdxZ0k1QmJkamY3YWxIOGlIM3pwOU1lTFB3Rkt2V0xySWha?=
+ =?utf-8?B?MDkxN0oxenlvbjhYTFI4UEw1aHF2Tm4yVVBuSmhwM3pQeDdua0xxZnNPQ3h3?=
+ =?utf-8?B?L2pJZzQxQ1NsS2NVK0YyWW4rNEpMRW5KVHdNeUJRN0k0UUJiNU50bEJvYkYx?=
+ =?utf-8?B?Rnp4V2l2KzZpMXFDVW9WVnRicWFPZmcrS3BHR2lLTGx1R0o0aUxSTzVmaDJt?=
+ =?utf-8?B?WUZBYTlSWjlHbkRWaGRnUVk0QVJKbG1zWEpYY3A2dWoyVjFXZGN5bjZyeGk4?=
+ =?utf-8?B?anVkOVlqR3MybWZ5VWMrNStPakU5dGo4RVB6K1BDS3BMZTBZek11NnZ3LzA5?=
+ =?utf-8?B?S0ZzampNenZqdTBGWVRKNUViVFR2QmpPcEdoL0Q3RHNqUUR2SWxBSi9MY1Fa?=
+ =?utf-8?B?UExRWHlta2VDSHhmdG1STllDSkV2OWVUR3BpVHFPK3NaOU02TTV2MWgwUkJl?=
+ =?utf-8?B?S1JJaEdJQnVKb2Z6QnRsSjRTRVRqby8wWm0xamtZdGd5ZlBLUW8zaWRMN3pR?=
+ =?utf-8?B?dUJhaUVrZDZTSkplNXFoN1liMWdVbEphMHZ2eW8xVlF0R1N0WjR0eGl0Yzl1?=
+ =?utf-8?B?OHJyWUZzbnJOSk9vUVd2TTBZdkJkSkowMmcvcGYySEhnOTJ1aXJxb3RQVlBT?=
+ =?utf-8?B?VnVNZ1I5RlpBM3ZzRVdJM29HZm9sMWJGei96MDdLeU5NY3VhVXIzdWk4MXd3?=
+ =?utf-8?B?ZDV0T0lSNHRhSC9BUVlMbWpkRU5WeXFTcHhlYnV4MnVDa3RkSUZRTnE3QVBP?=
+ =?utf-8?Q?/myf1kIdvZy2igkdQV1dhc0=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a749e6b9-d545-45f4-d2ae-08dbb52b1466
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 14:01:23.6120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k0SvFlIQifZ9ZMCKOiZfC7vO2kqVrqTuwVcWRLrew8Q2wSKNky8bxPzY4Ip+sXRwusdCsE592sIlKPq8mAAE3h6yGo/4IehMOUVajbPvVu4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6609
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/13/23 13:09, Andy Shevchenko wrote:
+> Use bitmap_zalloc() and bitmap_free() instead of hand-writing them.
+> It is less verbose and it improves the type checking and semantic.
+> 
+> While at it, add missing header inclusion (should be bitops.h,
+> but with the above change it becomes bitmap.h).
+> 
+> Suggested-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> Link: https://lore.kernel.org/r/20230911154534.4174265-1-andriy.shevchenko@linux.intel.com
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: added tags (Simon), sent separately from the series (Paolo)
 
-On 9/14/23 13:54, Boris Brezillon wrote:
-> On Thu, 14 Sep 2023 12:45:44 +0200
-> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->
->> On 9/14/23 10:20, Boris Brezillon wrote:
->>> On Wed, 13 Sep 2023 15:22:56 +0200
->>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>>   
->>>> On 9/13/23 13:33, Boris Brezillon wrote:
->>>>> On Wed, 13 Sep 2023 12:39:01 +0200
->>>>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>>>>      
->>>>>> Hi,
->>>>>>
->>>>>> On 9/13/23 09:19, Boris Brezillon wrote:
->>>>>>> On Wed, 13 Sep 2023 17:05:42 +1000
->>>>>>> Dave Airlie <airlied@gmail.com> wrote:
->>>>>>>         
->>>>>>>> On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
->>>>>>>> <boris.brezillon@collabora.com> wrote:
->>>>>>>>> On Tue, 12 Sep 2023 18:20:32 +0200
->>>>>>>>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>>>>>>>>            
->>>>>>>>>>> +/**
->>>>>>>>>>> + * get_next_vm_bo_from_list() - get the next vm_bo element
->>>>>>>>>>> + * @__gpuvm: The GPU VM
->>>>>>>>>>> + * @__list_name: The name of the list we're iterating on
->>>>>>>>>>> + * @__local_list: A pointer to the local list used to store already iterated items
->>>>>>>>>>> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
->>>>>>>>>>> + *
->>>>>>>>>>> + * This helper is here to provide lockless list iteration. Lockless as in, the
->>>>>>>>>>> + * iterator releases the lock immediately after picking the first element from
->>>>>>>>>>> + * the list, so list insertion deletion can happen concurrently.
->>>>>>>>>> Are the list spinlocks needed for that async state update from within
->>>>>>>>>> the dma-fence critical section we've discussed previously?
->>>>>>>>> Any driver calling _[un]link() from its drm_gpu_scheduler::run_job()
->>>>>>>>> hook will be in this situation (Panthor at the moment, PowerVR soon). I
->>>>>>>>> get that Xe and Nouveau don't need that because they update the VM
->>>>>>>>> state early (in the ioctl path), but I keep thinking this will hurt us
->>>>>>>>> if we don't think it through from the beginning, because once you've
->>>>>>>>> set this logic to depend only on resv locks, it will be pretty hard to
->>>>>>>>> get back to a solution which lets synchronous VM_BINDs take precedence
->>>>>>>>> on asynchronous request, and, with vkQueueBindSparse() passing external
->>>>>>>>> deps (plus the fact the VM_BIND queue might be pretty deep), it can
->>>>>>>>> take a long time to get your synchronous VM_BIND executed...
->>>>>> So this would boil down to either (possibly opt-in) keeping the spinlock
->>>>>> approach or pushing the unlink out to a wq then?
->>>>> Deferred _unlink() would not be an issue, since I already defer the
->>>>> drm_gpuva destruction to a wq, it would just a be a matter of moving the
->>>>> _unlink() call there as well. But _link() also takes the GEM gpuva list
->>>>> lock, and that one is bit tricky, in that sm_map() can trigger 2 more
->>>>> _link() calls for the prev/next mappings, which we can't guess until we
->>>>> get to execute the VM update. If we mandate the use of the GEM resv
->>>>> lock, that simply means async VM updates (AKA calling
->>>>> drm_gpuvm_sm_[un]map()) are not an option. And if this is what everyone
->>>>> agrees on, then I'd like the APIs that make this sort of async VM
->>>>> update possible (drm_gpuvm_sm_[un]map(), the drm_gpuvm_ops::sm_step*
->>>>> methods, and probably other things) to be dropped, so we don't make it
->>>>> look like it's something we support.
->>>>>      
->>>>>> BTW, as also asked in a reply to Danilo, how do you call unlink from
->>>>>> run_job() when it was requiring the obj->dma_resv lock, or was that a WIP?
->>>>> _unlink() makes sure the GEM gpuva list lock is taken, but this can be
->>>>> a custom lock (see drm_gem_gpuva_set_lock()). In panthor we have
->>>>> panthor_gem_object::gpuva_list_lock that's dedicated the gpuva list
->>>>> protection. We make sure we never take this lock while allocating
->>>>> memory to guarantee the dma-signalling path can't deadlock.
->>>>>      
->>>>>>>>>            
->>>>>>>> btw what is the use case for this? do we have actual vulkan
->>>>>>>> applications we know will have problems here?
->>>>>>> I don't, but I think that's a concern Faith raised at some point (dates
->>>>>>> back from when I was reading threads describing how VM_BIND on i915
->>>>>>> should work, and I was clearly discovering this whole VM_BIND thing at
->>>>>>> that time, so maybe I misunderstood).
->>>>>>>         
->>>>>>>> it feels like a bit of premature optimisation, but maybe we have use cases.
->>>>>>> Might be, but that's the sort of thing that would put us in a corner if
->>>>>>> we don't have a plan for when the needs arise. Besides, if we don't
->>>>>>> want to support that case because it's too complicated, I'd recommend
->>>>>>> dropping all the drm_gpuvm APIs that let people think this mode is
->>>>>>> valid/supported (map/remap/unmap hooks in drm_gpuvm_ops,
->>>>>>> drm_gpuvm_sm_[un]map helpers, etc). Keeping them around just adds to the
->>>>>>> confusion.
->>>>>> Xe allows bypassing the bind-queue with another bind-queue, but to
->>>>>> completely avoid dependencies between queues the Operations may not
->>>>>> overlap.
->>>>> So, you check the VM state with some VM lock held (would be the VM resv
->>>>> in my case), and if the mapping is new (no overlaps with pre-existing
->>>>> mappings), you queue it to the fast-track/sync-VM_BIND queue. What would
->>>>> be missing I guess is a way to know if the mapping is active (MMU has
->>>>> been updated) or pending (MMU update queued to the bind-queue), so I can
->>>>> fast-track mapping/unmapping of active mappings.
->>> Ok, so I started modifying the implementation, and quickly realized the
->>> overlap test can't be done without your xe_range_fence tree because of
->>> unmaps. Since we call drm_gpuva_unmap() early/in the IOCTL path (IOW,
->>> before the mapping teardown is effective), we lose track of this
->>> yet-to-be-executed-unmap operation, and if we do our
->>> va_range_overlaps_with_existing_mappings() test after such an unmap has
->>> been queued using just the drm_gpuvm tree, we might get false even if
->>> the mapping still exists and is expected to be torn down when the
->>> VM_BIND(unmap) job is executed on the bind-queue. As a result, this
->>> might execute the VM_BIND(map,sync) immediately (because the dependency
->>> went undetected), and then the vm_bind_run_job() function kicks in and
->>> undoes what the synchronous VM_BIND(map) did. Am I missing something?
->>>
->>> If I'm correct, that means I'm back to having synchronous VM_BIND ops
->>> queued after all asynchronous ones unless I use something like your
->>> xe_range_fence solution (which I was hoping I could postpone until we
->>> decide to expose multiple bind queues).
->> Yes, unfortunately fine-granular async range-tracking comes with a cost.
->> Still, if you are doing page-table updates solely with the CPU, you
->> could probably short-circuit the fence part of the fenced ranges?
-> I'm doing it with the CPU, but asynchronously (bind-queue), so I'm
-> facing pretty much the same problems, I think.
->
->>
->>> I'm still a bit skeptical about this 'update VM mappings tree early,
->>> defer MMU page table updates' approach, where the VM state and the
->>> actual page table tree are temporarily out of sync until all operations
->>> have been flushed on all queues targeting a VM. This means any test we
->>> do on the gpuvm, like, 'give me the BO mapped at VA xxx', is subject to
->>> 'is this the current state or the future state?' questioning. Note that
->>> we can't even get the current VM state anymore, because all the
->>> drm_gpuvm::tree stores with this solution is the future state, and
->>> to-be-unmapped mappings are lost during the transitioning period (when
->>> vm_bind jobs are queued but not executed yet).
->> Understandable. But this is the way we historically have been doing
->> things, (I think the whole async atomic page-flipping is using the same
->> concept), but rather than refering to it as current state and future
->> state, I'd like to think it as Synchronous CPU state (What an API user
->> sees) vs GPU state (What the GPU sees where it's currently executing).
-> Actually, the latency incurred by the fact the page table updates are
-> done by the GPU is one thing, and I guess I could agree with you if that
-> was the only difference between the GPU and CPU view. But the fact
-> VM_BIND jobs can have external dependencies makes things a lot more
-> confusing. I might be wrong, but I think atomic page-flip is simpler.
-> Yes you can have implicit deps on your scanout buffer, and yes the HW
-> will wait for these fences to signal before updating the plane pointer,
-> but that's still just a simple pipeline with one resource to deal with.
-> A VM is a whole range with virtual memory regions being attached
-> physical mem chunks, possibly with each range having its own lifecycle,
-> etc. It'd make more sense to me to have a way to know the current
-> state, and the future state.
+Yeah, in any context it's hard to get people to agree to fix things when 
+they started out of order :~
 
-Yeah so in Xe we support async bind jobs solely to be able to do deep 
-pipelining and it's not only the pagetable jobs, You could have multiple 
-bind-evict-restore-exec-unbind-bind-evict-restore-exec all piplelined 
-and only the available memory resources sets the limit. In fact you can 
-even have physical VRAM assigned to a bo which won't be used until exec 
-#5 in the pipeline and released in exec #4 since TTM is aware of async 
-memory management.
+>   net/core/dev.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index ccff2b6ef958..85df22f05c38 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -69,7 +69,7 @@
+>    */
+>   
+>   #include <linux/uaccess.h>
+> -#include <linux/bitops.h>
+> +#include <linux/bitmap.h>
+>   #include <linux/capability.h>
+>   #include <linux/cpu.h>
+>   #include <linux/types.h>
+> @@ -1080,7 +1080,7 @@ static int __dev_alloc_name(struct net *net, const char *name, char *buf)
+>   			return -EINVAL;
+>   
+>   		/* Use one page as a bit array of possible slots */
+> -		inuse = (unsigned long *) get_zeroed_page(GFP_ATOMIC);
+> +		inuse = bitmap_zalloc(max_netdevices, GFP_ATOMIC);
+>   		if (!inuse)
+>   			return -ENOMEM;
+>   
+> @@ -1109,7 +1109,7 @@ static int __dev_alloc_name(struct net *net, const char *name, char *buf)
+>   		}
+>   
+>   		i = find_first_zero_bit(inuse, max_netdevices);
+> -		free_page((unsigned long) inuse);
+> +		bitmap_free(inuse);
+>   	}
+>   
+>   	snprintf(buf, IFNAMSIZ, name, i);
 
-So something needs to absorb the state discrepancy between what you 
-refer to as the current state and the future state. The question is what 
-should absorb it? Should it be the gpuvm or some associated driver state 
-tracking?
-
-Now let's say that you have a deferred bind state-update pending and 
-track the *current* state in the gpuvm so that a number of vma unmaps 
-and maps aren't yet visible to gpuvm and then you submit an exec ioctl. 
-How does the exec ioctl know the gpuvm state? Like external bos to 
-validate or bos that become evicted, userptr vmas that have been 
-invalidated? Does the exec need to block waiting for the bind fence to 
-complete so that it can assess the VM state that UMD intended to be there?
-
->
-> Just one example, say you have a GPU job that triggers some fault
-> that's supposed to be handled by the kernel driver to unblock the
-> situation. In order to have some context, the kernel driver needs to
-> read a GPU buffer that's passed back as a virtual address by the GPU/FW,
-> so it calls drm_gpuvm_bo_find(), and now it might potentially get a BO
-> that's not the current BO being mapped at this address, but the future
-> BO after some asynchronous VM_BIND(map) has been executed, and of
-> course, the VM_BIND job leading to this future state, could have a
-> dependency on the GPU job, because this GPU job was using the old
-> mapping. It might sound completely hypothetical, but that's actually
-> the sort of things the Mali FW does in a few occasions.
-
-Recoverable faults are typically requiring some sort of memory operation 
-that requires the dma_resv or outer lock, like validation or 
-get_user_pages(), and can thus not be performed in the fence signalling 
-critical path and on Xe they are reserved for Long-Running VMs. On 
-those, pipelining is not really needed and is disallowed in Xe to avoid 
-having to deal with the state discrepancy.
-
-But to the actual problem you mention, let's say its a fault that 
-triggers a need to dump bo contents, then yes in order to be able to do 
-deep pipelining in this way the driver needs to track some state 
-discrepancy, and that's an additional overhead.
-
->
-> So yeah, I'm still not convinced we can always get away with just the
-> future representation of the VM. Sometimes you have to know what's
-> mapped at the moment.
->
->> To bring them in sync you need to wait for fences.
-> Wouldn't solve the case I mentioned above, AFAICT.
->
->> And ideally the async
->> work should never fail.
-> Sure, that I considered for granted. If async VM_BIND fails, we just
-> flag the VM as unusable, and cancel any GPU job submission happening on
-> the VM. The user then has to recreate the VM to take a fresh start
-> (DEVICE_LOST situation).
->
-> It a bit tricky when we want to clean things up after a failure,
-> because we might have lost track of some of mappings (early
-> gpuva_unmap(), but the MMU page tables are still lying around). In our
-> case (Panthor) that's not really an issue though, because
-> free_io_pgtable_ops() will take care of that for us.
->
->> If one wants to push async work out to be handled solely by the GPU,
->> this is the way things must be done since the GPU can't take locks or
->> allocate memory, but as part or all of async work is sometimes done
->> using the CPU, it might make sense to challenge that to some extent.
-> I think updating the VM state in the run_job() with drm_gpuva_[un]map()
-> would still account for the GPU-is-executing-pgtable-updates latency,
-> and that's not really the sort of desynchronization I'm worried about,
-> because when you get to submit your VM_BIND job, you know all the job
-> deps are met, and the VM update is about to happen. What I'm worried
-> about is the desynchronization incurred by complex VM_BIND job deps
-> that make it hard to know what's the diff between the drm_gpuvm state
-> (predicting the future) and the VM state a GPU job expects (the
-> present).
-
-Yes that sort of deep pipeling requires additional "current" state 
-tracking for some situations, but waiting in exec for the current state 
-to catch up with future state, which it seems is a consequence of async 
-state updates, isn't really an option for us.
-
-Now if you think the decision to remove those spinlocks from drm_gpuvm 
-was premature, I'm fully OK to have them in there again, but opt-in so 
-that we have helpers that fit all purposes.
-
-/Thomas
-
-
-
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
