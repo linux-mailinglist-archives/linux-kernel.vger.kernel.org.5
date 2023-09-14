@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15327A061B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907A37A061F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239061AbjINNfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
+        id S239920AbjINNfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239851AbjINNeu (ORCPT
+        with ESMTP id S239311AbjINNe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:34:50 -0400
+        Thu, 14 Sep 2023 09:34:57 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4990272D;
-        Thu, 14 Sep 2023 06:33:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A508273F;
+        Thu, 14 Sep 2023 06:33:54 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0D7676607350;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8C248660735A;
         Thu, 14 Sep 2023 14:33:52 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694698432;
-        bh=8QdmTHdgoaFCZ92hWXIEL9hOaDrX90tCZOqZYUq2PdQ=;
+        s=mail; t=1694698433;
+        bh=g+cKvL+57Ge4BbEO/J6pfXbFnIiiN4vCjyxapf5D6Zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hIrpjdHHkd8DCsezUS6Db1t2mu//j9qGKSeanMJQE79X+olRQO4KTQpC5RaEVpaXZ
-         fuztA6tGqvwzZ1PtMQJtqVn2jR+bbTJlozFixJYdu64lOLpfm86pNS0Htz0Spop+Oh
-         Wd1Wevs9N5g1gGaXwynNkHxF6L1jjDQwlDyEa/bRvVS/GpyU3vGcaZXPNLG8YMeiEu
-         5/hrxlneaY3Pi+0si5lcj1NKHcHZuEhgQhhOdftaYznfEim3yrOBNLzUa5vLyhLISI
-         8jYt914ufA6p3QiSz+BypCIRLDedkOW6MUxydy9ude1UD5XADaX26eJ8LV+b3sRizY
-         n1nNnWMdKdXeA==
+        b=BF/oWSSzruSq2mPoOs3pLdafwHgIDEVGPUJAogmZ2Pn3jq91kpmFLkc/leTdV6CLe
+         o0YQeVWi8i3MmUFknNMB/4F09BncPnnh+uzR2+i7peezooDR61j9s1VYvwzoQmsAoU
+         4HxpCDwVjGIhhTt2lygHGUfa8XRvnbGokkOk8XddVXNmqYNJp7UOrLHCIbejmme0Dz
+         15oxHz7rGTwk65MLth9ocO39WL1t2xF1Cxpj3vnZO6kCAd0aCYIysAtSyfbEaGG0ii
+         2WkUXpAmARnf3OGLeiiQSXI5rlMTkSqDxy4WXS0kmH1PwX6wTgTAEB+QQZqEH1wEOe
+         txQgTb8VXbQ6w==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 40/49] media: usb: usbtv: Stop direct calls to queue num_buffers field
-Date:   Thu, 14 Sep 2023 15:33:14 +0200
-Message-Id: <20230914133323.198857-41-benjamin.gaignard@collabora.com>
+Subject: [PATCH v7 41/49] media: atomisp: Stop direct calls to queue num_buffers field
+Date:   Thu, 14 Sep 2023 15:33:15 +0200
+Message-Id: <20230914133323.198857-42-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
 References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
@@ -59,27 +59,22 @@ Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/usb/usbtv/usbtv-video.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
-index 1e30e05953dc..41704d45c65c 100644
---- a/drivers/media/usb/usbtv/usbtv-video.c
-+++ b/drivers/media/usb/usbtv/usbtv-video.c
-@@ -725,10 +725,11 @@ static int usbtv_queue_setup(struct vb2_queue *vq,
- 	unsigned int *nplanes, unsigned int sizes[], struct device *alloc_devs[])
- {
- 	struct usbtv *usbtv = vb2_get_drv_priv(vq);
-+	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
- 	unsigned size = USBTV_CHUNK * usbtv->n_chunks * 2 * sizeof(u32);
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+index 4b65c69fa60d..48f9745421a9 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+@@ -1030,7 +1030,7 @@ static int atomisp_qbuf_wrapper(struct file *file, void *fh, struct v4l2_buffer
+ 	struct atomisp_device *isp = video_get_drvdata(vdev);
+ 	struct atomisp_video_pipe *pipe = atomisp_to_video_pipe(vdev);
  
--	if (vq->num_buffers + *nbuffers < 2)
--		*nbuffers = 2 - vq->num_buffers;
-+	if (q_num_bufs + *nbuffers < 2)
-+		*nbuffers = 2 - q_num_bufs;
- 	if (*nplanes)
- 		return sizes[0] < size ? -EINVAL : 0;
- 	*nplanes = 1;
+-	if (buf->index >= vdev->queue->num_buffers)
++	if (buf->index >= vb2_get_num_buffers(vdev->queue))
+ 		return -EINVAL;
+ 
+ 	if (buf->reserved2 & ATOMISP_BUFFER_HAS_PER_FRAME_SETTING) {
 -- 
 2.39.2
 
