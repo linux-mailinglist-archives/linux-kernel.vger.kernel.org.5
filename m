@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91677A0046
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC5B7A0052
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237191AbjINJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S237484AbjINJic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236956AbjINJh6 (ORCPT
+        with ESMTP id S236956AbjINJiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:37:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3D0CCD;
-        Thu, 14 Sep 2023 02:37:54 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 69FA066072FF;
-        Thu, 14 Sep 2023 10:37:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694684272;
-        bh=CTv2KXJMAq+hbSXUQVfEZKQZVTB0BrNwUz1wHsn45uM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=i5jNrMk2hXUFgOvbLKzaN5pw6W65Po/mspdrZQ0IBjbf5qXShn9cutfLwPky61b7R
-         rUCSlyyWVSEm5wbWEhUeRf1Iq0Hk70ApfNJKnj6hIrO2G4IlJMBgG4fcPd9ZwU1cPl
-         QFy8hK8yUba6HkqrDMGmXbWNf+GBXy+J4Ge2Ti9SXEoF4xGYnTCfNgsf+LAh71fFre
-         DfuH690DOsHuJIbp2fCxaIF7Urjx1ZD19FmVMy7mcrHHQLbl3WriragUaxMSOc1/Lq
-         TNfILGtbITRHPllCUklEDVnZWZBDkNMllJNlAqGgu2fRhAfgLZbELPMOAS2q9YucAF
-         oeZMDdfMt6Nbw==
-Message-ID: <dc2cf86a-abf2-b372-29f9-3bfedeb24a97@collabora.com>
-Date:   Thu, 14 Sep 2023 11:37:49 +0200
+        Thu, 14 Sep 2023 05:38:20 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642571BF8;
+        Thu, 14 Sep 2023 02:38:16 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso796311a12.1;
+        Thu, 14 Sep 2023 02:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694684295; x=1695289095; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZI015GOj12vNEvonbObjn/H9PpmmXSmK6cP4LNTtaEE=;
+        b=P5QnQQwt0TpNhO49BTd5ed8S4AdmK+1+JpPpIrkaPPfJvOFcvJsRZB6UNyBlCld8D7
+         E+rVJKlizJm9t4s74uO/TXj+eIOxHwJxV1D7LXCVnnV+XKzEso4ctHMzb2VNQMArQXDS
+         S8TlEHGtCPxQqf7Ku/Q/CeXi12hMQP5NUrZG4tvFDzSseAZ3g8geDvCavDTMNJXB29HM
+         /f1kMC2d9ZpqjcquKj/vi9Aua57EKvsEM3TNv8Qmf/tGwb1VsyaCXsKDgo4f5p42gGb+
+         gAbykogd3ev9IhGcnZGZCaKSupOCmo2lSJx4BCD6rFr81byIxXOQt1tS2I0wLJ2JJY8d
+         5wcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694684295; x=1695289095;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZI015GOj12vNEvonbObjn/H9PpmmXSmK6cP4LNTtaEE=;
+        b=DYoToSmT0DNf2LV/BM5pp7PiRD7ulVNSd5nlpuagTlPtm9ihkYDamF6flUDY2tT5JR
+         EfpsxvxNsMxGbi4r4qe7Pg9XUtWegQs7mn9fSgsUy7osHqZHgrrCLfsKPchySfIFuYZN
+         o/P8cFZPMJ+c6ls3WSGbWFSb7KzRosrk8Fzbj0WraS7QhfkYizBIOn6EOfqeppM0T4iG
+         0ChadbL8tOQKON2r0zJxrqpyU1jSjf0BWNkkT2EkKY4aau86rjFlT/li7aR7qqSfF1AO
+         hjUg7j/7kNd4+qRyvOr4/0UCsAhti7+8+uQDhSOBSp3ZB88CA1IvNk0QBVvn3dRYY+3W
+         Pnhg==
+X-Gm-Message-State: AOJu0YxtrlLFRO7W3VybdfW9AEVxCB8sT45JWgCpNNBEzwOWMyS0soP8
+        XW6fWGcCxu2NozpIKglSa44=
+X-Google-Smtp-Source: AGHT+IE2yntHCjuRW0J/1gvduFNdizLt3EbUeYgeUjfxfagC/CW9808YAw4zmESmya8e612cBs8d0A==
+X-Received: by 2002:a05:6402:5145:b0:525:7234:52b7 with SMTP id n5-20020a056402514500b00525723452b7mr4126906edd.19.1694684294745;
+        Thu, 14 Sep 2023 02:38:14 -0700 (PDT)
+Received: from [192.168.6.126] (54-240-197-234.amazon.com. [54.240.197.234])
+        by smtp.gmail.com with ESMTPSA id r5-20020aa7cfc5000000b0052a3ad836basm680351edy.41.2023.09.14.02.38.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 02:38:13 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <d28de5c6-27ff-5ced-95dc-575325e71598@xen.org>
+Date:   Thu, 14 Sep 2023 11:38:12 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH] i2c: mt65xx: allow optional pmic clock
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Qii Wang <qii.wang@mediatek.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        =?UTF-8?B?6YOt5bCP5qGl?= <joe@gainstrong.cn>
-References: <3bf827929a44c17bfb1bf1000b143c02ce26a929.1693102324.git.daniel@makrotopia.org>
- <0fd097fd-9fdb-9001-cddb-7a396fde28bb@collabora.com>
- <ZQLNWHKlIZNd7x4l@makrotopia.org>
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 5/8] KVM: pfncache: allow a cache to be activated with a
+ fixed (userspace) HVA
 Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <ZQLNWHKlIZNd7x4l@makrotopia.org>
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20230914084946.200043-1-paul@xen.org>
+ <20230914084946.200043-6-paul@xen.org>
+ <7c023cb88c5f13e70b53ac695a7b45213c4f97a3.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <7c023cb88c5f13e70b53ac695a7b45213c4f97a3.camel@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 14/09/23 11:07, Daniel Golle ha scritto:
-> On Wed, Sep 13, 2023 at 04:00:53PM +0200, AngeloGioacchino Del Regno wrote:
->> Il 27/08/23 04:13, Daniel Golle ha scritto:
->>> Using the I2C host controller on the MT7981 SoC requires 4 clocks to
->>> be enabled. One of them, the pmic clk, is only enabled in case
->>> 'mediatek,have-pmic' is also set which has other consequences which
->>> are not desired in this case.
->>>
->>> Allow defining a pmic clk even in case the 'mediatek,have-pmic' propterty
->>> is not present and the bus is not used to connect to a pmic, but may
->>> still require to enable the pmic clock.
->>>
->>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
->>> ---
->>>    drivers/i2c/busses/i2c-mt65xx.c | 12 ++++++++----
->>>    1 file changed, 8 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
->>> index 1a9b5a068ef1b..a8b5719c33729 100644
->>> --- a/drivers/i2c/busses/i2c-mt65xx.c
->>> +++ b/drivers/i2c/busses/i2c-mt65xx.c
->>> @@ -1442,15 +1442,19 @@ static int mtk_i2c_probe(struct platform_device *pdev)
->>>    	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk))
->>>    		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk);
->>> +	i2c->clocks[I2C_MT65XX_CLK_PMIC].clk = devm_clk_get_optional(&pdev->dev, "pmic");
->>> +	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk)) {
->>> +		dev_err(&pdev->dev, "cannot get pmic clock\n");
->>> +		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk);
->>> +	}
->>> +
->>>    	if (i2c->have_pmic) {
+On 14/09/2023 10:29, David Woodhouse wrote:
+> On Thu, 2023-09-14 at 08:49 +0000, Paul Durrant wrote:
 >>
->> ...but you're not changing speed_clk if !i2c->have_pmic, I'm not sure that
->> this will work correctly. Perhaps you wanted to also set speed_clk if the
->> clock is present?
+>>   int kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, unsigned long len)
+>>   {
+>> -       return __kvm_gpc_refresh(gpc, gpc->gpa, len);
+>> +       return __kvm_gpc_refresh(gpc, gpc->addr, len, gpc->addr_is_gpa);
+>>   }
+>>   EXPORT_SYMBOL_GPL(kvm_gpc_refresh);
 > 
-> No, if I wanted that I could have used the existing 'mediatek,have-pmic'
-> property -- however, all needed e.g. on MT7981 is to make sure the
-> clock is enabled, but still use I2C_MT65XX_CLK_MAIN as speed_clk.
+> I think I have a slight preference for leaving kvm_gpc_refresh()
+> working on a GPA unconditionally, thus calling __kvm_gpc_refresh() with
+> the final argument set to true.
 > 
+> Introduce another one-line wrapper kvm_gpc_refresh_hva() for the false
+> case. And perhaps BUG_ON() calling the 'wrong' refresh function?
 
-Sorry, I've misunderstood the intention and yes, I understand now.
+Hmm. That makes life harder for the code messing with the vcpu_info. I 
+would need to know which cache it was looking at, because it could be 
+the vcpu_info cache or shinfo cache, and if it's the shinfo cache it 
+would need to know how it was activated.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+   Paul
 
