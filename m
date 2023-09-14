@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414F179F82D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ED379F822
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbjINCey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
+        id S233637AbjINCc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjINCex (ORCPT
+        with ESMTP id S230121AbjINCc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:34:53 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2014.outbound.protection.outlook.com [40.92.53.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C92CE4;
-        Wed, 13 Sep 2023 19:34:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GEGyyA1Dl2iYvI0fiM4WkQQK1+8t2pSikwQQovA1VmVDUPLTwfLDxhVzFobitqIsYTMp+Amc/5u28d1Ze71/tlut6pdDlZDTXXC4g8ct4GTaoBJmBgVRNEjHwRJqYRv+UFJRmI+/itfOaTsOYovjZNa+IrkgJhVeLnV55fbOhvT6eimXZEgmKf+6CCVJ7oemgJYdRw5lrZDYn/O+5/iwZlVy39s4IWO/TxX3ztNcKrW6AE7gNlebrDkdihjV5psZZ+a2x+U7FW9xRQ0DwQKezX9xKu/4Cj7ztIx4IQ6bm9H/Xvx12L3UGcM/svkRQQ+3RgJ+zZ4N6oORZVUOGZJqEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SeuLeap8jPCG1UfUV2qhqMjqctK2pHmaxO9z8yJTCNw=;
- b=ex5+s7h2UPyFtYB1/+SqXYfkwoKte2e/Uc+ir3se2Kff+ZCYg9nERjix8rfJJRdpZlaKv7BGQkeOky6xRgO5QqFSktWKx2uaxjJlC+IoNtuJA+gjN2oXgg98wi4TtQ1UZJhOyHWBs/JNsDAbaIRYVJsh6JNwOFJDnnvSQyl2gc1UkmSwYaSsya3SxbztwncX1mBdUJbs4QHOqM5unPntoqDmWZLfiUtgCIrqzRIKEQnC07CvQaQu758Y3r4UKgTxferheUki3A1uvQDd8MHa1UQDDYJmyVwcurrrzYmWUH5oEoMsb4giWMGXFHJdThyqwuPFhcVDtBZen7DbJaH5AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SeuLeap8jPCG1UfUV2qhqMjqctK2pHmaxO9z8yJTCNw=;
- b=VwYvBxWq9w8/2LQMgcZy7RMMc/Fv9I1t4RM4R4BdPnPgQ0t/OQYRbUfXJeFADfJYsQF4irKd+YJyAQofCrtNgr9l1hHu35UHP0/GgPwiiCdQH4v1k29YWBvqQKgjzCxnf6UBf3P9eTgExwGWsy14LeV9pcvd+1NPN9TRcyWcgb1l477Gd1gzWkLXNqLf1j7TjtFGKRaBu/rCKU76wWF8CNThMfNo24b8Ii7VMe++bzh5mSnRmmNyp+Iyjzn9FANKEGLGAtbFfgtNkSR0Jy2lUcqW4r/GVXaPCOI00MAJOiqBGjXigqHaxNnV1B00fM2dM02LlL8i7rISxXtuDR/rCg==
-Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- (2603:1096:820:41::14) by SI2PR01MB4524.apcprd01.prod.exchangelabs.com
- (2603:1096:4:1e3::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Thu, 14 Sep
- 2023 02:34:44 +0000
-Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- ([fe80::fa4e:3c3d:23cc:79b5]) by KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- ([fe80::fa4e:3c3d:23cc:79b5%6]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 02:34:44 +0000
-From:   Ken Lin <ken_lin5@hotmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     groeck@chromium.org, Benson Leung <bleung@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kevin Chiu <kevin.chiu.17802@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rory Liu <hellojacky0226@hotmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Zoey Wu <zoey_wu@wistron.corp-partner.google.com>,
-        chrome-platform@lists.linux.dev, linux-media@vger.kernel.org
-Subject: [PATCH] media: platform: cros-ec: Add Taranza to the match table
-Date:   Thu, 14 Sep 2023 10:32:26 +0800
-Message-ID: <SI2PR01MB38170C8A050C6541900EFE99AEF7A@SI2PR01MB3817.apcprd01.prod.exchangelabs.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [s0ATTfVbYG1oOwHO/UmNkoml8iSJRy3x]
-X-ClientProxiedBy: PU1PR06CA0004.apcprd06.prod.outlook.com
- (2603:1096:803:2a::16) To SI2PR01MB3817.apcprd01.prod.exchangelabs.com
- (2603:1096:4:ee::5)
-X-Microsoft-Original-Message-ID: <20230914103021.1.I407545b93a111516f5b73b8071e3b361ec20cb4d@changeid>
+        Wed, 13 Sep 2023 22:32:58 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEEC1AD;
+        Wed, 13 Sep 2023 19:32:54 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38E0uCgg019721;
+        Thu, 14 Sep 2023 02:32:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=IgO3mqpLSWVJHvkh+qBggAdQouLFnxNzFgwRRXD33KE=;
+ b=g2o3bZy4O+PkbvDLTSF4huJnpfmXwCcxOG+jE6ayjwIAYikwYOPrlN+qwsnsXOwoDeow
+ uTc6+dhK4uwlguBVMfGjrjSgCy7cYPi1SIaqBEoRXSzMKmaPZ1zPyTUY7CXAIJuY8yZK
+ +8KcQiQ2G+y4ZurHlK4nnfo0F1D8ilXjCG+r3VvThetFp5F/F7sJkUvCjc2HFqNkTPRt
+ +AItnt1y4nx71rSc/C7yC/of8xXoqynz2UGHBZA+rwHZizVg9ZfU0wYYPjJG73Jc7NAV
+ FCqwz4i1+p8imApttBUdA9HaZv5ZjAV1V5P3CaPcJBC65ZBkm8Z3nPfyFGSh+F/zxVA7 Lw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7qbg9p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 02:32:41 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38E2WetV031475
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 02:32:40 GMT
+Received: from hu-mdtipton-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 13 Sep 2023 19:32:40 -0700
+Date:   Wed, 13 Sep 2023 19:32:39 -0700
+From:   Mike Tipton <quic_mdtipton@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     Georgi Djakov <djakov@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/53] icc-rpmh multi-RSC voting groundwork
+Message-ID: <20230914023239.GA25147@hu-mdtipton-lv.qualcomm.com>
+References: <20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org>
+ <c067a45f-9629-d516-9e56-36538e4ff6db@kernel.org>
+ <20230807215739.GA9621@hu-mdtipton-lv.qualcomm.com>
+ <10520827-dc01-475c-b09a-35cefc9e0a62@linaro.org>
+ <20230913012951.GA19284@hu-mdtipton-lv.qualcomm.com>
+ <ffc58838-c306-49f3-a90a-95b2cf02ae3d@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR01MB3809:EE_|SI2PR01MB4524:EE_
-X-MS-Office365-Filtering-Correlation-Id: 649a75f2-10ec-44ef-b061-08dbb4cb2603
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dS3fEzoI/lsj9Cbab8X3eaKZU6eGMe/StyM2h2Bzc43qY86LCG7S6GwGozBBn4rtWUZ1DFv1/znHes+t+R1YnC4974Kv+SOevUVizDuXIoTbTXyxxrFFqwm+txtrxg7S44fGtrj6kQkILGQwQlM4WVUCIkrpj5LFyUHJHwAu90MUeWEJHwygdG29hyz3wIOse3Z8B+yGoIWX45mRmKWhFttdqN6yWXqo5sCbOzhQAbdJPX6nH+65yt5lTJOnxlpT9HfVl5FE4KLDPJ17NM92+wQLC6cbq+orhWgS/hvVAVvFRzn/6tI6MfbBQBdwBIOpOdHRlHP/9XvjDgW9yTGhVo80ew5ZO2sPdpvtyI8Et1J/mOHtokAIUgZS4fIF0Z9PGh3fmDCTXqy3HJR7xT9zIxZKD12nAtTjl6rs3EyiwJYUUC78uwZZ6bBE3lE8tQJgorfv7TsEuxVLtVeDlUnmGUEgjnRe5gnbV2O+59YCBkRUtUj/2atfzAfiY7pDpaxjEZUv5fFhtIfxGwLJ5cjz7lNhwyncgRyhNaKoKq0oo5O/mieIwUgs1kDuygFS82Vf
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RHUZ9JOAWbIxypUFy5y0VC8RG5HsyULFqeFAE3ZR64/StEfyXWZSD4ekix4I?=
- =?us-ascii?Q?K8m0HDkPzX9qQMPCxPUD+3VIH67bsluGbq3t13tvEuBsvdNI5bo3V2Iib+g0?=
- =?us-ascii?Q?el1J2WVff1kXgROTeJA/vYyJ4VJU74uJb3fqWOuVfKbm1KEWwclfwf/zUo+x?=
- =?us-ascii?Q?dweCPRJbkO5i1wt4ehTu8DvBKtw+5em7WK4KYEbw6koWXPC+hdzK7NWkczYu?=
- =?us-ascii?Q?vFuO4CmKIRnC/dDvoZ7m7gKrzzSUnhRk92OQdH5hncSbA608/tyz2phIjJtM?=
- =?us-ascii?Q?KH+YLDKV47tdQls9raN2Lc8SXGmiv8ROaPkXx3dgA3v5wCYnR+gZ4PQ6LBbH?=
- =?us-ascii?Q?zNYja4W8NK6X9aVdfMEjX7j6h6D5tOres00Lc7cC6imM61pwqubVAYGQ8WOM?=
- =?us-ascii?Q?7ecuNXfkLmtDtxTH4ie3t6ei9tw96QnAAuw/Nkx7DRcuvQd41cv7d3CSci5U?=
- =?us-ascii?Q?if/QSm5h9zt7RpPK29YPSCrAgbJe+ADkP57I417uLi+/8tTjGwcSGf1PNTwb?=
- =?us-ascii?Q?gN/XC956rmmu2fOjSFXR0zKh6f06muVmBdX3Q7WuwG4vcPUnbzWvAyiNBRaB?=
- =?us-ascii?Q?gA/MD9bvmQbvKeXr+AH7GTM4C/u1gm7Q3wRrgCjUndC0fbN+5C5lUEBdEPQ7?=
- =?us-ascii?Q?ikA7HEB7TGThv5dla01lZeX4356qXHVclZBzJJ154V5XFMEdRAgNCWUilMQd?=
- =?us-ascii?Q?l0NyELIpx4XwFHXE02FFE3RWYtqinB18W15gbp7tXqK1dxxS2dC1lF+tc3J9?=
- =?us-ascii?Q?jf7l0g/C+ZpteBYmgFTCKMCYOlprKILB4dgb0+u6vskcEP9eJ4dIxfYfA9KD?=
- =?us-ascii?Q?xGB2JJ1M6RygBJE5CxjfAlcgpYIOZBG+Mx4nbLM3hsjnL+hBvWeTwYsswLKe?=
- =?us-ascii?Q?PdfpPr8ojCrpssieNNJjywefcSx2e69cnUT0augvsIZOv4tk3JXYNboj69/j?=
- =?us-ascii?Q?6MlmFTylIR0oY8Ox7aC4EtOs9wKO+fFHc/Sv9E1eAdihJpcjC8r5H3qPBU6x?=
- =?us-ascii?Q?m0a41zL2F1OLot8lR6FKjn2fKzaWk1fXADfAGg8jWHPZNlv8/Sh1N2sPHsl9?=
- =?us-ascii?Q?KvKVCpg4qD7NBy4yVeFA9rCDeAcaHq3aOL+lHC2XL4pv2UWBbuo16qBoryRt?=
- =?us-ascii?Q?FfowdiEpoVHZdh04QBBGBQvkDjW3L8/6Js0vXiaoknAAj2qENKOP2Cv3myXB?=
- =?us-ascii?Q?PiQWIS32Q0MvIXbccZ/fpsG69xLYtOQIhhTH+A=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-d8e84.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 649a75f2-10ec-44ef-b061-08dbb4cb2603
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR01MB3817.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 02:34:44.2597
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR01MB4524
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ffc58838-c306-49f3-a90a-95b2cf02ae3d@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0dFrF8mWXndu0a5H5z8d_erqmvHIcWJ5
+X-Proofpoint-ORIG-GUID: 0dFrF8mWXndu0a5H5z8d_erqmvHIcWJ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_19,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Google Taranza device uses the same approach as the Google Brask
-which enables the HDMI CEC via the cros-ec-cec driver.
+On Wed, Sep 13, 2023 at 10:31:49AM +0200, Konrad Dybcio wrote:
+> > The applicable voters should likely be defined in the target-specific
+> > headers, rather than the common qcom,icc.h. The bit range used for them
+> > could be common, but each target may only support a small subset of the
+> > total set of possible voters across all targets.
+> I'm not sure how client drivers would then choose the
+> correct path other than
+> 
+> switch (soc) {
+> case 8450:
+> 	tag = QCOM_ICC_TAG_VOTER_8450_HLOS;
+> 	break;
+> case 8550:
+> 	tag = QCOM_ICC_TAG_VOTER_8550_HLOS;
+> 	break;
+> ...
+> }
+> 
+> which would be unacceptable.
 
-Signed-off-by: Ken Lin <ken_lin5@hotmail.com>
----
+The same general way it's handled for the endpoint bindings, which are
+already target-specific. 
 
- drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 2 ++
- 1 file changed, 2 insertions(+)
+Any client drivers hardcoding the endpoint bindings in their driver
+would have to include the appropriate, target-specific binding header
+(e.g. qcom,sm8550-rpmh.h). That would only be possible if their driver
+file is itself target-specific. Otherwise, it would have to pull the
+endpoint bindings from devicetree. Or just use the recommended
+of_icc_get() and let devicetree do everything for them. Same for the
+target-specific voter tag bindings.
 
-diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-index c17faf002877..a65da16c243d 100644
---- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-+++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-@@ -231,6 +231,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
- 	{ "Google", "Gladios", "0000:00:02.0", "Port B" },
- 	/* Google Lisbon */
- 	{ "Google", "Lisbon", "0000:00:02.0", "Port B" },
-+	/* Google Taranza */
-+	{ "Google", "Taranza", "0000:00:02.0", "Port D" },
- };
- 
- static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
--- 
-2.25.1
+Clients can also specify their tags in devicetree. They don't actually
+have to call icc_set_tag() directly. For example:
 
+    #include <dt-bindings/interconnect/qcom,sm8450.h>
+
+    interconnects = <&mmss_noc MASTER_MDP QCOM_ICC_TAG_VOTER_DISP
+                     &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_VOTER_DISP>;
+
+Then when they call of_icc_get() for this path it'll automatically have
+QCOM_ICC_TAG_VOTER_DISP set for them.
