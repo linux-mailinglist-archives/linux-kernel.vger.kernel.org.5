@@ -2,151 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AF07A0293
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9207A02A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237231AbjINL13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
+        id S238407AbjINL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237872AbjINL1X (ORCPT
+        with ESMTP id S237779AbjINL2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:27:23 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7661FC9;
-        Thu, 14 Sep 2023 04:27:18 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmZkL5jfYz6HJbR;
-        Thu, 14 Sep 2023 19:25:30 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 12:27:16 +0100
-Date:   Thu, 14 Sep 2023 12:27:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 06/35] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
-Message-ID: <20230914122715.000076be@Huawei.com>
-In-Reply-To: <20230913163823.7880-7-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-7-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 07:28:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D45269F;
+        Thu, 14 Sep 2023 04:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qKsiGLcP8XdXXDc7ibwaXIyN8m4wv6e0IIyRIdjUx9c=; b=qrc7yR62CX+hvbwgE/klJkbFiW
+        sCh78HYtrk1q9rJ3Hva3lz6hvI0Bghsm5SJ458RXfW5Wu6AffvK+MfSu03otsrWtvlYsLJ5VOEkiy
+        kABF6cmuGBeWgzRAaUxoxsgJBR1qrI9pOf3RRevgH8NsRB4umWBlxXtr2PAjrwVNSDf9QHhlcTBfl
+        rJhep8JwnX7WALMJXbZPR+u+iK9uxex+xH+nhgu1WMrZ60lL/PzHdlTdiBq9JqmXqLroQ94KiDhc1
+        1a9G94f5nXNVOxJuczsnatpGNBIGcUuyUpzO7ZpRqjOzURYEfdxQzr/xNAz/terAAn8+zmf+huAiX
+        4BRWt9cQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgkVC-007pLm-1p;
+        Thu, 14 Sep 2023 11:27:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A6CB4300422; Thu, 14 Sep 2023 13:27:19 +0200 (CEST)
+Date:   Thu, 14 Sep 2023 13:27:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     Breno Leitao <leitao@debian.org>,
+        Jirka Hladky <jhladky@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, leit@fb.com,
+        dcostantino@meta.com,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
+Message-ID: <20230914112719.GB18948@noisy.programming.kicks-ass.net>
+References: <20230616115316.3652155-1-leitao@debian.org>
+ <20230616132954.GG4253@hirez.programming.kicks-ass.net>
+ <ZQHiJxHSSGNk+ul5@gmail.com>
+ <CAE4VaGBXO5Joynan_o13XpT=mNrwt4D84NTZF6H62GXJjpMbBA@mail.gmail.com>
+ <f06ef3dd-dd71-4ba4-a4fa-18a08788c035@amd.com>
+ <20230914091234.GE16631@noisy.programming.kicks-ass.net>
+ <ZQLSw6PeUbV+p2gH@gmail.com>
+ <20230914111845.GF16631@noisy.programming.kicks-ass.net>
+ <b1cf5990-1019-49ea-a1e8-e22410922801@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1cf5990-1019-49ea-a1e8-e22410922801@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:37:54 +0000
-James Morse <james.morse@arm.com> wrote:
-
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
+On Thu, Sep 14, 2023 at 04:52:13PM +0530, Sandipan Das wrote:
+> On 9/14/2023 4:48 PM, Peter Zijlstra wrote:
+> > On Thu, Sep 14, 2023 at 02:30:43AM -0700, Breno Leitao wrote:
+> >> On Thu, Sep 14, 2023 at 11:12:34AM +0200, Peter Zijlstra wrote:
+> >>> On Thu, Sep 14, 2023 at 02:25:40PM +0530, Sandipan Das wrote:
+> >>
+> >>>> I agree with using WARN_ON_ONCE() to make this less intrusive.
+> >>>
+> >>> Could you send a patch that AMD is happy with?
+> >>
+> >> Why the current patch is not good enough?
+> > 
+> > Sandipan, can you answer this? I don't tihnk I'm qualified to speak for
+> > the AMD pmu and certainly I don't have insight into their design future.
 > 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
+> Hi Breno,
 > 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
+> Functionally, the patch looks good to me and I will be reusing it
+> without any change to the authorship. However, as Peter suggested, I
+> wanted to add a message to prompt users to update the microcode and
+> also call out the required patch levels in the commit message since
+> different Zen 4 variants and steppings use different microcode.
 > 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
+> Here's what I plan to send.
 > 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
+> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+> index abadd5f23425..186a124bb3c0 100644
+> --- a/arch/x86/events/amd/core.c
+> +++ b/arch/x86/events/amd/core.c
+> @@ -909,6 +909,13 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+>                 status &= ~GLOBAL_STATUS_LBRS_FROZEN;
+>         }
 > 
-> Signed-off-by: James Morse <james.morse@arm.com>
-
-After this the earlier question about ordering of cpu_dev_init()
-and node_dev_init() is relevant.   
-
-Why won't node_dev_init() call
-get_cpu_devce() which queries per_cpu(cpu_sys_devices)
-and get NULL as we haven't yet filled that in?
-
-Or does it do so but that doesn't matter as well create the
-relevant links later?
-
-I've not had enough coffee yet today so might be missing the
-obvious!
-
-Jonathan
-
-> ---
->  arch/arm64/Kconfig           |  1 +
->  arch/arm64/include/asm/cpu.h |  1 -
->  arch/arm64/kernel/setup.c    | 13 ++++---------
->  3 files changed, 5 insertions(+), 10 deletions(-)
+> +       if (status & ~amd_pmu_global_cntr_mask)
+> +               pr_warn_once("Unknown status bits are set (0x%llx), please consider updating microcode\n",
+> +                            status);
+> +
+> +       /* Clear any reserved bits set by buggy microcode */
+> +       status &= amd_pmu_global_cntr_mask;
+> +
+>         for (idx = 0; idx < x86_pmu.num_counters; idx++) {
+>                 if (!test_bit(idx, cpuc->active_mask))
+>                         continue;
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index b10515c0200b..7b3990abf87a 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -132,6 +132,7 @@ config ARM64
->  	select GENERIC_ARCH_TOPOLOGY
->  	select GENERIC_CLOCKEVENTS_BROADCAST
->  	select GENERIC_CPU_AUTOPROBE
-> +	select GENERIC_CPU_DEVICES
->  	select GENERIC_CPU_VULNERABILITIES
->  	select GENERIC_EARLY_IOREMAP
->  	select GENERIC_IDLE_POLL_SETUP
-> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
-> index e749838b9c5d..887bd0d992bb 100644
-> --- a/arch/arm64/include/asm/cpu.h
-> +++ b/arch/arm64/include/asm/cpu.h
-> @@ -38,7 +38,6 @@ struct cpuinfo_32bit {
->  };
->  
->  struct cpuinfo_arm64 {
-> -	struct cpu	cpu;
->  	struct kobject	kobj;
->  	u64		reg_ctr;
->  	u64		reg_cntfrq;
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 417a8a86b2db..165bd2c0dd5a 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -402,19 +402,14 @@ static inline bool cpu_can_disable(unsigned int cpu)
->  	return false;
->  }
->  
-> -static int __init topology_init(void)
-> +int arch_register_cpu(int num)
->  {
-> -	int i;
-> +	struct cpu *cpu = &per_cpu(cpu_devices, num);
->  
-> -	for_each_possible_cpu(i) {
-> -		struct cpu *cpu = &per_cpu(cpu_data.cpu, i);
-> -		cpu->hotpluggable = cpu_can_disable(i);
-> -		register_cpu(cpu, i);
-> -	}
-> +	cpu->hotpluggable = cpu_can_disable(num);
->  
-> -	return 0;
-> +	return register_cpu(cpu, num);
->  }
-> -subsys_initcall(topology_init);
->  
->  static void dump_kernel_offset(void)
->  {
+> --
+> 
+> Hi Peter,
+> 
+> There is another case where users will see warnings but the patch
+> to fix it (link below) is yet to be reviewed. May I rebase and
+> resend it along with the above?
+> 
+> https://lore.kernel.org/all/20230613105809.524535-1-sandipan.das@amd.com/
+> 
 
+Sure, sorry I seem to have missed that :-(
