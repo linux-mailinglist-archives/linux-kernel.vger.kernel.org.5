@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0217A0129
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F35C7A02D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237959AbjINKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S233350AbjINLmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237811AbjINKD6 (ORCPT
+        with ESMTP id S229992AbjINLmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:03:58 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543C21BE3;
-        Thu, 14 Sep 2023 03:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=B6RnEXIYDtUw6JnmrPx9u+Y1Ptj1s48sSYqiRgozYj8=; b=JMuyF2HYa2ahrFynGeiT4letpJ
-        egbDnqzEYvKA38hOiMNTrIBVNsM9TyjW8BdZCaREg5Qb9/MqrLW7dhyVlaiRYqZUQzCF+zmAtz8Kd
-        1xWzA24/N68lesZyur9s/Lasqjwm5u7C3IgBoqCliaWhgs1b6nJTLYpbZFwktTF5KuzYVjDcFawv9
-        XcJ1e91OLAi+dqHiPcSbsqZkk4vgBy/P8b5B9bjgt/1mmMZTHeXRr9JzpoZ8ODYjbVqwXypram10j
-        c8qjJmSMD1BfGHCsck5bXiyMNAZMvxIkkIqGzfaEDBte4KHIU08IYgGx5qrkHpOXLB4worlNrNHP3
-        X085S91w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41812)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgjCR-0003r2-16;
-        Thu, 14 Sep 2023 11:03:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgjCR-0004f9-Ts; Thu, 14 Sep 2023 11:03:51 +0100
-Date:   Thu, 14 Sep 2023 11:03:51 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 09/35] LoongArch: Switch over to
- GENERIC_CPU_DEVICES
-Message-ID: <ZQLah+HBx8TuDaJQ@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-10-james.morse@arm.com>
+        Thu, 14 Sep 2023 07:42:03 -0400
+X-Greylist: delayed 8386 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 04:41:59 PDT
+Received: from 14.mo581.mail-out.ovh.net (14.mo581.mail-out.ovh.net [178.33.251.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3CBCC3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:41:58 -0700 (PDT)
+Received: from director2.ghost.mail-out.ovh.net (unknown [10.108.16.216])
+        by mo581.mail-out.ovh.net (Postfix) with ESMTP id B04F425E05
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:02:48 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-hwfnb (unknown [10.110.115.90])
+        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 45B251FEA2;
+        Thu, 14 Sep 2023 08:02:47 +0000 (UTC)
+Received: from RCM-web7.webmail.mail.ovh.net ([151.80.29.19])
+        by ghost-submission-6684bf9d7b-hwfnb with ESMTPSA
+        id o3rgISe+AmVUCAAA7wW1ag
+        (envelope-from <rafal@milecki.pl>); Thu, 14 Sep 2023 08:02:47 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913163823.7880-10-james.morse@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Date:   Thu, 14 Sep 2023 10:02:47 +0200
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: Re: [PATCH] nvmem: brcm_nvram: store a copy of NVRAM content
+In-Reply-To: <3f175090-4c5f-4821-9155-06c4868d0489@arinc9.com>
+References: <20230914064922.3986-1-zajec5@gmail.com>
+ <3f175090-4c5f-4821-9155-06c4868d0489@arinc9.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <d0545951a0e787792c5cc20eca66a72a@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 31.11.218.106
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 13702201867296680943
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeiledguddvhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgffhueeihfeitdettdehfefhieefffevkedvgeetteekteejtdeivddvhffgffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudehuddrkedtrddvledrudelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekuddpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:37:57PM +0000, James Morse wrote:
-> Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
-> overridden by the arch code, switch over to this to allow common code
-> to choose when the register_cpu() call is made.
+On 2023-09-14 09:56, Arınç ÜNAL wrote:
+> On 14.09.2023 09:49, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>> 
+>> This driver uses MMIO access for reading NVRAM from a flash device.
+>> Underneath there is a flash controller that reads data and provides
+>> mapping window.
+>> 
+>> Using MMIO interface affects controller configuration and may break 
+>> real
+>> controller driver. It was reported by multiple users of devices with
+>> NVRAM stored on NAND.
+>> 
+>> Modify driver to read & cache all NVRAM content during init and use 
+>> that
+>> copy to provide NVMEM data when requested.
+>> 
+>> Link: 
+>> https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
+>> Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+>> Cc: Scott Branden <scott.branden@broadcom.com>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > 
-> This allows topology_init() to be removed.
-> 
-> This is an intermediate step to the logic being moved to drivers/acpi,
-> where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
+> This is a bug fix, could you add a "Fixes" tag so it will be backported 
+> to
+> stable releases?
 
-Same comment as x86 (moving the point at which cpus are registered
-ought to be mentioned in the commit message.)
+I suppose we could try:
+Fixes: 3fef9ed0627a ("nvmem: brcm_nvram: new driver exposing Broadcom's 
+NVRAM")
+
+Srini: can you append it while applying if you find it OK?
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Rafał Miłecki
