@@ -2,149 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D2E7A0955
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ED77A0961
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241014AbjINPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        id S241117AbjINPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240810AbjINPeA (ORCPT
+        with ESMTP id S241105AbjINPfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:34:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F39CE;
-        Thu, 14 Sep 2023 08:33:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D029BC433C8;
-        Thu, 14 Sep 2023 15:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694705636;
-        bh=1KeR15MR0lzhn5Kwe9u+YNeU4/nutLkkCZN5KZakWas=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=rPamIDWjidl9aoOdYu4538eyG1jHEMWZEg2hgseAtAW4443e47amuR6bw/Z9KkHUn
-         gA88wNMgwOUjCzTKID4ynAYNOFuqz3SbokqFHhFMuvZKopusr9QQXjsY3RkU60FNki
-         A0mreV9IOF68fihVtB9m67vAE7uJbSfi73xxxKFnZv7jO1owPQEKT3yszKrZWsSBkw
-         1/gJJcuJNndyGRRLwtpQ5mVVSVZ6M6EddjOl2CF6S3+3WWXutNxsYzWJOqYPpEi3yG
-         XJkH6wkft6EOtfyYZP6VFdP4+sOSL2oApCfjPC5BsXAV/gGyXN7gZFPMqP6468h9R8
-         M8EItT4mbi1Vw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 14 Sep 2023 18:33:51 +0300
-Message-Id: <CVIR0BGHX3VS.39FY5QL8KXR0F@suppilovahvero>
-Cc:     "Jan Hendrik Farr" <kernel@jfarr.cc>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <x86@kernel.org>, <tglx@linutronix.de>, <dhowells@redhat.com>,
-        <vgoyal@redhat.com>, <keyrings@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <bhe@redhat.com>,
-        <bhelgaas@google.com>, <bluca@debian.org>
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Lennart Poettering" <mzxreary@0pointer.de>,
-        "Philipp Rudo" <prudo@redhat.com>
-X-Mailer: aerc 0.14.0
-References: <20230911052535.335770-1-kernel@jfarr.cc>
- <20230913160045.40d377f9@rotkaeppchen> <ZQLTJFb3S/xn5CWo@gardel-login>
- <CVIN0M3IHRKL.3U005Y5QTOJL5@suppilovahvero>
-In-Reply-To: <CVIN0M3IHRKL.3U005Y5QTOJL5@suppilovahvero>
+        Thu, 14 Sep 2023 11:35:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26A901FD4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694705667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=buiiu+tLXB8hg1uWGuKZq7mBUyxAEPJaVjE6lmvNhuc=;
+        b=JmC5uH5IE19aaeO/yBZHpMWZaQ9UuAHoAdfpjUWygwv7Ir1uYOrmvFF5oeTuv+6DyJ269y
+        fCfAZ5aaEfrK1CNG0p00UNfnvcFfG2e1y/mshmCl3BLCxCrFsz9N+oyAjFWJsdl+36fRhB
+        XDLXzzsVHIb5uFJ8MlUWeas9Wl46bRw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-630-5Dx95OfFN_qq4mBXB6W1EQ-1; Thu, 14 Sep 2023 11:34:26 -0400
+X-MC-Unique: 5Dx95OfFN_qq4mBXB6W1EQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31f46ccee0fso918394f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:34:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694705665; x=1695310465;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=buiiu+tLXB8hg1uWGuKZq7mBUyxAEPJaVjE6lmvNhuc=;
+        b=Q+BYFWPHR588/AoPfdnkO+RLe25jRZJ0TPnsksYXoR9l3oTt8WSoBuwpT0mppIr98w
+         Z3b3zeGQhvR6ybhTSuRDAzH81eu4/nzDTP1kgmzF+Phzz/ILWhIlZbJtpZ1r8+ryksR+
+         hT1F91nPsH6378LcpMzICYPTklcIEL+gQZGaVi+tN27CKdh/uR6hn7hdZX3A8Xulujkn
+         vbmzvRt4oXxBNCU9lLbqX2FFmw8fQRugfLrUdPV/TADQnBg9+fzhuYMDcyux0EO9zwyo
+         I/Fv+l+IOkDZ2jI4eXr3nB5iw1/3+3sESioY520TFqL6bdxtg24QjnlnftmkpSxpMhnx
+         IkCw==
+X-Gm-Message-State: AOJu0YxdMxbt8FJeZ713tsQrKKwK36vPCpiULhsdlkaS+TtOsEZ0GuBM
+        vFGAjbazeJVc3aH1ECw3GELTl1k+UAsrcv85ikTJ+FZ4nGVID86PMvzKcLmxqJji20f0hg38/ZH
+        EhDP6tokU7ZthMr74/KhHhPQv
+X-Received: by 2002:a5d:5948:0:b0:31c:8c5f:877e with SMTP id e8-20020a5d5948000000b0031c8c5f877emr1882384wri.33.1694705665493;
+        Thu, 14 Sep 2023 08:34:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEr+nCbcXFaH/HOSF4+8+BhfwcplnBX+yHnh9Wu4fo/aPF7ErBAktIXQigHFHZ5NP8kmGbuZA==
+X-Received: by 2002:a5d:5948:0:b0:31c:8c5f:877e with SMTP id e8-20020a5d5948000000b0031c8c5f877emr1882368wri.33.1694705665105;
+        Thu, 14 Sep 2023 08:34:25 -0700 (PDT)
+Received: from sgarzare-redhat ([46.222.114.183])
+        by smtp.gmail.com with ESMTPSA id l5-20020a7bc445000000b003fee849df23sm2283011wmi.22.2023.09.14.08.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 08:34:24 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 17:34:18 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v8 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
+ preparations
+Message-ID: <63xflnwiohdfo6m3vnrrxgv2ulplencpwug5qqacugqh7xxpu3@tsczkuqgwurb>
+References: <20230911202234.1932024-1-avkrasnov@salutedevices.com>
+ <554ugdobcmxraek662xkxjdehcu5ri6awxvhvlvnygyru5zlsx@e7cyloz6so7u>
+ <7bf35d28-893b-5bea-beb7-9a25bc2f0a0e@salutedevices.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7bf35d28-893b-5bea-beb7-9a25bc2f0a0e@salutedevices.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Sep 14, 2023 at 3:26 PM EEST, Jarkko Sakkinen wrote:
-> On Thu Sep 14, 2023 at 12:32 PM EEST, Lennart Poettering wrote:
-> > On Mi, 13.09.23 16:00, Philipp Rudo (prudo@redhat.com) wrote:
-> >
-> > > For example there are two definitions for the UKI which contradict ea=
-ch other.
-> > > The dedicated one [1] you have cited earlier and the one in the BLS f=
-or type #2
-> > > entries [2]. In [1] the .linux and .initrd sections are mandatory and=
- the
-> > > .osrel and .cmdline sections are optional while in [2] it is the othe=
-r way
-> > > round. Which definition should the kernel follow?
-> > >
-> > > Furthermore, I absolutely don't understand how the spec should be rea=
-d. All
-> > > the spec does is defining some file formats. There is no word about w=
-hich
-> > > component in the boot chain is supposed to handle them and what exact=
-ly this
-> > > component is supposed to do with it. But that is crucial if we want t=
-o add UKI
-> > > support for kexec as the kexec systemcall will replace the stub. So w=
-e need to
-> > > know what tasks the stub is supposed to perform. Currently this is on=
-ly some
-> > > implementation detail of the systemd-stub [3] that can change any mom=
-ent and I
-> > > strongly oppose to base any uapi on it.
-> > >
-> > > In the end the only benefit this series brings is to extend the signa=
-ture
-> > > checking on the whole UKI except of just the kernel image. Everything=
- else can
-> > > also be done in user space. Compared to the problems described above =
-this is a
-> > > very small gain for me.
-> > >
-> > > Until the spec got fixed I don't see a chance to add UKI support for =
-kexec.
-> >
-> > So that spec is initially just a generalization of what
-> > systemd-stub/systemd-boot/ukify does. The descrepancies between the
-> > cited specs mostly come from the that generalization. If you want to
-> > enumerate kernels and order them the ".osrel" stuff for example is
-> > necessary, hence the boot loader spec really wants it. If you don't
-> > care about the boot loader spec though and just want to register the
-> > kernel UKI PE directly in BootXXX efi vars for example, then there's
-> > no need to include .osrel. That all said we should certainly make the
-> > two specs align better, and clarify the situation. Suggestions/patches
-> > more than welcome.
-> >
-> > Ultimately, I think a spec written as description with a single
-> > implementation in mind (i.e. systemd) is a generally a bad spec. Hence
-> > if kexec in the Linux kernel wants to add support for it, that'd be
-> > great but I'd see that as an opportunity to adjust the spec to the
-> > needs of the Linux kernel in this area, so that it reflects well more
-> > than just one backend implementation.
-> >
-> > Hence, seeing the spec as set in stone and as inherently low quality
-> > is the wrong way to see it I am sure. Instead, the goal here is to
-> > adjust the spec to make it work really nicely for *both* systemd and
-> > the kernel.
+On Thu, Sep 14, 2023 at 05:05:17PM +0300, Arseniy Krasnov wrote:
+>Hello Stefano,
 >
-> Bringing better backing story [1] would also help the spec. Immeditaly
-> when there's some reflection surface, also the possible faults it the
-> spec become more apparent. Also this makes spec refinement less boring,
-> which can be boring and tedious if you write it isolated by yourself or
-> in a small group :-)
+>On 14.09.2023 17:07, Stefano Garzarella wrote:
+>> Hi Arseniy,
+>>
+>> On Mon, Sep 11, 2023 at 11:22:30PM +0300, Arseniy Krasnov wrote:
+>>> Hello,
+>>>
+>>> this patchset is first of three parts of another big patchset for
+>>> MSG_ZEROCOPY flag support:
+>>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+>>>
+>>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+>>> suggested to split it for three parts to simplify review and merging:
+>>>
+>>> 1) virtio and vhost updates (for fragged skbs) <--- this patchset
+>>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+>>>   tx completions) and update for Documentation/.
+>>> 3) Updates for tests and utils.
+>>>
+>>> This series enables handling of fragged skbs in virtio and vhost parts.
+>>> Newly logic won't be triggered, because SO_ZEROCOPY options is still
+>>> impossible to enable at this moment (next bunch of patches from big
+>>> set above will enable it).
+>>>
+>>> I've included changelog to some patches anyway, because there were some
+>>> comments during review of last big patchset from the link above.
+>>
+>> Thanks, I left some comments on patch 4, the others LGTM.
+>> Sorry to not having spotted them before, but moving
+>> virtio_transport_alloc_skb() around the file, made the patch a little
+>> confusing and difficult to review.
 >
-> I need to check if I could with some effort extend my current testing
-> environment for UKI [2]. Need to study this better at some point.
+>Sure, no problem, I'll fix them! Thanks for review.
 >
-> > Lennart
-> >
-> > --
-> > Lennart Poettering, Berlin
+>>
+>> In addition, I started having failures of test 14 (server: host,
+>> client: guest), so I looked better to see if there was anything wrong,
+>> but it fails me even without this series applied.
+>>
+>> It happens to me intermittently (~30%), does it happen to you?
+>> Can you take a look at it?
 >
-> [1] https://social.kernel.org/notice/AZklKOsIYBZXDL9Bya
-> [2] https://github.com/jarkkojs/buildroot-tpmdd/compare/master...linux-6.=
-5.y
->
-> BR, JKarkko
+>Yes! sometime ago I also started to get fails of this test, not ~30%,
+>significantly rare, but it depends on environment I guess, anyway I'm going to
+>look at this on the next few days
 
-I need to revisit one some months olds patch set from Matthew Garrett.
-It was about encrypted hibernate.
+Maybe it's just a timing issue in the test, indeed we are expecting 8
+bytes but we received only 3 plus the 2 bytes we received before it
+seems exactly the same bytes we send with the first
+`send(fd, HELLO_STR, strlen(HELLO_STR), 0);`
 
-I don't recall exactly what was the problem with PCR sealing but want
-to check. This is not hunch that this would affect the current patch
-set in review. Just want to revisit to remember why it did not go
-through in the end.
+Since it is a stream socket, it could happen, so we should retry
+the recv() or just use MSG_WAITALL.
 
-BTW, would not be a bad idea to extend CC list to at least Matthew and
-James Bottomley on this patch.
+Applying the following patch fixed the issue for me (15 mins without
+errors for now):
 
-BR, Jarkko
+diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+index 90718c2fd4ea..7b0fed9fc58d 100644
+--- a/tools/testing/vsock/vsock_test.c
++++ b/tools/testing/vsock/vsock_test.c
+@@ -1129,7 +1129,7 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+         control_expectln("SEND0");
+
+         /* Read skbuff partially. */
+-       res = recv(fd, buf, 2, 0);
++       res = recv(fd, buf, 2, MSG_WAITALL);
+         if (res != 2) {
+                 fprintf(stderr, "expected recv(2) returns 2 bytes, got %zi\n", res);
+                 exit(EXIT_FAILURE);
+@@ -1138,7 +1138,7 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+         control_writeln("REPLY0");
+         control_expectln("SEND1");
+
+-       res = recv(fd, buf + 2, sizeof(buf) - 2, 0);
++       res = recv(fd, buf + 2, 8, MSG_WAITALL);
+         if (res != 8) {
+                 fprintf(stderr, "expected recv(2) returns 8 bytes, got %zi\n", res);
+                 exit(EXIT_FAILURE);
+
+I will check better all the cases and send a patch upstream.
+
+Anyway it looks just an issue in our test suite :-)
+
+Stefano
+
+>
+>Thanks, Arseniy
+>
+>>
+>> host$ ./vsock_test --mode=server --control-port=12345 --peer-cid=4
+>> ...
+>> 14 - SOCK_STREAM virtio skb merge...expected recv(2) returns 8 bytes, got 3
+>>
+>> guest$ ./vsock_test --mode=client --control-host=192.168.133.2 --control-port=12345 --peer-cid=2
+>>
+>> Thanks,
+>> Stefano
+>>
+>
+
