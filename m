@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8BE79FC1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2C079FC25
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbjINGf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S235585AbjINGiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbjINGf5 (ORCPT
+        with ESMTP id S232856AbjINGiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:35:57 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EE7CCC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:35:53 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-307d20548adso537856f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:35:53 -0700 (PDT)
+        Thu, 14 Sep 2023 02:38:10 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C588CCD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:38:06 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-401b393ddd2so6546365e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694673350; x=1695278150; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694673485; x=1695278285; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zNOGE+5MM6BEZnPWt6ReEcr8sE6fFN9dseyZd6cTxY=;
-        b=o1Vq8GKyv46JJtdljTxwCCCkX3G4kgXa6gjv+7tavRJ6wwwQcic98mkT6kE1UjISrG
-         X5J9Pk0F6fMFqbV0m9LsDqgSd8Ibwpt0WzRHlr6b5Zn3cffZxlKtDs5qItA1vCudD6w6
-         eHUypxxsgtFMWds9ACA4kYcXLDrlBD7bsgBFlQ/SkZlPA26RpkuJMPnQouAkkzh6sciL
-         BxjzWmahhgVVoCcJ16IgHnlYOcHabTWTMkknKx5jnurRixAI9iug/lC5AepcnYkk02JP
-         QV2NcxnQxAIIL2wXtnorDMlf4g5xqLZsJqPDe57AyDb6zEI6PwCdG6ZKgruQG7xAO4BW
-         3utA==
+        bh=+Ln9AYYR12krk4RrRHWYO/LjdYMxN479/wAy3HLaC4E=;
+        b=LKoFw1ZsEPVitQv/QBGJj+3Q062VKdL9KZvfQemkrsVQHpEU14qFK90vwnsJV0MDkz
+         paFiqeA4HZr3NnCgszcnkSYCsIttRfC7GQ3raFunY1nhUvt5RnY/rqeIogUUGvrK4b4T
+         JoKP/RQKHfgL/4FrSvoIk+aXBAVDEdBxdpfmwT++WphT707ZjY2ZRT0dJo85EY4DTafo
+         W3EGgvS6R7LIWOTPmYazqGeo6gU2TkhuRBVId+jDnDT1sdDeqWDZGTN+hdgNCVZwfrOf
+         vQbubjLGLh/bv/dqnV0l63hunl5+g+sofejyIS8N37WtKaoBGXkG9lEnKqWUmUeJa3i2
+         kW6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694673350; x=1695278150;
+        d=1e100.net; s=20230601; t=1694673485; x=1695278285;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0zNOGE+5MM6BEZnPWt6ReEcr8sE6fFN9dseyZd6cTxY=;
-        b=MNc72n+fkp32pZgHCVs57qANcHuNDZHwdfgN4CEc6yx6sNBo5EMatOWLoa44KRRX6c
-         zIv4oCKlausvyWCDhobfQjh4Bq7gMfOuF6YAurFrJoaRoSa03bjqaAE+6tQco/SWajnW
-         EbO1q5xbftXMfzcDImXljgwJyGNISr5XayiB32kiitA0E5yfIkOwR4ONJoR76IEbAJNO
-         ppsnqdQ3yXF4Ev+0BcB890+lTDnN3GEbFz9YhCwsfeOnWa9nsIBmc8f+yH3UlEJPs01a
-         rxxLZ/GxEmSSZjzlysHjdieSuEj6F51nmyImvdv/7OhJ0EIkEnMXcFiEKyyhDiTWBaIw
-         61Lw==
-X-Gm-Message-State: AOJu0YwKHkT647gEozRF1953N9PBBpWtnKOvoGsjrGWUrqzEEfAol/f7
-        3wuqlL3ktHC8lyPm1bjvWFzAcA==
-X-Google-Smtp-Source: AGHT+IFchjJOs01D7OSO6EJ43M0F+u18JLWXIlesmUdumSOf5TZW42BgtvIm+F/+kcsudif63vxKTw==
-X-Received: by 2002:adf:f981:0:b0:319:7c07:87bf with SMTP id f1-20020adff981000000b003197c0787bfmr3724604wrr.53.1694673350534;
-        Wed, 13 Sep 2023 23:35:50 -0700 (PDT)
+        bh=+Ln9AYYR12krk4RrRHWYO/LjdYMxN479/wAy3HLaC4E=;
+        b=Zd2Q1xZUVIW8RUZVSn/OmCDLxnPXV+S8xJs9GeoT2mLs3UUB+KFNKWmrNM0puDCmaz
+         6gEMePObYka6bFmBdKcJnigOlYS+9NPuYwrteRyBOXuD8SEms1A3Jjg7UyJXdVFxVRps
+         TowuJI4jTS8wYZbxabypeg+JGifUsdg7Eczw+Cdj/thUZa1fOS9d8Dys9tSuMsETVMCi
+         Fo/BTBa3WQywleuIzexUtW8GpAqWA15E2bbZppfZnJT+KnPY3OEqk8g8T/EWMHgIQuKH
+         jAWNhOcPFSukHzmH607zE4E8ovMPBGvrpsBpXQACCuCYoATIfW+1dpGkZ9cBiyuSwArb
+         RPGw==
+X-Gm-Message-State: AOJu0YwGMdAsVgMBFlpz+ClFZ1b5UN65Q/Zdh4VsfT6zeCnCuLMfoV6g
+        umDMQN/vEOytwxVbMkhMgH67/q/CrLN/J6/sBuY=
+X-Google-Smtp-Source: AGHT+IGPEw/siPqdPa1mmpWtwvScyxJuter6eejbGV+yhWaeYVM/X3KyHBo5xANDsRBa4zWBvGUj/A==
+X-Received: by 2002:a5d:58fc:0:b0:317:6ef1:7939 with SMTP id f28-20020a5d58fc000000b003176ef17939mr4011730wrd.23.1694673484942;
+        Wed, 13 Sep 2023 23:38:04 -0700 (PDT)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id h16-20020a5d5490000000b0031773a8e5c4sm829543wrv.37.2023.09.13.23.35.49
+        by smtp.gmail.com with ESMTPSA id k3-20020a056000004300b0031fba0a746bsm851192wrx.9.2023.09.13.23.38.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 23:35:49 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 09:35:47 +0300
+        Wed, 13 Sep 2023 23:38:04 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 09:38:01 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     Umang Jain <umang.jain@ideasonboard.com>
 Cc:     linux-staging@lists.linux.dev,
@@ -65,51 +65,22 @@ Cc:     linux-staging@lists.linux.dev,
         Kieran Bingham <kieran.bingham@ideasonboard.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Phil Elwell <phil@raspberrypi.com>
-Subject: Re: [RFC PATCH v2 0/4] staging: vc04: Drop custom logging
-Message-ID: <1d54715d-25f9-4937-bdff-de0136c95fe8@kadam.mountain>
+Subject: Re: [RFC PATCH v2 3/4] staging: vc04: Convert vchiq_log_info() to
+ use dynamic debug
+Message-ID: <7ea529c2-3da6-47df-9b09-28d4ab36c4ef@kadam.mountain>
 References: <20230913185528.770634-1-umang.jain@ideasonboard.com>
+ <20230913185528.770634-4-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913185528.770634-1-umang.jain@ideasonboard.com>
+In-Reply-To: <20230913185528.770634-4-umang.jain@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 12:25:24AM +0530, Umang Jain wrote:
-> Hello,
-> 
-> This series attempts to restart the discussion on custom logging used
-> in VC04. In the last feedback gathered in [1] it seems that the logging
-> would rather be moved to use dynamic debug. The series tries to move
-> in that direction.
-> 
-> The elephant in the room is the ability of turning on/off log levels,
-> which this series just drops. Compensated by a crude strings
-> ("error", "warning", "info"... etc) for easier grepping.
-> 
-> The log category are also just strings (which probably can be transformed
-> to dynamic debug class names moving forwards?).
-> 
-> To move forwards, I would like feedback on the broader direction.
-> There are couple of TODOs in each of the patch (summarised in commit
-> messages) which require case-by-case discussion.
-> 
-> Additional high-level questions to move forwards:
-> 1. Is loss of log levels by moving to dynamic debug, is actually a
->    concern? Is dynamic debug a valid replacement?
-
-Dynamic debug is honestly going to be an improvement.  I guess, Greg and
-I said this back in Jan.
-
-> 2. Whether debugfs should be dropped as well, found vestigial in [2]
-
-Yes. The "vchiq/log" should be removed.  Ideally as part of this
-patchset so it's easier to understand.
-
-> 3. whether vchiq_log_trace() should actually be tracing support for VC04
-
-That can be done later if people want.  No need to discuss it now.
+Please rename vchiq_log_info() to vchiq_log_dbg() or something.  When I
+see "info", I think it's a KERN_INFO level.  This is all debug stuff and
+it's done correctly but the name is misleading so it looks wrong.
 
 regards,
 dan carpenter
