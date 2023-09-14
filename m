@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A617A0708
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591AE7A0711
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239864AbjINOQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
+        id S239882AbjINORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239833AbjINOQ4 (ORCPT
+        with ESMTP id S239493AbjINOR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:16:56 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEA9CE
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:16:51 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31fa666000dso890113f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694701010; x=1695305810; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r2kB3K2UJ4g8w/oEGmp+zgtYqt7DRAr5lRj6AMn1pyY=;
-        b=a3XRDwYKYhTtZny3s6to0KtJSFI/QCAEmjFgCB7w1HWlDJxX9Fhe4aD+HiWF5Mf36T
-         QQZmq5ZQFInl2BZRLH6JtaOJDsQZgYRxxIMcSeQyE1W3PDKjRU0ISSaNTYXTjMIWiBmS
-         ONiMdz2b0DRVGi47N1UBk5IMtqyfL4gOketpmttyQ0Dj/YIWKKh8Yviv7si/bmAeDU6X
-         xtFYYXrJIynKeUStTnPC7A/rgFBM0M8d04TCE3J1NQgdPmGz/dcKjS7xG8Ac1eG9KuoL
-         5T12Q+Yw/cUzEmEi7Z+bDQX+NT9267OEigy8xiGfsJYVPwE1mNe5yzZ0pocrg+A16bum
-         Z9Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694701010; x=1695305810;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r2kB3K2UJ4g8w/oEGmp+zgtYqt7DRAr5lRj6AMn1pyY=;
-        b=Dd8OCSjoumwVvqK/3+f72ueCrFKrEArLmzmaM3/bsDokpmHngboQNg0a38uBjXz9Td
-         PaNwz6o/GitKiv5yCiGqSmDePXr3C8ZYJzoczTbzKk0zHklkgwa/BfdjnE8CkP5ccl5N
-         yjcCpbnx/UXPpnZV10pJhX76p5mJLGeYwsmR/7Hm4OIXnhlaxa/pi5PKM66vfihkh9Pl
-         UD0GF7bi6F3dlaH6gCzLAekUJgepSjDQQlHzgN82CUMwNrBHz7yz8MIcDo8UtzTsPv2o
-         ehKy/IYnPzW9cCbFZ6xQ+mhnjkirhsfMtTBTqRmVzZI+mqS/iee4HPOh+3mPjR+qpO5x
-         qIAQ==
-X-Gm-Message-State: AOJu0YySH421MbqGovYWdC+gNQhf6Qm6YNsrvH06eAjYVswHrhgeRvam
-        Wsu95KNQt9XofKJDB6GM9IL6r5gwMy0=
-X-Google-Smtp-Source: AGHT+IGX+qWfRKpSfsJR0HeKvM9FR6IfWa+a/g5/HteSVFNj9/AAHq4VQZwDAuuBJxpAAAwoSp3X8g==
-X-Received: by 2002:a05:6000:68a:b0:31f:d5db:a13 with SMTP id bo10-20020a056000068a00b0031fd5db0a13mr2302589wrb.61.1694701009817;
-        Thu, 14 Sep 2023 07:16:49 -0700 (PDT)
-Received: from gmail.com (1F2EF048.nat.pool.telekom.hu. [31.46.240.72])
-        by smtp.gmail.com with ESMTPSA id k21-20020a05600c0b5500b003fbe791a0e8sm2127131wmr.0.2023.09.14.07.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 07:16:49 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 14 Sep 2023 16:16:47 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Huang, Kai" <kai.huang@intel.com>, lkp <lkp@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
- __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
- annotation
-Message-ID: <ZQMVz/wepyo9rlhE@gmail.com>
-References: <202309140828.9RdmlH2Z-lkp@intel.com>
- <90f0a4d44704f9c296f3a4d8b72c57f2916aa09d.camel@intel.com>
- <377b1ce2ecd390f4b6f8cdf68d22c708f7cef6d1.camel@intel.com>
- <20230914072959.GC16631@noisy.programming.kicks-ass.net>
+        Thu, 14 Sep 2023 10:17:28 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA923DD;
+        Thu, 14 Sep 2023 07:17:23 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmfRD5nVkz6D8gq;
+        Thu, 14 Sep 2023 22:12:40 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 15:17:21 +0100
+Date:   Thu, 14 Sep 2023 15:17:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 20/35] ACPI: Rename acpi_processor_hotadd_init
+ and remove pre-processor guards
+Message-ID: <20230914151720.00007105@Huawei.com>
+In-Reply-To: <20230913163823.7880-21-james.morse@arm.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-21-james.morse@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914072959.GC16631@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 13 Sep 2023 16:38:08 +0000
+James Morse <james.morse@arm.com> wrote:
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > It appears the __noreturn must be annotated to the function declaration 
-> > but not the function body.  I'll send out the fix as soon as I confirm 
-> > the fix with LKP.
+> acpi_processor_hotadd_init() will make a CPU present by mapping it
+> based on its hardware id.
 > 
-> FWIW, the reason being that...
+> 'hotadd_init' is ambiguous once there are two different behaviours
+> for cpu hotplug. This is for toggling the _STA present bit. Subsequent
+> patches will add support for toggling the _STA enabled bit, named
+> acpi_processor_make_enabled().
 > 
-> The point of noreturn is that the caller should know to stop generating 
-> code. For that the declaration needs the attribute, because call sites 
-> typically do not have access to the function definition in C.
+> Rename it acpi_processor_make_present() to make it clear this is
+> for CPUs that were not previously present.
+> 
+> Expose the function prototypes it uses to allow the preprocessor
+> guards to be removed. The IS_ENABLED() check will let the compiler
+> dead-code elimination pass remove this if it isn't going to be
+> used.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>  drivers/acpi/acpi_processor.c | 14 +++++---------
+>  include/linux/acpi.h          |  2 --
+>  2 files changed, 5 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 75257fae10e7..22a15a614f95 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -182,13 +182,15 @@ static void __init acpi_pcc_cpufreq_init(void) {}
+>  #endif /* CONFIG_X86 */
+>  
+>  /* Initialization */
+> -#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+> -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> +static int acpi_processor_make_present(struct acpi_processor *pr)
+>  {
+>  	unsigned long long sta;
+>  	acpi_status status;
+>  	int ret;
+>  
+> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> +		return -ENODEV;
+> +
+>  	if (invalid_phys_cpuid(pr->phys_id))
+>  		return -ENODEV;
+>  
+> @@ -222,12 +224,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+>  	cpu_maps_update_done();
+>  	return ret;
+>  }
+> -#else
+> -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> -{
+> -	return -ENODEV;
+> -}
+> -#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+>  
+>  static int acpi_processor_get_info(struct acpi_device *device)
+>  {
+> @@ -335,7 +331,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>  	 *  because cpuid <-> apicid mapping is persistent now.
+>  	 */
+>  	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> -		int ret = acpi_processor_hotadd_init(pr);
+> +		int ret = acpi_processor_make_present(pr);
+>  
+>  		if (ret)
+>  			return ret;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 651dd43976a9..b7ab85857bb7 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -316,12 +316,10 @@ static inline int acpi_processor_evaluate_cst(acpi_handle handle, u32 cpu,
+>  }
+>  #endif
+>  
+> -#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+>  /* Arch dependent functions for cpu hotplug support */
+>  int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
+>  		 int *pcpu);
+>  int acpi_unmap_cpu(int cpu);
 
-BTW., arguably shouldn't the compiler generate a warning to begin with, 
-when it encounters a noreturn function definition whose prototype doesn't 
-have the attribute?
+I've lost track somewhat but I think the definitions of these are still under ifdefs
+which is messy if nothing else and might cause build issues.
 
-Thanks,
+> -#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+>  
+>  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+>  int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
 
-	Ingo
