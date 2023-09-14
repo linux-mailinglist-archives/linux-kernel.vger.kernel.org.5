@@ -2,273 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40CF7A113C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABC47A1146
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjINWqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
+        id S230170AbjINWta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjINWqH (ORCPT
+        with ESMTP id S229499AbjINWt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:46:07 -0400
-X-Greylist: delayed 364 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 15:46:02 PDT
-Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88F326B7;
-        Thu, 14 Sep 2023 15:46:02 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 2E848828548A;
-        Thu, 14 Sep 2023 17:39:57 -0500 (CDT)
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id NSBzXeeNdZnd; Thu, 14 Sep 2023 17:39:56 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id DDAF582855BB;
-        Thu, 14 Sep 2023 17:39:55 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com DDAF582855BB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1694731195; bh=4wWmRk9vKnyCrbEIxInvXUMcBh4lG6WiQHGocKH4Sis=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=mumuRQ+Z+P+pn/JRSjSlfVfVffAHGssB17QTsDkNPQI8bQ3c4xgpRgHddmPagJ1Gx
-         qbK3DHZ5M0wMaQuqGZVzgx8IyTZLMvhh38K4B5z0VsJomqUEXMrupDVpI9QaIwEWPq
-         /sT2Mg5Bz6Ib3mnzqp7OVJG3QHqfGFhGYedTuP/g=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id CY7GKcQXnydf; Thu, 14 Sep 2023 17:39:55 -0500 (CDT)
-Received: from raptor-ewks-026.rptsys.com (5.edge.rptsys.com [23.155.224.38])
-        by mail.rptsys.com (Postfix) with ESMTPSA id 65CB1828548A;
-        Thu, 14 Sep 2023 17:39:55 -0500 (CDT)
-From:   Timothy Pearson <tpearson@raptorengineering.com>
-To:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Timothy Pearson <tpearson@raptorengineering.com>,
-        Shawn Anastasio <sanastasio@raptorengineering.com>
-Subject: [PATCH] hwmon: (adt7475) Add support for Imon readout on ADT7490
-Date:   Thu, 14 Sep 2023 17:39:47 -0500
-Message-Id: <20230914223947.829025-1-tpearson@raptorengineering.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 14 Sep 2023 18:49:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EB526B7;
+        Thu, 14 Sep 2023 15:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694731765; x=1726267765;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=I7CmItUovxlb3g4bzBGgC30o2aeNoowL0ziZ6HBrh7A=;
+  b=DGtudDddvENQO6DEjNsLQ6QO09YEzqy36xLQK5te0nW+yu4xhgJ9V7Zr
+   VY1D7BYExD0PvixvCY11ei0IdFKhL1LskkkvkoHZoYph4TGp4NzuleW2o
+   cg5WulNRoWykxABUfnTYhfFSDLWofIQSnd8IHR0RSV6TSZLLAtC6A7a6l
+   IonS4jZSjxn6vjW1B93keNr65Zz4pxV70nXG3Wl8l2EWBySePsQpLwG9z
+   9OXCf99D7mhLlOBAYTt1VSBODoJjfo4uNpvMe277bgJp1D4LM+TD42hbR
+   JyUqcjau7ggAYDWQokGssoQ6eEpkpcRJnHG9azyCT1Z597XEpMmQKuGmw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="445548346"
+X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
+   d="scan'208";a="445548346"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 15:40:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="918418758"
+X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
+   d="scan'208";a="918418758"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 15:40:00 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 15:40:00 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 15:39:59 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 15:39:59 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 14 Sep 2023 15:39:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UYW33x/6Vtjo6IHR8qiejsgq88hYlYBg5+1FwItXMID2qCvMyL+rQ72TzSiQcFrGEGEozFd7wL6UPaUNgyOKSBzybbLVhOxvtOkiDbB48UZtcmb5J6NWxPJ5WqQbCmygj8VDawH8zSAOEbf4TgTQClcimmml4zivpZy7SUfoc1zo+aRyRjRMmJyv38JTcVDRiu8rdtdrQBO2klai7p0Gi0j6N+35BsFv4GVi55Uryg+VajYgNzmyj2dkQdi7bT4X4yk8eywBF1yBmIcmLz/spMozNCto1U2VynTp8n491SPmHni+koNSztRGI6G/NkVR0+W8UDu+u4Fg7O6YpqlaAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I7CmItUovxlb3g4bzBGgC30o2aeNoowL0ziZ6HBrh7A=;
+ b=kVpGWMF9BrdDyqus55atwOo64UzKNbSNXntj8KFyfhMoxlEksUy9DF4qMGQUODTxOanT5C8OvMf0BjFise3nMi9+fMPkszNrgGuHjYvjdpx9JPFFhYqY+5akSwblk9xCuxX/4q7HLS8IGT3SqumwyZ+4VJGP7J/lvBnP16aQg/0kJvVrX+i6r/rvu+np5PfQZMVrTPvsN4iYrZuBIIjpX0qCsSVpidP99un3CkLjbIDXKcOouH5eHwG+TX2rgeE4/T45iJOso/5LS//NiRS29zwhY4g+FC5r5Gd2A6gPcUpJwJRcTs4j/gmb59mM+iMfg3Dn4py9lC78N3/Kgs8QMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by SJ0PR11MB5183.namprd11.prod.outlook.com (2603:10b6:a03:2d9::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 22:39:51 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::56f1:507b:133e:57cf]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::56f1:507b:133e:57cf%4]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
+ 22:39:51 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Yang, Weijiang" <weijiang.yang@intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "john.allen@amd.com" <john.allen@amd.com>
+Subject: Re: [PATCH v6 01/25] x86/fpu/xstate: Manually check and add
+ XFEATURE_CET_USER xstate bit
+Thread-Topic: [PATCH v6 01/25] x86/fpu/xstate: Manually check and add
+ XFEATURE_CET_USER xstate bit
+Thread-Index: AQHZ5u9Bdqx57z4B2UWlkM8Jq2LRNrAa6t8A
+Date:   Thu, 14 Sep 2023 22:39:51 +0000
+Message-ID: <868ea527d82f8b9ab7360663db0ef42e6900dc87.camel@intel.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-2-weijiang.yang@intel.com>
+In-Reply-To: <20230914063325.85503-2-weijiang.yang@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|SJ0PR11MB5183:EE_
+x-ms-office365-filtering-correlation-id: 623aaffa-11ae-41f9-ddb3-08dbb573823b
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Gv5qivlQc6cQSNxKDLXfBNQcdF+MskLxUkuR9OwsEY+KeTlDN0xO0dRuSlLMcHI1/IQmVyoiHKHcF92tP1BYfddhgeccWpxlDDZST9gh0tC7fGD6O5QEUA+B/9SrvJp26CjNUISTh9DS3WfSEpI+2cElfHjKfUfKgaWSVEI03vIr8NRQgCQ9idyafFjmw1accbBLhAbQRA23PnUbxgNp7iCGFWnJWHTvSy/ObEDkQmNy2IeDlLyD4HLbZ50ewmE3lsRFPlgvzEKCxJlJoELf3iXDPgAaxcLWgzNzdRx3TwNZSnsGIcuIgRBr0j6Hh0TZP8omxztKZjecK6hM7FU3TN8SNJ6xinhirA8/j15BO8fG1BXbJ9vBdmkOIoz11m4JbiFLlasZTifIdKZGX7Bmjgsr2LyIsbpmDihHpf1bJG4F9o7bq7VdUVMyV/8P3/r6GaFJzE7YLKirZ9JRxJDQwv9O1Rg0ALT+eoDEq3tz1BVw2znedT0F0+lhsSrh+DteElgcj+3Yc7Xroqb0Dg/+ygRSEKHEorjPl99hiOjqxE4m9x1sYo4FuDisHlHM0TF0b0GwxR+hnFg/xG7xmpR1hRgiVee29coHj78cXdTkEwjcLmzoJP7nbPmVT4ddwWZO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(136003)(376002)(186009)(1800799009)(451199024)(26005)(66946007)(2616005)(5660300002)(316002)(91956017)(64756008)(66476007)(54906003)(66446008)(76116006)(66556008)(6512007)(110136005)(6506007)(6486002)(122000001)(82960400001)(38070700005)(8936002)(4326008)(8676002)(83380400001)(71200400001)(41300700001)(478600001)(2906002)(86362001)(38100700002)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QU85enAzbGFtNzBKQy8yeDM3WHRnMDBaZjZJMkRJaDNQM0dRL3BBVWQ0bHgy?=
+ =?utf-8?B?bWprT3pCV2wwZ29Od3BHbjdLczR3Rkc2YXhoMndPMUFEYVV3YVFCVytRcEVH?=
+ =?utf-8?B?dlpnOU1UMHVnZVpOTTdZS2s1R2ZGd1VGemZTUmNCYUhoSmR5UXVpejF5QmNZ?=
+ =?utf-8?B?aVM0citnNE1jK01Gam5OMzdHcmI1SjlyWm9KRkVPR1kzSEFPREd3bkFJRnVk?=
+ =?utf-8?B?UVd3SVZGVDk2YkszSmZYQThXaFRCU1l2T3RYdlpUZElSOENVdjZTUGJuajF4?=
+ =?utf-8?B?bUVaeUlEQlVjanczMFR0TDNQdDlFTXFvRGFOOEFMT3hzZnBUdXp6UDdHTE5X?=
+ =?utf-8?B?UlRLdVVRR2xzcGlkVkY2ZHlFRVhEMkZtcklwanBsZ200S1k0TXpNRmlkVlVx?=
+ =?utf-8?B?VmNiNFcyRVk2bHNlR3dLRlgxbnJBNkFjVWV3bnh5eXhHUEhBdTFoUjRnempy?=
+ =?utf-8?B?eUN5aTN6bS9tdk1INWZoNlhCT2U2WThnVzhxUHkxNFVMTDdRRllZdTFkaGxl?=
+ =?utf-8?B?VzN5SXpUWlp0VU1mK09sb2FOSzNaQkVlc1M5clppNjJuSnl0Rk1uelg0MU5N?=
+ =?utf-8?B?MFN0VmdxUjBGT3BCS3JCYlVuSTF2KzJjOU9wdXMwMWkzSUlwOEtZQ0t1Q2hq?=
+ =?utf-8?B?YW5TRTQ2N2VJdW5vc1ZIM3N2ZE92MHJEUitPa2k1V0tKaW1XeGh0VDdyT2ly?=
+ =?utf-8?B?dzNJK3MrUzJPZFZKNHYvN1lLcURGcXVSK0FPUG5pam9HV2JMeTZxUWNFeWNY?=
+ =?utf-8?B?ZHR1amthOVlaTWNkY0o3NjRETStuaE43M0IwRjB1TWMvRE5VVlRpY0lFdC9o?=
+ =?utf-8?B?T1RLT0VwMlY5WVVBSGtBWVBWT0hVL01PL0ZBbmhFSFdjMzZMajU1c2pBMnI0?=
+ =?utf-8?B?ZE92cGJjTmZQQUw3cExrSXBFaS93QlVKa2ZwbC9uY0FRZiszc1R2YXZrSXRG?=
+ =?utf-8?B?V0g3d3RPS3NXbzhnNkUxOE5KSTI2VFJSajViN2pQL1ovUmx0b3dIakp3ZTUx?=
+ =?utf-8?B?NWIrV3FrcnZ5bkZ0MlBZZHBaTlJ0cDQxNWFGc085L1h0MldnRncvNEhFbllX?=
+ =?utf-8?B?aWxZOW43Q0duYUpIUVFoSFk1MFp4TFBzdUVkSEpUWk1kZHRvd0VVZGZkQVNr?=
+ =?utf-8?B?Mm9KenIvL09wSFZDdDRDMDJJOXY3NWZLTDJIY2lIL2RGNE8xcWhuWjFRSm45?=
+ =?utf-8?B?U2REWVI1Zmw4cW56c0ZabGNBNXBFNDhJSElvcUt1Y2xnMURiNm13UXFhLys1?=
+ =?utf-8?B?SDF1bUkwUGh2SE9qNmQ2aTUwczh0dGN5TkVMWUNnSTE3TEE4aHgrUTh4TCtR?=
+ =?utf-8?B?WThPekh1cjF4VzBQNGNwblZuWGhhdS81WnQ2Mm1SYjJZN1BCdlozWUMrVjVM?=
+ =?utf-8?B?bjB6ZUI3N1dZeXBLeHZwbUorWWZ2VjZwK2hNbnh3dys5RW9neGRpTFBNNGEv?=
+ =?utf-8?B?Sk5oN2czQXk3cmNXaUJTaXZNajgyblpndHQ5a3ppOFU0NjVIUG1USFo4VlFE?=
+ =?utf-8?B?YktXMUtxZCtIWklXQmFwbXMrdUJFMXNIS2x1amMvajhyMWNiWWtXWlFKNkhB?=
+ =?utf-8?B?dEE4NFdhd3hSZ1RqYjdkTThjdkVZTXpXMkcwWUlvSlR6TjNCTTl3YzZmZ2pN?=
+ =?utf-8?B?bFZRRFoxL3lDV2dKYzJ1cXNTM1doV0VDMDU3MlVINFo5YS9LaGNIK0lXOGVj?=
+ =?utf-8?B?aFFEc090M0NVcldFOW1BRll4U2tEd3IvVFBMb2pkS0Q2MjRDOUxnck1ZTFJY?=
+ =?utf-8?B?aERaYTZVVWVmSkJ4RUkyWURqUHBJLzBlR3E1eEgwbzhrZDZmeHFNdFBFM3Ra?=
+ =?utf-8?B?VzFYK3c5UDJkYzRPS1JNZ2ZQcnRoYnNyTDRJVStwRzVSbXBIOG54L2VBY1NU?=
+ =?utf-8?B?bFl0VVJMUnNpblVnQ01INTZSNUl4dk5nSjJ3bjVHOUhjNVl4d0E1cGowaU04?=
+ =?utf-8?B?bVdWRWU1MlJ3a1orNUpFZjBzNmlkTnFoL0FQMVlZSkVuU1N2cGNLTW5maVhr?=
+ =?utf-8?B?Z1VwcEV0ekxCcDBNNUg2S3ZOS1NJWHBFbEJQR1RQbGJuNjN6TXhwWVhBZjN0?=
+ =?utf-8?B?Z2szeHIybzRsbUFyVktqQUtLb2lDQXJxcE5uNHI5UUtKK3ptYkVjbTl3b2hv?=
+ =?utf-8?B?bEZDUU5OV1IyTU13RUxSaWQyd1RJVEJXc1JEWXFwUnl0N2FSZHhiTU5GSDhm?=
+ =?utf-8?B?OGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2DA79FC26FBE9948AE282C037FD03A63@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 623aaffa-11ae-41f9-ddb3-08dbb573823b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 22:39:51.3387
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6tD4zAbkHTKxZoEHqNf5EzXGiqyBWhQapP/bi1kMMxRr6f7nxa7jJtdQi8Nwg/WiUmZuAfdpChu7Xmv/GZ5BPVTNHecX/y6yyqaAB5VFFZ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5183
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the ADT7490's Imon voltage readout. It is handled
-largely the same way as the existing Vtt readout.
-
-Signed-off-by: Timothy Pearson <tpearson@raptorengineering.com>
-Co-developed-by: Shawn Anastasio <sanastasio@raptorengineering.com>
-Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
----
- Documentation/hwmon/adt7475.rst |  3 +-
- drivers/hwmon/adt7475.c         | 68 ++++++++++++++++++++++++++++++---
- 2 files changed, 64 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/hwmon/adt7475.rst b/Documentation/hwmon/adt7475.rst
-index ef3ea1ea9bc1..f90f769d82d6 100644
---- a/Documentation/hwmon/adt7475.rst
-+++ b/Documentation/hwmon/adt7475.rst
-@@ -90,7 +90,7 @@ ADT7476:
- 
- ADT7490:
-   * 6 voltage inputs
--  * 1 Imon input (not implemented)
-+  * 1 Imon input
-   * PECI support (not implemented)
-   * 2 GPIO pins (not implemented)
-   * system acoustics optimizations (not implemented)
-@@ -107,6 +107,7 @@ in2  VCC    (4)  VCC    (4)  VCC  (4)  VCC  (3)
- in3  5VIN   (20) 5VIN   (20)
- in4  12VIN  (21) 12VIN  (21)
- in5  VTT    (8)
-+in6  Imon   (19)
- ==== =========== =========== ========= ==========
- 
- Special Features
-diff --git a/drivers/hwmon/adt7475.c b/drivers/hwmon/adt7475.c
-index 03acadc3a6cb..4224ffb30483 100644
---- a/drivers/hwmon/adt7475.c
-+++ b/drivers/hwmon/adt7475.c
-@@ -43,6 +43,7 @@
- /* 7475 Common Registers */
- 
- #define REG_DEVREV2		0x12	/* ADT7490 only */
-+#define REG_IMON		0x1D	/* ADT7490 only */
- 
- #define REG_VTT			0x1E	/* ADT7490 only */
- #define REG_EXTEND3		0x1F	/* ADT7490 only */
-@@ -103,6 +104,9 @@
- #define REG_VTT_MIN		0x84	/* ADT7490 only */
- #define REG_VTT_MAX		0x86	/* ADT7490 only */
- 
-+#define REG_IMON_MIN		0x85	/* ADT7490 only */
-+#define REG_IMON_MAX		0x87	/* ADT7490 only */
-+
- #define VID_VIDSEL		0x80	/* ADT7476 only */
- 
- #define CONFIG2_ATTN		0x20
-@@ -123,7 +127,7 @@
- 
- /* ADT7475 Settings */
- 
--#define ADT7475_VOLTAGE_COUNT	5	/* Not counting Vtt */
-+#define ADT7475_VOLTAGE_COUNT	5	/* Not counting Vtt or Imon */
- #define ADT7475_TEMP_COUNT	3
- #define ADT7475_TACH_COUNT	4
- #define ADT7475_PWM_COUNT	3
-@@ -204,7 +208,7 @@ struct adt7475_data {
- 	u8 has_fan4:1;
- 	u8 has_vid:1;
- 	u32 alarms;
--	u16 voltage[3][6];
-+	u16 voltage[3][7];
- 	u16 temp[7][3];
- 	u16 tach[2][4];
- 	u8 pwm[4][3];
-@@ -215,7 +219,7 @@ struct adt7475_data {
- 
- 	u8 vid;
- 	u8 vrm;
--	const struct attribute_group *groups[9];
-+	const struct attribute_group *groups[10];
- };
- 
- static struct i2c_driver adt7475_driver;
-@@ -273,13 +277,14 @@ static inline u16 rpm2tach(unsigned long rpm)
- }
- 
- /* Scaling factors for voltage inputs, taken from the ADT7490 datasheet */
--static const int adt7473_in_scaling[ADT7475_VOLTAGE_COUNT + 1][2] = {
-+static const int adt7473_in_scaling[ADT7475_VOLTAGE_COUNT + 2][2] = {
- 	{ 45, 94 },	/* +2.5V */
- 	{ 175, 525 },	/* Vccp */
- 	{ 68, 71 },	/* Vcc */
- 	{ 93, 47 },	/* +5V */
- 	{ 120, 20 },	/* +12V */
- 	{ 45, 45 },	/* Vtt */
-+	{ 45, 45 },	/* Imon */
- };
- 
- static inline int reg2volt(int channel, u16 reg, u8 bypass_attn)
-@@ -369,11 +374,16 @@ static ssize_t voltage_store(struct device *dev,
- 			reg = VOLTAGE_MIN_REG(sattr->index);
- 		else
- 			reg = VOLTAGE_MAX_REG(sattr->index);
--	} else {
-+	} else if (sattr->index == 5) {
- 		if (sattr->nr == MIN)
- 			reg = REG_VTT_MIN;
- 		else
- 			reg = REG_VTT_MAX;
-+	} else {
-+		if (sattr->nr == MIN)
-+			reg = REG_IMON_MIN;
-+		else
-+			reg = REG_IMON_MAX;
- 	}
- 
- 	i2c_smbus_write_byte_data(client, reg,
-@@ -1104,6 +1114,10 @@ static SENSOR_DEVICE_ATTR_2_RO(in5_input, voltage, INPUT, 5);
- static SENSOR_DEVICE_ATTR_2_RW(in5_max, voltage, MAX, 5);
- static SENSOR_DEVICE_ATTR_2_RW(in5_min, voltage, MIN, 5);
- static SENSOR_DEVICE_ATTR_2_RO(in5_alarm, voltage, ALARM, 31);
-+static SENSOR_DEVICE_ATTR_2_RO(in6_input, voltage, INPUT, 6);
-+static SENSOR_DEVICE_ATTR_2_RW(in6_max, voltage, MAX, 6);
-+static SENSOR_DEVICE_ATTR_2_RW(in6_min, voltage, MIN, 6);
-+static SENSOR_DEVICE_ATTR_2_RO(in6_alarm, voltage, ALARM, 30);
- static SENSOR_DEVICE_ATTR_2_RO(temp1_input, temp, INPUT, 0);
- static SENSOR_DEVICE_ATTR_2_RO(temp1_alarm, temp, ALARM, 0);
- static SENSOR_DEVICE_ATTR_2_RO(temp1_fault, temp, FAULT, 0);
-@@ -1294,6 +1308,14 @@ static struct attribute *in5_attrs[] = {
- 	NULL
- };
- 
-+static struct attribute *in6_attrs[] = {
-+	&sensor_dev_attr_in6_input.dev_attr.attr,
-+	&sensor_dev_attr_in6_max.dev_attr.attr,
-+	&sensor_dev_attr_in6_min.dev_attr.attr,
-+	&sensor_dev_attr_in6_alarm.dev_attr.attr,
-+	NULL
-+};
-+
- static struct attribute *vid_attrs[] = {
- 	&dev_attr_cpu0_vid.attr,
- 	&dev_attr_vrm.attr,
-@@ -1307,6 +1329,7 @@ static const struct attribute_group in0_attr_group = { .attrs = in0_attrs };
- static const struct attribute_group in3_attr_group = { .attrs = in3_attrs };
- static const struct attribute_group in4_attr_group = { .attrs = in4_attrs };
- static const struct attribute_group in5_attr_group = { .attrs = in5_attrs };
-+static const struct attribute_group in6_attr_group = { .attrs = in6_attrs };
- static const struct attribute_group vid_attr_group = { .attrs = vid_attrs };
- 
- static int adt7475_detect(struct i2c_client *client,
-@@ -1389,6 +1412,18 @@ static int adt7475_update_limits(struct i2c_client *client)
- 		data->voltage[MAX][5] = ret << 2;
- 	}
- 
-+	if (data->has_voltage & (1 << 6)) {
-+		ret = adt7475_read(REG_IMON_MIN);
-+		if (ret < 0)
-+			return ret;
-+		data->voltage[MIN][6] = ret << 2;
-+
-+		ret = adt7475_read(REG_IMON_MAX);
-+		if (ret < 0)
-+			return ret;
-+		data->voltage[MAX][6] = ret << 2;
-+	}
-+
- 	for (i = 0; i < ADT7475_TEMP_COUNT; i++) {
- 		/* Adjust values so they match the input precision */
- 		ret = adt7475_read(TEMP_MIN_REG(i));
-@@ -1663,7 +1698,7 @@ static int adt7475_probe(struct i2c_client *client)
- 		revision = adt7475_read(REG_DEVID2) & 0x07;
- 		break;
- 	case adt7490:
--		data->has_voltage = 0x3e;	/* in1 to in5 */
-+		data->has_voltage = 0x7e;	/* in1 to in6 */
- 		revision = adt7475_read(REG_DEVID2) & 0x03;
- 		if (revision == 0x03)
- 			revision += adt7475_read(REG_DEVREV2);
-@@ -1775,6 +1810,9 @@ static int adt7475_probe(struct i2c_client *client)
- 	if (data->has_voltage & (1 << 5)) {
- 		data->groups[group_num++] = &in5_attr_group;
- 	}
-+	if (data->has_voltage & (1 << 6)) {
-+		data->groups[group_num++] = &in6_attr_group;
-+	}
- 	if (data->has_vid) {
- 		data->vrm = vid_which_vrm();
- 		data->groups[group_num] = &vid_attr_group;
-@@ -1960,6 +1998,24 @@ static int adt7475_update_measure(struct device *dev)
- 			((ext >> 4) & 3);
- 	}
- 
-+	if (data->has_voltage & (1 << 6)) {
-+		ret = adt7475_read(REG_STATUS4);
-+		if (ret < 0)
-+			return ret;
-+		data->alarms |= ret << 24;
-+
-+		ret = adt7475_read(REG_EXTEND3);
-+		if (ret < 0)
-+			return ret;
-+		ext = ret;
-+
-+		ret = adt7475_read(REG_IMON);
-+		if (ret < 0)
-+			return ret;
-+		data->voltage[INPUT][6] = ret << 2 |
-+			((ext >> 6) & 3);
-+	}
-+
- 	for (i = 0; i < ADT7475_TACH_COUNT; i++) {
- 		if (i == 3 && !data->has_fan4)
- 			continue;
--- 
-2.30.2
-
+T24gVGh1LCAyMDIzLTA5LTE0IGF0IDAyOjMzIC0wNDAwLCBZYW5nIFdlaWppYW5nIHdyb3RlOg0K
+PiBSZW1vdmUgWEZFQVRVUkVfQ0VUX1VTRVIgZW50cnkgZnJvbSBkZXBlbmRlbmN5IGFycmF5IGFz
+IHRoZSBlbnRyeQ0KPiBkb2Vzbid0DQo+IHJlZmxlY3QgdHJ1ZSBkZXBlbmRlbmN5IGJldHdlZW4g
+Q0VUIGZlYXR1cmVzIGFuZCB0aGUgeHN0YXRlIGJpdCwNCj4gaW5zdGVhZA0KPiBtYW51YWxseSBj
+aGVjayBhbmQgYWRkIHRoZSBiaXQgYmFjayBpZiBlaXRoZXIgU0hTVEsgb3IgSUJUIGlzDQo+IHN1
+cHBvcnRlZC4NCj4gDQo+IEJvdGggdXNlciBtb2RlIHNoYWRvdyBzdGFjayBhbmQgaW5kaXJlY3Qg
+YnJhbmNoIHRyYWNraW5nIGZlYXR1cmVzDQo+IGRlcGVuZA0KPiBvbiBYRkVBVFVSRV9DRVRfVVNF
+UiBiaXQgaW4gWFNTIHRvIGF1dG9tYXRpY2FsbHkgc2F2ZS9yZXN0b3JlIHVzZXINCj4gbW9kZQ0K
+PiB4c3RhdGUgcmVnaXN0ZXJzLCBpLmUuLCBJQTMyX1VfQ0VUIGFuZCBJQTMyX1BMM19TU1Agd2hl
+bmV2ZXINCj4gbmVjZXNzYXJ5Lg0KPiANCj4gQWx0aG91Z2ggaW4gcmVhbCB3b3JsZCBhIHBsYXRm
+b3JtIHdpdGggSUJUIGJ1dCBubyBTSFNUSyBpcyByYXJlLCBidXQNCj4gaW4NCj4gdmlydHVhbGl6
+YXRpb24gd29ybGQgaXQncyBjb21tb24sIGd1ZXN0IFNIU1RLIGFuZCBJQlQgY2FuIGJlDQo+IGNv
+bnRyb2xsZWQNCj4gaW5kZXBlbmRlbnRseSB2aWEgdXNlcnNwYWNlIGFwcC4NCg0KTml0LCBub3Qg
+c3VyZSB3ZSBjYW4gYXNzZXJ0IGl0J3MgY29tbW9uIHlldC4gSXQncyB0cnVlIGluIGdlbmVyYWwg
+dGhhdA0KZ3Vlc3RzIGNhbiBoYXZlIENQVUlEIGNvbWJpbmF0aW9ucyB0aGF0IGRvbid0IGFwcGVh
+ciBpbiByZWFsIHdvcmxkIG9mDQpjb3Vyc2UuIElzIHRoYXQgd2hhdCB5b3UgbWVhbnQ/DQoNCkFs
+c28sIHRoaXMgZG9lc24ndCBkaXNjdXNzIHRoZSByZWFsIG1haW4gcmVhc29uIGZvciB0aGlzIHBh
+dGNoLCBhbmQNCnRoYXQgaXMgdGhhdCBLVk0gd2lsbCBzb29uIHVzZSB0aGUgeGZlYXR1cmUgZm9y
+IHVzZXIgaWJ0LCBhbmQgc28gdGhlcmUNCndpbGwgbm93IGJlIGEgcmVhc29uIHRvIGhhdmUgWEZF
+QVRVUkVfQ0VUX1VTRVIgZGVwZW5kIG9uIElCVC4NCg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWWFu
+ZyBXZWlqaWFuZyA8d2VpamlhbmcueWFuZ0BpbnRlbC5jb20+DQoNCk90aGVyd2lzZToNCg0KUmV2
+aWV3ZWQtYnk6IFJpY2sgRWRnZWNvbWJlIDxyaWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4NClRl
+c3RlZC1ieTogUmljayBFZGdlY29tYmUgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPg0K
