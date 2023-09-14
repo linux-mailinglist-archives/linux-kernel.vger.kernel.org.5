@@ -2,168 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E82037A0B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4ED7A0B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238901AbjINRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S238829AbjINRHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjINRHv (ORCPT
+        with ESMTP id S232000AbjINRHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:07:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009E11FE1;
-        Thu, 14 Sep 2023 10:07:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91BAEC433C9;
-        Thu, 14 Sep 2023 17:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694711266;
-        bh=1r0+Zdvf3wZUhOn2z8iQ20YUkXarqeZelKafGh0Vb5A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dgOuqOeceJAGBoDw1c6Co4XoM8soxD7wU2eq/W6C+XZJf8V9pPkWgPUrUlgMqdE3b
-         7xYGmNx7ifAr7G46/C+o5KAoAvIJ4MI02+388TPgweqM9yyb2nb7yh5f5l2NV928nf
-         HzKsuBT45z22NndhQwRtqYlkQRwcL59p4AL6dcWrniocC5KhzYaAYr5W+KWH5R4SjY
-         /XWnkWCC05FLEdCJ0xRIQIj/qbAcnkutGUaP4kvMC4UGWSzao6GMj9aQAUiHnnBESq
-         vVnlhnJJave+UwMBOmYSqUrX9799zP1LRPBuB+sZtdYGRRK0lnWt4FYN4xQA72hY7A
-         LNgnq+suizjiQ==
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1c4c5375329so654198fac.2;
-        Thu, 14 Sep 2023 10:07:46 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzkINIjBLZakX2ZPYndHH1n3qGrsnqeB5lQxKBZEUn3fQ1z6wd/
-        BWdZKwzTf2JIFR7KCi2Mp6TEW3dpnTKzTGXVnFQ=
-X-Google-Smtp-Source: AGHT+IET219ycfzqvgCfxsTzJ4o9BjENQN4pkEP9AJb/FkgP6cvm9VXtjdpkuI/I118jM3aYOVxfCXNlOBWd9cwQOT4=
-X-Received: by 2002:a05:6871:60e:b0:1d5:a905:5681 with SMTP id
- w14-20020a056871060e00b001d5a9055681mr6469325oan.26.1694711265804; Thu, 14
- Sep 2023 10:07:45 -0700 (PDT)
+        Thu, 14 Sep 2023 13:07:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B191FE1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694711253; x=1726247253;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/eQr3ybfflzRpAXDDtun+U9e54s/8RMewMOTgkhAo/s=;
+  b=UtSBiv2bmIg9fjI/9x+9/d/P+3b5Hsxlegq4vtLROeluNt9UcDlQkjq0
+   fUpzW5RYcPtI35m2YOVRVKEzHBFndmmPUuo7CD0YV2LTEM6q3uavNUMDZ
+   7osvMlVJLVZDPncrdeJ3hPb2G5WEwkU2mCwVInOp3W+9qJXex2ZnaI6To
+   3UEAcvnJ+7AYaVoAEahphuSHCCgqQDhzfw0Vfc5WFvZK4DY9dIjdvzh/L
+   d69EBoicsCyyX3OyY6x8o8cT1owNbHiPyaIzIRuBRd1aIHj/mBSsKQap/
+   5TQ3eoid7vGO0TYKiBGpXfkVJmpx38sqFOH175v8Xd2onjSK4VwM0yNsj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="382832868"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="382832868"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 10:07:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="1075471230"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="1075471230"
+Received: from njayagop-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.48.41])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 10:07:29 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 5E48B109D89; Thu, 14 Sep 2023 20:07:26 +0300 (+03)
+Date:   Thu, 14 Sep 2023 20:07:26 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Ard Biesheuvel <ardb@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.de
+Subject: Re: [PATCH] x86/boot/compressed: Reserve more memory for page tables
+Message-ID: <20230914170726.4am7xi36m4hdgiyk@box>
+References: <20230914123001.27659-1-kirill.shutemov@linux.intel.com>
+ <45cdb5ae-986e-d186-f0fd-a308f946ce8d@intel.com>
 MIME-Version: 1.0
-References: <20230913113801.1901152-1-arnd@kernel.org> <ZQISGujwlH00B8KJ@fjasle.eu>
- <b234530c-88fe-4a2a-993c-f1733fe4d0c1@app.fastmail.com> <ZQIcuVgaDmA+VdV0@fjasle.eu>
-In-Reply-To: <ZQIcuVgaDmA+VdV0@fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 15 Sep 2023 02:07:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT9kO0RnNai5CuNgP3wgG+XQ2RqcSb2uAqP85P0PMN2tg@mail.gmail.com>
-Message-ID: <CAK7LNAT9kO0RnNai5CuNgP3wgG+XQ2RqcSb2uAqP85P0PMN2tg@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kbuild: explain handling optional dependencies
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45cdb5ae-986e-d186-f0fd-a308f946ce8d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 5:34=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
-wrote:
->
-> On Wed, Sep 13, 2023 at 09:55:36PM +0200 Arnd Bergmann wrote:
-> > On Wed, Sep 13, 2023, at 21:48, Nicolas Schier wrote:
-> > > On Wed, Sep 13, 2023 at 01:37:52PM +0200 Arnd Bergmann wrote:
-> > >
-> > >>  Documentation/kbuild/kconfig-language.rst | 26 ++++++++++++++++++++=
-+++
-> > >>  1 file changed, 26 insertions(+)
-> > >>
-> > >> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentati=
-on/kbuild/kconfig-language.rst
-> > >> index 858ed5d80defe..89dea587a469a 100644
-> > >> --- a/Documentation/kbuild/kconfig-language.rst
-> > >> +++ b/Documentation/kbuild/kconfig-language.rst
-> > >> @@ -573,6 +573,32 @@ above, leading to:
-> > >>    bool "Support for foo hardware"
-> > >>    depends on ARCH_FOO_VENDOR || COMPILE_TEST
-> > >>
-> > >> +Optional dependencies
-> > >> +~~~~~~~~~~~~~~~~~~~~~
-> > >> +
-> > >> +Some drivers are able to optionally use a feature from another modu=
-le
-> > >> +or build cleanly with that module disabled, but cause a link failur=
-e
-> > >> +when trying to use that loadable module from a built-in driver.
-> > >> +
-> > >> +The most common way to express this optional dependency in Kconfig =
-logic
-> > >> +uses the slighly counterintuitive
-> > >
-> > > slighly -> slightly
-> >
-> > Fixed, thanks
-> >
-> > > For better RST compliance: could you explicitly start the code block =
-e.g. by
-> > > appending '::' as in "... counterintuitive::"?
-> >
-> > Ok, done.
-> >
-> > >> +
-> > >> +  config FOO
-> > >> +  bool "Support for foo hardware"
-> > >> +  depends on BAR || !BAR
-> > >
-> > > are you sure that this is enough?  While testing, I needed to explici=
-tly use
-> > > =3Dy|=3Dn:
-> > >
-> > >     depends on BAR=3Dy || BAR=3Dn
-> > >
-> > > to prevent FOO to be selectable iff BAR=3Dm.
-> >
-> > I see my problem, I made a different mistake here. Your version
-> > is correct for a 'bool' symbol as I had here, but the intention
-> > of this was to make it work for tristate symbols, which are the
-> > interesting case. I've fixed it up this way now, hope it now makes
-> > sense to you:
-> >
-> > --- a/Documentation/kbuild/kconfig-language.rst
-> > +++ b/Documentation/kbuild/kconfig-language.rst
-> > @@ -581,19 +581,19 @@ or build cleanly with that module disabled, but c=
-ause a link failure
-> >  when trying to use that loadable module from a built-in driver.
-> >
-> >  The most common way to express this optional dependency in Kconfig log=
-ic
-> > -uses the slighly counterintuitive
-> > +uses the slightly counterintuitive::
-> >
-> >    config FOO
-> > -       bool "Support for foo hardware"
-> > +       tristate "Support for foo hardware"
-> >         depends on BAR || !BAR
->
-> ah, thanks, tristate kconfig symbols are really more interesting.
+On Thu, Sep 14, 2023 at 08:51:50AM -0700, Dave Hansen wrote:
+> On 9/14/23 05:30, Kirill A. Shutemov wrote:
+> > +/*
+> > + * Total number of page table kernel_add_identity_map() can allocate,
+> > + * including page tables consumed by startup_32().
+> > + */
+> > +# define BOOT_PGT_SIZE		(32*4096)
+> 
+> I agree that needing to know this in advance *exactly* is troublesome.
+> 
+> But I do think that we should preserve the comment about the worst-case
+> scenario.
+
+Want me to send v2 for that?
+
+> Also, I thought this was triggered by unaccepted memory.  Am
+> I remembering it wrong?  How was it in play?
+
+Unaccepted memory touched EFI system table. I was able to reproduce
+without unaccepted memory enabled: if get_rsdp_addr() takes
+efi_get_rsdp_addr() path. So it is not the root cause, just a trigger.
+
+So we need several things to run into the problem:
+
+- System supports 5-level paging and it is enabled;
+
+- Decompressor takes control in 64-bit mode, so it uses page tables
+  inherited from bootloader until initialize_identity_maps().
+
+  In initialize_identity_maps() kernel resets page tables, rebuilding them
+  from scratch. Here we only map what is definitely required: kernel,
+  cmdline, boot_patams, setup_data.
+
+  Entering in 32-bit mode would make startup_32() map the first 4G
+  unconditionally, but in this setup we rely more on #PF to fill page
+  table. It masks problem as we rarely need all four PMD tables.
+
+- Make kernel touch at least one page per-gigabyte in the first 4G.
+
+  In our case, unaccepted memory path was the last straw: it triggered
+  allocation of the fourth PMD table which failed. 
+
+We can increase the constant by one and it will work as long as nobody
+need anything beyond the first 4G (or any 1G-aligned 4G region where we've
+got loaded, I guess). I am not sure we can guarantee this with
+(potentially buggy) ACPI and EFI in the picture.
+
+> Either way, I think your general approach here is sound.  But let's add
+> one little tweak to at least warn when we're getting close to the limit.
+
+Yeah, makes sense.
 
 
-Both FOO and BAR MUST be tristate
-to make this documentation sensible.
-
-
-If FOO is bool type, "depends on BAR || !BAR"
-becomes a no-op.
-
-As you notice, FOO and BAR become independent of
-each other.
-
-
-You may wonder why.
-
-Here, another unclear rule applies:
-
-'depends on m' for a bool option is promoted to
-'depends on y'.
-
-https://github.com/torvalds/linux/blob/v6.5/scripts/kconfig/symbol.c#L214
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
