@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3BC7A0132
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D212B7A0139
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237964AbjINKFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
+        id S237991AbjINKGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237117AbjINKF2 (ORCPT
+        with ESMTP id S230444AbjINKGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:05:28 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8732D1BE3;
-        Thu, 14 Sep 2023 03:05:24 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AAF1466072FF;
-        Thu, 14 Sep 2023 11:05:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694685923;
-        bh=b9dNXd4DNo/EkCMgek1U0ux67al2IZqZJ/o5s4IfKu4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BYSojtiQaZbENP/vhxCjm5/kWFmmzr8lP1XygN7e1gdIbP6cHG60aOmQAoL5LaaKn
-         GgBqfnPhYBL1mKaSPMH7E9jLPKSJ4u2AHHaTWzb213sPLlHqXcnbny4J41XjpRNS3Q
-         3rlDa8CGgSQH0+SNj9LkC13R7M1Jnz0PAJEL6BdfCxdlDlYo+/rwIAH0fCDOd1jbek
-         vm9JW0WHNkqjos50O1JSj/yvG9/iQ0ggka+CshJSdh1r7OKQO0qz79M6KsVV6lYTPG
-         gwOQTyMdrrsIocBiFq2jBj6rmkHvzyL4v3Wv9K5uLx/qGX9xPFxlyTPONhudu1ajt/
-         c23H3voGAJj6g==
-Message-ID: <01cdd49e-2f11-d5bd-073c-916f7f36f2db@collabora.com>
-Date:   Thu, 14 Sep 2023 12:05:19 +0200
+        Thu, 14 Sep 2023 06:06:25 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F41BE3;
+        Thu, 14 Sep 2023 03:06:20 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.78.252) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 14 Sep
+ 2023 13:06:15 +0300
+Subject: Re: [PATCH] usb: musb: Get the musb_qh poniter after musb_giveback
+To:     Xingxing Luo <xingxing.luo@unisoc.com>, <b-liu@ti.com>,
+        <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
+        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
+        <zhang.lyra@gmail.com>
+References: <20230914015656.20856-1-xingxing.luo@unisoc.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <8365ba2a-8ecd-d055-e962-3a7f2bfdbfb0@omp.ru>
+Date:   Thu, 14 Sep 2023 13:06:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm64: mediatek: add mt8390-evk board
+In-Reply-To: <20230914015656.20856-1-xingxing.luo@unisoc.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230914061833.32288-1-macpaul.lin@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230914061833.32288-1-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.78.252]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 09/14/2023 09:39:25
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 179856 [Sep 14 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.78.252 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.78.252 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.252
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/14/2023 09:47:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 9/14/2023 9:01:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 14/09/23 08:18, Macpaul Lin ha scritto:
-> 1. Add compatible for MT8390.
-> 2. Add bindings for the MediaTek mt8390-evk board, also known
-> as the "Genio 700-EVK".
-> 
-> The MT8390 and MT8188 belong to the same SoC family,
-> with only minor differences in their physical characteristics.
-> They utilize unique efuse values for differentiation.
-> 
-> The booting process and configurations are managed by boot
-> loaders, firmware, and TF-A. Consequently, the part numbers
-> and procurement channels vary.
-> 
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Hello!
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On 9/14/23 4:56 AM, Xingxing Luo wrote:
 
+> When multiple threads are performing USB transmission, musb->lock will be
+> unlocked when musb_giveback is executed. At this time, qh may be released
+> in the dequeue process in other threads, resulting in a wild pointer, so
+> it needs to be here get qh again, and judge whether qh is NULL, and when
+> dequeue, you need to set qh to NULL.
+> 
+> Fixes: dbac5d07d13e ("usb: musb: host: don't start next rx urb if current one failed")
+> Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
+> ---
+>  drivers/usb/musb/musb_host.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
+> index a02c29216955..9df27db5847a 100644
+> --- a/drivers/usb/musb/musb_host.c
+> +++ b/drivers/usb/musb/musb_host.c
+> @@ -321,10 +321,16 @@ static void musb_advance_schedule(struct musb *musb, struct urb *urb,
+>  	musb_giveback(musb, urb, status);
+>  	qh->is_ready = ready;
+>  
+> +	/*
+> +	 * musb->lock had been unlocked in musb_giveback, so somtimes qh
 
+   Sometimes?
+
+> +	 * may freed, need get it again
+> +	 */
+> +	qh = musb_ep_get_qh(hw_ep, is_in);
+> +
+>  	/* reclaim resources (and bandwidth) ASAP; deschedule it, and
+>  	 * invalidate qh as soon as list_empty(&hep->urb_list)
+>  	 */
+> -	if (list_empty(&qh->hep->urb_list)) {
+> +	if (qh != NULL && list_empty(&qh->hep->urb_list)) {
+
+   Just qh, perhaps?
+
+[...]
+
+MBR, Sergey
