@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D69AC7A02F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA847A02F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbjINLpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
+        id S237500AbjINLpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbjINLpQ (ORCPT
+        with ESMTP id S237579AbjINLpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:45:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE799B;
-        Thu, 14 Sep 2023 04:45:12 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bdf4752c3cso6319715ad.2;
-        Thu, 14 Sep 2023 04:45:12 -0700 (PDT)
+        Thu, 14 Sep 2023 07:45:20 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5C81FCE;
+        Thu, 14 Sep 2023 04:45:16 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c1f7f7151fso6763715ad.1;
+        Thu, 14 Sep 2023 04:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694691911; x=1695296711; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694691916; x=1695296716; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pYIitMx9g3MKpxiS3F1EWy6vcHj1Wu+TNRC6xmRdLjk=;
-        b=IZBzX8ZidbxoFreVJap+2hqnscH2X31MkgLhfxAs3zhdTh4Tzl+huHFpaWY6tSPgU8
-         bRWojsV9gQrf0OEhq+xuZAElZ3IeBralyyQRMVCsSnAfHlpkFfOxcnOGRvo55BjYnH0Y
-         KqAPodxKoYFgj4cUOCPnuFA02rZvPOxfLkOhT8TP2WeqvQCFT7U2CgGEziqkgsZHlCNR
-         REq8TAwJc/YoBFqbDxI2K0H2WKFBXMknyM+L79hmpiLlm7YvNP/qYJKUyZmU/lwCnBVO
-         EfK0h5zUmEyD2ZG9PdqS8lSDrGqdwSa0V1SEXCg+S61LMawjFHnSi0Zhfaihd0gg2KRc
-         YL7A==
+        bh=ZphNssh9VfwLKx98RXX0JIFD92NbTglhfoRdVrmqJ6A=;
+        b=rwzcX+eAIXoteKSfYvB1F4Nb/qmGBIv7HH4JMf7REND3eybAPtmQuySmiisjtxq2Xf
+         v3FBVw+Riq5j+3jC0d4wfy2k+tsZx363y27eL8Xm0Y3viEIdGWqlmauTPM66WeWi8uYQ
+         6UY08yBNVjTbn5qK6kngQ1c3ek9UwfbIQA/lvAecB0tEWtU8xkBYDuGyWvrG3QbJCRlL
+         atJrV5sFnqWjQzZ/8a08CJdnSOfwWCuAzYiqMgKs1ANYOf5jGuCwW4ywK+0GP1BgxYhu
+         BUzF/7G8CqoTflxRwwlXUd2/1fZiWxU4Sqht0PNWq0HMRVtVj+Z5/pDkckT6Lb/iQRXa
+         3BiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694691911; x=1695296711;
+        d=1e100.net; s=20230601; t=1694691916; x=1695296716;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pYIitMx9g3MKpxiS3F1EWy6vcHj1Wu+TNRC6xmRdLjk=;
-        b=lj19pUlEg0X7p7CyPkVZsaYXzwtUV4cYP4kN3hfHRf657vRef53z1KRnf83Mol2MM4
-         +iZ81AbQxZ4gNeh/WVTpKR8MeCpyTagM5BkxVon/mE2W2Yb5XxYtALwYcP5t3YuoVBjG
-         /nvdfFL43Q1ghcl0LMH/P0n9Z6DHVUYgd1E/ewjtEqwmU3f5x4tgJDZ4GVyD5ez1CLq9
-         bBaA7PyzGok3zhRC9UIkbj5CG3mqnnEr056FtzkXkvOsvAEk5Nx7TSQiaXXaY4mQQ8/Q
-         fdc4Q/XfS1IXI2Dj10PrPuanwlOnOAwZFn1nCTX+yZlOO9BENWNPFMcTfkGA/Q12dnve
-         qZfg==
-X-Gm-Message-State: AOJu0YzhWrV4CiXPAYva8VNE4bl4UOOJhakpdR4GEsBTPMRnqhQPgine
-        50rTYHn1CZ6obe3nYFd7Uo8oYVrD/lWUmg==
-X-Google-Smtp-Source: AGHT+IEeuLsJdRCBypNKfaXJMua48b0JwNy+CJ8LJDQvgu1jV8UPq4iXOSAghw93jn98+c0wMFnpdw==
-X-Received: by 2002:a17:902:7242:b0:1c1:f27e:a55a with SMTP id c2-20020a170902724200b001c1f27ea55amr5022262pll.46.1694691911280;
-        Thu, 14 Sep 2023 04:45:11 -0700 (PDT)
+        bh=ZphNssh9VfwLKx98RXX0JIFD92NbTglhfoRdVrmqJ6A=;
+        b=OnG4xtq0rsH6rrzRbPYiNAYw28+E02CPo5MyKuCpIqJRjrLSoSXAKAzn20cNF8UVRc
+         KgBfIwOaAMEfpp2LHaklJjrEylC6AY629G3p1J60XXYf97QjjNYfMbTZpdnFHrfdl8+z
+         dOhNJvQNA5Wr1l2+3YFi6xoGqz7GBIRgaUr8DGZajA02O8rJkpk9/HpnCWXFzdRLUliY
+         Ix6VCWkM5k52ukbEb97R+neN/SRzRLWKaEm9kzHgbbEIKHCddWVr52GNPuCjKLACTnfe
+         S6dExPH2WMqH5BdSa6xnTA4B7jtAzbbgtwJbWD/c0lg14O+kAN7u/wVc9j6J8dKr+4EY
+         Qghg==
+X-Gm-Message-State: AOJu0Yws1Z6kEaIyMjW5VOb8rg8uAlaAlqhxkq1qkNVB2FsiClctUN1L
+        Q8D8JycfB77gSVG10YuvIrTcmAnaVkaZjg==
+X-Google-Smtp-Source: AGHT+IHfMw0rZNFe3r5jeYNlPT4fh7hC9MsQALYMPCoYUOs29ISRsGOjyqOtVRh5eLmS9gUnSmS7Fw==
+X-Received: by 2002:a17:903:24f:b0:1c3:5159:af00 with SMTP id j15-20020a170903024f00b001c35159af00mr6189086plh.44.1694691915626;
+        Thu, 14 Sep 2023 04:45:15 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902748c00b001b9cea4e8a2sm1388570pll.293.2023.09.14.04.45.07
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902748c00b001b9cea4e8a2sm1388570pll.293.2023.09.14.04.45.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 04:45:10 -0700 (PDT)
+        Thu, 14 Sep 2023 04:45:15 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -65,11 +65,10 @@ Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Jose Abreu <joabreu@synopsys.com>,
         Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v5 2/3] dt-bindings: net: Add Loongson-1 Ethernet Controller
-Date:   Thu, 14 Sep 2023 19:44:34 +0800
-Message-Id: <20230914114435.481900-3-keguang.zhang@gmail.com>
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH v5 3/3] net: stmmac: Add glue layer for Loongson-1 SoC
+Date:   Thu, 14 Sep 2023 19:44:35 +0800
+Message-Id: <20230914114435.481900-4-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914114435.481900-1-keguang.zhang@gmail.com>
 References: <20230914114435.481900-1-keguang.zhang@gmail.com>
@@ -79,287 +78,302 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding document for Loongson-1 Ethernet controller.
-And modify MAINTAINERS to add a new F: entry for
-Loongson1 dt-binding documents.
+This glue driver is created based on the arch-code
+implemented earlier with the platform-specific settings.
+
+Use syscon for SYSCON register access.
+
+And modify MAINTAINERS to add a new F: entry for this driver.
+
+Partially based on the previous work by Serge Semin.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-V4 -> V5: Add a new F: entry for Loongson1 dt-binding documents
-V3 -> V4: Add "|" to description part
-          Amend "phy-mode" property
-V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
-          and loongson,ls1c-emac.yaml (suggested by Serge Semin)
-          Change the compatibles to loongson,ls1b-gmac and loongson,ls1c-emac
-          Rename loongson,dwmac-syscon to loongson,ls1-syscon
-          Amend the title
-          Add description
-          Add Reviewed-by tag from Krzysztof Kozlowski(Sorry! I'm not sure)
-V1 -> V2: Fix "clock-names" and "interrupt-names" property
+V4 -> V5: Replace stmmac_probe_config_dt() with devm_stmmac_probe_config_dt()
+          Replace stmmac_pltfr_probe() with devm_stmmac_pltfr_probe()
+          Add a new F: entry for this driver.
+V3 -> V4: Drop ls1x_dwmac_syscon definition and its instances
+          Drop three redundant fields from the ls1x_dwmac structure
+          Drop the ls1x_dwmac_init() method.
+          Some minor improvements
+V2 -> V3: Determine the device ID by physical
+          base address(suggested by Serge Semin)
+          Use regmap instead of regmap fields
+          Use syscon_regmap_lookup_by_phandle()
+          Some minor fixes
+V1 -> V2: Fix the build errors due to CONFIG_OF being unset
+          Change struct reg_field definitions to const
           Rename the syscon property to "loongson,dwmac-syscon"
-          Drop "phy-handle" and "phy-mode" requirement
-          Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
-          to snps,dwmac.yaml
+          Add MII PHY mode for LS1C
 
- .../bindings/net/loongson,ls1b-gmac.yaml      | 114 ++++++++++++++++++
- .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++++++++++
  MAINTAINERS                                   |   1 +
- 3 files changed, 228 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+ .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 209 ++++++++++++++++++
+ 4 files changed, 222 insertions(+)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
 
-diff --git a/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-new file mode 100644
-index 000000000000..c4f3224bad38
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/loongson,ls1b-gmac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson-1B Gigabit Ethernet MAC Controller
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+description: |
-+  Loongson-1B Gigabit Ethernet MAC Controller is based on
-+  Synopsys DesignWare MAC (version 3.50a).
-+
-+  Main features
-+  - Dual 10/100/1000Mbps GMAC controllers
-+  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-+  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-+  - RX Checksum Offload
-+  - TX Checksum insertion
-+  - MII interface
-+  - RGMII interface
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - loongson,ls1b-gmac
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - loongson,ls1b-gmac
-+      - const: snps,dwmac-3.50a
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: stmmaceth
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: macirq
-+
-+  loongson,ls1-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the syscon containing some extra configurations
-+      including PHY interface mode.
-+
-+  phy-mode:
-+    enum:
-+      - mii
-+      - rgmii-id
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - loongson,ls1-syscon
-+
-+allOf:
-+  - $ref: snps,dwmac.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    gmac0: ethernet@1fe10000 {
-+        compatible = "loongson,ls1b-gmac", "snps,dwmac-3.50a";
-+        reg = <0x1fe10000 0x10000>;
-+
-+        clocks = <&clkc LS1X_CLKID_AHB>;
-+        clock-names = "stmmaceth";
-+
-+        interrupt-parent = <&intc1>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "macirq";
-+
-+        loongson,ls1-syscon = <&syscon>;
-+
-+        phy-handle = <&phy0>;
-+        phy-mode = "mii";
-+        snps,pbl = <1>;
-+
-+        mdio {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "snps,dwmac-mdio";
-+
-+            phy0: ethernet-phy@0 {
-+                reg = <0x0>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-new file mode 100644
-index 000000000000..99001b940b83
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/loongson,ls1c-emac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson-1C Ethernet MAC Controller
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+description: |
-+  Loongson-1C Ethernet MAC Controller is based on
-+  Synopsys DesignWare MAC (version 3.50a).
-+
-+  Main features
-+  - 10/100Mbps
-+  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-+  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-+  - IEEE 802.1Q VLAN tag detection for reception frames
-+  - MII interface
-+  - RMII interface
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - loongson,ls1c-emac
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - loongson,ls1c-emac
-+      - const: snps,dwmac-3.50a
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: stmmaceth
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: macirq
-+
-+  loongson,ls1-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the syscon containing some extra configurations
-+      including PHY interface mode.
-+
-+  phy-mode:
-+    enum:
-+      - mii
-+      - rmii
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - loongson,ls1-syscon
-+
-+allOf:
-+  - $ref: snps,dwmac.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    emac: ethernet@1fe10000 {
-+        compatible = "loongson,ls1c-emac", "snps,dwmac-3.50a";
-+        reg = <0x1fe10000 0x10000>;
-+
-+        clocks = <&clkc LS1X_CLKID_AHB>;
-+        clock-names = "stmmaceth";
-+
-+        interrupt-parent = <&intc1>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "macirq";
-+
-+        loongson,ls1-syscon = <&syscon>;
-+
-+        phy-handle = <&phy0>;
-+        phy-mode = "mii";
-+        snps,pbl = <1>;
-+
-+        mdio {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "snps,dwmac-mdio";
-+
-+            phy0: ethernet-phy@13 {
-+                reg = <0x13>;
-+            };
-+        };
-+    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index fa7487b7729b..e514b53fb225 100644
+index e514b53fb225..b71aff479a8c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -14379,6 +14379,7 @@ MIPS/LOONGSON1 ARCHITECTURE
- M:	Keguang Zhang <keguang.zhang@gmail.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
+@@ -14383,6 +14383,7 @@ F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
  F:	arch/mips/include/asm/mach-loongson32/
  F:	arch/mips/loongson32/
  F:	drivers/*/*loongson1*
++F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+ 
+ MIPS/LOONGSON2EF ARCHITECTURE
+ M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+index 06c6871f8788..a2b9e289aa36 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
++++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+@@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
+ 	  the stmmac device driver. This driver is used for the Intel Keem Bay
+ 	  SoC.
+ 
++config DWMAC_LOONGSON1
++	tristate "Loongson1 GMAC support"
++	default MACH_LOONGSON32
++	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
++	help
++	  Support for ethernet controller on Loongson1 SoC.
++
++	  This selects Loongson1 SoC glue layer support for the stmmac
++	  device driver. This driver is used for Loongson1-based boards
++	  like Loongson LS1B/LS1C.
++
+ config DWMAC_TEGRA
+ 	tristate "NVIDIA Tegra MGBE support"
+ 	depends on ARCH_TEGRA || COMPILE_TEST
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+index 5b57aee19267..80e598bd4255 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Makefile
++++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+@@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
+ obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
+ obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
+ obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
++obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
+ obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
+ obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
+ obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+new file mode 100644
+index 000000000000..3e86810717d3
+--- /dev/null
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Loongson-1 DWMAC glue layer
++ *
++ * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
++ */
++
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/phy.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++
++#include "stmmac.h"
++#include "stmmac_platform.h"
++
++#define LS1B_GMAC0_BASE		(0x1fe10000)
++#define LS1B_GMAC1_BASE		(0x1fe20000)
++
++/* Loongson-1 SYSCON Registers */
++#define LS1X_SYSCON0		(0x0)
++#define LS1X_SYSCON1		(0x4)
++
++/* Loongson-1B SYSCON Register Bits */
++#define GMAC1_USE_UART1		BIT(4)
++#define GMAC1_USE_UART0		BIT(3)
++
++#define GMAC1_SHUT		BIT(13)
++#define GMAC0_SHUT		BIT(12)
++
++#define GMAC1_USE_TXCLK		BIT(3)
++#define GMAC0_USE_TXCLK		BIT(2)
++#define GMAC1_USE_PWM23		BIT(1)
++#define GMAC0_USE_PWM01		BIT(0)
++
++/* Loongson-1C SYSCON Register Bits */
++#define GMAC_SHUT		BIT(6)
++
++#define PHY_INTF_SELI		GENMASK(30, 28)
++#define PHY_INTF_MII		FIELD_PREP(PHY_INTF_SELI, 0)
++#define PHY_INTF_RMII		FIELD_PREP(PHY_INTF_SELI, 4)
++
++struct ls1x_dwmac {
++	struct plat_stmmacenet_data *plat_dat;
++	struct regmap *regmap;
++};
++
++static int ls1b_dwmac_syscon_init(struct platform_device *pdev, void *priv)
++{
++	struct ls1x_dwmac *dwmac = priv;
++	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
++	struct regmap *regmap = dwmac->regmap;
++	struct resource *res;
++	unsigned long reg_base;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
++		return -EINVAL;
++	}
++	reg_base = (unsigned long)res->start;
++
++	if (reg_base == LS1B_GMAC0_BASE) {
++		switch (plat->phy_interface) {
++		case PHY_INTERFACE_MODE_RGMII_ID:
++			regmap_update_bits(regmap, LS1X_SYSCON0,
++					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
++					   0);
++			break;
++		case PHY_INTERFACE_MODE_MII:
++			regmap_update_bits(regmap, LS1X_SYSCON0,
++					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
++					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
++			break;
++		default:
++			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
++				plat->phy_interface);
++			return -EOPNOTSUPP;
++		}
++
++		regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
++	} else if (reg_base == LS1B_GMAC1_BASE) {
++		regmap_update_bits(regmap, LS1X_SYSCON0,
++				   GMAC1_USE_UART1 | GMAC1_USE_UART0,
++				   GMAC1_USE_UART1 | GMAC1_USE_UART0);
++
++		switch (plat->phy_interface) {
++		case PHY_INTERFACE_MODE_RGMII_ID:
++			regmap_update_bits(regmap, LS1X_SYSCON1,
++					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
++					   0);
++
++			break;
++		case PHY_INTERFACE_MODE_MII:
++			regmap_update_bits(regmap, LS1X_SYSCON1,
++					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
++					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
++			break;
++		default:
++			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
++				plat->phy_interface);
++			return -EOPNOTSUPP;
++		}
++
++		regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
++	} else {
++		dev_err(&pdev->dev, "Invalid Ethernet MAC base address %lx",
++			reg_base);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int ls1c_dwmac_syscon_init(struct platform_device *pdev, void *priv)
++{
++	struct ls1x_dwmac *dwmac = priv;
++	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
++	struct regmap *regmap = dwmac->regmap;
++
++	switch (plat->phy_interface) {
++	case PHY_INTERFACE_MODE_MII:
++		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
++				   PHY_INTF_MII);
++		break;
++	case PHY_INTERFACE_MODE_RMII:
++		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
++				   PHY_INTF_RMII);
++		break;
++	default:
++		dev_err(&pdev->dev, "Unsupported PHY-mode %u\n",
++			plat->phy_interface);
++		return -EOPNOTSUPP;
++	}
++
++	regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
++
++	return 0;
++}
++
++static int ls1x_dwmac_probe(struct platform_device *pdev)
++{
++	struct plat_stmmacenet_data *plat_dat;
++	struct stmmac_resources stmmac_res;
++	struct regmap *regmap;
++	struct ls1x_dwmac *dwmac;
++	int (*init)(struct platform_device *pdev, void *priv);
++	int ret;
++
++	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
++	if (ret)
++		return ret;
++
++	/* Probe syscon */
++	regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
++						 "loongson,ls1-syscon");
++	if (IS_ERR(regmap))
++		return dev_err_probe(&pdev->dev, PTR_ERR(regmap),
++				     "Unable to find syscon\n");
++
++	init = of_device_get_match_data(&pdev->dev);
++	if (!init) {
++		dev_err(&pdev->dev, "No of match data provided\n");
++		return -EINVAL;
++	}
++
++	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
++	if (!dwmac)
++		return -ENOMEM;
++
++	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
++	if (IS_ERR(plat_dat))
++		return dev_err_probe(&pdev->dev, PTR_ERR(plat_dat),
++				     "dt configuration failed\n");
++
++	plat_dat->bsp_priv = dwmac;
++	plat_dat->init = init;
++	dwmac->plat_dat = plat_dat;
++	dwmac->regmap = regmap;
++
++	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
++}
++
++static const struct of_device_id ls1x_dwmac_match[] = {
++	{
++		.compatible = "loongson,ls1b-gmac",
++		.data = &ls1b_dwmac_syscon_init,
++	},
++	{
++		.compatible = "loongson,ls1c-emac",
++		.data = &ls1c_dwmac_syscon_init,
++	},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
++
++static struct platform_driver ls1x_dwmac_driver = {
++	.probe = ls1x_dwmac_probe,
++	.driver = {
++		.name = "loongson1-dwmac",
++		.of_match_table = ls1x_dwmac_match,
++	},
++};
++module_platform_driver(ls1x_dwmac_driver);
++
++MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
++MODULE_DESCRIPTION("Loongson-1 DWMAC glue layer");
++MODULE_LICENSE("GPL");
 -- 
 2.39.2
 
