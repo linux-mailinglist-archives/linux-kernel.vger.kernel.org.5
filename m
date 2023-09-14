@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D061A7A00DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AA07A00DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237477AbjINJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S237636AbjINJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbjINJwr (ORCPT
+        with ESMTP id S237464AbjINJwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:52:47 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86F3E3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:52:42 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso853078a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:52:42 -0700 (PDT)
+        Thu, 14 Sep 2023 05:52:09 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314901FC2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:52:03 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f7638be6eso669123f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1694685161; x=1695289961; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cj/SE6Rvk/e9XkZXnBOI/CaPNirJMgseWJYK31KjjgI=;
-        b=ozWtVfe0XYvN1wI7astJBF7VJbiyXWKIbvNDhq2a4UOeOeBAnQrrDoj4dOGQmY8wUz
-         3R/xHW4S5DuzoJK+U0Dio7OT4DUqmLWaJWM0KqIPtmopCOi9yb32//qTqQDEexEmrh/S
-         9owzCaPFeJPi9XSF5UoXb9r/ErNXkP0Y1WLIITByNtbV1TMe/Se+on+c3BagGdbz0TOQ
-         6NXlKyzsz/SUfQrsBbJ/S5FISIZHmunw43tGLSV+ZKurDNHWqfHthlQEweOD2JWvBFYV
-         fKYK5zGYkIG+e4ZSJsVMiOpwIWRGbYc0hqVqk204q+LkP86evfjQ63E1cTbIdpKWtOiz
-         Qmeg==
+        d=ventanamicro.com; s=google; t=1694685121; x=1695289921; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=87hkIaEeaycrb+JmT+Kn5bO8XmPQAs/7YcVaTE26sUI=;
+        b=KF5cQPlhzQZJn23fWS1ibp4Z4H8CuKL7wivlrBWqGKQBC0Eyfv9HS02MTXJ2iSo9YI
+         opQgPDoEbYiikbQoyEbzxrOnkA24Qf27nJwX/gmA7FP/2Xl709igvbkEFpWLJB2IwAfE
+         ngkMOiybQz/ekgnugz/gVc/KY8QQ66qcRt+J9GCexzgWdSNBm+aUyrtCddcIoi5NMdQp
+         SAnw7yGg3tbUwgexKVaCfSXH/2iMN9MOGMwxKjfZaee2QIiymNl1hIJ5ocaqHolDELGP
+         h0EiKEoe2UsDSod6JS/4lOSNN/JQAsgdXLFWYgtTJb6rLo3xxhmLuLbUD8S3ctwmfea5
+         rImQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694685161; x=1695289961;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cj/SE6Rvk/e9XkZXnBOI/CaPNirJMgseWJYK31KjjgI=;
-        b=oMlmRaS5KH+5y4a7fJLyP1QgvrmBIw+IZ6dM4LooSQ/y3vWw+hX98kbBbsLIMVIEwK
-         cE91AjTKHDOBgT53PvocZhiFCUwbgsfbrQFZAF4VGdSZ+49m6s2j+wIex4Y3VVBuUr/s
-         baItaVyPoNYfRxtmvlgqvIS5mkiSTyrE5If/kxQLCe6PD3C/DXSxv76r5XIJrBqJ3VCm
-         kgHgMWymo43dSdvgMIvUO6oMV5IlAIfIbfocGQK75bmYGvKzRW7jmXmIdfABFGZ9iKpI
-         u8uyVnvP/ZITF0efF1RDP+MmsTHRyt3AK5RuU2FiXUrsWjrdBxg9H3Bcs/JpzG3bOq7f
-         hTow==
-X-Gm-Message-State: AOJu0YywOeEdR/I58p33+oOZwqX/xNBEtNiot6K9+ti7ngdx3F/SVmbM
-        +UrzxJSkKiZk2KJIl8ra3Ai3chq4jxlgDzxI0kA=
-X-Google-Smtp-Source: AGHT+IEC1a+xoynrTyUQgipRBAyqN6fsm479LRqSrkw0S66XqgQeWHLIFCzhhNx7UhDg/cXs/ZrhdQ==
-X-Received: by 2002:a17:906:24b:b0:99c:ae35:8cc with SMTP id 11-20020a170906024b00b0099cae3508ccmr4277277ejl.26.1694685160913;
-        Thu, 14 Sep 2023 02:52:40 -0700 (PDT)
-Received: from fedora.. (dh207-96-100.xnet.hr. [88.207.96.100])
-        by smtp.googlemail.com with ESMTPSA id i21-20020a170906851500b009894b476310sm760072ejx.163.2023.09.14.02.52.39
+        d=1e100.net; s=20230601; t=1694685121; x=1695289921;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=87hkIaEeaycrb+JmT+Kn5bO8XmPQAs/7YcVaTE26sUI=;
+        b=K6aJTkDpLecB4ln107upud/lMVFgMgynJRTifCg5FEL91ExDk9hgzn9aIIeBrVzdZw
+         Sb4l0hA6PU+NTgxJF96iRIgbGy/8yvDhaENom7+yWMsC7WAbTc7h3T+83PVByOLGOUPB
+         kzuzE8chZp9XmXblMjooz3YkkIp4+X6pxqpDjz9UTUY0BjBLiApW5qeaYUsLhtmRhbr0
+         hCQkyYKfn48jGN4JMtCDNLd9P0d7x28Hy13SWUOEcC04dMhhK+N2RAOmRC0o9V7AN/Oj
+         k4PzUYBfiORlR66p1u2sg0bKjT5rtzSV9d4lFZ+Q/54SyxqCYuK6f/ypDW0do7+/cD+b
+         wFBQ==
+X-Gm-Message-State: AOJu0Yxhi8Ui1TKtKOoUGNlBpcyFgijXzOu86U6xAJi84Z4Mfg4G2bdR
+        Rz1pQm0emmb7sVr/pIRVCboGew==
+X-Google-Smtp-Source: AGHT+IE9t7DU458yWwT1itzK5VNW8FsjrH1qSa0IsiYq57mBauEQWRv09OgpY8852LzCHRw39zKnyg==
+X-Received: by 2002:adf:e7cb:0:b0:318:8ad:f9f with SMTP id e11-20020adfe7cb000000b0031808ad0f9fmr4346446wrn.24.1694685121603;
+        Thu, 14 Sep 2023 02:52:01 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id j4-20020a5d6184000000b003176c6e87b1sm1290730wru.81.2023.09.14.02.52.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 02:52:40 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 2/2] MAINTAINERS: uDPU: add remaining Methode boards
-Date:   Thu, 14 Sep 2023 11:51:58 +0200
-Message-ID: <20230914095236.1601639-2-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230914095236.1601639-1-robert.marko@sartura.hr>
-References: <20230914095236.1601639-1-robert.marko@sartura.hr>
+        Thu, 14 Sep 2023 02:52:00 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 11:51:59 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
+Message-ID: <20230914-d2e594e7d84503ad14036e2d@orel>
+References: <cover.1694421911.git.haibo1.xu@intel.com>
+ <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Methode also has eDPU which is based on uDPU, so add eDPU as well
-as the common uDPU DTSI.
+On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
+> Add a KVM selftests to validate the Sstc timer functionality.
+> The test was ported from arm64 arch timer test.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I just tried this test out. Running it over and over again on QEMU I see
+it works sometimes, but it frequently fails with the
+GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once I
+also saw the __GUEST_ASSERT(xcnt >= cmp) assert.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e0c4cf40cbb8..5bec4bcf8386 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13875,7 +13875,8 @@ F:	drivers/staging/media/meson/vdec/
- METHODE UDPU SUPPORT
- M:	Robert Marko <robert.marko@sartura.hr>
- S:	Maintained
--F:	arch/arm64/boot/dts/marvell/armada-3720-uDPU.dts
-+F:	arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
-+F:	arch/arm64/boot/dts/marvell/armada-3720-uDPU.*
- 
- MHI BUS
- M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
--- 
-2.41.0
-
+Thanks,
+drew
