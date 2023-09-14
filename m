@@ -2,173 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26697A04DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869F07A04C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238598AbjINNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        id S238544AbjINNDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238558AbjINNE1 (ORCPT
+        with ESMTP id S231243AbjINNDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:04:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659211FD8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694696663; x=1726232663;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=GDQbhU9Gg8rlal0S/MQt01JWyA68WcGgPdEM+GOQN6Q=;
-  b=RamRvnl8DRmFKR74YyvFgCeJCtxVnNj+AkHf0bEw4gr//Th9zy6NbfIt
-   NFJSPevLUA1WAkcDxH4XGrcuDGaiNlCm2OD2dtj+bJIezSXrd6Ij981PD
-   SrgNyJCt0yliX5v0BjhPlpnBVNZE0fimUk1mobykSS7lQAMNOjWjd13rJ
-   n3q6QYWmhWFprdMvAuCMceQjNyZrKIFFjhoUEwCp4yCY+BTRj4OS7bD5B
-   FIEtIZRPCSPSbu+212cmhJjoFAnpfRDlEUfqs5HECwnRun3C1FdSlmZ7i
-   wTvt0hDLMeadErJ6zY+8CgrZ2naES6C+vZMyDkekO5yk/3jAn6sWfbHTi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465313713"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="465313713"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:03:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="737914838"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="737914838"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 14 Sep 2023 06:03:34 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgm04-0001bd-1q;
-        Thu, 14 Sep 2023 13:03:31 +0000
-Date:   Thu, 14 Sep 2023 21:02:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: kernel/bpf/helpers.c:2307:17: warning: no previous declaration for
- 'bpf_dynptr_adjust'
-Message-ID: <202309142045.CbO5iFUB-lkp@intel.com>
+        Thu, 14 Sep 2023 09:03:21 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E79D1FD4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:03:17 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d7e9d849bdfso962026276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694696597; x=1695301397; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aCsgoVc5MdDS0OEMSd5NVyJPQJml3xjCRjHmB8pQyQU=;
+        b=UmE2vFAwharNvYSJfAL72mxudS2a4wmMf/TkC49VsGZd89aOhrQvypUzbF7VHtx+5a
+         YC0BViG1cIGoWdpq0Wk1WSpeJL+12Xh2uJyvSYm4SC027sk8+3R+pbPXDyFh0sgVh+zq
+         +toHzyaCDhS2DVcf+VzvePK3BfVZmovOBVq2KdwMDfy5PAWy12EcC9/a0poZjYvQyi/L
+         CNS44n8C13mCfK+ICsZayqr9N842nE3AoEGju5c4BBD/ulhQAdP6J0AO99JNrOrCt24I
+         Ayvd+SP0ciP7DovwVIQLwsp++nn1D6dz0sQPsuh3QoBcK5aT0bUCOLTT6cWsXl9M78IH
+         b8MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694696597; x=1695301397;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aCsgoVc5MdDS0OEMSd5NVyJPQJml3xjCRjHmB8pQyQU=;
+        b=Bh53UbQqQgfWdWY7rJa4J+bohjTO3Eh5R48gaS04UVCcJ9iZphQ1j8qPZGrM6qsMb3
+         JoEWAud7WJlAZLXvnGVy9/O8YfcfsH/hplCKU7eT0wkt19lm+t9yhjuIxb4Bopq2Uv7C
+         zcw1+GTczeldYUaY8M8Vpbs1+cfxS/mAad9G/nlW7UDAFOej4UtHAUqcRlx4oezCWQnq
+         UvKSkNEc9a0t8/Aq8xSVg5037N2h3t+pH1HP03w2IuPi2r5Rwho60zU0dUiC1ZGk3yjy
+         k2uo+IwHWZdDUacRe1pe/RhcStlAfos5QEH/wYhBdrTALE4KY/B//2zhrbjI8IdHdSNP
+         PKsg==
+X-Gm-Message-State: AOJu0YwHk97COlYHJiIQhB1aw6gIZkkx/Pg+RqYvMSMM6/INSYiL2ZDT
+        Wf1WxiLXaZGVnm/PMLIYrHX/IEw4FWaVYY7kgAFmsA==
+X-Google-Smtp-Source: AGHT+IHtq67DZntMzVUKa/tcZfvAY9V5Pu2y+pL8a0RH0Ax2Jq7NeiRTvdNMEGDNeImVEaPGukeWC05mKHKjfg4DqmE=
+X-Received: by 2002:a5b:449:0:b0:d54:b34c:1c7b with SMTP id
+ s9-20020a5b0449000000b00d54b34c1c7bmr4766279ybp.59.1694696596656; Thu, 14 Sep
+ 2023 06:03:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20230825135503.282135-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230825135503.282135-1-krzysztof.kozlowski@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 14 Sep 2023 15:02:40 +0200
+Message-ID: <CAPDyKFpZnoVnZt-WN_5YdqesoT_Xcbs56tJunwS5oNZSJySxgg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: mmc: sdhci-msm: correct minimum number
+ of clocks
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   aed8aee11130a954356200afa3f1b8753e8a9482
-commit: 987d0242d189661f78b77cc4d77f843b15600fed bpf: Add bpf_dynptr_adjust
-date:   5 months ago
-config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230914/202309142045.CbO5iFUB-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309142045.CbO5iFUB-lkp@intel.com/reproduce)
+On Fri, 25 Aug 2023 at 15:55, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> In the TXT binding before conversion, the "xo" clock was listed as
+> optional.  Conversion kept it optional in "clock-names", but not in
+> "clocks".  This fixes dbts_check warnings like:
+>
+>   qcom-sdx65-mtp.dtb: mmc@8804000: clocks: [[13, 59], [13, 58]] is too short
+>
+> Cc: <stable@vger.kernel.org>
+> Fixes: a45537723f4b ("dt-bindings: mmc: sdhci-msm: Convert bindings to yaml")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309142045.CbO5iFUB-lkp@intel.com/
+Applied for fixes, thanks!
 
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/helpers.c:1889:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1919:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1927:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1962:17: warning: no previous declaration for 'bpf_list_push_front_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1972:17: warning: no previous declaration for 'bpf_list_push_back_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1998:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2003:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2008:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2054:17: warning: no previous declaration for 'bpf_rbtree_add_impl' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                    ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2063:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2076:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2087:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2099:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2111:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2123:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2143:28: warning: no previous declaration for 'bpf_cgroup_from_id' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2160:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2199:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2276:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:2307:17: warning: no previous declaration for 'bpf_dynptr_adjust' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2325:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2330:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2335:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2340:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
+Kind regards
+Uffe
 
 
-vim +/bpf_dynptr_adjust +2307 kernel/bpf/helpers.c
-
-  2306	
-> 2307	__bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-  2308	{
-  2309		u32 size;
-  2310	
-  2311		if (!ptr->data || start > end)
-  2312			return -EINVAL;
-  2313	
-  2314		size = bpf_dynptr_get_size(ptr);
-  2315	
-  2316		if (start > size || end > size)
-  2317			return -ERANGE;
-  2318	
-  2319		ptr->offset += start;
-  2320		bpf_dynptr_set_size(ptr, end - start);
-  2321	
-  2322		return 0;
-  2323	}
-  2324	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  Documentation/devicetree/bindings/mmc/sdhci-msm.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> index 80141eb7fc6b..10f34aa8ba8a 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
+> @@ -69,7 +69,7 @@ properties:
+>      maxItems: 4
+>
+>    clocks:
+> -    minItems: 3
+> +    minItems: 2
+>      items:
+>        - description: Main peripheral bus clock, PCLK/HCLK - AHB Bus clock
+>        - description: SDC MMC clock, MCLK
+> --
+> 2.34.1
+>
