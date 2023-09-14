@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663767A07DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA427A07E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240814AbjINOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        id S240329AbjINOu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240663AbjINOtc (ORCPT
+        with ESMTP id S240387AbjINOuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:49:32 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50941FFF;
-        Thu, 14 Sep 2023 07:49:12 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EE8ZlM027382;
-        Thu, 14 Sep 2023 14:48:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=aL++Hd0s2d7IrNOsxWTei1ji/pjM+JhOfFszoIJYSMA=;
- b=Nh3IfxgSoU46L4p9ldF3wIAOzk7Fofe5fxlElC3vnWaZcPRM+z9J5kyt+Toc//f3b6kT
- A9p2ax0nLIm2ndL+WGPeKj3OCUdn35YHrZYSbwAgo2hlaEqda51YXS3UBfJZonZ+NfPe
- 67q2jklcWHSTcrjLcJc+gX7i+JJfdhW5TB8iArslR2IjLquqS2X8qXprjOPRsZrP5Sgg
- YAdgEgXffFiWpEOlsJVxh36nlUC4XeAjWl4IgWcImrvdI6PccDkfLDI57bqKCHW+7MVY
- dullUEjq/Cms3fhaxmLfFU7nF5eZutZhq52SKf5coBk1fabU+qaMr08m143EX8AGjQIY Mw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t40tart0w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 14:48:57 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EEmuLj018476
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 14:48:56 GMT
-Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 07:48:55 -0700
-Message-ID: <7855cee1-c554-40b7-885f-d7f8d3d90979@quicinc.com>
-Date:   Thu, 14 Sep 2023 07:48:54 -0700
+        Thu, 14 Sep 2023 10:50:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D72C7212C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694702952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JJNWd5PCe2BYCxEP8rDUQkK/YgAeIPdVdWnp3Lyzy3o=;
+        b=K1oM7fY99l9Xx2kzfLM6hcnwPk8R6pnqZmQvd4E18GQduyznP+ejlmPqAwGhGOjVFWDMZI
+        A6/yHGmzp2I8SxHxyXHni5kn79U0hviwrHvEnlk2do00vWk677XVPEJn6BbZztFMAmoBZS
+        s5u1yyXdDCzw3VNrN1iwsiT/2W+bQTw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-fWYBj35hOEmxTcbsa6YIpg-1; Thu, 14 Sep 2023 10:49:11 -0400
+X-MC-Unique: fWYBj35hOEmxTcbsa6YIpg-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5301927ab91so502860a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:49:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694702950; x=1695307750;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JJNWd5PCe2BYCxEP8rDUQkK/YgAeIPdVdWnp3Lyzy3o=;
+        b=c9uZtb+BzwnxndybdoIABApRAmxDDVNVfnSq4PAcmVlAB+kOkhQ0eDbMZk6qO03DED
+         rp0aby1J2kwr/uB7Nza8jzo2gU7Q04LFsHuCLtuseJcYYA4/QMJNUX3pqm7dmLMmvPWB
+         SV+8Xs8wYDWuiKUpTGX/h599dX+wGF6A/8HpuOLTMZ/jMcNpSljKZ5UfYkxGSv1MgEnf
+         bjNZJ7dJ3RGtHEnd8z83q20i/bR5ycLPRh/hk+jOyisL3QrItBabIgs4PgqI8Va3mnj6
+         rwK8i03f7jcjg5aKwewEYOPNoa7TReb1AjDtZCSkuD9SixYPBxSXywD9foR+ExD8iDZ5
+         KPsA==
+X-Gm-Message-State: AOJu0YxzDh11oYT0vad4UJx2R/NzGwtEvL/hwiHMw1vvyeUyFNchh8Lu
+        V9sOfBLJTABWHo6YVz5X2MNCLc3ZxZvVpW3LMSHUG7XUY3HbcRN9bUwmMOi7J5vffHencStwtWF
+        3FwESZCAAJvu+SxHWzhTLAvLL
+X-Received: by 2002:a17:906:55:b0:9a1:fbfb:4d11 with SMTP id 21-20020a170906005500b009a1fbfb4d11mr5271987ejg.73.1694702950363;
+        Thu, 14 Sep 2023 07:49:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuUh+o4qBa2QpPTqZcV/CAgpJXUP4q4YCRFbbhogb7vavGnViV5ntjLQB4fVRFpDMI4D+1TQ==
+X-Received: by 2002:a17:906:55:b0:9a1:fbfb:4d11 with SMTP id 21-20020a170906005500b009a1fbfb4d11mr5271965ejg.73.1694702950001;
+        Thu, 14 Sep 2023 07:49:10 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b009a1e0349c4csm1119680ejb.23.2023.09.14.07.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 07:49:09 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc:     ssengar@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com
+Subject: Re: [PATCH] x86/hyperv: Restrict get_vtl to only VTL platforms
+In-Reply-To: <1694604531-17128-1-git-send-email-ssengar@linux.microsoft.com>
+References: <1694604531-17128-1-git-send-email-ssengar@linux.microsoft.com>
+Date:   Thu, 14 Sep 2023 16:49:08 +0200
+Message-ID: <874jjwq07v.fsf@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH wireless-next 6/9] wifi: ath10k: Remove unnecessary
- (void*) conversions
-Content-Language: en-US
-To:     Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>,
-        <toke@toke.dk>
-CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20230914040517.1170024-1-yunchuan@nfschina.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20230914040517.1170024-1-yunchuan@nfschina.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
-X-Proofpoint-ORIG-GUID: UFWaF2sTRwLgOAH9vtvK2J8JDZ4uPXlr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=611 phishscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140127
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/2023 9:05 PM, Wu Yunchuan wrote:
-> No need cast (void*) to (struct htt_rx_ring_setup_ring32 *),
-> (struct htt_rx_ring_setup_ring64 *), (struct ath_softc *)
-> or (struct ath_hw *).
-> 
-> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
-> ---
->   drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++----
->   drivers/net/wireless/ath/ath9k/pci.c     | 6 +++---
+Saurabh Sengar <ssengar@linux.microsoft.com> writes:
 
-ath9k change should be in a separate patch since it has a different 
-maintainer than ath10k
+> For non VTL platforms vtl is always 0, and there is no need of
+> get_vtl function. For VTL platforms get_vtl should always succeed
+> and should return the correct VTL.
+>
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> ---
+>  arch/x86/hyperv/hv_init.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 783ed339f341..e589c240565a 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -416,8 +416,8 @@ static u8 __init get_vtl(void)
+>  	if (hv_result_success(ret)) {
+>  		ret = output->as64.low & HV_X64_VTL_MASK;
+>  	} else {
+> -		pr_err("Failed to get VTL(%lld) and set VTL to zero by default.\n", ret);
+> -		ret = 0;
+> +		pr_err("Failed to get VTL(error: %lld) exiting...\n", ret);
+
+Nitpick: arch/x86/hyperv/hv_init.c lacks pr_fmt so the message won't get
+prefixed with "Hyper-V". I'm not sure 'VTL' abbreviation has the only,
+Hyper-V specific meaning. I'd suggest we add 
+
+#define pr_fmt(fmt)  "Hyper-V: " fmt
+
+to the beginning of the file.
+
+> +		BUG();
+>  	}
+>  
+>  	local_irq_restore(flags);
+> @@ -604,8 +604,10 @@ void __init hyperv_init(void)
+>  	hv_query_ext_cap(0);
+>  
+>  	/* Find the VTL */
+> -	if (!ms_hyperv.paravisor_present && hv_isolation_type_snp())
+> +	if (IS_ENABLED(CONFIG_HYPERV_VTL_MODE))
+>  		ms_hyperv.vtl = get_vtl();
+> +	else
+> +		ms_hyperv.vtl = 0;
+
+Is 'else' branch really needed? 'ms_hyperv' seems to be a statically
+allocated global. But instead of doing this, what about putting the
+whole get_vtl() funtion under '#if (IS_ENABLED(CONFIG_HYPERV_VTL_MODE))', i.e.:
+
+#if IS_ENABLED(CONFIG_HYPERV_VTL_MODE)
+static u8 __init get_vtl(void)
+{
+        u64 control = HV_HYPERCALL_REP_COMP_1 | HVCALL_GET_VP_REGISTERS;
+...
+}
+#else
+static inline get_vtl(void) { return 0; }
+#endif
+
+and then we can always do
+
+      ms_hyperv.vtl = get_vtl();
+
+unconditionally?
+
+>  
+>  	return;
+
+-- 
+Vitaly
 
