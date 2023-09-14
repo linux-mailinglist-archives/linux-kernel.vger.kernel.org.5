@@ -2,98 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F4D7A0DB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D372A7A0DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241752AbjINTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S241439AbjINTB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 15:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241709AbjINTAo (ORCPT
+        with ESMTP id S241331AbjINTBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:00:44 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320B6770CC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:42:55 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a7e68f4214so770588b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:42:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694716974; x=1695321774; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wW6Cg1zJm3pIpAsBkeDcyTsYyw/bFmOedVjHRUmaqB0=;
-        b=aV2KMBDNvU9cOBjNOdThSdUR+SVqEaYaJ0clxmkIM7M3VUj9sIMj4IOw3QU3YhncmL
-         56yStPR7MO0vmEQNnp52TcxgruWCD+2WJYGtitOsY6HIUdzz9dqqC/SZFpQNvfMltBfE
-         VmIwHxmNxX8JvrovDafsRCOMZNKRelZwi2cj2l56nljvlSpqJ7uZsCnyvPH/DMET2dXa
-         VFfehfwJJ+yr8qtcLVRmnJF1+lA+i5JVirwRGeRA5GPKuNqI6CFVubTrc3jZiBZDc4SW
-         g2y4DvJjmFTjcDBThbEUGoBs9FD5fpWaRn6nt41ubZgqjDR+mIYtMsKGAV6h7Q8g73Uy
-         7zLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694716974; x=1695321774;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wW6Cg1zJm3pIpAsBkeDcyTsYyw/bFmOedVjHRUmaqB0=;
-        b=TvZgNtYq+iOcfp0k0LwKwUlI6QBeXhh7DDnQMb51GovVBtfMmTav5b1dAaJdE3EQ+X
-         gt+FfRS3LbxLoPxmm9poEioH6MU0g0+op17BFJnh1nEhptWfV80JO/MYFuUXbwIiOTJ1
-         GzW4+AP6K8vDI8z7EcY5qSdIZmLNIK7r/Wm6QTYJpdzXZjj8587J9ZCJZryi2I7HHTJY
-         QYXMR69JZMB56gLgZMzOlzrWk2K6efYsgzZ5dllJXDUOMoIBHkKc1RUWJiF18+wiu0rS
-         pj0sD2TP9Og+EknbaRDSP0g2En4sIkgwBD4aTjZ80JpjQ8F88/eS9xYqlfQFT/YdKEWB
-         LPHA==
-X-Gm-Message-State: AOJu0YxoAhnRLPsE3F6FFSeOksq8CV4341wRTCsRNXQ4sTmr1+zDyJ49
-        g2n9qFRS14VRTcDPczEl/MdDoy4J9Z7U24j+PGLM
-X-Google-Smtp-Source: AGHT+IGPNy8EbKLj4XJ8pXuM3HonrcFslH5yiD8vr8y0o+cR6/0HT4xmd/jBQVZX5t3JRdCy/vsL1H3t0hcRku9emNs=
-X-Received: by 2002:a05:6870:6393:b0:1c8:bae6:527d with SMTP id
- t19-20020a056870639300b001c8bae6527dmr7958709oap.55.1694716974516; Thu, 14
- Sep 2023 11:42:54 -0700 (PDT)
-MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 14 Sep 2023 14:42:43 -0400
-Message-ID: <CAHC9VhT4yfGtBf3ECh9gMEQg9Tx4=ZjHDj_uEDPVqR=ihWph4A@mail.gmail.com>
-Subject: [GIT PULL] SELinux fixes for v6.6 (#1)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Thu, 14 Sep 2023 15:01:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4F2D5E;
+        Thu, 14 Sep 2023 11:42:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E16EBC433B9;
+        Thu, 14 Sep 2023 18:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694716971;
+        bh=08e3rjzF0krBhajpQnyBqQbdi7QA3Cyqf3TN7meiMuc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=e5jxyRyHOP/DjRJuPsyiFh1vt7vtwAZuZ7nmLxwXXZ34KlomrBCw1HjQvcicHQcfu
+         563tqna9nWQLTE2sPMxhAwDxEUICpNfyRjBWooir/u1+ZkTcm6MyRneNkG6dnqpFwf
+         VZAVbzNE6C+n+VKMXiEbLTf8bjiWU/BSlqQ6lYcU7M1I03H6BpP8xCxoZ8eA+SRBwm
+         7qsXxLr34whdGlGLz1JGQSmoG5k1x5Jibze8tNsk+LGU2/MAsQnjpmXbLmxvy5PmXb
+         RzIawaUEnSOV1IbQuFIH9E/VEd7Qd81olGd87UmFmLGkZf0nzkvdGHpxjWVMVz/ONk
+         HcY4lK9El8IgA==
+Date:   Thu, 14 Sep 2023 13:42:49 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     srinivas.pandruvada@linux.intel.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-pm@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Jian Hui Lee <jianhui.lee@canonical.com>,
+        Even Xu <even.xu@intel.com>, Zhang Lixu <lixu.zhang@intel.com>,
+        Najumon Ba <najumon.ba@intel.com>, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+Message-ID: <20230914184249.GA74069@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914041806.816741-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Sep 14, 2023 at 12:18:05PM +0800, Kai-Heng Feng wrote:
+> System cannot suspend more than 255 times because the driver doesn't
+> have corresponding acpi_disable_gpe() for acpi_enable_gpe(), so the GPE
+> refcount overflows.
 
-A relatively small SELinux patch to fix an issue with a
-vfs/LSM/SELinux patch that went upstream during the recent merge
-window.  The short version is that the original patch changed how we
-initialized mount options to resolve a NFS issue and we inadvertently
-broke a use case due to the changed behavior; the fix in this pull
-request restores this behavior for the cases that require it while
-keeping the original NFS fix in place.  Please merge.
+How can a user know they are seeing this problem?  Is there a public
+bug report for it?
 
-Thanks,
--Paul
---
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> Since PCI core and ACPI core already handles PCI PME wake and GPE wake
+> when the device has wakeup capability, use device_init_wakeup() to let
+> them do the wakeup setting work.
+> 
+> Also add a shutdown callback which uses pci_prepare_to_sleep() to let
+> PCI and ACPI set OOB wakeup for S5.
 
- Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+Is this logically required to be part of this patch, or could it be a
+separate patch?
 
-are available in the Git repository at:
+> Fixes: 2e23a70edabe ("HID: intel-ish-hid: ipc: finish power flow for EHL OOB")
+> Cc: Jian Hui Lee <jianhui.lee@canonical.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 59 +++++++------------------
+>  1 file changed, 15 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> index 55cb25038e63..65e7eeb2fa64 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> @@ -119,42 +119,6 @@ static inline bool ish_should_leave_d0i3(struct pci_dev *pdev)
+>  	return !pm_resume_via_firmware() || pdev->device == CHV_DEVICE_ID;
+>  }
+>  
+> -static int enable_gpe(struct device *dev)
+> -{
+> -#ifdef CONFIG_ACPI
+> -	acpi_status acpi_sts;
+> -	struct acpi_device *adev;
+> -	struct acpi_device_wakeup *wakeup;
+> -
+> -	adev = ACPI_COMPANION(dev);
+> -	if (!adev) {
+> -		dev_err(dev, "get acpi handle failed\n");
+> -		return -ENODEV;
+> -	}
+> -	wakeup = &adev->wakeup;
+> -
+> -	acpi_sts = acpi_enable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+> -	if (ACPI_FAILURE(acpi_sts)) {
+> -		dev_err(dev, "enable ose_gpe failed\n");
+> -		return -EIO;
+> -	}
+> -
+> -	return 0;
+> -#else
+> -	return -ENODEV;
+> -#endif
+> -}
+> -
+> -static void enable_pme_wake(struct pci_dev *pdev)
+> -{
+> -	if ((pci_pme_capable(pdev, PCI_D0) ||
+> -	     pci_pme_capable(pdev, PCI_D3hot) ||
+> -	     pci_pme_capable(pdev, PCI_D3cold)) && !enable_gpe(&pdev->dev)) {
+> -		pci_pme_active(pdev, true);
+> -		dev_dbg(&pdev->dev, "ish ipc driver pme wake enabled\n");
+> -	}
+> -}
 
- https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
-   tags/selinux-pr-20230914
+I LOVE the removal of all this code.  Thanks for doing it!
 
-for you to fetch changes up to ccf1dab96be4caed7c5235b1cfdb606ac161b996:
+>  /**
+>   * ish_probe() - PCI driver probe callback
+>   * @pdev:	pci device
+> @@ -225,7 +189,7 @@ static int ish_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  
+>  	/* Enable PME for EHL */
+>  	if (pdev->device == EHL_Ax_DEVICE_ID)
+> -		enable_pme_wake(pdev);
+> +		device_init_wakeup(dev, true);
+>  
+>  	ret = ish_init(ishtp);
+>  	if (ret)
+> @@ -248,6 +212,19 @@ static void ish_remove(struct pci_dev *pdev)
+>  	ish_device_disable(ishtp_dev);
+>  }
+>  
+> +
+> +/**
+> + * ish_shutdown() - PCI driver shutdown callback
+> + * @pdev:	pci device
+> + *
+> + * This function sets up wakeup for S5
+> + */
+> +static void ish_shutdown(struct pci_dev *pdev)
+> +{
+> +	if (pdev->device == EHL_Ax_DEVICE_ID)
+> +		pci_prepare_to_sleep(pdev);
 
- selinux: fix handling of empty opts in selinux_fs_context_submount()
-   (2023-09-12 17:31:08 -0400)
+There are only five drivers that use pci_prepare_to_sleep(), so I have
+to ask what is special about this device that makes it necessary here?
 
-----------------------------------------------------------------
-selinux/stable-6.6 PR 20230914
+It doesn't seem to match any of the scenarios mentioned in
+Documentation/power/pci.rst for using pci_prepare_to_sleep().
 
-----------------------------------------------------------------
-Ondrej Mosnacek (1):
-     selinux: fix handling of empty opts in selinux_fs_context_submount()
+Previously EHL_Ax_DEVICE_ID was used only in ish_probe(),
+ish_resume(), and _dma_no_cache_snooping().  None of those look like
+this, so this *looks* like new functionality that could/should be in a
+separate patch.
 
-security/selinux/hooks.c | 10 ++++++++--
-1 file changed, 8 insertions(+), 2 deletions(-)
-
--- 
-paul-moore.com
+> +}
+> +
+>  static struct device __maybe_unused *ish_resume_device;
+>  
+>  /* 50ms to get resume response */
+> @@ -370,13 +347,6 @@ static int __maybe_unused ish_resume(struct device *device)
+>  	struct pci_dev *pdev = to_pci_dev(device);
+>  	struct ishtp_device *dev = pci_get_drvdata(pdev);
+>  
+> -	/* add this to finish power flow for EHL */
+> -	if (dev->pdev->device == EHL_Ax_DEVICE_ID) {
+> -		pci_set_power_state(pdev, PCI_D0);
+> -		enable_pme_wake(pdev);
+> -		dev_dbg(dev->devc, "set power state to D0 for ehl\n");
+> -	}
+> -
+>  	ish_resume_device = device;
+>  	dev->resume_flag = 1;
+>  
+> @@ -392,6 +362,7 @@ static struct pci_driver ish_driver = {
+>  	.id_table = ish_pci_tbl,
+>  	.probe = ish_probe,
+>  	.remove = ish_remove,
+> +	.shutdown = ish_shutdown,
+>  	.driver.pm = &ish_pm_ops,
+>  };
+>  
+> -- 
+> 2.34.1
+> 
