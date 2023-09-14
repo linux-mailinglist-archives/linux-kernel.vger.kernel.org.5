@@ -2,144 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C8E79F873
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2505779F877
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbjINCtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        id S234027AbjINCvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbjINCtq (ORCPT
+        with ESMTP id S230121AbjINCvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:49:46 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B5F10C3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:49:41 -0700 (PDT)
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230914024938epoutp017e72ad1dfde24585f5ad9a69a826524a~EpBb0ws-e1331213312epoutp01_
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:49:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230914024938epoutp017e72ad1dfde24585f5ad9a69a826524a~EpBb0ws-e1331213312epoutp01_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694659778;
-        bh=r5jj0lu9AKPQ4dUW3z7RMHoNOH/8E0rIFCiEOm5ipWs=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=VijfJeHHK9y4SaPTM/KGiziiRA855ziCcAFEjKiDGWOk+U7wDxdhfnBCDcbJxlNsj
-         Vu4vv1lauoL+iSOSIiYLI2ho9pptyL+Goh70saqlQVm0KoU+0DK8OumTNvHFynKeD3
-         KGFUYFPXTU5hzv8racasjEJq71FR/wGziNeXFkd0=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20230914024937epcas1p4f2a21bad5bfca9e0b18e255b3e05ae86~EpBbWYV1J2101721017epcas1p41;
-        Thu, 14 Sep 2023 02:49:37 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.38.247]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4RmMH533hnz4x9Pr; Thu, 14 Sep
-        2023 02:49:37 +0000 (GMT)
-X-AuditID: b6c32a37-d85fa700000025ae-11-650274c19af9
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        25.C3.09646.1C472056; Thu, 14 Sep 2023 11:49:37 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re: [PATCH] maple_tree: use GFP_KERNEL on mas_node_count
-Reply-To: jason.sim@samsung.com
-Sender: Jaeseon Sim <jason.sim@samsung.com>
-From:   Jaeseon Sim <jason.sim@samsung.com>
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        "surenb@google.com" <surenb@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>,
-        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20230907144924.272e2f2sckprbvca@revolver>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230914024937epcms1p24be0b59caeefd7966bec81ac11feff8f@epcms1p2>
-Date:   Thu, 14 Sep 2023 11:49:37 +0900
-X-CMS-MailID: 20230914024937epcms1p24be0b59caeefd7966bec81ac11feff8f
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmvu7BEqZUg67lYhbdm2cyWvS+f8Vk
-        sb3hAbvF5V1z2CzurfnParFhZQOTxeRLC9gsfv8Aij3985fZgdPj34k1bB47Z91l91iwqdRj
-        8wotj02fJrF7bF5S7/Hx6S0Wj74tqxg9Pm+SC+CMyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneO
-        NzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAbpQSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKr
-        lFqQklNgVqBXnJhbXJqXrpeXWmJlaGBgZApUmJCdcXrFOdaCU5IV/Sc72RoYL0t0MXJySAiY
-        SCyZd4Gli5GLQ0hgB6NEY8sR9i5GDg5eAUGJvzuEQWqEBRwlerdPYgOxhQTkJc5uaWCEiGtL
-        nFp5kRnEZhPQlOi6sIUdxBYR0Jc4d+8cM8hMZoFuZolT2yCKJAR4JWa0P2WBsKUlti/fCjaI
-        U8Bc4tavW+wQcVGJm6vfwtnvj81nhLBFJFrvnYWaIyjx4OduqLiUxJm2JVAziyXWr7nOBGHX
-        SBx9sh8qbi7R8HYl2AO8Ar4S6yZeAJvDIqAqsXkezC4XiesbTrCC2MxAjy1b+JoZFA7MQI+t
-        36UPUaIosfP3XEaIEj6Jd197WGHe2jHvCdRaZYmP3y4wgrRKCEhKTNhlDmF6SHT8NoGE8kRg
-        iNx4xz6BUWEWIqBnIdk7C2HvAkbmVYxiqQXFuempxYYFxvC4Tc7P3cQITqta5jsYp739oHeI
-        kYmD8RCjBAezkggvmy1TqhBvSmJlVWpRfnxRaU5q8SFGU6CPJzJLiSbnAxN7Xkm8oYmlgYmZ
-        kYmFsaWxmZI4761nvSlCAumJJanZqakFqUUwfUwcnFINTJ6WNlcXFhxe25MgblGX53Ar8xXD
-        vvOzZp//ukc2z804vXTtOYe1QYfmPub5Fee0s/Le6eU6V5yC9/YeXmi9/Ip65gSZbA4RmaYP
-        77Otv6/Wvnb01both96oZobw/+VZ+ltjreN6vhVTtn7wkNnU9PD23YqEn+/MomS2Ma/QFNy8
-        IGf1TGn2xyvYDP/uFHjo73HiLs/MFQKnGn6qvikwdLUKryw/u3OvrHZNJ9utxRoSW3XvrLmV
-        02/vXRb7fkd30gFW41+TTzOVn9oXvbr+yjvNd1/8l6RsqJy4dX/spectfTEaJ8uvKNVnppQs
-        XckhyMDHL/9C4PYGi8DUxfFcDhNvhyne1GFeXPwwwTfZU1WJpTgj0VCLuag4EQBgeFxSNAQA
-        AA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3
-References: <20230907144924.272e2f2sckprbvca@revolver>
-        <ZPlNPGpAPy+7oQay@casper.infradead.org>
-        <20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p6>
-        <ZPlIShWJWt+Kxt8x@casper.infradead.org>
-        <06a8624e-00bb-a332-4271-860847faf4a3@bytedance.com>
-        <20230907044119epcms1p3ff1dd04b02119ff11b77fe40b4842afd@epcms1p3>
-        <CGME20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p2>
+        Wed, 13 Sep 2023 22:51:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2334B10C3;
+        Wed, 13 Sep 2023 19:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694659906; x=1726195906;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gEoEyEQ+kZdfM2KYaRFi9MudhQl7uMO52kPJ58tdVVw=;
+  b=fLBGxn/C9iYFnVjMjhsNzb1dtoCluZWd9TYXlv6Lw7WPOgHUDXekfVcc
+   iWksWbYaiI1CWEKHPdr0KFF8aheMt9GdmEcqJrXaKSaW1gEwJkZ4197CN
+   Swe33eLYUzardJ+ZcbA2+bDPv2et6j2bcNrICOoEpoOoTkUplQEP1GLYZ
+   Tjjoxmm6W43EfheF10NHswA5BqeaPHQDTbLs9i0lupW02UsagzcBbZQ5J
+   noRXyJSCS1le65EAn7BcqCepfiS8V1qK6iFfwGyj//e1sb1/eBbDAyisY
+   3P0ezHZxh7FqoCLh3HjkTmL62iupgJ0GtY+u2M/v0HtIeTE0Imv1GfOnv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="359099481"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="359099481"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 19:51:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="991223843"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="991223843"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Sep 2023 19:51:41 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgcSB-00013o-2S;
+        Thu, 14 Sep 2023 02:51:39 +0000
+Date:   Thu, 14 Sep 2023 10:51:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+        rui.zhang@intel.com, lenb@kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, sumitg@nvidia.com,
+        sanjayc@nvidia.com, ksitaraman@nvidia.com, srikars@nvidia.com,
+        jbrasen@nvidia.com, bbasu@nvidia.com
+Subject: Re: [Patch v2 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
+ pctg for Tegra241
+Message-ID: <202309141006.XkUm1rIu-lkp@intel.com>
+References: <20230913164659.9345-3-sumitg@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913164659.9345-3-sumitg@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> * Jaeseon Sim <jason.sim=40samsung.com> =5B230907 00:41=5D:
-> > > On Thu, Sep 07, 2023 at 12:02:02PM +0800, Peng Zhang wrote:
-> > > >=20
-> > > >=20
-> > > > =E5=9C=A8=202023/9/7=2011:49,=20Matthew=20Wilcox=20=E5=86=99=E9=81=
-=93:=0D=0A>=20>=20>=20>=20>=20On=20Thu,=20Sep=2007,=202023=20at=2012:39:14P=
-M=20+0900,=20=EC=8B=AC=EC=9E=AC=EC=84=A0=20wrote:=0D=0A>=20>=20>=20>=20>=20=
->=20Use=20GFP_KERNEL=20on=20mas_node_count=20instead=20of=20GFP_NOWAIT=20=
-=7C=20__GFP_NOWARN=0D=0A>=20>=20>=20>=20>=20>=20in=20order=20to=20allow=20m=
-emory=20reclaim.=0D=0A>=20>=20>=20>=20There=20are=20many=20paths=20that=20c=
-all=20maple=20tree's=20mas_node_count().=20Some=20paths=0D=0A>=20>=20>=20>=
-=20cannot=20reclaim=20memory.=0D=0A>=20>=20>=20=0D=0A>=20>=20>=20Right=20..=
-.=20but=20we=20should=20be=20handling=20the=20ENOMEM=20inside=20the=20maple=
-=20tree=20and=0D=0A>=20>=20>=20allocating=20some=20nodes=20with=20GFP_KERNE=
-L=20instead=20of=20failing=20fork().=0D=0A>=20>=20>=20=0D=0A>=20>=20>=20>=
-=20>=20What=20testing=20did=20you=20do=20of=20this=20patch?=20=20In=20parti=
-cular,=20did=20you=20try=20it=0D=0A>=20>=20>=20>=20>=20with=20lockdep=20ena=
-bled?=0D=0A>=20>=20I=20did=20power=20on/off=20test=20with=20this=20patch.=
-=0D=0A>=20>=20I=20did=20not=20try=20it=20with=20lockdep=20enabled.=0D=0A>=
-=20=0D=0A>=20To=20accomplish=20the=20same=20result,=20but=20with=20a=20much=
-=20smaller=20scope=20that=20will=0D=0A>=20work=20with=20lockdep,=20I=20woul=
-d=20suggest=20changing=20mas_expected_entries()=20to=0D=0A>=20use=20mas_nod=
-e_count_gfp()=20(which=20already=20exists)=20and=20pass=20in=20GFP_KERNEL.=
-=0D=0A>=20=0D=0A>=20Since=20fork=20is=20the=20only=20current=20user=20of=20=
-mas_expected_entries(),=20this=0D=0A>=20won't=20break=20other=20users=20and=
-=20we=20can=20deal=20with=20changing=20it=20for=20others=20if=0D=0A>=20it=
-=20is=20needed.=0D=0A>=20=0D=0A>=20If=20we=20do=20go=20this=20route,=20plea=
-se=20add=20a=20note=20in=20the=20documentation=20about=0D=0A>=20using=20GFP=
-_KERNEL.=0D=0A>=20=0D=0A>=20Willy,=20does=20that=20work=20for=20you?=0D=0A>=
-=20=0D=0A>=20Thanks,=0D=0A>=20Liam=0D=0A=0D=0ADear=20Liam,=0D=0ACan=20I=20a=
-sk=20you=20the=20reason=20why=20mas_node_count=20is=20using=20GFP_NOWAIT=20=
-=7C=20__GFP_NOWARN?=0D=0AI=20wonder=20if=20other=20callers=20for=20mas_node=
-_count=20might=20have=20similar=20issue.=0D=0A=0D=0AFrom=20your=20opinion,=
-=20I'll=20post=20v2=20patch=20as=20follows=0D=0A=0D=0Adiff=20--git=20a/lib/=
-maple_tree.c=20b/lib/maple_tree.c=0D=0Aindex=20ee1ff0c59fd7..b0229271c24e=
-=20100644=0D=0A---=20a/lib/maple_tree.c=0D=0A+++=20b/lib/maple_tree.c=0D=0A=
-=40=40=20-5574,7=20+5574,7=20=40=40=20int=20mas_expected_entries(struct=20m=
-a_state=20*mas,=20unsigned=20long=20nr_entries)=0D=0A=20=09/*=20Internal=20=
-nodes=20*/=0D=0A=20=09nr_nodes=20+=3D=20DIV_ROUND_UP(nr_nodes,=20nonleaf_ca=
-p);=0D=0A=20=09/*=20Add=20working=20room=20for=20split=20(2=20nodes)=20+=20=
-new=20parents=20*/=0D=0A-=09mas_node_count(mas,=20nr_nodes=20+=203);=0D=0A+=
-=09mas_node_count_gfp(mas,=20nr_nodes=20+=203,=20GFP_KERNEL);=0D=0A=20=0D=
-=0A=20=09/*=20Detect=20if=20allocations=20run=20out=20*/=0D=0A=20=09mas->ma=
-s_flags=20=7C=3D=20MA_STATE_PREALLOC;=0D=0A--=20=0D=0A2.17.1=0D=0A=0D=0ATha=
-nks=0D=0AJaeseon
+Hi Sumit,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on linus/master v6.6-rc1 next-20230913]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sumit-Gupta/ACPI-thermal-Add-Thermal-fast-Sampling-Period-_TFP-support/20230914-004929
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20230913164659.9345-3-sumitg%40nvidia.com
+patch subject: [Patch v2 2/2] ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230914/202309141006.XkUm1rIu-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141006.XkUm1rIu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309141006.XkUm1rIu-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/acpi/processor_thermal.c:141:6: warning: no previous prototype for 'acpi_thermal_cpufreq_config_nvidia' [-Wmissing-prototypes]
+     141 | void acpi_thermal_cpufreq_config_nvidia(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/acpi_thermal_cpufreq_config_nvidia +141 drivers/acpi/processor_thermal.c
+
+   140	
+ > 141	void acpi_thermal_cpufreq_config_nvidia(void)
+   142	{
+   143	#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+   144		s32 soc_id = arm_smccc_get_soc_id_version();
+   145	
+   146		/* Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) */
+   147		if ((soc_id < 0) || (soc_id != SMCCC_SOC_ID_T241))
+   148			return;
+   149	
+   150		/* Reduce the CPUFREQ Thermal reduction percentage to 5% */
+   151		cpufreq_thermal_pctg = 5;
+   152	
+   153		/*
+   154		 * Derive the MAX_STEP from minimum throttle percentage so that the reduction
+   155		 * percentage doesn't end up becoming negative. Also, cap the MAX_STEP so that
+   156		 * the CPU performance doesn't become 0.
+   157		 */
+   158		cpufreq_thermal_max_step = ((100 / cpufreq_thermal_pctg) - 1);
+   159	#endif
+   160	}
+   161	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
