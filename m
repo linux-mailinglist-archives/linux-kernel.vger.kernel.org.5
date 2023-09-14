@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595B87A00D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D877A0095
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237857AbjINJur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        id S236968AbjINJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237788AbjINJul (ORCPT
+        with ESMTP id S237747AbjINJoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:50:41 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BE5210D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:44:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9936b3d0286so108721566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:44:03 -0700 (PDT)
+        Thu, 14 Sep 2023 05:44:39 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C369026A8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:44:31 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so7967655e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1694684642; x=1695289442; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fpyUSA4zqMpJvFIRfLkgjwyN5TLcHnhqRritAX1SXxg=;
-        b=Y94vGfTPOkhD5b7nXKflpOfEAbD00UKQYbeBzkQMrM69c6ARXeuJXId8LjBubaOUYe
-         5Yex09MY80gCm0lnPqfVYdEmPtcBJ8i8PUclyrmS/ASRRmUISLS9uroYY65kBseOtVzQ
-         n/BAFc+Ss0SrJBDRw8PO/RWPyDKVaY5ms/oOc=
+        d=gmail.com; s=20221208; t=1694684670; x=1695289470; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=2zlwMt/1qb1MLOV1sSBNn+CBe41p91fImSV0fPQ0M0A=;
+        b=rWARnC6w83n1EEhFuNtjJNwzw5NQ8pTHcFHsoX/cQu6jqR5jGPdFndp0bonUPK7uqN
+         YLSPAjwQrCXygXVR/lsX7VEjESTH27fw5CnQsvhk2U9HBlPM54AP6DmLK5qADNpC0BA6
+         argS8qlacVgGOPFUaKqFHXWfsPQSGXx4d96SVlc1Xh+NPEBmFJ7qz2FoR1itVVoiVkZr
+         L8KUcbzRqHaqL7WkY/YD23GC55w5B1Jx3tbYbnW8L5yTEs4KLzifzIwAScBpXZUJeOdD
+         XRlxZllSrWJFsLCLf9W7IzjMKg6YGITLEyAlYQdxld3tDfx8d513+ACL+TnWkQ/JWsVh
+         boVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694684642; x=1695289442;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1694684670; x=1695289470;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fpyUSA4zqMpJvFIRfLkgjwyN5TLcHnhqRritAX1SXxg=;
-        b=jaGasoKth5758oYvJBum21ngOPvZqrQpB/cNqvYmKuLJIlCaJOVGxpYHYNgA796PgA
-         1ElE/cDHPEVbKnf24Nr66MmWHgv6iqHAy4hC0BJtyrjiZAwobJ+5YVKKF/Yyu0SCJ2WU
-         da+baU13PnNpi8przZ1WgC1rFO2tmfsJy3wdAMECWJvhk66urR8prOyAt0yiTp/M313K
-         uVQCp790LPVnWl3FGoM07CFtArammidTSHxvrUn6Yq7o9hkySjRjE1S1fVnENBpPLfmG
-         I0ZW1f8H7CnR5zSHLuqb++0kaX/lbWMQMdZb9WpxEJE/q14UEJfRCagwgCpDCZwknieX
-         4R6g==
-X-Gm-Message-State: AOJu0Yx4hDp1R4FM+X5INJlUcwHXqGj7LvA4g3zQl6sYfMhc9LtWLQjF
-        CNtD0aHgr2cn2erwM6v1T99RDEji8L0OgDJ3RzQgLQ==
-X-Google-Smtp-Source: AGHT+IEyolZjfGkJMmzniA571qSWAQ1BD87u/IWRMEO++M7nad1th1Wn2dPp8AwzT6FUIh4dPaRcViOPJcnRyrmQYX0=
-X-Received: by 2002:a17:907:77c2:b0:99b:f58d:1c49 with SMTP id
- kz2-20020a17090777c200b0099bf58d1c49mr3978899ejc.53.1694684642180; Thu, 14
- Sep 2023 02:44:02 -0700 (PDT)
+        bh=2zlwMt/1qb1MLOV1sSBNn+CBe41p91fImSV0fPQ0M0A=;
+        b=mUeob7mIqIDvZz2mBk7FavpNCaA0nyDhtE9fIanI9eBD+XGGHhqGoVEeXG31Kpm7cD
+         12MjGKavugjEeJKcKGM1VZlDYM+RGgA53sR9i30Yd4sJ4AxjTX1wKMuk5pNQRRj/xDgB
+         /l/QADe97vtOHdDoxuc4dz/LRNsS2u/hLuJCmfPjilimmfgJBRbyRLJKVVaJ6o210nuS
+         Y09kGL9SGzW+CwdVBgSucTp+vX1n2bKbu2YvrN5b4KED2HWx1mdzb79ECapblVsWKYzz
+         jaa8m/X/Mhy8dbjjKr7sNXnChYK8qx4gglnMBpAafOHreMKc4RB/3qw/Za2E+7ZhFgxH
+         gvHQ==
+X-Gm-Message-State: AOJu0YwrxN85VXskBF12kxcZMNT35V2JF+ynIOY7rtn9MChOWfHFfIGQ
+        y16GC6Pl5sdW8zeKdSsCSt9tdJfPckNFYg==
+X-Google-Smtp-Source: AGHT+IFc5G53FVaExDgb7Ec+zUJb4oulzj/DYeV0TFAGyvB2kYZ6NbVXgwSSwzn5p055GsYjtErC1Q==
+X-Received: by 2002:a05:600c:2242:b0:402:fec4:fddc with SMTP id a2-20020a05600c224200b00402fec4fddcmr3836118wmm.17.1694684669944;
+        Thu, 14 Sep 2023 02:44:29 -0700 (PDT)
+Received: from [127.0.0.1] (178.165.204.138.wireless.dyn.drei.com. [178.165.204.138])
+        by smtp.gmail.com with ESMTPSA id c10-20020a5d63ca000000b0031ddf6cc89csm1261752wrw.98.2023.09.14.02.44.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Sep 2023 02:44:29 -0700 (PDT)
+Message-ID: <adaba30d259f8113a6d7f524ee2facc1@swift.generated>
+Date:   Thu, 14 Sep 2023 11:44:24 +0200
+Subject: Re: Domainname reflexzone.de
+From:   Johannes Braun <jb7283397@gmail.com>
+To:     "" <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-2-mszeredi@redhat.com>
- <20230914-himmel-imposant-546bd73250a8@brauner> <CAJfpegv8ZVyyZN7ppSYMD4g8i7rAP1_5UBxzSo869_SKmFhgvw@mail.gmail.com>
- <20230914-jeweiligen-normung-47816c153531@brauner>
-In-Reply-To: <20230914-jeweiligen-normung-47816c153531@brauner>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 14 Sep 2023 11:43:50 +0200
-Message-ID: <CAJfpeguJ+H7HkZOgZrJ7VmTY_GhQ5uqueZH+DL9EuEeX5kgXQw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] add unique mount ID
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sept 2023 at 11:36, Christian Brauner <brauner@kernel.org> wrote:
->
-> > Yes, one concern is that humans confuse the old and the new ID.
-> >
-> > I also think it makes sense to allow the new interfaces to look up the
-> > mount based on either the old or the new ID.   But I could be wrong
->
-> Hm, mount id recycling may happen so quickly that for service restarts
-> with a lot of mounts this becomes mostly useless...
+Guten Tag
 
-Agreed.  The old ID is mostly useful for human interaction.
+reflexzone.de steht in K=C3=BCrze zur Verf=C3=BCgung, h=
+=C3=A4tten Sie Interesse daran?
+Falls Sie weitere Informationen ben=C3=
+=B6tigen, freue ich mich auf Ihre Nachricht.
 
->
-> > there, since that might encourage bad code.  Maybe the new interface
-> > should only use take the new ID, which means no mixed use of
-> > /proc/$$/mountinfo and statmnt/listmnt.
->
-> ... so I think that is indeed the better way of doing things. There's no
-> need to encourage userspace to mix both identifiers.
+Viele Gr=C3=BC=C3=9Fe
+=
 
-Okay.
+Johannes Braun
 
-But I'd still leave the 2^32 offset for human confusion avoidance.
 
-Thanks,
-Miklos
+................................................
