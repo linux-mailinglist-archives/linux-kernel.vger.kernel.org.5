@@ -2,309 +2,615 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BF87A0538
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EDA7A053B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238756AbjINNOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S238795AbjINNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237994AbjINNOc (ORCPT
+        with ESMTP id S238623AbjINNOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:14:32 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6751A5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:14:28 -0700 (PDT)
-Received: from fsav120.sakura.ne.jp (fsav120.sakura.ne.jp [27.133.134.247])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38EDE3Gv081530;
-        Thu, 14 Sep 2023 22:14:03 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav120.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp);
- Thu, 14 Sep 2023 22:14:03 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38EDDgLu081460
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 14 Sep 2023 22:14:03 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c59d62ef-0f69-7744-cefe-1fdb71d6cbfc@I-love.SAKURA.ne.jp>
-Date:   Thu, 14 Sep 2023 22:13:42 +0900
+        Thu, 14 Sep 2023 09:14:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4FF1FDD;
+        Thu, 14 Sep 2023 06:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694697289; x=1726233289;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=I3n8fdhwrpErj/oZ1BYx0F+rwu0AICWhWwpJ3nVkV4E=;
+  b=Sb49sIxDn9mgKrvpzbqrU3vwynaWNLRxGi8IjJ0yFl2D5ryHmx/lW8zX
+   oWmenjKmgFSSfbmSIrkOKti6bCZntks6wONTqy9krEuoM8PzpTKU2+fFK
+   +CQ6cWWZY4B/WPg7SmC64CgIb8fpkd8aOLGI+A1GsAc8vGHHIVSmjAV+F
+   81PgE4bT+TJaxDTtdCecD8oD9S3f12jZgKvZEOtFwONA7EUvliJCRBFsh
+   pRRDbBUtqSDlapPTBbD1r14KHm5CATl4DAF0xIWHjeGJCE6mKu8stLTls
+   V561MD7Hvq7cDbIpAvfWDMnszpRLYOqFHFDFPpIGXP3qXIrfvi19wu9tM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="359205135"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="359205135"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:14:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="721264694"
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="scan'208";a="721264694"
+Received: from skolhe-mobl1.ger.corp.intel.com ([10.252.36.254])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 06:14:46 -0700
+Date:   Thu, 14 Sep 2023 16:14:43 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH 4/4] drivers/tty/serial: add ESP32S3 ACM device driver
+In-Reply-To: <20230913211449.668796-5-jcmvbkbc@gmail.com>
+Message-ID: <ce1ec7e5-62fc-f039-415f-97e1639d952c@linux.intel.com>
+References: <20230913211449.668796-1-jcmvbkbc@gmail.com> <20230913211449.668796-5-jcmvbkbc@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: BUG: soft lockup in smp_call_function
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzkaller@googlegroups.com, LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>
-References: <20230913110709.6684-1-hdanton@sina.com>
- <20230914122134.6783-1-hdanton@sina.com>
-Content-Language: en-US
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20230914122134.6783-1-hdanton@sina.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/09/14 21:21, Hillf Danton wrote:
-> On Wed, 13 Sep 2023 23:30:23 +0900 Tetsuo Handa wrote:
->> On 2023/09/13 20:07, Hillf Danton wrote:
->>>
->>> 	cpu1			cpu4 (see below)
->>> 	====			====
->>> 	drm_crtc_vblank_off	__run_hrtimer
->>> 	spin_lock_irq(&dev->event_lock);
->>> 	...
->>> 				drm_handle_vblank
->>> 	hrtimer_cancel		spin_lock_irqsave(&dev->event_lock, irqflags);
->>>
->>>
->>> Deadlock should have been reported instead provided the lockdep_map in
->>> struct timer_list were added also to hrtimer, so it is highly appreciated
->>> if Tetsuo or Thomas adds it before 6.8 or 6.10.
->>
->> Not me. ;-)
->>
->> Since hrtimer_cancel() retries forever until lock_hrtimer_base() succeeds,
->> we want to add a lockdep annotation into hrtimer_cancel() so that we can
->> detect this type of deadlock?
+On Wed, 13 Sep 2023, Max Filippov wrote:
 
-Here is a reproducer.
+> Add driver for the ACM  controller of the Espressif ESP32S3 Soc.
+> Hardware specification is available at the following URL:
+> 
+>   https://www.espressif.com/sites/default/files/documentation/esp32-s3_technical_reference_manual_en.pdf
+>   (Chapter 33 USB Serial/JTAG Controller)
+> 
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> ---
+>  drivers/tty/serial/Kconfig       |  14 +
+>  drivers/tty/serial/Makefile      |   1 +
+>  drivers/tty/serial/esp32_acm.c   | 473 +++++++++++++++++++++++++++++++
+>  include/uapi/linux/serial_core.h |   3 +
+>  4 files changed, 491 insertions(+)
+>  create mode 100644 drivers/tty/serial/esp32_acm.c
 
-----------------------------------------
-#include <linux/module.h>
-#include <linux/delay.h>
-static DEFINE_SPINLOCK(lock1);
-static struct hrtimer timer1;
-static enum hrtimer_restart timer_func(struct hrtimer *timer)
-{
-	unsigned long flags;
-	mdelay(100); // Wait for test_init() to hold lock1.
-	spin_lock_irqsave(&lock1, flags);
-	spin_unlock_irqrestore(&lock1, flags);
-	return HRTIMER_RESTART;
-}
-static int __init test_init(void)
-{
-	unsigned long flags;
-	hrtimer_init(&timer1, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-	timer1.function = &timer_func;
-	hrtimer_start(&timer1, 1, HRTIMER_MODE_REL);
-	mdelay(10); // Wait for timer_func() to start.
-	spin_lock_irqsave(&lock1, flags);
-	hrtimer_cancel(&timer1); // Wait for timer_func() to finish.
-	spin_unlock_irqrestore(&lock1, flags);
-	return -EINVAL;
-}
-module_init(test_init);
-MODULE_LICENSE("GPL");
-----------------------------------------
+Please go through this with the comments against the other patch in mind, 
+I don't want to spend my time on reviewing it yet just to mark all the 
+similar issues.
 
-----------------------------------------
-[  996.507681] test: loading out-of-tree module taints kernel.
-[  996.514019] test: module verification failed: signature and/or required key missing - tainting kernel
-[ 1061.893054] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[ 1061.900411] rcu: 	4-...0: (1 GPs behind) idle=ed6c/1/0x4000000000000000 softirq=3304/3305 fqs=15784
-[ 1061.909128] rcu: 	(detected by 0, t=65018 jiffies, g=12625, q=4422 ncpus=12)
-[ 1061.915003] Sending NMI from CPU 0 to CPUs 4:
-[ 1061.918972] NMI backtrace for cpu 4
-[ 1061.919036] CPU: 4 PID: 3826 Comm: insmod Tainted: G           OE      6.6.0-rc1+ #20
-[ 1061.919093] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 11/12/2020
-[ 1061.919095] RIP: 0010:delay_tsc+0x34/0xa0
-[ 1061.919560] Code: ff 05 e8 b1 26 70 65 44 8b 0d e4 b1 26 70 0f 01 f9 66 90 48 c1 e2 20 48 09 c2 49 89 d0 eb 21 65 ff 0d c8 b1 26 70 74 54 f3 90 <65> ff 05 bd b1 26 70 65 8b 35 ba b1 26 70 41 39 f1 75 28 41 89 f1
-[ 1061.919563] RSP: 0018:ffffb471c059cf00 EFLAGS: 00000083
-[ 1061.919567] RAX: 0000028efe104ef6 RBX: 0000000000000041 RCX: 0000000000000004
-[ 1061.919569] RDX: 00000000002192f8 RSI: 0000000000000004 RDI: 000000000027d81e
-[ 1061.919571] RBP: ffff8970dafe5040 R08: 0000028efdeebbfe R09: 0000000000000004
-[ 1061.919572] R10: 0000000000000001 R11: ffffffffc0a8d600 R12: ffffffff90e030e0
-[ 1061.919574] R13: ffff8970dafe5040 R14: ffffffffc0a8b010 R15: ffff8970dafe5100
-[ 1061.919630] FS:  00007fdd998eb740(0000) GS:ffff8970dae00000(0000) knlGS:0000000000000000
-[ 1061.919633] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1061.919635] CR2: 0000000001edf678 CR3: 00000001a1060000 CR4: 0000000000350ee0
-[ 1061.919639] Call Trace:
-[ 1061.919641]  <NMI>
-[ 1061.919646]  ? nmi_cpu_backtrace+0xb1/0x130
-[ 1061.919711]  ? nmi_cpu_backtrace_handler+0x11/0x20
-[ 1061.922096]  ? nmi_handle+0xe4/0x290
-[ 1061.922163]  ? default_do_nmi+0x49/0x100
-[ 1061.922196]  ? exc_nmi+0x152/0x1e0
-[ 1061.922198]  ? end_repeat_nmi+0x16/0x67
-[ 1061.922340]  ? __pfx_timer_func+0x10/0x10 [test]
-[ 1061.922347]  ? delay_tsc+0x34/0xa0
-[ 1061.922349]  ? delay_tsc+0x34/0xa0
-[ 1061.922350]  ? delay_tsc+0x34/0xa0
-[ 1061.922352]  </NMI>
-[ 1061.922353]  <IRQ>
-[ 1061.922353]  timer_func+0x19/0xff0 [test]
-[ 1061.922358]  __hrtimer_run_queues+0x177/0x3a0
-[ 1061.922362]  hrtimer_interrupt+0x104/0x240
-[ 1061.922364]  ? __do_softirq+0x2db/0x392
-[ 1061.922827]  __sysvec_apic_timer_interrupt+0x64/0x180
-[ 1061.922833]  sysvec_apic_timer_interrupt+0x65/0x80
-[ 1061.922894]  </IRQ>
-[ 1061.922896]  <TASK>
-[ 1061.922898]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[ 1061.922902] RIP: 0010:delay_tsc+0x4d/0xa0
-[ 1061.922907] Code: c2 49 89 d0 eb 21 65 ff 0d c8 b1 26 70 74 54 f3 90 65 ff 05 bd b1 26 70 65 8b 35 ba b1 26 70 41 39 f1 75 28 41 89 f1 0f 01 f9 <66> 90 48 c1 e2 20 48 09 d0 48 89 c2 4c 29 c2 48 39 fa 72 c8 65 ff
-[ 1061.922909] RSP: 0018:ffffb471c1e63bd0 EFLAGS: 00000246
-[ 1061.922912] RAX: 00000000751ed8ab RBX: 000000000000000a RCX: 0000000000000004
-[ 1061.922914] RDX: 0000000000000267 RSI: 0000000000000004 RDI: 000000000027d81e
-[ 1061.922915] RBP: ffffffffc0a91010 R08: 00000267751adc59 R09: 0000000000000004
-[ 1061.922917] R10: 0000000000000001 R11: ffffffff90cd85c8 R12: 0000000000000000
-[ 1061.922918] R13: ffffb471c1e63d20 R14: 0000000000000000 R15: ffffffffc0a8d080
-[ 1061.922923]  ? __pfx_test_init+0x10/0x10 [test]
-[ 1061.922934]  test_init+0x52/0xff0 [test]
-[ 1061.922941]  do_one_initcall+0x5c/0x280
-[ 1061.923004]  ? kmalloc_trace+0xa9/0xc0
-[ 1061.923105]  do_init_module+0x60/0x240
-[ 1061.923111]  load_module+0x1f6e/0x20d0
-[ 1061.923119]  ? ima_post_read_file+0xe3/0xf0
-[ 1061.923225]  ? init_module_from_file+0x88/0xc0
-[ 1061.923229]  init_module_from_file+0x88/0xc0
-[ 1061.923238]  idempotent_init_module+0x19c/0x250
-[ 1061.923244]  ? security_capable+0x39/0x60
-[ 1061.923304]  __x64_sys_finit_module+0x5b/0xb0
-[ 1061.923310]  do_syscall_64+0x3b/0x90
-[ 1061.923366]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[ 1061.923421] RIP: 0033:0x7fdd986f8e29
-[ 1061.923427] Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 17 e0 2c 00 f7 d8 64 89 01 48
-[ 1061.923429] RSP: 002b:00007ffe2f34dd18 EFLAGS: 00000206 ORIG_RAX: 0000000000000139
-[ 1061.923432] RAX: ffffffffffffffda RBX: 0000000001ede240 RCX: 00007fdd986f8e29
-[ 1061.923434] RDX: 0000000000000000 RSI: 000000000041a96e RDI: 0000000000000003
-[ 1061.923435] RBP: 000000000041a96e R08: 0000000000000000 R09: 00007ffe2f34deb8
-[ 1061.923436] R10: 0000000000000003 R11: 0000000000000206 R12: 0000000000000000
-[ 1061.923437] R13: 0000000001ede210 R14: 0000000000000000 R15: 0000000000000000
-[ 1061.923444]  </TASK>
-[ 1061.923446] INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 4.474 msecs
-----------------------------------------
+-- 
+ i.
 
 > 
-> Yes, you are right.
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index d9ca6b268f01..85807db8f7ce 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1591,6 +1591,20 @@ config SERIAL_ESP32
+>  	    earlycon=esp32s3uart,mmio32,0x60000000,115200n8,40000000
+>  	    earlycon=esp32uart,mmio32,0x3ff40000,115200n8
+>  
+> +config SERIAL_ESP32_ACM
+> +	tristate "Espressif ESP32 USB ACM support"
+> +	depends on XTENSA_PLATFORM_ESP32 || (COMPILE_TEST && OF)
+> +	select SERIAL_CORE
+> +	select SERIAL_CORE_CONSOLE
+> +	select SERIAL_EARLYCON
+> +	help
+> +	  Driver for the CDC ACM controllers of the Espressif ESP32S3 SoCs
+> +	  that share separate USB controller with the JTAG adapter.
+> +	  The device name used for this controller is ttyACM.
+> +	  When earlycon option is enabled the following kernel command line
+> +	  snippet may be used:
+> +	    earlycon=esp32s3acm,mmio32,0x60038000
+> +
+>  endmenu
+>  
+>  config SERIAL_MCTRL_GPIO
+> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+> index 7b73137df7f3..970a292ca418 100644
+> --- a/drivers/tty/serial/Makefile
+> +++ b/drivers/tty/serial/Makefile
+> @@ -89,6 +89,7 @@ obj-$(CONFIG_SERIAL_SIFIVE)	+= sifive.o
+>  obj-$(CONFIG_SERIAL_LITEUART) += liteuart.o
+>  obj-$(CONFIG_SERIAL_SUNPLUS)	+= sunplus-uart.o
+>  obj-$(CONFIG_SERIAL_ESP32)	+= esp32_uart.o
+> +obj-$(CONFIG_SERIAL_ESP32_ACM)	+= esp32_acm.o
+>  
+>  # GPIOLIB helpers for modem control lines
+>  obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
+> diff --git a/drivers/tty/serial/esp32_acm.c b/drivers/tty/serial/esp32_acm.c
+> new file mode 100644
+> index 000000000000..f178e6af93f3
+> --- /dev/null
+> +++ b/drivers/tty/serial/esp32_acm.c
+> @@ -0,0 +1,473 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/console.h>
+> +#include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/serial_core.h>
+> +#include <linux/slab.h>
+> +#include <linux/tty_flip.h>
+> +#include <linux/delay.h>
+> +#include <asm/serial.h>
+> +
+> +#define DRIVER_NAME	"esp32s3-acm"
+> +#define DEV_NAME	"ttyACM"
+> +#define UART_NR		4
+> +
+> +#define ESP32S3_ACM_TX_FIFO_SIZE	64
+> +
+> +#define USB_SERIAL_JTAG_EP1_REG		0x00
+> +#define USB_SERIAL_JTAG_EP1_CONF_REG	0x04
+> +#define USB_SERIAL_JTAG_WR_DONE_MASK				0x00000001
+> +#define USB_SERIAL_JTAG_SERIAL_IN_EP_DATA_FREE_MASK		0x00000002
+> +#define USB_SERIAL_JTAG_SERIAL_OUT_EP_DATA_AVAIL_MASK		0x00000008
+> +#define USB_SERIAL_JTAG_INT_ST_REG	0x0c
+> +#define USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ST_MASK		0x00000004
+> +#define USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ST_MASK		0x00000008
+> +#define USB_SERIAL_JTAG_INT_ENA_REG	0x10
+> +#define USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ENA_MASK	0x00000004
+> +#define USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ENA_MASK		0x00000008
+> +#define USB_SERIAL_JTAG_INT_CLR_REG	0x14
+> +#define USB_SERIAL_JTAG_IN_EP1_ST_REG	0x2c
+> +#define USB_SERIAL_JTAG_IN_EP1_WR_ADDR_MASK			0x000001fc
+> +#define USB_SERIAL_JTAG_IN_EP1_WR_ADDR_SHIFT			2
+> +#define USB_SERIAL_JTAG_OUT_EP1_ST_REG	0x3c
+> +#define USB_SERIAL_JTAG_OUT_EP1_REC_DATA_CNT_MASK		0x007f0000
+> +#define USB_SERIAL_JTAG_OUT_EP1_REC_DATA_CNT_SHIFT		16
+> +
+> +static const struct of_device_id esp32s3_acm_dt_ids[] = {
+> +	{
+> +		.compatible = "esp,esp32s3-acm",
+> +	}, { /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, esp32s3_acm_dt_ids);
+> +
+> +static struct uart_port *esp32s3_acm_ports[UART_NR];
+> +
+> +static void esp32s3_acm_write(struct uart_port *port, unsigned long reg, u32 v)
+> +{
+> +	writel(v, port->membase + reg);
+> +}
+> +
+> +static u32 esp32s3_acm_read(struct uart_port *port, unsigned long reg)
+> +{
+> +	return readl(port->membase + reg);
+> +}
+> +
+> +static u32 esp32s3_acm_tx_fifo_free(struct uart_port *port)
+> +{
+> +	return esp32s3_acm_read(port, USB_SERIAL_JTAG_EP1_CONF_REG) &
+> +		USB_SERIAL_JTAG_SERIAL_IN_EP_DATA_FREE_MASK;
+> +}
+> +
+> +static u32 esp32s3_acm_tx_fifo_cnt(struct uart_port *port)
+> +{
+> +	u32 status = esp32s3_acm_read(port, USB_SERIAL_JTAG_IN_EP1_ST_REG);
+> +
+> +	return (status & USB_SERIAL_JTAG_IN_EP1_WR_ADDR_MASK) >>
+> +		USB_SERIAL_JTAG_IN_EP1_WR_ADDR_SHIFT;
+> +}
+> +
+> +static u32 esp32s3_acm_rx_fifo_cnt(struct uart_port *port)
+> +{
+> +	u32 status = esp32s3_acm_read(port, USB_SERIAL_JTAG_OUT_EP1_ST_REG);
+> +
+> +	return (status & USB_SERIAL_JTAG_OUT_EP1_REC_DATA_CNT_MASK) >>
+> +		USB_SERIAL_JTAG_OUT_EP1_REC_DATA_CNT_SHIFT;
+> +}
+> +
+> +/* return TIOCSER_TEMT when transmitter is not busy */
+> +static unsigned int esp32s3_acm_tx_empty(struct uart_port *port)
+> +{
+> +	return esp32s3_acm_tx_fifo_cnt(port) == 0 ? TIOCSER_TEMT : 0;
+> +}
+> +
+> +static void esp32s3_acm_set_mctrl(struct uart_port *port, unsigned int mctrl)
+> +{
+> +}
+> +
+> +static unsigned int esp32s3_acm_get_mctrl(struct uart_port *port)
+> +{
+> +	return TIOCM_CAR;
+> +}
+> +
+> +static void esp32s3_acm_stop_tx(struct uart_port *port)
+> +{
+> +	u32 int_ena;
+> +
+> +	int_ena = esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_ENA_REG);
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> +			  int_ena & ~USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ENA_MASK);
+> +}
+> +
+> +static void esp32s3_acm_rxint(struct uart_port *port)
+> +{
+> +	struct tty_port *tty_port = &port->state->port;
+> +	u32 rx_fifo_cnt = esp32s3_acm_rx_fifo_cnt(port);
+> +	unsigned long flags;
+> +	u32 i;
+> +
+> +	if (!rx_fifo_cnt)
+> +		return;
+> +
+> +	spin_lock_irqsave(&port->lock, flags);
+> +
+> +	for (i = 0; i < rx_fifo_cnt; ++i) {
+> +		u32 rx = esp32s3_acm_read(port, USB_SERIAL_JTAG_EP1_REG);
+> +
+> +		++port->icount.rx;
+> +		tty_insert_flip_char(tty_port, rx, TTY_NORMAL);
+> +	}
+> +	spin_unlock_irqrestore(&port->lock, flags);
+> +
+> +	tty_flip_buffer_push(tty_port);
+> +}
+> +
+> +static void esp32s3_acm_push(struct uart_port *port)
+> +{
+> +	if (esp32s3_acm_tx_fifo_free(port))
+> +		esp32s3_acm_write(port, USB_SERIAL_JTAG_EP1_CONF_REG,
+> +				  USB_SERIAL_JTAG_WR_DONE_MASK);
+> +}
+> +
+> +static void esp32s3_acm_put_char(struct uart_port *port, unsigned char c)
+> +{
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_EP1_REG, c);
+> +}
+> +
+> +static void esp32s3_acm_put_char_sync(struct uart_port *port, unsigned char c)
+> +{
+> +	while (!esp32s3_acm_tx_fifo_free(port))
+> +		cpu_relax();
+> +	esp32s3_acm_put_char(port, c);
+> +	esp32s3_acm_push(port);
+> +}
+> +
+> +static void esp32s3_acm_transmit_buffer(struct uart_port *port)
+> +{
+> +	struct circ_buf *xmit = &port->state->xmit;
+> +	u32 tx_fifo_used = esp32s3_acm_tx_fifo_cnt(port);
+> +
+> +	if (esp32s3_acm_tx_fifo_free(port)) {
+> +		while (!uart_circ_empty(xmit) && tx_fifo_used < ESP32S3_ACM_TX_FIFO_SIZE) {
+> +			esp32s3_acm_put_char(port, xmit->buf[xmit->tail]);
+> +			xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
+> +			port->icount.tx++;
+> +			++tx_fifo_used;
+> +		}
+> +	}
+> +
+> +	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+> +		uart_write_wakeup(port);
+> +
+> +	if (uart_circ_empty(xmit)) {
+> +		esp32s3_acm_stop_tx(port);
+> +	} else {
+> +		u32 int_ena;
+> +
+> +		int_ena = esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_ENA_REG);
+> +		esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> +				  int_ena | USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ENA_MASK);
+> +	}
+> +
+> +	if (tx_fifo_used > 0 && tx_fifo_used < ESP32S3_ACM_TX_FIFO_SIZE)
+> +		esp32s3_acm_write(port, USB_SERIAL_JTAG_EP1_CONF_REG,
+> +				  USB_SERIAL_JTAG_WR_DONE_MASK);
+> +}
+> +
+> +static void esp32s3_acm_txint(struct uart_port *port)
+> +{
+> +	esp32s3_acm_transmit_buffer(port);
+> +}
+> +
+> +static irqreturn_t esp32s3_acm_int(int irq, void *dev_id)
+> +{
+> +	struct uart_port *port = dev_id;
+> +	u32 status;
+> +
+> +	status = esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_ST_REG);
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_CLR_REG, status);
+> +
+> +	if (status & USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ST_MASK)
+> +		esp32s3_acm_rxint(port);
+> +	if (status & USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ST_MASK)
+> +		esp32s3_acm_txint(port);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void esp32s3_acm_start_tx(struct uart_port *port)
+> +{
+> +	esp32s3_acm_transmit_buffer(port);
+> +}
+> +
+> +static void esp32s3_acm_stop_rx(struct uart_port *port)
+> +{
+> +	u32 int_ena;
+> +
+> +	int_ena = esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_ENA_REG);
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> +			  int_ena & ~USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ENA_MASK);
+> +}
+> +
+> +static int esp32s3_acm_startup(struct uart_port *port)
+> +{
+> +	int ret = 0;
+> +
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> +			  USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ENA_MASK);
+> +	ret = devm_request_irq(port->dev, port->irq, esp32s3_acm_int, 0,
+> +			       DRIVER_NAME, port);
+> +	return ret;
+> +}
+> +
+> +static void esp32s3_acm_shutdown(struct uart_port *port)
+> +{
+> +	esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG, 0);
+> +	devm_free_irq(port->dev, port->irq, port);
+> +}
+> +
+> +static void esp32s3_acm_set_termios(struct uart_port *port,
+> +				    struct ktermios *termios,
+> +				    const struct ktermios *old)
+> +{
+> +}
+> +
+> +static const char *esp32s3_acm_type(struct uart_port *port)
+> +{
+> +	return "ESP32S3 ACM";
+> +}
+> +
+> +/* configure/auto-configure the port */
+> +static void esp32s3_acm_config_port(struct uart_port *port, int flags)
+> +{
+> +	if (flags & UART_CONFIG_TYPE)
+> +		port->type = PORT_ESP32ACM;
+> +}
+> +
+> +#ifdef CONFIG_CONSOLE_POLL
+> +static void esp32s3_acm_poll_put_char(struct uart_port *port, unsigned char c)
+> +{
+> +	esp32s3_acm_put_char_sync(port, c);
+> +}
+> +
+> +static int esp32s3_acm_poll_get_char(struct uart_port *port)
+> +{
+> +	if (esp32s3_acm_rx_fifo_cnt(port))
+> +		return esp32s3_acm_read(port, USB_SERIAL_JTAG_EP1_REG);
+> +	else
+> +		return NO_POLL_CHAR;
+> +
+> +}
+> +#endif
+> +
+> +static const struct uart_ops esp32s3_acm_pops = {
+> +	.tx_empty	= esp32s3_acm_tx_empty,
+> +	.set_mctrl	= esp32s3_acm_set_mctrl,
+> +	.get_mctrl	= esp32s3_acm_get_mctrl,
+> +	.stop_tx	= esp32s3_acm_stop_tx,
+> +	.start_tx	= esp32s3_acm_start_tx,
+> +	.stop_rx	= esp32s3_acm_stop_rx,
+> +	.startup	= esp32s3_acm_startup,
+> +	.shutdown	= esp32s3_acm_shutdown,
+> +	.set_termios	= esp32s3_acm_set_termios,
+> +	.type		= esp32s3_acm_type,
+> +	.config_port	= esp32s3_acm_config_port,
+> +#ifdef CONFIG_CONSOLE_POLL
+> +	.poll_put_char	= esp32s3_acm_poll_put_char,
+> +	.poll_get_char	= esp32s3_acm_poll_get_char,
+> +#endif
+> +};
+> +
+> +static void esp32s3_acm_console_putchar(struct uart_port *port, unsigned char c)
+> +{
+> +	esp32s3_acm_put_char_sync(port, c);
+> +}
+> +
+> +static void esp32s3_acm_string_write(struct uart_port *port, const char *s,
+> +				     unsigned int count)
+> +{
+> +	uart_console_write(port, s, count, esp32s3_acm_console_putchar);
+> +}
+> +
+> +static void
+> +esp32s3_acm_console_write(struct console *co, const char *s, unsigned int count)
+> +{
+> +	struct uart_port *port = esp32s3_acm_ports[co->index];
+> +	unsigned long flags;
+> +	int locked = 1;
+> +
+> +	if (port->sysrq)
+> +		locked = 0;
+> +	else if (oops_in_progress)
+> +		locked = spin_trylock_irqsave(&port->lock, flags);
+> +	else
+> +		spin_lock_irqsave(&port->lock, flags);
+> +
+> +	esp32s3_acm_string_write(port, s, count);
+> +
+> +	if (locked)
+> +		spin_unlock_irqrestore(&port->lock, flags);
+> +}
+> +
+> +static struct uart_driver esp32s3_acm_reg;
+> +static struct console esp32s3_acm_console = {
+> +	.name		= DEV_NAME,
+> +	.write		= esp32s3_acm_console_write,
+> +	.device		= uart_console_device,
+> +	.flags		= CON_PRINTBUFFER,
+> +	.index		= -1,
+> +	.data		= &esp32s3_acm_reg,
+> +};
+> +
+> +static void esp32s3_acm_earlycon_putchar(struct uart_port *port, unsigned char c)
+> +{
+> +	esp32s3_acm_put_char_sync(port, c);
+> +}
+> +
+> +static void esp32s3_acm_earlycon_write(struct console *con, const char *s,
+> +				      unsigned int n)
+> +{
+> +	struct earlycon_device *dev = con->data;
+> +
+> +	uart_console_write(&dev->port, s, n, esp32s3_acm_earlycon_putchar);
+> +}
+> +
+> +#ifdef CONFIG_CONSOLE_POLL
+> +static int esp32s3_acm_earlycon_read(struct console *con, char *s, unsigned int n)
+> +{
+> +	struct earlycon_device *dev = con->data;
+> +	int num_read = 0;
+> +
+> +	while (num_read < n) {
+> +		int c = esp32s3_acm_poll_get_char(&dev->port);
+> +
+> +		if (c == NO_POLL_CHAR)
+> +			break;
+> +		s[num_read++] = c;
+> +	}
+> +	return num_read;
+> +}
+> +#endif
+> +
+> +static int __init esp32s3_acm_early_console_setup(struct earlycon_device *device,
+> +						   const char *options)
+> +{
+> +	if (!device->port.membase)
+> +		return -ENODEV;
+> +
+> +	device->con->write = esp32s3_acm_earlycon_write;
+> +#ifdef CONFIG_CONSOLE_POLL
+> +	device->con->read = esp32s3_acm_earlycon_read;
+> +#endif
+> +	return 0;
+> +}
+> +
+> +OF_EARLYCON_DECLARE(esp32s3acm, "esp,esp32s3-acm",
+> +		    esp32s3_acm_early_console_setup);
+> +
+> +static struct uart_driver esp32s3_acm_reg = {
+> +	.owner		= THIS_MODULE,
+> +	.driver_name	= DRIVER_NAME,
+> +	.dev_name	= DEV_NAME,
+> +	.nr		= ARRAY_SIZE(esp32s3_acm_ports),
+> +	.cons		= &esp32s3_acm_console,
+> +};
+> +
+> +static int esp32s3_acm_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct uart_port *port;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	port = devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
+> +	if (!port)
+> +		return -ENOMEM;
+> +
+> +	ret = of_alias_get_id(np, "serial");
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev, "failed to get alias id, errno %d\n", ret);
+> +		return ret;
+> +	}
+> +	if (ret >= UART_NR) {
+> +		dev_err(&pdev->dev, "driver limited to %d serial ports\n",
+> +			UART_NR);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	port->line = ret;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res)
+> +		return -ENODEV;
+> +
+> +	port->mapbase = res->start;
+> +	port->membase = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(port->membase))
+> +		return PTR_ERR(port->membase);
+> +
+> +	port->dev = &pdev->dev;
+> +	port->type = PORT_ESP32ACM;
+> +	port->iotype = UPIO_MEM;
+> +	port->irq = platform_get_irq(pdev, 0);
+> +	port->ops = &esp32s3_acm_pops;
+> +	port->flags = UPF_BOOT_AUTOCONF;
+> +	port->has_sysrq = 1;
+> +	port->fifosize = ESP32S3_ACM_TX_FIFO_SIZE;
+> +
+> +	esp32s3_acm_ports[port->line] = port;
+> +
+> +	platform_set_drvdata(pdev, port);
+> +
+> +	ret = uart_add_one_port(&esp32s3_acm_reg, port);
+> +	return ret;
+> +}
+> +
+> +static int esp32s3_acm_remove(struct platform_device *pdev)
+> +{
+> +	struct uart_port *port = platform_get_drvdata(pdev);
+> +
+> +	uart_remove_one_port(&esp32s3_acm_reg, port);
+> +	return 0;
+> +}
+> +
+> +
+> +static struct platform_driver esp32s3_acm_driver = {
+> +	.probe		= esp32s3_acm_probe,
+> +	.remove		= esp32s3_acm_remove,
+> +	.driver		= {
+> +		.name	= DRIVER_NAME,
+> +		.of_match_table	= esp32s3_acm_dt_ids,
+> +	},
+> +};
+> +
+> +static int __init esp32s3_acm_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = uart_register_driver(&esp32s3_acm_reg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = platform_driver_register(&esp32s3_acm_driver);
+> +	if (ret)
+> +		uart_unregister_driver(&esp32s3_acm_reg);
+> +
+> +	return ret;
+> +}
+> +
+> +static void __exit esp32s3_acm_exit(void)
+> +{
+> +	platform_driver_unregister(&esp32s3_acm_driver);
+> +	uart_unregister_driver(&esp32s3_acm_reg);
+> +}
+> +
+> +module_init(esp32s3_acm_init);
+> +module_exit(esp32s3_acm_exit);
+> +
+> +MODULE_DESCRIPTION("Espressif ESP32S3 USB ACM driver.");
+> +MODULE_AUTHOR("Max Filippov <jcmvbkbc@gmail.com>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/serial_core.h
+> index ff076d6be159..1045bf096837 100644
+> --- a/include/uapi/linux/serial_core.h
+> +++ b/include/uapi/linux/serial_core.h
+> @@ -248,4 +248,7 @@
+>  /* Espressif ESP32 UART */
+>  #define PORT_ESP32UART	124
+>  
+> +/* Espressif ESP32 ACM */
+> +#define PORT_ESP32ACM	125
+> +
+>  #endif /* _UAPILINUX_SERIAL_CORE_H */
 > 
-> The diff below is my two cents (only for thoughts).
-> 
-
-I'm thinking something like below. (Completely untested.)
-
-I haven't checked IRQ state handling. But in the last diff chunk, why raw_spin_unlock_irqrestore()
-(which does not re-enable IRQs if the caller already disabled IRQs) is used before calling the callback
-function and raw_spin_lock_irq() (which always disables IRQs) is used after calling the callback
-function? Is it legal to disable IRQs again when the caller already disabled IRQs?
-
-----------------------------------------
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 0ee140176f10..5640730ec31c 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -123,8 +123,11 @@ struct hrtimer {
- 	u8				state;
- 	u8				is_rel;
- 	u8				is_soft;
- 	u8				is_hard;
-+#ifdef CONFIG_LOCKDEP
-+	struct lockdep_map lockdep_map;
-+#endif
- };
- 
- /**
-  * struct hrtimer_sleeper - simple sleeper structure
-@@ -440,15 +443,15 @@ static inline void hrtimer_restart(struct hrtimer *timer)
- 	hrtimer_start_expires(timer, HRTIMER_MODE_ABS);
- }
- 
- /* Query timers: */
--extern ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust);
-+extern ktime_t __hrtimer_get_remaining(struct hrtimer *timer, bool adjust);
- 
- /**
-  * hrtimer_get_remaining - get remaining time for the timer
-  * @timer:	the timer to read
-  */
--static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-+static inline ktime_t hrtimer_get_remaining(struct hrtimer *timer)
- {
- 	return __hrtimer_get_remaining(timer, false);
- }
- 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 238262e4aba7..fe0681d34b56 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -161,14 +161,23 @@ static inline bool is_migration_base(struct hrtimer_clock_base *base)
-  * possible to set timer->base = &migration_base and drop the lock: the timer
-  * remains locked.
-  */
- static
--struct hrtimer_clock_base *lock_hrtimer_base(const struct hrtimer *timer,
-+struct hrtimer_clock_base *lock_hrtimer_base(struct hrtimer *timer,
- 					     unsigned long *flags)
- 	__acquires(&timer->base->lock)
- {
- 	struct hrtimer_clock_base *base;
- 
-+#ifdef CONFIG_LOCKDEP
-+	unsigned long flags2;
-+
-+	local_irq_save(flags2);
-+	lock_map_acquire(&timer->lockdep_map);
-+	lock_map_release(&timer->lockdep_map);
-+	local_irq_restore(flags2);
-+#endif
-+
- 	for (;;) {
- 		base = READ_ONCE(timer->base);
- 		if (likely(base != &migration_base)) {
- 			raw_spin_lock_irqsave(&base->cpu_base->lock, *flags);
-@@ -1456,9 +1465,9 @@ EXPORT_SYMBOL_GPL(hrtimer_cancel);
-  * __hrtimer_get_remaining - get remaining time for the timer
-  * @timer:	the timer to read
-  * @adjust:	adjust relative timers when CONFIG_TIME_LOW_RES=y
-  */
--ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust)
-+ktime_t __hrtimer_get_remaining(struct hrtimer *timer, bool adjust)
- {
- 	unsigned long flags;
- 	ktime_t rem;
- 
-@@ -1574,8 +1583,14 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
- 	timer->is_soft = softtimer;
- 	timer->is_hard = !!(mode & HRTIMER_MODE_HARD);
- 	timer->base = &cpu_base->clock_base[base];
- 	timerqueue_init(&timer->node);
-+#ifdef CONFIG_LOCKDEP
-+	{
-+		static struct lock_class_key __key;
-+		lockdep_init_map(&timer->lockdep_map, "hrtimer", &__key, 0);
-+	}
-+#endif
- }
- 
- /**
-  * hrtimer_init - initialize a timer to the given clock
-@@ -1684,9 +1699,19 @@ static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
- 	raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
- 	trace_hrtimer_expire_entry(timer, now);
- 	expires_in_hardirq = lockdep_hrtimer_enter(timer);
- 
-+#ifdef CONFIG_LOCKDEP
-+	local_irq_save(flags);
-+	lock_map_acquire(&timer->lockdep_map);
-+	local_irq_restore(flags);
-+#endif
- 	restart = fn(timer);
-+#ifdef CONFIG_LOCKDEP
-+	local_irq_save(flags);
-+	lock_map_release(&timer->lockdep_map);
-+	local_irq_restore(flags);
-+#endif
- 
- 	lockdep_hrtimer_exit(expires_in_hardirq);
- 	trace_hrtimer_expire_exit(timer);
- 	raw_spin_lock_irq(&cpu_base->lock);
-----------------------------------------
-
