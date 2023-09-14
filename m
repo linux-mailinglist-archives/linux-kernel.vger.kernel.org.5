@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA697A0F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88FE7A0F16
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjINUfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
+        id S229763AbjINUkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjINUfH (ORCPT
+        with ESMTP id S229593AbjINUkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:35:07 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FCD19A6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:35:02 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc0d39b52cso11919125ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:35:02 -0700 (PDT)
+        Thu, 14 Sep 2023 16:40:02 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F3B269D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:39:54 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59bd2e19c95so16583667b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:39:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694723702; x=1695328502; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1694723994; x=1695328794; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RUZ4tKWNQQW/M0sqK1AFluw87RumzXnsJH+qNtjEDz0=;
-        b=sqAe8VJdxqO7wolyV170SCy2crJiWjg3DF6yg4dJLPkKIR77AR8exHgYRHNWUJsdCL
-         TRrKpr6JnLxpoDviwVR6q3IQyzqmiKOqlJ0wR7/qyq1gN6bZNhS+E6C8nPgVu3DFNCY9
-         T/StOfcuxjsIcDR18FXvguZ55t+Pi1g30gzdBL+8DKqbx0AHEvi00i6Q7i5qszSt117M
-         niOhMDseDETaPzb/FQCuorhfzuuWF0v3LEyyu7KzSq1Wp5IJLrCXVsRsMDP3f2KniIFU
-         YiWOoThyZ/EO+tcedVpuAD0jB1oozMjchlKrqhGVFrhvUOnWhBOTb2rIA9mXVG3KQFJO
-         Sleg==
+        bh=NaSIjMfdl0Gv6CgKXRD6SAmPWndDpWS6dyBZZ4689K4=;
+        b=N5vvMHout599KVr+BGn43S8hqeXB+KRKk6fLGZeqH/6Sa/KHg2mV1dqbVR4OAGBegk
+         Ji5qkNbtns/pRRU4ch0nMHYxILVIki++jUhPsRYJEzKDXwQ3uR6+euAmw7kIRxHk34NN
+         t6m3FY6bN7ptMEUgR4bI3pPfJwdUF1GcsxBDRvFIsHARq4ZzeSAaeHrZD4DvmpJG2usa
+         A6+OMkrr3cpHV9CqRMrtKpuRRz5Tz5V/koYSkndU4SRwuaxDvcx4LjBYwxfELnfuT5i3
+         48NTSzk/fqv2BDjyvYRESc8yRbNb4U+EQY62len0BNjVClZ73w1Zao5CdVDH9iS4jADm
+         eMhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694723702; x=1695328502;
+        d=1e100.net; s=20230601; t=1694723994; x=1695328794;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RUZ4tKWNQQW/M0sqK1AFluw87RumzXnsJH+qNtjEDz0=;
-        b=Rb+Rnt8CMw+t3hgBtClQfkhTLACVA9CB1vqnAtRo+kwaE01pXv9RnK8n8bvsEWCdxS
-         x8xwlRVxLmVunBlycmne1G4mg9q8HS1bYXxrLRAOF3sHrY5suLnGz3Ye54YjiMuWDWV0
-         UOaA/iCIFlko3l49fXeJ6aZNmfIsYo1EVbQyEfNt1tCFNWbwZfXDFCrI7sEld/o4R2Ln
-         yhp2x9Sob1dFq4wFJnzpeMuML/WTdXS4BIeC/1cikiiG8vPrUmzro7SRv982mhMFzgHK
-         J5yOAFm2kAwPOI0sanexrnyAwQzi5cXwo61lCnNzo5xrHipFbw++4bqyHeORRgH/oao2
-         fwpA==
-X-Gm-Message-State: AOJu0YwcoAnzzqi7hjJRKIHD1nDW0QJpGCXHYLbGTROHbbej7SvNk+fK
-        9yHFEYSGuBQYGS0lo3ewtqPy198vCFJDRyj7+aDGjFdw
-X-Google-Smtp-Source: AGHT+IFOJYurVLTveCv5tcbwSznaQ3Y77VJdYi4b/nk55QYpjNA4y8dRl/UXfJkyqn2rnYbR9kkKMwrpX3nyJfCj+2c=
-X-Received: by 2002:a17:902:c949:b0:1c3:ea60:73e2 with SMTP id
- i9-20020a170902c94900b001c3ea6073e2mr7674254pla.27.1694723702114; Thu, 14 Sep
- 2023 13:35:02 -0700 (PDT)
+        bh=NaSIjMfdl0Gv6CgKXRD6SAmPWndDpWS6dyBZZ4689K4=;
+        b=R/cTEKLJA626Ulb32710BFY5Ip0Lo7zZmYwXJ4WgKrIOI9c3JYxk8LwUoLm3Dtxkv7
+         lBgvU85qn6n4jTvP4nnTLvC27geIQ2T9xdSvL+rUmMvAGANNJRU8HxN+MG4RskNIfHlf
+         jZH4BYGlPXQMhFzLxCht0vnTTELoJWQX5PXLSIR7wNKgnTtsNuFbaHmeu899y3K2iiHH
+         79TqK89pFdDYM3mHLFf5zdnJxGjjHwSaWfw6c+l20ai95ASKU+6UCs3Okk56DPc+BDCn
+         mOli0AaHke+MtUfmEEOkI0K0rLZIGFLZ4xINGSwNFyA3ZCMkzIx2Zmnz13mQ7W6q5YYV
+         Oq1g==
+X-Gm-Message-State: AOJu0Yy6jnihhdCVGDyvOskZTHic81XDqiq8EVxAvtwcV2K13jpxGGg4
+        EzhVGhtvMNb1tTF1dRenXNmbbH8oDCtYrCc02aDj
+X-Google-Smtp-Source: AGHT+IHq8rrjq9tCJqLC7OfNa2hY3WISMCd4iUOBtPL6TwaHsYbzZZlii/9C2ThIbkYmqI7J/8s3pycN3nmMnaBACaI=
+X-Received: by 2002:a0d:c942:0:b0:577:189b:ad4 with SMTP id
+ l63-20020a0dc942000000b00577189b0ad4mr6892155ywd.48.1694723994051; Thu, 14
+ Sep 2023 13:39:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230914080833.50026-1-haibo.li@mediatek.com> <20230914112915.81f55863c0450195b4ed604a@linux-foundation.org>
-In-Reply-To: <20230914112915.81f55863c0450195b4ed604a@linux-foundation.org>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 14 Sep 2023 22:34:51 +0200
-Message-ID: <CA+fCnZemM-jJxX+=2W162NJkUC6aZXNJiVLa-=ia=L3CmE8ZTQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Haibo Li <haibo.li@mediatek.com>, linux-kernel@vger.kernel.org,
-        xiaoming.yu@mediatek.com, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
+In-Reply-To: <20230913152238.905247-3-mszeredi@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 14 Sep 2023 16:39:43 -0400
+Message-ID: <CAHC9VhSQb0fYz9FqEu-1jQ1UNsnt-asrKuPt4ufui92GC+=5=Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 8:29=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
-> > --- a/mm/kasan/kasan.h
-> > +++ b/mm/kasan/kasan.h
-> > @@ -304,8 +304,17 @@ static __always_inline bool addr_has_metadata(cons=
-t void *addr)
-> >  #ifdef __HAVE_ARCH_SHADOW_MAP
-> >       return (kasan_mem_to_shadow((void *)addr) !=3D NULL);
-> >  #else
-> > -     return (kasan_reset_tag(addr) >=3D
-> > -             kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
-> > +     u8 *shadow, shadow_val;
-> > +
-> > +     if (kasan_reset_tag(addr) <
-> > +             kasan_shadow_to_mem((void *)KASAN_SHADOW_START))
-> > +             return false;
-> > +     /* use read with nofault to check whether the shadow is accessibl=
-e */
-> > +     shadow =3D kasan_mem_to_shadow((void *)addr);
-> > +     __get_kernel_nofault(&shadow_val, shadow, u8, fault);
-> > +     return true;
-> > +fault:
-> > +     return false;
-> >  #endif
-> >  }
+On Wed, Sep 13, 2023 at 11:23=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.co=
+m> wrote:
 >
-> Are we able to identify a Fixes: target for this?
-> 9d7b7dd946924de43021f57a8bee122ff0744d93 ("kasan: split out
-> print_report from __kasan_report") altered the code but I expect the
-> bug was present before that commit.
+> Add a way to query attributes of a single mount instead of having to pars=
+e
+> the complete /proc/$PID/mountinfo, which might be huge.
 >
-> Seems this bug has been there for over a year.  Can you suggest why it
-> has been discovered after such a lengthy time?
+> Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+> needs to be queried based on path, then statx(2) can be used to first que=
+ry
+> the mount ID belonging to the path.
+>
+> Design is based on a suggestion by Linus:
+>
+>   "So I'd suggest something that is very much like "statfsat()", which ge=
+ts
+>    a buffer and a length, and returns an extended "struct statfs" *AND*
+>    just a string description at the end."
+>
+> The interface closely mimics that of statx.
+>
+> Handle ASCII attributes by appending after the end of the structure (as p=
+er
+> above suggestion).  Allow querying multiple string attributes with
+> individual offset/length for each.  String are nul terminated (terminatio=
+n
+> isn't counted in length).
+>
+> Mount options are also delimited with nul characters.  Unlike proc, speci=
+al
+> characters are not quoted.
+>
+> Link: https://lore.kernel.org/all/CAHk-=3Dwh5YifP7hzKSbwJj94+DZ2czjrZsczy=
+6GBimiogZws=3Drg@mail.gmail.com/
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> ---
+>  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+>  fs/internal.h                          |   5 +
+>  fs/namespace.c                         | 312 ++++++++++++++++++++++++-
+>  fs/proc_namespace.c                    |  19 +-
+>  fs/statfs.c                            |   1 +
+>  include/linux/syscalls.h               |   3 +
+>  include/uapi/asm-generic/unistd.h      |   5 +-
+>  include/uapi/linux/mount.h             |  36 +++
+>  8 files changed, 373 insertions(+), 9 deletions(-)
 
-Accessing unmapped memory with KASAN always led to a crash when
-checking shadow memory. This was reported/discussed before. To improve
-crash reporting for this case, Jann added kasan_non_canonical_hook and
-Mark integrated it into arm64. But AFAIU, for some reason, it stopped
-working.
+...
 
-Instead of this patch, we need to figure out why
-kasan_non_canonical_hook stopped working and fix it.
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index de47c5f66e17..088a52043bba 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
 
-This approach taken by this patch won't work for shadow checks added
-by compiler instrumentation. It only covers explicitly checked
-accesses, such as via memcpy, etc.
+...
+
+> +static int do_statmnt(struct stmt_state *s)
+> +{
+> +       struct statmnt *sm =3D &s->sm;
+> +       struct mount *m =3D real_mount(s->mnt);
+> +
+> +       if (!capable(CAP_SYS_ADMIN) &&
+> +           !is_path_reachable(m, m->mnt.mnt_root, &s->root))
+> +               return -EPERM;
+
+I realize statmnt() is different from fstatfs(), but from an access
+control perspective they look a lot alike to me which is why I think
+we should probably have a security_sb_statfs() call here.  Same thing
+for the listmnt() syscall in patch 3/3.
+
+> +       stmt_numeric(s, STMT_SB_BASIC, stmt_sb_basic);
+> +       stmt_numeric(s, STMT_MNT_BASIC, stmt_mnt_basic);
+> +       stmt_numeric(s, STMT_PROPAGATE_FROM, stmt_propagate_from);
+> +       stmt_string(s, STMT_MNT_ROOT, stmt_mnt_root, &sm->mnt_root);
+> +       stmt_string(s, STMT_MOUNTPOINT, stmt_mountpoint, &sm->mountpoint)=
+;
+> +       stmt_string(s, STMT_FS_TYPE, stmt_fs_type, &sm->fs_type);
+> +       stmt_string(s, STMT_SB_OPTS, stmt_sb_opts, &sm->sb_opts);
+> +
+> +       if (s->err)
+> +               return s->err;
+> +
+> +       if (copy_to_user(s->buf, sm, min_t(size_t, s->bufsize, sizeof(*sm=
+))))
+> +               return -EFAULT;
+> +
+> +       return 0;
+> +}
+
+--=20
+paul-moore.com
