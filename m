@@ -2,92 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3527A11DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED3B7A11E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjINXcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
+        id S230310AbjINXg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbjINXcX (ORCPT
+        with ESMTP id S230408AbjINXgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:32:23 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730E71AE;
-        Thu, 14 Sep 2023 16:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694734338;
-        bh=eUWIG1s5BYy4XyEX38uS42u7StqIJ5olVlOcN4LhB+E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=m39VrIb0sCejauUWQgHfa3TANQ1mrm3VDI8e1ykkYBOE6fl6Y9Wa8M+LcKX/7ivBb
-         0QsRRy0r1PzbG21sYhHQpfDqzUUip2RjDbN8js3IH8fHdaFL+gtoT3GaFqM7j8kXL+
-         4AsMU1iULIkRIfvUJXep2x6t6iSGBNTdhG6rVBY/fQSQYN+CqicsWSoYza8kmwN1bR
-         fSbvdiRc4KHBQsSYUnciOErr7HneBw4wjr6Q7T/wgyEMeqjfVmF6orkJSL1fUc8MtZ
-         Om9y/SFpPyJ0Kv4GfMnY156ue+btelqmjo1Iie8sHMfIiZKY3ju5prrY03Y57ekLWS
-         BIlN6iggHanDw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rmtry01HMz4x3D;
-        Fri, 15 Sep 2023 09:32:17 +1000 (AEST)
-Date:   Fri, 15 Sep 2023 09:32:16 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the btrfs tree
-Message-ID: <20230915093216.3fc19bd8@canb.auug.org.au>
+        Thu, 14 Sep 2023 19:36:17 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2B71FE5;
+        Thu, 14 Sep 2023 16:36:13 -0700 (PDT)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38ENYgxH3601720
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 14 Sep 2023 16:34:43 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38ENYgxH3601720
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1694734484;
+        bh=HfDqs1jBqLi+wrOAc4wIZvejTylBZZBdkCZqJwfRfd0=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=h+aH6y0bTuApWxxD0FGjLZCir3TsFygt5Z9SAiZwA3JAE+f+OJHnzcCQksobB7fOf
+         5t1gZi7cIwWXVEB01lFLGAHBgIpv4fcHjY9QNMiSrQuPZeBGcRpKbeMXty4ZIfYedU
+         1tv3IuQNIPxZHrs7YDo6Vrvah8hW583SZzsPGiIls3jmL6PB3fn61Gr3Vh2AL8DSxq
+         tVtSK31u2cUqkmrWiK8GuIEiYQtSyKLVTjVkXiAhLjIKrXRZsdB84Y60zEamLvptpU
+         8+0m+otGzcTNZ6tpxE8ZrDlZRbLCc1IY2zJrzBoIqmGOuc6Ks130pSbhAGP0zlb08L
+         0YHA1+0T0R5WA==
+Date:   Thu, 14 Sep 2023 16:34:40 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, andrew.cooper3@citrix.com,
+        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+CC:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
+        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
+        ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        jiangshanlai@gmail.com
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87y1h81ht4.ffs@tglx>
+References: <20230914044805.301390-1-xin3.li@intel.com> <20230914044805.301390-4-xin3.li@intel.com> <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
+Message-ID: <B93766B5-563E-401D-A1EF-579077CAEE82@zytor.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VHxI9Oqo.fa8Xafcy.+8gOV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VHxI9Oqo.fa8Xafcy.+8gOV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On September 14, 2023 4:00:39 PM PDT, Thomas Gleixner <tglx@linutronix=2Ede=
+> wrote:
+>Andrew!
+>
+>On Thu, Sep 14 2023 at 15:05, andrew wrote:
+>> On 14/09/2023 5:47 am, Xin Li wrote:
+>>> +static __always_inline void wrmsrns(u32 msr, u64 val)
+>>> +{
+>>> +	__wrmsrns(msr, val, val >> 32);
+>>> +}
+>>
+>> This API works in terms of this series where every WRMSRNS is hidden
+>> behind a FRED check, but it's an awkward interface to use anywhere else
+>> in the kernel=2E
+>
+>Agreed=2E
+>
+>> I fully understand that you expect all FRED capable systems to have
+>> WRMSRNS, but it is not a hard requirement and you will end up with
+>> simpler (and therefore better) logic by deleting the dependency=2E
+>
+>According to the CPU folks FRED systems are guaranteed to have WRMSRNS -
+>I asked for that :)=2E It's just not yet documented=2E
+>
+>But that I aside, I agree that we should opt for the safe side with a
+>fallback like the one you have in XEN even for the places which are
+>strictly FRED dependent=2E
+>
+>> As a "normal" user of the WRMSR APIs, the programmer only cares about:
+>>
+>> 1) wrmsr() -> needs to be serialising
+>> 2) wrmsr_ns() -> safe to be non-serialising
+>
+>Correct=2E
+>
+>> In Xen, I added something of the form:
+>>
+>> /* Non-serialising WRMSR, when available=2E=C2=A0 Falls back to a seria=
+lising
+>> WRMSR=2E */
+>> static inline void wrmsr_ns(uint32_t msr, uint32_t lo, uint32_t hi)
+>> {
+>> =C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0 * WRMSR is 2 bytes=2E=C2=A0 WRMSRNS is 3 bytes=
+=2E=C2=A0 Pad WRMSR with a redundant CS
+>> =C2=A0=C2=A0=C2=A0=C2=A0 * prefix to avoid a trailing NOP=2E
+>> =C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0 alternative_input("=2Ebyte 0x2e; wrmsr",
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "=2Ebyte 0x0f,0x0=
+1,0xc6", X86_FEATURE_WRMSRNS,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "c" (msr), "a" (l=
+o), "d" (hi));
+>> }
+>>
+>> and despite what Juergen said, I'm going to recommend that you do wire
+>> this through the paravirt infrastructure, for the benefit of regular
+>> users having a nice API, not because XenPV is expecting to do something
+>> wildly different here=2E
+>
+>I fundamentaly hate adding this to the PV infrastructure=2E We don't want
+>more PV ops, quite the contrary=2E
+>
+>For the initial use case at hand, there is an explicit FRED dependency
+>and the code in question really wants to use WRMSRNS directly and not
+>through a PV function call=2E
+>
+>I agree with your reasoning for the more generic use case where we can
+>gain performance independent of FRED by using WRMSRNS for cases where
+>the write has no serialization requirements=2E
+>
+>But this made me look into PV ops some more=2E For actual performance
+>relevant code the current PV ops mechanics are a horrorshow when the op
+>defaults to the native instruction=2E
+>
+>Let's look at wrmsrl():
+>
+>wrmsrl(msr, val
+> wrmsr(msr, (u32)val, (u32)val >> 32))
+>  paravirt_write_msr(msr, low, high)
+>    PVOP_VCALL3(cpu=2Ewrite_msr, msr, low, high)
+>
+>Which results in
+>
+>	mov	$msr, %edi
+>	mov	$val, %rdx
+>	mov	%edx, %esi
+>	shr	$0x20, %rdx
+>	call	native_write_msr
+>
+>and native_write_msr() does at minimum:
+>
+>	mov    %edi,%ecx
+>	mov    %esi,%eax
+>	wrmsr
+>        ret
+>
+>In the worst case 'ret' is going through the return thunk=2E Not to talk
+>about function prologues and whatever=2E
+>
+>This becomes even more silly for trivial instructions like STI/CLI or in
+>the worst case paravirt_nop()=2E
+>
+>The call makes only sense, when the native default is an actual
+>function, but for the trivial cases it's a blatant engineering
+>trainwreck=2E
+>
+>I wouldn't care at all if CONFIG_PARAVIRT_XXL would be the esoteric use
+>case, but AFAICT it's default enabled on all major distros=2E
+>
+>So no=2E I'm fundamentally disagreeing with your recommendation=2E The wa=
+y
+>forward is:
+>
+>  1) Provide the native variant for wrmsrns(), i=2Ee=2E rename the propos=
+ed
+>     wrmsrns() to native_wrmsr_ns() and have the X86_FEATURE_WRMSRNS
+>     safety net as you pointed out=2E
+>
+>     That function can be used in code which is guaranteed to be not
+>     affected by the PV_XXL madness=2E
+>
+>  2) Come up with a sensible solution for the PV_XXL horrorshow
+>
+>  3) Implement a sane general variant of wrmsr_ns() which handles
+>     both X86_FEATURE_WRMSRNS and X86_MISFEATURE_PV_XXL
+>
+>  4) Convert other code which benefits from the non-serializing variant
+>     to wrmsr_ns()
+>
+>Thanks,
+>
+>        tglx
+>
 
-Hi all,
+With regards to (2), the IMO only sensible solution is to have the ABI be =
+the one of the native instruction, and to have the PVXXL users take the ful=
+l brunt of the overhead=2E That means that on a native or HVM machine, the =
+proper code gets patched in inline, and the PVXXL code becomes a call to a =
+stub to do the parameter marshalling before walking off back into C ABI lan=
+d=2E The pvop further has to bear the full cost of providing the full nativ=
+e semantics unless otherwise agreed with the native maintainers and explici=
+tly documented what the modified semantics are (notably, having excplicit s=
+tubs for certain specific MSRs is entirely reasonable=2E)
 
-The following commits are also in the btrfs-fixes tree as different
-commits (but the same patches):
+In case this sounds familiar, it is the pvops we were promised over 15 yea=
+rs ago, and yet somehow never really got there=2E It *also* is similar in a=
+n inside-out way of the ABI marshalling used for legacy BIOS functions in t=
+he 16-bit startup code=2E
 
-  5801ee67a0dc ("btrfs: fix race between reading a directory and adding ent=
-ries to it")
-  e663f5e72c50 ("btrfs: fix race when refilling delayed refs block reserve")
-  418040f46bf7 ("btrfs: refresh dir last index during a rewinddir(3) call")
-  9c053ecc08e2 ("btrfs: set last dir index to the current last index when o=
-pening dir")
-  aa97c8e4f2ca ("btrfs: prevent transaction block reserve underflow when st=
-arting transaction")
-  8e7f82deb0c0 ("btrfs: fix race between reading a directory and adding ent=
-ries to it")
-  e60aa5da14d0 ("btrfs: refresh dir last index during a rewinddir(3) call")
-  357950361cbc ("btrfs: set last dir index to the current last index when o=
-pening dir")
+In-place "fat" paravirtualization in the Linux kernel has been a horror sh=
+ow, with the notable exception of UML, which is almost universally ignored =
+but yet manages to stay out of the way and keep working=2E
 
-Some of them are also duplicated within the btrfs tree itself.
+This is a classic case of Tragedy of The Commons, much like burning coal f=
+or power=2E
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VHxI9Oqo.fa8Xafcy.+8gOV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDmAAACgkQAVBC80lX
-0GwusAf/SDxDhOCG4yXVA4Kcb10VbV2yVCX4p5+e3I6gfiQwp1yx2+XzB04kgKNW
-9ueMXEhY0EFXf2JRCrUF4euzSuuLaINLpccMXMdr8C4rX2FKfmel7ma+1yZAnW1O
-cupoUfqdLXy2fvZVumZiIcPwBHPCCTn1G8nRm1k/3BytuxfTk53ZyVEeOBUekTVw
-R2BhY+jTXePGo7oKHp5E9jYJCUsIo4hM/Ti+XbhQW7mAbQvOVtRVia0t0qM56eY1
-3t3LKFyVa9UXqtArHtz7k4iAW3JNosNqcqMvdjNnOKjLPj1/hiKQjQ0GnYibUvzX
-xWvRLqduVt8ybOhFCGY5TN2dJqbt7w==
-=t9F0
------END PGP SIGNATURE-----
-
---Sig_/VHxI9Oqo.fa8Xafcy.+8gOV--
