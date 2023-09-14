@@ -2,70 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E317A0A93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45DD7A0A7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbjINQP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
+        id S236000AbjINQKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjINQPz (ORCPT
+        with ESMTP id S232594AbjINQKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:15:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71341BE1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694708150; x=1726244150;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7cPotS7qBVHdUySEK4zHsKbwDfm1ctKyZV4GD1fx6Sk=;
-  b=W4fwqgRWaPtmKmaBkClYihbNymFwuhs45ss2vsNWgCv2ClfkPkuTYtkk
-   47f7X7fdpMK4MQVZjpgh5fvnv/MfAeHT4NZ6X3hXBF3ih+RLfMdWWWvu4
-   hfc3EO243RlQkBvT5sQVTMYp9nqqhcPsECXnWRqV9jKDR9JclIdQ5XyxC
-   wc/zNNgbJpDdyPVs3FBKzB97eohshjiCdKajbcVgbPnpsXZ6OrQrxLjx3
-   5t1PSWuTOWbm1PT7U7QRmPVYNvT/cJKwcOJR+MSdXzDvISJ6EYLGKQVno
-   qVcYLW6GuIdj2mxzCkfPowsFH/4XDPRkYQKxSjALlU9fSbu072pOZjNpG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="364046115"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="364046115"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 09:09:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="1075445165"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="1075445165"
-Received: from spswartz-mobl.amr.corp.intel.com (HELO [10.209.21.97]) ([10.209.21.97])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 09:09:24 -0700
-Message-ID: <f2642936-75b7-6c64-f3d6-ef3bf7fd8a31@intel.com>
-Date:   Thu, 14 Sep 2023 09:09:22 -0700
+        Thu, 14 Sep 2023 12:10:46 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85F1BF8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:10:42 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EG8qJs010389;
+        Thu, 14 Sep 2023 16:10:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=wxM/CRoD3JKaVnkmsw2ndIN0bmN3lKAlmmoxIO/1ADQ=;
+ b=db84Z3l2Ma3GLDVNLusEIncP22DwWYdzo1c3anhq3g0GCzkhTFQogQCG1lsVgVro71dO
+ Lp8+phjrmaihwlCsZ8NkkXbpkIEF3eLc+sAlgNpcUwAghQKAPjCGfZcKrg2QoMIMP63P
+ Oecb6eBo3QZQ1pJ23J1YM0nXKx4JNQ8lB0K7iSEPoIby+EevnAg+JBW2BryVf7PfK8Iy
+ O7lpkhypPOdIpel520S30TLm0AKnu4BdmEr8Moo5m/35su29IfHOPnD3FtQ+99M3GEVJ
+ cGPua7kgKXzzXxMU6H+s/DDIolg3QtNEJvpjFyNvIWAdk9x5YdthZyZZB7ibyVulE4xC rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4584rax5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 16:10:27 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38EG9ZlL017308;
+        Thu, 14 Sep 2023 16:10:27 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4584rasy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 16:10:26 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38EECXUc024033;
+        Thu, 14 Sep 2023 16:10:25 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131tmjax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 16:10:25 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38EGAOH83342852
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Sep 2023 16:10:24 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF31A58051;
+        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CC2E5805C;
+        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
+Received: from [9.61.37.125] (unknown [9.61.37.125])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
+Message-ID: <54bf92e8-f884-1567-2149-caf638ff8f68@linux.ibm.com>
+Date:   Thu, 14 Sep 2023 09:10:23 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 2/3] Kconfig: Add dependencies of POWER_RESET for x86
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/1] powerpc: fix a memory leak
 Content-Language: en-US
-To:     Yuan Tan <tanyuan@tinylab.org>, tglx@linutronix.de,
-        mingo@redhat.com
-Cc:     bp@alien8.de, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, falcon@tinylab.org,
-        w@1wt.eu, linux@weissschuh.net
-References: <cover.1694687048.git.tanyuan@tinylab.org>
- <0f2cbd3026357a3936c0853057ed41b63db83d59.1694687048.git.tanyuan@tinylab.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <0f2cbd3026357a3936c0853057ed41b63db83d59.1694687048.git.tanyuan@tinylab.org>
+To:     Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230914094620.3379729-1-ruc_gongyuanjun@163.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+In-Reply-To: <20230914094620.3379729-1-ruc_gongyuanjun@163.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ehf7fiFyzaUOI7NGdKsAxMSqMMcW1_UN
+X-Proofpoint-ORIG-GUID: ZG1ahKUKrOA4vxNeAv_OcJngxTe42jz-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 malwarescore=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 03:36, Yuan Tan wrote:
-> x86 and x86_64's power off depends on ACPI and PCI to work. Enable them
-> when POWER_RESET is set for convenience.
+On 9/14/23 02:46, Yuanjun Gong wrote:
+> When one of the methods xive_native_alloc_irq_on_chip, irq_create_mapping
+> or irq_get_handler_data fails, the function will directly return without
+> disposing vinst->name and vinst. Fix it.
+> 
+> Fixes: c20e1e299d93 ("powerpc/vas: Alloc and setup IRQ and trigger port address")
+> Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
+> ---
+>  arch/powerpc/platforms/powernv/vas.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/powernv/vas.c b/arch/powerpc/platforms/powernv/vas.c
+> index b65256a63e87..780740b478f0 100644
+> --- a/arch/powerpc/platforms/powernv/vas.c
+> +++ b/arch/powerpc/platforms/powernv/vas.c
+> @@ -54,7 +54,7 @@ static int init_vas_instance(struct platform_device *pdev)
+>  	struct xive_irq_data *xd;
+>  	uint32_t chipid, hwirq;
+>  	struct resource *res;
+> -	int rc, cpu, vasid;
+> +	int rc, cpu, vasid, ret;
 
-I'm a bit confused by this.
+You can you reuse rc for the return value in the error path instead of
+introducing a new ret variable.
 
-Which code is this referring to, exactly?  Are you saying that no x86
-system can power off or reset unless it supports ACPI or PCI?
+-Tyrel
+
+> 
+>  	rc = of_property_read_u32(dn, "ibm,vas-id", &vasid);
+>  	if (rc) {
+> @@ -102,6 +102,7 @@ static int init_vas_instance(struct platform_device *pdev)
+>  	res = &pdev->resource[3];
+>  	if (res->end > 62) {
+>  		pr_err("Bad 'paste_win_id_shift' in DT, %llx\n", res->end);
+> +		ret = -ENODEV
+>  		goto free_vinst;
+>  	}
+> 
+> @@ -111,21 +112,24 @@ static int init_vas_instance(struct platform_device *pdev)
+>  	if (!hwirq) {
+>  		pr_err("Inst%d: Unable to allocate global irq for chip %d\n",
+>  				vinst->vas_id, chipid);
+> -		return -ENOENT;
+> +		ret = -ENOENT;
+> +		goto free_vinst;
+>  	}
+> 
+>  	vinst->virq = irq_create_mapping(NULL, hwirq);
+>  	if (!vinst->virq) {
+>  		pr_err("Inst%d: Unable to map global irq %d\n",
+>  				vinst->vas_id, hwirq);
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto free_vinst;
+>  	}
+> 
+>  	xd = irq_get_handler_data(vinst->virq);
+>  	if (!xd) {
+>  		pr_err("Inst%d: Invalid virq %d\n",
+>  				vinst->vas_id, vinst->virq);
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto free_vinst;
+>  	}
+> 
+>  	vinst->irq_port = xd->trig_page;
+> @@ -168,7 +172,7 @@ static int init_vas_instance(struct platform_device *pdev)
+>  free_vinst:
+>  	kfree(vinst->name);
+>  	kfree(vinst);
+> -	return -ENODEV;
+> +	return ret;
+> 
+>  }
+> 
+
