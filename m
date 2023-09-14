@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E8579FBD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9B379FBDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbjINGXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        id S235350AbjINGYA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 02:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234896AbjINGXD (ORCPT
+        with ESMTP id S234896AbjINGX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:23:03 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C35E0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:22:59 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a64619d8fbso79168966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694672578; x=1695277378; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7IY6Klcup6lhl/U3i4EA23kuZdk+E7DI+uCdmyLnRtE=;
-        b=jqYrseqPyH21d5ws8e1CcSoeZVI45XIXn1hiUuNUPmrvJ+VQIf6ofDdaNN5dKDVS+M
-         2IwsxHi0e4y5lfzhAdGiiGBAUmuwhFrEgrwjoW1hfMRQYIMBLg112dYI3mfq9Su0ei4D
-         9QDQZLW8dWiemwLj+x0Ag/VaSHk8AUEZwuNbuOr2YNxFDhkHEKG+qPSHldMaEAB7e3SA
-         ruWROaSiycEiaOBgeaPwD0S6EsdY1AfdkcLG4d/4L2WCdtlRyPpYHtfv1Ay0z5OZEcc2
-         2hjNl4r7/b9lbdmRtqSv8BOyoAHSU6LKEG2hemcGunZl0DQhUeMoIjIDIzHPagWOSnDV
-         iUgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694672578; x=1695277378;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7IY6Klcup6lhl/U3i4EA23kuZdk+E7DI+uCdmyLnRtE=;
-        b=MUIBc5HVnYnLjurldea8bOvr2iqOxaKPY0aPiQiQul6mCfYoUwA6njpj+p22l2vKbV
-         8VjSP96rgLMoBnYo577ovUhRWxbxkgio1ibBwYeF7dobB0/e+Dg5UPsxg2uIwo5O9oUr
-         3a+pjrZ01kfsEZsogkcrPezl1pthioxxxR40swAekvGB4VkMj1+Y3zG8k6CQ1tV/30qz
-         VTw4oKyhT4vuoXxP8jpxV54DsfvaqbUBv1U55iXazAE+zeORRk+JcYl7I+9X/KduYjlI
-         7rPxRWFutU4zBhIA7c/znJ8cMsLSMQvQfHj5nrnlD2w0gloLL/5FLPt21GZ5jHEuHz+6
-         ysWQ==
-X-Gm-Message-State: AOJu0Ywy3CapVK2OnmRsHpotjwG7L+O0BYUWUp4R+8PFxcyDKKQP65n+
-        UaPsqtVOwkSID74G7qelBGYKyQ==
-X-Google-Smtp-Source: AGHT+IGKIIEs8IOe0HhBpjx4EsRiO8dHrpPLhJSDgfHSmzRmaGEaG5r/fh7DRpWKCw5ScNBiYpvtxQ==
-X-Received: by 2002:a17:907:7811:b0:9a9:e4f8:3501 with SMTP id la17-20020a170907781100b009a9e4f83501mr3510882ejc.43.1694672577897;
-        Wed, 13 Sep 2023 23:22:57 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id kt27-20020a170906aadb00b0099d959f9536sm527418ejb.12.2023.09.13.23.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 23:22:57 -0700 (PDT)
-Message-ID: <95bf5c64-3fb3-6ee0-4290-3696d4b72883@linaro.org>
-Date:   Thu, 14 Sep 2023 08:22:55 +0200
+        Thu, 14 Sep 2023 02:23:59 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD24A98;
+        Wed, 13 Sep 2023 23:23:54 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.96)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qgflP-002rc2-1L; Thu, 14 Sep 2023 08:23:43 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.96)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qgflP-0030DN-0a; Thu, 14 Sep 2023 08:23:43 +0200
+Message-ID: <70e9fe45ca8bbe2dec5541a0c21bee3de8f82f91.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, linux-sh@vger.kernel.org,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 14 Sep 2023 08:23:42 +0200
+In-Reply-To: <190041c8-2d99-4bc3-adc3-6fbe902c1265@app.fastmail.com>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+         <20230802184849.1019466-4-arnd@kernel.org>
+         <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+         <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+         <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+         <190041c8-2d99-4bc3-adc3-6fbe902c1265@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: input: touchscreen: document Himax
- HX852x(ES)
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff LaBundy <jeff@labundy.com>,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>
-References: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
- <20230913-hx852x-v1-1-9c1ebff536eb@gerhold.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913-hx852x-v1-1-9c1ebff536eb@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 15:25, Stephan Gerhold wrote:
-> Himax HX852x(ES) is a touch panel controller with optional support
-> for capacitive touch keys.
+Hi Arnd!
+
+On Wed, 2023-09-13 at 16:30 +0200, Arnd Bergmann wrote:
+> > In the meantime, there is a v2, which I wasn't aware of when I wrote
+> > my previous email, so perhaps my comment is no longer valid.
+> > "[RFC PATCH v2 00/30] Device Tree support for SH7751 based board"
+> > https://lore.kernel.org/linux-sh/cover.1694596125.git.ysato@users.sourceforge.jp
 > 
-> Unfortunately, the model naming is quite unclear and confusing. There
-> seems to be a distinction between models (e.g. HX8526) and the "series"
-> suffix (e.g. -A, -B, -C, -D, -E, -ES). But this doesn't seem to be
-> applied very consistently because e.g. HX8527-E(44) actually seems to
-> belong to the -ES series.
+> Right, it looks like the GENERIC_IOMAP part if gone from that
+> series, and I also see that the PCI host bridge does not actually
+> map the port I/O window. That's usually fine because very few
+> drivers actually need it, and it also means that there should be
+> no need for GENERIC_IOMAP or the simpler alternative.
+> 
+> The first version probably only did it accidentally, which is a
+> common mistake, and I think the ones for hexagon, m68k, and
+> mips can probably be removed as well with some simplifiations.
+> 
+> x86 and ia64 want GENERIC_IOMAP because they require using
+> custom instructions for accessing IORESOURCE_IO registers,
+> but it's not really generic.
 
-...
+Would you suggest to apply your series before or after Yoshinori's series to
+convert arch/sh to device trees? If you want it to go in before the conversion,
+could you rebase your series against v6.6-rc1?
 
-> +  touchscreen-inverted-x: true
-> +  touchscreen-inverted-y: true
-> +  touchscreen-size-x: true
-> +  touchscreen-size-y: true
-> +  touchscreen-swapped-x-y: true
-> +
-> +  linux,keycodes:
-> +    minItems: 1
-> +    maxItems: 4
-> +
-> +additionalProperties: false
-> +
-> +required:
+I'm asking because the current version did not apply against v6.5-rc2.
 
-If there is going to be resend, required: goes before additionalProperties:.
+Adrian
 
-In any case:
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
