@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97887A017E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBD87A017A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238173AbjINKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S238167AbjINKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238067AbjINKTH (ORCPT
+        with ESMTP id S237922AbjINKSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:19:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B7C1BE8;
-        Thu, 14 Sep 2023 03:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694686744; x=1726222744;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=O1LLvMPKGNc5ZFEUOpVx7SNJUHBbUo3ACKo6XHAjDn8=;
-  b=SZ/IwTk/JBtcrbnUWIewn+srlKHoTrayar6iVcO7lMtfmSDT//8bm0Em
-   VUeDuWO9tN+xsF1aO3GXL1tBhkcO1ukq5PIoY+H+4VJvDDECvaDO0iqnB
-   QV3p6I0RNDzOzMcUKvbsXovf0uJR3QOZCbsG9BFJ7z/44TUb1bw2GQEIG
-   ElKlBJWnCwDZXXSCwjT5whp2266t6Po98FP8ujYOOoYdG+trCgYrIQBE4
-   OidZkxRO1gtW8FylSp0FK+TG/CPbMfj/hZN2J2BGIMImPij9VCI6pN1gp
-   rMXaqgVZMLMZ3ke4yp/wJl6JTodUC7nZj7e6R/dBa0GWUGjw6fO0+0Nc2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363949201"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="363949201"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 03:18:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="773840738"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="773840738"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2023 03:18:44 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgjQo-0001Tp-0F;
-        Thu, 14 Sep 2023 10:18:42 +0000
-Date:   Thu, 14 Sep 2023 18:18:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Anan Sun <anan.sun@mediatek.com>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        jianjiao.zeng@mediatek.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        kuohong.wang@mediatek.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, tjmercier@google.com,
-        linaro-mm-sig@lists.linaro.org, John Stultz <jstultz@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        Yong Wu <yong.wu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH 6/9] dma-buf: heaps: mtk_sec_heap: Add tee service call
- for buffer allocating/freeing
-Message-ID: <202309141707.zdT0yuMT-lkp@intel.com>
-References: <20230911023038.30649-7-yong.wu@mediatek.com>
+        Thu, 14 Sep 2023 06:18:33 -0400
+Received: from meesny.iki.fi (meesny.iki.fi [IPv6:2001:67c:2b0:1c1::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA38E1BE3;
+        Thu, 14 Sep 2023 03:18:28 -0700 (PDT)
+Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 4RmYDv5p6dzyWJ;
+        Thu, 14 Sep 2023 13:18:23 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1694686705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=icMC27BzeY6SN2EXUotyJ+BK0dx4eNWCSZ4I3xj8aTU=;
+        b=Y2QiSpib/nAQz+mKuXKs+r1Z1KuNVM3UnVSYLwbGY3GpsUNP9kTysIyIAmy4MQ0I4Gpixq
+        1Z2JQI3uDZr2GmAoOUS3RXMo2EtgVifZWO/X7aqwMRs1BVupM22cdSYJGQkgFIlcYlqgs1
+        bmuEjgrpiysRkdMfO5X5VhwF1fJP3c8=
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1694686705; a=rsa-sha256; cv=none;
+        b=qfZMJHDuh+FhXq0zZ2Z8UMQ5hPrIuU7qjPTUVsOrRuDRqdrM6EhP1kv50wKUN8q3WCcFw0
+        CnN3uJIaN9iV4NP8TOWl3f3nfZj5CBzByU2NfmT8KQiFBT153HGlk3FEM7bk3tLX7K4TQF
+        Sk0rhQemWDPacjUZXOek5E6tfbg1eL0=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1694686705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=icMC27BzeY6SN2EXUotyJ+BK0dx4eNWCSZ4I3xj8aTU=;
+        b=FGXPkUyP4O7zvZ+QxqaxvSriyG8lYJ6HhucxNmEB9g/jwSKMlJQxmgyhYI+8TGe9F4Dfsu
+        dtpoGTwl81ygLlC+dMD9mR0NoTb1fszmbNxZ+DFyyMnFx3TUHIHLQrA1Owo/Jlgo03+yzI
+        Sba4mDPowWJ9V57fWhSAWyWKPG/3m1w=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 54800634C93;
+        Thu, 14 Sep 2023 13:18:23 +0300 (EEST)
+Date:   Thu, 14 Sep 2023 10:18:23 +0000
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Fabio Estevam <festevam@denx.de>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3] dt-bindings: media: Add OV5642
+Message-ID: <ZQLd74RoAyx8S1d2@valkosipuli.retiisi.eu>
+References: <20230802160326.293420-1-festevam@denx.de>
+ <ZQHbm4K6tDs6ILo+@valkosipuli.retiisi.eu>
+ <19523723a202647d0ab5135581f5090f@denx.de>
+ <20230913-undocked-geek-757dddbbabd7@spud>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230911023038.30649-7-yong.wu@mediatek.com>
+In-Reply-To: <20230913-undocked-geek-757dddbbabd7@spud>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yong,
+On Wed, Sep 13, 2023 at 07:26:48PM +0100, Conor Dooley wrote:
+> On Wed, Sep 13, 2023 at 01:04:06PM -0300, Fabio Estevam wrote:
+> > Hi Sakari,
+> > 
+> > On 13/09/2023 12:56, Sakari Ailus wrote:
+> > 
+> > > One more little thing. Do you have a driver for this device? In upstream
+> > > there doesn't seem to be any.
+> > 
+> > Correct. There is no driver for OV5642 upstream.
+> > 
+> > The DT folks asked me to document the OV5642 binding even without an
+> > existing driver.
+> 
+> IIRC, Fabio wanted to delete it from trivial-devices, and Krzysztof and
+> I both felt it was more suitable to document it properly rather than
+> delete it.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on robh/for-next linus/master v6.6-rc1 next-20230914]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yong-Wu/dma-buf-heaps-Deduplicate-docs-and-adopt-common-format/20230911-103308
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230911023038.30649-7-yong.wu%40mediatek.com
-patch subject: [PATCH 6/9] dma-buf: heaps: mtk_sec_heap: Add tee service call for buffer allocating/freeing
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230914/202309141707.zdT0yuMT-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141707.zdT0yuMT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309141707.zdT0yuMT-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_kree_secure_session_init':
-   mtk_secure_heap.c:(.text+0x130): undefined reference to `tee_client_open_context'
-   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L10':
-   mtk_secure_heap.c:(.text+0x19c): undefined reference to `tee_client_open_session'
-   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L12':
-   mtk_secure_heap.c:(.text+0x1dc): undefined reference to `tee_client_close_context'
-   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_sec_mem_tee_service_call.constprop.0':
->> mtk_secure_heap.c:(.text+0x274): undefined reference to `tee_client_invoke_func'
-   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_sec_mem_release.isra.0':
-   mtk_secure_heap.c:(.text+0x464): undefined reference to `tee_client_invoke_func'
+Ack, works for me.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sakari Ailus
