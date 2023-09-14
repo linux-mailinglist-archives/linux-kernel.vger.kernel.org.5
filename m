@@ -2,53 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C966C79F7BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB42A79F7C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbjINCO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S233530AbjINCPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjINCO0 (ORCPT
+        with ESMTP id S230155AbjINCPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:14:26 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94144198;
-        Wed, 13 Sep 2023 19:14:20 -0700 (PDT)
-X-UUID: 4f335181164a4bda80778df58e5b69ba-20230914
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:86a4ba3f-8c4f-4216-9900-a2ab82169aa4,IP:5,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-10
-X-CID-INFO: VERSION:1.1.31,REQID:86a4ba3f-8c4f-4216-9900-a2ab82169aa4,IP:5,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:-10
-X-CID-META: VersionHash:0ad78a4,CLOUDID:c20ed0be-14cc-44ca-b657-2d2783296e72,B
-        ulkID:230914101351PPI539G4,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
-        nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
-        I:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-        TF_CID_SPAM_FSI
-X-UUID: 4f335181164a4bda80778df58e5b69ba-20230914
-X-User: oushixiong@kylinos.cn
-Received: from localhost.localdomain [(111.48.58.12)] by mailgw
-        (envelope-from <oushixiong@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 876358924; Thu, 14 Sep 2023 10:13:47 +0800
-From:   oushixiong <oushixiong@kylinos.cn>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shixiong Ou <oushixiong@kylinos.cn>
-Subject: [PATCH] vfio/pds: Use proper PF device access helper
-Date:   Thu, 14 Sep 2023 10:13:32 +0800
-Message-Id: <20230914021332.1929155-1-oushixiong@kylinos.cn>
+        Wed, 13 Sep 2023 22:15:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B50F198
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:15:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD537C433C7;
+        Thu, 14 Sep 2023 02:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694657726;
+        bh=hDUDqr9k3SYyjnXHAR1RWWc6dEx2CP1YVtbt5BVnYe8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PNEwqvuntYTEkB/TxnXyPRNKvE2c413bCBBqykLIFWXPJnJ+pornkDBh6riC2WNFM
+         uyV129DNSLxkBOysNa05041MQ4YqVBra/O7TGpzzzUb0T3hrqtOv70UwEYJDZID2Em
+         j07Aw0tJicT5Baf0+dEKXO6TsuWqztmmXheG6qq6VN7QJZM9fbfLBAvACd3CA5B4V9
+         y05HZM0Dg1wKUz6iLArvB9SFYUL7fazP9XShkor+WPjyK2/Ny6kUqrvtwfF9RhHCWw
+         Rjru4PPSPxog8lJ8TsMDqdELz3uxgZm0D+nXrTKxwO/EQdi+dZZ35aO0NZ5naI8s+9
+         Uaevwa0QxQgbg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/damon/core: use number of passed access sampling as a timer
+Date:   Thu, 14 Sep 2023 02:15:23 +0000
+Message-Id: <20230914021523.60649-1-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -56,37 +41,262 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shixiong Ou <oushixiong@kylinos.cn>
+DAMON sleeps for sampling interval after each sampling, and check if the
+aggregation interval and the ops update interval have passed using
+ktime_get_coarse_ts64() and baseline timestamps for the intervals.  That
+design is for making the operations occur at deterministic timing
+regardless of the time that spend for each work.  However, it turned out
+it is not that useful, and incur not-that-intuitive results.
 
-The pci_physfn() helper exists to support cases where the physfn
-field may not be compiled into the pci_dev structure. We've
-declared this driver dependent on PCI_IOV to avoid this problem,
-but regardless we should follow the precedent not to access this
-field directly.
+After all, timer functions, and especially sleep functions that DAMON
+uses to wait for specific timing, are not necessarily strictly accurate.
+It is legal design, so no problem.  However, depending on such
+inaccuracies, the nr_accesses can be larger than aggregation interval
+divided by sampling interval.  For example, with the default setting (5
+ms sampling interval and 100 ms aggregation interval) we frequently show
+regions having nr_accesses larger than 20.  Also, if the execution of a
+DAMOS scheme takes a long time, next aggregation could happen before
+enough number of samples are collected.  This is not what usual users
+would intuitively expect.
 
-Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
+Since access check sampling is the smallest unit work of DAMON, using
+the number of passed sampling intervals as the DAMON-internal timer can
+easily avoid these problems.  That is, convert aggregation and ops
+update intervals to numbers of sampling intervals that need to be passed
+before those operations be executed, count the number of passed sampling
+intervals, and invoke the operations as soon as the specific amount of
+sampling intervals passed.  Make the change.
+
+Note that this could make a behavioral change to settings that using
+intervals that not aligned by the sampling interval.  For example, if
+the sampling interval is 5 ms and the aggregation interval is 12 ms,
+DAMON effectively uses 15 ms as its aggregation interval, because it
+checks whether the aggregation interval after sleeping the sampling
+interval.  This change will make DAMON to effectively use 10 ms as
+aggregation interval, since it uses 'aggregation interval / sampling
+interval * sampling interval' as the effective aggregation interval, and
+we don't use floating point types.  Usual users would have used aligned
+intervals, so this behavioral change is not expected to make any
+meaningful impact, so just make this change.
+
+Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
+Changes from RFC v2
+(https://lore.kernel.org/damon/20230905035210.127868-1-sj@kernel.org/)
+- Rebase on latest mm-unstable
+- Avoid reading next_{aggregation,ops_update}_sis again after those are
+  changed in the middle
+- Trivial wordsmith of the commit message
 
-This patch changes the subject line and commit log, and the previous 
-patch's links is:
-	https://patchwork.kernel.org/project/kvm/patch/20230911080828.635184-1-oushixiong@kylinos.cn/
+Changes from RFC v1
+(https://lore.kernel.org/damon/20230827003727.49369-1-sj@kernel.org/)
+- Initalize next_*_sis at the beginning of kdamond_fn()
+- Remove unnecessary remaining intervals compensations in
+  damon_set_attrs()
 
- drivers/vfio/pci/pds/vfio_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/damon.h | 14 ++++++-
+ mm/damon/core.c       | 96 +++++++++++++++++++++----------------------
+ 2 files changed, 59 insertions(+), 51 deletions(-)
 
-diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-index b46174f5eb09..649b18ee394b 100644
---- a/drivers/vfio/pci/pds/vfio_dev.c
-+++ b/drivers/vfio/pci/pds/vfio_dev.c
-@@ -162,7 +162,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
- 	pci_id = PCI_DEVID(pdev->bus->number, pdev->devfn);
- 	dev_dbg(&pdev->dev,
- 		"%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
--		__func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
-+		__func__, pci_dev_id(pci_physfn(pdev)), pci_id, vf_id,
- 		pci_domain_nr(pdev->bus), pds_vfio);
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ab3089de1478..9a32b8fd0bd3 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -524,8 +524,18 @@ struct damon_ctx {
+ 	struct damon_attrs attrs;
  
+ /* private: internal use only */
+-	struct timespec64 last_aggregation;
+-	struct timespec64 last_ops_update;
++	/* number of sample intervals that passed since this context started */
++	unsigned long passed_sample_intervals;
++	/*
++	 * number of sample intervals that should be passed before next
++	 * aggregation
++	 */
++	unsigned long next_aggregation_sis;
++	/*
++	 * number of sample intervals that should be passed before next ops
++	 * update
++	 */
++	unsigned long next_ops_update_sis;
+ 
+ /* public: */
+ 	struct task_struct *kdamond;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 3ca34a252a3c..c5b7296c69a0 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -427,8 +427,10 @@ struct damon_ctx *damon_new_ctx(void)
+ 	ctx->attrs.aggr_interval = 100 * 1000;
+ 	ctx->attrs.ops_update_interval = 60 * 1000 * 1000;
+ 
+-	ktime_get_coarse_ts64(&ctx->last_aggregation);
+-	ctx->last_ops_update = ctx->last_aggregation;
++	ctx->passed_sample_intervals = 0;
++	/* These will be set from kdamond_init_intervals_sis() */
++	ctx->next_aggregation_sis = 0;
++	ctx->next_ops_update_sis = 0;
+ 
+ 	mutex_init(&ctx->kdamond_lock);
+ 
+@@ -552,6 +554,9 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
+  */
+ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+ {
++	unsigned long sample_interval = attrs->sample_interval ?
++		attrs->sample_interval : 1;
++
+ 	if (attrs->min_nr_regions < 3)
+ 		return -EINVAL;
+ 	if (attrs->min_nr_regions > attrs->max_nr_regions)
+@@ -559,6 +564,11 @@ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+ 	if (attrs->sample_interval > attrs->aggr_interval)
+ 		return -EINVAL;
+ 
++	ctx->next_aggregation_sis = ctx->passed_sample_intervals +
++		attrs->aggr_interval / sample_interval;
++	ctx->next_ops_update_sis = ctx->passed_sample_intervals +
++		attrs->ops_update_interval / sample_interval;
++
+ 	damon_update_monitoring_results(ctx, attrs);
+ 	ctx->attrs = *attrs;
  	return 0;
+@@ -732,38 +742,6 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs)
+ 	return err;
+ }
+ 
+-/*
+- * damon_check_reset_time_interval() - Check if a time interval is elapsed.
+- * @baseline:	the time to check whether the interval has elapsed since
+- * @interval:	the time interval (microseconds)
+- *
+- * See whether the given time interval has passed since the given baseline
+- * time.  If so, it also updates the baseline to current time for next check.
+- *
+- * Return:	true if the time interval has passed, or false otherwise.
+- */
+-static bool damon_check_reset_time_interval(struct timespec64 *baseline,
+-		unsigned long interval)
+-{
+-	struct timespec64 now;
+-
+-	ktime_get_coarse_ts64(&now);
+-	if ((timespec64_to_ns(&now) - timespec64_to_ns(baseline)) <
+-			interval * 1000)
+-		return false;
+-	*baseline = now;
+-	return true;
+-}
+-
+-/*
+- * Check whether it is time to flush the aggregated information
+- */
+-static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
+-{
+-	return damon_check_reset_time_interval(&ctx->last_aggregation,
+-			ctx->attrs.aggr_interval);
+-}
+-
+ /*
+  * Reset the aggregated monitoring results ('nr_accesses' of each region).
+  */
+@@ -1274,18 +1252,6 @@ static void kdamond_split_regions(struct damon_ctx *ctx)
+ 	last_nr_regions = nr_regions;
+ }
+ 
+-/*
+- * Check whether it is time to check and apply the operations-related data
+- * structures.
+- *
+- * Returns true if it is.
+- */
+-static bool kdamond_need_update_operations(struct damon_ctx *ctx)
+-{
+-	return damon_check_reset_time_interval(&ctx->last_ops_update,
+-			ctx->attrs.ops_update_interval);
+-}
+-
+ /*
+  * Check whether current monitoring should be stopped
+  *
+@@ -1397,6 +1363,17 @@ static int kdamond_wait_activation(struct damon_ctx *ctx)
+ 	return -EBUSY;
+ }
+ 
++static void kdamond_init_intervals_sis(struct damon_ctx *ctx)
++{
++	unsigned long sample_interval = ctx->attrs.sample_interval ?
++		ctx->attrs.sample_interval : 1;
++
++	ctx->passed_sample_intervals = 0;
++	ctx->next_aggregation_sis = ctx->attrs.aggr_interval / sample_interval;
++	ctx->next_ops_update_sis = ctx->attrs.ops_update_interval /
++		sample_interval;
++}
++
+ /*
+  * The monitoring daemon that runs as a kernel thread
+  */
+@@ -1410,6 +1387,8 @@ static int kdamond_fn(void *data)
+ 
+ 	pr_debug("kdamond (%d) starts\n", current->pid);
+ 
++	kdamond_init_intervals_sis(ctx);
++
+ 	if (ctx->ops.init)
+ 		ctx->ops.init(ctx);
+ 	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
+@@ -1418,6 +1397,17 @@ static int kdamond_fn(void *data)
+ 	sz_limit = damon_region_sz_limit(ctx);
+ 
+ 	while (!kdamond_need_stop(ctx)) {
++		/*
++		 * ctx->attrs and ctx->next_{aggregation,ops_update}_sis could
++		 * be changed from after_wmarks_check() or after_aggregation()
++		 * callbacks.  Read the values here, and use those for this
++		 * iteration.  That is, damon_set_attrs() updated new values
++		 * are respected from next iteration.
++		 */
++		unsigned long next_aggregation_sis = ctx->next_aggregation_sis;
++		unsigned long next_ops_update_sis = ctx->next_ops_update_sis;
++		unsigned long sample_interval = ctx->attrs.sample_interval;
++
+ 		if (kdamond_wait_activation(ctx))
+ 			break;
+ 
+@@ -1427,12 +1417,17 @@ static int kdamond_fn(void *data)
+ 				ctx->callback.after_sampling(ctx))
+ 			break;
+ 
+-		kdamond_usleep(ctx->attrs.sample_interval);
++		kdamond_usleep(sample_interval);
++		ctx->passed_sample_intervals++;
+ 
+ 		if (ctx->ops.check_accesses)
+ 			max_nr_accesses = ctx->ops.check_accesses(ctx);
+ 
+-		if (kdamond_aggregate_interval_passed(ctx)) {
++		sample_interval = ctx->attrs.sample_interval ?
++			ctx->attrs.sample_interval : 1;
++		if (ctx->passed_sample_intervals == next_aggregation_sis) {
++			ctx->next_aggregation_sis = next_aggregation_sis +
++				ctx->attrs.aggr_interval / sample_interval;
+ 			kdamond_merge_regions(ctx,
+ 					max_nr_accesses / 10,
+ 					sz_limit);
+@@ -1447,7 +1442,10 @@ static int kdamond_fn(void *data)
+ 				ctx->ops.reset_aggregated(ctx);
+ 		}
+ 
+-		if (kdamond_need_update_operations(ctx)) {
++		if (ctx->passed_sample_intervals == next_ops_update_sis) {
++			ctx->next_ops_update_sis = next_ops_update_sis +
++				ctx->attrs.ops_update_interval /
++				sample_interval;
+ 			if (ctx->ops.update)
+ 				ctx->ops.update(ctx);
+ 			sz_limit = damon_region_sz_limit(ctx);
 -- 
 2.25.1
 
