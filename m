@@ -2,442 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B9679FFD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE97B79FFDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236694AbjINJSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        id S236723AbjINJS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjINJSr (ORCPT
+        with ESMTP id S234427AbjINJS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:18:47 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AE71A2;
-        Thu, 14 Sep 2023 02:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1694683106; x=1695287906; i=quwenruo.btrfs@gmx.com;
- bh=icd+33yelo7OZxJ/7LKd1iDZiUEAA+tSnBqZO/KJO0c=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=jsmmTefiAOG8ktBBTrG0warBXse0OxJcqNV8CVJtTC3YGQMqlo2ARIf2/ZLL5ttZBXYfeoYQWUr
- SuL9C7niGTJ17PMX1+ULvBP/ieZjmxjxRrhRJtPVkBPlvS3OlQFHsFQ639IxgxLnICxyubuF758d+
- B8bt4FIUOmaI1WegFDMyVPcxop6QAQByaetz3M+kVWrEfNvDvI7K/zXStLoNbHBbRS69nh5s9LqYE
- qjJAZiMBuQVHkS7vpl9oiKyVGXv4qL7Z9eYPsZp7X/z0+5G8FTPK67Gvxw9SRYUpWry2u4wuzh7w8
- hs3G/y71cE4ExcMWgMxGsrd0IpjtMTv0z9cw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Un-1rbReE19ud-00wAxO; Thu, 14
- Sep 2023 11:18:26 +0200
-Message-ID: <6de87230-f981-411c-b173-55871e4d4720@gmx.com>
-Date:   Thu, 14 Sep 2023 18:48:17 +0930
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 05/11] btrfs: lookup physical address from stripe
- extent
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
- <20230911-raid-stripe-tree-v8-5-647676fa852c@wdc.com>
+        Thu, 14 Sep 2023 05:18:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34411BF2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694683132; x=1726219132;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Plu6HNyqIjziAZJbERsP2Vt6ex0fnbrqYnuK5YLa4os=;
+  b=fd6dYm5Dx6HFQpfMx0HQ7kJaizJ2OEogOtxUwuaObTt9Oa3wB0TM7LWj
+   /Ka67RPo7RS4OQKs00VmDvc91FBdzPCArV+0l6XXpy59kpOcgPM2glWVq
+   8O/DgcrMBbSnwjmb60QtBLgBvf2NNtKqzCn8JJ5vobCbAAkuJPegS/LZz
+   ueCl2MWhZlIWY0qSHJZuJq4cqRrkOmno3N3za60tANo4R7+Sq+QHaoDQf
+   +sSnvw6VF54gmgJnWEq8i+Ryqi7w0TDzLCNjOtrZnio2yFDyK6bhvCRqE
+   md89HCI2eSWef6gDppAo+MUzHkPk8IWrr1gWx0bssDm2tfaOraG6qJwbs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="465271288"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="465271288"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 02:18:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="809989328"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="809989328"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 02:18:52 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 02:18:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 14 Sep 2023 02:18:51 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 02:18:51 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 14 Sep 2023 02:18:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n15PSybI0O5i9+sIjeGPAFiBJxi8sRCWHubELvwXwvIMmDnA6/HLbGM3AGUt9bIOtX9C3ckv/OqDE5eXgfdwxbZSziyO1rVauYeftufxE87XehNMr0k4b4AhTM8uewebKCuQcrCSR4zVfuOoJRxgClpGWCdynCl8nryfrh7QT7TIbtBgiEzDqLEKeazfloXa2ZfsguDrvPE1VBMZNlExZqV8gNYDdJaayRmWh3lh68AKCN6KyuXa8nSEXkz1QaCrUFJ7M8r+QJ8/oFwMURB8K0IVe/AHwV7H5nXaKWHxDJtCqPMgF4JtuEJKxVYf3b25Y9POGjn9qgVFoxOBUAv5WQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Plu6HNyqIjziAZJbERsP2Vt6ex0fnbrqYnuK5YLa4os=;
+ b=YCxsbrcCbNXSxSo0v6IaUvmDz9QhcXWSUPZSpSUW5czQiL3LFK5XUNSVHRL7ttOKC+AT+Ez3qF3Ns4xx6CSMlcwsd280H7a7RuBMvYhEVqyzpQrcMS2bJzqeCI+5H2xloZBq9C55OXenP7hawRqzh3Xz1LBHdRNPJh0tgAilGXz4hb1laMturSL9CJQ3A6gCWHoqfEY/2oI7ZwoHg8W4oy5MRSwtBJfob/ajZDuSzWmaH0sI2CFFHNknB7QDUmceVi21Tu0Gz+aggo31evRC/0PtiAea+1On6gGnNJGBD56fLSB3U7+s0yoNfoTQCA1iJkISH5r5Oh9DEvPCG2Pgvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by DM4PR11MB8226.namprd11.prod.outlook.com (2603:10b6:8:182::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 09:18:45 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6768.036; Thu, 14 Sep 2023
+ 09:18:45 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "peterz@infradead.org" <peterz@infradead.org>
+CC:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lkp <lkp@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
+ __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
+ annotation
+Thread-Topic: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
+ __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
+ annotation
+Thread-Index: AQHZ5qem7IU2VPrp+E+UjIKvurp2uLAZhucAgAAgzICAAEWGgIAABr8AgAASL4CAAAVyAA==
+Date:   Thu, 14 Sep 2023 09:18:44 +0000
+Message-ID: <cd1331511723e283c7238078bc12c71a739d4dda.camel@intel.com>
+References: <202309140828.9RdmlH2Z-lkp@intel.com>
+         <90f0a4d44704f9c296f3a4d8b72c57f2916aa09d.camel@intel.com>
+         <377b1ce2ecd390f4b6f8cdf68d22c708f7cef6d1.camel@intel.com>
+         <20230914072959.GC16631@noisy.programming.kicks-ass.net>
+         <9eb77be3a64c25b3264d5011a93242d006b88627.camel@intel.com>
+         <20230914085913.GD16631@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230914085913.GD16631@noisy.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230911-raid-stripe-tree-v8-5-647676fa852c@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vt7kKFltGHNY4MRwnW+IRzo1H8knQDTof93ZAV2YaUwrIbb/ZZw
- RofkHGvYzL/hQNSHaVLrMyugEhmleWNANas/2hZUBI3HRj2+NNmAB3C5A/bnp838daS9pjR
- bbtuEc6Xx3EVq/muzwTQoGrSHPMKuKXZujK2NAoCCDrIPgQAbdKZJwRxwzZwVlw3hk4dDr1
- 3lYeiiT7IoiYvs+mf6EhA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ixJaVKpWiHA=;Q7fZTJc6o2RBurdHkOvIisHluYs
- Na+tRVHuQnnReya3KRcaEgVPOdKrxp8Ul2UFC79B3/QNg5BdYXNWaiVluRXz1X0BnsYyTYMKE
- LifpA+tA5jq13XFySAt27sTyH8oikYEzRzdzrRjYjsAv17MJq3G8YHL0is+ee0VQvVW088RJZ
- G106sodDwiaS7cybL9AFqBRujbZdhw0VX5/4Mzok8awZEVcZxH2laUZvJd41qPR7wCsTSMvLo
- k0ka3LSV7Wkry9zu8lMrQH/LEN66xSV65W0uaEA7Qh1CA9utNLqimdruje5qHUzb9tVEFoKpC
- LXOeMh9VQwcEi7afvAhetjzIME166sXQK+zkBlHnaGMzKNlRdJvWAo9/mPTXVLJFoOMvUz+rU
- 2ij/DKnmhfKtmHTCOkwkr5SU+a1nNfCU+wKcISYn04xScYFhu0osEH0mDR1+E/TTD4mwvXvpl
- U9YpDx6VXv9UtgfOAD5zIZFjT/xZcIrhxJ2PhpBDuR8FHFVq1Nx8OPoOqRHd9mP2RQD1YHJmN
- v0J4bickCnlHI6WjzqdDJ03EIZ0rn15dKSuxue/hUxqdHD2MTIyIfsZjjrebReyxt0ysvzwH0
- oB80MRgnyed967HJDY12nTdTnhBpveojHLwRM7mIieVzL+TQFLNYQuILoDo1dE8ZCRyF7du2D
- nNMfH/SSZ62WzuOKiHFYVff8PRcIz/j/8Pty6xE6YXw+PRlCcz+8+3pAVo1UtlxQ2Z2iCrMKN
- R0cRDVQwc5Z5x8zR94Zl3QptGVnGlbQ+YEr5TTa4Wj4ikBRy6Z30AyYuVvfSRCz5A0P+rGKo5
- wh9SFEcl/2agg6/RI6i/jMwPNsHMJpEYG/dmaHCs9coIjftKUPqYHAvWSAcRTKLbvvJUShI7M
- Gut8St80uUes4rxmmBkVFJFBHfNLbPS6uKXHj0OdM5JS/N8lZHp5BkQn/VlfAPkOm69uS17pA
- Uns4nSEBHqZ3mp6buEhDmQ9gYkg=
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|DM4PR11MB8226:EE_
+x-ms-office365-filtering-correlation-id: 58b03154-0d1b-4e74-c83d-08dbb5039872
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bCnOakYrw9j/kiEBNhF/a/h9H/DfzN1tqrSNNk2I5xh45gAQMMXPtkm5h5GfyrNbe+tLveYCnE65GlZ8i6TRj/5GZOuGgqxCYaapdO/5cm/G0lpw3nPqyn3lHIIStnG/CTxlxmwPrtI0ybk3gt9LbNtuaiMmJ+23Mt2w4orJSne4jIxA/j5qM1If+Q/WjjNURwhZz2wJcc/FEKaJuwXrbE1BWfZre8sBHrsX2wQqCAOcm9+3qYJaqbXe21xNAJi2O23boCSTOQuLex6xsjW+g5AulsJ4V03A5UJDZn8IdU/5aZex5NnAjvfmetCpF0ua8+W8ti5rlsYtICvlPpRDxjGZcXkMWt8ZQxPjIH+PShn7WdXmIiAfK2SSZFRT0WPq0ajhTRTG4Caz0zRcx7zpQgKBh6dOIaI0BohF5JmmRYO5GPZfMDaovmNW6jKoONJl4luYEMeSDuB5C3Y2E/vwCpT4YcFwgI07XnwhpuKG8fwyFWjiK1nLZxamT+xeVGea+NAUTb53augBmDsV43mctNCy2mQqq7Z87JxXFXpSBr9IHbuRE2t2w+XOgX/UYLSQOH2koH6cZD6R9UuO+OUPhQ/JeMHdS3eJ2m1AOWNOJKpsrNPpw/aKBgvYLfCxLr1z
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(451199024)(1800799009)(186009)(66446008)(64756008)(54906003)(91956017)(71200400001)(66556008)(66946007)(76116006)(66476007)(6486002)(6506007)(41300700001)(6512007)(6916009)(316002)(478600001)(8676002)(2616005)(4326008)(8936002)(26005)(5660300002)(36756003)(38070700005)(38100700002)(122000001)(82960400001)(2906002)(86362001)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VDFvdWE0aFEvak8wREIzQnYyT3ZPVm01QzlXTXNiRTBvRjdJN0V2RnozbHZp?=
+ =?utf-8?B?aVVPNW5PWUVmbjljeXdIOGFnR2QvU2NVc3ZHaTQ1THhsaEk4dGFSWUJ0K3hE?=
+ =?utf-8?B?TUlKNnZkMFNHcWJMRjJsNkliVnRvVU1QalNneG5jMmxYVlQ0WGlJSFBCd2Y3?=
+ =?utf-8?B?czE2cG54Sm5vVHQxQVU0dldtRmt5KzBwcTlPOGFqL0pjbmlpd3hhaTU0Q3Ix?=
+ =?utf-8?B?MitnZTV6WUNJM2Y4TG0yM2JEM2lsT1dPVTRFc2JJTWFrWWxzNWJOMVJKa2t0?=
+ =?utf-8?B?YkM4TEVBWFR6TTRkT2lEQ1hRbEIyOWQzTjl5OTJzWUF3V04wVm1RbWVnYnNj?=
+ =?utf-8?B?ei9SZUhvZFdzZVpFOXNCQS94cVJoU1pFNlo2OGczMTdQOEYrUHBYZUMzOENB?=
+ =?utf-8?B?bjFtUDNqV1o0VG9TeEJhVTNZQmprN0JDc0doQWxmK05MT1o2UGxyUzFMNDBw?=
+ =?utf-8?B?anlzdkt2bzFaTis0TDl2Y0xXRzdockwxNW9tUC9oYytmckFlczBHWnFhY3l2?=
+ =?utf-8?B?dGZHVTVWZWZoZTlRNCtlR2RJZThPVm01YkpDYUpkUVNhbEwySnllUVkrS3NE?=
+ =?utf-8?B?Nml4dS92azZjcW5hd1VJUnpWU3ZRVDREYnZ4ZzN0Mm4rUXd3UzUxN1NwaUNO?=
+ =?utf-8?B?bDAvRjdlM050U2NYRXlnMHA4TDMwcXQxdG14c0dnZjVhZlRicjB1azZQeTlK?=
+ =?utf-8?B?Q29kd3NNZEQxeXFEb2FRTDZhN0xVSVJUbDZ0bzltZWpiQ1hldUQ0R3lQZktl?=
+ =?utf-8?B?UkIzNUFUdy9IWGRwLyt0M1ZuNGJQditLNDFQWk4zQ0l3UzdpZldWdlJLVmVY?=
+ =?utf-8?B?Wnc5QUUwQ1FZR2RlbTlJUlZZWUFjWThiejVIbXZzSUozanlzUGkzUnVhWElY?=
+ =?utf-8?B?RU9wU0o2Z0xZeG1DMjJEcjFzb3dhN1RqU1ZqUFB0RDRselorQlM1d0w3clds?=
+ =?utf-8?B?ZWpReTNoYzY1ZWMxTGNKQW9nenFGWHlORjZTN0xhdEx4T0hJUU5wemJGTnNx?=
+ =?utf-8?B?RTBnUTErR2xuMTI5a3ZSUlNmeFFseU5jK29FVmUyR2RuaE91QUdmNk5scVJX?=
+ =?utf-8?B?VHo1SGMrMkhGT2JQYjFOTllGNCs1UzNkcVV0RDNQZkdsc3lxMUZOZU5RUVBn?=
+ =?utf-8?B?Q1dYS1duMnZ1YkF1SjVhRFFnZEZuYXV1czBIelRMbzlCVGV5eXVtbEpwMVBl?=
+ =?utf-8?B?TUFCdTFFV3RaclozVHlPVXUxRVRBb2EvOTlCTmJYa0RtTXZyUXFrVUlxdDBY?=
+ =?utf-8?B?QjVLNkwwOXdKeEtBMkhtRTBHY3hYZURMbU0ycHNqbU91MWl2VWZUZHcrMDZx?=
+ =?utf-8?B?UmVZYkM2UHQ3cFgwZ2M3Y0pVbjhaeXEvN05BYlNyMmswMlYrNmlyZkl2azBa?=
+ =?utf-8?B?SmdtSTNnTGp6QUpFK2g4RHdTVmdWUHVUMUxRZG82d2JkM2srVWdNK1NRVGNr?=
+ =?utf-8?B?WDVVbjQ1cGFHak8zM1daeHhRa1dFcmx3K1UybUVmSzFvaTRRUHRtN2h1UXRC?=
+ =?utf-8?B?R2grcFRRazJObDB3akpLMnYydjgxaGVQb0VTNFIvdlZIR2g0dllSOVFTekJN?=
+ =?utf-8?B?RmNnWElSTEhNZ0dIV3FCWEJRY1F6M3FqWG4rVEJZRVVsOTFGWjZFUHdXYXgr?=
+ =?utf-8?B?MlR0QXBSeDZtMlh2bnVOT3BuaE1CUFBpNkNrVVdJenl5SUVVWHluRDlpQ3Nz?=
+ =?utf-8?B?dElCbnNoL1oxZFhUcldlcUpOclRtOWdIS0p4RTMya3FyT1hVS1hROGJzdHVY?=
+ =?utf-8?B?ZWRqc1d2N2d3RTVUMWw3RTVnQ2NqWUpCK2dqVUhJMEJ2SXh4NS9DMWgwelk1?=
+ =?utf-8?B?Vm9vdTNNY2puMlRUczlFTFNESnp2VjIvRmpzazZhbVYwOVNwZTd6L2hlMkZh?=
+ =?utf-8?B?TVRSN3FEaUtuWThWVExCTVYxQW1lM0JNR3hVQmZpMFlPQWw5TzVXN1lmZ3Fu?=
+ =?utf-8?B?WnlMVi85UkVDRXRPSzRsM2Q3dW1kc1VmR3o0MC95bmR0Ti8ya3RiU09IUXZC?=
+ =?utf-8?B?c1VYK3pybnRwcytqVVhVdEZ3d0ErSTdDM0JXV0xPM2ZwTkVUd0VNODh1czRV?=
+ =?utf-8?B?cUpDRzRoa2dEN2crekxyUnlTRk1HclBjdnJBbUVvR1c2djN4UkNFV2dlMTZZ?=
+ =?utf-8?B?dzM1TTJOVXBRUERNVWxQN0JqbXV1T0NSenhXMHIzb2NFa0tsYzhBZ1FLbmF1?=
+ =?utf-8?B?enc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ADF3AD1B75CD2D4FA8C97EE9E08342AD@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58b03154-0d1b-4e74-c83d-08dbb5039872
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 09:18:45.0060
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3gjNbQSCKFPczQ9dBq36CL2ryAkjXC0lneTJk/NEiEiEpz8KEaNIgIX1RldgQw7IqGlOHK15OFi0uK7vK1hmLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8226
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/11 22:22, Johannes Thumshirn wrote:
-> Lookup the physical address from the raid stripe tree when a read on an
-> RAID volume formatted with the raid stripe tree was attempted.
->
-> If the requested logical address was not found in the stripe tree, it ma=
-y
-> still be in the in-memory ordered stripe tree, so fallback to searching
-> the ordered stripe tree in this case.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/raid-stripe-tree.c | 159 ++++++++++++++++++++++++++++++++++++=
-++++++++
->   fs/btrfs/raid-stripe-tree.h |  11 +++
->   fs/btrfs/volumes.c          |  37 ++++++++---
->   3 files changed, 198 insertions(+), 9 deletions(-)
->
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index 5b12f40877b5..7ed02e4b79ec 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -324,3 +324,162 @@ int btrfs_insert_raid_extent(struct btrfs_trans_ha=
-ndle *trans,
->
->   	return ret;
->   }
-> +
-> +static bool btrfs_check_for_extent(struct btrfs_fs_info *fs_info, u64 l=
-ogical,
-> +				   u64 length, struct btrfs_path *path)
-> +{
-> +	struct btrfs_root *extent_root =3D btrfs_extent_root(fs_info, logical)=
-;
-> +	struct btrfs_key key;
-> +	int ret;
-> +
-> +	btrfs_release_path(path);
-> +
-> +	key.objectid =3D logical;
-> +	key.type =3D BTRFS_EXTENT_ITEM_KEY;
-> +	key.offset =3D length;
-> +
-> +	ret =3D btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
-> +
-> +	return ret;
-> +}
-> +
-> +int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
-> +				 u64 logical, u64 *length, u64 map_type,
-> +				 u32 stripe_index,
-> +				 struct btrfs_io_stripe *stripe)
-> +{
-> +	struct btrfs_root *stripe_root =3D btrfs_stripe_tree_root(fs_info);
-> +	struct btrfs_stripe_extent *stripe_extent;
-> +	struct btrfs_key stripe_key;
-> +	struct btrfs_key found_key;
-> +	struct btrfs_path *path;
-> +	struct extent_buffer *leaf;
-> +	int num_stripes;
-> +	u8 encoding;
-> +	u64 offset;
-> +	u64 found_logical;
-> +	u64 found_length;
-> +	u64 end;
-> +	u64 found_end;
-> +	int slot;
-> +	int ret;
-> +	int i;
-> +
-> +	stripe_key.objectid =3D logical;
-> +	stripe_key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +	stripe_key.offset =3D 0;
-> +
-> +	path =3D btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	ret =3D btrfs_search_slot(NULL, stripe_root, &stripe_key, path, 0, 0);
-> +	if (ret < 0)
-> +		goto free_path;
-> +	if (ret) {
-> +		if (path->slots[0] !=3D 0)
-> +			path->slots[0]--;
-
-IIRC we have btrfs_previous_item() to do the forward search.
-
-> +	}
-> +
-> +	end =3D logical + *length;
-
-IMHO we can make it const and initialize it at the definition part.
-
-> +
-> +	while (1) {
-
-Here we only can hit at most one RST item, thus I'd recommend to remove
-the while().
-
-Although this would mean we will need a if () to handle (ret > 0) case,
-but it may still be a little easier to read than a loop.
-
-You may want to refer to btrfs_lookup_csum() for the non-loop
-implementation.
-
-> +		leaf =3D path->nodes[0];
-> +		slot =3D path->slots[0];
-> +
-> +		btrfs_item_key_to_cpu(leaf, &found_key, slot);
-> +		found_logical =3D found_key.objectid;
-> +		found_length =3D found_key.offset;
-> +		found_end =3D found_logical + found_length;
-> +
-> +		if (found_logical > end) {
-> +			ret =3D -ENOENT;
-> +			goto out;
-> +		}
-> +
-> +		if (in_range(logical, found_logical, found_length))
-> +			break;
-> +
-> +		ret =3D btrfs_next_item(stripe_root, path);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	offset =3D logical - found_logical;
-> +
-> +	/*
-> +	 * If we have a logically contiguous, but physically noncontinuous
-> +	 * range, we need to split the bio. Record the length after which we
-> +	 * must split the bio.
-> +	 */
-> +	if (end > found_end)
-> +		*length -=3D end - found_end;
-> +
-> +	num_stripes =3D btrfs_num_raid_stripes(btrfs_item_size(leaf, slot));
-> +	stripe_extent =3D btrfs_item_ptr(leaf, slot, struct btrfs_stripe_exten=
-t);
-> +	encoding =3D btrfs_stripe_extent_encoding(leaf, stripe_extent);
-> +
-> +	if (encoding !=3D btrfs_bg_type_to_raid_encoding(map_type)) {
-> +		ret =3D -ENOENT;
-> +		goto out;
-
-This looks like a very weird situation, we have a bg with a different type=
-.
-Should we do some warning or is there some valid situation for this?
-
-> +	}
-> +
-> +	for (i =3D 0; i < num_stripes; i++) {
-> +		struct btrfs_raid_stride *stride =3D &stripe_extent->strides[i];
-> +		u64 devid =3D btrfs_raid_stride_devid(leaf, stride);
-> +		u64 len =3D btrfs_raid_stride_length(leaf, stride);
-> +		u64 physical =3D btrfs_raid_stride_physical(leaf, stride);
-> +
-> +		if (offset >=3D len) {
-> +			offset -=3D len;
-> +
-> +			if (offset >=3D BTRFS_STRIPE_LEN)
-> +				continue;
-> +		}
-> +
-> +		if (devid !=3D stripe->dev->devid)
-> +			continue;
-> +
-> +		if ((map_type & BTRFS_BLOCK_GROUP_DUP) && stripe_index !=3D i)
-> +			continue;
-> +
-> +		stripe->physical =3D physical + offset;
-> +
-> +		ret =3D 0;
-> +		goto free_path;
-> +	}
-> +
-> +	/*
-> +	 * If we're here, we haven't found the requested devid in the stripe.
-> +	 */
-> +	ret =3D -ENOENT;
-> +out:
-> +	if (ret > 0)
-> +		ret =3D -ENOENT;
-> +	if (ret && ret !=3D -EIO) {
-> +		/*
-> +		 * Check if the range we're looking for is actually backed by
-> +		 * an extent. This can happen, e.g. when scrub is running on a
-> +		 * block-group and the extent it is trying to scrub get's
-> +		 * deleted in the meantime. Although scrub is setting the
-> +		 * block-group to read-only, deletion of extents are still
-> +		 * allowed. If the extent is gone, simply return ENOENT and be
-> +		 * good.
-> +		 */
-
-As mentioned in the next patch (sorry for the reversed order), this
-should be handled in a different way (by only searching commit root for
-scrub usage).
-> +		if (btrfs_check_for_extent(fs_info, logical, *length, path)) {
-> +			ret =3D -ENOENT;
-> +			goto free_path;
-> +		}
-> +
-> +		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> +			btrfs_print_tree(leaf, 1);
-> +		btrfs_err(fs_info,
-> +			  "cannot find raid-stripe for logical [%llu, %llu] devid %llu, prof=
-ile %s",
-> +			  logical, logical + *length, stripe->dev->devid,
-> +			  btrfs_bg_type_to_raid_name(map_type));
-> +	}
-> +free_path:
-> +	btrfs_free_path(path);
-> +
-> +	return ret;
-> +}
-> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-> index 7560dc501a65..40aa553ae8aa 100644
-> --- a/fs/btrfs/raid-stripe-tree.h
-> +++ b/fs/btrfs/raid-stripe-tree.h
-> @@ -13,6 +13,10 @@ struct btrfs_io_stripe;
->
->   int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 sta=
-rt,
->   			     u64 length);
-> +int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
-> +				 u64 logical, u64 *length, u64 map_type,
-> +				 u32 stripe_index,
-> +				 struct btrfs_io_stripe *stripe);
->   int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
->   			     struct btrfs_ordered_extent *ordered_extent);
->
-> @@ -33,4 +37,11 @@ static inline bool btrfs_need_stripe_tree_update(stru=
-ct btrfs_fs_info *fs_info,
->
->   	return false;
->   }
-> +
-> +static inline int btrfs_num_raid_stripes(u32 item_size)
-> +{
-> +	return (item_size - offsetof(struct btrfs_stripe_extent, strides)) /
-> +		sizeof(struct btrfs_raid_stride);
-> +}
-> +
->   #endif
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 0c0fd4eb4848..7c25f5c77788 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -35,6 +35,7 @@
->   #include "relocation.h"
->   #include "scrub.h"
->   #include "super.h"
-> +#include "raid-stripe-tree.h"
->
->   #define BTRFS_BLOCK_GROUP_STRIPE_MASK	(BTRFS_BLOCK_GROUP_RAID0 | \
->   					 BTRFS_BLOCK_GROUP_RAID10 | \
-> @@ -6206,12 +6207,22 @@ static u64 btrfs_max_io_len(struct map_lookup *m=
-ap, enum btrfs_map_op op,
->   	return U64_MAX;
->   }
->
-> -static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map=
-_lookup *map,
-> -			  u32 stripe_index, u64 stripe_offset, u32 stripe_nr)
-> +static int set_io_stripe(struct btrfs_fs_info *fs_info, enum btrfs_map_=
-op op,
-> +		      u64 logical, u64 *length, struct btrfs_io_stripe *dst,
-> +		      struct map_lookup *map, u32 stripe_index,
-> +		      u64 stripe_offset, u64 stripe_nr)
-Do we need @length to be a pointer?
-IIRC we can return the number of bytes we mapped, or <0 for errors.
-Thus at least @length doesn't need to be a pointer.
-
-Thanks,
-Qu
-
->   {
->   	dst->dev =3D map->stripes[stripe_index].dev;
-> +
-> +	if (op =3D=3D BTRFS_MAP_READ &&
-> +	    btrfs_need_stripe_tree_update(fs_info, map->type))
-> +		return btrfs_get_raid_extent_offset(fs_info, logical, length,
-> +						    map->type, stripe_index,
-> +						    dst);
-> +
->   	dst->physical =3D map->stripes[stripe_index].physical +
->   			stripe_offset + btrfs_stripe_nr_to_offset(stripe_nr);
-> +	return 0;
->   }
->
->   /*
-> @@ -6428,11 +6439,11 @@ int btrfs_map_block(struct btrfs_fs_info *fs_inf=
-o, enum btrfs_map_op op,
->   	 */
->   	if (smap && num_alloc_stripes =3D=3D 1 &&
->   	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1))=
- {
-> -		set_io_stripe(smap, map, stripe_index, stripe_offset, stripe_nr);
-> +		ret =3D set_io_stripe(fs_info, op, logical, length, smap, map,
-> +				    stripe_index, stripe_offset, stripe_nr);
->   		if (mirror_num_ret)
->   			*mirror_num_ret =3D mirror_num;
->   		*bioc_ret =3D NULL;
-> -		ret =3D 0;
->   		goto out;
->   	}
->
-> @@ -6463,21 +6474,29 @@ int btrfs_map_block(struct btrfs_fs_info *fs_inf=
-o, enum btrfs_map_op op,
->   		bioc->full_stripe_logical =3D em->start +
->   			btrfs_stripe_nr_to_offset(stripe_nr * data_stripes);
->   		for (i =3D 0; i < num_stripes; i++)
-> -			set_io_stripe(&bioc->stripes[i], map,
-> -				      (i + stripe_nr) % num_stripes,
-> -				      stripe_offset, stripe_nr);
-> +			ret =3D set_io_stripe(fs_info, op, logical, length,
-> +					    &bioc->stripes[i], map,
-> +					    (i + stripe_nr) % num_stripes,
-> +					    stripe_offset, stripe_nr);
->   	} else {
->   		/*
->   		 * For all other non-RAID56 profiles, just copy the target
->   		 * stripe into the bioc.
->   		 */
->   		for (i =3D 0; i < num_stripes; i++) {
-> -			set_io_stripe(&bioc->stripes[i], map, stripe_index,
-> -				      stripe_offset, stripe_nr);
-> +			ret =3D set_io_stripe(fs_info, op, logical, length,
-> +					    &bioc->stripes[i], map, stripe_index,
-> +					    stripe_offset, stripe_nr);
->   			stripe_index++;
->   		}
->   	}
->
-> +	if (ret) {
-> +		*bioc_ret =3D NULL;
-> +		btrfs_put_bioc(bioc);
-> +		goto out;
-> +	}
-> +
->   	if (op !=3D BTRFS_MAP_READ)
->   		max_errors =3D btrfs_chunk_max_errors(map);
->
->
+T24gVGh1LCAyMDIzLTA5LTE0IGF0IDEwOjU5ICswMjAwLCBQZXRlciBaaWpsc3RyYSB3cm90ZToN
+Cj4gT24gVGh1LCBTZXAgMTQsIDIwMjMgYXQgMDc6NTQ6MTBBTSArMDAwMCwgSHVhbmcsIEthaSB3
+cm90ZToNCj4gDQo+ID4gPiBUaGUgcG9pbnQgb2Ygbm9yZXR1cm4gaXMgdGhhdCB0aGUgY2FsbGVy
+IHNob3VsZCBrbm93IHRvIHN0b3AgZ2VuZXJhdGluZw0KPiA+ID4gY29kZS4gRm9yIHRoYXQgdGhl
+IGRlY2xhcmF0aW9uIG5lZWRzIHRoZSBhdHRyaWJ1dGUsIGJlY2F1c2UgY2FsbCBzaXRlcw0KPiA+
+ID4gdHlwaWNhbGx5IGRvIG5vdCBoYXZlIGFjY2VzcyB0byB0aGUgZnVuY3Rpb24gZGVmaW5pdGlv
+biBpbiBDLg0KPiA+IA0KPiA+IEFoIHRoYXQgbWFrZXMgcGVyZmVjdCBzZW5zZS4gIFRoYW5rcyEN
+Cj4gPiANCj4gPiBUaGVuIEkgYXNzdW1lIHdlIGRvbid0IG5lZWQgdG8gYW5ub3RhdGUgX19ub3Jl
+dHVybiBpbiB0aGUgZnVuY3Rpb24gYm9keSwgYnV0DQo+ID4gb25seSBpbiB0aGUgZGVjbGFyYXRp
+b24/ICBCZWNhdXNlIHRoZSBjb21waWxlciBtdXN0IGFscmVhZHkgaGF2ZSBzZWVuIHRoZQ0KPiA+
+IGRlY2xhcmF0aW9uIHdoZW4gaXQgZ2VuZXJhdGVzIHRoZSBjb2RlIGZvciB0aGUgZnVuY3Rpb24g
+Ym9keS4NCj4gDQo+IEkgdGhpbmsgc28sIEknbSBzdXJlIGl0J2xsIHRlbGwgeW91IGlmIGl0IGRp
+c2FncmVlcyA6LSkNCj4gDQo+ID4gQnR3LCBJIGhhcHBlbmVkIHRvIG5vdGljZSB0aGF0IHRoZSBv
+Ymp0b29sIGRvY3VtZW50YXRpb24gc3VnZ2VzdHMgdGhhdCB3ZSBzaG91bGQNCj4gPiBhbHNvIGFk
+ZCB0aGUgdGhlIGZ1bmN0aW9uIHRvIHRvb2xzL29ianRvb2wvbm9yZXR1cm5zLmg6DQo+ID4gDQo+
+ID4gMy4gZmlsZS5vOiB3YXJuaW5nOiBvYmp0b29sOiBmb28rMHg0OGM6IGJhcigpIGlzIG1pc3Np
+bmcgYSBfX25vcmV0dXJuIGFubm90YXRpb24NCj4gPiANCj4gPiAgICBUaGUgY2FsbCBmcm9tIGZv
+bygpIHRvIGJhcigpIGRvZXNuJ3QgcmV0dXJuLCBidXQgYmFyKCkgaXMgbWlzc2luZyB0aGUNCj4g
+PiAgICBfX25vcmV0dXJuIGFubm90YXRpb24uICBOT1RFOiBJbiBhZGRpdGlvbiB0byBhbm5vdGF0
+aW5nIHRoZSBmdW5jdGlvbg0KPiA+ICAgIHdpdGggX19ub3JldHVybiwgcGxlYXNlIGFsc28gYWRk
+IGl0IHRvIHRvb2xzL29ianRvb2wvbm9yZXR1cm5zLmguDQo+ID4gDQo+ID4gSXMgaXQgYSBiZWhh
+dmlvdXIgdGhhdCB3ZSBzdGlsbCBuZWVkIHRvIGZvbGxvdz8NCj4gDQo+IFllcy4gb2JqdG9vbCBo
+YXMgc29tZSBoZXVyaXN0aWNzIHRvIGRldGVjdCBub3JldHVybiwgYnV0IGlzIGlzIHZlcnkNCj4g
+ZGlmZmljdWx0LiBTYWRseSBub3JldHVybiBpcyBub3Qgc29tZXRoaW5nIHRoYXQgaXMgcmVmbGVj
+dGVkIGluIHRoZSBFTEYNCj4gb2JqZWN0IGZpbGUgc28gd2UgaGF2ZSB0byBndWVzcy4NCj4gDQo+
+IEZvciBub3cgbWFudWFsbHkgYWRkaW5nIGl0IHRvIHRoZSBvYmp0b29sIGxpc3QgaXMgcmVxdWly
+ZWQsIHdlJ3JlIHRyeWluZw0KPiB0byBnZXQgdG8gdGhlIHBvaW50IHdoZXJlIGl0IGlzIGdlbmVy
+YXRlZC92YWxpZGF0ZWQgYnkgdGhlIGNvbXBpbGVyLA0KPiBwZXJoYXBzIHdpdGggYSBwbHVnaW4s
+IGJ1dCB3ZSdyZSBub3QgdGhlcmUgeWV0Lg0KDQpUaGFua3MgUGV0ZXIhDQo=
