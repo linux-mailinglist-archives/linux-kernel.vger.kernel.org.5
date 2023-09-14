@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9207A02A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641EF7A029A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbjINL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
+        id S237828AbjINL2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237779AbjINL2A (ORCPT
+        with ESMTP id S237872AbjINL20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:28:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D45269F;
-        Thu, 14 Sep 2023 04:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qKsiGLcP8XdXXDc7ibwaXIyN8m4wv6e0IIyRIdjUx9c=; b=qrc7yR62CX+hvbwgE/klJkbFiW
-        sCh78HYtrk1q9rJ3Hva3lz6hvI0Bghsm5SJ458RXfW5Wu6AffvK+MfSu03otsrWtvlYsLJ5VOEkiy
-        kABF6cmuGBeWgzRAaUxoxsgJBR1qrI9pOf3RRevgH8NsRB4umWBlxXtr2PAjrwVNSDf9QHhlcTBfl
-        rJhep8JwnX7WALMJXbZPR+u+iK9uxex+xH+nhgu1WMrZ60lL/PzHdlTdiBq9JqmXqLroQ94KiDhc1
-        1a9G94f5nXNVOxJuczsnatpGNBIGcUuyUpzO7ZpRqjOzURYEfdxQzr/xNAz/terAAn8+zmf+huAiX
-        4BRWt9cQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgkVC-007pLm-1p;
-        Thu, 14 Sep 2023 11:27:21 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A6CB4300422; Thu, 14 Sep 2023 13:27:19 +0200 (CEST)
-Date:   Thu, 14 Sep 2023 13:27:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sandipan Das <sandipan.das@amd.com>
-Cc:     Breno Leitao <leitao@debian.org>,
-        Jirka Hladky <jhladky@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, leit@fb.com,
-        dcostantino@meta.com,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
-Message-ID: <20230914112719.GB18948@noisy.programming.kicks-ass.net>
-References: <20230616115316.3652155-1-leitao@debian.org>
- <20230616132954.GG4253@hirez.programming.kicks-ass.net>
- <ZQHiJxHSSGNk+ul5@gmail.com>
- <CAE4VaGBXO5Joynan_o13XpT=mNrwt4D84NTZF6H62GXJjpMbBA@mail.gmail.com>
- <f06ef3dd-dd71-4ba4-a4fa-18a08788c035@amd.com>
- <20230914091234.GE16631@noisy.programming.kicks-ass.net>
- <ZQLSw6PeUbV+p2gH@gmail.com>
- <20230914111845.GF16631@noisy.programming.kicks-ass.net>
- <b1cf5990-1019-49ea-a1e8-e22410922801@amd.com>
+        Thu, 14 Sep 2023 07:28:26 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B8E2109;
+        Thu, 14 Sep 2023 04:28:18 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401da71b83cso9083515e9.2;
+        Thu, 14 Sep 2023 04:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694690896; x=1695295696; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xQ4JSvALWwFERJLvgTZEaGF4FKSCIvpNYYc8CXH5D3Q=;
+        b=aWHFjFUmu7LSGmcs1LejzkoRXO/xS3DmcN8e+ZcMY2QmpE5NiegdkFudCexMadWZf2
+         D/qLMXeOVpuQ28d6meaAp/iu3r6dt2x7jDbTgAca6Gr4YTtvvedMz/7JWZg0ym8hBNvP
+         xD02SwF9eNK0F2aM01su00WUlnwoIIVFE0g/sZhk8Dr3jGXk/5MmfYPieG5Xv2HTQI5z
+         hFxQpcBWd0F1R8dtd3eEIUQsQVO74AgwSh0CN+fC4cTt0hxGKUAb1wRzNgD79tXJAho4
+         t+lkMh8zZwBh8gMH96lTE/r/cz7TjZTV2r6TNgv4jNIiTJKWbsLXwLJ5ATzRXM0DL5Ie
+         FFPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694690896; x=1695295696;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xQ4JSvALWwFERJLvgTZEaGF4FKSCIvpNYYc8CXH5D3Q=;
+        b=WiIPoNeTZv0uUPFYl1LFoakNXYQKf3efb7Kc7XCwcGpy4TfXqBacY0FBby1+oVj0Q9
+         wHcpF/qaAYKV0gghaoWfE48S5Y0aJNRu0nTqnCfYHfI0CutsSnk76WmuXRhWglp/xgtF
+         9E4GIoasMCG9ATlCfiRK/g6o/jvXwHU+PUq3BSCJQsFBUptZj2IStK5X8Tl32rKo501b
+         G4kjC/jSDSyJ4gb4VM0lwyrjrdiwJynlTOjfPy1sfsiPv8cMj9wv7D8vvyB14ePsYWQr
+         4LKNnbcGGwWEhbYuK8hmh4rV2KKXsn44HQTJjF9Dg6vokSCDl2eUARclm/bYzy3JuiNs
+         0/BA==
+X-Gm-Message-State: AOJu0YzjtcXgfokzV/znam+Hah89/elzWZbiMpBVaa74QbX6weLf9Dtd
+        eS4S64fO6iHISisN+prk4iMw6Aes7frh9Q==
+X-Google-Smtp-Source: AGHT+IEIs8UsiLCX8vS2k4dyGrRuq4U/UPnsQZYK+q3aG92sLgM/+ZObI42HG8W2u9lkURI+y8OtUg==
+X-Received: by 2002:a1c:7912:0:b0:3fe:2b60:b24e with SMTP id l18-20020a1c7912000000b003fe2b60b24emr4484855wme.29.1694690896217;
+        Thu, 14 Sep 2023 04:28:16 -0700 (PDT)
+Received: from lab.hqhome163.com ([194.183.10.152])
+        by smtp.googlemail.com with ESMTPSA id l36-20020a05600c1d2400b003fef5402d2dsm4786764wms.8.2023.09.14.04.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 04:28:15 -0700 (PDT)
+From:   "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
+To:     linux-modules@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Alessandro Carminati <alessandro.carminati@gmail.com>
+Subject: [RFC PATCH 0/2] Enhancing Boot Speed and Security with Delayed Module Signature Verification
+Date:   Thu, 14 Sep 2023 11:27:37 +0000
+Message-Id: <20230914112739.112729-1-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1cf5990-1019-49ea-a1e8-e22410922801@amd.com>
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 04:52:13PM +0530, Sandipan Das wrote:
-> On 9/14/2023 4:48 PM, Peter Zijlstra wrote:
-> > On Thu, Sep 14, 2023 at 02:30:43AM -0700, Breno Leitao wrote:
-> >> On Thu, Sep 14, 2023 at 11:12:34AM +0200, Peter Zijlstra wrote:
-> >>> On Thu, Sep 14, 2023 at 02:25:40PM +0530, Sandipan Das wrote:
-> >>
-> >>>> I agree with using WARN_ON_ONCE() to make this less intrusive.
-> >>>
-> >>> Could you send a patch that AMD is happy with?
-> >>
-> >> Why the current patch is not good enough?
-> > 
-> > Sandipan, can you answer this? I don't tihnk I'm qualified to speak for
-> > the AMD pmu and certainly I don't have insight into their design future.
-> 
-> Hi Breno,
-> 
-> Functionally, the patch looks good to me and I will be reusing it
-> without any change to the authorship. However, as Peter suggested, I
-> wanted to add a message to prompt users to update the microcode and
-> also call out the required patch levels in the commit message since
-> different Zen 4 variants and steppings use different microcode.
-> 
-> Here's what I plan to send.
-> 
-> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-> index abadd5f23425..186a124bb3c0 100644
-> --- a/arch/x86/events/amd/core.c
-> +++ b/arch/x86/events/amd/core.c
-> @@ -909,6 +909,13 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
->                 status &= ~GLOBAL_STATUS_LBRS_FROZEN;
->         }
-> 
-> +       if (status & ~amd_pmu_global_cntr_mask)
-> +               pr_warn_once("Unknown status bits are set (0x%llx), please consider updating microcode\n",
-> +                            status);
-> +
-> +       /* Clear any reserved bits set by buggy microcode */
-> +       status &= amd_pmu_global_cntr_mask;
-> +
->         for (idx = 0; idx < x86_pmu.num_counters; idx++) {
->                 if (!test_bit(idx, cpuc->active_mask))
->                         continue;
-> 
-> --
-> 
-> Hi Peter,
-> 
-> There is another case where users will see warnings but the patch
-> to fix it (link below) is yet to be reviewed. May I rebase and
-> resend it along with the above?
-> 
-> https://lore.kernel.org/all/20230613105809.524535-1-sandipan.das@amd.com/
-> 
+This patch sets up a new feature to the Linux kernel to have the ability,
+while module signature checking is enabled, to delay the moment where
+these signatures are effectively checked. The feature is structure into
+two main key points, the feature can be enabled by a new command line
+kernel argument, while in delay mode, the kernel waits until the
+userspace communicates to start checking signature modules.
+This operation can be done by writing a value in a securityfs file,
+which works the same as /sys/kernel/security/lockdown.
 
-Sure, sorry I seem to have missed that :-(
+Patch 1/2: Modules: Introduce boot-time module signature flexibility
+The first patch in this set fundamentally alters the kernel's behavior
+at boot time by implementing a delayed module signature verification
+mechanism. It introduces a new boot-time kernel argument that allows
+users to request this delay. By doing so, we aim to capitalize on the
+cryptographic checks already performed on the kernel and initrd images
+during the secure boot process. As a result, we can significantly
+improve the boot speed without compromising system security.
+
+Patch 2/2: docs: Update kernel-parameters.txt for signature verification
+enhancement
+The second patch is just to update the kernel parameters list
+documentation.
+
+Background and Motivation
+In certain contexts, boot speed becomes crucial. This patch follows the
+recognition that security checks can at times be redundant. Therefore,
+it proves valuable to skip those checks that have already been validated.
+
+In a typical Secure Boot startup with an initrd, the bootloader is
+responsible for verifying artifacts before relinquishing control. In a
+verified initrd image, it is reasonable to assume that its content is
+also secure. Consequently, verifying module signatures may be deemed
+unnecessary.
+This patch introduces a feature to skip signature verification during
+the initrd boot phase.
+
+Alessandro Carminati (Red Hat) (2):
+  Modules: Introduce boot-time module signature flexibility
+  docs: Update kernel-parameters.txt for signature verification
+    enhancement
+
+ .../admin-guide/kernel-parameters.txt         |  9 +++
+ include/linux/module.h                        |  4 ++
+ kernel/module/main.c                          | 14 +++--
+ kernel/module/signing.c                       | 56 +++++++++++++++++++
+ 4 files changed, 77 insertions(+), 6 deletions(-)
+
+-- 
+2.34.1
+
