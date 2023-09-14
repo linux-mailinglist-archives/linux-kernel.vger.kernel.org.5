@@ -2,56 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577C27A0D20
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B3D7A0D21
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242052AbjINSk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S242053AbjINSkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241819AbjINSjB (ORCPT
+        with ESMTP id S241837AbjINSjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:39:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F673211E;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F152101;
         Thu, 14 Sep 2023 11:38:56 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716734;
+        s=2020; t=1694716735;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E9wzJpM/hTGvGG40vNbVTUQjpkMtUAUxayMtXjZuHUE=;
-        b=u8PiurzFnDC29q45800AqAXE7kZ5IcrLh5PgFkXFWnEqN2WMaBEoxskCMMi9QcukzjXvo8
-        zxNMY05yrq8L33TVpXER2JxgNUc1E/xhYJMwu4sd4HpsDc0MKIuaWzFMfoPsnme259Cobp
-        iFCIpRAsH76Pf0EeGsYgvm7fR3aWBRfh1G80WueS2pdN+4BoyuaGhYWLdUKqmAySZCqsP5
-        xXwV5U0TC7WQVjC1oTM9nmcHz5iVLKEzG8NsdnzS8r8t1UW1grEEDkSSsaHK9ioYWVbh1d
-        cPSA2ZtEx9keDZud6890yVfuNfEzSbJ1Ewwhyu4E/NT7s9FAi1m0qLuQ3yqVLw==
+        bh=hpMKqxP39Aj1OlB9VqwDRJumN0r6uN84lHL1pDkCQeE=;
+        b=Pp/OGmDj8bMmAT9eZ1ySXB//R2G1FfxBh2rCko4qVh2BdTqpXFvZH3XdSA8/Dt5Rmy8Xmf
+        Au2vkXb+sOqd+lUM/wW0LbwmWUmMOItZJ8aipSq6my6kzxRdncDlAzKGX/5t978GKcPpId
+        vZuu2M33td/NUSKgQytJNEGeKqPiPmbK4DA/bL/wwv3GrvnJEBHahKvpM5Yf3n4o/QOkdO
+        m4wjj2Hih6J8cHfLNftCsYGbNH7EWimZgfNjdcCDHyZIyg2Fjvpwj4604kGsuT3NG6etBN
+        JVkGl0gcbLCwXXpWEhYVVwheb41Efq8+HkhAIy2JqF9LjKS6d7HlbaqVUwU6mA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716734;
+        s=2020e; t=1694716735;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E9wzJpM/hTGvGG40vNbVTUQjpkMtUAUxayMtXjZuHUE=;
-        b=Z1W6hSbtxnVWbn5OWCbxj/FFJw4sMBXi9W6Yl6ggduNuUlI6W1LsbgMRHOWu1h1acXbZjn
-        dfA/izrV71PNwOAw==
+        bh=hpMKqxP39Aj1OlB9VqwDRJumN0r6uN84lHL1pDkCQeE=;
+        b=uwgakoj7fG2f6H2ApkMwkAjT0yD56cfGqEkV4wd0dDYU1DBAjq1VStA47ABhHB07vJ5t/R
+        jbBg9GaiGCJPACDg==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
-        Taichi Sugaya <sugaya.taichi@socionext.com>,
-        Takao Orito <orito.takao@socionext.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Richard GENOUD <richard.genoud@gmail.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH tty v1 38/74] serial: milbeaut_usio: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:55 +0206
-Message-Id: <20230914183831.587273-39-john.ogness@linutronix.de>
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH tty v1 39/74] serial: mpc52xx: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:56 +0206
+Message-Id: <20230914183831.587273-40-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -88,74 +83,62 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/milbeaut_usio.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/tty/serial/mpc52xx_uart.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/tty/serial/milbeaut_usio.c b/drivers/tty/serial/milbeaut_usio.c
-index 70a910085e93..db3b81f2aa57 100644
---- a/drivers/tty/serial/milbeaut_usio.c
-+++ b/drivers/tty/serial/milbeaut_usio.c
-@@ -207,9 +207,9 @@ static irqreturn_t mlb_usio_rx_irq(int irq, void *dev_id)
+diff --git a/drivers/tty/serial/mpc52xx_uart.c b/drivers/tty/serial/mpc52xx_uart.c
+index 916507b8f31d..a252465e745f 100644
+--- a/drivers/tty/serial/mpc52xx_uart.c
++++ b/drivers/tty/serial/mpc52xx_uart.c
+@@ -1096,14 +1096,14 @@ static void
+ mpc52xx_uart_break_ctl(struct uart_port *port, int ctl)
  {
- 	struct uart_port *port = dev_id;
- 
--	spin_lock(&port->lock);
-+	uart_port_lock(port);
- 	mlb_usio_rx_chars(port);
--	spin_unlock(&port->lock);
-+	uart_port_unlock(port);
- 
- 	return IRQ_HANDLED;
- }
-@@ -218,10 +218,10 @@ static irqreturn_t mlb_usio_tx_irq(int irq, void *dev_id)
- {
- 	struct uart_port *port = dev_id;
- 
--	spin_lock(&port->lock);
-+	uart_port_lock(port);
- 	if (readb(port->membase + MLB_USIO_REG_SSR) & MLB_USIO_SSR_TBI)
- 		mlb_usio_tx_chars(port);
--	spin_unlock(&port->lock);
-+	uart_port_unlock(port);
- 
- 	return IRQ_HANDLED;
- }
-@@ -267,7 +267,7 @@ static int mlb_usio_startup(struct uart_port *port)
- 	escr = readb(port->membase + MLB_USIO_REG_ESCR);
- 	if (of_property_read_bool(port->dev->of_node, "auto-flow-control"))
- 		escr |= MLB_USIO_ESCR_FLWEN;
+ 	unsigned long flags;
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
- 	writeb(0, port->membase + MLB_USIO_REG_SCR);
- 	writeb(escr, port->membase + MLB_USIO_REG_ESCR);
- 	writeb(MLB_USIO_SCR_UPCL, port->membase + MLB_USIO_REG_SCR);
-@@ -282,7 +282,7 @@ static int mlb_usio_startup(struct uart_port *port)
  
- 	writeb(MLB_USIO_SCR_TXE  | MLB_USIO_SCR_RIE | MLB_USIO_SCR_TBIE |
- 	       MLB_USIO_SCR_RXE, port->membase + MLB_USIO_REG_SCR);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	return 0;
- }
-@@ -337,7 +337,7 @@ static void mlb_usio_set_termios(struct uart_port *port,
+ 	if (ctl == -1)
+ 		psc_ops->command(port, MPC52xx_PSC_START_BRK);
  	else
- 		quot = 0;
+ 		psc_ops->command(port, MPC52xx_PSC_STOP_BRK);
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	uart_update_timeout(port, termios->c_cflag, baud);
- 	port->read_status_mask = MLB_USIO_SSR_ORE | MLB_USIO_SSR_RDRF |
- 				 MLB_USIO_SSR_TDRE;
-@@ -367,7 +367,7 @@ static void mlb_usio_set_termios(struct uart_port *port,
- 	writew(BIT(12), port->membase + MLB_USIO_REG_FBYTE);
- 	writeb(MLB_USIO_SCR_RIE | MLB_USIO_SCR_RXE | MLB_USIO_SCR_TBIE |
- 	       MLB_USIO_SCR_TXE, port->membase + MLB_USIO_REG_SCR);
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
  }
  
- static const char *mlb_usio_type(struct uart_port *port)
+ static int
+@@ -1214,7 +1214,7 @@ mpc52xx_uart_set_termios(struct uart_port *port, struct ktermios *new,
+ 	}
+ 
+ 	/* Get the lock */
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Do our best to flush TX & RX, so we don't lose anything */
+ 	/* But we don't wait indefinitely ! */
+@@ -1250,7 +1250,7 @@ mpc52xx_uart_set_termios(struct uart_port *port, struct ktermios *new,
+ 	psc_ops->command(port, MPC52xx_PSC_RX_ENABLE);
+ 
+ 	/* We're all set, release the lock */
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static const char *
+@@ -1477,11 +1477,11 @@ mpc52xx_uart_int(int irq, void *dev_id)
+ 	struct uart_port *port = dev_id;
+ 	irqreturn_t ret;
+ 
+-	spin_lock(&port->lock);
++	uart_port_lock(port);
+ 
+ 	ret = psc_ops->handle_irq(port);
+ 
+-	spin_unlock(&port->lock);
++	uart_port_unlock(port);
+ 
+ 	return ret;
+ }
 -- 
 2.39.2
 
