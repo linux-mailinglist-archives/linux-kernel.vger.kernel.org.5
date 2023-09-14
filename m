@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112FD79FE9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B6279FE9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjINIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S235981AbjINImR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 04:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjINIk4 (ORCPT
+        with ESMTP id S229891AbjINImQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:40:56 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBBF91
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:40:52 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d8198ca891fso275862276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694680851; x=1695285651; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rBgKOX9HU0Cqf61gn84yvvVhKTbuYZo7XwNQLZJ6zZQ=;
-        b=n+HADZPRDaVcTgqRN5ARP3ajMfJkvybXCSDh3gpfl44JUiypjc0/2V2H9xRDnMa02L
-         GogX8fQVXn0s381cAovCMd06foZrauZjhyOBap0mLDCAPHe3mXoT2aiP6eFCtCELQtf0
-         No3nDZ3MqXZpg/BBorPaKFo+cw34NcuLUlb1PflEN1Z3qw/tn81HcLFh+y2UyWJT2Sor
-         PtE7Yj/2gQpR8iGR+T0IZvUC8JSH9v9x2pEJ0M3a5Mwf6x456JRwPNAMXKiFoPEb4AGR
-         /1O+1HTjQPjbydRY9fcyGmp6UfLzwETv4QUkc7rt+QZfoDy0B6DzDfhHbfbv1lemzh8j
-         fgRg==
+        Thu, 14 Sep 2023 04:42:16 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6291091;
+        Thu, 14 Sep 2023 01:42:12 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59bbdb435bfso7884857b3.3;
+        Thu, 14 Sep 2023 01:42:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694680851; x=1695285651;
+        d=1e100.net; s=20230601; t=1694680931; x=1695285731;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rBgKOX9HU0Cqf61gn84yvvVhKTbuYZo7XwNQLZJ6zZQ=;
-        b=ogN9C6jXDPaU3+SOEK/xMYqSGc7Ga/wFoAiVqfWPXRgIM6JOkr35XG4W2Plkzls+fK
-         /PfBT9UkDWwQGLrmdE1m00Lyw7vZfpZmTK2E4HU0P9foRslkZ4BfH4IWozvZktcpagTs
-         IBfMujWiGFX7DsdHliYE0WP4GAF3opky+yCSutkoGWpXBNEuEIqZZHqeSRzFPkHVZaca
-         YQLYmSxLrzbBtm8OAfn7GUT3wRHen9YY+rEAJ1TVC8FrY12pJIaFPdlCgFb60oxzCt8Y
-         w/V3gOkB/tcITzGIzCUksAVFn0eX4GMWy9rX75qKqcFMxItEcQZZJzvYXvnywSvN7knF
-         AIQQ==
-X-Gm-Message-State: AOJu0YzPMVV9JRXXY/Le75T5o9tGKPbc02dZNTdniIXaxHSiVShBDUHf
-        /XIGw2ed18FU0idE/e9bFMZBa84oySMCdhTFlcHIhQ==
-X-Google-Smtp-Source: AGHT+IFwZobHxcqKOc9i9F0FwU196xwcuhkf7p5VMd50HiyGLwvFBTBzw2gNzhm4i/jnEP5lPJDUpXQSAPyK3EQ0058=
-X-Received: by 2002:a25:8001:0:b0:d4b:6a0:fe2b with SMTP id
- m1-20020a258001000000b00d4b06a0fe2bmr4591638ybk.36.1694680851406; Thu, 14 Sep
- 2023 01:40:51 -0700 (PDT)
+        bh=Gt1d7x2jEDiyKRRaW6VzepfhDR5PRb6XJnF6WiN9Kfg=;
+        b=Y2EKMkwYRkbJVBSnL7eMtOebjKyx1nVensbYz4yzG08bUUvC9haDKGo9/9hSzH/TzX
+         FbPVyZzUGBqIZwfiWY8bZFOC8jLlYKXAhDu88bgdICTE8VgAhn+qaT4FrJCLGGyMC/lM
+         sSPorCvk1kSPzIU2/r4kU+7aprodAT350VxgfitjaLQYFrbna5n4lU6CyXxCDzpwaxuK
+         S8FGavfVXSRUmbOPKCXqrJklt2UdDn64m2SjcUPvpMVqB3KP4uAAMMyKpWroe6G3Ieyc
+         urm2S2lssVyEGNAOepw7b/AF7fO9GzdrFCUGRHEbATbSVqoOJXxWw/vUkJbMVoi8ahet
+         uKNg==
+X-Gm-Message-State: AOJu0YzEse9ynEBSgnn9+6E/KQ0teXe+/KyWG2+kp9bbthbFDE7gXsUC
+        etuuZsxPBssqauedHUAz+O0FcaqGr5GF+Q==
+X-Google-Smtp-Source: AGHT+IHy8EAG/YRAmgKeD3zoebtRhIrODs0H7KWcN//8lYUqY9YSl7tWPEO1edaRItsSeDda1vQzsA==
+X-Received: by 2002:a25:9885:0:b0:d80:a9d:aeae with SMTP id l5-20020a259885000000b00d800a9daeaemr4781019ybo.44.1694680931412;
+        Thu, 14 Sep 2023 01:42:11 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id m196-20020a25d4cd000000b00d814d8dfd69sm245845ybf.27.2023.09.14.01.42.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 01:42:10 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d81adf0d57fso18132276.1;
+        Thu, 14 Sep 2023 01:42:10 -0700 (PDT)
+X-Received: by 2002:a25:9707:0:b0:d80:4c9b:bf72 with SMTP id
+ d7-20020a259707000000b00d804c9bbf72mr4457953ybo.21.1694680930741; Thu, 14 Sep
+ 2023 01:42:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230912-gpio-led-trigger-dt-v1-0-1b50e3756dda@linaro.org>
- <20230912-gpio-led-trigger-dt-v1-1-1b50e3756dda@linaro.org> <20230913133451.GA2841610-robh@kernel.org>
-In-Reply-To: <20230913133451.GA2841610-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 14 Sep 2023 10:40:40 +0200
-Message-ID: <CACRpkdb72f9WFeEGo-tXscZaBmFH04WiePM+tJSmuuXQxxy=3A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: leds: Mention GPIO triggers
-To:     Rob Herring <robh@kernel.org>
-Cc:     =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230913203805.465780-1-ralph.siemsen@linaro.org>
+In-Reply-To: <20230913203805.465780-1-ralph.siemsen@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Sep 2023 10:41:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX1ccpveV+vxJrkmVCH-SJXhAHCiyp75CfXUQjz6bwcwQ@mail.gmail.com>
+Message-ID: <CAMuHMdX1ccpveV+vxJrkmVCH-SJXhAHCiyp75CfXUQjz6bwcwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] clk: renesas: r9a06g032: fix kerneldoc warning
+To:     Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 3:34=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
-> On Tue, Sep 12, 2023 at 03:44:30PM +0200, Linus Walleij wrote:
-> > We reuse the trigger-sources phandle to just point to
-> > GPIOs we may want to use as LED triggers.
-> >
-> > Example:
-> >
-> > gpio: gpio@0 {
-> >     compatible "my-gpio";
-> >     gpio-controller;
-> >     #gpio-cells =3D <2>;
-> >     interrupt-controller;
-> >     #interrupt-cells =3D <2>;
-> >     #trigger-source-cells =3D <2>;
+On Wed, Sep 13, 2023 at 10:38 PM Ralph Siemsen <ralph.siemsen@linaro.org> wrote:
+> Mention the 'dual' structure in the kdoc. This fixes the following
+> W=1 warning during build:
 >
-> BTW, this is not documented for any GPIO binding. If we want to specify
-> the cell size, then it has to be added to every GPIO controller binding.
-> If not, we then need to reference gpio.yaml in every GPIO controller
-> binding (along with unevaluatedProperties). Doesn't have to be done for
-> this patch to go in though.
+> > drivers/clk/renesas/r9a06g032-clocks.c:119: warning: Function parameter or member 'dual' not described in 'r9a06g032_clkdesc'
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309101314.kTRoxND5-lkp@intel.com/
+> Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+> ---
+> Changes in v2:
+> - split the warning fix into separate commit
 
-Yeah I mean this trigger-sources =3D <...>; one-size-fits-all is a bit
-weird in a way.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v6.7.
 
-My other idea was to simply add trigger-gpios to the normal way
-and be done with it, but now the trigger binding has this weird
-thing.
+Gr{oetje,eeting}s,
 
-Would trigger-gpios be better?
+                        Geert
 
-Yours,
-Linus Walleij
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
