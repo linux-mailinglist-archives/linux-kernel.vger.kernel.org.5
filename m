@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5054A7A0A3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E7E7A0A3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241394AbjINQEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        id S241462AbjINQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240667AbjINQEw (ORCPT
+        with ESMTP id S241439AbjINQFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:04:52 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59508CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:04:48 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3acfa8f8df3so82689b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:04:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694707487; x=1695312287;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZNdUoJwIRehdPwgJQ6H5/eO4Vgm7GeU3hjbHHkOa5/E=;
-        b=sW34sku1nVyYifserbI0s+yXQmDx2oGw/0vAnFQdJ4Pz6SYuEodY/4ZlyheD5VCOwR
-         IuqLeLRN9ZKXdGaXuXIYGdEY/P1eKUNEOPZBrPebeO+StLU9406KY3yZISZyyboGBwn6
-         7KmOqYcIwrOk44YUwAgJFNWesvFV6Wt8ZXDHQZE8hAgrwS0ip8NBNpCUaE0UOyM6uDw5
-         iMwA64U+t2z3ii2ySFNrW6t41HYQKaG/wH1gvToOoptvGSQscWgf3cQwKR4B+ysG3A21
-         pVYRRrqlxoS3K347DNLirZc2w9ttwTtB1oOhEFasMUlGCDteG/9ufUH1uiCLxspJD9Xq
-         9bZg==
-X-Gm-Message-State: AOJu0YyV7SUl+7bOlUD/vUbe9SLpKOQwT52RxvyQyEmzqLJ79Ab7staO
-        7QvfTx8WZIt/VYS09GXi5yzo4l/R5ygMA2Mcv75PHMi7XDxc
-X-Google-Smtp-Source: AGHT+IEDQtk73BIjie3qKGhsS3SlJkwNzsTIbJrHEDur23i7MA6UdvEoFBJnJLDhca2eLJO0edH5ljH5HcFw7e3vZNXEd6fSoRHH
+        Thu, 14 Sep 2023 12:05:03 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC3D1BDD;
+        Thu, 14 Sep 2023 09:04:59 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38EG4oqp075064;
+        Thu, 14 Sep 2023 11:04:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694707490;
+        bh=vQL80/+kCMGTTVV38gtzZKwjbEGDPwKyLfgY6s/HBP4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=X6hH6jh0Smbh3bOWXWTiG03OlJ+oguZZUF5EDL7CYbKMLeRBu/w1+E3L5vOzIvuHj
+         NJ5UmD6qLUFgKPkjz+pAlMDh77bxGEjD/Yrn2UbEQGw0+qSZMgmOgjnD4SAkT64Wmu
+         pkEdKHFj3M2Fsglm1Chclx20eV5MtVRxSththRik=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38EG4oHv056947
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 Sep 2023 11:04:50 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
+ Sep 2023 11:04:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 14 Sep 2023 11:04:50 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38EG4oW4017019;
+        Thu, 14 Sep 2023 11:04:50 -0500
+Date:   Thu, 14 Sep 2023 11:04:50 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Nitin Yadav <n-yadav@ti.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <vigneshr@ti.com>, <rogerq@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
+Message-ID: <20230914160450.knooq6q3dflostv4@playtime>
+References: <20230913114711.2937844-1-n-yadav@ti.com>
+ <20230913114711.2937844-2-n-yadav@ti.com>
+ <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
+ <f7bebc22-d494-f54d-5543-db75f5714a52@ti.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1893:b0:3a8:4895:63e1 with SMTP id
- bi19-20020a056808189300b003a8489563e1mr2724583oib.5.1694707487793; Thu, 14
- Sep 2023 09:04:47 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 09:04:47 -0700
-In-Reply-To: <d1285714-a6ad-688a-1adf-6a41771aa301@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cee844060553d536@google.com>
-Subject: Re: [syzbot] [io-uring?] UBSAN: array-index-out-of-bounds in io_setup_async_msg
-From:   syzbot <syzbot+a4c6e5ef999b68b26ed1@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <f7bebc22-d494-f54d-5543-db75f5714a52@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 14:56-20230914, Nitin Yadav wrote:
+> Hi Krzysztof,
+> 
+> On 14/09/23 11:57, Krzysztof Kozlowski wrote:
+> > On 13/09/2023 13:47, Nitin Yadav wrote:
+> >> Add support for AM62Q NAND card: X8 NAND EXPANSION
+> >> BOARD card (PROC143E1) for AM62x LP SK board.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-UBSAN: array-index-out-of-bounds in io_setup_async_msg
+Commit message is all too wrong as well. Sigh.
 
-================================================================================
-UBSAN: array-index-out-of-bounds in io_uring/net.c:189:55
-index 3779565697114 is out of range for type 'iovec [8]'
-CPU: 1 PID: 5467 Comm: syz-executor.0 Not tainted 6.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
- io_setup_async_msg+0x2a0/0x2b0 io_uring/net.c:189
- io_recvmsg+0x169f/0x2170 io_uring/net.c:781
- io_issue_sqe+0x54a/0xd80 io_uring/io_uring.c:1878
- io_queue_sqe io_uring/io_uring.c:2063 [inline]
- io_submit_sqe io_uring/io_uring.c:2323 [inline]
- io_submit_sqes+0x96c/0x1ed0 io_uring/io_uring.c:2438
- __do_sys_io_uring_enter+0x14ea/0x2650 io_uring/io_uring.c:3647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9a8a27cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9a8af210c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 00007f9a8a39bf80 RCX: 00007f9a8a27cae9
-RDX: 0000000000000000 RSI: 0000000000007689 RDI: 0000000000000003
-RBP: 00007f9a8a2c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f9a8a39bf80 R15: 00007ffd083c1e58
- </TASK>
-================================================================================
+> >>
+> >> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> >> ---
+> >>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
+> >>  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
+> >>  2 files changed, 31 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> >> index 284b90c94da8..e93e79d8083f 100644
+> >> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> >> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> >> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
+> >>  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
+> >>  		status = "disabled";
+> >>  	};
+> >> +	gpmc0: memory-controller@3b000000 {
+> >> +		status = "disabled";
+> > 
+> > status is never first in DTSI. Really, where did you see such code?
+> Thank for pointing out, Will send a revised version.
+
+GPMC is not functional without board specific interface configuration
+such as pinmux. this approach, in fact is all over the place now and
+discussed in the mailing list multiple times now.
+
+What is missing here is the documentation of the constraints as to why
+it is set as disabled by default.
 
 
-Tested on:
+> > 
+> >> +		compatible = "ti,am64-gpmc";
+> >> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+> > 
+> > First is compatible, second is reg/reg-names/ranges.
+> > 
+> > 
+> > Best regards,
+> > Krzysztof
+> > 
+> 
+> -- 
+> Regards,
+> Nitin
 
-commit:         0bb80ecc Linux 6.6-rc1
-git tree:       https://github.com/isilence/linux.git syz-test/netmsg-init-base
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ccbf30680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f4894cf58531f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4c6e5ef999b68b26ed1
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
