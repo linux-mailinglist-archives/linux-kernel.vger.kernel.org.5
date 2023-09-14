@@ -2,124 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C51B7A0F30
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FA07A0F33
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjINUpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S229873AbjINUqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjINUpj (ORCPT
+        with ESMTP id S229473AbjINUqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:45:39 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FD32120
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:45:35 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-5734f54dc44so797467eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694724335; x=1695329135; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lYFkx59s2xs5GUhtqs0B2NG56CjyPAmSZL2SFzjSb1A=;
-        b=W18YskAvzb69o+UD1NsNXlpUCA99U/LyMniG/sAUQ0DjEHvN8NE9hQAnnEDVRHAMfm
-         N+B/fifc0k5H5AjbSX/owFBpfab3Hyp6h1ecUrNHQPRunknFGwuHQpXT2hzmdjiyEH91
-         foqsP1AxTgYSEGa1pQh/hVM3d/6x+HAvcyKYvCcU0uiyXbxutloPHlLude4e0OC/hMCv
-         4EH9RxcquG8AjjebWOXU9hKAOfv1KLPwUpCUWgcTqatR5CbNC3/Jv0mj1/v7nHUndmIj
-         KqeBr5fGpLVRjHZp9BhNfKJw5rnTKwVVA8t3BJJsD2xVvsB84w8trX65s4JGVaJomRiz
-         Ke6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694724335; x=1695329135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lYFkx59s2xs5GUhtqs0B2NG56CjyPAmSZL2SFzjSb1A=;
-        b=CQevixNVsi5OP2g09V7IOGuVKLfNllTbzOCU1A8+FxeL/m223S1yueO7vrJU8o4JCj
-         klU2xVkglWR6eZScM4PKPkqf8J6rjb/+EQmKCQe0M7dOZX6XktOrbLerNR4HDgPAr+A6
-         xuQ6CVt6eefiRxj6HCvfGfcwIhsRCz8C4NW+gEOYdtmLG2O8gH13rkA+kSLsS+KCnoFm
-         lWleUUIfVLAb1JElvat398gakTSErgI589ndF0rthqzs1fL8seEFgrZJn/Aee6A1qXsW
-         RSgy0u2DiE0XqviSsA51Z0KeFuQ2QyUDW6Iooy1o2W4U/9eVAKKQuFRkAJ3B5WAiJljD
-         IUfA==
-X-Gm-Message-State: AOJu0YwHGD9Jbl7Pag4O3RkTgAtMXyPXKzQHENvqqK4i+VJL0cgcb3c3
-        cplBQ02BW/ZmF4NqAOLYXZKWk25cXCzNYtIPa/poSCEy
-X-Google-Smtp-Source: AGHT+IF0ninFMuKfFQj4R5kEyD2TqpllZdJ07TUZpeOjkb7E2DciQ4ukpmEmeloHGp0094kz4pau7MLErnTAD7pMk9o=
-X-Received: by 2002:a05:6870:3412:b0:1ad:5317:1f7d with SMTP id
- g18-20020a056870341200b001ad53171f7dmr6949318oah.39.1694724334982; Thu, 14
- Sep 2023 13:45:34 -0700 (PDT)
+        Thu, 14 Sep 2023 16:46:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 019212120;
+        Thu, 14 Sep 2023 13:46:01 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9C881FB;
+        Thu, 14 Sep 2023 13:46:38 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1F0D3F738;
+        Thu, 14 Sep 2023 13:45:57 -0700 (PDT)
+Message-ID: <be527eb1-d253-b9fe-ecc9-4c7b04da9efd@arm.com>
+Date:   Thu, 14 Sep 2023 22:45:46 +0200
 MIME-Version: 1.0
-References: <20230914094533.213548-1-liucong2@kylinos.cn> <BN9PR12MB52574EE1CDCCD04336E963FFFCF7A@BN9PR12MB5257.namprd12.prod.outlook.com>
-In-Reply-To: <BN9PR12MB52574EE1CDCCD04336E963FFFCF7A@BN9PR12MB5257.namprd12.prod.outlook.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Sep 2023 16:45:23 -0400
-Message-ID: <CADnq5_Oaw6Cm+oUb_TpfPwTt_euA85CB1aY6dxcW=r2hjp_Aig@mail.gmail.com>
-Subject: Re: [PATCH] fix a memory leak in amdgpu_ras_feature_enable
-To:     "Zhang, Hawking" <Hawking.Zhang@amd.com>
-Cc:     Cong Liu <liucong2@kylinos.cn>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Yang, Stanley" <Stanley.Yang@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/4] sched: consolidate and cleanup access to CPU's max
+ compute capacity
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, viresh.kumar@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org
+References: <20230901130312.247719-1-vincent.guittot@linaro.org>
+ <20230901130312.247719-2-vincent.guittot@linaro.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230901130312.247719-2-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On 01/09/2023 15:03, Vincent Guittot wrote:
+> Remove struct rq cpu_capacity_orig field and use arch_scale_cpu_capacity()
+> instead.
+> 
+> Scheduler uses 3 methods to get access to the CPU's max compute capacity:
+> - arch_scale_cpu_capacity(cpu) which is the default way to get CPU's capacity.
+> - cpu_capacity_orig field which is periodically updated with
+>   arch_scale_cpu_capacity().
+> - capacity_orig_of(cpu) which encapsulates rq->cpu_capacity_orig
+> 
+> There is no real need to save the value returned by arch_scale_cpu_capacity()
+> in struct rq. arch_scale_cpu_capacity() returns:
+> - either a per_cpu variable.
+> - or a const value for systems which have only one capacity.
+> 
+> Remove cpu_capacity_orig and use arch_scale_cpu_capacity() everywhere.
+> 
+> No functional changes.
+> 
+> some tests of Arm64:
+> small SMP device (hikey): no noticeable changes
+> HMP device (RB5): hackbench shows minor improvement (1-2%)
+> large smp (thx2): hackbench and tbench shows minor improvement (1%)
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-On Thu, Sep 14, 2023 at 5:53=E2=80=AFAM Zhang, Hawking <Hawking.Zhang@amd.c=
-om> wrote:
->
-> [AMD Official Use Only - General]
->
-> Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
->
-> Regards,
-> Hawking
-> -----Original Message-----
-> From: Cong Liu <liucong2@kylinos.cn>
-> Sent: Thursday, September 14, 2023 17:46
-> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Ch=
-ristian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; David Airlie <ai=
-rlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Yang, Stanley <Stanley.Y=
-ang@amd.com>; Zhang, Hawking <Hawking.Zhang@amd.com>
-> Cc: Cong Liu <liucong2@kylinos.cn>; amd-gfx@lists.freedesktop.org; dri-de=
-vel@lists.freedesktop.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH] fix a memory leak in amdgpu_ras_feature_enable
->
-> This patch fixes a memory leak in the amdgpu_ras_feature_enable() functio=
-n.
-> The leak occurs when the function sends a command to the firmware to enab=
-le or disable a RAS feature for a GFX block. If the command fails, the kfre=
-e() function is not called to free the info memory.
->
-> Fixes: bf7aa8bea9cb ("drm/amdgpu: Free ras cmd input buffer properly")
-> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/am=
-d/amdgpu/amdgpu_ras.c
-> index 8eb6f6943778..b4a8ea946410 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> @@ -802,6 +802,7 @@ int amdgpu_ras_feature_enable(struct amdgpu_device *a=
-dev,
->                                 enable ? "enable":"disable",
->                                 get_ras_block_str(head),
->                                 amdgpu_ras_is_poison_mode_supported(adev)=
-, ret);
-> +                       kfree(info);
->                         return ret;
->                 }
->
-> --
-> 2.34.1
->
+Next to util_fits_cpu() which uses capacity_orig as a local variable
+(which is fine) there is sis() referring to capacity_orig in a comment.
+
+Documentation/scheduler/sched-capacity.rst uses the term `capacity_orig`
+in chapter 1.2 to explain the difference between CPU's maximum
+(attainable) capacity and capacity as the former reduced by pressure.
+
+Not sure if you want to change those refs as well with this patch?
+People might get confused about the term `capacity_orig` pretty soon.
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
