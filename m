@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B7A79FD37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF4579FD3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbjINH3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S233834AbjINHa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjINH3O (ORCPT
+        with ESMTP id S230120AbjINHa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:29:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E8AF3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:29:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1751D21842;
-        Thu, 14 Sep 2023 07:29:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694676549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDEA/X6zv4BDt+KQZpV3IhgSyRZdkJ8Xl7rT59OeU9o=;
-        b=qM+agAQcoGoG66TpgqQ/00ummhfZFJjyuf9auoNoJBdRSwbshdxxMny+b4tGQo+9GbBrvq
-        HdzViv3j84jNx4OTjcyHFXYZNLdytBXHbBYRAQNPxdpMgQtEeuwoKCtRGRiU0wV1Xn7A5m
-        vqVTI1+AGw5VvPdVY6w25o9SxnRqQKQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694676549;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDEA/X6zv4BDt+KQZpV3IhgSyRZdkJ8Xl7rT59OeU9o=;
-        b=hSbb1oUopQsNq2T/IPs37CTwU5bzOKXgVp4nvlLlH4K2WW79N0gTtAmcCyZtrerenZYqsn
-        6WRXb31jU8CWS9AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E335E139DB;
-        Thu, 14 Sep 2023 07:29:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0+XGNkS2AmUECwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 14 Sep 2023 07:29:08 +0000
-Message-ID: <dbdece9a-9963-c425-f67f-01432ad5b271@suse.cz>
-Date:   Thu, 14 Sep 2023 09:29:08 +0200
+        Thu, 14 Sep 2023 03:30:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A040DF3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5DlddhjUVyteXMoL09oPHpi3KfoXAOYSYC67ZyBWCcg=; b=V/T0AS0FQjnWHcsJxlp10IjHZN
+        X1QU9duBdgIY8sBztxRpJHnTbJWsK9ni18zQBp+163HAPNGulZZSN1SElli0Luou3q2bMWzX+PlOu
+        aUTU6By5q7oeBPUbogiftneD4aySzXux/YtMXNpqIQJcoUl3bVDANRBw/FwSaOLiOKF30JvW4dy9b
+        HL9mmwfjlHOghwHhFbK7YXKfWh8xnreHZkDy5KpRMrTXZe3PxGhTuKnfcgREbaUywapOUYyGgDqGt
+        iodmIHEH3l+0FHWlMUUvMVELepx7m5q8Y0Zt1aY2XMMDQWVV1jbtSucXBpsKUpjFJjtTkuz8fJmYF
+        8VWPmh2Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qggnY-001YQ9-GZ; Thu, 14 Sep 2023 07:30:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1195E300422; Thu, 14 Sep 2023 09:30:00 +0200 (CEST)
+Date:   Thu, 14 Sep 2023 09:29:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     lkp <lkp@intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [tip:x86/tdx 8/12] vmlinux.o: warning: objtool:
+ __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn
+ annotation
+Message-ID: <20230914072959.GC16631@noisy.programming.kicks-ass.net>
+References: <202309140828.9RdmlH2Z-lkp@intel.com>
+ <90f0a4d44704f9c296f3a4d8b72c57f2916aa09d.camel@intel.com>
+ <377b1ce2ecd390f4b6f8cdf68d22c708f7cef6d1.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-2-hannes@cmpxchg.org>
- <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
- <20230912150320.GB3228@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230912150320.GB3228@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377b1ce2ecd390f4b6f8cdf68d22c708f7cef6d1.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 17:03, Johannes Weiner wrote:
-> On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
->> I think after this change we should [...]
+On Thu, Sep 14, 2023 at 03:21:29AM +0000, Huang, Kai wrote:
+> On Thu, 2023-09-14 at 01:23 +0000, Huang, Kai wrote:
+> > On Thu, 2023-09-14 at 09:05 +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
+> > > head:   7b804135d4d1f0a2b9dda69c6303d3f2dcbe9d37
+> > > commit: c641cfb5c157b6c3062a824fd8ba190bf06fb952 [8/12] x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL
+> > > config: x86_64-rhel-8.3-bpf (https://download.01.org/0day-ci/archive/20230914/202309140828.9RdmlH2Z-lkp@intel.com/config)
+> > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140828.9RdmlH2Z-lkp@intel.com/reproduce)
+> > > 
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Closes: https://lore.kernel.org/oe-kbuild-all/202309140828.9RdmlH2Z-lkp@intel.com/
+> > > 
+> > > All warnings (new ones prefixed by >>):
+> > > 
+> > > > > vmlinux.o: warning: objtool: __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn annotation
+> > > 
+> > 
+> > Hmm.. The __tdx_hypercall_failed() is already annotated with __noreturn (I
+> > explicitly added it to silent such warning):
+> > 
+> > /* Called from __tdx_hypercall() for unrecoverable failure */
+> > noinstr void __noreturn __tdx_hypercall_failed(void)
+> > {
+> >         instrumentation_begin();
+> >         panic("TDVMCALL failed. TDX module bug?");
+> > }
+> > 
+> > Not sure why the objtool is still complaining this?
+> > 
 > 
-> Speaking of follow-ups, AFAICS we no longer need those either:
+> It appears the __noreturn must be annotated to the function declaration but not
+> the function body.  I'll send out the fix as soon as I confirm the fix with LKP.
 
-Seems so, but the comments do talk about races, so once those are sorted out :)
+FWIW, the reason being that...
 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 9cad31de1bf5..bea499fbca58 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1751,13 +1751,6 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
->  
->  	old_block_type = get_pageblock_migratetype(page);
->  
-> -	/*
-> -	 * This can happen due to races and we want to prevent broken
-> -	 * highatomic accounting.
-> -	 */
-> -	if (is_migrate_highatomic(old_block_type))
-> -		goto single_page;
-> -
->  	/* Take ownership for orders >= pageblock_order */
->  	if (current_order >= pageblock_order) {
->  		change_pageblock_range(page, current_order, start_type);
-> @@ -1926,24 +1919,15 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
->  				continue;
->  
->  			/*
-> -			 * In page freeing path, migratetype change is racy so
-> -			 * we can counter several free pages in a pageblock
-> -			 * in this loop although we changed the pageblock type
-> -			 * from highatomic to ac->migratetype. So we should
-> -			 * adjust the count once.
-> +			 * It should never happen but changes to
-> +			 * locking could inadvertently allow a per-cpu
-> +			 * drain to add pages to MIGRATE_HIGHATOMIC
-> +			 * while unreserving so be safe and watch for
-> +			 * underflows.
->  			 */
-> -			if (is_migrate_highatomic_page(page)) {
-> -				/*
-> -				 * It should never happen but changes to
-> -				 * locking could inadvertently allow a per-cpu
-> -				 * drain to add pages to MIGRATE_HIGHATOMIC
-> -				 * while unreserving so be safe and watch for
-> -				 * underflows.
-> -				 */
-> -				zone->nr_reserved_highatomic -= min(
-> -						pageblock_nr_pages,
-> -						zone->nr_reserved_highatomic);
-> -			}
-> +			zone->nr_reserved_highatomic -= min(
-> +				pageblock_nr_pages,
-> +				zone->nr_reserved_highatomic);
->  
->  			/*
->  			 * Convert to ac->migratetype and avoid the normal
-> 
-> I think they were only in place because we could change the highatomic
-> status of pages on the pcplist, and those pages would then end up on
-> some other freelist due to the stale pcppage cache.
-> 
-> I replaced them locally with WARNs and ran an hour or so of kernel
-> builds under pressure. It didn't trigger. So I would send a follow up
-> to remove them.
-> 
-> Unless you point me to a good reason why they're definitely still
-> needed - in which case this is a moot proposal - but then we should
-> make the comments more specific.
-
+The point of noreturn is that the caller should know to stop generating
+code. For that the declaration needs the attribute, because call sites
+typically do not have access to the function definition in C.
