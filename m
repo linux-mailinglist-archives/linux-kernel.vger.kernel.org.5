@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F007A0FD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9767A0FD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjINV0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        id S229797AbjINV07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjINV0t (ORCPT
+        with ESMTP id S229531AbjINV05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:26:49 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D851FD2;
-        Thu, 14 Sep 2023 14:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694726803;
-        bh=XMEdsYr2iK4azShfUiq3F+FU2zjGXx6T+S5Oa+kszrc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Zu5SsbHZ3W+YusVgBgw+Mai9/W4QAscqAzgKpf4CQIX/H/zZ1Hpsuqf6NtK+B+Ha3
-         PDnq0Qw2j1C5YwXJy/pRT2bM2mWP2mkkushxdx0O536jJw1krqVa7hqFSHMMnVJHZH
-         53way7WRdw0IMeXd2fx0pyd1hs+vSZpeaPrNNsk4RZpCk8yCxpLsmNO3OVmw4GsyZv
-         3lVvCMI89Bz/EtwbgrB2jxhw8dEcpxHhMFzQTTsQIIYeGfZGTPxz/iPR+NIWSFBp2A
-         zX0xXNrNaEeGauT791hXWtUHeNpt4HkDumxyXCWTQotjPlKAbKsglFjDbLexrI9a5N
-         WuVlemAuxCZqQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rmr432Fc6z4x3H;
-        Fri, 15 Sep 2023 07:26:43 +1000 (AEST)
-Date:   Fri, 15 Sep 2023 07:26:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Veronika Molnarova <vmolnaro@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the perf tree
-Message-ID: <20230915072642.74e3c00f@canb.auug.org.au>
+        Thu, 14 Sep 2023 17:26:57 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC5926B2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:26:52 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c364fb8a4cso12977405ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694726812; x=1695331612; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4LzmTOuTIv4VUvVsi7SsAaofqZS+sUeMRVa500GSkmc=;
+        b=qdDJyH1N0sSzqSMRbB5OnSBOheOE6hMJ6QJiNyxxl5xvdPsDVeq84UPRdQbgcW72OD
+         JaJ1PU40orIWcmibL91bPgFJH0Lm52+rFO997pX/JzenCLy7HPtF8g9enCcWonlKiOwp
+         go9YCv0kAlazLsWkI9vAyva4//KmmRKWq68fwTr2AUDfh3w84dUlUgmRLTU1EiAyFniH
+         nG4yUpLCR5Kl/NqbOEZDXAnXNGl27syEhO45HqDOvUZB2fGULs5ODlMOHJmXLhmUrYYY
+         ffELmwNg36AmCEvLvGl6W5u4vgpjeLlA9mnsL/mkeaSG/dwPApIIhNYcYXoUbw6RP3Uz
+         mxTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694726812; x=1695331612;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LzmTOuTIv4VUvVsi7SsAaofqZS+sUeMRVa500GSkmc=;
+        b=XQ5Ukfb/svtowLzK4sRRYpnOqagoKjVl7ki8yKGEh3pcxXZSDSRE7NwLqfQO9hUu6O
+         PXuOcsKxwxcxy1fxq9XSX0BpRLMy8s2vrFN/gpnjvk7n27sQ4mH5wr9lUq0MyShMKZub
+         RuCUjmML0biuXiCycvgZzZPgERfWT0yau5fMg1r9wqkMTkOYb47UWZH1kU9xfIC7B07w
+         p1VtO00O9C+QD2YUmIC6xGDZ7Fser61vzvzREJ92i1ehT2M4xB3lNCXZGissxXUaPo65
+         eme+F5N8qnuinwfcf+9w5j23CgGLVdK8oo1I6DTePvfODvhT06y5Wj+Hw4x1cmj51UZ/
+         cJ0g==
+X-Gm-Message-State: AOJu0YwSbboRGQGD8RpJDDMlO+1Dw2ThAYYWQcEcP2HI4vI/qTfQbAoD
+        fD3APKZdnKeeSrH1Yv4IBgU=
+X-Google-Smtp-Source: AGHT+IE+kK/pe/5lufgYlyWCWF0r0Fpfv/VUwKNXVhZf+3vP28c26HPOiGWc55UyABMSmfYOEfyL7A==
+X-Received: by 2002:a17:902:b602:b0:1b3:d4d5:beb2 with SMTP id b2-20020a170902b60200b001b3d4d5beb2mr6700103pls.9.1694726812032;
+        Thu, 14 Sep 2023 14:26:52 -0700 (PDT)
+Received: from [10.67.51.148] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u10-20020a17090341ca00b001bbb7af4963sm2030920ple.68.2023.09.14.14.26.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 14:26:51 -0700 (PDT)
+Message-ID: <28fad55f-1253-deb2-9615-b32746129664@gmail.com>
+Date:   Thu, 14 Sep 2023 14:26:50 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kF4jKAnoc4SxRtPoubbXMqQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] nvmem: brcm_nvram: store a copy of NVRAM content
+Content-Language: en-US
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+References: <20230914064922.3986-1-zajec5@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230914064922.3986-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/kF4jKAnoc4SxRtPoubbXMqQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 9/13/23 23:49, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> This driver uses MMIO access for reading NVRAM from a flash device.
+> Underneath there is a flash controller that reads data and provides
+> mapping window.
+> 
+> Using MMIO interface affects controller configuration and may break real
+> controller driver. It was reported by multiple users of devices with
+> NVRAM stored on NAND.
+> 
+> Modify driver to read & cache all NVRAM content during init and use that
+> copy to provide NVMEM data when requested.
+> 
+> Link: https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
+> Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+> Cc: Scott Branden <scott.branden@broadcom.com>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+[snip]
+> -	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> -	if (IS_ERR(priv->base))
+> -		return PTR_ERR(priv->base);
+> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	priv->size = resource_size(res);
+> +
+> +	priv->data = devm_kzalloc(dev, priv->size, GFP_KERNEL);
 
-Hi all,
+These can conceivably quite big data structures, how about using kvmalloc()?
+-- 
+Florian
 
-Commits
-
-  19d8ab40f89b ("perf test stat+shadow_stat.sh: Add threshold for rounding =
-errors")
-  0c4ded92280b ("perf test lock_contention.sh: Skip test if the number of C=
-PUs is low")
-
-are missing a Signed-off-by from their author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kF4jKAnoc4SxRtPoubbXMqQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDepIACgkQAVBC80lX
-0GzGjAf+Mp0XiiZyA82gE7jivfIfahAWEWt6JZqGN4qM2ATghSlG0Kz25KCpcYm3
-3walfWm3Rjsg5S4XrobrQaatKqDgeAjlXE+O2sNbduAXCd70fy/sa1BOLsxkyiwI
-sLS/mBhGSSxc9mjei9kb/awoRQSOrKYE+og305qjW5xPfm/q69QYAPDxihssMT+x
-bbaLVEnDe7MpfplU/U6/5HZIg3sR4MELQ1Ss9S8IvjQkOEaGQRqVWorOf/C6szp5
-RbesnqU4kkgxmbdUbryyRJ0j82HiqX4eJAdOUsVTdO8Jmo94WBIYT2yGMh+2RRF3
-9YtqrYKCDvtBSrE5vjvt24u418lOhg==
-=qbWZ
------END PGP SIGNATURE-----
-
---Sig_/kF4jKAnoc4SxRtPoubbXMqQ--
