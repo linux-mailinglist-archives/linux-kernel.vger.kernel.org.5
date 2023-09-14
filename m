@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6217A0D8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904337A0D92
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241678AbjINSyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S239402AbjINSzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242026AbjINSxu (ORCPT
+        with ESMTP id S234957AbjINSy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:53:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4E026B1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:53:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694717598; x=1726253598;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6A5zTxWlFGq21TRaa7sBnBDNjHyUvmcdFYF89X/XvLs=;
-  b=TF43ZVmbJE9+tv8sqS1bzn9NSoOQck7VSogJ0imfnqzEu9RSYk6GkTV6
-   mUb7a+lz8kSKgjSKpGPWZqspfunL9vlbje7lrYpYWvfC7AJiNzBtVEXHC
-   r+Tns25NOnnH/Yj5/hF4c5HxXcVrkhS3SX57te5bJp60B86yZjsFm02oW
-   aUNMtqe7ohg+AtcCg8ZcOta4esVGWW394QTLaT/LdPOdRa0tW/ImpiTS5
-   1nejVL2iJENUBaHFZTmgHEpn5vK38Cp/ibHTsudHrrtUPehj2nF4S7aD8
-   aq2lelwJBt9aSjQJPd2pekAMDhUa1+xzC5tIds/LmuU+59uTBozMOgdb3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="359303854"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="359303854"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 11:52:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="834847899"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="834847899"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 11:52:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qgrSR-00000008Wzz-26Dx;
-        Thu, 14 Sep 2023 21:52:55 +0300
-Date:   Thu, 14 Sep 2023 21:52:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <kernel@xen0n.name>
-Subject: Re: [PATCH v1 1/2] LoongArch: Add missing headers
-Message-ID: <ZQNWh2DY319jGbfq@smile.fi.intel.com>
-References: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
- <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
+        Thu, 14 Sep 2023 14:54:59 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5805D9B
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:54:54 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d7b91422da8so1310539276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694717693; x=1695322493; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xk68pDIYGaQdkXvAFGGLllJihcyDuXFD/cYt4QPp8FY=;
+        b=iCd6p+4PUGIrDkLVKfY+45AtHn9KSRJfLXqYjWyryyyMrk1n2KxEX64ZnT7165mB7Q
+         1g3D1C27utN9JIin1iTbBNXFmt1AmHldVFNw9ALmAVlnn4Igx3DsO21kl2DrYTc8CIn3
+         TWcRbUdlIiCkigq9tRKzIRdHF8sgkjqaUArzPl6C1B2rM7YtnJZishe3o9K6xgyjy5Ei
+         cBcgvCYuPnYRRRT9koRppwnNV/4KAdI3Fo0Sk46xxw21s4BFVj36fa+ya5n3Z/2Y1HMi
+         NddvGD7CF7QsfoGW1CpeU+Ny1KLDDVIkGj4Y2FuAlV+AkSjHF0t0TCJvrFx5U6mN/Pg9
+         MvOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694717693; x=1695322493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xk68pDIYGaQdkXvAFGGLllJihcyDuXFD/cYt4QPp8FY=;
+        b=ohPPwg15V9CdFApz8wzlwrUxqyd2neGqrL17A2nD9B4IjbAiKSwjJQLQvh5vtCmxQ1
+         UCXt8v5Z+Ly/hSZDPEbDQLBeGQwgmyOIxTwO0BUyC9df8ImOtjlTGEDqJakLIJ4Ox7MQ
+         CMTunDbZacbgrwtuh1gX4VfIX5fBXuUjOcd/Ghm7KICRdnzSolczAGEqOiP7kX3KicIs
+         hkm1svvj6/dQ7GISfrJmL30tCDz2SQVHoO8DlSTrjfMmPL7IWWc8jjFPz0FZB09+EvgH
+         RdkOxeurp0PcFdViPh036aKGV4tZGHCFs1FeDpJF238Qh4NrMlN/mhs4bG3Mm3sekN4F
+         i+HA==
+X-Gm-Message-State: AOJu0YytVTxWF2dfJLb4PlFwv5hA+FR4V8MDlIJsNIoRlAMhAuD4mix4
+        /5LBIEFT3gBxlwqCCBKB5Kw7kosO8XyAfgYk37lEDA==
+X-Google-Smtp-Source: AGHT+IFDSlM9UKN9NkhsgECpx2pe7a3wkf2X3yhc6Mo4knngCi6hulry2K96aodnp7ogl7xysjTEerrZmm/bc4LuwBI=
+X-Received: by 2002:a25:4293:0:b0:d7e:8175:4fa9 with SMTP id
+ p141-20020a254293000000b00d7e81754fa9mr6102142yba.4.1694717693268; Thu, 14
+ Sep 2023 11:54:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-3-surenb@google.com>
+ <b7f44bff-644b-8aa6-4d0e-8f1dfd6d03d2@redhat.com>
+In-Reply-To: <b7f44bff-644b-8aa6-4d0e-8f1dfd6d03d2@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 14 Sep 2023 11:54:42 -0700
+Message-ID: <CAJuCfpEbJMqLDXgiDfrH1tn+DS2Wsfb17-UAoUR1e=S+ktTzPA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:25:22PM +0800, Huacai Chen wrote:
-> Hi,  Andy,
-> 
-> Thank you for your patch, can this patch solve the problem below?
-> https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.com/T/#u
+On Thu, Sep 14, 2023 at 11:47=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> On 14.09.23 17:26, Suren Baghdasaryan wrote:
+> > From: Andrea Arcangeli <aarcange@redhat.com>
+> >
+> > This implements the uABI of UFFDIO_REMAP.
+> >
+> > Notably one mode bitflag is also forwarded (and in turn known) by the
+> > lowlevel remap_pages method.
+>
+> Sorry to say, but these functions are unacceptably long. Please find
+> ways to structure the code in a better way.
 
-Nope, this just adds missing includes.
-No functional change, so warnings will still be there.
+Thanks for the comments, guys! I'll address them and will try to break
+the functions into smaller pieces.
 
-> If yes, please add a reference in the commit message. I have
-> investigated this problem for a long time but failed to solve it.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
