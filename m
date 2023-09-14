@@ -2,74 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC4679F5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 02:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE3F79F5E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 02:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbjINAcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 20:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S233313AbjINAdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 20:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbjINAb4 (ORCPT
+        with ESMTP id S231223AbjINAdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 20:31:56 -0400
-Received: from out28-122.mail.aliyun.com (out28-122.mail.aliyun.com [115.124.28.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6695F1727;
-        Wed, 13 Sep 2023 17:31:52 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3083717|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00366759-0.000116842-0.996216;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.UeY3CYB_1694651508;
-Received: from SunxiBot.allwinnertech.com(mailfrom:michael@allwinnertech.com fp:SMTPD_---.UeY3CYB_1694651508)
-          by smtp.aliyun-inc.com;
-          Thu, 14 Sep 2023 08:31:49 +0800
-From:   Michael Wu <michael@allwinnertech.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb:typec:tcpm:support double Rp to Vbus cable as sink
-Date:   Thu, 14 Sep 2023 08:31:54 +0800
-Message-Id: <20230914003154.27977-1-michael@allwinnertech.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 13 Sep 2023 20:33:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2391724;
+        Wed, 13 Sep 2023 17:33:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ADC5C433C7;
+        Thu, 14 Sep 2023 00:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694651587;
+        bh=78IdMo52kj5+6bJlcewfwBX0rNPqip7T68o37Qx9Yr4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fsjRpDYSulA9367EFdFAGLUTu0c9nlbpmTLnmUNUWF/Ujr/W3vhKnAVWmlRosElKt
+         i4pEY8n18Q45chLu8k2MsnLto7mITLe3+uU4+oOGe0HUptveFjgJddRHFVT2qBJghq
+         OW8Jj0CdSixK2KBDNQEO9ypNb/74gOs9KJjTtal3fzi9F0XVeh7th4ycIuM74sgwi/
+         zWy5vQt73rtL1m+kY5KAtchyeuTeCH6tQl9STxRRsALiOOAGTLQxoEOjCnbVdYKWKs
+         NdpKSg+jPtGvbF6+MTJVGOypSsPATnvfVPeTuwDr0uPOGJocHhU7pykTWe9IyJ0i6G
+         WFTiSHoplUEVQ==
+Message-ID: <36a333bf-4cc5-e3a6-90fd-34b362f96f83@kernel.org>
+Date:   Thu, 14 Sep 2023 09:33:03 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 09/19] zonefs: remove duplicate cleanup in
+ zonefs_fill_super
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-10-hch@lst.de>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230913111013.77623-10-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB Type-C Cable and Connector Specification defines the wire
-connections for the USB Type-C to USB 2.0 Standard-A cable assembly
-(Release 2.2, Chapter 3.5.2).
-The Notes says that Pin A5 (CC) of the USB Type-C plug shall be connected
-to Vbus through a resister Rp.
-However, there is a large amount of such double Rp connected to Vbus
-non-standard cables which produced by UGREEN circulating on the market, and
-it can affects the normal operations of the state machine easily,
-especially to CC1 and CC2 be pulled up at the same time.
-In fact, we can regard those cables as sink to avoid abnormal state.
+On 9/13/23 20:10, Christoph Hellwig wrote:
+> When ->fill_super fails, ->kill_sb is called which already cleans up
+> the inodes and zgroups.
+> 
+> Drop the extra cleanup code in zonefs_fill_super.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Message as follow:
-[   58.900212] VBUS on
-[   59.265433] CC1: 0 -> 3, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-[   62.623308] CC1: 3 -> 0, CC2: 3 -> 0 [state TOGGLING, polarity 0, disconnected]
-[   62.625006] VBUS off
-[   62.625012] VBUS VSAFE0V
+Looks good to me.
 
-Signed-off-by: Michael Wu <michael@allwinnertech.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index d962f67c95ae6..beb7143128667 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -519,7 +519,8 @@ static const char * const pd_rev[] = {
- 
- #define tcpm_port_is_sink(port) \
- 	((tcpm_cc_is_sink((port)->cc1) && !tcpm_cc_is_sink((port)->cc2)) || \
--	 (tcpm_cc_is_sink((port)->cc2) && !tcpm_cc_is_sink((port)->cc1)))
-+	 (tcpm_cc_is_sink((port)->cc2) && !tcpm_cc_is_sink((port)->cc1)) || \
-+	 (tcpm_cc_is_sink((port)->cc1) && tcpm_cc_is_sink((port)->cc2)))
- 
- #define tcpm_cc_is_source(cc) ((cc) == TYPEC_CC_RD)
- #define tcpm_cc_is_audio(cc) ((cc) == TYPEC_CC_RA)
+> ---
+>  fs/zonefs/super.c | 21 +++++----------------
+>  1 file changed, 5 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index 9d1a9808fbbba6..35b2554ce2ac2e 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -1309,13 +1309,12 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  	/* Initialize the zone groups */
+>  	ret = zonefs_init_zgroups(sb);
+>  	if (ret)
+> -		goto cleanup;
+> +		return ret;
+>  
+>  	/* Create the root directory inode */
+> -	ret = -ENOMEM;
+>  	inode = new_inode(sb);
+>  	if (!inode)
+> -		goto cleanup;
+> +		return -ENOMEM;
+>  
+>  	inode->i_ino = bdev_nr_zones(sb->s_bdev);
+>  	inode->i_mode = S_IFDIR | 0555;
+> @@ -1333,7 +1332,7 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	sb->s_root = d_make_root(inode);
+>  	if (!sb->s_root)
+> -		goto cleanup;
+> +		return -ENOMEM;
+>  
+>  	/*
+>  	 * Take a reference on the zone groups directory inodes
+> @@ -1341,19 +1340,9 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  	 */
+>  	ret = zonefs_get_zgroup_inodes(sb);
+>  	if (ret)
+> -		goto cleanup;
+> -
+> -	ret = zonefs_sysfs_register(sb);
+> -	if (ret)
+> -		goto cleanup;
+> -
+> -	return 0;
+> -
+> -cleanup:
+> -	zonefs_release_zgroup_inodes(sb);
+> -	zonefs_free_zgroups(sb);
+> +		return ret;
+>  
+> -	return ret;
+> +	return zonefs_sysfs_register(sb);
+>  }
+>  
+>  static struct dentry *zonefs_mount(struct file_system_type *fs_type,
+
 -- 
-2.29.0
+Damien Le Moal
+Western Digital Research
 
