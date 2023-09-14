@@ -2,194 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F7F7A0414
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43A17A0431
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238399AbjINMkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 08:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        id S233175AbjINMmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 08:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjINMk3 (ORCPT
+        with ESMTP id S229485AbjINMmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:40:29 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22351FCC;
-        Thu, 14 Sep 2023 05:40:25 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38E5XEqF028349;
-        Thu, 14 Sep 2023 12:40:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=qez4CXnGUw1IypJ0y5ikMWPHFvJWDjjYZe2toiWMvUU=;
- b=BWZsMU2gH4P8heNOb6AkE8zY4pcGgw8aLNU87BpwPNysTKj2P+LevDJuKDH1ezuolFWw
- gg3p1ItaVprjh0za0BfyLBLa0PCuoAg836F4CdSk9qFSzZ5STwQe4mH0E91M11J8+Ntz
- YYhKCbXUm5Wx7SONjVtMz7ickLeCBVHD6E/GT39zksYUBwaF4TIZyohVqKHrfa+MXOX9
- rDu3yTu1Z7Ke91h6xP6Q5I9Ujtog1mnJli438Tx199s+Cn2kHheZVn9SxGhNtUSpjIrW
- V785793+cqP2sQqlxScbzkBczZsjDVOPxzxOyZpugiusGagu4UWvHGrLaRly8EHIYZ/x fw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3v4h94q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 12:40:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38ECeF9X015297
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 12:40:15 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 05:40:11 -0700
-Message-ID: <5a2dc1a8-6a69-2eaa-aa20-127b2ee3d4d0@quicinc.com>
-Date:   Thu, 14 Sep 2023 18:10:08 +0530
+        Thu, 14 Sep 2023 08:42:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DCB1FC9;
+        Thu, 14 Sep 2023 05:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wfCoYr4MB0qRmxneTiXLJplTS9MxlOOJ1vFfY2Z2FRo=; b=aqNZ7tR4051TfUg1598nkCYfWI
+        p1lNL6KPVCo04iiPyfjdSWht2Em1NS6opHoDWF6RO64jnEyLcs0G3Ut2zl69J1+OWIuTmVq1y+DGT
+        o40lSrS18p7Fi4iPWFvmSN1OauPq33Vu/u4nF4Nfu49TphKzZDLscGUiouwiezMdjDKEgDqoAKjTj
+        Hwkajjf/3LkBWsnx3i+Kbs1oCqoXBIZf+q7Ep0/dknm7PzzYLyoM3aJ26C3Tip/xtNpMdi3eXbfIE
+        K0eazq8UY/sY8ST/DlLkA6Bg9RVht4xHeiZ/RwuOqFcvroC8cHwOus6Sf0LltCkh2TcgStm4XeW2T
+        u7wM/t+g==;
+Received: from [213.86.228.42] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qglfz-002xvG-Tf; Thu, 14 Sep 2023 12:42:32 +0000
+Message-ID: <08371c572d99df19f35fe180c0e3afc9612c34c9.camel@infradead.org>
+Subject: Re: [PATCH 4/8] KVM: pfncache: base offset check on khva rather
+ than gpa
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 14 Sep 2023 14:42:30 +0200
+In-Reply-To: <20230914084946.200043-5-paul@xen.org>
+References: <20230914084946.200043-1-paul@xen.org>
+         <20230914084946.200043-5-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-LvB9+SnEY9pLKoiWb+BH"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH 1/6] scsi: ufs: ufs-qcom: Setup host power mode during
- init
-Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, <mani@kernel.org>,
-        <quic_nguyenb@quicinc.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-2-git-send-email-quic_cang@quicinc.com>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <1694411968-14413-2-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: T-PizfkFyaJOGysut6OsFsnTAyCdceIq
-X-Proofpoint-GUID: T-PizfkFyaJOGysut6OsFsnTAyCdceIq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- clxscore=1015 spamscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140109
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-LvB9+SnEY9pLKoiWb+BH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/11/2023 11:29 AM, Can Guo wrote:
-> Setup host power mode and its limitations during UFS host driver init to
-> avoid repetitive work during every power mode change.
-> 
-> Co-developed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> Signed-off-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
+On Thu, 2023-09-14 at 08:49 +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
+>=20
+> After a subsequent patch, the gpa may not always be set whereas khva will
+> (as long as the cache valid flag is also set).
+>=20
 
-Hi Can,
+No functional change intended.
 
-Patch looks good. Please can you just change the order of Signed-off-by.
-I think it should be like below:
+> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
 
-Co-developed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
-Signed-off-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
-Signed-off-by: Can Guo <quic_cang@quicinc.com>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 
---Nitin
 
-> ---
->   drivers/ufs/host/ufs-qcom.c | 27 ++++++++++++++++++---------
->   drivers/ufs/host/ufs-qcom.h |  1 +
->   2 files changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index c3215d3..710f079 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -443,7 +443,11 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
->   static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_dev_params *host_pwr_cap = &host->host_pwr_cap;
->   	struct phy *phy = host->generic_phy;
-> +	enum phy_mode mode = host_pwr_cap->hs_rate == PA_HS_MODE_B ?
-> +							PHY_MODE_UFS_HS_B :
-> +							PHY_MODE_UFS_HS_A;
->   	int ret;
->   
->   	/* Reset UFS Host Controller and PHY */
-> @@ -460,7 +464,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->   		return ret;
->   	}
->   
-> -	phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);
-> +	phy_set_mode_ext(phy, mode, host->phy_gear);
->   
->   	/* power on phy - start serdes and phy's power and clocks */
->   	ret = phy_power_on(phy);
-> @@ -884,7 +888,6 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->   				struct ufs_pa_layer_attr *dev_req_params)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	struct ufs_dev_params ufs_qcom_cap;
->   	int ret = 0;
->   
->   	if (!dev_req_params) {
-> @@ -894,13 +897,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->   
->   	switch (status) {
->   	case PRE_CHANGE:
-> -		ufshcd_init_pwr_dev_param(&ufs_qcom_cap);
-> -		ufs_qcom_cap.hs_rate = UFS_QCOM_LIMIT_HS_RATE;
-> -
-> -		/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
-> -		ufs_qcom_cap.hs_tx_gear = ufs_qcom_cap.hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> -
-> -		ret = ufshcd_get_pwr_dev_param(&ufs_qcom_cap,
-> +		ret = ufshcd_get_pwr_dev_param(&host->host_pwr_cap,
->   					       dev_max_params,
->   					       dev_req_params);
->   		if (ret) {
-> @@ -1037,6 +1034,17 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
->   		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
->   }
->   
-> +static void ufs_qcom_set_pwr_mode_limits(struct ufs_hba *hba)
-> +{
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_dev_params *host_pwr_cap = &host->host_pwr_cap;
-> +
-> +	ufshcd_init_pwr_dev_param(host_pwr_cap);
-> +
-> +	/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
-> +	host_pwr_cap->hs_tx_gear = host_pwr_cap->hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> +}
-> +
->   static void ufs_qcom_set_caps(struct ufs_hba *hba)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> @@ -1259,6 +1267,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->   	if (err)
->   		goto out_variant_clear;
->   
-> +	ufs_qcom_set_pwr_mode_limits(hba);
->   	ufs_qcom_set_caps(hba);
->   	ufs_qcom_advertise_quirks(hba);
->   
-> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-> index fa54248..4db64d9 100644
-> --- a/drivers/ufs/host/ufs-qcom.h
-> +++ b/drivers/ufs/host/ufs-qcom.h
-> @@ -227,6 +227,7 @@ struct ufs_qcom_host {
->   
->   	struct gpio_desc *device_reset;
->   
-> +	struct ufs_dev_params host_pwr_cap;
->   	u32 phy_gear;
->   
->   	bool esi_enabled;
+--=-LvB9+SnEY9pLKoiWb+BH
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTE0MTI0MjMwWjAvBgkqhkiG9w0BCQQxIgQgD6AQLgqs
+8vESLhco5ugmituNXqIEVRAWQcmLelUl8Oowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBMS1JOmgbLJRslUY3GBFkbsrm8DX+abPwd
+z/Ijt0AOpf7bWX4mjVXdI1clWvuAPIbRFyj+qwPmTIivZawBPwn9XhlySS3iaX71tQk4EPNEs/ZZ
+E1OhDPbmVUqk+/K9q18exnd4mXP9tA6i2lPPUKHzkmNgg0Mf2kkhkciiw1uD2ldBncWpbeM7RBAj
+9MtmInbk1HWHyhFmpnoBy65Wx8XQ8fH1n/L1EectJX1mDp4mysi9Ag2xNJQDVBRZRvOP22be/8FK
+fMXUZEnPMUiYov5SplbxtfQsWO4wCFMtuptZYk3XKGl3pYkNo7yi5Fze4BwVrNog1tN07HPwZ+m9
+Uvi+yQn9gZodTubzifi7Aue0i1FwdzpeJCldSvsX6bL1WT+di6uw+N4KSlfMpAzk/WnlkUrZpqR+
+9gPX5dsu18Xa0TkXrxaqFgrTbjvqgzOFu7rn4aFLRdX6C3MMEvAdr69NfCaHGZDv3ytnMCKPeOnD
+6cyg+m/Rh9vyzF6oNInQQSj/sppkqoHAWkNJgMPziJVZgRkRRfLWqQ799ucT6a6u0PjuatBlD5k5
+g4ycj8m21HWN5xznxD/r+nwzyyxhSOLCQd/I2vlfLbgqzCrZAL+he8aAu3rdJLmmhszsJ8mBhsyL
+p9UTNDIf++dUkwiHLUP1hhwbwJH/cJuVw4aQCIZeTwAAAAAAAA==
+
+
+--=-LvB9+SnEY9pLKoiWb+BH--
