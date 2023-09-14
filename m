@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BAA7A0B86
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C5B7A0B87
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239942AbjINRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S240507AbjINRXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239846AbjINRWr (ORCPT
+        with ESMTP id S239042AbjINRWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:22:47 -0400
+        Thu, 14 Sep 2023 13:22:55 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 120052724
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25EBA2D49
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:36 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0518413D5;
-        Thu, 14 Sep 2023 10:23:10 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15AFA11FB;
+        Thu, 14 Sep 2023 10:23:13 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01BBB3F5A1;
-        Thu, 14 Sep 2023 10:22:29 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13B483F5A1;
+        Thu, 14 Sep 2023 10:22:32 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -38,9 +38,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com, amitsinght@marvell.com
-Subject: [PATCH v6 12/24] x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
-Date:   Thu, 14 Sep 2023 17:21:26 +0000
-Message-Id: <20230914172138.11977-13-james.morse@arm.com>
+Subject: [PATCH v6 13/24] x86/resctrl: Queue mon_event_read() instead of sending an IPI
+Date:   Thu, 14 Sep 2023 17:21:27 +0000
+Message-Id: <20230914172138.11977-14-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230914172138.11977-1-james.morse@arm.com>
 References: <20230914172138.11977-1-james.morse@arm.com>
@@ -50,152 +50,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The limbo and overflow code picks a CPU to use from the domain's list
-of online CPUs. Work is then scheduled on these CPUs to maintain
-the limbo list and any counters that may overflow.
+Intel is blessed with an abundance of monitors, one per RMID, that can be
+read from any CPU in the domain. MPAMs monitors reside in the MMIO MSC,
+the number implemented is up to the manufacturer. This means when there are
+fewer monitors than needed, they need to be allocated and freed.
 
-cpumask_any() may pick a CPU that is marked nohz_full, which will
-either penalise the work that CPU was dedicated to, or delay the
-processing of limbo list or counters that may overflow. Perhaps
-indefinitely. Delaying the overflow handling will skew the bandwidth
-values calculated by mba_sc, which expects to be called once a second.
+MPAM's CSU monitors are used to back the 'llc_occupancy' monitor file. The
+CSU counter is allowed to return 'not ready' for a small number of
+micro-seconds after programming. To allow one CSU hardware monitor to be
+used for multiple control or monitor groups, the CPU accessing the
+monitor needs to be able to block when configuring and reading the
+counter.
 
-Add cpumask_any_housekeeping() as a replacement for cpumask_any()
-that prefers housekeeping CPUs. This helper will still return
-a nohz_full CPU if that is the only option. The CPU to use is
-re-evaluated each time the limbo/overflow work runs. This ensures
-the work will move off a nohz_full CPU once a housekeeping CPU is
-available.
+Worse, the domain may be broken up into slices, and the MMIO accesses
+for each slice may need performing from different CPUs.
+
+These two details mean MPAMs monitor code needs to be able to sleep, and
+IPI another CPU in the domain to read from a resource that has been sliced.
+
+mon_event_read() already invokes mon_event_count() via IPI, which means
+this isn't possible. On systems using nohz-full, some CPUs need to be
+interrupted to run kernel work as they otherwise stay in user-space
+running realtime workloads. Interrupting these CPUs should be avoided,
+and scheduling work on them may never complete.
+
+Change mon_event_read() to pick a housekeeping CPU, (one that is not using
+nohz_full) and schedule mon_event_count() and wait. If all the CPUs
+in a domain are using nohz-full, then an IPI is used as the fallback.
+
+This function is only used in response to a user-space filesystem request
+(not the timing sensitive overflow code).
+
+This allows MPAM to hide the slice behaviour from resctrl, and to keep
+the monitor-allocation in monitor.c. When the IPI fallback is used on
+machines where MPAM needs to make an access on multiple CPUs, the counter
+read will always fail.
 
 Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-Tested-By: Peter Newman <peternewman@google.com>
+Reviewed-by: Peter Newman <peternewman@google.com>
+Tested-by: Peter Newman <peternewman@google.com>
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
+Changes since v2:
+ * Use cpumask_any_housekeeping() and fallback to an IPI if needed.
+
 Changes since v3:
- * typos fixed
+ * Actually include the IPI fallback code.
 
 Changes since v4:
- * Made temporary variables unsigned
-
-Changes since v5:
- * Restructured cpumask_any_housekeeping() to avoid later churn.
+ * Tinkered with existing capitalisation.
 ---
- arch/x86/kernel/cpu/resctrl/internal.h | 24 ++++++++++++++++++++++++
- arch/x86/kernel/cpu/resctrl/monitor.c  | 17 ++++++++++++-----
- 2 files changed, 36 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 28 +++++++++++++++++++++--
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  2 +-
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index f06d3d3e0808..37bb3de37a4a 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -7,6 +7,7 @@
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index b44c487727d4..bd263b9a0abd 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -19,6 +19,7 @@
  #include <linux/kernfs.h>
- #include <linux/fs_context.h>
- #include <linux/jump_label.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
 +#include <linux/tick.h>
- #include <asm/resctrl.h>
+ #include "internal.h"
  
- #define L3_QOS_CDP_ENABLE		0x01ULL
-@@ -55,6 +56,29 @@
- /* Max event bits supported */
- #define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
+ /*
+@@ -520,12 +521,24 @@ int rdtgroup_schemata_show(struct kernfs_open_file *of,
+ 	return ret;
+ }
  
-+/**
-+ * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
-+ *			        aren't marked nohz_full
-+ * @mask:	The mask to pick a CPU from.
-+ *
-+ * Returns a CPU in @mask. If there are housekeeping CPUs that don't use
-+ * nohz_full, these are preferred.
-+ */
-+static inline unsigned int cpumask_any_housekeeping(const struct cpumask *mask)
++static int smp_mon_event_count(void *arg)
 +{
-+	unsigned int cpu, hk_cpu;
++	mon_event_count(arg);
 +
-+	cpu = cpumask_any(mask);
-+	if (!tick_nohz_full_cpu(cpu))
-+		return cpu;
-+
-+	hk_cpu = cpumask_nth_andnot(0, mask, tick_nohz_full_mask);
-+	if (hk_cpu < nr_cpu_ids)
-+		cpu = hk_cpu;
-+
-+	return cpu;
++	return 0;
 +}
 +
- struct rdt_fs_context {
- 	struct kernfs_fs_context	kfc;
- 	bool				enable_cdpl2;
+ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ 		    struct rdt_domain *d, struct rdtgroup *rdtgrp,
+ 		    int evtid, int first)
+ {
++	int cpu;
++
++	/* When picking a CPU from cpu_mask, ensure it can't race with cpuhp */
++	lockdep_assert_held(&rdtgroup_mutex);
++
+ 	/*
+-	 * setup the parameters to send to the IPI to read the data.
++	 * Setup the parameters to pass to mon_event_count() to read the data.
+ 	 */
+ 	rr->rgrp = rdtgrp;
+ 	rr->evtid = evtid;
+@@ -534,7 +547,18 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ 	rr->val = 0;
+ 	rr->first = first;
+ 
+-	smp_call_function_any(&d->cpu_mask, mon_event_count, rr, 1);
++	cpu = cpumask_any_housekeeping(&d->cpu_mask);
++
++	/*
++	 * cpumask_any_housekeeping() prefers housekeeping CPUs, but
++	 * are all the CPUs nohz_full? If yes, pick a CPU to IPI.
++	 * MPAM's resctrl_arch_rmid_read() is unable to read the
++	 * counters on some platforms if its called in irq context.
++	 */
++	if (tick_nohz_full_cpu(cpu))
++		smp_call_function_any(&d->cpu_mask, mon_event_count, rr, 1);
++	else
++		smp_call_on_cpu(cpu, smp_mon_event_count, rr, false);
+ }
+ 
+ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
 diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 0bbed8c62d42..993837e46db1 100644
+index 993837e46db1..7749e6569a4a 100644
 --- a/arch/x86/kernel/cpu/resctrl/monitor.c
 +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -782,9 +782,9 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
- void cqm_handle_limbo(struct work_struct *work)
- {
- 	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
--	int cpu = smp_processor_id();
- 	struct rdt_resource *r;
- 	struct rdt_domain *d;
-+	int cpu;
- 
- 	mutex_lock(&rdtgroup_mutex);
- 
-@@ -793,8 +793,10 @@ void cqm_handle_limbo(struct work_struct *work)
- 
- 	__check_limbo(d, false);
- 
--	if (has_busy_rmid(d))
-+	if (has_busy_rmid(d)) {
-+		cpu = cpumask_any_housekeeping(&d->cpu_mask);
- 		schedule_delayed_work_on(cpu, &d->cqm_limbo, delay);
-+	}
- 
- 	mutex_unlock(&rdtgroup_mutex);
+@@ -587,7 +587,7 @@ static void mbm_bw_count(u32 closid, u32 rmid, struct rmid_read *rr)
  }
-@@ -804,7 +806,7 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms)
- 	unsigned long delay = msecs_to_jiffies(delay_ms);
- 	int cpu;
  
--	cpu = cpumask_any(&dom->cpu_mask);
-+	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
- 	dom->cqm_work_cpu = cpu;
- 
- 	schedule_delayed_work_on(cpu, &dom->cqm_limbo, delay);
-@@ -814,10 +816,10 @@ void mbm_handle_overflow(struct work_struct *work)
- {
- 	unsigned long delay = msecs_to_jiffies(MBM_OVERFLOW_INTERVAL);
- 	struct rdtgroup *prgrp, *crgrp;
--	int cpu = smp_processor_id();
- 	struct list_head *head;
- 	struct rdt_resource *r;
- 	struct rdt_domain *d;
-+	int cpu;
- 
- 	mutex_lock(&rdtgroup_mutex);
- 
-@@ -838,6 +840,11 @@ void mbm_handle_overflow(struct work_struct *work)
- 			update_mba_bw(prgrp, d);
- 	}
- 
-+	/*
-+	 * Re-check for housekeeping CPUs. This allows the overflow handler to
-+	 * move off a nohz_full CPU quickly.
-+	 */
-+	cpu = cpumask_any_housekeeping(&d->cpu_mask);
- 	schedule_delayed_work_on(cpu, &d->mbm_over, delay);
- 
- out_unlock:
-@@ -851,7 +858,7 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
- 
- 	if (!static_branch_likely(&rdt_mon_enable_key))
- 		return;
--	cpu = cpumask_any(&dom->cpu_mask);
-+	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
- 	dom->mbm_work_cpu = cpu;
- 	schedule_delayed_work_on(cpu, &dom->mbm_over, delay);
- }
+ /*
+- * This is called via IPI to read the CQM/MBM counters
++ * This is scheduled by mon_event_read() to read the CQM/MBM counters
+  * on a domain.
+  */
+ void mon_event_count(void *info)
 -- 
 2.39.2
 
