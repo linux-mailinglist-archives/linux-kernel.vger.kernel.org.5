@@ -2,200 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAB27A0F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7C37A0F4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjINUvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S230009AbjINUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjINUvT (ORCPT
+        with ESMTP id S229521AbjINUw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:51:19 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94811BEF;
-        Thu, 14 Sep 2023 13:51:14 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-530196c780dso1298631a12.1;
-        Thu, 14 Sep 2023 13:51:14 -0700 (PDT)
+        Thu, 14 Sep 2023 16:52:27 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1761BEF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:52:23 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7b957fd276so1744677276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:52:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694724673; x=1695329473; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dHE32EWDYAptcdQ86MDImV1ZwZxVabv6m9dyzNl/smc=;
-        b=RIB5uzNLYgO+bx3HtInshreHxhrWYwQBrwqI0ZKV4jW9nyrcSZoCwjVsrv6kX1jVPl
-         VScUTgmPhJmDnzYIuqdzFxNJ64FFiWztztDnuiXAtDykkuE/sgHNbCp19SGL+DCBsITY
-         DWOidtZBnx878GGr6+ZLkoGg7EwQWW4iPk6esPeRZN7Ck8PT/5PYKcDsmR8dESDG0hXD
-         3FzWiXI7GRobrxjFvw3SZrFhMsGoHoDr94aorBbzuKvRVN/6F7956Jt8WUpY+WNzzPpN
-         KGPKkV2+FrbxbZsOUhZlxeMI2ei3qKy1Qp9v3ke2Onhlzfey1+KCEjIdMgA63W4JW6lD
-         bkKQ==
+        d=google.com; s=20230601; t=1694724742; x=1695329542; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=y1bfYCZeoEdKY0xCX07ePzY5ryWaYVbqIYptARC7NJg=;
+        b=NvPAN8vmZH8DfMmys9TDmLInWpPq9YbkZCLXR6RLNMVSrtBW/FzkjXrkR+VJNe0Dk/
+         FviCs/pFWGDPVZGFlQPpspZLWWGo2yP+Emun8VHb1tdvrjDrluv91O5Zknvw7yyTymmd
+         9V3wVViLLN4reoAYmNS3vX2rGdOr0Ppefq8w7bwPhuBQXeApw8dH9137o0StaDePj2Wt
+         d2O0i1CWBZPyj5Cf89PtqTuWbinqvV+bVIV8ow5sd1LobS1AreXnJ+mRete+ZUBng0Un
+         tWfRpTtSIXNVSy96Caecylmey7Wy8b3ioYGo05AO0Ko8L7l6tl4xteD2qJdjZzjiRpp3
+         f+0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694724673; x=1695329473;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dHE32EWDYAptcdQ86MDImV1ZwZxVabv6m9dyzNl/smc=;
-        b=JjCAbp93OZUwhYEtcLeiXZKuWmJLx3NRWp7oIEqycQgVMW01Fd1oCUCWXzWaEleHUx
-         2TpqWML/MIwnUnh3qX8d4uV0lq20WUm/SdI2exCtC9t5+LryiVUWtv+o48BIjFdjRXNn
-         5wHck4x+1aGNtrZB4k7eEWxWhDm3xYWYh0kl2WQiSQHN/pbhbxH1oBH6USFR1IgAk/yh
-         /1PsuoL+uRxvbADOMlJw8AZubBLqZPEtoHcti3MvCI2vU5POYIJ/5gcR6578DXEo2oQ6
-         tWaZT/wqZ1LDjS831+i+kIBtrZKhSuW+YoG9Hli6AoMSHA49BYzcc8BQAbGeOI1/OU38
-         IK0g==
-X-Gm-Message-State: AOJu0YysZ40erHIvUEWbtANDG/gp8bBtYS8BEih0EChHniJWV8+9u2zm
-        /RFGN6cWmoHY2aA4bBIOnZUHfqAOWxQUB7NCUxo=
-X-Google-Smtp-Source: AGHT+IFTX2l9fGDZgeRqEPkarXTYPwsF3a4ioooK4lBG8i/kLDoHzno7rSe2oAhCBNpDMMqZqahmoxSRjyoMfHVFbTY=
-X-Received: by 2002:aa7:c655:0:b0:523:4933:b024 with SMTP id
- z21-20020aa7c655000000b005234933b024mr5604349edr.14.1694724672927; Thu, 14
- Sep 2023 13:51:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
- <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
- <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org> <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
- <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
-From:   Mitchell Levy <levymitchell0@gmail.com>
-Date:   Thu, 14 Sep 2023 13:51:01 -0700
-Message-ID: <CAMJwLczd7oZ3JPqKNW-qOiB0S2WRsqV7TVFWGD=yysK0nmZrSQ@mail.gmail.com>
-Subject: Re: guard coding style (was: Re: [PATCH v1 05/10] gpio: pca953x:
- Simplify code with cleanup helpers)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1694724742; x=1695329542;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y1bfYCZeoEdKY0xCX07ePzY5ryWaYVbqIYptARC7NJg=;
+        b=SggYR6+AFmt5P3i/bEn31t4psBMS+KKqQZCTBUKJX5cUj/BhvAN3JVJhWGFM2hdFVm
+         YS07c/yAegmhVJzcm6rdJWr3mpG75yzzmOC3YRBTo53/YTapYDtcR5gPdV0ewu39Zif+
+         jdbOY/RUKD5sb/XRUSuzKfy8ycfk3UbmJy7snBk2gR7FDG6FAbc9InRbAgxqdBlzJcSJ
+         doUaToc7GEoFocCgt7GMFj+eIqiFrbRBT8VTkMwiT1urGCqYdadOjDuE0OekrNzKl3us
+         fPUt9HF7/NLI06hegqSdp6M1AVF1QfHhkcVVFjWKGsDPn5njEVEKVuUz2378xGDevxzF
+         SJrQ==
+X-Gm-Message-State: AOJu0YysJQkYrwZmECwu8UrCy+QwXzK3TS2pz+0wPZSY2Bz4Zw1uqo0r
+        9jcP4HKR5kPLDSk+H+6y6csxSfhwQWnIv1L8wA==
+X-Google-Smtp-Source: AGHT+IFttkDgh3STEULt9nazdb9L/1U62+xkGrM5KSilaIH+f9BeV8ytqjsC9zn8dQK4VotAls06A/tr0JmiYNXTAA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:1816:b0:d0e:e780:81b3 with
+ SMTP id cf22-20020a056902181600b00d0ee78081b3mr162906ybb.2.1694724742466;
+ Thu, 14 Sep 2023 13:52:22 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 20:52:21 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAIVyA2UC/x2NywrCMBAAf6Xs2YU0tUX9FSklZrdxsS92NQil/
+ 27wNnOZ2cFYhQ1u1Q7KWUzWpUh9qiA+w5IYhYqDd75x1/qMpJJZDdP2KTxjmkPrHK7h9dYg0zB lskF8xIihbWJHlwd1foQS3JRH+f5n9/44fp7rBQF8AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694724741; l=1689;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ypZuHuWedw2GdaZjNukTcmFpVtl2zdn1sIH4RGMXcEM=; b=a3tnv1zYiSyHEe2n2OO9Vj2FcOGK7a0XpbAyi3Lxqx4nnbv89EszV7CesMgdUuN+kDtlRMpFC
+ pVAkhV0uNoXDTUPACgysTkT/3J06KPMo1mFrHQQCpMGJzRWbEQYIu7h
+X-Mailer: b4 0.12.3
+Message-ID: <20230914-drivers-gpu-drm-gma500-oaktrail_lvds_i2c-c-v1-1-0a53a076ce20@google.com>
+Subject: [PATCH] drm/gma500: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey all,
-A brief disclaimer, I'm a fairly new kernel contributor, but since I
-was cc'd directly, I figured I might as well drop into the
-conversation.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-On Thu, Sep 14, 2023 at 12:47=E2=80=AFAM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Bartosz,
->
-> On Wed, Sep 13, 2023 at 5:27=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> > On Wed, Sep 13, 2023 at 4:35=E2=80=AFPM Geert Uytterhoeven <geert@linux=
--m68k.org> wrote:
-> > > On Fri, 1 Sep 2023, Andy Shevchenko wrote:
-> > > > Use macros defined in linux/cleanup.h to automate resource lifetime
-> > > > control in gpio-pca953x.
-> > > >
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >
-> > > Thanks for your patch, which is now commit 8e471b784a720f6f
-> > > ("gpio: pca953x: Simplify code with cleanup helpers") in
-> > > gpio/gpio/for-next.
-> > >
-> > > > --- a/drivers/gpio/gpio-pca953x.c
-> > > > +++ b/drivers/gpio/gpio-pca953x.c
-> > > > @@ -557,9 +554,8 @@ static int pca953x_gpio_get_value(struct gpio_c=
-hip *gc, unsigned off)
-> > > >       u32 reg_val;
-> > > >       int ret;
-> > > >
-> > > > -     mutex_lock(&chip->i2c_lock);
-> > > > -     ret =3D regmap_read(chip->regmap, inreg, &reg_val);
-> > > > -     mutex_unlock(&chip->i2c_lock);
-> > > > +     scoped_guard(mutex, &chip->i2c_lock)
-> > > > +             ret =3D regmap_read(chip->regmap, inreg, &reg_val);
-> > >
-> > > I can't say I'm thrilled about the lack of curly braces.  I was also
-> > > surprised to discover that checkpatch nor gcc W=3D1 complain about th=
-e
-> > > indentation change.
-> > > I know we don't use curly braces in single-statement for_each_*() loo=
-ps,
-> > > but at least these have the familiar "for"-prefix.  And having the sc=
-ope
-> > > is very important here, so using braces, this would stand out more.
-> > >
-> > > Hence can we please get curly braces, like
-> > >
-> > >      scoped_guard(mutex, &chip->i2c_lock) {
-> > >             ret =3D regmap_read(chip->regmap, inreg, &reg_val);
-> > >      }
-> > >
-> > > ?
-> > >
-> > > Thanks! ;-)
-> >
-> > I strongly disagree. The scope here is very clear - just like it is in
-> > a for loop, in a while loop or in an if block:
-> >
-> > if (foo)
-> >     bar()
-> >
-> > if (foo) {
-> >     bar();
-> >     baz();
-> > }
-> >
-> > Only compound statements need curly braces in the kernel and it has
-> > been like this forever. I don't really see a need to make it an
-> > exception.
+We should prefer more robust and less ambiguous string interfaces.
 
-The more I think on this issue, the more I go back and forth. If we
-only had guard(...), the only way to approximate scoped guard would be
-to either just do what the macro does (i.e., a dummy for loop that
-only runs once) or use an anonymous scope, e.g.,
-{
-    guard(...);
-    my_one_statement();
-}
-Since this is how I've previously used std::lock_guard in C++, this
-pattern feels very familiar to me, and the scoped_guard feels almost
-like syntax sugar for this. As such, I feel like including the braces
-is most natural because, as Geert mentioned, it emphasizes the scope
-that "should" (in my brain, at least) be there.
+Since `chan->base.name` is expected to be NUL-terminated, a suitable
+replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer without also unnecessarily
+NUL-padding.
 
-Thanks,
-Mitchell
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
 
-> > That being said - I don't think the coding style for guard has ever
-> > been addressed yet, so maybe bring it up with Peter Zijlstra?
->
-> That's a good idea!
->
-> I see Peter always used curly braces (but he didn't have any
-> single-statement blocks, except for one with an "if", and we do tend
-> to use curly braces in "for"-statements containing a single "if", too),
-> but he does put a space after the "scoped_guard", as is also
-> shown in the template in include/linux/cleanup.h:
->
->     scoped_guard (name, args...) { }:
->
-> Then, "guard" does not get a space (but it is funny syntax
-> anyway, with the double set of parentheses ;-).  The template in
-> include/linux/cleanup.h doesn't match actual usage as it lacks the
-> second set of parentheses:
->
->     guard(name):
->
-> Peter: care to comment?
-> Or do you have a different bikeshed to paint today? ;-)
->
-> Thanks!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+
+drm/gma500: refactor deprecated strncpy
+---
+ drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c b/drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c
+index 06b5b2d70d48..68458cbdd6d5 100644
+--- a/drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c
++++ b/drivers/gpu/drm/gma500/oaktrail_lvds_i2c.c
+@@ -141,7 +141,7 @@ struct gma_i2c_chan *oaktrail_lvds_i2c_init(struct drm_device *dev)
+ 
+ 	chan->drm_dev = dev;
+ 	chan->reg = dev_priv->lpc_gpio_base;
+-	strncpy(chan->base.name, "gma500 LPC",  I2C_NAME_SIZE - 1);
++	strscpy(chan->base.name, "gma500 LPC",  I2C_NAME_SIZE - 1);
+ 	chan->base.owner = THIS_MODULE;
+ 	chan->base.algo_data = &chan->algo;
+ 	chan->base.dev.parent = dev->dev;
+
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230914-drivers-gpu-drm-gma500-oaktrail_lvds_i2c-c-a53c6d8bd62f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
