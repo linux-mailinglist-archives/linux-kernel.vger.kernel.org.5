@@ -2,191 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ABE7A1159
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5237A116B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjINXAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        id S230094AbjINXGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjINXAr (ORCPT
+        with ESMTP id S229818AbjINXGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:00:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA63E6A;
-        Thu, 14 Sep 2023 16:00:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694732439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y9UPmbkXZRNuioCyvMTxakQr1LFj1kbpXONIFu2xSbU=;
-        b=lg2xYIiFHmDQ94KTGhglBSA6Z0t67NpbKHOIiF7u/MK/QNmaP++hoHuiLV+K+pCpRbvrny
-        3/iljaw4BlgVWi/Axp6VS4fmMqKGyXg21eMc5ZV4tP/U4RlYANeOwmzU8va1MEOljqy3TT
-        btUeGlhB3sh0EMaUYvltsYDxwKSXnXEylIIdoo/fFFa9bHszzToBmfF7mWfvAeUCCTtYF7
-        dLVR6DZAro2zzE9j6g8fxSwh1UCUDJaHZwjyB+5Hh3UOpHfdYzQSP58MDIwDkxgh0AroPW
-        ApRPA6r3z/oN2U1ADa5bw8cimXbGYP6+gkTTb8YmUICXl2qp0JQtDGwblbFK+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694732439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y9UPmbkXZRNuioCyvMTxakQr1LFj1kbpXONIFu2xSbU=;
-        b=48C9u5FtSr/8YhitFLfTJzZIuTnlSrzcd0C4TaCewwtRO7Oehv/gGi/6/V2pnG6aVMDDrx
-        +xZpy5dDgM7R8iDQ==
-To:     andrew.cooper3@citrix.com, Xin Li <xin3.li@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        jiangshanlai@gmail.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-In-Reply-To: <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com>
-Date:   Fri, 15 Sep 2023 01:00:39 +0200
-Message-ID: <87y1h81ht4.ffs@tglx>
+        Thu, 14 Sep 2023 19:06:04 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97563270A
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:05:49 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so5682238a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694732748; x=1695337548; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J1ZXNYZuH4kWnk1JCUQ16o1+EQL82qZT05lOEyrXgZ0=;
+        b=olDVR5WY8J/l4AxAOsgFefpKEd5pX8GygtEQ/rQvVShJyGnjx/mhReb+c3XcpE0UgX
+         WXt6hQbbeD2DGFkVIyBGq2WZydzkEDJvyPnnQ0gRn+tmzW0THUbNNY3SJKb37eAmRGKQ
+         VfzkhiSRRCmOjMmVeaIk1685Vi01lO6z4QasVmZf6eqALXgbW/cUEjuNiHifFKHBgGww
+         75nwomGdaK5jKNzzVp9STq9PWq++88X7NghTU43ZCI72/cGEnTtIdog5bIhliu/kQIxZ
+         ypzsEvi1bHtBZ+KHitzXv75++9bWIYoMHnaQKZqxIbO/cb/NX3WHoJ7KWGGyYNjFf1C3
+         WcYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694732748; x=1695337548;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J1ZXNYZuH4kWnk1JCUQ16o1+EQL82qZT05lOEyrXgZ0=;
+        b=olb8vgRwJ9OtkWHa+kw8kjzn8MjiKWrHsQJIeSVOxE48p+DyOYeCVDvVmDAcUPrshD
+         tG7fFSsKJR+n+bgiozdkpPMcbgnYXMbQUG4x7cS6D7szhevAv+2Ltyu/0rAnb8oY/6pc
+         O9sQNtQ5FCoHIGThvTbXwnLkJLc7Z2YW1Agk+8e1o4UnuxygpbEy7DU9HS2hGLWnqbKn
+         PQLlAbylNC/kGa0ywt9iTR8AZWruJJZJcD21gOE5RYip+xnGGPF60bG3z8Uo9KsEXoIF
+         aW4zbR65MwC/teA0JmKH0YZJo5pFQgpCTLGxbjNekFepxn8PmSIzkAQYNbuyMmhJdgYV
+         Vp0A==
+X-Gm-Message-State: AOJu0YzprpPedmAr+7odzCuJSvcC7V076d6uSHc+C5p286bblQ41LPzU
+        OAxMN1+aAkm5RsowNaNQYXjSJ6dvITsaoeKPoo9RHg==
+X-Google-Smtp-Source: AGHT+IEYjO7yOeoI4U5uv88zCqAim8OtNIXGMQ0pIFGmP9HBSuvYiXqE5Do5P87Z31kBv1tppdr7V/FnfLnt2Xt0Va0=
+X-Received: by 2002:a17:906:8a6b:b0:9a9:d5d1:35a4 with SMTP id
+ hy11-20020a1709068a6b00b009a9d5d135a4mr56901ejc.7.1694732747675; Thu, 14 Sep
+ 2023 16:05:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230912041910.726442-1-arakesh@google.com>
+In-Reply-To: <20230912041910.726442-1-arakesh@google.com>
+From:   Avichal Rakesh <arakesh@google.com>
+Date:   Thu, 14 Sep 2023 16:05:36 -0700
+Message-ID: <CAMHf4WLeSC9m05XOU54yL=2xUcSqbWP0f7evM0rZRsJ=J-btWw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] usb: gadget: uvc: stability fixes when stopping streams
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew!
-
-On Thu, Sep 14 2023 at 15:05, andrew wrote:
-> On 14/09/2023 5:47 am, Xin Li wrote:
->> +static __always_inline void wrmsrns(u32 msr, u64 val)
->> +{
->> +	__wrmsrns(msr, val, val >> 32);
->> +}
+On Mon, Sep 11, 2023 at 9:19=E2=80=AFPM Avichal Rakesh <arakesh@google.com>=
+ wrote:
 >
-> This API works in terms of this series where every WRMSRNS is hidden
-> behind a FRED check, but it's an awkward interface to use anywhere else
-> in the kernel.
-
-Agreed.
-
-> I fully understand that you expect all FRED capable systems to have
-> WRMSRNS, but it is not a hard requirement and you will end up with
-> simpler (and therefore better) logic by deleting the dependency.
-
-According to the CPU folks FRED systems are guaranteed to have WRMSRNS -
-I asked for that :). It's just not yet documented.
-
-But that I aside, I agree that we should opt for the safe side with a
-fallback like the one you have in XEN even for the places which are
-strictly FRED dependent.
-
-> As a "normal" user of the WRMSR APIs, the programmer only cares about:
+> We have been seeing two main bugs when stopping stream:
+> 1. attempting to queue usb_requests on a disabled usb endpoint, and
+> 2. use-after-free problems for inflight requests
 >
-> 1) wrmsr() -> needs to be serialising
-> 2) wrmsr_ns() -> safe to be non-serialising
-
-Correct.
-
-> In Xen, I added something of the form:
+> Avichal Rakesh (2):
+>   usb: gadget: uvc: prevent use of disabled endpoint
+>   usb: gadget: uvc: prevent de-allocating inflight usb_requests
 >
-> /* Non-serialising WRMSR, when available.=C2=A0 Falls back to a serialisi=
-ng
-> WRMSR. */
-> static inline void wrmsr_ns(uint32_t msr, uint32_t lo, uint32_t hi)
-> {
-> =C2=A0=C2=A0=C2=A0 /*
-> =C2=A0=C2=A0=C2=A0=C2=A0 * WRMSR is 2 bytes.=C2=A0 WRMSRNS is 3 bytes.=C2=
-=A0 Pad WRMSR with a redundant CS
-> =C2=A0=C2=A0=C2=A0=C2=A0 * prefix to avoid a trailing NOP.
-> =C2=A0=C2=A0=C2=A0=C2=A0 */
-> =C2=A0=C2=A0=C2=A0 alternative_input(".byte 0x2e; wrmsr",
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ".byte 0x0f,0x01,0xc=
-6", X86_FEATURE_WRMSRNS,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "c" (msr), "a" (lo),=
- "d" (hi));
-> }
+>  drivers/usb/gadget/function/f_uvc.c     | 11 ++++----
+>  drivers/usb/gadget/function/f_uvc.h     |  2 +-
+>  drivers/usb/gadget/function/uvc.h       |  5 +++-
+>  drivers/usb/gadget/function/uvc_v4l2.c  | 21 ++++++++++++---
+>  drivers/usb/gadget/function/uvc_video.c | 34 +++++++++++++++++++++++--
+>  5 files changed, 60 insertions(+), 13 deletions(-)
 >
-> and despite what Juergen said, I'm going to recommend that you do wire
-> this through the paravirt infrastructure, for the benefit of regular
-> users having a nice API, not because XenPV is expecting to do something
-> wildly different here.
 
-I fundamentaly hate adding this to the PV infrastructure. We don't want
-more PV ops, quite the contrary.
+Bumping this thread up. Laurent, Dan, and Michael could you take a look?
 
-For the initial use case at hand, there is an explicit FRED dependency
-and the code in question really wants to use WRMSRNS directly and not
-through a PV function call.
-
-I agree with your reasoning for the more generic use case where we can
-gain performance independent of FRED by using WRMSRNS for cases where
-the write has no serialization requirements.
-
-But this made me look into PV ops some more. For actual performance
-relevant code the current PV ops mechanics are a horrorshow when the op
-defaults to the native instruction.
-
-Let's look at wrmsrl():
-
-wrmsrl(msr, val
- wrmsr(msr, (u32)val, (u32)val >> 32))
-  paravirt_write_msr(msr, low, high)
-    PVOP_VCALL3(cpu.write_msr, msr, low, high)
-
-Which results in
-
-	mov	$msr, %edi
-	mov	$val, %rdx
-	mov	%edx, %esi
-	shr	$0x20, %rdx
-	call	native_write_msr
-
-and native_write_msr() does at minimum:
-
-	mov    %edi,%ecx
-	mov    %esi,%eax
-	wrmsr
-        ret
-
-In the worst case 'ret' is going through the return thunk. Not to talk
-about function prologues and whatever.
-
-This becomes even more silly for trivial instructions like STI/CLI or in
-the worst case paravirt_nop().
-
-The call makes only sense, when the native default is an actual
-function, but for the trivial cases it's a blatant engineering
-trainwreck.
-
-I wouldn't care at all if CONFIG_PARAVIRT_XXL would be the esoteric use
-case, but AFAICT it's default enabled on all major distros.
-
-So no. I'm fundamentally disagreeing with your recommendation. The way
-forward is:
-
-  1) Provide the native variant for wrmsrns(), i.e. rename the proposed
-     wrmsrns() to native_wrmsr_ns() and have the X86_FEATURE_WRMSRNS
-     safety net as you pointed out.
-
-     That function can be used in code which is guaranteed to be not
-     affected by the PV_XXL madness.
-
-  2) Come up with a sensible solution for the PV_XXL horrorshow
-
-  3) Implement a sane general variant of wrmsr_ns() which handles
-     both X86_FEATURE_WRMSRNS and X86_MISFEATURE_PV_XXL
-
-  4) Convert other code which benefits from the non-serializing variant
-     to wrmsr_ns()
-
-Thanks,
-
-        tglx
+Thank you!
+- Avi.
