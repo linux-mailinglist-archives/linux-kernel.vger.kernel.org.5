@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA84D79FD93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DB879FD9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236139AbjINH45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S236038AbjINH5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235969AbjINH4x (ORCPT
+        with ESMTP id S235980AbjINH5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:56:53 -0400
+        Thu, 14 Sep 2023 03:57:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCFA1FC6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:56:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11FECC433C8;
-        Thu, 14 Sep 2023 07:56:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA5A1FDC;
+        Thu, 14 Sep 2023 00:57:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01827C433C7;
+        Thu, 14 Sep 2023 07:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694678207;
-        bh=9jZHF/WoDrDlTmD+rv+EN7tkrTG84HymGbe+Wx1tQBo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3a1jkgx9h+3UFijQVLP596H5NMlokw0rtDhGLa+6AnN9nFjHRxDbPK3jqxOSBkVe
-         pNRkd3kQ8dKOVloME4WOpqPOZtj7QJ2lHRl1klNDehztjRoSsA86BxzBb5pNUWEYRd
-         4XagF7Pn5Kiam4qFc32kA40Gio4zdZsHdDXQ9BtrFWba3uIC9uvnyGfrO7vcTSxk5N
-         P2mvhgAudOb02jT+O4Ez56iVMQjqXKq92Oe4z4DwrTGQfn7Cs2G79AVyQNs2pYKeMk
-         SxlQFp4iOv06AAbeDOPHtHbk5kf7R/GpdFdOW5hBqTqyusOTLW+AHj7m4qQIyIq0RN
-         aF1Pg56fqCHug==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] =?UTF-8?q?memblock=20tests:=20fix=20warning=20?= =?UTF-8?q?=E2=80=98struct=20seq=5Ffile=E2=80=99=20declared=20inside=20par?= =?UTF-8?q?ameter=20list?=
-Date:   Thu, 14 Sep 2023 10:56:32 +0300
-Message-Id: <20230914075632.9515-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230914075632.9515-1-rppt@kernel.org>
-References: <20230914075632.9515-1-rppt@kernel.org>
+        s=k20201202; t=1694678225;
+        bh=2ufj/dkiu5C9aI9VOV15kVL199L5WrTgWHf+hb5IyTg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hdT4bhltQEOObibgTe1UKoo0kHa563R3jH6g3lldaEO0pdCibFT6JexrMfgtDyCjk
+         zWnF1cZsnmanR82cmHDXMGSqoqzYSLjFimV+8MBgTjsf58thSdJRO1TL63bZFye3vI
+         Fq3vqyV2Gzlz9hgnCQg1LR82MZbcAYco0OJREyjZmjBfuF8MzK2j1pRjiNhmBwIeep
+         pf1flpeoFzmd5MmAWO8OnNcMygN3mvKK/8R0xkUDSTI9AcJAeZ8tmXBDsCVpZ/0lKE
+         1fssy50g3jgAFaXpAilGNljeBDWEcS/vXnpzk5sUIKRaOtQlOBi2hO0OTQ+6B3XV7Q
+         3FXzrKtuu/G/g==
+Date:   Thu, 14 Sep 2023 09:56:57 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230914-zielt-einzog-00389009b293@brauner>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230914023705.GH800259@ZenIV>
+ <20230914053843.GI800259@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230914053843.GI800259@ZenIV>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> BTW, this part of commit message in 2c18a63b760a is rather confused:
+>     Recent rework moved block device closing out of sb->put_super() and into
+>     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
+>     blkdev_put() can end up taking s_umount again.
+> 
+> That was *NOT* what a recent rework had done.  Block device closing had never
+> been inside ->put_super() - at no point since that (closing, that is) had been
+> introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
 
-Building memblock tests produces the following warning:
+I think the commit message probably just isn't clear enough. The main
+block device of a superblock isn't closed in sb->put_super(). That's
+always been closed in kill_block_super() after generic_shutdown_super().
 
-cc -I. -I../../include -Wall -O2 -fsanitize=address -fsanitize=undefined -D CONFIG_PHYS_ADDR_T_64BIT   -c -o main.o main.c
-In file included from tests/common.h:9,
-                 from tests/basic_api.h:5,
-                 from main.c:2:
-./linux/memblock.h:601:50: warning: ‘struct seq_file’ declared inside parameter list will not be visible outside of this definition or declaration
-  601 | static inline void memtest_report_meminfo(struct seq_file *m) { }
-      |                                                  ^~~~~~~~
+But afaict filesystem like ext4 and xfs may have additional block
+devices open exclusively and closed them in sb->put_super():
 
-Add declaration of 'struct seq_file' to tools/include/linux/seq_file.h
-to fix it.
+xfs_fs_put_super()
+-> xfs_close_devices()
+   -> xfs_blkdev_put()
+      -> blkdev_put()
 
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
----
- tools/include/linux/seq_file.h           | 2 ++
- tools/testing/memblock/tests/basic_api.c | 2 +-
- tools/testing/memblock/tests/common.h    | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/tools/include/linux/seq_file.h b/tools/include/linux/seq_file.h
-index 102fd9217f1f..f6bc226af0c1 100644
---- a/tools/include/linux/seq_file.h
-+++ b/tools/include/linux/seq_file.h
-@@ -1,4 +1,6 @@
- #ifndef _TOOLS_INCLUDE_LINUX_SEQ_FILE_H
- #define _TOOLS_INCLUDE_LINUX_SEQ_FILE_H
- 
-+struct seq_file;
-+
- #endif /* _TOOLS_INCLUDE_LINUX_SEQ_FILE_H */
-diff --git a/tools/testing/memblock/tests/basic_api.c b/tools/testing/memblock/tests/basic_api.c
-index 411647094cc3..57bf2688edfd 100644
---- a/tools/testing/memblock/tests/basic_api.c
-+++ b/tools/testing/memblock/tests/basic_api.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
-+#include "basic_api.h"
- #include <string.h>
- #include <linux/memblock.h>
--#include "basic_api.h"
- 
- #define EXPECTED_MEMBLOCK_REGIONS			128
- #define FUNC_ADD					"memblock_add"
-diff --git a/tools/testing/memblock/tests/common.h b/tools/testing/memblock/tests/common.h
-index 4f23302ee677..b5ec59aa62d7 100644
---- a/tools/testing/memblock/tests/common.h
-+++ b/tools/testing/memblock/tests/common.h
-@@ -5,6 +5,7 @@
- #include <stdlib.h>
- #include <assert.h>
- #include <linux/types.h>
-+#include <linux/seq_file.h>
- #include <linux/memblock.h>
- #include <linux/sizes.h>
- #include <linux/printk.h>
--- 
-2.39.2
-
+ext4_put_super()
+-> ext4_blkdev_remove()
+   -> blkdev_put()
