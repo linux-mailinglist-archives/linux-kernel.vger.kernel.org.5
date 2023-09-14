@@ -2,197 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45777A092E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E2A7A0938
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240983AbjINP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S240915AbjINP2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241065AbjINP1L (ORCPT
+        with ESMTP id S240914AbjINP2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:27:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4834D1FD8;
-        Thu, 14 Sep 2023 08:27:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C244C433C7;
-        Thu, 14 Sep 2023 15:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694705224;
-        bh=u4RNU2x3e+56ehtYfJBNsPQzsza8+/kdZ+mJNRjhyzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ozfEf/3Chy+F7tPp7fZjq9IrohhGbLE9N4aHzZwVJtPTslRZsam6ARH592+CAgQh2
-         97vHgLrelEKJWTr3MSJxEtLQ4oq6fNHBcP1CQ/sBylUhJ8nvx7sWS9y5B1lYLIixpZ
-         fJCsR6TAq+1p8TgYojoVuUonf+Qt6Mpur/K68cc2cXjCLQKVbEA97soFd/pcTDaQKV
-         f08HFudn+re76iSSzjSf/gAj9CRoIKuO6GKK4FGXY73Q/9oHPKreDdj/8DgxHhbIrf
-         JU93luHle4bfT9RmDZonL0amBpsRj8DxPQ/bKu77TT5POS0NA7zmLx47I/hgX1V6Xo
-         hVrcWj0gC2gHw==
-Date:   Thu, 14 Sep 2023 17:26:59 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-Message-ID: <20230914-lockmittel-verknallen-d1a18d76ba44@brauner>
-References: <20230913152238.905247-1-mszeredi@redhat.com>
- <20230913152238.905247-3-mszeredi@redhat.com>
- <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
- <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+        Thu, 14 Sep 2023 11:28:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D8FBC6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694705277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1nzUUEyUN53R/3LrUDJkNHrMrrKu1pIcJ20AJhQU8Ak=;
+        b=FqqtKgZy2BLFcNIZJxyBP/I6CPBfv3vJQpIR4lQZvZlf+f/9Kz7Bak9oV7oP1WNBempaLC
+        rQp4e380YVzp88Ym/hzVVhXNGn1FXL8y1hpz4+BhToV0fFU2/g7YLw0TMFEmKHn139jnu/
+        UaMlu2hp80WeURiGlfkfGrykhusGHtQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-539-ganyGMm6OTKMpYyybq-Iig-1; Thu, 14 Sep 2023 11:27:56 -0400
+X-MC-Unique: ganyGMm6OTKMpYyybq-Iig-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-52fc251c79cso772399a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:27:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694705274; x=1695310074;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1nzUUEyUN53R/3LrUDJkNHrMrrKu1pIcJ20AJhQU8Ak=;
+        b=Si9ZJ7QWeNaobv2S91CRT/k7tNAmcuTrCsyDGOfqmPHUKRND54n8A30kcSSv2S5gMe
+         KfCQboPWN2eOhCJw7ZxIA9YDo71ZYD8z8lCULMoJ6FtZ0PHDTLvZWB3ihWurhKjwTurB
+         BjEK0xNjWrJsZpNd8CzDFJP5JyoR4ia7TiaSQISVIvH0lHhk9AN2dyeFcOOekahKqIu5
+         /lmkj3pFrCOotKfBzlcneI00vsP5fWBbStkBQHlSTVUS88AZBUPNgoU+MfRj/g02Tp23
+         Ate6+xiu0ash8WWZZt9qFlJN+j8VEnYPrsK5JFLF3yKY86WahRVteIRaSYHOSqPf+E67
+         P/Cw==
+X-Gm-Message-State: AOJu0YzTS2em4UFbPlw58cqZkJQQvz7zzVIc1YmU6IdrUFGdO3Gn9RU4
+        SwPD48kJscVUGgg+FxcAF3+jTSoeU1HB1eeAUo/Bbv5mKczKYDY0YgThm9Pu0OV2Ve/pBxTXq4B
+        yCPdgGJIzWcEmrP2fEvC5yAxp4lU2ORSS
+X-Received: by 2002:aa7:c0cb:0:b0:523:47b0:9077 with SMTP id j11-20020aa7c0cb000000b0052347b09077mr5214086edp.38.1694705274427;
+        Thu, 14 Sep 2023 08:27:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFdWWnMS31MH1T9uKWfPa9G1b4DDCBSztU2uTa4LJwmVm9vdYkr2KCN+vHFrOzsC4eeWAhjaA==
+X-Received: by 2002:aa7:c0cb:0:b0:523:47b0:9077 with SMTP id j11-20020aa7c0cb000000b0052347b09077mr5214061edp.38.1694705273991;
+        Thu, 14 Sep 2023 08:27:53 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id d14-20020a50fb0e000000b00521953ce6e0sm1031725edq.93.2023.09.14.08.27.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 08:27:53 -0700 (PDT)
+Message-ID: <bdca7ebe-bc65-1db1-a247-490286a31307@redhat.com>
+Date:   Thu, 14 Sep 2023 17:27:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Nouveau] [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     matthew.brost@intel.com, sarah.walker@imgtec.com,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, boris.brezillon@collabora.com,
+        donald.robson@imgtec.com, daniel@ffwll.ch,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-7-dakr@redhat.com>
+ <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
+ <ZQCW6wzHYVdxl/IV@pollux>
+ <701dfead-e240-b3fb-422c-d49fc7e04595@linux.intel.com>
+ <ZQD2FFLP28bFgHXT@pollux>
+ <cbff08ca845655dee44fbf498cdb37a3d5251bf3.camel@linux.intel.com>
+ <ZQGoNovGz/4Y3xvf@pollux> <ef29b21d-157c-ead7-4b09-edf763d1f8b0@redhat.com>
+ <e8b9a298-d4ea-9ee7-69fe-eb8ea1f9dc3d@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <e8b9a298-d4ea-9ee7-69fe-eb8ea1f9dc3d@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 12:13:54PM +0200, Miklos Szeredi wrote:
-> On Thu, 14 Sept 2023 at 11:28, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > On Wed, Sep 13, 2023 at 05:22:35PM +0200, Miklos Szeredi wrote:
-> > > Add a way to query attributes of a single mount instead of having to parse
-> > > the complete /proc/$PID/mountinfo, which might be huge.
-> > >
-> > > Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
-> > > needs to be queried based on path, then statx(2) can be used to first query
-> > > the mount ID belonging to the path.
-> > >
-> > > Design is based on a suggestion by Linus:
-> > >
-> > >   "So I'd suggest something that is very much like "statfsat()", which gets
-> > >    a buffer and a length, and returns an extended "struct statfs" *AND*
-> > >    just a string description at the end."
-> >
-> > So what we agreed to at LSFMM was that we split filesystem option
-> > retrieval into a separate system call and just have a very focused
-> > statx() for mounts with just binary and non-variable sized information.
-> > We even gave David a hard time about this. :) I would really love if we
-> > could stick to that.
-> >
-> > Linus, I realize this was your suggestion a long time ago but I would
-> > really like us to avoid structs with variable sized fields at the end of
-> > a struct. That's just so painful for userspace and universally disliked.
-> > If you care I can even find the LSFMM video where we have users of that
-> > api requesting that we please don't do this. So it'd be great if you
-> > wouldn't insist on it.
+On 9/14/23 13:32, Thomas Hellström wrote:
 > 
-> I completely missed that.
-
-No worries, I think the discussion touching on this starts at:
-https://youtu.be/j3fp2MtRr2I?si=f-YBg6uWq80dV3VC&t=1603
-(with David talking quietly without a microphone for some parts
-unfortunately...)
-
-> What I'm thinking is making it even simpler for userspace:
+> On 9/14/23 12:57, Danilo Krummrich wrote:
+>> On 9/13/23 14:16, Danilo Krummrich wrote:
+>>
+>> <snip>
+>>
+>>>>> And validate() can remove it while still holding all dma-resv locks,
+>>>>> neat!
+>>>>> However, what if two tasks are trying to lock the VA space
+>>>>> concurrently? What
+>>>>> do we do when the drm_gpuvm_bo's refcount drops to zero in
+>>>>> drm_gpuva_unlink()?
+>>>>> Are we guaranteed that at this point of time the drm_gpuvm_bo is not
+>>>>> on the
+>>>>> evicted list? Because otherwise we would call drm_gpuvm_bo_destroy()
+>>>>> with the
+>>>>> dma-resv lock held, which wouldn't be allowed, since
+>>>>> drm_gpuvm_bo_destroy()
+>>>>> might drop the last reference to the drm_gem_object and hence we'd
+>>>>> potentially
+>>>>> free the dma-resv lock while holding it, at least if it's an external
+>>>>> object.
+>>>>
+>>>> Easiest way in this scheme is to think of the lists as being protected
+>>>> by the vm's resv lock. That means anybody calling unlink() must also
+>>>> hold the vm's resv lock. (Which is OK from an UAF point of view, but
+>>>> perhaps not from a locking inversion POW from an async list update).
+>>>
+>>> This would mean that on unlink() we'd need to hold the VM's resv lock and the
+>>> corresponding GEM's resv lock (in case they're not the same anyways) because the
+>>> VM's resv lock would protect the external / evicted object lists and the GEM
+>>> objects resv lock protects the GEM's list of drm_gpuvm_bos and the
+>>> drm_gpuvm_bo's list of drm_gpuvas.
+>>
+>> As mentioned below the same applies for drm_gpuvm_bo_put() since it might
+>> destroy the vm_bo, which includes removing the vm_bo from external / evicted
+>> object lists and the GEMs list of vm_bos.
+>>
+>> As mentioned, if the GEM's dma-resv is different from the VM's dma-resv we need
+>> to take both locks. Ultimately, this would mean we need a drm_exec loop, because
+>> we can't know the order in which to take these locks. Doing a full drm_exec loop
+>> just to put() a vm_bo doesn't sound reasonable to me.
+>>
+>> Can we instead just have an internal mutex for locking the lists such that we
+>> avoid taking and dropping the spinlocks, which we use currently, in a loop?
 > 
-> struct statmnt {
->   ...
->   char *mnt_root;
->   char *mountpoint;
->   char *fs_type;
->   u32 num_opts;
->   char *opts;
-> };
-> 
-> I'd still just keep options nul delimited.
-> 
-> Is there a good reason not to return pointers (pointing to within the
-> supplied buffer obviously) to userspace?
+> You'd have the same locking inversion problem with a mutex, right? Since in the eviction path you have resv->mutex, from exec you have resv->mutex->resv because validate would attempt to grab resv.
 
-It's really unpleasant to program with. Yes, I think you pointed out
-before that it often doesn't matter much as long as the system call is
-really only relevant to some special purpose userspace.
+Both lists, evict and extobj, would need to have a separate mutex, not a common one.
+We'd also need a dedicated GEM gpuva lock. Then the only rule would be that you can't
+hold the dma-resv lock when calling put(). Which I admit is not that nice.
 
-But statmount() will be used pretty extensively pretty quickly for the
-purpose of finding out mount options on a mount (Querying a whole
-sequences of mounts via repeated listmount() + statmount() calls on the
-other hand will be rarer.).
+With the current spinlock solution drivers wouldn't need to worry about anything locking
+related though. So maybe I come back to your proposal of having a switch for external
+locking with dma-resv locks entirely. Such that with external dma-resv locking I skip
+all the spinlocks and add lockdep checks instead.
 
-And there's just so many tools that need this: libmount, systemd, all
-kinds of container runtimes, path lookup libraries such as libpathrs,
-languages like go and rust that expose and wrap these calls and so on.
-
-Most of these tools don't need to know about filesystem mount options
-and if they do they can just query that through an extra system call. No
-harm in doing that.
-
-The agreement we came to to split out listing submounts into a separate
-system call was exactly to avoid having to have a variable sized pointer
-at the end of the struct statmnt (That's also part of the video above
-btw.) and to make it as simple as possible.
-
-Plus, the format for how to return arbitrary filesystem mount options
-warrants a separate discussion imho as that's not really vfs level
-information.
-
-> > This will also allow us to turn statmnt() into an extensible argument
-> > system call versioned by size just like we do any new system calls with
-> > struct arguments (e.g., mount_setattr(), clone3(), openat2() and so on).
-> > Which is how we should do things like that.
-> 
-> The mask mechanism also allow versioning of the struct.
-
-Yes, but this is done with reserved space which just pushes away the
-problem and bloats the struct for the sake of an unknown future. If we
-were to use an extensible argument struct we would just version by size.
-The only requirement is that you extend by 64 bit (see struct
-clone_args) which had been extended.
+I think that makes the most sense in terms of taking advantage of external dma-resv locking
+where possible and on the other hand having a self-contained solution if not. This should
+get all concerns out of the way, yours, Christian's and Boris'.
 
 > 
-> >
-> > Other than that I really think this is on track for what we ultimately
-> > want.
-> >
-> > > +struct stmt_str {
-> > > +     __u32 off;
-> > > +     __u32 len;
-> > > +};
-> > > +
-> > > +struct statmnt {
-> > > +     __u64 mask;             /* What results were written [uncond] */
-> > > +     __u32 sb_dev_major;     /* Device ID */
-> > > +     __u32 sb_dev_minor;
-> > > +     __u64 sb_magic;         /* ..._SUPER_MAGIC */
-> > > +     __u32 sb_flags;         /* MS_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME} */
-> > > +     __u32 __spare1;
-> > > +     __u64 mnt_id;           /* Unique ID of mount */
-> > > +     __u64 mnt_parent_id;    /* Unique ID of parent (for root == mnt_id) */
-> > > +     __u32 mnt_id_old;       /* Reused IDs used in proc/.../mountinfo */
-> > > +     __u32 mnt_parent_id_old;
-> > > +     __u64 mnt_attr;         /* MOUNT_ATTR_... */
-> > > +     __u64 mnt_propagation;  /* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} */
-> > > +     __u64 mnt_peer_group;   /* ID of shared peer group */
-> > > +     __u64 mnt_master;       /* Mount receives propagation from this ID */
-> > > +     __u64 propagate_from;   /* Propagation from in current namespace */
-> > > +     __u64 __spare[20];
-> > > +     struct stmt_str mnt_root;       /* Root of mount relative to root of fs */
-> > > +     struct stmt_str mountpoint;     /* Mountpoint relative to root of process */
-> > > +     struct stmt_str fs_type;        /* Filesystem type[.subtype] */
-> >
-> > I think if we want to do this here we should add:
-> >
-> > __u64 fs_type
-> > __u64 fs_subtype
-> >
-> > fs_type can just be our filesystem magic number and we introduce magic
+> That said, xe currently indeed does the vm+bo exec dance on vma put.
 > 
-> It's already there: sb_magic.
+> One reason why that seemingly horrible construct is good, is that when evicting an extobj and you need to access individual vmas to Zap page table entries or TLB flush, those VMAs are not allowed to go away (we're not refcounting them). Holding the bo resv on gpuva put prevents that from happening. Possibly one could use another mutex to protect the gem->vm_bo list to achieve the same, but we'd need to hold it on gpuva put.
 > 
-> However it's not a 1:1 mapping (ext* only has one magic).
+> /Thomas
+> 
+> 
+>>
+>> - Danilo
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>>
+>>>>>>> For extobjs an outer lock would be enough in case of Xe, but I
+>>>>>>> really would not
+>>>>>>> like to add even more complexity just to get the spinlock out of
+>>>>>>> the way in case
+>>>>>>> the driver already has an outer lock protecting this path.
+>>>>>>
+>>>>>> I must disagree here. These spinlocks and atomic operations are
+>>>>>> pretty
+>>>>>> costly and as discussed earlier this type of locking was the reason
+>>>>>> (at
+>>>>>> least according to the commit message) that made Christian drop the
+>>>>>> XArray
+>>>>>> use in drm_exec for the same set of objects: "The locking overhead
+>>>>>> is
+>>>>>> unecessary and measurable". IMHO the spinlock is the added
+>>>>>> complexity and a
+>>>>>> single wide lock following the drm locking guidelines set out by
+>>>>>> Daniel and
+>>>>>> David should really be the default choice with an opt-in for a
+>>>>>> spinlock if
+>>>>>> needed for async and pushing out to a wq is not an option.
+>>>>>
+>>>>> For the external object list an outer lock would work as long as it's
+>>>>> not the
+>>>>> dma-resv lock of the corresponding GEM object, since here we actually
+>>>>> need to
+>>>>> remove the list entry from the external object list on
+>>>>> drm_gpuvm_bo_destroy().
+>>>>> It's just a bit weird design wise that drivers would need to take
+>>>>> this outer
+>>>>> lock on:
+>>>>>
+>>>>> - drm_gpuvm_bo_extobj_add()
+>>>>> - drm_gpuvm_bo_destroy()        (and hence also drm_gpuvm_bo_put())
+>>>>> - drm_gpuva_unlink()            (because it needs to call
+>>>>> drm_gpuvm_bo_put())
+>>>>> - drm_gpuvm_exec_lock()
+>>>>> - drm_gpuvm_exec_lock_array()
+>>>>> - drm_gpuvm_prepare_range()
+>>>>>
+>>>>> Given that it seems reasonable to do all the required locking
+>>>>> internally.
+>>>>
+>>>>  From a design POW, there has been a clear direction in XE to make
+>>>> things similar to mmap() / munmap(), so this outer lock, which in Xe is
+>>>> an rwsem, is used in a similar way as the mmap_lock. It's protecting
+>>>> the page-table structures and vma rb tree, the userptr structures and
+>>>> the extobj list. Basically it's taken early in the exec IOCTL, the
+>>>> VM_BIND ioctl, the compute rebind worker and the pagefault handler, so
+>>>> all of the above are just asserting that it is taken in the correct
+>>>> mode.
+>>>>
+>>>> But strictly with this scheme one could also use the vm's dma_resv for
+>>>> the extobj list since with drm_exec, it's locked before traversing the
+>>>> list.
+>>>>
+>>>> The whole point of this scheme is to rely on locks that you already are
+>>>> supposed to be holding for various reasons and is simple to comprehend.
+>>>
+>>> I don't agree that we're supposed to hold the VM's resv lock anyways for
+>>> functions like drm_gpuvm_bo_put() or drm_gpuva_unlink(), but I'm fine using it
+>>> for that purpose nevertheless.
+>>>
+>>>>
+>>>>>
+>>>>> In order to at least place lockdep checks, the driver would need to
+>>>>> supply the
+>>>>> corresponding lock's lockdep_map, because the GPUVM otherwise doesn't
+>>>>> know about
+>>>>> the lock.
+>>>>
+>>>> Yes, that sounds reasonable. One lockdep map per list.
+>>>
+>>> I'd really like to avoid that, especially now that everything got simpler. We
+>>> should define the actual locks to take instead.
+>>>
+>>>>
+>>>>>
+>>>>> Out of curiosity, what is the overhead of a spin_lock() that doesn't
+>>>>> need to
+>>>>> spin?
+>>>>
+>>>> I guess it's hard to tell exactly, but it is much lower on modern x86
+>>>> than what it used to be. Not sure about ARM, which is the other
+>>>> architecture important to us. I figure if there is little cache-line
+>>>> bouncing the main overhead comes from the implied barriers.
+>>>>
+>>>>>
+>>>>>>
+>>>>>> A pretty simple way that would not add much code would be
+>>>>>>
+>>>>>> static void gpuvm_cond_spin_lock(const struct drm_gpuvm *gpuvm,
+>>>>>> spinlock_t
+>>>>>> *lock)
+>>>>>>
+>>>>>> {
+>>>>>>
+>>>>>>      if (!gpuvm->resv_protected_lists)
+>>>>>>          spin_lock(lock);
+>>>>>>
+>>>>>> }
+>>>>>>
+>>>>>>>> For such drivers, that would require anybody calling unlink to
+>>>>>>>> hold the vm's
+>>>>>>>> resv, though.
+>>>>>>> In V4 I want to go back to having a dedicated lock for the GEMs
+>>>>>>> gpuva list (or
+>>>>>>> VM_BO list to be more precise). We can't just use the dma-resv
+>>>>>>> lock for that
+>>>>>>> with VM_BO abstractions, because on destruction of a VM_BO we
+>>>>>>> otherwise wouldn't
+>>>>>>> be allowed to already hold the dma-resv lock. That's the fix I
+>>>>>>> was referring to
+>>>>>>> earlier.
+>>>>>>
+>>>>>> Yeah, I can see the need for a dedicated lock for the GEM's gpuva
+>>>>>> list, but
+>>>>>> holding the vm's dma-resv lock across the unlink shouldn't be a
+>>>>>> problem. We
+>>>>>> may free the object and a pointer to the vm's resv during unlink
+>>>>>> but we
+>>>>>> don't free the vm's resv.  It'd be a matter of ensuring that any
+>>>>>> calls to
+>>>>>> unlink from *within* drm_gpuvm allows it to be held.
+>>>>>
+>>>>> Drivers calling unlink() from the fence signaling path can't use the
+>>>>> VM's
+>>>>> dma-resv lock.
+>>>>
+>>>> Yes, that made me a bit curious because in the current version the code
+>>>> required the object's dma_resv for unlink() which can't be grabbed
+>>>> either from the fence signaling path. So are there any drivers actually
+>>>> wanting to do that? If so, they will either need to resort to the
+>>>> current spinlock solution or they will need to call unlink from a
+>>>> workqueue item.
+>>>
+>>> As Boris already mentioned we have the dma-resv lock by default or a driver
+>>> specific GEM gpuva lock as opt-in. Now, we can get rid of the latter.
+>>>
+>>>>>
+>>>>> Also, what if the object is an external object? We can't use the VM's
+>>>>> dma-resv
+>>>>> lock here.
+>>>>
+>>>> Why? Typically (sync) unlink is only ever called from an unbind-like
+>>>> operation where it should be trivial to grab the vm's resv. Or, for
+>>>> that matter any outer lock protecting the extobj list. Rule would be
+>>>> the drm_gpuvm_bo::entry::extobj  and drm_gpuvm_bo::entry::evict would
+>>>> be protected by either the vm's dma_resv (or possibly an outer lock in
+>>>> the case of the extobj list).
+>>>
+>>> Outer lock wouldn't have been working for updates in the async path, but
+>>> shouldn't be relevant anymore. We could use the VM's resv for that.
+>>>
+>>>>
+>>>>>   And we can't have the GEM objs dma-resv lock held when calling
+>>>>> unlink(), since unlink() calls drm_gpuvm_bo_put(), which if the
+>>>>> refcount drops
+>>>>> to zero calls drm_gpuvm_bo_destroy() and drm_gpuvm_bo_destroy() might
+>>>>> drop the
+>>>>> last reference of the GEM object.
+>>>>
+>>>> Yes, but this is a different problem as to what exactly protects
+>>>> drm_gpuvm_bo::entry::gem. Either as you suggest an internal per bo list
+>>>> lock, or if we want to keep the bo's dma_resv we need to ensure that
+>>>> the caller of dma_resv_unlock(obj->resv) actually refcounts its obj
+>>>> pointer, and doesn't implicitly rely on the gpuvm_bo's refcount (I know
+>>>> Boris didn't like that, but requiring an explicit refcount for a
+>>>> pointer you dereference unless you're under a lock that ensures keeping
+>>>> the object alive is pretty much required?) But anyway for the
+>>>> drm_gpuvm_bo::entry::gem list protection (bo resv or internal spinlock)
+>>>> I don't have a strong preference.
+>>>
+>>> We can keep the GEM objects dma-resv lock, however as mentioned above
+>>> drm_gpuva_unlink() and drm_gpuvm_bo_put() then requires both the VM's resv lock
+>>> and the GEM's resv lock in case they differ.
+>>>
+>>
+>>>>>>
+>>
+> 
 
-That's a very odd choice but probably fixable by giving it a subtype.
-
-> 
-> > numbers for sub types as well. So we don't need to use strings here.
-> 
-> Ugh.
-
-Hm, idk. It's not that bad imho. We'll have to make some ugly tradeoffs.
