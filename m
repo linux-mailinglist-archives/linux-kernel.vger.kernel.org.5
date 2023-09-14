@@ -2,133 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52737A03B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A487A03C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 14:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237750AbjINM0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 08:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S238124AbjINM1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 08:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbjINM0T (ORCPT
+        with ESMTP id S237745AbjINM1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:26:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0C81FC8;
-        Thu, 14 Sep 2023 05:26:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3A2C433C8;
-        Thu, 14 Sep 2023 12:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694694375;
-        bh=uwlERtgcIl0boGXES+0Lt7l/GYtqRgkvwlIpXYuTrm8=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=YMGgoK0vFJEZoIZLtjMUT/xcAi3HPriqpw9cgkjwNFEh6vBAofPrJ8v0/yo0uOC7i
-         XWHuPDy/xbSvaK8C6WgylQQPRgD11XSQZOPvPV2nyKDynKecvnmcmvICbUgC0GSl0b
-         olHpjVrfOBE+v/pzfg6/Fpt/BDA2ydU1f2W6xVJYWNrEhFYN+N8SluW9NSyfFRJ4hw
-         WdL+XNAlkrdZWstCts+UpCRGFritbMLgy3VClfw5T7vB1QsUN/VefDbGATVrz3dAfT
-         fNb3B4xndSvJUymSfj8S/H4Se7SG+Jxtq46MQqTUsm3QitAbhVnl4NYIwGpPEIHCCA
-         Ul/gVfgqDt2nA==
-Mime-Version: 1.0
+        Thu, 14 Sep 2023 08:27:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF31FC9;
+        Thu, 14 Sep 2023 05:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1694694421;
+        bh=IKd/xoLaYMNT3G43ojUHtX33LcBflkrUDAX5TgQ89VQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=rYiR5HRfpS/tMJ5vZ04WGHK5tqlEmN3zl7YBnuBIj4iDXvSjRcMk3Bm1xQR4G2xqA
+         ch/6vWdPHmOC2BUMMk4XX30GKkFETwPb6UKi6HR3vSS9M+ZGF48pqFYfp4X0b6Xnoc
+         3IT8Xs1CRfVJWHkXJOg3XffMJXWhIzBrBfe0rLT/1FOwmVJNKXhzU+07wARKckah+G
+         1nYEufulJtii1DdLYzWI+dlftci66s6CJLfGerDALqoTxKf5zQo5DIOqkNkz913pHl
+         hiwkYuo8iIaiLSkIq8iYXaa9BldBulkzz3WoyK+kyoqd71CY/sNwj3K8X+Pby7L5LJ
+         Ni+zJOD6zygLg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rmc544Ldlz4wxN;
+        Thu, 14 Sep 2023 22:26:48 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
+Cc:     "svens@linux.ibm.com" <svens@linux.ibm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "schwab@linux-m68k.org" <schwab@linux-m68k.org>,
+        "brgerst@gmail.com" <brgerst@gmail.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "monstr@monstr.eu" <monstr@monstr.eu>,
+        "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "glaubitz@physik.fu-berlin.de" <glaubitz@physik.fu-berlin.de>,
+        "dalias@libc.org" <dalias@libc.org>,
+        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "James.Bottomley@HansenPartnership.com" 
+        <James.Bottomley@HansenPartnership.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "rmclure@linux.ibm.com" <rmclure@linux.ibm.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "slyich@gmail.com" <slyich@gmail.com>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
+        "chris@zankel.net" <chris@zankel.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "richard.henderson@linaro.org" <richard.henderson@linaro.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH 2/2] arch: Reserve map_shadow_stack() syscall number for
+ all architectures
+In-Reply-To: <8b7106881fa227a64b4e951c6b9240a7126ac4a2.camel@intel.com>
+References: <20230911180210.1060504-1-sohil.mehta@intel.com>
+ <20230911180210.1060504-3-sohil.mehta@intel.com>
+ <8b7106881fa227a64b4e951c6b9240a7126ac4a2.camel@intel.com>
+Date:   Thu, 14 Sep 2023 22:26:47 +1000
+Message-ID: <871qf17xfc.fsf@mail.lhotse>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 14 Sep 2023 15:26:10 +0300
-Message-Id: <CVIN0M3IHRKL.3U005Y5QTOJL5@suppilovahvero>
-Cc:     "Jan Hendrik Farr" <kernel@jfarr.cc>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <x86@kernel.org>, <tglx@linutronix.de>, <dhowells@redhat.com>,
-        <vgoyal@redhat.com>, <keyrings@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <bhe@redhat.com>,
-        <bhelgaas@google.com>, <bluca@debian.org>
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Lennart Poettering" <mzxreary@0pointer.de>,
-        "Philipp Rudo" <prudo@redhat.com>
-X-Mailer: aerc 0.14.0
-References: <20230911052535.335770-1-kernel@jfarr.cc>
- <20230913160045.40d377f9@rotkaeppchen> <ZQLTJFb3S/xn5CWo@gardel-login>
-In-Reply-To: <ZQLTJFb3S/xn5CWo@gardel-login>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Sep 14, 2023 at 12:32 PM EEST, Lennart Poettering wrote:
-> On Mi, 13.09.23 16:00, Philipp Rudo (prudo@redhat.com) wrote:
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> writes:
+> On Mon, 2023-09-11 at 18:02 +0000, Sohil Mehta wrote:
+>> diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl
+>> b/arch/powerpc/kernel/syscalls/syscall.tbl
+>> index 20e50586e8a2..2767b8a42636 100644
+>> --- a/arch/powerpc/kernel/syscalls/syscall.tbl
+>> +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+>> @@ -539,3 +539,4 @@
+>> =C2=A0450=C2=A0=C2=A0=C2=A0=C2=A0nospu=C2=A0=C2=A0=C2=A0set_mempolicy_ho=
+me_node=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sys_set_mempol=
+icy_hom
+>> e_node
+>> =C2=A0451=C2=A0=C2=A0=C2=A0=C2=A0common=C2=A0=C2=A0cachestat=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sys_cachestat
+>> =C2=A0452=C2=A0=C2=A0=C2=A0=C2=A0common=C2=A0=C2=A0fchmodat2=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sys_fchmodat2
+>> +453=C2=A0=C2=A0=C2=A0=C2=A0common=C2=A0=C2=A0map_shadow_stack=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0sys_map_shadow_stack
 >
-> > For example there are two definitions for the UKI which contradict each=
- other.
-> > The dedicated one [1] you have cited earlier and the one in the BLS for=
- type #2
-> > entries [2]. In [1] the .linux and .initrd sections are mandatory and t=
-he
-> > .osrel and .cmdline sections are optional while in [2] it is the other =
-way
-> > round. Which definition should the kernel follow?
-> >
-> > Furthermore, I absolutely don't understand how the spec should be read.=
- All
-> > the spec does is defining some file formats. There is no word about whi=
-ch
-> > component in the boot chain is supposed to handle them and what exactly=
- this
-> > component is supposed to do with it. But that is crucial if we want to =
-add UKI
-> > support for kexec as the kexec systemcall will replace the stub. So we =
-need to
-> > know what tasks the stub is supposed to perform. Currently this is only=
- some
-> > implementation detail of the systemd-stub [3] that can change any momen=
-t and I
-> > strongly oppose to base any uapi on it.
-> >
-> > In the end the only benefit this series brings is to extend the signatu=
-re
-> > checking on the whole UKI except of just the kernel image. Everything e=
-lse can
-> > also be done in user space. Compared to the problems described above th=
-is is a
-> > very small gain for me.
-> >
-> > Until the spec got fixed I don't see a chance to add UKI support for ke=
-xec.
->
-> So that spec is initially just a generalization of what
-> systemd-stub/systemd-boot/ukify does. The descrepancies between the
-> cited specs mostly come from the that generalization. If you want to
-> enumerate kernels and order them the ".osrel" stuff for example is
-> necessary, hence the boot loader spec really wants it. If you don't
-> care about the boot loader spec though and just want to register the
-> kernel UKI PE directly in BootXXX efi vars for example, then there's
-> no need to include .osrel. That all said we should certainly make the
-> two specs align better, and clarify the situation. Suggestions/patches
-> more than welcome.
->
-> Ultimately, I think a spec written as description with a single
-> implementation in mind (i.e. systemd) is a generally a bad spec. Hence
-> if kexec in the Linux kernel wants to add support for it, that'd be
-> great but I'd see that as an opportunity to adjust the spec to the
-> needs of the Linux kernel in this area, so that it reflects well more
-> than just one backend implementation.
->
-> Hence, seeing the spec as set in stone and as inherently low quality
-> is the wrong way to see it I am sure. Instead, the goal here is to
-> adjust the spec to make it work really nicely for *both* systemd and
-> the kernel.
+> I noticed in powerpc, the not implemented syscalls are manually mapped
+> to sys_ni_syscall. It also has some special extra sys_ni_syscall()
+> implementation bits to handle both ARCH_HAS_SYSCALL_WRAPPER and
+> !ARCH_HAS_SYSCALL_WRAPPER. So wondering if it might need special
+> treatment. Did you see those parts?
 
-Bringing better backing story [1] would also help the spec. Immeditaly
-when there's some reflection surface, also the possible faults it the
-spec become more apparent. Also this makes spec refinement less boring,
-which can be boring and tedious if you write it isolated by yourself or
-in a small group :-)
+I don't think it needs any special treatment. It's processed by the same
+script as other arches (scripts/syscalltbl.sh). So if there's no compat
+or native entry it will default to sys_ni_syscall.
 
-I need to check if I could with some effort extend my current testing
-environment for UKI [2]. Need to study this better at some point.
+I think it's just habit/historical that we always spell out sys_ni_syscall.
 
-> Lennart
->
-> --
-> Lennart Poettering, Berlin
-
-[1] https://social.kernel.org/notice/AZklKOsIYBZXDL9Bya
-[2] https://github.com/jarkkojs/buildroot-tpmdd/compare/master...linux-6.5.=
-y
-
-BR, JKarkko
+cheers
