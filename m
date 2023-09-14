@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CB87A0FF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0840E7A100D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjINVk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
+        id S229703AbjINVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjINVkz (ORCPT
+        with ESMTP id S229447AbjINVvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:40:55 -0400
+        Thu, 14 Sep 2023 17:51:50 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2315E10C3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:40:51 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59beb3a8291so17007907b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:40:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479511BFA
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:51:46 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bf37b7734so13969697b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694727650; x=1695332450; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694728305; x=1695333105; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=yg6NbhhS6bNBw/im5wDGZLYsqmgcXnTvleG//pORS78=;
-        b=0aVZQDcPxW9vqBUD5lokonAdN0omVw+fVFqi1FwSebHZ9fv9DT4cN0DrlwPZbsWqP+
-         8N58N/u8KPo/w/ixO2UKpiw/80Yeh69t2zbBinK8YsbZHeM49GesrttM5d8WMuOxz33m
-         eD+3PkxmcIvipq2dznue6VcQq4/C1/IHltWYaNTy3d/DbtUcVkgsXn9ArGuiJGq3Zg3j
-         sFZrSlLCyvOLzJdPVNOsfebYE8tyBgRfym9YwYNfiLQx10mdU0AF1tmvyopUPJHIL7Pc
-         5lt8lOO/CdqRjKmTUl6Uo46LVMg0noF1R6B3+hY8UCyZq1wQHfyf+53JmwEGZoNzHFWQ
-         wdJQ==
+        bh=f5AmKdq1pRjBoWugao1uMYxjphGEN0AUTFevs+I8FV8=;
+        b=DtMkF6B9loTkxqAiL7t9DxXW12XBfzsD5JupOxSD+35qj8/okpJueuqaVxt6qDAA8q
+         E1OrM7KA8pZ3YPWjSOXALl+HchfoX4qRVv87qgfA9RzWNtdO6CJ8BGQEwm/mNJ7wzhPt
+         enGU8HVrL0b2tlUg5iSagAaqZA1oJJayo5AjfkyXUQMjJAEkdqbXP7aK1OH7t7MlBu2x
+         EVg12xfRU/lnVBR2LPWkhlgGtyat0Aqf+G+yzooILGnfEMNoPaBVQ2O5SqrJ3xAgOh1b
+         /Y1qTn9wo5TqyjTCT9+k2Ac5I2OO1AdpZaiw1lRGeCagm0F+/N/jNVe+bHsVCwDiETXU
+         vdEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694727650; x=1695332450;
+        d=1e100.net; s=20230601; t=1694728305; x=1695333105;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yg6NbhhS6bNBw/im5wDGZLYsqmgcXnTvleG//pORS78=;
-        b=R6Y2bSGQIL6tPefeoh4bOrS5s2ejttk2KSVOKmX4UJ9hGKnaoKuJJnCXPD8WDuzfdM
-         e/FCP+13NfPQmNLOut9gGB5bXrccwSn3bm5ffhGoEK+lVzs0xw9JSowfdTxe3z7pYg/O
-         jmj37/818aqVrprnqHvnBxuAncjLXtzPx2YleE1AnPtrcSEok8t0zbEzE9C5AItvDinJ
-         p4Tpz/3iB70Iqao163Lo7t6R+BPhEOshPvzjnEEKyUcM5LxAmVidTv5gMfhx20eWY4Xb
-         6l5XLKATvwNGhpIiCwUyLl9wvYOHYz8j444RGYdw5JLZm7oPyrzOrpOVonE4QHNue3le
-         iXrA==
-X-Gm-Message-State: AOJu0Yzliip+13P93L8EQWMjoId0dw21JQu+n80AM4aejW2e7JHb6pAi
-        thbRpGYdCl+D90XDnLptgTKRVa7mOz6hGpDtXA==
-X-Google-Smtp-Source: AGHT+IHIwo1uxVWE4qpMcXDY+I8QuHt0NGAH38LuWxAvqb8Hw+peynTElFPrZBbvCY+tn1X9WNxQ4+n8wAYBwLiIEw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:690c:d8f:b0:59b:ea96:887f with
- SMTP id da15-20020a05690c0d8f00b0059bea96887fmr125429ywb.0.1694727650404;
- Thu, 14 Sep 2023 14:40:50 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 21:40:49 +0000
+        bh=f5AmKdq1pRjBoWugao1uMYxjphGEN0AUTFevs+I8FV8=;
+        b=OSZB+Wzd7nPUIp/nKttanagap2IQO59UEaDD6oK/pDUr15i4zv1LAY32X270G0bhR1
+         J1O/i/AR0gT4czf0WhhR/y1q0b9Ji7hepKiZ+ZBviMnpax7SjFwpihd9N/3z7VaNaUQT
+         ovKKJwOq4z9kax5c1KmtEgZ2nL5CpGFa9c8sGOXdKAPMwjye+4ssGy4zV4eZRgYsfn0R
+         TrjyMVx0Z/pgq12JgJc3rZRk19cjurt6LRFIMQcRYjDOCZhauDkAWDPag+5y8vJjTxXn
+         KLzPFTYbakbCG8Qi3CTOsJ+LIesWD+XhBMOnxWj/rOCjDOpOlKdF5NzWL8TlsfbTMeeQ
+         IJfQ==
+X-Gm-Message-State: AOJu0Yx1jEFwBs1LguEzfg0zWjJsP9hkNJaix0ywvndnfwkFFXFS5br2
+        xiWlssWXQmnifZAMVQRUjsyfBuseBA==
+X-Google-Smtp-Source: AGHT+IHC8lDywtd/3DEAcrqeCtnI7BBVZqxz6OQQKZ2Pz6wFZ+PgIiPJP0JXxADfRz+G4oMIAJKsW2usLQ==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:6902:905:b0:d64:f7ec:6d5d with SMTP id
+ bu5-20020a056902090500b00d64f7ec6d5dmr155560ybb.10.1694728305515; Thu, 14 Sep
+ 2023 14:51:45 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 21:51:40 +0000
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOF9A2UC/x2Nyw6CMBAAf4Xs2U1oSwL4K8ZDLQtuTB/Z2ioh/
- LuNt5nLzAGZhCnDtTtAqHLmGJqoSwfuacNGyEtz0L02/awGzG8JLu24CFeSjFsqjT2GWCrZgqG +PLoohCuL/9gGDsdZaW0mMz1GDS2dhFb+/re3+3n+AGeHtrSGAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694727649; l=1779;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=veRS+F8fLCXOEB+IwiJ2Jr1EVTbkT3rdWvzzy6w4YBI=; b=mxTJZ6DGijn6/IfaObu6+S9iqoBOFL/VXV+IETu4YWEw2MiDJWtx0Af8fFwoaDQuBhONmsZIu
- cVfnCIxjq5WDEKO2xTXXXVEW93KmK0oIwx+SXuNXj091829J4/96aii
-X-Mailer: b4 0.12.3
-Message-ID: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-core-firmware-c-v1-1-3aeae46c032f@google.com>
-Subject: [PATCH] drm/nouveau/core: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230914215141.3399584-1-rmoar@google.com>
+Subject: [PATCH 1/2] kunit: tool: add parsing of test attributes
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+Add parsing of attributes as diagnostic data. Fixes issue with test plan
+being parsed incorrectly as diagnostic data when located after
+suite-level attributes.
 
-We should prefer more robust and less ambiguous string interfaces.
+Note that if there does not exist a test plan line, the diagnostic lines
+between the suite header and the first result will be saved in the suite
+log rather than the first test log.
 
-A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-NUL-termination on the destination buffer without unnecessarily NUL-padding.
+This could be changed to do the opposite if preferred.
 
-There is likely no bug in the current implementation due to the safeguard:
-| 	cname[sizeof(cname) - 1] = '\0';
-... however we can provide simpler and easier to understand code using
-the newer (and recommended) `strscpy` api.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Signed-off-by: Rae Moar <rmoar@google.com>
 ---
- drivers/gpu/drm/nouveau/nvkm/core/firmware.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/testing/kunit/kunit_parser.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-index 91fb494d4009..374212da9e95 100644
---- a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-@@ -79,8 +79,7 @@ nvkm_firmware_get(const struct nvkm_subdev *subdev, const char *fwname, int ver,
- 	int i;
- 
- 	/* Convert device name to lowercase */
--	strncpy(cname, device->chip->name, sizeof(cname));
--	cname[sizeof(cname) - 1] = '\0';
-+	strscpy(cname, device->chip->name, sizeof(cname));
- 	i = strlen(cname);
- 	while (i) {
- 		--i;
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 79d8832c862a..ce34be15c929 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -450,7 +450,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+ 	Log of diagnostic lines
+ 	"""
+ 	log = []  # type: List[str]
+-	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START]
++	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START, TEST_PLAN]
+ 	while lines and not any(re.match(lines.peek())
+ 			for re in non_diagnostic_lines):
+ 		log.append(lines.pop())
+@@ -726,6 +726,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		# test plan
+ 		test.name = "main"
+ 		ktap_line = parse_ktap_header(lines, test)
++		test.log.extend(parse_diagnostic(lines))
+ 		parse_test_plan(lines, test)
+ 		parent_test = True
+ 	else:
+@@ -737,6 +738,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		if parent_test:
+ 			# If KTAP version line and/or subtest header is found, attempt
+ 			# to parse test plan and print test header
++			test.log.extend(parse_diagnostic(lines))
+ 			parse_test_plan(lines, test)
+ 			print_test_header(test)
+ 	expected_count = test.expected_count
 
----
-base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-change-id: 20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-core-firmware-c-791223838b72
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+base-commit: 9076bc476d7ebf0565903c4b048442131825c1c3
+-- 
+2.42.0.459.ge4e396fd5e-goog
 
