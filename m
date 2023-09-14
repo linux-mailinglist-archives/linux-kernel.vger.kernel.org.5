@@ -2,182 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 594617A0A9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415FE7A0AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjINQSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
+        id S235491AbjINQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjINQSs (ORCPT
+        with ESMTP id S229992AbjINQUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:18:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEC41FC0;
-        Thu, 14 Sep 2023 09:18:44 -0700 (PDT)
-Received: from mercury (dyndsl-091-248-132-131.ewe-ip-backbone.de [91.248.132.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 73CD5660734C;
-        Thu, 14 Sep 2023 17:18:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694708323;
-        bh=BLm09vQcjjmO2omYXit39dcSh8oDsxgFsPspyM2A5+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cYEEh3Nyv/rd0700Q4Chu9ABx/oSMqfk+fWgNI2WmSnh+PBAvYDgl0PHab0ji0QP+
-         HWUoQ1Pc9ojgm5s6DkvN/9iWdINurfVJ2DFBZGX4Z6P2uo5/wZXv69msPZK3yme92i
-         QcwksnSPJT6/V1zviRXtjhAyq8+flGs1F/isJjWNYjqKx0AzyBq58b7Ns4D0yK1R0D
-         QCIeb+OECSYRDPYQQp4yt0verJWAA+u+4e1km58lnIK/YL88kIqv4XkAk6LlJxXv8H
-         bAwjkGVgpGJ9+Wgsu6r/wLS7eJPHO1Albx90FXcVf/JJ0zYJnr2nLZfnaCypWUKRy1
-         4mz/lBDu/XtUQ==
-Received: by mercury (Postfix, from userid 1000)
-        id 2FFA8106098B; Thu, 14 Sep 2023 18:18:41 +0200 (CEST)
-Date:   Thu, 14 Sep 2023 18:18:41 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Daisuke Nojiri <dnojiri@chromium.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cros_pchg: Sync port status on resume
-Message-ID: <20230914161841.gyjjkarid27r4nw7@mercury.elektranox.org>
-References: <20230417221610.1507341-1-dnojiri@chromium.org>
- <20230508123228.pduxcrwylbq73iuj@mercury.elektranox.org>
- <CAC0y+Ah1kLAGzftR8=afm3+uF5U5eH1_E89FwX0--NkZJNVYQg@mail.gmail.com>
+        Thu, 14 Sep 2023 12:20:50 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21399B;
+        Thu, 14 Sep 2023 09:20:45 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso1944994e87.0;
+        Thu, 14 Sep 2023 09:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694708444; x=1695313244; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J95EVnvedQGsOXFf9YyeDY6M57brRLbFCl8LMxPg7Xc=;
+        b=pVoCwqsjbNrDMr63tfrSXgWlY/ABLBXMtFHPCklw1HnPobi9MjUjzAvoxpAfUPGg7y
+         oP68t/OMVp+nEc38UfIkGejWupRin3usi5AyDDtXQm+qZ6mqaOcaMkd80Y3f4xL4lp7Q
+         TmP9KqCaETofJvw73TkHKc/lQWgTS5dNMOa2S1jXYNW0iNKgbf5bikLCLPVpZjXgyBf0
+         bTcIfBSSCADBtaj58rppzKZR/jMq0PRvnPCXMOY2wUXFTmuU8FoTZEUjXxPPgyYtR6y4
+         UKPCTs0OfbUzN10PSKVbMPBBTnHoWbes+ckgb3bRPE4t/VCrcliCbCq/I2Wut9NLH1uj
+         DjjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694708444; x=1695313244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J95EVnvedQGsOXFf9YyeDY6M57brRLbFCl8LMxPg7Xc=;
+        b=pUPVt+TtMPLS6958QokQ0XtYv/1mzlaZJw8No55NDMMw4wLsBqhS5gS3S/yW3Mwk4O
+         9KuW5L6YXz1prpoJVKj9y4059ZpXXnC+QoyxBtXAPEOmF+UuU3WZ4jVLUmzWsrglMzQ0
+         S/90++vxII1kvdDQvv9W2MgDDpeLNaKpv0XqP1GL8/fQ2TYITrOni+m/IBn7huzSwK66
+         tUD1TAOjDTVYNPMP7QB/vyKGJqNGvhS14HAYqUK4H+/ip4Dl/XM+Q8FXphFi1dEUEthi
+         SD5704TWvg2C72K1a4lfAh3W8TbOW5en4jf32kJrTClXx+psbmILToZAlo+nEacT+A/D
+         i1jw==
+X-Gm-Message-State: AOJu0YyuKsfcq2/BWXtgUDfbdP7jIfHtKHEhltTriFdQc3Cya+OjW+JS
+        TQnnKom51smmPrRrj+aqxfiZAsoVv/2Zl3XFcSE=
+X-Google-Smtp-Source: AGHT+IGq5hOj8vL3TMQVdZKjYxMC3LkGk25J0zeXmYONkzwmZ89uatlv3waUJU08I2cSoeHLfS3oHQvDBmnDcOmiyRc=
+X-Received: by 2002:ac2:5394:0:b0:4f9:5580:1894 with SMTP id
+ g20-20020ac25394000000b004f955801894mr4511518lfh.15.1694708443569; Thu, 14
+ Sep 2023 09:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tfqnw5fnudvt3nws"
-Content-Disposition: inline
-In-Reply-To: <CAC0y+Ah1kLAGzftR8=afm3+uF5U5eH1_E89FwX0--NkZJNVYQg@mail.gmail.com>
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+ <20230913122827.91591-1-gerhorst@amazon.de>
+In-Reply-To: <20230913122827.91591-1-gerhorst@amazon.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 Sep 2023 09:20:32 -0700
+Message-ID: <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+To:     Luis Gerhorst <gerhorst@cs.fau.de>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        gerhorst@amazon.de, Ilya Leoshkevich <iii@linux.ibm.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hagar Gamal Halim Hemdan <hagarhem@amazon.de>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 13, 2023 at 5:30=E2=80=AFAM Luis Gerhorst <gerhorst@amazon.de> =
+wrote:
+>
+> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
+>
+> To mitigate Spectre v1, the verifier relies on static analysis to deduct
+> constant pointer bounds, which can then be enforced by rewriting pointer
+> arithmetic [1] or index masking [2]. This relies on the fact that every
+> memory region to be accessed has a static upper bound and every date
+> below that bound is accessible. The verifier can only rewrite pointer
+> arithmetic or insert masking instructions to mitigate Spectre v1 if a
+> static upper bound, below of which every access is valid, can be given.
+>
+> When allowing packet pointer comparisons, this introduces a way for the
+> program to effectively construct an accessible pointer for which no
+> static upper bound is known. Intuitively, this is obvious as a packet
+> might be of any size and therefore 0 is the only statically known upper
+> bound below of which every date is always accessible (i.e., none).
+>
+> To clarify, the problem is not that comparing two pointers can be used
+> for pointer leaks in the same way in that comparing a pointer to a known
+> scalar can be used for pointer leaks. That is because the "secret"
+> components of the addresses cancel each other out if the pointers are
+> into the same region.
+>
+> With [3] applied, the following malicious BPF program can be loaded into
+> the kernel without CAP_PERFMON:
+>
+> r2 =3D *(u32 *)(r1 + 76) // data
+> r3 =3D *(u32 *)(r1 + 80) // data_end
+> r4 =3D r2
+> r4 +=3D 1
+> if r4 > r3 goto exit
+> r5 =3D *(u8 *)(r2 + 0) // speculatively read secret
+> r5 &=3D 1 // choose bit to leak
+> // ... side channel to leak secret bit
+> exit:
+> // ...
+>
+> This is jited to the following amd64 code which still contains the
+> gadget:
+>
+>    0:   endbr64
+>    4:   nopl   0x0(%rax,%rax,1)
+>    9:   xchg   %ax,%ax
+>    b:   push   %rbp
+>    c:   mov    %rsp,%rbp
+>    f:   endbr64
+>   13:   push   %rbx
+>   14:   mov    0xc8(%rdi),%rsi // data
+>   1b:   mov    0x50(%rdi),%rdx // data_end
+>   1f:   mov    %rsi,%rcx
+>   22:   add    $0x1,%rcx
+>   26:   cmp    %rdx,%rcx
+>   29:   ja     0x000000000000003f // branch to mispredict
+>   2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
+>   30:   and    $0x1,%r8 // choose bit to leak
+>   34:   xor    %ebx,%ebx
+>   36:   cmp    %rbx,%r8
+>   39:   je     0x000000000000003f // branch based on secret
+>   3b:   imul   $0x61,%r8,%r8 // leak using port contention side channel
+>   3f:   xor    %eax,%eax
+>   41:   pop    %rbx
+>   42:   leaveq
+>   43:   retq
+>
+> Here I'm using a port contention side channel because storing the secret
+> to the stack causes the verifier to insert an lfence for unrelated
+> reasons (SSB mitigation) which would terminate the speculation.
+>
+> As Daniel already pointed out to me, data_end is even attacker
+> controlled as one could send many packets of sufficient length to train
+> the branch prediction into assuming data_end >=3D data will never be true=
+.
+> When the attacker then sends a packet with insufficient data, the
+> Spectre v1 gadget leaks the chosen bit of some value that lies behind
+> data_end.
 
---tfqnw5fnudvt3nws
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The above analysis is correct, but unlike traditional spec_v1
+the attacker doesn't control data/data_end.
+The attack can send many large packets to train that data + X < data_end
+and then send a small packet where CPU will mispredict that branch
+and data + X will speculatively read past data_end,
+so the attacker can extract a bit past data_end,
+but data/data_end themselves cannot be controlled.
+So whether this bit 0 or 1 has no bearing.
+The attack cannot be repeated for the same location.
+The attacker can read one bit 8 times in a row and all of them
+will be from different locations in the memory.
+Same as reading 8 random bits from 8 random locations.
+Hence I don't think this revert is necessary.
+I don't believe you can craft an actual exploit.
 
-Hi,
+Your patch 3 says:
+       /* Speculative access to be prevented. */
++       char secret =3D *((char *) iph);
++
++       /* Leak the first bit of the secret value that lies behind data_end=
+ to a
++        * SMP silbling thread that also executes imul instructions. If the=
+ bit
++        * is 1, the silbling will experience a slowdown. */
++       long long x =3D secret;
++       if (secret & 1) {
++               x *=3D 97;
++       }
 
-On Tue, Aug 29, 2023 at 10:46:19AM -0700, Daisuke Nojiri wrote:
-> Hi Sebastian. Friendly ping. Any progress on this? Thanks,
-
-Please don't top-post on kernel mailing lists. Also I queued this On
-2023-05-08, as you quoted. The patch landed in 6.4-rc1.
-
--- Sebastian
-
-> On Mon, May 8, 2023 at 9:37=E2=80=AFAM Sebastian Reichel
-> <sebastian.reichel@collabora.com> wrote:
-> > On Mon, Apr 17, 2023 at 03:16:10PM -0700, Daisuke Nojiri wrote:
-> > > When a stylus is removed (or attached) during suspend, the device det=
-ach
-> > > (or attach) events can be lost. This patch makes the peripheral device
-> > > charge driver retrieve the latest status from the EC on resume.
-> > >
-> > > BUG=3Db:276414488
-> > > TEST=3DRedrix
-> > >
-> > > Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-> > > ---
-> >
-> > Thanks, queued.
-> >
-> > -- Sebastian
-> >
-> > >  .../power/supply/cros_peripheral_charger.c    | 25 ++++++++++++++++-=
---
-> > >  1 file changed, 22 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/power/supply/cros_peripheral_charger.c b/drivers=
-/power/supply/cros_peripheral_charger.c
-> > > index 1379afd9698d..a204f2355be4 100644
-> > > --- a/drivers/power/supply/cros_peripheral_charger.c
-> > > +++ b/drivers/power/supply/cros_peripheral_charger.c
-> > > @@ -227,8 +227,7 @@ static int cros_pchg_get_prop(struct power_supply=
- *psy,
-> > >       return 0;
-> > >  }
-> > >
-> > > -static int cros_pchg_event(const struct charger_data *charger,
-> > > -                        unsigned long host_event)
-> > > +static int cros_pchg_event(const struct charger_data *charger)
-> > >  {
-> > >       int i;
-> > >
-> > > @@ -256,7 +255,7 @@ static int cros_ec_notify(struct notifier_block *=
-nb,
-> > >       if (!(host_event & EC_MKBP_PCHG_DEVICE_EVENT))
-> > >               return NOTIFY_DONE;
-> > >
-> > > -     return cros_pchg_event(charger, host_event);
-> > > +     return cros_pchg_event(charger);
-> > >  }
-> > >
-> > >  static int cros_pchg_probe(struct platform_device *pdev)
-> > > @@ -281,6 +280,8 @@ static int cros_pchg_probe(struct platform_device=
- *pdev)
-> > >       charger->ec_dev =3D ec_dev;
-> > >       charger->ec_device =3D ec_device;
-> > >
-> > > +     platform_set_drvdata(pdev, charger);
-> > > +
-> > >       ret =3D cros_pchg_port_count(charger);
-> > >       if (ret <=3D 0) {
-> > >               /*
-> > > @@ -349,9 +350,27 @@ static int cros_pchg_probe(struct platform_devic=
-e *pdev)
-> > >       return 0;
-> > >  }
-> > >
-> > > +#ifdef CONFIG_PM_SLEEP
-> > > +static int __maybe_unused cros_pchg_resume(struct device *dev)
-> > > +{
-> > > +     struct charger_data *charger =3D dev_get_drvdata(dev);
-> > > +
-> > > +     /*
-> > > +      * Sync all ports on resume in case reports from EC are lost du=
-ring
-> > > +      * the last suspend.
-> > > +      */
-> > > +     cros_pchg_event(charger);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +#endif
-> > > +
-> > > +static SIMPLE_DEV_PM_OPS(cros_pchg_pm_ops, NULL, cros_pchg_resume);
-> > > +
-> > >  static struct platform_driver cros_pchg_driver =3D {
-> > >       .driver =3D {
-> > >               .name =3D DRV_NAME,
-> > > +             .pm =3D &cros_pchg_pm_ops,
-> > >       },
-> > >       .probe =3D cros_pchg_probe
-> > >  };
-> > > --
-> > > 2.39.2
-> > >
-
---tfqnw5fnudvt3nws
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUDMlwACgkQ2O7X88g7
-+pqybhAAg1Ti6H/qCCYpCtCO8eN6GmnNnFEo7RMBb+11YJwt5LGPRzLvIDCs3uIN
-IJrrt190+sazFe7OUqzCLdbrB+9PdOlQpUwh8TlfO7VaFSUPGHGcKQmgDBPXrDTk
-aN349WyqFSTyQ3/y7rEG5jxFEKIc6OqF6Mg3EX66xR7J6wfLkXpaN+6qB8XKEt/F
-Hrha2OpxH0OxWvc5biphj+ltQ3l/g0guSao1l3ZIQTjkJj+iv9QSoRrQrw6jQX8m
-U6rgU3Dxz0jOZhpS7XuN2AIwslYxz3iieZh21Z1+6Ib3ha+Y0NCjII96gNOQvH0Q
-V/LFED3Ow64+JnIQLprsmruddWcZAigC61TglIzFf9SEk5duZFoNQV764n6F4Nqk
-Kg0BENIZxaPq7IuWyCjXGvhflH2aYAVeMBJWojNVdJUf5SrjoWv5B8hrHVWo1TE8
-t7JDTnx0HO0Agml2l0N06SmzWOFoVUab3WYLsO6FxjBS/n0gzqSYhJfrn4uFBwKg
-9+s1g6uZrI96l5WuEZl93Va2b4q85b6h3kAhRsmsvot2n/H6ahCh8CB6TMjulGXN
-LPYruo/tZ5QvZtYBtM6VzkPsU2YYaiWbHfbuLNtcvHRSxL9esKYOnUNi8Jj+Yry7
-7wzmjacsyDGQstVh2IpmImVDZ1DLGcCJRqQw6Z3Jg682JokSyKQ=
-=x+sG
------END PGP SIGNATURE-----
-
---tfqnw5fnudvt3nws--
+the comment is correct, but speculative access alone is not enough
+to leak data.
