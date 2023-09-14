@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4097A0262
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6087A0263
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237454AbjINLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        id S237885AbjINLT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237644AbjINLTo (ORCPT
+        with ESMTP id S237787AbjINLTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:19:44 -0400
+        Thu, 14 Sep 2023 07:19:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07181FD3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:19:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E39E8C433C7;
-        Thu, 14 Sep 2023 11:19:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9713C1FE8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:19:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05CFBC433CB;
+        Thu, 14 Sep 2023 11:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694690379;
-        bh=O3CIa31gYoOF4a1uQIEH6AoTOjXHQf3zX/6sb/ewrxg=;
+        s=k20201202; t=1694690381;
+        bh=BAzmsoSj0BnX7MoU6zXX/2/yna/irLVGocmTBn20dLU=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=rFHctGm94GQQptUu4nkbO7IPXbQDLt8ya/Sd/f8crD5NSHTBHsz5SB04rtxEWGikl
-         wkOGGwIgCCJayBetITKzU7Opxd8jpLTCEB2n8GJN0cY4auaEKiLWLK1tfYUP24C2vW
-         UAbORmaP1y/3eqgGfvL9rHikI7Jw4fnKwbM//aozKcVyJUz1qJkB55OUciSbPwe8XH
-         6BLPKEJPmapi61bUHWxBJnNIJ8PragwRqUP5WT+o4JZv9dNCOrIaGY+Z6fv0VBP6DG
-         FwQEZa9ZwPdrU/F6EaFI5zgYj+vQTJKgJLVuPTpL16DK+DOl9xvywQRPoJqkiFyO5r
-         ZfcAYerC75JMw==
+        b=CO+q3UPZlmZLLf52885QGYBw+GfGnDj3i2p/OQmZzu3eZty6e9GYRLtwlYF/1iBvy
+         JqqHmvqKPUjITmfleG4EcUwE+DtLuNOQEcw/qKx4WQTB8+Nnh2n2Qier9+TtZgwEfe
+         QPjk14lFH9/4hrgmmOXQZ6mYO8oRvsAAFV4bbaJAW3ES8u31V3SM0Zh88DarVHYRg2
+         ht6//d0ZbYMVqTQvLJ2YE7CGO2+So9cGEIQzNVkmdXPm5WBZUt3GLcfAMPZhFi9A7F
+         QmM1Tk+/hbBOtl4cbRK8jd8C0L1pZq/2IFiJHZ1xWC2N0rQK39eYPzl7QVjCkC0dja
+         OtBbIe1FfxNAg==
 From:   Mark Brown <broonie@kernel.org>
-To:     pierre-louis.bossart@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, kai.vehmanen@linux.intel.com,
-        peter.ujfalusi@linux.intel.com,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230912163207.3498161-1-rf@opensource.cirrus.com>
-References: <20230912163207.3498161-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/4] ASoC: cs35l56: Use PCI SSID to select specific
- firmware
-Message-Id: <169469037763.23670.11361040315224579897.b4-ty@kernel.org>
-Date:   Thu, 14 Sep 2023 12:19:37 +0100
+To:     Uday M Bhat <uday.m.bhat@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+In-Reply-To: <20230913150012.604775-1-sbinding@opensource.cirrus.com>
+References: <20230913150012.604775-1-sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v1 0/3] ASoC: cs42l42: Fix handling of hard reset
+Message-Id: <169469037974.23670.12014281893865046396.b4-ty@kernel.org>
+Date:   Thu, 14 Sep 2023 12:19:39 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -48,13 +46,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023 17:32:03 +0100, Richard Fitzgerald wrote:
-> The PCI device registers contain a subsystem ID (SSID), that is
-> separate from the silicon ID. The PCI specification defines it thus:
+On Wed, 13 Sep 2023 16:00:09 +0100, Stefan Binding wrote:
+> These patches fix 3 problems with hard reset:
+> 1. Ensure a minimum reset pulse width
+> 2. Deal with ACPI overriding the requested default GPIO state
+> 3. Avoid a race condition when hard-resetting a SoundWire peripheral
+>    that is already enumerated
 > 
-> "They provide a mechanism for board vendors to distiguish their
->  boards from one another even thought the boards may have the same
->  PCI controller on them."
+> Richard Fitzgerald (3):
+>   ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
+>   ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
+>   ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
 > 
 > [...]
 
@@ -64,14 +66,12 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: soc-card: Add storage for PCI SSID
-      commit: 47f56e38a199bd45514b8e0142399cba4feeaf1a
-[2/4] ASoC: SOF: Pass PCI SSID to machine driver
-      commit: ba2de401d32625fe538d3f2c00ca73740dd2d516
-[3/4] ASoC: Intel: sof_sdw: Copy PCI SSID to struct snd_soc_card
-      commit: d8b387544ff4d02eda1d1839a0c601de4b037c33
-[4/4] ASoC: cs35l56: Use PCI SSID as the firmware UID
-      commit: 1a1c3d794ef65ef2978c5e65e1aed3fe6f014e90
+[1/3] ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
+      commit: 41dac81b56c82c51a6d00fda5f3af7691ffee2d7
+[2/3] ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
+      commit: a479b44ac0a0ac25cd48e5356200078924d78022
+[3/3] ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
+      commit: 2d066c6a78654c179f95c9beda1985d4c6befa4e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
