@@ -2,207 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB4079FAF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8374B79FAF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjINFnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        id S234703AbjINFoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 01:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjINFnj (ORCPT
+        with ESMTP id S234889AbjINFn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:43:39 -0400
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE42AC;
-        Wed, 13 Sep 2023 22:43:35 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso562608a12.3;
-        Wed, 13 Sep 2023 22:43:35 -0700 (PDT)
+        Thu, 14 Sep 2023 01:43:59 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC91CC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:43:55 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-404732a0700so784525e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694670233; x=1695275033; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Gboc+yTSlTpqo4O2hT0cAj0WNACoksBEekqcz7Hl4Y0=;
+        b=qj/foAC6JHM58o+shEjt5deuS1KouDYNa66h/L+Hp/4Rl+MkS77NG9jwg7M6byduLw
+         CetU5Jvm+5EshWFqJm+5ZtBsP1znN0aE5Ll6yGcoTAv2T5h4NY7lgeq7Sk7EFzCoKcsD
+         T74mCJGRCP2tKrS0u+OAhd0EhXRvYR09lrAQ5ZSEWLbwl6zcv/Cqqew9Iyk7j+t9EOGK
+         2Oahcp0itVZXqM4uqD11vJKj9Q+h+hU9SQFYXfDNMA7ka4mMnZIA5EZKr70c5+HD5bJl
+         UR/iDwPSpboJtLpLZoHMsTGVE9n3snQYZGfhUdtKDQqaNkEL5elX8RhE55n3MFpgR/fW
+         6niA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694670213; x=1695275013;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1694670233; x=1695275033;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OlZDiGz8e/osauYT4zKDfZbr/tlfGTh4cki0WmddMNs=;
-        b=qe1cl+VPfi5PBKpHTvaBMsKwZj0tLrnHGLTu6FHLoLoMfO+3pBlDF+Z0bSOP09K8Lt
-         stE/PfWRdEv0n8t2XJMWR6+XQw8iLGjCCOWNkgWOh5Lx4pCzq5UYEFjBuMS/HqCOdIt1
-         L9cKSuSfVRbWxkSotIKlpq/28C1Buepp86d5cDsZK60dHYZe7EelecS8QnWf6QF5XteE
-         i8BFtDQkdd3ycJSE6RmfgjE8YPmFTrDQ8NFQAEouhjM3lNeZZjeZhcsa/amW0bBt935g
-         pvw28T/pfYr/IOVTHCCRS0wuFSxtghxJP2LhQ91uX1f/uwZjM7yMuqa+dqoxbo1DtvkD
-         HYZg==
-X-Gm-Message-State: AOJu0YyFUlBxpfHzFyzBMm9vJSlLsr19GuLdpYwwdPteoGJlI0hyJjWP
-        utKGVikgFMrxZdFQbLO9lZcjrlsyQfQ=
-X-Google-Smtp-Source: AGHT+IEkjOcxno+IHNzOB3L7DtrgSRd5jy7s+LBqGQqb8gqM+yUB6Ll4FnjZMsG54diT+Fo2+WOJ0Q==
-X-Received: by 2002:a17:906:224a:b0:9a1:f871:8a5f with SMTP id 10-20020a170906224a00b009a1f8718a5fmr3474544ejr.32.1694670213373;
-        Wed, 13 Sep 2023 22:43:33 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id j26-20020a170906255a00b009adad3f9034sm478965ejb.21.2023.09.13.22.43.32
+        bh=Gboc+yTSlTpqo4O2hT0cAj0WNACoksBEekqcz7Hl4Y0=;
+        b=OV44L6YL8AzZe4APyHAGKhG3ax7bbO8ycQD9i/douXiWPVZdKEdxNTqM2bED1PpiJC
+         GH0GzbsDSyX2Qshl9rqeo7FXjepI+urv3le4Pt7vS8LoeDd7ukTrEIDThjcPoofI/58x
+         Ahl17OBxocwAeLlZXRLNP/m/zi0aNa7D/734FjqEpzM2C8Pb6uVzda1+q3ZRZODIB9k4
+         WWt+L5icV17epZXE1sRMEhABVvc1y/lVwKLxLtIY0sooESF0oWl8OdlEMzjuC+Dbumln
+         9ROcWURbSytzR0GDNoQfknwPfhr0skJPYkfJuViZhI+0g7YBFplQKARuP5qzxT7zGG1S
+         Bfgg==
+X-Gm-Message-State: AOJu0YwlpFoBJ3bAt7wpmX7jqHv42shkyQdgQztBemYiWdq3TxA3LS0V
+        WKgDspOAA3Nt+3wzM9bpPMsrMw==
+X-Google-Smtp-Source: AGHT+IHhTwruxbWAJnFseDhN3IBL74tiH5GdBHD333uhU9mBS+pwEm+niM0SFeeTRHH3WUdznGqUtQ==
+X-Received: by 2002:a5d:444c:0:b0:318:7bc:122e with SMTP id x12-20020a5d444c000000b0031807bc122emr3500282wrr.23.1694670233432;
+        Wed, 13 Sep 2023 22:43:53 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d4288000000b00317a29af4b2sm709967wrq.68.2023.09.13.22.43.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 22:43:32 -0700 (PDT)
-Message-ID: <4c9c637a-9117-4f43-a64f-892fa33958c1@kernel.org>
-Date:   Thu, 14 Sep 2023 07:43:31 +0200
+        Wed, 13 Sep 2023 22:43:52 -0700 (PDT)
+Message-ID: <c3ad0911-72eb-9054-a0b5-397ecdae3205@linaro.org>
+Date:   Thu, 14 Sep 2023 07:43:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] serial: core: Add support for DEVNAME:0.0 style
- naming for kernel console
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/4] dt-bindings: hwmon: Added new properties to the
+ devicetree
 Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20230912110350.14482-1-tony@atomide.com>
- <20230912110350.14482-3-tony@atomide.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20230912110350.14482-3-tony@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     "Matyas, Daniel" <Daniel.Matyas@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <20230913152135.457892-1-daniel.matyas@analog.com>
+ <20230913152135.457892-3-daniel.matyas@analog.com>
+ <177ef05b-0cca-be25-afad-ac518d9f6473@linaro.org>
+ <PH0PR03MB67716A8AA5139C407BB0712989F0A@PH0PR03MB6771.namprd03.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <PH0PR03MB67716A8AA5139C407BB0712989F0A@PH0PR03MB6771.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12. 09. 23, 13:03, Tony Lindgren wrote:
-> --- /dev/null
-> +++ b/drivers/tty/serial/serial_base_con.c
-...
-> +/* Adds a command line console to the list of consoles for driver probe time */
-> +static int __init serial_base_add_con(char *name, char *opt)
-> +{
-> +	struct serial_base_console *con;
-> +
-> +	con = kzalloc(sizeof(*con), GFP_KERNEL);
-> +	if (!con)
-> +		return -ENOMEM;
-> +
-> +	con->name = kstrdup(name, GFP_KERNEL);
-> +	if (!con->name)
-> +		goto free_con;
-> +
-> +	if (opt) {
-> +		con->opt = kstrdup(opt, GFP_KERNEL);
-> +		if (!con->name)
+On 13/09/2023 17:48, Matyas, Daniel wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Sent: Wednesday, September 13, 2023 6:41 PM
+>> To: Matyas, Daniel <Daniel.Matyas@analog.com>
+>> Cc: Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck-
+>> us.net>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+>> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+>> <conor+dt@kernel.org>; Jonathan Corbet <corbet@lwn.net>; linux-
+>> hwmon@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-doc@vger.kernel.org
+>> Subject: Re: [PATCH 2/4] dt-bindings: hwmon: Added new properties to
+>> the devicetree
+>>
+>> [External]
+>>
+>> On 13/09/2023 17:21, Daniel Matyas wrote:
+>>
+>> Subject: not much improved. I am sorry, but you are not adding new
+>> properties to entire devicetree of entire world. You are actually not
+>> adding anything to any devicetree, because these are bindings (which is
+>> obvious, as said by prefix).
+>>
+>> You got comments on this.
+>>
+>>> These attributes are:
+>>> 	- adi,comp-int - boolean property
+>>> 	- adi,alrm-pol - can be 0, 1 (if not present, default value)
+>>> 	- adi,flt-q - can be 1, 2, 4, 8 (if not present, default value)
+>>> 	- adi,timeout-enable - boolean property
+>>
+>> Don't repeat what the code does. Explain why you are adding it, what is
+>> the purpose.
+>>
+>>>
+>>> These modify the corresponding bits in the configuration register.
+>>>
+>>> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+>>> ---
+>>>  .../bindings/hwmon/adi,max31827.yaml          | 35
+>> +++++++++++++++++++
+>>>  1 file changed, 35 insertions(+)
+>>>
+>>> diff --git
+>> a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+>>> b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+>>> index 2dc8b07b4d3b..6bde71bdb8dd 100644
+>>> --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+>>> +++
+>> b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+>>> @@ -32,6 +32,37 @@ properties:
+>>>        Must have values in the interval (1.6V; 3.6V) in order for the device
+>> to
+>>>        function correctly.
+>>>
+>>> +  adi,comp-int:
+>>> +    description:
+>>> +      If present interrupt mode is used. If not present comparator mode
+>> is used
+>>> +      (default).
+>>
+>> Why this is a property of hardware?
+>>
+>>> +    type: boolean
+>>> +
+>>> +  adi,alrm-pol:
+>>> +    description:
+>>> +      Sets the alarms active state.
+>>> +            - 0 = active low
+>>> +            - 1 = active high
+>>> +      For max31827 and max31828 the default alarm polarity is low. For
+>> max31829
+>>> +      it is high.
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    enum: [0, 1]
+>>> +
+>>> +  adi,flt-q:
+>>> +    description:
+>>> +      Select how many consecutive temperature faults must occur
+>> before
+>>> +      overtemperature or undertemperature faults are indicated in the
+>>> +      corresponding status bits.
+>>> +      For max31827 default fault queue is 1. For max31828 and max31829
+>> it is 4.
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    enum: [1, 2, 4, 8]
+>>> +
+>>> +  adi,timeout-enable:
+>>> +    description:
+>>> +      Enables timeout. Bus timeout resets the I2C-compatible interface
+>> when SCL
+>>> +      is low for more than 30ms (nominal).
+>>
+>> Why this is a property of hardware?
 
-con->opt
+Code is okay, after Guenter's explanation. However please fix the
+subject and improve the commit msg.
 
-> +			goto free_name;
-> +	}
-> +
-> +	list_add_tail(&con->node, &serial_base_consoles);
-> +
-> +	return 0;
-> +
-> +free_name:
-> +	kfree(con->name);
-> +
-> +free_con:
-> +	kfree(con);
-> +
-> +	return -ENOMEM;
-> +}
-> +
-> +/* Parse console name and options */
-> +static int __init serial_base_parse_one(char *param, char *val,
-> +					const char *unused, void *arg)
-> +{
-> +	char *opt;
-> +
-> +	if (strcmp(param, "console"))
-> +		return 0;
-> +
-> +	if (!val)
-> +		return 0;
-> +
-> +	opt = strchr(val, ',');
-> +	if (opt) {
-> +		opt[0] = '\0';
-> +		opt++;
-> +	}
-
-Can this be done without mangling val, i.e. without kstrdup below?
-
-> +	if (!strlen(val))
-
-IOW, can this check be "val - opt > 0" or alike?
-
-> +		return 0;
-> +
-> +	return serial_base_add_con(val, opt);
-> +}
-> +
-> +/*
-> + * The "console=" option is handled by console_setup() in printk. We can't use
-> + * early_param() as do_early_param() checks for "console" and "earlycon" options
-> + * so console_setup() potentially handles console also early. Use parse_args().
-
-So why not concentrate console= handling on one place, ie. in 
-console_setup()? The below (second time console= handling) occurs quite 
-illogical to me.
-
-> + */
-> +static int __init serial_base_opts_init(void)
-> +{
-> +	char *command_line;
-> +
-> +	command_line = kstrdup(boot_command_line, GFP_KERNEL);
-> +	if (!command_line)
-> +		return -ENOMEM;
-> +
-> +	parse_args("Setting serial core console", command_line,
-> +		   NULL, 0, -1, -1, NULL, serial_base_parse_one);
-> +
-> +	kfree(command_line);
-> +
-> +	return 0;
-> +}
-
-thanks,
--- 
-js
-suse labs
+Best regards,
+Krzysztof
 
