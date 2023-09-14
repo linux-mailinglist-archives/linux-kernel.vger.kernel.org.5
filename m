@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6324979F672
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F7E79F678
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbjINBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        id S233610AbjINBl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbjINBlG (ORCPT
+        with ESMTP id S233345AbjINBl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:41:06 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1761BE7;
-        Wed, 13 Sep 2023 18:40:57 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38E1Jp9W013575;
-        Thu, 14 Sep 2023 01:40:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=ZExZKpHQC04IrjkW6/EZ6aFwHm7m6mhplNslB/QBZww=;
- b=TQIIkPeDVyRKsFZ7I0bdWF9vuviL+xnFzCU5n/Ov241SE0vo3w6I/GTuEzyGlcDoweUG
- mWlwQXDLI0gxCX04HcE2Ql8ek89krpDWkoC0nawofStGHXln3eO667YIyBdRRbcgnd4Q
- oeBDI80qlzFtHVRzoheymdi/mxWf9Um/+q2RSXhnvRpIPMyaJuWH6R3nFDbg0BxX+itT
- 5iQrRqXZtiqgMMI/L2uTJ5UdBjzXVCCTm3DE3SBa5nsssuVQCuIKxuHy0CID5Pl0ofnH
- 52R7TZdNhNbBB41mM0f1VoYL/24F9aEXde9k3EsPt4p0GUfuXCNJHSfWigVKcYoESs15 fw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y7kkkqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Sep 2023 01:40:48 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38E0a4I5007592;
-        Thu, 14 Sep 2023 01:40:47 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f581r2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Sep 2023 01:40:47 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38E1efpX038417;
-        Thu, 14 Sep 2023 01:40:47 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3t0f581qyy-6;
-        Thu, 14 Sep 2023 01:40:46 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Michal Grzedzicki <mge@meta.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        jinpu.wang@cloud.ionos.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Wang <jinpu.wang@ionos.com>
-Subject: Re: [PATCH v2 1/2] pm80xx: Use phy specific sas address when sending PHY_START command
-Date:   Wed, 13 Sep 2023 21:40:29 -0400
-Message-Id: <169465549436.730690.3321701168124397748.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230913155611.3183612-1-mge@meta.com>
-References: <CAMGffE=kWc1rsNfn6n8d1qkYw2U8sz+n5E-GEkWB7=835j=66g@mail.gmail.com> <20230913155611.3183612-1-mge@meta.com>
+        Wed, 13 Sep 2023 21:41:57 -0400
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0831D1BD0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:41:52 -0700 (PDT)
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay10.hostedemail.com (Postfix) with ESMTP id 700E5C0ED3;
+        Thu, 14 Sep 2023 01:41:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 5D9EB2E;
+        Thu, 14 Sep 2023 01:41:49 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 2/2] checkpatch: Add a couple new alloc functions to alloc with multiplies check
+Date:   Wed, 13 Sep 2023 18:41:47 -0700
+Message-ID: <edb667e19211652a32ef6069159bb85dbc3bcdff.1694636817.git.joe@perches.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1694636817.git.joe@perches.com>
+References: <cover.1694636817.git.joe@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_19,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 mlxscore=0 mlxlogscore=566 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140013
-X-Proofpoint-GUID: Dvn9UAPcXAbvL50PnTEt7pSr8ohPeW1b
-X-Proofpoint-ORIG-GUID: Dvn9UAPcXAbvL50PnTEt7pSr8ohPeW1b
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 5D9EB2E
+X-Stat-Signature: 64s9gkepqudbxw6q3mhphyrgas9f9n5t
+X-Spam-Status: No, score=-0.10
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18IvTadWSku2lXX3mRrqjmkVKInnXd5ObY=
+X-HE-Tag: 1694655709-754970
+X-HE-Meta: U2FsdGVkX19X7SO++FS+W2npsmESX/N4ji5Hvf5FkffJk2a+F5sr6Seerxk2h/QrGsEp/dT0+m/PmAb5NJWRwzXCXepqEA5EU/0lwQ5vGHwm0EaxssmdkOAgluSsGKt3aQs1K8103KB1GsrGqv5+aqf/EZG47D2bBSEMtWRgT7eI7VB4NrCXeIMphtKkjixY/R7gwn5iO3Y0FTVMqhdOGPzOKZV5FlkwX/9F11R6Hw/zxmxUhl59h/phR7UyejZOdj7G/8jGBkv+uH3xsZRSVQGEna3ZUDg8V9KSAtoq0HDq798lGjM9h2XU3yMu4QA/Gfka0VIjz4vl7pG7MGXOJJt+Pi9W9b69DSNyiVMnKFOGiNERcVp2l5oXOmvtOYOiddOKVo8WLEosNjeWfuuQYx1nP8Mb2WX5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 08:56:10 -0700, Michal Grzedzicki wrote:
+vmalloc() and vzalloc() functions have now 2-factor multiplication
+argument forms vmalloc_array() and vcalloc(), correspondingly.
 
-> Some cards have more than one sas addresses. Using incorrect
-> address causes communication issues with some devices like expanders.
-> 
-> 
+Add alloc-with-multiplies checks for these new functions.
 
-Applied to 6.6/scsi-fixes, thanks!
+Simplify the original codes repeated else to use a hash.
 
-[1/2] pm80xx: Use phy specific sas address when sending PHY_START command
-      https://git.kernel.org/mkp/scsi/c/71996bb835ae
-[2/2] pm80xx: Avoid leaking tags when processing OPC_INB_SET_CONTROLLER_CONFIG command
-      https://git.kernel.org/mkp/scsi/c/c13e73317458
+Link: https://github.com/KSPP/linux/issues/342
 
+Original-patch-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Co-developed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/lkml/ZQCaO+tYycDxVLy7@work/
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+
+v2: Fix search because vmalloc functions don't take a 3rd argument
+
+ scripts/checkpatch.pl | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 617f9e53bacdf..4cb248985eefc 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -834,6 +834,16 @@ our %deprecated_apis = (
+ #Create a search pattern for all these strings to speed up a loop below
+ our $deprecated_apis_search = '(?:' . join('|', keys %deprecated_apis) . ')';
+ 
++our %alloc_with_multiply_apis = (
++	"kmalloc"		=> "kmalloc_array",
++	"kvmalloc"		=> "kvmalloc_array",
++	"vmalloc"		=> "vmalloc_array",
++	"kvzalloc"		=> "kvcalloc",
++	"kzalloc"		=> "kcalloc",
++	"vzalloc"		=> "vcalloc",
++);
++our $alloc_with_multiply_search = '(?:' . join('|', keys %alloc_with_multiply_apis) . ')';
++
+ our $mode_perms_world_writable = qr{
+ 	S_IWUGO		|
+ 	S_IWOTH		|
+@@ -7187,17 +7197,14 @@ sub process {
+ 			    "Prefer $3(sizeof(*$1)...) over $3($4...)\n" . $herecurr);
+ 		}
+ 
+-# check for (kv|k)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/kvcalloc/kcalloc
++# check for various allocs with multiplies that should use safer functions
+ 		if ($perl_version_ok &&
+ 		    defined $stat &&
+-		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
++		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*($alloc_with_multiply_search)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/) {
+ 			my $oldfunc = $3;
++			my $newfunc = $alloc_with_multiply_apis{$oldfunc};
+ 			my $a1 = $4;
+ 			my $a2 = $10;
+-			my $newfunc = "kmalloc_array";
+-			$newfunc = "kvmalloc_array" if ($oldfunc eq "kvmalloc");
+-			$newfunc = "kvcalloc" if ($oldfunc eq "kvzalloc");
+-			$newfunc = "kcalloc" if ($oldfunc eq "kzalloc");
+ 			my $r1 = $a1;
+ 			my $r2 = $a2;
+ 			if ($a1 =~ /^sizeof\s*\S/) {
+@@ -7213,7 +7220,7 @@ sub process {
+ 					 "Prefer $newfunc over $oldfunc with multiply\n" . $herectx) &&
+ 				    $cnt == 1 &&
+ 				    $fix) {
+-					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
++					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*($oldfunc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
+ 				}
+ 			}
+ 		}
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.41.0
+
