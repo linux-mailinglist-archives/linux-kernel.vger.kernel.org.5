@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CBC79FF68
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47AC79FF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbjINJDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
+        id S236894AbjINJDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236668AbjINJCy (ORCPT
+        with ESMTP id S236753AbjINJDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:02:54 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E64C1BF1;
-        Thu, 14 Sep 2023 02:02:29 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2DCF12CF;
-        Thu, 14 Sep 2023 11:00:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694682055;
-        bh=ZSJzooOMl8o+UASvefvCSAyN9by/gcSLf34MmpDlkOA=;
+        Thu, 14 Sep 2023 05:03:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304AC1FCC;
+        Thu, 14 Sep 2023 02:03:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC4E9C433C7;
+        Thu, 14 Sep 2023 09:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694682190;
+        bh=N3L2pkXgh4YQ+q9kocn04dm6+vzax3CnSl5k5mqxMJc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sRgWdbuxCqCfmaEXP0Wbi/MjJfDdjiaIJ6JrR+j3Fdan+E3YvXDF+1+7tdS6bbRSh
-         jvuRtKEZsgVG8KQyyB36+OvBN5Vo0Xqs1SM6ao9T9HHSJ6xtlbVazYSW436gAE9A3E
-         qIboFCnK8987DMfYzOQo9kHaVjNXETJ4J1oxcj+I=
-Date:   Thu, 14 Sep 2023 12:02:41 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Cc:     Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarrah Gosbell <kernel@undef.tools>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH] media: ov5640: use pm_runtime_force_suspend/resume for
- system suspend
-Message-ID: <20230914090241.GA2504@pendragon.ideasonboard.com>
-References: <20230818173416.2467832-1-andrej.skvortzov@gmail.com>
- <ZQHU+LA+BEB7jzx1@valkosipuli.retiisi.eu>
- <ZQIgDb0usm768umH@skv.local>
- <pvbl7c34njy2bxeb3vjnvvoiaatrfc6jp53iidh2dfogor4h5x@geb7cigsran5>
+        b=F1JpLd35kG+k5w2HwrVTXcTYX+6Ji/1OxwtWdQonj2MmciwX9HejiNUqcgcdBlqVc
+         7g/ld06TBJyz1O+7tDuQFAIqIbU2cHcENfi5QvVFd8BkJdSEKG5CYBYh6OLSAA3h6b
+         woewGTeJ2wdl9ZKnPxb/3RIv9Z71x29qG+gVKhNJwgX6p0o+8PpMtQMh1YP/+5Ps4q
+         xdnxukjG1qxW4WxEm9wiuugAbODwIrOF9gnV908DeR7K4rdQhbr6R8M9o2p8uzotvF
+         EAHpim4dHU5Up9AAzkLMsMppquUALKM7aa/sLZGaUuBdNzJ7jQdL1+vK4jtDkQQIv8
+         4OtoWrDiP/OCw==
+Date:   Thu, 14 Sep 2023 11:03:05 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 1/3] add unique mount ID
+Message-ID: <20230914-himmel-imposant-546bd73250a8@brauner>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <20230913152238.905247-2-mszeredi@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <pvbl7c34njy2bxeb3vjnvvoiaatrfc6jp53iidh2dfogor4h5x@geb7cigsran5>
+In-Reply-To: <20230913152238.905247-2-mszeredi@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:54:40AM +0200, Jacopo Mondi wrote:
-> On Wed, Sep 13, 2023 at 11:48:13PM +0300, Andrey Skvortsov wrote:
-> > On 23-09-13 15:27, Sakari Ailus wrote:
-> > > On Fri, Aug 18, 2023 at 08:34:16PM +0300, Andrey Skvortsov wrote:
-> > > > If system was suspended while camera sensor was used, data and
-> > > > interrupts were still coming from sensor and that caused unstable
-> > > > system. Sometimes system hanged during a resume. Use
-> > > > pm_runtime_force_* helpers in order to support system suspend.
-> > > >
-> > > > Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> > >
-> > > Thanks for the patch.
-> > >
-> > > It's not been documented really how system suspend and resume should
-> > > work for complex cameras. But I don't think it can be done by drivers
-> > > separately as the CSI-2 bus initialisation requires actions from both
-> > > sender and receiver drivers, at particular points of time.
-> >
-> > Thanks for the review.
-> >
-> > I've tested this on PinePhone A64. It uses DVP, maybe because of that
-> > system suspend/resume worked good in my case.
-> > Originally I've implemented system suspend/resume similar to this [1]
-> > or [2] as I've seen this approach in other mainlined drivers. But some
-> > drivers reuse pm_runtime_force_* helpers, so I've went with this.
-> >
-> > Do you think it would be better to use something like [2] until there
-> > is better well defined way for system suspend/resume for complex cameras?
-> >
+On Wed, Sep 13, 2023 at 05:22:34PM +0200, Miklos Szeredi wrote:
+> If a mount is released then it's mnt_id can immediately be reused.  This is
+> bad news for user interfaces that want to uniquely identify a mount.
 > 
-> please don't :)
-> https://patchwork.linuxtv.org/project/linux-media/patch/20230913135638.26277-16-laurent.pinchart@ideasonboard.com/
+> Implementing a unique mount ID is trivial (use a 64bit counter).
+> Unfortunately userspace assumes 32bit size and would overflow after the
+> counter reaches 2^32.
 > 
-> However...
+> Introduce a new 64bit ID alongside the old one.  Allow new interfaces to
+> work on both the old and new IDs by starting the counter from 2^32.
 > 
-> > > So I think we'll need to initiate this from the driver handling DMA, just
-> > > as starting and stopping streaming. Even then, there needs to be a
-> > > certainty that the sensor device has resumed before streaming is started. I
-> > > recall Laurent suggested device links for that purpose, but I don't think
-> > > any work has been done to implement it that way.
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> ---
+>  fs/mount.h                | 3 ++-
+>  fs/namespace.c            | 4 ++++
+>  fs/stat.c                 | 9 +++++++--
+>  include/uapi/linux/stat.h | 1 +
+>  4 files changed, 14 insertions(+), 3 deletions(-)
 > 
-> .. as Sakari suggested, the driver handling the DMA should be in
-> charge of calling s_stream() on the sensor subdev in its
-> suspend/resume handlers. There's the risk the receiver resumes while
-> the sensor is still suspended, and at this time there's no solution in
-> mainline to handle this correctly.
-> 
-> Laurent/Sakari, how should this be handled for the time being ?
+> diff --git a/fs/mount.h b/fs/mount.h
+> index 130c07c2f8d2..a14f762b3f29 100644
+> --- a/fs/mount.h
+> +++ b/fs/mount.h
+> @@ -72,7 +72,8 @@ struct mount {
+>  	struct fsnotify_mark_connector __rcu *mnt_fsnotify_marks;
+>  	__u32 mnt_fsnotify_mask;
+>  #endif
+> -	int mnt_id;			/* mount identifier */
+> +	int mnt_id;			/* mount identifier, reused */
+> +	u64 mnt_id_unique;		/* mount ID unique until reboot */
+>  	int mnt_group_id;		/* peer group identifier */
+>  	int mnt_expiry_mark;		/* true if marked for expiry */
+>  	struct hlist_head mnt_pins;
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index e157efc54023..de47c5f66e17 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -68,6 +68,9 @@ static u64 event;
+>  static DEFINE_IDA(mnt_id_ida);
+>  static DEFINE_IDA(mnt_group_ida);
+>  
+> +/* Don't allow confusion with mount ID allocated wit IDA */
+> +static atomic64_t mnt_id_ctr = ATOMIC64_INIT(1ULL << 32);
 
-device_link() should handle this. See mxc_isi_async_notifier_bound() in
-drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c.
+Hm, is your concern that userspace confuses these two values? If so, I
+think we shouldn't worry about this.
 
-It would be nice if this could be done in the V4L2 core. I haven't
-checked if that's possible.
-
-> Laurent's patch for imx219 (and his forthcoming patch to remove the
-> same pattern from all sensor drivers in mainline) might be opening th
-> door for unexpected bugs as long as we don't enforce a resume/suspend
-> ordering ?
-
-I'd argue that the bugs are there already, at least for CSI-2 sensors
-the use a continuous clock. If you resume streaming on the sensor first,
-the clock lane will switch to HS mode before the receiver gets resumed,
-and the receiver won't be able to synchronize.
-
-System suspend/resume tends to be badly tested in camera sensor drivers,
-so lots of bugs creep in :-(
-
-> > 1. https://salsa.debian.org/Mobian-team/devices/kernels/sunxi64-linux/-/blob/mobian-6.1/debian/patches/camera/0076-media-gc2145-implement-system-suspend.patch
-> > 2. https://elixir.bootlin.com/linux/latest/source/drivers/media/i2c/imx219.c#L1159
-> 
-> Can we get a link to the receiver driver you're using in your kernel ?
-
--- 
-Regards,
-
-Laurent Pinchart
+If a userspace program retrieves a mntid and then confuses itself about
+what mnt id they're talking about something's very wrong anyway. So I'd
+rather not see us waste 32 bits just for that. Other than that this
+seems to implement what we agreed on at LSFMM so my hope is that this is
+fairly uncontroversial.
