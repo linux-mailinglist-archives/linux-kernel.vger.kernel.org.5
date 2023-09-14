@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94A379FDD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9666079FED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236181AbjINIG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
+        id S235914AbjINIrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236237AbjINIGQ (ORCPT
+        with ESMTP id S236308AbjINIGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:06:16 -0400
+        Thu, 14 Sep 2023 04:06:18 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D571FC4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:06:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CDD1BF9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:06:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694678772; x=1726214772;
+  t=1694678774; x=1726214774;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8ECxTmkTJrUKYowBzG4iCWRdaVRNBCun3uzgIB4rtu4=;
-  b=YifS1HLMRoQVG3WbP9+1aw33MJRHrj0OMKEGnP8uYSIDQD12eydijIzh
-   3LfkG9QG2tuChOX7lIf1Y4FbB5a1ZI19bjRSFmKoELD3rCdEEVA4Bd6cb
-   1QrHn5gLHc4BfvGMTY9wniNoKR3RBSxwIN3n6uP+oCCHid3a260LPgukh
-   ggbYbNJ+D/SkGxdAPkXxTuq863cqsF5cW57iWmS/vwZy8eaJ05wENSZUR
-   FQOEzQwzZ/BOW4QW/UTHJjknW0La0AIrzBq+a1FcAhYJZej9CUaSENU7h
-   Ol+2ClpYTOHYd98+JdQrQv+XetJncEocHczWPKGTBRqqiuCSzdsCwuRok
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="442917383"
+  bh=1p71K//XQ9zZQYmDOllPeza8+3H0XOHh0PahGZw2m84=;
+  b=ZSX7IcqGGOQ9cmy6onOrZsMf5+P4Db6/cuny9Mi1qzEHbCTzCYD6TmSr
+   tulC7N71SAEfO4rjoU0URWjUFxSGs6H6wewlj+POWlzJ7iBY91UGhaULG
+   x10lhofkLFCaXNhAX9QHMOjgAdDZ+8WduifzkiQhO3M/ezWnPZgR784cD
+   SUC+dI6EZnSoggyQt5EMLfMTH1mK6jUoYiEYoIF7FhwerclzPyu4331nF
+   sL9F2g+T+pbQtVpR3QB4uSKxOnoaps6ZNNb3bLwBy0ZIzULYHhz1joyLo
+   Knn6TIO0pRJcN8BDmLsezk2Ox/mujCimjQnw1VZiHSO68HcenmNx6CxGB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="442917396"
 X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="442917383"
+   d="scan'208";a="442917396"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 01:06:11 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 01:06:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="887691680"
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="887691688"
 X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="887691680"
+   d="scan'208";a="887691688"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 01:05:37 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 01:05:40 -0700
 From:   Alexander Usyskin <alexander.usyskin@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lucas De Marchi <lucas.demarchi@intel.com>,
@@ -48,9 +48,9 @@ Cc:     Tomas Winkler <tomas.winkler@intel.com>,
         Alexander Usyskin <alexander.usyskin@intel.com>,
         Vitaly Lubart <vitaly.lubart@intel.com>,
         intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/4] drm/xe/gsc: add gsc device support
-Date:   Thu, 14 Sep 2023 11:01:37 +0300
-Message-Id: <20230914080138.4178295-4-alexander.usyskin@intel.com>
+Subject: [PATCH v2 4/4] mei: gsc: add support for auxiliary device created by Xe driver
+Date:   Thu, 14 Sep 2023 11:01:38 +0300
+Message-Id: <20230914080138.4178295-5-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230914080138.4178295-1-alexander.usyskin@intel.com>
 References: <20230914080138.4178295-1-alexander.usyskin@intel.com>
@@ -62,389 +62,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vitaly Lubart <vitaly.lubart@intel.com>
 
-Create mei-gscfi auxiliary device and configure interrupts
-to be consumed by mei-gsc device driver.
+Add support for gsc mei auxiliary device created by Xe driver
 
 Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/gpu/drm/xe/Kconfig           |   1 +
- drivers/gpu/drm/xe/Makefile          |   1 +
- drivers/gpu/drm/xe/xe_device.c       |   4 +
- drivers/gpu/drm/xe/xe_device_types.h |   4 +
- drivers/gpu/drm/xe/xe_heci_gsc.c     | 205 +++++++++++++++++++++++++++
- drivers/gpu/drm/xe/xe_heci_gsc.h     |  35 +++++
- drivers/gpu/drm/xe/xe_irq.c          |  14 +-
- 7 files changed, 262 insertions(+), 2 deletions(-)
- create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.c
- create mode 100644 drivers/gpu/drm/xe/xe_heci_gsc.h
+ drivers/misc/mei/gsc-me.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/xe/Kconfig b/drivers/gpu/drm/xe/Kconfig
-index 096bd066afa8..da82084fe236 100644
---- a/drivers/gpu/drm/xe/Kconfig
-+++ b/drivers/gpu/drm/xe/Kconfig
-@@ -37,6 +37,7 @@ config DRM_XE
- 	select DRM_SCHED
- 	select MMU_NOTIFIER
- 	select WANT_DEV_COREDUMP
-+	select AUXILIARY_BUS
- 	help
- 	  Experimental driver for Intel Xe series GPUs
- 
-diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
-index 9d2311f8141f..fbdb28fa5ace 100644
---- a/drivers/gpu/drm/xe/Makefile
-+++ b/drivers/gpu/drm/xe/Makefile
-@@ -73,6 +73,7 @@ xe-y += xe_bb.o \
- 	xe_guc_log.o \
- 	xe_guc_pc.o \
- 	xe_guc_submit.o \
-+	xe_heci_gsc.o \
- 	xe_hw_engine.o \
- 	xe_hw_engine_class_sysfs.o \
- 	xe_hw_fence.o \
-diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
-index d6fc06d4c9dc..4d6e2f2b281f 100644
---- a/drivers/gpu/drm/xe/xe_device.c
-+++ b/drivers/gpu/drm/xe/xe_device.c
-@@ -323,6 +323,8 @@ int xe_device_probe(struct xe_device *xe)
- 			goto err_irq_shutdown;
+diff --git a/drivers/misc/mei/gsc-me.c b/drivers/misc/mei/gsc-me.c
+index e63cabd0818d..63525778a4e0 100644
+--- a/drivers/misc/mei/gsc-me.c
++++ b/drivers/misc/mei/gsc-me.c
+@@ -292,6 +292,10 @@ static const struct auxiliary_device_id mei_gsc_id_table[] = {
+ 		.name = "i915.mei-gscfi",
+ 		.driver_data = MEI_ME_GSCFI_CFG,
+ 	},
++	{
++		.name = "xe.mei-gscfi",
++		.driver_data = MEI_ME_GSCFI_CFG,
++	},
+ 	{
+ 		/* sentinel */
  	}
- 
-+	xe_heci_gsc_init(xe);
-+
- 	err = xe_display_init(xe);
- 	if (err)
- 		goto err_irq_shutdown;
-@@ -365,6 +367,8 @@ void xe_device_remove(struct xe_device *xe)
- 
- 	xe_display_fini(xe);
- 
-+	xe_heci_gsc_fini(xe);
-+
- 	xe_irq_shutdown(xe);
- }
- 
-diff --git a/drivers/gpu/drm/xe/xe_device_types.h b/drivers/gpu/drm/xe/xe_device_types.h
-index 1d1fe53fc30d..80233c2f0d81 100644
---- a/drivers/gpu/drm/xe/xe_device_types.h
-+++ b/drivers/gpu/drm/xe/xe_device_types.h
-@@ -13,6 +13,7 @@
- #include <drm/ttm/ttm_device.h>
- 
- #include "xe_devcoredump_types.h"
-+#include "xe_heci_gsc.h"
- #include "xe_gt_types.h"
- #include "xe_platform_types.h"
- #include "xe_step_types.h"
-@@ -364,6 +365,9 @@ struct xe_device {
- 	 */
- 	struct task_struct *pm_callback_task;
- 
-+	/** @gsc: graphics security controller */
-+	struct xe_heci_gsc heci_gsc;
-+
- 	/* private: */
- 
- #if IS_ENABLED(CONFIG_DRM_XE_DISPLAY)
-diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.c b/drivers/gpu/drm/xe/xe_heci_gsc.c
-new file mode 100644
-index 000000000000..1eca1c46f257
---- /dev/null
-+++ b/drivers/gpu/drm/xe/xe_heci_gsc.c
-@@ -0,0 +1,205 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright(c) 2023, Intel Corporation. All rights reserved.
-+ */
-+
-+#include <linux/irq.h>
-+#include <linux/mei_aux.h>
-+#include <linux/pci.h>
-+#include <linux/sizes.h>
-+
-+#include "regs/xe_regs.h"
-+#include "xe_device_types.h"
-+#include "xe_drv.h"
-+#include "xe_heci_gsc.h"
-+#include "xe_platform_types.h"
-+
-+#define GSC_BAR_LENGTH  0x00000FFC
-+
-+static void heci_gsc_irq_mask(struct irq_data *d)
-+{
-+	/* generic irq handling */
-+}
-+
-+static void heci_gsc_irq_unmask(struct irq_data *d)
-+{
-+	/* generic irq handling */
-+}
-+
-+static struct irq_chip heci_gsc_irq_chip = {
-+	.name = "gsc_irq_chip",
-+	.irq_mask = heci_gsc_irq_mask,
-+	.irq_unmask = heci_gsc_irq_unmask,
-+};
-+
-+static int heci_gsc_irq_init(int irq)
-+{
-+	irq_set_chip_and_handler_name(irq, &heci_gsc_irq_chip,
-+				      handle_simple_irq, "heci_gsc_irq_handler");
-+
-+	return irq_set_chip_data(irq, NULL);
-+}
-+
-+/**
-+ * struct heci_gsc_def - graphics security controller heci interface definitions
-+ *
-+ * @name: name of the heci device
-+ * @bar: address of the mmio bar
-+ * @bar_size: size of the mmio bar
-+ * @use_polling: indication of using polling mode for the device
-+ * @slow_firmware: indication of whether the device is slow (needs longer timeouts)
-+ */
-+struct heci_gsc_def {
-+	const char *name;
-+	unsigned long bar;
-+	size_t bar_size;
-+	bool use_polling;
-+	bool slow_firmware;
-+};
-+
-+/* gsc resources and definitions */
-+static const struct heci_gsc_def heci_gsc_def_dg1 = {
-+	.name = "mei-gscfi",
-+	.bar = DG1_GSC_HECI2_BASE,
-+	.bar_size = GSC_BAR_LENGTH,
-+};
-+
-+static const struct heci_gsc_def heci_gsc_def_dg2 = {
-+	.name = "mei-gscfi",
-+	.bar = DG2_GSC_HECI2_BASE,
-+	.bar_size = GSC_BAR_LENGTH,
-+};
-+
-+static void heci_gsc_release_dev(struct device *dev)
-+{
-+	struct auxiliary_device *aux_dev = to_auxiliary_dev(dev);
-+	struct mei_aux_device *adev = auxiliary_dev_to_mei_aux_dev(aux_dev);
-+
-+	kfree(adev);
-+}
-+
-+void xe_heci_gsc_fini(struct xe_device *xe)
-+{
-+	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
-+
-+	if (!HAS_HECI_GSCFI(xe))
-+		return;
-+
-+	if (heci_gsc->adev) {
-+		struct auxiliary_device *aux_dev = &heci_gsc->adev->aux_dev;
-+
-+		auxiliary_device_delete(aux_dev);
-+		auxiliary_device_uninit(aux_dev);
-+		heci_gsc->adev = NULL;
-+	}
-+
-+	if (heci_gsc->irq >= 0)
-+		irq_free_desc(heci_gsc->irq);
-+	heci_gsc->irq = -1;
-+}
-+
-+void xe_heci_gsc_init(struct xe_device *xe)
-+{
-+	struct xe_heci_gsc *heci_gsc = &xe->heci_gsc;
-+	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
-+	struct mei_aux_device *adev;
-+	struct auxiliary_device *aux_dev;
-+	const struct heci_gsc_def *def;
-+	int ret;
-+
-+	if (!HAS_HECI_GSCFI(xe))
-+		return;
-+
-+	heci_gsc->irq = -1;
-+
-+	if (xe->info.platform == XE_DG1) {
-+		def = &heci_gsc_def_dg1;
-+	} else if (xe->info.platform == XE_DG2) {
-+		def = &heci_gsc_def_dg2;
-+	} else {
-+		drm_warn_once(&xe->drm, "Unknown platform\n");
-+		return;
-+	}
-+
-+	if (!def->name) {
-+		drm_warn_once(&xe->drm, "HECI is not implemented!\n");
-+		return;
-+	}
-+
-+	/* skip irq initialization */
-+	if (def->use_polling)
-+		goto add_device;
-+
-+	heci_gsc->irq = irq_alloc_desc(0);
-+	if (heci_gsc->irq < 0) {
-+		drm_err(&xe->drm, "gsc irq error %d\n", heci_gsc->irq);
-+		goto fail;
-+	}
-+
-+	ret = heci_gsc_irq_init(heci_gsc->irq);
-+	if (ret < 0) {
-+		drm_err(&xe->drm, "gsc irq init failed %d\n", ret);
-+		goto fail;
-+	}
-+
-+add_device:
-+	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
-+	if (!adev)
-+		goto fail;
-+	adev->irq = heci_gsc->irq;
-+	adev->bar.parent = &pdev->resource[0];
-+	adev->bar.start = def->bar + pdev->resource[0].start;
-+	adev->bar.end = adev->bar.start + def->bar_size - 1;
-+	adev->bar.flags = IORESOURCE_MEM;
-+	adev->bar.desc = IORES_DESC_NONE;
-+	adev->slow_firmware = def->slow_firmware;
-+
-+	aux_dev = &adev->aux_dev;
-+	aux_dev->name = def->name;
-+	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
-+		      PCI_DEVID(pdev->bus->number, pdev->devfn);
-+	aux_dev->dev.parent = &pdev->dev;
-+	aux_dev->dev.release = heci_gsc_release_dev;
-+
-+	ret = auxiliary_device_init(aux_dev);
-+	if (ret < 0) {
-+		drm_err(&xe->drm, "gsc aux init failed %d\n", ret);
-+		kfree(adev);
-+		goto fail;
-+	}
-+
-+	heci_gsc->adev = adev; /* needed by the notifier */
-+	ret = auxiliary_device_add(aux_dev);
-+	if (ret < 0) {
-+		drm_err(&xe->drm, "gsc aux add failed %d\n", ret);
-+		heci_gsc->adev = NULL;
-+
-+		/* adev will be freed with the put_device() and .release sequence */
-+		auxiliary_device_uninit(aux_dev);
-+		goto fail;
-+	}
-+
-+	return;
-+fail:
-+	xe_heci_gsc_fini(xe);
-+}
-+
-+void xe_heci_gsc_irq_handler(struct xe_device *xe, u32 iir)
-+{
-+	int ret;
-+
-+	if ((iir & GSC_IRQ_INTF(1)) == 0)
-+		return;
-+
-+	if (!HAS_HECI_GSCFI(xe)) {
-+		drm_warn_once(&xe->drm, "GSC irq: not supported");
-+		return;
-+	}
-+
-+	if (xe->heci_gsc.irq < 0)
-+		return;
-+
-+	ret = generic_handle_irq(xe->heci_gsc.irq);
-+	if (ret)
-+		drm_err_ratelimited(&xe->drm, "error handling GSC irq: %d\n", ret);
-+}
-diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.h b/drivers/gpu/drm/xe/xe_heci_gsc.h
-new file mode 100644
-index 000000000000..9db454478fae
---- /dev/null
-+++ b/drivers/gpu/drm/xe/xe_heci_gsc.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * Copyright(c) 2023, Intel Corporation. All rights reserved.
-+ */
-+#ifndef __XE_HECI_GSC_DEV_H__
-+#define __XE_HECI_GSC_DEV_H__
-+
-+#include <linux/types.h>
-+
-+struct xe_device;
-+struct mei_aux_device;
-+
-+/*
-+ * The HECI1 bit corresponds to bit15 and HECI2 to bit14.
-+ * The reason for this is to allow growth for more interfaces in the future.
-+ */
-+#define GSC_IRQ_INTF(_x)  BIT(15 - (_x))
-+
-+/**
-+ * struct xe_heci_gsc - graphics security controller for xe, HECI interface
-+ *
-+ * @adev : pointer to mei auxiliary device structure
-+ * @irq : irq number
-+ *
-+ */
-+struct xe_heci_gsc {
-+	struct mei_aux_device *adev;
-+	int irq;
-+};
-+
-+void xe_heci_gsc_init(struct xe_device *xe);
-+void xe_heci_gsc_fini(struct xe_device *xe);
-+void xe_heci_gsc_irq_handler(struct xe_device *xe, u32 iir);
-+
-+#endif /* __XE_HECI_GSC_DEV_H__ */
-diff --git a/drivers/gpu/drm/xe/xe_irq.c b/drivers/gpu/drm/xe/xe_irq.c
-index 1dee3e832eb5..d297e9b8a3be 100644
---- a/drivers/gpu/drm/xe/xe_irq.c
-+++ b/drivers/gpu/drm/xe/xe_irq.c
-@@ -128,6 +128,7 @@ void xe_irq_enable_hwe(struct xe_gt *gt)
- 	struct xe_device *xe = gt_to_xe(gt);
- 	u32 ccs_mask, bcs_mask;
- 	u32 irqs, dmask, smask;
-+	u32 gsc_mask = GSC_IRQ_INTF(1);
- 
- 	if (xe_device_guc_submission_enabled(xe)) {
- 		irqs = GT_RENDER_USER_INTERRUPT |
-@@ -180,6 +181,9 @@ void xe_irq_enable_hwe(struct xe_gt *gt)
- 		if (xe_hw_engine_mask_per_class(gt, XE_ENGINE_CLASS_OTHER)) {
- 			xe_mmio_write32(gt, GUNIT_GSC_INTR_ENABLE, irqs);
- 			xe_mmio_write32(gt, GUNIT_GSC_INTR_MASK, ~irqs);
-+		} else if (HAS_HECI_GSCFI(xe)) {
-+			xe_mmio_write32(gt, GUNIT_GSC_INTR_ENABLE, gsc_mask);
-+			xe_mmio_write32(gt, GUNIT_GSC_INTR_MASK, ~gsc_mask);
- 		}
- 	}
- }
-@@ -284,6 +288,11 @@ static void gt_irq_handler(struct xe_tile *tile,
- 			instance = INTR_ENGINE_INSTANCE(identity[bit]);
- 			intr_vec = INTR_ENGINE_INTR(identity[bit]);
- 
-+			if (class == XE_ENGINE_CLASS_OTHER && instance == OTHER_GSC_INSTANCE) {
-+				xe_heci_gsc_irq_handler(xe, intr_vec);
-+				continue;
-+			}
-+
- 			engine_gt = pick_engine_gt(tile, class, instance);
- 
- 			hwe = xe_gt_hw_engine(engine_gt, class, instance, false);
-@@ -470,8 +479,9 @@ static void gt_irq_reset(struct xe_tile *tile)
- 	if (ccs_mask & (BIT(2)|BIT(3)))
- 		xe_mmio_write32(mmio,  CCS2_CCS3_INTR_MASK, ~0);
- 
--	if (tile->media_gt &&
--	    xe_hw_engine_mask_per_class(tile->media_gt, XE_ENGINE_CLASS_OTHER)) {
-+	if ((tile->media_gt &&
-+	     xe_hw_engine_mask_per_class(tile->media_gt, XE_ENGINE_CLASS_OTHER)) ||
-+	    HAS_HECI_GSCFI(tile_to_xe(tile))) {
- 		xe_mmio_write32(mmio, GUNIT_GSC_INTR_ENABLE, 0);
- 		xe_mmio_write32(mmio, GUNIT_GSC_INTR_MASK, ~0);
- 	}
+@@ -312,4 +316,5 @@ module_auxiliary_driver(mei_gsc_driver);
+ MODULE_AUTHOR("Intel Corporation");
+ MODULE_ALIAS("auxiliary:i915.mei-gsc");
+ MODULE_ALIAS("auxiliary:i915.mei-gscfi");
++MODULE_ALIAS("auxiliary:xe.mei-gscfi");
+ MODULE_LICENSE("GPL");
 -- 
 2.34.1
 
