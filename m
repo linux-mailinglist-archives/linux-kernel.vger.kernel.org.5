@@ -2,175 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D23E7A0E7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3D77A0E83
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjINTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S233208AbjINTuY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 15:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjINTru (ORCPT
+        with ESMTP id S229462AbjINTuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:47:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E0E2698
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694720866; x=1726256866;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=z1LX5xFPniNvFQN6V3+Eg86A6ZjtT4fiKPoExJjcwss=;
-  b=WCAtvrY8xYmoFh6lb7o5lqL1E6CnRzExY/SKdA3CU/4ZdLpb87pGIMXE
-   gRi+aztMk75XnUYhjDYExxDZLOhdu5V+yhDvTn8DClC41Dq7T4sGEjrDq
-   D/ikqvketc6/HQLlhQCZV1m4JRnEdSeAWApGmygcSXI1mQfoA65q4wQgn
-   oHcjkKTMzQxzwwK5fgaxq4PBfVsQhQj+A2/QcjBiMEGFZdJ7+ceIOSU6e
-   K8lcYfj6bZPM4/GAHdKwRFhmXqt8xey5mkTa8D5fknG+3RF5U8XHr04NG
-   pZB2pss1cBcZKGsl5eYIz64m/rif8nFB7+m3e0ZAQNhbAQrK3280kfuyh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="443103788"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="443103788"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 12:47:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="868380659"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="868380659"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 12:47:43 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 14 Sep 2023 12:47:42 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 14 Sep 2023 12:47:42 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 12:47:42 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 14 Sep 2023 12:47:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f54huq1Arse9uw8MjKoJ3D4mGfMHMQvDRC2EEB62nXhfx3YW8cuScZBc3gYWhRv/FLgBucrIEMdxC3x9+USZAWm85AfBRSIPurey7d1Q8smS9j0DElRMTEh3xg3Piwg8RHMGaohkWgbJ1tF1k3wHSWRa8l66CRmRw8N19OrHxt3x2a5/mytkmg0Fet/Vyaq1J7fUebJbVPQW6AuvOzNubYM2vpBZdUdQ+E1J1lT2WIfrdKzRPLJFkTsVm9/2D9xxJR4v3pDv7jdi75//A3wcDOpTU4D6TnVAdCfybDrT60RBVftY9QCjcKVO6SBsm3jzC/4VlDm5a7cc46dXJ7zhYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SeTf+i1dMQuJ00UwQANXPJcLOE6cibKDsFxihxfyJL8=;
- b=b90vjT8oZ9t3Tl6vZo2qfZOnypfmxyrFzYcw2Gaa4iWhzGBJO3D+5ZtyJoK1kVSUK4meSCtr1+ZSlhekOsMwr+hBkqXtIxxz+12uL6T56LniwAJo178DLlN3a3RLomFgYGJPCcA1X3Sxh4jbZEJPPfSmpMmZGD0zWClcWrQx6zqz8Wo6Tr0YM8L2EW47J4AI5RW+7DOo69yynN6Yg01dTn8rW58ZmEwKyYLt49zv8D6Lm+hnHWmgWuPyUmCn7tOQuPrnj0Arx8CV68Y1U6LobEPjDM8AINAmxwNJk4X/T8b7s7oZp5GVd+ilkC5EBjYFzW9OPXul21N5TRs4uxevVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by PH0PR11MB4984.namprd11.prod.outlook.com (2603:10b6:510:34::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Thu, 14 Sep
- 2023 19:47:40 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
- 19:47:40 +0000
-Date:   Thu, 14 Sep 2023 12:47:26 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Jiang <dave.jiang@intel.com>, Chen Ni <nichen@iscas.ac.cn>,
-        <oohall@gmail.com>, <dan.j.williams@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <aneesh.kumar@linux.ibm.com>
-CC:     <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] libnvdimm/of_pmem: Use devm_kstrdup instead of
- kstrdup and check its return value
-Message-ID: <6503634e78f61_35db1029469@iweiny-mobl.notmuch>
-References: <20230914070328.2121-1-nichen@iscas.ac.cn>
- <8ff1ddf4-a3b7-2fed-5dfd-041aaaf981d2@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8ff1ddf4-a3b7-2fed-5dfd-041aaaf981d2@intel.com>
-X-ClientProxiedBy: BYAPR07CA0081.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::22) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Thu, 14 Sep 2023 15:50:22 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545AD26AB;
+        Thu, 14 Sep 2023 12:50:18 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:38982)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qgsLn-00GZhg-4r; Thu, 14 Sep 2023 13:50:07 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:33022 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qgsLl-003z6W-RZ; Thu, 14 Sep 2023 13:50:06 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Sebastian Ott <sebott@redhat.com>,
+        stable@vger.kernel.org
+References: <20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net>
+Date:   Thu, 14 Sep 2023 14:49:44 -0500
+In-Reply-To: <20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net> ("Thomas
+        =?utf-8?Q?Wei=C3=9Fschuh=22's?= message of "Thu, 14 Sep 2023 17:59:21
+ +0200")
+Message-ID: <87fs3gwn53.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH0PR11MB4984:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b6d67eb-b556-4a5a-9a15-08dbb55b736b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H4C9LHoQKwxGFtgLPls12rYi/YD/xf53hpEwgdL0tBHWvZnJrDmklXdzmlRi5pGL0dftf022dDKkxfD37jn4+E8I39NQFJhxECPcFu0rGRx/mVJ+li5ragG+qpipcTYZtvukYmgJLyVTCjmlL1h1ZVeOscVEKZWCXTN+dNftNeiy9RPp+ghRSSqXCjfG/J+S0va53EzOHe+CO9OCDhh64I2SxGzQeqGKwRcqx+yFCg6Rbi1UfDp3LwVaOXuy9MEqdztVR0BrNLPp2OtVZJuGpSSlD/cvyZaMJA1fuh1px81WLN/lJuLcy/HqCtMAhe9cHq2MRCOcEAGTqKN6Oog1zB78d2JGYifxTLH9fMBYfCw42wVTGXxC1H6I08MYAp3F0gvmTgHdUtVQV+8wkfgkwUEWPCPM4QYeaIaa42NXTGMw6CE0tVBQeGisdxRp0ypQC2glciicYpvupzoZlayeX4vpK8tMPrGcVsqIb3plOrUwmgQvfFa80nGK8xpYmD4sLiQx9smjvGlPBXXQGz/jY8rYGZDxpZpmi+aOCuiXXSm4N4voiiwFhdc7zjusVfee
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(396003)(366004)(186009)(451199024)(1800799009)(4326008)(44832011)(4744005)(6506007)(6486002)(6666004)(82960400001)(8676002)(8936002)(86362001)(5660300002)(2906002)(26005)(66946007)(66556008)(66476007)(110136005)(6512007)(9686003)(478600001)(53546011)(38100700002)(316002)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MizPwh5UiTx+nf9+IcRaBR/iE8usetcp7BGAJozo0N7NMdFxmI94TnGEp0M+?=
- =?us-ascii?Q?lxdQ/A2vWWLDydhUqK3Hc3FtOfAokPCLYGNl/BCfYHwwmzpCgHtCO8lfcwfF?=
- =?us-ascii?Q?Dl3G9CSBkmTOn+/tmFRy5mun744JefqCn2EJitio2CmL5W9kQQToBhz1WfRb?=
- =?us-ascii?Q?1+KMYbGAieL9YDYnO2ktCbOK7XarzDd1yQw5EbSrPLrVCc71ivjcRK8OujuO?=
- =?us-ascii?Q?2ZeYcFifqHa+8vk5eMUa+3HdahhAaZbxd2LQN7BHr6CQ1iKwJJr6f6wIQPz/?=
- =?us-ascii?Q?rE5y2fuJNYEgmw1UEmoPMoCFrHMVme8EbkRDJiiINN0KU9BduyZmWMup75Tx?=
- =?us-ascii?Q?9wk380K+3++zzTDLwARxsGBkZZAfdNR8PtBZAo8esWtg6QNDRA7zeuEG2c2H?=
- =?us-ascii?Q?8NTxNdknc7avl/oBt3ny8ZMFu1bC11kXJjWu4xr+VoX8/VZg/VS0oAZA32yc?=
- =?us-ascii?Q?ldXBGOO4PrmaoRdaC4k0/0SBZvmAA/F2ovoYrLjyVmy8gzoB6x6Oqj9/meoB?=
- =?us-ascii?Q?XF2ga5JaBHz7Tll3wjRHZxD5eJysjQ1O/f2X7q+mVYnHf/kK80lAVhbZtsbZ?=
- =?us-ascii?Q?k9R9Avw7kWnrryLn/oi4b8acsoDsihvk55bJtNVNgAPFiuE+2bWXgZ9BpLwB?=
- =?us-ascii?Q?KyW8K9021tIOp2oyWLaHjb01AoiTuX8v4E6HFytQkXyun4xFLtQm31rtZRWm?=
- =?us-ascii?Q?ASKoYUyTOhObNHG3NBYjpi3jY+H8AnpFFOd/v9srQJS6JNgL5rS3l7tpa9n4?=
- =?us-ascii?Q?9twF4qwq3QMaAz8pmsfgGpEpt4lScxnZ6JUc9PPzMbziA4+jhodgczfOI+G4?=
- =?us-ascii?Q?fikOTMuLmXTr+NoXMP41Mh8k8IZx3UTcl5BZDXfLl3UOsKzfRObmdYbGNe40?=
- =?us-ascii?Q?uVgkGN4S4fD0RLGyYWjlMrvAxW9J4OuVVq2TdhMbNjY4MMNhjryalYkYzTXg?=
- =?us-ascii?Q?J+d9wAIBWgM5BnNA2xsvPDdRRrUHwBdnJAPcO/CCuaqH7hfR+Rg4rZrheS1i?=
- =?us-ascii?Q?/uOAafboDHnsHclTb+6u6EHCpER27BUZNpF8+AyJFBLHE92E+WqzxXri26wd?=
- =?us-ascii?Q?lzjwhK/7nDsA+tP19fSb772bcL0BdoJUObnv2J9/EOvi4BfSOPjHAMzwOXwV?=
- =?us-ascii?Q?hugq21KHO1oms2Xw2xDJzTsx6n07hzPqQclywLNuRJVNwFsRsSCrgjrq/UMA?=
- =?us-ascii?Q?/myCcLobt0XGwPbeb4LsH1sk+jocxf7FCN1Eznlg7s0hIu3nS1EZ6KS4Pb0n?=
- =?us-ascii?Q?Im0IadZptubxKnrX8BMjJQdBxsIwTGtR48uXV4pdfm53yp46CrfCqiS8IWO5?=
- =?us-ascii?Q?6rP10sWqyWR9pLc5MaMvYHWjzQnVCeELSmvXpIs5AzHmAtMvg7eoYCqfx4O0?=
- =?us-ascii?Q?+woxutZTWMjdM9ENkTJMUtTcqC9F/rdGvlOCwJKbEsm8qlgyzfrXU9ygINXH?=
- =?us-ascii?Q?vaK24jav5ZkowDdoqfAX0DWR2e81MR0dg7DK2gosPE+32uxiY8nIYdsxgDxp?=
- =?us-ascii?Q?AYfHmb7mIFIzIHajXi/20o1XUN8vUKjaOJIigd1zS7cX0YOBtmO7Snbkck/N?=
- =?us-ascii?Q?vwP0UQfdZakfj2JyqRA9gMC/KFcWg5AiqDYRuOOC?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6d67eb-b556-4a5a-9a15-08dbb55b736b
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 19:47:40.0708
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +b4e/FeND0KG5tUPIev54zH2swZqfNzFNiUgPCa9lRXsY9xzMChMQD5BecWPDiBfREIrVLIt3ArZfRZRVHtjxQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4984
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1qgsLl-003z6W-RZ;;;mid=<87fs3gwn53.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18h1j36igoeR9FeBDXb/u1JtAQea+Mzym8=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XM_B_Unicode,
+        XM_Multi_Part_URI shortcircuit=no autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        *  1.2 XM_Multi_Part_URI URI: Long-Multi-Part URIs
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: =?ISO-8859-1?Q?**;Thomas Wei=c3=9fschuh <linux@weissschuh.net>?=
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 542 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 10 (1.9%), b_tie_ro: 9 (1.6%), parse: 1.00 (0.2%),
+         extract_message_metadata: 17 (3.1%), get_uri_detail_list: 2.7 (0.5%),
+        tests_pri_-2000: 10 (1.8%), tests_pri_-1000: 2.4 (0.5%),
+        tests_pri_-950: 1.17 (0.2%), tests_pri_-900: 1.00 (0.2%),
+        tests_pri_-200: 0.78 (0.1%), tests_pri_-100: 14 (2.7%), tests_pri_-90:
+        66 (12.3%), check_bayes: 65 (11.9%), b_tokenize: 10 (1.9%),
+        b_tok_get_all: 12 (2.2%), b_comp_prob: 4.0 (0.7%), b_tok_touch_all: 35
+        (6.4%), b_finish: 0.94 (0.2%), tests_pri_0: 362 (66.7%),
+        check_dkim_signature: 0.56 (0.1%), check_dkim_adsp: 1.89 (0.3%),
+        poll_dns_idle: 42 (7.8%), tests_pri_10: 1.98 (0.4%), tests_pri_500: 52
+        (9.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH RFC] binfmt_elf: fully allocate bss pages
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Jiang wrote:
-> 
-> 
-> On 9/14/23 00:03, Chen Ni wrote:
+Thomas Weißschuh <linux@weissschuh.net> writes:
 
-[snip]
+> When allocating the pages for bss the start address needs to be rounded
+> down instead of up.
+> Otherwise the start of the bss segment may be unmapped.
+>
+> The was reported to happen on Aarch64:
 
-> > diff --git a/drivers/nvdimm/of_pmem.c b/drivers/nvdimm/of_pmem.c
-> > index 1b9f5b8a6167..5765674b36f2 100644
-> > --- a/drivers/nvdimm/of_pmem.c
-> > +++ b/drivers/nvdimm/of_pmem.c
-> > @@ -30,7 +30,13 @@ static int of_pmem_region_probe(struct platform_device *pdev)
-> >  	if (!priv)
-> >  		return -ENOMEM;
-> >  
-> > -	priv->bus_desc.provider_name = kstrdup(pdev->name, GFP_KERNEL);
-> > +	priv->bus_desc.provider_name = devm_kstrdup(&pdev->dev, pdev->name,
-> > +							GFP_KERNEL);
-> > +	if (!priv->bus_desc.provider_name) {
-> > +		kfree(priv);
-> 
-> I wonder if priv should be allocated with devm_kzalloc() instead to reduce the resource management burden. 
+Those program headers you quote look corrupt.
 
-I think it could be but this is the driver and I wonder if leaving the
-allocation around until the platform device goes away was undesirable for
-some reason?
+The address 0x41ffe8 is not 0x10000 aligned.
 
-Ira
+I don't think anything in the elf specification allows that.
+
+The most common way to have bss is for a elf segment to have a larger
+memsize than filesize.  In which case rounding up is the correct way to
+handle things.
+
+We definitely need to verify the appended bss case works, before
+taking this patch, or we will get random application failures
+because parts of the data segment are being zeroed, or the binaries
+won't load because the bss won't be able to map over the initialized data.
+
+
+The note segment living at a conflicting virtual address also looks
+suspicious.   It is probably harmless, as note segments are not
+loaded.
+
+
+Are you by any chance using an experimental linker?
+
+
+In general every segment in an elf executable needs to be aligned to the
+SYSVABI's architecture page size.  I think that is 64k on ARM.  Which it
+looks like the linker tried to implement by setting the alignment to
+0x10000, and then ignored by putting a byte offset beginning to the
+page.
+
+At a minimum someone needs to sort through what the elf specification
+says needs to happen is a weird case like this where the start address
+of a load segment does not match the alignment of the segment.
+
+To see how common this is I looked at a binary known to be working, and
+my /usr/bin/ls binary has one segment that has one of these unaligned
+starts as well.
+
+So it must be defined to work somewhere but I need to see the definition
+to even have a good opinion on the nonsense of saying an unaligned value
+should be aligned.
+
+
+All I know is that we need to limit our support to what memory mapping
+pieces from the elf executable can support.  Which at a minimum requires:
+	virt_addr % ELF_MIN_ALIGN == file_offset % ELF_MIN_ALIGN
+
+
+
+Eric
+
+
+
+
+
+
+
+
+
+
+> Memory allocated by set_brk():
+> Before: start=0x420000 end=0x420000
+> After:  start=0x41f000 end=0x420000
+>
+> The triggering binary looks like this:
+>
+>     Elf file type is EXEC (Executable file)
+>     Entry point 0x400144
+>     There are 4 program headers, starting at offset 64
+>
+>     Program Headers:
+>       Type           Offset             VirtAddr           PhysAddr
+>                      FileSiz            MemSiz              Flags  Align
+>       LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
+>                      0x0000000000000178 0x0000000000000178  R E    0x10000
+>       LOAD           0x000000000000ffe8 0x000000000041ffe8 0x000000000041ffe8
+>                      0x0000000000000000 0x0000000000000008  RW     0x10000
+>       NOTE           0x0000000000000120 0x0000000000400120 0x0000000000400120
+>                      0x0000000000000024 0x0000000000000024  R      0x4
+>       GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+>                      0x0000000000000000 0x0000000000000000  RW     0x10
+>
+>      Section to Segment mapping:
+>       Segment Sections...
+>        00     .note.gnu.build-id .text .eh_frame
+>        01     .bss
+>        02     .note.gnu.build-id
+>        03
+>
+> Reported-by: Sebastian Ott <sebott@redhat.com>
+> Closes: https://lore.kernel.org/lkml/5d49767a-fbdc-fbe7-5fb2-d99ece3168cb@redhat.com/
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>
+> I'm not really familiar with the ELF loading process, so putting this
+> out as RFC.
+>
+> A example binary compiled with aarch64-linux-gnu-gcc 13.2.0 is available
+> at https://test.t-8ch.de/binfmt-bss-repro.bin
+> ---
+>  fs/binfmt_elf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index 7b3d2d491407..4008a57d388b 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -112,7 +112,7 @@ static struct linux_binfmt elf_format = {
+>  
+>  static int set_brk(unsigned long start, unsigned long end, int prot)
+>  {
+> -	start = ELF_PAGEALIGN(start);
+> +	start = ELF_PAGESTART(start);
+>  	end = ELF_PAGEALIGN(end);
+>  	if (end > start) {
+>  		/*
+>
+> ---
+> base-commit: aed8aee11130a954356200afa3f1b8753e8a9482
+> change-id: 20230914-bss-alloc-f523fa61718c
+>
+> Best regards,
