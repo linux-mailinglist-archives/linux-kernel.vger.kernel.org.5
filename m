@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4550B7A0901
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F517A0908
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240846AbjINPYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        id S240841AbjINPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239524AbjINPYN (ORCPT
+        with ESMTP id S235048AbjINPZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:24:13 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A0C1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:24:09 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4Rmh1f3PRDz9shm;
-        Thu, 14 Sep 2023 17:24:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id p_ZzYUqoefDC; Thu, 14 Sep 2023 17:24:06 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Rmh1c6d3bz9snc;
-        Thu, 14 Sep 2023 17:24:04 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DFB5E8B76D;
-        Thu, 14 Sep 2023 17:24:04 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 0Z7Ngs57m-B9; Thu, 14 Sep 2023 17:24:04 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.98])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AB7758B763;
-        Thu, 14 Sep 2023 17:24:04 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 38EFNw0n4149656
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 17:23:58 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 38EFNqfM4149609;
-        Thu, 14 Sep 2023 17:23:52 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] powerpc/82xx: Select FSL_SOC
-Date:   Thu, 14 Sep 2023 17:23:45 +0200
-Message-ID: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Thu, 14 Sep 2023 11:25:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C263C6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:25:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CE16C433C7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694705134;
+        bh=knWsHjBFVRzdgek7o198MSYRBmsXslhV9GmcwZLF6yE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O3dJ2yRwd8ajZp73nuPqUbjPhXusPFVa5xTYPVePNAsdbvpw8dJ5Nwhw/1c+hCvNG
+         9D0E/UNKtrW45cljZ7CPmVpzp5fyJsxBYzQBMOF9hqggu7K3w1l6jAKB2ZidkO2aHS
+         Xlsn3nQwJynB93v44RjfHbK1Jh/v1SMdfWUG/mPWNX+L+Dc2K4Tdff0w6+RKr5NOGR
+         Ktuddgq7Nw0UFl+3QJ0xioQ3VWJPTy7lPXWki127Zc1Nb/GmCJfXIoUwdPkBvVC9+2
+         0X0h4/7MwLmRqSEAiRadXRUQfLLd1+4j2Cg7f4u/OFrxmQm3c+HXX3YSQIB6CV2qpY
+         fk118OZ2a9Cyg==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso1286149a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:25:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyQ393+nEiF6BDMvuNCpkTirtLftj3tYQbjGvr9VzxXR/eKyxty
+        kM0/ht5Ea7z6rL+iKfOyZ8Y9ZoqFcwDcgosZGvk=
+X-Google-Smtp-Source: AGHT+IHcwA2t/kyZUwQVU13H6XxJZI4dOYLldBtDniM048IzFCaIZJz9M3iPj3Q/HXpAc+4DI080jVBRFLMV0s/WWvc=
+X-Received: by 2002:aa7:c703:0:b0:52a:250e:a052 with SMTP id
+ i3-20020aa7c703000000b0052a250ea052mr5581143edq.7.1694705132751; Thu, 14 Sep
+ 2023 08:25:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694705024; l=1598; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Jj9Alu0MLKuxX1QkULA4mmw2y3s6Ft2LhGs+pStHEUg=; b=SNWNtDClXy5jZEeACZJaXaRluk3WX4/sTp0u0Vv0lJxZzknMOPycHIumK3gyjZ94p206zRJ1j 1SZ/qqvie89BCnXc54aoGMvtTN5szKzHAiC5C/YXC/kQJzKlVFBYyRp
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+References: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 14 Sep 2023 23:25:22 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
+Message-ID: <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] LoongArch: Add missing headers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <kernel@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It used to be impossible to select CONFIG_CPM2 without selecting
-CONFIG_FSL_SOC at the same time because CONFIG_CPM2 was dependent
-on CONFIG_8260 and CONFIG_8260 was selecting CONFIG_FSL_SOC.
+Hi,  Andy,
 
-But after commit eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260
-and CONFIG_8272") CONFIG_CPM2 depends on CONFIG_MPC82xx instead
-but CONFIG_MPC82xx doesn't directly selects CONFIG_FSL_SOC.
+Thank you for your patch, can this patch solve the problem below?
+https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.com/T=
+/#u
 
-Fix it by forcing CONFIG_MPC82xx to select CONFIG_FSL_SOC just
-like already done by MPC8xx, MPC512x, MPC83xx, PPC_86xx.
+If yes, please add a reference in the commit message. I have
+investigated this problem for a long time but failed to solve it.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Fixes: eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/platforms/82xx/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Huacai
 
-diff --git a/arch/powerpc/platforms/82xx/Kconfig b/arch/powerpc/platforms/82xx/Kconfig
-index d9f1a2a83158..1824536cf6f2 100644
---- a/arch/powerpc/platforms/82xx/Kconfig
-+++ b/arch/powerpc/platforms/82xx/Kconfig
-@@ -2,6 +2,7 @@
- menuconfig PPC_82xx
- 	bool "82xx-based boards (PQ II)"
- 	depends on PPC_BOOK3S_32
-+	select FSL_SOC
- 
- if PPC_82xx
- 
-@@ -9,7 +10,6 @@ config EP8248E
- 	bool "Embedded Planet EP8248E (a.k.a. CWH-PPC-8248N-VE)"
- 	select CPM2
- 	select PPC_INDIRECT_PCI if PCI
--	select FSL_SOC
- 	select PHYLIB if NETDEVICES
- 	select MDIO_BITBANG if PHYLIB
- 	help
-@@ -22,7 +22,6 @@ config MGCOGE
- 	bool "Keymile MGCOGE"
- 	select CPM2
- 	select PPC_INDIRECT_PCI if PCI
--	select FSL_SOC
- 	help
- 	  This enables support for the Keymile MGCOGE board.
- 
--- 
-2.41.0
-
+On Thu, Sep 14, 2023 at 6:34=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The header uses definitions from sizes.h, include it.
+> For __iomem we need the compiler_types.h, include it.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  arch/loongarch/include/asm/addrspace.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/loongarch/include/asm/addrspace.h b/arch/loongarch/incl=
+ude/asm/addrspace.h
+> index 5c9c03bdf915..eaf8ac098622 100644
+> --- a/arch/loongarch/include/asm/addrspace.h
+> +++ b/arch/loongarch/include/asm/addrspace.h
+> @@ -10,7 +10,9 @@
+>  #ifndef _ASM_ADDRSPACE_H
+>  #define _ASM_ADDRSPACE_H
+>
+> +#include <linux/compiler_types.h>
+>  #include <linux/const.h>
+> +#include <linux/sizes.h>
+>
+>  #include <asm/loongarch.h>
+>
+> --
+> 2.40.0.1.gaa8946217a0b
+>
+>
