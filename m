@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8131079F9E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A05779F9F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbjINFJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        id S234722AbjINFQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 01:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjINFJM (ORCPT
+        with ESMTP id S234197AbjINFQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:09:12 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F4298
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:09:08 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3D37E5C0267;
-        Thu, 14 Sep 2023 01:09:08 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 14 Sep 2023 01:09:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694668148; x=1694754548; bh=yd
-        JTNhSaUGGtg0mobQUwtBl+Oa8gBYThWl5NgNFBv+M=; b=kWSgLc7j9kEBO4uJgN
-        wSavPAVuaWHtZfMRBfsIMbXRuoaZVBo9Q/ooFDP6erl5ujtDJ5rnaJKNJIanayu/
-        9hJKstmZn8ArTRSQEqCHo1IeDuGETGql3s2sDerV6H2hbm2irEI5L2Guc3G2+eVc
-        KJFvAge4UD6wvGLkS5FRaP2XYh1Kl5thZRPigrl7YYbF8Ufswv79j81JNEkWnCq4
-        b7W2MNaMzCdZgyHxesOY5dx55gYHvascpFj5hhWa1tCk0QTTxLT3TRAky4rApyZN
-        7PPKQLNaELW/2JtrLl7+y6+aMpx+2K3F8d/sKhGrYHNWprS+NMmzen/z97ZC9xRU
-        KXGQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1694668148; x=1694754548; bh=ydJTNhSaUGGtg
-        0mobQUwtBl+Oa8gBYThWl5NgNFBv+M=; b=riZbqwy3rL5Ha4BCuoaZogNIjd56E
-        HkLQDxUTtNsz2UIzLauerPae2aR+qvlLwNv8dOshW/PBSkZ1EE9p3yoYs+7tjQy1
-        b1f/OJbrbclcpStnfc2rFv04vjCMduVTFmkKsuYn3gfMJx/jmdUJRTH7v+XMzxdu
-        S4m3P8JJqAgyeWjuVnTJqF78kjw373Y4/1zPJmEjQvDRbHEistFr7Wi9aOvyRQSC
-        kIv/fdNcRnxKak3GfuUkkIydxC4fv4H1aW80K2JIF0/dBmLto5rjw8vJ7ila4EJX
-        oOFEpvMiPcxsL5Hw1Pzm8ON1Ezz5YMxj4b4HZxCbDdN5z+agdEURRpLqw==
-X-ME-Sender: <xms:c5UCZahM7-7ai_2pds8mz8FQHNWPZVUKCs-sWupIKvkPdOCJcp4i9w>
-    <xme:c5UCZbCvmF1YKg9Zx1KfJ-UC7ut9ZAHUVqgbzWYA8GJl3jYYczce1TpIZtYDkKN3O
-    Ot4FjxaHpeRcDC8NYY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiledgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:c5UCZSFGe5XAzgjQWKe5a0XHdkti_gljUFkeX3hHOSijRT5MQM1hMg>
-    <xmx:c5UCZTTuze8Re_FeY6OoANbU4CBv0cRa1x9QYDB_-iYrtfDpp0IksA>
-    <xmx:c5UCZXzo5AqSn9cmjr8I6M-kTAHWV6aNifsthxKLs6HvkMiPikeXtQ>
-    <xmx:dJUCZQoMWaVZyI0-QfqEgduDrScXcuyb2WTlt3nacQa3bvV6F5TiCA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B16E7B60089; Thu, 14 Sep 2023 01:09:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <5cace191-31f6-4aa5-8b19-aa6c1f2db7e6@app.fastmail.com>
-In-Reply-To: <202309141131.pNe5J6HH-lkp@intel.com>
-References: <202309141131.pNe5J6HH-lkp@intel.com>
-Date:   Thu, 14 Sep 2023 07:08:14 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "kernel test robot" <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Jens Axboe" <axboe@kernel.dk>
-Subject: Re: arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in final BE8
- format
-Content-Type: text/plain
+        Thu, 14 Sep 2023 01:16:38 -0400
+Received: from mta-64-228.siemens.flowmailer.net (mta-64-228.siemens.flowmailer.net [185.136.64.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9721BCF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:16:33 -0700 (PDT)
+Received: by mta-64-228.siemens.flowmailer.net with ESMTPSA id 202309140516316b578876157cef1ed1
+        for <linux-kernel@vger.kernel.org>;
+        Thu, 14 Sep 2023 07:16:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=daniel.starke@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
+ bh=gZzddzoCMxHTB8tXxt4nFUsRH1Ri6FrsG2SDJTbPMf8=;
+ b=KYKJ7ov/T2XaL6vsynXP+1JVPCCad16UuTf2C1IZQxkQeA69EG9YgLEtKlMD/ey9UPJ+PY
+ 68a1TYHo1CcrJxYrDXbJaOfr3WKjv94RJvM/+pbnDNRvhPvEdNi8hMgTMVOeAWoo7qKoSSHW
+ sQOAEqymDHOaLNqWRsxEGSz8mvYIo=;
+From:   "D. Starke" <daniel.starke@siemens.com>
+To:     linux-serial@vger.kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, hedonistsmith@gmail.com,
+        Daniel Starke <daniel.starke@siemens.com>
+Subject: [PATCH 1/1] Revert "tty: n_gsm: fix UAF in gsm_cleanup_mux"
+Date:   Thu, 14 Sep 2023 07:15:07 +0200
+Message-Id: <20230914051507.3240-1-daniel.starke@siemens.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-314044:519-21489:flowmailer
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023, at 05:45, kernel test robot wrote:
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new 
-> version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: 
-> https://lore.kernel.org/oe-kbuild-all/202309141131.pNe5J6HH-lkp@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->>> arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in final BE8 format
->    arm-linux-gnueabi-ld: failed to merge target specific data of file 
-> .btf.vmlinux.bin.o
+From: Daniel Starke <daniel.starke@siemens.com>
 
-It's a completely unrelated issue at the link stage that gets
-exposed by fixing the other bug. I don't see this in my
-randconfig builds right now, so I probably have a workaround for
-it somewhere, but I can't find it.
+This reverts commit 9b9c8195f3f0d74a826077fc1c01b9ee74907239.
 
-     Arnd
+The commit above is reverted as it did not solve the original issue.
+
+gsm_cleanup_mux() tries to free up the virtual ttys by calling
+gsm_dlci_release() for each available DLCI. There, dlci_put() is called to
+decrease the reference counter for the DLCI via tty_port_put() which
+finally calls gsm_dlci_free(). This already clears the pointer which is
+being checked in gsm_cleanup_mux() before calling gsm_dlci_release().
+Therefore, it is not necessary to clear this pointer in gsm_cleanup_mux()
+as done in the reverted commit. The commit introduces a null pointer
+dereference:
+ <TASK>
+ ? __die+0x1f/0x70
+ ? page_fault_oops+0x156/0x420
+ ? search_exception_tables+0x37/0x50
+ ? fixup_exception+0x21/0x310
+ ? exc_page_fault+0x69/0x150
+ ? asm_exc_page_fault+0x26/0x30
+ ? tty_port_put+0x19/0xa0
+ gsmtty_cleanup+0x29/0x80 [n_gsm]
+ release_one_tty+0x37/0xe0
+ process_one_work+0x1e6/0x3e0
+ worker_thread+0x4c/0x3d0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xe1/0x110
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2f/0x50
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork_asm+0x1b/0x30
+ </TASK>
+
+The actual issue is that nothing guards dlci_put() from being called
+multiple times while the tty driver was triggered but did not yet finished
+calling gsm_dlci_free().
+
+Signed-off-by: Daniel Starke <daniel.starke@siemens.com>
+---
+ drivers/tty/n_gsm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+I plan to create a bug report for this issue around next month as I have no
+solution for this at hand.
+
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index b3550ff9c494..1f3aba607cd5 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -3097,10 +3097,8 @@ static void gsm_cleanup_mux(struct gsm_mux *gsm, bool disc)
+ 		gsm->has_devices = false;
+ 	}
+ 	for (i = NUM_DLCI - 1; i >= 0; i--)
+-		if (gsm->dlci[i]) {
++		if (gsm->dlci[i])
+ 			gsm_dlci_release(gsm->dlci[i]);
+-			gsm->dlci[i] = NULL;
+-		}
+ 	mutex_unlock(&gsm->mutex);
+ 	/* Now wipe the queues */
+ 	tty_ldisc_flush(gsm->tty);
+-- 
+2.34.1
+
