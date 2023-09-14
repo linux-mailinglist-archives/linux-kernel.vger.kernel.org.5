@@ -2,187 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D1C7A08ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BA57A08F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240773AbjINPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        id S240788AbjINPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239524AbjINPU0 (ORCPT
+        with ESMTP id S239530AbjINPVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:20:26 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2046.outbound.protection.outlook.com [40.107.220.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C411FCC;
-        Thu, 14 Sep 2023 08:20:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dih+S/SBNNOSYyUBhsm9ktAkab6ea+yxSENwCdtNt+1hg3ypbst/FDV+3Tz4X/JeDx4xl7wuMAm/gupOxpzM2KF+hldJklvJm/IUzrYkaDimvMH/349y+Ia/mDAh12b0tc1KxBpXETKk29cyXE3BI3y1rskx3p4Cx0YDwK9g/CfKPsnSvxCj6xQaBdHINWoQU2l/eX5nznq03kjZOzosG3tz2qvN3qnB/qd5Tl4sb0PSrvq7sMDsHkKiEYoSzajgd4bHDC739R4EWcJamSwDbVtzJ6RSgYZvqv39b1dHiXvrIKP91Xyw1Mr+vbTzlj8D13XTvuOzWwrusYBqvdl8aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7rYXGvPzbMSrXYOJqxO3Qy46Yltf8R9K0xFSsYrDwYw=;
- b=O/8cW1NWqvFTrSGZmGF7+qt9ruWUZzWfcuMCKCvPOiOJwBJCu75d5lXsQ49HK/JlfguZHnqd6Qk/Ox0l3KBQ3dTQ1um+kcTrx5ALZxW5Nbji/oh8mIB+EitvpemrCjam0eWuQ3g5dGWc46XNtuf9VpvjpbqQxUiiyJpusUkv35pde5+SZLJUiDyUdeWqGmbDLTXBdzR7Eigr10YkgeuBcXtvCM+ek4XzluJ0zFCUHivxmoA7tyuOrrjB2moXC1A5F+6OY6oauNY+OtDA9za5lliG+5atWLQwaWxZFNR26h7mIJ0vurXfZE4fSl94oJEVVE3r03K9aKxeaSYXCtaLrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7rYXGvPzbMSrXYOJqxO3Qy46Yltf8R9K0xFSsYrDwYw=;
- b=d8hYobn7RxFFDtn+M2EB+9J4okcV6dDhG+CO8vqgQ6oDEREs2an8ZaDL0puO2nrxf/FxJLE81INVz0GLKZXI3/4v9OdS4jrsGBu+WeKrlFcopNWv9mzA/AuSywxgP1eWBJK6vHS1Z1Y6nAmtpj52ITHeL3ITIX4Ge2HILvPbBVU=
-Received: from BYAPR08CA0026.namprd08.prod.outlook.com (2603:10b6:a03:100::39)
- by DM6PR12MB4943.namprd12.prod.outlook.com (2603:10b6:5:1bc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
- 2023 15:20:19 +0000
-Received: from SA2PEPF000015CA.namprd03.prod.outlook.com
- (2603:10b6:a03:100:cafe::87) by BYAPR08CA0026.outlook.office365.com
- (2603:10b6:a03:100::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20 via Frontend
- Transport; Thu, 14 Sep 2023 15:20:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SA2PEPF000015CA.mail.protection.outlook.com (10.167.241.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.20 via Frontend Transport; Thu, 14 Sep 2023 15:20:18 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Sep
- 2023 10:20:14 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Sep
- 2023 08:20:14 -0700
-Received: from xcbalexaust40x.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 14 Sep 2023 10:20:13 -0500
-From:   Alex Austin <alex.austin@amd.com>
-To:     <netdev@vger.kernel.org>, <linux-net-drivers@amd.com>
-CC:     <ecree.xilinx@gmail.com>, <habetsm.xilinx@gmail.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <richardcochran@gmail.com>,
-        <linux-kernel@vger.kernel.org>, Alex Austin <alex.austin@amd.com>
-Subject: [PATCH net-next] sfc: make coding style of PTP addresses consistent with core
-Date:   Thu, 14 Sep 2023 16:19:16 +0100
-Message-ID: <20230914151916.21044-1-alex.austin@amd.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 14 Sep 2023 11:21:45 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F0EC1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:21:41 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dcf1d8957so75332785a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 08:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694704900; x=1695309700; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5AAJjTPKJrbM2I7UYPlK+5KUhbVO5e1/2BSYEunOT4=;
+        b=3WI7VxyESBxfqKW2eyaDDY2HtyQARmAbdQS35iy7BVr/1jhtHHrXDT78rGWjtT6ZT3
+         BS1iPsssEbDBBbPBCmKJm0Vf86OOssZJkOwkH9Yd9NdaEdCJFqSCu2tnsDudUAvZCdE4
+         Y0fsYvCH57rpGDqG9iVgrvWTpMOI/RM+aYxcO2w5xWouvoijttCgCX8ml9ICb8vha5lE
+         FRmnEbo+sOkHL8LS4jWetWhU2qVFGZwxSpjcf6VW0i0KiXbWG3YHvqEBtXJoznnqUmFp
+         yduYjnxc8K39LsXVcf009AeJ6H9MtpEBp4fZTlNOtwf9xgh0FWnRFu8X5kjpgww1JbFy
+         9s1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694704900; x=1695309700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a5AAJjTPKJrbM2I7UYPlK+5KUhbVO5e1/2BSYEunOT4=;
+        b=Hw6swdxNnjpdjGzxYDdWpab8kJnUe7bc766EloUWtRn8wnDibRsBMbXGUJkycjLFPv
+         c2xktSXJol0CdunRVFtrRCuhCw2pmxRmEFS5+AmTdfQHAgb/pvMZEmjArxgBUtDclVho
+         HDhkhYnx1aQEnegOsQGLYAYdloQetRNnmOKm/x2lpq5MbBV6OpmqeStbB34Q72bRwwkC
+         Y/qQ0Cu5MH6Q9rZNnH2FMWjxS5ex4lyixjJ7YoYSEkUgKaaZ4mqt1NoGA1/YeNXCqPN4
+         HPeaqJVqcW2TR9ym6gqWtL6LZgAyjgEbma8AUh7J5WZytq1woZ8UVw1Ot4zD+6/J8dtw
+         ahig==
+X-Gm-Message-State: AOJu0YzIqEHho3QVOidzgGRBkNXOe8HTW/7xG+zsuIaSWt/NUi3RGzHa
+        kiKXBMBnJwAUThNl9xpG8nIxk8sJuLZFxRSoJLk=
+X-Google-Smtp-Source: AGHT+IHgtk6WfW2S9wNIgrLhLx0aGlhPzs87X2FNRaKA/uPvD9Pcu8aQedVeuRULw1Fcn3jL1s7COw==
+X-Received: by 2002:a05:620a:404b:b0:76e:f279:4c36 with SMTP id i11-20020a05620a404b00b0076ef2794c36mr7068909qko.29.1694704900315;
+        Thu, 14 Sep 2023 08:21:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:35bb])
+        by smtp.gmail.com with ESMTPSA id ou19-20020a05620a621300b0076cf49bcb50sm543795qkn.37.2023.09.14.08.21.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 08:21:40 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Breno Leitao <leitao@debian.org>,
+        Josef Bacik <josef@toxicpanda.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: memcontrol: fix GFP_NOFS recursion in memory.high enforcement
+Date:   Thu, 14 Sep 2023 11:21:39 -0400
+Message-ID: <20230914152139.100822-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015CA:EE_|DM6PR12MB4943:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc0fb7b7-7a9b-4531-dbcb-08dbb5361ac4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: opJ5LCGIvXVe9JWoLrEx4rywVD8UnG6w2NvujgHAqXi8OwvC3W0angCFLnu/fHrfyM3KIazppHXoDTbf7AaPdWdKX5GNRkAa1REo5SFK18m9VywUdznX5wIy3vECNUGqHkXbhFiw4Y5FS54VAo+5+WUzM1JC2YDAX97WZXbHXbVqRCeV+MTHDYG+J0ZhIAZM74A0yqee8NuliGBkgSjVX9GhwxHPGA+JijXnM+W17UW1BgooKYvjGhb8xdkatCr1AvT7tdC2lH6V4XhlCHGlrK+OnDTWuKx9law9jJcRIQs3+pSHs0p8DJTiaDcv1BYKL/o9jN+tbj+++meh4o0aeN0OUierJZ39xkzveUp60PZHSpNE1RVTshKOSIDgEdcgnFeiFEwZ1R6S1nxXU7uyy+EwBWY8f/KvOe9pXh8nREYCvJqm2ULdxAVrlYAkxb5sfdacfYPMa5ev3tk8/79V/K/zvba1HwqVGIuar0ETZ9Vm+bUZY8BgcoV7DECbhVxoSqqpQd6VB9Q5N6s1ISHKp7ko7jRtBwBEKoDILql2oc9lSeMC0D8Xa6usONvR9iObpkh0cS7J1wFinUQHXpKl4EXns4LyfwsCXhI4AAZadyBx7ZbwvdIgmF7WcrUTRY7qpzJWCCqPF2MAH08niUgwEHqdbITHQRmRctcgD8qsOTSgwT/N6PNs0SHTd0K2RarreMXElaleeGWS1mX9s4UHzz7fy0swsCVwfm5L/nOF4wNFCpgKch48X+E7b3IWYX435ZA/0qACivwMPouqT3hnlg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(39860400002)(396003)(82310400011)(186009)(1800799009)(451199024)(40470700004)(46966006)(36840700001)(26005)(5660300002)(4326008)(1076003)(8936002)(40460700003)(8676002)(2616005)(2906002)(83380400001)(86362001)(81166007)(356005)(82740400003)(36756003)(47076005)(336012)(36860700001)(426003)(40480700001)(70586007)(316002)(54906003)(6636002)(110136005)(70206006)(44832011)(41300700001)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 15:20:18.4402
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc0fb7b7-7a9b-4531-dbcb-08dbb5361ac4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4943
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the style used in the core kernel (e.g.
-include/linux/etherdevice.h and include/linux/in6.h) for the PTP IPv6
-and Ethernet addresses. No functional changes.
+Breno and Josef report a deadlock scenario from cgroup reclaim
+re-entering the filesystem:
 
-Signed-off-by: Alex Austin <alex.austin@amd.com>
-Reviewed-by: Edward Cree <ecree.xilinx@gmail.com>
+[  361.546690] ======================================================
+[  361.559210] WARNING: possible circular locking dependency detected
+[  361.571703] 6.5.0-0_fbk700_debug_rc0_kbuilder_13159_gbf787a128001 #1 Tainted: G S          E
+[  361.589704] ------------------------------------------------------
+[  361.602277] find/9315 is trying to acquire lock:
+[  361.611625] ffff88837ba140c0 (&delayed_node->mutex){+.+.}-{4:4}, at: __btrfs_release_delayed_node+0x68/0x4f0
+[  361.631437]
+[  361.631437] but task is already holding lock:
+[  361.643243] ffff8881765b8678 (btrfs-tree-01){++++}-{4:4}, at: btrfs_tree_read_lock+0x1e/0x40
+
+[  362.904457]  mutex_lock_nested+0x1c/0x30
+[  362.912414]  __btrfs_release_delayed_node+0x68/0x4f0
+[  362.922460]  btrfs_evict_inode+0x301/0x770
+[  362.982726]  evict+0x17c/0x380
+[  362.988944]  prune_icache_sb+0x100/0x1d0
+[  363.005559]  super_cache_scan+0x1f8/0x260
+[  363.013695]  do_shrink_slab+0x2a2/0x540
+[  363.021489]  shrink_slab_memcg+0x237/0x3d0
+[  363.050606]  shrink_slab+0xa7/0x240
+[  363.083382]  shrink_node_memcgs+0x262/0x3b0
+[  363.091870]  shrink_node+0x1a4/0x720
+[  363.099150]  shrink_zones+0x1f6/0x5d0
+[  363.148798]  do_try_to_free_pages+0x19b/0x5e0
+[  363.157633]  try_to_free_mem_cgroup_pages+0x266/0x370
+[  363.190575]  reclaim_high+0x16f/0x1f0
+[  363.208409]  mem_cgroup_handle_over_high+0x10b/0x270
+[  363.246678]  try_charge_memcg+0xaf2/0xc70
+[  363.304151]  charge_memcg+0xf0/0x350
+[  363.320070]  __mem_cgroup_charge+0x28/0x40
+[  363.328371]  __filemap_add_folio+0x870/0xd50
+[  363.371303]  filemap_add_folio+0xdd/0x310
+[  363.399696]  __filemap_get_folio+0x2fc/0x7d0
+[  363.419086]  pagecache_get_page+0xe/0x30
+[  363.427048]  alloc_extent_buffer+0x1cd/0x6a0
+[  363.435704]  read_tree_block+0x43/0xc0
+[  363.443316]  read_block_for_search+0x361/0x510
+[  363.466690]  btrfs_search_slot+0xc8c/0x1520
+
+This is caused by the mem_cgroup_handle_over_high() not respecting the
+gfp_mask of the allocation context. We used to only call this function
+on resume to userspace, where no locks were held. But c9afe31ec443
+("memcg: synchronously enforce memory.high for large overcharges")
+added a call from the allocation context without considering the gfp.
+
+Reported-by: Breno Leitao <leitao@debian.org>
+Reported-by: Josef Bacik <josef@toxicpanda.com>
+Fixes: c9afe31ec443 ("memcg: synchronously enforce memory.high for large overcharges")
+Cc: stable@vger.kernel.org # 5.17+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- drivers/net/ethernet/sfc/ptp.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ include/linux/memcontrol.h       | 4 ++--
+ include/linux/resume_user_mode.h | 2 +-
+ mm/memcontrol.c                  | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
-index f54200f03e15..b04fdbb8aece 100644
---- a/drivers/net/ethernet/sfc/ptp.c
-+++ b/drivers/net/ethernet/sfc/ptp.c
-@@ -108,11 +108,17 @@
- #define	PTP_MIN_LENGTH		63
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index ab94ad4597d0..e4e24da16d2c 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -920,7 +920,7 @@ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
+ 	return READ_ONCE(mz->lru_zone_size[zone_idx][lru]);
+ }
  
- #define PTP_ADDR_IPV4		0xe0000181	/* 224.0.1.129 */
--#define PTP_ADDR_IPV6		{0xff, 0x0e, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
--				0, 0x01, 0x81}	/* ff0e::181 */
-+
-+/* ff0e::181 */
-+static const struct in6_addr ptp_addr_ipv6 = { { {
-+	0xff, 0x0e, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x01, 0x81 } } };
-+
-+/* 01-1B-19-00-00-00 */
-+static const u8 ptp_addr_ether[ETH_ALEN] __aligned(2) = {
-+	0x01, 0x1b, 0x19, 0x00, 0x00, 0x00 };
-+
- #define PTP_EVENT_PORT		319
- #define PTP_GENERAL_PORT	320
--#define PTP_ADDR_ETHER		{0x01, 0x1b, 0x19, 0, 0, 0} /* 01-1B-19-00-00-00 */
+-void mem_cgroup_handle_over_high(void);
++void mem_cgroup_handle_over_high(gfp_t gfp_mask);
  
- /* Annoyingly the format of the version numbers are different between
-  * versions 1 and 2 so it isn't possible to simply look for 1 or 2.
-@@ -1296,7 +1302,7 @@ static int efx_ptp_insert_ipv4_filter(struct efx_nic *efx,
+ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg);
  
- static int efx_ptp_insert_ipv6_filter(struct efx_nic *efx,
- 				      struct list_head *filter_list,
--				      struct in6_addr *addr, u16 port,
-+				      const struct in6_addr *addr, u16 port,
- 				      unsigned long expiry)
+@@ -1458,7 +1458,7 @@ static inline void mem_cgroup_unlock_pages(void)
+ 	rcu_read_unlock();
+ }
+ 
+-static inline void mem_cgroup_handle_over_high(void)
++static inline void mem_cgroup_handle_over_high(gfp_t gfp_mask)
  {
- 	struct efx_filter_spec spec;
-@@ -1309,11 +1315,10 @@ static int efx_ptp_insert_ipv6_filter(struct efx_nic *efx,
- static int efx_ptp_insert_eth_multicast_filter(struct efx_nic *efx)
- {
- 	struct efx_ptp_data *ptp = efx->ptp_data;
--	const u8 addr[ETH_ALEN] = PTP_ADDR_ETHER;
- 	struct efx_filter_spec spec;
+ }
  
- 	efx_ptp_init_filter(efx, &spec);
--	efx_filter_set_eth_local(&spec, EFX_FILTER_VID_UNSPEC, addr);
-+	efx_filter_set_eth_local(&spec, EFX_FILTER_VID_UNSPEC, ptp_addr_ether);
- 	spec.match_flags |= EFX_FILTER_MATCH_ETHER_TYPE;
- 	spec.ether_type = htons(ETH_P_1588);
- 	return efx_ptp_insert_filter(efx, &ptp->rxfilters_mcast, &spec, 0);
-@@ -1346,15 +1351,13 @@ static int efx_ptp_insert_multicast_filters(struct efx_nic *efx)
- 	 * PTP over IPv6 and Ethernet
- 	 */
- 	if (efx_ptp_use_mac_tx_timestamps(efx)) {
--		struct in6_addr ipv6_addr = {{PTP_ADDR_IPV6}};
--
- 		rc = efx_ptp_insert_ipv6_filter(efx, &ptp->rxfilters_mcast,
--						&ipv6_addr, PTP_EVENT_PORT, 0);
-+						&ptp_addr_ipv6, PTP_EVENT_PORT, 0);
- 		if (rc < 0)
- 			goto fail;
- 
- 		rc = efx_ptp_insert_ipv6_filter(efx, &ptp->rxfilters_mcast,
--						&ipv6_addr, PTP_GENERAL_PORT, 0);
-+						&ptp_addr_ipv6, PTP_GENERAL_PORT, 0);
- 		if (rc < 0)
- 			goto fail;
- 
-@@ -1379,9 +1382,7 @@ static bool efx_ptp_valid_unicast_event_pkt(struct sk_buff *skb)
- 			ip_hdr(skb)->protocol == IPPROTO_UDP &&
- 			udp_hdr(skb)->source == htons(PTP_EVENT_PORT);
- 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
--		struct in6_addr mcast_addr = {{PTP_ADDR_IPV6}};
--
--		return !ipv6_addr_equal(&ipv6_hdr(skb)->daddr, &mcast_addr) &&
-+		return !ipv6_addr_equal(&ipv6_hdr(skb)->daddr, &ptp_addr_ipv6) &&
- 			ipv6_hdr(skb)->nexthdr == IPPROTO_UDP &&
- 			udp_hdr(skb)->source == htons(PTP_EVENT_PORT);
+diff --git a/include/linux/resume_user_mode.h b/include/linux/resume_user_mode.h
+index 285189454449..f8f3e958e9cf 100644
+--- a/include/linux/resume_user_mode.h
++++ b/include/linux/resume_user_mode.h
+@@ -55,7 +55,7 @@ static inline void resume_user_mode_work(struct pt_regs *regs)
  	}
+ #endif
+ 
+-	mem_cgroup_handle_over_high();
++	mem_cgroup_handle_over_high(GFP_KERNEL);
+ 	blkcg_maybe_throttle_current();
+ 
+ 	rseq_handle_notify_resume(NULL, regs);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a4d3282493b6..d13dde2f8b56 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2555,7 +2555,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+  * Scheduled by try_charge() to be executed from the userland return path
+  * and reclaims memory over the high limit.
+  */
+-void mem_cgroup_handle_over_high(void)
++void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
+ 	unsigned long penalty_jiffies;
+ 	unsigned long pflags;
+@@ -2583,7 +2583,7 @@ void mem_cgroup_handle_over_high(void)
+ 	 */
+ 	nr_reclaimed = reclaim_high(memcg,
+ 				    in_retry ? SWAP_CLUSTER_MAX : nr_pages,
+-				    GFP_KERNEL);
++				    gfp_mask);
+ 
+ 	/*
+ 	 * memory.high is breached and reclaim is unable to keep up. Throttle
+@@ -2819,7 +2819,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+ 	    !(current->flags & PF_MEMALLOC) &&
+ 	    gfpflags_allow_blocking(gfp_mask)) {
+-		mem_cgroup_handle_over_high();
++		mem_cgroup_handle_over_high(gfp_mask);
+ 	}
+ 	return 0;
+ }
 -- 
-2.17.1
+2.42.0
 
