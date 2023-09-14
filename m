@@ -2,142 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E787A0B3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0673B7A0B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbjINRGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
+        id S238750AbjINRHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjINRGD (ORCPT
+        with ESMTP id S232000AbjINRHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:06:03 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BEE1FE8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:05:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf7423ef3eso10075935ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694711159; x=1695315959; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ACnGDvO4UdzljeQyTb/RRh5LQy8tu22rKTkwltqG0Ho=;
-        b=A+98zkLrLIqFQRG2qtHyYhTf1K08tU35To5JZaBVdzpIsqq/+OPOS1QjFPrdwxyFe6
-         gNmzJrhg94ed5xijOUkSHk3tmYdLm+X0XknXINKL32Nu7PV45hx7TaBvXE4e88NQk3U8
-         rIsIQ7bqVzQlxH0zG/M17far7Z1nbY9i4O3YPBDeisq4Uu/Y90FiGTTPzAiBcNbQ3WLJ
-         9GfVGVeuZj3NGLnLPpSN73UDfBt8zo3r4jOJQyWt4hcHNMnnYRQh2z0fzeDRu+BWAzL+
-         Qp7VWcXjHp2qWrwEVI/nfykM10cEgHSvOG6HbBFNKWxbjgi4UigoDqOMsrLBR1t3usL4
-         Jc5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694711159; x=1695315959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ACnGDvO4UdzljeQyTb/RRh5LQy8tu22rKTkwltqG0Ho=;
-        b=iSIjCyF8BfaPXpdzgo4FBnwdm7Ztdyk5bx+kPWyHh88OqJ3dudYPjNT5AF0BVMTyQP
-         bo2XV30Ewtc9RTF0CMJmt723xrQiRTmCcAOJHwDuDIah5AABMVudZtMCsO42/9Xv2zts
-         MExR3JCwRlbf1DLkBQ4vKYyGUXDNVfEdiymO0S30F1Hogi+hIkJupuovI7ZzshWcTTGX
-         YVD85mcNF6CR5jdoxvsZuFkMaws1cKyRE2cmErYj3QQHJFyTtUzIfTuuYzjI22uyq6DI
-         uVt63FJRiC+KqdkzrVNcVXzUWuq1P+P8tlJ0Cg05S5c06Om5wmNtxvw6inATh+Ptv9kH
-         WsFQ==
-X-Gm-Message-State: AOJu0Yzf7a+dE1fPJxTbwlln8qvl7BDD1tyW6C8GwJZucNfvzuw0ZtRL
-        olp9W0obCUkTuuPuszExIpBIf6auUpv9Xf9qn5FIog==
-X-Google-Smtp-Source: AGHT+IE3SeljEZBVjgSPFmQYSU3VIvBk/LO658+eF0c5YErcCOq6SFiu9VBpZHQowXDraXVuPEsTNvPjl3W77446uAI=
-X-Received: by 2002:a17:90a:bc89:b0:274:7b85:eae6 with SMTP id
- x9-20020a17090abc8900b002747b85eae6mr1570581pjr.34.1694711158726; Thu, 14 Sep
- 2023 10:05:58 -0700 (PDT)
+        Thu, 14 Sep 2023 13:07:10 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36D11FE1;
+        Thu, 14 Sep 2023 10:07:05 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EFEPat026692;
+        Thu, 14 Sep 2023 17:06:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=VS5omclDy3oniz92XfXL1gqbRojQdj9K/4l/+LddOJ0=;
+ b=QAyD27Tfoq3ApMqGseXEJMgkHjxE4aLrzxF91opPn4+NvyscQ7HHOkzBCay457yTYnVc
+ aRs8IqLAbp8P8pVOhhRVjtyoFRZbWYe0ox+W16SzQPOt5nPYMge+Em0dnwxZjOAEu8a4
+ YEkGRcO8GJBLteYJRskkvyw6qGVk/kg+2R6JH5ElZ/BQ/HXcLmYBw6KFEZOVNoezZFC/
+ Gdgl9yQ9LT3tLk6vaWQOEoGPizwhDhsmiYECWZBTk4ZVqLvLRgeYa7pDSK6Zexr7kgUH
+ P2IzbMraTe+EvPTi1st8uWD6kF7uVSD5Nn0mBWQ8U0+BdD87NBLJRXVxlBgNhOL46Kis Jg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3wx19kps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 17:06:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EH6qdc004174
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 17:06:52 GMT
+Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
+ 2023 10:06:52 -0700
+Message-ID: <7427d5aa-902a-4013-8aa9-f986bb5218a4@quicinc.com>
+Date:   Thu, 14 Sep 2023 10:06:51 -0700
 MIME-Version: 1.0
-References: <20230914083716.57443-1-larysa.zaremba@intel.com>
- <ZQM1BUzcZQtXusA3@google.com> <ZQM5kt8qHKUH0Iob@lincoln>
-In-Reply-To: <ZQM5kt8qHKUH0Iob@lincoln>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 14 Sep 2023 10:05:47 -0700
-Message-ID: <CAKH8qBuw68AixQabgP5wNfAQBcc0RuVNEyV9rf9vgVi__c4Y9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Allow to use kfunc XDP hints and frags together
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless-next 7/9] wifi: ath12k: Remove unnecessary
+ (void*) conversions
+Content-Language: en-US
+To:     Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>
+CC:     <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <20230914040525.1170102-1-yunchuan@nfschina.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230914040525.1170102-1-yunchuan@nfschina.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Q1UfUiFg-rmx_-W3ymAyC5ujLujnkhDE
+X-Proofpoint-ORIG-GUID: Q1UfUiFg-rmx_-W3ymAyC5ujLujnkhDE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 adultscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309140148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 9:55=E2=80=AFAM Larysa Zaremba <larysa.zaremba@inte=
-l.com> wrote:
->
-> On Thu, Sep 14, 2023 at 09:29:57AM -0700, Stanislav Fomichev wrote:
-> > On 09/14, Larysa Zaremba wrote:
-> > > There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX=
- hints
-> > > cannot coexist in a single program.
-> > >
-> > > Allow those features to be used together by modifying the flags condi=
-tions.
-> > >
-> > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=3DOKMdsxEkyML36VsAuZp=
-crsXcyqjdKXSJCBq=3DQ@mail.gmail.com/
-> > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > ---
-> > >  kernel/bpf/offload.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > > index ee35f33a96d1..43aded96c79b 100644
-> > > --- a/kernel/bpf/offload.c
-> > > +++ b/kernel/bpf/offload.c
-> > > @@ -232,7 +232,11 @@ int bpf_prog_dev_bound_init(struct bpf_prog *pro=
-g, union bpf_attr *attr)
-> > >         attr->prog_type !=3D BPF_PROG_TYPE_XDP)
-> > >             return -EINVAL;
-> > >
-> > > -   if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > > +   if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS=
-_FRAGS))
-> > > +           return -EINVAL;
-> > > +
-> >
-> > [..]
-> >
-> > > +   if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-> > > +       !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
-> > >             return -EINVAL;
-> >
-> > Any reason we have 'attr->prog_flags & BPF_F_XDP_HAS_FRAGS' part here?
-> > Seems like doing '!(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)' shoul=
-d
-> > be enough, right? We only want to bail out here when BPF_F_XDP_DEV_BOUN=
-D_ONLY
-> > is not set and we don't really care whether BPF_F_XDP_HAS_FRAGS is set
-> > or not at this point.
->
-> If !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY) at this point, program =
-could
-> be requesting offload.
->
-> Now I have thought about those conditions once more and they could be red=
-uced to
-> this:
->
-> if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY) &&
->     attr->prog_flags !=3D (BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS=
-))
->         return -EINVAL;
->
-> What do you think?
+On 9/13/2023 9:05 PM, Wu Yunchuan wrote:
+> No need cast (void*) to (struct hal_rx_ppdu_end_user_stats *),
+> (struct ath12k_rx_desc_info *) or (struct hal_tx_msdu_ext_desc *).
+> 
+> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+> ---
+>   drivers/net/wireless/ath/ath12k/dp_mon.c | 6 ++----
+>   drivers/net/wireless/ath/ath12k/dp_rx.c  | 2 +-
+>   drivers/net/wireless/ath/ath12k/dp_tx.c  | 2 +-
+>   3 files changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath12k/dp_mon.c b/drivers/net/wireless/ath/ath12k/dp_mon.c
+> index f1e57e98bdc6..41cfe7bd865f 100644
+> --- a/drivers/net/wireless/ath/ath12k/dp_mon.c
+> +++ b/drivers/net/wireless/ath/ath12k/dp_mon.c
+> @@ -13,8 +13,7 @@
+>   static void ath12k_dp_mon_rx_handle_ofdma_info(void *rx_tlv,
+>   					       struct hal_rx_user_status *rx_user_status)
+>   {
+> -	struct hal_rx_ppdu_end_user_stats *ppdu_end_user =
+> -				(struct hal_rx_ppdu_end_user_stats *)rx_tlv;
+> +	struct hal_rx_ppdu_end_user_stats *ppdu_end_user = rx_tlv;
+>   
+>   	rx_user_status->ul_ofdma_user_v0_word0 =
+>   		__le32_to_cpu(ppdu_end_user->usr_resp_ref);
+> @@ -26,8 +25,7 @@ static void
+>   ath12k_dp_mon_rx_populate_byte_count(void *rx_tlv, void *ppduinfo,
+>   				     struct hal_rx_user_status *rx_user_status)
+>   {
+> -	struct hal_rx_ppdu_end_user_stats *ppdu_end_user =
+> -		(struct hal_rx_ppdu_end_user_stats *)rx_tlv;
+> +	struct hal_rx_ppdu_end_user_stats *ppdu_end_user = rx_tlv;
+>   	u32 mpdu_ok_byte_count = __le32_to_cpu(ppdu_end_user->mpdu_ok_cnt);
+>   	u32 mpdu_err_byte_count = __le32_to_cpu(ppdu_end_user->mpdu_err_cnt);
+>   
 
-Ah, so this check is here to protect against the mbuf+offloaded
-combination? (looking at that other thread with Maciej)
-Let's keep your current way with two separate checks, but let's add
-your "/* Frags are allowed only if program is dev-bound-only, but not
-if it is requesting
-bpf offload. */" as a comment to the second check?
+for both of the above IMO the better solution is to change the prototype 
+to replace void *rx_tlv with struct hal_rx_ppdu_end_user_stats 
+*ppdu_end_user and to remove the local variable
+
+further, I think you can add const to that since the TLV is only read, 
+not written
+
+this better describes that the function requires a specific flavor of RX 
+TLV rather than handling any RX TLV
+
+> diff --git a/drivers/net/wireless/ath/ath12k/dp_rx.c b/drivers/net/wireless/ath/ath12k/dp_rx.c
+> index e6e64d437c47..ff5f66ca7783 100644
+> --- a/drivers/net/wireless/ath/ath12k/dp_rx.c
+> +++ b/drivers/net/wireless/ath/ath12k/dp_rx.c
+> @@ -3730,7 +3730,7 @@ int ath12k_dp_rx_process_wbm_err(struct ath12k_base *ab,
+>   			continue;
+>   		}
+>   
+> -		desc_info = (struct ath12k_rx_desc_info *)err_info.rx_desc;
+> +		desc_info = err_info.rx_desc;
+
+this is ok
+
+>   
+>   		/* retry manual desc retrieval if hw cc is not done */
+>   		if (!desc_info) {
+> diff --git a/drivers/net/wireless/ath/ath12k/dp_tx.c b/drivers/net/wireless/ath/ath12k/dp_tx.c
+> index 8874c815d7fa..98ddf46b3bb9 100644
+> --- a/drivers/net/wireless/ath/ath12k/dp_tx.c
+> +++ b/drivers/net/wireless/ath/ath12k/dp_tx.c
+> @@ -109,7 +109,7 @@ static struct ath12k_tx_desc_info *ath12k_dp_tx_assign_buffer(struct ath12k_dp *
+>   static void ath12k_hal_tx_cmd_ext_desc_setup(struct ath12k_base *ab, void *cmd,
+
+This function is only called from one place, and it is already passing a 
+variable that is of type struct hal_tx_msdu_ext_desc *
+so IMO a better solution is to change the prototype to replace void *cmd 
+with struct hal_tx_msdu_ext_desc *tcl_ext_desc and remove the local variable
+
+again this better describes that the function requires a specific 
+payload rather than a generic opaque payload
+
+as a general rule, use void * when the payload has some level of 
+opaqueness and use a specific struct * when the payload must be of a 
+specific type
+
+>   					     struct hal_tx_info *ti)
+>   {
+> -	struct hal_tx_msdu_ext_desc *tcl_ext_cmd = (struct hal_tx_msdu_ext_desc *)cmd;
+> +	struct hal_tx_msdu_ext_desc *tcl_ext_cmd = cmd;
+>   
+>   	tcl_ext_cmd->info0 = le32_encode_bits(ti->paddr,
+>   					      HAL_TX_MSDU_EXT_INFO0_BUF_PTR_LO);
+
