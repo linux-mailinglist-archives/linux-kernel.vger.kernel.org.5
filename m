@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CD27A012E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3BC7A0132
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbjINKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S237964AbjINKFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237276AbjINKEe (ORCPT
+        with ESMTP id S237117AbjINKF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:04:34 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136111BE7;
-        Thu, 14 Sep 2023 03:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TungYnLWY9BVlgruVURPd6F3Z87oI7SC3m5x9j6z2eg=; b=y9U73woI1ZDPmhAm+/gOrb9PoN
-        WxH4DuTEG1QNBULV6zUe2S7kmS86eZZl110Gx3sDQ+8uHmBKKkwvLGuUsXmeQCbHJc3Rp+L7XM/ww
-        5s39GgSMHFadDwMi/PN2t5rkyiphQX1ZrhY4iJflxBgAMIbwbcSqf6+wNlg5YbCDu2iRWF42QKgAM
-        gvqabwDEdElAA23pKQBzzgePvq00M3IO48IMcyYlgtucEYPnfElxlyRtCXPQu2F/NpNIpiasr0E2g
-        V+0bZcufUpoFQ81fewAN5YmTEk3eXiBQrfamqSAFku6oMOSF6p6xcjl/RsexI30JFTxyH5EBNB2ZI
-        s+ZgrTqw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45606)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgjD1-0003rJ-0a;
-        Thu, 14 Sep 2023 11:04:27 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgjD1-0004fG-TJ; Thu, 14 Sep 2023 11:04:27 +0100
-Date:   Thu, 14 Sep 2023 11:04:27 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 10/35] riscv: Switch over to GENERIC_CPU_DEVICES
-Message-ID: <ZQLaq0/qyXdJWbLq@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-11-james.morse@arm.com>
+        Thu, 14 Sep 2023 06:05:28 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8732D1BE3;
+        Thu, 14 Sep 2023 03:05:24 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AAF1466072FF;
+        Thu, 14 Sep 2023 11:05:22 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694685923;
+        bh=b9dNXd4DNo/EkCMgek1U0ux67al2IZqZJ/o5s4IfKu4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BYSojtiQaZbENP/vhxCjm5/kWFmmzr8lP1XygN7e1gdIbP6cHG60aOmQAoL5LaaKn
+         GgBqfnPhYBL1mKaSPMH7E9jLPKSJ4u2AHHaTWzb213sPLlHqXcnbny4J41XjpRNS3Q
+         3rlDa8CGgSQH0+SNj9LkC13R7M1Jnz0PAJEL6BdfCxdlDlYo+/rwIAH0fCDOd1jbek
+         vm9JW0WHNkqjos50O1JSj/yvG9/iQ0ggka+CshJSdh1r7OKQO0qz79M6KsVV6lYTPG
+         gwOQTyMdrrsIocBiFq2jBj6rmkHvzyL4v3Wv9K5uLx/qGX9xPFxlyTPONhudu1ajt/
+         c23H3voGAJj6g==
+Message-ID: <01cdd49e-2f11-d5bd-073c-916f7f36f2db@collabora.com>
+Date:   Thu, 14 Sep 2023 12:05:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913163823.7880-11-james.morse@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm64: mediatek: add mt8390-evk board
+Content-Language: en-US
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+References: <20230914061833.32288-1-macpaul.lin@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230914061833.32288-1-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:37:58PM +0000, James Morse wrote:
-> Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
-> overridden by the arch code, switch over to this to allow common code
-> to choose when the register_cpu() call is made.
+Il 14/09/23 08:18, Macpaul Lin ha scritto:
+> 1. Add compatible for MT8390.
+> 2. Add bindings for the MediaTek mt8390-evk board, also known
+> as the "Genio 700-EVK".
 > 
-> This allows topology_init() to be removed.
+> The MT8390 and MT8188 belong to the same SoC family,
+> with only minor differences in their physical characteristics.
+> They utilize unique efuse values for differentiation.
 > 
-> This is an intermediate step to the logic being moved to drivers/acpi,
-> where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
+> The booting process and configurations are managed by boot
+> loaders, firmware, and TF-A. Consequently, the part numbers
+> and procurement channels vary.
 > 
-> Signed-off-by: James Morse <james.morse@arm.com>
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-... and same concern as the previous patch.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+
