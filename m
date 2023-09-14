@@ -2,117 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A7A7A0634
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328817A0636
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239985AbjINNgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
+        id S240228AbjINNgw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 09:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239721AbjINNfQ (ORCPT
+        with ESMTP id S240126AbjINNgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:35:16 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6C130C1;
-        Thu, 14 Sep 2023 06:33:58 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADAC16607363;
-        Thu, 14 Sep 2023 14:33:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694698437;
-        bh=e/0oW+YFaFeImADlNG8EUeKcdUibwENtTNcAqKB0P6A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SL+vKn/uv+bwLgADFoLmvyiqfe7/Lo7rBKOrF3RpVfp8gVqlFIgwHnnlBT1svUSxM
-         PsqGrTbXR5ewRPNj+tlt0w6nzkBWLldeaLmQtuHqb7bjpSrsmaqw797Fo7RcpeZZu6
-         E5S1TZU1JlWmB3t5A5CESCWvBDmgMGUVXdQjnn4IIO1mAwAT2Z9ZLvfDN1oWt34LUl
-         IYL1iHAeSuYkZNMzNlVPN8uHOTIsiovx8LnTA9EdFQmA6oXqFqDV3IjnkLfuPY6yaJ
-         NSi1oVparCg69fZ86IB2ARG345RQeyqglO8Jj0sgkLOm7NUdHVUPqlh2+bp5AcLTQu
-         b+2Y4U/qNMblg==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 49/49] media: test-drivers: Use helper for DELETE_BUFS ioctl
-Date:   Thu, 14 Sep 2023 15:33:23 +0200
-Message-Id: <20230914133323.198857-50-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
-References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
+        Thu, 14 Sep 2023 09:36:37 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8353C2D;
+        Thu, 14 Sep 2023 06:34:34 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so1192498a12.0;
+        Thu, 14 Sep 2023 06:34:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694698472; x=1695303272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RpUIdnK9U7Z8dFu+3u/h7aGjExjlf4tG3qsuv5njPLM=;
+        b=TR1x7jsDmqdxi0XwQF54fUixXaMuNUjTQvpjE+RF3FRuAe7jqKAhRaTNO1cnEV9evm
+         wbGZ+/djqqClD9U0F5AGRwoTtyHX4/FIR6tvm+g8JX1rcGQmZvSPl5rVOIxDCUbCrvgJ
+         m9jz+UuKC5S+r9s/PBBKKcljewvMNJJtyM6SeNAIwRSowMgf6d07dvuVUzTh0yMoNQSp
+         HYsxs70w/AFs1q0u+H2Iv3y0ADBJigZYZvTx2R4COPEexRxgrFB+nySxNMi6tSn0vMlw
+         ICXxw6S7tm1dYMr8+Zs/v/pVi7ZRROhh0c2iDRrErCKYRk4SzkkYrnHQq+4YjQuBTZCQ
+         VQLQ==
+X-Gm-Message-State: AOJu0Yzyelauh5Q7Tpp51w5h8qrnu1UrBZb/TGtDPoNxCOajmQb/8xQG
+        nz3LNdNxXkMVAXEFla0UzCQAR0GjqikXPr+J
+X-Google-Smtp-Source: AGHT+IHoSHhBHzdoVOZoVSlVzWh5mQfZXtJugX/ClqLHOgwOtBJL9kyIMToqjtkpdfJMnigafX/SEg==
+X-Received: by 2002:a17:906:3195:b0:9a1:be5b:f499 with SMTP id 21-20020a170906319500b009a1be5bf499mr4092592ejy.24.1694698472201;
+        Thu, 14 Sep 2023 06:34:32 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id q21-20020a1709066b1500b0098921e1b064sm1019750ejr.181.2023.09.14.06.34.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 06:34:32 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso127015066b.1;
+        Thu, 14 Sep 2023 06:34:32 -0700 (PDT)
+X-Received: by 2002:a17:906:2182:b0:9a5:c79f:bed5 with SMTP id
+ 2-20020a170906218200b009a5c79fbed5mr4416706eju.16.1694698471866; Thu, 14 Sep
+ 2023 06:34:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230914111712.586522-1-ulf.hansson@linaro.org>
+In-Reply-To: <20230914111712.586522-1-ulf.hansson@linaro.org>
+From:   Neal Gompa <neal@gompa.dev>
+Date:   Thu, 14 Sep 2023 09:33:55 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je_Goo+8NVXzF3m4zocNwCpE0kGty2aDpMj+zKoy616vbA@mail.gmail.com>
+Message-ID: <CAEg-Je_Goo+8NVXzF3m4zocNwCpE0kGty2aDpMj+zKoy616vbA@mail.gmail.com>
+Subject: Re: [PATCH 04/17] pmdomain: apple: Move Kconfig option to the
+ pmdomain subsystem
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>, asahi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow test drivers to use DELETE_BUFS by adding vb2_ioctl_delete_bufs() helper.
+On Thu, Sep 14, 2023 at 7:17 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> The Kconfig option belongs closer to the corresponding implementation,
+> hence let's move it from the soc subsystem to the pmdomain subsystem.
+>
+> Cc: Hector Martin <marcan@marcan.st>
+> Cc: Sven Peter <sven@svenpeter.dev>
+> Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Cc: <asahi@lists.linux.dev>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/pmdomain/Kconfig       |  1 +
+>  drivers/pmdomain/apple/Kconfig | 18 ++++++++++++++++++
+>  drivers/soc/apple/Kconfig      | 13 -------------
+>  3 files changed, 19 insertions(+), 13 deletions(-)
+>  create mode 100644 drivers/pmdomain/apple/Kconfig
+>
+> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
+> index 07d2f8165abe..55a9ca191849 100644
+> --- a/drivers/pmdomain/Kconfig
+> +++ b/drivers/pmdomain/Kconfig
+> @@ -3,5 +3,6 @@ menu "Power Domains Support"
+>
+>  source "drivers/pmdomain/actions/Kconfig"
+>  source "drivers/pmdomain/amlogic/Kconfig"
+> +source "drivers/pmdomain/apple/Kconfig"
+>
+>  endmenu
+> diff --git a/drivers/pmdomain/apple/Kconfig b/drivers/pmdomain/apple/Kconfig
+> new file mode 100644
+> index 000000000000..12237cbcfaa9
+> --- /dev/null
+> +++ b/drivers/pmdomain/apple/Kconfig
+> @@ -0,0 +1,18 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +if ARCH_APPLE || COMPILE_TEST
+> +
+> +config APPLE_PMGR_PWRSTATE
+> +       bool "Apple SoC PMGR power state control"
+> +       depends on PM
+> +       select REGMAP
+> +       select MFD_SYSCON
+> +       select PM_GENERIC_DOMAINS
+> +       select RESET_CONTROLLER
+> +       default ARCH_APPLE
+> +       help
+> +         The PMGR block in Apple SoCs provides high-level power state
+> +         controls for SoC devices. This driver manages them through the
+> +         generic power domain framework, and also provides reset support.
+> +
+> +endif
+> diff --git a/drivers/soc/apple/Kconfig b/drivers/soc/apple/Kconfig
+> index a1596fefacff..eff486a77337 100644
+> --- a/drivers/soc/apple/Kconfig
+> +++ b/drivers/soc/apple/Kconfig
+> @@ -4,19 +4,6 @@ if ARCH_APPLE || COMPILE_TEST
+>
+>  menu "Apple SoC drivers"
+>
+> -config APPLE_PMGR_PWRSTATE
+> -       bool "Apple SoC PMGR power state control"
+> -       depends on PM
+> -       select REGMAP
+> -       select MFD_SYSCON
+> -       select PM_GENERIC_DOMAINS
+> -       select RESET_CONTROLLER
+> -       default ARCH_APPLE
+> -       help
+> -         The PMGR block in Apple SoCs provides high-level power state
+> -         controls for SoC devices. This driver manages them through the
+> -         generic power domain framework, and also provides reset support.
+> -
+>  config APPLE_RTKIT
+>         tristate "Apple RTKit co-processor IPC protocol"
+>         depends on MAILBOX
+> --
+> 2.34.1
+>
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/media/test-drivers/vicodec/vicodec-core.c | 1 +
- drivers/media/test-drivers/vimc/vimc-capture.c    | 1 +
- drivers/media/test-drivers/visl/visl-video.c      | 1 +
- drivers/media/test-drivers/vivid/vivid-core.c     | 1 +
- 4 files changed, 4 insertions(+)
+Makes sense to me.
 
-diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
-index 6f0e20df74e9..64bb0d3372f0 100644
---- a/drivers/media/test-drivers/vicodec/vicodec-core.c
-+++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
-@@ -1339,6 +1339,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl_ops = {
- 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
- 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
-+	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
- 
- 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
- 	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
-diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-index aa944270e716..66e76b645346 100644
---- a/drivers/media/test-drivers/vimc/vimc-capture.c
-+++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-@@ -221,6 +221,7 @@ static const struct v4l2_ioctl_ops vimc_capture_ioctl_ops = {
- 	.vidioc_expbuf = vb2_ioctl_expbuf,
- 	.vidioc_streamon = vb2_ioctl_streamon,
- 	.vidioc_streamoff = vb2_ioctl_streamoff,
-+	.vidioc_delete_bufs = vb2_ioctl_delete_bufs,
- };
- 
- static void vimc_capture_return_all_buffers(struct vimc_capture_device *vcapture,
-diff --git a/drivers/media/test-drivers/visl/visl-video.c b/drivers/media/test-drivers/visl/visl-video.c
-index 7cac6a6456eb..2fb5ff4a4987 100644
---- a/drivers/media/test-drivers/visl/visl-video.c
-+++ b/drivers/media/test-drivers/visl/visl-video.c
-@@ -521,6 +521,7 @@ const struct v4l2_ioctl_ops visl_ioctl_ops = {
- 	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
- 	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
-+	.vidioc_delete_bufs		= v4l2_m2m_ioctl_delete_bufs,
- 
- 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
- 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index e95bdccfc18e..43a7594e7c5b 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -769,6 +769,7 @@ static const struct v4l2_ioctl_ops vivid_ioctl_ops = {
- 	.vidioc_expbuf			= vb2_ioctl_expbuf,
- 	.vidioc_streamon		= vb2_ioctl_streamon,
- 	.vidioc_streamoff		= vb2_ioctl_streamoff,
-+	.vidioc_delete_bufs		= vb2_ioctl_delete_bufs,
- 
- 	.vidioc_enum_input		= vivid_enum_input,
- 	.vidioc_g_input			= vivid_g_input,
+Reviewed-by: Neal Gompa <neal@gompa.dev>
+
+
 -- 
-2.39.2
-
+真実はいつも一つ！/ Always, there's only one truth!
