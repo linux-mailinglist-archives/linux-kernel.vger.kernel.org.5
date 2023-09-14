@@ -2,170 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2D87A015D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78F17A0159
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238095AbjINKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        id S237303AbjINKOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237639AbjINKOO (ORCPT
+        with ESMTP id S230444AbjINKOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:14:14 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFAC1BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:14:09 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9adb9fa7200so106510766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1694686448; x=1695291248; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TPuDwD4ZrkyAZ/NBOLS8VaQLWjoMvPUnZLd4ZQdk17o=;
-        b=QLPVbta0mIgsVHxTB342Kfkc6P5mkwpvc8LRZIviHrsloFuQwMwZ0sM6jGWy9nCBOT
-         uTUyoG8ex9Jy1lIJaB8zz4u0JxQthyFIW0HmvV7XCC5pkgb/0nUKcjHwgc4G15a6EL2C
-         eVC25wejuY9fv1OJMSV8kXuBjt6XPECvgOaMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694686448; x=1695291248;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TPuDwD4ZrkyAZ/NBOLS8VaQLWjoMvPUnZLd4ZQdk17o=;
-        b=bNSy13yPgxF0PyYMEUTt4DJOtKYO5ZiKvnCUKKft+oz5kjEoJHpHfijPvIJ7emA+KR
-         jBVY0z70qjb1PeAxFqOQGpZddP5eXlb78JkQYQ6xpUieRyuGl9Eu2OEJKIECIOANAUnj
-         sgjS/vNmXQDL3HpmW6Jdt3VBbsh8NwXTqbSf+Cqcn14Uj46cq7U618CDDGgHvs41FXfq
-         Va20D74WrYN28NmAUfV/i7Y77oGUA38s+hZdVdhGRt3soXwdClKIcll/Z/plySdSvco7
-         h0klV/hcUljC+2qYioPaVj2XWukjaI/GZ/9Tjimo90QAryYlSowf8eJZLejco1ehkAi5
-         mj1g==
-X-Gm-Message-State: AOJu0Yw3PXZqjFhURILhhrHXJtPYJKueJ2IWNg4c4k4n0aS2DQKvrW/r
-        SRryf1cG8ae/6wg+XvSh22klelSQUt4sQppm1EHIgg==
-X-Google-Smtp-Source: AGHT+IGWbiyTK876nyDnSZchKAdndIJh+WgEikVLilcv45driRsG8+782uLgZQcb00o4mLm3qnrfRcUzbWyYeD/tVxI=
-X-Received: by 2002:a17:906:51c5:b0:9ad:a46c:66a2 with SMTP id
- v5-20020a17090651c500b009ada46c66a2mr2033508ejk.11.1694686448127; Thu, 14 Sep
- 2023 03:14:08 -0700 (PDT)
+        Thu, 14 Sep 2023 06:14:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3B61BE9;
+        Thu, 14 Sep 2023 03:14:07 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5EA6166072FF;
+        Thu, 14 Sep 2023 11:14:05 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694686445;
+        bh=OFvsdCQ1KzQj5G85fRFDOIGP6wxoxx66ab2XPVsGYNo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=O5eUS/j1EBqT+GT8lG7w3gmWCXNr2WoXzTo1g6W1TgY2sSvzHB3bBi3TJdiAlBan4
+         +WjXI2p4inBo+YqHFBQc/e86tTAYh+SSrDojVvTurYT4QYCNbcIp9RCBLdplp3BO4f
+         0oQTHfsVeS3RffWfG5UPpm1qh6asxrLn4fw7I8NLK7YDoPsZa5ce501l6C4R/+OD1N
+         n9z15xKyg7cdpENK/KbCGPyTsMgitMdqV8MarY+8xbWePdNJSK1QtS9PpGjVi3YfwM
+         cZezC6cCVVTomAhDjI6+L+evhMvinI0oqdQxpDTHyq7BG2S0L0Mm/3Qb5mbUcn9Hvc
+         vo8IGJqCve3/g==
+Message-ID: <712ab5f3-eb61-f7e5-fc67-c6c175beaac0@collabora.com>
+Date:   Thu, 14 Sep 2023 12:14:03 +0200
 MIME-Version: 1.0
-References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
- <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
-In-Reply-To: <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 14 Sep 2023 12:13:54 +0200
-Message-ID: <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/2] usb: xhci-mtk: add a bandwidth budget table
+Content-Language: en-US
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230830122820.18859-1-chunfeng.yun@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230830122820.18859-1-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sept 2023 at 11:28, Christian Brauner <brauner@kernel.org> wrote:
->
-> On Wed, Sep 13, 2023 at 05:22:35PM +0200, Miklos Szeredi wrote:
-> > Add a way to query attributes of a single mount instead of having to parse
-> > the complete /proc/$PID/mountinfo, which might be huge.
-> >
-> > Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
-> > needs to be queried based on path, then statx(2) can be used to first query
-> > the mount ID belonging to the path.
-> >
-> > Design is based on a suggestion by Linus:
-> >
-> >   "So I'd suggest something that is very much like "statfsat()", which gets
-> >    a buffer and a length, and returns an extended "struct statfs" *AND*
-> >    just a string description at the end."
->
-> So what we agreed to at LSFMM was that we split filesystem option
-> retrieval into a separate system call and just have a very focused
-> statx() for mounts with just binary and non-variable sized information.
-> We even gave David a hard time about this. :) I would really love if we
-> could stick to that.
->
-> Linus, I realize this was your suggestion a long time ago but I would
-> really like us to avoid structs with variable sized fields at the end of
-> a struct. That's just so painful for userspace and universally disliked.
-> If you care I can even find the LSFMM video where we have users of that
-> api requesting that we please don't do this. So it'd be great if you
-> wouldn't insist on it.
+Il 30/08/23 14:28, Chunfeng Yun ha scritto:
+> In order to estimate when fs/ls transactions appear on a downstream bus,
+> the host must calculate a best case full-speed budget, use a table to
+> track how many bytes occure in each microframe.
+> This patch is prepared for introducing an improved bandwidth scheduling.
+> 
 
-I completely missed that.
+Hello Chunfeng,
 
-What I'm thinking is making it even simpler for userspace:
-
-struct statmnt {
-  ...
-  char *mnt_root;
-  char *mountpoint;
-  char *fs_type;
-  u32 num_opts;
-  char *opts;
-};
-
-I'd still just keep options nul delimited.
-
-Is there a good reason not to return pointers (pointing to within the
-supplied buffer obviously) to userspace?
-
->
-> This will also allow us to turn statmnt() into an extensible argument
-> system call versioned by size just like we do any new system calls with
-> struct arguments (e.g., mount_setattr(), clone3(), openat2() and so on).
-> Which is how we should do things like that.
-
-The mask mechanism also allow versioning of the struct.
-
->
-> Other than that I really think this is on track for what we ultimately
-> want.
->
-> > +struct stmt_str {
-> > +     __u32 off;
-> > +     __u32 len;
-> > +};
-> > +
-> > +struct statmnt {
-> > +     __u64 mask;             /* What results were written [uncond] */
-> > +     __u32 sb_dev_major;     /* Device ID */
-> > +     __u32 sb_dev_minor;
-> > +     __u64 sb_magic;         /* ..._SUPER_MAGIC */
-> > +     __u32 sb_flags;         /* MS_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME} */
-> > +     __u32 __spare1;
-> > +     __u64 mnt_id;           /* Unique ID of mount */
-> > +     __u64 mnt_parent_id;    /* Unique ID of parent (for root == mnt_id) */
-> > +     __u32 mnt_id_old;       /* Reused IDs used in proc/.../mountinfo */
-> > +     __u32 mnt_parent_id_old;
-> > +     __u64 mnt_attr;         /* MOUNT_ATTR_... */
-> > +     __u64 mnt_propagation;  /* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} */
-> > +     __u64 mnt_peer_group;   /* ID of shared peer group */
-> > +     __u64 mnt_master;       /* Mount receives propagation from this ID */
-> > +     __u64 propagate_from;   /* Propagation from in current namespace */
-> > +     __u64 __spare[20];
-> > +     struct stmt_str mnt_root;       /* Root of mount relative to root of fs */
-> > +     struct stmt_str mountpoint;     /* Mountpoint relative to root of process */
-> > +     struct stmt_str fs_type;        /* Filesystem type[.subtype] */
->
-> I think if we want to do this here we should add:
->
-> __u64 fs_type
-> __u64 fs_subtype
->
-> fs_type can just be our filesystem magic number and we introduce magic
-
-It's already there: sb_magic.
-
-However it's not a 1:1 mapping (ext* only has one magic).
-
-> numbers for sub types as well. So we don't need to use strings here.
-
-Ugh.
+it would be helpful if you add a cover letter with some test results for
+the BW improvements that you're seeing here.
 
 Thanks,
-Miklos
+Angelo
+
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>   drivers/usb/host/xhci-mtk-sch.c | 113 +++++++++++++++++++++++---------
+>   drivers/usb/host/xhci-mtk.h     |   4 +-
+>   2 files changed, 85 insertions(+), 32 deletions(-)
+> 
+
