@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3227A0D18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E713C7A0D1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242034AbjINSkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
+        id S242040AbjINSkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241724AbjINSi7 (ORCPT
+        with ESMTP id S241740AbjINSjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:38:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8532682;
+        Thu, 14 Sep 2023 14:39:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997702683;
         Thu, 14 Sep 2023 11:38:54 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716732;
+        s=2020; t=1694716733;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ljKUwev2UkcA8WCxS5wHB4jucft9QaueReQAnJLBgA=;
-        b=4LBDpTPLhp3Mhhl4pVyJop8/w8YO125vIGMHFDGAc829iCRLFSl6X0mnCu86Xp0DKlykZQ
-        MXfUoGbOklo8kZ7vno2kF6WSkEIFFIvGBTcq82frPQ1vcXYDd6OP7vg6a7cB6OoKGCAkfw
-        fKDP6Ajv8OLwdQ319atwJb34QtjDpof9v9S7t56NLpZyAZyZJnQuNrxE05l8/g1GJoesLm
-        lwGEKRQpPcSrqp5lU/Qczo2PqcPpFrhhih2JjfhMpnvo2acScgXq2FMPoFFKDsSCyfuCZw
-        ocpglMKMTGaf/tHVHULGAUC4UImI8D22JCJD7t3sASdeP7gHPu23CWH7OKLk0g==
+        bh=xu+MA3nvAGpQibJHqwBXfavhwazXxpOBvYT7SUXxurg=;
+        b=VNedMCHdngMxNzKkI4Tk3e/Scyd10wBR9UsJz4Nv9l3mO40AvsIaYB5UO8o6dA/4/jwD5J
+        iOCuPIyDf16h72BERJcVXy0VZ8a6A3zmwzjMPFpuLjj9OyfkzzeRQXOKaPMUpDV2fULhy8
+        cGnJl0BWhMxtQC9bl5QNvRo0WWzmM/QKhUAxbsaRPX/uxVCjwzMn6eCyLOAR9nnTZBLmGF
+        VQD1UySg+AtbVJpq2cc+vjZB4BINNtIEFjbBtzLV5e4b7IH+k1u/ONNntwWMv8CEHhCQ7w
+        s+awbpMjvgek91Sh+gVYrmY3I8Bui727eu0LEcRwRdJMrrXD97PtfYhQv0hLOQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716732;
+        s=2020e; t=1694716733;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ljKUwev2UkcA8WCxS5wHB4jucft9QaueReQAnJLBgA=;
-        b=DU48W/75T7f5tMYhQEpupILmuQfJztsBNWC4FVQumidZDa1Kg7GZ2XZ8GARLh976Uuhd0Q
-        AFsq08hjfv2Li5Cg==
+        bh=xu+MA3nvAGpQibJHqwBXfavhwazXxpOBvYT7SUXxurg=;
+        b=BDeS7WcDlvoxrWV5nRJyybaIh6Ix6LKXdIjVcLazyjC0Pcx+K4Imt04CGw4/ALxm62UPmZ
+        PGHFzBpNpEyz6ECQ==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Richard GENOUD <richard.genoud@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH tty v1 35/74] serial: mcf: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:52 +0206
-Message-Id: <20230914183831.587273-36-john.ogness@linutronix.de>
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH tty v1 36/74] serial: men_z135_uart: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:53 +0206
+Message-Id: <20230914183831.587273-37-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -84,100 +82,49 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/mcf.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/tty/serial/men_z135_uart.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
-index 1666ce012e5e..91b15243f6c6 100644
---- a/drivers/tty/serial/mcf.c
-+++ b/drivers/tty/serial/mcf.c
-@@ -135,12 +135,12 @@ static void mcf_break_ctl(struct uart_port *port, int break_state)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	if (break_state == -1)
- 		writeb(MCFUART_UCR_CMDBREAKSTART, port->membase + MCFUART_UCR);
- 	else
- 		writeb(MCFUART_UCR_CMDBREAKSTOP, port->membase + MCFUART_UCR);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
- 
- /****************************************************************************/
-@@ -150,7 +150,7 @@ static int mcf_startup(struct uart_port *port)
- 	struct mcf_uart *pp = container_of(port, struct mcf_uart, port);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	/* Reset UART, get it into known state... */
- 	writeb(MCFUART_UCR_CMDRESETRX, port->membase + MCFUART_UCR);
-@@ -164,7 +164,7 @@ static int mcf_startup(struct uart_port *port)
- 	pp->imr = MCFUART_UIR_RXREADY;
- 	writeb(pp->imr, port->membase + MCFUART_UIMR);
- 
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	return 0;
- }
-@@ -176,7 +176,7 @@ static void mcf_shutdown(struct uart_port *port)
- 	struct mcf_uart *pp = container_of(port, struct mcf_uart, port);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	/* Disable all interrupts now */
- 	pp->imr = 0;
-@@ -186,7 +186,7 @@ static void mcf_shutdown(struct uart_port *port)
- 	writeb(MCFUART_UCR_CMDRESETRX, port->membase + MCFUART_UCR);
- 	writeb(MCFUART_UCR_CMDRESETTX, port->membase + MCFUART_UCR);
- 
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
- 
- /****************************************************************************/
-@@ -252,7 +252,7 @@ static void mcf_set_termios(struct uart_port *port, struct ktermios *termios,
- 		mr2 |= MCFUART_MR2_TXCTS;
- 	}
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 	if (port->rs485.flags & SER_RS485_ENABLED) {
- 		dev_dbg(port->dev, "Setting UART to RS485\n");
- 		mr2 |= MCFUART_MR2_TXRTS;
-@@ -273,7 +273,7 @@ static void mcf_set_termios(struct uart_port *port, struct ktermios *termios,
- 		port->membase + MCFUART_UCSR);
- 	writeb(MCFUART_UCR_RXENABLE | MCFUART_UCR_TXENABLE,
- 		port->membase + MCFUART_UCR);
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- }
- 
- /****************************************************************************/
-@@ -350,7 +350,7 @@ static irqreturn_t mcf_interrupt(int irq, void *data)
- 
- 	isr = readb(port->membase + MCFUART_UISR) & pp->imr;
+diff --git a/drivers/tty/serial/men_z135_uart.c b/drivers/tty/serial/men_z135_uart.c
+index d2502aaa3e8c..8048fa542fc4 100644
+--- a/drivers/tty/serial/men_z135_uart.c
++++ b/drivers/tty/serial/men_z135_uart.c
+@@ -392,7 +392,7 @@ static irqreturn_t men_z135_intr(int irq, void *data)
+ 	if (!irq_id)
+ 		goto out;
  
 -	spin_lock(&port->lock);
 +	uart_port_lock(port);
- 	if (isr & MCFUART_UIR_RXREADY) {
- 		mcf_rx_chars(pp);
- 		ret = IRQ_HANDLED;
-@@ -359,7 +359,7 @@ static irqreturn_t mcf_interrupt(int irq, void *data)
- 		mcf_tx_chars(pp);
- 		ret = IRQ_HANDLED;
+ 	/* It's save to write to IIR[7:6] RXC[9:8] */
+ 	iowrite8(irq_id, port->membase + MEN_Z135_STAT_REG);
+ 
+@@ -418,7 +418,7 @@ static irqreturn_t men_z135_intr(int irq, void *data)
+ 		handled = true;
  	}
+ 
 -	spin_unlock(&port->lock);
 +	uart_port_unlock(port);
- 
- 	return ret;
+ out:
+ 	return IRQ_RETVAL(handled);
  }
+@@ -708,7 +708,7 @@ static void men_z135_set_termios(struct uart_port *port,
+ 
+ 	baud = uart_get_baud_rate(port, termios, old, 0, uart_freq / 16);
+ 
+-	spin_lock_irq(&port->lock);
++	uart_port_lock_irq(port);
+ 	if (tty_termios_baud_rate(termios))
+ 		tty_termios_encode_baud_rate(termios, baud, baud);
+ 
+@@ -716,7 +716,7 @@ static void men_z135_set_termios(struct uart_port *port,
+ 	iowrite32(bd_reg, port->membase + MEN_Z135_BAUD_REG);
+ 
+ 	uart_update_timeout(port, termios->c_cflag, baud);
+-	spin_unlock_irq(&port->lock);
++	uart_port_unlock_irq(port);
+ }
+ 
+ static const char *men_z135_type(struct uart_port *port)
 -- 
 2.39.2
 
