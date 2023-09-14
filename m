@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3124579FC28
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32DA79FC39
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbjINGjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        id S235548AbjINGlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234896AbjINGjx (ORCPT
+        with ESMTP id S232856AbjINGlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:39:53 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B06ECD8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:39:49 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401ec23be82so6215455e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694673587; x=1695278387; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vw1xAqxeSq4kl4jeb6G5DgHyu+jon40ahkBSIlI62DE=;
-        b=VOGnwLsa5qkR1VwZc1i2Woe1Nge1yaatlCqx4V3FYdGtLam+/+G0xRsMjro83oQiZ6
-         yAdcAFQvsRjz2lq/Gdts3HpVlAbsbk6BfbJpoXUbetgZbKBgROwSZMKHyli+d1k72IyA
-         7PKzfTN3oi1n2p8wmVeowOigdGrneji05hp48CXiufVUhaX0YjU325yL2mMBH5cEzVwI
-         pXeYAbZ3cJR1GgZwKol4f2WEqjPhnYfC3maW8osJ1vzYNcj4Yoa0KyR/sDQgi2BfjdiR
-         qeJRSd/HZV6QYD5aGvWvCCfy1BTzDC20kcWJ/FHYqMIGAogRatamTMThYR0hEUqHpLRj
-         wScA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694673587; x=1695278387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vw1xAqxeSq4kl4jeb6G5DgHyu+jon40ahkBSIlI62DE=;
-        b=K6u6nGKiz77/2R8LfaDkHt4bDHTNaWu3kFn/49MKyKmzfAPFRA6MQxJmwhHWqXHR4C
-         1eWMQYIrMkgA5pQvKU2ActsJbrAY1VEsH1j/iYH04m44DSLdizlDsxmqRuhhtGwv6i/P
-         Dm7nLnSeFg5cbRf6zNRg8RD/VgCtj1ZXnwR/CO33hIKDvEMRFfPdRCp1NQpAM6sua5iw
-         zEWrjrJvt3IdT38hU6RExR81VzS7LC1bL5uEm4YCs8pxbspnjJnDgPiYRm/2uSKVNN5h
-         LDLxciKdJixncrN60dPI3PEamQ8FvlpJ2+Zgqzz7WbTkyLhizYQXZW2ASfgecoi7outF
-         Kxjg==
-X-Gm-Message-State: AOJu0YwLbDoWVQ7EJKiM2eP/GzSFAfXfvLgU1bnI3GbM+pr9t4SjXWDr
-        oJASgYXkb1lWfxUBec78srg=
-X-Google-Smtp-Source: AGHT+IEL/pZOjLIhGTpDNc/dM2JnFH9ddv4ez2DZz2UBgRU3SL8zcdWMfCo50q7zqhkrQgEJV1sIKw==
-X-Received: by 2002:a7b:ce93:0:b0:401:daf2:2735 with SMTP id q19-20020a7bce93000000b00401daf22735mr3785020wmj.31.1694673587417;
-        Wed, 13 Sep 2023 23:39:47 -0700 (PDT)
-Received: from gmail.com (1F2EF048.nat.pool.telekom.hu. [31.46.240.72])
-        by smtp.gmail.com with ESMTPSA id z6-20020a05600c220600b00402dbe0bbdcsm3884895wml.28.2023.09.13.23.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 23:39:46 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 14 Sep 2023 08:39:44 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Wei Wang <wvw@google.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
-        Hank <han.lin@mediatek.com>,
-        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>
-Subject: Re: [PATCH v4 1/3] sched/uclamp: Set max_spare_cap_cpu even if
- max_spare_cap is 0
-Message-ID: <ZQKqsL0MCZCW3Rpi@gmail.com>
-References: <20230821224504.710576-1-qyousef@layalina.io>
- <20230821224504.710576-2-qyousef@layalina.io>
- <d5407fdf-8e49-1035-3188-f96248c96c44@arm.com>
- <20230826204156.5gznalle6qzwl7y3@airbuntu>
+        Thu, 14 Sep 2023 02:41:17 -0400
+Received: from mail-sh.amlogic.com (mail-sh.amlogic.com [58.32.228.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252FBCCD;
+        Wed, 13 Sep 2023 23:40:25 -0700 (PDT)
+Received: from droid10-sz.amlogic.com (10.28.11.69) by mail-sh.amlogic.com
+ (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Thu, 14 Sep 2023
+ 14:40:21 +0800
+From:   zelong dong <zelong.dong@amlogic.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <yonghui.yu@amlogic.com>,
+        <kelvin.zhang@amlogic.com>, Zelong Dong <zelong.dong@amlogic.com>
+Subject: [PATCH v4 0/3] reset: amlogic-c3: add reset driver
+Date:   Thu, 14 Sep 2023 14:40:15 +0800
+Message-ID: <20230914064018.18790-1-zelong.dong@amlogic.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230826204156.5gznalle6qzwl7y3@airbuntu>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.28.11.69]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zelong Dong <zelong.dong@amlogic.com>
 
-* Qais Yousef <qyousef@layalina.io> wrote:
+This patchset adds Reset controller driver support for Amlogic C3 SoC.
+The RESET registers count and offset for C3 Soc are same as S4 Soc.
 
-> > Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> 
-> Thanks for the review!
-> 
-> I will wait for the maintainers to see if they would like a v5 to address 
-> the nitpicks or it's actually good enough and happy to pick this up. I 
-> think the commit messages explain the problem clear enough and doesn't 
-> warrant sending a new version. But happy to do so if there's insistence 
-> :-)
+Changes since v1:
+- remove Change-ID
+- run scripts/checkpatch.pl and fix reported warnings
+- sort dts node by base reg offset
 
-Yeah, please always do that: sensible review replies with actionable 
-feedback cause a semi-atomatic "mark this thread as read, there will be a 
-next version" reflexive action from maintainers, especially if a series is 
-in its 4th iteration already...
+Changes since v2:
+- replace keyword "meson" with "amlogic"
 
-Thanks,
+Changes since v3:
+- rebase on v6.6-rc1
 
-	Ingo
+---
+v1:https://lore.kernel.org/all/20230630121059.28748-1-zelong.dong@amlogic.com/
+v2:https://lore.kernel.org/all/20230718123550.13712-1-zelong.dong@amlogic.com/
+v3:https://lore.kernel.org/all/20230719060954.14864-1-zelong.dong@amlogic.com/
+
+Zelong Dong (3):
+  dt-bindings: reset: Add compatible and DT bindings for Amlogic C3
+    Reset Controller
+  reset: reset-meson: add support for Amlogic C3 SoC Reset Controller
+  arm64: dts: amlogic: add reset controller for Amlogic C3 SoC
+
+ .../bindings/reset/amlogic,meson-reset.yaml   |   1 +
+ arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi   |   7 ++
+ drivers/reset/reset-meson.c                   |   1 +
+ include/dt-bindings/reset/amlogic,c3-reset.h  | 119 ++++++++++++++++++
+ 4 files changed, 128 insertions(+)
+ create mode 100644 include/dt-bindings/reset/amlogic,c3-reset.h
+
+-- 
+2.35.1
+
