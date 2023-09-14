@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A2B7A0D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E69F7A0D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241973AbjINSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S241814AbjINSjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241745AbjINSi6 (ORCPT
+        with ESMTP id S241748AbjINSi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A441FFD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C049F1FFF;
         Thu, 14 Sep 2023 11:38:50 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,30 +22,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bAQMyCFi9PO4xpR/WPWLi4jhKKcsg8hehn8chVaaTl0=;
-        b=n2xCF/DUjDRzahmUSJxlSWtqGEYnXikTuRJGO0brUgFo2xy+azTzwwyTkZQNjo2UtThea7
-        6Bj6FHVBCQWeV2ZRasFqBo0ev16KuZO4Z/2Dmh9F+/Uiy4YQqcvXCUKI9WXIJWy13kiOFV
-        njJOY6stZWqb3FId6kBIv374vYa8WlyJvXiRxupEVrKfVO6HmihZfrUwaYlElGK8Avws4a
-        KRYBVPxog9AXlkbsxYS+nBFZ3qtL5FhcNCgQXfqgfplsxw+PQ6yXHjleI2Ixi4sl/t+RFV
-        vYvVuQKs//wBKHK7pFppuYNN0V74DEvdof27v/pzsUV1rUhJe6hwLZjED2PO+g==
+        bh=LnvnRSzrP5woiUHdOlb0Xg3fIJh3UJCjsy6M4up7fns=;
+        b=q3Pkc5q153R9B4lAEoaA19W6MCMs6e7mCMtjnfPCoSu5uskZO70YiNFkdi4cc2AiIdF44X
+        xMN/yA0YBtf1rAThdjz4/pj0TN952tVmeDh4LfVuzsehKXBkDYjOjivfsFWjHiND1aoCDR
+        vOZihjkxvwaVoFclY/TK4PPQec6xJixb03Sgeu8bZAxp2rNnEF/LwPJfUSJMiKC6sekAar
+        DMNKKY5hA3CkE8EqATl34e8U6c3UqqVj7GF22fSwM5KGL8t90o0+uh92rOgF6yoH2pv3OJ
+        JyFF3Qy8mEpw8dfdii/p/yOitx+q9v/ismffS6J7mEVMch28sWMu9yb7W2uvAw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716729;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bAQMyCFi9PO4xpR/WPWLi4jhKKcsg8hehn8chVaaTl0=;
-        b=KdZ4Z6jUDDh6cAqCYOcEnIuqTngw9Nw3VLNS+kOfej1f0HNVUKkr2RbnSjsqky7RxWlaNt
-        7pOCpZiPfAabqLDA==
+        bh=LnvnRSzrP5woiUHdOlb0Xg3fIJh3UJCjsy6M4up7fns=;
+        b=5doHq489JrJleGSPjVe5kdeivGhy0qLN1gSxtjdAKVkc4V0xuC8emnUqbt0JJUzhj7NGUS
+        pfM2wQcP0bLD79Bw==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: [PATCH tty v1 25/74] serial: dz: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:42 +0206
-Message-Id: <20230914183831.587273-26-john.ogness@linutronix.de>
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Yangtao Li <frank.li@vivo.com>, Rob Herring <robh@kernel.org>
+Subject: [PATCH tty v1 26/74] serial: linflexuart: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:43 +0206
+Message-Id: <20230914183831.587273-27-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -82,134 +85,116 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/dz.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/tty/serial/fsl_linflexuart.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/dz.c b/drivers/tty/serial/dz.c
-index 667f52e83277..6df7af9edc1c 100644
---- a/drivers/tty/serial/dz.c
-+++ b/drivers/tty/serial/dz.c
-@@ -268,9 +268,9 @@ static inline void dz_transmit_chars(struct dz_mux *mux)
- 	}
- 	/* If nothing to do or stopped or hardware stopped. */
- 	if (uart_circ_empty(xmit) || uart_tx_stopped(&dport->port)) {
--		spin_lock(&dport->port.lock);
-+		uart_port_lock(&dport->port);
- 		dz_stop_tx(&dport->port);
--		spin_unlock(&dport->port.lock);
-+		uart_port_unlock(&dport->port);
- 		return;
- 	}
- 
-@@ -287,9 +287,9 @@ static inline void dz_transmit_chars(struct dz_mux *mux)
- 
- 	/* Are we are done. */
- 	if (uart_circ_empty(xmit)) {
--		spin_lock(&dport->port.lock);
-+		uart_port_lock(&dport->port);
- 		dz_stop_tx(&dport->port);
--		spin_unlock(&dport->port.lock);
-+		uart_port_unlock(&dport->port);
- 	}
- }
- 
-@@ -415,14 +415,14 @@ static int dz_startup(struct uart_port *uport)
- 		return ret;
- 	}
- 
--	spin_lock_irqsave(&dport->port.lock, flags);
-+	uart_port_lock_irqsave(&dport->port, &flags);
- 
- 	/* Enable interrupts.  */
- 	tmp = dz_in(dport, DZ_CSR);
- 	tmp |= DZ_RIE | DZ_TIE;
- 	dz_out(dport, DZ_CSR, tmp);
- 
--	spin_unlock_irqrestore(&dport->port.lock, flags);
-+	uart_port_unlock_irqrestore(&dport->port, flags);
- 
- 	return 0;
- }
-@@ -443,9 +443,9 @@ static void dz_shutdown(struct uart_port *uport)
- 	int irq_guard;
- 	u16 tmp;
- 
--	spin_lock_irqsave(&dport->port.lock, flags);
-+	uart_port_lock_irqsave(&dport->port, &flags);
- 	dz_stop_tx(&dport->port);
--	spin_unlock_irqrestore(&dport->port.lock, flags);
-+	uart_port_unlock_irqrestore(&dport->port, flags);
- 
- 	irq_guard = atomic_add_return(-1, &mux->irq_guard);
- 	if (!irq_guard) {
-@@ -491,14 +491,14 @@ static void dz_break_ctl(struct uart_port *uport, int break_state)
+diff --git a/drivers/tty/serial/fsl_linflexuart.c b/drivers/tty/serial/fsl_linflexuart.c
+index 249cb380c3c6..7fa809a405e8 100644
+--- a/drivers/tty/serial/fsl_linflexuart.c
++++ b/drivers/tty/serial/fsl_linflexuart.c
+@@ -203,7 +203,7 @@ static irqreturn_t linflex_txint(int irq, void *dev_id)
+ 	struct circ_buf *xmit = &sport->state->xmit;
  	unsigned long flags;
- 	unsigned short tmp, mask = 1 << dport->port.line;
  
--	spin_lock_irqsave(&uport->lock, flags);
-+	uart_port_lock_irqsave(uport, &flags);
- 	tmp = dz_in(dport, DZ_TCR);
- 	if (break_state)
- 		tmp |= mask;
- 	else
- 		tmp &= ~mask;
- 	dz_out(dport, DZ_TCR, tmp);
--	spin_unlock_irqrestore(&uport->lock, flags);
-+	uart_port_unlock_irqrestore(uport, flags);
+-	spin_lock_irqsave(&sport->lock, flags);
++	uart_port_lock_irqsave(sport, &flags);
+ 
+ 	if (sport->x_char) {
+ 		linflex_put_char(sport, sport->x_char);
+@@ -217,7 +217,7 @@ static irqreturn_t linflex_txint(int irq, void *dev_id)
+ 
+ 	linflex_transmit_buffer(sport);
+ out:
+-	spin_unlock_irqrestore(&sport->lock, flags);
++	uart_port_unlock_irqrestore(sport, flags);
+ 	return IRQ_HANDLED;
  }
  
- static int dz_encode_baud_rate(unsigned int baud)
-@@ -608,7 +608,7 @@ static void dz_set_termios(struct uart_port *uport, struct ktermios *termios,
- 	if (termios->c_cflag & CREAD)
- 		cflag |= DZ_RXENAB;
+@@ -230,7 +230,7 @@ static irqreturn_t linflex_rxint(int irq, void *dev_id)
+ 	unsigned char rx;
+ 	bool brk;
  
--	spin_lock_irqsave(&dport->port.lock, flags);
-+	uart_port_lock_irqsave(&dport->port, &flags);
+-	spin_lock_irqsave(&sport->lock, flags);
++	uart_port_lock_irqsave(sport, &flags);
  
- 	uart_update_timeout(uport, termios->c_cflag, baud);
+ 	status = readl(sport->membase + UARTSR);
+ 	while (status & LINFLEXD_UARTSR_RMB) {
+@@ -266,7 +266,7 @@ static irqreturn_t linflex_rxint(int irq, void *dev_id)
+ 		}
+ 	}
  
-@@ -631,7 +631,7 @@ static void dz_set_termios(struct uart_port *uport, struct ktermios *termios,
- 	if (termios->c_iflag & IGNBRK)
- 		dport->port.ignore_status_mask |= DZ_BREAK;
+-	spin_unlock_irqrestore(&sport->lock, flags);
++	uart_port_unlock_irqrestore(sport, flags);
  
--	spin_unlock_irqrestore(&dport->port.lock, flags);
-+	uart_port_unlock_irqrestore(&dport->port, flags);
+ 	tty_flip_buffer_push(port);
+ 
+@@ -369,11 +369,11 @@ static int linflex_startup(struct uart_port *port)
+ 	int ret = 0;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	linflex_setup_watermark(port);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	ret = devm_request_irq(port->dev, port->irq, linflex_int, 0,
+ 			       DRIVER_NAME, port);
+@@ -386,14 +386,14 @@ static void linflex_shutdown(struct uart_port *port)
+ 	unsigned long ier;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* disable interrupts */
+ 	ier = readl(port->membase + LINIER);
+ 	ier &= ~(LINFLEXD_LINIER_DRIE | LINFLEXD_LINIER_DTIE);
+ 	writel(ier, port->membase + LINIER);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	devm_free_irq(port->dev, port->irq, port);
+ }
+@@ -474,7 +474,7 @@ linflex_set_termios(struct uart_port *port, struct ktermios *termios,
+ 		cr &= ~LINFLEXD_UARTCR_PCE;
+ 	}
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	port->read_status_mask = 0;
+ 
+@@ -507,7 +507,7 @@ linflex_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	writel(cr1, port->membase + LINCR1);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static const char *linflex_type(struct uart_port *port)
+@@ -646,14 +646,14 @@ linflex_console_write(struct console *co, const char *s, unsigned int count)
+ 	if (sport->sysrq)
+ 		locked = 0;
+ 	else if (oops_in_progress)
+-		locked = spin_trylock_irqsave(&sport->lock, flags);
++		locked = uart_port_trylock_irqsave(sport, &flags);
+ 	else
+-		spin_lock_irqsave(&sport->lock, flags);
++		uart_port_lock_irqsave(sport, &flags);
+ 
+ 	linflex_string_write(sport, s, count);
+ 
+ 	if (locked)
+-		spin_unlock_irqrestore(&sport->lock, flags);
++		uart_port_unlock_irqrestore(sport, flags);
  }
  
  /*
-@@ -645,12 +645,12 @@ static void dz_pm(struct uart_port *uport, unsigned int state,
- 	struct dz_port *dport = to_dport(uport);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&dport->port.lock, flags);
-+	uart_port_lock_irqsave(&dport->port, &flags);
- 	if (state < 3)
- 		dz_start_tx(&dport->port);
- 	else
- 		dz_stop_tx(&dport->port);
--	spin_unlock_irqrestore(&dport->port.lock, flags);
-+	uart_port_unlock_irqrestore(&dport->port, flags);
- }
- 
- 
-@@ -811,7 +811,7 @@ static void dz_console_putchar(struct uart_port *uport, unsigned char ch)
- 	unsigned short csr, tcr, trdy, mask;
- 	int loops = 10000;
- 
--	spin_lock_irqsave(&dport->port.lock, flags);
-+	uart_port_lock_irqsave(&dport->port, &flags);
- 	csr = dz_in(dport, DZ_CSR);
- 	dz_out(dport, DZ_CSR, csr & ~DZ_TIE);
- 	tcr = dz_in(dport, DZ_TCR);
-@@ -819,7 +819,7 @@ static void dz_console_putchar(struct uart_port *uport, unsigned char ch)
- 	mask = tcr;
- 	dz_out(dport, DZ_TCR, mask);
- 	iob();
--	spin_unlock_irqrestore(&dport->port.lock, flags);
-+	uart_port_unlock_irqrestore(&dport->port, flags);
- 
- 	do {
- 		trdy = dz_in(dport, DZ_CSR);
 -- 
 2.39.2
 
