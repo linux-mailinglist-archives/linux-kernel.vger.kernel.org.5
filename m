@@ -2,339 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C61E7A0A54
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1A47A0A56
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbjINQHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
+        id S241830AbjINQHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241709AbjINQGx (ORCPT
+        with ESMTP id S241832AbjINQHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:06:53 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221661BFE
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:06:49 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-414b3b65e85so6282251cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694707608; x=1695312408; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Mbajobr6rP3X4aM0XYFLHq1u31se4ZehoUPZ9vu3Rs8=;
-        b=ynjChdKSZj30zq/lrD0gBdmOPJsfNGf5ZTnCoWgd4q/G4+yumrrMoJJFFD+8M6VeSr
-         2fLZGvqlrUQFV87V9PdGKZLCULu8SzKpDortmijZNf5QMFKEq+PjQO4MJDg2z4f85NHb
-         Y94cn9E9oEtE7j8gq4DreA6hBd2a3TthB7pDpf6C4olQ5hZ4KdEo15oG2NZZV4WNCAfU
-         DU7ILRjAv6kasGDCo6Byqy6FlhSFgnKcaPegdrAniKZsAP7m7p2hIa1NksK6W+4bGySE
-         aCvButfSJCTVya4LycsUNQYkXwJUtglSmIU+gKfnPgivOK2Xev3TgRvxLCVpTGoZZhvG
-         2MBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694707608; x=1695312408;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mbajobr6rP3X4aM0XYFLHq1u31se4ZehoUPZ9vu3Rs8=;
-        b=xD3oyrQyWOSrKsTpq8WygR3jvW2DmaRpWF/0nY8SHuguTw4rOi7dgENTXClpdQY+oW
-         BuqGm+gbKc1yjqOwP/Ghrqo/QGpxpOBJLqQRSJkhMZCWhvfoooft+qF8UYNSjoWXR0/q
-         1hXAY6cwCl2hhb+Fc1eTc04pcRsWGbbU6IpCP2k5P8LaSAGtm533fNL3a/jp+zJdOku5
-         MOKdT++iMa7nCfLRuXDcChdR4pcY8bJ4SytIUQsniAlFpN8qD2OZn/KX/be4f5PaIGS5
-         RKp5QMBT2fmjPixf/0yO9hQb6KKjwSfbgjOonvxFqFg0po9/EuyC7GMju4q+iGOkCVNL
-         An7A==
-X-Gm-Message-State: AOJu0YyPKBM2SGoZCeL/akPrGvDOf2+03U8x5u5uwzVABY1BScCyT2TN
-        EN7DsAMYZ1ytOFGBi5ydACzUVA==
-X-Google-Smtp-Source: AGHT+IH9X3Gcor+GBhrCueAkrgEE1SxqvatfvMWYPllvxpSwoFFUa+VD2Q5mOEYogDi3f0LpvKJrNg==
-X-Received: by 2002:a05:622a:1306:b0:403:ef20:5142 with SMTP id v6-20020a05622a130600b00403ef205142mr6838232qtk.40.1694707607720;
-        Thu, 14 Sep 2023 09:06:47 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:35bb])
-        by smtp.gmail.com with ESMTPSA id l25-20020ac87259000000b00413152fb99esm541457qtp.49.2023.09.14.09.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 09:06:47 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 12:06:46 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and
- accuracy
-Message-ID: <20230914160646.GA101038@cmpxchg.org>
-References: <20230913073846.1528938-1-yosryahmed@google.com>
- <20230913073846.1528938-4-yosryahmed@google.com>
- <20230913153758.GB45543@cmpxchg.org>
- <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com>
+        Thu, 14 Sep 2023 12:07:07 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA981FF6;
+        Thu, 14 Sep 2023 09:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1694707623; x=1726243623;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=tfAj+1QeyQQxe36jSfS+R39/VwmnSFZHudvCn+33SQc=;
+  b=JQK1ZyOgEIyE+MaJU9UCeMXovlqXHhS9GoHGtkek/sRkKNYF3JCPK21V
+   z16HNcLDTp7Tq9BKMuN3xfacX/KwprJga5KYynOaaMmCMuE14vH84tcdN
+   FLv57bRe+aWgU0tbPrW4WVV9QQtSu5IRb5fWtEbnhJL4cXVcfkO5tKtJh
+   D+gY1N0qKvF8j/Ttrj4Xs9vydAcUizrQbUsJO5/MRlWObHskQhqcfzOzH
+   mL++2gde1wwiildT7f6At7Kta7zYwPNqtszHoH096xiWYpM93YcSAnuRo
+   mur4wZzuuUYSW42Lme3azKjc8ognsMiI9sKFIoauxkSzNCi14/I8OGFS4
+   Q==;
+X-CSE-ConnectionGUID: PY1F1lkzS2ah20PaTUaPcg==
+X-CSE-MsgGUID: +97RoaoyT5SSwZ9OaS5Hlg==
+X-IronPort-AV: E=Sophos;i="6.02,146,1688400000"; 
+   d="scan'208";a="248490522"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2023 00:07:03 +0800
+IronPort-SDR: LtbK6soRSdvjtyBoox8knGqdZnaO4vFOVk0IT0YZsPt6FqjbIoUqSt3iDHPQ5H8knPrX1AZGCq
+ l/JqIYbFWdmjRsYNwYRB6sGXQnbdhl8BflXbIPYnyP0rBurB9dtevFrVN2973wvtb6SJjCYQ8r
+ QcOD96vZuBCevzdMrBEBxv4lXIySX9EXvO7gkHVaw0yOcKWRUMk93U8O/yMOt/LQ6h9o+n+6RY
+ ySWNCVKTsMXV1nOgbW64Y/Y/E1mipT/ZjKzcEUd1GayHS+WU4I0ggTEwzbkQPxiGW3fkZ+WSQt
+ Jtk=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 08:14:04 -0700
+IronPort-SDR: H9ySB66UnfkJkbyk4SoO6c6fYGIZyVGQVtxjpitTd/U+QeGzu6mRVSyU2x2JHSgDJk8r2fXR4G
+ +xr3P3jTe2fDGiI7O/7A8OHcV6oWEtUiuOPVAYr17W4C0PvdGZolQHLen3BBpnyDd9SlAR+kUG
+ QAQ2m5rHTU6i5C9pLDGwne0qAyKG1vKWNYU0+v9yhLbFjP2kseYsWbYYp1APdYcUbJ5VDr8Ew6
+ 7WJAtf6KT/lUhisanC7DQvWQ9pq2Waf3rFSpai4JYKY18lG9vwiH4SZJnA5de2KfjmvWQXat0Z
+ i8U=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip01.wdc.com with ESMTP; 14 Sep 2023 09:07:03 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v9 00/11] btrfs: introduce RAID stripe tree
+Date:   Thu, 14 Sep 2023 09:06:55 -0700
+Message-Id: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKAvA2UC/2WOwQ6CMBBEf4X07JpCoYAn/8NwKMsiexDItkEM4
+ d8tePT4JjN5sylPwuTVLdmU0MKepzFCfUkUDm58EnAXWWU6M9qmBsRxBz4IzwRBiICM0Vi7vEA
+ 0Ks5a5wlacSMOx7AN0nt4sUcYaQ1HYxbqeT2ljybywD5M8jk/LNWR/nR1mv7rlgo02Ly0pe1dV
+ WR4f3d4xemlmn3fvxXpQK3QAAAA
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694707621; l=6809;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=tfAj+1QeyQQxe36jSfS+R39/VwmnSFZHudvCn+33SQc=;
+ b=2SpkGuL90HD4Dw7Yctb5r2/pBPsKYL8/OKwmpxA7p4E7bkjaubdPJrHJ0kkojGCeiHkePA8Un
+ HA/N+TzI9yJA9zwwJAtM/sBk3GHApjHgxKIB0WWspwBTVpmkQ/RiYin
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 09:26:21AM -0700, Yosry Ahmed wrote:
-> On Wed, Sep 13, 2023 at 8:38 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Wed, Sep 13, 2023 at 07:38:46AM +0000, Yosry Ahmed wrote:
-> > > Stats flushing for memcg currently follows the following rules:
-> > > - Always flush the entire memcg hierarchy (i.e. flush the root).
-> > > - Only one flusher is allowed at a time. If someone else tries to flush
-> > >   concurrently, they skip and return immediately.
-> > > - A periodic flusher flushes all the stats every 2 seconds.
-> > >
-> > > The reason this approach is followed is because all flushes are
-> > > serialized by a global rstat spinlock. On the memcg side, flushing is
-> > > invoked from userspace reads as well as in-kernel flushers (e.g.
-> > > reclaim, refault, etc). This approach aims to avoid serializing all
-> > > flushers on the global lock, which can cause a significant performance
-> > > hit under high concurrency.
-> > >
-> > > This approach has the following problems:
-> > > - Occasionally a userspace read of the stats of a non-root cgroup will
-> > >   be too expensive as it has to flush the entire hierarchy [1].
-> > > - Sometimes the stats accuracy are compromised if there is an ongoing
-> > >   flush, and we skip and return before the subtree of interest is
-> > >   actually flushed. This is more visible when reading stats from
-> > >   userspace, but can also affect in-kernel flushers.
-> > >
-> > > This patch aims to solve both problems by reworking how flushing
-> > > currently works as follows:
-> > > - Without contention, there is no need to flush the entire tree. In this
-> > >   case, only flush the subtree of interest. This avoids the latency of a
-> > >   full root flush if unnecessary.
-> > > - With contention, fallback to a coalesced (aka unified) flush of the
-> > >   entire hierarchy, a root flush. In this case, instead of returning
-> > >   immediately if a root flush is ongoing, wait for it to finish
-> > >   *without* attempting to acquire the lock or flush. This is done using
-> > >   a completion. Compared to competing directly on the underlying lock,
-> > >   this approach makes concurrent flushing a synchronization point
-> > >   instead of a serialization point. Once  a root flush finishes, *all*
-> > >   waiters can wake up and continue at once.
-> > > - Finally, with very high contention, bound the number of waiters to the
-> > >   number of online cpus. This keeps the flush latency bounded at the tail
-> > >   (very high concurrency). We fallback to sacrificing stats freshness only
-> > >   in such cases in favor of performance.
-> > >
-> > > This was tested in two ways on a machine with 384 cpus:
-> > > - A synthetic test with 5000 concurrent workers doing allocations and
-> > >   reclaim, as well as 1000 readers for memory.stat (variation of [2]).
-> > >   No significant regressions were noticed in the total runtime.
-> > >   Note that if concurrent flushers compete directly on the spinlock
-> > >   instead of waiting for a completion, this test shows 2x-3x slowdowns.
-> > >   Even though subsequent flushers would have nothing to flush, just the
-> > >   serialization and lock contention is a major problem. Using a
-> > >   completion for synchronization instead seems to overcome this problem.
-> > >
-> > > - A synthetic stress test for concurrently reading memcg stats provided
-> > >   by Wei Xu.
-> > >   With 10k threads reading the stats every 100ms:
-> > >   - 98.8% of reads take <100us
-> > >   - 1.09% of reads take 100us to 1ms.
-> > >   - 0.11% of reads take 1ms to 10ms.
-> > >   - Almost no reads take more than 10ms.
-> > >   With 10k threads reading the stats every 10ms:
-> > >   - 82.3% of reads take <100us.
-> > >   - 4.2% of reads take 100us to 1ms.
-> > >   - 4.7% of reads take 1ms to 10ms.
-> > >   - 8.8% of reads take 10ms to 100ms.
-> > >   - Almost no reads take more than 100ms.
-> > >
-> > > [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
-> > > [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
-> > > [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
-> > >
-> > > [weixugc@google.com: suggested the fallback logic and bounding the
-> > > number of waiters]
-> > >
-> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >
-> > >       /*
-> > > +      * Opportunistically try to only flush the requested subtree. Otherwise
-> > > +      * fallback to a coalesced flush below.
-> > >        */
-> > > -     if (atomic_read(&stats_flush_ongoing) ||
-> > > -         atomic_xchg(&stats_flush_ongoing, 1))
-> > > +     if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mutex)) {
-> > > +             cgroup_rstat_flush(memcg->css.cgroup);
-> > > +             mutex_unlock(&subtree_flush_mutex);
-> > >               return;
-> > > +     }
-> > >
-> > > -     WRITE_ONCE(flush_last_time, jiffies_64);
-> > > -
-> > > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-> > > +     /* A coalesced root flush is in order. Are we the designated flusher? */
-> > > +     spin_lock(&root_flusher_lock);
-> >
-> > I can't say I'm crazy about this.
-> >
-> > Let's say you have a fairly sprawling and active cgroup tree with lots
-> > of updates in lots of groups in the system.
-> >
-> > Add a periodic memory.stat reader to one of the subgroups, and that
-> > reader will do very fast, localized aggregation.
-> >
-> > Now add a periodic memory.stat reader to some other subgroup. They
-> > might still both do very fast, localized aggregation. Or they might
-> > collide; and now - despite having nothing in common, and sharing no
-> > data besides the rstat lock - will have to flush the entire massive
-> > tree. The rate at which this happens is purely dependent on timing of
-> > what should be independent actors. This is really not great for the
-> > p50 vs p99 gap.
-> 
-> Initially I had a few retry iterations for the subtree flush, where we
-> fsleep for a bit and trylock again. I thought it was a little bit too
-> complicated and the fsleep duration would be a magic value.
+Updates of the raid-stripe-tree are done at ordered extent write time to safe
+on bandwidth while for reading we do the stripe-tree lookup on bio mapping
+time, i.e. when the logical to physical translation happens for regular btrfs
+RAID as well.
 
-Hm, how is that different than a mutex / sleepable lock?
+The stripe tree is keyed by an extent's disk_bytenr and disk_num_bytes and
+it's contents are the respective physical device id and position.
 
-> > I think this whole thing is getting away from us.
-> >
-> > When we first switched to rstat, every reader would take the global
-> > rstat lock and then flush its local subtree of interest.
-> >
-> > This was changed in the following commit:
-> >
-> > commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
-> > Author: Shakeel Butt <shakeelb@google.com>
-> > Date:   Fri Nov 5 13:37:34 2021 -0700
-> >
-> >     memcg: unify memcg stat flushing
-> >
-> >     The memcg stats can be flushed in multiple context and potentially in
-> >     parallel too.  For example multiple parallel user space readers for
-> >     memcg stats will contend on the rstat locks with each other.  There is
-> >     no need for that.  We just need one flusher and everyone else can
-> >     benefit.
-> >
-> >     In addition after aa48e47e3906 ("memcg: infrastructure to flush memcg
-> >     stats") the kernel periodically flush the memcg stats from the root, so,
-> >     the other flushers will potentially have much less work to do.
-> >
-> >     Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb@google.com
-> >     Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> >     Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> >     Cc: Michal Hocko <mhocko@kernel.org>
-> >     Cc: "Michal Koutný" <mkoutny@suse.com>
-> >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> >
-> > The idea was that we can avoid lock contention if somebody is already
-> > doing the flushing. However, you're now bringing global serialization.
-> > Clearly that idea didn't work out. What would be an obstacle to go
-> > back to the original way of doing it?
-> 
-> The obstacle is high concurrency among flushers. A good example is
-> reclaim code, we can have a lot of concurrent reclaimers. When I tried
-> to go back to the original way of doing it, a stress test with high
-> reclaim concurrency (100s or 1000s) would be 2x-3x slower. I think
-> high concurrency among userspace reads would have a similar outcome,
-> but I hadn't really checked.
-> 
-> Basically this patch is trying to switch to root flushing when the
-> cost of contending on the lock is roughly the same as a root flush (or
-> waiting for one). It's doing that too eagerly now of course (if
-> contenders > 1), we can try to calibrate this better.
+For an example 1M write (split into 126K segments due to zone-append)
+rapido2:/home/johannes/src/fstests# xfs_io -fdc "pwrite -b 1M 0 1M" -c fsync /mnt/test/test
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0065 sec (151.538 MiB/sec and 151.5381 ops/sec)
 
-I don't quite understand this.
+The tree will look as follows (both 128k buffered writes to a ZNS drive):
 
-If you have two readers on separate subtrees, why is it cheaper to
-flush the entire tree in sequence (where both readers don't care about
-the majority of the data), than having each reader flush their own
-small subset one after another? It's not like the whole tree flush
-parallelizes its work.
+RAID0 case:
+bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+btrfs-progs v6.3
+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+checksum stored 2d2d2262
+checksum calced 2d2d2262
+fs uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+chunk uuid c9470ba2-49ac-4d46-8856-438a18e6bd23
+        item 0 key (1073741824 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+                        encoding: RAID0
+                        stripe 0 devid 1 offset 805306368 length 131072
+                        stripe 1 devid 2 offset 536870912 length 131072
+total bytes 42949672960
+bytes used 294912
+uuid ab05cfc6-9859-404e-970d-3999b1cb5438
 
-Where is that overhead actually coming from?
+RAID1 case:
+bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+btrfs-progs v6.3
+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+checksum stored 56199539
+checksum calced 56199539
+fs uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+chunk uuid 691874fc-1b9c-469b-bd7f-05e0e6ba88c4
+        item 0 key (939524096 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+                        encoding: RAID1
+                        stripe 0 devid 1 offset 939524096 length 65536
+                        stripe 1 devid 2 offset 536870912 length 65536
+total bytes 42949672960
+bytes used 294912
+uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
 
-> > With one reader, this will work the same as in your proposal.
-> >
-> > With two readers, just like in your proposal, flushing must be
-> > serialized against the root level. But at least the two flushes only
-> > aggregate the local data they actually care about - not the entire
-> > tree data that doesn't even have readers! This is much better for lock
-> > contention and performance.
-> 
-> Keep in mind that in my testing, I noticed that synchronization using
-> a completion is more performant than serialization on a lock. I am
-> assuming because when we contend on the underlying lock, we serially
-> wake up and do the flush. Even if there is nothing to do (as you
-> mention below), we still do this work. On the contrary, in this
-> proposal we just wait for the root flush to finish and return
-> immediately, and all waiters return at once (that's a lie because of
-> scheduling internals).
+A design document can be found here:
+https://docs.google.com/document/d/1Iui_jMidCd4MVBNSSLXRfO7p5KmvnoQL/edit?usp=sharing&ouid=103609947580185458266&rtpof=true&sd=true
 
-Right, because rstat's do-nothing case is still somewhat costly due to
-the per-cpu loop and the tree walk.
+The user-space part of this series can be found here:
+https://lore.kernel.org/linux-btrfs/20230215143109.2721722-1-johannes.thumshirn@wdc.com
 
-But that should be possible to avoid with the outlined caching of
-recently-flushed state at the memcg level.
+Changes to v8:
+- Changed tracepoints according to David's comments
+- Mark on-disk structures as packed
+- Got rid of __DECLARE_FLEX_ARRAY
+- Rebase onto misc-next
+- Split out helpers for new btrfs_load_block_group_zone_info RAID cases
+- Constify declarations where possible
+- Initialise variables before use
+- Lower scope of variables
+- Remove btrfs_stripe_root() helper
+- Pick different BTRFS_RAID_STRIPE_KEY constant
+- Reorder on-disk encoding types to match the raid_index
+- And possibly more, please git range-diff the versions
+- Link to v8: https://lore.kernel.org/r/20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com
 
-> Also, in the current code, in the two reader scenario, the first
-> reader will flush the entire tree anyway. The only difference is that
-> the second reader will wait for it to finish instead of just skipping,
-> which is the right thing to do from a correctness point of view. Right
-> now it's a coin flip on whether you get updated stats if someone else
-> is already flushing.
+Changes to v7:
+- Huge rewrite
 
-Agreed, it should wait. My mutex would accomplish this, right?
+v7 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1677750131.git.johannes.thumshirn@wdc.com/
 
-> > One concern is the thresholding code. The cost of flushing on every
-> > read is too high: even when there is no flush work, checking for it is
-> > kind of expensive due to the locks and the for_each_possible_cpu().
-> >
-> > Could we do something like the following?
-> >
-> >         mem_cgroup_flush(memcg)
-> >         {
-> >                 mutex_lock(&memcg_flush_mutex);
-> >                 if (atomic_read(&memcg->stat_delta) > THRESHOLD)
-> >                         cgroup_rstat_flush(memcg);
-> >                 mutex_unlock(&memcg_flush_mutex);
-> >         }
-> >
-> >         mem_cgroup_css_rstat_flush(css, cpu)
-> >         {
-> >                 ...
-> >                 /*
-> >                  * Reset here instead of mem_cgroup_flush()
-> >                  * so that each flushed subgroup is reset
-> >                  * recursively. A recent parent flush will
-> >                  * allow a child flush to skip.
-> >                  */
-> >                 atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0);
-> >         }
-> >
-> >         memcg_rstat_updated(memcg, val)
-> >         {
-> >                 atomic_add(&memcg->stat_delta, val);
-> 
-> We need to do this for each parent in the hierarchy, not just the
-> memcg being updated, right? I guess that may be too expensive for the
-> update path.
+Changes to v6:
+- Fix degraded RAID1 mounts
+- Fix RAID0/10 mounts
 
-How so?
+v6 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1676470614.git.johannes.thumshirn@wdc.com
 
-We need to mark the subgroups that are flushed, so that if you have
+Changes to v5:
+- Incroporated review comments from Josef and Christoph
+- Rebased onto misc-next
 
-	root - a - a1 - foo
-                `- a2
+v5 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1675853489.git.johannes.thumshirn@wdc.com
 
-and somebody flushes a, then a1 and a2 also don't need to be flushed
-for a while.
+Changes to v4:
+- Added patch to check for RST feature in sysfs
+- Added RST lookups for scrubbing 
+- Fixed the error handling bug Josef pointed out
+- Only check if we need to write out a RST once per delayed_ref head
+- Added support for zoned data DUP with RST
 
-But if we flush a1 first, foo is aggregated into a1. Reading a still
-needs to aggregate a1 and a2 into a.
+Changes to v3:
+- Rebased onto 20221120124734.18634-1-hch@lst.de
+- Incorporated Josef's review
+- Merged related patches
 
-Maybe I'm missing something blatant, but I don't see how we have to
-mark parents in any way. We only have to tag cgroups up to the point
-to which they were recently flushed, and we already visit all those.
+v3 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1666007330.git.johannes.thumshirn@wdc.com
 
-Let me know if I'm missing something blatant here.
+Changes to v2:
+- Bug fixes
+- Rebased onto 20220901074216.1849941-1-hch@lst.de
+- Added tracepoints
+- Added leak checker
+- Added RAID0 and RAID10
+
+v2 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1656513330.git.johannes.thumshirn@wdc.com
+
+Changes to v1:
+- Write the stripe-tree at delayed-ref time (Qu)
+- Add a different write path for preallocation
+
+v1 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1652711187.git.johannes.thumshirn@wdc.com/
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Johannes Thumshirn (11):
+      btrfs: add raid stripe tree definitions
+      btrfs: read raid-stripe-tree from disk
+      btrfs: add support for inserting raid stripe extents
+      btrfs: delete stripe extent on extent deletion
+      btrfs: lookup physical address from stripe extent
+      btrfs: implement RST version of scrub
+      btrfs: zoned: allow zoned RAID
+      btrfs: add raid stripe tree pretty printer
+      btrfs: announce presence of raid-stripe-tree in sysfs
+      btrfs: add trace events for RST
+      btrfs: add raid-stripe-tree to features enabled with debug
+
+ fs/btrfs/Makefile               |   2 +-
+ fs/btrfs/accessors.h            |  10 +
+ fs/btrfs/bio.c                  |  25 +++
+ fs/btrfs/block-rsv.c            |   6 +
+ fs/btrfs/disk-io.c              |  18 ++
+ fs/btrfs/extent-tree.c          |   7 +
+ fs/btrfs/fs.h                   |   4 +-
+ fs/btrfs/inode.c                |   8 +-
+ fs/btrfs/locking.c              |   1 +
+ fs/btrfs/ordered-data.c         |   1 +
+ fs/btrfs/ordered-data.h         |   2 +
+ fs/btrfs/print-tree.c           |  26 +++
+ fs/btrfs/raid-stripe-tree.c     | 449 ++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/raid-stripe-tree.h     |  52 +++++
+ fs/btrfs/scrub.c                |  53 +++++
+ fs/btrfs/sysfs.c                |   3 +
+ fs/btrfs/volumes.c              |  43 +++-
+ fs/btrfs/volumes.h              |  16 +-
+ fs/btrfs/zoned.c                | 144 ++++++++++++-
+ include/trace/events/btrfs.h    |  75 +++++++
+ include/uapi/linux/btrfs.h      |   1 +
+ include/uapi/linux/btrfs_tree.h |  31 +++
+ 22 files changed, 954 insertions(+), 23 deletions(-)
+---
+base-commit: 1d73023d96965a5c8fb76a39aec88d840ebe5b21
+change-id: 20230613-raid-stripe-tree-e330c9a45cc3
+
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
