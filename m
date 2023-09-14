@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B837A009F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E627A00A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235665AbjINJqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
+        id S237045AbjINJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjINJqA (ORCPT
+        with ESMTP id S234376AbjINJqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:46:00 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289E8EB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:45:56 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5009d4a4897so1299883e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:45:56 -0700 (PDT)
+        Thu, 14 Sep 2023 05:46:01 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCACE3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:45:57 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so855350a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1694684754; x=1695289554; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E7ZJS7sdRoRRRFWMj7zQxb45/LmVE5dZcYckff9SE60=;
-        b=w8T+yCOI7KA4ub4gTbuO5LlaxcmLPW3AbXZHcii6XGbrDLSwAHGS9b28PK3EBj1/zE
-         lTTquETWgywhc4XCnqfxiTEBAPsGtDKCbQ0ZN//vvrn6d2M7v9I6sWdWIBtAMzVdX8Vg
-         gX8PG5iKVZ4T9C4Rda3ixtWoRcAAzA/R6FqTHdzIlHe+b8ixUTdeuto37ZtLUdSat477
-         z1N8QSBHkb59V/lX0YbsijwGfHRid6HYot67rtW42vN4W7DfGJ02rMYh0/khqWOkyP+a
-         p4cXUMUFLx/h+zsIlmWGgC51wT9wEeq6gVIeE3pLw3frHPXpUNz91Pm4Wd4rotN90Z5o
-         3rWw==
+        d=sartura.hr; s=sartura; t=1694684755; x=1695289555; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ulj0sxL109s6WRduuI+x9sWJvUGugBDVjc0AW8V0tV0=;
+        b=uuk12mev2HWLDJAhvfuqzmp1ltAEshLoPc1rBu7J257yD0YyMPyYDYfaBLyTADJaxu
+         dqql4D2SxdAMpnuCcVOXFJJAxWXXtdNELkrFL8uOSmn7veBVGudmPTklc18BUst7bjOz
+         dIWDEIfOBIAqQGSKE9AICVaEPBxAvShaticG5T89j72wkvQc9+tucPvb4KetRke3LK48
+         8wAgHTJ2kYoXi9Yy8XvbxA2ZNj4KcEACgsO17GmcNbaHYKrGwco06EXEbt00PvEEGws4
+         owHyckkfo1sXQWsxJsskDakeryKHQy8K0BJ1aSf3XNgZz795Uz3JEjtxUgcjpxk+8JdH
+         4mYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694684754; x=1695289554;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E7ZJS7sdRoRRRFWMj7zQxb45/LmVE5dZcYckff9SE60=;
-        b=B5dJl20uh5guyRuHDpbPaM5jqt3s9tdOSwV+3QNTPwcMBdge5tCMyFlI7a79yfRu9i
-         HNT/YxPAaIlb9vyYNFHQo4++DVOv+DuzyXQ+sHSZShNoDTrWoYYfTSJx1UE4EeRPvVl1
-         mvAV+YU9ff22lsi/LNo4vtxW+lFLmUHgAMcCViwPH1FIKTzICdvOnFIGLDhxD1qXc9SW
-         TFRmjnd25WDwcC4VZgjiGylnXIvNwaEUq0YLLPZD85slIeHM+aH3bg9Rcq17PcXm3VQE
-         VDIuaJJfAtJ5ktBMse7Vl4iLo+VnbJjOjX2Mb6SpkpiZ4dRZMz5Iywgr8S9/WKdkrIFb
-         2HQA==
-X-Gm-Message-State: AOJu0YzPLO4SaHJ/zK7APqbBKFGdjTHpgH1C+CpnMUQPJKTfXl3dpXsS
-        87lngoOHrdWwojy0OD8UvLjvCw==
-X-Google-Smtp-Source: AGHT+IHSgul+kLrJPi7KVcBBip8N6s20VQqyBuiCm2/3Tvx45VXiObBiCIa3Y7CQVbs50y5JTgmjXg==
-X-Received: by 2002:a05:6512:530:b0:4fb:772a:af12 with SMTP id o16-20020a056512053000b004fb772aaf12mr3871076lfc.21.1694684754247;
-        Thu, 14 Sep 2023 02:45:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694684755; x=1695289555;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ulj0sxL109s6WRduuI+x9sWJvUGugBDVjc0AW8V0tV0=;
+        b=TttErYL8CmI+h/jCg2n7xlp2wi4nKRfDkdSgZUXJOoiVQkmB7XVjF2YZKI+Gm94A6/
+         saVsyvjcl88JSDJbOWN4qn+cfUjB8r68BNhcKTg4A2IXoKg5jqOIfCqJzUhdMIlPZvHr
+         bAwoilAH+Ih288VKYUuau7iMzkYPEMqLpYZGuu47m3+f5FJ83P79ylk6oygNGtSj86v1
+         hU7qRbKEU9T/ZZwGl0cZDMtQkrbiqaWQ96T1zmBWIoByiMhZexr3T4r7fNvpzZ3juxTX
+         gviVxKjOc45XNOE9aFlw0NQHrRcAc8C5ExqTpgL60K5vdGKNcTR+sHU4QlaODPLz9vyr
+         UDlw==
+X-Gm-Message-State: AOJu0YyMOKHDG8b7J0ot71HTneXUjcXnr4J0WrnYoH0AusBGcwu5gsba
+        xtnipzazEf0Bk3FTIsc6C+keOQ==
+X-Google-Smtp-Source: AGHT+IHUUXjR202tEyKfXygRVDaxtDSF35MAKczmRFFXZk/N71UuM9KZrB8zkt+OWbntduc9N+RLTQ==
+X-Received: by 2002:a05:6402:517b:b0:51d:d4c3:6858 with SMTP id d27-20020a056402517b00b0051dd4c36858mr4439955ede.12.1694684755560;
+        Thu, 14 Sep 2023 02:45:55 -0700 (PDT)
 Received: from fedora.. (dh207-96-100.xnet.hr. [88.207.96.100])
-        by smtp.googlemail.com with ESMTPSA id e10-20020a50ec8a000000b0052565298bedsm690790edr.34.2023.09.14.02.45.52
+        by smtp.googlemail.com with ESMTPSA id e10-20020a50ec8a000000b0052565298bedsm690790edr.34.2023.09.14.02.45.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 02:45:53 -0700 (PDT)
+        Thu, 14 Sep 2023 02:45:55 -0700 (PDT)
 From:   Robert Marko <robert.marko@sartura.hr>
 To:     andrew@lunn.ch, gregory.clement@bootlin.com,
         sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
@@ -56,47 +57,85 @@ To:     andrew@lunn.ch, gregory.clement@bootlin.com,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 1/2] arm64: dts: marvell: uDPU: rename the SFP GPIO properties
-Date:   Thu, 14 Sep 2023 11:45:00 +0200
-Message-ID: <20230914094550.1519097-1-robert.marko@sartura.hr>
+Subject: [PATCH 2/2] arm64: dts: marvell: eDPU: add support for version with external switch
+Date:   Thu, 14 Sep 2023 11:45:01 +0200
+Message-ID: <20230914094550.1519097-2-robert.marko@sartura.hr>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230914094550.1519097-1-robert.marko@sartura.hr>
+References: <20230914094550.1519097-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the GPIO related SFP properties to include the preffered -gpios
-suffix as defined in the SFP schema.
+New revision of eDPU uses an Marvell MV88E6361 switch to connect the SFP
+cage and G.hn IC instead of connecting them directly to the ethernet
+controllers.
 
-This fixes the following warning:
-arch/arm64/boot/dts/marvell/armada-3720-eDPU.dtb: sfp-eth1: 'los-gpio', 'mod-def0-gpio', 'tx-disable-gpio', 'tx-fault-gpio' do not match any of the regexes: 'pinctrl-[0-9]+'
-from schema $id: http://devicetree.org/schemas/net/sff,sfp.yaml#
+U-Boot will enable the switch node and disable the unused ethernet
+controller.
 
 Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-uDPU.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../boot/dts/marvell/armada-3720-eDPU.dts     | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-uDPU.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-uDPU.dtsi
-index 3f79923376fb..3a9b6907185d 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-uDPU.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-uDPU.dtsi
-@@ -61,10 +61,10 @@ led-alarm2 {
- 	sfp_eth1: sfp-eth1 {
- 		compatible = "sff,sfp";
- 		i2c-bus = <&i2c1>;
--		los-gpio = <&gpiosb 7 GPIO_ACTIVE_HIGH>;
--		mod-def0-gpio = <&gpiosb 8 GPIO_ACTIVE_LOW>;
--		tx-disable-gpio = <&gpiosb 9 GPIO_ACTIVE_HIGH>;
--		tx-fault-gpio = <&gpiosb 10 GPIO_ACTIVE_HIGH>;
-+		los-gpios = <&gpiosb 7 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpios = <&gpiosb 8 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpios = <&gpiosb 9 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpios = <&gpiosb 10 GPIO_ACTIVE_HIGH>;
- 		maximum-power-milliwatt = <3000>;
- 	};
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts b/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
+index 57fc698e55d0..d6d37a1f6f38 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-eDPU.dts
+@@ -12,3 +12,50 @@ / {
+ &eth0 {
+ 	phy-mode = "2500base-x";
  };
++
++/*
++ * External MV88E6361 switch is only available on v2 of the board.
++ * U-Boot will enable the MDIO bus and switch nodes.
++ */
++&mdio {
++	status = "disabled";
++	pinctrl-names = "default";
++	pinctrl-0 = <&smi_pins>;
++
++	/* Actual device is MV88E6361 */
++	switch: switch@0 {
++		compatible = "marvell,mv88e6190";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0>;
++		status = "disabled";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				label = "cpu";
++				phy-mode = "2500base-x";
++				managed = "in-band-status";
++				ethernet = <&eth0>;
++			};
++
++			port@9 {
++				reg = <9>;
++				label = "downlink";
++				phy-mode = "2500base-x";
++				managed = "in-band-status";
++			};
++
++			port@a {
++				reg = <10>;
++				label = "uplink";
++				phy-mode = "2500base-x";
++				managed = "in-band-status";
++				sfp = <&sfp_eth1>;
++			};
++		};
++	};
++};
 -- 
 2.41.0
 
