@@ -2,141 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE1A7A0502
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3F37A050D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjINNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S238675AbjINNJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238671AbjINNH1 (ORCPT
+        with ESMTP id S238471AbjINNJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:07:27 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3351FD5;
-        Thu, 14 Sep 2023 06:07:23 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401f68602a8so9748265e9.3;
-        Thu, 14 Sep 2023 06:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694696841; x=1695301641; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tej9b0LMdUKBSRZxH07jBOdxaJ6MquCE3RokLEVjR7k=;
-        b=rjoLWTXLiEKOlMZrYLKwMuRNi4V41FSZiO/Fyr1dsj/eufqx8ATVWylFkkOHpiJPg2
-         dCA56AD1LdD5T/VjMMCipoxTSB547oS64J6jxrpjXEtjacwQIN+7Cz6tVqqBVNEbWuEA
-         XyIx7qOWHodsnYhrZOckIOErmGbO6eFwhjgGkuojVFZOBvYo0hl9jP2pNsNmKLIw4fkD
-         PWR0m++xId7DOEDcbF8XIO9Dgr/ONtE3aMxorWoCjndLyB2QSjooJTaHK5Gc0Ck4OUs7
-         tS9xJk5Ecfi47JVvFmsYTRi4nErjrn4dgYz2NA5MA0wWN7BGY1GYyqQo961RsXJSf0/3
-         tGgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694696841; x=1695301641;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tej9b0LMdUKBSRZxH07jBOdxaJ6MquCE3RokLEVjR7k=;
-        b=EB/k0W3pjh2TTOf/f3FeQM1wZ+nmAtVaXfziggUe3P3xJFmjuJMxItz+zZ4zjXkbyc
-         w8X3lhUkvecgWHlsyQ9lyRBc3mw9GIhkbCU4Qihn3rtnwz2VzZNiexnuYRZhmTU3xsvB
-         zpNcEMEKF6mNEHYri2CSDYqZmpXzQ4UNPyZ2cDIZfQSN9g4ky3V0HEMVF/jMt1EoH52v
-         pcoDNTzpsDOhIoxhTl37qKqXbht4ObGgK3WeSgaIyByweDAEDnKA94EUeEJvyPhnQsCN
-         xu6iC8bacjXBRpOmx1dZsaBDME2KAa5V5Zh5FI2UcRedN3V1VMvhJ/krcKLEgvYoaWJL
-         tN1Q==
-X-Gm-Message-State: AOJu0YyXFuS9vax5HbpopifHZni6uxU39enYvKpWKZeoaEZXn0aEfop5
-        nFQInG0OpjdChRljf/dWEPs=
-X-Google-Smtp-Source: AGHT+IHUqdikwusaZ197Z7lAgvVUm0b2rKPwxGuDzuK0CfVPCbOiJ1CSjghXQW5EGPQAtAcuiR1wqg==
-X-Received: by 2002:a05:600c:2307:b0:402:e6a2:c8c7 with SMTP id 7-20020a05600c230700b00402e6a2c8c7mr4838002wmo.7.1694696841293;
-        Thu, 14 Sep 2023 06:07:21 -0700 (PDT)
-Received: from [192.168.5.8] (54-240-197-235.amazon.com. [54.240.197.235])
-        by smtp.gmail.com with ESMTPSA id u8-20020a5d6ac8000000b0031416362e23sm1759075wrw.3.2023.09.14.06.07.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 06:07:20 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <75b00614-a3a5-44de-5a14-3b7c7c7eceb0@xen.org>
-Date:   Thu, 14 Sep 2023 15:07:18 +0200
+        Thu, 14 Sep 2023 09:09:48 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D901A5;
+        Thu, 14 Sep 2023 06:09:44 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rmd0X0KkPz6HJdv;
+        Thu, 14 Sep 2023 21:07:56 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 14:09:41 +0100
+Date:   Thu, 14 Sep 2023 14:09:40 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 14/35] ACPI: Only enumerate enabled (or
+ functional) devices
+Message-ID: <20230914140940.00001417@Huawei.com>
+In-Reply-To: <20230914132732.00006908@Huawei.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-15-james.morse@arm.com>
+        <20230914132732.00006908@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 2/8] KVM: pfncache: add a mark-dirty helper
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-References: <20230914084946.200043-1-paul@xen.org>
- <20230914084946.200043-3-paul@xen.org>
- <87b3f6713a7c6aa57adc89b6c47be3e1511f66ca.camel@infradead.org>
- <69b2a8ae-fcae-75b8-4b2a-ca75bbd273f0@xen.org>
- <a689f4847d2272a75d89364723bab7a29508f646.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <a689f4847d2272a75d89364723bab7a29508f646.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 13:39, David Woodhouse wrote:
-> On Thu, 2023-09-14 at 11:34 +0200, Paul Durrant wrote:
->> On 14/09/2023 10:21, David Woodhouse wrote:
->>> On Thu, 2023-09-14 at 08:49 +0000, Paul Durrant wrote:
->>>> --- a/arch/x86/kvm/xen.c
->>>> +++ b/arch/x86/kvm/xen.c
->>>> @@ -430,14 +430,13 @@ static void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, bool atomic)
->>>>                   smp_wmb();
->>>>           }
->>>>    
->>>> -       if (user_len2)
->>>> +       if (user_len2) {
->>>> +               kvm_gpc_mark_dirty(gpc2);
->>>>                   read_unlock(&gpc2->lock);
->>>> +       }
->>>>    
->>>> +       kvm_gpc_mark_dirty(gpc1);
->>>>           read_unlock_irqrestore(&gpc1->lock, flags);
->>>> -
->>>> -       mark_page_dirty_in_slot(v->kvm, gpc1->memslot, gpc1->gpa >> PAGE_SHIFT);
->>>> -       if (user_len2)
->>>> -               mark_page_dirty_in_slot(v->kvm, gpc2->memslot, gpc2->gpa >> PAGE_SHIFT);
->>>>    }
->>>>    
->>>>    void kvm_xen_update_runstate(struct kvm_vcpu *v, int state)
->>>
->>> ISTR there was a reason why the mark_page_dirty_in_slot() was called
->>> *after* unlocking. Although now I say it, that seems wrong... is that
->>> because the spinlock is only protecting the uHVA→kHVA mapping, while
->>> the memslot/gpa are going to remain valid even after unlock, because
->>> those are protected by sRCU?
->>
->> Without the lock you could see an inconsistent GPA and memslot so I
->> think you could theoretically calculate a bogus rel_gfn and walk off the
->> end of the dirty bitmap. Hence moving the call inside the lock while I
->> was in the neighbourhood seemed like a good idea. I could call it out in
->> the commit comment if you'd like.
-> 
-> Yeah, I can't see a reason why it needs to be outside the lock, and as
-> you note, there really is a reason why it should be *inside*. Whatever
-> reason there was, it either disappeared in the revisions of the gpc
-> patch set or it was stupidity on my part in the first place.
-> 
-> So yeah, let it move inside the lock, call that out in the commit
-> message (I did note some of the other commits could have used a 'No
-> functional change intended' too, FWIW), and
+On Thu, 14 Sep 2023 13:27:32 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Ack. Will do.
+> On Wed, 13 Sep 2023 16:38:02 +0000
+> James Morse <james.morse@arm.com> wrote:
+> 
+> > Today the ACPI enumeration code 'visits' all devices that are present.
+> > 
+> > This is a problem for arm64, where CPUs are always present, but not
+> > always enabled. When a device-check occurs because the firmware-policy
+> > has changed and a CPU is now enabled, the following error occurs:
+> > | acpi ACPI0007:48: Enumeration failure
+> > 
+> > This is ultimately because acpi_dev_ready_for_enumeration() returns
+> > true for a device that is not enabled. The ACPI Processor driver
+> > will not register such CPUs as they are not 'decoding their resources'.
+> > 
+> > Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+> > ACPI allows a device to be functional instead of maintaining the
+> > present and enabled bit. Make this behaviour an explicit check with
+> > a reference to the spec, and then check the present and enabled bits.  
+> 
+> "and the" only applies if the functional route hasn't been followed
+> "if not this case check the present and enabled bits."
+> 
+> > This is needed to avoid enumerating present && functional devices that
+> > are not enabled.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > ---
+> > If this change causes problems on deployed hardware, I suggest an
+> > arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+> > acpi_dev_ready_for_enumeration() to only check the present bit.
+> > ---
+> >  drivers/acpi/device_pm.c    |  2 +-
+> >  drivers/acpi/device_sysfs.c |  2 +-
+> >  drivers/acpi/internal.h     |  1 -
+> >  drivers/acpi/property.c     |  2 +-
+> >  drivers/acpi/scan.c         | 23 +++++++++++++----------
+> >  5 files changed, 16 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> > index f007116a8427..76c38478a502 100644
+> > --- a/drivers/acpi/device_pm.c
+> > +++ b/drivers/acpi/device_pm.c
+> > @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+> >  		return -EINVAL;
+> >  
+> >  	device->power.state = ACPI_STATE_UNKNOWN;
+> > -	if (!acpi_device_is_present(device)) {
+> > +	if (!acpi_dev_ready_for_enumeration(device)) {
+> >  		device->flags.initialized = false;
+> >  		return -ENXIO;
+> >  	}
+> > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> > index b9bbf0746199..16e586d74aa2 100644
+> > --- a/drivers/acpi/device_sysfs.c
+> > +++ b/drivers/acpi/device_sysfs.c
+> > @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
+> >  	struct acpi_hardware_id *id;
+> >  
+> >  	/* Avoid unnecessarily loading modules for non present devices. */
+> > -	if (!acpi_device_is_present(acpi_dev))
+> > +	if (!acpi_dev_ready_for_enumeration(acpi_dev))
+> >  		return 0;
+> >  
+> >  	/*
+> > diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+> > index 866c7c4ed233..a1b45e345bcc 100644
+> > --- a/drivers/acpi/internal.h
+> > +++ b/drivers/acpi/internal.h
+> > @@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
+> >  void acpi_device_remove_files(struct acpi_device *dev);
+> >  void acpi_device_add_finalize(struct acpi_device *device);
+> >  void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+> > -bool acpi_device_is_present(const struct acpi_device *adev);
+> >  bool acpi_device_is_battery(struct acpi_device *adev);
+> >  bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+> >  					const struct device *dev);
+> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> > index 413e4fcadcaf..e03f00b98701 100644
+> > --- a/drivers/acpi/property.c
+> > +++ b/drivers/acpi/property.c
+> > @@ -1418,7 +1418,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
+> >  	if (!is_acpi_device_node(fwnode))
+> >  		return false;
+> >  
+> > -	return acpi_device_is_present(to_acpi_device_node(fwnode));
+> > +	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
+> >  }
+> >  
+> >  static const void *
+> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > index 17ab875a7d4e..f898591ce05f 100644
+> > --- a/drivers/acpi/scan.c
+> > +++ b/drivers/acpi/scan.c
+> > @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+> >  	int error;
+> >  
+> >  	acpi_bus_get_status(adev);
+> > -	if (acpi_device_is_present(adev)) {
+> > +	if (acpi_dev_ready_for_enumeration(adev)) {
+> >  		/*
+> >  		 * This function is only called for device objects for which
+> >  		 * matching scan handlers exist.  The only situation in which
+> > @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+> >  	int error;
+> >  
+> >  	acpi_bus_get_status(adev);
+> > -	if (!acpi_device_is_present(adev)) {
+> > +	if (!acpi_dev_ready_for_enumeration(adev)) {
+> >  		acpi_scan_device_not_enumerated(adev);
+> >  		return 0;
+> >  	}
+> > @@ -1908,11 +1908,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
+> >  	return true;
+> >  }
+> >  
+> > -bool acpi_device_is_present(const struct acpi_device *adev)
+> > -{
+> > -	return adev->status.present || adev->status.functional;
+> > -}
+> > -
+> >  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+> >  				       const char *idstr,
+> >  				       const struct acpi_device_id **matchid)
+> > @@ -2375,16 +2370,24 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+> >   * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
+> >   * @device: Pointer to the &struct acpi_device to check
+> >   *
+> > - * Check if the device is present and has no unmet dependencies.
+> > + * Check if the device is functional or enabled and has no unmet dependencies.
+> >   *
+> > - * Return true if the device is ready for enumeratino. Otherwise, return false.
+> > + * Return true if the device is ready for enumeration. Otherwise, return false.
+> >   */
+> >  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
+> >  {
+> >  	if (device->flags.honor_deps && device->dep_unmet)
+> >  		return false;
+> >  
+> > -	return acpi_device_is_present(device);
+> > +	/*
+> > +	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
+> > +	 * (!present && functional) for certain types of devices that should be
+> > +	 * enumerated.  
+> 
+> I'd call out the fact that enumeration isn't same as "device driver should be loaded"
+> which is the thing that functional is supposed to indicate should not happen.
+> 
+> > +	 */
+> > +	if (!device->status.present && !device->status.enabled)  
+> 
+> In theory no need to check !enabled if !present
+> "If bit [0] is cleared, then bit 1 must also be cleared (in other words, a device that is not present cannot be enabled)."
+> We could report an ACPI bug if that's seen.  If that bug case is ignored this code can
+> become the simpler.
+> 
+> 	if (device->status.present)
+> 		return device->status_enabled;
+> 	else
+> 		return device->status.functional;
+> 
+> Or the following also valid here (as functional should be set for enabled present devices
+> unless they failed diagnostics).
+> 
+> 	if (dev->status.functional)
+> 		return true;
+> 	return device->status.present && device->status.enabled;
+> 
+> On assumption we want to enumerate dead devices for debug purposes...
+Actually ignore this.  Could have weird race with present, functional true,
+but enabled not quite set - despite the device being there and self
+tests having passed.
+
 
 > 
-> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 > 
-
-Thanks.
-
-   Paul
+> > +		return device->status.functional;
+> > +
+> > +	return device->status.present && device->status.enabled;  
+> 
+> 
+> >  }
+> >  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+> >    
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
