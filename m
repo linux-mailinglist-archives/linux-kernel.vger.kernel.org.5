@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81697A0073
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91677A0046
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237608AbjINJjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        id S237191AbjINJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237253AbjINJi0 (ORCPT
+        with ESMTP id S236956AbjINJh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:38:26 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6C71FC4;
-        Thu, 14 Sep 2023 02:38:20 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38E3ihC2012982;
-        Thu, 14 Sep 2023 04:37:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=PgPgRK+/j1+zXmV
-        y3XMmwkmh0K8fdGhl//JJcR1N0uQ=; b=KESbjM/m4ZW7mMq5uzG5dkqyirKQeL4
-        BDqeq0I1ihRuCLseqbliVzcCFp+b5PxoNo8z2y5MpoCscN4mE/pHDbxJP4GquRcu
-        CRSNKjWI4oJ4Mzet80XEyy+yNjpDhzQwxI7ipaUKt+MuRof11DJA0tOKIGXiAk+I
-        x5xsifkGQE1IXQ+amgV6dp6Tvwi3MvVbxzaqE7De/zZ2NdBepcYV4sCGk66s42tv
-        dOEP2xlWVQABUa1AqrVgZvoKJTCfd+DuTM3PFLikAVj8g3eDJ6OkO1fm8C2ZL2VP
-        AvybehyKqGXG+BElqCibioPP9ThyJ1UBKdG2bWlVpqrHgsxiqFyCOmw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t2y7u25xv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 04:37:33 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 14 Sep
- 2023 10:37:31 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Thu, 14 Sep 2023 10:37:31 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 03BE93575;
-        Thu, 14 Sep 2023 09:37:31 +0000 (UTC)
-Date:   Thu, 14 Sep 2023 09:37:31 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     John Watts <contact@jookia.org>
-CC:     <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <patches@opensource.cirrus.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: wm8782: Handle maximum audio rate at runtime
-Message-ID: <20230914093731.GS103419@ediswmail.ad.cirrus.com>
-References: <20230913171552.92252-1-contact@jookia.org>
- <20230913171552.92252-2-contact@jookia.org>
- <20230914092107.GR103419@ediswmail.ad.cirrus.com>
- <ZQLR50CAzr0VDpeh@titan>
+        Thu, 14 Sep 2023 05:37:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3D0CCD;
+        Thu, 14 Sep 2023 02:37:54 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 69FA066072FF;
+        Thu, 14 Sep 2023 10:37:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694684272;
+        bh=CTv2KXJMAq+hbSXUQVfEZKQZVTB0BrNwUz1wHsn45uM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=i5jNrMk2hXUFgOvbLKzaN5pw6W65Po/mspdrZQ0IBjbf5qXShn9cutfLwPky61b7R
+         rUCSlyyWVSEm5wbWEhUeRf1Iq0Hk70ApfNJKnj6hIrO2G4IlJMBgG4fcPd9ZwU1cPl
+         QFy8hK8yUba6HkqrDMGmXbWNf+GBXy+J4Ge2Ti9SXEoF4xGYnTCfNgsf+LAh71fFre
+         DfuH690DOsHuJIbp2fCxaIF7Urjx1ZD19FmVMy7mcrHHQLbl3WriragUaxMSOc1/Lq
+         TNfILGtbITRHPllCUklEDVnZWZBDkNMllJNlAqGgu2fRhAfgLZbELPMOAS2q9YucAF
+         oeZMDdfMt6Nbw==
+Message-ID: <dc2cf86a-abf2-b372-29f9-3bfedeb24a97@collabora.com>
+Date:   Thu, 14 Sep 2023 11:37:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQLR50CAzr0VDpeh@titan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: b6do4WOHYNEt-Js07443kw8u0Rdbb7Z4
-X-Proofpoint-ORIG-GUID: b6do4WOHYNEt-Js07443kw8u0Rdbb7Z4
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] i2c: mt65xx: allow optional pmic clock
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Qii Wang <qii.wang@mediatek.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?6YOt5bCP5qGl?= <joe@gainstrong.cn>
+References: <3bf827929a44c17bfb1bf1000b143c02ce26a929.1693102324.git.daniel@makrotopia.org>
+ <0fd097fd-9fdb-9001-cddb-7a396fde28bb@collabora.com>
+ <ZQLNWHKlIZNd7x4l@makrotopia.org>
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <ZQLNWHKlIZNd7x4l@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 07:27:03PM +1000, John Watts wrote:
-> On Thu, Sep 14, 2023 at 09:21:07AM +0000, Charles Keepax wrote:
-> > On Thu, Sep 14, 2023 at 03:15:50AM +1000, John Watts wrote:
-> > > The wm8782 supports up to 192kHz audio when pins are set correctly.
-> > > Instead of hardcoding which rates are supported enable them all
-> > > then refer to a max_rate variable at runtime.
-> > > 
-> > > Signed-off-by: John Watts <contact@jookia.org>
-> > > ---
-> > > +static int wm8782_dai_hw_params(struct snd_pcm_substream *component,
-> > > +			    struct snd_pcm_hw_params *params,
-> > > +			    struct snd_soc_dai *dai)
-> > > +{
-> > > +	struct wm8782_priv *priv =
-> > > +		snd_soc_component_get_drvdata(dai->component);
-> > > +
-> > > +	if (params_rate(params) > priv->max_rate)
-> > > +		return -EINVAL;
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > We should be setting this as a constraint in startup, rather
-> > than returning an error in hw_params. That will let user-space
-> > know the supported rates and allow it to resample if necessary.
+Il 14/09/23 11:07, Daniel Golle ha scritto:
+> On Wed, Sep 13, 2023 at 04:00:53PM +0200, AngeloGioacchino Del Regno wrote:
+>> Il 27/08/23 04:13, Daniel Golle ha scritto:
+>>> Using the I2C host controller on the MT7981 SoC requires 4 clocks to
+>>> be enabled. One of them, the pmic clk, is only enabled in case
+>>> 'mediatek,have-pmic' is also set which has other consequences which
+>>> are not desired in this case.
+>>>
+>>> Allow defining a pmic clk even in case the 'mediatek,have-pmic' propterty
+>>> is not present and the bus is not used to connect to a pmic, but may
+>>> still require to enable the pmic clock.
+>>>
+>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+>>> ---
+>>>    drivers/i2c/busses/i2c-mt65xx.c | 12 ++++++++----
+>>>    1 file changed, 8 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+>>> index 1a9b5a068ef1b..a8b5719c33729 100644
+>>> --- a/drivers/i2c/busses/i2c-mt65xx.c
+>>> +++ b/drivers/i2c/busses/i2c-mt65xx.c
+>>> @@ -1442,15 +1442,19 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+>>>    	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk))
+>>>    		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_ARB].clk);
+>>> +	i2c->clocks[I2C_MT65XX_CLK_PMIC].clk = devm_clk_get_optional(&pdev->dev, "pmic");
+>>> +	if (IS_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk)) {
+>>> +		dev_err(&pdev->dev, "cannot get pmic clock\n");
+>>> +		return PTR_ERR(i2c->clocks[I2C_MT65XX_CLK_PMIC].clk);
+>>> +	}
+>>> +
+>>>    	if (i2c->have_pmic) {
+>>
+>> ...but you're not changing speed_clk if !i2c->have_pmic, I'm not sure that
+>> this will work correctly. Perhaps you wanted to also set speed_clk if the
+>> clock is present?
 > 
-> How do you do this? The struct with the rate is statically defined.
+> No, if I wanted that I could have used the existing 'mediatek,have-pmic'
+> property -- however, all needed e.g. on MT7981 is to make sure the
+> clock is enabled, but still use I2C_MT65XX_CLK_MAIN as speed_clk.
 > 
 
-You can programmatically add additional constraints, commonly
-this will be done from the startup callback on the DAI. See
-something like arizona_startup in sound/soc/codecs/arizona.c for
-an example, that enables 44.1/48k rates based on clocks but the
-principle should be similar.
+Sorry, I've misunderstood the intention and yes, I understand now.
 
-Thanks,
-Charles
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
