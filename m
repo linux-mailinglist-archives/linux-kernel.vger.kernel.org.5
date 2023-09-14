@@ -2,223 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3977A0B4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0C7A0B39
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238739AbjINRKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        id S238585AbjINRFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbjINRKU (ORCPT
+        with ESMTP id S231326AbjINRFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:10:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B201FE5;
-        Thu, 14 Sep 2023 10:10:15 -0700 (PDT)
+        Thu, 14 Sep 2023 13:05:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA801FE1;
+        Thu, 14 Sep 2023 10:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694711415; x=1726247415;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=eV2JD3Rjn3EOex8TEdN5XPzNXegQiID0LMnAxot9DXo=;
-  b=F8cgEWE4FjkBBY9vybdJ5kKn6y0Q9cRGg06gsYJ2HoZDvxQFpxTfh68c
-   NVajIdTIaMJYtezXA7mK7ZkZ69Ghl21q3clzWbKOmykbpbuXmSDcq11JU
-   CkeBlIAVIbQmEbnPKB6ebwsHfzxMGc94nQZ5lrwP55Oy+UFX87gQUxNxG
-   XbMWxMCBe3f0P2VklvJywW2X/Ohg9se7hKWbAeIl86R86qUQqGkt4BtGV
-   4ATG6sr5vxUXQImxDZgdBYrOAdBNwyaTCjbwTO+N8SZIYgY4zs/O8S928
-   3UQT8RUR8cfsueMMxh+HqdAV/LDcTx7JEt5BfWypWLZd5uuOmknbVJF5U
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381731272"
+  t=1694711143; x=1726247143;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=tUD1/z6POA3IUtdx5XVzuwR95oUWZZa4NLHp9FWHlmg=;
+  b=YFqSbA3zGe4A/P3zZ0C0Z1h8S0GA8lrUpOU2v8GbDN6ICTAibRpPlVPB
+   WlsFuWqGQqmSpKh2KePaa9nmaQj0G1NTKecxEtANkTPsOStzxM9Mkqo3M
+   4yTstizEJk3T/yu9a3G0eXxrwBEf7d5YGa4SvsdWw5ziDJkLq7hc9T4DT
+   +1BSFZoSTnc1i0dgDjJJXjg3U8ib2TCKPfDfw/tVHpwn7LJiOJ6I0HBrD
+   zhsqMsjri6PmuAj79wNhP8Ehr1r4Dfg1hmonOTYtQZNBok2dbU5CeqzHx
+   W4tYjGZg0HBEmjYsw0SldI5vdNvBKC/JWaiD2puqmSOY6ELUftq2i3Ty3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="369315210"
 X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="381731272"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 10:10:13 -0700
+   d="scan'208";a="369315210"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 10:05:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744615860"
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="773950069"
 X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="744615860"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Sep 2023 10:10:12 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 14 Sep 2023 10:10:12 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 14 Sep 2023 10:10:12 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.49) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 14 Sep 2023 10:10:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QoFS0Pc/9p49sSxzfC0cSyyqVEWa3tjB0hr2WmWRU65m8Si6aWb6k+3qH6yNSljUp0W588HrgHhQmkYmGjpqfrS2V0VAwV/n1E5BOOuaybSYI4L7DnYZHHWBdW410fLLuGxIMfFf0qpi+rVYvHfmV3gUqCWtsd+WYn6rdpds6Sw+MdkHp15e8AugNnGDIJ84xtKQdL293CWKu9A53h/xQ8PToVjXQ3hSUSO9A42atGX+oInnsOfYHHiRaocY22Ut3mqspPgnnj8PwRxcQ9ef5F1w8G8krbWhLfSgA1lYum71RJuSTmEngJRt79ihkPRmH+Xhm98xnK8FMUfZxEJCvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2eWxw17nHCAgma8znqqc/i83EJUxcpJKKb26CgAdaqY=;
- b=ChlCd1MHAn+PZ/zTys7FQYJYxf6ZyY1hn6cXxcg5DffyXqe7R3JAmriHaD2XOOzzWWvET9s6Ur5XleyvnkaI5wTepc7P1bzi3POwRE6+6Bed0+3n9+f9Ye288/9zKmdc1jt00UuHxM6Cqe9DVvksDWEoyDoA0ed4bWPfXMreohTG/LtzF0QB1mFV/H9E9Om0j1SvKAIYVmJkAy1q2PSRXHaz4ZI0EtpMgRSQ89dibFcarLAyS1gmophCnNtSq/awAtubmnehgd67yyyx5EVF/PXwhiH4gM+VQDn1vZx3AjCRwkfIgo1tjB+lKhgIAG/a/7AMSx5TKVvbfmbG0t4dWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by MW5PR11MB5762.namprd11.prod.outlook.com (2603:10b6:303:196::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Thu, 14 Sep
- 2023 17:10:06 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d%3]) with mapi id 15.20.6768.029; Thu, 14 Sep 2023
- 17:10:06 +0000
-Date:   Thu, 14 Sep 2023 19:04:26 +0200
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Allow to use kfunc XDP hints and frags
- together
-Message-ID: <ZQM9GjMLo32SqxyQ@lincoln>
-References: <20230914083716.57443-1-larysa.zaremba@intel.com>
- <ZQM1BUzcZQtXusA3@google.com>
- <ZQM5kt8qHKUH0Iob@lincoln>
- <CAKH8qBuw68AixQabgP5wNfAQBcc0RuVNEyV9rf9vgVi__c4Y9A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKH8qBuw68AixQabgP5wNfAQBcc0RuVNEyV9rf9vgVi__c4Y9A@mail.gmail.com>
-X-ClientProxiedBy: BE1P281CA0042.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:22::8) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+   d="scan'208";a="773950069"
+Received: from skolhe-mobl1.ger.corp.intel.com ([10.252.36.254])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 10:05:07 -0700
+Date:   Thu, 14 Sep 2023 20:05:05 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/5] selftests/resctrl: Extend signal handler coverage
+ to unmount on receiving signal
+In-Reply-To: <b32f4bd1-9e99-3daa-9d39-8f241b41170c@intel.com>
+Message-ID: <52478b0-15e6-9072-df34-612ec0ebfa@linux.intel.com>
+References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com> <20230911111930.16088-2-ilpo.jarvinen@linux.intel.com> <4176a620-4cec-5d57-42a3-a15c0fe3eb73@intel.com> <aab4b1cc-6eb5-c324-e97e-c6699e2d165@linux.intel.com> <d6cc3829-9b7d-6a0b-c734-c33f6a66959c@intel.com>
+ <9dfe761f-6779-44c6-c227-5175d53ac25@linux.intel.com> <b32f4bd1-9e99-3daa-9d39-8f241b41170c@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|MW5PR11MB5762:EE_
-X-MS-Office365-Filtering-Correlation-Id: a35b0915-6d42-4407-8693-08dbb5457198
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PiWcihmYbrGKbyzm0ThBqxFDgI9T8ZVVvrc2HOi0S5Ou+YKgzaNC+4weh9qQsifBfthUihbh6SpYmWOqhiFLIRXUBARwHoicIRJzNcofIjq8YRLaAIYL2GeBZhQU+W6lLhYwjYetmTkzKbiqOApEa1gc5mCS5WG0mW59bMjFigEe9cOdCUmviZX6HxOAL4EB7X5i0PbFNi8ZP3ekY4adtktDkHTuzvSra7DgBz9nBZL5p/OCLu38Lsz8gYuMIk4+CiRSDW3RZv4G9p76jJwztMHNLVjuqIjn4n3GxwtmxhiR/+VjWpHu2skeGVhMGGUquROYdEl1NY1v4a/s5ediQnAeRWUrwDrXgLMOyncSmPhAvw7nSBva8+mYh2yS2hc9YqV9BqJu3FyH4n4baAK2yzO7tsb5SFKR9kBnJOOzBnxUcakXWTsQFey4oZRqXAE1bbJkchj7ZvyrMz0m//eKaS36pI5HYAeZCPF3WkU0HDqjxZnGMU2UOz2AtzvcDuYTqxqB1ZwCfYijr/xTiNIzI1EIHFkMWZe7C7VhqYERYv0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(39860400002)(136003)(346002)(376002)(186009)(451199024)(1800799009)(6916009)(316002)(41300700001)(4326008)(7416002)(26005)(66556008)(54906003)(44832011)(966005)(8676002)(8936002)(2906002)(66476007)(66946007)(478600001)(5660300002)(6666004)(6506007)(6486002)(6512007)(9686003)(53546011)(86362001)(83380400001)(38100700002)(82960400001)(33716001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z054UkpBSW41RGx4ZHdOdDNwb0toUVZXMCtsdzZ6dHdZWDJSd0t5cU5MTU1L?=
- =?utf-8?B?SjV0LzEreHJXZ1ZCNVBML3BWZW1nNCtuZ0o2V09UclVhY0o2d1VtM25JREs4?=
- =?utf-8?B?bGJielNVa0hCZ2Q2U1BmN25VVVJldmpaWllPaFFrbWdUUWQwUGtOWVMwLzIw?=
- =?utf-8?B?cmU4REhBdXduTDNXWHdHU0E5a0NKcHMzcW9CQ0JXOVNGRCtoelFUYUcyRFY1?=
- =?utf-8?B?dkthbWlGSjV4ckxsTFVLODkrM2prNStHeXhkZWNudVFWOWVoUzFaN3c2OGFN?=
- =?utf-8?B?YWh5M1gweERsd200dGRiSGpDaWpGMURmQkZ5Rm0wbFY0QUxneFoxcDMwWWVh?=
- =?utf-8?B?THJ5d1FZR3Qyb3dkNW9BMC9hdGM2RnpwSGZ4UG8wTFV5alZFMmg1dUZRbDJa?=
- =?utf-8?B?NmlHWEgrTWdOOHd1UXBLOHl0UXJBTlQzMXMwdEwvWUdKU0Z5NjZTc2FDZ2ln?=
- =?utf-8?B?TzNPMldIem1teDJkOUwwUG42NkRRZ0ltaUlQMFJWUkxocldNbU9maUUxNWtr?=
- =?utf-8?B?SCs5QXRqQ3gzYmVKMHdwTEpqUWVnMUdsdnIvS0txL1AyVzlyUUFQbWx5T0VX?=
- =?utf-8?B?ODZ0ZGN3VEpSWGlsUHBBelFFS0RYT1VRQUZDQ1h3ZExUcDlvaHJPUFIrVWY2?=
- =?utf-8?B?dHZ6dmdHWkxwU3BvVHp1T2h4U1BjTG1MeU8vSDJVVW1MU0tocFQrVjhmLy9D?=
- =?utf-8?B?U1k3akl0ekgwSGZnRFlXMFcrc1FhWjIrTmxNWmQ4VVExV3laTW5xN2RWZ2pM?=
- =?utf-8?B?QjFDM0xWRmFlSXR1ZmE3YjBkSU9BYmVjaEtwbVk5M2NBYVF0aWtibXMyeTNY?=
- =?utf-8?B?ZHpQQkNvQXo1TFh6cUNBOGoreWV1NDZjZkJiZUNXa0M1cm0vWGkzbGx4VFBx?=
- =?utf-8?B?OHR5cUpXSVhqWG5vanVTWE1mK2dlcXFHQ0JLdFllTDdTWXNiYUJZRGh5dzZ1?=
- =?utf-8?B?VHRLUFB1b1dtREtza0FwSDJJaElPbTlvRUxhZ0wwVGxjZDU3YzFTRFVsRnRX?=
- =?utf-8?B?Q0NTSm1ZTzFyeGRUVTZhcDdGL2h4NGFSaVhlWEIvWmVaZXN4c0NoTm9TbzEx?=
- =?utf-8?B?ZTRaVTR5R2N5Y0VSY1dFMHE2cnVoL0d6RmhsNCtzdU1RWm05dGM3cGdrdnJy?=
- =?utf-8?B?Vno1aFdjR2Z3aUxjbkgxaXJJeWRqb1hmQmtDSzdvaDNqWlRBVktxbVRPTUxN?=
- =?utf-8?B?V0RhSVMyVGJaUU04WU9TNlprKzluK29ZWFZhWm9pZVNyN0M5WndUNFJTdTBK?=
- =?utf-8?B?L0taY1NRNzNQSmsvWlR3S0xNRXN6N01Ha0ozeVRqMzQ0K2g2TDNpczhqRjQ0?=
- =?utf-8?B?L3Vua29ON21ZT2lOSnJjV01Gb3RIeVhlSUdwa0dqMkFHVk01djZibU1RZndB?=
- =?utf-8?B?cXlHRlIyTERXZnZaYUdUZ1h1aFVPVjNpclhxU3JML0lwRXdhcXQwWnRmblJh?=
- =?utf-8?B?NEo5dmtxb1BJZzNET0JYT2pzcjVsbkZoZzEvbnl3T0thWjE1dlRhS05oSnUz?=
- =?utf-8?B?U1JFYmtxWmtuWG0zZjJBVk1iWGpndVF0NjdwWWc4RGFjRWNZUU00NEhKb2Qv?=
- =?utf-8?B?Mmw2cVRTYXpMdGVtbStRR21LNkRETTVtWGpyRjVZd1V2K1pRdlgwVFdsV1FY?=
- =?utf-8?B?bDVYSE4vR1c3eU1TV1dIZXpHL3E4SzVNWGMzbEtvV3JBbit2L2l1NzllN2ZF?=
- =?utf-8?B?R2hMQ1lqSUdZZU5uclRaS09lbUd4aFFxdzN0bkNSSjZ2N0pReFBGN1J0eWM0?=
- =?utf-8?B?RFhYVHI0M3kvT2diRGIrU1pVL3NNbHZoZ2R6OHc1QkhBVFYvZ21meDZjNHFj?=
- =?utf-8?B?QXBNNENKV0JZR0hrSmNnMWtWSVk2WDZvaTJwaTBYeC94dE4yYVY3R1VOSk1H?=
- =?utf-8?B?cmRyR01QVU9iOW1SUU5FU0RwYjhYbnJwcjRPV0NyTUFBRE54dTVhMjBtMVF6?=
- =?utf-8?B?N21yV2Z1ZVpYVXZBakFBMTRSSDgrSUhNakR0RTFpaEoxWDI3VmRVMU1lT2NF?=
- =?utf-8?B?QzI4S2ljaDBxUnphS2U3UksrMU5pQmZPekNlRjhWT3pLclVZclVMSDRXb0lP?=
- =?utf-8?B?YzFwQWpxQjNjOVRJZ1doSEdXVS9OaU03dXBUR3g3aU0zSmh4K1JVVGJSYmhV?=
- =?utf-8?B?dzI0My9CQzE1SjQ2c1RMcW5DYytZc1ZOalBEQmFqdGM3dXhPMFVYb1NoU2Yr?=
- =?utf-8?B?N2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a35b0915-6d42-4407-8693-08dbb5457198
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 17:10:06.7050
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wzs+6yoDZI9HuUG2ke9rqNh7DJ9A4nrVZAS+8pVZG10POgDs6uHRuefEEmldgJjKE07accVNtj1ZFnKv3P7hR7PTMQVTcdFjL/iH3eiYK04=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR11MB5762
-X-OriginatorOrg: intel.com
+Content-Type: multipart/mixed; boundary="8323329-256835453-1694711109=:1814"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:05:47AM -0700, Stanislav Fomichev wrote:
-> On Thu, Sep 14, 2023 at 9:55 AM Larysa Zaremba <larysa.zaremba@intel.com> wrote:
-> >
-> > On Thu, Sep 14, 2023 at 09:29:57AM -0700, Stanislav Fomichev wrote:
-> > > On 09/14, Larysa Zaremba wrote:
-> > > > There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX hints
-> > > > cannot coexist in a single program.
-> > > >
-> > > > Allow those features to be used together by modifying the flags conditions.
-> > > >
-> > > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > > Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=OKMdsxEkyML36VsAuZpcrsXcyqjdKXSJCBq=Q@mail.gmail.com/
-> > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > > ---
-> > > >  kernel/bpf/offload.c | 6 +++++-
-> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > > > index ee35f33a96d1..43aded96c79b 100644
-> > > > --- a/kernel/bpf/offload.c
-> > > > +++ b/kernel/bpf/offload.c
-> > > > @@ -232,7 +232,11 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> > > >         attr->prog_type != BPF_PROG_TYPE_XDP)
-> > > >             return -EINVAL;
-> > > >
-> > > > -   if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > > > +   if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-> > > > +           return -EINVAL;
-> > > > +
-> > >
-> > > [..]
-> > >
-> > > > +   if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-> > > > +       !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
-> > > >             return -EINVAL;
-> > >
-> > > Any reason we have 'attr->prog_flags & BPF_F_XDP_HAS_FRAGS' part here?
-> > > Seems like doing '!(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)' should
-> > > be enough, right? We only want to bail out here when BPF_F_XDP_DEV_BOUND_ONLY
-> > > is not set and we don't really care whether BPF_F_XDP_HAS_FRAGS is set
-> > > or not at this point.
-> >
-> > If !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY) at this point, program could
-> > be requesting offload.
-> >
-> > Now I have thought about those conditions once more and they could be reduced to
-> > this:
-> >
-> > if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY) &&
-> >     attr->prog_flags != (BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-> >         return -EINVAL;
-> >
-> > What do you think?
-> 
-> Ah, so this check is here to protect against the mbuf+offloaded
-> combination? (looking at that other thread with Maciej)
-> Let's keep your current way with two separate checks, but let's add
-> your "/* Frags are allowed only if program is dev-bound-only, but not
-> if it is requesting
-> bpf offload. */" as a comment to the second check?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Ok, sound good to me.
+--8323329-256835453-1694711109=:1814
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Thu, 14 Sep 2023, Reinette Chatre wrote:
+> On 9/14/2023 3:16 AM, Ilpo Järvinen wrote:
+> > On Wed, 13 Sep 2023, Reinette Chatre wrote:
+> >> On 9/13/2023 3:01 AM, Ilpo Järvinen wrote:
+> >>> On Tue, 12 Sep 2023, Reinette Chatre wrote:
+> >>>> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
+> >>>>> Unmounting resctrl FS has been moved into the per test functions in
+> >>>>> resctrl_tests.c by commit caddc0fbe495 ("selftests/resctrl: Move
+> >>>>> resctrl FS mount/umount to higher level"). In case a signal (SIGINT,
+> >>>>> SIGTERM, or SIGHUP) is received, the running selftest is aborted by
+> >>>>> ctrlc_handler() which then unmounts resctrl fs before exiting. The
+> >>>>> current section between signal_handler_register() and
+> >>>>> signal_handler_unregister(), however, does not cover the entire
+> >>>>> duration when resctrl FS is mounted.
+> >>>>>
+> >>>>> Move signal_handler_register() and signal_handler_unregister() call
+> >>>>> into the test functions in resctrl_tests.c to properly unmount resctrl
+> >>>>> fs. Adjust child process kill() call in ctrlc_handler() to only be
+> >>>>> invoked if the child was already forked.
+> >>>>
+> >>>> Thank you for catching this.
+> >>>>
+> >>>>>
+> >>>>> Fixes: caddc0fbe495 ("selftests/resctrl: Move resctrl FS mount/umount to higher level")
+> >>>>> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> >>>>> Cc: <stable@vger.kernel.org>
+> >>>>> ---
+> >>>>>  tools/testing/selftests/resctrl/cat_test.c    |  8 -------
+> >>>>>  .../testing/selftests/resctrl/resctrl_tests.c | 24 +++++++++++++++++++
+> >>>>>  tools/testing/selftests/resctrl/resctrl_val.c | 22 ++++++++---------
+> >>>>>  3 files changed, 34 insertions(+), 20 deletions(-)
+> >>>>>
+> >>>>> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+> >>>>> index 97b87285ab2a..224ba8544d8a 100644
+> >>>>> --- a/tools/testing/selftests/resctrl/cat_test.c
+> >>>>> +++ b/tools/testing/selftests/resctrl/cat_test.c
+> >>>>> @@ -167,12 +167,6 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >>>>>  		strcpy(param.filename, RESULT_FILE_NAME1);
+> >>>>>  		param.num_of_runs = 0;
+> >>>>>  		param.cpu_no = sibling_cpu_no;
+> >>>>> -	} else {
+> >>>>> -		ret = signal_handler_register();
+> >>>>> -		if (ret) {
+> >>>>> -			kill(bm_pid, SIGKILL);
+> >>>>> -			goto out;
+> >>>>> -		}
+> >>>>>  	}
+> >>>>>  
+> >>>>>  	remove(param.filename);
+> >>>>> @@ -209,10 +203,8 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >>>>>  		}
+> >>>>>  		close(pipefd[0]);
+> >>>>>  		kill(bm_pid, SIGKILL);
+> >>>>> -		signal_handler_unregister();
+> >>>>>  	}
+> >>>>>  
+> >>>>> -out:
+> >>>>>  	cat_test_cleanup();
+> >>>>>  
+> >>>>>  	return ret;
+> >>>>> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+> >>>>> index 823672a20a43..3d66fbdc2df3 100644
+> >>>>> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+> >>>>> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+> >>>>> @@ -73,8 +73,13 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+> >>>>>  
+> >>>>>  	ksft_print_msg("Starting MBM BW change ...\n");
+> >>>>>  
+> >>>>> +	res = signal_handler_register();
+> >>>>> +	if (res)
+> >>>>> +		return;
+> >>>>> +
+> >>>>>  	res = mount_resctrlfs();
+> >>>>>  	if (res) {
+> >>>>> +		signal_handler_unregister();
+> >>>>>  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> >>>>>  		return;
+> >>>>>  	}
+> >>>>> @@ -91,6 +96,7 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+> >>>>>  
+> >>>>>  umount:
+> >>>>>  	umount_resctrlfs();
+> >>>>> +	signal_handler_unregister();
+> >>>>>  }
+> >>>>>  
+> >>>>>  static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+> >>>>> @@ -99,8 +105,13 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+> >>>>>  
+> >>>>>  	ksft_print_msg("Starting MBA Schemata change ...\n");
+> >>>>>  
+> >>>>> +	res = signal_handler_register();
+> >>>>> +	if (res)
+> >>>>> +		return;
+> >>>>> +
+> >>>>>  	res = mount_resctrlfs();
+> >>>>>  	if (res) {
+> >>>>> +		signal_handler_unregister();
+> >>>>>  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> >>>>>  		return;
+> >>>>>  	}
+> >>>>> @@ -115,6 +126,7 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+> >>>>>  
+> >>>>>  umount:
+> >>>>>  	umount_resctrlfs();
+> >>>>> +	signal_handler_unregister();
+> >>>>>  }
+> >>>>>  
+> >>>>
+> >>>> This adds more duplicated code for every test. Have you considered a
+> >>>> single test setup function that can be used to mount resctrl FS and setup
+> >>>> the signal handler paired with a single test teardown function?
+> >>>
+> >>> Yes. Consolidating all these is among my not-yet submitted patches.
+> >>> I just had to do a backport-friendly Fixes patch first for this.
+> >>>
+> >>
+> >> Could you please help me understand how the duplicate calls are more
+> >> backport friendly?
+> > 
+> > Hi,
+> > 
+> > It's simply because the refactoring that has to be done to be able to 
+> > introduce the generalized test framework is much more invasive and far 
+> > reaching than this patch. Essentially, all the call signatures of the test 
+> > functions need to match and the feature checks need to be done in new per 
+> > test functions too. This is the diffstat of those changes alone:
+> > 
+> >  tools/testing/selftests/resctrl/cat_test.c      |  21 +++--
+> >  tools/testing/selftests/resctrl/cmt_test.c      |  26 +++--
+> >  tools/testing/selftests/resctrl/mba_test.c      |  20 +++-
+> >  tools/testing/selftests/resctrl/mbm_test.c      |  20 +++-
+> >  tools/testing/selftests/resctrl/resctrl.h       |  43 ++++++++-
+> >  tools/testing/selftests/resctrl/resctrl_tests.c | 220 +++++++++++++++----------------------------
+> >  tools/testing/selftests/resctrl/resctrlfs.c     |   5 +
+> > 
+> > (tools/testing/selftests/resctrl/resctrl_tests.c --- part would 
+> > be slightly less if I'd reorder this patch but that only 24 lines off as 
+> > per diffstat of this patch).
+> > 
+> > But that's not all.... To be able to push the generalized test framework 
+> > to stable, you need to also count in the benchmark cmd changes which 
+> > worked towards making the call signatures identical. So here's the 
+> > diffstat for that series for quick reference:
+> > 
+> >  tools/testing/selftests/resctrl/cache.c       |   5 +-
+> >  tools/testing/selftests/resctrl/cat_test.c    |  13 +--
+> >  tools/testing/selftests/resctrl/cmt_test.c    |  34 ++++--
+> >  tools/testing/selftests/resctrl/mba_test.c    |   4 +-
+> >  tools/testing/selftests/resctrl/mbm_test.c    |   7 +-
+> >  tools/testing/selftests/resctrl/resctrl.h     |  16 +--
+> >  .../testing/selftests/resctrl/resctrl_tests.c | 100 ++++++++----------
+> >  tools/testing/selftests/resctrl/resctrl_val.c |  10 +-
+> > 
+> > That's ~500 lines changed vs ~50 so it's a magnitude worse and much less 
+> > localized.
+> > 
+> > And rest assured, I did not like introducing the duplicated calls any more 
+> > than you do (I did not write the generalized test framework for nothing, 
+> > after all) but the way taken in this patch seemed the most reasonable 
+> > option under these circumstances.
+> > 
+> 
+> hmmm ... I did not expect that a total refactoring would be needed.
+> 
+> I was thinking about a change from this:
+> 
+> 
+> 	testX(...) 
+> 	{
+> 	
+> 		res = signal_handler_register();
+> 		/* error handling */
+> 		res = mount_resctrlfs();
+> 		/* error handling */
+> 		
+> 		/* test */
+> 
+> 		unmount_resctrlfs();
+> 		signal_handler_register();
+> 
+> 	}
+> 
+> 
+> to this:
+> 
+> 
+> 	int test_setup(...)
+> 	{
+> 		res = signal_handler_register();
+> 		/* error handling */
+> 		res = mount_resctrlfs();
+> 		/* error handling */
+> 	}
+> 
+> 
+> 	void test_cleanup(...)
+> 	{
+> 		unmount_resctrlfs();
+> 		signal_handler_register();
+> 	}
+> 
+> 
+> 	testX(...)
+> 	{
+> 
+> 		res = test_setup(..);
+> 		/* error handling */
+> 
+> 		/* test */
+> 
+> 		test_cleanup();
+> 	}
+> 
+> I expect this to also support the bigger refactoring.
+
+Okay, I'll do so then.
+
+However, having already written the generic run_single_test() function 
+that is part of the generic test framework, I definitely don't feel those 
+helpers would be that helpful for it. It more feels like they'd make the 
+flow less obvious by adding those two extra calls there but that's of 
+course matter of taste.
+
+
+-- 
+ i.
+
+--8323329-256835453-1694711109=:1814--
