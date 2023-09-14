@@ -2,84 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0577A11FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0327A1200
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbjINXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S230304AbjINXqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjINXov (ORCPT
+        with ESMTP id S230306AbjINXqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:44:51 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A731FE8;
-        Thu, 14 Sep 2023 16:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694735086;
-        bh=pT5UrpfCMVGRXSACPqeP/Xvjp5b4jCyTouDPdHdi6Qk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VuCzKzy0jrXMkEpPumqfYzDZTL1fdYBnc//buMNSmEb4dpWfEjIWfpqgN2gueC9mf
-         kElN6sjxNyH+U3vZX7oNX2MsFJdfsb6VbOtasMQ3LCwidgIkMt2So/LaROspzR01Ft
-         /eEXBdE8QD6gXA61vaA3ZwFXIa/ImqTmrn6Bs1UNf9RnR7CAGcx9YzVppnZIb3lXa3
-         pjlOF2APjRhRcQ6CyDqc32pGK6w88c2tE+cXzqA8xFWMfnwzRDTc9/DJw/bRRyvWAv
-         uPEM6bSwsMRMFsEZf5L2iOw/j5dRt10c2sLz0RgF0J34ldX0/wfyDG1gHca60O7AkG
-         XXIi3AwGn9tcw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rmv7L01Pjz4wxh;
-        Fri, 15 Sep 2023 09:44:45 +1000 (AEST)
-Date:   Fri, 15 Sep 2023 09:44:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the v4l-dvb-next tree
-Message-ID: <20230915094444.266b938f@canb.auug.org.au>
+        Thu, 14 Sep 2023 19:46:37 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4D12707
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:46:33 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a9d6b98845so588666266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1694735192; x=1695339992; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=jEsOE3VahVBRrZQB+F/BuNrsfqTbbzggGN9bcwX+LFw=;
+        b=WBmURdAIViqySOYd4mwoL5+CGavhBHlAcQZJOFnePa/0bAXu0bgybRI3OcGj4HTG2j
+         c4WP2JsR5jpOWTsFRjLuua//y/QQpf3bQLoZvnXtVvdNZZ0OV5Ll75KL7oUytg7KbJMU
+         ZOjCMe/ghixf3/EUuPcV+lYqQ1FwmK9/STj1Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694735192; x=1695339992;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jEsOE3VahVBRrZQB+F/BuNrsfqTbbzggGN9bcwX+LFw=;
+        b=gSfrBGMu0QaocrI9XcZtHOWHuK9+NLlS/i8dYpfu0PZ+1MkEQ69ZPDx6VkUucW2xVP
+         mLUy+9gfAR+AbpnHYodEM13HaFAzwrKSNJaGeGh2HRO2jpO19XaNVOFWYrnxJB9a8+3q
+         xzzcZJ0M4NhWJz8kyOxhIeZWCEQoQo5UApDA4Uy2cArqtGZ/SWX+7fPZ3eSOguttaJaG
+         aXqM3DSxVay+8AJHIDkAhOwtIrTE95EHWxzXG6HTl0c1SS5mJMXLFTlET6vVuqXVRmH8
+         CTsJgdSLCQ582vJBVKSSnksGJtrDMRugAQE58FVUv6I0pj1whYNPgefSwxOB1TluhZ9U
+         5PvA==
+X-Gm-Message-State: AOJu0Yw9Sgrj2jFFgMMKDJdM8zhxpAbmDMOSnGSCeBPEwoGtyj7Ezavv
+        JWgS/ZmBLSxh/0SDyX1jwEJ44A==
+X-Google-Smtp-Source: AGHT+IFdLzHxkpcWBSKfZyEmhUJiAzFwTc5lp2rJbnp1c8teqkmJckhwUBhX6fJYxYR6W8lj/upGVQ==
+X-Received: by 2002:a17:906:51d0:b0:9a1:fda6:2e2a with SMTP id v16-20020a17090651d000b009a1fda62e2amr179416ejk.9.1694735191861;
+        Thu, 14 Sep 2023 16:46:31 -0700 (PDT)
+Received: from [192.168.1.10] (host-92-12-44-130.as13285.net. [92.12.44.130])
+        by smtp.gmail.com with ESMTPSA id m21-20020a1709060d9500b009937dbabbd5sm1623158eji.220.2023.09.14.16.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 16:46:31 -0700 (PDT)
+Message-ID: <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com>
+Date:   Fri, 15 Sep 2023 00:46:30 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2SvlkEtILSp84/vVuujrrum";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   andrew.cooper3@citrix.com
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+Content-Language: en-GB
+To:     Thomas Gleixner <tglx@linutronix.de>, Xin Li <xin3.li@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+ <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
+In-Reply-To: <87y1h81ht4.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2SvlkEtILSp84/vVuujrrum
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 15/09/2023 12:00 am, Thomas Gleixner wrote:
+>> and despite what Juergen said, I'm going to recommend that you do wire
+>> this through the paravirt infrastructure, for the benefit of regular
+>> users having a nice API, not because XenPV is expecting to do something
+>> wildly different here.
+> I fundamentaly hate adding this to the PV infrastructure. We don't want
+> more PV ops, quite the contrary.
 
-Hi all,
+What I meant was "there should be the two top-level APIs, and under the
+covers they DTRT".  Part of doing the right thing is to wire up paravirt
+for configs where that is specified.
 
-The following commits are also in v4l-dvb-fixes tree as different
-commits (but the same patches):
+Anything else is going to force people to write logic of the form:
 
-  0835b195d034 ("media: ivsc: Depend on VIDEO_DEV")
-  99de9266e8ef ("media: uvcvideo: Fix OOB read")
-  14f36ff244d8 ("media: via: Use correct dependency for camera sensor drive=
-rs")
-  a498bdab9b61 ("media: v4l: Use correct dependency for camera sensor drive=
-rs")
-  cb655c1231ca ("media: pci: ivsc: Select build dependencies")
+    if (WRMSRNS && !XENPV)
+        wrmsr_ns(...)
+    else
+        wrmsr(...)
 
---=20
-Cheers,
-Stephen Rothwell
+which is going to be worse overall.  And there really is one example of
+this antipattern already in the series.
 
---Sig_/2SvlkEtILSp84/vVuujrrum
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> For the initial use case at hand, there is an explicit FRED dependency
+> and the code in question really wants to use WRMSRNS directly and not
+> through a PV function call.
+>
+> I agree with your reasoning for the more generic use case where we can
+> gain performance independent of FRED by using WRMSRNS for cases where
+> the write has no serialization requirements.
+>
+> But this made me look into PV ops some more. For actual performance
+> relevant code the current PV ops mechanics are a horrorshow when the op
+> defaults to the native instruction.
+>
+> Let's look at wrmsrl():
+>
+> wrmsrl(msr, val
+>  wrmsr(msr, (u32)val, (u32)val >> 32))
+>   paravirt_write_msr(msr, low, high)
+>     PVOP_VCALL3(cpu.write_msr, msr, low, high)
+>
+> Which results in
+>
+> 	mov	$msr, %edi
+> 	mov	$val, %rdx
+> 	mov	%edx, %esi
+> 	shr	$0x20, %rdx
+> 	call	native_write_msr
+>
+> and native_write_msr() does at minimum:
+>
+> 	mov    %edi,%ecx
+> 	mov    %esi,%eax
+> 	wrmsr
+>         ret
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDmu0ACgkQAVBC80lX
-0GxBsQf+KKsw31ig7lz+Uq72bazGEDaEs7U1uo87w5dPpfwPgFNLBopQzS9KwveD
-TD+ZJ81/1+GkvBTmoERPWqUYQnwekFJM7RTwztsxwg9VWzf8/KYgZLLDA7TCoT9v
-/CtZNcsh61ICw3oZ28C7EB1fiJlmZypebefjengQCUvLuE6PAsZS4/G3xVCHePM+
-LCpxbhDKPq86Dm8A2QAOBA2YAqY3lCuMBFcYiU2KSgDO+cCpsJGCWlSsy5VCBjLZ
-DhL5+uSwfTqJHGIWEqzeq7I6FMH6+YptbVumhvvxOCETcOZjavYsQoTA3/+jMZG8
-JKHuvvtkwQD/xqDBmkFABDt1NC3ufw==
-=rhRN
------END PGP SIGNATURE-----
+Yeah, this is daft.  But it can also be fixed irrespective of WRMSRNS.
 
---Sig_/2SvlkEtILSp84/vVuujrrum--
+WRMSR has one complexity that most other PV-ops don't, and that's the
+exception table reference for the instruction itself.
+
+In a theoretical future ought to look like:
+
+    mov    $msr, %ecx
+    mov    $lo, %eax
+    mov    $hi, %edx
+    1: {call paravirt_blah(%rip) | cs...cs wrmsr | cs...cs wrmsrns }
+    _ASM_EXTABLE(1b, ...)
+
+In paravirt builds, the CALL needs to be the emitted form, because it
+needs to function in very early boot.
+
+But once the paravirt-ness has been chosen and alternatives run, the
+as-native paths are fully inline.
+
+The alternative which processes this site wants to conclude that, in the
+case it does not alter from the CALL, to clobber the EXTABLE reference. 
+CALL instructions can #GP, and you don't want to end up thinking you're
+handling a WRMSR #GP when in fact it was a non-canonical function pointer.
+
+> In the worst case 'ret' is going through the return thunk. Not to talk
+> about function prologues and whatever.
+>
+> This becomes even more silly for trivial instructions like STI/CLI or in
+> the worst case paravirt_nop().
+
+STI/CLI are already magic.  Are they not inlined?
+
+> The call makes only sense, when the native default is an actual
+> function, but for the trivial cases it's a blatant engineering
+> trainwreck.
+>
+> I wouldn't care at all if CONFIG_PARAVIRT_XXL would be the esoteric use
+> case, but AFAICT it's default enabled on all major distros.
+>
+> So no. I'm fundamentally disagreeing with your recommendation. The way
+> forward is:
+>
+>   1) Provide the native variant for wrmsrns(), i.e. rename the proposed
+>      wrmsrns() to native_wrmsr_ns() and have the X86_FEATURE_WRMSRNS
+>      safety net as you pointed out.
+>
+>      That function can be used in code which is guaranteed to be not
+>      affected by the PV_XXL madness.
+>
+>   2) Come up with a sensible solution for the PV_XXL horrorshow
+>
+>   3) Implement a sane general variant of wrmsr_ns() which handles
+>      both X86_FEATURE_WRMSRNS and X86_MISFEATURE_PV_XXL
+>
+>   4) Convert other code which benefits from the non-serializing variant
+>      to wrmsr_ns()
+
+Well - point 1 is mostly work that needs reverting as part of completing
+point 3, and point 2 clearly needs doing irrespective of anything else.
+
+Thanks,
+
+~Andrew
