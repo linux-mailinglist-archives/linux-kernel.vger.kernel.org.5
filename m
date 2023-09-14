@@ -2,200 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 392BA7A11D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3527A11DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjINXcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S230365AbjINXcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbjINXbo (ORCPT
+        with ESMTP id S230187AbjINXcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:31:44 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E372D48
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:31:36 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso581285466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694734295; x=1695339095; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r7Rb24jsu1Obt5C61wSLsWivJKBy0po7p8YAHy1mWV0=;
-        b=ec94cJ09zKdzjHAXxU1iRkThGliciKFPhphW1t4eNFS4oSPl3XsbT+Vug8CSQ8qmjs
-         0W2BS5XmVYmJobS3Mer6nPsVBXBxNIg+AQtfL2xgcSHJOw0dDMSdJuBQcl3DrcLDL1n3
-         VNkQOnjMJaf8laRkx+kHoJ3babjO5UqhUKysdabSfYo++J0b/1QWcA9tMlrwcYR+3w2U
-         48f+fQxE5HQCRtHS95YEc30BodxZevyHNYFWSZgw0jqBHjtGa7yoZnPEF9qAYyDF7xuc
-         mPgpSbKxKfIOzf7cSDCyEtPTVviPa/u1FhFGZtI8nSLQErVztPSpn+7HlJEpdA6Zf6Ih
-         2GLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694734295; x=1695339095;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r7Rb24jsu1Obt5C61wSLsWivJKBy0po7p8YAHy1mWV0=;
-        b=J56wPYnt6EM6YUAeCUxtujwU64yOHWbDeswNB/ktp3cz1OB5vKcmqTIT2kA6SYi+RD
-         9zG1dgLWMlS6/4jJbdxAsyfdWK01nZa0il+9eFO4aS2llDd9VmkkluecwjZCiwwlzMa/
-         EcY3T+5+VndkIa2KVg6u1JWA9fnL6P9eEguJ4XKtARYX6qoBBRHTIvT1DvXmMFS/U+z7
-         9wgFjx8DtNFotuisQUahLQwPw5YlsKwLqEOtDL1FeKXWG91+wSE7+UZBO0oSGZ8LqV8j
-         +6Acs0s+8SJdnRXOP4Luc+m6OfF9VW0ERqbFJ83AhvQlMfC4y9vMWCaj2PecyLtjbpPj
-         LUIA==
-X-Gm-Message-State: AOJu0Yx3vsa885FD7faUwTDGEH7BLAKjH4s+mfuLRHwx05boqn4x7MSu
-        BEs+74AargRtjBu/bU2e45qrwttFtbE2Fnl98522Lg==
-X-Google-Smtp-Source: AGHT+IFLci1Gh1vs2mE7QDtLKQZUE/TQg6gUZQiUYohfckoWuwQf41Nn3O2H4gd3T/hi9Q7bQvnRj2aLWQNjtTHhaXs=
-X-Received: by 2002:a17:906:5a5f:b0:9a5:9305:83fb with SMTP id
- my31-20020a1709065a5f00b009a5930583fbmr100497ejc.34.1694734294841; Thu, 14
- Sep 2023 16:31:34 -0700 (PDT)
+        Thu, 14 Sep 2023 19:32:23 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730E71AE;
+        Thu, 14 Sep 2023 16:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694734338;
+        bh=eUWIG1s5BYy4XyEX38uS42u7StqIJ5olVlOcN4LhB+E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=m39VrIb0sCejauUWQgHfa3TANQ1mrm3VDI8e1ykkYBOE6fl6Y9Wa8M+LcKX/7ivBb
+         0QsRRy0r1PzbG21sYhHQpfDqzUUip2RjDbN8js3IH8fHdaFL+gtoT3GaFqM7j8kXL+
+         4AsMU1iULIkRIfvUJXep2x6t6iSGBNTdhG6rVBY/fQSQYN+CqicsWSoYza8kmwN1bR
+         fSbvdiRc4KHBQsSYUnciOErr7HneBw4wjr6Q7T/wgyEMeqjfVmF6orkJSL1fUc8MtZ
+         Om9y/SFpPyJ0Kv4GfMnY156ue+btelqmjo1Iie8sHMfIiZKY3ju5prrY03Y57ekLWS
+         BIlN6iggHanDw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rmtry01HMz4x3D;
+        Fri, 15 Sep 2023 09:32:17 +1000 (AEST)
+Date:   Fri, 15 Sep 2023 09:32:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the btrfs tree
+Message-ID: <20230915093216.3fc19bd8@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230913073846.1528938-1-yosryahmed@google.com>
- <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
- <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com> <20230914225844.woz7mke6vnmwijh7@google.com>
-In-Reply-To: <20230914225844.woz7mke6vnmwijh7@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 14 Sep 2023 16:30:56 -0700
-Message-ID: <CAJD7tkb_pDxqqhB25aZpbfur=YodBRb1nmdpNZt1DB_1ozDpPQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/VHxI9Oqo.fa8Xafcy.+8gOV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 3:58=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Thu, Sep 14, 2023 at 10:56:52AM -0700, Yosry Ahmed wrote:
-> [...]
-> > >
-> > > 1. How much delayed/stale stats have you observed on real world workl=
-oad?
-> >
-> > I am not really sure. We don't have a wide deployment of kernels with
-> > rstat yet. These are problems observed in testing and/or concerns
-> > expressed by our userspace team.
-> >
->
-> Why sleep(2) not good enough for the tests?
+--Sig_/VHxI9Oqo.fa8Xafcy.+8gOV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The problem is not making the tests pass. The tests are just a signal.
+Hi all,
 
->
-> > I am trying to solve this now because any problems that result from
-> > this staleness will be very hard to debug and link back to stale
-> > stats.
-> >
->
-> I think first you need to show if this (2 sec stale stats) is really a
-> problem.
+The following commits are also in the btrfs-fixes tree as different
+commits (but the same patches):
 
-That's the thing, my main concern is that if this causes a problem, we
-probably won't be able to tell it was because of stale stats. It's
-very hard to make that connection.
+  5801ee67a0dc ("btrfs: fix race between reading a directory and adding ent=
+ries to it")
+  e663f5e72c50 ("btrfs: fix race when refilling delayed refs block reserve")
+  418040f46bf7 ("btrfs: refresh dir last index during a rewinddir(3) call")
+  9c053ecc08e2 ("btrfs: set last dir index to the current last index when o=
+pening dir")
+  aa97c8e4f2ca ("btrfs: prevent transaction block reserve underflow when st=
+arting transaction")
+  8e7f82deb0c0 ("btrfs: fix race between reading a directory and adding ent=
+ries to it")
+  e60aa5da14d0 ("btrfs: refresh dir last index during a rewinddir(3) call")
+  357950361cbc ("btrfs: set last dir index to the current last index when o=
+pening dir")
 
-Pre-rstat, reading stats would always yield fresh stats (as much as
-possible). Now the stats can be up to 2s stale, and we don't really
-know how this will affect our existing workloads.
+Some of them are also duplicated within the btrfs tree itself.
 
->
-> > >
-> > > 2. What is acceptable staleness in the stats for your use-case?
-> >
-> > Again, unfortunately I am not sure, but right now it can be O(seconds)
-> > which is not acceptable as we have workloads querying the stats every
-> > 1s (and sometimes more frequently).
-> >
->
-> It is 2 seconds in most cases and if it is higher, the system is already
-> in bad shape. O(seconds) seems more dramatic. So, why 2 seconds
-> staleness is not acceptable? Is 1 second acceptable? or 500 msec? Let's
-> look at the use-cases below.
->
-> > >
-> > > 3. What is your use-case?
-> >
-> > A few use cases we have that may be affected by this:
-> > - System overhead: calculations using memory.usage and some stats from
-> > memory.stat. If one of them is fresh and the other one isn't we have
-> > an inconsistent view of the system.
-> > - Userspace OOM killing: We use some stats in memory.stat to gauge the
-> > amount of memory that will be freed by killing a task as sometimes
-> > memory.usage includes shared resources that wouldn't be freed anyway.
-> > - Proactive reclaim: we read memory.stat in a proactive reclaim
-> > feedback loop, stale stats may cause us to mistakenly think reclaim is
-> > ineffective and prematurely stop.
-> >
->
-> I don't see why userspace OOM killing and proactive reclaim need
-> subsecond accuracy. Please explain.
+--=20
+Cheers,
+Stephen Rothwell
 
-For proactive reclaim it is not about sub-second accuracy. It is about
-doing the reclaim then reading the stats immediately to see the
-effect. Naturally one would expect that a stat read after reclaim
-would show the system state after reclaim.
+--Sig_/VHxI9Oqo.fa8Xafcy.+8gOV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-For userspace OOM killing I am not really sure. It depends on how
-dynamic the workload is. If a task recently had a spike in memory
-usage causing a threshold to be hit, userspace can kill a different
-task if the stats are stale.
+-----BEGIN PGP SIGNATURE-----
 
-I think the whole point is *not* about the amount of staleness. It is
-more about that you expect a stats read after an event to reflect the
-system state after the event. Whether this event is proactive reclaim
-or a spike in memory usage or something else.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDmAAACgkQAVBC80lX
+0GwusAf/SDxDhOCG4yXVA4Kcb10VbV2yVCX4p5+e3I6gfiQwp1yx2+XzB04kgKNW
+9ueMXEhY0EFXf2JRCrUF4euzSuuLaINLpccMXMdr8C4rX2FKfmel7ma+1yZAnW1O
+cupoUfqdLXy2fvZVumZiIcPwBHPCCTn1G8nRm1k/3BytuxfTk53ZyVEeOBUekTVw
+R2BhY+jTXePGo7oKHp5E9jYJCUsIo4hM/Ti+XbhQW7mAbQvOVtRVia0t0qM56eY1
+3t3LKFyVa9UXqtArHtz7k4iAW3JNosNqcqMvdjNnOKjLPj1/hiKQjQ0GnYibUvzX
+xWvRLqduVt8ybOhFCGY5TN2dJqbt7w==
+=t9F0
+-----END PGP SIGNATURE-----
 
-As Tejun mentioned previously [1]: "The only guarantee you need is
-that there has been at least one flush since
-the read attempt started".
-
-[1]https://lore.kernel.org/lkml/ZP92xP5rdKdeps7Z@mtj.duckdns.org/
-
-> Same for system overhead but I can
-> see the complication of two different sources for stats. Can you provide
-> the formula of system overhead? I am wondering why do you need to read
-> stats from memory.stat files. Why not the memory.current of top level
-> cgroups and /proc/meminfo be enough. Something like:
->
-> Overhead =3D MemTotal - MemFree - SumOfTopCgroups(memory.current)
-
-We use the amount of compressed memory in zswap from memory.stat,
-which is not accounted as memory usage in cgroup v1.
-
->
-> > >
-> > > I know I am going back on some of the previous agreements but this
-> > > whole locking back and forth has made in question the original
-> > > motivation.
-> >
-> > That's okay. Taking a step back, having flushing being indeterministic
->
-> I would say atmost 2 second stale instead of indeterministic.
-
-Ack.
-
->
-> > in this way is a time bomb in my opinion. Note that this also affects
-> > in-kernel flushers like reclaim or dirty isolation
->
-> Fix the in-kernel flushers separately.
-
-The in-kernel flushers are basically facing the same problem. For
-instance, reclaim would expect a stats read after a reclaim iteration
-to reflect the system state after the reclaim iteration.
-
-> Also the problem Cloudflare is facing does not need to be tied with this.
-
-When we try to wait for flushing to complete we run into the same
-latency problem of the root flush.
+--Sig_/VHxI9Oqo.fa8Xafcy.+8gOV--
