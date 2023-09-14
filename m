@@ -2,157 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A3F79FC63
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4423C79FC69
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbjINGza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S230059AbjING63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235722AbjINGz3 (ORCPT
+        with ESMTP id S229460AbjING62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:55:29 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3199CD8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:55:24 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-403004a96a4so6369645e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694674523; x=1695279323; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JdJtSip6jueHWIKrIxuq/3ErqyWztQHlLvahC0B+skk=;
-        b=KfDP9okeHdz6WYyhPYr+eKtjJ/NzNcwvdZ/U8pWxo6ufOEWIHKDGHMzyODXrjArU4j
-         bPrPIle2ah5/QJC/RykooapNsc9YA8kLxrLN9aNEZS2Xfj3G6bYbzCFiJ7MCHK9Fqan7
-         I5eqhGietipvwvX8yDyfR6TKySCyhrpP34DG5UFYh8sMOmgD+x3RLmVjPjoQE08uB1MO
-         y07TAYHqWucA6Y9FhhfPSDs71u7twCHe+X/PWOmssJnu2Gd8jcEr18ydF39FAMsaOoPC
-         pY+Rbc0lNuQRZbK8aoahxL+zrhT/+dochC0IJrT2ERSbHVmhBON2pdeLjq5dvcJYmSRL
-         N7og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694674523; x=1695279323;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JdJtSip6jueHWIKrIxuq/3ErqyWztQHlLvahC0B+skk=;
-        b=f9tiNpqz10Uq0xiYHwzR2Qb8i6GsYZInZ+3dltAod2z7NbRYCh/Vyo00wbJ4yDlX+h
-         adYvnIFKt60WZmRHCe64QD89vjlYp2W8S22lBkGohgVkEWeW8RWdGZS3GF7ZGOJoUy9g
-         xkJTJX23HVQxELR3J2VZ9zoCTOxVzNc35hDWpiqTH0Z4HI9B5qg61BFXmY+CyMQkr5+D
-         llpC7wWQVJ4YdK0bv8TxnANb5bkpuQfVKPioenC3bG5pLb2p5prL/93hinOcdno7BfQI
-         8SgkiT4t+9kBgk9vekkW6ep61ejcHs8dSlq02GMzDUh1TGakbcqKXHdmjpYf5+vPNGV4
-         XWMA==
-X-Gm-Message-State: AOJu0YxnwW1rTHJpjarcmNeXO9IbQXOeJ0aaQIDD37GHaWMt8C0sqC/j
-        I0ScMPOVavuyR7e26NqktlYLag==
-X-Google-Smtp-Source: AGHT+IFOZXhoecDP9qmvD/AMxMEBbJgx3W49iO7bgz4TRdWNNWKhcPAvmDSxEp5Co0lMcqsrM6Wu8Q==
-X-Received: by 2002:adf:ed8e:0:b0:319:66b2:6798 with SMTP id c14-20020adfed8e000000b0031966b26798mr4017253wro.43.1694674523195;
-        Wed, 13 Sep 2023 23:55:23 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id u25-20020a05600c00d900b003feff926fc5sm1074430wmm.17.2023.09.13.23.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 23:55:22 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 09:55:20 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Umang Jain <umang.jain@ideasonboard.com>
-Cc:     linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrien Thierry <athierry@redhat.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v11 1/5] staging: vc04_services: vchiq_arm: Add new bus
- type and device type
-Message-ID: <e815e9d6-450c-4dcf-b562-f302dd9e22e5@kadam.mountain>
-References: <20230913195354.835884-1-umang.jain@ideasonboard.com>
- <20230913195354.835884-2-umang.jain@ideasonboard.com>
+        Thu, 14 Sep 2023 02:58:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AFECD8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694674704; x=1726210704;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Sn8vj2spcMts/pPv27VPnQbbUcalBZLbwbp6A30++Ig=;
+  b=CMW4k2GPThDNM3l9QwV7SQML6lZdY+oeWX+3HeSmf0e63hLWe8bh+zEr
+   OaMS3pbKEdFmUaW9jB8HyuxCeYArwAGKfpQOCj8L7uq/+U+suqqJ4xAme
+   DzfYkbD4qtTF/2IIJh9BCcExKTm871KvEyIUzCWOuha1txLE7xRB79ZTN
+   ciOR7zXNnibC/MC5qNjhg9cUZ0A8qubzYAoO5C2GpinOig7AnzG9HkjKr
+   3hjkcy0GBRFRItXTBW6LaOBH1X6qMCQSOaJDoeNTZOdvHJ08R8dNXAbhJ
+   aZwIHi/ChVbt6W+B9QV5R0aL59sDP/8nA2TG4SJ5l9LVJi8gKG2qQ6LV5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="359132470"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="359132470"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 23:58:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="737813329"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="737813329"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 13 Sep 2023 23:58:16 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qggIo-0001IN-0y;
+        Thu, 14 Sep 2023 06:58:14 +0000
+Date:   Thu, 14 Sep 2023 14:58:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
+Subject: ERROR: modpost: "__st_r13_to_r25" [lib/zstd/zstd_decompress.ko]
+ undefined!
+Message-ID: <202309141422.FTh1oZyd-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913195354.835884-2-umang.jain@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 01:23:50AM +0530, Umang Jain wrote:
-> +static int vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
-> +{
-> +	if (dev->bus == &vchiq_bus_type &&
-> +	    strcmp(dev_name(dev), drv->name) == 0)
-> +		return 1;
-> +
-> +	return 0;
-> +}
+Hi Vineet,
 
-I was not going to comment on this, because it's unfair to nitpick a
-v11 patch...  But since you're going to have to redo it anyway, could
-you make this function bool and change it to return true/false.
+First bad commit (maybe != root cause):
 
-static bool vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
-{
-	if (dev->bus == &vchiq_bus_type &&
-	    strcmp(dev_name(dev), drv->name) == 0)
-		return true;
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   aed8aee11130a954356200afa3f1b8753e8a9482
+commit: cfca4b5abe0cc13f9d9f45f760efd8260e31200f ARC: entry: use gp to cache task pointer (vs. r25)
+date:   4 weeks ago
+config: arc-randconfig-r005-20230429 (https://download.01.org/0day-ci/archive/20230914/202309141422.FTh1oZyd-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141422.FTh1oZyd-lkp@intel.com/reproduce)
 
-	return false;
-}
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309141422.FTh1oZyd-lkp@intel.com/
 
-> +static int vchiq_bus_probe(struct device *dev)
-> +{
-> +	struct vchiq_device *device = to_vchiq_device(dev);
-> +	struct vchiq_driver *driver = to_vchiq_driver(dev->driver);
-> +	int ret;
-> +
-> +	ret = driver->probe(device);
-> +	if (ret == 0)
-> +		return 0;
-> +
-> +	return ret;
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-Ugh...  I was going to ignore this as well, but later there is a
-checkpatch warning so then I decided nitpicking was ok.  Always do
-error handling.  if (ret).  Never do success handling.  if (!ret).  But
-here it can be done on one line.
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_min_heap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_module.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_sort.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bitmap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_xarray.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_maple_tree.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_kprobes.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/list-test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/hashtable_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bits.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/cmdline_kunit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/overflow_kunit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/siphash_kunit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pinctrl/meson/pinctrl-meson.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpio/gpio-pcf857x.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pci/controller/pcie-mt7621.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_accel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_DAC1064.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_Ti3026.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/via/viafb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/vfb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/mediatek/clk-mt8365-mfg.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sprd/clk-sprd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sunxi-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun20i-d1-r-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun50i-a64-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun50i-a100-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun50i-a100-r-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun50i-h6-r-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun6i-rtc-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-a23-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-a33-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-a83t-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-r40-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-de2-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/sunxi-ng/sun8i-r-ccu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/clk_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/qcom/clk-qcom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/qcom/lpass-gfm-sm8250.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/qcom/gcc-msm8976.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dma/qcom/hdma_mgmt.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dma/ti/omap-dma.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/regulator/da9121-regulator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/regulator/max20411-regulator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/regulator/rt4831-regulator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/regulator/tps6286x-regulator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/reset/hisilicon/hi6220_reset.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/hw_random/omap-rng.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/hw_random/nomadik-rng.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/ppdev.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/lontium-lt9611uxc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-ac97.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-slimbus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-w1.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/block/loop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/ssbi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/rt4831.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/scsi_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/host/nvme.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/target/nvmet.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/target/nvme-loop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/target/nvmet-fc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/target/nvme-fcloop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_netx.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/cdrom/cdrom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/i2c/busses/i2c-ccgx-ucsi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/i2c/busses/i2c-pxa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/common/videobuf2/videobuf2-dvb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-alsa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-dvb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/menz69_wdt.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_emmc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/tmio_mmc_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/renesas_sdhi_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-power-supply.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-vibrator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mailbox/mtk-cmdq-mailbox.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_userspace.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/xilinx-ams.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwtracing/intel_th/intel_th_msu_sink.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_brcm_nvram.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/touchscreen/cyttsp_i2c_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/matrix-keymap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/vivaldi-fmap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/counter/ftm-quaddec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/snd-acp-config.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/fsl/imx-pcm-dma.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
+>> ERROR: modpost: "__st_r13_to_r25" [lib/zstd/zstd_decompress.ko] undefined!
+>> ERROR: modpost: "__ld_r13_to_r25_ret" [lib/zstd/zstd_decompress.ko] undefined!
 
-	return driver->probe(device);
-
-> +}
-> +
-> +struct bus_type vchiq_bus_type = {
-> +	.name   = "vchiq-bus",
-> +	.match  = vchiq_bus_type_match,
-> +	.uevent = vchiq_bus_uevent,
-> +	.probe  = vchiq_bus_probe,
-> +};
-> +
-> +static void vchiq_device_release(struct device *dev)
-> +{
-> +	struct vchiq_device *device = to_vchiq_device(dev);
-> +
-> +	kfree(device);
-> +}
-> +
-> +struct vchiq_device *
-> +vchiq_device_register(struct device *parent, const char *name)
-> +{
-> +	struct vchiq_device *device;
-> +	int ret;
-> +
-> +	device = kzalloc(sizeof(*device), GFP_KERNEL);
-> +	if (!device) {
-> +		dev_err(parent, "Cannot register %s: Insufficient memory\n",
-> +			name);
-
-Run checkpatch.pl -f on your files.
-
-> +		return NULL;
-> +	}
-
-Stefan already commented on the other stuff I was going to say.
-
-regards,
-dan carpenter
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
