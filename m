@@ -2,73 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6617A0BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF4A7A0C05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238985AbjINRvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S239859AbjINRyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjINRva (ORCPT
+        with ESMTP id S231419AbjINRyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:51:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80864CA
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:51:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 20E44C433C9;
-        Thu, 14 Sep 2023 17:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694713886;
-        bh=Y+TiaH7nEnTtK97dGbzl74ozQlGiijQHhK1f2rwQW7E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bGO8wioW8L0iq4AGp8ea3npwiqdVu0vAZ1c70dkebiY95CNaC6yKj8/rYnTq04NRc
-         bj8Jlmrr8L4obkKum/X3+VS+A5RlE3vJVLdBciW5zg3pDZQNpmUR0e6yVARekCZvdY
-         Rzv5/DKRB8VfMsiRHiVF907h5V4L3BZzEHXqwE7njvmTJ/Q/DS+DJ28ApuO5c9vgTV
-         B2KvxSmkmu1M3fPHcA5SnpI9Rc2yRDsLeRkct55lLkUBb3P95jOI3W6X4MicRXszDC
-         EUMIKR3UmKd9Lgwv0rrReN4DLoMliXi6QzUvVPDVL8e9fO2LfDLOS78CGiPiZiV0hv
-         bq44hNk4GbOww==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 06825E22AF4;
-        Thu, 14 Sep 2023 17:51:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Sep 2023 13:54:35 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2072.outbound.protection.outlook.com [40.107.244.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14575CA;
+        Thu, 14 Sep 2023 10:54:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DWNKpuTWbL7SilmsOkWwJVOQ81uunu86MmlBPJcBwkYWKscfs3nr4w0A26vVYM60sU0y3QeWPvuA+y7B9f+/fhbrJjNQHB1Ra54kwRIJaTREWyTwHX+RdhtBvlslMs3kKRo/GGlu4EB5HeYVAaBIBuXima9UMrwmwUW1TtF/tk7uNHFRaLlBJlGAIkq9z1Wszd5hWzvlgkOAfxH/q75zbyThLgp8WbTvOMbiE31VYF/kvzA9ePrchPqRdHvG/X5Y6X3RaA7V7oDXJcHXrHAJ6Z1m1g1nu6KQc31LrtUfydlJ52gjoGV8aKn92qKW8ipYh8of25Hga3olUvKcchx9mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d4jGPU9cQORcjUs95P54KkeJwuA4VPdM47qnWdx3zRw=;
+ b=FwYTWYl+neTcYIU1+nit9KS7HW9oa8+EG3dRq39t4j32kaxlv7KKTJrmAizfHCfIApkQzsq/CAob0oEmaxnJIbZWUlkMg50hBuBh+YaoFbPW7q0b9muq+aVG1ktF49f94vTv+nBqOJa6L9zCDj8ztcWpZUIv9y+w4PZwGwsOUGsZjrNboDGO1ba2joy2isu88RYijffkUfINy0Z9f5T8qrgGtKPdp7pozkgYoIKHKD2Nt+yVU3RtYFm+RySQ+kbrh0EFRGIyHrhVvXj/VwNx9h3PXKhSc7YFaCeJI/WJvc7Uv7bPgTRGRI+v6BrAB0BZn/Su/hkFLKwvrBl0jLTFMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d4jGPU9cQORcjUs95P54KkeJwuA4VPdM47qnWdx3zRw=;
+ b=izkdGNszYBpxy+MkwI76LB2OAqe5MO5ctYayGVuXvdXU37awwR5j6vESAsGBGTahK8+lpyz/IwaxkrZa9ItaVU13d52oo//ik3kv0aVKYwAXE0y5ai3UuPqjkd+h7QNa79ouUe1+h+rFLsWT2ouQi3eP1XxsG+SkuWaZUdcFGuk=
+Received: from MN2PR04CA0022.namprd04.prod.outlook.com (2603:10b6:208:d4::35)
+ by MN2PR12MB4376.namprd12.prod.outlook.com (2603:10b6:208:26c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 17:54:28 +0000
+Received: from BL6PEPF0001AB75.namprd02.prod.outlook.com
+ (2603:10b6:208:d4:cafe::f5) by MN2PR04CA0022.outlook.office365.com
+ (2603:10b6:208:d4::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
+ Transport; Thu, 14 Sep 2023 17:54:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB75.mail.protection.outlook.com (10.167.242.168) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.20 via Frontend Transport; Thu, 14 Sep 2023 17:54:28 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Sep
+ 2023 12:54:26 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>, <stable@vger.kernel.org>,
+        "Harry Wentland" <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "Rodrigo Siqueira" <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        "Hersen Wu" <hersenxs.wu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>, Alan Liu <haoping.liu@amd.com>,
+        Joshua Ashton <joshua@froggi.es>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/amd/display: fix the ability to use lower resolution modes on eDP
+Date:   Thu, 14 Sep 2023 13:53:51 -0400
+Message-ID: <20230914175354.102709-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL] Networking for 6.6-rc2
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169471388602.12217.8215674538813373212.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Sep 2023 17:51:26 +0000
-References: <20230914131626.49468-1-pabeni@redhat.com>
-In-Reply-To: <20230914131626.49468-1-pabeni@redhat.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB75:EE_|MN2PR12MB4376:EE_
+X-MS-Office365-Filtering-Correlation-Id: 13bc4920-7bd5-4f53-8b30-08dbb54ba401
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6PbH5+20S08uXpxe0buxod1XajMQbZnrUj1wwMUYj8fuGeMYnupaKgdnQMAoimMm9/M4iWQWgIFfFG5E9JSURJzZ26olhttS7wreFwciEFuyxwdp6x3J5eOcCFGMd69EWxe+3pd7bHFV4syImdPj9/HFZUUlMs3WsELgHTHfMiYnJgX9BfytQhrNE2iEjUljrb5mLWoK261Zv7zxddY5pDIn3ItXMFobi6MlSZ2B8m69p94XL3pF28c3F8hgFX1gNQ8GUJNydanbAiaB91Di/1cz+AdUPh8UbI+JFhq4SrWu/3KM39UHxdhe0vGJqcs3LVO012BV4R0Io7fcx/3rDctH+93AQ71Io78DVbJR5YukZN1md9MM6GfyYha/cKpKdepHDnZMn8S1ZKijxk865StgzI5ClibnVVRp2EhjpJLPSNWA9HJncpM7TDOCPIQthpEp8YI0aST8TS+IgZO0nea4bbbH4rTFR35XltJZ9oQ3Q5+whZPUZisgLsgaqWvoeTBi0v74YEuuTwCRfLNJg3gj6/xEeXD8BxJPtbvviqEJHuObElUrEVitYiYnr9o9vkZUGvClSMYg/ujI2pCfgtUc+NbVPhUMqmJOVvBYhkCI6fqiu4lanIw1NriEzr4eZ5VXSkSVRlOFa7RUyAtuexsPvBbKGM3uQ9I+PXyiC4xFthsnZCz1XGvPwXPTikdQVFneXJC+5QHSbEtkdZZut+UzIDoc/t28llkxTn8RpHsQnE3Nr+hSkm0Rx/0sEQistOgPaS1BJSGdQ/OHO2xYfz33kjjlYzGmT1lYNApzE3Q=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(396003)(346002)(186009)(1800799009)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(8676002)(4326008)(8936002)(70586007)(316002)(6916009)(70206006)(54906003)(44832011)(5660300002)(40460700003)(41300700001)(36756003)(36860700001)(426003)(16526019)(1076003)(40480700001)(336012)(26005)(356005)(82740400003)(6666004)(81166007)(2616005)(478600001)(47076005)(966005)(83380400001)(86362001)(2906002)(36900700001)(16060500005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 17:54:28.1327
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13bc4920-7bd5-4f53-8b30-08dbb54ba401
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB75.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4376
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On eDP we can receive invalid modes from dm_update_crtc_state() for
+entirely new streams for which drm_mode_set_crtcinfo() shouldn't be
+called on. So, instead of calling drm_mode_set_crtcinfo() from within
+create_stream_for_sink() we can instead call it from
+amdgpu_dm_connector_mode_valid(). Since, we are guaranteed to only call
+drm_mode_set_crtcinfo() for valid modes from that function (invalid
+modes are rejected by that callback) and that is the only user
+of create_validate_stream_for_sink() that we need to call
+drm_mode_set_crtcinfo() for (as before commit cb841d27b876
+("drm/amd/display: Always pass connector_state to stream validation"),
+that is the only place where create_validate_stream_for_sink()'s
+dm_state was NULL).
 
-This pull request was applied to netdev/net.git (main)
-by Linus Torvalds <torvalds@linux-foundation.org>:
+Cc: stable@vger.kernel.org
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2693
+Fixes: cb841d27b876 ("drm/amd/display: Always pass connector_state to stream validation")
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Thu, 14 Sep 2023 15:16:26 +0200 you wrote:
-> Hi Linus!
-> 
-> Quite unusually, this does not contains any fix coming from subtrees
-> (nf, ebpf, wifi, etc).
-> 
-> The following changes since commit 73be7fb14e83d24383f840a22f24d3ed222ca319:
-> 
-> [...]
-
-Here is the summary with links:
-  - [GIT,PULL] Networking for 6.6-rc2
-    https://git.kernel.org/netdev/net/c/9fdfb15a3dbf
-
-You are awesome, thank you!
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 933c9b5d5252..beef4fef7338 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6128,8 +6128,6 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+ 
+ 	if (recalculate_timing)
+ 		drm_mode_set_crtcinfo(&saved_mode, 0);
+-	else if (!old_stream)
+-		drm_mode_set_crtcinfo(&mode, 0);
+ 
+ 	/*
+ 	 * If scaling is enabled and refresh rate didn't change
+@@ -6691,6 +6689,8 @@ enum drm_mode_status amdgpu_dm_connector_mode_valid(struct drm_connector *connec
+ 		goto fail;
+ 	}
+ 
++	drm_mode_set_crtcinfo(mode, 0);
++
+ 	stream = create_validate_stream_for_sink(aconnector, mode,
+ 						 to_dm_connector_state(connector->state),
+ 						 NULL);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.42.0
 
