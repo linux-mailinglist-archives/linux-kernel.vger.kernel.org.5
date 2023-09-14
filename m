@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC3979F94E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD38279F951
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 06:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjINEEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 00:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S234461AbjINEFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 00:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbjINEEu (ORCPT
+        with ESMTP id S234614AbjINEFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 00:04:50 -0400
+        Thu, 14 Sep 2023 00:05:01 -0400
 Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 5960A1BEF;
-        Wed, 13 Sep 2023 21:04:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 8FF2FE6C;
+        Wed, 13 Sep 2023 21:04:56 -0700 (PDT)
 Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 6CD11605FCF3B;
-        Thu, 14 Sep 2023 12:04:43 +0800 (CST)
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id AC94F605FCF3B;
+        Thu, 14 Sep 2023 12:04:53 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From:   Wu Yunchuan <yunchuan@nfschina.com>
-To:     chunkeey@googlemail.com, kvalo@kernel.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     loic.poulain@linaro.org, kvalo@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com
+Cc:     wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
         kernel-janitors@vger.kernel.org,
         Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH wireless-next 2/9] carl9170: remove unnecessary (void*) conversions
-Date:   Thu, 14 Sep 2023 12:04:40 +0800
-Message-Id: <20230914040439.1169604-1-yunchuan@nfschina.com>
+Subject: [PATCH wireless-next 3/9] wifi: wcn36xx: remove unnecessary (void*) conversions
+Date:   Thu, 14 Sep 2023 12:04:50 +0800
+Message-Id: <20230914040450.1169703-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -35,62 +39,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need cast (void *) to (struct ar9170 *), (u8 *) or (void*).
+No need cast (void *) to other types such as (struct wcn36xx *),
+(struct wcn36xx_hal_update_scan_params_resp *), etc.
 
 Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
 ---
- drivers/net/wireless/ath/carl9170/usb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/wcn36xx/dxe.c      |  6 +++---
+ drivers/net/wireless/ath/wcn36xx/smd.c      | 20 ++++++++++----------
+ drivers/net/wireless/ath/wcn36xx/testmode.c |  2 +-
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/carl9170/usb.c b/drivers/net/wireless/ath/carl9170/usb.c
-index e4eb666c6eea..c4edf8355941 100644
---- a/drivers/net/wireless/ath/carl9170/usb.c
-+++ b/drivers/net/wireless/ath/carl9170/usb.c
-@@ -178,7 +178,7 @@ static void carl9170_usb_tx_data_complete(struct urb *urb)
- 	switch (urb->status) {
- 	/* everything is fine */
- 	case 0:
--		carl9170_tx_callback(ar, (void *)urb->context);
-+		carl9170_tx_callback(ar, urb->context);
- 		break;
+diff --git a/drivers/net/wireless/ath/wcn36xx/dxe.c b/drivers/net/wireless/ath/wcn36xx/dxe.c
+index 9013f056eecb..d405a4c34059 100644
+--- a/drivers/net/wireless/ath/wcn36xx/dxe.c
++++ b/drivers/net/wireless/ath/wcn36xx/dxe.c
+@@ -180,7 +180,7 @@ static int wcn36xx_dxe_init_descs(struct wcn36xx *wcn, struct wcn36xx_dxe_ch *wc
+ 	if (!wcn_ch->cpu_addr)
+ 		return -ENOMEM;
  
- 	/* disconnect */
-@@ -369,7 +369,7 @@ void carl9170_usb_handle_tx_err(struct ar9170 *ar)
- 	struct urb *urb;
+-	cur_dxe = (struct wcn36xx_dxe_desc *)wcn_ch->cpu_addr;
++	cur_dxe = wcn_ch->cpu_addr;
+ 	cur_ctl = wcn_ch->head_blk_ctl;
  
- 	while ((urb = usb_get_from_anchor(&ar->tx_err))) {
--		struct sk_buff *skb = (void *)urb->context;
-+		struct sk_buff *skb = urb->context;
+ 	for (i = 0; i < wcn_ch->desc_num; i++) {
+@@ -453,7 +453,7 @@ static void reap_tx_dxes(struct wcn36xx *wcn, struct wcn36xx_dxe_ch *ch)
  
- 		carl9170_tx_drop(ar, skb);
- 		carl9170_tx_callback(ar, skb);
-@@ -397,7 +397,7 @@ static void carl9170_usb_tasklet(struct tasklet_struct *t)
- 
- static void carl9170_usb_rx_complete(struct urb *urb)
+ static irqreturn_t wcn36xx_irq_tx_complete(int irq, void *dev)
  {
--	struct ar9170 *ar = (struct ar9170 *)urb->context;
-+	struct ar9170 *ar = urb->context;
- 	int err;
+-	struct wcn36xx *wcn = (struct wcn36xx *)dev;
++	struct wcn36xx *wcn = dev;
+ 	int int_src, int_reason;
  
- 	if (WARN_ON_ONCE(!ar))
-@@ -559,7 +559,7 @@ static int carl9170_usb_flush(struct ar9170 *ar)
- 	int ret, err = 0;
+ 	wcn36xx_dxe_read_register(wcn, WCN36XX_DXE_INT_SRC_RAW_REG, &int_src);
+@@ -541,7 +541,7 @@ static irqreturn_t wcn36xx_irq_tx_complete(int irq, void *dev)
  
- 	while ((urb = usb_get_from_anchor(&ar->tx_wait))) {
--		struct sk_buff *skb = (void *)urb->context;
-+		struct sk_buff *skb = urb->context;
- 		carl9170_tx_drop(ar, skb);
- 		carl9170_tx_callback(ar, skb);
- 		usb_free_urb(urb);
-@@ -668,7 +668,7 @@ int carl9170_exec_cmd(struct ar9170 *ar, const enum carl9170_cmd_oids cmd,
- 		memcpy(ar->cmd.data, payload, plen);
+ static irqreturn_t wcn36xx_irq_rx_ready(int irq, void *dev)
+ {
+-	struct wcn36xx *wcn = (struct wcn36xx *)dev;
++	struct wcn36xx *wcn = dev;
  
- 	spin_lock_bh(&ar->cmd_lock);
--	ar->readbuf = (u8 *)out;
-+	ar->readbuf = out;
- 	ar->readlen = outlen;
- 	spin_unlock_bh(&ar->cmd_lock);
+ 	wcn36xx_dxe_rx_frame(wcn);
  
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+index 17e1919d1cd8..2cf86fc3f8fe 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -576,7 +576,7 @@ static int wcn36xx_smd_start_rsp(struct wcn36xx *wcn, void *buf, size_t len)
+ 	if (len < sizeof(*rsp))
+ 		return -EIO;
+ 
+-	rsp = (struct wcn36xx_hal_mac_start_rsp_msg *)buf;
++	rsp = buf;
+ 
+ 	if (WCN36XX_FW_MSG_RESULT_SUCCESS != rsp->start_rsp_params.status)
+ 		return -EIO;
+@@ -1025,7 +1025,7 @@ static int wcn36xx_smd_switch_channel_rsp(void *buf, size_t len)
+ 	ret = wcn36xx_smd_rsp_status_check(buf, len);
+ 	if (ret)
+ 		return ret;
+-	rsp = (struct wcn36xx_hal_switch_channel_rsp_msg *)buf;
++	rsp = buf;
+ 	wcn36xx_dbg(WCN36XX_DBG_HAL, "channel switched to: %d, status: %d\n",
+ 		    rsp->channel_number, rsp->status);
+ 	return ret;
+@@ -1072,7 +1072,7 @@ static int wcn36xx_smd_process_ptt_msg_rsp(void *buf, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	rsp = (struct wcn36xx_hal_process_ptt_msg_rsp_msg *)buf;
++	rsp = buf;
+ 
+ 	wcn36xx_dbg(WCN36XX_DBG_HAL, "process ptt msg responded with length %d\n",
+ 		    rsp->header.len);
+@@ -1131,7 +1131,7 @@ static int wcn36xx_smd_update_scan_params_rsp(void *buf, size_t len)
+ {
+ 	struct wcn36xx_hal_update_scan_params_resp *rsp;
+ 
+-	rsp = (struct wcn36xx_hal_update_scan_params_resp *)buf;
++	rsp = buf;
+ 
+ 	/* Remove the PNO version bit */
+ 	rsp->status &= (~(WCN36XX_FW_MSG_PNO_VERSION_MASK));
+@@ -1198,7 +1198,7 @@ static int wcn36xx_smd_add_sta_self_rsp(struct wcn36xx *wcn,
+ 	if (len < sizeof(*rsp))
+ 		return -EINVAL;
+ 
+-	rsp = (struct wcn36xx_hal_add_sta_self_rsp_msg *)buf;
++	rsp = buf;
+ 
+ 	if (rsp->status != WCN36XX_FW_MSG_RESULT_SUCCESS) {
+ 		wcn36xx_warn("hal add sta self failure: %d\n",
+@@ -1316,7 +1316,7 @@ static int wcn36xx_smd_join_rsp(void *buf, size_t len)
+ 	if (wcn36xx_smd_rsp_status_check(buf, len))
+ 		return -EIO;
+ 
+-	rsp = (struct wcn36xx_hal_join_rsp_msg *)buf;
++	rsp = buf;
+ 
+ 	wcn36xx_dbg(WCN36XX_DBG_HAL,
+ 		    "hal rsp join status %d tx_mgmt_power %d\n",
+@@ -1481,7 +1481,7 @@ static int wcn36xx_smd_config_sta_rsp(struct wcn36xx *wcn,
+ 	if (len < sizeof(*rsp))
+ 		return -EINVAL;
+ 
+-	rsp = (struct wcn36xx_hal_config_sta_rsp_msg *)buf;
++	rsp = buf;
+ 	params = &rsp->params;
+ 
+ 	if (params->status != WCN36XX_FW_MSG_RESULT_SUCCESS) {
+@@ -1849,7 +1849,7 @@ static int wcn36xx_smd_config_bss_rsp(struct wcn36xx *wcn,
+ 	if (len < sizeof(*rsp))
+ 		return -EINVAL;
+ 
+-	rsp = (struct wcn36xx_hal_config_bss_rsp_msg *)buf;
++	rsp = buf;
+ 	params = &rsp->bss_rsp_params;
+ 
+ 	if (params->status != WCN36XX_FW_MSG_RESULT_SUCCESS) {
+@@ -2476,7 +2476,7 @@ static int wcn36xx_smd_add_ba_session_rsp(void *buf, int len, u8 *session)
+ 	if (len < sizeof(*rsp))
+ 		return -EINVAL;
+ 
+-	rsp = (struct wcn36xx_hal_add_ba_session_rsp_msg *)buf;
++	rsp = buf;
+ 	if (rsp->status != WCN36XX_FW_MSG_RESULT_SUCCESS)
+ 		return rsp->status;
+ 
+@@ -2654,7 +2654,7 @@ static int wcn36xx_smd_trigger_ba_rsp(void *buf, int len, struct add_ba_info *ba
+ 	if (len < sizeof(*rsp))
+ 		return -EINVAL;
+ 
+-	rsp = (struct wcn36xx_hal_trigger_ba_rsp_msg *) buf;
++	rsp = buf;
+ 
+ 	if (rsp->candidate_cnt < 1)
+ 		return rsp->status ? rsp->status : -EINVAL;
+diff --git a/drivers/net/wireless/ath/wcn36xx/testmode.c b/drivers/net/wireless/ath/wcn36xx/testmode.c
+index 7ae14b4d2d0e..e5142c052985 100644
+--- a/drivers/net/wireless/ath/wcn36xx/testmode.c
++++ b/drivers/net/wireless/ath/wcn36xx/testmode.c
+@@ -53,7 +53,7 @@ static int wcn36xx_tm_cmd_ptt(struct wcn36xx *wcn, struct ieee80211_vif *vif,
+ 
+ 	buf = nla_data(tb[WCN36XX_TM_ATTR_DATA]);
+ 	buf_len = nla_len(tb[WCN36XX_TM_ATTR_DATA]);
+-	msg = (struct ftm_rsp_msg *)buf;
++	msg = buf;
+ 
+ 	wcn36xx_dbg(WCN36XX_DBG_TESTMODE,
+ 		    "testmode cmd wmi msg_id 0x%04X msg_len %d buf %pK buf_len %d\n",
 -- 
 2.30.2
 
