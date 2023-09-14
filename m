@@ -2,618 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EE37A0DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25BC7A0DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241522AbjINTPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S241783AbjINTQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 15:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241594AbjINTO7 (ORCPT
+        with ESMTP id S241748AbjINTQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:14:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5022699
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694718894; x=1726254894;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=YZkCHIVGw9IK92mpFq46alloAI5CuK+/9NDjKcGgH34=;
-  b=jVbJedVQjZZrf/OCpGNUQY6Chv3GYki6g6B8Elk1aEBEWjEmvPYqq2Zv
-   h1wcNXS+4R/Q9HLPfglT0jzR2e432m7fdf/R54YgurjSdB0cHdXMGbkn5
-   hxwFb+oYciLZR0S4G6Sb+depZM+XLBkU0J/uvhEHUxg7r03DCczbmJwH5
-   OPyysjiQtGW55b9HkoSIinUAKe3HAt3dy8/9nle84Qv+QLwJzMWpV91v4
-   E+HqTcr1SxsFwOoeV4vDZ9ncegmk8wi48QaY7WaOOdsklfW2kq/eKZF8+
-   ITM/QDnZ+rFVj/xVLb7bHsACV5eh2ax+d/ZTe5HgFq1atFFF13n7sf+6L
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="358465528"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="358465528"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 12:14:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="918344346"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="918344346"
-Received: from skallurr-mobl1.ger.corp.intel.com (HELO [10.249.254.49]) ([10.249.254.49])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 12:14:50 -0700
-Message-ID: <e9ea8cb0a55a004a0f7d5d5a7469ea4d4ef00bf4.camel@linux.intel.com>
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 14 Sep 2023 21:14:48 +0200
-In-Reply-To: <803e4aa0-0c46-05ba-e90b-188771227f0a@redhat.com>
-References: <20230909153125.30032-1-dakr@redhat.com>
-         <20230909153125.30032-7-dakr@redhat.com>
-         <62d9b00a-547a-2106-5ec3-6f6a88023496@linux.intel.com>
-         <c620c142-ea38-415d-729e-2561f1f4bae3@redhat.com>
-         <476c46cfddaef125108a117b47ea9f76299ea85c.camel@linux.intel.com>
-         <803e4aa0-0c46-05ba-e90b-188771227f0a@redhat.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
+        Thu, 14 Sep 2023 15:16:03 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031FA26B2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:15:59 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bf2427b947so752198a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694718958; x=1695323758; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d/OKaoFTzHFPckQ8elHjeRhc3HPJtJWQjmgI/gL6p9I=;
+        b=ezA1rVCZD+dRibxTs+KY2HucRI4VFs0SDCIkBKV/mRtDmqp5HPsA7oNBu98jk5Eypd
+         kDLs9VGH2jV+dFA3fOQDB5KGf14uMJQ/U2Ccpjfw8UyIN1GK6NVcFXE59snWTHcHz40H
+         v+1S1cldo3XY9dZIhWU1cgKEEGGJQ2frmRPtVsVimsy9xVZcncyVGaoOgj4le0eeo9iZ
+         oCDAzNn6uzAj05CLNHQedDUJ2YpOq3ycgxQlccStSkcoSZNml/S5snA/Tuvgy2JLuGeC
+         kJgHhxqeM9jkrqVIgCLI8syw4hUqZBGRFNvKk/XN6QxCkfDFfPmBPnwUQMtgPKj3SsCJ
+         QBxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694718958; x=1695323758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d/OKaoFTzHFPckQ8elHjeRhc3HPJtJWQjmgI/gL6p9I=;
+        b=Xa0Fdit+9Z4oq8s9KbsApMgicOwSdarAklLx2/FJNmtjujijNrAEcO91Z4Svrfek5q
+         RIoCaIs3bdBHHGONHZNHMTp6Nb0qF4p2ngR7VbbQ6BTzvxiMHZDeetT5vtWzF4EbwUxn
+         wp7YjdIv/4kUrG9AzxzvSJGwa6LXg90Z+EW0cPCr+MeJw1wGr3FDUAIOabVRkeRRm1H9
+         FdwPhILaj4yyVK/1KCjhU0u6CxI+yn5zhinEKnTxqzq0Qkj28MNSgu4L9Caa84v+qTyv
+         AyMEgZ9majA+9Z3mjJHLHiMfX8KBEx4D6QCudicvBzGQpYyrC6e6Xzx6PWHnU3qCDLhE
+         VPvg==
+X-Gm-Message-State: AOJu0YzphBCHS1DAxasbW7jXNnCocGoo3pdGLcT57R8mw4dObgGHDTN8
+        HMIGhzSmXX+s8zJVLvfPFXgzzmKNYGRddZET65TOH3rzzpQR0el2DK8=
+X-Google-Smtp-Source: AGHT+IFgjCX7b6T7mbh0ViVMGicpC/DaCfIz07Wpfl/pmZh0VIBshCVYBpO+RJhvDcH2HnGIfPB6GohIOiUqcipNCFE=
+X-Received: by 2002:a05:6358:7302:b0:135:4003:7857 with SMTP id
+ d2-20020a056358730200b0013540037857mr3832327rwg.31.1694718958043; Thu, 14 Sep
+ 2023 12:15:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230914170138.995606-1-song@kernel.org>
+In-Reply-To: <20230914170138.995606-1-song@kernel.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 14 Sep 2023 12:15:21 -0700
+Message-ID: <CABCJKufZJstbnjtcwKRY1CSE-eZBnbYScpD6wp9fMXmpFfdBoA@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/purgatory: Remove LTO flags
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        kexec@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-14 at 19:25 +0200, Danilo Krummrich wrote:
-> On 9/14/23 19:21, Thomas Hellstr=C3=B6m wrote:
-> > On Thu, 2023-09-14 at 18:36 +0200, Danilo Krummrich wrote:
-> > > On 9/14/23 15:48, Thomas Hellstr=C3=B6m wrote:
-> > > > Hi, Danilo
-> > > >=20
-> > > > Some additional minor comments as xe conversion progresses.
-> > > >=20
-> > > > On 9/9/23 17:31, Danilo Krummrich wrote:
-> > > > > So far the DRM GPUVA manager offers common infrastructure to
-> > > > > track GPU VA
-> > > > > allocations and mappings, generically connect GPU VA mappings
-> > > > > to
-> > > > > their
-> > > > > backing buffers and perform more complex mapping operations
-> > > > > on
-> > > > > the GPU VA
-> > > > > space.
-> > > > >=20
-> > > > > However, there are more design patterns commonly used by
-> > > > > drivers,
-> > > > > which
-> > > > > can potentially be generalized in order to make the DRM GPUVA
-> > > > > manager
-> > > > > represent a basic GPU-VM implementation. In this context,
-> > > > > this
-> > > > > patch aims
-> > > > > at generalizing the following elements.
-> > > > >=20
-> > > > > 1) Provide a common dma-resv for GEM objects not being used
-> > > > > outside of
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 this GPU-VM.
-> > > > >=20
-> > > > > 2) Provide tracking of external GEM objects (GEM objects
-> > > > > which
-> > > > > are
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 shared with other GPU-VMs).
-> > > > >=20
-> > > > > 3) Provide functions to efficiently lock all GEM objects dma-
-> > > > > resv
-> > > > > the
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 GPU-VM contains mappings of.
-> > > > >=20
-> > > > > 4) Provide tracking of evicted GEM objects the GPU-VM
-> > > > > contains
-> > > > > mappings
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0 of, such that validation of evicted GEM =
-objects is
-> > > > > accelerated.
-> > > > >=20
-> > > > > 5) Provide some convinience functions for common patterns.
-> > > > >=20
-> > > > > Rather than being designed as a "framework", the target is to
-> > > > > make all
-> > > > > features appear as a collection of optional helper functions,
-> > > > > such that
-> > > > > drivers are free to make use of the DRM GPUVA managers basic
-> > > > > functionality and opt-in for other features without setting
-> > > > > any
-> > > > > feature
-> > > > > flags, just by making use of the corresponding functions.
-> > > > >=20
-> > > > > Big kudos to Boris Brezillon for his help to figure out
-> > > > > locking
-> > > > > for drivers
-> > > > > updating the GPU VA space within the fence signalling path.
-> > > > >=20
-> > > > > Suggested-by: Matthew Brost <matthew.brost@intel.com>
-> > > > > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> > > > > ---
-> > > > >=20
-> > > > > +/**
-> > > > > + * drm_gpuvm_bo_evict() - add / remove a &drm_gem_object to
-> > > > > /
-> > > > > from a
-> > > > > + * &drm_gpuvms evicted list
-> > > > > + * @obj: the &drm_gem_object to add or remove
-> > > > > + * @evict: indicates whether the object is evicted
-> > > > > + *
-> > > > > + * Adds a &drm_gem_object to or removes it from all
-> > > > > &drm_gpuvms
-> > > > > evicted
-> > > > > + * list containing a mapping of this &drm_gem_object.
-> > > > > + */
-> > > > > +void
-> > > > > +drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict)
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0 struct drm_gpuvm_bo *vm_bo;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 drm_gem_for_each_gpuvm_bo(vm_bo, obj) {
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (evict)
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 drm_gpuvm_bo_list_add(vm_bo, evict);
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 drm_gpuvm_bo_list_del(vm_bo, evict);
-> > > > > +=C2=A0=C2=A0=C2=A0 }
-> > > > > +}
-> > > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_evict);
-> > > > > +
-> > > >=20
-> > > > We need a drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, ...)
-> > > > that
-> > > > puts a single gpuvm_bo on the list, the above function could
-> > > > perhaps be renamed as drm_gpuvm_gem_obj_evict(obj, ....).
-> > >=20
-> > > Makes sense - gonna change that.
-> > >=20
-> > > >=20
-> > > > Reason is some vm's are faulting vms which don't have an evict
-> > > > list, but validate from the pagefault handler. Also evict =3D=3D
-> > > > false
-> > > > is dangerous because if called from within an exec, it might
-> > > > remove
-> > > > the obj from other vm's evict list before they've had a chance
-> > > > to
-> > > > rebind their VMAs.
-> > > >=20
-> > > > > =C2=A0=C2=A0 static int
-> > > > > =C2=A0=C2=A0 __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 struct drm_gpuva *va)
-> > > > > diff --git a/include/drm/drm_gpuvm.h
-> > > > > b/include/drm/drm_gpuvm.h
-> > > > > index afa50b9059a2..834bb6d6617e 100644
-> > > > > --- a/include/drm/drm_gpuvm.h
-> > > > > +++ b/include/drm/drm_gpuvm.h
-> > > > > @@ -26,10 +26,12 @@
-> > > > > =C2=A0=C2=A0=C2=A0 */
-> > > > > =C2=A0=C2=A0 #include <linux/list.h>
-> > > > > +#include <linux/dma-resv.h>
-> > > > > =C2=A0=C2=A0 #include <linux/rbtree.h>
-> > > > > =C2=A0=C2=A0 #include <linux/types.h>
-> > > > > =C2=A0=C2=A0 #include <drm/drm_gem.h>
-> > > > > +#include <drm/drm_exec.h>
-> > > > > =C2=A0=C2=A0 struct drm_gpuvm;
-> > > > > =C2=A0=C2=A0 struct drm_gpuvm_bo;
-> > > > > @@ -259,6 +261,38 @@ struct drm_gpuvm {
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * space
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dma_resv *resv;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @extobj: structure holding the extobj=
- list
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 struct {
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @list: &list_=
-head storing &drm_gpuvm_bos serving
-> > > > > as
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * external obje=
-ct
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head list=
-;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @lock: spinlo=
-ck to protect the extobj list
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t lock;
-> > > > > +=C2=A0=C2=A0=C2=A0 } extobj;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @evict: structure holding the evict l=
-ist and evict
-> > > > > list
-> > > > > lock
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 struct {
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @list: &list_=
-head storing &drm_gpuvm_bos
-> > > > > currently
-> > > > > being
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * evicted
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head list=
-;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @lock: spinlo=
-ck to protect the evict list
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t lock;
-> > > > > +=C2=A0=C2=A0=C2=A0 } evict;
-> > > > > =C2=A0=C2=A0 };
-> > > > > =C2=A0=C2=A0 void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct
-> > > > > drm_device
-> > > > > *drm,
-> > > > > @@ -268,6 +302,21 @@ void drm_gpuvm_init(struct drm_gpuvm
-> > > > > *gpuvm,
-> > > > > struct drm_device *drm,
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 const struct drm_gpuvm_ops *ops);
-> > > > > =C2=A0=C2=A0 void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
-> > > > > +/**
-> > > > > + * drm_gpuvm_is_extobj() - indicates whether the given
-> > > > > &drm_gem_object is an
-> > > > > + * external object
-> > > > > + * @gpuvm: the &drm_gpuvm to check
-> > > > > + * @obj: the &drm_gem_object to check
-> > > > > + *
-> > > > > + * Returns: true if the &drm_gem_object &dma_resv differs
-> > > > > from
-> > > > > the
-> > > > > + * &drm_gpuvms &dma_resv, false otherwise
-> > > > > + */
-> > > > > +static inline bool drm_gpuvm_is_extobj(struct drm_gpuvm
-> > > > > *gpuvm,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struc=
-t drm_gem_object *obj)
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0 return obj && obj->resv !=3D gpuvm->resv;
-> > > > > +}
-> > > > > +
-> > > > > =C2=A0=C2=A0 static inline struct drm_gpuva *
-> > > > > =C2=A0=C2=A0 __drm_gpuva_next(struct drm_gpuva *va)
-> > > > > =C2=A0=C2=A0 {
-> > > > > @@ -346,6 +395,128 @@ __drm_gpuva_next(struct drm_gpuva *va)
-> > > > > =C2=A0=C2=A0 #define drm_gpuvm_for_each_va_safe(va__, next__, gpu=
-vm__)
-> > > > > \
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_for_each_entry_safe(va_=
-_, next__, &(gpuvm__)-
-> > > > > >rb.list,
-> > > > > rb.entry)
-> > > > > +/**
-> > > > > + * struct drm_gpuvm_exec - &drm_gpuvm abstraction of
-> > > > > &drm_exec
-> > > > > + *
-> > > > > + * This structure should be created on the stack as
-> > > > > &drm_exec
-> > > > > should be.
-> > > > > + *
-> > > > > + * Optionally, @extra can be set in order to lock additional
-> > > > > &drm_gem_objects.
-> > > > > + */
-> > > > > +struct drm_gpuvm_exec {
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @exec: the &drm_exec structure
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 struct drm_exec exec;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @vm: the &drm_gpuvm to lock its DMA r=
-eservations
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 struct drm_gpuvm *vm;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @extra: Callback and corresponding pr=
-ivate data for
-> > > > > the
-> > > > > driver to
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * lock arbitrary additional &drm_gem_ob=
-jects.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 struct {
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @fn: The driv=
-er callback to lock additional
-> > > > > &drm_gem_objects.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*fn)(struct drm_=
-gpuvm_exec *vm_exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 unsigned int num_fences);
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @priv: driver=
- private data for the @fn callback
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *priv;
-> > > > > +=C2=A0=C2=A0=C2=A0 } extra;
-> > > > > +};
-> > > > > +
-> > > > > +/**
-> > > > > + * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-
-> > > > > resv
-> > > > > + * @gpuvm: the &drm_gpuvm
-> > > > > + * @exec: the &drm_exec context
-> > > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > > + *
-> > > > > + * Calls drm_exec_prepare_obj() for the GPUVMs dummy
-> > > > > &drm_gem_object.
-> > > > > + *
-> > > > > + * Using this function directly, it is the drivers
-> > > > > responsibility to call
-> > > > > + * drm_exec_init() and drm_exec_fini() accordingly.
-> > > > > + *
-> > > > > + * Returns: 0 on success, negative error code on failure.
-> > > > > + */
-> > > > > +static inline int
-> > > > > +drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 struct drm_exec *exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 unsigned int num_fences)
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0 return drm_exec_prepare_obj(exec, &gpuvm->d_o=
-bj,
-> > > > > num_fences);
-> > > > > +}
-> > > > > +
-> > > > > +int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_exec *exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int num_fences);
-> > > > > +
-> > > > > +int drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_exec *exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 addr, u64 range,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int num_fences);
-> > > > > +
-> > > > > +int drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 unsigned int num_fences,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 bool interruptible);
-> > > > > +
-> > > > > +int drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec
-> > > > > *vm_exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_gem_object **objs,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int num_objs,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int num_fences,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool interruptible);
-> > > > > +
-> > > > > +int drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec
-> > > > > *vm_exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 addr, u64 range,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int num_fences,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool interruptible);
-> > > > > +
-> > > > > +/**
-> > > > > + * drm_gpuvm_lock() - lock all dma-resv of all assoiciated
-> > > > > BOs
-> > > > > + * @gpuvm: the &drm_gpuvm
-> > > > > + *
-> > > > > + * Releases all dma-resv locks of all &drm_gem_objects
-> > > > > previously acquired
-> > > > > + * through drm_gpuvm_lock() or its variants.
-> > > > > + *
-> > > > > + * Returns: 0 on success, negative error code on failure.
-> > > > > + */
-> > > > > +static inline void
-> > > > > +drm_gpuvm_exec_unlock(struct drm_gpuvm_exec *vm_exec)
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0 drm_exec_fini(&vm_exec->exec);
-> > > > > +}
-> > > > > +
-> > > > > +int drm_gpuvm_validate(struct drm_gpuvm *gpuvm);
-> > > > > +void drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_exec *exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dma_fence *fence,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum dma_resv_usage private_usage,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum dma_resv_usage extobj_usage);
-> > > > > +
-> > > > > +/**
-> > > > > + * drm_gpuvm_exec_resv_add_fence()
-> > > > > + * @vm_exec: the &drm_gpuvm_exec abstraction
-> > > > > + * @fence: fence to add
-> > > > > + * @private_usage: private dma-resv usage
-> > > > > + * @extobj_usage: extobj dma-resv usage
-> > > > > + *
-> > > > > + * See drm_gpuvm_resv_add_fence().
-> > > > > + */
-> > > > > +static inline void
-> > > > > +drm_gpuvm_exec_resv_add_fence(struct drm_gpuvm_exec
-> > > > > *vm_exec,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dma_fence *fence,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum dma_resv_usage private_usage,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum dma_resv_usage extobj_usage)
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0 drm_gpuvm_resv_add_fence(vm_exec->vm, &vm_exe=
-c->exec,
-> > > > > fence,
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 private_usage, extobj_usage);
-> > > > > +}
-> > > > > +
-> > > > > =C2=A0=C2=A0 /**
-> > > > > =C2=A0=C2=A0=C2=A0 * struct drm_gpuvm_bo - structure representing=
- a
-> > > > > &drm_gpuvm
-> > > > > and
-> > > > > =C2=A0=C2=A0=C2=A0 * &drm_gem_object combination
-> > > > > @@ -398,6 +569,18 @@ struct drm_gpuvm_bo {
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 * gpuva list.
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 struct list_head gem;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * @evict: List entry to attach to the
-> > > > > &drm_gpuvms
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * extobj list.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 struct list_head extobj;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * @evict: List entry to attach to the
-> > > > > &drm_gpuvms
-> > > > > evict
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * list.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 struct list_head evict;
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } en=
-try;
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } list;
-> > > > > =C2=A0=C2=A0 };
-> > > > > @@ -432,6 +615,9 @@ struct drm_gpuvm_bo *
-> > > > > =C2=A0=C2=A0 drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 struct drm_gem_object *obj);
-> > > > > +void drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool
-> > > > > evict);
-> > > > > +void drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo);
-> > > > > +
-> > > > > =C2=A0=C2=A0 /**
-> > > > > =C2=A0=C2=A0=C2=A0 * drm_gpuvm_bo_for_each_va() - iterator to wal=
-k over a
-> > > > > list of
-> > > > > &drm_gpuva
-> > > > > =C2=A0=C2=A0=C2=A0 * @va__: &drm_gpuva structure to assign to in =
-each
-> > > > > iteration
-> > > > > step
-> > > > > @@ -837,6 +1023,17 @@ struct drm_gpuvm_ops {
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * used.
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*sm_step_unmap)(struct =
-drm_gpuva_op *op, void
-> > > > > *priv);
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0 /**
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * @bo_validate: called from drm_gpuvm_v=
-alidate()
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 *
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * Drivers receive this callback for eve=
-ry evicted
-> > > > > &drm_gem_object being
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * mapped in the corresponding &drm_gpuv=
-m.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 *
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * Typically, drivers would call their d=
-river specific
-> > > > > variant of
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 * ttm_bo_validate() from within this ca=
-llback.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0 int (*bo_validate)(struct drm_gem_object *obj=
-);
-> > > >=20
-> > > > Same here. Could we have a vm_bo as an argument instead, so
-> > > > that
-> > > > the callback knows what gpuvm we're targeting and can mark all
-> > > > its
-> > > > gpu_vas for revalidation? Or is that intended to be done
-> > > > elsewhere?
-> > >=20
-> > > Makes sense as well. I'll change that too.
-> >=20
-> > I forgot, drm_gpuvm_validate() would preferably take an
-> > drm_gpuvm_exec
-> > argument because we need it in the validate callback. It's also
-> > easy
-> > for the driver to subclass further if needed, to pass even more
-> > arguments to its validate callback.
->=20
-> Hm.. that implies that a driver open coding the drm_exec loop, still
-> needs
-> to use a struct drm_gpuvm_exec rather than just a struct drm_exec.
-> What is
-> this needed for in Xe? Do we expect other drivers needing it? Might a
-> priv
-> void pointer maybe make more sense?
+On Thu, Sep 14, 2023 at 10:02=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> -flto* implies -ffunction-sections. With LTO enabled, ld.lld generates
+> multiple .text sections for purgatory.ro:
+>
+> $ readelf -S purgatory.ro  | grep " .text"
+>   [ 1] .text             PROGBITS         0000000000000000  00000040
+>   [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
+>   [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
+>   [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
+>   [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
+>   [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
+>   [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
+>
+> This cause WARNING from kexec_purgatory_setup_sechdrs():
+>
+> WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
+> kexec_load_purgatory+0x37f/0x390
+>
+> Fix this by disabling LTO for purgatory.
+>
+> We could also fix this with an explicit linker script to rejoin .text.*
+> sections back into .text. However, given the benefit of LTOing pugatory
+> is small, simply disable the production of more .text.* sections for now.
+>
+> Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
+> Cc: Ricardo Ribalda <ribalda@chromium.org>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: kexec@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Song Liu <song@kernel.org>
+>
+> ---
+> AFAICT, x86 is the only arch that supports LTO and purgatory.
+>
+> Changes in v3:
+> 1. Fix "Fixes" tag. (Nick Desaulniers)
+> 2. Add description of an alternative fix, with linker script.
+>    (Nick Desaulniers)
+>
+> Changes in v2:
+> 1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
+> ---
+>  arch/x86/purgatory/Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+> index c2a29be35c01..08aa0f25f12a 100644
+> --- a/arch/x86/purgatory/Makefile
+> +++ b/arch/x86/purgatory/Makefile
+> @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS -D__NO_FORTIF=
+Y
+>  # optimization flags.
+>  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D% -fprofile-use=
+=3D%,$(KBUILD_CFLAGS))
+>
+> +# When LTO is enabled, llvm emits many text sections, which is not suppo=
+rted
+> +# by kexec. Remove -flto=3D* flags.
+> +KBUILD_CFLAGS :=3D $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
+> +
+>  # When linking purgatory.ro with -r unresolved symbols are not checked,
+>  # also link a purgatory.chk binary without -r to check for unresolved sy=
+mbols.
+>  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
 
-It's for sleeping locks during eviction rather than trylocks. TTM
-currently fishes out the struct ww_acquire_context used for locking
-from the lock itself, but I'd expect that to be more explicit in the
-near future with a variant of ttm_bo_validate() that actually
-explicitly takes a drm_exec as argument.
+LGTM, thanks for the patch!
 
-So we would probably also like to try to find a way to encourage
-drivers to include the validate() in the until_all_locked() loop,
-because if TTM resorts to a sleeping lock *after* that loop, the
-following warning will be hit:
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-https://elixir.bootlin.com/linux/latest/source/kernel/locking/ww_mutex.h#L1=
-95
-
-So not sure what's best, but perhaps then a struct drm_exec * or a=C2=A0
-(void *)
-
-/Thomas
-
-
->=20
-> >=20
-> > /Thomas
-> >=20
-> >=20
-> > >=20
-> > > >=20
-> > > > > =C2=A0=C2=A0 };
-> > > > > =C2=A0=C2=A0 int drm_gpuvm_sm_map(struct drm_gpuvm *gpuvm, void *=
-priv,
-> > > >=20
-> > > > Thanks,
-> > > >=20
-> > > > Thomas
-> > > >=20
-> > > >=20
-> > >=20
-> >=20
->=20
-
+Sami
