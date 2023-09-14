@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522AC7A00A3
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE917A00A4
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbjINJqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        id S237469AbjINJqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237547AbjINJqS (ORCPT
+        with ESMTP id S237761AbjINJq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:46:18 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D86210C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:46:12 -0700 (PDT)
-X-UUID: bebcfc2cd5234480a8d300e4f6e5c3b5-20230914
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: EDM_GE969F26
-X-CID-O-INFO: VERSION:1.1.31,REQID:fd810b43-069c-4082-a0de-37e72278df8d,IP:10,
-        URL:0,TC:0,Content:0,EDM:-25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-        TION:release,TS:-30
-X-CID-INFO: VERSION:1.1.31,REQID:fd810b43-069c-4082-a0de-37e72278df8d,IP:10,UR
-        L:0,TC:0,Content:0,EDM:-25,RT:0,SF:-15,FILE:0,BULK:0,RULE:EDM_GE969F26,ACT
-        ION:release,TS:-30
-X-CID-META: VersionHash:0ad78a4,CLOUDID:4256ef13-4929-4845-9571-38c601e9c3c9,B
-        ulkID:230914174555IULG59O1,BulkQuantity:0,Recheck:0,SF:19|44|38|24|17|102,
-        TC:nil,Content:0,EDM:1,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
-        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_AEC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-        TF_CID_SPAM_FSI
-X-UUID: bebcfc2cd5234480a8d300e4f6e5c3b5-20230914
-X-User: liucong2@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw
-        (envelope-from <liucong2@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1588511505; Thu, 14 Sep 2023 17:45:53 +0800
-From:   Cong Liu <liucong2@kylinos.cn>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stanley Yang <Stanley.Yang@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Cc:     Cong Liu <liucong2@kylinos.cn>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fix a memory leak in amdgpu_ras_feature_enable
-Date:   Thu, 14 Sep 2023 17:45:33 +0800
-Message-Id: <20230914094533.213548-1-liucong2@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Thu, 14 Sep 2023 05:46:26 -0400
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907201FC6;
+        Thu, 14 Sep 2023 02:46:20 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id B0F9F1864859;
+        Thu, 14 Sep 2023 12:46:16 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 21PzqHuNWfIK; Thu, 14 Sep 2023 12:46:16 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 6A54A186337A;
+        Thu, 14 Sep 2023 12:46:16 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Bf6bOSsUcO7o; Thu, 14 Sep 2023 12:46:16 +0300 (MSK)
+Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.13.132])
+        by mail.astralinux.ru (Postfix) with ESMTPSA id 34B591864965;
+        Thu, 14 Sep 2023 12:46:15 +0300 (MSK)
+From:   Anastasia Belova <abelova@astralinux.ru>
+To:     Chris Mason <clm@fb.com>
+Cc:     Anastasia Belova <abelova@astralinux.ru>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Subject: [PATCH 5.10] btrfs: fix region size in count_bitmap_extents
+Date:   Thu, 14 Sep 2023 12:45:55 +0300
+Message-Id: <20230914094555.25657-1-abelova@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a memory leak in the amdgpu_ras_feature_enable() function.
-The leak occurs when the function sends a command to the firmware to enable
-or disable a RAS feature for a GFX block. If the command fails, the kfree()
-function is not called to free the info memory.
+count_bitmap_extents was deleted in version 5.11, but
+there is possible mistake in versions 5.6-5.10.
 
-Fixes: bf7aa8bea9cb ("drm/amdgpu: Free ras cmd input buffer properly")
-Signed-off-by: Cong Liu <liucong2@kylinos.cn>
+Region size should be calculated by subtracting
+the end from the beginning.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: dfb79ddb130e ("btrfs: track discardable extents for async discard"=
+)
+Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/free-space-cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 8eb6f6943778..b4a8ea946410 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -802,6 +802,7 @@ int amdgpu_ras_feature_enable(struct amdgpu_device *adev,
- 				enable ? "enable":"disable",
- 				get_ras_block_str(head),
- 				amdgpu_ras_is_poison_mode_supported(adev), ret);
-+			kfree(info);
- 			return ret;
- 		}
- 
--- 
-2.34.1
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 4989c60b1df9..a34e266a0969 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -1930,7 +1930,7 @@ static int count_bitmap_extents(struct btrfs_free_s=
+pace_ctl *ctl,
+=20
+ 	bitmap_for_each_set_region(bitmap_info->bitmap, rs, re, 0,
+ 				   BITS_PER_BITMAP) {
+-		bytes -=3D (rs - re) * ctl->unit;
++		bytes -=3D (re - rs) * ctl->unit;
+ 		count++;
+=20
+ 		if (!bytes)
+--=20
+2.30.2
 
