@@ -2,162 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B033479FD6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8563179FD76
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbjINHr0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 03:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S231853AbjINHuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjINHrY (ORCPT
+        with ESMTP id S229890AbjINHum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:47:24 -0400
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C791BF6;
-        Thu, 14 Sep 2023 00:47:20 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d7ba4c5f581so686012276.0;
-        Thu, 14 Sep 2023 00:47:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694677639; x=1695282439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TH2NAACEuqLTwvTPSksNHJiP3v0GBMYJgjJTtcx+5Sw=;
-        b=PRwPqxvoLae1QR4SqZCoBuGowcsLr65i549L6ojjMgZZpwb8HKiexWnD50Y8fp432c
-         lHomy8t+9d6c6xnOKS5Rs41KaVUCm2ZJY73v0niUC5NeQFrUvrNJp76Vy9Zg6C/Fm3xk
-         KmqbcH/spPkFAvdsXvt/RSqpbhigbfm0ysvt3ubcnViDYnJiMGE6CLcysFZ8YUkWr7E2
-         3sTzqFeS0rmvLE0rmx7VXXr31PD1JjFxHdarfTDkkV+hNhyWbVUO7aVCmMc14cFeFoWL
-         ikWiaygL6mbRV/daXKDPI7IZuMwQqdS4Cz2yXAr58cqo8Y6lZbsfSBBG4bf+lprFhGXb
-         qf8A==
-X-Gm-Message-State: AOJu0Yx2RKDC8DpejIYgmwVJ5xj25UFyML6q8hJF4YqPDR5JvR3PFvZe
-        xoQox82eMXwQFEt4T97C9V49rbNgWrRxQw==
-X-Google-Smtp-Source: AGHT+IGGc71cjLXfVuEx4Q7iM0vMEDydwunljfwf+/VqDOqnkaHeIqU9R8qZrYTl7n5AULPpQlM1Kw==
-X-Received: by 2002:a25:8683:0:b0:d7b:8d9a:4ec5 with SMTP id z3-20020a258683000000b00d7b8d9a4ec5mr4386915ybk.41.1694677639567;
-        Thu, 14 Sep 2023 00:47:19 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id e9-20020a259249000000b00d43697c429esm216628ybo.50.2023.09.14.00.47.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 00:47:18 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59231a1ca9eso7546727b3.1;
-        Thu, 14 Sep 2023 00:47:18 -0700 (PDT)
-X-Received: by 2002:a05:6902:285:b0:d81:5ec1:80cf with SMTP id
- v5-20020a056902028500b00d815ec180cfmr3698465ybh.12.1694677638369; Thu, 14 Sep
- 2023 00:47:18 -0700 (PDT)
+        Thu, 14 Sep 2023 03:50:42 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D61CC3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:50:38 -0700 (PDT)
+Received: from [192.168.2.134] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EC4EE6607328;
+        Thu, 14 Sep 2023 08:50:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694677837;
+        bh=+t94FHno8EI7tdTZCjTtriG4Jaov6Eg5SgnYWwDQgB8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KD5Ipjf9j8o8530Jp8JUIXTZ+QU4czaZHq5CVr7TLQ/rRBOXY2Ild68jnkcbss0ye
+         kbxXZueIvBUWnPgmfUuyonSRrIXt0Q2wtL3BRfHD9kJsNs9sdl8JSpMJdm5rDOKf1X
+         r1HIw8dwaS6U/Ij2TIdGESrfLKZsj0AQvPw7cifexw1ZMFVXBtLogbwWki3EHlil6y
+         jP8dOoy9R+MynPjMPHygTTtEsY5L1C7jy8VnDsTHpWQN6cssW9Q89cjP16Tn8JBbA2
+         px9HKnrtoaE/i6SsviuNcTVct5iOC9AN3xNRdyiP/ejPIv2r3tI3YW5SrPKjNnYzs4
+         kUC5pa7dMJ6Ew==
+Message-ID: <21dda0bd-4264-b480-dbbc-29a7744bc96c@collabora.com>
+Date:   Thu, 14 Sep 2023 10:50:32 +0300
 MIME-Version: 1.0
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
- <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
- <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org> <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
-In-Reply-To: <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 14 Sep 2023 09:47:07 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
-Message-ID: <CAMuHMdVYDSPGP48OXxi-s4GFegfzUu900ASBnRmMo=18UzmCrQ@mail.gmail.com>
-Subject: guard coding style (was: Re: [PATCH v1 05/10] gpio: pca953x: Simplify
- code with cleanup helpers)
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mitchell Levy <levymitchell0@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+ <20230903170736.513347-16-dmitry.osipenko@collabora.com>
+ <20230905100306.3564e729@collabora.com>
+ <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
+ <20230913094832.3317c2df@collabora.com>
+ <aa270715-89ae-2aac-e2e3-018c21e1ff0e@collabora.com>
+ <20230914093626.19692c24@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230914093626.19692c24@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+On 9/14/23 10:36, Boris Brezillon wrote:
+> On Thu, 14 Sep 2023 07:02:52 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> On 9/13/23 10:48, Boris Brezillon wrote:
+>>> On Wed, 13 Sep 2023 03:56:14 +0300
+>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>   
+>>>> On 9/5/23 11:03, Boris Brezillon wrote:  
+>>>>>>                * But
+>>>>>> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
+>>>>>> +		 * cause a locking order inversion between reservation_ww_class_mutex
+>>>>>> +		 * and fs_reclaim.
+>>>>>> +		 *
+>>>>>> +		 * This deadlock is not actually possible, because no one should
+>>>>>> +		 * be already holding the lock when drm_gem_shmem_free() is called.
+>>>>>> +		 * Unfortunately lockdep is not aware of this detail.  So when the
+>>>>>> +		 * refcount drops to zero, don't touch the reservation lock.
+>>>>>> +		 */
+>>>>>> +		if (shmem->got_pages_sgt &&
+>>>>>> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
+>>>>>> +			drm_gem_shmem_do_release_pages_locked(shmem);
+>>>>>> +			shmem->got_pages_sgt = false;
+>>>>>>  		}    
+>>>>> Leaking memory is the right thing to do if pages_use_count > 1 (it's
+>>>>> better to leak than having someone access memory it no longer owns), but
+>>>>> I think it's worth mentioning in the above comment.    
+>>>>
+>>>> It's unlikely that it will be only a leak without a following up
+>>>> use-after-free. Neither is acceptable.  
+>>>
+>>> Not necessarily, if you have a page leak, it could be that the GPU has
+>>> access to those pages, but doesn't need the GEM object anymore
+>>> (pages are mapped by the iommu, which doesn't need shmem->sgt or
+>>> shmem->pages after the mapping is created). Without a WARN_ON(), this
+>>> can go unnoticed and lead to memory corruptions/information leaks.
+>>>   
+>>>>
+>>>> The drm_gem_shmem_free() could be changed such that kernel won't blow up
+>>>> on a refcnt bug, but that's not worthwhile doing because drivers
+>>>> shouldn't have silly bugs.  
+>>>
+>>> We definitely don't want to fix that, but we want to complain loudly
+>>> (WARN_ON()), and make sure the risk is limited (preventing memory from
+>>> being re-assigned to someone else by not freeing it).  
+>>
+>> That's what the code did and continues to do here. Not exactly sure what
+>> you're trying to say. I'm going to relocate the comment in v17 to
+>> put_pages(), we can continue discussing it there if I'm missing yours point.
+>>
+> 
+> I'm just saying it would be worth mentioning that we're intentionally
+> leaking memory if shmem->pages_use_count > 1. Something like:
+> 
+> 	/**
+> 	 * shmem->pages_use_count should be 1 when ->sgt != NULL and
+> 	 * zero otherwise. If some users still hold a pages reference
+> 	 * that's a bug, and we intentionally leak the pages so they
+> 	 * can't be re-allocated to someone else while the GPU/CPU
+> 	 * still have access to it.
+> 	 */
+> 	drm_WARN_ON(drm,
+> 		    refcount_read(&shmem->pages_use_count) == (shmem->sgt ? 1 : 0));
+> 	if (shmem->sgt && refcount_dec_and_test(&shmem->pages_use_count))
+> 		drm_gem_shmem_free_pages(shmem);
 
-On Wed, Sep 13, 2023 at 5:27 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> On Wed, Sep 13, 2023 at 4:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, 1 Sep 2023, Andy Shevchenko wrote:
-> > > Use macros defined in linux/cleanup.h to automate resource lifetime
-> > > control in gpio-pca953x.
-> > >
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > Thanks for your patch, which is now commit 8e471b784a720f6f
-> > ("gpio: pca953x: Simplify code with cleanup helpers") in
-> > gpio/gpio/for-next.
-> >
-> > > --- a/drivers/gpio/gpio-pca953x.c
-> > > +++ b/drivers/gpio/gpio-pca953x.c
-> > > @@ -557,9 +554,8 @@ static int pca953x_gpio_get_value(struct gpio_chip *gc, unsigned off)
-> > >       u32 reg_val;
-> > >       int ret;
-> > >
-> > > -     mutex_lock(&chip->i2c_lock);
-> > > -     ret = regmap_read(chip->regmap, inreg, &reg_val);
-> > > -     mutex_unlock(&chip->i2c_lock);
-> > > +     scoped_guard(mutex, &chip->i2c_lock)
-> > > +             ret = regmap_read(chip->regmap, inreg, &reg_val);
-> >
-> > I can't say I'm thrilled about the lack of curly braces.  I was also
-> > surprised to discover that checkpatch nor gcc W=1 complain about the
-> > indentation change.
-> > I know we don't use curly braces in single-statement for_each_*() loops,
-> > but at least these have the familiar "for"-prefix.  And having the scope
-> > is very important here, so using braces, this would stand out more.
-> >
-> > Hence can we please get curly braces, like
-> >
-> >      scoped_guard(mutex, &chip->i2c_lock) {
-> >             ret = regmap_read(chip->regmap, inreg, &reg_val);
-> >      }
-> >
-> > ?
-> >
-> > Thanks! ;-)
->
-> I strongly disagree. The scope here is very clear - just like it is in
-> a for loop, in a while loop or in an if block:
->
-> if (foo)
->     bar()
->
-> if (foo) {
->     bar();
->     baz();
-> }
->
-> Only compound statements need curly braces in the kernel and it has
-> been like this forever. I don't really see a need to make it an
-> exception.
->
-> That being said - I don't think the coding style for guard has ever
-> been addressed yet, so maybe bring it up with Peter Zijlstra?
-
-That's a good idea!
-
-I see Peter always used curly braces (but he didn't have any
-single-statement blocks, except for one with an "if", and we do tend
-to use curly braces in "for"-statements containing a single "if", too),
-but he does put a space after the "scoped_guard", as is also
-shown in the template in include/linux/cleanup.h:
-
-    scoped_guard (name, args...) { }:
-
-Then, "guard" does not get a space (but it is funny syntax
-anyway, with the double set of parentheses ;-).  The template in
-include/linux/cleanup.h doesn't match actual usage as it lacks the
-second set of parentheses:
-
-    guard(name):
-
-Peter: care to comment?
-Or do you have a different bikeshed to paint today? ;-)
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+That may be acceptable, but only once there will a driver using this
+feature.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Best regards,
+Dmitry
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
