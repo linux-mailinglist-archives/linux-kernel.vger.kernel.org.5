@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5C779FEB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE9F79FEBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236534AbjINIqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
+        id S236556AbjINIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236468AbjINIqa (ORCPT
+        with ESMTP id S236539AbjINIqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:46:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 194CC106
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694681140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZPWUJt9WZ2RKYjC2FfyDRPBLoDD7vPyZdjkHVLwZxgA=;
-        b=JnTXJuu6O0U7hDKOeaI/fGpQLKVlSDPsf3fxsg/cI/lCDwtv5CL8pTjWoCp4WMqucrgVih
-        YIRMYfVXJBQh3anANPZJrKQ+HVEXDNd/j90bIzAR4DXgWTWXDzgX7VJqzbEc04T5PHKhx0
-        9KruOyS2LXpb4e5j4ylJ/WoixNPXAcI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-2rmVHMPwMAytm1NCw455ow-1; Thu, 14 Sep 2023 04:45:39 -0400
-X-MC-Unique: 2rmVHMPwMAytm1NCw455ow-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2bcc03ed694so9244031fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:45:38 -0700 (PDT)
+        Thu, 14 Sep 2023 04:46:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF5B106
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:46:33 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31aeef88a55so572384f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1694681191; x=1695285991; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KQEPjdH4Gli9KAKRohOP4WFvJ7BvjQDzxENQGkakYUo=;
+        b=akqB3OZmyrYPrr/2AkSGvD93rHAXS+FRk5BVzmf8wBaG6o33cIZAeJVxQAJ4aOgLgC
+         ODJLzw/M7HRGg+Bc5/Rxu/z35r0SJ3t2/MyBM9/hWRI6ONHlRkT0Z8gEd7ufyj0yB88U
+         u2FnVScOUwu9REAnC0s5ZS5LMRzY53Xuq2TjWlWb1dUDm+aY2Xot+A+81SbbO0GXYaM3
+         gFXysm9D1b/J/0DqOvOCYOP2xlGPi2SbsUUoAem3z8z6tJ+uwcs6xzUYydHF9nqSXkjO
+         IAXfgKVaAYzmOYVFtb73AISpAyf2VGV6xT4hNJqe3+zRdUg99BnLMZCND8iFNJsMNvLY
+         pNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694681137; x=1695285937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZPWUJt9WZ2RKYjC2FfyDRPBLoDD7vPyZdjkHVLwZxgA=;
-        b=MZme5ovJkmq0vpV0YeQYuEI18QW6IWOAFALlsdgdjR9+LgqlJFpvFTxy/9XP9C8lJb
-         O72B/ykS8FG4q+Tkn8DhbW75Ct1vhHHMYiyxPQtaE7tSmKn3H4jymlOgpvPD2RyNA8XM
-         gob7LuvjDDLEH30XfeHX2NU9lJRLk+1fG8EwKYFLL1jL4+KfM5cEytE76x6l61bm/Sbx
-         1Tl+MAwGyZXqgNQnuB5KUeQOqeHgytL64IZGG8Q83jy6Ez/awEC67LuD3vERJ12PoEg4
-         5t2pSjkNOSrLOxHULqa4O24g3XkKb84lOrNDtVyewKJQmHOtM39ZLOqQMMBjvnm4wnfW
-         rJkw==
-X-Gm-Message-State: AOJu0Yx79wKEb3TlAkcL2TwgJtaTy9cLSYI6Z3hL3OFto6z2ylNzqm1r
-        i0tAwU1UnovNZgFRO9LvF3h8mRqdbWyjiQ4yGG6GKAV8AAZBWIfjhlY5ixrN0qpvXfHIHguEido
-        KnUXU5kuwx68UI+bDIIJ5PjZ58pOkrBbVCxuONVHQ
-X-Received: by 2002:a2e:8557:0:b0:2ba:18e5:1063 with SMTP id u23-20020a2e8557000000b002ba18e51063mr4133168ljj.50.1694681137682;
-        Thu, 14 Sep 2023 01:45:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEl3iGxG9z9pzSVoj1U53hPDZT0x51orYLzvDfs6x7agdKCrNDqRvP0Eb3gKLCiKIk4fXxQBbe7PBIylDs+3T8=
-X-Received: by 2002:a2e:8557:0:b0:2ba:18e5:1063 with SMTP id
- u23-20020a2e8557000000b002ba18e51063mr4133140ljj.50.1694681137323; Thu, 14
- Sep 2023 01:45:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694681191; x=1695285991;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KQEPjdH4Gli9KAKRohOP4WFvJ7BvjQDzxENQGkakYUo=;
+        b=AcHH7dj0Tn7ogdR7wWSqjM7RrTc1wLoIVXH3HMaylru4ELSeFzCdTsRBklz/NMNIMj
+         8HhCw3l4DJc6BfMejRPsT3reGtizk5JxMoYVajwEUO0s1tLIO67kTgWmehHmtBOMbPwI
+         HukDrv2eJ5FUjq4uc34KJYB51UE7y+gd5Bjmqs1pcTTzJ19Y2NSHheOixd3VU3MJV07V
+         EX3AKhPDM5UgevKN8LTHSGfvneE+lh4DEZdXsoj6kNzOJxA3uxFXTMPwxKFmh2aXAY1F
+         /e5qCmkvs1MtBxu2h2SOsmaZ4Th+kPQX+3sZlcDforup4Lh9FIK5sNXw3Qb9aB+98T68
+         fwNA==
+X-Gm-Message-State: AOJu0YxOemld8cG1if0p0Y6Mt4DQph3fwhulbVXgrf60Dbtu2yWp0Fy3
+        FcoJqNagJjxPU9mOajF9IjEd3A==
+X-Google-Smtp-Source: AGHT+IEirTjVMIzTLjC7sB1QXwQuxnOxm1+1fH/gEKNI6n9l8wkInADFzO37/+IpdsjO1bWWulPatg==
+X-Received: by 2002:a5d:6105:0:b0:319:8427:d221 with SMTP id v5-20020a5d6105000000b003198427d221mr4297904wrt.62.1694681191504;
+        Thu, 14 Sep 2023 01:46:31 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b003176eab8868sm1157269wrs.82.2023.09.14.01.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 01:46:31 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 10:46:30 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 2/9] KVM: selftests: Unify the makefile rule for split
+ targets
+Message-ID: <20230914-393dcb077c664af16c4830e4@orel>
+References: <cover.1694421911.git.haibo1.xu@intel.com>
+ <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
 MIME-Version: 1.0
-References: <20230616115316.3652155-1-leitao@debian.org> <20230616132954.GG4253@hirez.programming.kicks-ass.net>
- <ZQHiJxHSSGNk+ul5@gmail.com>
-In-Reply-To: <ZQHiJxHSSGNk+ul5@gmail.com>
-From:   Jirka Hladky <jhladky@redhat.com>
-Date:   Thu, 14 Sep 2023 10:45:26 +0200
-Message-ID: <CAE4VaGBXO5Joynan_o13XpT=mNrwt4D84NTZF6H62GXJjpMbBA@mail.gmail.com>
-Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
-To:     Breno Leitao <leitao@debian.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sandipan Das <sandipan.das@amd.com>, leit@fb.com,
-        dcostantino@meta.com,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Breno,
-
-I'm definitively voting for using WARN_ON_ONCE - in the current
-implementation, we are getting thousands of the same warnings and Call
-Traces, causing the system to become unusable.
-
->Anyway, please let me know whatever is your preferred way and I will submi=
-t a v2.
-@Peter Zijlstra and @Sandipan - could you please comment on the
-preferred implementation of the patch?
-
-THANK YOU
-Jirka
-
-On Wed, Sep 13, 2023 at 6:24=E2=80=AFPM Breno Leitao <leitao@debian.org> wr=
-ote:
->
-> Hi Peter,
->
-> On Fri, Jun 16, 2023 at 03:29:54PM +0200, Peter Zijlstra wrote:
-> > On Fri, Jun 16, 2023 at 04:53:15AM -0700, Breno Leitao wrote:
-> > > On some systems, the Performance Counter Global Status Register is
-> > > coming with reserved bits set, which causes the system to be unusable
-> > > if a simple `perf top` runs. The system hits the WARN() thousands tim=
-es
-> > > while perf runs.
-> > >
-> > > WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu=
-_v2_handle_irq+0x1be/0x2b0
-> > >
-> > > This happens because the "Performance Counter Global Status Register"
-> > > (PerfCntGlobalStatus) MSR has bit 7 set. Bit 7 should be reserved acc=
-ording
-> > > to the documentation (Figure 13-12 from "AMD64 Architecture Programme=
-r=E2=80=99s
-> > > Manual, Volume 2: System Programming, 24593"[1]
-> >
-> > Would it then not make more sense to mask out bit7 before:
-> >
-> > +     status &=3D ~AMD_PMU_V2_GLOBAL_STATUS_RESERVED;
-> >       if (!status)
-> >               goto done;
->
-> Instead of masking `status` against AMD_PMU_V2_GLOBAL_STATUS_RESERVED
-> (AMD64_NUM_COUNTERS?), I opted for using the `amd_pmu_global_cntr_mask`
-> global variable because it seems to represent what the loop below is
-> iterating over:
->
->         /* PMC Enable and Overflow bits for PerfCntrGlobal* registers */
->         static u64 amd_pmu_global_cntr_mask __read_mostly;
->
-> Also, I think we want to WARN_ON_ONCE() if we see this problem. Right
-> now, it warns at every time we call this function, which makes the
-> machine unusable, but, warning it once could be helpful to figure out
-> there is something wrong with the machine/firmware.
->
-> Anyway, please let me know whatever is your preferred way and I will
-> submit a v2.
+On Thu, Sep 14, 2023 at 09:36:56AM +0800, Haibo Xu wrote:
+> A separate makefile rule was used for split targets which was added
+> in patch(KVM: arm64: selftests: Split get-reg-list test code). This
+> could be avoided by minor changes to the recipes of current rule.
+> 
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a3bb36fb3cfc..7972269e8c5f 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -249,13 +249,10 @@ TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
+>  -include $(TEST_DEP_FILES)
+>  
+>  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+> -	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) $(LDLIBS) -o $@
+> +	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
+>  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+>  	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+>  
+> -$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
+> -	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
+> -
+>  EXTRA_CLEAN += $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SPLIT_TESTS_OBJS) cscope.*
+>  
+>  x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
+> @@ -274,6 +271,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
+>  x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
+>  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
+>  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
+> +$(SPLIT_TESTS_TARGETS): $(OUTPUT)/%: $(ARCH_DIR)/%.o
+>  
+>  cscope: include_paths = $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) include lib ..
+>  cscope:
+> -- 
+> 2.34.1
 >
 
+Nice.
 
---=20
--Jirka
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
+Thanks,
+drew
