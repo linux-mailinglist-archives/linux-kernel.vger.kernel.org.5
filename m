@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DB879FD9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1876779FDA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbjINH5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        id S234161AbjINH6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235980AbjINH5K (ORCPT
+        with ESMTP id S232458AbjINH6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:57:10 -0400
+        Thu, 14 Sep 2023 03:58:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA5A1FDC;
-        Thu, 14 Sep 2023 00:57:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01827C433C7;
-        Thu, 14 Sep 2023 07:57:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDE71BF6;
+        Thu, 14 Sep 2023 00:57:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37AC2C433CA;
+        Thu, 14 Sep 2023 07:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694678225;
-        bh=2ufj/dkiu5C9aI9VOV15kVL199L5WrTgWHf+hb5IyTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hdT4bhltQEOObibgTe1UKoo0kHa563R3jH6g3lldaEO0pdCibFT6JexrMfgtDyCjk
-         zWnF1cZsnmanR82cmHDXMGSqoqzYSLjFimV+8MBgTjsf58thSdJRO1TL63bZFye3vI
-         Fq3vqyV2Gzlz9hgnCQg1LR82MZbcAYco0OJREyjZmjBfuF8MzK2j1pRjiNhmBwIeep
-         pf1flpeoFzmd5MmAWO8OnNcMygN3mvKK/8R0xkUDSTI9AcJAeZ8tmXBDsCVpZ/0lKE
-         1fssy50g3jgAFaXpAilGNljeBDWEcS/vXnpzk5sUIKRaOtQlOBi2hO0OTQ+6B3XV7Q
-         3FXzrKtuu/G/g==
-Date:   Thu, 14 Sep 2023 09:56:57 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230914-zielt-einzog-00389009b293@brauner>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
+        s=k20201202; t=1694678278;
+        bh=w97jgCxmnIaSV+4bbnSk1R7YKOaENxmwU85CS3tNcPo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZhVxi3ng0SyBcUTeBMQePKCqcaLd8ethtP02v1fL+sfnyUaoKqHkq9ju2Mb2DzGmx
+         12cPbr6KS37U3XQdfYDg39fefRxRGPkNAt0JcrqNuLoRrMOChzJNI4I+30xyF/Z+DO
+         9uUgJtnDdJgF7nEXzChIzKYS5cn58Peg6JMWClVEEmyT8kN2TvcDY5+cWznkmtlWEO
+         c1HUPT6VfSprEw7p42m6MzIVjlX2UkH0Kd4+Pu+jggh68f29rTsOMA5jm7wh31KLCT
+         cO/FDvorrtEl5TBHSc2NBxToKVfMI9e/jz1tApeqdW/ft0iWrkGBooY5qJ9zwbp4IC
+         8ehDh8M7Vy3CQ==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so9531961fa.3;
+        Thu, 14 Sep 2023 00:57:58 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw+9qrEMoTR7t0idesOR0RbpI5kPq+T/PRgyFtG8hVW4gMz6vls
+        x+xt8doxzKfnZHFOYXYHfc2Y77LOzwa0321qE9s=
+X-Google-Smtp-Source: AGHT+IFuQtEiIDjo1DdCQY9KR6JQVDNyxLjSiMxhcLunotHqZWQic/fNmbjkP5sAIxtK7RWx3KWbiGw4//GC4psRyfI=
+X-Received: by 2002:a2e:a172:0:b0:2bc:db70:b563 with SMTP id
+ u18-20020a2ea172000000b002bcdb70b563mr4235801ljl.32.1694678276384; Thu, 14
+ Sep 2023 00:57:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230914053843.GI800259@ZenIV>
+References: <20230913163823.7880-1-james.morse@arm.com> <20230913163823.7880-28-james.morse@arm.com>
+In-Reply-To: <20230913163823.7880-28-james.morse@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 14 Sep 2023 09:57:44 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+Message-ID: <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code first?]
+To:     James Morse <james.morse@arm.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> BTW, this part of commit message in 2c18a63b760a is rather confused:
->     Recent rework moved block device closing out of sb->put_super() and into
->     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
->     blkdev_put() can end up taking s_umount again.
-> 
-> That was *NOT* what a recent rework had done.  Block device closing had never
-> been inside ->put_super() - at no point since that (closing, that is) had been
-> introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
+Hello James,
 
-I think the commit message probably just isn't clear enough. The main
-block device of a superblock isn't closed in sb->put_super(). That's
-always been closed in kill_block_super() after generic_shutdown_super().
+On Wed, 13 Sept 2023 at 18:41, James Morse <james.morse@arm.com> wrote:
+>
+> Add the new flag field to the MADT's GICC structure.
+>
+> 'Online Capable' indicates a disabled CPU can be enabled later.
+>
 
-But afaict filesystem like ext4 and xfs may have additional block
-devices open exclusively and closed them in sb->put_super():
+Why do we need a bit for this? What would be the point of describing
+disabled CPUs that cannot be enabled (and are you are aware of
+firmware doing this?).
 
-xfs_fs_put_super()
--> xfs_close_devices()
-   -> xfs_blkdev_put()
-      -> blkdev_put()
+So why are we not able to assume that this new bit can always be treated as '1'?
 
-ext4_put_super()
--> ext4_blkdev_remove()
-   -> blkdev_put()
+
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+> This patch probably needs to go via the upstream acpica project,
+> but is included here so the feature can be testd.
+> ---
+>  include/acpi/actbl2.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 3751ae69432f..c433a079d8e1 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+>  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
+>  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1) /* 01: Performance Interrupt Mode */
+>  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2) /* 02: VGIC Maintenance Interrupt mode */
+> +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3) /* 03: CPU is online capable */
+>
+>  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
+>
+> --
+> 2.39.2
+>
