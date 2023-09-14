@@ -2,163 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0673B7A0B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82037A0B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbjINRHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        id S238901AbjINRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjINRHK (ORCPT
+        with ESMTP id S232000AbjINRHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:07:10 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36D11FE1;
-        Thu, 14 Sep 2023 10:07:05 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EFEPat026692;
-        Thu, 14 Sep 2023 17:06:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=VS5omclDy3oniz92XfXL1gqbRojQdj9K/4l/+LddOJ0=;
- b=QAyD27Tfoq3ApMqGseXEJMgkHjxE4aLrzxF91opPn4+NvyscQ7HHOkzBCay457yTYnVc
- aRs8IqLAbp8P8pVOhhRVjtyoFRZbWYe0ox+W16SzQPOt5nPYMge+Em0dnwxZjOAEu8a4
- YEkGRcO8GJBLteYJRskkvyw6qGVk/kg+2R6JH5ElZ/BQ/HXcLmYBw6KFEZOVNoezZFC/
- Gdgl9yQ9LT3tLk6vaWQOEoGPizwhDhsmiYECWZBTk4ZVqLvLRgeYa7pDSK6Zexr7kgUH
- P2IzbMraTe+EvPTi1st8uWD6kF7uVSD5Nn0mBWQ8U0+BdD87NBLJRXVxlBgNhOL46Kis Jg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3wx19kps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 17:06:53 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EH6qdc004174
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 17:06:52 GMT
-Received: from [10.111.183.186] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 10:06:52 -0700
-Message-ID: <7427d5aa-902a-4013-8aa9-f986bb5218a4@quicinc.com>
-Date:   Thu, 14 Sep 2023 10:06:51 -0700
+        Thu, 14 Sep 2023 13:07:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009E11FE1;
+        Thu, 14 Sep 2023 10:07:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91BAEC433C9;
+        Thu, 14 Sep 2023 17:07:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694711266;
+        bh=1r0+Zdvf3wZUhOn2z8iQ20YUkXarqeZelKafGh0Vb5A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dgOuqOeceJAGBoDw1c6Co4XoM8soxD7wU2eq/W6C+XZJf8V9pPkWgPUrUlgMqdE3b
+         7xYGmNx7ifAr7G46/C+o5KAoAvIJ4MI02+388TPgweqM9yyb2nb7yh5f5l2NV928nf
+         HzKsuBT45z22NndhQwRtqYlkQRwcL59p4AL6dcWrniocC5KhzYaAYr5W+KWH5R4SjY
+         /XWnkWCC05FLEdCJ0xRIQIj/qbAcnkutGUaP4kvMC4UGWSzao6GMj9aQAUiHnnBESq
+         vVnlhnJJave+UwMBOmYSqUrX9799zP1LRPBuB+sZtdYGRRK0lnWt4FYN4xQA72hY7A
+         LNgnq+suizjiQ==
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1c4c5375329so654198fac.2;
+        Thu, 14 Sep 2023 10:07:46 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzkINIjBLZakX2ZPYndHH1n3qGrsnqeB5lQxKBZEUn3fQ1z6wd/
+        BWdZKwzTf2JIFR7KCi2Mp6TEW3dpnTKzTGXVnFQ=
+X-Google-Smtp-Source: AGHT+IET219ycfzqvgCfxsTzJ4o9BjENQN4pkEP9AJb/FkgP6cvm9VXtjdpkuI/I118jM3aYOVxfCXNlOBWd9cwQOT4=
+X-Received: by 2002:a05:6871:60e:b0:1d5:a905:5681 with SMTP id
+ w14-20020a056871060e00b001d5a9055681mr6469325oan.26.1694711265804; Thu, 14
+ Sep 2023 10:07:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH wireless-next 7/9] wifi: ath12k: Remove unnecessary
- (void*) conversions
-Content-Language: en-US
-To:     Wu Yunchuan <yunchuan@nfschina.com>, <kvalo@kernel.org>
-CC:     <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20230914040525.1170102-1-yunchuan@nfschina.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20230914040525.1170102-1-yunchuan@nfschina.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Q1UfUiFg-rmx_-W3ymAyC5ujLujnkhDE
-X-Proofpoint-ORIG-GUID: Q1UfUiFg-rmx_-W3ymAyC5ujLujnkhDE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 adultscore=0 clxscore=1015
- phishscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140148
+References: <20230913113801.1901152-1-arnd@kernel.org> <ZQISGujwlH00B8KJ@fjasle.eu>
+ <b234530c-88fe-4a2a-993c-f1733fe4d0c1@app.fastmail.com> <ZQIcuVgaDmA+VdV0@fjasle.eu>
+In-Reply-To: <ZQIcuVgaDmA+VdV0@fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 15 Sep 2023 02:07:09 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT9kO0RnNai5CuNgP3wgG+XQ2RqcSb2uAqP85P0PMN2tg@mail.gmail.com>
+Message-ID: <CAK7LNAT9kO0RnNai5CuNgP3wgG+XQ2RqcSb2uAqP85P0PMN2tg@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional dependencies
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/2023 9:05 PM, Wu Yunchuan wrote:
-> No need cast (void*) to (struct hal_rx_ppdu_end_user_stats *),
-> (struct ath12k_rx_desc_info *) or (struct hal_tx_msdu_ext_desc *).
-> 
-> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
-> ---
->   drivers/net/wireless/ath/ath12k/dp_mon.c | 6 ++----
->   drivers/net/wireless/ath/ath12k/dp_rx.c  | 2 +-
->   drivers/net/wireless/ath/ath12k/dp_tx.c  | 2 +-
->   3 files changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath12k/dp_mon.c b/drivers/net/wireless/ath/ath12k/dp_mon.c
-> index f1e57e98bdc6..41cfe7bd865f 100644
-> --- a/drivers/net/wireless/ath/ath12k/dp_mon.c
-> +++ b/drivers/net/wireless/ath/ath12k/dp_mon.c
-> @@ -13,8 +13,7 @@
->   static void ath12k_dp_mon_rx_handle_ofdma_info(void *rx_tlv,
->   					       struct hal_rx_user_status *rx_user_status)
->   {
-> -	struct hal_rx_ppdu_end_user_stats *ppdu_end_user =
-> -				(struct hal_rx_ppdu_end_user_stats *)rx_tlv;
-> +	struct hal_rx_ppdu_end_user_stats *ppdu_end_user = rx_tlv;
->   
->   	rx_user_status->ul_ofdma_user_v0_word0 =
->   		__le32_to_cpu(ppdu_end_user->usr_resp_ref);
-> @@ -26,8 +25,7 @@ static void
->   ath12k_dp_mon_rx_populate_byte_count(void *rx_tlv, void *ppduinfo,
->   				     struct hal_rx_user_status *rx_user_status)
->   {
-> -	struct hal_rx_ppdu_end_user_stats *ppdu_end_user =
-> -		(struct hal_rx_ppdu_end_user_stats *)rx_tlv;
-> +	struct hal_rx_ppdu_end_user_stats *ppdu_end_user = rx_tlv;
->   	u32 mpdu_ok_byte_count = __le32_to_cpu(ppdu_end_user->mpdu_ok_cnt);
->   	u32 mpdu_err_byte_count = __le32_to_cpu(ppdu_end_user->mpdu_err_cnt);
->   
+On Thu, Sep 14, 2023 at 5:34=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
+wrote:
+>
+> On Wed, Sep 13, 2023 at 09:55:36PM +0200 Arnd Bergmann wrote:
+> > On Wed, Sep 13, 2023, at 21:48, Nicolas Schier wrote:
+> > > On Wed, Sep 13, 2023 at 01:37:52PM +0200 Arnd Bergmann wrote:
+> > >
+> > >>  Documentation/kbuild/kconfig-language.rst | 26 ++++++++++++++++++++=
++++
+> > >>  1 file changed, 26 insertions(+)
+> > >>
+> > >> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentati=
+on/kbuild/kconfig-language.rst
+> > >> index 858ed5d80defe..89dea587a469a 100644
+> > >> --- a/Documentation/kbuild/kconfig-language.rst
+> > >> +++ b/Documentation/kbuild/kconfig-language.rst
+> > >> @@ -573,6 +573,32 @@ above, leading to:
+> > >>    bool "Support for foo hardware"
+> > >>    depends on ARCH_FOO_VENDOR || COMPILE_TEST
+> > >>
+> > >> +Optional dependencies
+> > >> +~~~~~~~~~~~~~~~~~~~~~
+> > >> +
+> > >> +Some drivers are able to optionally use a feature from another modu=
+le
+> > >> +or build cleanly with that module disabled, but cause a link failur=
+e
+> > >> +when trying to use that loadable module from a built-in driver.
+> > >> +
+> > >> +The most common way to express this optional dependency in Kconfig =
+logic
+> > >> +uses the slighly counterintuitive
+> > >
+> > > slighly -> slightly
+> >
+> > Fixed, thanks
+> >
+> > > For better RST compliance: could you explicitly start the code block =
+e.g. by
+> > > appending '::' as in "... counterintuitive::"?
+> >
+> > Ok, done.
+> >
+> > >> +
+> > >> +  config FOO
+> > >> +  bool "Support for foo hardware"
+> > >> +  depends on BAR || !BAR
+> > >
+> > > are you sure that this is enough?  While testing, I needed to explici=
+tly use
+> > > =3Dy|=3Dn:
+> > >
+> > >     depends on BAR=3Dy || BAR=3Dn
+> > >
+> > > to prevent FOO to be selectable iff BAR=3Dm.
+> >
+> > I see my problem, I made a different mistake here. Your version
+> > is correct for a 'bool' symbol as I had here, but the intention
+> > of this was to make it work for tristate symbols, which are the
+> > interesting case. I've fixed it up this way now, hope it now makes
+> > sense to you:
+> >
+> > --- a/Documentation/kbuild/kconfig-language.rst
+> > +++ b/Documentation/kbuild/kconfig-language.rst
+> > @@ -581,19 +581,19 @@ or build cleanly with that module disabled, but c=
+ause a link failure
+> >  when trying to use that loadable module from a built-in driver.
+> >
+> >  The most common way to express this optional dependency in Kconfig log=
+ic
+> > -uses the slighly counterintuitive
+> > +uses the slightly counterintuitive::
+> >
+> >    config FOO
+> > -       bool "Support for foo hardware"
+> > +       tristate "Support for foo hardware"
+> >         depends on BAR || !BAR
+>
+> ah, thanks, tristate kconfig symbols are really more interesting.
 
-for both of the above IMO the better solution is to change the prototype 
-to replace void *rx_tlv with struct hal_rx_ppdu_end_user_stats 
-*ppdu_end_user and to remove the local variable
 
-further, I think you can add const to that since the TLV is only read, 
-not written
+Both FOO and BAR MUST be tristate
+to make this documentation sensible.
 
-this better describes that the function requires a specific flavor of RX 
-TLV rather than handling any RX TLV
 
-> diff --git a/drivers/net/wireless/ath/ath12k/dp_rx.c b/drivers/net/wireless/ath/ath12k/dp_rx.c
-> index e6e64d437c47..ff5f66ca7783 100644
-> --- a/drivers/net/wireless/ath/ath12k/dp_rx.c
-> +++ b/drivers/net/wireless/ath/ath12k/dp_rx.c
-> @@ -3730,7 +3730,7 @@ int ath12k_dp_rx_process_wbm_err(struct ath12k_base *ab,
->   			continue;
->   		}
->   
-> -		desc_info = (struct ath12k_rx_desc_info *)err_info.rx_desc;
-> +		desc_info = err_info.rx_desc;
+If FOO is bool type, "depends on BAR || !BAR"
+becomes a no-op.
 
-this is ok
+As you notice, FOO and BAR become independent of
+each other.
 
->   
->   		/* retry manual desc retrieval if hw cc is not done */
->   		if (!desc_info) {
-> diff --git a/drivers/net/wireless/ath/ath12k/dp_tx.c b/drivers/net/wireless/ath/ath12k/dp_tx.c
-> index 8874c815d7fa..98ddf46b3bb9 100644
-> --- a/drivers/net/wireless/ath/ath12k/dp_tx.c
-> +++ b/drivers/net/wireless/ath/ath12k/dp_tx.c
-> @@ -109,7 +109,7 @@ static struct ath12k_tx_desc_info *ath12k_dp_tx_assign_buffer(struct ath12k_dp *
->   static void ath12k_hal_tx_cmd_ext_desc_setup(struct ath12k_base *ab, void *cmd,
 
-This function is only called from one place, and it is already passing a 
-variable that is of type struct hal_tx_msdu_ext_desc *
-so IMO a better solution is to change the prototype to replace void *cmd 
-with struct hal_tx_msdu_ext_desc *tcl_ext_desc and remove the local variable
+You may wonder why.
 
-again this better describes that the function requires a specific 
-payload rather than a generic opaque payload
+Here, another unclear rule applies:
 
-as a general rule, use void * when the payload has some level of 
-opaqueness and use a specific struct * when the payload must be of a 
-specific type
+'depends on m' for a bool option is promoted to
+'depends on y'.
 
->   					     struct hal_tx_info *ti)
->   {
-> -	struct hal_tx_msdu_ext_desc *tcl_ext_cmd = (struct hal_tx_msdu_ext_desc *)cmd;
-> +	struct hal_tx_msdu_ext_desc *tcl_ext_cmd = cmd;
->   
->   	tcl_ext_cmd->info0 = le32_encode_bits(ti->paddr,
->   					      HAL_TX_MSDU_EXT_INFO0_BUF_PTR_LO);
+https://github.com/torvalds/linux/blob/v6.5/scripts/kconfig/symbol.c#L214
 
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
