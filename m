@@ -2,202 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46FB7A0CA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36907A0CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237282AbjINSVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
+        id S241002AbjINSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237421AbjINSVO (ORCPT
+        with ESMTP id S239368AbjINSZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:21:14 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC2E1FD7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:21:10 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6befdb1f545so793198a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694715669; x=1695320469; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r14viLFdjZlr5qs/ZwW+ippwaGuAbVYT3KOmYlUCcNo=;
-        b=1xQpo/A3jQo75R+YewJ25HSdp8qW0g35s8oDj+YWfrUcPt5wpoOM5IObFNEJnEUCQ8
-         wvLsp2zSlpLcK/LyzqnpSmIA5EL46OV6OoMzcbrN+gf6HzFSyD+9NMx0Qoe3wgAKyHmD
-         PzNeqZk8jjKlkORAjBXR3Ayq9ROthsvjRZEdcvscKcVpQL30Heb3Hw+/sduBmQwbgxkl
-         AzHLHljZxKJv6YM428++vHEgldi/8nhMuWV2gnU6SfvCYr/GK0bxKlzS6/tXr6267cee
-         cC7jD7T8VG5CJV3ArwZhYgMFz35z6G5KoUI7dm3WmJOC60FSBu649Zx0o/W6sRxIxp1o
-         qcOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694715669; x=1695320469;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r14viLFdjZlr5qs/ZwW+ippwaGuAbVYT3KOmYlUCcNo=;
-        b=MVE9K4jp/vjOQ2XE+oCrNf77PC9XGRgAKc0z+aM6kOKa13qvIxuNeVC6PZ4XnQMZ1H
-         ledi8/dCXGJY6FqopaqvISwUkLgAFz0hFaPmQCjd4YTvNtv7CjcGZF0Rgo74eG+2Sp/i
-         1nG7m9T89VRPFOqcG+aHTOZEOeUYGYMdZ9zKHyocQkHIvkxGpn2yWqcKx9JzTSGEhtrv
-         LvQE4/iwKFjjGE4zXeqbMeA8lBn/QijNZnsc0ANgNei6c5Rg6I0GL0pyYA8pPxE2lpf0
-         qp89Bf5Ytle2g0+3bUcp2hv9ZFzMotx8P5i/VFqsyMaJUDOt0OPFa4+1ELJsLjNiBU6g
-         Qs7A==
-X-Gm-Message-State: AOJu0Yw5GEdaCZk0BrN/W5y31Xag5b+KIOwc4CeoKM8kbcI4efdCnbOU
-        oDMbvRY7Mi2c0MNfMxPDa29mYnKPaDfi8RObj6zHkCA+HJCwjmNYRL8LKQ==
-X-Google-Smtp-Source: AGHT+IFqR2FxLVaE4WCj9ke8MpZJew4TgvR+yFLFOCL/SSpFtMiCbSV346KAy8ngKjHeyUIg1vbMVOD9Nf72nqiJgHo=
-X-Received: by 2002:a9d:4d84:0:b0:6bf:1fed:95ce with SMTP id
- u4-20020a9d4d84000000b006bf1fed95cemr6895607otk.22.1694715669318; Thu, 14 Sep
- 2023 11:21:09 -0700 (PDT)
+        Thu, 14 Sep 2023 14:25:42 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8090D1FD7;
+        Thu, 14 Sep 2023 11:25:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3ECE31F74A;
+        Thu, 14 Sep 2023 18:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694715937;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEppc6r1PcjpW6nK40c3JixDt+9V9j2BhP6BX+ws15s=;
+        b=fphcYmr+TIz8swRi5INYpv6MQDGtRy6H046QwCH65Zklz3kRSgvpgzHJuFNFkuOaVUXMsu
+        GWm74NeWntyve5PbhluG/35zWnEVQBuPN62ZLllXVj0N5ipvTVpeQwOWc8u0whlQnlaq5p
+        GEoZgCdCdfa4ZapW9lfax0h6RTsoDkw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694715937;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEppc6r1PcjpW6nK40c3JixDt+9V9j2BhP6BX+ws15s=;
+        b=++3uf7H3w1ABt0dgcwrDx+dg4N6CS3N+dpbWMCZyXMTZ5Dy7R+iUTnmZHOYWLLDycS3+Mm
+        VrVEF6WNoXLlOFBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CE3E139DB;
+        Thu, 14 Sep 2023 18:25:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wmGLAiFQA2XWZAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 14 Sep 2023 18:25:37 +0000
+Date:   Thu, 14 Sep 2023 20:25:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 00/11] btrfs: introduce RAID stripe tree
+Message-ID: <20230914182534.GD20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
 MIME-Version: 1.0
-References: <000000000000f392a60604a65085@google.com> <ZP/3hgDCXeceE9uU@casper.infradead.org>
- <ZQB76G/6NxVgoE9u@casper.infradead.org> <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com>
- <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
- <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com> <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com>
-In-Reply-To: <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 14 Sep 2023 18:20:56 +0000
-Message-ID: <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 4:46=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Wed, Sep 13, 2023 at 4:05=E2=80=AFPM Suren Baghdasaryan <surenb@google=
-.com> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 4:00=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > >
-> > > On Tue, Sep 12, 2023 at 8:03=E2=80=AFAM Suren Baghdasaryan <surenb@go=
-ogle.com> wrote:
-> > > >
-> > > > On Tue, Sep 12, 2023 at 7:55=E2=80=AFAM Matthew Wilcox <willy@infra=
-dead.org> wrote:
-> > > > >
-> > > > > On Tue, Sep 12, 2023 at 06:30:46AM +0100, Matthew Wilcox wrote:
-> > > > > > On Tue, Sep 05, 2023 at 06:03:49PM -0700, syzbot wrote:
-> > > > > > > Hello,
-> > > > > > >
-> > > > > > > syzbot found the following issue on:
-> > > > > > >
-> > > > > > > HEAD commit:    a47fc304d2b6 Add linux-next specific files fo=
-r 20230831
-> > > > > > > git tree:       linux-next
-> > > > > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1=
-6502ddba80000
-> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6=
-ecd2a74f20953b9
-> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Db59=
-1856e0f0139f83023
-> > > > > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Bi=
-nutils for Debian) 2.40
-> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=
-=3D120e7d70680000
-> > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1=
-523f9c0680000
-> > > > > > >
-> > > > > > > Downloadable assets:
-> > > > > > > disk image: https://storage.googleapis.com/syzbot-assets/b2e8=
-f4217527/disk-a47fc304.raw.xz
-> > > > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/ed6cdcc=
-09339/vmlinux-a47fc304.xz
-> > > > > > > kernel image: https://storage.googleapis.com/syzbot-assets/bd=
-9b2475bf5a/bzImage-a47fc304.xz
-> > > > > > >
-> > > > > > > IMPORTANT: if you fix the issue, please add the following tag=
- to the commit:
-> > > > > > > Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmai=
-l.com
-> > > > > >
-> > > > > > #syz test
-> > > > > >
-> > > > > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > > > > > index 42b5567e3773..90ad5fe60824 100644
-> > > > > > --- a/mm/mempolicy.c
-> > > > > > +++ b/mm/mempolicy.c
-> > > > > > @@ -1342,6 +1342,7 @@ static long do_mbind(unsigned long start,=
- unsigned long len,
-> > > > > >       vma_iter_init(&vmi, mm, start);
-> > > > > >       prev =3D vma_prev(&vmi);
-> > > > > >       for_each_vma_range(vmi, vma, end) {
-> > > > > > +             vma_start_write(vma);
-> > > > > >               err =3D mbind_range(&vmi, vma, &prev, start, end,=
- new);
-> > > > > >               if (err)
-> > > > > >                       break;
-> > > > >
-> > > > > Suren, can you take a look at this?  The VMA should be locked by =
-the
-> > > > > call to queue_pages_range(), but by the time we get to here, the =
-VMA
-> > > > > isn't locked.  I don't see anywhere that we cycle the mmap_lock (=
-which
-> > > > > would unlock the VMA), but I could have missed something.  The tw=
-o
-> > > > > VMA walks should walk over the same set of VMAs.  Certainly the V=
-MA
-> > > > > being dumped should have been locked by the pagewalk:
-> > >
-> > > Yeah, this looks strange. queue_pages_range() should have locked all
-> > > the vmas and the tree can't change since we are holding mmap_lock for
-> > > write. I'll try to reproduce later today and see what's going on.
-> >
-> > So far I was unable to reproduce the issue. I tried with Linus' ToT
-> > using the attached config. linux-next ToT does not boot with this
-> > config but defconfig boots and fails to reproduce the issue. I'll try
-> > to figure out why current linux-next does not like this config.
->
-> Ok, I found a way to reproduce this using the config and kernel
-> baseline reported on 2023/09/06 06:24 at
-> https://syzkaller.appspot.com/bug?extid=3Db591856e0f0139f83023. I
-> suspect mmap_lock is being dropped by a racing thread, similar to this
-> issue we fixed before here:
-> https://lore.kernel.org/all/CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=3DuD+BK6-oYX=
-=3DysQv5qQ@mail.gmail.com/
-> Anyway, I'm on it and will report once I figure out the issue.
+On Thu, Sep 14, 2023 at 09:06:55AM -0700, Johannes Thumshirn wrote:
+> Updates of the raid-stripe-tree are done at ordered extent write time to safe
+> on bandwidth while for reading we do the stripe-tree lookup on bio mapping
+> time, i.e. when the logical to physical translation happens for regular btrfs
+> RAID as well.
+> 
+> The stripe tree is keyed by an extent's disk_bytenr and disk_num_bytes and
+> it's contents are the respective physical device id and position.
+> 
+> For an example 1M write (split into 126K segments due to zone-append)
+> rapido2:/home/johannes/src/fstests# xfs_io -fdc "pwrite -b 1M 0 1M" -c fsync /mnt/test/test
+> wrote 1048576/1048576 bytes at offset 0
+> 1 MiB, 1 ops; 0.0065 sec (151.538 MiB/sec and 151.5381 ops/sec)
+> 
+> The tree will look as follows (both 128k buffered writes to a ZNS drive):
+> 
+> RAID0 case:
+> bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+> btrfs-progs v6.3
+> raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+> leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+> leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+> checksum stored 2d2d2262
+> checksum calced 2d2d2262
+> fs uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+> chunk uuid c9470ba2-49ac-4d46-8856-438a18e6bd23
+>         item 0 key (1073741824 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+>                         encoding: RAID0
+>                         stripe 0 devid 1 offset 805306368 length 131072
+>                         stripe 1 devid 2 offset 536870912 length 131072
+> total bytes 42949672960
+> bytes used 294912
+> uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+> 
+> RAID1 case:
+> bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+> btrfs-progs v6.3
+> raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+> leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+> leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+> checksum stored 56199539
+> checksum calced 56199539
+> fs uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+> chunk uuid 691874fc-1b9c-469b-bd7f-05e0e6ba88c4
+>         item 0 key (939524096 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 56
+>                         encoding: RAID1
+>                         stripe 0 devid 1 offset 939524096 length 65536
+>                         stripe 1 devid 2 offset 536870912 length 65536
+> total bytes 42949672960
+> bytes used 294912
+> uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+> 
+> A design document can be found here:
+> https://docs.google.com/document/d/1Iui_jMidCd4MVBNSSLXRfO7p5KmvnoQL/edit?usp=sharing&ouid=103609947580185458266&rtpof=true&sd=true
 
-I think I found the problem and the explanation is much simpler. While
-walking the page range, queue_folios_pte_range() encounters an
-unmovable page and queue_folios_pte_range() returns 1. That causes a
-break from the loop inside walk_page_range() and no more VMAs get
-locked. After that the loop calling mbind_range() walks over all VMAs,
-even the ones which were skipped by queue_folios_pte_range() and that
-causes this BUG assertion.
+Please also turn it to developer documentation file (in
+btrfs-progs/Documentation/dev), it can follow the same structure.
 
-Thinking what's the right way to handle this situation (what's the
-expected behavior here)...
-I think the safest way would be to modify walk_page_range() and make
-it continue calling process_vma_walk_lock() for all VMAs in the range
-even when __walk_page_range() returns a positive err. Any objection or
-alternative suggestions?
+> 
+> The user-space part of this series can be found here:
+> https://lore.kernel.org/linux-btrfs/20230215143109.2721722-1-johannes.thumshirn@wdc.com
+> 
+> Changes to v8:
+> - Changed tracepoints according to David's comments
+> - Mark on-disk structures as packed
+> - Got rid of __DECLARE_FLEX_ARRAY
+> - Rebase onto misc-next
+> - Split out helpers for new btrfs_load_block_group_zone_info RAID cases
+> - Constify declarations where possible
+> - Initialise variables before use
+> - Lower scope of variables
+> - Remove btrfs_stripe_root() helper
+> - Pick different BTRFS_RAID_STRIPE_KEY constant
+> - Reorder on-disk encoding types to match the raid_index
+> - And possibly more, please git range-diff the versions
+> - Link to v8: https://lore.kernel.org/r/20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com
 
-
->
-> >
-> > >
-> > > >
-> > > > Sure, I'll look into this today. Somehow this report slipped by me
-> > > > unnoticed. Thanks!
-> > > >
-> > > > >
-> > > > >  vma ffff888077381a00 start 0000000020c2a000 end 0000000021000000=
- mm ffff8880258a8980
-> > > > >  prot 25 anon_vma 0000000000000000 vm_ops 0000000000000000
-> > > > >  pgoff 20c2a file 0000000000000000 private_data 0000000000000000
-> > > > >  flags: 0x8100077(read|write|exec|mayread|maywrite|mayexec|accoun=
-t|softdirty)
-> > > > >
-> > > > >   syscall(__NR_mbind, /*addr=3D*/0x20400000ul, /*len=3D*/0xc00000=
-ul, /*mode=3D*/4ul,
-> > > > >           /*nodemask=3D*/0ul, /*maxnode=3D*/0ul, /*flags=3D*/3ul)=
-;
-> > > > >
-> > > > > 20400000 + c00000 should overlap 20c2a000-21000000
+v9 will be added as topic branch to for-next, I did several style
+changes so please send any updates as incrementals if needed.
