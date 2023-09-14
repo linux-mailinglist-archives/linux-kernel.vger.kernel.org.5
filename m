@@ -2,199 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DD17A0236
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA82C7A023B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbjINLPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S233222AbjINLQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINLPu (ORCPT
+        with ESMTP id S232883AbjINLQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:15:50 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA941FC9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:15:46 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703a0453fso12973751fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:15:45 -0700 (PDT)
+        Thu, 14 Sep 2023 07:16:08 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FB31FD6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:16:03 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-500c37d479aso1370715e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694690144; x=1695294944; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gzE1xt1UAc3po3dWiOSU5lTtw+EXYGxz3mz1wJE3HBQ=;
-        b=OqcT+919fW9qJI5PbffBEAxN/r27PT+8+mUqybL+hgR41opi+eURCmBRd875WNWYau
-         SBnjoRGhsBpBM27I2ibiWrgHo/qViVpCorAOqDbC2rcLDyzBm8JT+kNfKw1fJ/KJ2g0x
-         9/MUOO8Ieb6j2zI96/1RCbWIwpkn3Jixt2o4/xSclvIg45HaiqnckHcUl+6Knoz2f4E0
-         4DEM2HcJYQkb/8GBrNp/NY/U3mXP7ICsih+kn0era65jlsFu+ica1qZ6AQZ3EruNhZ9h
-         sZ4yXTJCMiRdwj7hcdcIl9LT/kJYK6EITL8AyKvQj75z9YN6hTv20b3uIsXtrN8pqzVQ
-         PuMQ==
+        d=linaro.org; s=google; t=1694690161; x=1695294961; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NwwwwfCX71CGPY+4m/B/8JB1FGVXzFuLpjf50GP33WM=;
+        b=mrUrG3F5waGhxnAVEni2chuXNhbBacCWpm1UWN9GnGnGIyjKEIl9AMhz3vaVIYfqAU
+         52UAQCtuRDCrY27EghvtvGI7DKS72gloiMmBMm7hM9s+Jos4TLPaIWS58eFxEpcu6D3e
+         NPN98y71v6LNGg7L2YVGtg6aQvFswLdsbsiJIyd+i/pHklzD+03pCjJ2bh4sXC8b/URT
+         zL/v74Bi4RrsIqzhhJjn/asE9gPXKZlQzSH3DVoBrcObsPNsbL4VGHKhAoZalyyv/w70
+         NcZZv/M90AXS7pxXdRSJ03YU0lpG0jmgxSh8oXAgMQd090wXs8YBf3WWkP6G1uabZJ3a
+         m+ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694690144; x=1695294944;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gzE1xt1UAc3po3dWiOSU5lTtw+EXYGxz3mz1wJE3HBQ=;
-        b=nVde7mG0wu5wn2/uKqCC6GRbJjYG1QE9zpsu5XCcOGersdivuQelHKqlInMjcF1dIs
-         S9o779umlJ8B/gZPQjEaEvujdDvegzyBx74kL/5jnZxH+hnn7Z/nsgu4ZeDUClhWlyBB
-         YQbZAF7Oi86lBGiOMAWtOxKEkRiFP9PC3n8NiHxqkuFKE96Ijv5ICHlSTaqVGPyWX5mj
-         2+3+ewaFv7EsU+ykJ4OyewRSGXtEhAnaoDU8MoqZe/4SMnzpZQ76WSGFVXzess6jnKfC
-         oA6JWoMhw/fE4Kl7DOrTcijgqaWFtO8ncchW+xxrel7zjzYeL1D9HVhKoyVQ4SSfEBNs
-         SFRQ==
-X-Gm-Message-State: AOJu0YwsefgEZInI/riHz/TJPzfUavbXWY8pTjJnEnR3Glmgs1GVLATP
-        LdcI8xkURK9mTrQMZuud44TKnA==
-X-Google-Smtp-Source: AGHT+IFrBiYjOlea2kd9kb+iMjELbn9Wk4OW2mFSrduXUIuoK1ikB3rZCDxxmDHUihe0dYvLiIO/Mg==
-X-Received: by 2002:a05:6512:3115:b0:500:b5db:990c with SMTP id n21-20020a056512311500b00500b5db990cmr3752849lfb.57.1694690144110;
-        Thu, 14 Sep 2023 04:15:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694690161; x=1695294961;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NwwwwfCX71CGPY+4m/B/8JB1FGVXzFuLpjf50GP33WM=;
+        b=Ga/aC9Moe4AqpVedKWJRxaHM1VAp87zcetxNhxDD6uczyF/ahf4Av9JW534SQ8lFNq
+         CvInrU/ZNBVXvwrL13CLyAfe+FxaxK0i++SS6eIrDHXAbU8RGF9mDURLVB10Y+wEw0Nz
+         vNzRXDMOIFiDsGWHBhKI1aEHhUhN91/3XtcNpUddBV1ZbIfJAAafvRpP2Xw6cR0ScUMB
+         KUtG+xmOH5kR20PJ55WOS0Un9VyBg9BMRZc2pZjGzfBMqpjYsS11nwpMsjI4UhDAIeui
+         Oq37UfOpeq21iSqAkifuvWQeOblKoabG6C0a/AIAxhsTCu9Q2ipoPzTixRhjPpjZpz0p
+         S6lA==
+X-Gm-Message-State: AOJu0YxfeSDrFwAubGCa9wHyL263E//oP24mzPFGXNWP3dDFG3Y03nNN
+        FBU1T9neY8fe8mUOTZJwqdtK3n2ZSIgnayRfRDhICw==
+X-Google-Smtp-Source: AGHT+IGNDq1+kGv5ZTcP0wVAqFgUnsmaefZprk/wPO9nW3ABND+2s7KXW5rp8cCLBWwqxo4DDvNGnA==
+X-Received: by 2002:a05:6512:20cc:b0:500:75e5:a2f0 with SMTP id u12-20020a05651220cc00b0050075e5a2f0mr3775138lfr.51.1694690160982;
+        Thu, 14 Sep 2023 04:16:00 -0700 (PDT)
 Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id y26-20020ac2447a000000b005009d9c6bf0sm234605lfl.207.2023.09.14.04.15.42
+        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b00500ba43a43asm236197lfm.86.2023.09.14.04.16.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 04:15:43 -0700 (PDT)
+        Thu, 14 Sep 2023 04:16:00 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andreas Farber <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 00/17] pmdomain: Move Kconfig options/files to the pmdomain subsystem
-Date:   Thu, 14 Sep 2023 13:15:26 +0200
-Message-Id: <20230914111526.586400-1-ulf.hansson@linaro.org>
+Subject: [PATCH 01/17] pmdomain: Prepare to move Kconfig files into the pmdomain subsystem
+Date:   Thu, 14 Sep 2023 13:15:54 +0200
+Message-Id: <20230914111554.586438-1-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <pmdomain_move_kconfig/0002-pmdomain-actions-Move-Kconfig-file-to-the-pmdomain-s.patch>
+References: <pmdomain_move_kconfig/0002-pmdomain-actions-Move-Kconfig-file-to-the-pmdomain-s.patch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently we added a new subsystem to host pmdomain (genpd) providers and moved
-a bunch of code for them in there. However, their corresponding Kconfig
-options/files was not moved in that first step, but instead that is taken care
-of in this series. Ideally it should be easier to keep Kconfig options closer
-to their corresponding implementations.
+Rather than having the various Kconfig files for the genpd providers
+sprinkled across subsystems, let's prepare to move them into the pmdomain
+subsystem along with the implementations.
 
-Note that, I am planning to queue this up via my pmdomain tree [1] as soon as I
-have received enough of reviewed/acked-by tags from soc maintainers. If you
-have reasons to belive that this can be problem, due to conflicts etc, please
-let me know so we can figure out a way forward.
-
-Kind regards
-Uffe
-
-[1]
-git git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git next
-
-Ulf Hansson (17):
-  pmdomain: Prepare to move Kconfig files into the pmdomain subsystem
-  pmdomain: actions: Move Kconfig file to the pmdomain subsystem
-  pmdomain: amlogic: Move Kconfig options to the pmdomain subsystem
-  pmdomain: apple: Move Kconfig option to the pmdomain subsystem
-  pmdomain: bcm: Move Kconfig options to the pmdomain subsystem
-  pmdomain: imx: Move Kconfig options to the pmdomain subsystem
-  pmdomain: mediatek: Move Kconfig options to the pmdomain subsystem
-  pmdomain: qcom: Move Kconfig options to the pmdomain subsystem
-  pmdomain: renesas: Move Kconfig options to the pmdomain subsystem
-  pmdomain: rockchip: Move Kconfig option to the pmdomain subsystem
-  pmdomain: samsung: Move Kconfig option to the pmdomain subsystem
-  pmdomain: st: Add a Kconfig option for the ux500 power domain
-  pmdomain: starfive: Move Kconfig file to the pmdomain subsystem
-  pmdomain: sunxi: Move Kconfig option to the pmdomain subsystem
-  pmdomain: tegra: Move Kconfig option to the pmdomain subsystem
-  pmdomain: ti: Move and add Kconfig options to the pmdomain subsystem
-  pmdomain: xilinx: Move Kconfig option to the pmdomain subsystem
-
- MAINTAINERS                                |   4 +-
- drivers/Kconfig                            |   2 +
- drivers/firmware/imx/Kconfig               |   6 --
- drivers/pmdomain/Kconfig                   |  21 ++++
- drivers/{soc => pmdomain}/actions/Kconfig  |   0
- drivers/pmdomain/amlogic/Kconfig           |  39 ++++++++
- drivers/pmdomain/apple/Kconfig             |  18 ++++
- drivers/pmdomain/bcm/Kconfig               |  46 +++++++++
- drivers/pmdomain/imx/Kconfig               |  29 ++++++
- drivers/pmdomain/mediatek/Kconfig          |  29 ++++++
- drivers/pmdomain/qcom/Kconfig              |  41 ++++++++
- drivers/pmdomain/renesas/Kconfig           | 109 +++++++++++++++++++++
- drivers/pmdomain/rockchip/Kconfig          |  16 +++
- drivers/pmdomain/samsung/Kconfig           |   8 ++
- drivers/pmdomain/st/Kconfig                |   5 +
- drivers/pmdomain/st/Makefile               |   2 +-
- drivers/{soc => pmdomain}/starfive/Kconfig |   0
- drivers/pmdomain/sunxi/Kconfig             |  10 ++
- drivers/pmdomain/tegra/Kconfig             |   6 ++
- drivers/pmdomain/ti/Kconfig                |  22 +++++
- drivers/pmdomain/ti/Makefile               |   2 +-
- drivers/pmdomain/xilinx/Kconfig            |  10 ++
- drivers/soc/Kconfig                        |   2 -
- drivers/soc/amlogic/Kconfig                |  35 -------
- drivers/soc/apple/Kconfig                  |  13 ---
- drivers/soc/bcm/Kconfig                    |  42 --------
- drivers/soc/imx/Kconfig                    |  19 ----
- drivers/soc/mediatek/Kconfig               |  23 -----
- drivers/soc/qcom/Kconfig                   |  37 -------
- drivers/soc/renesas/Kconfig                | 105 --------------------
- drivers/soc/rockchip/Kconfig               |  12 ---
- drivers/soc/samsung/Kconfig                |   4 -
- drivers/soc/sunxi/Kconfig                  |   9 --
- drivers/soc/tegra/Kconfig                  |   5 -
- drivers/soc/ti/Kconfig                     |  12 ---
- drivers/soc/xilinx/Kconfig                 |   9 --
- 36 files changed, 415 insertions(+), 337 deletions(-)
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/Kconfig          | 2 ++
+ drivers/pmdomain/Kconfig | 4 ++++
+ 2 files changed, 6 insertions(+)
  create mode 100644 drivers/pmdomain/Kconfig
- rename drivers/{soc => pmdomain}/actions/Kconfig (100%)
- create mode 100644 drivers/pmdomain/amlogic/Kconfig
- create mode 100644 drivers/pmdomain/apple/Kconfig
- create mode 100644 drivers/pmdomain/bcm/Kconfig
- create mode 100644 drivers/pmdomain/imx/Kconfig
- create mode 100644 drivers/pmdomain/mediatek/Kconfig
- create mode 100644 drivers/pmdomain/qcom/Kconfig
- create mode 100644 drivers/pmdomain/renesas/Kconfig
- create mode 100644 drivers/pmdomain/rockchip/Kconfig
- create mode 100644 drivers/pmdomain/samsung/Kconfig
- create mode 100644 drivers/pmdomain/st/Kconfig
- rename drivers/{soc => pmdomain}/starfive/Kconfig (100%)
- create mode 100644 drivers/pmdomain/sunxi/Kconfig
- create mode 100644 drivers/pmdomain/tegra/Kconfig
- create mode 100644 drivers/pmdomain/ti/Kconfig
- create mode 100644 drivers/pmdomain/xilinx/Kconfig
 
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index efb66e25fa2d..045c469cb438 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -175,6 +175,8 @@ source "drivers/soundwire/Kconfig"
+ 
+ source "drivers/soc/Kconfig"
+ 
++source "drivers/genpd/Kconfig"
++
+ source "drivers/devfreq/Kconfig"
+ 
+ source "drivers/extcon/Kconfig"
+diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
+new file mode 100644
+index 000000000000..c32a76b51840
+--- /dev/null
++++ b/drivers/pmdomain/Kconfig
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menu "Power Domains Support"
++
++endmenu
 -- 
 2.34.1
 
