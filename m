@@ -2,101 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A57547A02B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8B37A02B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjINLcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        id S237616AbjINLeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjINLcx (ORCPT
+        with ESMTP id S235307AbjINLeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:32:53 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7311E1BE8;
-        Thu, 14 Sep 2023 04:32:49 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so12003011fa.2;
-        Thu, 14 Sep 2023 04:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694691167; x=1695295967; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LtP+ORG51cOnQgAyG8Q8L/PuvqcAZFq5aTIYWfYMZs4=;
-        b=UDEqhXjW/OEqJJS2rAavgtk9cYHfatxeVCSon8uQQxxeYcfnfxEodg7nErgoqNEb4j
-         kVr2juhb/2LakczKz2VpfH3OrglkOvJUk2y+NVj457o+zaXOM2zujsuY49XLsV+hBmCn
-         +lX7+7UxjNSGTXYrH1IrsR7gzvQK5Ly9TWZBPlNmK39VqkTclMFQuBTeYv1HyuIYKEgR
-         1hn7kQ3VMNp8jy5+j3BZC2Fl9ew32xXF2Emnl1U6fcW5Of9XBk/H/6CpFUbX4YXhl3Ti
-         m8QIGxH2ozO2TV3tgiNn8MF0PGUOX/KBBs4ljYPq4/0+zbJUdEDAX1vKFD+7EYHxX7Fh
-         /mdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694691167; x=1695295967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LtP+ORG51cOnQgAyG8Q8L/PuvqcAZFq5aTIYWfYMZs4=;
-        b=nx2Y/tbCxzlmXpaEdCkN1m6W6hQ4XD9O+DLyzYSHENazJdhJPP75W9Ws3H/4+X5gfI
-         8CdnB9XBv/D9Oyfp8cTdb0Xx1MBtHiKfqvzmDvrnFXqk/lzQmPjSZeH3209BiYYRSjZa
-         8DVXs2R3NffDL8PYc6KCoG1n+LOLvOIEQXvy4/kPKJROq0VsTKwFemxFaKUgbYkDYw79
-         saPOpCsH4AxEeW+Xs2SO84x/na+x8XVh95JzgJGm8sJbfUrnmGMAMucjBgFU++1XNWJY
-         pyq4qazmzjgrzeroQly/NZUaSD7xyavWHm549sI4qWMnalr9Snk/pMY7ubCyiFegxCPL
-         QaSg==
-X-Gm-Message-State: AOJu0Yy1lWfBErYZZAO6TE56BhGjPFE1RZQ/HGWs0CKmPc4D9WaQhUrI
-        ebgkJryoTMrAQeQaD8PIlgU=
-X-Google-Smtp-Source: AGHT+IFU1JI/BHPOJOArjfnzjINNAJavuJJ6VMYd9VBuQkPUCgFXcEp/9CjG0Rg8PaabYFr1/HcxFQ==
-X-Received: by 2002:a2e:350d:0:b0:2bc:ed75:1b0 with SMTP id z13-20020a2e350d000000b002bced7501b0mr4966389ljz.2.1694691167361;
-        Thu, 14 Sep 2023 04:32:47 -0700 (PDT)
-Received: from skbuf ([188.26.56.202])
-        by smtp.gmail.com with ESMTPSA id x8-20020a170906298800b0099bcb44493fsm884550eje.147.2023.09.14.04.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 04:32:47 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 14:32:44 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v5 1/2] dt-bindings: net: dsa: microchip: Update
- ksz device tree bindings for drive strength
-Message-ID: <20230914113244.ozj4swe7ck3l4dbr@skbuf>
-References: <20230914075107.2239886-1-o.rempel@pengutronix.de>
- <20230914075107.2239886-1-o.rempel@pengutronix.de>
- <20230914075107.2239886-2-o.rempel@pengutronix.de>
- <20230914075107.2239886-2-o.rempel@pengutronix.de>
+        Thu, 14 Sep 2023 07:34:21 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF811FC9;
+        Thu, 14 Sep 2023 04:34:16 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EBOZ2p011614;
+        Thu, 14 Sep 2023 11:33:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=v/rgcR0kkyQPdpyr7j0ww+hfbXTrJx0WvQpvJwPUWPI=;
+ b=Ced2txkveHOCo78dV1YmnFJi6JFO7m2vMd3GxbSoDqUK5z9ti88yGjGdh6Lp7Kr5ThST
+ 9BjFuXOQdIpQ/Y7YpoTYGCgnRFjwRyVx6olghbQYs1pOwaq4Ibei+wrnl4ftZNNgLEmg
+ j3ECyPTVE0BuqwdA792jekhXVPKx/UlFhJ8Bo23zxFqYKpdqZmW1LBgZswRkxX7O14xV
+ VGaTLRxMVksPw8Iy9SfRbmHKEqtrySckoQBdYDBKLDelMUCQ2xTlexHWhWgu7mmWnWWu
+ OccHa3fWtz3iTnGFLa134C+0VXr8m85r90KBzLBChxpoplrCSqhijqOGhHg5x6I8i5ys TQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3r15sart-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:33:33 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EBXWBD030265
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 11:33:32 GMT
+Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
+ 2023 04:33:27 -0700
+Message-ID: <8a9cc52c-9c7d-1f8f-8a98-1a816f59aa79@quicinc.com>
+Date:   Thu, 14 Sep 2023 17:03:24 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914075107.2239886-2-o.rempel@pengutronix.de>
- <20230914075107.2239886-2-o.rempel@pengutronix.de>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH 5/6] scsi: ufs: ufs-sysfs: Expose UFS power info
+To:     Can Guo <quic_cang@quicinc.com>, <mani@kernel.org>,
+        <quic_nguyenb@quicinc.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "Avri Altman" <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Arthur Simchaev" <arthur.simchaev@wdc.com>,
+        Lu Hongfei <luhongfei@vivo.com>,
+        "open list" <linux-kernel@vger.kernel.org>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-6-git-send-email-quic_cang@quicinc.com>
+Content-Language: en-US
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <1694411968-14413-6-git-send-email-quic_cang@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XIyqZAed4Z4Jm6wGSYLkz5OKfSPiDUvD
+X-Proofpoint-ORIG-GUID: XIyqZAed4Z4Jm6wGSYLkz5OKfSPiDUvD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309140098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:51:06AM +0200, Oleksij Rempel wrote:
-> Extend device tree bindings to support drive strength configuration for the
-> ksz* switches. Introduced properties:
-> - microchip,hi-drive-strength-microamp: Controls the drive strength for
->   high-speed interfaces like GMII/RGMII and more.
-> - microchip,lo-drive-strength-microamp: Governs the drive strength for
->   low-speed interfaces such as LEDs, PME_N, and others.
-> - microchip,io-drive-strength-microamp: Controls the drive strength for
->   for undocumented Pads on KSZ88xx variants.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+
+On 9/11/2023 11:29 AM, Can Guo wrote:
+> Having UFS power info available in sysfs makes it easier to tell the state
+> of the link during runtime considering we have a bounch of power saving
+> features and various combinations for backward compatiblity.
+
+Please fix spelling mistake - *bounch -> bunch
+
+
+> 
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>   drivers/ufs/core/ufs-sysfs.c | 71 ++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 71 insertions(+)
+> 
+> diff --git a/drivers/ufs/core/ufs-sysfs.c b/drivers/ufs/core/ufs-sysfs.c
+> index c959064..53af490 100644
+> --- a/drivers/ufs/core/ufs-sysfs.c
+> +++ b/drivers/ufs/core/ufs-sysfs.c
+> @@ -628,6 +628,76 @@ static const struct attribute_group ufs_sysfs_monitor_group = {
+>   	.attrs = ufs_sysfs_monitor_attrs,
+>   };
+>   
+> +static ssize_t gear_show(struct device *dev, struct device_attribute *attr,
+> +			 char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%u\n", hba->pwr_info.gear_rx);
+> +}
+> +
+> +static ssize_t lane_show(struct device *dev, struct device_attribute *attr,
+> +			 char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%u\n", hba->pwr_info.lane_rx);
+> +}
+> +
+> +static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
+> +			 char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%u\n", hba->pwr_info.pwr_rx);
+> +}
+> +
+> +static ssize_t rate_show(struct device *dev, struct device_attribute *attr,
+> +			 char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%u\n", hba->pwr_info.hs_rate);
+> +}
+> +
+> +static ssize_t dev_pm_show(struct device *dev, struct device_attribute *attr,
+> +			   char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%d\n", hba->curr_dev_pwr_mode);
+> +}
+> +
+> +static ssize_t link_state_show(struct device *dev,
+> +			       struct device_attribute *attr, char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%d\n", hba->uic_link_state);
+> +}
+> +
+> +static DEVICE_ATTR_RO(gear);
+> +static DEVICE_ATTR_RO(lane);
+> +static DEVICE_ATTR_RO(mode);
+> +static DEVICE_ATTR_RO(rate);
+> +static DEVICE_ATTR_RO(dev_pm);
+> +static DEVICE_ATTR_RO(link_state);
+> +
+> +static struct attribute *ufs_power_info_attrs[] = {
+> +	&dev_attr_gear.attr,
+> +	&dev_attr_lane.attr,
+> +	&dev_attr_mode.attr,
+> +	&dev_attr_rate.attr,
+> +	&dev_attr_dev_pm.attr,
+> +	&dev_attr_link_state.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group ufs_sysfs_power_info_group = {
+> +	.name = "power_info",
+> +	.attrs = ufs_power_info_attrs,
+> +};
+> +
+>   static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
+>   				  enum desc_idn desc_id,
+>   				  u8 desc_index,
+> @@ -1233,6 +1303,7 @@ static const struct attribute_group *ufs_sysfs_groups[] = {
+>   	&ufs_sysfs_default_group,
+>   	&ufs_sysfs_capabilities_group,
+>   	&ufs_sysfs_monitor_group,
+> +	&ufs_sysfs_power_info_group,
+>   	&ufs_sysfs_device_descriptor_group,
+>   	&ufs_sysfs_interconnect_descriptor_group,
+>   	&ufs_sysfs_geometry_descriptor_group,
+
+
+How about having one power mode attribute displaying all useful info 
+(lane, gear, mode, rate).
+
+Regards,
+Nitin Rawat
