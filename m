@@ -2,116 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA7B7A0EEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2315B7A0EF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjINU1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S229687AbjINU2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjINU1T (ORCPT
+        with ESMTP id S229473AbjINU2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:27:19 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D8A26B2;
-        Thu, 14 Sep 2023 13:27:15 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EKFtA6000787;
-        Thu, 14 Sep 2023 20:27:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=spiH3gFH19/jm7I7++wwwkP9fPV76kgclzFFFCYsQDE=;
- b=jsPwM167QYqmHfbMdY1iB3rysmBZ66EGCRyCo75Fs/Akm1oLnc6PaAb1/1rqsUyGkuoN
- x5PnmZFfmBU9HfOR7cwNC2pU86OtO4Ov0Magd50J+lioJhr4OMj/bx3tNVMTzXcMStO/
- 0izSyPWjH0EHVp/6qOdVw6SDuTX2/iwkHXIl3U3w2M2Cq2R8wRXoAgpMi5XvQvsEgcGj
- FxUGOESFlAyUsvcRiP+wpfO+mUo3TmjVaArufMoUGs67bVDG10mNo1Vgdlb+8ucCGmL8
- OhccPgK7PTLkR9t/lvePeMgHuC9Qjjm9n79tPhfN8bA4y7zVzkdYo8MOOKorkZMf0kDP AQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t3v4gabh6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 20:27:02 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38EKR1qQ000788
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 20:27:01 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 14 Sep
- 2023 13:27:00 -0700
-Message-ID: <2d49a4a2-01f0-1625-0cbf-d414499e47ca@quicinc.com>
-Date:   Thu, 14 Sep 2023 13:27:00 -0700
+        Thu, 14 Sep 2023 16:28:05 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CDA26B2;
+        Thu, 14 Sep 2023 13:28:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694723278; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Dfz75ui+4qYiWbAdx/b2gB508EnOEzfr+hACrmm+M9VREKMQfUoFcN7wfp5Az8YHIJ
+    tCeiWoMi7PIwX7hR119PfMA5wRhom5Y45tgljKqjH/D528+k0oabjSReo3BDewTikRY9
+    QLHZgR5x1GLOQWGukO0kYoLDkW2wYZyGNadE6BJw+re99dX6CkaJvrD5TtsscDx8mcz4
+    pDgqkcoR1vO/V/0faCaxWsKS8pyaiq/tgqrpL1BMO4fKySqE+dBH9jRVY+CdWWTe4m19
+    qOMZ+4B4BQDsB7ezy5UHwgdy+f2QfaDLcXgayDvcYM/rLohL0DxRUmtO35PTbEX+CPVr
+    J3rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723278;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
+    b=L6EnQonLTsNEcoS7C3U6vLTuSefAyMMZXATv4Y/OtQjmZYbHE1cMyhT6xCrLuIv0Ta
+    5rNHfjg8uvyigkqytwuCW70hApNFo8tkASAKq3eolZNtCCO+M0AClZ10IxuqH8UblXwS
+    I6Y9jlVycITAIPOccruW6iy/h7uBvTCMXvjhljQF+2Lrbfv13+ukBRUly7AgqL06rfwV
+    5iCDbhgZpiiroQLoqK9lcW6ZQ14Z8sMe9CTzUFQz8sAi3q8jtFVkNNK4m31iv/BMwvbC
+    WuzU6mIEwayZCF0G6SiV7QdtwbmGHplephZE4dZucxHyfRGGR8wCeVBvUsp5Ft+EZXc5
+    vAxQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723278;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
+    b=m9+VWFRUhpH3FY8mIhtKKeqhRdMkMbh8U2d2Nq2oUSjQf7FS1E+ud+BejLtLOKIhdI
+    yhIdkfHkdWtIL86S/arUdx7v6K73aiy/dRcdJWC+F1LO6/j6dc9Ph19rI/E4E9jWSINW
+    mwasWOr1vC+v3ZtS688VGfS3XBX2oliZl+gKJVOPj4PkloCEq7G42KCrchPbkNV4U4UP
+    34pNaJ1ewKWiPlXZc0O6DmYhr6RbRECWixT5Z4Asa2qbwpf2lK8xsUSUFezged9bCJZ9
+    pAZvb0DbSRV/8LJBnCVGL+smT9g++lWD0K+bgpdJ75xEDSW2cYjYe5wvlq+ln0jgJjpC
+    Ptgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694723278;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
+    b=WE4KU2/QrraNeA4qJwf4tPUppronPwuw3wYGF/ORaShLsr+bC9w9DC0D8AUVHbuQTf
+    AT6r6gVb7Y4gtSwp2MCg==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1QLj68UeUr1+U1BzWso7brrTnk+qJtuXDXLVLiZPxnvk6DWJlKA=="
+Received: from blinux.speedport.ip
+    by smtp.strato.de (RZmta 49.8.2 AUTH)
+    with ESMTPSA id V04024z8EKRvDZR
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 14 Sep 2023 22:27:57 +0200 (CEST)
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        beanhuo@micron.com, jakub.kwapisz@toradex.com,
+        rafael.beims@toradex.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH v2] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
+Date:   Thu, 14 Sep 2023 22:27:49 +0200
+Message-Id: <20230914202749.470100-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/8] drm/panel: nv3052c: Document known register names
-Content-Language: en-US
-To:     John Watts <contact@jookia.org>
-CC:     <dri-devel@lists.freedesktop.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-2-contact@jookia.org>
- <977a8de9-26ec-1789-4c72-fd36f34480c3@quicinc.com> <ZQKIED7jCc1FuPP1@titan>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <ZQKIED7jCc1FuPP1@titan>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: oN9uX6SQC4NWwccyzUfTryGXaPcoKS8n
-X-Proofpoint-GUID: oN9uX6SQC4NWwccyzUfTryGXaPcoKS8n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_12,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=973
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
- spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140178
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bean Huo <beanhuo@micron.com>
 
+Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
+operation be allowed only after a write has occurred. Otherwise, the
+cache flush command or subsequent commands will time out.
 
-On 9/13/2023 9:12 PM, John Watts wrote:
-> On Wed, Sep 13, 2023 at 02:43:43PM -0700, Jessica Zhang wrote:
->> Hi John,
->>
->> Just curious, what do you mean by these registers being mostly unknown?
->>
->> I do see them specified in the online specs -- some even seem to map to
->> existing MIPI_DCS_* enums (ex. 0x01 to MIPI_DCS_SOFT_RESET, and 0x04 to
->> MIPI_DCS_GET_DISPLAY_ID).
->>
->> Thanks,
->>
->> Jessica Zhang
-> 
-> Hi Jessica,
-> 
-> Unfortunately these registers are not MIPI ones, but on a separate page of
-> registers. So page 2 register 1 isn't MIPI_DCS_SOFT_RESET, that is page 0
-> register 1.
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
+Tested-by: Rafael Beims <rafael.beims@toradex.com>
+Cc: stable@vger.kernel.org
+---
+Changelog:
 
-Got it -- thanks for the explanation.
+v1--v2:
+    1. Add Rafael's test-tag, and Co-developed-by.
+    2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
 
-In that case,
+---
+ drivers/mmc/core/core.c   | 7 +++++++
+ drivers/mmc/core/mmc.c    | 5 +++++
+ drivers/mmc/core/quirks.h | 7 ++++---
+ include/linux/mmc/card.h  | 2 ++
+ 4 files changed, 18 insertions(+), 3 deletions(-)
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index 3d3e0ca52614..86a669b35b91 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -259,6 +259,13 @@ static void __mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
+ 		host->cqe_ops->cqe_off(host);
+ 
+ 	host->ops->request(host, mrq);
++
++	if (host->card && host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH &&
++	    !host->card->written_flag) {
++		if (mrq->cmd->opcode == MMC_WRITE_MULTIPLE_BLOCK ||
++		    mrq->cmd->opcode == MMC_WRITE_BLOCK)
++			host->card->written_flag = true;
++	}
+ }
+ 
+ static void mmc_mrq_pr_debug(struct mmc_host *host, struct mmc_request *mrq,
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 89cd48fcec79..a2edd065fa1b 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 	if (!oldcard)
+ 		host->card = card;
+ 
++	card->written_flag = false;
++
+ 	return 0;
+ 
+ free_card:
+@@ -2081,6 +2083,9 @@ static int _mmc_flush_cache(struct mmc_host *host)
+ {
+ 	int err = 0;
+ 
++	if (host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH && !host->card->written_flag)
++		return err;
++
+ 	if (_mmc_cache_enabled(host)) {
+ 		err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
+ 				 EXT_CSD_FLUSH_CACHE, 1,
+diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+index 32b64b564fb1..5e68c8b4cdca 100644
+--- a/drivers/mmc/core/quirks.h
++++ b/drivers/mmc/core/quirks.h
+@@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
+ 		  MMC_QUIRK_TRIM_BROKEN),
+ 
+ 	/*
+-	 * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
+-	 * support being used to offload WRITE_ZEROES.
++	 * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
++	 * WRITE_ZEROES offloading. It also supports caching, but the cache can
++	 * only be flushed after a write has occurred.
+ 	 */
+ 	MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
+-		  MMC_QUIRK_TRIM_BROKEN),
++		  MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
+ 
+ 	/*
+ 	 * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index daa2f40d9ce6..7b12eebc5586 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -295,7 +295,9 @@ struct mmc_card {
+ #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
+ #define MMC_QUIRK_BROKEN_SD_DISCARD	(1<<14)	/* Disable broken SD discard support */
+ #define MMC_QUIRK_BROKEN_SD_CACHE	(1<<15)	/* Disable broken SD cache support */
++#define MMC_QUIRK_BROKEN_CACHE_FLUSH	(1<<16)	/* Don't flush cache until the write has occurred */
+ 
++	bool			written_flag;	/* Indicates eMMC has been written since power on */
+ 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+ 
+ 	unsigned int		erase_size;	/* erase size in sectors */
+-- 
+2.34.1
 
-Thanks,
-
-Jessica Zhang
-
-> 
-> John.
