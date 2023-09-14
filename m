@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8B47A09E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742847A09EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 17:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241274AbjINP46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 11:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        id S241270AbjINP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 11:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240667AbjINP4z (ORCPT
+        with ESMTP id S240667AbjINP5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:56:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07CB1BDD;
-        Thu, 14 Sep 2023 08:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694707012; x=1726243012;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=sjnm9j0exQ8kWr8SJac5qRGJ+LAGIH1ZXOdQmtHpGXE=;
-  b=SiHmhm6foJEnFyG/rGFMMcAXA7ho6GK/GFPu+blg0EXP6KkTYVSZggLp
-   fa9psn67MexnLZ1kDmLVcGLiZ23/DF4m9T3hRlrQrj6dNLV4KNBaCGDL8
-   8Gim7MgQOQxXXeKWUKS1ZzHY1/mzIDeHBNtAraP5HhGz4B4Bzl2Xxo1B2
-   Gy5O/6Ee3wOgLWMV96Fa010ZHD4PU+n/8A99O0fFHGSo7wMLVwoYYztIa
-   weqNQhdVFTESMjK9bmavk/bw0FmVDEK8RgoUHlLd6gMqZ7K90rBaKGh/r
-   LJVcSdSYMUCMdlSbmHq40ZB0LqXZdwJV+2KPEFIVqdhDvKtFBn28ENox7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="378913726"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="378913726"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:56:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="1075437508"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="scan'208";a="1075437508"
-Received: from jnikula-mobl4.fi.intel.com (HELO localhost) ([10.237.66.162])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 08:56:45 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        Thu, 14 Sep 2023 11:57:20 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10AE1BDD;
+        Thu, 14 Sep 2023 08:57:16 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 25FD75C0794;
+        Thu, 14 Sep 2023 11:57:16 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 14 Sep 2023 11:57:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694707036; x=1694793436; bh=D1
+        Dh6oQfyKo2m4In2UHMqMu6/cg0jek1Ga5qSZ41amY=; b=DO1KxuA4yLhkDnUhZc
+        oF9OHCmT2d2aBxzyJPfSKuWWUj1zD0X5ZSPbRY9cHzaXtA13Cdz1tFR7/QuqfFtr
+        V1/ARdbuDHWfsIwkEuv3nxL5xFoMJd4WEKQZhiqZFfctQaZXpGuYz5yKoCn4sYJn
+        BOBvLXxrVNceKQWyndYn9LaoVMbAa9AYpXVDg8ct/KaRh+R+tadNLGDzwcAOBZI6
+        IscHgtIwgugCAaBgc2wn1w8s3wgNmWU/Y4UmnL23zAZhK2RYE8t30k0V+nxB7c1h
+        ye6X7rKxxd7FUQHKCYfID+eyZN+5LYlZAXyMxv1qr/ikSR+otgYcfMTXd9f2UnBZ
+        q8bA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1694707036; x=1694793436; bh=D1Dh6oQfyKo2m
+        4In2UHMqMu6/cg0jek1Ga5qSZ41amY=; b=NC35CZ5wO9IDwGD/4Zih/FLMTGX6J
+        NtVFGFImU4agnQuH2UXmtD82OBUpHTS35WdXov2Dj9mDPjhMGtUYrzhDnaaILo3H
+        JyrTrIL4CRZ8YUZR0QrxDqNidKRCheRMOhhyKJT+JMPX4F26+IKoOn5o+FEWm3bJ
+        AH7rWvE/GEAJN8rez6wjH5UJLRG+y2MmfOCr6Wt9QqED9rHMDtzbsiDynuStIE+R
+        40bYsxVfIGgrGhAYKYjF02tp0NdFOhR5p3DwvcAgF6ITgE+jSY6EZTyjoz4cwSe1
+        sk76Hi4yfFHqzmx4JT99EH/5bi4pw8J4hPOXmfuv8Jlv2Ba9hP16Xicow==
+X-ME-Sender: <xms:Wy0DZQp89EVJx81r_dhkzejH2uIBct3lYp8KycGFdEzjlxEjsk96Lw>
+    <xme:Wy0DZWrot73VY9VpbloKV3AlkRXN1-36rPvmaw7tFUCBZeFd7mNdm184-f3CTLAwF
+    syJczCV4DbdhHe2SP8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejtddgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Wy0DZVOJNSds_ig4NZ_Ly-kgR4WmRoioq7KUAK7IOLt3xH74DpR8Jw>
+    <xmx:Wy0DZX52k6IHu6bOC-papL0Tbqrt1egKUTU9mPfQzhHUVACHboKt0g>
+    <xmx:Wy0DZf5rqnElCJxBXSLZ4It4BOD6dzo6_-eKcJLafBUt6xkiIMr4CA>
+    <xmx:XC0DZS0o_QqtHB2HNaEOwC4psmyEjlQ_xAmaf5oSDSZl3fV2lUUivg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2D2FBB60089; Thu, 14 Sep 2023 11:57:15 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <73cdb822-4819-4621-bbd0-de60392552b5@app.fastmail.com>
+In-Reply-To: <70e9fe45ca8bbe2dec5541a0c21bee3de8f82f91.camel@physik.fu-berlin.de>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+ <20230802184849.1019466-4-arnd@kernel.org>
+ <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+ <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+ <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+ <190041c8-2d99-4bc3-adc3-6fbe902c1265@app.fastmail.com>
+ <70e9fe45ca8bbe2dec5541a0c21bee3de8f82f91.camel@physik.fu-berlin.de>
+Date:   Thu, 14 Sep 2023 17:56:54 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>, linux-sh@vger.kernel.org,
+        "Rich Felker" <dalias@libc.org>,
+        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: kbuild: explain handling optional
- dependencies
-In-Reply-To: <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230913113801.1901152-1-arnd@kernel.org>
- <874jjwx44g.fsf@intel.com>
- <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
-Date:   Thu, 14 Sep 2023 18:56:42 +0300
-Message-ID: <87v8ccvjd1.fsf@intel.com>
-MIME-Version: 1.0
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023, "Arnd Bergmann" <arnd@arndb.de> wrote:
-> On Thu, Sep 14, 2023, at 15:42, Jani Nikula wrote:
->> On Wed, 13 Sep 2023, Arnd Bergmann <arnd@kernel.org> wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>  
->>> +Optional dependencies
->>> +~~~~~~~~~~~~~~~~~~~~~
->>> +
->>> +Some drivers are able to optionally use a feature from another module
->>> +or build cleanly with that module disabled, but cause a link failure
->>> +when trying to use that loadable module from a built-in driver.
->>> +
->>> +The most common way to express this optional dependency in Kconfig logic
->>> +uses the slighly counterintuitive
->>> +
->>> +  config FOO
->>> +	bool "Support for foo hardware"
->>> +	depends on BAR || !BAR
->>
->> 	depends on BAR || BAR=n
->>
->> seems to be an alternative that's about as common:
->>
->> $ git grep "depends on \([A-Z0-9_]\+\) || \!\1" | wc -l
->> 109
->> $ git grep "depends on \([A-Z0-9_]\+\) || \1=n" | wc -l
->> 107
->>
->> Maybe worth mentioning both?
+On Thu, Sep 14, 2023, at 08:23, John Paul Adrian Glaubitz wrote:
+
+> On Wed, 2023-09-13 at 16:30 +0200, Arnd Bergmann wrote:
+>> > In the meantime, there is a v2, which I wasn't aware of when I wrote
+>> > my previous email, so perhaps my comment is no longer valid.
+>> > "[RFC PATCH v2 00/30] Device Tree support for SH7751 based board"
+>> > https://lore.kernel.org/linux-sh/cover.1694596125.git.ysato@users.sourceforge.jp
+>> 
+>> Right, it looks like the GENERIC_IOMAP part if gone from that
+>> series, and I also see that the PCI host bridge does not actually
+>> map the port I/O window. That's usually fine because very few
+>> drivers actually need it, and it also means that there should be
+>> no need for GENERIC_IOMAP or the simpler alternative.
+>> 
+>> The first version probably only did it accidentally, which is a
+>> common mistake, and I think the ones for hexagon, m68k, and
+>> mips can probably be removed as well with some simplifiations.
+>> 
+>> x86 and ia64 want GENERIC_IOMAP because they require using
+>> custom instructions for accessing IORESOURCE_IO registers,
+>> but it's not really generic.
 >
-> I fear that would add more confusion than it avoids:
-> "!BAR" is actually different from "BAR=n", but
+> Would you suggest to apply your series before or after Yoshinori's series to
+> convert arch/sh to device trees? If you want it to go in before the conversion,
+> could you rebase your series against v6.6-rc1?
+>
+> I'm asking because the current version did not apply against v6.5-rc2.
 
-*head explodes*
+I've rebased and resent the series now, with no other changes
+added in. I expect that you can apply it in either order now
+if the other series no longer relies on GENERIC_IOMAP.
 
-> "BAR || !BAR" is the same as "BAR || BAR=n" here, and
-> trying to explain this in the documentation would either
-> make it incorrect or unhelpfully complicated.
-
-Fair enough.
-
-
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel
+    Arnd
