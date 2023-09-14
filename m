@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1207A0CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406037A0CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241552AbjINSiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S241613AbjINSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbjINSiq (ORCPT
+        with ESMTP id S237683AbjINSiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7501FEB;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1341FFB;
         Thu, 14 Sep 2023 11:38:41 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716719;
+        s=2020; t=1694716720;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OtT3qcU2XT7sBWbeVRoS4eXwomdEnzl8JI54HpXjFPk=;
-        b=16oMLXh+x41buwFBxm6MjmScUALYnbHnctuSlnCJImDb+hw6IInt0wo8Oz7A7El5VEtrzZ
-        ehgyfKluVVW+QLIaiBAOsZTImLOShBkB8G9EBqB7JcGNn5k48TwECuTG4UlOTZH5MSdwHs
-        hxvPohSSTULpW9tg9xJiFxOd0ZreLZGAH4KwMbCe9li0OELjCwmLocizmQc3bfTBXr768z
-        NUkJytLfCrs+3V3XppweqwkkFWHFWXYIwVuw54Qr2Bn/SXld+NLkJHqZYJiI4IvtWPfEKz
-        G8bmjzQrKvBcdEOeUtWsqI2QUQyyEqkFgml+Ze2Au7tqNhW1+CyrEjoNdPbf0w==
+        bh=rtv2ooAyzSE0YQWAS7XlGsZho6T7ZcwOVdsZs7LIu1E=;
+        b=g+dINB6iW64ACyGaujJ1o1fmjmZZbggm+6IGvHEYyUBn1NzpRPs7TAlZjj6IsoY1R6uRqA
+        l02QK0APIRRJEGEHzLmuA3KNxtug5g+ZiMeicDYNS16St1i3YebOJpD8Th+Ih0YDcly03Y
+        88NV2gWch783aKq55g9nJrpFBkOUi+kX5aDhtwbssvlMaTyqZEhO4g9OM0wPPxDm3k2Dd1
+        WLbM9DkVbWc/Pmo0rWfMA0lismVw25oXL6aNdf3ZGpKv2Oq7ytfCJtWuGu+AbLDTWO10uR
+        b0MdDi4MZRShdMearsckOqhJOJsQAj23J0JWA6Mgza8OCdfmiqjky48X7C7X3g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716719;
+        s=2020e; t=1694716720;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OtT3qcU2XT7sBWbeVRoS4eXwomdEnzl8JI54HpXjFPk=;
-        b=z6TexzG/00l02Fbtx0bPhdCI79PStLL0Fhn/0+ixK+c/BftQZOZ2PcUkUHXgDPVF8zvEno
-        3ft3BN8P50LrL+BQ==
+        bh=rtv2ooAyzSE0YQWAS7XlGsZho6T7ZcwOVdsZs7LIu1E=;
+        b=PhIqp92kh8QdxyU/WhDvrm3+buau2QJZp8tIjUyzIecq6jH+ypbOUQF51L77DTojwzBhYS
+        2sI3D1mGczaDbsBw==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH tty v1 02/74] serial: core: Use lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:19 +0206
-Message-Id: <20230914183831.587273-3-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH tty v1 03/74] serial: 21285: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:20 +0206
+Message-Id: <20230914183831.587273-4-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -81,62 +82,48 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/serial_core.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/tty/serial/21285.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index f1d5c0d1568c..3091c62ec37b 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -1035,14 +1035,14 @@ static inline void uart_unlock_and_check_sysrq(struct uart_port *port)
- 	u8 sysrq_ch;
+diff --git a/drivers/tty/serial/21285.c b/drivers/tty/serial/21285.c
+index d756fcc884cb..4de0c975ebdc 100644
+--- a/drivers/tty/serial/21285.c
++++ b/drivers/tty/serial/21285.c
+@@ -185,14 +185,14 @@ static void serial21285_break_ctl(struct uart_port *port, int break_state)
+ 	unsigned long flags;
+ 	unsigned int h_lcr;
  
- 	if (!port->has_sysrq) {
--		spin_unlock(&port->lock);
-+		uart_port_unlock(port);
- 		return;
- 	}
- 
- 	sysrq_ch = port->sysrq_ch;
- 	port->sysrq_ch = 0;
- 
--	spin_unlock(&port->lock);
-+	uart_port_unlock(port);
- 
- 	if (sysrq_ch)
- 		handle_sysrq(sysrq_ch);
-@@ -1054,14 +1054,14 @@ static inline void uart_unlock_and_check_sysrq_irqrestore(struct uart_port *port
- 	u8 sysrq_ch;
- 
- 	if (!port->has_sysrq) {
--		spin_unlock_irqrestore(&port->lock, flags);
-+		uart_port_unlock_irqrestore(port, flags);
- 		return;
- 	}
- 
- 	sysrq_ch = port->sysrq_ch;
- 	port->sysrq_ch = 0;
- 
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
- 
- 	if (sysrq_ch)
- 		handle_sysrq(sysrq_ch);
-@@ -1077,12 +1077,12 @@ static inline int uart_prepare_sysrq_char(struct uart_port *port, u8 ch)
- }
- static inline void uart_unlock_and_check_sysrq(struct uart_port *port)
- {
--	spin_unlock(&port->lock);
-+	uart_port_unlock(port);
- }
- static inline void uart_unlock_and_check_sysrq_irqrestore(struct uart_port *port,
- 		unsigned long flags)
- {
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	h_lcr = *CSR_H_UBRLCR;
+ 	if (break_state)
+ 		h_lcr |= H_UBRLCR_BREAK;
+ 	else
+ 		h_lcr &= ~H_UBRLCR_BREAK;
+ 	*CSR_H_UBRLCR = h_lcr;
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
  }
- #endif	/* CONFIG_MAGIC_SYSRQ_SERIAL */
  
+ static int serial21285_startup(struct uart_port *port)
+@@ -272,7 +272,7 @@ serial21285_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	if (port->fifosize)
+ 		h_lcr |= H_UBRLCR_FIFO;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/*
+ 	 * Update the per-port timeout.
+@@ -309,7 +309,7 @@ serial21285_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	*CSR_H_UBRLCR = h_lcr;
+ 	*CSR_UARTCON = 1;
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static const char *serial21285_type(struct uart_port *port)
 -- 
 2.39.2
 
