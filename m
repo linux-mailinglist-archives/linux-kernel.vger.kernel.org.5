@@ -2,150 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C6A7A0B84
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1A17A0B92
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239148AbjINRXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        id S240569AbjINRYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239289AbjINRWo (ORCPT
+        with ESMTP id S239969AbjINRXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:22:44 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CD12715
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:27 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-649c6ea6e72so7029566d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:27 -0700 (PDT)
+        Thu, 14 Sep 2023 13:23:35 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7C230CA
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:59 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso169110666b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694712146; x=1695316946; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694712178; x=1695316978; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A8eQORumJtaroUI8JT9bu5D1IY7lPGvpUmpxNHPhsvg=;
-        b=jE6UjXJ7BkxVirgNwrjHB7bsXjKXr2s3aEpRyLtBIqG/VsMWL7lrJetRWxk2CGiH51
-         y68z9mb9sTRUuVyf8pX7yULzgFKeGOVCGGyXoS35TuCfJQwo2zatN0cICH7wVqbctbWh
-         bySNekPa/ZnfWkQUQ7x9zncSSoiNCA1ixMDo57DXY2sWRFR0XYd8jbuaSfjSjkjlFLYJ
-         2FP6rrwAyXW/khvvlEhgZ2hETZVjp0T+lPF7cDCsF842iuE7CTMYmF058jD3ycRAMawF
-         RT8DH0rkmquiSEnkS/q7MD2BjzSWYCoF5Nquqf2zuVVWN9WcUgPKvsKb60UfsWOONgI2
-         zi2Q==
+        bh=8P8Iz0AXrz+yvXhSdzWefKmGB+E6NxTMaN+Ka9Zbzsc=;
+        b=FAGDhbzUm8fYwBUzU8t1UQ1PrtOq8au6U1PIQ+YF0ED+DyavoVwTdTCRMnIM1dQFOx
+         QeT54VR0nfEdA5VWV4i+KxrZJfTe9Eggji/WXACghUZGYdIbmA6kip9DuY0KF+xlRd5m
+         UM/lfR/zTEh8DsyvUJsrRPIjx6MD2XOyKVPpUlECY2gw2j5c/EkrvZSXH962ISyZDhOq
+         DHO71trPKGLQ8Fn2u7n4WUy1yFTkdk50+BCuXAtYACbTwe781fGtuu2fnNRxKkWvv8bt
+         w51qPFYIALPc2BLuIZ99BeAnnn2ZLjCDTQJTCzPVa/YHzFqEN/nO+unH31KJuUVvpHqL
+         HvqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694712146; x=1695316946;
+        d=1e100.net; s=20230601; t=1694712178; x=1695316978;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A8eQORumJtaroUI8JT9bu5D1IY7lPGvpUmpxNHPhsvg=;
-        b=HFMxLngHkwnrKNKhNJCHTG5M9d+3gAIMov7IBRAcreyGZZ7ByeY3zSWt3naGSNYAla
-         Hu2sZCctQeDaRrwpNBKio+I5LYrv0swjHtzSnY2dda4+owUTa1rbUdyfuH1nrYh5NS5U
-         loHwJlX5J6Dd4fXMTOIdl6xlfKau8RzHtvCMUNw4Dl/G2+Dq8GUu2ZsWrdVKvNAS+qEr
-         6iYSBnwscGPxqJ50gMB9Mh2e6dzhjT2dr9wtecu7Z3Y/+r8UYBQCFQavk18cma9LwnJ/
-         zxsI3q7E0quiTSwgZP7etyODv7xJDUtp6vv7HQFsH2cWpuHrVwWoj6IDyM5KGiKHTwTA
-         127Q==
-X-Gm-Message-State: AOJu0YyQ/ffQW/oEdrBbDd7TOIjIsfIE3fCkzorKh9B9CMXrJOrAJONZ
-        ypZbj0Gnvo4zVNIHyYvZC5wUKVWTlJsb1YAOKjC4+Q==
-X-Google-Smtp-Source: AGHT+IFA5G/u9fTxemIh7ppyemUF4heb6N+w5pTJ0x1vdhIE9rGnXqUnizt0BXWM/DV2ecQatLz805H4QnF5kKUSyAs=
-X-Received: by 2002:ad4:5851:0:b0:63d:7214:638e with SMTP id
- de17-20020ad45851000000b0063d7214638emr7042473qvb.56.1694712146470; Thu, 14
- Sep 2023 10:22:26 -0700 (PDT)
+        bh=8P8Iz0AXrz+yvXhSdzWefKmGB+E6NxTMaN+Ka9Zbzsc=;
+        b=WnUbLzLjjDAQLc5pONr7LABEijWcZ7uyedfDyoHvsl6K0LHF6V6zp28A8EWAXJ/ijg
+         fTKFx9a8Xm557SeEAqVfzKiHhvk+GRLaj+9f0mGLgIiGvI9hnKO0UnpYzW6nZaZvEnlY
+         iOc/SKHvOhrbQnkkGyFyULdMh+L/caqw2/87+7kFldok0/oTnNraVxDcioQJM8s/pWzA
+         5yj55nqR4ZynBIsHTnTIMsGT5krxQ9jnPYnl3JBDf4zVYY/4agHTsSK0CDVxi5Jjdm38
+         TGvUv0xXByvPOy9NJWTddM0TTxUw4QFon1Tj/JJL9uPtOubxlsj+AUqjM/H0X2zf4w+U
+         MuaQ==
+X-Gm-Message-State: AOJu0Yx0c9RlRU6l7dYytalkNuSnJUjPHNXzFM2BFs714h+17daaPOxC
+        AxZGyqvv9+bO9e3pmzLSHo5NxyjQt/gRTYnliT6gDQ==
+X-Google-Smtp-Source: AGHT+IFs/OlQ0X2hkz+pYOiU8/CErI+9ARlTKYrPBUE/JYU1jBkndyPNKYHMSI3ubRLgzRJNTrufvQPBaMiMFuUKp/I=
+X-Received: by 2002:a17:907:2c6a:b0:9a1:aea2:d18d with SMTP id
+ ib10-20020a1709072c6a00b009a1aea2d18dmr4701892ejc.48.1694712177785; Thu, 14
+ Sep 2023 10:22:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230914170138.995606-1-song@kernel.org>
-In-Reply-To: <20230914170138.995606-1-song@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Sep 2023 10:22:12 -0700
-Message-ID: <CAKwvOdnisbzAx3eQD_U8gQU05WzuOr48VRJfySu5WRTWZVDiPw@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/purgatory: Remove LTO flags
-To:     Song Liu <song@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        kexec@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <20230913153758.GB45543@cmpxchg.org>
+ <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com> <20230914160646.GA101038@cmpxchg.org>
+In-Reply-To: <20230914160646.GA101038@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 14 Sep 2023 10:22:18 -0700
+Message-ID: <CAJD7tkaLQ8H4-EiZimyZ4a=CbLb_0KEPE8RkPofFRVceSOqtnw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:02=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+[..]
+> > > > -
+> > > > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> > > > +     /* A coalesced root flush is in order. Are we the designated =
+flusher? */
+> > > > +     spin_lock(&root_flusher_lock);
+> > >
+> > > I can't say I'm crazy about this.
+> > >
+> > > Let's say you have a fairly sprawling and active cgroup tree with lot=
+s
+> > > of updates in lots of groups in the system.
+> > >
+> > > Add a periodic memory.stat reader to one of the subgroups, and that
+> > > reader will do very fast, localized aggregation.
+> > >
+> > > Now add a periodic memory.stat reader to some other subgroup. They
+> > > might still both do very fast, localized aggregation. Or they might
+> > > collide; and now - despite having nothing in common, and sharing no
+> > > data besides the rstat lock - will have to flush the entire massive
+> > > tree. The rate at which this happens is purely dependent on timing of
+> > > what should be independent actors. This is really not great for the
+> > > p50 vs p99 gap.
+> >
+> > Initially I had a few retry iterations for the subtree flush, where we
+> > fsleep for a bit and trylock again. I thought it was a little bit too
+> > complicated and the fsleep duration would be a magic value.
 >
-> -flto* implies -ffunction-sections. With LTO enabled, ld.lld generates
-> multiple .text sections for purgatory.ro:
->
-> $ readelf -S purgatory.ro  | grep " .text"
->   [ 1] .text             PROGBITS         0000000000000000  00000040
->   [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
->   [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
->   [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
->   [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
->   [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
->   [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
->
-> This cause WARNING from kexec_purgatory_setup_sechdrs():
->
-> WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
-> kexec_load_purgatory+0x37f/0x390
->
-> Fix this by disabling LTO for purgatory.
->
-> We could also fix this with an explicit linker script to rejoin .text.*
-> sections back into .text. However, given the benefit of LTOing pugatory
+> Hm, how is that different than a mutex / sleepable lock?
 
-s/pugatory/purgatory/
-
-(maybe the x86 maintainers can apply that fixup if/when picked up)
-
-> is small, simply disable the production of more .text.* sections for now.
->
-> Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
-> Cc: Ricardo Ribalda <ribalda@chromium.org>
-> Cc: Sami Tolvanen <samitolvanen@google.com>
-> Cc: kexec@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: x86@kernel.org
-> Cc: llvm@lists.linux.dev
-> Signed-off-by: Song Liu <song@kernel.org>
-
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+It is essentially a lock with a timeout, which IIUC we don't support
+explicitly in the kernel. What I was trying to do was basically to try
+and do a subtree flush, but if we are waiting for too long then a lot
+of people are probably flushing, so let's all switch to a root flush
+and wait for one flusher instead of contending among ourselves.
 
 >
-> ---
-> AFAICT, x86 is the only arch that supports LTO and purgatory.
+> > > I think this whole thing is getting away from us.
+> > >
+> > > When we first switched to rstat, every reader would take the global
+> > > rstat lock and then flush its local subtree of interest.
+> > >
+> > > This was changed in the following commit:
+> > >
+> > > commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
+> > > Author: Shakeel Butt <shakeelb@google.com>
+> > > Date:   Fri Nov 5 13:37:34 2021 -0700
+> > >
+> > >     memcg: unify memcg stat flushing
+> > >
+> > >     The memcg stats can be flushed in multiple context and potentiall=
+y in
+> > >     parallel too.  For example multiple parallel user space readers f=
+or
+> > >     memcg stats will contend on the rstat locks with each other.  The=
+re is
+> > >     no need for that.  We just need one flusher and everyone else can
+> > >     benefit.
+> > >
+> > >     In addition after aa48e47e3906 ("memcg: infrastructure to flush m=
+emcg
+> > >     stats") the kernel periodically flush the memcg stats from the ro=
+ot, so,
+> > >     the other flushers will potentially have much less work to do.
+> > >
+> > >     Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb@g=
+oogle.com
+> > >     Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > >     Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > >     Cc: Michal Hocko <mhocko@kernel.org>
+> > >     Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
+> > >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > >     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > >
+> > > The idea was that we can avoid lock contention if somebody is already
+> > > doing the flushing. However, you're now bringing global serialization=
+.
+> > > Clearly that idea didn't work out. What would be an obstacle to go
+> > > back to the original way of doing it?
+> >
+> > The obstacle is high concurrency among flushers. A good example is
+> > reclaim code, we can have a lot of concurrent reclaimers. When I tried
+> > to go back to the original way of doing it, a stress test with high
+> > reclaim concurrency (100s or 1000s) would be 2x-3x slower. I think
+> > high concurrency among userspace reads would have a similar outcome,
+> > but I hadn't really checked.
+> >
+> > Basically this patch is trying to switch to root flushing when the
+> > cost of contending on the lock is roughly the same as a root flush (or
+> > waiting for one). It's doing that too eagerly now of course (if
+> > contenders > 1), we can try to calibrate this better.
 >
-> Changes in v3:
-> 1. Fix "Fixes" tag. (Nick Desaulniers)
-> 2. Add description of an alternative fix, with linker script.
->    (Nick Desaulniers)
+> I don't quite understand this.
 >
-> Changes in v2:
-> 1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
-> ---
->  arch/x86/purgatory/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
+> If you have two readers on separate subtrees, why is it cheaper to
+> flush the entire tree in sequence (where both readers don't care about
+> the majority of the data), than having each reader flush their own
+> small subset one after another? It's not like the whole tree flush
+> parallelizes its work.
 >
-> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-> index c2a29be35c01..08aa0f25f12a 100644
-> --- a/arch/x86/purgatory/Makefile
-> +++ b/arch/x86/purgatory/Makefile
-> @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS -D__NO_FORTIF=
-Y
->  # optimization flags.
->  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D% -fprofile-use=
-=3D%,$(KBUILD_CFLAGS))
->
-> +# When LTO is enabled, llvm emits many text sections, which is not suppo=
-rted
-> +# by kexec. Remove -flto=3D* flags.
-> +KBUILD_CFLAGS :=3D $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
-> +
->  # When linking purgatory.ro with -r unresolved symbols are not checked,
->  # also link a purgatory.chk binary without -r to check for unresolved sy=
-mbols.
->  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
-> --
-> 2.34.1
->
+> Where is that overhead actually coming from?
 
+If you have N concurrent readers flushing different parts of the
+subtree, at some point the overhead of N sequential subtree flushes
+will exceed the overhead of a single root flush.
 
---=20
-Thanks,
-~Nick Desaulniers
+Ideally, we would be able to identify this point, and switch to a
+single root flush with everyone else waiting.
+
+>
+> > > With one reader, this will work the same as in your proposal.
+> > >
+> > > With two readers, just like in your proposal, flushing must be
+> > > serialized against the root level. But at least the two flushes only
+> > > aggregate the local data they actually care about - not the entire
+> > > tree data that doesn't even have readers! This is much better for loc=
+k
+> > > contention and performance.
+> >
+> > Keep in mind that in my testing, I noticed that synchronization using
+> > a completion is more performant than serialization on a lock. I am
+> > assuming because when we contend on the underlying lock, we serially
+> > wake up and do the flush. Even if there is nothing to do (as you
+> > mention below), we still do this work. On the contrary, in this
+> > proposal we just wait for the root flush to finish and return
+> > immediately, and all waiters return at once (that's a lie because of
+> > scheduling internals).
+>
+> Right, because rstat's do-nothing case is still somewhat costly due to
+> the per-cpu loop and the tree walk.
+>
+> But that should be possible to avoid with the outlined caching of
+> recently-flushed state at the memcg level.
+
+This helps only if concurrent flushers are overlapping, right?
+
+>
+> > Also, in the current code, in the two reader scenario, the first
+> > reader will flush the entire tree anyway. The only difference is that
+> > the second reader will wait for it to finish instead of just skipping,
+> > which is the right thing to do from a correctness point of view. Right
+> > now it's a coin flip on whether you get updated stats if someone else
+> > is already flushing.
+>
+> Agreed, it should wait. My mutex would accomplish this, right?
+
+I think what you're describing here is v4 of the patchset I mention in
+the cover letter:
+https://lore.kernel.org/lkml/20230831165611.2610118-5-yosryahmed@google.com=
+/
+
+The problem with that was that with very high concurrency among
+readers, the read latency is unbounded and can get out of hand. Wei
+shared some numbers in that thread.
+
+What this patch is trying to do is to switch to root flushing if the
+mutex is contended to avoid that scenario.  Also, if we keep acquiring
+more flushers at some point we just skip the flush in favor of
+performance (if the number of waiters exceeds the number of cpus). Now
+that I think about it, perhaps we can just go back to the mutex
+approach w/ limiting the number of waiters, without ever falling back
+to a root flush. Not sure how that would work.
+
+Taking a step back, I think what you are implying is that if we make
+the thresholding code per cpu instead of global, this should mitigate
+the issue in a different way than falling back to root flushing or
+limiting the number of waiters, is that right?
+If yes, I think it will work in some cases where the flushes are
+overlapping as I mentioned above, but not if concurrent readers are
+flushing different parts of the tree. Right?
+
+>
+> > > One concern is the thresholding code. The cost of flushing on every
+> > > read is too high: even when there is no flush work, checking for it i=
+s
+> > > kind of expensive due to the locks and the for_each_possible_cpu().
+> > >
+> > > Could we do something like the following?
+> > >
+> > >         mem_cgroup_flush(memcg)
+> > >         {
+> > >                 mutex_lock(&memcg_flush_mutex);
+> > >                 if (atomic_read(&memcg->stat_delta) > THRESHOLD)
+> > >                         cgroup_rstat_flush(memcg);
+> > >                 mutex_unlock(&memcg_flush_mutex);
+> > >         }
+> > >
+> > >         mem_cgroup_css_rstat_flush(css, cpu)
+> > >         {
+> > >                 ...
+> > >                 /*
+> > >                  * Reset here instead of mem_cgroup_flush()
+> > >                  * so that each flushed subgroup is reset
+> > >                  * recursively. A recent parent flush will
+> > >                  * allow a child flush to skip.
+> > >                  */
+> > >                 atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0);
+> > >         }
+> > >
+> > >         memcg_rstat_updated(memcg, val)
+> > >         {
+> > >                 atomic_add(&memcg->stat_delta, val);
+> >
+> > We need to do this for each parent in the hierarchy, not just the
+> > memcg being updated, right? I guess that may be too expensive for the
+> > update path.
+>
+> How so?
+>
+> We need to mark the subgroups that are flushed, so that if you have
+>
+>         root - a - a1 - foo
+>                 `- a2
+>
+> and somebody flushes a, then a1 and a2 also don't need to be flushed
+> for a while.
+>
+> But if we flush a1 first, foo is aggregated into a1. Reading a still
+> needs to aggregate a1 and a2 into a.
+>
+> Maybe I'm missing something blatant, but I don't see how we have to
+> mark parents in any way. We only have to tag cgroups up to the point
+> to which they were recently flushed, and we already visit all those.
+>
+> Let me know if I'm missing something blatant here.
+
+I think we are talking about different paths. I believe you are
+talking about resetting memcg->stat_delta, which I agree should be
+done during the flush. What I am talking about is updating
+memcg->stat_delta when memcg_rstat_updated() is called. We would need
+to update that for all parents. In your example hierarchy, if stat
+updates happened in a2, and someone tries to flush a, they should be
+aware that there are stats to flush.
