@@ -2,46 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E2E7A0A0B
+	by mail.lfdr.de (Postfix) with ESMTP id 721857A0A0C
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241527AbjINQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S241540AbjINQAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241416AbjINQAm (ORCPT
+        with ESMTP id S241443AbjINQAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:00:42 -0400
+        Thu, 14 Sep 2023 12:00:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E541D1FEA;
-        Thu, 14 Sep 2023 09:00:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2B93C433CC;
-        Thu, 14 Sep 2023 16:00:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A17A1FD5;
+        Thu, 14 Sep 2023 09:00:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE8EC433CB;
+        Thu, 14 Sep 2023 16:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694707237;
-        bh=0dXDToWchwa5Fi/vBSRm1OFETDOVXG95OjcF/59qP30=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=moovSjx08Y7pKhz4XmLz2HheNOGl6IkD3m3nE3ZaczG7G1GLPMKFYor9bs7Uu55uu
-         bF0H9FhrDdNytckqd8pujQx9kj6AHnr6F+DKW2IWe5A3R5K9vS0hDGJ0CKxYYeHZ74
-         Q+FrPZgQzz7+i7noyBtHAt+ZLqydV+ibBQ+d898O6HiSvUjICwTIOTzqs5Nx+7Hzu4
-         u28WsYrJ43J1vHsmTDYo/iBkpITsZ8vlGLTABR3No1BFqFRBOvknXUNzYRJFg9noT1
-         1fitveKOJxvON1ghmum2w+XRsf2uZdoB/qFAL3pnG+O3LtgvOXaHSADJwIY76K5qsy
-         /0AJzJx1bC+mQ==
+        s=k20201202; t=1694707239;
+        bh=z65jDiJhYXiqCrF+31TXNYpOkgLv4DTepLv6il1TdHw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dkoXbS/9OdtDzucDaW3k1ZSAITVrqG9S2VNfizgl9rIwddQ8a6Y02/j81kyVsPTCv
+         pgE5jYBvdbyWOrrATe4JSdxjpIYWJ+r8nf6kSrEKBCLp49zXcEuaSwTi4aG4u/l3Ke
+         kZLRjxxsLV+3SfenXJ71RiTeeJkD1gbfywSCIvonWEhVYPrFAarqAfcytQ3PQduTwH
+         GLYa6w0dunqfoWk5gwCWsfigvaqVXWKavFZOsSgxSSbTsl3Iz5PuLDy4cTVwbqd10s
+         Sp8ma8Y5Ogoej+Fdrwi7Xg4ri96C3fI/YO1H1lFINehSy5QrS/1ZXP5mt51hdwCB/v
+         FdNGqrVKlxSkg==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
+To:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Luca Weiss <luca.weiss@fairphone.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 1/6] arm64: dts: qcom: sm8550-mtp: use correct UFS supply
-Date:   Thu, 14 Sep 2023 09:04:25 -0700
-Message-ID: <169470744885.681825.1825941724380590278.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: (subset) [PATCH 00/11] Initial support for the Fairphone 5 smartphone
+Date:   Thu, 14 Sep 2023 09:04:27 -0700
+Message-ID: <169470744878.681825.1089291695542666982.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230906104744.163479-1-krzysztof.kozlowski@linaro.org>
-References: <20230906104744.163479-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
+References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -50,27 +57,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 06 Sep 2023 12:47:39 +0200, Krzysztof Kozlowski wrote:
-> According to schematics the VCCQ2 supply is not connected and the L3G
-> regulator instead powers up the controller pads (VDD_PX10).  Use correct
-> supply vdd-hba and drop unsupported current limit for the vdd-hba.
+On Wed, 30 Aug 2023 11:58:25 +0200, Luca Weiss wrote:
+> Add support to boot up mainline kernel on the QCM6490-based Fairphone 5
+> smartphone.
 > 
+> These patches only cover a part of the functionality brought up on
+> mainline so far, with the rest needing larger dts and driver changes or
+> depend on patches that are not yet merged. I will work on sending those
+> once these base patches here have settled.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/6] arm64: dts: qcom: sm8550-mtp: use correct UFS supply
-      commit: 5c72cb3a9a96a5103cba49a1c8f2a2c71b158ab6
-[2/6] arm64: dts: qcom: sm8550-qrd: use correct UFS supply
-      commit: e485c6e19ae888761d9fc65353722afa0235bbb4
-[3/6] arm64: dts: qcom: sm8450-hdk: add UFS host controller supply
-      commit: f5688b4914fa5c5b9a0fca1692b82d25ae6cee33
-[4/6] arm64: dts: qcom: sm8450-qrd: add UFS host controller supply
-      commit: ebad126daf0c70a054b358e276cef453b2fcdc7f
-[5/6] arm64: dts: qcom: sm8350-hdk: add UFS host controller supply
-      commit: 2c20c75d850574c727e07e615ed55e3d5c2b42db
-[6/6] arm64: dts: qcom: sm8350-mtp: add UFS host controller supply
-      commit: 201cd8541673f9b553508c2f11dadfab7874addd
+[07/11] dt-bindings: arm: qcom,ids: Add SoC ID for QCM6490
+        commit: ccfb4d8b606302d857a03ea29039e21029311335
+[08/11] soc: qcom: socinfo: Add SoC ID for QCM6490
+        commit: 59872d59d164ec67f295d6f96fe818b92973ee40
 
 Best regards,
 -- 
