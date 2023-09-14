@@ -2,180 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2315B7A0EF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4901C7A0EF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjINU2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        id S229473AbjINU2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjINU2F (ORCPT
+        with ESMTP id S229655AbjINU2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:28:05 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CDA26B2;
-        Thu, 14 Sep 2023 13:28:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694723278; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Dfz75ui+4qYiWbAdx/b2gB508EnOEzfr+hACrmm+M9VREKMQfUoFcN7wfp5Az8YHIJ
-    tCeiWoMi7PIwX7hR119PfMA5wRhom5Y45tgljKqjH/D528+k0oabjSReo3BDewTikRY9
-    QLHZgR5x1GLOQWGukO0kYoLDkW2wYZyGNadE6BJw+re99dX6CkaJvrD5TtsscDx8mcz4
-    pDgqkcoR1vO/V/0faCaxWsKS8pyaiq/tgqrpL1BMO4fKySqE+dBH9jRVY+CdWWTe4m19
-    qOMZ+4B4BQDsB7ezy5UHwgdy+f2QfaDLcXgayDvcYM/rLohL0DxRUmtO35PTbEX+CPVr
-    J3rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723278;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
-    b=L6EnQonLTsNEcoS7C3U6vLTuSefAyMMZXATv4Y/OtQjmZYbHE1cMyhT6xCrLuIv0Ta
-    5rNHfjg8uvyigkqytwuCW70hApNFo8tkASAKq3eolZNtCCO+M0AClZ10IxuqH8UblXwS
-    I6Y9jlVycITAIPOccruW6iy/h7uBvTCMXvjhljQF+2Lrbfv13+ukBRUly7AgqL06rfwV
-    5iCDbhgZpiiroQLoqK9lcW6ZQ14Z8sMe9CTzUFQz8sAi3q8jtFVkNNK4m31iv/BMwvbC
-    WuzU6mIEwayZCF0G6SiV7QdtwbmGHplephZE4dZucxHyfRGGR8wCeVBvUsp5Ft+EZXc5
-    vAxQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694723278;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
-    b=m9+VWFRUhpH3FY8mIhtKKeqhRdMkMbh8U2d2Nq2oUSjQf7FS1E+ud+BejLtLOKIhdI
-    yhIdkfHkdWtIL86S/arUdx7v6K73aiy/dRcdJWC+F1LO6/j6dc9Ph19rI/E4E9jWSINW
-    mwasWOr1vC+v3ZtS688VGfS3XBX2oliZl+gKJVOPj4PkloCEq7G42KCrchPbkNV4U4UP
-    34pNaJ1ewKWiPlXZc0O6DmYhr6RbRECWixT5Z4Asa2qbwpf2lK8xsUSUFezged9bCJZ9
-    pAZvb0DbSRV/8LJBnCVGL+smT9g++lWD0K+bgpdJ75xEDSW2cYjYe5wvlq+ln0jgJjpC
-    Ptgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694723278;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=m4iE6KJnkzc7DxuNvxScdnjLzszoDLro5lcUVYr2ojc=;
-    b=WE4KU2/QrraNeA4qJwf4tPUppronPwuw3wYGF/ORaShLsr+bC9w9DC0D8AUVHbuQTf
-    AT6r6gVb7Y4gtSwp2MCg==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1QLj68UeUr1+U1BzWso7brrTnk+qJtuXDXLVLiZPxnvk6DWJlKA=="
-Received: from blinux.speedport.ip
-    by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id V04024z8EKRvDZR
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 14 Sep 2023 22:27:57 +0200 (CEST)
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        beanhuo@micron.com, jakub.kwapisz@toradex.com,
-        rafael.beims@toradex.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v2] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
-Date:   Thu, 14 Sep 2023 22:27:49 +0200
-Message-Id: <20230914202749.470100-1-beanhuo@iokpp.de>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 14 Sep 2023 16:28:36 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B355226BD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:28:32 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-570428954b9so1161594a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694723312; x=1695328112; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nzJvstdCVNLuwr9+zSVIDyjCzM8g0GZ73rr7XEH2PE0=;
+        b=VM5gsZe/AgVse75tZYcyCKOyRqXe9vZ5DPrqFkVSglfXiscr1hxp93GyX99Kgi+JTS
+         7V8UdmOrHrZdtgUMOkItvaGUqeuSQsZPV49z5U4UQ3OZnQi/QeNp5anv2ebFd7zlUtAY
+         eF94rc+l4cRHjGkWQyxaTKtOK5BoaDuOkOGwN1jcxFguCcPhrqOa1J9zaunV1hreJX7+
+         6O4abtxrL+Ms6E3o6U+Mq6tsQsVePvpRDlSRmySTauwAczqRYORzqoZFdnrtGofJ09k6
+         PAIdN/Fnhd3QhAl9G3A1BUE+KgDdsXB4ooR33utIsBCiG4QB+rtdLHc2tlhw26ZUooQ+
+         CPJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694723312; x=1695328112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nzJvstdCVNLuwr9+zSVIDyjCzM8g0GZ73rr7XEH2PE0=;
+        b=M+oxQ3Un5ioJ7FoQJ3/A8vaVPKyi/Ym7KAwtlGLOKovSLyC4C6UK6Ye/PY+Es0tUz4
+         bwDVnF6g963fyViPifqF4QKG1esyXXAvBwJqhBTRqZ8orGySG3Ol8miLoAnBXhs3ohxJ
+         f0GhwCJc8KS1pEYvdzCE61YUTZljj+vi6Rqp9eSX9PYAvvzM04bCNsCGICr69Cz+KKnJ
+         ZXShNHWm23xaOaxXp5g7K+xMqXSs+VW2fqeflZXIROp8NNjEw2TI6iGkQmFXQ44s+8YT
+         bFNPIpBtsM8C/4FiGWqoofovxO/GeXLlLl11ukUvm9Xvmg7E9XCAg46cVdesCgj2sk3U
+         NMrQ==
+X-Gm-Message-State: AOJu0Yw3w/LW6cIMHw6ZWkx0E8PY/T9u2KmPHodewIYOGtiubhHF6M8d
+        FbditHCsFQoO4RFpOx6On/osZtl76fE=
+X-Google-Smtp-Source: AGHT+IFCmNWCdoQYSXPoJjA3buhXhkVNpWdxwRvg7GxXKJMBpOx11hjkfaPx69BGHLo24zE4QfsBBmjyGNI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:77c6:0:b0:563:962e:e912 with SMTP id
+ s189-20020a6377c6000000b00563962ee912mr162430pgc.0.1694723312190; Thu, 14 Sep
+ 2023 13:28:32 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 13:28:30 -0700
+In-Reply-To: <8a5c1d2637475c7fb9657cdd6cb0e86f2bb3bab6.1694721045.git.thomas.lendacky@amd.com>
+Mime-Version: 1.0
+References: <cover.1694721045.git.thomas.lendacky@amd.com> <8a5c1d2637475c7fb9657cdd6cb0e86f2bb3bab6.1694721045.git.thomas.lendacky@amd.com>
+Message-ID: <ZQNs7uo8F62XQawJ@google.com>
+Subject: Re: [PATCH 1/2] KVM: SVM: Fix TSC_AUX virtualization setup
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Babu Moger <babu.moger@amd.com>
 Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Thu, Sep 14, 2023, Tom Lendacky wrote:
+> The checks for virtualizing TSC_AUX occur during the vCPU reset processing
+> path. However, at the time of initial vCPU reset processing, when the vCPU
+> is first created, not all of the guest CPUID information has been set. In
+> this case the RDTSCP and RDPID feature support for the guest is not in
+> place and so TSC_AUX virtualization is not established.
+> 
+> This continues for each vCPU created for the guest. On the first boot of
+> an AP, vCPU reset processing is executed as a result of an APIC INIT
+> event, this time with all of the guest CPUID information set, resulting
+> in TSC_AUX virtualization being enabled, but only for the APs. The BSP
+> always sees a TSC_AUX value of 0 which probably went unnoticed because,
+> at least for Linux, the BSP TSC_AUX value is 0.
+> 
+> Move the TSC_AUX virtualization enablement into the vcpu_after_set_cpuid()
+> path to allow for proper initialization of the support after the guest
+> CPUID information has been set.
+> 
+> Fixes: 296d5a17e793 ("KVM: SEV-ES: Use V_TSC_AUX if available instead of RDTSC/MSR_TSC_AUX intercepts")
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 27 +++++++++++++++++++--------
+>  arch/x86/kvm/svm/svm.c |  3 +++
+>  arch/x86/kvm/svm/svm.h |  1 +
+>  3 files changed, 23 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index b9a0a939d59f..565c9de87c6d 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2962,6 +2962,25 @@ int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in)
+>  				    count, in);
+>  }
+>  
+> +static void sev_es_init_vmcb_after_set_cpuid(struct vcpu_svm *svm)
 
-Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
-operation be allowed only after a write has occurred. Otherwise, the
-cache flush command or subsequent commands will time out.
+I would rather name this sev_es_after_set_cpuid() and call it directly from
+svm_vcpu_after_set_cpuid().  Or I suppose bounce through sev_after_set_cpuid(),
+but that seems gratuitous.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
-Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
-Tested-by: Rafael Beims <rafael.beims@toradex.com>
-Cc: stable@vger.kernel.org
----
-Changelog:
+AFAICT, there's no point in calling this from init_vmcb(); guest_cpuid_has() is
+guaranteed to be false when called during vCPU creation and so the intercept
+behavior will be correct, and even if SEV-ES called init_vmcb() from
+shutdown_interception(), which it doesn't, guest_cpuid_has() wouldn't change,
+i.e. the intercepts wouldn't need to be changed.
 
-v1--v2:
-    1. Add Rafael's test-tag, and Co-developed-by.
-    2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
+init_vmcb_after_set_cpuid() is a special snowflake because it handles both SVM's
+true defaults *and* guest CPUID updates.
 
----
- drivers/mmc/core/core.c   | 7 +++++++
- drivers/mmc/core/mmc.c    | 5 +++++
- drivers/mmc/core/quirks.h | 7 ++++---
- include/linux/mmc/card.h  | 2 ++
- 4 files changed, 18 insertions(+), 3 deletions(-)
+> +{
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +
+> +	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX) &&
+> +	    (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
+> +	     guest_cpuid_has(vcpu, X86_FEATURE_RDPID))) {
+> +		set_msr_interception(vcpu, svm->msrpm, MSR_TSC_AUX, 1, 1);
 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 3d3e0ca52614..86a669b35b91 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -259,6 +259,13 @@ static void __mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
- 		host->cqe_ops->cqe_off(host);
- 
- 	host->ops->request(host, mrq);
-+
-+	if (host->card && host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH &&
-+	    !host->card->written_flag) {
-+		if (mrq->cmd->opcode == MMC_WRITE_MULTIPLE_BLOCK ||
-+		    mrq->cmd->opcode == MMC_WRITE_BLOCK)
-+			host->card->written_flag = true;
-+	}
- }
- 
- static void mmc_mrq_pr_debug(struct mmc_host *host, struct mmc_request *mrq,
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 89cd48fcec79..a2edd065fa1b 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
- 	if (!oldcard)
- 		host->card = card;
- 
-+	card->written_flag = false;
-+
- 	return 0;
- 
- free_card:
-@@ -2081,6 +2083,9 @@ static int _mmc_flush_cache(struct mmc_host *host)
- {
- 	int err = 0;
- 
-+	if (host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH && !host->card->written_flag)
-+		return err;
-+
- 	if (_mmc_cache_enabled(host)) {
- 		err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
- 				 EXT_CSD_FLUSH_CACHE, 1,
-diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index 32b64b564fb1..5e68c8b4cdca 100644
---- a/drivers/mmc/core/quirks.h
-+++ b/drivers/mmc/core/quirks.h
-@@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
- 		  MMC_QUIRK_TRIM_BROKEN),
- 
- 	/*
--	 * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
--	 * support being used to offload WRITE_ZEROES.
-+	 * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
-+	 * WRITE_ZEROES offloading. It also supports caching, but the cache can
-+	 * only be flushed after a write has occurred.
- 	 */
- 	MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
--		  MMC_QUIRK_TRIM_BROKEN),
-+		  MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
- 
- 	/*
- 	 * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index daa2f40d9ce6..7b12eebc5586 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -295,7 +295,9 @@ struct mmc_card {
- #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
- #define MMC_QUIRK_BROKEN_SD_DISCARD	(1<<14)	/* Disable broken SD discard support */
- #define MMC_QUIRK_BROKEN_SD_CACHE	(1<<15)	/* Disable broken SD cache support */
-+#define MMC_QUIRK_BROKEN_CACHE_FLUSH	(1<<16)	/* Don't flush cache until the write has occurred */
- 
-+	bool			written_flag;	/* Indicates eMMC has been written since power on */
- 	bool			reenable_cmdq;	/* Re-enable Command Queue */
- 
- 	unsigned int		erase_size;	/* erase size in sectors */
--- 
-2.34.1
+This needs to toggled interception back on if RDTSCP and RDPID are hidden from
+the guest.  KVM's wonderful ABI doesn't disallow multiple calls to KVM_SET_CPUID2
+before KVM_RUN.
 
+> +		if (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> +			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
+
+Same thing here.
+
+> +	}
+> +}
