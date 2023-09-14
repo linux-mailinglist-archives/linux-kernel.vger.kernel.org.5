@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06A27A0D4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA72C7A0D4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242027AbjINSmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S242176AbjINSmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjINSkO (ORCPT
+        with ESMTP id S241841AbjINSkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:40:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618CB2721;
+        Thu, 14 Sep 2023 14:40:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C85F2728;
         Thu, 14 Sep 2023 11:39:05 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,32 +22,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ftoYF3ysXZRgd7029hIddGE6TugW7j1R0akznX06Mek=;
-        b=AVsgLhp3emlP/RNgitQPW0uhlds6RD4TU4dct35DRx4bNvQKUbjV8C0drufMaiZ0wIihGa
-        TWkE52zfn+HIgR6AuRGV2UrROOAZDWRb0IAuAbpAr5VC/Gh442FopUkwW7O+kRKLfTSHHx
-        G/fv9sc1lIhZ7fEu2Oniebv2c8pgfU42cXr40v4cri1R0iln1kpbKNFOdKg4yETrJ64mJE
-        kgAd6H3xwAKOH8C9w1FbP6P99Y8wCDfoYJ/vhVVOjjgenhJzWwGHEeZaBWZ/Thrlwi+1cQ
-        6/GmbmC7aQi/G43VolWTa3jdAOttDC56MXk9R4ZmUBXk9mAekCVd3QZoigP2EQ==
+        bh=JJqXttFgJz1o+g4eBfJScMI/XchlkOkBgsSlRKeNPuA=;
+        b=geNM0FhgCOGoeOBNGt6FPlmpPdYxQua3VqM3C5V4/54UlAM68Le8U6SgMWLk/Z9BBDR225
+        oqAl/lCUHEDK2lWu1r9ruGG1EOAAY+gQrQxYxvJDFlYdFmYq5H3ShwEq86ZnoraE0TBDcX
+        a+2MPqtqWclmIjULaU+gNvavGPc7z9IOvDVJzsAlD4DwHks3GU+3eu+zTliGUH+Q1yEc7Z
+        konqxYwSudBlS5wMjE+UFOhsSiJrUuaf2iNX6fv9e0MNL4s+4hxVgVrGb+lChSeWdPNLd1
+        aUREM5MlnXBQcuvPCMxXz8M9TxKSXd0cEDJqSN670xSbHSfWLgF1e/dR7AGTtw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ftoYF3ysXZRgd7029hIddGE6TugW7j1R0akznX06Mek=;
-        b=v+V76Qzo12KFfI6gBWpLLNJ0z4vydANWQYRetphYnTZH8vxTQOViwIGVEpH6m5HJPH43Ws
-        Y+xUKDucxO8n7uCA==
+        bh=JJqXttFgJz1o+g4eBfJScMI/XchlkOkBgsSlRKeNPuA=;
+        b=ipuV52qQ3Ii6VyO019DyBaS2uSpRYxwD4fQyMU2xQaxxolropoqi+GP1uzV2022g1oFfIh
+        DZiIBiEFXX9TkyCw==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
-        Richard GENOUD <richard.genoud@gmail.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH tty v1 59/74] serial: txx9: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:44:16 +0206
-Message-Id: <20230914183831.587273-60-john.ogness@linutronix.de>
+Subject: [PATCH tty v1 60/74] serial: sh-sci: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:44:17 +0206
+Message-Id: <20230914183831.587273-61-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -84,107 +87,275 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/serial_txx9.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/tty/serial/sh-sci.c | 68 ++++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/tty/serial/serial_txx9.c b/drivers/tty/serial/serial_txx9.c
-index be08fb6f749c..eaa980722455 100644
---- a/drivers/tty/serial/serial_txx9.c
-+++ b/drivers/tty/serial/serial_txx9.c
-@@ -335,13 +335,13 @@ static irqreturn_t serial_txx9_interrupt(int irq, void *dev_id)
- 	unsigned int status;
+diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+index a560b729fa3b..84ab434c94ba 100644
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -1205,7 +1205,7 @@ static void sci_dma_tx_complete(void *arg)
  
- 	while (1) {
--		spin_lock(&up->lock);
-+		uart_port_lock(up);
- 		status = sio_in(up, TXX9_SIDISR);
- 		if (!(sio_in(up, TXX9_SIDICR) & TXX9_SIDICR_TIE))
- 			status &= ~TXX9_SIDISR_TDIS;
- 		if (!(status & (TXX9_SIDISR_TDIS | TXX9_SIDISR_RDIS |
- 				TXX9_SIDISR_TOUT))) {
--			spin_unlock(&up->lock);
-+			uart_port_unlock(up);
- 			break;
+ 	dev_dbg(port->dev, "%s(%d)\n", __func__, port->line);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	uart_xmit_advance(port, s->tx_dma_len);
+ 
+@@ -1229,7 +1229,7 @@ static void sci_dma_tx_complete(void *arg)
  		}
+ 	}
  
-@@ -353,7 +353,7 @@ static irqreturn_t serial_txx9_interrupt(int irq, void *dev_id)
- 		sio_mask(up, TXX9_SIDISR,
- 			 TXX9_SIDISR_TDIS | TXX9_SIDISR_RDIS |
- 			 TXX9_SIDISR_TOUT);
--		spin_unlock(&up->lock);
-+		uart_port_unlock(up);
- 
- 		if (pass_counter++ > PASS_LIMIT)
- 			break;
-@@ -367,9 +367,9 @@ static unsigned int serial_txx9_tx_empty(struct uart_port *up)
- 	unsigned long flags;
- 	unsigned int ret;
- 
--	spin_lock_irqsave(&up->lock, flags);
-+	uart_port_lock_irqsave(up, &flags);
- 	ret = (sio_in(up, TXX9_SICISR) & TXX9_SICISR_TXALS) ? TIOCSER_TEMT : 0;
--	spin_unlock_irqrestore(&up->lock, flags);
-+	uart_port_unlock_irqrestore(up, flags);
- 
- 	return ret;
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
  }
-@@ -399,12 +399,12 @@ static void serial_txx9_break_ctl(struct uart_port *up, int break_state)
- {
+ 
+ /* Locking: called with port lock held */
+@@ -1320,7 +1320,7 @@ static void sci_dma_rx_complete(void *arg)
+ 	dev_dbg(port->dev, "%s(%d) active cookie %d\n", __func__, port->line,
+ 		s->active_rx);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	active = sci_dma_rx_find_active(s);
+ 	if (active >= 0)
+@@ -1347,20 +1347,20 @@ static void sci_dma_rx_complete(void *arg)
+ 
+ 	dma_async_issue_pending(chan);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 	dev_dbg(port->dev, "%s: cookie %d #%d, new active cookie %d\n",
+ 		__func__, s->cookie_rx[active], active, s->active_rx);
+ 	return;
+ 
+ fail:
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 	dev_warn(port->dev, "Failed submitting Rx DMA descriptor\n");
+ 	/* Switch to PIO */
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	dmaengine_terminate_async(chan);
+ 	sci_dma_rx_chan_invalidate(s);
+ 	sci_dma_rx_reenable_irq(s);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static void sci_dma_tx_release(struct sci_port *s)
+@@ -1409,13 +1409,13 @@ static int sci_dma_rx_submit(struct sci_port *s, bool port_lock_held)
+ fail:
+ 	/* Switch to PIO */
+ 	if (!port_lock_held)
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 	if (i)
+ 		dmaengine_terminate_async(chan);
+ 	sci_dma_rx_chan_invalidate(s);
+ 	sci_start_rx(port);
+ 	if (!port_lock_held)
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 	return -EAGAIN;
+ }
+ 
+@@ -1437,14 +1437,14 @@ static void sci_dma_tx_work_fn(struct work_struct *work)
+ 	 * transmit till the end, and then the rest. Take the port lock to get a
+ 	 * consistent xmit buffer state.
+ 	 */
+-	spin_lock_irq(&port->lock);
++	uart_port_lock_irq(port);
+ 	head = xmit->head;
+ 	tail = xmit->tail;
+ 	buf = s->tx_dma_addr + tail;
+ 	s->tx_dma_len = CIRC_CNT_TO_END(head, tail, UART_XMIT_SIZE);
+ 	if (!s->tx_dma_len) {
+ 		/* Transmit buffer has been flushed */
+-		spin_unlock_irq(&port->lock);
++		uart_port_unlock_irq(port);
+ 		return;
+ 	}
+ 
+@@ -1452,7 +1452,7 @@ static void sci_dma_tx_work_fn(struct work_struct *work)
+ 					   DMA_MEM_TO_DEV,
+ 					   DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+ 	if (!desc) {
+-		spin_unlock_irq(&port->lock);
++		uart_port_unlock_irq(port);
+ 		dev_warn(port->dev, "Failed preparing Tx DMA descriptor\n");
+ 		goto switch_to_pio;
+ 	}
+@@ -1464,12 +1464,12 @@ static void sci_dma_tx_work_fn(struct work_struct *work)
+ 	desc->callback_param = s;
+ 	s->cookie_tx = dmaengine_submit(desc);
+ 	if (dma_submit_error(s->cookie_tx)) {
+-		spin_unlock_irq(&port->lock);
++		uart_port_unlock_irq(port);
+ 		dev_warn(port->dev, "Failed submitting Tx DMA descriptor\n");
+ 		goto switch_to_pio;
+ 	}
+ 
+-	spin_unlock_irq(&port->lock);
++	uart_port_unlock_irq(port);
+ 	dev_dbg(port->dev, "%s: %p: %d...%d, cookie %d\n",
+ 		__func__, xmit->buf, tail, head, s->cookie_tx);
+ 
+@@ -1477,10 +1477,10 @@ static void sci_dma_tx_work_fn(struct work_struct *work)
+ 	return;
+ 
+ switch_to_pio:
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	s->chan_tx = NULL;
+ 	sci_start_tx(port);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 	return;
+ }
+ 
+@@ -1497,17 +1497,17 @@ static enum hrtimer_restart sci_dma_rx_timer_fn(struct hrtimer *t)
+ 
+ 	dev_dbg(port->dev, "DMA Rx timed out\n");
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	active = sci_dma_rx_find_active(s);
+ 	if (active < 0) {
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 		return HRTIMER_NORESTART;
+ 	}
+ 
+ 	status = dmaengine_tx_status(s->chan_rx, s->active_rx, &state);
+ 	if (status == DMA_COMPLETE) {
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 		dev_dbg(port->dev, "Cookie %d #%d has already completed\n",
+ 			s->active_rx, active);
+ 
+@@ -1525,7 +1525,7 @@ static enum hrtimer_restart sci_dma_rx_timer_fn(struct hrtimer *t)
+ 	 */
+ 	status = dmaengine_tx_status(s->chan_rx, s->active_rx, &state);
+ 	if (status == DMA_COMPLETE) {
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 		dev_dbg(port->dev, "Transaction complete after DMA engine was stopped");
+ 		return HRTIMER_NORESTART;
+ 	}
+@@ -1546,7 +1546,7 @@ static enum hrtimer_restart sci_dma_rx_timer_fn(struct hrtimer *t)
+ 
+ 	sci_dma_rx_reenable_irq(s);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+@@ -1770,9 +1770,9 @@ static irqreturn_t sci_tx_interrupt(int irq, void *ptr)
+ 	struct uart_port *port = ptr;
  	unsigned long flags;
  
--	spin_lock_irqsave(&up->lock, flags);
-+	uart_port_lock_irqsave(up, &flags);
- 	if (break_state == -1)
- 		sio_set(up, TXX9_SIFLCR, TXX9_SIFLCR_TBRK);
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	sci_transmit_chars(port);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1786,11 +1786,11 @@ static irqreturn_t sci_tx_end_interrupt(int irq, void *ptr)
+ 	if (port->type != PORT_SCI)
+ 		return sci_tx_interrupt(irq, ptr);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	ctrl = serial_port_in(port, SCSCR);
+ 	ctrl &= ~(SCSCR_TE | SCSCR_TEIE);
+ 	serial_port_out(port, SCSCR, ctrl);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -2187,7 +2187,7 @@ static void sci_break_ctl(struct uart_port *port, int break_state)
+ 		return;
+ 	}
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	scsptr = serial_port_in(port, SCSPTR);
+ 	scscr = serial_port_in(port, SCSCR);
+ 
+@@ -2201,7 +2201,7 @@ static void sci_break_ctl(struct uart_port *port, int break_state)
+ 
+ 	serial_port_out(port, SCSPTR, scsptr);
+ 	serial_port_out(port, SCSCR, scscr);
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ static int sci_startup(struct uart_port *port)
+@@ -2233,7 +2233,7 @@ static void sci_shutdown(struct uart_port *port)
+ 	s->autorts = false;
+ 	mctrl_gpio_disable_ms(to_sci_port(port)->gpios);
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 	sci_stop_rx(port);
+ 	sci_stop_tx(port);
+ 	/*
+@@ -2243,7 +2243,7 @@ static void sci_shutdown(struct uart_port *port)
+ 	scr = serial_port_in(port, SCSCR);
+ 	serial_port_out(port, SCSCR, scr &
+ 			(SCSCR_CKE1 | SCSCR_CKE0 | s->hscif_tot));
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ #ifdef CONFIG_SERIAL_SH_SCI_DMA
+ 	if (s->chan_rx_saved) {
+@@ -2545,7 +2545,7 @@ static void sci_set_termios(struct uart_port *port, struct ktermios *termios,
+ 		serial_port_out(port, SCCKS, sccks);
+ 	}
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	sci_reset(port);
+ 
+@@ -2667,7 +2667,7 @@ static void sci_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	if ((termios->c_cflag & CREAD) != 0)
+ 		sci_start_rx(port);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	sci_port_disable(s);
+ 
+@@ -3052,9 +3052,9 @@ static void serial_console_write(struct console *co, const char *s,
+ 	if (port->sysrq)
+ 		locked = 0;
+ 	else if (oops_in_progress)
+-		locked = spin_trylock_irqsave(&port->lock, flags);
++		locked = uart_port_trylock_irqsave(port, &flags);
  	else
- 		sio_mask(up, TXX9_SIFLCR, TXX9_SIFLCR_TBRK);
--	spin_unlock_irqrestore(&up->lock, flags);
-+	uart_port_unlock_irqrestore(up, flags);
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* first save SCSCR then disable interrupts, keep clock source */
+ 	ctrl = serial_port_in(port, SCSCR);
+@@ -3074,7 +3074,7 @@ static void serial_console_write(struct console *co, const char *s,
+ 	serial_port_out(port, SCSCR, ctrl);
+ 
+ 	if (locked)
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
  }
  
- #if defined(CONFIG_SERIAL_TXX9_CONSOLE) || defined(CONFIG_CONSOLE_POLL)
-@@ -517,9 +517,9 @@ static int serial_txx9_startup(struct uart_port *up)
- 	/*
- 	 * Now, initialize the UART
- 	 */
--	spin_lock_irqsave(&up->lock, flags);
-+	uart_port_lock_irqsave(up, &flags);
- 	serial_txx9_set_mctrl(up, up->mctrl);
--	spin_unlock_irqrestore(&up->lock, flags);
-+	uart_port_unlock_irqrestore(up, flags);
- 
- 	/* Enable RX/TX */
- 	sio_mask(up, TXX9_SIFLCR, TXX9_SIFLCR_RSDE | TXX9_SIFLCR_TSDE);
-@@ -541,9 +541,9 @@ static void serial_txx9_shutdown(struct uart_port *up)
- 	 */
- 	sio_out(up, TXX9_SIDICR, 0);	/* disable all intrs */
- 
--	spin_lock_irqsave(&up->lock, flags);
-+	uart_port_lock_irqsave(up, &flags);
- 	serial_txx9_set_mctrl(up, up->mctrl);
--	spin_unlock_irqrestore(&up->lock, flags);
-+	uart_port_unlock_irqrestore(up, flags);
- 
- 	/*
- 	 * Disable break condition
-@@ -625,7 +625,7 @@ serial_txx9_set_termios(struct uart_port *up, struct ktermios *termios,
- 	 * Ok, we're now changing the port state.  Do it with
- 	 * interrupts disabled.
- 	 */
--	spin_lock_irqsave(&up->lock, flags);
-+	uart_port_lock_irqsave(up, &flags);
- 
- 	/*
- 	 * Update the per-port timeout.
-@@ -676,7 +676,7 @@ serial_txx9_set_termios(struct uart_port *up, struct ktermios *termios,
- 	sio_out(up, TXX9_SIFCR, fcr);
- 
- 	serial_txx9_set_mctrl(up, up->mctrl);
--	spin_unlock_irqrestore(&up->lock, flags);
-+	uart_port_unlock_irqrestore(up, flags);
- }
- 
- static void
+ static int serial_console_setup(struct console *co, char *options)
 -- 
 2.39.2
 
