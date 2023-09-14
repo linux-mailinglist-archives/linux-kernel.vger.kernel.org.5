@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6161C7A11BD
+	by mail.lfdr.de (Postfix) with ESMTP id ABD1A7A11BE
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjINX3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
+        id S231156AbjINX30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjINX3M (ORCPT
+        with ESMTP id S230408AbjINX3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:29:12 -0400
+        Thu, 14 Sep 2023 19:29:14 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0F02710
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:29:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F4B2729
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:29:10 -0700 (PDT)
 Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DF3C16607356;
-        Fri, 15 Sep 2023 00:29:05 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5255D6607354;
+        Fri, 15 Sep 2023 00:29:07 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694734147;
-        bh=WO04qyK07S2NqVZi3rKtftqpx6J1ujZZfJYpj019Mzw=;
+        s=mail; t=1694734149;
+        bh=Ux87TxMV5vy/PWBLrg20A7F+FmVwQrERrTwLmwymf+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GGQK1nzymMp6iAUQ3PbgGWllfZJYeGClC/iwjy20ZMSlG6iMLrWfLgXihMmUqBC2k
-         sulcYSwqx7pRCdIqq0E3bCswGqWTuQ7W+hU7DQ6nlnSA6amTl8JzmasQui5om/tSc9
-         Lnz4ttfQdlRtqTR0HjORtVxCCkmF7xqZngZNvNsWu1uBXhqY+Qo8N4UpmFOtaHhNF2
-         Jo/W+cpIQ2/FtaTWK4n37IrR+7PLLTJtfQd7b/8NlH1TFunlqis+hjrOcq3e1DYtFi
-         PRNjfqIoEu1Q70tfNB3yGCods5qsx8eDGDtjqLWBK9OtL7dRt0w0+kjeIHIluIW5zL
-         eYqa61Bu0r1Ag==
+        b=hcNyh7i8Q+Xk31Yh4mvNe9RQ4U/F+y1VwR034qHizz3ONttTiuRyiEKmvUpWZH/tB
+         zlY6BqCDg4cyoR2LVRmGC5eI5eYOr2G4GwiRDy2AwOMHW4gQdMTsHYul43o5n69uyt
+         fwdUxkb8A2tTiHV+zgnAQAMVUfFmgsWDUFM3XCNAJXEbZ3ILZk7FCqENJcZYJ4TFoI
+         5/FWIwUP62pc8RdyYKcOR+DYsMcYjmhioyhqLYC7RxQ4IMBPgnrET6ZWcuL8NSY+bV
+         ZRdnphvYM8fsa4vfISnkzGSie0FzJFUxwec3tPFFH7EwpMjt1aBD2hlg0ysDYFBIuR
+         bhxcBMYxk9Ptg==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@gmail.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
@@ -47,9 +47,9 @@ To:     David Airlie <airlied@gmail.com>,
         Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v17 07/18] drm/shmem-helper: Use refcount_t for pages_use_count
-Date:   Fri, 15 Sep 2023 02:27:10 +0300
-Message-ID: <20230914232721.408581-8-dmitry.osipenko@collabora.com>
+Subject: [PATCH v17 08/18] drm/shmem-helper: Add and use lockless drm_gem_shmem_get_pages()
+Date:   Fri, 15 Sep 2023 02:27:11 +0300
+Message-ID: <20230914232721.408581-9-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
 References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
@@ -59,145 +59,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use atomic refcount_t helper for pages_use_count to optimize pin/unpin
-functions by skipping reservation locking while GEM's pin refcount > 1.
+Add lockless drm_gem_shmem_get_pages() helper that skips taking reservation
+lock if pages_use_count is non-zero, leveraging from atomicity of the
+refcount_t. Make drm_gem_shmem_mmap() to utilize the new helper.
 
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c  | 33 +++++++++++--------------
- drivers/gpu/drm/lima/lima_gem.c         |  2 +-
- drivers/gpu/drm/panfrost/panfrost_mmu.c |  2 +-
- include/drm/drm_gem_shmem_helper.h      |  2 +-
- 4 files changed, 18 insertions(+), 21 deletions(-)
+ drivers/gpu/drm/drm_gem_shmem_helper.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index 286f0ca51309..e9d9fbd52b34 100644
+index e9d9fbd52b34..a5964f347dda 100644
 --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
 +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -155,7 +155,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
- 		if (shmem->pages)
- 			drm_gem_shmem_put_pages_locked(shmem);
- 
--		drm_WARN_ON(obj->dev, shmem->pages_use_count);
-+		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
- 
- 		dma_resv_unlock(shmem->base.resv);
- 	}
-@@ -172,14 +172,13 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
- 
- 	dma_resv_assert_held(shmem->base.resv);
- 
--	if (shmem->pages_use_count++ > 0)
-+	if (refcount_inc_not_zero(&shmem->pages_use_count))
- 		return 0;
- 
- 	pages = drm_gem_get_pages(obj);
- 	if (IS_ERR(pages)) {
- 		drm_dbg_kms(obj->dev, "Failed to get pages (%ld)\n",
- 			    PTR_ERR(pages));
--		shmem->pages_use_count = 0;
- 		return PTR_ERR(pages);
- 	}
- 
-@@ -195,6 +194,8 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
- 
- 	shmem->pages = pages;
- 
-+	refcount_set(&shmem->pages_use_count, 1);
-+
- 	return 0;
- }
- 
-@@ -210,21 +211,17 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
- 
- 	dma_resv_assert_held(shmem->base.resv);
- 
--	if (drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
--		return;
--
--	if (--shmem->pages_use_count > 0)
--		return;
--
-+	if (refcount_dec_and_test(&shmem->pages_use_count)) {
- #ifdef CONFIG_X86
--	if (shmem->map_wc)
--		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
-+		if (shmem->map_wc)
-+			set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
- #endif
- 
--	drm_gem_put_pages(obj, shmem->pages,
--			  shmem->pages_mark_dirty_on_put,
--			  shmem->pages_mark_accessed_on_put);
--	shmem->pages = NULL;
-+		drm_gem_put_pages(obj, shmem->pages,
-+				  shmem->pages_mark_dirty_on_put,
-+				  shmem->pages_mark_accessed_on_put);
-+		shmem->pages = NULL;
-+	}
+@@ -225,6 +225,20 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
  }
  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
  
-@@ -551,8 +548,8 @@ static void drm_gem_shmem_vm_open(struct vm_area_struct *vma)
- 	 * mmap'd, vm_open() just grabs an additional reference for the new
- 	 * mm the vma is getting copied into (ie. on fork()).
- 	 */
--	if (!drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
--		shmem->pages_use_count++;
-+	drm_WARN_ON_ONCE(obj->dev,
-+			 !refcount_inc_not_zero(&shmem->pages_use_count));
- 
- 	dma_resv_unlock(shmem->base.resv);
- 
-@@ -640,7 +637,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
- 		return;
- 
- 	drm_printf_indent(p, indent, "pages_pin_count=%u\n", refcount_read(&shmem->pages_pin_count));
--	drm_printf_indent(p, indent, "pages_use_count=%u\n", shmem->pages_use_count);
-+	drm_printf_indent(p, indent, "pages_use_count=%u\n", refcount_read(&shmem->pages_use_count));
- 	drm_printf_indent(p, indent, "vmap_use_count=%u\n", shmem->vmap_use_count);
- 	drm_printf_indent(p, indent, "vaddr=%p\n", shmem->vaddr);
- }
-diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
-index 62d4a409faa8..988e74f67465 100644
---- a/drivers/gpu/drm/lima/lima_gem.c
-+++ b/drivers/gpu/drm/lima/lima_gem.c
-@@ -47,7 +47,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
- 		}
- 
- 		bo->base.pages = pages;
--		bo->base.pages_use_count = 1;
-+		refcount_set(&bo->base.pages_use_count, 1);
- 
- 		mapping_set_unevictable(mapping);
++static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
++{
++	int ret;
++
++	if (refcount_inc_not_zero(&shmem->pages_use_count))
++		return 0;
++
++	dma_resv_lock(shmem->base.resv, NULL);
++	ret = drm_gem_shmem_get_pages_locked(shmem);
++	dma_resv_unlock(shmem->base.resv);
++
++	return ret;
++}
++
+ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
+ {
+ 	int ret;
+@@ -608,10 +622,7 @@ int drm_gem_shmem_mmap(struct drm_gem_shmem_object *shmem, struct vm_area_struct
+ 		return ret;
  	}
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 7771769f0ce0..a91252053aa3 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -487,7 +487,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
- 			goto err_unlock;
- 		}
- 		bo->base.pages = pages;
--		bo->base.pages_use_count = 1;
-+		refcount_set(&bo->base.pages_use_count, 1);
- 	} else {
- 		pages = bo->base.pages;
- 		if (pages[page_offset]) {
-diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-index 268b3127d150..3947f5c6bff7 100644
---- a/include/drm/drm_gem_shmem_helper.h
-+++ b/include/drm/drm_gem_shmem_helper.h
-@@ -37,7 +37,7 @@ struct drm_gem_shmem_object {
- 	 * Reference count on the pages table.
- 	 * The pages are put when the count reaches zero.
- 	 */
--	unsigned int pages_use_count;
-+	refcount_t pages_use_count;
  
- 	/**
- 	 * @pages_pin_count:
+-	dma_resv_lock(shmem->base.resv, NULL);
+-	ret = drm_gem_shmem_get_pages_locked(shmem);
+-	dma_resv_unlock(shmem->base.resv);
+-
++	ret = drm_gem_shmem_get_pages(shmem);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.41.0
 
