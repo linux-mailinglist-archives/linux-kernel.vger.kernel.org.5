@@ -2,231 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C368A7A0B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7863F7A0B13
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238443AbjINQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        id S233926AbjINQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjINQyv (ORCPT
+        with ESMTP id S229705AbjINQ45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:54:51 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3381BCB;
-        Thu, 14 Sep 2023 09:54:47 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rmk1X02Syz6K66F;
-        Fri, 15 Sep 2023 00:54:07 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 17:54:44 +0100
-Date:   Thu, 14 Sep 2023 17:54:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 35/35] cpumask: Add enabled cpumask for present
- CPUs that can be brought online
-Message-ID: <20230914175443.000038f6@Huawei.com>
-In-Reply-To: <20230913163823.7880-36-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-36-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 12:56:57 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7321FDE
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:56:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BD4181F74C;
+        Thu, 14 Sep 2023 16:56:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694710611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9dYbcygFs+B71xYNYqVHVDk/ZWOqRCfnzVK6KuhBKJI=;
+        b=Rheo62hLVc0dxeDLyvQ5sjmbAvZLXFpqZnskMAwq8m+e5BP+OY4EoCEVJQ3IQ5hGcOetul
+        D0eG7FEfYFe0Wa2I6io9FWd3rsnfPJJoNzKXLRNFdTRj1+/QGWbH1pHxqrvxRCLxw7i1D/
+        26Omj6jLkgHAsDtjC0MhGXWkYenKals=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DFEF139DB;
+        Thu, 14 Sep 2023 16:56:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eTH/IlM7A2XnPgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 14 Sep 2023 16:56:51 +0000
+Date:   Thu, 14 Sep 2023 18:56:50 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Breno Leitao <leitao@debian.org>,
+        Josef Bacik <josef@toxicpanda.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: fix GFP_NOFS recursion in memory.high
+ enforcement
+Message-ID: <ZQM7UiuRKPB9giYK@dhcp22.suse.cz>
+References: <20230914152139.100822-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914152139.100822-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:23 +0000
-James Morse <james.morse@arm.com> wrote:
-
-> The 'offline' file in sysfs shows all offline CPUs, including those
-> that aren't present. User-space is expected to remove not-present CPUs
-> from this list to learn which CPUs could be brought online.
+On Thu 14-09-23 11:21:39, Johannes Weiner wrote:
+> Breno and Josef report a deadlock scenario from cgroup reclaim
+> re-entering the filesystem:
 > 
-> CPUs can be present but not-enabled. These CPUs can't be brought online
-> until the firmware policy changes, which comes with an ACPI notification
-> that will register the CPUs.
+> [  361.546690] ======================================================
+> [  361.559210] WARNING: possible circular locking dependency detected
+> [  361.571703] 6.5.0-0_fbk700_debug_rc0_kbuilder_13159_gbf787a128001 #1 Tainted: G S          E
+> [  361.589704] ------------------------------------------------------
+> [  361.602277] find/9315 is trying to acquire lock:
+> [  361.611625] ffff88837ba140c0 (&delayed_node->mutex){+.+.}-{4:4}, at: __btrfs_release_delayed_node+0x68/0x4f0
+> [  361.631437]
+> [  361.631437] but task is already holding lock:
+> [  361.643243] ffff8881765b8678 (btrfs-tree-01){++++}-{4:4}, at: btrfs_tree_read_lock+0x1e/0x40
 > 
-> With only the offline and present files, user-space is unable to
-> determine which CPUs it can try to bring online. Add a new CPU mask
-> that shows this based on all the registered CPUs.
-
-Bikeshed should be blue.
-
-Enabled is a really confusing name for this - to the extent that I'm not sure
-what it means.  Assuming I have the sense right, how about the horrible
-onlineable or online_capable?
-
-
+> [  362.904457]  mutex_lock_nested+0x1c/0x30
+> [  362.912414]  __btrfs_release_delayed_node+0x68/0x4f0
+> [  362.922460]  btrfs_evict_inode+0x301/0x770
+> [  362.982726]  evict+0x17c/0x380
+> [  362.988944]  prune_icache_sb+0x100/0x1d0
+> [  363.005559]  super_cache_scan+0x1f8/0x260
+> [  363.013695]  do_shrink_slab+0x2a2/0x540
+> [  363.021489]  shrink_slab_memcg+0x237/0x3d0
+> [  363.050606]  shrink_slab+0xa7/0x240
+> [  363.083382]  shrink_node_memcgs+0x262/0x3b0
+> [  363.091870]  shrink_node+0x1a4/0x720
+> [  363.099150]  shrink_zones+0x1f6/0x5d0
+> [  363.148798]  do_try_to_free_pages+0x19b/0x5e0
+> [  363.157633]  try_to_free_mem_cgroup_pages+0x266/0x370
+> [  363.190575]  reclaim_high+0x16f/0x1f0
+> [  363.208409]  mem_cgroup_handle_over_high+0x10b/0x270
+> [  363.246678]  try_charge_memcg+0xaf2/0xc70
+> [  363.304151]  charge_memcg+0xf0/0x350
+> [  363.320070]  __mem_cgroup_charge+0x28/0x40
+> [  363.328371]  __filemap_add_folio+0x870/0xd50
+> [  363.371303]  filemap_add_folio+0xdd/0x310
+> [  363.399696]  __filemap_get_folio+0x2fc/0x7d0
+> [  363.419086]  pagecache_get_page+0xe/0x30
+> [  363.427048]  alloc_extent_buffer+0x1cd/0x6a0
+> [  363.435704]  read_tree_block+0x43/0xc0
+> [  363.443316]  read_block_for_search+0x361/0x510
+> [  363.466690]  btrfs_search_slot+0xc8c/0x1520
 > 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  drivers/base/cpu.c      | 10 ++++++++++
->  include/linux/cpumask.h | 25 +++++++++++++++++++++++++
->  kernel/cpu.c            |  3 +++
->  3 files changed, 38 insertions(+)
+> This is caused by the mem_cgroup_handle_over_high() not respecting the
+> gfp_mask of the allocation context. We used to only call this function
+> on resume to userspace, where no locks were held. But c9afe31ec443
+> ("memcg: synchronously enforce memory.high for large overcharges")
+> added a call from the allocation context without considering the gfp.
 > 
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index c709747c4a18..a19a8be93102 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -95,6 +95,7 @@ void unregister_cpu(struct cpu *cpu)
->  {
->  	int logical_cpu = cpu->dev.id;
->  
-> +	set_cpu_enabled(logical_cpu, false);
->  	unregister_cpu_under_node(logical_cpu, cpu_to_node(logical_cpu));
->  
->  	device_unregister(&cpu->dev);
-> @@ -273,6 +274,13 @@ static ssize_t print_cpus_offline(struct device *dev,
->  }
->  static DEVICE_ATTR(offline, 0444, print_cpus_offline, NULL);
->  
-> +static ssize_t print_cpus_enabled(struct device *dev,
-> +				  struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpu_enabled_mask));
-> +}
-> +static DEVICE_ATTR(enabled, 0444, print_cpus_enabled, NULL);
-> +
->  static ssize_t print_cpus_isolated(struct device *dev,
->  				  struct device_attribute *attr, char *buf)
->  {
-> @@ -413,6 +421,7 @@ int register_cpu(struct cpu *cpu, int num)
->  	register_cpu_under_node(num, cpu_to_node(num));
->  	dev_pm_qos_expose_latency_limit(&cpu->dev,
->  					PM_QOS_RESUME_LATENCY_NO_CONSTRAINT);
-> +	set_cpu_enabled(num, true);
->  
->  	return 0;
->  }
-> @@ -494,6 +503,7 @@ static struct attribute *cpu_root_attrs[] = {
->  	&cpu_attrs[2].attr.attr,
->  	&dev_attr_kernel_max.attr,
->  	&dev_attr_offline.attr,
-> +	&dev_attr_enabled.attr,
->  	&dev_attr_isolated.attr,
->  #ifdef CONFIG_NO_HZ_FULL
->  	&dev_attr_nohz_full.attr,
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index f10fb87d49db..a29ee03f13ff 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -92,6 +92,7 @@ static inline void set_nr_cpu_ids(unsigned int nr)
->   *
->   *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
->   *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
-> + *     cpu_enabled_mask  - has bit 'cpu' set iff cpu can be brought online
->   *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
->   *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
->   *
-> @@ -124,11 +125,13 @@ static inline void set_nr_cpu_ids(unsigned int nr)
->  
->  extern struct cpumask __cpu_possible_mask;
->  extern struct cpumask __cpu_online_mask;
-> +extern struct cpumask __cpu_enabled_mask;
->  extern struct cpumask __cpu_present_mask;
->  extern struct cpumask __cpu_active_mask;
->  extern struct cpumask __cpu_dying_mask;
->  #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
->  #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
-> +#define cpu_enabled_mask   ((const struct cpumask *)&__cpu_enabled_mask)
->  #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
->  #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
->  #define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
-> @@ -973,6 +976,7 @@ extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
->  #else
->  #define for_each_possible_cpu(cpu) for_each_cpu((cpu), cpu_possible_mask)
->  #define for_each_online_cpu(cpu)   for_each_cpu((cpu), cpu_online_mask)
-> +#define for_each_enabled_cpu(cpu)   for_each_cpu((cpu), cpu_enabled_mask)
->  #define for_each_present_cpu(cpu)  for_each_cpu((cpu), cpu_present_mask)
->  #endif
->  
-> @@ -995,6 +999,15 @@ set_cpu_possible(unsigned int cpu, bool possible)
->  		cpumask_clear_cpu(cpu, &__cpu_possible_mask);
->  }
->  
-> +static inline void
-> +set_cpu_enabled(unsigned int cpu, bool can_be_onlined)
-> +{
-> +	if (can_be_onlined)
-> +		cpumask_set_cpu(cpu, &__cpu_enabled_mask);
-> +	else
-> +		cpumask_clear_cpu(cpu, &__cpu_enabled_mask);
-> +}
-> +
->  static inline void
->  set_cpu_present(unsigned int cpu, bool present)
->  {
-> @@ -1074,6 +1087,7 @@ static __always_inline unsigned int num_online_cpus(void)
->  	return raw_atomic_read(&__num_online_cpus);
->  }
->  #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
-> +#define num_enabled_cpus()	cpumask_weight(cpu_enabled_mask)
->  #define num_present_cpus()	cpumask_weight(cpu_present_mask)
->  #define num_active_cpus()	cpumask_weight(cpu_active_mask)
->  
-> @@ -1082,6 +1096,11 @@ static inline bool cpu_online(unsigned int cpu)
->  	return cpumask_test_cpu(cpu, cpu_online_mask);
->  }
->  
-> +static inline bool cpu_enabled(unsigned int cpu)
-> +{
-> +	return cpumask_test_cpu(cpu, cpu_enabled_mask);
-> +}
-> +
->  static inline bool cpu_possible(unsigned int cpu)
->  {
->  	return cpumask_test_cpu(cpu, cpu_possible_mask);
-> @@ -1106,6 +1125,7 @@ static inline bool cpu_dying(unsigned int cpu)
->  
->  #define num_online_cpus()	1U
->  #define num_possible_cpus()	1U
-> +#define num_enabled_cpus()	1U
->  #define num_present_cpus()	1U
->  #define num_active_cpus()	1U
->  
-> @@ -1119,6 +1139,11 @@ static inline bool cpu_possible(unsigned int cpu)
->  	return cpu == 0;
->  }
->  
-> +static inline bool cpu_enabled(unsigned int cpu)
-> +{
-> +	return cpu == 0;
-> +}
-> +
->  static inline bool cpu_present(unsigned int cpu)
->  {
->  	return cpu == 0;
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 6de7c6bb74ee..2201a6a449b5 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -3101,6 +3101,9 @@ EXPORT_SYMBOL(__cpu_possible_mask);
->  struct cpumask __cpu_online_mask __read_mostly;
->  EXPORT_SYMBOL(__cpu_online_mask);
->  
-> +struct cpumask __cpu_enabled_mask __read_mostly;
-> +EXPORT_SYMBOL(__cpu_enabled_mask);
-> +
->  struct cpumask __cpu_present_mask __read_mostly;
->  EXPORT_SYMBOL(__cpu_present_mask);
->  
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Reported-by: Josef Bacik <josef@toxicpanda.com>
+> Fixes: c9afe31ec443 ("memcg: synchronously enforce memory.high for large overcharges")
+> Cc: stable@vger.kernel.org # 5.17+
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
