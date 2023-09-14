@@ -2,231 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 196947A0E8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A697A0E8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 21:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237421AbjINTvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 15:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S234669AbjINTxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 15:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236766AbjINTvb (ORCPT
+        with ESMTP id S229942AbjINTxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 15:51:31 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2056.outbound.protection.outlook.com [40.107.102.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4583926BE;
-        Thu, 14 Sep 2023 12:51:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NoQSum5AaFWC5d2Swhy9PSnBQBV1IdmJeTADPBCTVcKO3QnOmS2Y4STbg16XVEOIkr7UtFBgzuCQmWBYq2lKGvIufcfMvm8TLUUU1Jpp5Zd84zqWY6pzuPDU81Cfk9CBZEsZE0KC2dTfHNc9WNGUTwLTK7FrmC9yWawtlpKBrQBF6VY4mJZw+0RzSfJhD6s7nZu1/2MsT30QWKUQ17ivmOomAm/ll1vzC8LdKQE5AqKtwc4tpDAsSAZaQEn2/6JCCAUDr6z1LXPbo4W7ZVDEodcswxbCgQvC749AtM0b2xdXCfk4jbGMjkWjm6JLohKMG1SPzquhpnkI/VZWeKDwSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ryjtQanXScVgjoFWtmekPEcaPOMluYCd+MZp1yqQs8k=;
- b=B9a55HC7QbZ+o1Q7UYJ11MQf3T6lf1mvfvEX1LzLbd2GYb/gy9YwsYfoqdvZKdgMLFiVzvdkpaF7nJCDm6AVoVmgWW866c2J7RgrU4Kx7a+J4i+J2OimD27fPD/kH441tRgc2kTH/0KIFCCe535R59yeU0z31euaukB8mVawFIDkV6LV61CBS1cVhwgFh9NqVTZ6Wn2fj09zk+eOQH6qdTZ9d9APubO37+wpcgLSQsOEhqvwhbqtfyULTJx7FYAC5q0t4xjwIQo4Cw+d3fD08hzGaP6X2Z13jEBMiyEqbG+Y9UYKkYSPDlIYQVHchQ9udyvoUzRRyORZaaxRlJ2VwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ryjtQanXScVgjoFWtmekPEcaPOMluYCd+MZp1yqQs8k=;
- b=v0VWSgbE+rZW3ibnjRA13aGu8mchnD16bqTqIPfPfP4BC8n9A9kvFnIou9cplPqVMzXAxiVvUsN7dgjsvYPtmpiTq2cAWx+5PrtG9MYEjR/XQQtmdCuf8dx5IgqdFc79FgS927p789BPAMV1FqiNfWxlb4IR6ZxPtAqTi14R59s=
-Received: from DM6PR11CA0001.namprd11.prod.outlook.com (2603:10b6:5:190::14)
- by PH0PR12MB5451.namprd12.prod.outlook.com (2603:10b6:510:ee::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
- 2023 19:51:23 +0000
-Received: from CY4PEPF0000EE3B.namprd03.prod.outlook.com
- (2603:10b6:5:190:cafe::b9) by DM6PR11CA0001.outlook.office365.com
- (2603:10b6:5:190::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
- Transport; Thu, 14 Sep 2023 19:51:22 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE3B.mail.protection.outlook.com (10.167.242.15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.20 via Frontend Transport; Thu, 14 Sep 2023 19:51:22 +0000
-Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 14 Sep 2023 14:51:21 -0500
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <x86@kernel.org>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Babu Moger <babu.moger@amd.com>
-Subject: [PATCH 2/2] KVM: SVM: Do not use user return MSR support for virtualized TSC_AUX
-Date:   Thu, 14 Sep 2023 14:50:45 -0500
-Message-ID: <025fd734d35acbbbbca74c4b3ed671a02d4af628.1694721045.git.thomas.lendacky@amd.com>
+        Thu, 14 Sep 2023 15:53:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8425026B8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694721124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q/dj/LCR0O5gsD/qpCJOxuH/Z8gNXnmeWxnQEV1TNGA=;
+        b=bzWrrJdjf+2Cq3L+1YMc4b4ZSmw6WTLvrmpbhOFEET/GL73xjVcxF9dhL8UP/OhfR73+FA
+        t4Paw8+yK0p3ngPCWLDgtpUIllfiK9+Fvw0NQhwUdyQdanYWM0r3W4iaSGZxi4I8/UboyB
+        H+TGXLdWvsJD/PplXp/j8WN6ljzU0NA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-58-k2ubRpcONDOW3GRtwcoqMA-1; Thu, 14 Sep 2023 15:52:03 -0400
+X-MC-Unique: k2ubRpcONDOW3GRtwcoqMA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so10305245e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 12:52:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694721122; x=1695325922;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q/dj/LCR0O5gsD/qpCJOxuH/Z8gNXnmeWxnQEV1TNGA=;
+        b=PCSX77zp9cmFYfJeD11TFHrWK6XOI9eRnk9do4004AmpnQ2593Yp6U/QazUCCcFLVO
+         ULpQO5bIWinYOJD0prUcGWofGeGNJjHlw9VEXPCpaAvOW5V3lUqffbTvlAzE6mP4ULQH
+         +CnrPAZqzQpI8agmYydKgHHAXmfwLaI77Tk0VXyfQHc8mi1IeXCkoldF5reRjISXDJmS
+         vjCf3+bM6svtx92fW2dMhjR1/+hoiDHFh0PPvB5PYlVbRaJp7cTviug6HjU301jUzPoM
+         B6OhLXdUK6gn8jKX85AI08VswpO4L/BW1Hg4coHWJK5m+6Me/MlF0fxpQt7/YPTfJltY
+         SZbg==
+X-Gm-Message-State: AOJu0Yw7dBkkgOoXfvW3CTMSe5ZkEbEElymtSSjyGYC7XGoz+pd3KTg+
+        G2zPDJJJ7E1Nf60i6cYQCo9aeFQsUSi1mKoDs9D7gBCOVsdjXT1p2Irdk3Qp2n1jg6HuLExu/m+
+        NzsyFzxNYtXsVXRxdcK7/SpjO7Tq0fpZGclx7M9jxOXXFgLablPsPD8TChVHGQtENXjv2f7pcLw
+        vE/47v0Hw=
+X-Received: by 2002:a05:600c:2210:b0:401:bf56:8ba0 with SMTP id z16-20020a05600c221000b00401bf568ba0mr5485527wml.28.1694721121839;
+        Thu, 14 Sep 2023 12:52:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEQSOLQHLT5syA/mgJqXyvs7BJNeTPgNQRbQoKkAnj7HNnkkWxGFLTHIsAcaYufqvs9/KWSzw==
+X-Received: by 2002:a05:600c:2210:b0:401:bf56:8ba0 with SMTP id z16-20020a05600c221000b00401bf568ba0mr5485511wml.28.1694721121444;
+        Thu, 14 Sep 2023 12:52:01 -0700 (PDT)
+Received: from minerva.home (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id s23-20020a7bc397000000b00403bbe69629sm2773069wmj.31.2023.09.14.12.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 12:52:01 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/ssd130x: Drop _helper prefix from struct drm_*_helper_funcs callbacks
+Date:   Thu, 14 Sep 2023 21:51:24 +0200
+Message-ID: <20230914195138.1518065-1-javierm@redhat.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1694721045.git.thomas.lendacky@amd.com>
-References: <cover.1694721045.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3B:EE_|PH0PR12MB5451:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04e64f80-7eb9-4bec-4b4f-08dbb55bf905
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yPoUcFE8vvaOgTLL16iBbSl3MB9JjCP8KHArm8R2sMJD8JpWkaOo59f01q1B3zjeNs3c/gwrnqJa2ayWLIOUph4Q2RwUalUDekzgXgM3oQyRw/EumWSeFO3YWPJ1QoVIGGNECy/uq54r9n3pui+64pQeT5nVma8HmRPOslEOHSErx1OKpsw3qGy5jCW7U3v9gwPj/oAQ/nRhUmcR8hKCMiujotQhRc375DXJghGqEDALhBEFxcnVXgq/QdLJohgxExOPgDPFVzs84OiFeWKhmqmzjLvfNodP3RMurWSdl3Kz+M6gpvsRVJ2ds9PudgIOrKHxJ4mXxg25uYirA2dhAELE0jjbNMT63B6Yx8NTUnXcN50CP0LX1SAE7tg10dA8B8Uc6EY1zJGSc1Lo0GEnXuw6cgq/Dn9CDQVc8EoGdfmm9GR0F8bwW0WNCVeZj2lnK3EvXvWszgLeKjhwxYOdexg1dqv0jOpVzDGemH69HrYKCIIxZOudoZZ3+2n7gi8A8oazAhpVhhUwEjeAifciTvYHqdDuAj67LC10cENumNuTTLyuKYOEUREf5TiwCDUm7QFzFu6L/JCUzh3Jvi6phch/O+MF7b4Czp3Ov/Ws7R9cgMLF38OKLeQ2cV+mueT6vcdy0tzjP2R1AF6Sc6aFbxc1OAVLy7gXfxnYMpxvjOD6alp9xEDYxdvmkyBW1rOhoLEIec4TWQwTKOboT3Gomzbg3yuGY/1VljBUXxI6SuV7lxyQc0FVR9ecFRIkFzBnXie0xttDRKZqJZKmameVpA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(396003)(376002)(1800799009)(82310400011)(186009)(451199024)(36840700001)(46966006)(40470700004)(478600001)(5660300002)(41300700001)(316002)(8936002)(8676002)(2616005)(336012)(26005)(36860700001)(426003)(16526019)(86362001)(356005)(4326008)(47076005)(54906003)(83380400001)(81166007)(82740400003)(36756003)(2906002)(40480700001)(40460700003)(70586007)(70206006)(6666004)(110136005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 19:51:22.6644
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04e64f80-7eb9-4bec-4b4f-08dbb55bf905
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE3B.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5451
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the TSC_AUX MSR is virtualized, the TSC_AUX value is swap type "B"
-within the VMSA. This means that the guest value is loaded on VMRUN and
-the host value is restored from the host save area on #VMEXIT.
+The driver uses a naming convention where functions for struct drm_*_funcs
+callbacks are named ssd130x_$object_$operation, while the callbacks for
+struct drm_*_helper_funcs are named ssd130x_$object_helper_$operation.
 
-Since the value is restored on #VMEXIT, the KVM user return MSR support
-for TSC_AUX can be replaced by populating the host save area with current
-host value of TSC_AUX. This replaces two WRMSR instructions with a single
-RDMSR instruction.
+The idea is that this helper_ prefix in the function names denote that are
+for struct drm_*_helper_funcs callbacks. This convention was copied from
+other drivers, when ssd130x was written but Maxime pointed out that is the
+exception rather than the norm.
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+So let's get rid of the _helper prefixes from the function handlers names.
+
+Suggested-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
- arch/x86/kvm/svm/sev.c | 14 +++++++++++++-
- arch/x86/kvm/svm/svm.c | 26 ++++++++++++++++----------
- arch/x86/kvm/svm/svm.h |  4 +++-
- 3 files changed, 32 insertions(+), 12 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 565c9de87c6d..1bbaae2fed96 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2969,6 +2969,7 @@ static void sev_es_init_vmcb_after_set_cpuid(struct vcpu_svm *svm)
- 	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX) &&
- 	    (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
- 	     guest_cpuid_has(vcpu, X86_FEATURE_RDPID))) {
-+		svm->v_tsc_aux = true;
- 		set_msr_interception(vcpu, svm->msrpm, MSR_TSC_AUX, 1, 1);
- 		if (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
- 			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-@@ -3071,8 +3072,10 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm)
- 					    sev_enc_bit));
+ drivers/gpu/drm/solomon/ssd130x.c | 46 +++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
+index 8ab02724f65f..245e4ba1c041 100644
+--- a/drivers/gpu/drm/solomon/ssd130x.c
++++ b/drivers/gpu/drm/solomon/ssd130x.c
+@@ -630,8 +630,8 @@ static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb,
+ 	return ret;
  }
  
--void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
-+void sev_es_prepare_switch_to_guest(struct vcpu_svm *svm, struct sev_es_save_area *hostsa)
+-static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
+-						     struct drm_atomic_state *state)
++static int ssd130x_primary_plane_atomic_check(struct drm_plane *plane,
++					      struct drm_atomic_state *state)
  {
-+	u32 msr_hi;
-+
- 	/*
- 	 * All host state for SEV-ES guests is categorized into three swap types
- 	 * based on how it is handled by hardware during a world switch:
-@@ -3109,6 +3112,15 @@ void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
- 		hostsa->dr2_addr_mask = amd_get_dr_addr_mask(2);
- 		hostsa->dr3_addr_mask = amd_get_dr_addr_mask(3);
- 	}
-+
-+	/*
-+	 * If TSC_AUX virtualization is enabled, MSR_TSC_AUX is loaded but NOT
-+	 * saved by the CPU (Type-B). If TSC_AUX is not virtualized, the user
-+	 * return MSR support takes care of restoring MSR_TSC_AUX. This
-+	 * exchanges two WRMSRs for one RDMSR.
-+	 */
-+	if (svm->v_tsc_aux)
-+		rdmsr(MSR_TSC_AUX, hostsa->tsc_aux, msr_hi);
+ 	struct drm_device *drm = plane->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+@@ -667,8 +667,8 @@ static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
+ 	return 0;
  }
  
- void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c58d5632e74a..905b1a2664ed 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1529,13 +1529,13 @@ static void svm_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
- 		struct sev_es_save_area *hostsa;
- 		hostsa = (struct sev_es_save_area *)(page_address(sd->save_area) + 0x400);
+-static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
+-						       struct drm_atomic_state *state)
++static void ssd130x_primary_plane_atomic_update(struct drm_plane *plane,
++						struct drm_atomic_state *state)
+ {
+ 	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
+ 	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
+@@ -701,8 +701,8 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
+ 	drm_dev_exit(idx);
+ }
  
--		sev_es_prepare_switch_to_guest(hostsa);
-+		sev_es_prepare_switch_to_guest(svm, hostsa);
- 	}
+-static void ssd130x_primary_plane_helper_atomic_disable(struct drm_plane *plane,
+-							struct drm_atomic_state *state)
++static void ssd130x_primary_plane_atomic_disable(struct drm_plane *plane,
++						 struct drm_atomic_state *state)
+ {
+ 	struct drm_device *drm = plane->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+@@ -777,9 +777,9 @@ static void ssd130x_primary_plane_destroy_state(struct drm_plane *plane,
  
- 	if (tsc_scaling)
- 		__svm_write_tsc_multiplier(vcpu->arch.tsc_scaling_ratio);
+ static const struct drm_plane_helper_funcs ssd130x_primary_plane_helper_funcs = {
+ 	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
+-	.atomic_check = ssd130x_primary_plane_helper_atomic_check,
+-	.atomic_update = ssd130x_primary_plane_helper_atomic_update,
+-	.atomic_disable = ssd130x_primary_plane_helper_atomic_disable,
++	.atomic_check = ssd130x_primary_plane_atomic_check,
++	.atomic_update = ssd130x_primary_plane_atomic_update,
++	.atomic_disable = ssd130x_primary_plane_atomic_disable,
+ };
  
--	if (likely(tsc_aux_uret_slot >= 0))
-+	if (likely(tsc_aux_uret_slot >= 0) && !svm->v_tsc_aux)
- 		kvm_set_user_return_msr(tsc_aux_uret_slot, svm->tsc_aux, -1ull);
+ static const struct drm_plane_funcs ssd130x_primary_plane_funcs = {
+@@ -791,8 +791,8 @@ static const struct drm_plane_funcs ssd130x_primary_plane_funcs = {
+ 	.destroy = drm_plane_cleanup,
+ };
  
- 	svm->guest_state_loaded = true;
-@@ -3090,15 +3090,21 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		break;
- 	case MSR_TSC_AUX:
- 		/*
--		 * TSC_AUX is usually changed only during boot and never read
--		 * directly.  Intercept TSC_AUX instead of exposing it to the
--		 * guest via direct_access_msrs, and switch it via user return.
-+		 * If TSC_AUX is being virtualized, do not use the user return
-+		 * MSR support because TSC_AUX is restored on #VMEXIT.
- 		 */
--		preempt_disable();
--		ret = kvm_set_user_return_msr(tsc_aux_uret_slot, data, -1ull);
--		preempt_enable();
--		if (ret)
--			break;
-+		if (!svm->v_tsc_aux) {
-+			/*
-+			 * TSC_AUX is usually changed only during boot and never read
-+			 * directly.  Intercept TSC_AUX instead of exposing it to the
-+			 * guest via direct_access_msrs, and switch it via user return.
-+			 */
-+			preempt_disable();
-+			ret = kvm_set_user_return_msr(tsc_aux_uret_slot, data, -1ull);
-+			preempt_enable();
-+			if (ret)
-+				break;
-+		}
+-static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc,
+-							   const struct drm_display_mode *mode)
++static enum drm_mode_status ssd130x_crtc_mode_valid(struct drm_crtc *crtc,
++						    const struct drm_display_mode *mode)
+ {
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(crtc->dev);
  
- 		svm->tsc_aux = data;
- 		break;
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index c0d17da46fae..49427858474e 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -213,6 +213,8 @@ struct vcpu_svm {
- 	u32 asid;
- 	u32 sysenter_esp_hi;
- 	u32 sysenter_eip_hi;
-+
-+	bool v_tsc_aux;
- 	uint64_t tsc_aux;
+@@ -807,8 +807,8 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
+ 	return MODE_OK;
+ }
  
- 	u64 msr_decfg;
-@@ -690,7 +692,7 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu);
- int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
- void sev_es_vcpu_reset(struct vcpu_svm *svm);
- void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
--void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa);
-+void sev_es_prepare_switch_to_guest(struct vcpu_svm *svm, struct sev_es_save_area *hostsa);
- void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+-static int ssd130x_crtc_helper_atomic_check(struct drm_crtc *crtc,
+-					    struct drm_atomic_state *state)
++static int ssd130x_crtc_atomic_check(struct drm_crtc *crtc,
++				     struct drm_atomic_state *state)
+ {
+ 	struct drm_device *drm = crtc->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+@@ -882,8 +882,8 @@ static void ssd130x_crtc_destroy_state(struct drm_crtc *crtc,
+  * the screen in the primary plane's atomic_disable function.
+  */
+ static const struct drm_crtc_helper_funcs ssd130x_crtc_helper_funcs = {
+-	.mode_valid = ssd130x_crtc_helper_mode_valid,
+-	.atomic_check = ssd130x_crtc_helper_atomic_check,
++	.mode_valid = ssd130x_crtc_mode_valid,
++	.atomic_check = ssd130x_crtc_atomic_check,
+ };
  
- /* vmenter.S */
+ static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
+@@ -895,8 +895,8 @@ static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
+ 	.atomic_destroy_state = ssd130x_crtc_destroy_state,
+ };
+ 
+-static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+-						 struct drm_atomic_state *state)
++static void ssd130x_encoder_atomic_enable(struct drm_encoder *encoder,
++					  struct drm_atomic_state *state)
+ {
+ 	struct drm_device *drm = encoder->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+@@ -921,8 +921,8 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+ 	return;
+ }
+ 
+-static void ssd130x_encoder_helper_atomic_disable(struct drm_encoder *encoder,
+-						  struct drm_atomic_state *state)
++static void ssd130x_encoder_atomic_disable(struct drm_encoder *encoder,
++					   struct drm_atomic_state *state)
+ {
+ 	struct drm_device *drm = encoder->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+@@ -935,15 +935,15 @@ static void ssd130x_encoder_helper_atomic_disable(struct drm_encoder *encoder,
+ }
+ 
+ static const struct drm_encoder_helper_funcs ssd130x_encoder_helper_funcs = {
+-	.atomic_enable = ssd130x_encoder_helper_atomic_enable,
+-	.atomic_disable = ssd130x_encoder_helper_atomic_disable,
++	.atomic_enable = ssd130x_encoder_atomic_enable,
++	.atomic_disable = ssd130x_encoder_atomic_disable,
+ };
+ 
+ static const struct drm_encoder_funcs ssd130x_encoder_funcs = {
+ 	.destroy = drm_encoder_cleanup,
+ };
+ 
+-static int ssd130x_connector_helper_get_modes(struct drm_connector *connector)
++static int ssd130x_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(connector->dev);
+ 	struct drm_display_mode *mode;
+@@ -963,7 +963,7 @@ static int ssd130x_connector_helper_get_modes(struct drm_connector *connector)
+ }
+ 
+ static const struct drm_connector_helper_funcs ssd130x_connector_helper_funcs = {
+-	.get_modes = ssd130x_connector_helper_get_modes,
++	.get_modes = ssd130x_connector_get_modes,
+ };
+ 
+ static const struct drm_connector_funcs ssd130x_connector_funcs = {
 -- 
 2.41.0
 
