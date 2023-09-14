@@ -2,101 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF49F79FE90
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A886B79FE92
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236510AbjINIiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        id S236405AbjINIim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236468AbjINIiQ (ORCPT
+        with ESMTP id S231404AbjINIik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:38:16 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC43F1FC3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:38:12 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d8165e3b209so1845981276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694680692; x=1695285492; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tw+IM7T28OUZCuFvNNtZ4r0LwLPv3E7VBk0HU9CwOkM=;
-        b=cFbmBs6YE5ogcBr0pGE7Gr0BSYHeT+XWSylTxMfjtJdE5FEGK3W88Zt3vwgrVtjA23
-         WyOh1nU7GnQkovCxpbEd5kJJsRZmdYt/Vjw77qjDkACMgL2rS7mGJEZfX9fsDCLUYx0W
-         TR/wdb5/OUQZSU2rPDIvSe+eFlNwkg0lkjI6dmAOsgfV4XSVROuGrT8TPcxSRbz7bvgZ
-         0x0xzD4rXoR3ZWc7fmtMQAoo42pHNDHrkvdqJDAHonx5GB22MRx5orbPECcaa3rHGqaP
-         VMhZlJTtWecczZov6hNSEVBKvW+HeK2tDRrMWSXopyLkIGodQ0blgAxMfErBny+8/ULs
-         5bCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694680692; x=1695285492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tw+IM7T28OUZCuFvNNtZ4r0LwLPv3E7VBk0HU9CwOkM=;
-        b=Km3NSpvy2ecAHSiywmnxVRvhN55LmdaMJekgUGX5G0x8KNkFmdm0ycnOjO37adz5qi
-         6VuatZDM0FFZYCOIJBSc/drTR+CJTmuiK94UW+dyLnKMTAfkqzRqNV/PAWEuaa/WH+ox
-         BjPC2WFaRQVBhtPIG9blTzvQcWhmJ5U05erxfn/mBly8LJkuI2+2hrDdXIU5yNTzOZ+H
-         I0kigp8Sd6VZBrZq7Murigl+RNgsVKWFWyCBGCAA8kgdioV0l+eH1UB0DbO4/uPsnxkP
-         YX8mvGrOSjoNpbnBbNPktHm3FJxWWqqw2Wm09IBYOSffU0GOyJcOSDKQeqwaMH5FNFYR
-         WMSg==
-X-Gm-Message-State: AOJu0Yz9PCx3Sx2D6q0eO3S58dip9gawoRizr4ivUiZRTNMr/JqTRQB8
-        T/29PwWRuOGEwN/TUd4ZHK9mLJLhXsYS3OmD+yNFgPc5qryeGNpU
-X-Google-Smtp-Source: AGHT+IFyY43h1oRCVKhhChEd117O1PDuUi9sFE50e09WDnGshfwxm7/vGR5ngRDde3sVsJopmuH3eR/c9W658nqJCQo=
-X-Received: by 2002:a25:7714:0:b0:d07:b677:3349 with SMTP id
- s20-20020a257714000000b00d07b6773349mr806404ybc.25.1694680691812; Thu, 14 Sep
- 2023 01:38:11 -0700 (PDT)
+        Thu, 14 Sep 2023 04:38:40 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2079.outbound.protection.outlook.com [40.107.92.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B1D1FC4;
+        Thu, 14 Sep 2023 01:38:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B1wL28qs8wNv9ZUvI9nZQSLi25+1O9ZkCvVBEj8H0vfWpkn2b6OgrcbZARKhoB/1v10bILU1KyCo6BhBuxFS3PI+hn7RxvaQNBKnThMHaTpW+i1DBBuo7euIrTB/ZoVC5j7H04e53kAIAbNEdERzZP0p3adxowwKd0lJxJLbkoHATxrYqND3Nh2DOtwZrdGUJTTNI3O1CkfLq8zUvEbae3SQYhZi3sil7R0kX3DdDSW0XLeyqW1ccEr1IkuH9Wh9ulccrMamgmNCNEZZoeegzp6Nxa0y/lsLrFwmbsB6xLa6dj4pXRpuHqJPXFCMNENtrx6A176+SQkVtWmcZba5NQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YERWMJ30B91l/sSfp9V6W9satlDcewaEx3lnE3+EPJw=;
+ b=ZNwo7ejB9/7opFhpo0qNfmqce+C7SpHRDvguxENC/ELLQcRnzTshBdzWRM/SOhcwhs8sCOwVi4WZFiQ6sFhavlhHtwOxA3vAE7BP0LqafRU9GZE8spkuPk/A8B0O9XhadHjSqTpKWl15ctBW35/Kcoioc8n8a6dAYBs7t8sSKyxLVB0WU4lc/2br8a+TwyLHau1E4+WYPxnIB8Qmn9p72s6bj+iKcUe51hf3fDu2zPtn56E7GVyLDb2RfRvnpMHdPS+p+Ky0RgWDYM223fATn+ugs0mukxCR5MLx/fBTEqFzI6DEx/+RCJA5RoY4bAjxQqIey5/rfpBLAIa7E3CWdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YERWMJ30B91l/sSfp9V6W9satlDcewaEx3lnE3+EPJw=;
+ b=n20O/7WJmxEIXu9uttFxEkBnLn9lkvqk9Qgw5RjvJcIBQCxxlnDCXxYu+FhQzfaUgTdha9jh969KbqLy4GeA7Axm8tsbRQpzaUmLbNw9zOnyLRI5EemhyrZcAxLHGU6hMGMeEmPfard4FDT3UOfqV8zKzY8mtT+vqk+rYZ2dSn4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH0PR12MB5346.namprd12.prod.outlook.com (2603:10b6:610:d5::24)
+ by PH7PR12MB5760.namprd12.prod.outlook.com (2603:10b6:510:1d3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
+ 2023 08:38:33 +0000
+Received: from CH0PR12MB5346.namprd12.prod.outlook.com
+ ([fe80::b009:6291:f87a:33b6]) by CH0PR12MB5346.namprd12.prod.outlook.com
+ ([fe80::b009:6291:f87a:33b6%4]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
+ 08:38:33 +0000
+Message-ID: <9d4e175b-b8ed-85df-31a2-6bfb4a3616d9@amd.com>
+Date:   Thu, 14 Sep 2023 14:08:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH 0/5] Add new platform support for DBC
+Content-Language: en-US
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     john.allen@amd.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907184846.47598-1-mario.limonciello@amd.com>
+ <5d9af84b-59e8-385e-5dff-0f12651fab52@amd.com>
+From:   Rijo Thomas <Rijo-john.Thomas@amd.com>
+In-Reply-To: <5d9af84b-59e8-385e-5dff-0f12651fab52@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BM1P287CA0011.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::15) To CH0PR12MB5346.namprd12.prod.outlook.com
+ (2603:10b6:610:d5::24)
 MIME-Version: 1.0
-References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-4-brgl@bgdev.pl>
- <CACRpkdax-CrB42LeQ1bs3E7VqMncsgEwMs7b_v7J6R5AE+BjAg@mail.gmail.com>
- <CAMRc=Mdt0wbjzbwBLK5m--VLV2WE5JybgrNYWXtbinPu_c=psw@mail.gmail.com> <CACRpkdYVGR0Wj9zS9cuS3qa_tNZHE1t95wQ-4MXAEL6s_4jdFQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYVGR0Wj9zS9cuS3qa_tNZHE1t95wQ-4MXAEL6s_4jdFQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 14 Sep 2023 10:38:00 +0200
-Message-ID: <CACRpkdaar4UsYcnMmjMPd5NnhaJq-LMSW0gQfBnjS3_u0_UkYQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mmc: slot-gpio: use gpiod_set_active_[low|high]()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5346:EE_|PH7PR12MB5760:EE_
+X-MS-Office365-Filtering-Correlation-Id: 993a939c-7444-4b4c-6adc-08dbb4fdfacf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P5pue92VosRRRm+5S0MRLcx1RzCnPukgn88uZxLEQPcgYwgTkE7oTqrZTbiiuaMLAAGXsw+NpKKqbyVSa5r+hbKjkfHdge+G1E+4DrZhFQh03HOeNnf35VBfl/p6qu/ktTyMQ9F/ZjYUKT5f+sJEd3u7tRnr7RSaI5Ne32sJa9YFFEOSGrTM3ac+a4WvW82UTytGydCzyhSOyUe/n0feArtaFkPXFpsH0LJ5B2jqauBqy7p3YxSvit9M+7I9cQ7Bt7SjobfE7r6M3PR5ZwdPT9pzpH1wH/ekGtV1K5BFLsBUe9NpilxfSb2EjCezrENt+fj+FmHI63XV9PTCa4wG/M9kt4H+NokTE7vgbfMw2W46YMeyYuMwTCTJFmY8t0FIieSKstI6O0MV3B9h8s2/jvx6CO8oSHg7wb+v6hG7WziLDRzVwt+UhCWHsFqAfsCY9k8BCEPM47Km0vNifWRpq4VNjKLtYEZbtxqEw22QwdD6xAyyY5MGAdITB7nWUAsc8Ca4ZcHb3wvw8yYLsBEiFefHG5ajL76kjsHxxwD0QhB6XZTuqapaLYnaWZ0Inx3kQGMM7f7CDnQ4+UiZTge7mzS74ErplC/okUPvtkDQ/WE7Sxj+t83pOfUP94kwzLaH9vHSI5MXoFzruTMZCGtA+g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5346.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(346002)(366004)(396003)(186009)(1800799009)(451199024)(41300700001)(83380400001)(316002)(6666004)(53546011)(6486002)(966005)(478600001)(6506007)(66476007)(66556008)(26005)(2616005)(66946007)(110136005)(6512007)(2906002)(31696002)(38100700002)(5660300002)(8936002)(86362001)(8676002)(4326008)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SW80Rnp0YTJvaG8rMHFYL1gxTm5nOGd4RXY4UUFJM2F6b3dHU2JINXBHNzI1?=
+ =?utf-8?B?MDkvU3BUWHEzekpaOHFTbE9QUW1YZzVZd3Q3T0h4TDlKWENYTUQxMjROd2s0?=
+ =?utf-8?B?WW02Ynhzd3NzUXVjZlBLZGkzY0pZSHZUckdacDhHeTF0Zkl0UnhiSjFaMFl4?=
+ =?utf-8?B?VEkxMDlLZWV1OW5DOGNZVitGMTBBRGI4d3RmVEQ2cHo2QUhOWnJlZkJKMW0w?=
+ =?utf-8?B?U1BxN1JoN3gvamxCZ1NTUEk3bHdPa2xOUXdSc00zRUpsSi9NUi8yMzQwOExK?=
+ =?utf-8?B?TENKRGp4VWNmT3U0NHFJa25OVzNjSmRrT0x6M2ZkbHFJTTdDVnVhbzd4L2RQ?=
+ =?utf-8?B?WmQ5REpRL1BJaUd4TDJ5WlFDNEptNXRZWWVsdWpDWklWMlo4dkJLZndaLzV6?=
+ =?utf-8?B?S2Q4QVV2ejE1UC9NZ0dVb1diQ1pEWEF4cjNXRXVBeDJTSFFrc2NQWEwweEl5?=
+ =?utf-8?B?dzNhS2MzRkFXT0xZejVFWStQbk81aUZEMnlaQUlHQ1F3ZFA3cjRXZ0oyWnVj?=
+ =?utf-8?B?aEpmTjNDL0tPNVE5WXEvcjZ5V3M4QmtHbXJjMENueHVVN2FQNysrbnlxVUlJ?=
+ =?utf-8?B?RGtnSlFUOEJSWHFiQUhQOTNWSFpQK1NjRWcvQmwralo2bkJNV1QrUldHMzJ3?=
+ =?utf-8?B?K0hObnNUeFhjTE9WMmlrNVRsblhCY3hNMWozbDUxM0hoNzJDbDhnckhYMmN6?=
+ =?utf-8?B?Rm1OeGxKT0RJbnVUWnk0SlFHMjNVd0ZIOG45ZWNNNXJPOGdlQ2VkNTIwTHZS?=
+ =?utf-8?B?UkVsRXBrdlZpRE5GYVFLVEtUQWVmYVBFUzRPcmMyMDVSODFmVGxKS2hxYUN3?=
+ =?utf-8?B?STFQSjRvd1c0M2cvMW1HK3RNdWdob2FwOGhDR3FGY3lPMzdHcHcyOTNCQXY0?=
+ =?utf-8?B?OElJWW9ObW5JVlFjL0xSRUkvRDBiTGkzWE9ROG1ZNHJHV1ZxOFpiQlNUUTZr?=
+ =?utf-8?B?bzQ1RndKdEl0RU9oTkp5KzRSMlJ1cVppWjdNM2hVOTVQRlZaMWtDRWdpT1hj?=
+ =?utf-8?B?SGJuTCtRclNmQ2l5MFhxYmxTRlFrZ1hKeWhYR2plOFFzQmJKaGZvL1Rsd2ta?=
+ =?utf-8?B?c1JkbTJxR0dEQ2NZSG1KOVRXeDhvcGhyK0NES3FGNXBYTGEyR3RHc21yVTEz?=
+ =?utf-8?B?a0ZkcDV2YUtGT3F1aHgxd1B2NzljT1pQbnI5MjZFdkdPZXF0dElCNXhZeDdS?=
+ =?utf-8?B?YXJDcGYrZFBDWGJreEt0NlcrQ1E2R0VEWnJlY3VEMXgxR0VsalhRUS9TZW5W?=
+ =?utf-8?B?MFBURlVGZnlnT05lRll4VW10alJRU2ZkOXBEbHZraUFXUGZRSUxCVXl5dFBB?=
+ =?utf-8?B?RW9Ec050dklqdWE2SFIvRG01amxlemRic09HVzdubVlCS3ZBdHR0THUwQUVI?=
+ =?utf-8?B?MEZtakZMbis4RU1OUUVkRnA2ZmpKZm1CTVRhTmhtTmtwRm56aVVDdW5haU1O?=
+ =?utf-8?B?SW45TWVxR0ZGTXBteGF1Z3FhY1hJT2lZcGRWT2cwVmpwNlJYa2wvWHdrSUxJ?=
+ =?utf-8?B?enhFeGdWQ2wya3I1eWI3SjRqOTVBQnNCUFNyOE9TdWFsbkxGRjBhNVUyZUZK?=
+ =?utf-8?B?U2hxSURkdXIvRXg1VUZtdEVmRTBoNFZjU0FPS1VtaWtmTXAyanVMamxIOHJv?=
+ =?utf-8?B?MlR6R3hybko1WFc1eUFMVThuZVgvWHpld1dUd0c5WFgxVmwrSlJPRVBEcnQw?=
+ =?utf-8?B?MEI5b2FEVjBsUVZvaXlyaTMxZi9vaXlrTGNKSzQ2eWNrNDJ4bVBYKzhXQ2d0?=
+ =?utf-8?B?UlNjcitKWjFGVEcvcTF3VGNCQmV1V1lqTG54TjZ6c0pzaEhpaWJvb01jbkJY?=
+ =?utf-8?B?UkFvd0V4RHpReVBRMzNjNFQ2S3h4M3dLTFlOaWxnckZHSmVnZFBRcnpUbTRv?=
+ =?utf-8?B?ZytQR1BkODY1WHpqZ08yeU9oOU9Rc3dvM1NTQ01LWEFucmNqYThVNFA3NldW?=
+ =?utf-8?B?MkhPQ3dXQ3pIY1I5Z002Y1YxbThQSldhcDNnUkNrRVp6TDlZbTdDVWE3YlJs?=
+ =?utf-8?B?ZGRFMXdRZDEvZVFLcHR5d0ZJcXg1RVFaWW0zb0VRUElUUFNURWRRR0dyeG90?=
+ =?utf-8?B?UDR4K2IveGhNbGxOdnFDNHQrZWt3RStzTFVtTTB4MUdMY2pCQVFDcmxMOXB4?=
+ =?utf-8?Q?mQvkqeOaUd5OGnWGFIv/noxjg?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 993a939c-7444-4b4c-6adc-08dbb4fdfacf
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5346.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 08:38:33.4612
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iLAUI686uB35LCnnTuCAPuFkI2ydR4agnUET+xzp+bag9OUwtxo60HCGpeXUV0RNiOItmcxkTqvfWGOTjYg24Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5760
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:31=E2=80=AFAM Linus Walleij <linus.walleij@linar=
-o.org> wrote:
-> On Wed, Sep 13, 2023 at 2:39=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
 
-> > Alternatively we could reimplement the toggle semantics locally in a
-> > helper function in order to get rid of it from GPIOLIB.
->
-> I don't know about that, the flag is inside gpio_desc so we cannot
-> access it (struct is private to gpiolib...)
 
-Actually I think the way the toggle call came about was for this one
-MMC usecase.
+On 9/8/2023 2:58 AM, Tom Lendacky wrote:
+> On 9/7/23 13:48, Mario Limonciello wrote:
+>> Some platforms that support dynamic boost control (DBC) support it via
+>> a different mailbox than the platform access mailbox.
+>>
+>> This series adds support for those platforms.
+>>
+>> It is tested on top of the fixes series. The prerequisite patches refer
+>> to that series.
+>> Link: https://lore.kernel.org/linux-crypto/20230829150759.156126-1-mario.limonciello@amd.com/T/#m47782729377f6fe5d62130cc701dae7f15306726
+>>
+>> Mario Limonciello (4):
+>>    crypto: ccp: Add support for extended PSP mailbox commands
+>>    crypto: ccp: Add a communication path abstraction for DBC
+>>    crypto: ccp: Add a macro to check capabilities register
+>>    crypto: ccp: Add support for DBC over PSP mailbox
+>>
+>> Tom Lendacky (1):
+>>    crypto: ccp: Move direct access to some PSP registers out of TEE
+>>
+>>   drivers/crypto/ccp/dbc.c     |  72 ++++++++++++++-------
+>>   drivers/crypto/ccp/dbc.h     |  29 +++------
+>>   drivers/crypto/ccp/psp-dev.c | 122 ++++++++++++++++++++++++++++-------
+>>   drivers/crypto/ccp/psp-dev.h |  55 ++++++++++++++++
+>>   drivers/crypto/ccp/sp-dev.h  |   4 ++
+>>   drivers/crypto/ccp/sp-pci.c  |  22 ++++---
+>>   drivers/crypto/ccp/tee-dev.c |  48 +++-----------
+>>   drivers/crypto/ccp/tee-dev.h |  15 +----
+>>   8 files changed, 241 insertions(+), 126 deletions(-)
+>>
+> 
+> Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> But I would like to see a Reviewed-by: or Tested-by: from Rijo-john for the TEE changes.
+> 
 
-Then other subsystems have used it without asking the GPIO
-maintainers or without implementing the more proper accessors
-or patching drivers/gpio/gpiolib-of.c because why not, probably
-thinking something like "hey weird that it is just toggle I guess they
-are not so smart, but it works, ship it".
+Done.
 
-Yours,
-Linus Walleij
+Acked-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
+
+Thanks,
+Rijo
+
+> Thanks,
+> Tom
+> 
+>>
+>> base-commit: 7ba2090ca64ea1aa435744884124387db1fac70f
+>> prerequisite-patch-id: 4bcf7f3ea21472e4e28c2457cc9827f6023ec6ca
+>> prerequisite-patch-id: 903be53a20306f0188e52015dbfe5196738bb2eb
+>> prerequisite-patch-id: af396bafb6acaa9c203c1a2c5f4665171cb45e4f
+>> prerequisite-patch-id: abe450d4bf1de4a5664a41dbf84e72b1d4bfdae7
+>> prerequisite-patch-id: b0b9cf55fcb73a11de6f3da73412fb090562857a
