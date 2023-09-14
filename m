@@ -2,349 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44587A0C0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A577A0C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240437AbjINR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
+        id S240639AbjINR6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbjINR5P (ORCPT
+        with ESMTP id S237398AbjINR6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:57:15 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBE81FF5;
-        Thu, 14 Sep 2023 10:57:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 949772183B;
-        Thu, 14 Sep 2023 17:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694714229;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GzgmO2bKqcW0F2Qtps8c2xmVQEbiNB6QHQCr0bblrYs=;
-        b=dcVd2qmVA4V6KEv3sTh8HbCLfuKV8UqVklLrOyOc8DnnvdkTzFNvbv0OzLX435byROd79Q
-        gHEoN0LsR3r+jw0vW5BvhliJR1dT01KgRbicPCvECfyY8hccwB7p7wAo1rZ5PBfMIJPyjG
-        xRlRyI+0SpCfDbn4oVZcTeT5cpcsvQ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694714229;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GzgmO2bKqcW0F2Qtps8c2xmVQEbiNB6QHQCr0bblrYs=;
-        b=ls3a3o0GSRp+qlkzmijfcKpuB1bfCXkdwWOBuzNNcitC5SZ4fAXqL1g/y1oLRSWc74Lz6p
-        ccnzqv1D1LaMuxDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A98D13580;
-        Thu, 14 Sep 2023 17:57:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lz9wEXVJA2VwWAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 14 Sep 2023 17:57:09 +0000
-Date:   Thu, 14 Sep 2023 19:57:06 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 05/11] btrfs: lookup physical address from stripe
- extent
-Message-ID: <20230914175706.GZ20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
- <20230914-raid-stripe-tree-v9-5-15d423829637@wdc.com>
+        Thu, 14 Sep 2023 13:58:49 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116B21FF6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:58:45 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c337aeefbdso11313395ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694714324; x=1695319124; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CFsmyS+K09iiFSJvxqc49LzsJ6t7yJD96oHLDDlnADM=;
+        b=x7kvdH2hsQPrJYkro3R2iENXeZrkDu8WkA3eU+3ZdN/sC0WOpErpIuiQs0YqePaf00
+         hV1OUAYy0r8tb8GdG0dahlSfCmzZkErygZ2GSY1P0E/Ra3SVs41NwcWfHnx5rrBAb2EQ
+         cHSMNQgsmL8ZCAVIn1Sfj8k0j7zKmCmwRFoePPVPUrQNtqq/g91Wv2K+8SnV6N3sO2ga
+         K9YLGkGdagshFNVF4JGV1VmGFJA83OesBAD6VlwS/tOzTg+JV7ed42XmzuP+d+2SJ6UM
+         hmIcTQYS7Ax70gqS0E+Xwo2GoTFxk5q/iUXGB0/xJ5hBpuYQ8drSM6Ep3sfQvvQgAtXp
+         ORpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694714324; x=1695319124;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CFsmyS+K09iiFSJvxqc49LzsJ6t7yJD96oHLDDlnADM=;
+        b=G/KDxXFppgUMH4dtoMorQx5rpk+r2uozFhM26QjBq/LSMzcql5+JIS81e2y8ZdP53/
+         Rq9yTD5CIyTvdCFXTogQawOt9l6ynFSVCLj4WbNx/iUZvJnWVmf1DEP2zJ4goF/euizo
+         wTJmU3BDUhtXwX4Bu8pWM/G4O0cZaeyqPNCH8QKSftH8s5EcMzJhBg/k49/DdkvDfBrv
+         55/py5W2l0t7F1g6y8eYsdhTXVHSRZNw+GJrXkvzZKUT+1ZmSWVVcDDIAmrRm2RdUwe6
+         ezBYFrqHCC6HSc7jokGo22kRrL+MQs6KAniuTg6zVaWzIOdIxo6TWhtlXKA65Q2U7rW0
+         pc7A==
+X-Gm-Message-State: AOJu0YxFc+Wpfr9HKOEGp/kRgd87gWBUypF5+2GiW6jW7YNeouGsjiTh
+        wvbiZ5OcYTj+EncMNpv7xJ6q6w==
+X-Google-Smtp-Source: AGHT+IFLLcNJ4RkUCWudbnFvaVhj4LHDQoNdbqKUsqeh+Tv088pDBCurogl3v9yGI/QiTbD9DdPxAw==
+X-Received: by 2002:a17:902:c10d:b0:1c3:7762:2adc with SMTP id 13-20020a170902c10d00b001c377622adcmr6172599pli.7.1694714324429;
+        Thu, 14 Sep 2023 10:58:44 -0700 (PDT)
+Received: from ghost ([50.168.177.76])
+        by smtp.gmail.com with ESMTPSA id jj14-20020a170903048e00b001bf2dcfe352sm1871487plb.234.2023.09.14.10.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 10:58:43 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 13:58:40 -0400
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v4 2/5] riscv: Add checksum library
+Message-ID: <ZQNJ0LQhZyJWlcSy@ghost>
+References: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
+ <20230911-optimize_checksum-v4-2-77cc2ad9e9d7@rivosinc.com>
+ <20230914-mural-deskbound-0e37d0767f6f@wendy>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914-raid-stripe-tree-v9-5-15d423829637@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20230914-mural-deskbound-0e37d0767f6f@wendy>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:07:00AM -0700, Johannes Thumshirn wrote:
-> Lookup the physical address from the raid stripe tree when a read on an
-> RAID volume formatted with the raid stripe tree was attempted.
+On Thu, Sep 14, 2023 at 01:25:23PM +0100, Conor Dooley wrote:
+> On Mon, Sep 11, 2023 at 03:57:12PM -0700, Charlie Jenkins wrote:
+> > Provide a 32 and 64 bit version of do_csum. When compiled for 32-bit
+> > will load from the buffer in groups of 32 bits, and when compiled for
+> > 64-bit will load in groups of 64 bits. Benchmarking by proxy compiling
+> > csum_ipv6_magic (64-bit version) for an x86 chip as well as running
+> > the riscv generated code in QEMU, discovered that summing in a
+> > tree-like structure is about 4% faster than doing 64-bit reads.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/checksum.h |  11 ++
+> >  arch/riscv/lib/Makefile           |   1 +
+> >  arch/riscv/lib/csum.c             | 210 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 222 insertions(+)
+> > 
+> > diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
+> > index 0d7fc8275a5e..a09a4053fb87 100644
+> > --- a/arch/riscv/include/asm/checksum.h
+> > +++ b/arch/riscv/include/asm/checksum.h
+> > @@ -16,6 +16,14 @@ typedef unsigned int csum_t;
+> >  typedef unsigned long csum_t;
+> >  #endif
+> >  
+> > +/* Default version is sufficient for 32 bit */
+> > +#ifdef CONFIG_64BIT
+> > +#define _HAVE_ARCH_IPV6_CSUM
+> > +__sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+> > +			const struct in6_addr *daddr,
+> > +			__u32 len, __u8 proto, __wsum sum);
+> > +#endif
+> > +
+> >  /*
+> >   *	Fold a partial checksum without adding pseudo headers
+> >   */
+> > @@ -90,6 +98,9 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+> >  
+> >  #define ip_fast_csum ip_fast_csum
+> >  
+> > +extern unsigned int do_csum(const unsigned char *buff, int len);
+> > +#define do_csum do_csum
+> > +
+> >  #include <asm-generic/checksum.h>
+> >  
+> >  #endif // __ASM_RISCV_CHECKSUM_H
+> > diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+> > index 26cb2502ecf8..2aa1a4ad361f 100644
+> > --- a/arch/riscv/lib/Makefile
+> > +++ b/arch/riscv/lib/Makefile
+> > @@ -6,6 +6,7 @@ lib-y			+= memmove.o
+> >  lib-y			+= strcmp.o
+> >  lib-y			+= strlen.o
+> >  lib-y			+= strncmp.o
+> > +lib-y			+= csum.o
+> >  lib-$(CONFIG_MMU)	+= uaccess.o
+> >  lib-$(CONFIG_64BIT)	+= tishift.o
+> >  lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
+> > diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
+> > new file mode 100644
+> > index 000000000000..47d98c51bab2
+> > --- /dev/null
+> > +++ b/arch/riscv/lib/csum.c
+> > @@ -0,0 +1,210 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * IP checksum library
+> > + *
+> > + * Influenced by arch/arm64/lib/csum.c
+> > + * Copyright (C) 2023 Rivos Inc.
+> > + */
+> > +#include <linux/bitops.h>
+> > +#include <linux/compiler.h>
+> > +#include <linux/kasan-checks.h>
+> > +#include <linux/kernel.h>
+> > +
+> > +#include <net/checksum.h>
+> > +
+> > +/* Default version is sufficient for 32 bit */
+> > +#ifndef CONFIG_32BIT
+> > +__sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+> > +			const struct in6_addr *daddr,
+> > +			__u32 len, __u8 proto, __wsum csum)
+> > +{
+> > +	/*
+> > +	 * Inform the compiler/processor that the operation we are performing is
+> > +	 * "Commutative and Associative" by summing parts of the checksum in a
+> > +	 * tree-like structure (Section 2(A) of "Computing the Internet
+> > +	 * Checksum"). Furthermore, defer the overflow until the end of the
+> > +	 * computation which is shown to be valid in Section 2(C)(1) of the
+> > +	 * same handbook.
+> > +	 */
+> > +	unsigned long sum, sum1, sum2, sum3, sum4, ulen, uproto;
+> > +
+> > +	uproto = htonl(proto);
+> > +	ulen = htonl(len);
+> > +
+> > +	sum   = saddr->s6_addr32[0];
+> > +	sum  += saddr->s6_addr32[1];
+> > +	sum1  = saddr->s6_addr32[2];
+> > +	sum1 += saddr->s6_addr32[3];
+> > +
+> > +	sum2  = daddr->s6_addr32[0];
+> > +	sum2 += daddr->s6_addr32[1];
+> > +	sum3  = daddr->s6_addr32[2];
+> > +	sum3 += daddr->s6_addr32[3];
+> > +
+> > +	sum4  = csum;
+> > +	sum4 += ulen;
+> > +	sum4 += uproto;
+> > +
+> > +	sum  += sum1;
+> > +	sum2 += sum3;
+> > +
+> > +	sum += sum2;
+> > +	sum += sum4;
+> > +
+> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
+> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+> > +		csum_t fold_temp;
+> > +
+> > +		/*
+> > +		 * Zbb is likely available when the kernel is compiled with Zbb
+> > +		 * support, so nop when Zbb is available and jump when Zbb is
+> > +		 * not available.
+> > +		 */
+> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
+> > +					      RISCV_ISA_EXT_ZBB, 1)
+> > +				  :
+> > +				  :
+> > +				  :
+> > +				  : no_zbb);
+> > +		asm(".option push					\n\
+> > +		.option arch,+zbb					\n\
+> > +			rori	%[fold_temp], %[sum], 32		\n\
+> > +			add	%[sum], %[fold_temp], %[sum]		\n\
+> > +			srli	%[sum], %[sum], 32			\n\
+> > +			not	%[fold_temp], %[sum]			\n\
+> > +			roriw	%[sum], %[sum], 16			\n\
+> > +			subw	%[sum], %[fold_temp], %[sum]		\n\
+> > +		.option pop"
+> > +		: [sum] "+r" (sum), [fold_temp] "=&r" (fold_temp));
+> > +		return (__force __sum16)(sum >> 16);
+> > +	}
+> > +no_zbb:
+> > +	sum += (sum >> 32) | (sum << 32);
+> > +	sum >>= 32;
+> > +	return csum_fold((__force __wsum)sum);
+> > +}
+> > +EXPORT_SYMBOL(csum_ipv6_magic);
+> > +#endif // !CONFIG_32BIT
+> > +
+> > +#ifdef CONFIG_32BIT
+> > +#define OFFSET_MASK 3
+> > +#elif CONFIG_64BIT
+> > +#define OFFSET_MASK 7
+> > +#endif
+> > +
+> > +/*
+> > + * Perform a checksum on an arbitrary memory address.
+> > + * Algorithm accounts for buff being misaligned.
+> > + * If buff is not aligned, will over-read bytes but not use the bytes that it
+> > + * shouldn't. The same thing will occur on the tail-end of the read.
+> > + */
+> > +unsigned int __no_sanitize_address do_csum(const unsigned char *buff, int len)
+> > +{
+> > +	unsigned int offset, shift;
+> > +	csum_t csum, data;
+> > +	const csum_t *ptr;
+> > +
+> > +	if (unlikely(len <= 0))
+> > +		return 0;
+> > +	/*
+> > +	 * To align the address, grab the whole first byte in buff.
+> > +	 * Since it is inside of a same byte, it will never cross pages or cache
+> > +	 * lines.
+> > +	 * Directly call KASAN with the alignment we will be using.
+> > +	 */
+> > +	offset = (csum_t)buff & OFFSET_MASK;
+> > +	kasan_check_read(buff, len);
+> > +	ptr = (const csum_t *)(buff - offset);
+> > +	len = len + offset - sizeof(csum_t);
+> > +
+> > +	/*
+> > +	 * Clear the most signifant bits that were over-read if buff was not
+> > +	 * aligned.
+> > +	 */
+> > +	shift = offset * 8;
+> > +	data = *ptr;
+> > +#ifdef __LITTLE_ENDIAN
+> > +	data = (data >> shift) << shift;
+> > +#else
+> > +	data = (data << shift) >> shift;
+> > +#endif
+> > +	/*
+> > +	 * Do 32-bit reads on RV32 and 64-bit reads otherwise. This should be
+> > +	 * faster than doing 32-bit reads on architectures that support larger
+> > +	 * reads.
+> > +	 */
+> > +	while (len > 0) {
+> > +		csum += data;
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/raid-stripe-tree.c | 130 ++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/raid-stripe-tree.h |  11 ++++
->  fs/btrfs/volumes.c          |  37 ++++++++++---
->  3 files changed, 169 insertions(+), 9 deletions(-)
+> arch/riscv/lib/csum.c:137:3: warning: variable 'csum' is uninitialized when used here [-Wuninitialized]
+>                 csum += data;
+>                 ^~~~
+> arch/riscv/lib/csum.c:104:13: note: initialize the variable 'csum' to silence this warning
+>         csum_t csum, data;
+>                    ^
+>                     = 0
+> > +		csum += csum < data;
+> > +		len -= sizeof(csum_t);
+> > +		ptr += 1;
+> > +		data = *ptr;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Perform alignment (and over-read) bytes on the tail if any bytes
+> > +	 * leftover.
+> > +	 */
+> > +	shift = len * -8;
+> > +#ifdef __LITTLE_ENDIAN
+> > +	data = (data << shift) >> shift;
+> > +#else
+> > +	data = (data >> shift) << shift;
+> > +#endif
+> > +	csum += data;
+> > +	csum += csum < data;
+> > +
+> > +	if (!riscv_has_extension_likely(RISCV_ISA_EXT_ZBB))
+> > +		goto no_zbb;
 > 
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index 517bc08803f1..697a6e1fd255 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -303,3 +303,133 @@ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
->  
->  	return ret;
->  }
-> +
-> +int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
-> +				 u64 logical, u64 *length, u64 map_type,
-> +				 u32 stripe_index,
-> +				 struct btrfs_io_stripe *stripe)
-> +{
-> +	struct btrfs_root *stripe_root = fs_info->stripe_root;
-> +	struct btrfs_stripe_extent *stripe_extent;
-> +	struct btrfs_key stripe_key;
-> +	struct btrfs_key found_key;
-> +	struct btrfs_path *path;
-> +	struct extent_buffer *leaf;
-> +	const u64 end = logical + *length;
-> +	int num_stripes;
-> +	u8 encoding;
-> +	u64 offset;
-> +	u64 found_logical;
-> +	u64 found_length;
-> +	u64 found_end;
-> +	int slot;
-> +	int ret;
-> +	int i;
-> +
-> +	stripe_key.objectid = logical;
-> +	stripe_key.type = BTRFS_RAID_STRIPE_KEY;
-> +	stripe_key.offset = 0;
-> +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	ret = btrfs_search_slot(NULL, stripe_root, &stripe_key, path, 0, 0);
-> +	if (ret < 0)
-> +		goto free_path;
-> +	if (ret) {
-> +		if (path->slots[0] != 0)
-> +			path->slots[0]--;
-> +	}
-> +
-> +
-> +	while (1) {
-> +		leaf = path->nodes[0];
-> +		slot = path->slots[0];
-> +
-> +		btrfs_item_key_to_cpu(leaf, &found_key, slot);
-> +		found_logical = found_key.objectid;
-> +		found_length = found_key.offset;
-> +		found_end = found_logical + found_length;
-> +
-> +		if (found_logical > end) {
-> +			ret = -ENOENT;
-> +			goto out;
-> +		}
-> +
-> +		if (in_range(logical, found_logical, found_length))
-> +			break;
-> +
-> +		ret = btrfs_next_item(stripe_root, path);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	offset = logical - found_logical;
-> +
-> +	/*
-> +	 * If we have a logically contiguous, but physically noncontinuous
-> +	 * range, we need to split the bio. Record the length after which we
-> +	 * must split the bio.
-> +	 */
-> +	if (end > found_end)
-> +		*length -= end - found_end;
-> +
-> +	num_stripes = btrfs_num_raid_stripes(btrfs_item_size(leaf, slot));
-> +	stripe_extent = btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
-> +	encoding = btrfs_stripe_extent_encoding(leaf, stripe_extent);
-> +
-> +	if (encoding != btrfs_bg_flags_to_raid_index(map_type)) {
-> +		ret = -EUCLEAN;
-> +		btrfs_handle_fs_error(fs_info, ret,
-> +				      "on-disk stripe encoding %d doesn't match RAID index %d",
-> +				      encoding,
-> +				      btrfs_bg_flags_to_raid_index(map_type));
-> +		goto out;
-> +	}
-> +
-> +	for (i = 0; i < num_stripes; i++) {
-> +		struct btrfs_raid_stride *stride = &stripe_extent->strides[i];
-> +		u64 devid = btrfs_raid_stride_devid(leaf, stride);
-> +		u64 len = btrfs_raid_stride_length(leaf, stride);
-> +		u64 physical = btrfs_raid_stride_physical(leaf, stride);
-> +
-> +		if (offset >= len) {
-> +			offset -= len;
-> +
-> +			if (offset >= BTRFS_STRIPE_LEN)
-> +				continue;
-> +		}
-> +
-> +		if (devid != stripe->dev->devid)
-> +			continue;
-> +
-> +		if ((map_type & BTRFS_BLOCK_GROUP_DUP) && stripe_index != i)
-> +			continue;
-> +
-> +		stripe->physical = physical + offset;
-> +
-> +		ret = 0;
-> +		goto free_path;
-> +	}
-> +
-> +	/*
-> +	 * If we're here, we haven't found the requested devid in the stripe.
-> +	 */
-> +	ret = -ENOENT;
-> +out:
-> +	if (ret > 0)
-> +		ret = -ENOENT;
-> +	if (ret && ret != -EIO) {
-> +		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> +			btrfs_print_tree(leaf, 1);
-> +		btrfs_err(fs_info,
-> +			  "cannot find raid-stripe for logical [%llu, %llu] devid %llu, profile %s",
-> +			  logical, logical + *length, stripe->dev->devid,
-> +			  btrfs_bg_type_to_raid_name(map_type));
-> +	}
-> +free_path:
-> +	btrfs_free_path(path);
-> +
-> +	return ret;
-> +}
-> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-> index b3a127c997c8..5d9629a815c1 100644
-> --- a/fs/btrfs/raid-stripe-tree.h
-> +++ b/fs/btrfs/raid-stripe-tree.h
-> @@ -13,6 +13,10 @@ struct btrfs_trans_handle;
->  
->  int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start,
->  			     u64 length);
-> +int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
-> +				 u64 logical, u64 *length, u64 map_type,
-> +				 u32 stripe_index,
-> +				 struct btrfs_io_stripe *stripe);
->  int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
->  			     struct btrfs_ordered_extent *ordered_extent);
->  
-> @@ -33,4 +37,11 @@ static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
->  
->  	return false;
->  }
-> +
-> +static inline int btrfs_num_raid_stripes(u32 item_size)
-> +{
-> +	return (item_size - offsetof(struct btrfs_stripe_extent, strides)) /
-> +		sizeof(struct btrfs_raid_stride);
-> +}
-> +
->  #endif
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index c2bac87912c7..2326dbcf85f6 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -35,6 +35,7 @@
->  #include "relocation.h"
->  #include "scrub.h"
->  #include "super.h"
-> +#include "raid-stripe-tree.h"
->  
->  #define BTRFS_BLOCK_GROUP_STRIPE_MASK	(BTRFS_BLOCK_GROUP_RAID0 | \
->  					 BTRFS_BLOCK_GROUP_RAID10 | \
-> @@ -6309,12 +6310,22 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
->  	return U64_MAX;
->  }
->  
-> -static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *map,
-> -			  u32 stripe_index, u64 stripe_offset, u32 stripe_nr)
-> +static int set_io_stripe(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
-> +		      u64 logical, u64 *length, struct btrfs_io_stripe *dst,
-> +		      struct map_lookup *map, u32 stripe_index,
-> +		      u64 stripe_offset, u64 stripe_nr)
->  {
->  	dst->dev = map->stripes[stripe_index].dev;
-> +
-> +	if (op == BTRFS_MAP_READ &&
-> +	    btrfs_need_stripe_tree_update(fs_info, map->type))
-> +		return btrfs_get_raid_extent_offset(fs_info, logical, length,
-> +						    map->type, stripe_index,
-> +						    dst);
-> +
->  	dst->physical = map->stripes[stripe_index].physical +
->  			stripe_offset + btrfs_stripe_nr_to_offset(stripe_nr);
-> +	return 0;
->  }
->  
->  /*
-> @@ -6531,11 +6542,11 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->  	 */
->  	if (smap && num_alloc_stripes == 1 &&
->  	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1)) {
-> -		set_io_stripe(smap, map, stripe_index, stripe_offset, stripe_nr);
-> +		ret = set_io_stripe(fs_info, op, logical, length, smap, map,
-> +				    stripe_index, stripe_offset, stripe_nr);
-
->  		if (mirror_num_ret)
->  			*mirror_num_ret = mirror_num;
->  		*bioc_ret = NULL;
-> -		ret = 0;
->  		goto out;
->  	}
->  
-> @@ -6566,21 +6577,29 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->  		bioc->full_stripe_logical = em->start +
->  			btrfs_stripe_nr_to_offset(stripe_nr * data_stripes);
->  		for (i = 0; i < num_stripes; i++)
-> -			set_io_stripe(&bioc->stripes[i], map,
-> -				      (i + stripe_nr) % num_stripes,
-> -				      stripe_offset, stripe_nr);
-> +			ret = set_io_stripe(fs_info, op, logical, length,
-> +					    &bioc->stripes[i], map,
-> +					    (i + stripe_nr) % num_stripes,
-> +					    stripe_offset, stripe_nr);
-
-You've added error value but it's not checked and the whole for-loop
-continues, is that intentional?
-
->  	} else {
->  		/*
->  		 * For all other non-RAID56 profiles, just copy the target
->  		 * stripe into the bioc.
->  		 */
->  		for (i = 0; i < num_stripes; i++) {
-> -			set_io_stripe(&bioc->stripes[i], map, stripe_index,
-> -				      stripe_offset, stripe_nr);
-> +			ret = set_io_stripe(fs_info, op, logical, length,
-> +					    &bioc->stripes[i], map, stripe_index,
-> +					    stripe_offset, stripe_nr);
-
-Same here.
-
->  			stripe_index++;
->  		}
->  	}
->  
-> +	if (ret) {
-> +		*bioc_ret = NULL;
-> +		btrfs_put_bioc(bioc);
-> +		goto out;
-> +	}
-
-This handles ret != 0 but after the whole loop is done.
-
-> +
->  	if (op != BTRFS_MAP_READ)
->  		max_errors = btrfs_chunk_max_errors(map);
->  
+> I think this is missing a change for IS_ENABLED(CONFIG_RISCV_ISA_ZBB)?
+> arch/riscv/lib/csum.c:180:1: warning: unknown option, expected 'push', 'pop', 'rvc', 'norvc', 'relax' or 'norelax' [-Winline-asm]
+>                 .option arch,+zbb                               \n\
+> ^
+> <inline asm>:2:11: note: instantiated into assembly here
+>                 .option arch,+zbb                               
+>                         ^
+> arch/riscv/lib/csum.c:181:1: error: instruction requires the following: 'Zbb' (Basic Bit-Manipulation) or 'Zbkb' (Bitmanip instructions for Cryptography)
+>                         rori    %[fold_temp], %[csum], 32       \n\
+> ^
+> <inline asm>:3:4: note: instantiated into assembly here
+>                         rori    a2, a0, 32      
+>                         ^
+> arch/riscv/lib/csum.c:184:1: error: instruction requires the following: 'Zbb' (Basic Bit-Manipulation) or 'Zbkb' (Bitmanip instructions for Cryptography)
+>                         roriw   %[fold_temp], %[csum], 16       \n\
+> ^
+> <inline asm>:6:4: note: instantiated into assembly here
+>                         roriw   a2, a0, 16      
+>                         ^
+> arch/riscv/lib/csum.c:188:1: error: instruction requires the following: 'Zbb' (Basic Bit-Manipulation) or 'Zbkb' (Bitmanip instructions for Cryptography)
+>                         rev8    %[csum], %[csum]                \n\
+> ^
+> <inline asm>:10:4: note: instantiated into assembly here
+>                         rev8    a0, a0          
+>                         ^
+> 2 warnings and 3 errors generated.
 > 
-> -- 
-> 2.41.0
+> clang before 17 doesn't support `.option arch`, so the guard is required
+> around any code using it. You've got the guard on the other `.option
+> arch` user above, so that one seems to have escaped notice ;)
+> 
+> Going forward, it'd be good to test this stuff with non-latest clang to
+> make sure you appropriately consider the !Zbb cases.
+> 
+Yes this was an oversight to drop the guard.
+> 
+> > +
+> > +	unsigned int fold_temp;
+> > +
+> > +	if (IS_ENABLED(CONFIG_32BIT)) {
+> > +		asm_volatile_goto(".option push			\n\
+> > +		.option arch,+zbb				\n\
+> > +			rori	%[fold_temp], %[csum], 16	\n\
+> > +			andi	%[offset], %[offset], 1		\n\
+> > +			add	%[csum], %[fold_temp], %[csum]	\n\
+> > +			beq	%[offset], zero, %l[end]	\n\
+> > +			rev8	%[csum], %[csum]		\n\
+> > +			zext.h	%[csum], %[csum]		\n\
+> > +		.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
+> > +			: [offset] "r" (offset)
+> > +			:
+> > +			: end);
+> > +
+> > +		return csum;
+> > +	} else {
+> > +		asm_volatile_goto(".option push			\n\
+> > +		.option arch,+zbb				\n\
+> > +			rori	%[fold_temp], %[csum], 32	\n\
+> > +			add	%[csum], %[fold_temp], %[csum]	\n\
+> > +			srli	%[csum], %[csum], 32		\n\
+> > +			roriw	%[fold_temp], %[csum], 16	\n\
+> > +			addw	%[csum], %[fold_temp], %[csum]	\n\
+> > +			andi	%[offset], %[offset], 1		\n\
+> > +			beq	%[offset], zero, %l[end]	\n\
+> > +			rev8	%[csum], %[csum]		\n\
+> > +			srli	%[csum], %[csum], 32		\n\
+> > +			zext.h	%[csum], %[csum]		\n\
+> > +		.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
+> > +			: [offset] "r" (offset)
+> > +			:
+> > +			: end);
+> > +
+> > +		return csum;
+> > +	}
+> > +end:
+> > +		return csum >> 16;
+> > +no_zbb:
+> > +#ifndef CONFIG_32BIT
+> 
+> These can also be moved to IS_ENABLED() FYI, since there's no 32-bit
+> stuff here that'd break the build for 64-bit. Ditto elsewhere where
+> you've got similar stuff.
+> 
+> Cheers,
+> Conor.
+This is an ifndef, so 32-bit compilation would throw a warning about
+shifting by 32 bits if IS_ENABLED was used instead.
+
+- Charlie
+> 
+> > +		csum += (csum >> 32) | (csum << 32);
+> > +		csum >>= 32;
+> > +#endif
+> > +	csum = (unsigned int)csum + (((unsigned int)csum >> 16) | ((unsigned int)csum << 16));
+> > +	if (offset & 1)
+> > +		return (unsigned short)swab32(csum);
+> > +	return csum >> 16;
+> > +}
+> > 
+> > -- 
+> > 2.42.0
+> > 
+
+
