@@ -2,62 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B957F7A0C0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2137A0C12
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240284AbjINR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S240454AbjINR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbjINR5F (ORCPT
+        with ESMTP id S240622AbjINR5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:57:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC961FF6;
-        Thu, 14 Sep 2023 10:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UCSAnfDQZSe/uOw7DpXU/BcBg2LGDIRrSZJxohdLxgo=; b=mltWCpd4ixTs64AGjV2zp9HKuk
-        VCAkIfKfTuJzh+AFfA9TgPdUW7EuHkfLcHjL0RNWyY8ZkECMLdrdPJjaPG8x9jlnMztZiWUZbNWAc
-        dw6aBWQOTEueze9zspCWYCMnawb8LmPluyLl4Jogei0UJworXclbcOCgomZkue6vgf266lWFZYlMp
-        ZMXw0BfIfzt9qXThwx6as+g1i4dOpyjjuv+FsmMnUzl9BZZ8Tb776B9u023bMHyZBX2MlUusgaT7q
-        qbJ0onE29i8E9YpfFasTkjteJZFODJIEOq3Jfgadt+o2+hHNGgqYFFLpqcQyZEteWOUGEzn38JuZ+
-        CHmiNnQQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgqZv-004K1u-R4; Thu, 14 Sep 2023 17:56:36 +0000
-Date:   Thu, 14 Sep 2023 18:56:35 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
-Message-ID: <ZQNJU67eDoZqffEQ@casper.infradead.org>
-References: <20230914152620.2743033-1-surenb@google.com>
- <20230914152620.2743033-2-surenb@google.com>
+        Thu, 14 Sep 2023 13:57:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4141FFB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:57:33 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-501bd7711e8so2136402e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694714251; x=1695319051; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7VwkUDvl9cZBLnoPVjTuHGS1QPb1S9F5cL//3ghT7s0=;
+        b=YlWf9sD7GK4cXkl+pkBTdxc9bxdcUbiqFiuxTAoqK5nGIWWh5Tu6glIfvHSNyIVugD
+         W17YoFOy0fJsDwyd2mQA2343Rp3Ecjdy4fSP64NYey8tQe0aeia2U9PclC9gGCLNpGnp
+         Fun3PCAD+MWLDGTBTrXQEHf44ku1/FaD9Evg290F0OOPoGUzcMj/W1B0wKs3badVXY/R
+         n2I0mwhs/mmvKCOWdApbPL4nmCB2+o8gxjh7RZZ/cOS3Gczj8qnZZXmS0p3mK/9S6lw4
+         W2JGa1KxPbuucey4JBvpDSpcRJgic4Ner0KV8VaWA04CSDpRFCd03t703eoPVo0e3q3i
+         k39Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694714251; x=1695319051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7VwkUDvl9cZBLnoPVjTuHGS1QPb1S9F5cL//3ghT7s0=;
+        b=v5krjKR+5iQWS87CZl+j/m9yqiTU+2kXuT/iVo2/NcTFUCtpG1aIVAfQGs+kaQgjRu
+         ac32D3/dwoH4YoMopr4eONkyTARaHbP/RwR4j8jHj4AcbIJMIj3rSOG8Qh549zIGWQHC
+         CFKcPyotEadwkVHzYLbcdARLleJBfiBGdjJdSk+o3zLOV8jDNR2wFFZJsc7X5qbn40KE
+         I6VHJ/jUcWfmJwKTlf/6Tw81MPXjCHLyew3IOe5ZnY1CX4OV/bMEbJ10mB4+kgOAOhvO
+         7NdXCVr7NE7vXOpunqnDw/cGeEDPQMyv6IrtZ8HHIA71G88virMAm9szoH0ZXNyjD9EO
+         T33Q==
+X-Gm-Message-State: AOJu0YzHiIiwaxKUvA3iArl6eW3DiJEFG0d8QC5gFj2Xz4mOgbZ9YMHC
+        w8m/vFdJtZNOaaat+VWJnrGTYy4sUID5tXsj1euzJw==
+X-Google-Smtp-Source: AGHT+IHQgtpNq6uSe+ZaI+1z0+HChrSoQtGuT/yoWpOf0wfrdIwnM85LbTdpIHNp4lwDtm4o2jYW0NAs2G8lxEa0Mdw=
+X-Received: by 2002:a05:6512:2394:b0:4f8:71cc:2b6e with SMTP id
+ c20-20020a056512239400b004f871cc2b6emr6333688lfv.33.1694714251252; Thu, 14
+ Sep 2023 10:57:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914152620.2743033-2-surenb@google.com>
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
+In-Reply-To: <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 14 Sep 2023 10:56:52 -0700
+Message-ID: <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 08:26:11AM -0700, Suren Baghdasaryan wrote:
-> From: Andrea Arcangeli <aarcange@redhat.com>
-> 
-> As far as the rmap code is concerned, UFFDIO_REMAP only alters the
-> page->mapping and page->index. It does it while holding the page
+On Thu, Sep 14, 2023 at 10:36=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
+ wrote:
+>
+> On Wed, Sep 13, 2023 at 12:38=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+> > Stats flushing for memcg currently follows the following rules:
+> > - Always flush the entire memcg hierarchy (i.e. flush the root).
+> > - Only one flusher is allowed at a time. If someone else tries to flush
+> >   concurrently, they skip and return immediately.
+> > - A periodic flusher flushes all the stats every 2 seconds.
+> >
+> > The reason this approach is followed is because all flushes are
+> > serialized by a global rstat spinlock. On the memcg side, flushing is
+> > invoked from userspace reads as well as in-kernel flushers (e.g.
+> > reclaim, refault, etc). This approach aims to avoid serializing all
+> > flushers on the global lock, which can cause a significant performance
+> > hit under high concurrency.
+> >
+> > This approach has the following problems:
+> > - Occasionally a userspace read of the stats of a non-root cgroup will
+> >   be too expensive as it has to flush the entire hierarchy [1].
+>
+> This is a real world workload exhibiting the issue which is good.
+>
+> > - Sometimes the stats accuracy are compromised if there is an ongoing
+> >   flush, and we skip and return before the subtree of interest is
+> >   actually flushed. This is more visible when reading stats from
+> >   userspace, but can also affect in-kernel flushers.
+>
+> Please provide similar data/justification for the above. In addition:
+>
+> 1. How much delayed/stale stats have you observed on real world workload?
 
-folio->mapping and folio->index.  It does it while holding the folio
+I am not really sure. We don't have a wide deployment of kernels with
+rstat yet. These are problems observed in testing and/or concerns
+expressed by our userspace team.
 
-No other objections ...
+I am trying to solve this now because any problems that result from
+this staleness will be very hard to debug and link back to stale
+stats.
+
+>
+> 2. What is acceptable staleness in the stats for your use-case?
+
+Again, unfortunately I am not sure, but right now it can be O(seconds)
+which is not acceptable as we have workloads querying the stats every
+1s (and sometimes more frequently).
+
+>
+> 3. What is your use-case?
+
+A few use cases we have that may be affected by this:
+- System overhead: calculations using memory.usage and some stats from
+memory.stat. If one of them is fresh and the other one isn't we have
+an inconsistent view of the system.
+- Userspace OOM killing: We use some stats in memory.stat to gauge the
+amount of memory that will be freed by killing a task as sometimes
+memory.usage includes shared resources that wouldn't be freed anyway.
+- Proactive reclaim: we read memory.stat in a proactive reclaim
+feedback loop, stale stats may cause us to mistakenly think reclaim is
+ineffective and prematurely stop.
+
+>
+> 4. Does your use-case care about staleness of all the stats in
+> memory.stat or some specific stats?
+
+We have multiple use cases that can be affected by this, so I don't
+think there are some specific stats. I am also not aware of all
+possibly affected use cases.
+
+>
+> 5. If some specific stats in memory.stat, does it make sense to
+> decouple them from rstat and just pay the price up front to maintain
+> them accurately?
+>
+> Most importantly please please please be concise in your responses.
+
+I try, sometimes I am not sure how much detail is needed. Sorry about that =
+:)
+
+>
+> I know I am going back on some of the previous agreements but this
+> whole locking back and forth has made in question the original
+> motivation.
+
+That's okay. Taking a step back, having flushing being indeterministic
+in this way is a time bomb in my opinion. Note that this also affects
+in-kernel flushers like reclaim or dirty isolation, which I suspect
+will be more affected by staleness. No one complained yet AFAICT, but
+I think it's a time bomb. The worst part is that if/when a problem
+happens, we won't be able to easily tell what went wrong.
