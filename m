@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C67C779FE23
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93AB79FE28
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236287AbjINIUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
+        id S236276AbjINIVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 04:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbjINIUb (ORCPT
+        with ESMTP id S235969AbjINIVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:20:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214781BB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:20:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B128BC433C7;
-        Thu, 14 Sep 2023 08:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694679626;
-        bh=bgtFB9pPCeAZNnsPGVeYzmmhXx+nDQpLvLJuN4vUJP0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=axq6F/2BDquSKKLZsXgQPzru+I13yGcjSFhpO8guOq9sLoiut+B1iYNd4Dvb7tHxS
-         EUU65Fx1G+H1j3ziAIbMQvTwKDLKB8k92qQtc0O4zZxht5pBfLHHatjawMBMZLnNcF
-         nR2lQtJtOCeJ3uXu457Aslnk6Wf3GpJ/A3DagpFHz/kDbFz7s40+OM8HpzoGEmZLDe
-         ulk1WULMdcZKD9W+ehAmYSBzqh/gPaxvRfguzF74KSn/cRXCL3pjEPkUG5ADcgTD8O
-         vVYvMWY3WYyiOnNrpxqF6Hw9q307V+lTX9Ci4nZzL3OblLlWyok2fu3PjTnSBiOUot
-         9Sixwg+IVJscg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 98CF5E22AF5;
-        Thu, 14 Sep 2023 08:20:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Sep 2023 04:21:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB52DA;
+        Thu, 14 Sep 2023 01:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jFy+WxBhwYo/RJJ6gzVJec734NGNXktDMBEY9ow/Fcg=; b=hyJmh5YCPZYWVjLLnLzcQDRTY7
+        ywvl6lBjVSG9cEkIBAf2Hx5RF5uYtKBW1F3qZiT64n+qjI4+g8X47j2unLXPjYgyLaN3QUwWHtWsP
+        fW+ULTHC9y3lAiAwozVPKS/GyrQWD8X+T9MKu4B1WO9MHe6UcpNl2cEd5DF40Y6lz+CVxn8Asl1U5
+        Bu1IWMEEoMa8ePJ+5z2RutRuCQcnGq6Lk+jujK3UBTi9GKeKgviujNSc3K8lwzCP1NA3Wa4V+Wj1c
+        fLJMeHEapLIwlRAHD0OLv0kav5/UwRl9Js5aNjE1xnVdzf+oxFI1F7TJv/G3mjYqUg2VCJ7+XJsDe
+        Mno7iVww==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53756)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qghao-0003hf-1j;
+        Thu, 14 Sep 2023 09:20:54 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qghao-0004ag-K8; Thu, 14 Sep 2023 09:20:54 +0100
+Date:   Thu, 14 Sep 2023 09:20:54 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     James Morse <james.morse@arm.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+Subject: Re: [RFC PATCH v2 02/35] drivers: base: Use present CPUs in
+ GENERIC_CPU_DEVICES
+Message-ID: <ZQLCZsw+ZGbTM8oK@shell.armlinux.org.uk>
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-3-james.morse@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] atl1c: Work around the DMA RX overflow issue
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169467962662.28916.1296559484134110409.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Sep 2023 08:20:26 +0000
-References: <20230912010711.12036-1-liew.s.piaw@gmail.com>
-In-Reply-To: <20230912010711.12036-1-liew.s.piaw@gmail.com>
-To:     Sieng-Piaw Liew <liew.s.piaw@gmail.com>
-Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, edumazet@google.com, feng.tang@intel.com,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913163823.7880-3-james.morse@arm.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 12 Sep 2023 09:07:11 +0800 you wrote:
-> This is based on alx driver commit 881d0327db37 ("net: alx: Work around
-> the DMA RX overflow issue").
+On Wed, Sep 13, 2023 at 04:37:50PM +0000, James Morse wrote:
+> Three of the five ACPI architectures create sysfs entries using
+> register_cpu() for present CPUs, whereas arm64, riscv and all
+> GENERIC_CPU_DEVICES do this for possible CPUs.
 > 
-> The alx and atl1c drivers had RX overflow error which was why a custom
-> allocator was created to avoid certain addresses. The simpler workaround
-> then created for alx driver, but not for atl1c due to lack of tester.
+> Registering a CPU is what causes them to show up in sysfs.
 > 
-> [...]
+> It makes very little sense to register all possible CPUs. Registering
+> a CPU is what triggers the udev notifications allowing user-space to
+> react to newly added CPUs.
+> 
+> To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
+> it to use for_each_present_cpu(). Making the ACPI architectures use
+> GENERIC_CPU_DEVICES is a pre-requisite step to centralise their
+> cpu_register() logic, before moving it into the ACPI processor driver.
+> When ACPI is disabled this work would be done by
+> cpu_dev_register_generic().
+> 
+> Of the ACPI architectures that register possible CPUs, arm64 and riscv
+> do not support making possible CPUs present as they use the weak 'always
+> fails' version of arch_register_cpu().
+> 
+> Only two of the eight architectures that use GENERIC_CPU_DEVICES have a
+> distinction between present and possible CPUs.
+> 
+> The following architectures use GENERIC_CPU_DEVICES but are not SMP,
+> so possible == present:
+>  * m68k
+>  * microblaze
+>  * nios2
+> 
+> The following architectures use GENERIC_CPU_DEVICES and consider
+> possible == present:
+>  * csky: setup_smp()
+>  * parisc: smp_prepare_boot_cpu() marks the boot cpu as present,
+>    processor_probe() sets possible for all CPUs and present for all CPUs
+>    except the boot cpu.
 
-Here is the summary with links:
-  - [net-next] atl1c: Work around the DMA RX overflow issue
-    https://git.kernel.org/netdev/net-next/c/86565682e905
+However, init/main.c::start_kernel() calls boot_cpu_init() which sets
+the boot CPU in the online, active, present and possible masks. So,
+_every_ architecture gets the boot CPU in all these masks no matter
+what.
 
-You are awesome, thank you!
+Only of something then clears the boot CPU from these masks (which
+would be silly) would the boot CPU not be in all of these masks.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
