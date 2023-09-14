@@ -2,195 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8C77A10CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75B07A10C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjINWRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        id S230119AbjINWRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjINWRS (ORCPT
+        with ESMTP id S230123AbjINWRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:17:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D368B2D40
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694729765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kJbp/xPUEeZPZ6xlN6+ErzCN36LIEvr4JCtOzFEoqKk=;
-        b=Zg5bLVhW9DiM3kMLRpCzR2iePJy154BIK8k2TkH6O18GqtpnHdIIT5IXM8xGIj7VzG+Ej4
-        fJsREFnHp5Z6ijgPIG/dyWnozbJ8cFhvKbBpyeISEeu+2b6637TRAb7VTYum3JOfgnwz17
-        78jN6UX3xl/T4gfhJVJgw1aF9PI5XjQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-321-oafUx_6YMSSpr0ZeGoRjbg-1; Thu, 14 Sep 2023 18:15:59 -0400
-X-MC-Unique: oafUx_6YMSSpr0ZeGoRjbg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 20ECC816525;
-        Thu, 14 Sep 2023 22:15:58 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 686E72026D4B;
-        Thu, 14 Sep 2023 22:15:55 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
-Date:   Thu, 14 Sep 2023 23:15:26 +0100
-Message-ID: <20230914221526.3153402-10-dhowells@redhat.com>
-In-Reply-To: <20230914221526.3153402-1-dhowells@redhat.com>
-References: <20230914221526.3153402-1-dhowells@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+        Thu, 14 Sep 2023 18:17:14 -0400
+Received: from mail-oa1-x4a.google.com (mail-oa1-x4a.google.com [IPv6:2001:4860:4864:20::4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EB12720
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:17:10 -0700 (PDT)
+Received: by mail-oa1-x4a.google.com with SMTP id 586e51a60fabf-1bf00f8cf77so2111197fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694729829; x=1695334629; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NmiSL1hPoXorfA2q6qNOq7ioFso4QUSjYQj36GecrTE=;
+        b=xkngvD2Ibfn8w03jxth/IdNDuHUov2S9wEE3mKAgK6Q1mChzRVyw499SXq0AUo289Y
+         +JKqJd5TxrL2PO0QKNR23nWlvl+MrmwriQSqIDEvCUnQd7Uo1p0lI6XDj9OYqGoIkXck
+         J52jeUoyaC9rVgZDVdETfWrEwEszVZ7TSIDG2h37hl9k13Tq+YmW9EiDJUA51/nf10WK
+         BZVMls7AVpXNkoY3o0KpqXGp6n2kd1H6koJZTJ4EMOE2GfZ8txQDffzrlTUlK6yqOwur
+         qV+YJoBcWV7/tAxy6NAzSig4O+Rx095bL6zYNVPjmsp0kcIPm3buw0KK2lkdTG32viMt
+         KB+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694729829; x=1695334629;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NmiSL1hPoXorfA2q6qNOq7ioFso4QUSjYQj36GecrTE=;
+        b=U/kESbmecpBxT9QWOsdzhGkrnQU6k3hg5D3+9YkFDEDGHsn5hUFVmFWluaBpKWJ1jy
+         93vZWiduuBGdGNOIhG51Qv/tkdqH2LyBIEaLw4BQrq72SDlZuseWw1oCkzfPeBjWcVru
+         5uNt/KMDIizwKrZMhiGM3eFeaht/FAbsii1K9JD+FLyYa8QRHt4brRb5WP1+0XTajqlz
+         viEVEZh3OF//5V3p1WbAsRBCUSNBkoy1HsXZEROEWddZxDF0zWxG8A09RYqyk0ZakcuL
+         FDtNOZzSJPsOzS0T/LRfUjwOhyREB8eTNRpyhtRtq+7+UXZoHLhommDTAH2Qn8BJX0Zx
+         zClw==
+X-Gm-Message-State: AOJu0YzI+comCUVerUziMYny8qq9zaX/W/DC/jdStUvDioWxC4VuuP/m
+        KJiREBIvff+Hy7PUvhpvsoOgLHqtYwUc7QT/oA==
+X-Google-Smtp-Source: AGHT+IFwcROu4zar64CAvXwI9J0nMFhba4+cLsta+BCeiKNlxnKo7O4A0MBXBGcuyAHHg0RNV0zPR7a2HtcCyI3FeQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:5b17:b0:1d6:6175:e8b7 with
+ SMTP id ds23-20020a0568705b1700b001d66175e8b7mr704oab.4.1694729829605; Thu,
+ 14 Sep 2023 15:17:09 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 22:17:08 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAGOGA2UC/x2NQQqDMBAAvyI5dyFqodqvlB6SuEmXkjXsamgR/
+ 97Q28xl5jCKQqjm3h1GsJLSyk36S2fCy3FCoKW5Geww2rm/gm7CoXxhEaooCqnsjTPwuld0O3B 9Z0BOxAglg3eKEGCcfJzDbfLBRtPaRTDS5/99PM/zB65MP5KHAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694729828; l=2319;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=RxOj2KRPJoHaPbd44NSfvp7xlYOfBBUfmUGMt4NplWM=; b=DjqYwwhRW21CQ5QMz9Kq/kMZK/2XQMBC1ojIhEn54/lvBB1ZMdiXQOPyCP7EYWc+wzaWYIxZw
+ urNwQ6OfNmeAjWVrv9S1uYW4YBYQvugcZXBlGnwgHVmMTJgXi8klaNc
+X-Mailer: b4 0.12.3
+Message-ID: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-v1-1-4b09ed453f84@google.com>
+Subject: [PATCH] drm/nouveau/pm: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kunit tests to benchmark 256MiB copies to a UBUF iterator and an IOVEC
-iterator.  This attaches a userspace VM with a mapped file in it
-temporarily to the test thread.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Christian Brauner <brauner@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Al Viro <viro@zeniv.linux.org.uk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: David Hildenbrand <david@redhat.com>
-cc: John Hubbard <jhubbard@nvidia.com>
-cc: Brendan Higgins <brendanhiggins@google.com>
-cc: David Gow <davidgow@google.com>
-cc: linux-kselftest@vger.kernel.org
-cc: kunit-dev@googlegroups.com
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
+We should prefer more robust and less ambiguous string interfaces.
+
+A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer without unnecessarily NUL-padding.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- lib/kunit_iov_iter.c | 85 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+ drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
-index f8d0cd6a2923..cc9c64663a73 100644
---- a/lib/kunit_iov_iter.c
-+++ b/lib/kunit_iov_iter.c
-@@ -1304,6 +1304,89 @@ static void *__init iov_kunit_create_source(struct kunit *test, size_t npages)
- 	return scratch;
- }
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
+index 8fe0444f761e..131db2645f84 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
+@@ -462,7 +462,7 @@ nvkm_perfmon_mthd_query_domain(struct nvkm_perfmon *perfmon,
  
-+/*
-+ * Time copying 256MiB through an ITER_UBUF.
-+ */
-+static void __init iov_kunit_benchmark_ubuf(struct kunit *test)
-+{
-+	struct iov_iter iter;
-+	unsigned int samples[IOV_KUNIT_NR_SAMPLES];
-+	ktime_t a, b;
-+	ssize_t copied;
-+	size_t size = 256 * 1024 * 1024, npages = size / PAGE_SIZE;
-+	void *scratch;
-+	int i;
-+	u8 __user *buffer;
-+
-+	/* Allocate a huge buffer and populate it with pages. */
-+	buffer = iov_kunit_create_user_buf(test, npages, NULL);
-+
-+	/* Create a single large buffer to copy to/from. */
-+	scratch = iov_kunit_create_source(test, npages);
-+
-+	/* Perform and time a bunch of copies. */
-+	kunit_info(test, "Benchmarking copy_to_iter() over UBUF:\n");
-+	for (i = 0; i < IOV_KUNIT_NR_SAMPLES; i++) {
-+		iov_iter_ubuf(&iter, ITER_DEST, buffer, size);
-+
-+		a = ktime_get_real();
-+		copied = copy_to_iter(scratch, size, &iter);
-+		b = ktime_get_real();
-+		KUNIT_EXPECT_EQ(test, copied, size);
-+		samples[i] = ktime_to_us(ktime_sub(b, a));
-+	}
-+
-+	iov_kunit_benchmark_print_stats(test, samples);
-+	KUNIT_SUCCEED();
-+}
-+
-+/*
-+ * Time copying 256MiB through an ITER_IOVEC.
-+ */
-+static void __init iov_kunit_benchmark_iovec(struct kunit *test)
-+{
-+	struct iov_iter iter;
-+	struct iovec iov[8];
-+	unsigned int samples[IOV_KUNIT_NR_SAMPLES];
-+	ktime_t a, b;
-+	ssize_t copied;
-+	size_t size = 256 * 1024 * 1024, npages = size / PAGE_SIZE, part;
-+	void *scratch;
-+	int i;
-+	u8 __user *buffer;
-+
-+	/* Allocate a huge buffer and populate it with pages. */
-+	buffer = iov_kunit_create_user_buf(test, npages, NULL);
-+
-+	/* Create a single large buffer to copy to/from. */
-+	scratch = iov_kunit_create_source(test, npages);
-+
-+	/* Split the target over a number of iovecs */
-+	copied = 0;
-+	for (i = 0; i < ARRAY_SIZE(iov); i++) {
-+		part = size / ARRAY_SIZE(iov);
-+		iov[i].iov_base = buffer + copied;
-+		iov[i].iov_len = part;
-+		copied += part;
-+	}
-+	iov[i - 1].iov_len += size - part;
-+
-+	/* Perform and time a bunch of copies. */
-+	kunit_info(test, "Benchmarking copy_to_iter() over IOVEC:\n");
-+	for (i = 0; i < IOV_KUNIT_NR_SAMPLES; i++) {
-+		iov_iter_init(&iter, ITER_DEST, iov, ARRAY_SIZE(iov), size);
-+
-+		a = ktime_get_real();
-+		copied = copy_to_iter(scratch, size, &iter);
-+		b = ktime_get_real();
-+		KUNIT_EXPECT_EQ(test, copied, size);
-+		samples[i] = ktime_to_us(ktime_sub(b, a));
-+	}
-+
-+	iov_kunit_benchmark_print_stats(test, samples);
-+	KUNIT_SUCCEED();
-+}
-+
- /*
-  * Time copying 256MiB through an ITER_KVEC.
-  */
-@@ -1504,6 +1587,8 @@ static struct kunit_case __refdata iov_kunit_cases[] = {
- 	KUNIT_CASE(iov_kunit_extract_pages_kvec),
- 	KUNIT_CASE(iov_kunit_extract_pages_bvec),
- 	KUNIT_CASE(iov_kunit_extract_pages_xarray),
-+	KUNIT_CASE(iov_kunit_benchmark_ubuf),
-+	KUNIT_CASE(iov_kunit_benchmark_iovec),
- 	KUNIT_CASE(iov_kunit_benchmark_kvec),
- 	KUNIT_CASE(iov_kunit_benchmark_bvec),
- 	KUNIT_CASE(iov_kunit_benchmark_bvec_split),
+ 		args->v0.id         = di;
+ 		args->v0.signal_nr  = nvkm_perfdom_count_perfsig(dom);
+-		strncpy(args->v0.name, dom->name, sizeof(args->v0.name) - 1);
++		strscpy(args->v0.name, dom->name, sizeof(args->v0.name));
+ 
+ 		/* Currently only global counters (PCOUNTER) are implemented
+ 		 * but this will be different for local counters (MP). */
+@@ -513,8 +513,7 @@ nvkm_perfmon_mthd_query_signal(struct nvkm_perfmon *perfmon,
+ 			snprintf(args->v0.name, sizeof(args->v0.name),
+ 				 "/%s/%02x", dom->name, si);
+ 		} else {
+-			strncpy(args->v0.name, sig->name,
+-				sizeof(args->v0.name) - 1);
++			strscpy(args->v0.name, sig->name, sizeof(args->v0.name));
+ 		}
+ 
+ 		args->v0.signal = si;
+@@ -572,7 +571,7 @@ nvkm_perfmon_mthd_query_source(struct nvkm_perfmon *perfmon,
+ 
+ 		args->v0.source = sig->source[si];
+ 		args->v0.mask   = src->mask;
+-		strncpy(args->v0.name, src->name, sizeof(args->v0.name) - 1);
++		strscpy(args->v0.name, src->name, sizeof(args->v0.name));
+ 	}
+ 
+ 	if (++si < source_nr) {
+
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-38bf9c78bc0f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
