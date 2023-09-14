@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE42D79FB37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8245E79FB3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbjINFrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S235591AbjINFru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 01:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235085AbjINFr2 (ORCPT
+        with ESMTP id S235316AbjINFrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:47:28 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60A3C1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:47:24 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58fb8933e18so8616717b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:47:24 -0700 (PDT)
+        Thu, 14 Sep 2023 01:47:37 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A7D1739
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:47:33 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bcc0adab4so71967766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694670444; x=1695275244; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tS5rZvk+JQ82ZNIv0TH5Yi0ePQfGELuD7tGPhOL+JYg=;
-        b=JJsu+zvXz4xlIkQi2s39lZUMWsulckQVhIA8PIlJqAzDbjCyhzBF/dR28dY8VSaNof
-         HirQgVEkS09wtAZQs7V27kiHtQjDpsaBEUM+Mp/sar19WwJ2sukwT1VZyfZiOYXCeAK3
-         mliPuZcVl5IabVDiUHToiVXsaLE0ej31w1GmjO6xMOGm9Tv+ugQYY5D0FhqWNdly1h/o
-         UGiHubetQE2aFly8LGeh8xfkDnZueFye+DCzuOCSyUmQ4bxovf1bq+f6luTVGdzbbsfx
-         mTM5fNw5DLdQrPOJr8V2CwotWZW2dIGj6ARTVGpYj4YNlesn2rsYbbMJUE7O/UKbsl0a
-         Jd6A==
+        d=linaro.org; s=google; t=1694670451; x=1695275251; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aRwKx+aVUNdsT/yRs8dmsSCK+EhxcclEATZc5SW5dvk=;
+        b=CwWSiijddI8KOTo71TaKJsUGwgeBO4AN7smiA5V2bM9M8y4U4SD4p/fdw4XAdGZCfZ
+         EYtqIyqM0mLEA5SQWraJ28eSVvGIaMvQH7dTVClICZYrXItPEdFI/3aQtTfviakmiBbK
+         Kf4kwbQxsiaOpvWN7tXvonFaXbHDw781u+HpcmCbjnjevh3AZUc9GkuPhFVLljXSjuuS
+         vEGbEzXp5D4zbv6Csr+Xd6rmo0O9QlKyK88AZ7KTWDmzRA27fLa//HkhMtwYdIle97sF
+         t/Hee40bl4FrF62ndwIWyOIVGsp8B82jDILjRu87kasYqXwZuJfg8h2fyuZsaql76Z4X
+         QKxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694670444; x=1695275244;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tS5rZvk+JQ82ZNIv0TH5Yi0ePQfGELuD7tGPhOL+JYg=;
-        b=DvgFitzmMipURfp3prJ6PaltOHCemeP/cuOZ/Tb2Bz8hX7BmrzESAtZkLIMGSBdCiW
-         t0y8xCBAE6/CCzL7/VNQ8vOjKXP0EBbVxSY2s2ES59Gs5egIVhtoWMlCoQkRoMgNU3l+
-         kobeuRQwIr0B0P9/YvfkauXEYXIT+frtWUUAZ8EDXlY79z6xGbu1G1gX5OpMOlZDZXCS
-         QbpdxAgHUVft738Syj+YnuGk9Y3lDOLZnwTHkTHzNgyPn/b+EC/gn8ZHNmoEfrueREPb
-         Viip0iPlZynAUy3oB39lTbq9h6yWMWj4BcDhtINBn/GEBZesCdb1Oix3/Q7uWUr9vfgK
-         urFg==
-X-Gm-Message-State: AOJu0YzPZE0KvwXeNL5mlN+qlZYciHkeGLxjrPwssaYp5q4Gx38FY8rl
-        vZ+2xW781IEwNsQBGS36R8eAnr6sYNEpMg==
-X-Google-Smtp-Source: AGHT+IG6p2OhgSYYFCejxWmLnsMS9maAkvo3+M0NMvomjvoXTGY12ej1IMxp2jnwMQibdFuQBsfPZY8GukgG6A==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a05:690c:fd0:b0:59b:c6bb:bab9 with SMTP
- id dg16-20020a05690c0fd000b0059bc6bbbab9mr122311ywb.3.1694670443972; Wed, 13
- Sep 2023 22:47:23 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 05:47:21 +0000
-In-Reply-To: <20230901062141.51972-2-wuyun.abel@bytedance.com>
-Mime-Version: 1.0
-References: <20230901062141.51972-1-wuyun.abel@bytedance.com> <20230901062141.51972-2-wuyun.abel@bytedance.com>
-Message-ID: <20230914054721.kaojkal2kcfz7drb@google.com>
-Subject: Re: [RFC PATCH net-next 1/3] sock: Code cleanup on __sk_mem_raise_allocated()
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1694670451; x=1695275251;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aRwKx+aVUNdsT/yRs8dmsSCK+EhxcclEATZc5SW5dvk=;
+        b=RW927S5lUP74ZzpMoi7JBMtRKXtyQMb4H9pZEIrRx48u0JD8vgGqqxWwRVfGVLdKoW
+         w2+QYf8JESdd5aI3Jbf27x7Ya8nMfcPPD5l60vb/ExPbDTTE8IKRNhndsjidfD/OsjTq
+         qXj3Xv++OLd+Y3m+4v9Iw8CxKKNxxGxNon7ilYdGiAPp5XrSWHgdbRqulff9UqUI+jmF
+         d5trM241ZqcLl0r1l5gtlFUPY6L4/+yBRqhhLqENY6TLUiX/NBttEXFVOMBW+0tstIim
+         pM8gCMNItzK45voEE5GF8V7WaFdUrcs4EA2ATmlIxCq7UL2ufCKc20x3jIkZsjPknvrt
+         GsCg==
+X-Gm-Message-State: AOJu0Yz+GIqlOb0cBhNpCQhX7V0r75HytERF/4W4+zRaR2GLM+MmD/4o
+        xor2zYnJ/fy6QHDjwb9uqJbvfw==
+X-Google-Smtp-Source: AGHT+IGxTh/8mNU2+nmm+vM8YqApu/9J2UNCKeeNHOXZXyiuYhSXCWhblzjZH7lFirW7vVAD2E7tLA==
+X-Received: by 2002:a17:906:e:b0:9a2:2635:daa9 with SMTP id 14-20020a170906000e00b009a22635daa9mr3555311eja.6.1694670451368;
+        Wed, 13 Sep 2023 22:47:31 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id gy18-20020a170906f25200b00991d54db2acsm484864ejb.44.2023.09.13.22.47.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 22:47:30 -0700 (PDT)
+Message-ID: <4520fa76-8645-a438-ba7d-ef50c9781249@linaro.org>
+Date:   Thu, 14 Sep 2023 07:47:29 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/5] dt-bindings: gpio: vf610: correct i.MX8ULP and i.MX93
+ interrupts
+Content-Language: en-US
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>
+References: <20230914-vf610-gpio-v1-0-3ed418182a6a@nxp.com>
+ <20230914-vf610-gpio-v1-1-3ed418182a6a@nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230914-vf610-gpio-v1-1-3ed418182a6a@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 02:21:26PM +0800, Abel Wu wrote:
-> Code cleanup for both better simplicity and readability.
-> No functional change intended.
+On 14/09/2023 04:20, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> i.MX8ULP and i.MX93 actually has two interrupts for each gpio
+> controller, one for
 
-This is simple cleanup and can be included independently.
+...
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,vf610-gpio
+> +              - fsl,imx7ulp-gpio
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +    else:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 2
+
+Instead describe the items with "items:" and descriptions.
+
+Best regards,
+Krzysztof
+
