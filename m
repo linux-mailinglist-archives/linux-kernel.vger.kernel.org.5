@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194687A01CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5F77A01CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbjINKgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S237466AbjINKhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjINKgV (ORCPT
+        with ESMTP id S233324AbjINKhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:36:21 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2941BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:36:16 -0700 (PDT)
-X-QQ-mid: bizesmtp85t1694687756t88dzc2b
+        Thu, 14 Sep 2023 06:37:00 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0DD1BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:36:55 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1694687770tc0ax3wh
 Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 14 Sep 2023 18:35:54 +0800 (CST)
-X-QQ-SSF: 01200000000000907000000A0000000
-X-QQ-FEAT: LG+NUo/f6sEUMONClK+11md+5xqu6zIlbMPJrekhWFfJ0GAu41AM2fZGVaAlN
-        ENlhOksv6ZpQuVRMoUjdX/Qn/2vcIOApf/sc7sSxHPgH3aCJ3zb/DeoyuM3E5+To9KyK0eX
-        1QjdaS5lECew5jPmD+c4gjwSuJxiycUeBZHR6foJXKuD4NgAkSzeXGpK3QR8JCg0zsfjvEI
-        wCnOJgHwy04zrUM6EtVjagkhLR4Rmuji26gVj3/WI/waGtH4F0iRvxjYeLyupyOhP2PwqUO
-        82rscBh8blJAshAVevuAd7juWd2463mxn2IILLqW8p5wsdwZV1htZXjdHPPvWTCES/IkxLJ
-        olZQZ8cmLwAe/QtrhSOd3Sm32/mK+xd+QRBhbgnfvZIBa7ecyS9I6zXoe34NH/xXY/LsG24
+        id ; Thu, 14 Sep 2023 18:36:07 +0800 (CST)
+X-QQ-SSF: 00200000000000907000000A0000000
+X-QQ-FEAT: QityeSR92A3McIomN9U9NmeiRqhK4geqfNR+UMSijkaoEF+prEGz5E6z1Z0ra
+        rDHfriq1Iwoblco1m50jRLj5Bf3SyE/oj4Ifti11gSicGXLBXKm5SzdyGWPg/waEzwxdoZi
+        USbVul+DUZc77BOF23H/aiSKB20toY60qoX1AsXSxy6+ypDHkhkLtQciZI9fgL71+blwe3b
+        ycX8YF9XksBkAot7uy57x21jfsikuQyHmEcw3nvjy9xiSFVDqV+P+Q+qdjRzpn4Y7YvQFmR
+        Xys4iDi87/s7VQNJ/MGnH1dXAkaDujXnokxKLk9i6gvvZ1Vj2speP77YaqzA5J4ZZ6asn76
+        pWcnJLfFm0u9bZeCYRnimdiOvJPq8Tp2IU0JzosOpXbLBUkT5qmkUGfaYk2mg==
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9684224307865873303
+X-BIZMAIL-ID: 9747960263612415347
 From:   Yuan Tan <tanyuan@tinylab.org>
 To:     tglx@linutronix.de, mingo@redhat.com
 Cc:     bp@alien8.de, dave.hansen@linux.intel.com,
         linux-kernel@vger.kernel.org, x86@kernel.org, falcon@tinylab.org,
-        w@1wt.eu, linux@weissschuh.net, tanyuan@tinylab.org
-Subject: [PATCH v3 0/3] Kconfig: Add dependencies of POWER_RESET for x86
-Date:   Thu, 14 Sep 2023 18:35:52 +0800
-Message-Id: <cover.1694687048.git.tanyuan@tinylab.org>
+        w@1wt.eu, linux@weissschuh.net, tanyuan@tinylab.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 1/3] x86/config: Cleanup i386_defconfig and x86_64_defconfig
+Date:   Thu, 14 Sep 2023 18:36:06 +0800
+Message-Id: <e9aad853957b4ce50cd1f5c15a622f29c7f28d63.1694687048.git.tanyuan@tinylab.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694687048.git.tanyuan@tinylab.org>
+References: <cover.1694687048.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,66 +50,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches are to add dependencies of POWER_RESET for x86.
+Use 'make savedefconfig' to cleanup i386_defconfig and x86_64_defconfig.
 
-I sent v1 and v2 to the wrong x86 repository and email list. Here is v3.
-
-As I have to use "savedefconfig" on the latest branch of different
-architectures, I am sending separate patches for each architecture in v3.
-
-To simplify the enablement of the poweroff support, selecting the
-required options for CONFIG_POWER_RESET=y may make many people happy
-especially when they are using a customized config (maybe tinyconfig
-based) for a target qemu board. Without normal poweroff support from the
-kernel side, qemu will simply hang[1] there after a 'poweroff' command,
-which is a very bad experience for the automatical tests.
-
-However, CONFIG_POWER_RESET is ineffective if there are no
-dependencies that enable certain devices in Kconfig.
-
-Currently, based on tinyconfig, it is very hard to find the exact
-poweroff related option[2]. Some architectures' poweroff works well without
-any dependence, the others' poweroff options are hidden deeply, which
-make things hard.
-
-After multiple verifications, these options have been identified as the
-minimum dependencies required for poweroff to function normally.
-Additionally, 'make savedefconfig' simplifies the defconfig
-automatically.
-
-Zhangjin and I invested a significant amount of time in searching for
-the current options on these devices. We hope that this set of patches
-will save time for others. If community like it, we will consider adding
-dependencies for POWER_RESET on other devices.
-
-We hope every device's CONFIG_POWER_RESET will have proper dependencies. :)
-
+Suggested-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
 ---
-[1]: https://lore.kernel.org/lkml/511b2f6009fb830b3f32b4be3dca99596c684fa3.1689759351.git.falcon@tinylab.org/
-[2]: https://lore.kernel.org/all/983843582e52e83fba79ad45cea6c79e1f62ec6c.1690489039.git.falcon@tinylab.org/
+ arch/x86/configs/i386_defconfig   | 29 +++++++++--------------------
+ arch/x86/configs/x86_64_defconfig |  7 +------
+ 2 files changed, 10 insertions(+), 26 deletions(-)
 
-v1: https://lore.kernel.org/all/20230831201727.3177853-1-tanyuan@tinylab.org/
-v2: https://lore.kernel.org/all/cover.1693535514.git.tanyuan@tinylab.org/
-
----
-Changes in v2:
-- Fix the mistake of using spaces instead of tabs in kconfig.
-
-Changes in v3:
-- Enable POWER_RESET and simplify the deconfig.
-
-Yuan Tan (3):
-  x86/config: Cleanup i386_defconfig and x86_64_defconfig
-  Kconfig: Add dependencies of POWER_RESET for x86
-  x86/config: Simplify i386_defconfig and x86_64_defconfig
-
- arch/x86/Kconfig                  |  2 ++
- arch/x86/configs/i386_defconfig   | 31 ++++++++++---------------------
- arch/x86/configs/x86_64_defconfig |  9 ++-------
- 3 files changed, 14 insertions(+), 28 deletions(-)
-
-
-base-commit: 84b81a67e9cba5466178e47c20c0628359a242b0
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index 1b411bbf3cb0..babd91c8091a 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -1,7 +1,6 @@
+ CONFIG_WERROR=y
+ CONFIG_SYSVIPC=y
+ CONFIG_POSIX_MQUEUE=y
+-CONFIG_USELIB=y
+ CONFIG_AUDIT=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+@@ -28,21 +27,20 @@ CONFIG_CGROUP_DEBUG=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_KALLSYMS_ALL=y
+ CONFIG_PROFILING=y
++CONFIG_CRASH_DUMP=y
+ CONFIG_SMP=y
+ CONFIG_HYPERVISOR_GUEST=y
+ CONFIG_PARAVIRT=y
+-CONFIG_NR_CPUS=8
+ CONFIG_X86_REROUTE_FOR_BROKEN_BOOT_IRQS=y
+ CONFIG_X86_MSR=y
+ CONFIG_X86_CPUID=y
++CONFIG_NUMA=y
+ CONFIG_X86_CHECK_BIOS_CORRUPTION=y
+ # CONFIG_MTRR_SANITIZER is not set
+ CONFIG_EFI=y
+ CONFIG_EFI_STUB=y
++CONFIG_EFI_MIXED=y
+ CONFIG_HZ_1000=y
+-CONFIG_KEXEC=y
+-CONFIG_CRASH_DUMP=y
+-# CONFIG_RETHUNK is not set
+ CONFIG_HIBERNATION=y
+ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
+@@ -51,9 +49,9 @@ CONFIG_ACPI_BGRT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+ CONFIG_X86_ACPI_CPUFREQ=y
++CONFIG_IA32_EMULATION=y
+ CONFIG_KPROBES=y
+ CONFIG_JUMP_LABEL=y
+-CONFIG_COMPAT_32BIT_TIME=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_MODULE_FORCE_UNLOAD=y
+@@ -64,9 +62,7 @@ CONFIG_BINFMT_MISC=y
+ # CONFIG_COMPAT_BRK is not set
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+-CONFIG_UNIX=y
+ CONFIG_XFRM_USER=y
+-CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_ADVANCED_ROUTER=y
+ CONFIG_IP_MULTIPLE_TABLES=y
+@@ -127,7 +123,6 @@ CONFIG_NET_9P=y
+ CONFIG_NET_9P_VIRTIO=y
+ CONFIG_PCI=y
+ CONFIG_PCIEPORTBUS=y
+-CONFIG_PCI_MSI=y
+ CONFIG_HOTPLUG_PCI=y
+ CONFIG_PCCARD=y
+ CONFIG_YENTA=y
+@@ -135,7 +130,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_DEBUG_DEVRES=y
+ CONFIG_CONNECTOR=y
+-CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_VIRTIO_BLK=y
+ CONFIG_BLK_DEV_SD=y
+@@ -150,8 +144,6 @@ CONFIG_ATA_PIIX=y
+ CONFIG_PATA_AMD=y
+ CONFIG_PATA_OLDPIIX=y
+ CONFIG_PATA_SCH=y
+-CONFIG_PATA_MPIIX=y
+-CONFIG_ATA_GENERIC=y
+ CONFIG_MD=y
+ CONFIG_BLK_DEV_MD=y
+ CONFIG_BLK_DEV_DM=y
+@@ -162,17 +154,14 @@ CONFIG_MAC_EMUMOUSEBTN=y
+ CONFIG_NETDEVICES=y
+ CONFIG_NETCONSOLE=y
+ CONFIG_VIRTIO_NET=y
+-CONFIG_BNX2=y
+ CONFIG_TIGON3=y
+ CONFIG_NET_TULIP=y
+ CONFIG_E100=y
+ CONFIG_E1000=y
+ CONFIG_E1000E=y
+ CONFIG_SKY2=y
+-CONFIG_NE2K_PCI=y
+ CONFIG_FORCEDETH=y
+ CONFIG_8139TOO=y
+-# CONFIG_8139TOO_PIO is not set
+ CONFIG_R8169=y
+ CONFIG_INPUT_EVDEV=y
+ CONFIG_INPUT_JOYSTICK=y
+@@ -191,6 +180,8 @@ CONFIG_SERIAL_8250_RSA=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_HW_RANDOM=y
++# CONFIG_HW_RANDOM_INTEL is not set
++# CONFIG_HW_RANDOM_AMD is not set
+ CONFIG_NVRAM=y
+ CONFIG_HPET=y
+ # CONFIG_HPET_MMAP is not set
+@@ -237,12 +228,14 @@ CONFIG_DMADEVICES=y
+ CONFIG_VIRTIO_PCI=y
+ CONFIG_VIRTIO_INPUT=y
+ CONFIG_EEEPC_LAPTOP=y
++CONFIG_AMD_IOMMU=y
++CONFIG_INTEL_IOMMU=y
++# CONFIG_INTEL_IOMMU_DEFAULT_ON is not set
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+ CONFIG_EXT4_FS_SECURITY=y
+ CONFIG_QUOTA=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_QFMT_V2=y
+ CONFIG_AUTOFS_FS=y
+ CONFIG_ISO9660_FS=y
+@@ -267,10 +260,8 @@ CONFIG_SECURITY=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_SECURITY_SELINUX=y
+ CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+-CONFIG_SECURITY_SELINUX_DISABLE=y
+ CONFIG_PRINTK_TIME=y
+ CONFIG_DEBUG_KERNEL=y
+-CONFIG_FRAME_WARN=1024
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_WX=y
+ CONFIG_DEBUG_STACK_USAGE=y
+@@ -280,5 +271,3 @@ CONFIG_BLK_DEV_IO_TRACE=y
+ CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+ CONFIG_EARLY_PRINTK_DBGP=y
+ CONFIG_DEBUG_BOOT_PARAMS=y
+-CONFIG_UNWINDER_FRAME_POINTER=y
+-# CONFIG_64BIT is not set
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 409e9182bd29..babd91c8091a 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -27,6 +27,7 @@ CONFIG_CGROUP_DEBUG=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_KALLSYMS_ALL=y
+ CONFIG_PROFILING=y
++CONFIG_CRASH_DUMP=y
+ CONFIG_SMP=y
+ CONFIG_HYPERVISOR_GUEST=y
+ CONFIG_PARAVIRT=y
+@@ -40,8 +41,6 @@ CONFIG_EFI=y
+ CONFIG_EFI_STUB=y
+ CONFIG_EFI_MIXED=y
+ CONFIG_HZ_1000=y
+-CONFIG_KEXEC=y
+-CONFIG_CRASH_DUMP=y
+ CONFIG_HIBERNATION=y
+ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
+@@ -63,9 +62,7 @@ CONFIG_BINFMT_MISC=y
+ # CONFIG_COMPAT_BRK is not set
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+-CONFIG_UNIX=y
+ CONFIG_XFRM_USER=y
+-CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_ADVANCED_ROUTER=y
+ CONFIG_IP_MULTIPLE_TABLES=y
+@@ -239,7 +236,6 @@ CONFIG_EXT4_FS_POSIX_ACL=y
+ CONFIG_EXT4_FS_SECURITY=y
+ CONFIG_QUOTA=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_QFMT_V2=y
+ CONFIG_AUTOFS_FS=y
+ CONFIG_ISO9660_FS=y
+@@ -264,7 +260,6 @@ CONFIG_SECURITY=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_SECURITY_SELINUX=y
+ CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+-CONFIG_SECURITY_SELINUX_DISABLE=y
+ CONFIG_PRINTK_TIME=y
+ CONFIG_DEBUG_KERNEL=y
+ CONFIG_MAGIC_SYSRQ=y
 -- 
 2.34.1
 
