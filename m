@@ -2,196 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0327A1200
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925BD7A1204
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjINXqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 19:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
+        id S230392AbjINXrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjINXqh (ORCPT
+        with ESMTP id S230113AbjINXri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 19:46:37 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4D12707
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:46:33 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a9d6b98845so588666266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1694735192; x=1695339992; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=jEsOE3VahVBRrZQB+F/BuNrsfqTbbzggGN9bcwX+LFw=;
-        b=WBmURdAIViqySOYd4mwoL5+CGavhBHlAcQZJOFnePa/0bAXu0bgybRI3OcGj4HTG2j
-         c4WP2JsR5jpOWTsFRjLuua//y/QQpf3bQLoZvnXtVvdNZZ0OV5Ll75KL7oUytg7KbJMU
-         ZOjCMe/ghixf3/EUuPcV+lYqQ1FwmK9/STj1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694735192; x=1695339992;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jEsOE3VahVBRrZQB+F/BuNrsfqTbbzggGN9bcwX+LFw=;
-        b=gSfrBGMu0QaocrI9XcZtHOWHuK9+NLlS/i8dYpfu0PZ+1MkEQ69ZPDx6VkUucW2xVP
-         mLUy+9gfAR+AbpnHYodEM13HaFAzwrKSNJaGeGh2HRO2jpO19XaNVOFWYrnxJB9a8+3q
-         xzzcZJ0M4NhWJz8kyOxhIeZWCEQoQo5UApDA4Uy2cArqtGZ/SWX+7fPZ3eSOguttaJaG
-         aXqM3DSxVay+8AJHIDkAhOwtIrTE95EHWxzXG6HTl0c1SS5mJMXLFTlET6vVuqXVRmH8
-         CTsJgdSLCQ582vJBVKSSnksGJtrDMRugAQE58FVUv6I0pj1whYNPgefSwxOB1TluhZ9U
-         5PvA==
-X-Gm-Message-State: AOJu0Yw9Sgrj2jFFgMMKDJdM8zhxpAbmDMOSnGSCeBPEwoGtyj7Ezavv
-        JWgS/ZmBLSxh/0SDyX1jwEJ44A==
-X-Google-Smtp-Source: AGHT+IFdLzHxkpcWBSKfZyEmhUJiAzFwTc5lp2rJbnp1c8teqkmJckhwUBhX6fJYxYR6W8lj/upGVQ==
-X-Received: by 2002:a17:906:51d0:b0:9a1:fda6:2e2a with SMTP id v16-20020a17090651d000b009a1fda62e2amr179416ejk.9.1694735191861;
-        Thu, 14 Sep 2023 16:46:31 -0700 (PDT)
-Received: from [192.168.1.10] (host-92-12-44-130.as13285.net. [92.12.44.130])
-        by smtp.gmail.com with ESMTPSA id m21-20020a1709060d9500b009937dbabbd5sm1623158eji.220.2023.09.14.16.46.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 16:46:31 -0700 (PDT)
-Message-ID: <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com>
-Date:   Fri, 15 Sep 2023 00:46:30 +0100
+        Thu, 14 Sep 2023 19:47:38 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4C42100;
+        Thu, 14 Sep 2023 16:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694735252;
+        bh=9patxbNFGAzErm12k2acKDbtykuvtFZGquoKci9pL2Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S4ylrAEvFGUjAedAM7hKhJk1oI23FnsRLMmTUUXQDX/nQnbtCetlpqj3otm5HNUWO
+         Ibeeog+VSaMLOnLQbhmZC1AN4ebaE6YWctvpdzc+aktMJpxyV2Jtuz8dDa3BhGwa1N
+         k6E0DCs0A5I6Dk3KAyDUdxOh7olff2FdmTXSBHblC5Gcu6zWEUzysB9IK5t0vUKIoy
+         s3E1wUc7/MDMsQsURgTpO8B2v8mYUvDvoYyBpLu4b39xQw3KkjrWDQs8e2nQVkuoCa
+         DTwGk3kPAdTCOqLHStiRtBwwh92E92tZzrnRE0jjJAahN2+LgCbLtmWpZp11bNnduP
+         L7qMQ5ClqQt/w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmvBW6kD7z4wb1;
+        Fri, 15 Sep 2023 09:47:31 +1000 (AEST)
+Date:   Fri, 15 Sep 2023 09:47:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: linux-next: manual merge of the btrfs tree with the mm tree
+Message-ID: <20230915094731.076a3e98@canb.auug.org.au>
+In-Reply-To: <20230915091421.58207f2c@canb.auug.org.au>
+References: <20230915091421.58207f2c@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   andrew.cooper3@citrix.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-GB
-To:     Thomas Gleixner <tglx@linutronix.de>, Xin Li <xin3.li@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
-In-Reply-To: <87y1h81ht4.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/9uejlp7IAa7pwaCXIWPCDo_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 12:00 am, Thomas Gleixner wrote:
->> and despite what Juergen said, I'm going to recommend that you do wire
->> this through the paravirt infrastructure, for the benefit of regular
->> users having a nice API, not because XenPV is expecting to do something
->> wildly different here.
-> I fundamentaly hate adding this to the PV infrastructure. We don't want
-> more PV ops, quite the contrary.
+--Sig_/9uejlp7IAa7pwaCXIWPCDo_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What I meant was "there should be the two top-level APIs, and under the
-covers they DTRT".  Part of doing the right thing is to wire up paravirt
-for configs where that is specified.
+Hi all,
 
-Anything else is going to force people to write logic of the form:
+[Forgot the diff ...]
 
-    if (WRMSRNS && !XENPV)
-        wrmsr_ns(...)
-    else
-        wrmsr(...)
+On Fri, 15 Sep 2023 09:14:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the btrfs tree got a conflict in:
+>=20
+>   fs/btrfs/super.c
+>=20
+> between commit:
+>=20
+>   c0824542e4d1 ("fs: super: dynamically allocate the s_shrink")
+>=20
+> from the mm tree and commit:
+>=20
+>   2ebed4689ba2 ("btrfs: open block devices after superblock creation")
+>=20
+> from the btrfs tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-which is going to be worse overall.  And there really is one example of
-this antipattern already in the series.
+--=20
+Cheers,
+Stephen Rothwell
 
+diff --cc fs/btrfs/super.c
+index 3b165d9967bb,3eff75e06a57..000000000000
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@@ -1518,8 -1459,23 +1459,23 @@@ static struct dentry *btrfs_mount_root(
+  		if ((flags ^ s->s_flags) & SB_RDONLY)
+  			error =3D -EBUSY;
+  	} else {
+- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
++ 		struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
++=20
++ 		mutex_lock(&uuid_mutex);
++ 		error =3D btrfs_open_devices(fs_devices, sb_open_mode(flags),
++ 					   fs_type);
++ 		mutex_unlock(&uuid_mutex);
++ 		if (error)
++ 			goto error_deactivate;
++=20
++ 		if (!(flags & SB_RDONLY) && fs_devices->rw_devices =3D=3D 0) {
++ 			error =3D -EACCES;
++ 			goto error_deactivate;
++ 		}
++=20
++ 		snprintf(s->s_id, sizeof(s->s_id), "%pg",
++ 			 fs_devices->latest_dev->bdev);
+ -		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s", fs_type->name,
+ +		shrinker_debugfs_rename(s->s_shrink, "sb-%s:%s", fs_type->name,
+  					s->s_id);
+  		btrfs_sb(s)->bdev_holder =3D fs_type;
+  		error =3D btrfs_fill_super(s, fs_devices, data);
 
-> For the initial use case at hand, there is an explicit FRED dependency
-> and the code in question really wants to use WRMSRNS directly and not
-> through a PV function call.
->
-> I agree with your reasoning for the more generic use case where we can
-> gain performance independent of FRED by using WRMSRNS for cases where
-> the write has no serialization requirements.
->
-> But this made me look into PV ops some more. For actual performance
-> relevant code the current PV ops mechanics are a horrorshow when the op
-> defaults to the native instruction.
->
-> Let's look at wrmsrl():
->
-> wrmsrl(msr, val
->  wrmsr(msr, (u32)val, (u32)val >> 32))
->   paravirt_write_msr(msr, low, high)
->     PVOP_VCALL3(cpu.write_msr, msr, low, high)
->
-> Which results in
->
-> 	mov	$msr, %edi
-> 	mov	$val, %rdx
-> 	mov	%edx, %esi
-> 	shr	$0x20, %rdx
-> 	call	native_write_msr
->
-> and native_write_msr() does at minimum:
->
-> 	mov    %edi,%ecx
-> 	mov    %esi,%eax
-> 	wrmsr
->         ret
+--Sig_/9uejlp7IAa7pwaCXIWPCDo_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Yeah, this is daft.  But it can also be fixed irrespective of WRMSRNS.
+-----BEGIN PGP SIGNATURE-----
 
-WRMSR has one complexity that most other PV-ops don't, and that's the
-exception table reference for the instruction itself.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUDm5MACgkQAVBC80lX
+0GwNlgf/c8QLvGO7aWYDfCnianzsnQO453i8/VaSFrJoo6X22GtnnKFYpJ73yhxn
+N+5CNz75RUJGI3/ZLlNaFY5CPoN2RTRrnnaypb5TMzuXIthynSdpSZETNwCJN8IB
+O5VdkxxnLJmiaCdh8JD1QejOSlRBAjhOlMS8albR9XIuRbF8Nu4TC/PolAkz0/VE
+qf3fd9PRSbf2yAe33dbIV7szOCkbY2GJtXn2LqgnDx+dTeBgTlcIT6XOCVUY/NG/
+d482Y7XLdPYvVTuICHBA4h7rgYlAdHE1iJ40P3jGCALuGd8nDRYXh4zl1iZrYAa2
+6V8dv/5fL1kGW8gAv2jfhnlTRmCCUQ==
+=sG5a
+-----END PGP SIGNATURE-----
 
-In a theoretical future ought to look like:
-
-    mov    $msr, %ecx
-    mov    $lo, %eax
-    mov    $hi, %edx
-    1: {call paravirt_blah(%rip) | cs...cs wrmsr | cs...cs wrmsrns }
-    _ASM_EXTABLE(1b, ...)
-
-In paravirt builds, the CALL needs to be the emitted form, because it
-needs to function in very early boot.
-
-But once the paravirt-ness has been chosen and alternatives run, the
-as-native paths are fully inline.
-
-The alternative which processes this site wants to conclude that, in the
-case it does not alter from the CALL, to clobber the EXTABLE reference. 
-CALL instructions can #GP, and you don't want to end up thinking you're
-handling a WRMSR #GP when in fact it was a non-canonical function pointer.
-
-> In the worst case 'ret' is going through the return thunk. Not to talk
-> about function prologues and whatever.
->
-> This becomes even more silly for trivial instructions like STI/CLI or in
-> the worst case paravirt_nop().
-
-STI/CLI are already magic.  Are they not inlined?
-
-> The call makes only sense, when the native default is an actual
-> function, but for the trivial cases it's a blatant engineering
-> trainwreck.
->
-> I wouldn't care at all if CONFIG_PARAVIRT_XXL would be the esoteric use
-> case, but AFAICT it's default enabled on all major distros.
->
-> So no. I'm fundamentally disagreeing with your recommendation. The way
-> forward is:
->
->   1) Provide the native variant for wrmsrns(), i.e. rename the proposed
->      wrmsrns() to native_wrmsr_ns() and have the X86_FEATURE_WRMSRNS
->      safety net as you pointed out.
->
->      That function can be used in code which is guaranteed to be not
->      affected by the PV_XXL madness.
->
->   2) Come up with a sensible solution for the PV_XXL horrorshow
->
->   3) Implement a sane general variant of wrmsr_ns() which handles
->      both X86_FEATURE_WRMSRNS and X86_MISFEATURE_PV_XXL
->
->   4) Convert other code which benefits from the non-serializing variant
->      to wrmsr_ns()
-
-Well - point 1 is mostly work that needs reverting as part of completing
-point 3, and point 2 clearly needs doing irrespective of anything else.
-
-Thanks,
-
-~Andrew
+--Sig_/9uejlp7IAa7pwaCXIWPCDo_--
