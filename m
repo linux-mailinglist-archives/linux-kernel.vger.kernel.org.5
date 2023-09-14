@@ -2,323 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E7479FC4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F04B79FC4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235684AbjINGsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        id S235655AbjINGtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbjINGsJ (ORCPT
+        with ESMTP id S232171AbjINGtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:48:09 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E50DCCD;
-        Wed, 13 Sep 2023 23:48:05 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7a7d7a3d975so327868241.3;
-        Wed, 13 Sep 2023 23:48:05 -0700 (PDT)
+        Thu, 14 Sep 2023 02:49:41 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDB7CCD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:49:37 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso9089841fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694674084; x=1695278884; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wVkSBOidF5jZ/kRD34qwreK7L3VDPKeJsOCPs4UXZMQ=;
-        b=M733xMII+mp7ll1MehLetOj5/Rby7bQvuFtvW0lSQNUQhO5Bum8DlPuopTxhZcbkkC
-         eR0J9+V6ftgjvkE93OGwitdfAg+aus74mZUZOutDuLsf2m8moZbxu/vx23FauDW/XPe4
-         s3F1BQlVqjFniCbqMuRnZk+LqzUmfXdZFZhr/4hhla0UpXaddaNu/rKdEmRK7858rkF7
-         1nFgBNfFlyQAhAQw1U8lL+tfAZBaEH4yB7gz6/SqyHMXZUi7kmJM27coYE+ZoS3cdh/9
-         bHHjDpokkodu2RzGbF3iXQWcA3pYxYTtdYRQJoi8GTy1S5dG8IFn5mk72Ltm1mf53ga9
-         xgGw==
+        d=gmail.com; s=20221208; t=1694674176; x=1695278976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nLt56x/+byFP2a42jCI16rLI5Oh2/81pcuquOpoEQwU=;
+        b=hfhGBqt9lDVZjZ7aiQRJJO7kkG8Xlip5rKZg1zMqq3cD1pICRoTlisBVsn7v4BYa0b
+         lZgxxOrcmZmjggdryYpBh0ogHulzZ3NkkufkiXt1R5b5mxW10qYCDkiSNhbBeT/C+8Z9
+         M30jjrem6oTiN/XOMnAlG24UBVYz6guWlrZOgrhTLupkT5KethtvR6RBdKmdZQKFcqp+
+         Mb4PwuLN2xF5K34uQO4Aa4m1j0lzoSTObLhzghSZS2lebSxXwWbAf4JDA4oegfDxOa3f
+         P0vGtU4FyBgsoTauFjNPos9lYpnB4xEdfye1aKnTG6KGw6Kap/YTXrg5/B8vA6iZnBvG
+         4ATg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694674084; x=1695278884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wVkSBOidF5jZ/kRD34qwreK7L3VDPKeJsOCPs4UXZMQ=;
-        b=gUMWSc7Y8CCP0bIExBrC+vKgA6Oh+JWYzXMueJN9wzdIjYi/WibszaRcTP/w1Jg/4+
-         Rn1dwqembb5GA43GPRtTvlwIyKnmhE9aKBuq06fNvKPGGQ0QzQNFTICt5az1NNiIDOaU
-         NErck3CNB0JhDJBUhDnSiaCiZjFQcyZ2XDQdHvWRgymutmjkpewPoI4UGyyztOiDv72O
-         xfF8Af6xN/IXPb7ZvMo755JltB0Fg/8AMQ3rQ3tj3HRT3ZVP+gnCUjSGl6GoriVS9nwG
-         +UjICompO9nZu/IuwHa2LKwCBvkr9e/QHo0WaB0tNydRVWtuV/IMSrHW3sauxQCY3Z32
-         5x9A==
-X-Gm-Message-State: AOJu0Yyv6ZZw0WaXjBlkPZe/fVjAAWewOZPfjSSY8mUNf/yYIKupzQ+X
-        vrkSKE63jk0KtzYFTj6dfRWFSIBDWZqcezOojo82HZTQpY0=
-X-Google-Smtp-Source: AGHT+IF9RDNj478YjOhQJscUtD8ZDfkcIOK5cUpGnYnn7NjXnzBZMXppz8hxntOHacJe+WK6pEX4ktUuZhsUpG3JwO0=
-X-Received: by 2002:a1f:ea43:0:b0:48d:2bcf:f959 with SMTP id
- i64-20020a1fea43000000b0048d2bcff959mr5256766vkh.3.1694674084110; Wed, 13 Sep
- 2023 23:48:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694674176; x=1695278976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nLt56x/+byFP2a42jCI16rLI5Oh2/81pcuquOpoEQwU=;
+        b=DxKd/Ssgr6CoDaXYwhDbUFDtniZ+n5WfmvW4W+gFSfWcU+JvCwzpKEUYZbe1b5MwMc
+         9qguzgfutc3tmOxkbn4ocSC4F3lNozzKo80RdkkLqiKcSylvEZrtHnB/nT0VSEQ1xGGr
+         ErGmcq1KQceRmVEyluw+Zwz1c6U/x2p7RbHlJbi16jhOxJ04B33tuMwuWUyX+rxl+eHI
+         vE5laAxqVpC2jY5B95Vp6bf5dq5daT3X6KqKIjwYLPG32NaHGSixkrcbUuKcVhAoEpON
+         drpx+z41eh05MXQPkdXWU4anesdqtplsE7vY+Di5Yosp6FjFXvkkDxCmoVmVjudl/U/P
+         SxCw==
+X-Gm-Message-State: AOJu0YwU781JzcxMaEtTI7abkz7UIGzNyNWqW7PdEdzS0yyHhL9XfsLH
+        xtq5ObMaJClQMEzDMudmi1s=
+X-Google-Smtp-Source: AGHT+IGmZW4nrpil9KXEo+bbhmVfahNQoU3dZnFCrmBmZD4hG2m18HihW7kyboCIQAU1X8pIArdHsA==
+X-Received: by 2002:a2e:8850:0:b0:2bb:c22a:f28c with SMTP id z16-20020a2e8850000000b002bbc22af28cmr4775114ljj.32.1694674175493;
+        Wed, 13 Sep 2023 23:49:35 -0700 (PDT)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id l4-20020a2e7004000000b002b9f0b25ff6sm159739ljc.4.2023.09.13.23.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 23:49:35 -0700 (PDT)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] nvmem: brcm_nvram: store a copy of NVRAM content
+Date:   Thu, 14 Sep 2023 08:49:22 +0200
+Message-Id: <20230914064922.3986-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20230913152238.905247-1-mszeredi@redhat.com>
-In-Reply-To: <20230913152238.905247-1-mszeredi@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 14 Sep 2023 09:47:52 +0300
-Message-ID: <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] quering mount attributes
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 6:22=E2=80=AFPM Miklos Szeredi <mszeredi@redhat.com=
-> wrote:
->
-> Implement the mount querying syscalls agreed on at LSF/MM 2023.  This is =
-an
-> RFC with just x86_64 syscalls.
->
-> Excepting notification this should allow full replacement for
-> parsing /proc/self/mountinfo.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Since you mentioned notifications, I will add that the plan discussed
-in LFSMM was, once we have an API to query mount stats and children,
-implement fanotify events for:
-mount [mntuid] was un/mounted at [parent mntuid],[dirfid+name]
+This driver uses MMIO access for reading NVRAM from a flash device.
+Underneath there is a flash controller that reads data and provides
+mapping window.
 
-As with other fanotify events, the self mntuid and dirfid+name
-information can be omitted and without it, multiple un/mount events
-from the same parent mntuid will be merged, allowing userspace
-to listmnt() periodically only mntuid whose child mounts have changed,
-with little risk of event queue overflow.
+Using MMIO interface affects controller configuration and may break real
+controller driver. It was reported by multiple users of devices with
+NVRAM stored on NAND.
 
-The possible monitoring scopes would be the entire mount namespace
-of the monitoring program or watching a single mount for change in
-its children mounts. The latter is similar to inotify directory children wa=
-tch,
-where the watches needs to be set recursively, with all the weight on
-userspace to avoid races.
+Modify driver to read & cache all NVRAM content during init and use that
+copy to provide NVMEM data when requested.
 
-That still leaves the problem of monitoring the creation of new mount
-namespaces, but that is out of scope for this discussion, which is
-about a replacement for /proc/self/mountinfo monitoring.
+Link: https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
+Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Scott Branden <scott.branden@broadcom.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/nvmem/brcm_nvram.c | 77 +++++++++++++++++++++-----------------
+ 1 file changed, 43 insertions(+), 34 deletions(-)
 
-Thanks,
-Amir.
+diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
+index 9737104f3b76..cfc1c485e20a 100644
+--- a/drivers/nvmem/brcm_nvram.c
++++ b/drivers/nvmem/brcm_nvram.c
+@@ -19,7 +19,8 @@
+ 
+ struct brcm_nvram {
+ 	struct device *dev;
+-	void __iomem *base;
++	uint8_t *data;
++	size_t size;
+ 	struct nvmem_cell_info *cells;
+ 	int ncells;
+ };
+@@ -36,10 +37,8 @@ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+ 			   size_t bytes)
+ {
+ 	struct brcm_nvram *priv = context;
+-	u8 *dst = val;
+ 
+-	while (bytes--)
+-		*dst++ = readb(priv->base + offset++);
++	memcpy(val, priv->data + offset, bytes);
+ 
+ 	return 0;
+ }
+@@ -68,7 +67,12 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ {
+ 	struct device *dev = priv->dev;
+ 	char *var, *value, *eq;
++	uint8_t tmp;
+ 	int idx;
++	int err = 0;
++
++	tmp = priv->data[len - 1];
++	priv->data[len - 1] = '\0';
+ 
+ 	priv->ncells = 0;
+ 	for (var = data + sizeof(struct brcm_nvram_header);
+@@ -78,8 +82,10 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ 	}
+ 
+ 	priv->cells = devm_kcalloc(dev, priv->ncells, sizeof(*priv->cells), GFP_KERNEL);
+-	if (!priv->cells)
+-		return -ENOMEM;
++	if (!priv->cells) {
++		err = -ENOMEM;
++		goto out;
++	}
+ 
+ 	for (var = data + sizeof(struct brcm_nvram_header), idx = 0;
+ 	     var < (char *)data + len && *var;
+@@ -91,8 +97,10 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ 		value = eq + 1;
+ 
+ 		priv->cells[idx].name = devm_kstrdup(dev, var, GFP_KERNEL);
+-		if (!priv->cells[idx].name)
+-			return -ENOMEM;
++		if (!priv->cells[idx].name) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 		priv->cells[idx].offset = value - (char *)data;
+ 		priv->cells[idx].bytes = strlen(value);
+ 		priv->cells[idx].np = of_get_child_by_name(dev->of_node, priv->cells[idx].name);
+@@ -105,40 +113,32 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ 		}
+ 	}
+ 
+-	return 0;
++out:
++	priv->data[len - 1] = tmp;
++	return err;
+ }
+ 
+ static int brcm_nvram_parse(struct brcm_nvram *priv)
+ {
++	struct brcm_nvram_header *header = (struct brcm_nvram_header *)priv->data;
+ 	struct device *dev = priv->dev;
+-	struct brcm_nvram_header header;
+-	uint8_t *data;
+ 	size_t len;
+ 	int err;
+ 
+-	memcpy_fromio(&header, priv->base, sizeof(header));
+-
+-	if (memcmp(header.magic, NVRAM_MAGIC, 4)) {
++	if (memcmp(header->magic, NVRAM_MAGIC, 4)) {
+ 		dev_err(dev, "Invalid NVRAM magic\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	len = le32_to_cpu(header.len);
+-
+-	data = kzalloc(len, GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
+-
+-	memcpy_fromio(data, priv->base, len);
+-	data[len - 1] = '\0';
+-
+-	err = brcm_nvram_add_cells(priv, data, len);
+-	if (err) {
+-		dev_err(dev, "Failed to add cells: %d\n", err);
+-		return err;
++	len = le32_to_cpu(header->len);
++	if (len > priv->size) {
++		dev_err(dev, "NVRAM length (%zd) exceeds mapped size (%zd)\n", len, priv->size);
++		return -EINVAL;
+ 	}
+ 
+-	kfree(data);
++	err = brcm_nvram_add_cells(priv, priv->data, len);
++	if (err)
++		dev_err(dev, "Failed to add cells: %d\n", err);
+ 
+ 	return 0;
+ }
+@@ -150,8 +150,9 @@ static int brcm_nvram_probe(struct platform_device *pdev)
+ 		.reg_read = brcm_nvram_read,
+ 	};
+ 	struct device *dev = &pdev->dev;
+-	struct resource *res;
+ 	struct brcm_nvram *priv;
++	struct resource *res;
++	void __iomem *base;
+ 	int err;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+@@ -159,21 +160,29 @@ static int brcm_nvram_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	priv->dev = dev;
+ 
+-	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+-	if (IS_ERR(priv->base))
+-		return PTR_ERR(priv->base);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	priv->size = resource_size(res);
++
++	priv->data = devm_kzalloc(dev, priv->size, GFP_KERNEL);
++	if (!priv->data)
++		return -ENOMEM;
++
++	memcpy_fromio(priv->data, base, priv->size);
+ 
+ 	err = brcm_nvram_parse(priv);
+ 	if (err)
+ 		return err;
+ 
+-	bcm47xx_nvram_init_from_iomem(priv->base, resource_size(res));
++	bcm47xx_nvram_init_from_iomem(base, priv->size);
+ 
+ 	config.dev = dev;
+ 	config.cells = priv->cells;
+ 	config.ncells = priv->ncells;
+ 	config.priv = priv;
+-	config.size = resource_size(res);
++	config.size = priv->size;
+ 
+ 	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
+ }
+-- 
+2.35.3
 
->
-> It is not a replacement for /proc/$OTHER_PID/mountinfo, since mount
-> namespace and root are taken from the current task.  I guess namespace an=
-d
-> root could be switched before invoking these syscalls but that sounds a b=
-it
-> complicated.  Not sure if this is a problem.
->
-> Test utility attached at the end.
-> ---
->
-> Miklos Szeredi (3):
->   add unique mount ID
->   add statmnt(2) syscall
->   add listmnt(2) syscall
->
->  arch/x86/entry/syscalls/syscall_64.tbl |   2 +
->  fs/internal.h                          |   5 +
->  fs/mount.h                             |   3 +-
->  fs/namespace.c                         | 365 +++++++++++++++++++++++++
->  fs/proc_namespace.c                    |  19 +-
->  fs/stat.c                              |   9 +-
->  fs/statfs.c                            |   1 +
->  include/linux/syscalls.h               |   5 +
->  include/uapi/asm-generic/unistd.h      |   8 +-
->  include/uapi/linux/mount.h             |  36 +++
->  include/uapi/linux/stat.h              |   1 +
->  11 files changed, 443 insertions(+), 11 deletions(-)
->
-> --
-> 2.41.0
->
-> =3D=3D=3D statmnt.c =3D=3D=3D
-> #define _GNU_SOURCE
-> #include <unistd.h>
-> #include <stdio.h>
-> #include <fcntl.h>
-> #include <stdint.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <errno.h>
-> #include <sys/mount.h>
-> #include <sys/stat.h>
-> #include <err.h>
->
-> struct stmt_str {
->         __u32 off;
->         __u32 len;
-> };
->
-> struct statmnt {
->         __u64 mask;             /* What results were written [uncond] */
->         __u32 sb_dev_major;     /* Device ID */
->         __u32 sb_dev_minor;
->         __u64 sb_magic;         /* ..._SUPER_MAGIC */
->         __u32 sb_flags;         /* MS_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIM=
-E} */
->         __u32 __spare1;
->         __u64 mnt_id;           /* Unique ID of mount */
->         __u64 mnt_parent_id;    /* Unique ID of parent (for root =3D=3D m=
-nt_id) */
->         __u32 mnt_id_old;       /* Reused IDs used in proc/.../mountinfo =
-*/
->         __u32 mnt_parent_id_old;
->         __u64 mnt_attr;         /* MOUNT_ATTR_... */
->         __u64 mnt_propagation;  /* MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE} *=
-/
->         __u64 mnt_peer_group;   /* ID of shared peer group */
->         __u64 mnt_master;       /* Mount receives propagation from this I=
-D */
->         __u64 propagate_from;   /* Propagation from in current namespace =
-*/
->         __u64 __spare[20];
->         struct stmt_str mnt_root;       /* Root of mount relative to root=
- of fs */
->         struct stmt_str mountpoint;     /* Mountpoint relative to root of=
- process */
->         struct stmt_str fs_type;        /* Filesystem type[.subtype] */
->         struct stmt_str sb_opts;        /* Super block string options (nu=
-l delimted) */
-> };
->
-> #define STMT_SB_BASIC           0x00000001U     /* Want/got sb_... */
-> #define STMT_MNT_BASIC          0x00000002U     /* Want/got mnt_... */
-> #define STMT_PROPAGATE_FROM     0x00000004U     /* Want/got propagate_fro=
-m */
-> #define STMT_MNT_ROOT           0x00000008U     /* Want/got mnt_root  */
-> #define STMT_MOUNTPOINT         0x00000010U     /* Want/got mountpoint */
-> #define STMT_FS_TYPE            0x00000020U     /* Want/got fs_type */
-> #define STMT_SB_OPTS            0x00000040U     /* Want/got sb_opts */
->
-> #define __NR_statmnt   454
-> #define __NR_listmnt   455
->
-> #define STATX_MNT_ID_UNIQUE     0x00004000U     /* Want/got extended stx_=
-mount_id */
->
-> int main(int argc, char *argv[])
-> {
->         char buf[65536];
->         struct statmnt *st =3D (void *) buf;
->         char *end;
->         const char *arg =3D argv[1];
->         long res;
->         int list =3D 0;
->         unsigned long mnt_id;
->         unsigned int mask =3D STMT_SB_BASIC | STMT_MNT_BASIC | STMT_PROPA=
-GATE_FROM | STMT_MNT_ROOT | STMT_MOUNTPOINT | STMT_FS_TYPE | STMT_SB_OPTS;
->
->         if (arg && strcmp(arg, "-l") =3D=3D 0) {
->                 list =3D 1;
->                 arg =3D argv[2];
->         }
->         if (argc !=3D list + 2)
->                 errx(1, "usage: %s [-l] (mnt_id|path)", argv[0]);
->
->         mnt_id =3D strtol(arg, &end, 0);
->         if (!mnt_id || *end !=3D '\0') {
->                 struct statx sx;
->
->                 res =3D statx(AT_FDCWD, arg, 0, STATX_MNT_ID_UNIQUE, &sx)=
-;
->                 if (res =3D=3D -1)
->                         err(1, "%s", arg);
->
->                 if (!(sx.stx_mask & (STATX_MNT_ID | STATX_MNT_ID_UNIQUE))=
-)
->                         errx(1, "Sorry, no mount ID");
->
->                 mnt_id =3D sx.stx_mnt_id;
->         }
->
->
->         if (list) {
->                 size_t size =3D 8192;
->                 uint64_t list[size];
->                 long i, num;
->
->                 res =3D syscall(__NR_listmnt, mnt_id, list, size, 0);
->                 if (res =3D=3D -1)
->                         err(1, "listmnt(%lu)", mnt_id);
->
->                 num =3D res;
->                 for (i =3D 0; i < num; i++) {
->                         printf("0x%lx / ", list[i]);
->
->                         res =3D syscall(__NR_statmnt, list[i], STMT_MNT_B=
-ASIC | STMT_MOUNTPOINT, &buf, sizeof(buf), 0);
->                         if (res =3D=3D -1) {
->                                 printf("???\t[%s]\n", strerror(errno));
->                         } else {
->                                 printf("%u\t%s\n", st->mnt_id_old,
->                                        (st->mask & STMT_MOUNTPOINT) ? buf=
- + st->mountpoint.off : "???");
->                         }
->                 }
->
->                 return 0;
->         }
->
->         res =3D syscall(__NR_statmnt, mnt_id, mask, &buf, sizeof(buf), 0)=
-;
->         if (res =3D=3D -1)
->                 err(1, "statmnt(%lu)", mnt_id);
->
->         printf("mask: 0x%llx\n", st->mask);
->         if (st->mask & STMT_SB_BASIC) {
->                 printf("sb_dev_major: %u\n", st->sb_dev_major);
->                 printf("sb_dev_minor: %u\n", st->sb_dev_minor);
->                 printf("sb_magic: 0x%llx\n", st->sb_magic);
->                 printf("sb_flags: 0x%08x\n", st->sb_flags);
->         }
->         if (st->mask & STMT_MNT_BASIC) {
->                 printf("mnt_id: 0x%llx\n", st->mnt_id);
->                 printf("mnt_parent_id: 0x%llx\n", st->mnt_parent_id);
->                 printf("mnt_id_old: %u\n", st->mnt_id_old);
->                 printf("mnt_parent_id_old: %u\n", st->mnt_parent_id_old);
->                 printf("mnt_attr: 0x%08llx\n", st->mnt_attr);
->                 printf("mnt_propagation: %s%s%s%s\n",
->                        st->mnt_propagation & MS_SHARED ? "shared," : "",
->                        st->mnt_propagation & MS_SLAVE ? "slave," : "",
->                        st->mnt_propagation & MS_UNBINDABLE ? "unbindable,=
-" : "",
->                        st->mnt_propagation & MS_PRIVATE ? "private" : "")=
-;
->                 printf("mnt_peer_group: %llu\n", st->mnt_peer_group);
->                 printf("mnt_master: %llu\n", st->mnt_master);
->         }
->         if (st->mask & STMT_PROPAGATE_FROM) {
->                 printf("propagate_from: %llu\n", st->propagate_from);
->         }
->         if (st->mask & STMT_MNT_ROOT) {
->                 printf("mnt_root: %i/%u <%s>\n", st->mnt_root.off,
->                        st->mnt_root.len, buf + st->mnt_root.off);
->         }
->         if (st->mask & STMT_MOUNTPOINT) {
->                 printf("mountpoint: %i/%u <%s>\n", st->mountpoint.off,
->                        st->mountpoint.len, buf + st->mountpoint.off);
->         }
->         if (st->mask & STMT_FS_TYPE) {
->                 printf("fs_type: %i/%u <%s>\n", st->fs_type.off,
->                        st->fs_type.len, buf + st->fs_type.off);
->         }
->
->         if (st->mask & STMT_SB_OPTS) {
->                 char *p =3D buf + st->sb_opts.off;
->                 char *end =3D p + st->sb_opts.len;
->
->                 printf("sb_opts: %i/%u ", st->sb_opts.off, st->sb_opts.le=
-n);
->                 for (; p < end; p +=3D strlen(p) + 1)
->                         printf("<%s>, ", p);
->                 printf("\n");
->         }
->
->         return 0;
-> }
->
