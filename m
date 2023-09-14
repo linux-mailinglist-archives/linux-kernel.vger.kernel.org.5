@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31A67A07BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20687A07C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240390AbjINOsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        id S240417AbjINOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240356AbjINOsN (ORCPT
+        with ESMTP id S240386AbjINOsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:48:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7FD1FD8;
-        Thu, 14 Sep 2023 07:48:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FDCBC433C9;
-        Thu, 14 Sep 2023 14:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694702889;
-        bh=y75UZV7IrEfaRshsSKNFVB5QqnbIpnAX2/2OZFpAm1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZO9RHGVbtpfHNXzviqAu345MBTfgs3Mj0JvziDHVFd6VP7DHN8BXPZl8fQlMTSUv3
-         VdGNxQLmXJceXc5QounrVyFFRQFSIQt8Y3AxrVvQm2hN+5/PncJhz7SQavQkdtpW+6
-         ZbKUY3ZNT8Z6U+MhhNxxxkgbdsWLlLI3nWA/KKU2tCrX4DNJzNi8mg/QeqEm2SeI+Q
-         6TNPDoWo87fv4nYUjLQ7A/aq6IYGNwR/ziTksXiOcjMmSjU/pwaopBjq00MGFWLLm4
-         Z09dOwpHXjB/rdY5QPnW1uHMkb63BLy6GJTyjEOhSuwYl675BCY2+w0Tqc7yFtXuOu
-         p/lP27OPtGgww==
-Received: (nullmailer pid 1271313 invoked by uid 1000);
-        Thu, 14 Sep 2023 14:48:07 -0000
-Date:   Thu, 14 Sep 2023 09:48:07 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: phy: qcom,snps-eusb2-repeater: Add
- magic tuning overrides
-Message-ID: <20230914144807.GA1267899-robh@kernel.org>
-References: <20230830-topic-eusb2_override-v2-0-7d8c893d93f6@linaro.org>
- <20230830-topic-eusb2_override-v2-1-7d8c893d93f6@linaro.org>
+        Thu, 14 Sep 2023 10:48:15 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EDA1FDE;
+        Thu, 14 Sep 2023 07:48:10 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmgCS0cnFz6K5mL;
+        Thu, 14 Sep 2023 22:47:32 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
+ 2023 15:48:08 +0100
+Date:   Thu, 14 Sep 2023 15:48:07 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     James Morse <james.morse@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>
+Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
+ [code first?]
+Message-ID: <20230914154807.0000710d@Huawei.com>
+In-Reply-To: <20230913163823.7880-28-james.morse@arm.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-28-james.morse@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830-topic-eusb2_override-v2-1-7d8c893d93f6@linaro.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 11:53:23AM +0200, Konrad Dybcio wrote:
-> The EUSB2 repeater requires some alterations to its init sequence,
-> depending on board design.
+On Wed, 13 Sep 2023 16:38:15 +0000
+James Morse <james.morse@arm.com> wrote:
+
+> Add the new flag field to the MADT's GICC structure.
 > 
-> Add support for making the necessary changes to that sequence to make USB
-> functional on SM8550-based Xperia 1 V.
+> 'Online Capable' indicates a disabled CPU can be enabled later.
 > 
-> They all have lackluster description due to lack of information.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: James Morse <james.morse@arm.com>
+Why [code first?] it's in ACPI 6.5
+https://uefi.org/sites/default/files/resources/ACPI_Spec_6_5_Aug29.pdf
+
+Spec reference would be good though. It's 6.5 Tabel 5.37: GICC CPU Interface Flags
+I think
+
 > ---
->  .../bindings/phy/qcom,snps-eusb2-repeater.yaml      | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
+> This patch probably needs to go via the upstream acpica project,
+> but is included here so the feature can be testd.
+tested
+
+> ---
+>  include/acpi/actbl2.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-repeater.yaml b/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-repeater.yaml
-> index 029569d5fcf3..24c733c10e0e 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-repeater.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,snps-eusb2-repeater.yaml
-> @@ -32,6 +32,27 @@ properties:
->  
->    vdd3-supply: true
->  
-> +  qcom,tune-usb2-disc-thres:
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    description: High-Speed disconnect threshold
-> +    minimum: 0
-> +    maximum: 7
-> +    default: 0
-> +
-> +  qcom,tune-usb2-amplitude:
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    description: High-Speed trasmit amplitude
-> +    minimum: 0
-> +    maximum: 15
-> +    default: 8
-> +
-> +  qcom,tune-usb2-preem:
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    description: High-Speed TX pre-emphasis tuning
-> +    minimum: 0
-> +    maximum: 7
-> +    default: 5
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 3751ae69432f..c433a079d8e1 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+>  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
+>  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1)	/* 01: Performance Interrupt Mode */
+>  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2)	/* 02: VGIC Maintenance Interrupt mode */
+> +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
+bikeshed colour time....
 
-For what it is worth, the mediatek,tphy.yaml binding has the same 
-properties...
+It's capable of being a CPU?
 
-Acked-by: Rob Herring <robh@kernel.org>
+ACPI_MADT_GICC_ONLINE_CAPABLE 
+
+GICC already tells us it's a CPU (last C) despite the table in ACPI being labeled
+Table 5.37: GICC CPU Interface table
+
+
+
+>  
+>  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
+>  
+
