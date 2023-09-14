@@ -2,209 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F28207A06D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3778F7A06FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239516AbjINOFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S240066AbjINOMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjINOF2 (ORCPT
+        with ESMTP id S239857AbjINOMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:05:28 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C29DF;
-        Thu, 14 Sep 2023 07:05:24 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38E8mxYD015442;
-        Thu, 14 Sep 2023 14:05:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=giTc/GRTU6miAlAmMsOIbO9zGkB+hDWdNFKnASGOH6M=;
- b=FEIsiT1l8PAZkHo06enKFe3LDOkJLnk/4JMR/RS3TzoQdQXIGb8ovUZ4WOPDkRTdeTpW
- pNDlR2mOGOUSYl2L4irrSne5Nq+um3Guw1Lucwz4SKIBauh9zozwZCFb7NEP4UYuxHPD
- VH+mkgwwxpGRsaveB3sJQuPaod9b6hGbGbNK+Vdd0W9aiNwmwYT3SOuZmyFt5P4A22JP
- /KSa3GAkqCpbi9kUTAePSnRNoadqseaZFGaLcp7OuXc2xxWNkE+tOYm4oq5M78RvhkXI
- dDT4xgGPGpuxQYl1nUs/LnoXggFvXiaelVZBVHmKYvhxysRYh7oGM6uE4nr0JZ+Jecw+ Jg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y7kdhny-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Sep 2023 14:05:08 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38EDVAwS007400;
-        Thu, 14 Sep 2023 14:05:07 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f59g53n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Sep 2023 14:05:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PaMaE1PGhEmXdxa8ZlnH2NiRnK9B6Ynosnggf5QIEkffg2770k4JhELDOf+P3aVi19DwNvtkkqvbrMUQWc7iXjbULIQ1UNpAPeTiP6NH/U+qtB4+mlOsffc7srY2ImvwEqdjL9Y2igOaY0FAWBrSwrHdH5a2ZT9UUtjBKG2dvTW3aTKA4kemHsp74+sWhfR+qkzDO5fXMw5WAnR7KTLPp2z6Sfz46LfxBPFO7YFjZYjxFGv4iRRtkUj9nkZ9EBrK+rMgcFEglAY4RjeSnTB4lj0Twrn1Y4eGcqzcOtPnSTtc94Eb6A6+HE8iRZeqohQOTWbLxpyGJ5LMMHRZzeht/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=giTc/GRTU6miAlAmMsOIbO9zGkB+hDWdNFKnASGOH6M=;
- b=adfuTcyVeCoHRm6q0V5BEj3pUGfRYr5XfgW45SiMGGH32gXchwfZ/Y/TUa4Kbq0sAetpnm/t1wxfATeBsgQNI3/Moh+1LPGZCcCoAjDSjIfEjgKekjWT9eQirnyf3LE5UlwMS8NrQlFLsAWaOsXCVbih5v57TbbYATxQc7vCuRq7BVnbGlw8JJhxgUEoyG7LIAw3sHJBtjlPUE4eQi4S5wfZ8vr+kvkcI2mbY7p19RLdLQnDMkC830IP/YmqrIQyPDKEmJoWxD+QUXXOdKtjNiSLn8AvVU+zpeV6OfrmTJU4C0zMXUVa3C3C4zdYQiDlhB5oYchmznMji3YOJXSgTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=giTc/GRTU6miAlAmMsOIbO9zGkB+hDWdNFKnASGOH6M=;
- b=Je+BO2MKk7aVreMHr5X+CdvbU5fjqQR9riy7WZ3SxBp3OnENt0nF3LersZvRmWWadnRnqwBnpZvXvbMG9V8kqfvgocuc7iBGw2nRSO2+YbEy0PJua7lm+IK6YeqffHtZljmAFjp7Vo/iVhCHTyABW5/ZO4MchHDlJRwJim/Ohuo=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by PH7PR10MB5700.namprd10.prod.outlook.com (2603:10b6:510:125::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 14 Sep
- 2023 14:05:05 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::bffc:4f39:2aa8:6144]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::bffc:4f39:2aa8:6144%4]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 14:05:05 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Neil Brown <neilb@suse.de>
-CC:     Chuck Lever <cel@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
-Thread-Topic: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
-Thread-Index: AQHZ5L3S7eczMxv7N0KGYdSIc28+v7AV7d2AgAAmQoCAAAmMgIAAJdCAgAAkcYCAA/d3AA==
-Date:   Thu, 14 Sep 2023 14:05:04 +0000
-Message-ID: <DB109932-C918-4F1E-BAF2-92D921238D54@oracle.com>
-References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
- <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>
- <20230911111333.4d1a872330e924a00acb905b@linux-foundation.org>
- <4D5C2693-40E9-467D-9F2F-59D92CBE9D3B@oracle.com>
- <20230911140439.b273bf9e120881f038da0de7@linux-foundation.org>
- <169447439989.19905.9386812394578844629@noble.neil.brown.name>
- <20230911183025.5f808a70a62df79a3a1e349e@linux-foundation.org>
-In-Reply-To: <20230911183025.5f808a70a62df79a3a1e349e@linux-foundation.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|PH7PR10MB5700:EE_
-x-ms-office365-filtering-correlation-id: ed9edd74-ca05-4b97-dff7-08dbb52b9882
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xfAik2smIH/6GQMF619G4tkj+TA4QDYUiJZGD/U+waM2wZfCiZOBZT3SPBgMjpktBpPmGHenABcTKok1Zzgoz/Re8oaPTOX0vWQZ4yvqlkJi+JqnLXwxXj/xzSu3aiOdZKhfraRwJnmMLRgbkJH4ikzuOOc3HVDsbjea5SizDtYBEvEJfsqFB/gcv4uIeDHaTlJgj4UJPGIkEVQ/JSOng649u820sVkZVlzEmx4UjDyKuctlHcFekxn4TahpRMIswqmacKiSjk4NjCwauNXfmAOpTzxAq9YlJAp0s0ETODjHC5ByKU7oZsZ3zhmU5FmYIwzPFEF+oFdCMBdfBCaid+URk5jq/GBD0JJoz7N+HZ71sWjzBcgkwg5Wp3fScx00qatD+7gBg14+7cu3u6CKovm80InDj3ynDkE+Qt71hSjyvTX3IuE+0sJmUS3xIEIiOJNrEVRZsUJkXMnn0u+dRHmV8pBsFh00BqrDhxddqX/Wm7PLu/NdlCvvw1O169UYUO96x53BCrttTEzR+fvXBlje4zTxKCskCIr5j2dEObLSGXJ3yS4FFe8cf5tP6fjO1J61T9m4ueNEwAwqT0BLY6Xe4QjM/t7tuTOZrhAT+W+Be5HH67Fh6GnYLbBpKPkSL2QU8/6cRj9i0b8tSIfQx0m2vVoZP9x3P1oa28kGSY7rb9Oyaul33etlj85v3y6f
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39860400002)(376002)(366004)(1800799009)(186009)(451199024)(71200400001)(478600001)(122000001)(4326008)(8936002)(38100700002)(38070700005)(86362001)(26005)(5660300002)(8676002)(66556008)(66446008)(64756008)(54906003)(66946007)(66476007)(316002)(76116006)(83380400001)(91956017)(6916009)(41300700001)(6486002)(6512007)(53546011)(2616005)(6506007)(33656002)(36756003)(2906002)(16393002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?H1Ocppe9csK2g4fzj2pL3KA2w9me7uvszeiGUKiaCfo8UgtwdnPZSR0Cd+i4?=
- =?us-ascii?Q?B+pp7FBvhp8xWoib0r5nlqcnVW+NBNPIi5mI8kCmlsZVG37KUz71H4i6eU3N?=
- =?us-ascii?Q?9VxPPPPJNW2JIA/EZSZRaWoBkS82e9YzQWnGO6Nck0rB5UC5bfYN5z2ekJlk?=
- =?us-ascii?Q?t+JUtud/vgQ7s/RdI7koyjInnPbOIwYFkaPO5O03Msa/v1hFeeCU0juU/Mx6?=
- =?us-ascii?Q?WHann8S+6tXZSCZBdqS0lG9b/Y2ZsdgS7skCTUlLUIkajJaGsXzjpqQv3qD3?=
- =?us-ascii?Q?dZpVHlbYb3B7qT0x790hOwdz7XZPl2f/wDqdRm7JjYTKQp4lL/bi0nEZfEZo?=
- =?us-ascii?Q?sVM0JA/HSgRs3MLhkMiHc3T0QcJRPTNV4e57ryk++BeLsM/GVHpkMQw2Y8DM?=
- =?us-ascii?Q?yGmN4tWgyiQ6HQLnhtNG/ttQX/0SZ0Mg4PxW9fDqgtI9pBrFVMT63CmHwHLo?=
- =?us-ascii?Q?kn1ql0o3EpndArtaEu8vgl1BubSh//1HTqd8PkD2dtoR/LicpXkwfpADb7pK?=
- =?us-ascii?Q?9QpZxdg5m/mdsW21NdsidPpSy1HK1PvW1Gm0aYvT33WYBUOHCnu4AOTKxkW/?=
- =?us-ascii?Q?+xH/Lrti9vpiF8q+tI4JwZJdtkxgAa29yvbrMf7OkYIDWYeJO0GtD31i1Drb?=
- =?us-ascii?Q?Qn9MLCa1E6wMHPbg6T5btl8maWWFXbFQfdavUA0PgJakDxn0NeWrJwwooSbE?=
- =?us-ascii?Q?belxaxXGQu+tlnAhLG98Qh2EUK9PI/NMsnokgp7RcCR4Q7heTF5V4b4HgSZa?=
- =?us-ascii?Q?pBKy31N418xl8yuga7hrZM8kvIdLmki4ZD/8RNzbaTYGYz/9e07MNJlil9kq?=
- =?us-ascii?Q?eucLd9ZyddlgaIuW9niVoIE9MVFBZbg/o7pE+ebH/WNJPWe6XInyrDQeGIdE?=
- =?us-ascii?Q?/rFjdU5aZBQhvTYIV1uMDwC7Rhr5ReP21fixErGOhUmvSxK73t6j9suklog+?=
- =?us-ascii?Q?jS0dlyYvdgvBC5Rdx7ZzmOhVNd82THOTJZ/QV2Etk3rbj4LjMBTwYOslAmPQ?=
- =?us-ascii?Q?bKVHIPyEK+3To9Y3pHgo8i5H1aWunyKzmEYy3MPcdUjjbKcTtU5El2pMR6Sx?=
- =?us-ascii?Q?R+9kdYMD5gi9qPZDCxQcS2ByOEwcoRlyzXDlPhGiXeRRI79IIrNBo/wERm3A?=
- =?us-ascii?Q?DTHcuUryvH8fCJokOzCuU1tmkxusjvR+qB+71ezIP6cP2PEHq/ASVXKv+e/A?=
- =?us-ascii?Q?KDDzFLmIeJ41WdP8WuGOgG7FEmevHRcgVeO4YZjjkZm6zKjUW+LIHKIjS7tQ?=
- =?us-ascii?Q?rFJyBun2NSpCnRIz78wMhp+CU6cw6+kI26FXK7u2N/bNFlPloxFGRTEOQS1m?=
- =?us-ascii?Q?Lah8oNf0y6pbu2e2CwLBH/pC9tmlJ3MU8kgNpIDJGjusUyA3T5bIQVpenBRv?=
- =?us-ascii?Q?UwUXtgpLGVU14vKjSXFMUTuTTy6uKRIqEtsGz3chuGA8Wa55O1MWYVcHRQDc?=
- =?us-ascii?Q?va3jXD1BrCJ2kZ33sXuPiKuK5QHUST3eJ/HeXIhVr74mloHVCX+CBPltiFmX?=
- =?us-ascii?Q?+hmWZY9yxEJvkjoJf/3JDfkHgOytnGSh/a3mzl/l0kqy6Ca/lMJt3IKRfPD4?=
- =?us-ascii?Q?LxWGn51jad+hZE9Hogf7RYAm/jqG130GDtjpu5PQcRGD94wzCwg/z5TW1cqp?=
- =?us-ascii?Q?hw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2F305C4796331F4BAED64EA962C70D65@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 14 Sep 2023 10:12:07 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE8A1BF9;
+        Thu, 14 Sep 2023 07:12:01 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 0D1CE100006;
+        Thu, 14 Sep 2023 17:11:59 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0D1CE100006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694700719;
+        bh=2Sn5v2IP39dIXPaQUcY6Rx1KATowf+vHArILTGeExRg=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=EXo9SW1260pWO5Q+lg2E7ys1XB+qwE7RBTM83czOFyrEpRJgnfiw12L1Db6YK4aEK
+         b52wvkIFSDf4q2jTUwKKoWuWhDhb96oXXZcNwnjBYD631fPlNrOOmkUVT7Z8PFc4f6
+         gu28DlZ1IbgiPauR0CEbMQkUi4h9rDtjBOv5//4qnhsxycvhax4knZS771rM+eJxNr
+         KmNUSTlRx1afirK7TIncF7PJcXlKvjCYDlZrb4Xq2rZmo2PhRyzRCfYds6dNASbGD3
+         oxyRUQfb4ipel4TMT5vIbNWlj+JIsPG7pXT2f4gOdXDhz2D5eTXeaZWY4bZrwiUgcc
+         k0qQ+bnXOoFbg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 14 Sep 2023 17:11:58 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 14 Sep 2023 17:11:58 +0300
+Message-ID: <7bf35d28-893b-5bea-beb7-9a25bc2f0a0e@salutedevices.com>
+Date:   Thu, 14 Sep 2023 17:05:17 +0300
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?I5K0fyttHOTfqk1J5AydKFYa5JJ3ljOxooigcFUT45+f8Ex/4+9q5XAhUf6f?=
- =?us-ascii?Q?5nlaxZLMJyYDzhC+43gJT4RbVAI6+S41R0s23t05hqR6nGpnL5OyTm2ywNjy?=
- =?us-ascii?Q?DcZ007yfEDzCK6epF/u3PcgF4V3t0L13A0P1LzqK8rzU0PIJSVXKEucFiVzg?=
- =?us-ascii?Q?bPCUOeALzouLP3yiQEHdHMQ+TVmq4PAhc36XGAr9vCyWy83MYQPzF2/dxZHQ?=
- =?us-ascii?Q?bNz0UkKK9pjfBFa/hA3fa4M3X8PNhvVsy8jHnhKrdIdFPpe3vTSt2aGNXJIc?=
- =?us-ascii?Q?sq0QWHBF34I9m7/V2EaD/kIgJYqMDxNK+5gbbv5r7cPevld8x+P5ur2vPmVt?=
- =?us-ascii?Q?481O0dLQn5fw3jzFYgditAwrWPhWhuDBRbyFnFdlgFuGMu65m17ysDnPUjRG?=
- =?us-ascii?Q?rDLOZPyhaOBRdGUlBwqZ/cJbMqm1Ov5VryfQNmiqvi9XxV6OoUarlgScJ+9y?=
- =?us-ascii?Q?1X0Xjjw/mE7maATlaejkUYKnvgDrQqpJCpsjKAAvzfLelT6KJtkDjStGU7HU?=
- =?us-ascii?Q?KkUeQc4jSAjhIN0YJj4Tm/gb2sBV1Ut5XLC7ABWNQJZHF2v4SncGiWw5cjHX?=
- =?us-ascii?Q?xlP6s9oNUYe50jlpvg8g/qPDpt3Uy8JX5egTO5Ar5mLAer7xrcj3EhAN0Ugg?=
- =?us-ascii?Q?Q/3ACz0q+DjraiI0w8xhHN79H2WiSm+3ho61I02cJvryfbn7kJ/xUXQpWFEN?=
- =?us-ascii?Q?FctQEX37Bfqse9aN+yq6St7XmhBmJv/l/+k2yGmuGYdEsG3hsw0/DnL6UhKT?=
- =?us-ascii?Q?0uklvSTimhK2b9wTBhEkpb56FWFypJKWgLJ3n33HpaG+qg+6UGGIv/h18rXC?=
- =?us-ascii?Q?F1q44Rp9PU/V1HHbRA6ualGti3PrlEOYRHFhndUgL3UqhgdBSquvbqZ74hT2?=
- =?us-ascii?Q?AjAx3HeRDJZ6cr5tRkcIIOEBif8vTbGh+TIMEbxJOGR7IBM2D96ClwXjCqPg?=
- =?us-ascii?Q?tCEqY+RgEMjx2mJH/A3mct5TPy3On425fneJN6GTit8=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed9edd74-ca05-4b97-dff7-08dbb52b9882
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 14:05:04.9518
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hHVz4ZTQ9KRW5cGkDTXW0gSQZrk8WF5Nfr7vp2hRZu2YfCCMFIIV0sS09D9vci6BtFl401tSahlUKljjzWx1LQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5700
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=831 mlxscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309140121
-X-Proofpoint-GUID: QgkEulfC8MnuxdwwsX2mzYlwG_OQ3lEI
-X-Proofpoint-ORIG-GUID: QgkEulfC8MnuxdwwsX2mzYlwG_OQ3lEI
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v8 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
+ preparations
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230911202234.1932024-1-avkrasnov@salutedevices.com>
+ <554ugdobcmxraek662xkxjdehcu5ri6awxvhvlvnygyru5zlsx@e7cyloz6so7u>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <554ugdobcmxraek662xkxjdehcu5ri6awxvhvlvnygyru5zlsx@e7cyloz6so7u>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179868 [Sep 14 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/14 12:07:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/14 12:07:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/14 11:07:00 #21890594
+X-KSMG-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Stefano,
 
+On 14.09.2023 17:07, Stefano Garzarella wrote:
+> Hi Arseniy,
+> 
+> On Mon, Sep 11, 2023 at 11:22:30PM +0300, Arseniy Krasnov wrote:
+>> Hello,
+>>
+>> this patchset is first of three parts of another big patchset for
+>> MSG_ZEROCOPY flag support:
+>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+>>
+>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+>> suggested to split it for three parts to simplify review and merging:
+>>
+>> 1) virtio and vhost updates (for fragged skbs) <--- this patchset
+>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+>>   tx completions) and update for Documentation/.
+>> 3) Updates for tests and utils.
+>>
+>> This series enables handling of fragged skbs in virtio and vhost parts.
+>> Newly logic won't be triggered, because SO_ZEROCOPY options is still
+>> impossible to enable at this moment (next bunch of patches from big
+>> set above will enable it).
+>>
+>> I've included changelog to some patches anyway, because there were some
+>> comments during review of last big patchset from the link above.
+> 
+> Thanks, I left some comments on patch 4, the others LGTM.
+> Sorry to not having spotted them before, but moving
+> virtio_transport_alloc_skb() around the file, made the patch a little
+> confusing and difficult to review.
 
-> On Sep 11, 2023, at 9:30 PM, Andrew Morton <akpm@linux-foundation.org> wr=
-ote:
->=20
-> On Tue, 12 Sep 2023 09:19:59 +1000 "NeilBrown" <neilb@suse.de> wrote:
->=20
->> Plain old list_heads (which the code currently uses) require a spinlock
->> to be taken to insert something into the queue.  As this is usually in
->> bh context, it needs to be a spin_lock_bh().  My understanding is that
->> the real-time developers don't much like us disabling bh.  It isn't an
->> enormous win switching from a list_head list to a llist_node list, but
->> there are small gains such as object size reduction and less locking.  I
->> particularly wanted an easy-to-use library facility that could be
->> plugged in to two different uses cases in the sunrpc code and there
->> didn't seem to be one.  I could have written one using list_head, but
->> llist seemed a better fix.  I think the code in sunrpc that uses this
->> lwq looks a lot neater after the conversion.
->=20
-> Thanks.  Could we please get words such as these into the changelog,
-> describing why it was felt necessary to add more library code?
->=20
-> And also into the .c file, to help people who are looking at it and
-> wondering "can I use this".  And to help reviewers who are wondering
-> "could they have used Neil's thing".
+Sure, no problem, I'll fix them! Thanks for review.
 
-Neil, are you planning to send along a replacement for 11/17,
-or would you like me to fold the above into the patch description
-I have now?
+> 
+> In addition, I started having failures of test 14 (server: host,
+> client: guest), so I looked better to see if there was anything wrong,
+> but it fails me even without this series applied.
+> 
+> It happens to me intermittently (~30%), does it happen to you?
+> Can you take a look at it?
 
+Yes! sometime ago I also started to get fails of this test, not ~30%,
+significantly rare, but it depends on environment I guess, anyway I'm going to
+look at this on the next few days
 
---
-Chuck Lever
+Thanks, Arseniy
 
-
+> 
+> host$ ./vsock_test --mode=server --control-port=12345 --peer-cid=4
+> ...
+> 14 - SOCK_STREAM virtio skb merge...expected recv(2) returns 8 bytes, got 3
+> 
+> guest$ ./vsock_test --mode=client --control-host=192.168.133.2 --control-port=12345 --peer-cid=2
+> 
+> Thanks,
+> Stefano
+> 
