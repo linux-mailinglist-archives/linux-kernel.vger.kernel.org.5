@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D547A1143
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262D47A1149
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjINWr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S230177AbjINWu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjINWr6 (ORCPT
+        with ESMTP id S230116AbjINWuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:47:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C6326B7;
-        Thu, 14 Sep 2023 15:47:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DF79C433C9;
-        Thu, 14 Sep 2023 22:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694731673;
-        bh=8oQq0VYcvVbisN6FW9kbAh9+TeVEDESzGIQyb2pXlFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CJ7gxIhHti/Me6L5sAEzKxN7FrFJDkV8vaOQnFAMFeXZXZM3GO3tRozkwk24k9EJC
-         6/aW17lXE9Gg6aR8ePVzzP8yfp9uVjDmQMJYsZKYV3ZDuVxrMJU/FwQPUU1vkZ6mhr
-         zFMl78uyS5AI7NuZX2mJWdfzNRcjmojIp9VuiHrh/dzYNWU5IKoHKkpIUkFzdOpurv
-         3RGuQ2HWkrAI4Iwp819RX2HZVwbvRePYlOcGuKGbu04+VUQV6gjw8ayEOm7FG8dUoh
-         +QMX9E1hN+xnL0TkvyKcQlxN6I05any05XQzNaFhAtPq/yZ9gGQIGvVAtLIx9xRdzI
-         QpEUM331gNJUw==
-Received: by mercury (Postfix, from userid 1000)
-        id E67F710609D6; Fri, 15 Sep 2023 00:47:49 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 00:47:49 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Stefan Moring <stefan.moring@technolution.nl>
-Cc:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: Increase imx51 ecspi burst length based on transfer
- length
-Message-ID: <20230914224749.kmg4xqsg3wmfwwhj@mercury.elektranox.org>
-References: <20230628125406.237949-1-stefan.moring@technolution.nl>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lxinejkm3oweqd2g"
-Content-Disposition: inline
-In-Reply-To: <20230628125406.237949-1-stefan.moring@technolution.nl>
+        Thu, 14 Sep 2023 18:50:25 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857D526B8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:50:21 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bdae1ef38so35558617b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694731820; x=1695336620; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wrenr5WHs2dK5hnlbbyL0EycRKjoEDbDNwq7CnxxIaU=;
+        b=BxugndSsenTM9NF1aOCW4ZO/a1jXQgUDDQ9ubb3sKS1Ev0pBTHSqm//oPKCUZG33dn
+         +IDUP66N300o9+XksnMg5cDPIFDFxkcsPwO2j+tzjfvqooIFtT61kpn2waKHY164Bgsg
+         dFgkaZzbCbvTJsGmT2sQ79BXa4Ns1A/gSs1VZFHipi7fzgvaCLBeDxDKFjY4FY1EPqsy
+         3dEmTXoLOBlv6XJVimtn6xD6xix+mSWXcbD3goZCRcw0ftb6DoPrqdngHUk+j+NeqbsL
+         rPFs63g3CQlzsY9Gx+TF9cQ+wqvv6x/G3jgAmhXDbhyiFrH3SbMi17bZxVurW/BLWAAS
+         81eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694731821; x=1695336621;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wrenr5WHs2dK5hnlbbyL0EycRKjoEDbDNwq7CnxxIaU=;
+        b=Ta1lEZG2idAXxQuzTReqA6tzoHF/OHBQtTIUr/pQbX2EWRFLVgCqFg9X8Yc485akeO
+         S08I6Mlz9YJgvMsA/7hMbWeIcxFpZvOgvm+v8MerI0hMKNTihNXh6AbTxRzmXsrp79fl
+         PdWTWrrlZUfvkfAZ4EYwBCUFSQZM58ZjDfTZJSG604TgvvyGA9QasqOond0vgMoZkmNV
+         XgD9dB6MXjuN4mUKa4vzUlgR7FZ5FFfjporGi9WBcX+eaSR7/dEWuUnMZgN2aoNrvbrH
+         VfYOAr5KYoWQWvXusxRiEQAf1Bn2Mtt0fPKMuw81Y5jdg4KmQdl0mL4diHPNG4/g1ZdJ
+         EFow==
+X-Gm-Message-State: AOJu0YxCGoyVZxpBIda1avbqZ38nWEgUwBm/Z0Ia4FM/8eA/pm2HrBTR
+        yPzxHzGpBUlQYV3/oLJH94baei24AsBTbrcfwQ==
+X-Google-Smtp-Source: AGHT+IFqrDocdDDYwMpT4qE4iWOo5ZoiN4++kHE+CY4yKvqynUceKA1T5/Jq8WXi8hvg81Z+gTnwNQ1IpfMPouoe0w==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:c748:0:b0:d15:53b5:509f with SMTP
+ id w69-20020a25c748000000b00d1553b5509fmr85146ybe.2.1694731820834; Thu, 14
+ Sep 2023 15:50:20 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 22:50:15 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACaOA2UC/x3NwQqDMAyA4VeRnBeodYO5VxlDXJrOHGxLIuoQ3
+ 31lx+/y/wcYq7DBozlAeRWTnCraSwM0jenDKKEavPOd69sr2qKJyheDyspqOG1zTjhSkaHkjXW YeWFFQuqjD3d3694coeaKcpT9v3q+zvMHDxSl8XoAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694731820; l=1404;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=K3iZ/hNNCktU+LFT+e2eCRR8wtHujlZPGvgREL3k5N0=; b=AMgFe1H+bSBII/rO5u6ibPsdFEANAgzsVzlwm/0r26kBLn7wO36XET/m1sJz644C8oxgiiZ7R
+ YlZOH5dfwGzCrRlgTODJ7YveNEm/+t8Y38//F6Nts1+INz+B7Gxxjzc
+X-Mailer: b4 0.12.3
+Message-ID: <20230914-strncpy-drivers-hwmon-acpi_power_meter-c-v1-1-905297479fe8@google.com>
+Subject: [PATCH] hwmon: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
---lxinejkm3oweqd2g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We should prefer more robust and less ambiguous string interfaces.
 
-Hi,
+A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer without unnecessarily NUL-padding.
 
-On Wed, Jun 28, 2023 at 02:54:06PM +0200, Stefan Moring wrote:
-> IMX51 supports 4096 bit burst lengths. Using the spi transfer length
-> instead of bits_per_word increases performance significantly.
->=20
-> Signed-off-by: Stefan Moring <stefan.moring@technolution.nl>
-> ---
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ drivers/hwmon/acpi_power_meter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have an i.MX6ULL system with "inanbo,t28cp45tn89-v17" panel, which
-breaks due to this change. Reverting this patch results in working
-panel. Note, that the panel driver [0] does 'spi->bits_per_word =3D 9;'.
+diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
+index fa28d447f0df..9bafe7c85ff7 100644
+--- a/drivers/hwmon/acpi_power_meter.c
++++ b/drivers/hwmon/acpi_power_meter.c
+@@ -803,7 +803,7 @@ static int read_capabilities(struct acpi_power_meter_resource *resource)
+ 			goto error;
+ 		}
+ 
+-		strncpy(*str, element->string.pointer, element->string.length);
++		strscpy(*str, element->string.pointer, element->string.length);
+ 		str++;
+ 	}
+ 
 
-[0] drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230914-strncpy-drivers-hwmon-acpi_power_meter-c-c9f2d8053bef
 
--- Sebastian
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
->  drivers/spi/spi-imx.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-> index 34e5f81ec431..cbd306c25d28 100644
-> --- a/drivers/spi/spi-imx.c
-> +++ b/drivers/spi/spi-imx.c
-> @@ -644,9 +644,13 @@ static int mx51_ecspi_prepare_transfer(struct spi_im=
-x_data *spi_imx,
->  	if (spi_imx->slave_mode && is_imx53_ecspi(spi_imx))
->  		ctrl |=3D (spi_imx->slave_burst * 8 - 1)
->  			<< MX51_ECSPI_CTRL_BL_OFFSET;
-> -	else
-> -		ctrl |=3D (spi_imx->bits_per_word - 1)
-> -			<< MX51_ECSPI_CTRL_BL_OFFSET;
-> +	else {
-> +		if (spi_imx->count >=3D 512)
-> +			ctrl |=3D 0xFFF << MX51_ECSPI_CTRL_BL_OFFSET;
-> +		else
-> +			ctrl |=3D (spi_imx->count*8 - 1)
-> +				<< MX51_ECSPI_CTRL_BL_OFFSET;
-> +	}
-> =20
->  	/* set clock speed */
->  	ctrl &=3D ~(0xf << MX51_ECSPI_CTRL_POSTDIV_OFFSET |
-> @@ -1243,6 +1247,7 @@ static int spi_imx_setupxfer(struct spi_device *spi,
->  		spi_imx->spi_bus_clk =3D t->speed_hz;
-> =20
->  	spi_imx->bits_per_word =3D t->bits_per_word;
-> +	spi_imx->count =3D t->len;
-> =20
->  	/*
->  	 * Initialize the functions for transfer. To transfer non byte-aligned
-> --=20
-> 2.34.1
->=20
-
---lxinejkm3oweqd2g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUDjYYACgkQ2O7X88g7
-+prukBAAnl9cT+kmXltGA07ukiiFUS+xePDTzU3O6pJ+3SO9zIhRHU+vPijobqCA
-U9oBWiJA5TbSTVZiwBz77Ty+PyTufqRl2isJLfSTrQDVjDluGtMxlwKafqkVohqG
-Js32INNEOsCX1hWhsn8Szv61XfkYjR3uik4Mu2g6/UXrGMOSNQBWxwlijMMM2QRF
-/tTJUdBIKIAzJcw73Bsr+eoO2v+4sa3EkcC39CerAYNzCSt0RBrNpdCa3HhjSt6X
-9RfxKL5KH8ZS6U+XJ5M0u6iy0xL60QmGLip1Ypyp7nLhjrUuw7VLyGBKomCPNboP
-2bju8OJosb4V5vF1jlPU9icA1FPCvWnBhyw/THcXG2m1DnnnMUjp77lhoLHx5pDS
-8qYVemRqSw8wqwxivSH3KYXjUP2PctGByDjL5W09C7Xwk5g7NlJejX9o/o4pxCoD
-NPWQphAlxhPTxkADGrxMw8zdrD2urPaiQyXPQmZqY3LIu6l2MAIQ5ASJ+jaDrgzQ
-tRVkBHPWXLqpaaR0oLuraJ75WcM51g0t2Q5/jpM2AAzb0BnxDiyA/Js6uybx08or
-bRuCkbUbMo9NGNBNO8iFlYrE/9vhJwyHzlhuPAltOPvqKTRqSsJ4Luwk2mWm2PtO
-0SGxQaidlCGOa+f9i61sf8agNsoNF4u1dcwlBbWlt7A7kad4PQo=
-=kCXx
------END PGP SIGNATURE-----
-
---lxinejkm3oweqd2g--
