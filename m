@@ -2,150 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B062F7A0C37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E887A0C3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjINSGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
+        id S236205AbjINSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjINSGm (ORCPT
+        with ESMTP id S231305AbjINSHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:06:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B877B1FE9;
-        Thu, 14 Sep 2023 11:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1D+/SKBfP3op3rJcuUd1QTL4SUDL0Vl8hzAaaiQ05QA=; b=oTYBk4M3u15uWEFrkJeYaNABsn
-        4SlrZEZ1WnSQ6iG5PsCCW3OJcnRQyRWFERG17cyeloVk5IZXV+W/7YYeXQzx4KLSISJ9v3icL+OYB
-        ULoRZVOzaE1vCBOoF9wm99Stm87Hb5xK5og7jL9hsdNB1MODNk8YvCx0j9axxvSa3h/nn5VEkMwtp
-        oNDPSNNrTBqjlTF2OW2i192v8m99oW3sTtYOPO6hAXvrVjwcgEvkqTlqGwTBpbsoSlZOjV3QWoiQk
-        T4V953zJY/gikz2sIL7gNZw+9+bgQgbDng7TT3aeobFMRTgKNC0p3avg1A+R6U9nU9oRqssDa1RTc
-        06RbnWZw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50940)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgqjI-0004fs-10;
-        Thu, 14 Sep 2023 19:06:16 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgqjC-0004z2-Sn; Thu, 14 Sep 2023 19:06:10 +0100
-Date:   Thu, 14 Sep 2023 19:06:10 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-Message-ID: <ZQNLkiAt4jOjojRf@shell.armlinux.org.uk>
-References: <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
- <20230827121235.zog4c3ehu2cyd3jy@skbuf>
- <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
- <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
- <20230911225126.rk23g3u3bzo3agby@skbuf>
- <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
- <20230912193450.h5s6miubag46z623@skbuf>
- <6cec079e-991e-4222-a76d-d6156de0daca@arinc9.com>
- <20230913074231.5azwxqjuv2wp5nik@skbuf>
- <ZQHcV5DUfcCYkkTi@shell.armlinux.org.uk>
+        Thu, 14 Sep 2023 14:07:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E41A1FE9;
+        Thu, 14 Sep 2023 11:07:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B8EA1F74A;
+        Thu, 14 Sep 2023 18:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694714824;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F31T9xx7T0GqKi/w3qYFmniSoEZSD0UOSTjiZjqaxBg=;
+        b=b/5qnekPKt/ZPVPSlulwWeHt7Imf1QPSPtweinYPhetKTJ0mdmJZBhg0wt5FC7t7L6zuVk
+        9X5S/jCcKlcaz5/Y4z3m3sgONDVMy63L7yW6sWsw9ColrSQ5FtvD8gdzb6V6YFtPWLUPPO
+        gPMQcI5zpYFWkoKPg7/ssCruRXn/3jc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694714824;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F31T9xx7T0GqKi/w3qYFmniSoEZSD0UOSTjiZjqaxBg=;
+        b=yGQOL0iedhxjeGawAk7YuBS3GMzRIsccgaF+kJS/KXK23aVoLFx+gjpRH4MMC4d5BpPITc
+        H0vpOutr7i/e/mCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E7A0D13580;
+        Thu, 14 Sep 2023 18:07:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hBO8N8dLA2V1XAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 14 Sep 2023 18:07:03 +0000
+Date:   Thu, 14 Sep 2023 20:07:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 03/11] btrfs: add support for inserting raid stripe
+ extents
+Message-ID: <20230914180701.GB20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
+ <20230914-raid-stripe-tree-v9-3-15d423829637@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQHcV5DUfcCYkkTi@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20230914-raid-stripe-tree-v9-3-15d423829637@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:59:19PM +0100, Russell King (Oracle) wrote:
-> On Wed, Sep 13, 2023 at 10:42:31AM +0300, Vladimir Oltean wrote:
-> > On Wed, Sep 13, 2023 at 08:52:37AM +0300, Arınç ÜNAL wrote:
-> > > On 12.09.2023 22:34, Vladimir Oltean wrote:
-> > > > On Tue, Sep 12, 2023 at 10:23:51PM +0300, Arınç ÜNAL wrote:
-> > > > > The phylink bindings for user ports I ended up making by looking up the
-> > > > > existing devicetrees are different than the phylink bindings for the shared
-> > > > > (CPU and DSA) ports currently enforced on all switches.
-> > > > > 
-> > > > > My phylink bindings for user ports:
-> > > > > 
-> > > > >              allOf:
-> > > > >                - anyOf:
-> > > > >                    - required: [ fixed-link ]
-> > > > >                    - required: [ phy-handle ]
-> > > > >                    - required: [ managed ]
-> > > > > 
-> > > > >                - if:
-> > > > >                    required: [ fixed-link ]
-> > > > >                  then:
-> > > > >                    not:
-> > > > >                      required: [ managed ]
-> > > > 
-> > > > Right, it should have been anyOf and not oneOf.. my mistake. It is a bug
-> > > > which should be fixed. It's the same phylink that gets used in both cases,
-> > > > user ports and shared ports :)
-> > > 
-> > > One more thing, I don't recall phy-mode being required to be defined for
-> > > user ports as it will default to GMII. I don't believe this is the same
-> > > case for shared ports so phy-mode is required only for them?
-> > 
-> > phy-mode is not strictly required, but I think there is a strong
-> > preference to set it. IIRC, when looking at the DSA device trees, there
-> > was no case where phy-mode would be absent on CPU/DSA ports if the other
-> > link properties were also present, so we required it too. There were no
-> > complaints in 1 year since dsa_shared_port_validate_of() is there. The
-> > requirement can be relaxed to just a warning and no error in the kernel,
-> > and the removal of "required" in the schema, if it helps making it
-> > common with user ports.
+On Thu, Sep 14, 2023 at 09:06:58AM -0700, Johannes Thumshirn wrote:
+> Add support for inserting stripe extents into the raid stripe tree on
+> completion of every write that needs an extra logical-to-physical
+> translation when using RAID.
 > 
-> However, phylink pretty much requires phy-mode to be specified to be
-> something sane for shared ports, so I wouldn't be in favour of relaxing
-> the checkinng in dsa_shared_port_validate_of()... not unless you're
-> now going to accept the approach I originally proposed to have DSA
-> drivers tell the core (and thus phylink) what phy-mode and other link
-> parameters should be used when they are missing from DT.
+> Inserting the stripe extents happens after the data I/O has completed,
+> this is done to a) support zone-append and b) rule out the possibility of
+> a RAID-write-hole.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/Makefile           |   2 +-
+>  fs/btrfs/bio.c              |  23 +++++
+>  fs/btrfs/extent-tree.c      |   1 +
+>  fs/btrfs/inode.c            |   8 +-
+>  fs/btrfs/ordered-data.c     |   1 +
+>  fs/btrfs/ordered-data.h     |   2 +
+>  fs/btrfs/raid-stripe-tree.c | 245 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/raid-stripe-tree.h |  34 ++++++
+>  fs/btrfs/volumes.c          |   4 +-
+>  fs/btrfs/volumes.h          |  15 +--
+>  10 files changed, 326 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index c57d80729d4f..525af975f61c 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -33,7 +33,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>  	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
+>  	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
+>  	   subpage.o tree-mod-log.o extent-io-tree.o fs.o messages.o bio.o \
+> -	   lru_cache.o
+> +	   lru_cache.o raid-stripe-tree.o
+>  
+>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 31ff36990404..ddbe6f8d4ea2 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -14,6 +14,7 @@
+>  #include "rcu-string.h"
+>  #include "zoned.h"
+>  #include "file-item.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  static struct bio_set btrfs_bioset;
+>  static struct bio_set btrfs_clone_bioset;
+> @@ -415,6 +416,9 @@ static void btrfs_orig_write_end_io(struct bio *bio)
+>  	else
+>  		bio->bi_status = BLK_STS_OK;
+>  
+> +	if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
+> +		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +
+>  	btrfs_orig_bbio_end_io(bbio);
+>  	btrfs_put_bioc(bioc);
+>  }
+> @@ -426,6 +430,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+>  	if (bio->bi_status) {
+>  		atomic_inc(&stripe->bioc->error);
+>  		btrfs_log_dev_io_error(bio, stripe->dev);
+> +	} else if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+> +		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+>  	}
+>  
+>  	/* Pass on control to the original bio this one was cloned from */
+> @@ -487,6 +493,7 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
+>  	bio->bi_private = &bioc->stripes[dev_nr];
+>  	bio->bi_iter.bi_sector = bioc->stripes[dev_nr].physical >> SECTOR_SHIFT;
+>  	bioc->stripes[dev_nr].bioc = bioc;
+> +	bioc->size = bio->bi_iter.bi_size;
+>  	btrfs_submit_dev_bio(bioc->stripes[dev_nr].dev, bio);
+>  }
+>  
+> @@ -496,6 +503,8 @@ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
+>  	if (!bioc) {
+>  		/* Single mirror read/write fast path. */
+>  		btrfs_bio(bio)->mirror_num = mirror_num;
+> +		if (bio_op(bio) != REQ_OP_READ)
+> +			btrfs_bio(bio)->orig_physical = smap->physical;
+>  		bio->bi_iter.bi_sector = smap->physical >> SECTOR_SHIFT;
+>  		if (bio_op(bio) != REQ_OP_READ)
+>  			btrfs_bio(bio)->orig_physical = smap->physical;
+> @@ -688,6 +697,20 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  			bio->bi_opf |= REQ_OP_ZONE_APPEND;
+>  		}
+>  
+> +		if (is_data_bbio(bbio) && bioc &&
+> +		    btrfs_need_stripe_tree_update(bioc->fs_info,
+> +						  bioc->map_type)) {
+> +			/*
+> +			 * No locking for the list update, as we only add to
+> +			 * the list in the I/O submission path, and list
+> +			 * iteration only happens in the completion path,
+> +			 * which can't happen until after the last submission.
+> +			 */
+> +			btrfs_get_bioc(bioc);
+> +			list_add_tail(&bioc->ordered_entry,
+> +				      &bbio->ordered->bioc_list);
+> +		}
+> +
+>  		/*
+>  		 * Csum items for reloc roots have already been cloned at this
+>  		 * point, so they are handled as part of the no-checksum case.
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index cb12bfb047e7..959d7449ea0d 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -42,6 +42,7 @@
+>  #include "file-item.h"
+>  #include "orphan.h"
+>  #include "tree-checker.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  #undef SCRAMBLE_DELAYED_REFS
+>  
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index e02a5ba5b533..b5e0ed3a36f7 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -71,6 +71,7 @@
+>  #include "super.h"
+>  #include "orphan.h"
+>  #include "backref.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  struct btrfs_iget_args {
+>  	u64 ino;
+> @@ -3091,6 +3092,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+>  
+>  	trans->block_rsv = &inode->block_rsv;
+>  
+> +	ret = btrfs_insert_raid_extent(trans, ordered_extent);
+> +	if (ret)
+> +		goto out;
+> +
+>  	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+>  		compress_type = ordered_extent->compress_type;
+>  	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
+> @@ -3224,7 +3229,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+>  int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
+>  {
+>  	if (btrfs_is_zoned(btrfs_sb(ordered->inode->i_sb)) &&
+> -	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags))
+> +	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags) &&
+> +	    list_empty(&ordered->bioc_list))
+>  		btrfs_finish_ordered_zoned(ordered);
+>  	return btrfs_finish_one_ordered(ordered);
+>  }
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 345c449d588c..55c7d5543265 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -191,6 +191,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>  	INIT_LIST_HEAD(&entry->log_list);
+>  	INIT_LIST_HEAD(&entry->root_extent_list);
+>  	INIT_LIST_HEAD(&entry->work_list);
+> +	INIT_LIST_HEAD(&entry->bioc_list);
+>  	init_completion(&entry->completion);
+>  
+>  	/*
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 173bd5c5df26..1c51ac57e5df 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -151,6 +151,8 @@ struct btrfs_ordered_extent {
+>  	struct completion completion;
+>  	struct btrfs_work flush_work;
+>  	struct list_head work_list;
+> +
+> +	struct list_head bioc_list;
+>  };
+>  
+>  static inline void
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> new file mode 100644
+> index 000000000000..7cdcc45a8796
+> --- /dev/null
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -0,0 +1,245 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#include <linux/btrfs_tree.h>
+> +
+> +#include "ctree.h"
+> +#include "fs.h"
+> +#include "accessors.h"
+> +#include "transaction.h"
+> +#include "disk-io.h"
+> +#include "raid-stripe-tree.h"
+> +#include "volumes.h"
+> +#include "misc.h"
+> +#include "print-tree.h"
+> +
+> +static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
+> +				 int num_stripes,
+> +				 struct btrfs_io_context *bioc)
+> +{
+> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+> +	struct btrfs_key stripe_key;
+> +	struct btrfs_root *stripe_root = fs_info->stripe_root;
+> +	u8 encoding = btrfs_bg_flags_to_raid_index(bioc->map_type);
+> +	struct btrfs_stripe_extent *stripe_extent;
+> +	const size_t item_size = struct_size(stripe_extent, strides, num_stripes);
+> +	int ret;
+> +
+> +	stripe_extent = kzalloc(item_size, GFP_NOFS);
+> +	if (!stripe_extent) {
+> +		btrfs_abort_transaction(trans, -ENOMEM);
+> +		btrfs_end_transaction(trans);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
+> +	for (int i = 0; i < num_stripes; i++) {
+> +		u64 devid = bioc->stripes[i].dev->devid;
+> +		u64 physical = bioc->stripes[i].physical;
+> +		u64 length = bioc->stripes[i].length;
+> +		struct btrfs_raid_stride *raid_stride =
+> +						&stripe_extent->strides[i];
+> +
+> +		if (length == 0)
+> +			length = bioc->size;
+> +
+> +		btrfs_set_stack_raid_stride_devid(raid_stride, devid);
+> +		btrfs_set_stack_raid_stride_physical(raid_stride, physical);
+> +		btrfs_set_stack_raid_stride_length(raid_stride, length);
+> +	}
+> +
+> +	stripe_key.objectid = bioc->logical;
+> +	stripe_key.type = BTRFS_RAID_STRIPE_KEY;
+> +	stripe_key.offset = bioc->size;
+> +
+> +	ret = btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_extent,
+> +				item_size);
+> +	if (ret)
+> +		btrfs_abort_transaction(trans, ret);
+> +
+> +	kfree(stripe_extent);
+> +
+> +	return ret;
+> +}
+> +
+> +static int btrfs_insert_mirrored_raid_extents(struct btrfs_trans_handle *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	int num_stripes = btrfs_bg_type_to_factor(map_type);
+> +	struct btrfs_io_context *bioc;
+> +	int ret;
+> +
+> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
+> +		ret = btrfs_insert_one_raid_extent(trans, num_stripes, bioc);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int btrfs_insert_striped_mirrored_raid_extents(
+> +				      struct btrfs_trans_handle *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	struct btrfs_io_context *bioc;
+> +	struct btrfs_io_context *rbioc;
+> +	const int nstripes = list_count_nodes(&ordered->bioc_list);
+> +	const int index = btrfs_bg_flags_to_raid_index(map_type);
+> +	const int substripes = btrfs_raid_array[index].sub_stripes;
+> +	const int max_stripes =
+> +		trans->fs_info->fs_devices->rw_devices / substripes;
 
-You mean the approach that I picked up using software nodes that got
-thrown out by the software node people? That approach that I picked
-up from you and tried to get merged?
-
-No, that's not going to happen, and it's not a question of whether
-_I_ am going to accept that approach or not. So don't throw that
-back on me, please.
-
-If this is something that we want to solve, we need to stop being so
-devisive (your language above is so) and try to come up with a
-solution that is acceptable to everyone... the swnode approach
-doesn't seem to be it.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+This will probably warn due to u64/u32 division.
