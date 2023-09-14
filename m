@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEBC7A05AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE7E7A05B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239040AbjINNdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S239075AbjINNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjINNdh (ORCPT
+        with ESMTP id S237766AbjINNdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:33:37 -0400
+        Thu, 14 Sep 2023 09:33:38 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCF11FC0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52751BF8;
         Thu, 14 Sep 2023 06:33:33 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:36f2:37bd:ccbb:373f])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9993F660734C;
-        Thu, 14 Sep 2023 14:33:31 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 275EA660734D;
+        Thu, 14 Sep 2023 14:33:32 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1694698412;
-        bh=+eRsvnpNumq6bQf88LlWZR7Lny7uqYBNBiPKeHOjtOs=;
+        bh=vLoWqr47TwOs1W2O/2hbr7Z04WYV94izNAnUlnx4n1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aSyp7ffubuNGkWb5eWQFg+eXWjYVUNooVpYC/nK0PtWo3aDnYbC4wrVxLTimb72Tl
-         YbjeDlDt10JlG0HL7pr1oRCiK5NXQf2LB6EYt1cAcqy1aYaCMKKWuaGa9B09B8wC0n
-         zC+GhyPII95M+/TAA6VoBiJBDJhvETgIcvFwYXQ4DhyLgimlxBiavxHHJdbNh/FI6o
-         PGGJDDdUf7+2YpCCUyLTqDuzQ/Kt+vBVpVfffjdxGcdDMvCTTOncE6jLOjUlc22BjI
-         JlW6oiKwMcXQkSGNZwDvqIT6T3pkCnleWWYex4bCEEZnLgJ83XhWmUJZwjqkMOHzdB
-         5/zbTa0w3ffwA==
+        b=AuvJq6LC1pQYeAaZvyb0AVzp6pX9e26QrthP7Tv39E7s97ssh7hrz95u7afxAdhjz
+         BJX1o2yaxKntWICdJhTc/IMi3qi9Q1tUiiSlmLCUwcjf1W9FRCWxT0QsoDzybofyof
+         uANPP7cD3h1ev5p3AVx3dD8sR1acPAOUKsj4NhvKV3GPTIkrh1Df0IR0G/8UxR/Qxd
+         rRkHy/WaI6wfRxE6WQgCMNF0LQlc5hwWi0jbUDIPKeCpPvJhwzm6LY8X60hWxQk6zD
+         SqPwOA2a950Rux6G27ch5DeOrc7km5dKtO8K1cvn2KbpSiVf9F0NI7nYO0Bqp5mZ7/
+         JC3gCr+hTLV8A==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v7 01/49] media: videobuf2: Rework offset 'cookie' encoding pattern
-Date:   Thu, 14 Sep 2023 15:32:35 +0200
-Message-Id: <20230914133323.198857-2-benjamin.gaignard@collabora.com>
+Subject: [PATCH v7 02/49] media: videobuf2: Stop spamming kernel log with all queue counter
+Date:   Thu, 14 Sep 2023 15:32:36 +0200
+Message-Id: <20230914133323.198857-3-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
 References: <20230914133323.198857-1-benjamin.gaignard@collabora.com>
@@ -55,97 +55,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change how offset 'cookie' field value is computed to make possible
-to use more buffers (up to 0x7fff)
-With this encoding pattern we know the maximum number that a queue
-could store so we can check ing at queue init time.
-It also make easier and faster to find buffer and plane from using
-the offset field.
+Only report unbalanced queue counters do avoid spamming kernel log
+with useless information.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 48 +++++++++----------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ .../media/common/videobuf2/videobuf2-core.c   | 77 +++++++++++--------
+ 1 file changed, 43 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index cf6727d9c81f..cf3b9f5b69b7 100644
+index cf3b9f5b69b7..bedd827c0d9a 100644
 --- a/drivers/media/common/videobuf2/videobuf2-core.c
 +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -31,6 +31,10 @@
+@@ -529,24 +529,25 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+ #ifdef CONFIG_VIDEO_ADV_DEBUG
+ 	/*
+ 	 * Check that all the calls were balances during the life-time of this
+-	 * queue. If not (or if the debug level is 1 or up), then dump the
+-	 * counters to the kernel log.
++	 * queue. If not then dump the counters to the kernel log.
+ 	 */
+ 	if (q->num_buffers) {
+ 		bool unbalanced = q->cnt_start_streaming != q->cnt_stop_streaming ||
+ 				  q->cnt_prepare_streaming != q->cnt_unprepare_streaming ||
+ 				  q->cnt_wait_prepare != q->cnt_wait_finish;
  
- #include <trace/events/vb2.h>
+-		if (unbalanced || debug) {
+-			pr_info("counters for queue %p:%s\n", q,
+-				unbalanced ? " UNBALANCED!" : "");
+-			pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
+-				q->cnt_queue_setup, q->cnt_start_streaming,
+-				q->cnt_stop_streaming);
+-			pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
+-				q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
+-			pr_info("     wait_prepare: %u wait_finish: %u\n",
+-				q->cnt_wait_prepare, q->cnt_wait_finish);
++		if (unbalanced) {
++			pr_info("unbalanced counters for queue %p:\n", q);
++			if (q->cnt_start_streaming != q->cnt_stop_streaming)
++				pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
++					q->cnt_queue_setup, q->cnt_start_streaming,
++					q->cnt_stop_streaming);
++			if (q->cnt_prepare_streaming != q->cnt_unprepare_streaming)
++				pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
++					q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
++			if (q->cnt_wait_prepare != q->cnt_wait_finish)
++				pr_info("     wait_prepare: %u wait_finish: %u\n",
++					q->cnt_wait_prepare, q->cnt_wait_finish);
+ 		}
+ 		q->cnt_queue_setup = 0;
+ 		q->cnt_wait_prepare = 0;
+@@ -567,29 +568,37 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+ 				  vb->cnt_buf_prepare != vb->cnt_buf_finish ||
+ 				  vb->cnt_buf_init != vb->cnt_buf_cleanup;
  
-+#define PLANE_INDEX_SHIFT	(PAGE_SHIFT + 3)
-+#define PLANE_INDEX_MASK	0x7
-+#define BUFFER_INDEX_MASK	0x7fff
-+
- static int debug;
- module_param(debug, int, 0644);
- 
-@@ -358,21 +362,23 @@ static void __setup_offsets(struct vb2_buffer *vb)
- 	unsigned int plane;
- 	unsigned long off = 0;
- 
--	if (vb->index) {
--		struct vb2_buffer *prev = q->bufs[vb->index - 1];
--		struct vb2_plane *p = &prev->planes[prev->num_planes - 1];
--
--		off = PAGE_ALIGN(p->m.offset + p->length);
--	}
-+	/*
-+	 * Offsets cookies value have the following constraints:
-+	 * - a buffer could have up to 8 planes.
-+	 * - v4l2 mem2mem use bit 30 to distinguish between source and destination buffers.
-+	 * - must be page aligned
-+	 * That led to this bit mapping:
-+	 * |30                |29        15|14       12|11 0|
-+	 * |DST_QUEUE_OFF_BASE|buffer index|plane index| 0  |
-+	 * where there is 15 bits to store buffer index.
-+	 */
-+	off = vb->index << (PLANE_INDEX_SHIFT);
- 
- 	for (plane = 0; plane < vb->num_planes; ++plane) {
--		vb->planes[plane].m.offset = off;
-+		vb->planes[plane].m.offset = off + (plane << PAGE_SHIFT);
- 
- 		dprintk(q, 3, "buffer %d, plane %d offset 0x%08lx\n",
- 				vb->index, plane, off);
--
--		off += vb->planes[plane].length;
--		off = PAGE_ALIGN(off);
+-		if (unbalanced || debug) {
+-			pr_info("   counters for queue %p, buffer %d:%s\n",
+-				q, buffer, unbalanced ? " UNBALANCED!" : "");
+-			pr_info("     buf_init: %u buf_cleanup: %u buf_prepare: %u buf_finish: %u\n",
+-				vb->cnt_buf_init, vb->cnt_buf_cleanup,
+-				vb->cnt_buf_prepare, vb->cnt_buf_finish);
+-			pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
+-				vb->cnt_buf_out_validate, vb->cnt_buf_queue,
+-				vb->cnt_buf_done, vb->cnt_buf_request_complete);
+-			pr_info("     alloc: %u put: %u prepare: %u finish: %u mmap: %u\n",
+-				vb->cnt_mem_alloc, vb->cnt_mem_put,
+-				vb->cnt_mem_prepare, vb->cnt_mem_finish,
+-				vb->cnt_mem_mmap);
+-			pr_info("     get_userptr: %u put_userptr: %u\n",
+-				vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
+-			pr_info("     attach_dmabuf: %u detach_dmabuf: %u map_dmabuf: %u unmap_dmabuf: %u\n",
+-				vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf,
+-				vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+-			pr_info("     get_dmabuf: %u num_users: %u vaddr: %u cookie: %u\n",
++		if (unbalanced) {
++			pr_info("unbalanced counters for queue %p:, buffer %d\n",
++				q, buffer);
++			if (vb->cnt_buf_init != vb->cnt_buf_cleanup)
++				pr_info("     buf_init: %u buf_cleanup: %u\n",
++					vb->cnt_buf_init, vb->cnt_buf_cleanup);
++			if (vb->cnt_buf_prepare != vb->cnt_buf_finish)
++				pr_info("     buf_prepare: %u buf_finish: %u\n",
++					vb->cnt_buf_prepare, vb->cnt_buf_finish);
++			if (vb->cnt_buf_queue != vb->cnt_buf_done)
++				pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
++					vb->cnt_buf_out_validate, vb->cnt_buf_queue,
++					vb->cnt_buf_done, vb->cnt_buf_request_complete);
++			if (vb->cnt_mem_alloc != vb->cnt_mem_put)
++				pr_info("     alloc: %u put: %u\n",
++					vb->cnt_mem_alloc, vb->cnt_mem_put);
++			if (vb->cnt_mem_prepare != vb->cnt_mem_finish)
++				pr_info("     prepare: %u finish: %u\n",
++					vb->cnt_mem_prepare, vb->cnt_mem_finish);
++			if (vb->cnt_mem_get_userptr != vb->cnt_mem_put_userptr)
++				pr_info("     get_userptr: %u put_userptr: %u\n",
++					vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
++			if (vb->cnt_mem_attach_dmabuf != vb->cnt_mem_detach_dmabuf)
++				pr_info("     attach_dmabuf: %u detach_dmabuf: %u\n",
++					vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf);
++			if (vb->cnt_mem_map_dmabuf != vb->cnt_mem_unmap_dmabuf)
++				pr_info("     map_dmabuf: %u unmap_dmabuf: %u\n",
++					vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
++			pr_info("     get_dmabuf: %u num_users: %u\n",
+ 				vb->cnt_mem_get_dmabuf,
+-				vb->cnt_mem_num_users,
+-				vb->cnt_mem_vaddr,
+-				vb->cnt_mem_cookie);
++				vb->cnt_mem_num_users);
+ 		}
  	}
- }
- 
-@@ -2209,21 +2215,15 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
- 		return -EBUSY;
- 	}
- 
--	/*
--	 * Go over all buffers and their planes, comparing the given offset
--	 * with an offset assigned to each plane. If a match is found,
--	 * return its buffer and plane numbers.
--	 */
--	for (buffer = 0; buffer < q->num_buffers; ++buffer) {
--		vb = q->bufs[buffer];
-+	/* Get buffer and plane from the offset */
-+	buffer = (off >> PLANE_INDEX_SHIFT) & BUFFER_INDEX_MASK;
-+	plane = (off >> PAGE_SHIFT) & PLANE_INDEX_MASK;
- 
--		for (plane = 0; plane < vb->num_planes; ++plane) {
--			if (vb->planes[plane].m.offset == off) {
--				*_buffer = buffer;
--				*_plane = plane;
--				return 0;
--			}
--		}
-+	vb = q->bufs[buffer];
-+	if (vb->planes[plane].m.offset == off) {
-+		*_buffer = buffer;
-+		*_plane = plane;
-+		return 0;
- 	}
- 
- 	return -EINVAL;
+ #endif
 -- 
 2.39.2
 
