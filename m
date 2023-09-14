@@ -2,144 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA427A07E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FA37A07E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240329AbjINOu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
+        id S240359AbjINOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240387AbjINOuO (ORCPT
+        with ESMTP id S234000AbjINOvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:50:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D72C7212C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:49:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694702952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JJNWd5PCe2BYCxEP8rDUQkK/YgAeIPdVdWnp3Lyzy3o=;
-        b=K1oM7fY99l9Xx2kzfLM6hcnwPk8R6pnqZmQvd4E18GQduyznP+ejlmPqAwGhGOjVFWDMZI
-        A6/yHGmzp2I8SxHxyXHni5kn79U0hviwrHvEnlk2do00vWk677XVPEJn6BbZztFMAmoBZS
-        s5u1yyXdDCzw3VNrN1iwsiT/2W+bQTw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-fWYBj35hOEmxTcbsa6YIpg-1; Thu, 14 Sep 2023 10:49:11 -0400
-X-MC-Unique: fWYBj35hOEmxTcbsa6YIpg-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5301927ab91so502860a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:49:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694702950; x=1695307750;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JJNWd5PCe2BYCxEP8rDUQkK/YgAeIPdVdWnp3Lyzy3o=;
-        b=c9uZtb+BzwnxndybdoIABApRAmxDDVNVfnSq4PAcmVlAB+kOkhQ0eDbMZk6qO03DED
-         rp0aby1J2kwr/uB7Nza8jzo2gU7Q04LFsHuCLtuseJcYYA4/QMJNUX3pqm7dmLMmvPWB
-         SV+8Xs8wYDWuiKUpTGX/h599dX+wGF6A/8HpuOLTMZ/jMcNpSljKZ5UfYkxGSv1MgEnf
-         bjNZJ7dJ3RGtHEnd8z83q20i/bR5ycLPRh/hk+jOyisL3QrItBabIgs4PgqI8Va3mnj6
-         rwK8i03f7jcjg5aKwewEYOPNoa7TReb1AjDtZCSkuD9SixYPBxSXywD9foR+ExD8iDZ5
-         KPsA==
-X-Gm-Message-State: AOJu0YxzDh11oYT0vad4UJx2R/NzGwtEvL/hwiHMw1vvyeUyFNchh8Lu
-        V9sOfBLJTABWHo6YVz5X2MNCLc3ZxZvVpW3LMSHUG7XUY3HbcRN9bUwmMOi7J5vffHencStwtWF
-        3FwESZCAAJvu+SxHWzhTLAvLL
-X-Received: by 2002:a17:906:55:b0:9a1:fbfb:4d11 with SMTP id 21-20020a170906005500b009a1fbfb4d11mr5271987ejg.73.1694702950363;
-        Thu, 14 Sep 2023 07:49:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuUh+o4qBa2QpPTqZcV/CAgpJXUP4q4YCRFbbhogb7vavGnViV5ntjLQB4fVRFpDMI4D+1TQ==
-X-Received: by 2002:a17:906:55:b0:9a1:fbfb:4d11 with SMTP id 21-20020a170906005500b009a1fbfb4d11mr5271965ejg.73.1694702950001;
-        Thu, 14 Sep 2023 07:49:10 -0700 (PDT)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b009a1e0349c4csm1119680ejb.23.2023.09.14.07.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 07:49:09 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc:     ssengar@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com
-Subject: Re: [PATCH] x86/hyperv: Restrict get_vtl to only VTL platforms
-In-Reply-To: <1694604531-17128-1-git-send-email-ssengar@linux.microsoft.com>
-References: <1694604531-17128-1-git-send-email-ssengar@linux.microsoft.com>
-Date:   Thu, 14 Sep 2023 16:49:08 +0200
-Message-ID: <874jjwq07v.fsf@redhat.com>
+        Thu, 14 Sep 2023 10:51:51 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE62FF9;
+        Thu, 14 Sep 2023 07:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:Reply-To:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=N+daY3W8c0wPiaII8cnXdFIF6V6hVhPTLJNCrw2Vgv4=; b=lTy+WfbtTrNsAPu+3qW9e1TZOW
+        CDIl+c93vTZApkIFJbMn5QS4hQ/SzWBu/fVYukEWW5qvQurPtPo0Whn64CsvOxWOokOI7bhfftzMQ
+        8ePyUoCNTS4sjn7HeeqE7dmptpXYcg9PUVIFdzulgU44EVY/upAn/x40eFn7neGD0LpbAXEzUXRPi
+        zFiM5NhXRinhTNIDrSv185pfr1xt23fsRaa9vOXhWAahOqY9icnMcXs8suMZcvGqIC6NUG32623sG
+        nDcRFKy/JgUxyBwrAoFms3ZZSdc/0TcgA47Td5IvpqS2D4G3q3qo06rrCB6Q2LTfwXD8F8xSj2GMA
+        lRpnOYwQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:34884 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1qgnh2-0004Ol-0n;
+        Thu, 14 Sep 2023 15:51:44 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1qgnh2-007ZRZ-WD; Thu, 14 Sep 2023 15:51:45 +0100
+From:   "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+To:     linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Salil Mehta <salil.mehta@huawei.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-ia64@vger.kernel.org
+Subject: [PATCH RFC v2] cpu-hotplug: provide prototypes for arch CPU registration
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1qgnh2-007ZRZ-WD@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Thu, 14 Sep 2023 15:51:44 +0100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Saurabh Sengar <ssengar@linux.microsoft.com> writes:
+Provide common prototypes for arch_register_cpu() and
+arch_unregister_cpu(). These are called by acpi_processor.c, with
+weak versions, so the prototype for this is already set. It is
+generally not necessary for function prototypes to be conditional
+on preprocessor macros.
 
-> For non VTL platforms vtl is always 0, and there is no need of
-> get_vtl function. For VTL platforms get_vtl should always succeed
-> and should return the correct VTL.
->
-> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> ---
->  arch/x86/hyperv/hv_init.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 783ed339f341..e589c240565a 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -416,8 +416,8 @@ static u8 __init get_vtl(void)
->  	if (hv_result_success(ret)) {
->  		ret = output->as64.low & HV_X64_VTL_MASK;
->  	} else {
-> -		pr_err("Failed to get VTL(%lld) and set VTL to zero by default.\n", ret);
-> -		ret = 0;
-> +		pr_err("Failed to get VTL(error: %lld) exiting...\n", ret);
+Some architectures (e.g. Loongarch) are missing the prototype for this,
+and rather than add it to Loongarch's asm/cpu.h, lets do the job once
+for everyone.
 
-Nitpick: arch/x86/hyperv/hv_init.c lacks pr_fmt so the message won't get
-prefixed with "Hyper-V". I'm not sure 'VTL' abbreviation has the only,
-Hyper-V specific meaning. I'd suggest we add 
+Since this covers everyone, remove the now unnecessary prototypes in
+asm/cpu.h, and we also need to remove the 'static' from one of ia64's
+arch_register_cpu() definitions.
 
-#define pr_fmt(fmt)  "Hyper-V: " fmt
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+Spotted during the review of James Morse's patches, I think rather than
+adding prototypes for loongarch to its asm/cpu.h, it would make more
+sense to provide the prototypes in a non-arch specific header file so
+everyone can benefit, rather than having each architecture do its own
+thing.
 
-to the beginning of the file.
+I'm sending this as RFC as James has yet to comment on my proposal, and
+also to a wider audience, and although it makes a little more work for
+James (to respin his series) it does mean that his series should get a
+little smaller.
 
-> +		BUG();
->  	}
->  
->  	local_irq_restore(flags);
-> @@ -604,8 +604,10 @@ void __init hyperv_init(void)
->  	hv_query_ext_cap(0);
->  
->  	/* Find the VTL */
-> -	if (!ms_hyperv.paravisor_present && hv_isolation_type_snp())
-> +	if (IS_ENABLED(CONFIG_HYPERV_VTL_MODE))
->  		ms_hyperv.vtl = get_vtl();
-> +	else
-> +		ms_hyperv.vtl = 0;
+See:
+ https://lore.kernel.org/r/20230913163823.7880-2-james.morse@arm.com
+ https://lore.kernel.org/r/20230913163823.7880-4-james.morse@arm.com
+ https://lore.kernel.org/r/20230913163823.7880-23-james.morse@arm.com
 
-Is 'else' branch really needed? 'ms_hyperv' seems to be a statically
-allocated global. But instead of doing this, what about putting the
-whole get_vtl() funtion under '#if (IS_ENABLED(CONFIG_HYPERV_VTL_MODE))', i.e.:
+v2: lets try not fat-fingering vim.
 
-#if IS_ENABLED(CONFIG_HYPERV_VTL_MODE)
-static u8 __init get_vtl(void)
-{
-        u64 control = HV_HYPERCALL_REP_COMP_1 | HVCALL_GET_VP_REGISTERS;
-...
-}
-#else
-static inline get_vtl(void) { return 0; }
-#endif
+ arch/ia64/include/asm/cpu.h | 5 -----
+ arch/ia64/kernel/topology.c | 2 +-
+ arch/x86/include/asm/cpu.h  | 2 --
+ include/linux/cpu.h         | 2 ++
+ 4 files changed, 3 insertions(+), 8 deletions(-)
 
-and then we can always do
-
-      ms_hyperv.vtl = get_vtl();
-
-unconditionally?
-
->  
->  	return;
-
+diff --git a/arch/ia64/include/asm/cpu.h b/arch/ia64/include/asm/cpu.h
+index db125df9e088..642d71675ddb 100644
+--- a/arch/ia64/include/asm/cpu.h
++++ b/arch/ia64/include/asm/cpu.h
+@@ -15,9 +15,4 @@ DECLARE_PER_CPU(struct ia64_cpu, cpu_devices);
+ 
+ DECLARE_PER_CPU(int, cpu_state);
+ 
+-#ifdef CONFIG_HOTPLUG_CPU
+-extern int arch_register_cpu(int num);
+-extern void arch_unregister_cpu(int);
+-#endif
+-
+ #endif /* _ASM_IA64_CPU_H_ */
+diff --git a/arch/ia64/kernel/topology.c b/arch/ia64/kernel/topology.c
+index 94a848b06f15..741863a187a6 100644
+--- a/arch/ia64/kernel/topology.c
++++ b/arch/ia64/kernel/topology.c
+@@ -59,7 +59,7 @@ void __ref arch_unregister_cpu(int num)
+ }
+ EXPORT_SYMBOL(arch_unregister_cpu);
+ #else
+-static int __init arch_register_cpu(int num)
++int __init arch_register_cpu(int num)
+ {
+ 	return register_cpu(&sysfs_cpus[num].cpu, num);
+ }
+diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+index 3a233ebff712..25050d953eee 100644
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -28,8 +28,6 @@ struct x86_cpu {
+ };
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+-extern int arch_register_cpu(int num);
+-extern void arch_unregister_cpu(int);
+ extern void soft_restart_cpu(void);
+ #endif
+ 
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 0abd60a7987b..eb768a866fe3 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -80,6 +80,8 @@ extern __printf(4, 5)
+ struct device *cpu_device_create(struct device *parent, void *drvdata,
+ 				 const struct attribute_group **groups,
+ 				 const char *fmt, ...);
++extern int arch_register_cpu(int cpu);
++extern void arch_unregister_cpu(int cpu);
+ #ifdef CONFIG_HOTPLUG_CPU
+ extern void unregister_cpu(struct cpu *cpu);
+ extern ssize_t arch_cpu_probe(const char *, size_t);
 -- 
-Vitaly
+2.30.2
 
