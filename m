@@ -2,304 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93797A0178
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97887A017E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238180AbjINKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S238173AbjINKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238139AbjINKRs (ORCPT
+        with ESMTP id S238067AbjINKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:17:48 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989F21BE5;
-        Thu, 14 Sep 2023 03:17:44 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4RmYD52Fyxz49Q2t;
-        Thu, 14 Sep 2023 13:17:41 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1694686662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ROG//h33L4gcarp0kEAKqAx8IqwYzYLfNFC2B4kqyfY=;
-        b=uyrIY+Fvm9pT+mWFvCZ+stXrFsf0Zqb/bRLyn9XocU/8d1Ks0w/mP4OaGuiYLJwuQvE+Ei
-        LS87+QxMOGfjJ6jmvofxYz1CZdg2Ai53dFHiCP4zIBne2m8KLDM0hS3J+vE4D+0PtMxJSi
-        kyBPPtDfC7cC4X76w/aGHK1W8worwuHwAen0Rlyri+eVa2zoOEgyrDiJcXhi6HzGkqBK0f
-        XYyHArEyfyrg0Sz5TFoJoMTEpCbzPAex0rpyr/I13Zi8EhOweF78yOcwZyS67RwCz2GjX9
-        0HrTPteLbIXraGsotACzK8fQCbP2GetUlObqiZCNm5t6m0Vtke8dONfhrl2Rsg==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1694686662; a=rsa-sha256;
-        cv=none;
-        b=A3lqBLT2YiDygcWEYDuw8cIV0djpIm1643GlapLWq6kXmZWOGP9LGgoovM2DRGHVUFgxw0
-        3sgeJJON+INCdi4wRPigZXvW/yl6/hnokvW8/uti6wjCXspGX9Js3qfN0ix2d680Mx3Yvy
-        TiVXbgIagzBAZJby4aai3aLQsmGa9QBlJYPPRh3KIiptt8QxPuzcJ5TXqYyDvAfXmiIi5P
-        YUR0SKFBz4756TUrD+Zo37Tp0igs2k4DF5sN7qESu48zmCc3og3l477mhKX9QC/w4PLaLt
-        eNy4eftd0r9ZRc1YeJSr62QwwXm1A/xljnP3a/HeuBogq3PxbmAADTW3MkDeLA==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1694686662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ROG//h33L4gcarp0kEAKqAx8IqwYzYLfNFC2B4kqyfY=;
-        b=gDUQ2dpjDetw4rX/gTPKZ2rTQjsg8FqmiLYpKfVb1F0L3HrlIpAlBl2k2RTmd0nJxFrKxO
-        l+IdzXUZxXvso/Ddb3nGHEE/Li6QGOV+yWFurekjuY+cm7NoA3yGH9zMIP3s72s5WlNu3H
-        2IJV7GHJYHu3oqPuStsT5doKXGQNMtfIqEJwxQnQ4AcTuAh4LxtBusHPbUC54pYoEF1DQk
-        4EogUOdfkdD/BoNnx4xIzsdkaBCqxqlWAcn3Ynk6jvOoWmNbM+a97i4J5xx7GDIxCU1LtT
-        ccPkJqYr+UYjrXAFZMjQbAVdq+vlXyebGdn71SVuw9MI7fkRbmx71C2IiI+gFw==
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 9B2B9634C93;
-        Thu, 14 Sep 2023 13:17:40 +0300 (EEST)
-Date:   Thu, 14 Sep 2023 10:17:40 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     hverkuil@xs4all.nl, tfiga@chromium.org, m.szyprowski@samsung.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v3 6/9] media: v4l2: Add audio capture and output
- support
-Message-ID: <ZQLdxMaqFYUukt4J@valkosipuli.retiisi.eu>
-References: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
- <1694670845-17070-7-git-send-email-shengjiu.wang@nxp.com>
+        Thu, 14 Sep 2023 06:19:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B7C1BE8;
+        Thu, 14 Sep 2023 03:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694686744; x=1726222744;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=O1LLvMPKGNc5ZFEUOpVx7SNJUHBbUo3ACKo6XHAjDn8=;
+  b=SZ/IwTk/JBtcrbnUWIewn+srlKHoTrayar6iVcO7lMtfmSDT//8bm0Em
+   VUeDuWO9tN+xsF1aO3GXL1tBhkcO1ukq5PIoY+H+4VJvDDECvaDO0iqnB
+   QV3p6I0RNDzOzMcUKvbsXovf0uJR3QOZCbsG9BFJ7z/44TUb1bw2GQEIG
+   ElKlBJWnCwDZXXSCwjT5whp2266t6Po98FP8ujYOOoYdG+trCgYrIQBE4
+   OidZkxRO1gtW8FylSp0FK+TG/CPbMfj/hZN2J2BGIMImPij9VCI6pN1gp
+   rMXaqgVZMLMZ3ke4yp/wJl6JTodUC7nZj7e6R/dBa0GWUGjw6fO0+0Nc2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363949201"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="363949201"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 03:18:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="773840738"
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="773840738"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2023 03:18:44 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgjQo-0001Tp-0F;
+        Thu, 14 Sep 2023 10:18:42 +0000
+Date:   Thu, 14 Sep 2023 18:18:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Anan Sun <anan.sun@mediatek.com>,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        jianjiao.zeng@mediatek.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        kuohong.wang@mediatek.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, tjmercier@google.com,
+        linaro-mm-sig@lists.linaro.org, John Stultz <jstultz@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        Yong Wu <yong.wu@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 6/9] dma-buf: heaps: mtk_sec_heap: Add tee service call
+ for buffer allocating/freeing
+Message-ID: <202309141707.zdT0yuMT-lkp@intel.com>
+References: <20230911023038.30649-7-yong.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1694670845-17070-7-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20230911023038.30649-7-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shenjiu,
+Hi Yong,
 
-Thanks for the update.
+kernel test robot noticed the following build errors:
 
-On Thu, Sep 14, 2023 at 01:54:02PM +0800, Shengjiu Wang wrote:
-> Audio signal processing has the requirement for memory to
-> memory similar as Video.
-> 
-> This patch is to add this support in v4l2 framework, defined
-> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
-> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
-> for audio case usage.
-> 
-> Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+[auto build test ERROR on drm-misc/drm-misc-next]
+[also build test ERROR on robh/for-next linus/master v6.6-rc1 next-20230914]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This would be nicer as a separate patch. Also see the related comments
-below.
+url:    https://github.com/intel-lab-lkp/linux/commits/Yong-Wu/dma-buf-heaps-Deduplicate-docs-and-adopt-common-format/20230911-103308
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230911023038.30649-7-yong.wu%40mediatek.com
+patch subject: [PATCH 6/9] dma-buf: heaps: mtk_sec_heap: Add tee service call for buffer allocating/freeing
+config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230914/202309141707.zdT0yuMT-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141707.zdT0yuMT-lkp@intel.com/reproduce)
 
-> 
-> Defined V4L2_CAP_AUDIO_M2M capability type for audio memory
-> to memory case.
-> 
-> The created audio device is named "/dev/v4l-audioX".
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../userspace-api/media/v4l/audio-formats.rst | 15 +++++
->  .../userspace-api/media/v4l/buffer.rst        |  6 ++
->  .../userspace-api/media/v4l/dev-audio.rst     | 63 +++++++++++++++++++
->  .../userspace-api/media/v4l/devices.rst       |  1 +
->  .../media/v4l/pixfmt-aud-lpcm.rst             | 31 +++++++++
->  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
->  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
->  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
->  .../media/v4l/vidioc-querycap.rst             |  3 +
->  .../media/videodev2.h.rst.exceptions          |  2 +
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
->  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++++
->  include/media/v4l2-dev.h                      |  2 +
->  include/media/v4l2-ioctl.h                    | 34 ++++++++++
->  include/uapi/linux/videodev2.h                | 25 ++++++++
->  16 files changed, 263 insertions(+)
->  create mode 100644 Documentation/userspace-api/media/v4l/audio-formats.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/audio-formats.rst b/Documentation/userspace-api/media/v4l/audio-formats.rst
-> new file mode 100644
-> index 000000000000..bc52712d20d3
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/audio-formats.rst
-> @@ -0,0 +1,15 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _audio-formats:
-> +
-> +*************
-> +Audio Formats
-> +*************
-> +
-> +These formats are used for :ref:`audio` interface only.
-> +
-> +
-> +.. toctree::
-> +    :maxdepth: 1
-> +
-> +    pixfmt-aud-lpcm
-> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-> index 04dec3e570ed..80cf2cb20dfe 100644
-> --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> @@ -438,6 +438,12 @@ enum v4l2_buf_type
->      * - ``V4L2_BUF_TYPE_META_OUTPUT``
->        - 14
->        - Buffer for metadata output, see :ref:`metadata`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
-> +      - 15
-> +      - Buffer for audio capture, see :ref:`audio`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
-> +      - 16
-> +      - Buffer for audio output, see :ref:`audio`.
->  
->  
->  .. _buffer-flags:
-> diff --git a/Documentation/userspace-api/media/v4l/dev-audio.rst b/Documentation/userspace-api/media/v4l/dev-audio.rst
-> new file mode 100644
-> index 000000000000..f9bcf0c7b056
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/dev-audio.rst
-> @@ -0,0 +1,63 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _audiodev:
-> +
-> +******************
-> +audio Interface
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309141707.zdT0yuMT-lkp@intel.com/
 
-Capital "A"?
+All errors (new ones prefixed by >>):
 
-> +******************
-
-Too many asterisks (same a few lines above, too).
-
-> +
-> +The audio interface is implemented on audio device nodes. The audio device
-> +which uses application software for modulation or demodulation. This
-> +interface is intended for controlling and data streaming of such devices
-> +
-> +Audio devices are accessed through character device special files named
-> +``/dev/v4l-audio``
-> +
-> +Querying Capabilities
-> +=====================
-> +
-> +Device nodes supporting the audio capture and output interface set the
-> +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
-> +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_QUERYCAP`
-> +ioctl.
-> +
-> +At least one of the read/write or streaming I/O methods must be supported.
-> +
-> +
-> +Data Format Negotiation
-> +=======================
-> +
-> +The audio device uses the :ref:`format` ioctls to select the capture format.
-> +The audio buffer content format is bound to that selected format. In addition
-> +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioctl must be
-> +supported as well.
-> +
-> +To use the :ref:`format` ioctls applications set the ``type`` field of the
-> +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` or to
-> +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must set the
-> +remainder of the :c:type:`v4l2_format` structure to 0.
-> +
-> +.. c:type:: v4l2_audio_format
-> +
-> +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
-> +
-> +.. flat-table:: struct v4l2_audio_format
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u32
-> +      - ``rate``
-> +      - The sample rate, set by the application. The range is [5512, 768000].
-> +    * - __u32
-> +      - ``format``
-> +      - The sample format, set by the application. format is defined as
-> +        SNDRV_PCM_FORMAT_S8, SNDRV_PCM_FORMAT_U8, ...,
-> +    * - __u32
-> +      - ``channels``
-> +      - The channel number, set by the application. channel number range is
-> +        [1, 32].
-> +    * - __u32
-> +      - ``buffersize``
-> +      - Maximum buffer size in bytes required for data. The value is set by the
-> +        driver.
-> diff --git a/Documentation/userspace-api/media/v4l/devices.rst b/Documentation/userspace-api/media/v4l/devices.rst
-> index 8bfbad65a9d4..8261f3468489 100644
-> --- a/Documentation/userspace-api/media/v4l/devices.rst
-> +++ b/Documentation/userspace-api/media/v4l/devices.rst
-> @@ -24,3 +24,4 @@ Interfaces
->      dev-event
->      dev-subdev
->      dev-meta
-> +    dev-audio
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> new file mode 100644
-> index 000000000000..f9ebe2a05f69
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-aud-lpcm.rst
-> @@ -0,0 +1,31 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _v4l2-aud-fmt-lpcm:
-> +
-> +*************************
-> +V4L2_AUDIO_FMT_LPCM ('LPCM')
-> +*************************
-> +
-> +Linear Pulse-Code Modulation (LPCM)
-> +
-> +
-> +Description
-> +===========
-> +
-> +This describes audio format used by the audio memory to memory driver.
-> +
-> +It contains the following fields:
-> +
-> +.. flat-table::
-> +    :widths: 1 4
-> +    :header-rows:  1
-> +    :stub-columns: 0
-> +
-> +    * - Field
-> +      - Description
-> +    * - u32 samplerate;
-> +      - which is the number of times per second that samples are taken.
-> +    * - u32 sampleformat;
-> +      - which determines the number of possible digital values that can be used to represent each sample
-
-80 characters (or less) per line, please.
-
-Which values could this field have and what do they signify?
-
-> +    * - u32 channels;
-> +      - channel number for each sample.
-
-I suppose the rest of the buffer would be samples? This should be
-documented. I think there are also different ways the data could be
-arrangeed and this needs to be documented, too.
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_kree_secure_session_init':
+   mtk_secure_heap.c:(.text+0x130): undefined reference to `tee_client_open_context'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L10':
+   mtk_secure_heap.c:(.text+0x19c): undefined reference to `tee_client_open_session'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L12':
+   mtk_secure_heap.c:(.text+0x1dc): undefined reference to `tee_client_close_context'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_sec_mem_tee_service_call.constprop.0':
+>> mtk_secure_heap.c:(.text+0x274): undefined reference to `tee_client_invoke_func'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_sec_mem_release.isra.0':
+   mtk_secure_heap.c:(.text+0x464): undefined reference to `tee_client_invoke_func'
 
 -- 
-Kind regards,
-
-Sakari Ailus
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
