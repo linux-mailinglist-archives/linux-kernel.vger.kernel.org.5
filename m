@@ -2,195 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CF87A0225
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D4B7A0226
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbjINLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
+        id S233182AbjINLHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjINLHE (ORCPT
+        with ESMTP id S229485AbjINLHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:07:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3531BF8;
-        Thu, 14 Sep 2023 04:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694689620; x=1726225620;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=9JugPIiCsTNlGSqA+RcuSCrtIlm0srdP+9uKp4qf/eI=;
-  b=iHvk9Ff9y3VeGaBg2/3JY9GTAStt3FVMr8C1IUkOeqUtoPQgiIyjUjLu
-   nDrz2th439hD4G8keMHgGXsdSWppZyB3HW8B12ELVicxtzGG87fOC76ho
-   Tw8uIbUSLq50eRlz6iBXVc9ArNyWpHJBDyd+m/Vx1DmYbPEqkV0lg7vKx
-   HaxbXVKWRjMAocLkR3IkRT6LqYH88CnHXlv/jBoI4dbDEtszWr7UJS/tH
-   oeCR5KHV3BcWo6pfZ6a4WBZ1Su+XwvIdCc7Eefh7OdZoS6wSrsRpHqKF8
-   3q1D/6lDFUnNGIsuEB9U6RwcNUx7Dt0DtzXIZSq6tDw1mJ8wLsQZtzd1+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377826677"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="377826677"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 04:06:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="694204392"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="694204392"
-Received: from skolhe-mobl1.ger.corp.intel.com ([10.252.36.254])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 04:06:56 -0700
-Date:   Thu, 14 Sep 2023 14:06:54 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 3/5] selftests/resctrl: Refactor feature check to use
- resource and feature name
-In-Reply-To: <8eb32195-102b-cbf5-3ea0-88550cc81de6@intel.com>
-Message-ID: <dfc53e-3f92-82e4-6af-d1a28e8c199a@linux.intel.com>
-References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com> <20230911111930.16088-4-ilpo.jarvinen@linux.intel.com> <b5a36b8a-c5c7-84a9-270e-bef4478d4bff@intel.com> <eac7deb6-3593-7a59-7df8-208392254f7@linux.intel.com>
- <8eb32195-102b-cbf5-3ea0-88550cc81de6@intel.com>
+        Thu, 14 Sep 2023 07:07:21 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324251BF8;
+        Thu, 14 Sep 2023 04:07:17 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38E8mlrJ014836;
+        Thu, 14 Sep 2023 04:07:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=xgh+YMX78OZe8NgUnhXLVX9e/GTYEJWYZAie4By5QLE=;
+ b=Vaq6vt19e9nB+sYuswII4jCTYPMTZUEMx3x0ezLzhU1sRcOWLs5qDEa3av+w8VuCA1d6
+ 4RC/YrKTuJ0Vpgt9rrmx8d7h5QKjzimAJkP+DgRmPvabsth1fkC3wdTPuaLSKxuRs5va
+ 6qqwsJP+rC1AOSNDLCpKfty7XkFax7TYt6SBJYcnKPn6OHeNFm4xvW2Dm9qsfhgQEFMu
+ 4Tp707BeUeTOf6F5Fra1hoGoeCzR97qTDiXrbaMd73EPMYTaA8SRb3xLCrc/mJmO/3oD
+ hi9FstNSiuS7STW+r6U+RuGQ/yh0V7AnYS85smS+bPBLRIgKuidpAIyLu85JD14ffrqK Dg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3t3kqrjsc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 14 Sep 2023 04:07:01 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 14 Sep
+ 2023 04:06:59 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 14 Sep 2023 04:06:59 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id DC0843F7053;
+        Thu, 14 Sep 2023 04:06:56 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        <edumazet@google.com>, <pabeni@redhat.com>
+Subject: [net-next Patch] octeontx2-pf: Tc flower offload support for MPLS
+Date:   Thu, 14 Sep 2023 16:36:55 +0530
+Message-ID: <20230914110655.31222-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1062744194-1694684643=:1814"
-Content-ID: <28d9a3b7-cfeb-a9c3-296d-fb7779b81997@linux.intel.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: m9qCVgSl2zcfb8mqILvPN2mqIiJ0USfC
+X-Proofpoint-GUID: m9qCVgSl2zcfb8mqILvPN2mqIiJ0USfC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This patch extends flower offload support for MPLS protocol.
+Due to hardware limitation, currently driver supports lse
+depth up to 4.
 
---8323329-1062744194-1694684643=:1814
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <b452ea9-a5c4-b7dd-25c6-5441c2c767eb@linux.intel.com>
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  6 +++
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  8 +++
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 52 ++++++++++++++++++
+ .../marvell/octeontx2/af/rvu_npc_fs.c         | 46 ++++++++++++++++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 54 +++++++++++++++++++
+ 5 files changed, 166 insertions(+)
 
-On Wed, 13 Sep 2023, Reinette Chatre wrote:
-> On 9/13/2023 4:02 AM, Ilpo Järvinen wrote:
-> > On Tue, 12 Sep 2023, Reinette Chatre wrote:
-> >> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
-> >>> Feature check in validate_resctrl_feature_request() takes in the test
-> >>> name string and maps that to what to check per test.
-> >>>
-> >>> Pass resource and feature names to validate_resctrl_feature_request()
-> >>> directly rather than deriving them from the test name inside the
-> >>> function which makes the feature check easier to extend for new test
-> >>> cases.
-> >>>
-> >>> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> >>> Cc: <stable@vger.kernel.org>
-> >>
-> >> This does not seem to be stable material.
-> > 
-> > Alone it isn't, but both 2/5 and this 3/5 are prerequisites for 4/5 as 
-> > shown by the tags there.
-> > 
-> >>> ---
-> >>>  tools/testing/selftests/resctrl/resctrl.h     |  6 +-
-> >>>  .../testing/selftests/resctrl/resctrl_tests.c | 10 +--
-> >>>  tools/testing/selftests/resctrl/resctrlfs.c   | 69 ++++++++-----------
-> >>>  3 files changed, 34 insertions(+), 51 deletions(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> >>> index dd07463cdf48..89ced4152933 100644
-> >>> --- a/tools/testing/selftests/resctrl/resctrl.h
-> >>> +++ b/tools/testing/selftests/resctrl/resctrl.h
-> > 
-> >>> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> >>> index bd36ee206602..bd547a10791c 100644
-> >>> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> >>> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> >>> @@ -10,6 +10,8 @@
-> >>>   */
-> >>>  #include "resctrl.h"
-> >>>  
-> >>> +#include <limits.h>
-> >>> +
-> >>
-> >> Could you please include <limits.h> before the local resctrl.h?
-> > 
-> > Believe me I tried that first but it did not work. So this intentionally 
-> > in the current order as resctrl.h defines _GNU_SOURCE which is among 
-> > things that tends to alter many things. If I reorder them, the build gives 
-> > me these issues:
-> > 
-> > resctrlfs.c: In function ‘taskset_benchmark’:
-> > resctrlfs.c:284:2: warning: implicit declaration of function ‘CPU_ZERO’; 
-> > did you mean ‘FP_ZERO’? [-Wimplicit-function-declaration]
-> >   284 |  CPU_ZERO(&my_set);
-> >       |  ^~~~~~~~
-> >       |  FP_ZERO
-> > resctrlfs.c:285:2: warning: implicit declaration of function ‘CPU_SET’ 
-> > [-Wimplicit-function-declaration]
-> >   285 |  CPU_SET(cpu_no, &my_set);
-> >       |  ^~~~~~~
-> > resctrlfs.c:287:6: warning: implicit declaration of function 
-> > ‘sched_setaffinity’ [-Wimplicit-function-declaration]
-> >   287 |  if (sched_setaffinity(bm_pid, sizeof(cpu_set_t), &my_set)) {
-> >       |      ^~~~~~~~~~~~~~~~~
-> > 
-> > It might be useful to move _GNU_SOURCE define into Makefile though to 
-> > avoid these kind of issues (but that's not material for this patch).
-> 
-> How about a #define _GNU_SOURCE in this file as an intermediate step?
-> I did see your patch making this change but cannot see how it is
-> coordinated with fixing the include order in this file.
-
-I'll just make that change part of this series and use also it as 
-dependency. Making an intermediate step just for stable that is going to 
-immediately removed in mainline would just causing the code to diverge 
-unnecessarily, IMO.
-
-There's also a small risk for some other bug that does not cause compile 
-to fail due to differences because of a late define for _GNU_SOURCE. I 
-don't find it very likely but seems possible due to differences in some 
-constant values (not that the resctrl selftest code is very good at using 
-those defined constants in the first place, there are plenty of literals 
-still to cleanup).
-
-> >>>  static int find_resctrl_mount(char *buffer)
-> >>>  {
-> >>>  	FILE *mounts;
-> >>> @@ -604,63 +606,46 @@ char *fgrep(FILE *inf, const char *str)
-> >>>  
-> >>>  /*
-> >>>   * validate_resctrl_feature_request - Check if requested feature is valid.
-> >>> - * @resctrl_val:	Requested feature
-> >>> + * @resource:	Required resource (e.g., MB, L3, L2, L3_MON, etc.)
-> >>> + * @feature:	Feature to be checked under resource (can be NULL). This path
-> >>> + *		is relative to the resource path.
-> >>
-> >> I do not think "this path" is accurate. @feature is not a path but an entry
-> >> within the mon_features file.
-> > 
-> > Yes, agreed.
-> > 
-> >> Also please note that mon_features only exists for L3_MON, none of the other
-> >> listed resources have an associated mon_features file in resctrl. This
-> >> function is created to be generic has specific requirements on what
-> >> valid (never checked) parameters should be. This may be ok with the usage
-> >> but it should not pretend to be generic.
-> > 
-> > So are you recommending I split this function into two where the new one 
-> > would do the mon_features check?
-> 
-> No need to split the function. That seems overkill considering its
-> captive usage. I think a snippet making its usage clear will be helpful.
-> Something like:
-> 
-> 	@feature: <description>. Can only be set for L3_MON. Must be
-> 		  NULL for all other resources.
-> 
-> Please feel free to improve.
-
-Thanks, I'll do that.
-
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 6b5b06c2b4e9..b82a9f8c329b 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -1473,6 +1473,12 @@ struct flow_msg {
+ 		u8 next_header;
+ 	};
+ 	__be16 vlan_itci;
++#define OTX2_FLOWER_MASK_MPLS_LB		GENMASK(31, 12)
++#define OTX2_FLOWER_MASK_MPLS_TC		GENMASK(11, 9)
++#define OTX2_FLOWER_MASK_MPLS_BOS		BIT(8)
++#define OTX2_FLOWER_MASK_MPLS_TTL		GENMASK(7, 0)
++#define OTX2_FLOWER_MASK_MPLS_NON_TTL		GENMASK(31, 8)
++	u32 mpls_lse[4];
+ };
+ 
+ struct npc_install_flow_req {
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index de9fbd98dfb7..ab3e39eef2eb 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -206,6 +206,14 @@ enum key_fields {
+ 	NPC_SPORT_SCTP,
+ 	NPC_DPORT_SCTP,
+ 	NPC_IPSEC_SPI,
++	NPC_MPLS1_LBTCBOS,
++	NPC_MPLS1_TTL,
++	NPC_MPLS2_LBTCBOS,
++	NPC_MPLS2_TTL,
++	NPC_MPLS3_LBTCBOS,
++	NPC_MPLS3_TTL,
++	NPC_MPLS4_LBTCBOS,
++	NPC_MPLS4_TTL,
+ 	NPC_HEADER_FIELDS_MAX,
+ 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
+ 	NPC_PF_FUNC, /* Valid when Tx */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index d30e84803481..e71c3da52cfd 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -2756,6 +2756,26 @@ static int rvu_dbg_npc_rx_miss_stats_display(struct seq_file *filp,
+ 
+ RVU_DEBUG_SEQ_FOPS(npc_rx_miss_act, npc_rx_miss_stats_display, NULL);
+ 
++#define RVU_DBG_PRINT_MPLS_TTL(pkt, mask)                                                  \
++do {											   \
++	seq_printf(s, "%ld ", FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt));                  \
++	seq_printf(s, "mask 0x%lx\n", FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask));         \
++} while (0)                                                                                \
++
++#define RVU_DBG_PRINT_MPLS_LBTCBOS(_pkt, _mask)                                            \
++do {										           \
++	typeof(_pkt) (pkt) = (_pkt);							   \
++	typeof(_mask) (mask) = (_mask);                                                    \
++	seq_printf(s, "%ld %ld %ld\n",                                        \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_LB, pkt),                               \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_TC, pkt),                               \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_BOS, pkt));                             \
++	seq_printf(s, "\tmask 0x%lx 0x%lx 0x%lx\n",                           \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_LB, mask),                              \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_TC, mask),                              \
++		   FIELD_GET(OTX2_FLOWER_MASK_MPLS_BOS, mask));                            \
++} while (0)                                                                                \
++
+ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
+ 					struct rvu_npc_mcam_rule *rule)
+ {
+@@ -2836,6 +2856,38 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
+ 			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
+ 			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
+ 			break;
++		case NPC_MPLS1_LBTCBOS:
++			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[0],
++						   rule->mask.mpls_lse[0]);
++			break;
++		case NPC_MPLS1_TTL:
++			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[0],
++					       rule->mask.mpls_lse[0]);
++			break;
++		case NPC_MPLS2_LBTCBOS:
++			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[1],
++						   rule->mask.mpls_lse[1]);
++			break;
++		case NPC_MPLS2_TTL:
++			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[1],
++					       rule->mask.mpls_lse[1]);
++			break;
++		case NPC_MPLS3_LBTCBOS:
++			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[2],
++						   rule->mask.mpls_lse[2]);
++			break;
++		case NPC_MPLS3_TTL:
++			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[2],
++					       rule->mask.mpls_lse[2]);
++			break;
++		case NPC_MPLS4_LBTCBOS:
++			RVU_DBG_PRINT_MPLS_LBTCBOS(rule->packet.mpls_lse[3],
++						   rule->mask.mpls_lse[3]);
++			break;
++		case NPC_MPLS4_TTL:
++			RVU_DBG_PRINT_MPLS_TTL(rule->packet.mpls_lse[3],
++					       rule->mask.mpls_lse[3]);
++			break;
+ 		default:
+ 			seq_puts(s, "\n");
+ 			break;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 237f82082ebe..8c3c1a1e10a6 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -43,6 +43,14 @@ static const char * const npc_flow_names[] = {
+ 	[NPC_DPORT_SCTP] = "sctp destination port",
+ 	[NPC_LXMB]	= "Mcast/Bcast header ",
+ 	[NPC_IPSEC_SPI] = "SPI ",
++	[NPC_MPLS1_LBTCBOS] = "lse depth 1 label tc bos",
++	[NPC_MPLS1_TTL]     = "lse depth 1 ttl",
++	[NPC_MPLS2_LBTCBOS] = "lse depth 2 label tc bos",
++	[NPC_MPLS2_TTL]     = "lse depth 2 ttl",
++	[NPC_MPLS3_LBTCBOS] = "lse depth 3 label tc bos",
++	[NPC_MPLS3_TTL]     = "lse depth 3 ttl",
++	[NPC_MPLS4_LBTCBOS] = "lse depth 4 label tc bos",
++	[NPC_MPLS4_TTL]     = "lse depth 4",
+ 	[NPC_UNKNOWN]	= "unknown",
+ };
+ 
+@@ -528,6 +536,14 @@ do {									       \
+ 
+ 	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LD, NPC_LT_LD_AH, 4, 4);
+ 	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LE, NPC_LT_LE_ESP, 0, 4);
++	NPC_SCAN_HDR(NPC_MPLS1_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 0, 3);
++	NPC_SCAN_HDR(NPC_MPLS1_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 3, 1);
++	NPC_SCAN_HDR(NPC_MPLS2_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 4, 3);
++	NPC_SCAN_HDR(NPC_MPLS2_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 7, 1);
++	NPC_SCAN_HDR(NPC_MPLS3_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 8, 3);
++	NPC_SCAN_HDR(NPC_MPLS3_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 11, 1);
++	NPC_SCAN_HDR(NPC_MPLS4_LBTCBOS, NPC_LID_LC, NPC_LT_LC_MPLS, 12, 3);
++	NPC_SCAN_HDR(NPC_MPLS4_TTL, NPC_LID_LC, NPC_LT_LC_MPLS, 15, 1);
+ 
+ 	/* SMAC follows the DMAC(which is 6 bytes) */
+ 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
+@@ -593,6 +609,11 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
+ 	/* for L2M/L2B/L3M/L3B, check if the type is present in the key */
+ 	if (npc_check_field(rvu, blkaddr, NPC_LXMB, intf))
+ 		*features |= BIT_ULL(NPC_LXMB);
++
++	for (hdr = NPC_MPLS1_LBTCBOS; hdr <= NPC_MPLS4_TTL; hdr++) {
++		if (npc_check_field(rvu, blkaddr, hdr, intf))
++			*features |= BIT_ULL(hdr);
++	}
+ }
+ 
+ /* Scan key extraction profile and record how fields of our interest
+@@ -959,6 +980,31 @@ do {									      \
+ 	NPC_WRITE_FLOW(NPC_INNER_VID, vlan_itci, ntohs(pkt->vlan_itci), 0,
+ 		       ntohs(mask->vlan_itci), 0);
+ 
++	NPC_WRITE_FLOW(NPC_MPLS1_LBTCBOS, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[0]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[0]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS1_TTL, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[0]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[0]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS2_LBTCBOS, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[1]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[1]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS2_TTL, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[1]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[1]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS3_LBTCBOS, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[2]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[2]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS3_TTL, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[2]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[2]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS4_LBTCBOS, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, pkt->mpls_lse[3]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_NON_TTL, mask->mpls_lse[3]), 0);
++	NPC_WRITE_FLOW(NPC_MPLS4_TTL, mpls_lse,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, pkt->mpls_lse[3]), 0,
++		       FIELD_GET(OTX2_FLOWER_MASK_MPLS_TTL, mask->mpls_lse[3]), 0);
++
+ 	NPC_WRITE_FLOW(NPC_IPFRAG_IPV6, next_header, pkt->next_header, 0,
+ 		       mask->next_header, 0);
+ 	npc_update_ipv6_flow(rvu, entry, features, pkt, mask, output, intf);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index fab9d85bfb37..760237f413fb 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -27,6 +27,8 @@
+ #define CN10K_TLX_BURST_MANTISSA	GENMASK_ULL(43, 29)
+ #define CN10K_TLX_BURST_EXPONENT	GENMASK_ULL(47, 44)
+ 
++#define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
++
+ struct otx2_tc_flow_stats {
+ 	u64 bytes;
+ 	u64 pkts;
+@@ -519,6 +521,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
+ 	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
++	      BIT_ULL(FLOW_DISSECTOR_KEY_MPLS) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
+ 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
+ 			    dissector->used_keys);
+@@ -738,6 +741,57 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 		}
+ 	}
+ 
++	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS)) {
++		struct flow_match_mpls match;
++		u8 bit;
++
++		flow_rule_match_mpls(rule, &match);
++
++		if (match.mask->used_lses & OTX2_UNSUPP_LSE_DEPTH) {
++			NL_SET_ERR_MSG_MOD(extack,
++					   "unsupported LSE depth for MPLS match offload");
++			return -EOPNOTSUPP;
++		}
++
++		for_each_set_bit(bit, (unsigned long *)&match.mask->used_lses,
++				 FLOW_DIS_MPLS_MAX)  {
++			/* check if any of the fields LABEL,TC,BOS are set */
++			if (*((u32 *)&match.mask->ls[bit]) & 0xffffff00) {
++				/* Hardware will capture 4 byte MPLS header into two
++				 * fields NPC_MPLSX_LBTCBOS and NPC_MPLSX_TTL. Derive
++				 * the associated NPC key based on header index and offset.
++				 */
++
++				req->features |= BIT_ULL(NPC_MPLS1_LBTCBOS + 2 * bit);
++				flow_spec->mpls_lse[bit] =
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_LB,
++						   match.key->ls[bit].mpls_label) |
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TC,
++						   match.key->ls[bit].mpls_tc) |
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_BOS,
++						   match.key->ls[bit].mpls_bos);
++
++				flow_mask->mpls_lse[bit] =
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_LB,
++						   match.mask->ls[bit].mpls_label) |
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TC,
++						   match.mask->ls[bit].mpls_tc) |
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_BOS,
++						   match.mask->ls[bit].mpls_bos);
++			}
++
++			if (match.mask->ls[bit].mpls_ttl) {
++				req->features |= BIT_ULL(NPC_MPLS1_TTL + 2 * bit);
++				flow_spec->mpls_lse[bit] |=
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TTL,
++						   match.key->ls[bit].mpls_ttl);
++				flow_mask->mpls_lse[bit] |=
++					FIELD_PREP(OTX2_FLOWER_MASK_MPLS_TTL,
++						   match.mask->ls[bit].mpls_ttl);
++			}
++		}
++	}
++
+ 	return otx2_tc_parse_actions(nic, &rule->action, req, f, node);
+ }
+ 
 -- 
- i.
---8323329-1062744194-1694684643=:1814--
+2.17.1
+
