@@ -2,150 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E19F79FEB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20A179FEB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 10:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236525AbjINIpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 04:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S236531AbjINIoy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 04:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjINIpc (ORCPT
+        with ESMTP id S236556AbjINIot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 04:45:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 472041FC2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694681079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZw6hbxq/embQ47llYIzPMH7DMweT5RR/fyzZ/IaAeE=;
-        b=UR3emsxJh13krOgqRavuw8HluBUD35miLG+FM5kb90NNLve9JcNuscM1GQsAOPfaeK24L7
-        npHLzH6Vt6EAJUXM0YYWRcqMLUDgNlwKaN8sV4dtzRCaJ/+pXk1WEkyvDaomv4lXfA8WID
-        gkoZQQ90Drk+4kep8ATujBz0s+CAZkI=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-316-naHRBVFIMG6uFpDTrk4zVw-1; Thu, 14 Sep 2023 04:44:38 -0400
-X-MC-Unique: naHRBVFIMG6uFpDTrk4zVw-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2be63489592so12274371fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 01:44:37 -0700 (PDT)
+        Thu, 14 Sep 2023 04:44:49 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373371FC9;
+        Thu, 14 Sep 2023 01:44:45 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59b8f5b6c0aso7805657b3.0;
+        Thu, 14 Sep 2023 01:44:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694681077; x=1695285877;
+        d=1e100.net; s=20230601; t=1694681084; x=1695285884;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aZw6hbxq/embQ47llYIzPMH7DMweT5RR/fyzZ/IaAeE=;
-        b=nI81/vp44l8mGmV94BbItdYGGDzvzZ16RttCUxHohQNzbgGxqpzlF/gwJRVBTAk8vz
-         ELaVP3TD3KELUBrVcfpu7gVhFowQIdJm3lEOd/lVlaBFqkCweLQNyy/XwTMLk1A3JpWX
-         qDof08Gjnuij04d4WFNpLTDOxQF3eGtTRJGxchPScmlKkqpUkIxumuexXcX20pVr2OS2
-         wE75yCrwa8ly5aA7WZS5TQG7nabsoLxidLKn/Y1YtMmsT/YjLb3Cp/DietjU/XFVBXVf
-         6pzmcC1goYZVU+ngEpYYWlx2LvNyM9erEFfG6c4ydew14/hJLsCLZCe0+RCs5a2gCkX7
-         TPvA==
-X-Gm-Message-State: AOJu0YxpQ90u78dj74/WrYfLC+cNR0deLASKDRiUxtpgfc8bG/fBwK/e
-        dTLCxl3dErg8TWBtXL9OFIg+OVmglCQ3tsdUzQpgJSDr/j4p7tSk63o0mIC7to13Jtn179wWil0
-        2NModO6OZR1RL0+vBvLDwKGVSXiIW3lHPt7NzaBMm
-X-Received: by 2002:a05:651c:222:b0:2bd:21ea:bf0a with SMTP id z2-20020a05651c022200b002bd21eabf0amr451713ljn.2.1694681076823;
-        Thu, 14 Sep 2023 01:44:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGXqn21JqRoVZAD9wyDGrdj8us8mB1oFCjJnoTd+pLrivjCjNMTde5cowMo0QmOqovM5UnTzu5V+YMsAf2QB/w=
-X-Received: by 2002:a05:651c:222:b0:2bd:21ea:bf0a with SMTP id
- z2-20020a05651c022200b002bd21eabf0amr451699ljn.2.1694681076529; Thu, 14 Sep
- 2023 01:44:36 -0700 (PDT)
+        bh=/TWBuYKi1PnXyDlaO9Zh+t3iJnn6mw95ujQMJVIW/pE=;
+        b=v7ipYdvacqT7QsdoD3wD/F2QK8KcSN4sKlIWfxDIfy1J0d6qMOVhKkfWx7DweAlFo6
+         Y0WevVOPua09sABTpgaJVF3jqdZ8PNDP/f+Heg62DmpauuKYsBogXbE0Ut04Zj0+1vjP
+         ERxMlykocFiSo/vbHoVj5IwzP8R7qhly9nXLBmXVoivXKedopoG8cjcikZdiVRnjKF+X
+         dBIpMwDlBtpIfDfCm/qssMMA83bYjKpvGPtTHko2IqJhJ8TmOan5t7OddYe13UGBkMIJ
+         MOuWpVnrMlHmNcNaNKaUl6lspHOu0Mmk/RnDiEgZiK5EsqJYT5Euo7iqkEm29A8zfWHH
+         D39w==
+X-Gm-Message-State: AOJu0Yy4nap/Szj+hPM5vn4IoXcpUqL8ejQMh3TBaQiVJH8aTv59aDw1
+        eYVmHsFwfy3F2+rMQxBiMxIgmRNO3yJvzA==
+X-Google-Smtp-Source: AGHT+IF+B6FHu4HgzJGKcwXNRaELWz9krCDg4TZoAfoqHT7AZHJVZbB4zf4SWMypzYIl3n/hpWqZUQ==
+X-Received: by 2002:a0d:ccd3:0:b0:59b:4ed2:a33 with SMTP id o202-20020a0dccd3000000b0059b4ed20a33mr5516716ywd.35.1694681084125;
+        Thu, 14 Sep 2023 01:44:44 -0700 (PDT)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id f128-20020a0ddc86000000b005929fd6a6c7sm222757ywe.41.2023.09.14.01.44.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 01:44:43 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-58c92a2c52dso7549137b3.2;
+        Thu, 14 Sep 2023 01:44:42 -0700 (PDT)
+X-Received: by 2002:a81:a50d:0:b0:59b:14ca:4316 with SMTP id
+ u13-20020a81a50d000000b0059b14ca4316mr5373508ywg.43.1694681082479; Thu, 14
+ Sep 2023 01:44:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230616115316.3652155-1-leitao@debian.org> <20230616132954.GG4253@hirez.programming.kicks-ass.net>
- <ZIxrxpYtffT0FtEx@gmail.com> <100041d0-f2fe-331b-13a7-ad09082aeb7d@gmail.com>
- <20230616153221.GI4253@hirez.programming.kicks-ass.net> <CAE4VaGBbKC+KgX-drhnc-nHsBo_DfcX4yZWBsNvrULiV3+Li1A@mail.gmail.com>
- <ada0da4e-4260-47c0-897f-09e3e1e1658e@amd.com>
-In-Reply-To: <ada0da4e-4260-47c0-897f-09e3e1e1658e@amd.com>
-From:   Jirka Hladky <jhladky@redhat.com>
-Date:   Thu, 14 Sep 2023 10:44:25 +0200
-Message-ID: <CAE4VaGA7kjMw8rWk3cvktGmwjjkwwrHPSrY80Ozjsc=7TvQmAg@mail.gmail.com>
-Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
-To:     Sandipan Das <sandipan.das@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Breno Leitao <leitao@debian.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, leit@fb.com,
-        dcostantino@meta.com,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>, ananth.narayan@amd.com,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Michael Petlan <mpetlan@redhat.com>
+References: <20230913203805.465780-1-ralph.siemsen@linaro.org> <20230913203805.465780-2-ralph.siemsen@linaro.org>
+In-Reply-To: <20230913203805.465780-2-ralph.siemsen@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Sep 2023 10:44:31 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVpGGHcP4tDunsZ_b5sSucezZn76PwLaCbWF-rFS4hZpg@mail.gmail.com>
+Message-ID: <CAMuHMdVpGGHcP4tDunsZ_b5sSucezZn76PwLaCbWF-rFS4hZpg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] clk: renesas: r9a06g032: name anonymous structs
+To:     Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sandipan,
+Hi Ralph,
 
-here is the info from /proc/cpuinfo
-
-vendor_id       : AuthenticAMD
-cpu family      : 25
-model           : 160
-model name      : AMD EPYC 9754 128-Core Processor
-stepping        : 2
-microcode       : 0xaa0020f
-
->2. Microcode patch level
-Is it the microcode string from cpuinfo provided above, or are you
-looking for something else?
-
-Thanks!
-Jirka
-
-
-On Wed, Sep 13, 2023 at 6:19=E2=80=AFPM Sandipan Das <sandipan.das@amd.com>=
- wrote:
+On Wed, Sep 13, 2023 at 10:38 PM Ralph Siemsen <ralph.siemsen@linaro.org> wrote:
+> Clarify the content of the r9a06g032_clkdesc structure by naming the
+> remaining anonymous structures defined inside. Renaming each field and
+> updating the doc then becomes necessary in order to avoid name
+> duplications and kdoc warnings.
 >
-> Hi Jirka,
->
-> Can you please share the following?
->
-> 1. Family, Model and Stepping of the processor
-> 2. Microcode patch level
-> On 9/13/2023 8:00 PM, Jirka Hladky wrote:
-> > Hi Sandipan,
-> >
-> > Is there any update on this issue? We have hit the issue, and it makes
-> > the server pretty unusable due to the thousands of Call Traces being
-> > logged.
-> >
-> > Thanks a lot!
-> > Jirka
-> >
-> >
-> > On Fri, Jun 16, 2023 at 5:34=E2=80=AFPM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
-> >>
-> >> On Fri, Jun 16, 2023 at 08:13:22PM +0530, Sandipan Das (AMD) wrote:
-> >>> The reserved bits should never be set. The purpose of the WARN_ON() i=
-s to catch such anomalies.
-> >>> I am working out the details with Breno and will report back with a r=
-esolution.
-> >>
-> >> Thanks!
-> >>
-> >
-> >
->
+> Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
 
+Thanks for your patch!
 
---=20
--Jirka
+> --
 
+Please use three hyphens next time, else the below will still end
+up in the final commit.
+
+> Changes in v2:
+> - split this out as a separate commit
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v6.7, with the above fixed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
