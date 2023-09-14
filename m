@@ -2,333 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5537A0F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C1E7A0F3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjINUqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S229905AbjINUra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjINUqR (ORCPT
+        with ESMTP id S229515AbjINUr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:46:17 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9BA2698;
-        Thu, 14 Sep 2023 13:46:12 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id E5D8B8619A;
-        Thu, 14 Sep 2023 22:46:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1694724365;
-        bh=XTngkan7RZTToUwglNOoCwHHF+jxvfkJf/daBGVqjuM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VELJEuCDUVPyjayr49XiisxPTFspdLKlhYLGem3UcavfgYKR+UzcXrhILe6zRu68u
-         1DMe8+1XhS6qUcfbXAFhjcka/cKUW8CWGimU48GAiGc3ZoQZ8VnF7Hjx/Z8vITdYnM
-         WQymlqiljsiN7yN7svhpFCTgbLKFRFzw3nRWysKdtE6NwMa0dcEUaDy8jGN8lONc8D
-         ZLvkpfWcMgRKYhXtvR6QUgr53rl7kWws3L3J/F+/ZCcSRP0fLgRPudGjNhbfxJBPox
-         jbcxTFaSYozFj+BpOrDOtAKWJOacr3urDbKiXbk0gFh7oKsgz2jLDx2bHlPSwwoCXC
-         mZyQV0oM/vrZw==
-Date:   Thu, 14 Sep 2023 22:45:57 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230914224557.0ca0f057@wsk>
-In-Reply-To: <20230913135102.hoyl4tifyf77kdo2@skbuf>
-References: <20230912101748.0ca4eec8@wsk>
-        <20230912092909.4yj4b2b4xrhzdztu@skbuf>
-        <20230912160326.188e1d13@wsk>
-        <20230912160326.188e1d13@wsk>
-        <20230912142644.u4sdkveei3e5hwaf@skbuf>
-        <20230912170641.5bfc3cfe@wsk>
-        <20230912215523.as4puqamj65dikip@skbuf>
-        <20230913102219.773e38f8@wsk>
-        <20230913105806.g5p3wck675gbw5fo@skbuf>
-        <20230913141548.70658940@wsk>
-        <20230913135102.hoyl4tifyf77kdo2@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 14 Sep 2023 16:47:29 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5FC2120;
+        Thu, 14 Sep 2023 13:47:25 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53482b44007so1047080a12.2;
+        Thu, 14 Sep 2023 13:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694724445; x=1695329245; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V+vcKKBW7m4dimFQCqOQ/FSEh/1OFmvKpug97OFECsw=;
+        b=NBs3c42Uj7z2Bln8/oHxtFGfuzfj6PFjetfkYnywUw4Arf5a7DjULPuTbkMJMUbcmG
+         EOJhssZR9XpoiFimYT+rCrG82hgsXjU/ZrVuR55PGQLiV9Voa/QsyJROp3BaYg2lOtMj
+         tqTX/gnv4kKoD0nJ9zHLiGbNAhWSnZUB4TpUDUKx+zspcfw4KgvygvKKsD57snJ40rVw
+         2X7xaeIy7nnxH/9n/1NXQ4tUgGlRTtJ4IgNv9OLINlq1TD73d3AdtYe9KF1OT/csKIT1
+         Bzsk63FWdZYgjrTCkmL6aK69vA9vFj46Ep2nyD084hw8hOfpZnu5kuEBsv6HAIJUmVHu
+         6vpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694724445; x=1695329245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+vcKKBW7m4dimFQCqOQ/FSEh/1OFmvKpug97OFECsw=;
+        b=c7cuHRAWUHjKnkHup8iiyPdDPSwPEpw2NhkbZT6wkqiBfqRJ2gk7ze10Diqk0WN/4p
+         zscuyzU4MYFqOTNxuDU6Rw2tGOHcV7A15o2GCffFA5Yiggo3UL8+L6NG4pFoawcx7CWR
+         7HvB5jWzRra+RJzB4j2sshpXHJYpQjp0FP9h8R0PyQfj8EMYxivGop3OoZ/MecUJ0UPb
+         9p5IUm03B+4ZuB4cr60mO/tZmiizvpnPl0reuszN4yBU8BXeETgNU/Llh/WvJYCWtiXo
+         0d4CR/mjHixDrCQ9J0VfgAlYBiBg/jjyu63RzG9XNXjM7/CEceuq+990AtjTfOLsUi8B
+         C8wQ==
+X-Gm-Message-State: AOJu0YzUJbHOF2V+lp9jWm2ckDa8xfzup5xh6p2PlwiAM6H9aKVXKf9d
+        sF4Bjzc/nbJqEQZ9xN+1ZYoKMQQxFDXuwdetulf4gMui+e0=
+X-Google-Smtp-Source: AGHT+IEYq3Ge99GvmTYyrwRhMv5Siqo9GkcGQyZgtksJ6lYipoYwXo09EZ4kCTqZIkp1e/A/33VpAXMFKiv3xnGL9tY=
+X-Received: by 2002:a17:90b:709:b0:274:6135:8363 with SMTP id
+ s9-20020a17090b070900b0027461358363mr3424523pjz.33.1694724444919; Thu, 14 Sep
+ 2023 13:47:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2qAaBY27j4Xi1V+4gXSYttg";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+References: <20230913211449.668796-1-jcmvbkbc@gmail.com> <20230913211449.668796-4-jcmvbkbc@gmail.com>
+ <196fb9ac-53b7-51a6-6ce4-9f980215fde4@linaro.org>
+In-Reply-To: <196fb9ac-53b7-51a6-6ce4-9f980215fde4@linaro.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 14 Sep 2023 13:47:13 -0700
+Message-ID: <CAMo8Bf+u3hkk8zW6EQUtQcAC5t-hUJ5+HoE8JDskBj4KyFK7xA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: serial: document esp32s3-acm bindings
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2qAaBY27j4Xi1V+4gXSYttg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 13, 2023 at 10:57=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 13/09/2023 23:14, Max Filippov wrote:
+> > Add documentation for the ESP32S3 ACM controller.
+>
+> A nit, subject: drop second/last, redundant "bindings". The
+> "dt-bindings" prefix is already stating that these are bindings.
 
-Hi Vladimir,
+Ok.
 
-> On Wed, Sep 13, 2023 at 02:15:48PM +0200, Lukasz Majewski wrote:
-> > > I thought we were in agreement to program the actual DSA user
-> > > ports' MAC addresses to hardware. =20
-> >=20
-> > No - v4 of this solution uses HSR net device MAC address, which is
-> > supposed to be the same as DSA master. =20
->=20
-> By "in agreement" I mean "as a result of the discussion on v4 [ this
-> discussion ], where it became obvious that the DSA master solution is
-> not so robust". I hope the 12 emails already exchanged on this patch
-> set weren't for nothing.
->=20
-> > > With KSZ switches, a single CPU port is supported, so all ports
-> > > share the same DSA master. So if the contents of
-> > > REG_SW_MAC_ADDR_0 is different from the DSA master (the same DSA
-> > > master that was used for an earlier HSR offload), why do you
-> > > infer that it was altered by WoL? It makes no sense. =20
-> >=20
-> > So where is the issue? The only issue is that somebody would change
-> > DSA master (and hence HSR) MAC address, so the REG_SW_MAC_ADDR_0
-> > would not be changed. Or do I miss something? =20
->=20
-> Changing the DSA master address and changing the HSR MAC address
-> (indirectly through the ports' address) are different operations.
-> The DSA master's address and the user ports' address are not
-> necessarily in sync.
->=20
-> Each address change is problematic in its own way, and each problem
-> needs to be tackled in its own way, depending on which MAC address you
-> desire for REG_SW_MAC_ADDR_0 to track.
->=20
-> But yes, the only issue is that the MAC address can be changed at
-> runtime, after the initial offload.
->=20
-> > > - Changing the MAC address of (a) triggers a pre-existing bug.
-> > > That bug can be separated from the HSR offload discussion if the
-> > > HSR offload decides to not program the DSA master's MAC address to
-> > > hardware, but a different MAC address. The pre-existence of the
-> > > DSA bug is not a strong enough argument per se to avoid
-> > > programming the DSA master's address to hardware. =20
-> >=20
-> > And this is how v4 is implemented. Or not? =20
->=20
-> If A =3D=3D B initially, then there are 2 ways you can change that
-> condition. You can change A, or you can change B. Replace "A" with
-> "the DSA master's address" and "B" with "the HSR device's address".
->=20
-> > > - Changing the MAC address of (c) does not seem directly possible,
-> > > but:
-> > >=20
-> > > - Changing the MAC address of (b) also triggers (c) - see
-> > > hsr_netdev_notify(). This is because the HSR driver makes sure
-> > > that the addresses of port_A, port_B and the HSR device are equal
-> > > at all times. =20
-> >=20
-> > Why changing HSR port would affect HSR device MAC address? =20
->=20
-> I don't have a simpler answer than "because that's what the code
-> does".
->=20
-> If you don't have time to experiment to convince yourself that this is
-> the case, below is a set of commands that should hopefully clarify.
->=20
-> $ ip link
-> 6: eno2: <BROADCAST,MULTICAST> mtu 1508 qdisc noop state DOWN group
-> default qlen 1000 link/ether 2a:af:42:b7:73:11 brd ff:ff:ff:ff:ff:ff
->     altname end0
->     altname enp0s0f2
-> 7: swp0@eno2: <BROADCAST,MULTICAST,M-DOWN> mtu 1504 qdisc noop state
-> DOWN group default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd
-> ff:ff:ff:ff:ff:ff 8: swp1@eno2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500
-> qdisc noop state DOWN group default qlen 1000 link/ether
-> a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff 9: swp2@eno2:
-> <BROADCAST,MULTICAST,M-DOWN> mtu 1504 qdisc noop state DOWN group
-> default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
-> 10: sw0p0@swp0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop
-> state DOWN group default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd
-> ff:ff:ff:ff:ff:ff 11: sw0p1@swp0: <BROADCAST,MULTICAST,M-DOWN> mtu
-> 1500 qdisc noop state DOWN group default qlen 1000 link/ether
-> a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff 12: sw0p2@swp0:
-> <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group
-> default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
-> 13: sw2p0@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop
-> state DOWN group default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd
-> ff:ff:ff:ff:ff:ff 14: sw2p1@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu
-> 1500 qdisc noop state DOWN group default qlen 1000 link/ether
-> a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff 15: sw2p2@swp2:
-> <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group
-> default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
-> 16: sw2p3@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop
-> state DOWN group default qlen 1000 link/ether a6:f4:af:fd:fc:73 brd
-> ff:ff:ff:ff:ff:ff # Simplified in a table for brevity. The format
-> will be kept below $ ip link show ... sw0p0              sw0p1
->       DSA master          hsr0 addr a6:f4:af:fd:fc:73
-> a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73   n/a
->=20
-> $ ip link add hsr0 type hsr slave1 sw0p0 slave2 sw0p1 version 1
-> [   70.033711] sja1105 spi2.0 sw0p0: entered promiscuous mode
-> [   70.058066] sja1105 spi2.0 sw0p1: entered promiscuous mode
-> Warning: dsa_core: Offloading not supported.
->=20
-> $ ip link show ...
->      sw0p0              sw0p1              DSA master          hsr0
-> addr a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73
-> a6:f4:af:fd:fc:73
->=20
-> $ ip link set swp0 address 00:01:02:03:04:05 # DSA master
->=20
-> $ ip link show ...
->      sw0p0              sw0p1              DSA master          hsr0
-> addr a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73  00:01:02:03:04:05
-> a6:f4:af:fd:fc:73
->=20
-> $ ip link set sw0p0 address 00:01:02:03:04:06
->=20
-> $ ip link show ...
->      sw0p0              sw0p1              DSA master          hsr0
-> addr 00:01:02:03:04:06  a6:f4:af:fd:fc:73  00:01:02:03:04:05
-> 00:01:02:03:04:06
->=20
-> $ ip link set sw0p1 address 00:01:02:03:04:07
->=20
-> $ ip link show ...
->      sw0p0              sw0p1              DSA master          hsr0
-> addr 00:01:02:03:04:06  00:01:02:03:04:07  00:01:02:03:04:05
-> 00:01:02:03:04:06
->=20
-> > Shouldn't it be forbidden, and HSR ports shall inherit MAC address
-> > of HSR device (hsr0) ? =20
->=20
-> Since HSR does _actually_ track the MAC address of port_A (sw0p0
-> above), I guess it would be best if the API introduced would always
-> program REG_SW_MAC_ADDR_0 with the MAC address of the first port that
-> joins the HSR (and requests a reference to REG_SW_MAC_ADDR_0). That
-> way, the API should work with no changing for WoL as well. Anyway -
-> minor difference between first user port and HSR dev_addr.
+> > Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> > ---
+> >  .../bindings/serial/esp,esp32-acm.yaml        | 40 +++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-=
+acm.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/serial/esp,esp32-acm.yam=
+l b/Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
+> > new file mode 100644
+> > index 000000000000..dafbae38aa64
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
+> > @@ -0,0 +1,40 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/serial/esp,esp32-acm.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ESP32S3 ACM controller
+> > +
+> > +maintainers:
+> > +  - Max Filippov <jcmvbkbc@gmail.com>
+> > +
+> > +description: |
+>
+> Do not need '|' unless you need to preserve formatting.
 
-I've made wrong assumptions - I thought that when we have
+Ok.
 
-hsr0    -> lan1
-	-> lan2
+> > +  ESP32S3 ACM controller is a communication device found in the ESP32S=
+3
+>
+> What is "ACM"?
 
-it is only possible to adjust hsr0 MAC address as lan1,lan2 are in some
-way "slaves" for hsr0.
+It's an 'Abstract Control Model' as in USB CDC-ACM: 'Communication Device C=
+lass
+- Abstract Control Model'.
 
-In other words - I thought that lan1, lan2 "disappear" from "normal"
-DSA control as they after "join" are "represented" to DSA by hsr0 (the
-below hierarchy).
+> Why is this in serial? Only serial controllers are in serial.
 
-eth0 	-->  lan3
-	-->  lan4
-	-->  hsr0	-> lan2
-			-> lan1
+Because it's a serial communication device. The SoC TRM calls this peripher=
+al
+'USB Serial', but the USB part is fixed and is not controllable on the SoC =
+side.
+When you plug it into a host USB socket you get a serial port called ttyACM=
+ on
+the host.
 
-And then you explained a use case where one can adjust MAC address of
-lan1 and it would be propagated to hsr0.
+> The description is very vague, way too vague.
 
-Now it is clear.
+Is the following better?
 
->=20
-> > > The simple matter is: if you program the MAC address of a netdev
-> > > (any netdev) to hardware =20
-> >=20
-> > Which netdev in this case? lan1, lan2, hsr0 or eth0 ? =20
->=20
-> Any netdev. It is a general statement which had a continuation, which
-> you've interrupted.
->=20
-> > > , then for a correct and robust implementation, you
-> > > need to make sure that the hardware will always be in sync with
-> > > that address, keeping in mind that the user may change it. Either
-> > > you deny changes, or you update the hardware when the address is
-> > > updated.=20
-> >=20
-> > Why I cannot just:
-> >=20
-> > 1. Check on hsr_join if lan1, lan2, hsr0 and eth0 MAC is equal and
-> > write it to REG_SW_MAC_ADDR_0? =20
->=20
-> This is actually unnecessary if you implement the reference scheme on
-> REG_SW_MAC_ADDR_0 that I've suggested. Checking the MAC address of
-> eth0 is unnecessary in any case, if you don't program it to hardware.
->=20
-> > 2. Forbid the change of lan1/lan2/eth0/hsr0 if it may affect HSR HW
-> > offloading? If user want to change it - then one shall delete hsr0
-> > net device, change MAC and create it again. =20
->=20
-> I've been saying since yesterday that you should do this.
->=20
-> > How point 2 can be achieved (if possible) ? =20
->=20
-> Re-read earlier emails.
->=20
-> > > If the DSA user port MAC address changes, =20
-> >=20
-> > You mean lan1, lan2, which are joined with hsr0? =20
->=20
-> Yup. I've been saying this for a number of emails already:
-> https://lore.kernel.org/netdev/20230912092909.4yj4b2b4xrhzdztu@skbuf/
->=20
-> | The ports which hold a reference on REG_SW_MAC_ADDR_0 cannot have
-> their | MAC address changed - and for this, you'd have to add a hook
-> to | dsa_switch_ops (and thus to the driver) from
-> | dsa_slave_set_mac_address().
->=20
-> > > and REG_SW_MAC_ADDR_0 was
-> > > previously programmed with it, and nothing is done in reaction to
-> > > this, then this is a problem with the HSR offload.  =20
-> >=20
-> > This shall be just forbidden? =20
->=20
-> Yup.
->=20
-> > > So no, it's not
-> > > just a problem with upcoming WoL patches as you imply. You need to
-> > > integrate a solution to that problem as part of your HSR patches.
-> > > =20
-> >=20
-> > I'm really stunned, how much extra work is required to add two
-> > callbacks to DSA subsystem (to have already implemented feature)
-> > for a single chip IC. =20
->=20
-> Some observations are best kept to yourself. This is only the second
-> HSR offload in the entire kernel. To complain that the infrastructure
-> needs some extensions, for something that wasn't even needed for the
-> first implementation (tracking a MAC address), is unrealistic.
+  Fixed function USB CDC-ACM device controller of the Espressif ESP32S3 SoC=
+.
 
+> > +  SoC that is connected to one of its USB controllers.
+>
+> Same comments as previous patch.
+>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: esp,esp32s3-acm
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    acm@60038000 {
+> > +            compatible =3D "esp,esp32s3-acm";
+>
+> Use 4 spaces for example indentation.
 
+Ok.
 
+> > +            reg =3D <0x60038000 0x1000>;
+> > +            interrupts =3D <96 3 0>;
+>
+> Same comments as previous patch.
 
-Best regards,
+These are not IRQ flags. In any case the contents of the IRQ
+specification cells is not relevant here, right?
 
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/2qAaBY27j4Xi1V+4gXSYttg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUDcQUACgkQAR8vZIA0
-zr0O5wgAn/aJUC5VfmXzX8kEgoqA1c0n1OcVpfXz89/U9ulQIikxZTLpgxBQoe+T
-/nbNbUUquZc9jn6HWY/nlSn8A++0zVqarsZdm/3MzeRfN+ySbaNzHttE2rYWAQpf
-ObipY2rrFdvuyw4r0sR2XMOPMUuU7ToiLWFYHC3DcmKca6/rIgx/ln25L7ruH2Ox
-Iv3gDh2e7T6mh4p+tCOhj3HLtXl85sGCT8DfYkY44STQgVCaxkbUA0959i63ND+N
-5lysQX0RbR0U5TWgVSbR8bbcDX/Z08XYd6Ze4ZaZj5LqqAHyo67yrEx9fnUPSqkk
-joqNqwYm+WAf2CaMKOtkPOUb0lZxbg==
-=LkOe
------END PGP SIGNATURE-----
-
---Sig_/2qAaBY27j4Xi1V+4gXSYttg--
+--=20
+Thanks.
+-- Max
