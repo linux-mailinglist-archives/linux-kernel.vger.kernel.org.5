@@ -2,153 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C51B7A0C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1927A0C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbjINSHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S237548AbjINSIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235550AbjINSHb (ORCPT
+        with ESMTP id S237421AbjINSIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:07:31 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED36C1FDF;
-        Thu, 14 Sep 2023 11:07:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DVM5Y9GchlYycYoe4MGIo5Kf5CTVmd8xy8ZARREdE/8=; b=SAh4R3lRHvnhPlZeNIxjJdVqBc
-        Mk0AoHkAFXaS6l/17Qv/R8L3TzYN2RnNSLENcMR0QLpY9x27DT37TD3jO3c7mn2QectFuXNDTe5K6
-        XzIJ5v5FqOSKTDgxd5VIyYaWnTLtpZQC7Jhmw4ifTjfeRktttX4bQLJ4ayglE8n4PNFkZ7AB5Wlac
-        zcxe9nw33PhorsMEfgbsPlm1x3F2nLP8YzXK3Xkec7jx0Jn0lPINXCgGnKbjbsxsNaReIGFA+a1iP
-        CjtgY8S6DqsN7dVpdnOSMyY6fPpjxrFdahQTcMJyWy85fyeGU27thT/Hwr8GI8hGyoh53EmBS++x9
-        m1mZKXvA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33982)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgqkD-0004gP-2T;
-        Thu, 14 Sep 2023 19:07:13 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgqkD-0004zA-Ty; Thu, 14 Sep 2023 19:07:13 +0100
-Date:   Thu, 14 Sep 2023 19:07:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-Message-ID: <ZQNL0Vy3kMbWlNFl@shell.armlinux.org.uk>
-References: <20230827121235.zog4c3ehu2cyd3jy@skbuf>
- <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
- <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
- <20230911225126.rk23g3u3bzo3agby@skbuf>
- <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
- <20230912193450.h5s6miubag46z623@skbuf>
- <6cec079e-991e-4222-a76d-d6156de0daca@arinc9.com>
- <20230913074231.5azwxqjuv2wp5nik@skbuf>
- <ZQHcV5DUfcCYkkTi@shell.armlinux.org.uk>
- <ZQNLkiAt4jOjojRf@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQNLkiAt4jOjojRf@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Thu, 14 Sep 2023 14:08:51 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E551FF9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:08:46 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5925fb6087bso16629467b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 11:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694714926; x=1695319726; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=643G47GETNhqNdCuDURH7WS6HlitohpBl/WopZi3siE=;
+        b=Bxn5R+b1g8a0Kv4v/3SKs/7FFXxscduq0iIX7Dzlo0z4z7rBdjOjT4gbYnbmml8vTN
+         w/V2CSL7dfvSYIk147DnulaRMg+rT9rL+isOFLTOSRhLYzKj/99zEpfGcjynpsoluoxD
+         YiqDFQd6dICw1tIkm4rOLf5N2eLZ2LGQqOlKn/R+HuHuFkcywX43vATzf3TmCyynz5F6
+         17B4PCjMy3s737/YDdvP4J+3kHPOdn8+LMupU1RP7aIzYG8MfD+NG+dBVvKUQpoQbczM
+         yasecrIqIBpIWGgV+MsCWVSbgYglFveSoRRFJexgbaRGqXty790O5Adflv2qJpL5Su9H
+         j74g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694714926; x=1695319726;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=643G47GETNhqNdCuDURH7WS6HlitohpBl/WopZi3siE=;
+        b=QTXRNaxzqHyInw/tvZmoPeCHsIJFg1btoS/LQjuHOB1kD9IrSUWmNJdHT2az4UNbxq
+         FH5Oo5Tck+4Ch7rY7mJ5PDE2t9uJimOf57eTl0z+wA85Ura8ADIpRIxzF3JQMZJQGjIJ
+         TbDRf38GmExKYXStJw4woswouJrqiekO36pDEmejRKS/QZvOmtxoQa2GUCNO4UWomjKo
+         xntLKtLe8w5pTJA6kZIgdUd5bS8eHl9WqXBjBkm43nkwraZy0bDbP31q1z3C0mTU05yY
+         455gjdzTZPRGLTTOhFPZEk6XPeM7597cFhC8V3Ce033o3L5ZPi0hHV8PsDYBDY/Q0W2Q
+         N7pA==
+X-Gm-Message-State: AOJu0YzyRMH4IIuBbqLijQTFqAG5ow3HP7rMlA8XngT43F6CLbPqNhif
+        LR9fUX/xDZzMq8O2wqPX0OhO6rC7zxRue/DoNg==
+X-Google-Smtp-Source: AGHT+IHNWB0qP5meAQB51iaCUK7XP1sqn9eMFG8FkOmWjyLp7Z/2qgzDTOAe33XQ2hHF6E3jXIVHS2ObMzFQCFbozQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:78d6:0:b0:59b:d33b:5ddc with SMTP
+ id t205-20020a8178d6000000b0059bd33b5ddcmr133238ywc.4.1694714926173; Thu, 14
+ Sep 2023 11:08:46 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 18:08:44 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACtMA2UC/x2NSwrDMAwFrxK0rsB2Wvq5SinFWGqqRRwjpaYh5
+ O5xuxh4s3mzgrEKG9y6FZSrmEy5iT90kN4xD4xCzSG40LurP6LNmlNZkFQqq+FQPm2PP57jRGy YMPYnOl9CiuQ8tKei/JLvv3J/bNsOrmjEmXUAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694714925; l=2160;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=/VCD7DX1eCwVY46g4u81ZzjWo56f8DBPp1HX5L6qls8=; b=MSSj1xqOuKPodBgV3hCbCUvST05NmhGqT2NoNhh2CgiIOwHCP9o4MvQZLtDioILfwHV7oAWOC
+ NasnjoSdir4BVmDVA/kDQPWT/uy8cxs5U1km0orFGKX5eaHoO0od7O3
+X-Mailer: b4 0.12.3
+Message-ID: <20230914-strncpy-drivers-gpu-drm-drm_modes-c-v1-1-079b532553a3@google.com>
+Subject: [PATCH] drm/modes: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Xu Panda <xu.panda@zte.com.cn>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 07:06:11PM +0100, Russell King (Oracle) wrote:
-> On Wed, Sep 13, 2023 at 04:59:19PM +0100, Russell King (Oracle) wrote:
-> > On Wed, Sep 13, 2023 at 10:42:31AM +0300, Vladimir Oltean wrote:
-> > > On Wed, Sep 13, 2023 at 08:52:37AM +0300, Arınç ÜNAL wrote:
-> > > > On 12.09.2023 22:34, Vladimir Oltean wrote:
-> > > > > On Tue, Sep 12, 2023 at 10:23:51PM +0300, Arınç ÜNAL wrote:
-> > > > > > The phylink bindings for user ports I ended up making by looking up the
-> > > > > > existing devicetrees are different than the phylink bindings for the shared
-> > > > > > (CPU and DSA) ports currently enforced on all switches.
-> > > > > > 
-> > > > > > My phylink bindings for user ports:
-> > > > > > 
-> > > > > >              allOf:
-> > > > > >                - anyOf:
-> > > > > >                    - required: [ fixed-link ]
-> > > > > >                    - required: [ phy-handle ]
-> > > > > >                    - required: [ managed ]
-> > > > > > 
-> > > > > >                - if:
-> > > > > >                    required: [ fixed-link ]
-> > > > > >                  then:
-> > > > > >                    not:
-> > > > > >                      required: [ managed ]
-> > > > > 
-> > > > > Right, it should have been anyOf and not oneOf.. my mistake. It is a bug
-> > > > > which should be fixed. It's the same phylink that gets used in both cases,
-> > > > > user ports and shared ports :)
-> > > > 
-> > > > One more thing, I don't recall phy-mode being required to be defined for
-> > > > user ports as it will default to GMII. I don't believe this is the same
-> > > > case for shared ports so phy-mode is required only for them?
-> > > 
-> > > phy-mode is not strictly required, but I think there is a strong
-> > > preference to set it. IIRC, when looking at the DSA device trees, there
-> > > was no case where phy-mode would be absent on CPU/DSA ports if the other
-> > > link properties were also present, so we required it too. There were no
-> > > complaints in 1 year since dsa_shared_port_validate_of() is there. The
-> > > requirement can be relaxed to just a warning and no error in the kernel,
-> > > and the removal of "required" in the schema, if it helps making it
-> > > common with user ports.
-> > 
-> > However, phylink pretty much requires phy-mode to be specified to be
-> > something sane for shared ports, so I wouldn't be in favour of relaxing
-> > the checkinng in dsa_shared_port_validate_of()... not unless you're
-> > now going to accept the approach I originally proposed to have DSA
-> > drivers tell the core (and thus phylink) what phy-mode and other link
-> > parameters should be used when they are missing from DT.
-> 
-> You mean the approach that I picked up using software nodes that got
-> thrown out by the software node people? That approach that I picked
-> up from you and tried to get merged?
-> 
-> No, that's not going to happen, and it's not a question of whether
-> _I_ am going to accept that approach or not. So don't throw that
-> back on me, please.
-> 
-> If this is something that we want to solve, we need to stop being so
-> devisive (your language above is so) and try to come up with a
-> solution that is acceptable to everyone... the swnode approach
-> doesn't seem to be it.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Oh dear. I must be going mad!
+We should prefer more robust and less ambiguous string interfaces.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer and doesn't incur the
+performance loss of unnecessarily NUL-padding.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Xu Panda <xu.panda@zte.com.cn>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+This patch is basically a resend of [1] by Xu but rebased onto mainline.
+
+This patch is also similar to:
+commit 0f9aa074c92dd ("drm/modes: Use strscpy() to copy command-line mode name")
+
+[1]: https://lore.kernel.org/all/202212051935289159302@zte.com.cn/
+---
+ drivers/gpu/drm/drm_modes.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..c702a8b866cf 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -2617,8 +2617,7 @@ void drm_mode_convert_to_umode(struct drm_mode_modeinfo *out,
+ 		break;
+ 	}
+ 
+-	strncpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
+-	out->name[DRM_DISPLAY_MODE_LEN-1] = 0;
++	strscpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
+ }
+ 
+ /**
+@@ -2659,8 +2658,7 @@ int drm_mode_convert_umode(struct drm_device *dev,
+ 	 * useful for the kernel->userspace direction anyway.
+ 	 */
+ 	out->type = in->type & DRM_MODE_TYPE_ALL;
+-	strncpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
+-	out->name[DRM_DISPLAY_MODE_LEN-1] = 0;
++	strscpy(out->name, in->name, DRM_DISPLAY_MODE_LEN);
+ 
+ 	/* Clearing picture aspect ratio bits from out flags,
+ 	 * as the aspect-ratio information is not stored in
+
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230914-strncpy-drivers-gpu-drm-drm_modes-c-a35d782cad01
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
