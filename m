@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290057A072C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6187A0730
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240010AbjINOWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S239861AbjINOWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239861AbjINOWd (ORCPT
+        with ESMTP id S240008AbjINOWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:22:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62541D7;
-        Thu, 14 Sep 2023 07:22:29 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 14:22:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694701347;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o44G06hAJziml8pp0cuaTUEtEYfmyNkmKHXY38oO1WM=;
-        b=RMsZxdwU0Mj2Rk539pjdzWvKAWrCLvdESw/Ncy+zz5ApNm2i8NPsi+zszMmwSlECgrJVH8
-        8Rxw+bTSsZn6+ovHmIiVsY63EW4CYfv41MIdeMgHn8sCTHm4bz7hxI0E8o7LNeRvF9ajYn
-        v9xmKMsz98ujOa21UPVWO4n4RFVRzjvOEFgST6CC1MxFmQGUdbDXJYjW0qGGtxtEABHDbc
-        P6fAs6DZ5+Pb7XUhnD8lBpdfTs/C58c7DceCviY9GaXQDUVQgofovCXKmuS4ND2PvX8QKZ
-        TTrymiRZok1/8kdGMXeyBK70icWTshGIPuITKxI2CJD5l+A/IoVnVdp4UVquEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694701347;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o44G06hAJziml8pp0cuaTUEtEYfmyNkmKHXY38oO1WM=;
-        b=Ho8CWlgGmZiQAYPycuqAmvGz+WOk7HTNgg87JaqsLjE9UPyG8/YVucIgUO+uC11fu+b3/K
-        NruSPm/CozCYutCw==
-From:   "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/boot/compressed: Reserve more memory for page tables
-Cc:     Aaron Lu <aaron.lu@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230914123001.27659-1-kirill.shutemov@linux.intel.com>
-References: <20230914123001.27659-1-kirill.shutemov@linux.intel.com>
+        Thu, 14 Sep 2023 10:22:34 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1386E3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:29 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso11390635e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1694701348; x=1695306148; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ff9Ehpvke6LtFPxvHhzarjEmuj2e3YwgZf0e14rNLIQ=;
+        b=oFoJvRewtC6A80eeRdd+puYIumNM+E1bfXQYd3VmpzcXsIEabMXBB+vrO2KmBnsoWs
+         ppRNLJDdee40avDVqtKO4TsqeW/qOcSMLUjEGOPNCjhdrIVQqi+tozip8YfdZXL/Zu2y
+         2I8l2NE2J4QwrfM3W39ZSacGyERMECQsB8iqA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694701348; x=1695306148;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ff9Ehpvke6LtFPxvHhzarjEmuj2e3YwgZf0e14rNLIQ=;
+        b=HltHUnOnPOF9HPgJP5REOIgzl2K825XRBvs2qdivxzegKxSjmBqHNDtmQ0O8ZIK5lM
+         5Dv2K8n7+lAmNtLmF/Hu9G3DvIxn6mxHgRY+Vv1Y4NEvFp9jYpJXlXL08FpnRbpi4cN5
+         2zU59iUWOSJci0+AswNWKhCr46tRiPFxdcwkyY7fa2HWbk2lo0rMud01wQF3FFel6otR
+         kOwZyyiKFme4T6zXDBy055CI0uADA4GHdQSWcT14q6iyORaTc+11Z5y+kKX+Zx1GaTHH
+         BbeOWIKcnbIpOhubVvNcR+I3KN6wHItBAkgxwSGzQ0dH+t6JS3BUlbUodbNm/T8if4oR
+         ueAA==
+X-Gm-Message-State: AOJu0Yx7ZUMO9Nh2iYcQ2lViXouWNkOx1ngwrZztZzv8VVNBn8Hs1HaU
+        SDSCIt28d85u3eaNxAzQ4oFJ3g==
+X-Google-Smtp-Source: AGHT+IFve9l57veSgCPqyrpryNeRPxRNyvtIANtQFRamRYlphhlxA6Tmolp/NSw7/qlFLxzi7VWxww==
+X-Received: by 2002:a7b:c414:0:b0:402:fe6d:6296 with SMTP id k20-20020a7bc414000000b00402fe6d6296mr4934579wmi.9.1694701348349;
+        Thu, 14 Sep 2023 07:22:28 -0700 (PDT)
+Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id v26-20020a1cf71a000000b003fe1630a8f0sm5015544wmh.24.2023.09.14.07.22.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 07:22:28 -0700 (PDT)
+Message-ID: <cd4979cf-bcf4-75b4-a18b-c61a9b2e0ffb@citrix.com>
+Date:   Thu, 14 Sep 2023 15:22:27 +0100
 MIME-Version: 1.0
-Message-ID: <169470134628.27769.10667514395726055409.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   andrew.cooper3@citrix.com
+Subject: Re: [PATCH v10 05/38] x86/trapnr: Add event type macros to
+ <asm/trapnr.h>
+Content-Language: en-GB
+To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-6-xin3.li@intel.com>
+In-Reply-To: <20230914044805.301390-6-xin3.li@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 14/09/2023 5:47 am, Xin Li wrote:
+> Intel VT-x classifies events into eight different types, which is
+> inherited by FRED for event identification. As such, event type
+> becomes a common x86 concept, and should be defined in a common x86
+> header.
+>
+> Add event type macros to <asm/trapnr.h>, and use it in <asm/vmx.h>.
+>
+> Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+> Tested-by: Shan Kang <shan.kang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> ---
+>  arch/x86/include/asm/trapnr.h | 12 ++++++++++++
+>  arch/x86/include/asm/vmx.h    | 17 +++++++++--------
+>  2 files changed, 21 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/trapnr.h b/arch/x86/include/asm/trapnr.h
+> index f5d2325aa0b7..ab7e4c9d666f 100644
+> --- a/arch/x86/include/asm/trapnr.h
+> +++ b/arch/x86/include/asm/trapnr.h
+> @@ -2,6 +2,18 @@
+>  #ifndef _ASM_X86_TRAPNR_H
+>  #define _ASM_X86_TRAPNR_H
+>  
+> +/*
+> + * Event type codes used by both FRED and Intel VT-x
 
-Commit-ID:     7362132a6408d23244b95025ea85dd3dc41e5332
-Gitweb:        https://git.kernel.org/tip/7362132a6408d23244b95025ea85dd3dc41e5332
-Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-AuthorDate:    Thu, 14 Sep 2023 15:30:01 +03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 14 Sep 2023 16:12:28 +02:00
+And AMD SVM.  This enumeration has never been unique to just VT-x.
 
-x86/boot/compressed: Reserve more memory for page tables
+> + */
+> +#define EVENT_TYPE_EXTINT	0	// External interrupt
+> +#define EVENT_TYPE_RESERVED	1
+> +#define EVENT_TYPE_NMI		2	// NMI
+> +#define EVENT_TYPE_HWEXC	3	// Hardware originated traps, exceptions
+> +#define EVENT_TYPE_SWINT	4	// INT n
+> +#define EVENT_TYPE_PRIV_SWEXC	5	// INT1
+> +#define EVENT_TYPE_SWEXC	6	// INT0, INT3
 
-The decompressor has a hard limit on the number of page tables it can
-allocate. This limit is defined at compile-time and will cause boot
-failure if it is reached.
+Typo.  into, not int0  (the difference shows up more clearly in lower case.)
 
-The kernel is very strict and calculates the limit precisely for the
-worst-case scenario based on the current configuration. However, it is
-easy to forget to adjust the limit when a new use-case arises. The
-worst-case scenario is rarely encountered during sanity checks.
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 0e73616b82f3..c84acfefcd31 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -374,14 +375,14 @@ enum vmcs_field {
+>  #define VECTORING_INFO_DELIVER_CODE_MASK    	INTR_INFO_DELIVER_CODE_MASK
+>  #define VECTORING_INFO_VALID_MASK       	INTR_INFO_VALID_MASK
+>  
+> -#define INTR_TYPE_EXT_INTR              (0 << 8) /* external interrupt */
+> -#define INTR_TYPE_RESERVED              (1 << 8) /* reserved */
+> -#define INTR_TYPE_NMI_INTR		(2 << 8) /* NMI */
+> -#define INTR_TYPE_HARD_EXCEPTION	(3 << 8) /* processor exception */
+> -#define INTR_TYPE_SOFT_INTR             (4 << 8) /* software interrupt */
+> -#define INTR_TYPE_PRIV_SW_EXCEPTION	(5 << 8) /* ICE breakpoint - undocumented */
+> -#define INTR_TYPE_SOFT_EXCEPTION	(6 << 8) /* software exception */
+> -#define INTR_TYPE_OTHER_EVENT           (7 << 8) /* other event */
+> +#define INTR_TYPE_EXT_INTR		(EVENT_TYPE_EXTINT << 8)	/* external interrupt */
+> +#define INTR_TYPE_RESERVED		(EVENT_TYPE_RESERVED << 8)	/* reserved */
+> +#define INTR_TYPE_NMI_INTR		(EVENT_TYPE_NMI << 8)		/* NMI */
+> +#define INTR_TYPE_HARD_EXCEPTION	(EVENT_TYPE_HWEXC << 8)		/* processor exception */
+> +#define INTR_TYPE_SOFT_INTR		(EVENT_TYPE_SWINT << 8)		/* software interrupt */
+> +#define INTR_TYPE_PRIV_SW_EXCEPTION	(EVENT_TYPE_PRIV_SWEXC << 8)	/* ICE breakpoint - undocumented */
 
-In the case of enabling 5-level paging, a use-case was overlooked. The
-limit needs to be increased by one to accommodate the additional level.
-This oversight went unnoticed until Aaron attempted to run the kernel
-via kexec with 5-level paging and unaccepted memory enabled.
+ICEBP/INT1 is no longer undocumented.
 
-To address this issue, let's allocate some extra space for page tables.
-128K should be sufficient for any use-case. The logic can be simplified
-by using a single value for all kernel configurations.
-
-Fixes: 34bbb0009f3b ("x86/boot/compressed: Enable 5-level paging during decompression stage")
-Reported-by: Aaron Lu <aaron.lu@intel.com>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20230914123001.27659-1-kirill.shutemov@linux.intel.com
----
- arch/x86/include/asm/boot.h | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-index 4ae1433..d2caae2 100644
---- a/arch/x86/include/asm/boot.h
-+++ b/arch/x86/include/asm/boot.h
-@@ -40,23 +40,20 @@
- #ifdef CONFIG_X86_64
- # define BOOT_STACK_SIZE	0x4000
- 
-+/*
-+ * Used by decompressor's startup_32() to allocate page tables for identity
-+ * mapping of the 4G of RAM in 4-level paging mode.
-+ *
-+ * The additional page table needed for 5-level paging is allocated from
-+ * trampoline_32bit memory.
-+ */
- # define BOOT_INIT_PGT_SIZE	(6*4096)
--# ifdef CONFIG_RANDOMIZE_BASE
-+
- /*
-- * Assuming all cross the 512GB boundary:
-- * 1 page for level4
-- * (2+2)*4 pages for kernel, param, cmd_line, and randomized kernel
-- * 2 pages for first 2M (video RAM: CONFIG_X86_VERBOSE_BOOTUP).
-- * Total is 19 pages.
-+ * Total number of page table kernel_add_identity_map() can allocate,
-+ * including page tables consumed by startup_32().
-  */
--#  ifdef CONFIG_X86_VERBOSE_BOOTUP
--#   define BOOT_PGT_SIZE	(19*4096)
--#  else /* !CONFIG_X86_VERBOSE_BOOTUP */
--#   define BOOT_PGT_SIZE	(17*4096)
--#  endif
--# else /* !CONFIG_RANDOMIZE_BASE */
--#  define BOOT_PGT_SIZE		BOOT_INIT_PGT_SIZE
--# endif
-+# define BOOT_PGT_SIZE		(32*4096)
- 
- #else /* !CONFIG_X86_64 */
- # define BOOT_STACK_SIZE	0x1000
+~Andrew
