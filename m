@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0D27A04EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF627A04FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238614AbjINNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        id S238677AbjINNHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238606AbjINNF4 (ORCPT
+        with ESMTP id S238525AbjINNHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:05:56 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A461FD5;
-        Thu, 14 Sep 2023 06:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694696752; x=1726232752;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bFjx+SY72hetzAF5+8Myb01ScB2LpuX1/USvMPO9Sl4=;
-  b=Y1xi+n5Wb2ufcedJPeclNkM7ac+Ljjr0yxRRat3B+49KxtOCF3MKIySM
-   vNF2rUljQLUUlL47LoGdEY0cEET7eCTxKGqvYirFmAVEpQHTSEDRzjGTK
-   QtboLG9llfOD68PROg4wjkiHOn4OV0vyFCizDOo9oX0ibu286+yquULIU
-   auaAmP206HAJCO5Vl8VKPeIdfCqAdGDOxf2Px8CXlF3lI93U8d43y8LaX
-   VjfZGoiqIpGv2/7GYbYfFqF93MHoHrt7E1ZXFV/le9QXkJk2DYBO7HlVc
-   5X3Fjrpx/ZAE2ff0bkshvWveDoBgB/LKjxUtNecsX8dtrmv0pSAWseeop
-   Q==;
-X-CSE-ConnectionGUID: FF6xf1diS2Ob62pF01zcqQ==
-X-CSE-MsgGUID: ADYnQ6GcSYyCRIyV8oyr1A==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
-   d="asc'?scan'208";a="4664425"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 06:05:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 14 Sep 2023 06:05:50 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 14 Sep 2023 06:05:47 -0700
-Date:   Thu, 14 Sep 2023 14:05:31 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Samuel Neves <sneves@dei.uc.pt>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thu, 14 Sep 2023 09:07:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45A771FDA
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694696785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X/pGng4Jlz5jKGWmwVqa99A3qKH6EyoanXPEX+/wRiw=;
+        b=hIRVVVOzKiwgVi2u5A31m4hbSkkKjOsCcwEMo3YF2ynF969HokJTRo83QQm436VsU4RlMh
+        FlOxZoqZvMtAtR1KbYi9vKbEpTeZScmgp/BjxmvpxCDCgknoivMek3sm/ZZqMEPO4nM8fV
+        4OUCCXo4aMscBy4L5GQ3H2YND1drdHg=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-115-DR0i8qiWP8ujg3PPCORm4w-1; Thu, 14 Sep 2023 09:06:23 -0400
+X-MC-Unique: DR0i8qiWP8ujg3PPCORm4w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31f3eaa5c5eso569395f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:06:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694696782; x=1695301582;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X/pGng4Jlz5jKGWmwVqa99A3qKH6EyoanXPEX+/wRiw=;
+        b=Vejrk2Vv0WudxMWm5Um4BWpXJO7AvTz0P/bCzjTzRyIsWjmEWPW1Emb/5Zh03XtMYh
+         19TWkZ2LE6VQnOCsQExH31kxRBcaTDiA3L/zdJYHDf3l8/dYCnInOHJFusH7HkuBuXZo
+         BW767ExoU2mDGd/cT65t/T69oCzfkdrQD9Cf7gd+8TuA06/fJ06IsjoExnqXn4X9ub1p
+         sQHXeOsPFjB73Jom8RbwHEAFMzlEV7I1KURLuKuAQ7rb2QzPCohK/u83YuEuu+SvPVjP
+         sV06hUksIkSLyKFH/3a+TPCyiHQWI1Dyu3s2IDfEo9sK2ZtfqRFYxYv7Z4dqwq1CHicJ
+         lWjQ==
+X-Gm-Message-State: AOJu0Yza/B1b54y4yo5mkZjsXZsUi+5b1fMLt6gKilAKfYXS5Ho0IdR2
+        CwwHTnLWx6y1LHsqmKvPFUYcn27L014iucwxMglhCVoe/JnmYhdVQiIioS9jdKg3/F337zohAVX
+        aBg5vgOjTzEOp1PvxcG4itAod
+X-Received: by 2002:a5d:6752:0:b0:31f:b91c:6ebc with SMTP id l18-20020a5d6752000000b0031fb91c6ebcmr4442860wrw.14.1694696782739;
+        Thu, 14 Sep 2023 06:06:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMprSt5Eq7z2+zyD9pVdEhDhOcN3K4FFKy92OAHwhT7/UABz6yxx0vX6SGjsriWT02u92rgg==
+X-Received: by 2002:a5d:6752:0:b0:31f:b91c:6ebc with SMTP id l18-20020a5d6752000000b0031fb91c6ebcmr4442801wrw.14.1694696781669;
+        Thu, 14 Sep 2023 06:06:21 -0700 (PDT)
+Received: from sgarzare-redhat ([46.222.114.183])
+        by smtp.gmail.com with ESMTPSA id 4-20020a05600c22c400b00403b63e87f2sm1940671wmg.32.2023.09.14.06.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 06:06:21 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 15:06:17 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/6] RISC-V BLAKE2s Vector implementation
-Message-ID: <20230914-float-uneven-7cd1a18b3978@wendy>
-References: <20230912115728.172982-1-bjorn@kernel.org>
- <20230914-roaming-plunging-948c78d9831c@wendy>
- <87pm2kap1p.fsf@all.your.base.are.belong.to.us>
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v8 2/4] vsock/virtio: support to send non-linear
+ skb
+Message-ID: <nzguzjuchyk5uwdnexegayweyogv5wdfgaxrrw47fuw2rjkumq@4ybro57ixsga>
+References: <20230911202234.1932024-1-avkrasnov@salutedevices.com>
+ <20230911202234.1932024-3-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4Z89i+AmwxS2DNN/"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <87pm2kap1p.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <20230911202234.1932024-3-avkrasnov@salutedevices.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---4Z89i+AmwxS2DNN/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 11, 2023 at 11:22:32PM +0300, Arseniy Krasnov wrote:
+>For non-linear skb use its pages from fragment array as buffers in
+>virtio tx queue. These pages are already pinned by 'get_user_pages()'
+>during such skb creation.
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v2 -> v3:
+>  * Comment about 'page_to_virt()' is updated. I don't remove R-b,
+>    as this change is quiet small I guess.
+> v6 -> v7:
+>  * Move arrays '*sgs' and 'bufs' to 'virtio_vsock' instead of being
+>    local variables. This allows to save stack space in cases of too
+>    big MAX_SKB_FRAGS.
+>  * Add 'WARN_ON_ONCE()' for handling nonlinear skbs - it checks that
+>    linear part of such skb contains only header.
+>  * R-b tag removed due to updates above.
+> v7 -> v8:
+>  * Add comment in 'struct virtio_vsock' for both 'struct scatterlist'
+>    fields.
+>  * Rename '*sgs' and 'bufs' to '*out_sgs' and 'out_bufs'.
+>  * Initialize '*out_sgs' in 'virtio_vsock_probe()' by always pointing
+>    to the corresponding element of 'out_bufs'.
 
-On Thu, Sep 14, 2023 at 02:59:30PM +0200, Bj=F6rn T=F6pel wrote:
-> Conor Dooley <conor.dooley@microchip.com> writes:
->=20
-> > On Tue, Sep 12, 2023 at 01:57:22PM +0200, Bj=F6rn T=F6pel wrote:
-> >> From: Bj=F6rn T=F6pel <bjorn@rivosinc.com>
-> >>=20
-> >> Hi,
-> >>=20
-> >> This is Andy's kernel mode vector V2 series [1], with my BLAKE2s
-> >> AVX-512-to-RISC-V translation patch appended.
-> >>=20
-> >> I've tagged it as RFC, since Andy's series is still not in-tree yet.
-> >>=20
-> >> It's a first step towards a Vector aided Wireguard! ;-)
-> >
-> > This has the same problems as Andy's stuff & doesn't build properly for=
- the
-> > automation. What is the plan between yourself and Andy for submitting a
-> > version of the in-kernel vector support that passes build testing?
->=20
-> I'll synch up with Andy! I'm not even sure the blake2s patch should part
-> of the "in-kernel vector" series at all.
+LGTM, thanks for addressing that comments!
 
-The in-kernel vector stuff should come with a user, otherwise it's dead
-code :)
+>
+> net/vmw_vsock/virtio_transport.c | 60 ++++++++++++++++++++++++++++----
+> 1 file changed, 53 insertions(+), 7 deletions(-)
 
---4Z89i+AmwxS2DNN/
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMFGwAKCRB4tDGHoIJi
-0nmFAQDHF1wBd2jJ7LQfLaP8C74vxNiAF9XKvsbMGR3MThqnJgD+JLe5EToa4Wse
-m9FpUzukIIhTCC5Xsq+aCiT+wUzQcAA=
-=2kdw
------END PGP SIGNATURE-----
-
---4Z89i+AmwxS2DNN/--
