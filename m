@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FFE7A0AE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B727A0AED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbjINQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        id S238295AbjINQlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjINQjN (ORCPT
+        with ESMTP id S229485AbjINQlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:39:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D89791FDC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694709501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V0YL1s0r0RMXaZzIshNhC7a9mBahQAI6QCadmD8ScPA=;
-        b=VVm2cIVpvOPy1Iqaki5WFhIMu46bkNomMHLv1lzkSUSb85/fChyIWhuK8uLrGlPKwsXque
-        0QywQy/fJvuRPXLKP/oAKND+Lpsjfi0L+OZ+IfWrsFsvnle9jARl4XFaj3L4JsHhiir/r9
-        zRDxFgag/gahf+fCBMgsvGlCu9IedBU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-500-6-yp-sEYPmGZbB07lH4vFg-1; Thu, 14 Sep 2023 12:38:19 -0400
-X-MC-Unique: 6-yp-sEYPmGZbB07lH4vFg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31facb07f53so523739f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:38:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694709498; x=1695314298;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0YL1s0r0RMXaZzIshNhC7a9mBahQAI6QCadmD8ScPA=;
-        b=mGIijuZNHfQfqqtBKuKFrVKUi9tIEDD4pzTzcFHnywAA/Ekx0bS3dnokdbvSLUYDqh
-         Sgcdv2WlX4QSeonsO46pIVofBZh9XXEG+uf7fnOEJokVyIOxyjmpIcrAHbYlRomg9rv6
-         kEHkOSH1NkMJRuf6IMMN6qBPyWHlymQhCvYpUO11SAreJyA3gMmHs4eUMbJgaTye9kF3
-         oT1GaHGHlb2pW9pDERnNd3mrGr7PAy0xOkxesnpzw4L6cn3rsZV6+KF+nhawSc0P7sZH
-         7wBkrGgguLbqY8Z1HwbcylJoEYFdj4z3xY7Nr2U5JvsEbUHh+AqBjCiKK2g7LUeLFE+b
-         J3wQ==
-X-Gm-Message-State: AOJu0YxMRZ5MMNtEKm2mjCyq07TcAfYRHIN1OTLGhBBUkcYDdRmRpPKt
-        AUDNY0/ZQM0PGvIWvx1Sfva0nwvP1hCfmTHhFVkOG68gOAgUVj/DA+n8J7r44Lq0aH0sjYPherq
-        K04nP9I/wkyzHT+7x7gW57+mb
-X-Received: by 2002:adf:e84f:0:b0:313:e391:e492 with SMTP id d15-20020adfe84f000000b00313e391e492mr1880302wrn.17.1694709498617;
-        Thu, 14 Sep 2023 09:38:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGBOthBlD0bgX2N8wV+hRehTPip5ujqkbdNT+j7la9Evm0t96iLWUoZqxs1LEG97yVEpxc/lA==
-X-Received: by 2002:adf:e84f:0:b0:313:e391:e492 with SMTP id d15-20020adfe84f000000b00313e391e492mr1880286wrn.17.1694709498264;
-        Thu, 14 Sep 2023 09:38:18 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id c1-20020a5d4141000000b0031f300a4c26sm2175932wrq.93.2023.09.14.09.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 09:38:17 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4] drm/ssd130x: Store the HW buffer in the
- driver-private CRTC state
-In-Reply-To: <b4gfkcv3zdtdgcpucufwfmi7225redkxll75gr72zdirqtrrj4@u4kvevdmhtvt>
-References: <20230913052938.1114651-1-javierm@redhat.com>
- <4norb2kxq4uxs3imi3qjxhyxpvnyf5cpl4sg7yyf3ydrykqhfl@cb3w4wstak7r>
- <871qf028ie.fsf@minerva.mail-host-address-is-not-set>
- <b4gfkcv3zdtdgcpucufwfmi7225redkxll75gr72zdirqtrrj4@u4kvevdmhtvt>
-Date:   Thu, 14 Sep 2023 18:38:16 +0200
-Message-ID: <8734zg677r.fsf@minerva.mail-host-address-is-not-set>
+        Thu, 14 Sep 2023 12:41:01 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8751FDC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1694709625; x=1695314425; i=deller@gmx.de;
+ bh=BPMo+H8KWB+kOjZY/A9qgBPQBv2St3LuqxU/RGbM92o=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=UoLFaKEe21F7QTQTz5CVwKfjTQRQE74Q3qBUJJHHoizJ46GPws1M8TsrS56hLutOvHG5WTp47ZT
+ rqBwLtC5DVHuZ0sH83/NsWixr2iXRDpgEgKoXp9m9+KIJNPYbEFx6m90hJ6KxMGED3FPMGoQ/AoRy
+ LMfa4npZHiSAkV8K+SeFwRV5ieKBWVqVwJwooEzlJilzukeKASMNuF/tU1YbnYQ9X4Za2GPQ2cULI
+ FoMP3fGim+kCURLebZKurYDvOy5a3kLDNCbwijq8amRZiETIHLckHLOB56rNCZ0ymSCQ7tQOpgobk
+ P3Y5oiepg6sfWZWS4BWF7aEwOXovrZGMGsyw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.145.203]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVeI8-1r8M7Z2Fc4-00RcTW; Thu, 14
+ Sep 2023 18:40:25 +0200
+Message-ID: <981897ec-93a2-28f8-8c12-bc7b5e029058@gmx.de>
+Date:   Thu, 14 Sep 2023 18:40:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] LoongArch: Fix lockdep static memory detection
+To:     Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        WANG Xuerui <kernel@xen0n.name>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+References: <ZQC5jS/Kc/JiBEOa@p100>
+ <9d0cb447-2556-4609-a96f-13875ddeeda3@roeck-us.net>
+Content-Language: en-US
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <9d0cb447-2556-4609-a96f-13875ddeeda3@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tG/Am0xeATwJq1gejFjQUCaQOKupskcqB7iEBKV7ldNFocQv5hl
+ 5YGcNW7PqKRvgEemBoUKO9cBZiwA6jHPxkcfCoAR+OBjrOzQI68IarmBK46d8dZJm9vQqLu
+ p25ZYHd/1ESbYtwTjNSYsYezzxkd6/bEhn53gdic0vMLgonyo9gIZQ55u21FBDuh1x7VLVr
+ IVCoqjbamS4aNZW29xxmw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:KAgDSiHeoWk=;stj9L4avZWYcxrvgYmaGOiko9Qm
+ bJYy4nIkk8WYIv6eKJM7FozDd6tt9KyGr9LxOK7OdNcIIlcRAwnBhx60QB+YSbt0xTjenPHLd
+ 3ystPe85Tze4/vvL1TPAXHnVU/pVDpm5s32eu1IG7LpV9gVIk0hbva3tFOLYonWiJM33HGnn3
+ RAXlNeROH4jnE26TZ4Tding4jEPK6bzWd6UWOkoSrzkEtEDyLFe/bcSih/JNcbU5SpmH3tC4w
+ gY+Q10atHoMVp4zwUFh8nwE6/hH8heEeijTTsoqLSbEdZDHpUkIkTsNxbgsH2rf9D8M7zWsf7
+ OSU9o/Rcci2FS66YEa32fbEkMTGafPzaL5CwOtg1nBw76gYOlMOO4fFKnfWHOw3/W/OExwysr
+ Kl1MJjdC9v+eFoHEuusQiXCi82Oeb0WYtxuDeM94SHyG1OaJAbciy3FPbSts+Ri7umOYiicdM
+ BWySzP3uePYMk4zbR9NAfrFGldJ3W1YA9t5iGdV9MKtsq4NYtb94FZpYgt7s5akjD4dlpEHuv
+ PBiJzbUgbs9qI6HSpW/7JJnRxULmNHS3N7UBMo7f9c/DfmDiwZad/zpzKeoTNNPhAD2YhW/Ef
+ kCbPOZfRsmMituYRuvLMFjpcVYqer6YPLbKEJDqM57iq2UlSiCnVcpowVOwkKUpyrchg14jCF
+ yP7uZlFdh5hq3Nzx8ZcmFVJJCIT8mkEYBzPT0inO/HDRugppUu1xCI3JIlxV2QoCwSV5p2sIK
+ WEfNskB2gch6fLQzz1935dwAUV8OF5KVTWf3oTKEK7xhg7qMPs0d1d7hpKxfK0a4A1aIC0tYv
+ J7eDnh+/taydsCOAIEua7xvSa9Y4IRhvjcKSpyhXQtAI4DnJQ2De84TKX+QIvMfee1gm8XNUv
+ BSGQH14Lx8umGspChjNHfc1KhihvD68ttY5UOoriTnf/IMCV+/L/JwZqaPk9cu3T+aAMLlaIg
+ mTaaag==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+PING to Loongarch maintainers!
 
-> On Thu, Sep 14, 2023 at 03:23:53PM +0200, Javier Martinez Canillas wrote:
->> Maxime Ripard <mripard@kernel.org> writes:
->> 
->> Hello Maxime,
->> 
->> > Hi,
->> >
->> > On Wed, Sep 13, 2023 at 07:29:25AM +0200, Javier Martinez Canillas wrote:
->> >>  static const struct drm_crtc_helper_funcs ssd130x_crtc_helper_funcs = {
->> >>  	.mode_valid = ssd130x_crtc_helper_mode_valid,
->> >> -	.atomic_check = drm_crtc_helper_atomic_check,
->> >> +	.atomic_check = ssd130x_crtc_helper_atomic_check,
->> >>  };
->> >
->> > Sorry I didn't catch that sooner, but there's no reason to call that
->> > function a helper.
->> >
->> 
->> Yeah, agreed that there's no reason but others drivers already add the
->> _helper prefix for struct drm_*_helper_funcs callbacks, and I did that
->> in this driver as well to follow (what appears to be?) a convention.
+Without this patch, lockdep is broken on LoongArch on kernel v6.1 and abov=
+e.
+(patch below wrongly mentions kernel 6.4, but actually it needs backport t=
+o v6.1 too).
+
+Helge
+
+On 9/12/23 22:31, Guenter Roeck wrote:
+> On Tue, Sep 12, 2023 at 09:18:37PM +0200, Helge Deller wrote:
+>> Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection even
+>> more") the lockdep code uses is_kernel_core_data(), is_kernel_rodata()
+>> and init_section_contains() to verify if a lock is located inside a
+>> kernel static data section.
+>>
+>> This change triggers a failure on LoongArch, for which the vmlinux.lds.=
+S
+>> script misses to put the locks (as part of in the .data.rel symbols)
+>> into the Linux data section.
+>> This patch fixes the lockdep problem by moving *(.data.rel*) symbols
+>> into the kernel data section (from _sdata to _edata).
+>>
+>> Additionally, move other wrongly assigned symbols too:
+>> - altinstructions into the _initdata section,
+>> - PLT symbols behind the read-only section, and
+>> - *(.la_abs) into the data section.
+>>
+>> Signed-off-by: Helge Deller <deller@gmx.de>
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Fixes: 0a6b58c5cd0d ("lockdep: fix static memory detection even more")
+>> Cc: stable <stable@kernel.org> # v6.4+
 >
-> From a quick grep, it looks like it's the exception rather than the norm
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 >
-
-Ah, I guess that was just unlucky when looking at others drivers as
-reference when writing this one.
-
->> So I've to that now for the struct drm_crtc_helper_funcs handlers to be
->> consistent with the rest of the driver, e.g for plane:
->> 
->> static const struct drm_plane_helper_funcs ssd130x_primary_plane_helper_funcs = {
->> 	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
->> 	.atomic_check = ssd130x_primary_plane_helper_atomic_check,
->> 	.atomic_update = ssd130x_primary_plane_helper_atomic_update,
->> 	.atomic_disable = ssd130x_primary_plane_helper_atomic_disable,
->> };
->> 
->> static const struct drm_plane_funcs ssd130x_primary_plane_funcs = {
->> 	.update_plane = drm_atomic_helper_update_plane,
->> 	.disable_plane = drm_atomic_helper_disable_plane,
->> 	.reset = ssd130x_primary_plane_reset,
->> 	.atomic_duplicate_state = ssd130x_primary_plane_duplicate_state,
->> 	.atomic_destroy_state = ssd130x_primary_plane_destroy_state,
->> 	.destroy = drm_plane_cleanup,
->> };
->
-> Ack.
->
-> I still believe we should be removing the helper part, those are not
-> helpers. But it's not a big deal anyway.
->
-
-Probably it comes down to semantics since one could argue that are helper
-functions in the driver that are used as callbacks.
-
-But yes, I agree that if is not the norm, it's better to get rid of those.
-I'll post a follow-up patch.
-
-> Maxime
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+>>
+>> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kerne=
+l/vmlinux.lds.S
+>> index b1686afcf876..bb2ec86f37a8 100644
+>> --- a/arch/loongarch/kernel/vmlinux.lds.S
+>> +++ b/arch/loongarch/kernel/vmlinux.lds.S
+>> @@ -53,33 +53,6 @@ SECTIONS
+>>   	. =3D ALIGN(PECOFF_SEGMENT_ALIGN);
+>>   	_etext =3D .;
+>>
+>> -	/*
+>> -	 * struct alt_inst entries. From the header (alternative.h):
+>> -	 * "Alternative instructions for different CPU types or capabilities"
+>> -	 * Think locking instructions on spinlocks.
+>> -	 */
+>> -	. =3D ALIGN(4);
+>> -	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+>> -		__alt_instructions =3D .;
+>> -		*(.altinstructions)
+>> -		__alt_instructions_end =3D .;
+>> -	}
+>> -
+>> -#ifdef CONFIG_RELOCATABLE
+>> -	. =3D ALIGN(8);
+>> -	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
+>> -		__la_abs_begin =3D .;
+>> -		*(.la_abs)
+>> -		__la_abs_end =3D .;
+>> -	}
+>> -#endif
+>> -
+>> -	.got : ALIGN(16) { *(.got) }
+>> -	.plt : ALIGN(16) { *(.plt) }
+>> -	.got.plt : ALIGN(16) { *(.got.plt) }
+>> -
+>> -	.data.rel : { *(.data.rel*) }
+>> -
+>>   	. =3D ALIGN(PECOFF_SEGMENT_ALIGN);
+>>   	__init_begin =3D .;
+>>   	__inittext_begin =3D .;
+>> @@ -94,6 +67,18 @@ SECTIONS
+>>
+>>   	__initdata_begin =3D .;
+>>
+>> +	/*
+>> +	 * struct alt_inst entries. From the header (alternative.h):
+>> +	 * "Alternative instructions for different CPU types or capabilities"
+>> +	 * Think locking instructions on spinlocks.
+>> +	 */
+>> +	. =3D ALIGN(4);
+>> +	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+>> +		__alt_instructions =3D .;
+>> +		*(.altinstructions)
+>> +		__alt_instructions_end =3D .;
+>> +	}
+>> +
+>>   	INIT_DATA_SECTION(16)
+>>   	.exit.data : {
+>>   		EXIT_DATA
+>> @@ -113,6 +98,11 @@ SECTIONS
+>>
+>>   	_sdata =3D .;
+>>   	RO_DATA(4096)
+>> +
+>> +	.got : ALIGN(16) { *(.got) }
+>> +	.plt : ALIGN(16) { *(.plt) }
+>> +	.got.plt : ALIGN(16) { *(.got.plt) }
+>> +
+>>   	RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
+>>
+>>   	.rela.dyn : ALIGN(8) {
+>> @@ -121,6 +111,17 @@ SECTIONS
+>>   		__rela_dyn_end =3D .;
+>>   	}
+>>
+>> +	.data.rel : { *(.data.rel*) }
+>> +
+>> +#ifdef CONFIG_RELOCATABLE
+>> +	. =3D ALIGN(8);
+>> +	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
+>> +		__la_abs_begin =3D .;
+>> +		*(.la_abs)
+>> +		__la_abs_end =3D .;
+>> +	}
+>> +#endif
+>> +
+>>   	.sdata : {
+>>   		*(.sdata)
+>>   	}
 
