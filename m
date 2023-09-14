@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A76597A04B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF947A04BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237037AbjINNBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        id S238500AbjINNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238533AbjINNBS (ORCPT
+        with ESMTP id S237706AbjINNBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:01:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C9281FD4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694696425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GD4InApqGwPlaqPD1j+cPsIFJ/FaN83LoGbvPs5/BZM=;
-        b=CS/5BYrLQrA3Lm4xseMkspyD3Q2gGRMYJ+Af3/DWqyVFz+I0RahF0g6tsRCNjYNP9w+fgz
-        1HAjVzugmBgb0l6Uh3wq3kmkJg2x1Hf7qZw63KRAGTdzj/JNScf6I1q8aBiBKMRBlUT8iO
-        s5IJGRq7D+yalcpUCehRw97bP34uPPg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-sl-t1mcSN8eO_rF_t1yPnA-1; Thu, 14 Sep 2023 09:00:24 -0400
-X-MC-Unique: sl-t1mcSN8eO_rF_t1yPnA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4020645b2a2so7032215e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:00:24 -0700 (PDT)
+        Thu, 14 Sep 2023 09:01:43 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C307F1FDA
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:38 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-404539209ffso6419345e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1694696497; x=1695301297; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ddiGkE6j5Yqjx2YChUyXAKUMjOfVYGR2wU1BDa/uOVM=;
+        b=R/7QQUfIOihU7dGQ6BLubDNlHg4kFo2L3RePq6XZ9UzkbShQ72beoYkykdPtNO9ojO
+         hOi7dAks7mgoG/wxJR4kvEWG1ZNr3QcSdYw4xWD4k3oDGO+9xgWVlnqXDnDxVQPu7jx3
+         FvCAIOzKqJjiMBjCK7g4R7Ctiafan+9onbcyE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694696422; x=1695301222;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GD4InApqGwPlaqPD1j+cPsIFJ/FaN83LoGbvPs5/BZM=;
-        b=dztuRqbbnnOXoawVGPiDcm6uMRPrvAK836aR+bVcI7MTw793iSrnA/NWTQW+iwsa9k
-         gbO2xsXvNE+w5gO/G15WpZn7X+Cd5pqJeLViAiz3fuqNsr5jsc08tuBumom/DFQ9tZ/d
-         nhWdnETHsq9HPRd+jDIP/SFnbxLbj6CevFfZdtE3mrpW59OJEQ8t8Tr6Up672JXyaozr
-         W+nvPgX/kAewfXSmhF1MS9yCeeJpqenSs71Tvtpx00Ht4uEDVnKfNjukd8KHqe9+/ZQI
-         6Iw1MTX6A+yyKDwqcdnkWF6aMjCnZiauxZeqNXB35R3uVd5haxGIji+cBkf+RNq1ivXg
-         5q0w==
-X-Gm-Message-State: AOJu0YxxqxenAXLMAzFZMOjsCx58deyQKSolEuW9KNiG9/YBbz4ECKBw
-        MfAjW1JYGQFeeQxNo6nxBoBnBigMnojGIgdm6DiVgAfTMi/DiF79NseK5Ag/AQX1ZP7hz5FL+je
-        Z57jO9aeGx0ZrFFtoiLCt0gWw
-X-Received: by 2002:a1c:7c08:0:b0:3fd:2e89:31bd with SMTP id x8-20020a1c7c08000000b003fd2e8931bdmr4909341wmc.14.1694696421061;
-        Thu, 14 Sep 2023 06:00:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyAuCfFyUyVDVL0z0/uh6CoJRANuY+BSorx+ortm8WCPKSWcX0US0Dzyy1Y66VZIZ/zKjomA==
-X-Received: by 2002:a1c:7c08:0:b0:3fd:2e89:31bd with SMTP id x8-20020a1c7c08000000b003fd2e8931bdmr4909307wmc.14.1694696420636;
-        Thu, 14 Sep 2023 06:00:20 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id g13-20020a7bc4cd000000b003fc02e8ea68sm4810805wmk.13.2023.09.14.06.00.19
+        d=1e100.net; s=20230601; t=1694696497; x=1695301297;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ddiGkE6j5Yqjx2YChUyXAKUMjOfVYGR2wU1BDa/uOVM=;
+        b=gNB6eD69n0TEC+dIpigzRytvrgkJJ7nNhFnss46bn5XOgwpZUeATdHIzvsL+e+96fz
+         p+ZtHqJ4PhRXsgFf00sBljXWIBQlnhk4tH5KxLrS6Fwg3U/W0miuC5/hgedmaar5R7cL
+         OfdszQrDSQYv1kXqJlLsGFBmbDrZ9HO8FsbYs9ggzicdZwUzDwdUf0QZg5W14rzRGsih
+         11K/H2VmRzxXVWFDe33VFaicrZym83LU0nKQIY0G7f+gQmVyMYg/PG2v28U8rAHytM3E
+         YfSzbxZ+BcaH7jarps7evp9xbJ2l/Be6WxLVNfc10MgQaclUOvuzNXLggTyT0QKbZjlr
+         aFaA==
+X-Gm-Message-State: AOJu0YxKlvk2/O10N4xoNWIW61T9lDrHpIA+CLkqk13hK5j7nUjnp0ip
+        FeDXydkOc/my3iKxbzo+6atKWg==
+X-Google-Smtp-Source: AGHT+IGu9ZokynanEidxo6b4ugwjHDqKzn9EMgeKgnKUXWugWLtEAMgf7RA8IhMPo5oq1q9TPG+E9Q==
+X-Received: by 2002:a05:600c:b5a:b0:401:eb0:a98d with SMTP id k26-20020a05600c0b5a00b004010eb0a98dmr4538194wmr.24.1694696496369;
+        Thu, 14 Sep 2023 06:01:36 -0700 (PDT)
+Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id c20-20020a7bc854000000b003fee6f027c7sm4769165wml.19.2023.09.14.06.01.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 06:00:20 -0700 (PDT)
-Message-ID: <5d6a780e-2945-2b24-bca6-3e38565fe157@redhat.com>
-Date:   Thu, 14 Sep 2023 15:00:18 +0200
+        Thu, 14 Sep 2023 06:01:35 -0700 (PDT)
+Message-ID: <b894ba89-27b2-88a9-6adf-7d53e2c51c02@citrix.com>
+Date:   Thu, 14 Sep 2023 14:01:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/1] mm: report per-page metadata information
-Content-Language: en-US
-To:     Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230913173000.4016218-1-souravpanda@google.com>
- <20230913173000.4016218-2-souravpanda@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230913173000.4016218-2-souravpanda@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ Thunderbird/102.15.1
+From:   andrew.cooper3@citrix.com
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+Content-Language: en-GB
+To:     Juergen Gross <jgross@suse.com>, Xin Li <xin3.li@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+ <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
+In-Reply-To: <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.23 19:30, Sourav Panda wrote:
-> Adds a new per-node PageMetadata field to
-> /sys/devices/system/node/nodeN/meminfo
-> and a global PageMetadata field to /proc/meminfo. This information can
-> be used by users to see how much memory is being used by per-page
-> metadata, which can vary depending on build configuration, machine
-> architecture, and system use.
-> 
-> Per-page metadata is the amount of memory that Linux needs in order to
-> manage memory at the page granularity. The majority of such memory is
-> used by "struct page" and "page_ext" data structures.
+On 14/09/2023 7:02 am, Juergen Gross wrote:
+> On 14.09.23 06:47, Xin Li wrote:
+>> Add an always inline API __wrmsrns() to embed the WRMSRNS instruction
+>> into the code.
+>>
+>> Tested-by: Shan Kang <shan.kang@intel.com>
+>> Signed-off-by: Xin Li <xin3.li@intel.com>
+>
+> In order to avoid having to add paravirt support for WRMSRNS I think
+> xen_init_capabilities() should gain:
+>
+> +    setup_clear_cpu_cap(X86_FEATURE_WRMSRNS);
 
-It's probably worth mentioning, that in contrast to most other "memory 
-consumption" statistics, this metadata might not be included "MemTotal"; 
-when the memmap is allocated using the memblock allocator, it's not 
-included, when it's dynamically allocated using the buddy (e.g., memory 
-hotplug), it's included.
+Xen PV guests will never ever see WRMSRNS.  Operating in CPL3, they have
+no possible way of adjusting an MSR which isn't serialising, because
+even the hypercall forms are serialising.
 
--- 
-Cheers,
+Xen only exposes the bit for HVM guests.
 
-David / dhildenb
-
+~Andrew
