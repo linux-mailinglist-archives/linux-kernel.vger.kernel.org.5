@@ -2,308 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB2B79F796
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1836679F7B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbjINCIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
+        id S233784AbjINCLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbjINCIb (ORCPT
+        with ESMTP id S234105AbjINBzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:08:31 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A523C2D
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:40 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5924b2aac52so6447467b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694656600; x=1695261400; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=i91JvGzfQg7A4MbSmUGyo4+8+JqUux5ifD59BoUsadA=;
-        b=XN95L1dXLkzuSG+hNiM+A+e7KQXKTh9khvx0jTBPuWI3JF2PPRtKZyTaYuBf3QArdV
-         Ev+PHhTTBPArtqEfTTiu/BuHluUhu1+F0rMi7JsnrpcyVeefLInusgTaEO8nZhLBncnc
-         ZL4iWZbS1BQMDmwvCodpQHxtpanuZLuYegsAY1glYt1Oo6icVhwjdNjVpIhb1iGw96e6
-         9XHWppHr9cvjiq24xl8CAxx46HEIH7FkuMUMX/ThCPAhbhIdOci92sudIHsZ2JHxJnOn
-         3sy2EdJwrQJA9yRbaEbaUDUEV/EEDFBNdL6UYBuNnJk7VPelfPD5s1rrC+hno80eDgFP
-         oBzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694656600; x=1695261400;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i91JvGzfQg7A4MbSmUGyo4+8+JqUux5ifD59BoUsadA=;
-        b=wpQUATNxEzXgHUrRno85ygWeuHzAPFvijgh7ZRexTDk/ji/mqbeIr7jycHPyL+4XrQ
-         ynhYwFSmCETvJiOqZxqCXo9oJqnFJuRwZ0RTytpKpsHbSZNhP+nzqSgXZIGWWQoGKcMu
-         n8R/hXM1I9MS4sNwhj0rmHUoNtDbLMDn22e9t2l1U8l17qeoeDxvM98ZXC0DPJFHzy6W
-         3+0Y4f14DMQ5MUgZRHD8M3iYa6CEqIX5xcpa/JTizm3FUB/rs7Alm4j10H1/wr/JaLoj
-         Sm6Wa/eHTCZYnt2+TuOJbvJpJ+Fyfxrxgw7AGe/KR3C284rJV+dJawN2RiejEEDrqNGe
-         qsVA==
-X-Gm-Message-State: AOJu0Yxn1VDLclOF7xhF6BCbq8y+ZE4Y1kXe5B8o7FnNiWxJfu9Bo4I3
-        x22VHW/ceOykIjRTXuPP/boBs+3NIzg=
-X-Google-Smtp-Source: AGHT+IEvLzTJgrzr2NLiV8Z9En5+JUJxc1EswgYLaEL3Jr6eWhED9/CQgA0jS1j6Htu+3uQxxbNwCvj4oqA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:400c:0:b0:589:a855:7af with SMTP id
- l12-20020a81400c000000b00589a85507afmr107432ywn.7.1694656599914; Wed, 13 Sep
- 2023 18:56:39 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Sep 2023 18:55:30 -0700
-In-Reply-To: <20230914015531.1419405-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230914015531.1419405-33-seanjc@google.com>
-Subject: [RFC PATCH v12 32/33] KVM: selftests: Add basic selftest for guest_memfd()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Sep 2023 21:55:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F481FF9;
+        Wed, 13 Sep 2023 18:55:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6A5DC433C8;
+        Thu, 14 Sep 2023 01:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694656541;
+        bh=gXVhJOHHu42wAbkHvrobBuAxMZhcTwxM0j4OPJEY6D0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qG71OHQbCaL+Ti3zHuIzIPYGVRd66+PjwUbFGa3ApuSX6nVQebACo4fUqJs0KEp4Z
+         k+SkH3r8R4IK5c+6DmKI0Oy8BkmjmALWRqYHgJIctNuxwnDCCkY9PBfvpq/gxwUuYG
+         AiAw1Ko4OfmWKqTy7Z3xvcpEuKiS/wLUa9yQR6HE7Wk9CMcvNbgwDBfi17MVEnnBLd
+         vRjI+C2IFMh27iM4FQCDBZCP9krp8XsWFrYpnjIED2Tmbrqpzm+uGHZ44fBRWf+qVc
+         6FJJDqOs2x5c1GyaaXM2wNhB9WGfmmP5wVdf7QbqdpHzrYPfaWx0aTMQ6f0uqGSxEF
+         B4vsSPIPxQSLA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tobias Schramm <t.schramm@manjaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, wens@csie.org,
+        jernej.skrabec@gmail.com, samuel@sholland.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 2/3] spi: sun6i: reduce DMA RX transfer width to single byte
+Date:   Wed, 13 Sep 2023 21:55:35 -0400
+Message-Id: <20230914015536.51984-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230914015536.51984-1-sashal@kernel.org>
+References: <20230914015536.51984-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.131
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Peng <chao.p.peng@linux.intel.com>
+From: Tobias Schramm <t.schramm@manjaro.org>
 
-Add a selftest to verify the basic functionality of guest_memfd():
+[ Upstream commit 171f8a49f212e87a8b04087568e1b3d132e36a18 ]
 
-+ file descriptor created with the guest_memfd() ioctl does not allow
-  read/write/mmap operations
-+ file size and block size as returned from fstat are as expected
-+ fallocate on the fd checks that offset/length on
-  fallocate(FALLOC_FL_PUNCH_HOLE) should be page aligned
-+ invalid inputs (misaligned size, invalid flags) are rejected
+Through empirical testing it has been determined that sometimes RX SPI
+transfers with DMA enabled return corrupted data. This is down to single
+or even multiple bytes lost during DMA transfer from SPI peripheral to
+memory. It seems the RX FIFO within the SPI peripheral can become
+confused when performing bus read accesses wider than a single byte to it
+during an active SPI transfer.
 
-Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+This patch reduces the width of individual DMA read accesses to the
+RX FIFO to a single byte to mitigate that issue.
+
+Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+Link: https://lore.kernel.org/r/20230827152558.5368-2-t.schramm@manjaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../testing/selftests/kvm/guest_memfd_test.c  | 165 ++++++++++++++++++
- 2 files changed, 166 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
+ drivers/spi/spi-sun6i.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index b709a52d5cdb..2b1ef809d73a 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -124,6 +124,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
- TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-+TEST_GEN_PROGS_x86_64 += guest_memfd_test
- TEST_GEN_PROGS_x86_64 += guest_print_test
- TEST_GEN_PROGS_x86_64 += hardware_disable_test
- TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
-diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-new file mode 100644
-index 000000000000..75073645aaa1
---- /dev/null
-+++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright Intel Corporation, 2023
-+ *
-+ * Author: Chao Peng <chao.p.peng@linux.intel.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include "test_util.h"
-+#include "kvm_util_base.h"
-+#include <linux/bitmap.h>
-+#include <linux/falloc.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+
-+static void test_file_read_write(int fd)
-+{
-+	char buf[64];
-+
-+	TEST_ASSERT(read(fd, buf, sizeof(buf)) < 0,
-+		    "read on a guest_mem fd should fail");
-+	TEST_ASSERT(write(fd, buf, sizeof(buf)) < 0,
-+		    "write on a guest_mem fd should fail");
-+	TEST_ASSERT(pread(fd, buf, sizeof(buf), 0) < 0,
-+		    "pread on a guest_mem fd should fail");
-+	TEST_ASSERT(pwrite(fd, buf, sizeof(buf), 0) < 0,
-+		    "pwrite on a guest_mem fd should fail");
-+}
-+
-+static void test_mmap(int fd, size_t page_size)
-+{
-+	char *mem;
-+
-+	mem = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	TEST_ASSERT_EQ(mem, MAP_FAILED);
-+}
-+
-+static void test_file_size(int fd, size_t page_size, size_t total_size)
-+{
-+	struct stat sb;
-+	int ret;
-+
-+	ret = fstat(fd, &sb);
-+	TEST_ASSERT(!ret, "fstat should succeed");
-+	TEST_ASSERT_EQ(sb.st_size, total_size);
-+	TEST_ASSERT_EQ(sb.st_blksize, page_size);
-+}
-+
-+static void test_fallocate(int fd, size_t page_size, size_t total_size)
-+{
-+	int ret;
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, total_size);
-+	TEST_ASSERT(!ret, "fallocate with aligned offset and size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size - 1, page_size);
-+	TEST_ASSERT(ret, "fallocate with unaligned offset should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size, page_size);
-+	TEST_ASSERT(ret, "fallocate beginning at total_size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size, page_size);
-+	TEST_ASSERT(ret, "fallocate beginning after total_size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			total_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) at total_size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			total_size + page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) after total_size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size, page_size - 1);
-+	TEST_ASSERT(ret, "fallocate with unaligned size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) with aligned offset and size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
-+}
-+
-+static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
-+{
-+	uint64_t valid_flags = 0;
-+	size_t page_size = getpagesize();
-+	uint64_t flag;
-+	size_t size;
-+	int fd;
-+
-+	for (size = 1; size < page_size; size++) {
-+		fd = __vm_create_guest_memfd(vm, size, 0);
-+		TEST_ASSERT(fd == -1 && errno == EINVAL,
-+			    "guest_memfd() with non-page-aligned page size '0x%lx' should fail with EINVAL",
-+			    size);
-+	}
-+
-+	if (thp_configured()) {
-+		for (size = page_size * 2; size < get_trans_hugepagesz(); size += page_size) {
-+			fd = __vm_create_guest_memfd(vm, size, KVM_GUEST_MEMFD_ALLOW_HUGEPAGE);
-+			TEST_ASSERT(fd == -1 && errno == EINVAL,
-+				    "guest_memfd() with non-hugepage-aligned page size '0x%lx' should fail with EINVAL",
-+				    size);
-+		}
-+
-+		valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-+	}
-+
-+	for (flag = 1; flag; flag <<= 1) {
-+		uint64_t bit;
-+
-+		if (flag & valid_flags)
-+			continue;
-+
-+		fd = __vm_create_guest_memfd(vm, page_size, flag);
-+		TEST_ASSERT(fd == -1 && errno == EINVAL,
-+			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
-+			    flag);
-+
-+		for_each_set_bit(bit, &valid_flags, 64) {
-+			fd = __vm_create_guest_memfd(vm, page_size, flag | BIT_ULL(bit));
-+			TEST_ASSERT(fd == -1 && errno == EINVAL,
-+				    "guest_memfd() with flags '0x%llx' should fail with EINVAL",
-+				    flag | BIT_ULL(bit));
-+		}
-+	}
-+}
-+
-+
-+int main(int argc, char *argv[])
-+{
-+	size_t page_size;
-+	size_t total_size;
-+	int fd;
-+	struct kvm_vm *vm;
-+
-+	TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
-+
-+	page_size = getpagesize();
-+	total_size = page_size * 4;
-+
-+	vm = vm_create_barebones();
-+
-+	test_create_guest_memfd_invalid(vm);
-+
-+	fd = vm_create_guest_memfd(vm, total_size, 0);
-+
-+	test_file_read_write(fd);
-+	test_mmap(fd, page_size);
-+	test_file_size(fd, page_size, total_size);
-+	test_fallocate(fd, page_size, total_size);
-+
-+	close(fd);
-+}
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index 23ad052528dbe..2bfe87873edb3 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -200,7 +200,7 @@ static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
+ 		struct dma_slave_config rxconf = {
+ 			.direction = DMA_DEV_TO_MEM,
+ 			.src_addr = sspi->dma_addr_rx,
+-			.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
++			.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+ 			.src_maxburst = 8,
+ 		};
+ 
 -- 
-2.42.0.283.g2d96d420d3-goog
+2.40.1
 
