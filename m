@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EA57A0D6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4861E7A0D6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242044AbjINSoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
+        id S241788AbjINSom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242184AbjINSmm (ORCPT
+        with ESMTP id S242189AbjINSm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 14:42:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C532430F6;
-        Thu, 14 Sep 2023 11:39:11 -0700 (PDT)
+        Thu, 14 Sep 2023 14:42:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C753583;
+        Thu, 14 Sep 2023 11:39:12 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1694716750;
@@ -22,35 +22,34 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rrDPhfR+hcH2ulqT+tmz0NkOOAInrrikJFQ9+rrgXq4=;
-        b=KfjPbYSme07Uy0HtarpcBzSFQ1/rLTznLPx3w1c4fArr0Y5kGtKzI/Ul9ouwJRXdZeU/J2
-        nadN6L18ZJIEZd4/qd77a5MMYgHznr/VdEX4YaV6YEVQg226CMthIInseqEgsZrt2JU/SM
-        hrvtG4v2A0Aab0JSgQ/X2uc19tg5cN7/KsBEEnvqHijZr/ddzu7OZp4NR0MuQksSw5xf4H
-        1FvccofeL0vCGlTQQkCd1W6zru71arQ7y6L7TSn3XqKLX1H/RoT2P0vGRJJ8EmEGrSaGYG
-        fykGh54wuVQ019BCJGhN5qdhXCIQatyCIpCafbGGWbvjoPvfFCdXRsxKA0zSAQ==
+        bh=GJtXjFQWXKNeQs2nL2+qrP6FYwoUINI6rwVKVGPhbxU=;
+        b=Smto3ilWRwjFAG931YsffW+HoqJKbQcMRTmOo7z5AAELHBSg1EK70rg26n1N24tEW9h+e/
+        WyTNOAXTUly60x5p5uadirORR1qp/dsQWOug1txsQnqoZamxcgSqxEx3AfakxgesEb41o0
+        91BJCHp14XxMViT/S/f+kxcaxPDfhNLp/4lyCeOzZ0rTSuamsc5VriJq2BohFJgIdmGgab
+        UigtGSeCdKeJqh8qkx71ePFVifIAeTFyYCdNvSOnYDOuhHSXvpRUFcOYf/xvCcWWULGjS1
+        g8xkLUfrwFizQ9ZhuW11q2/BMcJCuNdGVdYdVDRGhhKQ8B5+g4JWyCWh9sOs7w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694716750;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rrDPhfR+hcH2ulqT+tmz0NkOOAInrrikJFQ9+rrgXq4=;
-        b=zw8NaAfgbtDwAq7EKORtMTWehRQcY0jJ9It/03eZCA4UwTMGL31oJD/g86N0no8XkSo7er
-        qKWevdh86PM28vAg==
+        bh=GJtXjFQWXKNeQs2nL2+qrP6FYwoUINI6rwVKVGPhbxU=;
+        b=IfKwzLt6V2gvWeERQdlBb8no0cSJvFxrzZxTD5K9r1Vc7iPP+pkOgbr29JHUUcvkPDsqzN
+        FUypfeRKCJff99CQ==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ruan Jinjie <ruanjinjie@huawei.com>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Mukesh Ojha <quic_mojha@quicinc.com>,
-        Yangtao Li <frank.li@vivo.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH tty v1 73/74] serial: vt8500: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:44:30 +0206
-Message-Id: <20230914183831.587273-74-john.ogness@linutronix.de>
+Subject: [PATCH tty v1 74/74] serial: xilinx_uartps: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:44:31 +0206
+Message-Id: <20230914183831.587273-75-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -87,49 +86,249 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/vt8500_serial.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c | 56 +++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/tty/serial/vt8500_serial.c b/drivers/tty/serial/vt8500_serial.c
-index c5d5c2765119..78a1c1eea11b 100644
---- a/drivers/tty/serial/vt8500_serial.c
-+++ b/drivers/tty/serial/vt8500_serial.c
-@@ -227,7 +227,7 @@ static irqreturn_t vt8500_irq(int irq, void *dev_id)
- 	struct uart_port *port = dev_id;
- 	unsigned long isr;
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 2e5e86a00a77..9c13dac1d4d1 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -346,7 +346,7 @@ static irqreturn_t cdns_uart_isr(int irq, void *dev_id)
+ 	struct uart_port *port = (struct uart_port *)dev_id;
+ 	unsigned int isrstatus;
  
 -	spin_lock(&port->lock);
 +	uart_port_lock(port);
- 	isr = vt8500_read(port, VT8500_URISR);
  
- 	/* Acknowledge active status bits */
-@@ -240,7 +240,7 @@ static irqreturn_t vt8500_irq(int irq, void *dev_id)
- 	if (isr & TCTS)
- 		handle_delta_cts(port);
+ 	/* Read the interrupt status register to determine which
+ 	 * interrupt(s) is/are active and clear them.
+@@ -369,7 +369,7 @@ static irqreturn_t cdns_uart_isr(int irq, void *dev_id)
+ 	    !(readl(port->membase + CDNS_UART_CR) & CDNS_UART_CR_RX_DIS))
+ 		cdns_uart_handle_rx(dev_id, isrstatus);
  
 -	spin_unlock(&port->lock);
 +	uart_port_unlock(port);
- 
  	return IRQ_HANDLED;
  }
-@@ -342,7 +342,7 @@ static void vt8500_set_termios(struct uart_port *port,
- 	unsigned int baud, lcr;
- 	unsigned int loops = 1000;
+ 
+@@ -506,14 +506,14 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ 			return NOTIFY_BAD;
+ 		}
+ 
+-		spin_lock_irqsave(&cdns_uart->port->lock, flags);
++		uart_port_lock_irqsave(cdns_uart->port, &flags);
+ 
+ 		/* Disable the TX and RX to set baud rate */
+ 		ctrl_reg = readl(port->membase + CDNS_UART_CR);
+ 		ctrl_reg |= CDNS_UART_CR_TX_DIS | CDNS_UART_CR_RX_DIS;
+ 		writel(ctrl_reg, port->membase + CDNS_UART_CR);
+ 
+-		spin_unlock_irqrestore(&cdns_uart->port->lock, flags);
++		uart_port_unlock_irqrestore(cdns_uart->port, flags);
+ 
+ 		return NOTIFY_OK;
+ 	}
+@@ -523,7 +523,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ 		 * frequency.
+ 		 */
+ 
+-		spin_lock_irqsave(&cdns_uart->port->lock, flags);
++		uart_port_lock_irqsave(cdns_uart->port, &flags);
+ 
+ 		locked = 1;
+ 		port->uartclk = ndata->new_rate;
+@@ -533,7 +533,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ 		fallthrough;
+ 	case ABORT_RATE_CHANGE:
+ 		if (!locked)
+-			spin_lock_irqsave(&cdns_uart->port->lock, flags);
++			uart_port_lock_irqsave(cdns_uart->port, &flags);
+ 
+ 		/* Set TX/RX Reset */
+ 		ctrl_reg = readl(port->membase + CDNS_UART_CR);
+@@ -555,7 +555,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
+ 		ctrl_reg |= CDNS_UART_CR_TX_EN | CDNS_UART_CR_RX_EN;
+ 		writel(ctrl_reg, port->membase + CDNS_UART_CR);
+ 
+-		spin_unlock_irqrestore(&cdns_uart->port->lock, flags);
++		uart_port_unlock_irqrestore(cdns_uart->port, flags);
+ 
+ 		return NOTIFY_OK;
+ 	default:
+@@ -652,7 +652,7 @@ static void cdns_uart_break_ctl(struct uart_port *port, int ctl)
+ 	unsigned int status;
+ 	unsigned long flags;
  
 -	spin_lock_irqsave(&port->lock, flags);
 +	uart_port_lock_irqsave(port, &flags);
  
- 	/* calculate and set baud rate */
- 	baud = uart_get_baud_rate(port, termios, old, 900, 921600);
-@@ -410,7 +410,7 @@ static void vt8500_set_termios(struct uart_port *port,
- 	vt8500_write(&vt8500_port->uart, 0x881, VT8500_URFCR);
- 	vt8500_write(&vt8500_port->uart, vt8500_port->ier, VT8500_URIER);
+ 	status = readl(port->membase + CDNS_UART_CR);
+ 
+@@ -664,7 +664,7 @@ static void cdns_uart_break_ctl(struct uart_port *port, int ctl)
+ 			writel(CDNS_UART_CR_STOPBRK | status,
+ 					port->membase + CDNS_UART_CR);
+ 	}
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ /**
+@@ -683,7 +683,7 @@ static void cdns_uart_set_termios(struct uart_port *port,
+ 	unsigned long flags;
+ 	unsigned int ctrl_reg, mode_reg;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Disable the TX and RX to set baud rate */
+ 	ctrl_reg = readl(port->membase + CDNS_UART_CR);
+@@ -794,7 +794,7 @@ static void cdns_uart_set_termios(struct uart_port *port,
+ 		cval &= ~CDNS_UART_MODEMCR_FCM;
+ 	writel(cval, port->membase + CDNS_UART_MODEMCR);
  
 -	spin_unlock_irqrestore(&port->lock, flags);
 +	uart_port_unlock_irqrestore(port, flags);
  }
  
- static const char *vt8500_type(struct uart_port *port)
+ /**
+@@ -813,7 +813,7 @@ static int cdns_uart_startup(struct uart_port *port)
+ 
+ 	is_brk_support = cdns_uart->quirks & CDNS_UART_RXBS_SUPPORT;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Disable the TX and RX */
+ 	writel(CDNS_UART_CR_TX_DIS | CDNS_UART_CR_RX_DIS,
+@@ -861,7 +861,7 @@ static int cdns_uart_startup(struct uart_port *port)
+ 	writel(readl(port->membase + CDNS_UART_ISR),
+ 			port->membase + CDNS_UART_ISR);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	ret = request_irq(port->irq, cdns_uart_isr, 0, CDNS_UART_NAME, port);
+ 	if (ret) {
+@@ -889,7 +889,7 @@ static void cdns_uart_shutdown(struct uart_port *port)
+ 	int status;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Disable interrupts */
+ 	status = readl(port->membase + CDNS_UART_IMR);
+@@ -900,7 +900,7 @@ static void cdns_uart_shutdown(struct uart_port *port)
+ 	writel(CDNS_UART_CR_TX_DIS | CDNS_UART_CR_RX_DIS,
+ 			port->membase + CDNS_UART_CR);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	free_irq(port->irq, port);
+ }
+@@ -1050,7 +1050,7 @@ static int cdns_uart_poll_get_char(struct uart_port *port)
+ 	int c;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Check if FIFO is empty */
+ 	if (readl(port->membase + CDNS_UART_SR) & CDNS_UART_SR_RXEMPTY)
+@@ -1058,7 +1058,7 @@ static int cdns_uart_poll_get_char(struct uart_port *port)
+ 	else /* Read a character */
+ 		c = (unsigned char) readl(port->membase + CDNS_UART_FIFO);
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ 
+ 	return c;
+ }
+@@ -1067,7 +1067,7 @@ static void cdns_uart_poll_put_char(struct uart_port *port, unsigned char c)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* Wait until FIFO is empty */
+ 	while (!(readl(port->membase + CDNS_UART_SR) & CDNS_UART_SR_TXEMPTY))
+@@ -1080,7 +1080,7 @@ static void cdns_uart_poll_put_char(struct uart_port *port, unsigned char c)
+ 	while (!(readl(port->membase + CDNS_UART_SR) & CDNS_UART_SR_TXEMPTY))
+ 		cpu_relax();
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	uart_port_unlock_irqrestore(port, flags);
+ }
+ #endif
+ 
+@@ -1232,9 +1232,9 @@ static void cdns_uart_console_write(struct console *co, const char *s,
+ 	if (port->sysrq)
+ 		locked = 0;
+ 	else if (oops_in_progress)
+-		locked = spin_trylock_irqsave(&port->lock, flags);
++		locked = uart_port_trylock_irqsave(port, &flags);
+ 	else
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 
+ 	/* save and disable interrupt */
+ 	imr = readl(port->membase + CDNS_UART_IMR);
+@@ -1257,7 +1257,7 @@ static void cdns_uart_console_write(struct console *co, const char *s,
+ 	writel(imr, port->membase + CDNS_UART_IER);
+ 
+ 	if (locked)
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ }
+ 
+ /**
+@@ -1325,7 +1325,7 @@ static int cdns_uart_suspend(struct device *device)
+ 	if (console_suspend_enabled && uart_console(port) && may_wake) {
+ 		unsigned long flags;
+ 
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 		/* Empty the receive FIFO 1st before making changes */
+ 		while (!(readl(port->membase + CDNS_UART_SR) &
+ 					CDNS_UART_SR_RXEMPTY))
+@@ -1334,7 +1334,7 @@ static int cdns_uart_suspend(struct device *device)
+ 		writel(1, port->membase + CDNS_UART_RXWM);
+ 		/* disable RX timeout interrups */
+ 		writel(CDNS_UART_IXR_TOUT, port->membase + CDNS_UART_IDR);
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 	}
+ 
+ 	/*
+@@ -1372,7 +1372,7 @@ static int cdns_uart_resume(struct device *device)
+ 			return ret;
+ 		}
+ 
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 
+ 		/* Set TX/RX Reset */
+ 		ctrl_reg = readl(port->membase + CDNS_UART_CR);
+@@ -1392,14 +1392,14 @@ static int cdns_uart_resume(struct device *device)
+ 
+ 		clk_disable(cdns_uart->uartclk);
+ 		clk_disable(cdns_uart->pclk);
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 	} else {
+-		spin_lock_irqsave(&port->lock, flags);
++		uart_port_lock_irqsave(port, &flags);
+ 		/* restore original rx trigger level */
+ 		writel(rx_trigger_level, port->membase + CDNS_UART_RXWM);
+ 		/* enable RX timeout interrupt */
+ 		writel(CDNS_UART_IXR_TOUT, port->membase + CDNS_UART_IER);
+-		spin_unlock_irqrestore(&port->lock, flags);
++		uart_port_unlock_irqrestore(port, flags);
+ 	}
+ 
+ 	return uart_resume_port(cdns_uart->cdns_uart_driver, port);
 -- 
 2.39.2
 
