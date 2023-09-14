@@ -2,320 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B197A020E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E260B7A020C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236668AbjINK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
+        id S236375AbjINK6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjINK6o (ORCPT
+        with ESMTP id S232865AbjINK6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:58:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C31B81BFE
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694689077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FoPuCs18pZ686VhI69Xm5WgHhot1lsJCX1IL4VQKnKg=;
-        b=KSIn/hTltCanRUAfbJlkDhUnf2BplrJ0ngtImqCJ91quY0qf6mDXEP3eA6TJtk3sMvJ9qU
-        l81e04JV4VBg8izj9/c5/DUY1RsB6G3gnficuCzR5K9BzQwq2priOG00oSUEmVE5tvbOjX
-        bPSe1jC14DFbxMuCaeaT5xBUW9OffH0=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-YoOKx15PPjyFOZPhKqJkLQ-1; Thu, 14 Sep 2023 06:57:56 -0400
-X-MC-Unique: YoOKx15PPjyFOZPhKqJkLQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bce36a1628so10335231fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:57:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694689075; x=1695293875;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FoPuCs18pZ686VhI69Xm5WgHhot1lsJCX1IL4VQKnKg=;
-        b=GaR237prUPlpRvpj3CR0knHfd/wojGLEUFQKfKxrCscis3pViWviD8vAEgzjXrehYO
-         u2R2Gu+7M7Xdbj8KcB1V1E/kHgGVpidMqu8jOlZFYAM782KGre/7qsirs1nNVTbo+0o1
-         lBRURIlCgkbM4jDoV2NioA74H7b8xs3Bghb56V7NZi+vONoeZKz9wqnd6BPJ8dnynerv
-         kEzpjIW/ERVl2Zs6IlfAS6JvwTm+r59ldu+iuITUKOKJK9u2CFEbvUp1pU6sQNyxvtKo
-         vy0WNhJ1tY/4Dw2IvxW9tOH8pNf26hIbudA7OS4b5bxuuLz2cTgAvjrr9vM9mcNf/hss
-         g1LA==
-X-Gm-Message-State: AOJu0YzqvfKaYbk0jKqjmurLi3Jrg+rrAH3Yms0/7OOzL2yXWi8w0eY2
-        x+jBNYfGERoXMiq34h0yG59aztfBJ9sqtv/oTvhgjp+SzbQ2qRkeUYB3gNA/4Y+hemhCc8ezJ6a
-        aW+U18f6lhC+6/e3V+XuTdQ0R
-X-Received: by 2002:a05:651c:21b:b0:2bd:1bca:ebee with SMTP id y27-20020a05651c021b00b002bd1bcaebeemr4625371ljn.19.1694689075061;
-        Thu, 14 Sep 2023 03:57:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHOvKZVaWbdYOFk6Vg6AEXc6zNHfpRuPJE47cICK/BDLyMP1uNwS5rG9wQE5qKpKizS6hAzeg==
-X-Received: by 2002:a05:651c:21b:b0:2bd:1bca:ebee with SMTP id y27-20020a05651c021b00b002bd1bcaebeemr4625360ljn.19.1694689074625;
-        Thu, 14 Sep 2023 03:57:54 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id i10-20020a170906250a00b009a5f1d15642sm834356ejb.158.2023.09.14.03.57.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 03:57:54 -0700 (PDT)
-Message-ID: <ef29b21d-157c-ead7-4b09-edf763d1f8b0@redhat.com>
-Date:   Thu, 14 Sep 2023 12:57:52 +0200
+        Thu, 14 Sep 2023 06:58:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE931FC0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:58:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72486C433C8;
+        Thu, 14 Sep 2023 10:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694689088;
+        bh=rUYhkyTuPj7ApZAOUD6dArBv3dyDSPnmyCzau1cFCjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M6wtWjAAF7WGBRZnKIphw8mUEmVkovGFAXaqBr30m2bL5aXGOSsjprP+jUwzbJsYY
+         ySMfW4/zqW3RLQlcQUSeT/+7yDZ9SIwOiEKT3B2mN38XX5IDRltFUreU0Dnec5pqs+
+         zs6L/KIg9Gcltbt1RBvz+XPQaRfBmDxEqCvdLNRRn0fLURHPqu5vsWd+DLZkLXYoqk
+         5Z7933TxFbGi5AajdnYQe4nLBi17JKp51yId+BWfGfpWIFjeoaA14KM4MxG126FtuA
+         Y4sfEKHyoyDTg6roynomr5ZSc7KeH39/1whVsnq2StG01F3VPiP5QFlZsGmTdQPDL7
+         JdJ7pyULyrbVg==
+Date:   Thu, 14 Sep 2023 12:57:59 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Shinas Rasheed <srasheed@marvell.com>
+Cc:     aayarekar@marvell.com, davem@davemloft.net, edumazet@google.com,
+        egallen@redhat.com, hgani@marvell.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mschmidt@redhat.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, sburla@marvell.com,
+        sedara@marvell.com, vburru@marvell.com, vimleshk@marvell.com
+Subject: Re: [net PATCH v2] octeon_ep: fix tx dma unmap len values in SG
+Message-ID: <20230914105759.GY401982@kernel.org>
+References: <PH0PR18MB47346CADA6D087CB1BF2234CC7F0A@PH0PR18MB4734.namprd18.prod.outlook.com>
+ <20230913084156.2147106-1-srasheed@marvell.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Nouveau] [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Content-Language: en-US
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     matthew.brost@intel.com, sarah.walker@imgtec.com,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, boris.brezillon@collabora.com,
-        donald.robson@imgtec.com, daniel@ffwll.ch,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com
-References: <20230909153125.30032-1-dakr@redhat.com>
- <20230909153125.30032-7-dakr@redhat.com>
- <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
- <ZQCW6wzHYVdxl/IV@pollux>
- <701dfead-e240-b3fb-422c-d49fc7e04595@linux.intel.com>
- <ZQD2FFLP28bFgHXT@pollux>
- <cbff08ca845655dee44fbf498cdb37a3d5251bf3.camel@linux.intel.com>
- <ZQGoNovGz/4Y3xvf@pollux>
-Organization: RedHat
-In-Reply-To: <ZQGoNovGz/4Y3xvf@pollux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913084156.2147106-1-srasheed@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/23 14:16, Danilo Krummrich wrote:
+On Wed, Sep 13, 2023 at 01:41:56AM -0700, Shinas Rasheed wrote:
+> Lengths of SG pointers are kept in the following order in
+> the SG entries in hardware.
+>  63      48|47     32|31     16|15       0
+>  -----------------------------------------
+>  |  Len 0  |  Len 1  |  Len 2  |  Len 3  |
+>  -----------------------------------------
+>  |                Ptr 0                  |
+>  -----------------------------------------
+>  |                Ptr 1                  |
+>  -----------------------------------------
+>  |                Ptr 2                  |
+>  -----------------------------------------
+>  |                Ptr 3                  |
+>  -----------------------------------------
+> Dma pointers have to be unmapped based on their
+> respective lengths given in this format.
+> 
+> Fixes: 37d79d059606 ("octeon_ep: add Tx/Rx processing and interrupt support")
+> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 
-<snip>
-
->>> And validate() can remove it while still holding all dma-resv locks,
->>> neat!
->>> However, what if two tasks are trying to lock the VA space
->>> concurrently? What
->>> do we do when the drm_gpuvm_bo's refcount drops to zero in
->>> drm_gpuva_unlink()?
->>> Are we guaranteed that at this point of time the drm_gpuvm_bo is not
->>> on the
->>> evicted list? Because otherwise we would call drm_gpuvm_bo_destroy()
->>> with the
->>> dma-resv lock held, which wouldn't be allowed, since
->>> drm_gpuvm_bo_destroy()
->>> might drop the last reference to the drm_gem_object and hence we'd
->>> potentially
->>> free the dma-resv lock while holding it, at least if it's an external
->>> object.
->>
->> Easiest way in this scheme is to think of the lists as being protected
->> by the vm's resv lock. That means anybody calling unlink() must also
->> hold the vm's resv lock. (Which is OK from an UAF point of view, but
->> perhaps not from a locking inversion POW from an async list update).
-> 
-> This would mean that on unlink() we'd need to hold the VM's resv lock and the
-> corresponding GEM's resv lock (in case they're not the same anyways) because the
-> VM's resv lock would protect the external / evicted object lists and the GEM
-> objects resv lock protects the GEM's list of drm_gpuvm_bos and the
-> drm_gpuvm_bo's list of drm_gpuvas.
-
-As mentioned below the same applies for drm_gpuvm_bo_put() since it might
-destroy the vm_bo, which includes removing the vm_bo from external / evicted
-object lists and the GEMs list of vm_bos.
-
-As mentioned, if the GEM's dma-resv is different from the VM's dma-resv we need
-to take both locks. Ultimately, this would mean we need a drm_exec loop, because
-we can't know the order in which to take these locks. Doing a full drm_exec loop
-just to put() a vm_bo doesn't sound reasonable to me.
-
-Can we instead just have an internal mutex for locking the lists such that we
-avoid taking and dropping the spinlocks, which we use currently, in a loop?
-
-- Danilo
-
-> 
->>
->>>
->>>>>
->>>>> For extobjs an outer lock would be enough in case of Xe, but I
->>>>> really would not
->>>>> like to add even more complexity just to get the spinlock out of
->>>>> the way in case
->>>>> the driver already has an outer lock protecting this path.
->>>>
->>>> I must disagree here. These spinlocks and atomic operations are
->>>> pretty
->>>> costly and as discussed earlier this type of locking was the reason
->>>> (at
->>>> least according to the commit message) that made Christian drop the
->>>> XArray
->>>> use in drm_exec for the same set of objects: "The locking overhead
->>>> is
->>>> unecessary and measurable". IMHO the spinlock is the added
->>>> complexity and a
->>>> single wide lock following the drm locking guidelines set out by
->>>> Daniel and
->>>> David should really be the default choice with an opt-in for a
->>>> spinlock if
->>>> needed for async and pushing out to a wq is not an option.
->>>
->>> For the external object list an outer lock would work as long as it's
->>> not the
->>> dma-resv lock of the corresponding GEM object, since here we actually
->>> need to
->>> remove the list entry from the external object list on
->>> drm_gpuvm_bo_destroy().
->>> It's just a bit weird design wise that drivers would need to take
->>> this outer
->>> lock on:
->>>
->>> - drm_gpuvm_bo_extobj_add()
->>> - drm_gpuvm_bo_destroy()        (and hence also drm_gpuvm_bo_put())
->>> - drm_gpuva_unlink()            (because it needs to call
->>> drm_gpuvm_bo_put())
->>> - drm_gpuvm_exec_lock()
->>> - drm_gpuvm_exec_lock_array()
->>> - drm_gpuvm_prepare_range()
->>>
->>> Given that it seems reasonable to do all the required locking
->>> internally.
->>
->>  From a design POW, there has been a clear direction in XE to make
->> things similar to mmap() / munmap(), so this outer lock, which in Xe is
->> an rwsem, is used in a similar way as the mmap_lock. It's protecting
->> the page-table structures and vma rb tree, the userptr structures and
->> the extobj list. Basically it's taken early in the exec IOCTL, the
->> VM_BIND ioctl, the compute rebind worker and the pagefault handler, so
->> all of the above are just asserting that it is taken in the correct
->> mode.
->>
->> But strictly with this scheme one could also use the vm's dma_resv for
->> the extobj list since with drm_exec, it's locked before traversing the
->> list.
->>
->> The whole point of this scheme is to rely on locks that you already are
->> supposed to be holding for various reasons and is simple to comprehend.
-> 
-> I don't agree that we're supposed to hold the VM's resv lock anyways for
-> functions like drm_gpuvm_bo_put() or drm_gpuva_unlink(), but I'm fine using it
-> for that purpose nevertheless.
-> 
->>
->>>
->>> In order to at least place lockdep checks, the driver would need to
->>> supply the
->>> corresponding lock's lockdep_map, because the GPUVM otherwise doesn't
->>> know about
->>> the lock.
->>
->> Yes, that sounds reasonable. One lockdep map per list.
-> 
-> I'd really like to avoid that, especially now that everything got simpler. We
-> should define the actual locks to take instead.
-> 
->>
->>>
->>> Out of curiosity, what is the overhead of a spin_lock() that doesn't
->>> need to
->>> spin?
->>
->> I guess it's hard to tell exactly, but it is much lower on modern x86
->> than what it used to be. Not sure about ARM, which is the other
->> architecture important to us. I figure if there is little cache-line
->> bouncing the main overhead comes from the implied barriers.
->>
->>>
->>>>
->>>> A pretty simple way that would not add much code would be
->>>>
->>>> static void gpuvm_cond_spin_lock(const struct drm_gpuvm *gpuvm,
->>>> spinlock_t
->>>> *lock)
->>>>
->>>> {
->>>>
->>>>      if (!gpuvm->resv_protected_lists)
->>>>          spin_lock(lock);
->>>>
->>>> }
->>>>
->>>>>> For such drivers, that would require anybody calling unlink to
->>>>>> hold the vm's
->>>>>> resv, though.
->>>>> In V4 I want to go back to having a dedicated lock for the GEMs
->>>>> gpuva list (or
->>>>> VM_BO list to be more precise). We can't just use the dma-resv
->>>>> lock for that
->>>>> with VM_BO abstractions, because on destruction of a VM_BO we
->>>>> otherwise wouldn't
->>>>> be allowed to already hold the dma-resv lock. That's the fix I
->>>>> was referring to
->>>>> earlier.
->>>>
->>>> Yeah, I can see the need for a dedicated lock for the GEM's gpuva
->>>> list, but
->>>> holding the vm's dma-resv lock across the unlink shouldn't be a
->>>> problem. We
->>>> may free the object and a pointer to the vm's resv during unlink
->>>> but we
->>>> don't free the vm's resv.  It'd be a matter of ensuring that any
->>>> calls to
->>>> unlink from *within* drm_gpuvm allows it to be held.
->>>
->>> Drivers calling unlink() from the fence signaling path can't use the
->>> VM's
->>> dma-resv lock.
->>
->> Yes, that made me a bit curious because in the current version the code
->> required the object's dma_resv for unlink() which can't be grabbed
->> either from the fence signaling path. So are there any drivers actually
->> wanting to do that? If so, they will either need to resort to the
->> current spinlock solution or they will need to call unlink from a
->> workqueue item.
-> 
-> As Boris already mentioned we have the dma-resv lock by default or a driver
-> specific GEM gpuva lock as opt-in. Now, we can get rid of the latter.
-> 
->>>
->>> Also, what if the object is an external object? We can't use the VM's
->>> dma-resv
->>> lock here.
->>
->> Why? Typically (sync) unlink is only ever called from an unbind-like
->> operation where it should be trivial to grab the vm's resv. Or, for
->> that matter any outer lock protecting the extobj list. Rule would be
->> the drm_gpuvm_bo::entry::extobj  and drm_gpuvm_bo::entry::evict would
->> be protected by either the vm's dma_resv (or possibly an outer lock in
->> the case of the extobj list).
-> 
-> Outer lock wouldn't have been working for updates in the async path, but
-> shouldn't be relevant anymore. We could use the VM's resv for that.
-> 
->>
->>>   And we can't have the GEM objs dma-resv lock held when calling
->>> unlink(), since unlink() calls drm_gpuvm_bo_put(), which if the
->>> refcount drops
->>> to zero calls drm_gpuvm_bo_destroy() and drm_gpuvm_bo_destroy() might
->>> drop the
->>> last reference of the GEM object.
->>
->> Yes, but this is a different problem as to what exactly protects
->> drm_gpuvm_bo::entry::gem. Either as you suggest an internal per bo list
->> lock, or if we want to keep the bo's dma_resv we need to ensure that
->> the caller of dma_resv_unlock(obj->resv) actually refcounts its obj
->> pointer, and doesn't implicitly rely on the gpuvm_bo's refcount (I know
->> Boris didn't like that, but requiring an explicit refcount for a
->> pointer you dereference unless you're under a lock that ensures keeping
->> the object alive is pretty much required?) But anyway for the
->> drm_gpuvm_bo::entry::gem list protection (bo resv or internal spinlock)
->> I don't have a strong preference.
-> 
-> We can keep the GEM objects dma-resv lock, however as mentioned above
-> drm_gpuva_unlink() and drm_gpuvm_bo_put() then requires both the VM's resv lock
-> and the GEM's resv lock in case they differ.
-> 
-
->>>>
+Reviewed-by: Simon Horman <horms@kernel.org>
 
