@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E6F7A0AD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411347A0ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237433AbjINQcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S232633AbjINQbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjINQco (ORCPT
+        with ESMTP id S237762AbjINQbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:32:44 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86AA1FDC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:32:39 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-64f387094ddso6351946d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1694709158; x=1695313958; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iBpYCeeiHkRSP1d/Fs1QslqOdnD/9unLXrEK1uz74Tw=;
-        b=x+Yd94kQKSZq7SABaWGpYOvW1N6EGdOnwF4m7cP5o+RuhkQFc1EOsZuEM7dU+8dk3t
-         uroxGajlrl/9Rutb9mqnhWsJNu3lER21eXbd+Vyq7UwSfy/1znKJ2DSjfFf5YWOdJWHe
-         dCtH6+gio+jjuxGxxnlfPVfSelTsK73kuNvoUdk8qj+zep/yZ+54U0BIw7YE+GvfMGeh
-         MEoacB9uB0AXfrYu9X1lnjugk0VV9LcoZxOv8wP8y8oo7PcV3PiwnQNp80UqEuCnLLnU
-         7+zLzpDkA7hpGkGKieJByvs4OZ7Bd1+k1P84x8MqEqdJMMgV6svjTOKkkmWybC+RHROX
-         2zCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694709158; x=1695313958;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iBpYCeeiHkRSP1d/Fs1QslqOdnD/9unLXrEK1uz74Tw=;
-        b=ks3p1BbDr0boFnxTnEtLVjerlK8yI7CEQ+W7CFhNWm9BjACw3JdbZ7nSXuNOe/GmD8
-         EYIsjeUQ65wnB3pfmsICp3bbyHYDCPXLyQKWSf7b8FOBswEr6qgiGNIHzsi/2uNRSawd
-         XsfL3axgayjMwNRayUPEQojjlTUyT4T3rV/ZnKrLguUWL6QhC47lS8JgXXT4GmFkdPb+
-         UXhi7JXmgdCFwFxLTyPEPfKLOpOJV5ntuEzPdJUxUu7SRVLgLGRlzb4FgVCuwhwiReBK
-         9mDGjQnMKMEJdV46Djb52ztkHV/1wyIWgz5Q+p2sjwMxRW+pHWk5K4SzS7NMwDNXoMbg
-         4Jzg==
-X-Gm-Message-State: AOJu0YzJ3tULiyRmx0QjupxZPvSHCk0fuDIAGDCKYP6ATqkUsHB/VBaK
-        Hmw9AhvAtyJg8fZ1HDrg8Ym++0Li5gVG24mwGuipiA==
-X-Google-Smtp-Source: AGHT+IGludCmXbLx+omxZ+Rh8LXM31hPcSOfnELHU56S6MFz8xkk0vPxdTAclYoBzGIE5OhYZCv9eQ==
-X-Received: by 2002:a0c:e6c3:0:b0:64f:67ae:a132 with SMTP id l3-20020a0ce6c3000000b0064f67aea132mr6129634qvn.23.1694709158650;
-        Thu, 14 Sep 2023 09:32:38 -0700 (PDT)
-Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id v6-20020a0cdd86000000b0063d38e52c8fsm579122qvk.18.2023.09.14.09.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 09:32:38 -0700 (PDT)
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Greg Ungerer <gerg@uclinux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Ben Wolsieffer <Ben.Wolsieffer@hefring.com>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH] proc: nommu: /proc/<pid>/maps: release mmap read lock
-Date:   Thu, 14 Sep 2023 12:30:20 -0400
-Message-ID: <20230914163019.4050530-2-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 14 Sep 2023 12:31:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B111FD7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:31:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B71DDC433CC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 16:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694709072;
+        bh=yK9wOyly7qXn00unB+iWDobdGAfW+ysMR294jVlJehY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YnPF73tA4FJIt1zHgix/GbKseAd2p1qSvJtvFEtLKU3tglVfdtSVXz45R90EkROQz
+         4DpirqdSNTq64df/D8anke/yvRlxoNEUDu6aYxjnyf/Z4JUO9LnCsZyYHmiNwgiMcl
+         5IHyGhGtTIOsXVfp3AD3GwKvno+ZwQOi+qR6VWpQzoWEZVywa6c35nRqcoNhN4VWYA
+         /D479EcO6+Df3QjJVMxfSgNkUz4ldk4Dp1pbDkeAG5mCGwgVWRYgOavhfoCQE6MtkC
+         2uV3mPcZf7JO5x//6SjPYIaphF1Hg5cdZ+WD+0lZMajeZUHbBOuVZHsm1/woQ9/MyH
+         wCdJ6RKgfup4Q==
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so18688561fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:31:12 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxkiOIpDFE8UUF4m57EhVXWNA00HKXpvSZ7B42y0QVeawR7yIs/
+        +iloLjoVImh91pel/QWuvs6iHg4Gi5WEgIilW60=
+X-Google-Smtp-Source: AGHT+IEyDvQTasFSMTuQOc1lTVEzqzqm8NEorFEDvZRS+lGp6oHxPgR0Z57DdvNG5dUkvLYrxKYK4WrAwjGHajHGftg=
+X-Received: by 2002:a2e:3012:0:b0:2b9:aa4d:3719 with SMTP id
+ w18-20020a2e3012000000b002b9aa4d3719mr5166010ljw.12.1694709070929; Thu, 14
+ Sep 2023 09:31:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230908231244.1092614-1-song@kernel.org>
+In-Reply-To: <20230908231244.1092614-1-song@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 14 Sep 2023 09:30:56 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5Xy_K=6u4s=pNAZ8+eGBtX8v16Fr+9quL-FftEu+DWOA@mail.gmail.com>
+Message-ID: <CAPhsuW5Xy_K=6u4s=pNAZ8+eGBtX8v16Fr+9quL-FftEu+DWOA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/purgatory: Remove LTO flags
+To:     linux-kernel@vger.kernel.org
+Cc:     ndesaulniers@google.com, Ricardo Ribalda <ribalda@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        kexec@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Wolsieffer <Ben.Wolsieffer@hefring.com>
+Hi folks,
 
-The no-MMU implementation of /proc/<pid>/map doesn't normally release
-the mmap read lock, because it uses !IS_ERR_OR_NULL(_vml) to determine
-whether to release the lock. Since _vml is NULL when the end of the
-mappings is reached, the lock is not released.
+On Fri, Sep 8, 2023 at 4:13=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> With LTO enabled, ld.lld generates multiple .text sections for
+> purgatory.ro:
+>
+> $ readelf -S purgatory.ro  | grep " .text"
+>   [ 1] .text             PROGBITS         0000000000000000  00000040
+>   [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
+>   [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
+>   [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
+>   [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
+>   [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
+>   [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
+>
+> This cause WARNING from kexec_purgatory_setup_sechdrs():
+>
+> WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
+> kexec_load_purgatory+0x37f/0x390
+>
+> Fix this by disabling LTO for purgatory.
+>
+> Fixes: 8652d44f466a ("kexec: support purgatories with .text.hot sections"=
+)
+> Cc: Ricardo Ribalda <ribalda@chromium.org>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: kexec@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Song Liu <song@kernel.org>
 
-This code was incorrectly adapted from the MMU implementation, which
-at the time released the lock in m_next() before returning the last entry.
+What would be the next step for this work? We hope to back port it
+to our production kernel soon.
 
-The MMU implementation has diverged further from the no-MMU version
-since then, so this patch brings their locking and error handling into
-sync, fixing the bug and hopefully avoiding similar issues in the
-future.
+Thanks,
+Song
 
-Fixes: 47fecca15c09 ("fs/proc/task_nommu.c: don't use priv->task->mm")
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
----
- fs/proc/task_nommu.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/fs/proc/task_nommu.c b/fs/proc/task_nommu.c
-index 2c8b62265981..061bd3f82756 100644
---- a/fs/proc/task_nommu.c
-+++ b/fs/proc/task_nommu.c
-@@ -205,11 +205,16 @@ static void *m_start(struct seq_file *m, loff_t *pos)
- 		return ERR_PTR(-ESRCH);
- 
- 	mm = priv->mm;
--	if (!mm || !mmget_not_zero(mm))
-+	if (!mm || !mmget_not_zero(mm)) {
-+		put_task_struct(priv->task);
-+		priv->task = NULL;
- 		return NULL;
-+	}
- 
- 	if (mmap_read_lock_killable(mm)) {
- 		mmput(mm);
-+		put_task_struct(priv->task);
-+		priv->task = NULL;
- 		return ERR_PTR(-EINTR);
- 	}
- 
-@@ -218,23 +223,21 @@ static void *m_start(struct seq_file *m, loff_t *pos)
- 	if (vma)
- 		return vma;
- 
--	mmap_read_unlock(mm);
--	mmput(mm);
- 	return NULL;
- }
- 
--static void m_stop(struct seq_file *m, void *_vml)
-+static void m_stop(struct seq_file *m, void *v)
- {
- 	struct proc_maps_private *priv = m->private;
-+	struct mm_struct *mm = priv->mm;
- 
--	if (!IS_ERR_OR_NULL(_vml)) {
--		mmap_read_unlock(priv->mm);
--		mmput(priv->mm);
--	}
--	if (priv->task) {
--		put_task_struct(priv->task);
--		priv->task = NULL;
--	}
-+	if (!priv->task)
-+		return;
-+
-+	mmap_read_unlock(mm);
-+	mmput(mm);
-+	put_task_struct(priv->task);
-+	priv->task = NULL;
- }
- 
- static void *m_next(struct seq_file *m, void *_p, loff_t *pos)
--- 
-2.42.0
-
+>
+> ---
+> AFAICT, x86 is the only arch that supports LTO and purgatory.
+>
+> Changes in v2:
+> 1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
+> ---
+>  arch/x86/purgatory/Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+> index c2a29be35c01..08aa0f25f12a 100644
+> --- a/arch/x86/purgatory/Makefile
+> +++ b/arch/x86/purgatory/Makefile
+> @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS -D__NO_FORTIF=
+Y
+>  # optimization flags.
+>  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D% -fprofile-use=
+=3D%,$(KBUILD_CFLAGS))
+>
+> +# When LTO is enabled, llvm emits many text sections, which is not suppo=
+rted
+> +# by kexec. Remove -flto=3D* flags.
+> +KBUILD_CFLAGS :=3D $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
+> +
+>  # When linking purgatory.ro with -r unresolved symbols are not checked,
+>  # also link a purgatory.chk binary without -r to check for unresolved sy=
+mbols.
+>  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
+> --
+> 2.34.1
+>
