@@ -2,225 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D087879FB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E1179FB7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbjINGCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        id S235005AbjINGCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjINGCD (ORCPT
+        with ESMTP id S232474AbjINGCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:02:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CC8DF;
-        Wed, 13 Sep 2023 23:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694671319; x=1726207319;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=x4m+hBPfEVAPKF/DgbzPIFCQ9IMRP66naWb9YtOIHNo=;
-  b=HFdWYIJq2umV0kYNBW7wTVQtSa9HZ2wJIZ0s3MSy8eZtwSCtKngNIYs9
-   w54KCA6LVIlMeM/EjTrHFMhFqe+KAQQpY4hENW3HK2k26lFKhv4XLCEVm
-   w3ZZqB4saugeE/iBsbuv6g8Pc+No/Oo4eGiHkohdXnHKa6/oNPFHJ29+S
-   BIxuTTBxLGdnUZ/jiESI15qwhEzhAFYwMOF00lKAGCjRhjS4Yb20CcSvi
-   BSx4GCWBv11abWERJtn6M70sdpt1ij16D/CXzJmqOHicGEBuYgOzbxdaB
-   F1Pd+Sq+gzrkBhiwey2FJMOxCjbPI/6bIcyitmytmdnxU7rDQ22PjgArl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363900164"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="363900164"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 23:01:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="859569041"
-X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
-   d="scan'208";a="859569041"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Sep 2023 23:01:58 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 13 Sep 2023 23:01:58 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 13 Sep 2023 23:01:58 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 13 Sep 2023 23:01:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9uDXprOalhke1TQ1/rTew3Vm/HYrTRcUr3iOZviVBehM2YSNdwpPFvLu8h5Hca6jkrZ46dnprSlghMKQW+VjnlTIIttIAmdazgTgNBU+aj5mB5ndkviXNK93+9Y3pOABLdHM1geMKJR15l3w7QFKv+kSEMJj0aJnPctv3U8PZ2EDUecilck6VRE9oDfMWzt9EIrLPWPCkuzPDb4aMgCilHBjdLbvo/yE+NYSRbJGtpx3FS+neePGHmZIYV9yGszPeAmNMIIvMt9G0Ns0OsdwLIbWcrIFlM5ZnFfBsRIbo9vvrLVrJyb8M8eeJ47ecoybhjet7MYQALuF9mdMGuQ4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tQf2snuFnqc8bQdW9H0dxUIFcFLcNABWt1iv3Ec8cAQ=;
- b=WWk3UdtQZkMzvxoOOxD0+f/LHmNdwehwwNM6lSD+Ulf582HZjtOviIBnAOScupCXpiSsxDKrkNx6r7l5hKjMN8KaybEtWUsUnGHgwE54UeL00yOgf++lQjlcKJEsR3LSUhfFfE29hm/GvVQnsfdv/9DEIuFTM4j6QWi2FE/FhbL32bkCp5ksHkkz1Rg0k7LNPLQAW1EvLEJw3T2maV4jYrFEWOhcTOEG27Dyv9qmIDlxtV/Up6dSkTLYsWaYhWLrDaqQ6+pD3jtzlYAfAOHmSHIWTvSP8aS77VpDEvkOEaDEMN5Pz8ujg4Va37zEYgAQHfgnwoe67tgAaAzYSmpvMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by CY5PR11MB6211.namprd11.prod.outlook.com (2603:10b6:930:25::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Thu, 14 Sep
- 2023 06:01:55 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::6ecb:9e9a:87e5:f342]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::6ecb:9e9a:87e5:f342%4]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 06:01:55 +0000
-Date:   Thu, 14 Sep 2023 08:01:50 +0200
-From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-CC:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        <ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RESEND v3 1/2] selftests/resctrl: Fix schemata write
- error check
-Message-ID: <ycbcan5wcxtz2mbywz6zdoyfus26vrhus6enipe543x2ejyt77@m3l4ksir7k2k>
-References: <cover.1693575451.git.maciej.wieczor-retman@intel.com>
- <960b5302cee8e5bb0e83dcf20cd2ef4d353b7b0b.1693575451.git.maciej.wieczor-retman@intel.com>
- <99eabc5c-f5e3-27dd-0a29-ad0cdb7b4239@intel.com>
- <sr6ana6d7ebtuxbhjuo6kcnhnn2zzvg3ivve6mndqeb3nxrzo7@mrfmtzlxlwdh>
- <a7f0dfb9-c841-b240-fca9-b908517a44d0@intel.com>
- <jyxp5mspjn7xbmclj5sumbsuwd424fqmdvntiiuq24tiz5yqb4@qunho7whbamf>
- <6d6dba28-a7f0-1f49-3f59-4e0026d0c2b8@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d6dba28-a7f0-1f49-3f59-4e0026d0c2b8@intel.com>
-X-ClientProxiedBy: FR4P281CA0075.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ce::20) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+        Thu, 14 Sep 2023 02:02:44 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CD5DF;
+        Wed, 13 Sep 2023 23:02:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7BBAE2185C;
+        Thu, 14 Sep 2023 06:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694671358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=UN6sspPIx39466fl+yxO68tXlqE24fawTHIm37vhBn4=;
+        b=mpJlx73uIZL2iN/jToOMnMFHb3itmckBlbd98AVqtO/PjC685eTRNtoGXki7SrCtuYG/wl
+        KFgBeLmgoOsergPrfZfQXOmFXQ1z8bJydFm5YA5NCOWuZjxxK+6mXGcW9gHW0bak2+SbbE
+        73hNUuUUYyvZGa29XszOIaFStQNmoXc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D58E213580;
+        Thu, 14 Sep 2023 06:02:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NLO+Mv2hAmUEWwAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 14 Sep 2023 06:02:37 +0000
+Message-ID: <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
+Date:   Thu, 14 Sep 2023 08:02:37 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|CY5PR11MB6211:EE_
-X-MS-Office365-Filtering-Correlation-Id: bfc625aa-e624-4e8c-c69c-08dbb4e81947
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5CjXj9j8TPIwVL8gYvTumrb8hqHebwhupC0bXMViQ3Ck0FkOplHYEqnEtZ30UG5Pu66m/dz1dak9ZkO7Ff6Juyq9CYqXC8cdSkNqLyAOVRnW622/yMk9f3Yd0gpAI7qNMCGhhOcEupnyB6LVPd5qaPA5i4pYiaKj3179XM0xCJ3pnMALm88A5RymzJ3bgXRlxDxU2eiTs/fNQSVRTmyfx7DbmwUnZc+L4j4867iR2OVYUPR1swyoOpICobP+FCN9/Idz2PvP1l3iY0TEJypuXBHz8ezt5VvNMqdbBP8/1821xgIffOckmYnJNptRx5LhWq9AOcegeGWqPKOl3R5i6FXppgEDtpZTv1NYSE6Ii88FlVpV7Huvt0mqKRLilfUc7ZofaIJtXw0dVmJTRXo1LiINqODRf4DStQOP6yUoh9AIJV8/LNUcJZAQtL0bHtqvmq78XX9YwfXvO3Ts3AJUX912UMbUlcLxEyzfxc8xJzyqfV2AwGYOWC9jp2Tumk3Hohq8i6xLNNf46MRPxUiOeqj1o/Q6VQk/zSqaedczxY6CtFNWh5kLvdPE3kaF3ULT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(376002)(396003)(39860400002)(346002)(451199024)(1800799009)(186009)(26005)(5660300002)(66556008)(9686003)(66476007)(316002)(6512007)(54906003)(6636002)(6506007)(53546011)(66946007)(38100700002)(8936002)(4326008)(8676002)(6862004)(83380400001)(41300700001)(6666004)(6486002)(478600001)(66574015)(2906002)(33716001)(86362001)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bE04azhoaWg1QzF5aEdsT3ZBSUxSOXA0K2swekdQRU5IRG93aE9MKzQ5TjYw?=
- =?utf-8?B?QWxtai9mQ3VQa3N4Wm9sam1VYlFXdHhBN0xLSmcrNUovWjRSNldQblVWQngy?=
- =?utf-8?B?bkkzUkVnZDZhcXlXbEQ3MXVoMHI5bWJmOHdFQmFlOXY4eWNRVHlLWFZicjM3?=
- =?utf-8?B?SUViRUNDRTFDeHREN1hpQUU2NjlzQjQzU2RMbGFNZlR0TStkb2NudFp4eVB1?=
- =?utf-8?B?V1lDNGdLT1E3Ky9zL3FSRWlrOE5vc1ZCNlY4Q3BRUCtlUmR3ZnZZcjRzdTlN?=
- =?utf-8?B?QkNHeHZmL1FxL00yTUpJY3F2U0ExM3JuQ0dRL0FOYmlpTGE2VXJzOFV6VG81?=
- =?utf-8?B?QkhzbEJ3dFA0RzVpSlFsaVo5cklqelUwRGE2SkFEMnUwRDZYeGp6Q0RaVEV3?=
- =?utf-8?B?NVRFSXdYWlJSZ0k4TkJrOGVzQXpLbVc2eUs1NnRzRGFYbGNtSmhKMU9RMzhO?=
- =?utf-8?B?cGZjdFpNRVByWG1SMkZuUFVldThEeU1BbVkyN0RqTEJsQXk1NTlEdmRHWlg5?=
- =?utf-8?B?bkF3c0loanA1bjNZMGxEKzgrREFGTU85anJEc1VuK2FybWNBWTBvTUdIQlJZ?=
- =?utf-8?B?QzNGNVRwb0l2MFBWVWpFSUM3QzdYMXQzQmNXWGNHa2pzNDB4NTl4RnYxYXZk?=
- =?utf-8?B?NkZnTEhSMUErTmZYZ1kzbHhkMkY3WG1rOTQ3OUl2OXY4Nk9UeElnbW9wMFVI?=
- =?utf-8?B?dTV2bXJTaVY5WTdkbUdCRTVWMHZlQWozQ1dUK3dYZ2ZlZlVEeEpNN0pHT0dN?=
- =?utf-8?B?ZUxUMDNkSGZRUTMyVWFFUzJHR1UwN3N1b1Bud2Nsbk1tODRTaUdqSXBQak5C?=
- =?utf-8?B?Wm13eFFZMkF2M3hVcHRYSlc2Z2ZoZzJZUWJ4cnUxQ29vWGFKd2RIUGJBRCtj?=
- =?utf-8?B?WmxQOHhEcWhvTjd3a2E3Nko4NWlzY1hGcFp1Ykk3Wmw1N1VyYnQvSXBPNmpO?=
- =?utf-8?B?YU9oSzN3cDE0T0pqSy9TOER6a1FWRGYvQkQ5V2R3ZkVaR25PMVlKcU93RkVS?=
- =?utf-8?B?aGZ2QWI1Y0MvWlNLTXJpQ3VETFV2UXFJTGRSUTdIOFdjQnMrQmgyZWZLZ2xm?=
- =?utf-8?B?b2cxMHVWZW4rMndJbmhmU3dsTEZ3YStCSzM5Nzllekt5bm9BNlVWTmNhVldG?=
- =?utf-8?B?bjJRUDhwUVhQZ3BSeTd6d0o4Y1pVVUJlVnExRnF3bHM1OUEvQ0psUW1KaHhB?=
- =?utf-8?B?SXdrMGRuYzhxTXVjaE0zUmNZeVlzM0NQTjZaWklmc1JJK2ZqMVVoNURZbGlQ?=
- =?utf-8?B?UVZWVXVxODN6N3ljdkkyR3lqVTZmeUgvbXJLWlNhbE82M2cyc2ZIQVpmTTl3?=
- =?utf-8?B?RHRxanN6SmNCQitCRURuR3Y0ZEs2NFJhL21YWlpDcDg4T2RTZkpLamxPTjlx?=
- =?utf-8?B?Nll5QXEvRDYveGU2K2pwOXYzWnFjc0VnbjFINjlNSHF6eWg3V04rWVFxOEQr?=
- =?utf-8?B?U0FtSmFBNzJrNUZGdThPdUZPeEVGNWh4MnhZSWJkLzQreVlnRU5BcEFKWll6?=
- =?utf-8?B?ZmdmbnBRT2QyazY1aTJuZ2hlaWhmWG52elpOZC9QUmVpeVl6V2VrSGMxSUls?=
- =?utf-8?B?S1VqZldwWnlSSFlaY215dXBOYkhUTU9OdTV2VUg4b2UreXVPUXRocVdtbGNx?=
- =?utf-8?B?SmpKeDVmUWJoRC9ybG5SWWQ4bTVaWCtXOUYvOXlHMFpLMkdmQVpyMkg1L2J2?=
- =?utf-8?B?N09ZRlZOcCs0VURpb052MXZGdE5xS3lnNzd0elVydUtTZ0Nva0ZPN2dSOUhO?=
- =?utf-8?B?d3VxRzk4Mjd2OGpoNVg2OGNPT3FCOU96ZVY1SHJlTm9WbTBxeERwZkRscGxq?=
- =?utf-8?B?K2MvMHlmdHc5ZHY5cmRaVWZZbWZ3cTJ1dXVLbEw4ems0ZnBZNmdNL1lkeC83?=
- =?utf-8?B?MkFOWmpNelFzejM3bThsVTk3M1pManR2OG0xSkh4L1RCUlVmVm1TZ0Zzdnh6?=
- =?utf-8?B?NW1wbTdESnZhNnAwUWtGTk1CZXIxKzh2M2UrTHJieFh5YzVWL0pwNzhBREpI?=
- =?utf-8?B?WThVYkRBWHhUeEZVNTB1SEg2RWowMjNQd2JWZWpTaFZ0eGM4d2l6clRGK1Bq?=
- =?utf-8?B?K2FETVc2RjVSTmtVTGtQZnBLSDR3TjVWcWZJQ1ZXbFgzRkRoZmtUOEs1Q3dj?=
- =?utf-8?B?TUlTQzM4Z0Z6MEJLb1dxVXNJZ2s5OVhYMDFSTVQxTHBhSWR5R283L2gxQmJU?=
- =?utf-8?Q?7twM1eslHFE4WQGmY0TQDl8=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfc625aa-e624-4e8c-c69c-08dbb4e81947
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 06:01:55.5369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K2ZCwzZDODyqIEbWOCJsIwX4ZudYlgwKMQ8mZzXePBXOgrPap1beFHu3PHDHZzYs0jNmGqnsXQ05ZaGFtzIoaw/n4nxE90kAk/zDnkIsmP4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6211
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+Content-Language: en-US
+To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, andrew.cooper3@citrix.com,
+        jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20230914044805.301390-4-xin3.li@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------VvzgLc0ddY8y20w2PeqS1wNo"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------VvzgLc0ddY8y20w2PeqS1wNo
+Content-Type: multipart/mixed; boundary="------------OCPddz9Em9L06c0hebIM6Gc4";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+ xen-devel@lists.xenproject.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+ pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+ ravi.v.shankar@intel.com, mhiramat@kernel.org, andrew.cooper3@citrix.com,
+ jiangshanlai@gmail.com
+Message-ID: <48d312f4-50cd-468d-af70-51314796b0d8@suse.com>
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+In-Reply-To: <20230914044805.301390-4-xin3.li@intel.com>
 
-On 2023-09-13 at 11:49:19 -0700, Reinette Chatre wrote:
->Hi Maciej,
->
->On 9/12/2023 10:59 PM, Maciej Wieczór-Retman wrote:
->> On 2023-09-12 at 09:00:28 -0700, Reinette Chatre wrote:
->>> Hi Maciej,
->>>
->>> On 9/11/2023 11:32 PM, Maciej Wieczór-Retman wrote:
->>>> On 2023-09-11 at 09:59:06 -0700, Reinette Chatre wrote:
->>>>> Hi Maciej,
->>>>> When I build the tests with this applied I encounter the following:
->>>>>
->>>>> resctrlfs.c: In function ‘write_schemata’:
->>>>> resctrlfs.c:475:14: warning: implicit declaration of function ‘open’; did you mean ‘popen’? [-Wimplicit-function-declaration]
->>>>>  475 |         fd = open(controlgroup, O_WRONLY);
->>>>>      |              ^~~~
->>>>>      |              popen
->>>>> resctrlfs.c:475:33: error: ‘O_WRONLY’ undeclared (first use in this function)
->>>>>  475 |         fd = open(controlgroup, O_WRONLY);
->>>>>      |                                 ^~~~~~~~
->>>>> resctrlfs.c:475:33: note: each undeclared identifier is reported only once for each function it appears in
->>>>
->>>> Hmm, that's odd. How do you build the tests?
->>>
->>> I applied this series on top of kselftest repo's "next" branch.
->>>
->>> I use a separate build directory and first ran "make headers". After that,
->>> $ make O=<build dir> -C tools/testing/selftests/resctrl
->> 
->> I do the same, just without the build directory, but that shouldn't
->> matter here I guess.
->> 
->>>> I use "make -C tools/testing/selftests/resctrl" while in the root kernel
->>>> source directory. I tried to get the same error you experienced by
->>>> compiling some dummy test program with "open" and "O_WRONLY". From the
->>>> experiment I found that the "resctrl.h" header provides the declarations
->>>> that are causing your errors.
->>>
->>>From what I can tell resctrl.h does not include fcntl.h that provides
->>> what is needed.
->> 
->> I found out you can run "gcc -M <file>" and it will recursively tell you
->> what headers are including other headers.
->> 
->> Using this I found that "resctrl.h" includes <sys/mount.h> which in turn
->> includes <fcntl.h> out of /usr/include/sys directory. Is that also the
->> case on your system?
->> 
->
->No. The test system I used is running glibc 2.35 and it seems that including
->fcntl.h was added to sys/mount.h in 2.36. See glibc commit
->78a408ee7ba0 ("linux: Add open_tree")
->
->Generally we should avoid indirect inclusions and here I think certainly so
->since it cannot be guaranteed that fcntl.h would be available via 
->sys/mount.h.
+--------------OCPddz9Em9L06c0hebIM6Gc4
+Content-Type: multipart/mixed; boundary="------------cb9RlJPV0piuYa8dnn0zZdi9"
 
-Okay, would including the fcntl.h header to resctrl.h be okay in this
-case? Or is there some other more sophisticated way of doing that (some
-include guard or checking glibc version for example)?
+--------------cb9RlJPV0piuYa8dnn0zZdi9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
--- 
-Kind regards
-Maciej Wieczór-Retman
+T24gMTQuMDkuMjMgMDY6NDcsIFhpbiBMaSB3cm90ZToNCj4gQWRkIGFuIGFsd2F5cyBpbmxp
+bmUgQVBJIF9fd3Jtc3JucygpIHRvIGVtYmVkIHRoZSBXUk1TUk5TIGluc3RydWN0aW9uDQo+
+IGludG8gdGhlIGNvZGUuDQo+IA0KPiBUZXN0ZWQtYnk6IFNoYW4gS2FuZyA8c2hhbi5rYW5n
+QGludGVsLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogWGluIExpIDx4aW4zLmxpQGludGVsLmNv
+bT4NCg0KSW4gb3JkZXIgdG8gYXZvaWQgaGF2aW5nIHRvIGFkZCBwYXJhdmlydCBzdXBwb3J0
+IGZvciBXUk1TUk5TIEkgdGhpbmsNCnhlbl9pbml0X2NhcGFiaWxpdGllcygpIHNob3VsZCBn
+YWluOg0KDQorCXNldHVwX2NsZWFyX2NwdV9jYXAoWDg2X0ZFQVRVUkVfV1JNU1JOUyk7DQoN
+Cg0KSnVlcmdlbg0KDQo+IC0tLQ0KPiAgIGFyY2gveDg2L2luY2x1ZGUvYXNtL21zci5oIHwg
+MTggKysrKysrKysrKysrKysrKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlv
+bnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9tc3IuaCBi
+L2FyY2gveDg2L2luY2x1ZGUvYXNtL21zci5oDQo+IGluZGV4IDY1ZWMxOTY1Y2QyOC4uYzI4
+NGZmOWViZTY3IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9tc3IuaA0K
+PiArKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9tc3IuaA0KPiBAQCAtOTcsNiArOTcsMTkg
+QEAgc3RhdGljIF9fYWx3YXlzX2lubGluZSB2b2lkIF9fd3Jtc3IodW5zaWduZWQgaW50IG1z
+ciwgdTMyIGxvdywgdTMyIGhpZ2gpDQo+ICAgCQkgICAgIDogOiAiYyIgKG1zciksICJhIihs
+b3cpLCAiZCIgKGhpZ2gpIDogIm1lbW9yeSIpOw0KPiAgIH0NCj4gICANCj4gKy8qDQo+ICsg
+KiBXUk1TUk5TIGJlaGF2ZXMgZXhhY3RseSBsaWtlIFdSTVNSIHdpdGggdGhlIG9ubHkgZGlm
+ZmVyZW5jZSBiZWluZw0KPiArICogdGhhdCBpdCBpcyBub3QgYSBzZXJpYWxpemluZyBpbnN0
+cnVjdGlvbiBieSBkZWZhdWx0Lg0KPiArICovDQo+ICtzdGF0aWMgX19hbHdheXNfaW5saW5l
+IHZvaWQgX193cm1zcm5zKHUzMiBtc3IsIHUzMiBsb3csIHUzMiBoaWdoKQ0KPiArew0KPiAr
+CS8qIEluc3RydWN0aW9uIG9wY29kZSBmb3IgV1JNU1JOUzsgc3VwcG9ydGVkIGluIGJpbnV0
+aWxzID49IDIuNDAuICovDQo+ICsJYXNtIHZvbGF0aWxlKCIxOiAuYnl0ZSAweDBmLDB4MDEs
+MHhjNlxuIg0KPiArCQkgICAgICIyOlxuIg0KPiArCQkgICAgIF9BU01fRVhUQUJMRV9UWVBF
+KDFiLCAyYiwgRVhfVFlQRV9XUk1TUikNCj4gKwkJICAgICA6IDogImMiIChtc3IpLCAiYSIo
+bG93KSwgImQiIChoaWdoKSk7DQo+ICt9DQo+ICsNCj4gICAjZGVmaW5lIG5hdGl2ZV9yZG1z
+cihtc3IsIHZhbDEsIHZhbDIpCQkJXA0KPiAgIGRvIHsJCQkJCQkJXA0KPiAgIAl1NjQgX192
+YWwgPSBfX3JkbXNyKChtc3IpKTsJCQlcDQo+IEBAIC0yOTcsNiArMzEwLDExIEBAIGRvIHsJ
+CQkJCQkJXA0KPiAgIA0KPiAgICNlbmRpZgkvKiAhQ09ORklHX1BBUkFWSVJUX1hYTCAqLw0K
+PiAgIA0KPiArc3RhdGljIF9fYWx3YXlzX2lubGluZSB2b2lkIHdybXNybnModTMyIG1zciwg
+dTY0IHZhbCkNCj4gK3sNCj4gKwlfX3dybXNybnMobXNyLCB2YWwsIHZhbCA+PiAzMik7DQo+
+ICt9DQo+ICsNCj4gICAvKg0KPiAgICAqIDY0LWJpdCB2ZXJzaW9uIG9mIHdybXNyX3NhZmUo
+KToNCj4gICAgKi8NCg0K
+--------------cb9RlJPV0piuYa8dnn0zZdi9
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------cb9RlJPV0piuYa8dnn0zZdi9--
+
+--------------OCPddz9Em9L06c0hebIM6Gc4--
+
+--------------VvzgLc0ddY8y20w2PeqS1wNo
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUCof0FAwAAAAAACgkQsN6d1ii/Ey/Z
+Ygf/fFOAgiGHRKwhq+fiBtmitqjuCWlNXY8uP2C+It97gt1yyUr3t1R2km3a7rHjTKgRdMjP4uW3
+JWbkKaWAjFGVfodq6EF3h1zPEmGuXuGdQTscEEXjUoebhPeUbggLr5//p5g0BLbQYOn84RFRpVkD
+EF0pSEz3DTx8ZA4p+UupIFbUGC4IxJM53COI38mMoplsRcDAbwo+IrTsuK5BGSnmOa3/JKYflJBE
+NL6WB9YcFm5atMMlgjkMPIH9lb0eWyrh8PLl1Q+rfx7EcFA7K+q1eoFRcsKJNoX8Ox6CP+sEFBgf
+ZzsjTmX/1IFmS3F9Y5Q/hsPnTHQ0SZ4fBgRCKmxv3g==
+=d8Tq
+-----END PGP SIGNATURE-----
+
+--------------VvzgLc0ddY8y20w2PeqS1wNo--
