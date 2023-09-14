@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE5979FBBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3873F79FBC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjINGRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
+        id S234937AbjINGSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjINGRI (ORCPT
+        with ESMTP id S230198AbjINGSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:17:08 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63086FA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:17:04 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bcf2de59cso79478866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694672223; x=1695277023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UK0O4WJKJlOZsHN2AORyIn3x8ciKDTzhX6N4dTgrbtM=;
-        b=oxpc56GmwVM8T7ITmCtul2+h1l1OM4rnDWfEd6u7N7jZXtABZVKnif8VSsvXly5o8W
-         ZppQCIDTxiPPFHMG/O0S7ONp+bztV1vXr0BvZGHKe0U116CKFXCqdprhfxipXkwr/Y+Y
-         uoVoTKjlZaqXw44jwEzhOQfF/Si9p9d5W3Im5pIQlcAwkU80k+eV3clTQhY9iYOOh+41
-         ebpoN67B8YLhHTGF/LJ/y+H0JBllnPU7mH5bWDj5TsdFahV4i6LQ24sswrkg2BNG6J2P
-         FQyxgxjnBKCjQJc7n+36/bKFjL8lxrSRufPcnFUN6RSO7OTY7zT7x+jTwNx9dqUdWzDC
-         a+tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694672223; x=1695277023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UK0O4WJKJlOZsHN2AORyIn3x8ciKDTzhX6N4dTgrbtM=;
-        b=u1bppSTntgwT8VNl3k0ogTwBWpTHJFtNu0HpHD4//ypO60EZ8uXt9Ie3bleBXCsIyh
-         zHjEbeSjOa95YkZQ3q/LOVs5Hkc83PfTThWLp5IduCZgdoUlJDnP2FAW8ehR+Qh1+vZu
-         OdBFaOR2wGq25CcKTf96rLB8G7n2WTpiuy1Q/6eFjRVPuf7GHXVcQOCctPT3s2NbJDdW
-         wjJYhAukk61VgGf3r6g4BuGak6qK139GO/Pno5EKHaCJuGYolwY7gdOKT+Aej0JfhaEZ
-         K/912D2KvXG8ntEmrkYBwkzF6tYuFtCgRkvwYRe7oahT+ZouVk+q262p4K5UQUJu+9ik
-         0NQA==
-X-Gm-Message-State: AOJu0YylHppOMca3HgYezrvsazyPRfjOBy306K4WZDbsCZBPH+EQeYFL
-        /tuQvB94whgoxi8bHlYbYtLV7Q==
-X-Google-Smtp-Source: AGHT+IFoQUQl22lWSHFNhUxXzHXGNgTqAInQGx0SzU77yOY3Lg/+ylETFd0JjlYLR9E9wxvPxBnT4A==
-X-Received: by 2002:a17:907:62a6:b0:99d:e8da:c20b with SMTP id nd38-20020a17090762a600b0099de8dac20bmr4172306ejc.24.1694672221956;
-        Wed, 13 Sep 2023 23:17:01 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id q13-20020a170906770d00b0097073f1ed84sm514322ejm.4.2023.09.13.23.17.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 23:17:01 -0700 (PDT)
-Message-ID: <45637012-0972-fc7b-1276-163da363b962@linaro.org>
-Date:   Thu, 14 Sep 2023 08:16:59 +0200
+        Thu, 14 Sep 2023 02:18:31 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D64F7;
+        Wed, 13 Sep 2023 23:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694672307; x=1726208307;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IA9Szt83UA+m0xuMf7Hdrsj2dhOmdjzYfCrJsm9w51E=;
+  b=TZIZEbtKCohefNHoZuHuYQ1kn7veyvqPuLv9jSNsTw0YBonz0Zc8EZvo
+   AdivhS2ZqlpCj6hIePQ8Qz2jGnqM7+f8cOIcAlrYfuV+a6jWvIUk39djz
+   wslXKLZ5rGR9b0lxzJwX3+BLgXYUj6UTs5JVu0kSEqnb3fi1LDtULzXDk
+   8yqpfpqlus8j1K7WT7uKEUVYMpoTIwbWQcx1WmDclEk6wt5Jz/OTU7KxO
+   pKjMCxErUgXvGxvElyu3Tl5nVGB6vwlIJh9oTobwNAGoJmyl8uF1UlPh/
+   g4C1+GZScF3Au01UKR0i9mH4FrjeJPdRVPWxWSuk4w8vFkIEKUvK3P6K3
+   g==;
+X-CSE-ConnectionGUID: HkcT5bKNT/qqQzS7wKsIFg==
+X-CSE-MsgGUID: WEcacK1qQ8+gKJMibd8z+Q==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,145,1688454000"; 
+   d="scan'208";a="4768622"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Sep 2023 23:18:27 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 13 Sep 2023 23:18:15 -0700
+Received: from che-dk-unglab44lx.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Wed, 13 Sep 2023 23:18:12 -0700
+From:   Pavithra Sathyanarayanan <Pavithra.Sathyanarayanan@microchip.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>
+Subject: [PATCH net-next v1] net: microchip: lan743x: add fixed phy unregister support
+Date:   Thu, 14 Sep 2023 11:47:37 +0530
+Message-ID: <20230914061737.3147-1-Pavithra.Sathyanarayanan@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] dt-bindings: pinctrl: Add compatibles for Amlogic T7
- SoCs
-Content-Language: en-US
-To:     Huqiang Qin <huqiang.qin@amlogic.com>, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, neil.armstrong@linaro.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, brgl@bgdev.pl, andy@kernel.org
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230914054525.1180595-1-huqiang.qin@amlogic.com>
- <20230914054525.1180595-2-huqiang.qin@amlogic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230914054525.1180595-2-huqiang.qin@amlogic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 07:45, Huqiang Qin wrote:
-> Add a new compatible name for Amlogic T7 pin controller, and add
-> a new dt-binding header file which document the detail pin names.
-> 
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
-> ---
->  .../pinctrl/amlogic,meson-pinctrl-a1.yaml     |   1 +
->  include/dt-bindings/gpio/amlogic-t7-gpio.h    | 179 ++++++++++++++++++
->  2 files changed, 180 insertions(+)
->  create mode 100644 include/dt-bindings/gpio/amlogic-t7-gpio.h
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml b/Documentation/devicetree/bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml
-> index 4e7a456ea4cc..c7df4cd34197 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/amlogic,meson-pinctrl-a1.yaml
-> @@ -16,6 +16,7 @@ properties:
->    compatible:
->      enum:
->        - amlogic,c3-periphs-pinctrl
-> +      - amlogic,t7-periphs-pinctrl
->        - amlogic,meson-a1-periphs-pinctrl
->        - amlogic,meson-s4-periphs-pinctrl
->  
-> diff --git a/include/dt-bindings/gpio/amlogic-t7-gpio.h b/include/dt-bindings/gpio/amlogic-t7-gpio.h
-> new file mode 100644
-> index 000000000000..2bab9a99501a
-> --- /dev/null
-> +++ b/include/dt-bindings/gpio/amlogic-t7-gpio.h
+When operating in fixed phy mode and if there is repeated open/close
+phy test cases, everytime the fixed phy is registered as a new phy
+which leads to overrun after 32 iterations. It is solved by adding
+fixed_phy_unregister() in the phy_close path.
 
-Use compatible syntax.
+In phy_close path, netdev->phydev cannot be used directly in
+fixed_phy_unregister() due to two reasons,
+    - netdev->phydev is set to NULL in phy_disconnect()
+    - fixed_phy_unregister() can be called only after phy_disconnect()
+So saving the netdev->phydev in local variable 'phydev' and
+passing it to phy_disconnect().
 
-> @@ -0,0 +1,179 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-> +/*
-> + * Copyright (c) 2023 Amlogic, Inc. All rights reserved.
-> + * Author: Huqiang Qin <huqiang.qin@amlogic.com>
-> + */
-> +
-> +#ifndef _DT_BINDINGS_AMLOGIC_T7_GPIO_H
-> +#define _DT_BINDINGS_AMLOGIC_T7_GPIO_H
-> +
-> +#define	GPIOB_0		0
+Signed-off-by: Pavithra Sathyanarayanan <Pavithra.Sathyanarayanan@microchip.com>
+---
+ drivers/net/ethernet/microchip/lan743x_main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Why weird indentation?
-
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index c81cdeb4d4e7..f940895b14e8 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1466,9 +1466,15 @@ static void lan743x_phy_link_status_change(struct net_device *netdev)
+ static void lan743x_phy_close(struct lan743x_adapter *adapter)
+ {
+ 	struct net_device *netdev = adapter->netdev;
++	struct phy_device *phydev = netdev->phydev;
+ 
+ 	phy_stop(netdev->phydev);
+ 	phy_disconnect(netdev->phydev);
++
++	/* using phydev here as phy_disconnect NULLs netdev->phydev */
++	if (phy_is_pseudo_fixed_link(phydev))
++		fixed_phy_unregister(phydev);
++
+ }
+ 
+ static void lan743x_phy_interface_select(struct lan743x_adapter *adapter)
+-- 
+2.25.1
 
