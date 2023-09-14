@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BA47A000F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0CF7A0010
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbjINJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S237074AbjINJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236984AbjINJax (ORCPT
+        with ESMTP id S236830AbjINJaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:30:53 -0400
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B3B1BFB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1694683846; x=1697275846;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BikrMtESuNp+DgxwHDrljdpsjzQ302FVUhgX7muuOUk=;
-        b=lpkXwOUT0ck26Q2lbH75Gdhzvt+BV2lyGyqcC6WEEGpNfk2Yi7tAk2i8kJYN2YCR
-        Hs62PkMQrQ5ot15wAwoMXnvQNV7sMJzvJkHCHbbg/tKuQFqBU+4q1H88ogyTQHeJ
-        V+by2xr+dXJztt4bJGsLHlKOQTwRCKB2rFJp1FMGK0g=;
-X-AuditID: ac14000a-6e25770000001e37-f1-6502d2c626ef
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id B9.F2.07735.6C2D2056; Thu, 14 Sep 2023 11:30:46 +0200 (CEST)
-Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
- (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 14 Sep
- 2023 11:30:46 +0200
-From:   Wadim Egorov <w.egorov@phytec.de>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <upstream@lists.phytec.de>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: dts: ti: phycore-am64: Add RTC interrupt pin
-Date:   Thu, 14 Sep 2023 11:30:27 +0200
-Message-ID: <20230914093027.3901602-1-w.egorov@phytec.de>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Sep 2023 05:30:52 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF7B1BF2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:48 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso96137466b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1694683847; x=1695288647; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGNKandpT5NJQi5/AVhbxV6HoTTqbRKSZ06ZbK3/luU=;
+        b=EuckalfXH1JT3XTkUzTWkewdpQFiWl9xm/X1oFwXOucRbqaQYrGTv5pRzINx2+JbVB
+         GN/RhmMwwvCunOdM4h/yE/8V3FHdy/1e405EOc4Uy9+7IgnDHytdaEbkjOK6ixXStyyg
+         grBK+M9EhO4xMbIgTqOJbnPleXeJou4ay6rYc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694683847; x=1695288647;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AGNKandpT5NJQi5/AVhbxV6HoTTqbRKSZ06ZbK3/luU=;
+        b=SWW0Myd7FIy7ODC7VWLk/qLNBbf6Zlv+rJDDihvBxzVfdI+ZszVv6trhrSSA6uJoPX
+         TrUMgE7AC/KBnUD9iIxHYXP0/RlOgXr7RDWeLzDecHN3a1sK8sT3MjGCc/A1ocwv7zb+
+         bN9SWBKi0IlZZNipQNQvXZoVGaa/+istgBcbsNgjqBdicXoCv0qWrKM//0TR4LmmD0WO
+         cJLnlfK+EFfsedZldXziVnREPRTZQRe3EeUOtKnsIbph9oScJy4bU2pgIB/+j68eUcLa
+         ERR9Jp9jYxrXFeTIreptTFNxNbyfXLwnEow0b21Dq/UM2UqJd4jCNqNMrbEugMhmnTOM
+         jeQQ==
+X-Gm-Message-State: AOJu0YzBNnj3M88/i6SebnMUfy6/bZ5BJ5sxGdkqtVdvF5VVCXh5904N
+        uhBhG6R+OofqO8VtObHxuPv5AOnqTcjPTWHPoZFC4w==
+X-Google-Smtp-Source: AGHT+IErxIuUSOrHMpZqSuqUdIXCMgDX2eTt5MQnPA0+NeX4YIBWXdWis7beQb0iCZTFlc7Klj2DKQaUtyCunDyiRVo=
+X-Received: by 2002:a17:907:1c8e:b0:9a1:edb0:2a7f with SMTP id
+ nb14-20020a1709071c8e00b009a1edb02a7fmr5062869ejc.6.1694683846431; Thu, 14
+ Sep 2023 02:30:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.25.0.11]
-X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWyRpKBR/fYJaZUg9ZFShZr9p5jsph/5Byr
-        xfLPs9kt+l48ZLbY9Pgaq8XlXXPYLN78OMtk0br3CLtF9zt1i/9nP7A7cHlsWtXJ5nHn2h42
-        j81L6j36u1tYPY7f2M7k8XmTXABbFJdNSmpOZllqkb5dAlfGiXWn2QvecFbcPPeQvYGxj6OL
-        kZNDQsBE4uXRTqYuRi4OIYElTBLn19xghXCeMErcmXCXDaSKTUBd4s6Gb2AJEYFuRomTB5Yx
-        gzjMAm2MEof2rmEEqRIWcJFY9fYNK4jNIqAqceH3axYQm1fAUuLz01NsEPvkJWZe+s4OEReU
-        ODnzCVgNM1C8eetsZghbQuLgixdgthBQ/MWl5SwwvdPOvWaGsEMljmxazTSBUWAWklGzkIya
-        hWTUAkbmVYxCuZnJ2alFmdl6BRmVJanJeimpmxhBkSDCwLWDsW+OxyFGJg7GQ4wSHMxKIrxs
-        tkypQrwpiZVVqUX58UWlOanFhxilOViUxHnv9zAlCgmkJ5akZqemFqQWwWSZODilGhitpIKv
-        lzAErJdyeXFTJPrhhM0lBSeNPXZM8FT35wxa4dvMe9NturTfJN9zej8v3/At5V8ZkSl/wL+O
-        8UxwdEz3HKUuZQ0lvQyR0zMF/9k+tsz738Q968XMrM1OVfZ9hYdCuRsXPD0gJMSz4iTLXNfn
-        tXVWB/+90lv4Xp5Z5dXc7+ZZUwq/pyixFGckGmoxFxUnAgDh8L4rcgIAAA==
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-2-mszeredi@redhat.com>
+ <20230914-himmel-imposant-546bd73250a8@brauner>
+In-Reply-To: <20230914-himmel-imposant-546bd73250a8@brauner>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 14 Sep 2023 11:30:34 +0200
+Message-ID: <CAJfpegv8ZVyyZN7ppSYMD4g8i7rAP1_5UBxzSo869_SKmFhgvw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] add unique mount ID
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wth commit 16b26f602758 ("rtc: rv3028: Use IRQ flags obtained from device
-tree if available") we can now use the interrupt pin of the RTC.
-Let's add interrupt pin definitions to the SoM RTC.
+On Thu, 14 Sept 2023 at 11:04, Christian Brauner <brauner@kernel.org> wrote:
+>
+> On Wed, Sep 13, 2023 at 05:22:34PM +0200, Miklos Szeredi wrote:
+> > If a mount is released then it's mnt_id can immediately be reused.  This is
+> > bad news for user interfaces that want to uniquely identify a mount.
+> >
+> > Implementing a unique mount ID is trivial (use a 64bit counter).
+> > Unfortunately userspace assumes 32bit size and would overflow after the
+> > counter reaches 2^32.
+> >
+> > Introduce a new 64bit ID alongside the old one.  Allow new interfaces to
+> > work on both the old and new IDs by starting the counter from 2^32.
+> >
+> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> > ---
+> >  fs/mount.h                | 3 ++-
+> >  fs/namespace.c            | 4 ++++
+> >  fs/stat.c                 | 9 +++++++--
+> >  include/uapi/linux/stat.h | 1 +
+> >  4 files changed, 14 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/mount.h b/fs/mount.h
+> > index 130c07c2f8d2..a14f762b3f29 100644
+> > --- a/fs/mount.h
+> > +++ b/fs/mount.h
+> > @@ -72,7 +72,8 @@ struct mount {
+> >       struct fsnotify_mark_connector __rcu *mnt_fsnotify_marks;
+> >       __u32 mnt_fsnotify_mask;
+> >  #endif
+> > -     int mnt_id;                     /* mount identifier */
+> > +     int mnt_id;                     /* mount identifier, reused */
+> > +     u64 mnt_id_unique;              /* mount ID unique until reboot */
+> >       int mnt_group_id;               /* peer group identifier */
+> >       int mnt_expiry_mark;            /* true if marked for expiry */
+> >       struct hlist_head mnt_pins;
+> > diff --git a/fs/namespace.c b/fs/namespace.c
+> > index e157efc54023..de47c5f66e17 100644
+> > --- a/fs/namespace.c
+> > +++ b/fs/namespace.c
+> > @@ -68,6 +68,9 @@ static u64 event;
+> >  static DEFINE_IDA(mnt_id_ida);
+> >  static DEFINE_IDA(mnt_group_ida);
+> >
+> > +/* Don't allow confusion with mount ID allocated wit IDA */
+> > +static atomic64_t mnt_id_ctr = ATOMIC64_INIT(1ULL << 32);
+>
+> Hm, is your concern that userspace confuses these two values? If so, I
+> think we shouldn't worry about this.
 
-Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
----
- arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Yes, one concern is that humans confuse the old and the new ID.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-index 1c2c8f0daca9..f87f09d83c95 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-@@ -126,6 +126,12 @@ AM64X_IOPAD(0x0028, PIN_INPUT, 0)	/* (M17) OSPI0_D7 */
- 			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0)	/* (L19) OSPI0_CSn0 */
- 		>;
- 	};
-+
-+	rtc_pins_default: rtc-defaults-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0278, PIN_INPUT, 7)	/* (C19) EXTINTn.GPIO1_70 */
-+		>;
-+	};
- };
- 
- &cpsw3g {
-@@ -177,6 +183,11 @@ eeprom@50 {
- 	i2c_som_rtc: rtc@52 {
- 		compatible = "microcrystal,rv3028";
- 		reg = <0x52>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&rtc_pins_default>;
-+		interrupt-parent = <&main_gpio1>;
-+		interrupts = <70 IRQ_TYPE_EDGE_FALLING>;
-+		wakeup-source;
- 	};
- };
- 
--- 
-2.25.1
+I also think it makes sense to allow the new interfaces to look up the
+mount based on either the old or the new ID.   But I could be wrong
+there, since that might encourage bad code.  Maybe the new interface
+should only use take the new ID, which means no mixed use of
+/proc/$$/mountinfo and statmnt/listmnt.
 
+>
+> If a userspace program retrieves a mntid and then confuses itself about
+> what mnt id they're talking about something's very wrong anyway. So I'd
+> rather not see us waste 32 bits just for that.
+
+This is wasting a quarter of a billionth of the ID space.  We are
+surely not concerned about that.
+
+Thanks,
+Miklos
