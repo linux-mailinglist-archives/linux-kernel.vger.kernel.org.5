@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311467A0D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A2B7A0D09
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 20:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241964AbjINSjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 14:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S241973AbjINSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 14:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241739AbjINSi6 (ORCPT
+        with ESMTP id S241745AbjINSi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Sep 2023 14:38:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BFB1FFB;
-        Thu, 14 Sep 2023 11:38:49 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A441FFD;
+        Thu, 14 Sep 2023 11:38:50 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694716728;
+        s=2020; t=1694716729;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lSEvjVL+BxuTqhoV6y++5iFzUZwHV0OnCUueADVyxEA=;
-        b=IVquxk0Z+ro6LFHKJw51lwIPigfWCMfmclUU2+JcehI3LOaX5BkNwJRLblrY0cbagILQic
-        RqiElXu91Wnj1AhvgvDxpBl8H4wZs16fjHk6JDxf7RHlZytj1RGhivPhRjLqRbQGhMxpEy
-        vg/kQ1k3mVm1xZnPUIn7+mrqPqddMnw5g3lnvkbYeAfM5GK9kjiAKhJJO1cRKYHo3CMe2D
-        bbcknb4FzDKQZjdNHh8XHtx01Lip0J/J3MtvXpgDJScQb8lF5ZDAXULO+IUJr1FN+XgeG5
-        WasYgGIMC0IPIVLI1Q5P/xd2hLixAvMXU+m/Fa8R6mu0GRkyln7ivVnmHKqBqA==
+        bh=bAQMyCFi9PO4xpR/WPWLi4jhKKcsg8hehn8chVaaTl0=;
+        b=n2xCF/DUjDRzahmUSJxlSWtqGEYnXikTuRJGO0brUgFo2xy+azTzwwyTkZQNjo2UtThea7
+        6Bj6FHVBCQWeV2ZRasFqBo0ev16KuZO4Z/2Dmh9F+/Uiy4YQqcvXCUKI9WXIJWy13kiOFV
+        njJOY6stZWqb3FId6kBIv374vYa8WlyJvXiRxupEVrKfVO6HmihZfrUwaYlElGK8Avws4a
+        KRYBVPxog9AXlkbsxYS+nBFZ3qtL5FhcNCgQXfqgfplsxw+PQ6yXHjleI2Ixi4sl/t+RFV
+        vYvVuQKs//wBKHK7pFppuYNN0V74DEvdof27v/pzsUV1rUhJe6hwLZjED2PO+g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694716728;
+        s=2020e; t=1694716729;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lSEvjVL+BxuTqhoV6y++5iFzUZwHV0OnCUueADVyxEA=;
-        b=r6+fh09oHfENkWCN4lF8MffdwEGUKNIjvSkxoPrQxnv1rhnu/nekiAEHappQ9NFpa+bmJT
-        nA9poxy/eDhflsDg==
+        bh=bAQMyCFi9PO4xpR/WPWLi4jhKKcsg8hehn8chVaaTl0=;
+        b=KdZ4Z6jUDDh6cAqCYOcEnIuqTngw9Nw3VLNS+kOfej1f0HNVUKkr2RbnSjsqky7RxWlaNt
+        7pOCpZiPfAabqLDA==
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Baruch Siach <baruch@tkos.co.il>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Richard GENOUD <richard.genoud@gmail.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH tty v1 24/74] serial: digicolor: Use port lock wrappers
-Date:   Thu, 14 Sep 2023 20:43:41 +0206
-Message-Id: <20230914183831.587273-25-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: [PATCH tty v1 25/74] serial: dz: Use port lock wrappers
+Date:   Thu, 14 Sep 2023 20:43:42 +0206
+Message-Id: <20230914183831.587273-26-john.ogness@linutronix.de>
 In-Reply-To: <20230914183831.587273-1-john.ogness@linutronix.de>
 References: <20230914183831.587273-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -85,85 +82,134 @@ Converted with coccinelle. No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/tty/serial/digicolor-usart.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/tty/serial/dz.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/tty/serial/digicolor-usart.c b/drivers/tty/serial/digicolor-usart.c
-index 128b5479e813..5004125f3045 100644
---- a/drivers/tty/serial/digicolor-usart.c
-+++ b/drivers/tty/serial/digicolor-usart.c
-@@ -133,7 +133,7 @@ static void digicolor_uart_rx(struct uart_port *port)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	while (1) {
- 		u8 status, ch, ch_flag;
-@@ -172,7 +172,7 @@ static void digicolor_uart_rx(struct uart_port *port)
- 				 ch_flag);
+diff --git a/drivers/tty/serial/dz.c b/drivers/tty/serial/dz.c
+index 667f52e83277..6df7af9edc1c 100644
+--- a/drivers/tty/serial/dz.c
++++ b/drivers/tty/serial/dz.c
+@@ -268,9 +268,9 @@ static inline void dz_transmit_chars(struct dz_mux *mux)
+ 	}
+ 	/* If nothing to do or stopped or hardware stopped. */
+ 	if (uart_circ_empty(xmit) || uart_tx_stopped(&dport->port)) {
+-		spin_lock(&dport->port.lock);
++		uart_port_lock(&dport->port);
+ 		dz_stop_tx(&dport->port);
+-		spin_unlock(&dport->port.lock);
++		uart_port_unlock(&dport->port);
+ 		return;
  	}
  
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+@@ -287,9 +287,9 @@ static inline void dz_transmit_chars(struct dz_mux *mux)
  
- 	tty_flip_buffer_push(&port->state->port);
- }
-@@ -185,7 +185,7 @@ static void digicolor_uart_tx(struct uart_port *port)
- 	if (digicolor_uart_tx_full(port))
- 		return;
- 
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
- 
- 	if (port->x_char) {
- 		writeb_relaxed(port->x_char, port->membase + UA_EMI_REC);
-@@ -211,7 +211,7 @@ static void digicolor_uart_tx(struct uart_port *port)
- 		uart_write_wakeup(port);
- 
- out:
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+ 	/* Are we are done. */
+ 	if (uart_circ_empty(xmit)) {
+-		spin_lock(&dport->port.lock);
++		uart_port_lock(&dport->port);
+ 		dz_stop_tx(&dport->port);
+-		spin_unlock(&dport->port.lock);
++		uart_port_unlock(&dport->port);
+ 	}
  }
  
- static irqreturn_t digicolor_uart_int(int irq, void *dev_id)
-@@ -333,7 +333,7 @@ static void digicolor_uart_set_termios(struct uart_port *port,
- 		port->ignore_status_mask |= UA_STATUS_OVERRUN_ERR
- 			| UA_STATUS_PARITY_ERR | UA_STATUS_FRAME_ERR;
+@@ -415,14 +415,14 @@ static int dz_startup(struct uart_port *uport)
+ 		return ret;
+ 	}
  
--	spin_lock_irqsave(&port->lock, flags);
-+	uart_port_lock_irqsave(port, &flags);
+-	spin_lock_irqsave(&dport->port.lock, flags);
++	uart_port_lock_irqsave(&dport->port, &flags);
  
- 	uart_update_timeout(port, termios->c_cflag, baud);
+ 	/* Enable interrupts.  */
+ 	tmp = dz_in(dport, DZ_CSR);
+ 	tmp |= DZ_RIE | DZ_TIE;
+ 	dz_out(dport, DZ_CSR, tmp);
  
-@@ -341,7 +341,7 @@ static void digicolor_uart_set_termios(struct uart_port *port,
- 	writeb_relaxed(divisor & 0xff, port->membase + UA_HBAUD_LO);
- 	writeb_relaxed(divisor >> 8, port->membase + UA_HBAUD_HI);
+-	spin_unlock_irqrestore(&dport->port.lock, flags);
++	uart_port_unlock_irqrestore(&dport->port, flags);
  
--	spin_unlock_irqrestore(&port->lock, flags);
-+	uart_port_unlock_irqrestore(port, flags);
+ 	return 0;
  }
+@@ -443,9 +443,9 @@ static void dz_shutdown(struct uart_port *uport)
+ 	int irq_guard;
+ 	u16 tmp;
  
- static const char *digicolor_uart_type(struct uart_port *port)
-@@ -398,14 +398,14 @@ static void digicolor_uart_console_write(struct console *co, const char *c,
- 	int locked = 1;
+-	spin_lock_irqsave(&dport->port.lock, flags);
++	uart_port_lock_irqsave(&dport->port, &flags);
+ 	dz_stop_tx(&dport->port);
+-	spin_unlock_irqrestore(&dport->port.lock, flags);
++	uart_port_unlock_irqrestore(&dport->port, flags);
  
- 	if (oops_in_progress)
--		locked = spin_trylock_irqsave(&port->lock, flags);
-+		locked = uart_port_trylock_irqsave(port, &flags);
+ 	irq_guard = atomic_add_return(-1, &mux->irq_guard);
+ 	if (!irq_guard) {
+@@ -491,14 +491,14 @@ static void dz_break_ctl(struct uart_port *uport, int break_state)
+ 	unsigned long flags;
+ 	unsigned short tmp, mask = 1 << dport->port.line;
+ 
+-	spin_lock_irqsave(&uport->lock, flags);
++	uart_port_lock_irqsave(uport, &flags);
+ 	tmp = dz_in(dport, DZ_TCR);
+ 	if (break_state)
+ 		tmp |= mask;
  	else
--		spin_lock_irqsave(&port->lock, flags);
-+		uart_port_lock_irqsave(port, &flags);
+ 		tmp &= ~mask;
+ 	dz_out(dport, DZ_TCR, tmp);
+-	spin_unlock_irqrestore(&uport->lock, flags);
++	uart_port_unlock_irqrestore(uport, flags);
+ }
  
- 	uart_console_write(port, c, n, digicolor_uart_console_putchar);
+ static int dz_encode_baud_rate(unsigned int baud)
+@@ -608,7 +608,7 @@ static void dz_set_termios(struct uart_port *uport, struct ktermios *termios,
+ 	if (termios->c_cflag & CREAD)
+ 		cflag |= DZ_RXENAB;
  
- 	if (locked)
--		spin_unlock_irqrestore(&port->lock, flags);
-+		uart_port_unlock_irqrestore(port, flags);
+-	spin_lock_irqsave(&dport->port.lock, flags);
++	uart_port_lock_irqsave(&dport->port, &flags);
  
- 	/* Wait for transmitter to become empty */
+ 	uart_update_timeout(uport, termios->c_cflag, baud);
+ 
+@@ -631,7 +631,7 @@ static void dz_set_termios(struct uart_port *uport, struct ktermios *termios,
+ 	if (termios->c_iflag & IGNBRK)
+ 		dport->port.ignore_status_mask |= DZ_BREAK;
+ 
+-	spin_unlock_irqrestore(&dport->port.lock, flags);
++	uart_port_unlock_irqrestore(&dport->port, flags);
+ }
+ 
+ /*
+@@ -645,12 +645,12 @@ static void dz_pm(struct uart_port *uport, unsigned int state,
+ 	struct dz_port *dport = to_dport(uport);
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&dport->port.lock, flags);
++	uart_port_lock_irqsave(&dport->port, &flags);
+ 	if (state < 3)
+ 		dz_start_tx(&dport->port);
+ 	else
+ 		dz_stop_tx(&dport->port);
+-	spin_unlock_irqrestore(&dport->port.lock, flags);
++	uart_port_unlock_irqrestore(&dport->port, flags);
+ }
+ 
+ 
+@@ -811,7 +811,7 @@ static void dz_console_putchar(struct uart_port *uport, unsigned char ch)
+ 	unsigned short csr, tcr, trdy, mask;
+ 	int loops = 10000;
+ 
+-	spin_lock_irqsave(&dport->port.lock, flags);
++	uart_port_lock_irqsave(&dport->port, &flags);
+ 	csr = dz_in(dport, DZ_CSR);
+ 	dz_out(dport, DZ_CSR, csr & ~DZ_TIE);
+ 	tcr = dz_in(dport, DZ_TCR);
+@@ -819,7 +819,7 @@ static void dz_console_putchar(struct uart_port *uport, unsigned char ch)
+ 	mask = tcr;
+ 	dz_out(dport, DZ_TCR, mask);
+ 	iob();
+-	spin_unlock_irqrestore(&dport->port.lock, flags);
++	uart_port_unlock_irqrestore(&dport->port, flags);
+ 
  	do {
+ 		trdy = dz_in(dport, DZ_CSR);
 -- 
 2.39.2
 
