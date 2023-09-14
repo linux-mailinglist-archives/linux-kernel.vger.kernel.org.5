@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C71BB79F67E
+	by mail.lfdr.de (Postfix) with ESMTP id 29AAD79F67D
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbjINBsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
+        id S233597AbjINBtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbjINBsw (ORCPT
+        with ESMTP id S233422AbjINBtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:48:52 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C8E1727
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:48:48 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c3f97f2239so3666535ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:48:48 -0700 (PDT)
+        Wed, 13 Sep 2023 21:49:01 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94971BD7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:48:56 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3ab244e7113so238416b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694656127; x=1695260927; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694656136; x=1695260936; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7G9SEUQPbBc7hK7MqcgeahM6vrAJ1AHKjUYjsBXeK4U=;
-        b=XHurYXWaDyYScXpqXdlWf/P1sKzKTwdH4BhS4nVfIF6rNJ/yYvt/35J1Lp4z58pGtO
-         Fn/l5J+bmPuGTSaok+0z9wxj3lK5ursZ/nLVZMWQkccnVDyRqgbC8I4gfx0CpDpJ/XHP
-         0Pem6KbO6/8hXEHbqb7tD5uM1tiAhPRKPEr+iIjDwviY9weeX7ukZ71MDJtsU84KarYs
-         YltcP3L28WPBnaIZYNDm1gPdzPEuNc1JFoP+eDqTapzCNkEsVyqLEMZ2EVMuTYpMAXGu
-         JWuQ2gAuXxOVaW8OBjR4bCzu8PT3ArMJN/XsQegPII83Krmc09dX8OLGTWSbtSq59YFZ
-         J8JQ==
+        bh=4Hs9Ustk4EmlUB2JGtZSycxavIeFuWFEPg+DdS2Trtk=;
+        b=CCvE2yJYHw6mwHkpNSOfUkoItm+UKu25KXrqjFXNpCrAs/RsPCO2P3/gfcQ9narGah
+         X5Y+mZAE1rACbqDMffDUiHDIM7L5VvAuy3tMowpVgXjCV/Ava83tptjskXcmu6W3Vu4W
+         Seg5t5tigHnHUjoeYJCK14OFH6U+2OJIueHEc6ivSKbKdS2mZqZxkjBDMAQWaVmRwAv+
+         dpGnxUKm6zuCEo1FIsNFiuqcKWdr+NU2o9NxKokOdKcr8jnRyT8+KsVf3RH4pRD2jDSF
+         nmJaxIMdX8FSmE9pK9spCB5R16vK00lj0vZA7ZxfRGlHcMKO3wff0/Tt0TteYj4SO/WB
+         z1Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694656127; x=1695260927;
+        d=1e100.net; s=20230601; t=1694656136; x=1695260936;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7G9SEUQPbBc7hK7MqcgeahM6vrAJ1AHKjUYjsBXeK4U=;
-        b=r1VkHmtBxTsB/eNrSPjZbNJ4V87FoyB4qbrazFensQIfjPMBjFLwqVOchbzGlzHJod
-         8ycVx2ZBQIx9YMR7ZD1++LKL2jTQr0iiUB8tXtl5jo6r7wDob3GnJ85nLvvFsARK7LN+
-         ygJ2rb7MMfESLY5s0hAWKX12uLzXGYGke4LH33qltjKx6TUMDkNa/bm00mL6OLhmbi8E
-         txo6pjqBR/9tbJfbv7YWn78tYBkSHj53pg+jhAJytn3twfhaKrLOKt+YVeHblIYnQXR7
-         5QUqT+bBc57F0MKsp3iadjAvHl8584FuAZnwrmV5774EkeI27PBD9d3o77IFtPLAa7A3
-         2DmQ==
-X-Gm-Message-State: AOJu0YzSm1XZ09wqO7T5Q+478tTpyO9//R4Zw6XZXCRUBxaTW7Frl3El
-        69VXkkwOLQ7kvyGms7EQ0e3iaRPy7VM=
-X-Google-Smtp-Source: AGHT+IFbGFW+3U06+CjLKFiFdLo5Zi8mm499sOVRPGgccCDsmopa8SPAeHzdu/6vPihn8fjldwF1Cw==
-X-Received: by 2002:a17:903:2442:b0:1bd:d911:2a85 with SMTP id l2-20020a170903244200b001bdd9112a85mr5308501pls.12.1694656126867;
-        Wed, 13 Sep 2023 18:48:46 -0700 (PDT)
+        bh=4Hs9Ustk4EmlUB2JGtZSycxavIeFuWFEPg+DdS2Trtk=;
+        b=o+47whgwKj5AjiWDjgXLmcnjCAe+ntMtUzWGFEGEM2ZDLKQE4WUcZjPnEXw+7xaDpq
+         oEN0Icn2+gHShzK/BR7ZoYBeoXCkd9t4Ar9Q7Dkousz4D0iPjdZ6ds1/Lljcmf/1Ox+6
+         zRcTAvMoyliOSzQVTKfEbSQHsKr2W6hCBIMRlUN3zvhaIFlJ096TRFTtdmgrrsW5Xm2n
+         7JI30CFmjmo4FLQabrfBkrp5MUhmFTRfcKbfH8q12BU6Xf6rnjgfEi8ueVYNX4RGaFxl
+         afih8Wvv2riyk7vWdLcMbEMGTGOl4Au1sTvpj6O21PMKXxav9z+p55l6OlfbMYqsC7QX
+         A7xQ==
+X-Gm-Message-State: AOJu0Yw/y5ic6fFHhmiZ/9v9QS44T2H2/mNr7/kBoiAJur0EbLyiibHh
+        7pYHiAlx9G+DPY5aKrMDtb+apuWtTQU=
+X-Google-Smtp-Source: AGHT+IFKpqOC1TnPZX6h7NwaIl5G2oUG1urmVx7EzaQLrOjxvgod80Yghx4alpGj8Va/iZv5xya7Dg==
+X-Received: by 2002:a05:6808:309a:b0:3a9:ea90:5901 with SMTP id bl26-20020a056808309a00b003a9ea905901mr5431000oib.56.1694656135025;
+        Wed, 13 Sep 2023 18:48:55 -0700 (PDT)
 Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:82b1:d7c2:2eaf:61e7])
-        by smtp.gmail.com with ESMTPSA id jw12-20020a170903278c00b001b89891bfc4sm261985plb.199.2023.09.13.18.48.46
+        by smtp.gmail.com with ESMTPSA id g7-20020aa78187000000b0068c10187dc3sm195301pfi.168.2023.09.13.18.48.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 18:48:46 -0700 (PDT)
+        Wed, 13 Sep 2023 18:48:54 -0700 (PDT)
 From:   Max Filippov <jcmvbkbc@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] xtensa: import ESP32 core variant
-Date:   Wed, 13 Sep 2023 18:48:29 -0700
-Message-Id: <20230914014829.683779-1-jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: import ESP32S3 core variant
+Date:   Wed, 13 Sep 2023 18:48:52 -0700
+Message-Id: <20230914014852.683830-1-jcmvbkbc@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,25 +63,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Import processor configuration for the Xtensa core found in Espressif
-ESP32 SoC.
+ESP32S3 SoC.
 
 Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- .../variants/esp32/include/variant/core.h     | 655 ++++++++++++++++++
- .../variants/esp32/include/variant/tie-asm.h  | 323 +++++++++
- .../variants/esp32/include/variant/tie.h      | 182 +++++
- 3 files changed, 1160 insertions(+)
- create mode 100644 arch/xtensa/variants/esp32/include/variant/core.h
- create mode 100644 arch/xtensa/variants/esp32/include/variant/tie-asm.h
- create mode 100644 arch/xtensa/variants/esp32/include/variant/tie.h
+ .../variants/esp32s3/include/variant/core.h   | 681 ++++++++++++++++++
+ .../esp32s3/include/variant/tie-asm.h         | 429 +++++++++++
+ .../variants/esp32s3/include/variant/tie.h    | 207 ++++++
+ 3 files changed, 1317 insertions(+)
+ create mode 100644 arch/xtensa/variants/esp32s3/include/variant/core.h
+ create mode 100644 arch/xtensa/variants/esp32s3/include/variant/tie-asm.h
+ create mode 100644 arch/xtensa/variants/esp32s3/include/variant/tie.h
 
-diff --git a/arch/xtensa/variants/esp32/include/variant/core.h b/arch/xtensa/variants/esp32/include/variant/core.h
+diff --git a/arch/xtensa/variants/esp32s3/include/variant/core.h b/arch/xtensa/variants/esp32s3/include/variant/core.h
 new file mode 100644
-index 000000000000..f3f4e45f001f
+index 000000000000..6c8fc963c0aa
 --- /dev/null
-+++ b/arch/xtensa/variants/esp32/include/variant/core.h
-@@ -0,0 +1,655 @@
-+/* 
++++ b/arch/xtensa/variants/esp32s3/include/variant/core.h
+@@ -0,0 +1,681 @@
++/*
 + * xtensa/config/core-isa.h -- HAL definitions that are dependent on Xtensa
 + *				processor CORE configuration
 + *
@@ -90,7 +90,7 @@ index 000000000000..f3f4e45f001f
 +
 +/* Xtensa processor core configuration information.
 +
-+   Copyright (c) 1999-2016 Tensilica Inc.
++   Customer ID=15128; Build=0x90f1f; Copyright (c) 1999-2021 Tensilica Inc.
 +
 +   Permission is hereby granted, free of charge, to any person obtaining
 +   a copy of this software and associated documentation files (the
@@ -133,7 +133,7 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_WINDOWED		1	/* windowed registers option */
 +#define XCHAL_NUM_AREGS			64	/* num of physical addr regs */
 +#define XCHAL_NUM_AREGS_LOG2		6	/* log2(XCHAL_NUM_AREGS) */
-+#define XCHAL_MAX_INSTRUCTION_SIZE	3	/* max instr bytes (3..8) */
++#define XCHAL_MAX_INSTRUCTION_SIZE	4	/* max instr bytes (3..8) */
 +#define XCHAL_HAVE_DEBUG		1	/* debug option */
 +#define XCHAL_HAVE_DENSITY		1	/* 16-bit instructions */
 +#define XCHAL_HAVE_LOOPS		1	/* zero-overhead loops */
@@ -151,6 +151,7 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_ABSOLUTE_LITERALS	0	/* non-PC-rel (extended) L32R */
 +#define XCHAL_HAVE_CONST16		0	/* CONST16 instruction */
 +#define XCHAL_HAVE_ADDX			1	/* ADDX#/SUBX# instructions */
++#define XCHAL_HAVE_EXCLUSIVE            0	/* L32EX/S32EX instructions */
 +#define XCHAL_HAVE_WIDE_BRANCHES	0	/* B*.W18 or B*.W15 instr's */
 +#define XCHAL_HAVE_PREDICTED_BRANCHES	0	/* B[EQ/EQZ/NE/NEZ]T instr's */
 +#define XCHAL_HAVE_CALL4AND12		1	/* (obsolete option) */
@@ -178,48 +179,68 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_CP_MAXCFG			8	/* max allowed cp id plus one */
 +#define XCHAL_HAVE_MAC16		1	/* MAC16 package */
 +
-+#define XCHAL_HAVE_FUSION		 0	/* Fusion*/
-+#define XCHAL_HAVE_FUSION_FP	 0	        /* Fusion FP option */
-+#define XCHAL_HAVE_FUSION_LOW_POWER 0	/* Fusion Low Power option */
-+#define XCHAL_HAVE_FUSION_AES	 0	        /* Fusion BLE/Wifi AES-128 CCM option */
-+#define XCHAL_HAVE_FUSION_CONVENC	 0       /* Fusion Conv Encode option */
-+#define XCHAL_HAVE_FUSION_LFSR_CRC	 0	/* Fusion LFSR-CRC option */
-+#define XCHAL_HAVE_FUSION_BITOPS	 0	/* Fusion Bit Operations Support option */
-+#define XCHAL_HAVE_FUSION_AVS	 0	/* Fusion AVS option */
-+#define XCHAL_HAVE_FUSION_16BIT_BASEBAND	 0	/* Fusion 16-bit Baseband option */
-+#define XCHAL_HAVE_FUSION_VITERBI        0     /* Fusion Viterbi option */
-+#define XCHAL_HAVE_FUSION_SOFTDEMAP      0   /* Fusion Soft Bit Demap option */
++#define XCHAL_HAVE_FUSION		0	/* Fusion*/
++#define XCHAL_HAVE_FUSION_FP		0	/* Fusion FP option */
++#define XCHAL_HAVE_FUSION_LOW_POWER	0	/* Fusion Low Power option */
++#define XCHAL_HAVE_FUSION_AES		0	/* Fusion BLE/Wifi AES-128 CCM option */
++#define XCHAL_HAVE_FUSION_CONVENC	0	/* Fusion Conv Encode option */
++#define XCHAL_HAVE_FUSION_LFSR_CRC	0	/* Fusion LFSR-CRC option */
++#define XCHAL_HAVE_FUSION_BITOPS	0	/* Fusion Bit Operations Support option */
++#define XCHAL_HAVE_FUSION_AVS		0	/* Fusion AVS option */
++#define XCHAL_HAVE_FUSION_16BIT_BASEBAND 0	/* Fusion 16-bit Baseband option */
++#define XCHAL_HAVE_FUSION_VITERBI	0	/* Fusion Viterbi option */
++#define XCHAL_HAVE_FUSION_SOFTDEMAP	0	/* Fusion Soft Bit Demap option */
 +#define XCHAL_HAVE_HIFIPRO		0	/* HiFiPro Audio Engine pkg */
++#define XCHAL_HAVE_HIFI5		0	/* HiFi5 Audio Engine pkg */
++#define XCHAL_HAVE_HIFI5_NN_MAC		0	/* HiFi5 Audio Engine NN-MAC option */
++#define XCHAL_HAVE_HIFI5_VFPU		0	/* HiFi5 Audio Engine Single-Precision VFPU option */
++#define XCHAL_HAVE_HIFI5_HP_VFPU	0	/* HiFi5 Audio Engine Half-Precision VFPU option */
 +#define XCHAL_HAVE_HIFI4		0	/* HiFi4 Audio Engine pkg */
 +#define XCHAL_HAVE_HIFI4_VFPU		0	/* HiFi4 Audio Engine VFPU option */
 +#define XCHAL_HAVE_HIFI3		0	/* HiFi3 Audio Engine pkg */
 +#define XCHAL_HAVE_HIFI3_VFPU		0	/* HiFi3 Audio Engine VFPU option */
++#define XCHAL_HAVE_HIFI3Z		0	/* HiFi3Z Audio Engine pkg */
++#define XCHAL_HAVE_HIFI3Z_VFPU	0	/* HiFi3Z Audio Engine VFPU option */
 +#define XCHAL_HAVE_HIFI2		0	/* HiFi2 Audio Engine pkg */
 +#define XCHAL_HAVE_HIFI2EP		0	/* HiFi2EP */
-+#define XCHAL_HAVE_HIFI_MINI		0	
++#define XCHAL_HAVE_HIFI_MINI		0
 +
 +
-+#define XCHAL_HAVE_VECTORFPU2005	0	/* vector or user floating-point pkg */
-+#define XCHAL_HAVE_USER_DPFPU         0       /* user DP floating-point pkg */
-+#define XCHAL_HAVE_USER_SPFPU         0       /* user DP floating-point pkg */
-+#define XCHAL_HAVE_FP                 1      /* single prec floating point */
-+#define XCHAL_HAVE_FP_DIV             1  /* FP with DIV instructions */
-+#define XCHAL_HAVE_FP_RECIP           1        /* FP with RECIP instructions */
-+#define XCHAL_HAVE_FP_SQRT            1 /* FP with SQRT instructions */
-+#define XCHAL_HAVE_FP_RSQRT           1        /* FP with RSQRT instructions */
-+#define XCHAL_HAVE_DFP                        0     /* double precision FP pkg */
-+#define XCHAL_HAVE_DFP_DIV            0 /* DFP with DIV instructions */
-+#define XCHAL_HAVE_DFP_RECIP          0       /* DFP with RECIP instructions*/
-+#define XCHAL_HAVE_DFP_SQRT           0        /* DFP with SQRT instructions */
-+#define XCHAL_HAVE_DFP_RSQRT          0       /* DFP with RSQRT instructions*/
-+#define XCHAL_HAVE_DFP_ACCEL		1	/* double precision FP acceleration pkg */
-+#define XCHAL_HAVE_DFP_accel		XCHAL_HAVE_DFP_ACCEL				/* for backward compatibility */
 +
-+#define XCHAL_HAVE_DFPU_SINGLE_ONLY    1                 	/* DFPU Coprocessor, single precision only */
-+#define XCHAL_HAVE_DFPU_SINGLE_DOUBLE  0               	/* DFPU Coprocessor, single and double precision */
++#define XCHAL_HAVE_VECTORFPU2005	0	/* vector floating-point pkg */
++#define XCHAL_HAVE_USER_DPFPU		0       /* user DP floating-point pkg */
++#define XCHAL_HAVE_USER_SPFPU		0       /* user SP floating-point pkg */
++#define XCHAL_HAVE_FP			1	/* single prec floating point */
++#define XCHAL_HAVE_FP_DIV		1	/* FP with DIV instructions */
++#define XCHAL_HAVE_FP_RECIP		1	/* FP with RECIP instructions */
++#define XCHAL_HAVE_FP_SQRT		1	/* FP with SQRT instructions */
++#define XCHAL_HAVE_FP_RSQRT		1	/* FP with RSQRT instructions */
++#define XCHAL_HAVE_DFP			0	/* double precision FP pkg */
++#define XCHAL_HAVE_DFP_DIV		0	/* DFP with DIV instructions */
++#define XCHAL_HAVE_DFP_RECIP		0	/* DFP with RECIP instructions*/
++#define XCHAL_HAVE_DFP_SQRT		0	/* DFP with SQRT instructions */
++#define XCHAL_HAVE_DFP_RSQRT		0	/* DFP with RSQRT instructions*/
++#define XCHAL_HAVE_DFP_ACCEL		0	/* double precision FP acceleration pkg */
++#define XCHAL_HAVE_DFP_accel		XCHAL_HAVE_DFP_ACCEL	/* for backward compatibility */
++
++#define XCHAL_HAVE_DFPU_SINGLE_ONLY	1	/* DFPU Coprocessor, single precision only */
++#define XCHAL_HAVE_DFPU_SINGLE_DOUBLE	0	/* DFPU Coprocessor, single and double precision */
 +#define XCHAL_HAVE_VECTRA1		0	/* Vectra I  pkg */
 +#define XCHAL_HAVE_VECTRALX		0	/* Vectra LX pkg */
-+#define XCHAL_HAVE_PDX4		        0	/* PDX4 */
++
++#define XCHAL_HAVE_FUSIONG		0    /* FusionG */
++#define XCHAL_HAVE_FUSIONG3		0    /* FusionG3 */
++#define XCHAL_HAVE_FUSIONG6		0    /* FusionG6 */
++#define XCHAL_HAVE_FUSIONG_SP_VFPU	0    /* sp_vfpu option on FusionG */
++#define XCHAL_HAVE_FUSIONG_DP_VFPU	0    /* dp_vfpu option on FusionG */
++#define XCHAL_FUSIONG_SIMD32		0    /* simd32 for FusionG */
++
++#define XCHAL_HAVE_PDX			0    /* PDX */
++#define XCHAL_PDX_SIMD32		0    /* simd32 for PDX */
++#define XCHAL_HAVE_PDX4			0    /* PDX4 */
++#define XCHAL_HAVE_PDX8			0    /* PDX8 */
++#define XCHAL_HAVE_PDX16		0    /* PDX16 */
++
 +#define XCHAL_HAVE_CONNXD2		0	/* ConnX D2 pkg */
 +#define XCHAL_HAVE_CONNXD2_DUALLSFLIX   0	/* ConnX D2 & Dual LoadStore Flix */
 +#define XCHAL_HAVE_BBE16		0	/* ConnX BBE16 pkg */
@@ -227,6 +248,7 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_BBE16_VECDIV		0	/* BBE16 & vector divide */
 +#define XCHAL_HAVE_BBE16_DESPREAD	0	/* BBE16 & despread */
 +#define XCHAL_HAVE_BBENEP		0	/* ConnX BBENEP pkgs */
++#define XCHAL_HAVE_BBENEP_SP_VFPU	0      /* sp_vfpu option on BBE-EP */
 +#define XCHAL_HAVE_BSP3			0	/* ConnX BSP3 pkg */
 +#define XCHAL_HAVE_BSP3_TRANSPOSE	0	/* BSP3 & transpose32x32 */
 +#define XCHAL_HAVE_SSP16		0	/* ConnX SSP16 pkg */
@@ -234,9 +256,18 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_TURBO16		0	/* ConnX Turbo16 pkg */
 +#define XCHAL_HAVE_BBP16		0	/* ConnX BBP16 pkg */
 +#define XCHAL_HAVE_FLIX3		0	/* basic 3-way FLIX option */
-+#define XCHAL_HAVE_GRIVPEP              0   /*  GRIVPEP is General Release of IVPEP */
-+#define XCHAL_HAVE_GRIVPEP_HISTOGRAM    0   /* Histogram option on GRIVPEP */
++#define XCHAL_HAVE_GRIVPEP		0	/* General Release of IVPEP */
++#define XCHAL_HAVE_GRIVPEP_HISTOGRAM	0       /* Histogram option on GRIVPEP */
 +
++#define XCHAL_HAVE_VISION	        0     /* Vision P5/P6 */
++#define XCHAL_VISION_SIMD16             0     /* simd16 for Vision P5/P6 */
++#define XCHAL_VISION_TYPE               0     /* Vision P5, P6, or P3 */
++#define XCHAL_VISION_QUAD_MAC_TYPE      0     /* quad_mac option on Vision P6 */
++#define XCHAL_HAVE_VISION_HISTOGRAM     0     /* histogram option on Vision P5/P6 */
++#define XCHAL_HAVE_VISION_SP_VFPU       0     /* sp_vfpu option on Vision P5/P6 */
++#define XCHAL_HAVE_VISION_HP_VFPU       0     /* hp_vfpu option on Vision P6 */
++
++#define XCHAL_HAVE_VISIONC	        0     /* Vision C */
 +
 +/*----------------------------------------------------------------------
 +				MISC
@@ -245,8 +276,8 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_NUM_LOADSTORE_UNITS	1	/* load/store units */
 +#define XCHAL_NUM_WRITEBUFFER_ENTRIES	4	/* size of write buffer */
 +#define XCHAL_INST_FETCH_WIDTH		4	/* instr-fetch width in bytes */
-+#define XCHAL_DATA_WIDTH		4	/* data width in bytes */
-+#define XCHAL_DATA_PIPE_DELAY		2	/* d-side pipeline delay
++#define XCHAL_DATA_WIDTH		16	/* data width in bytes */
++#define XCHAL_DATA_PIPE_DELAY		1	/* d-side pipeline delay
 +						   (1 = 5-stage, 2 = 7-stage) */
 +#define XCHAL_CLOCK_GATING_GLOBAL	1	/* global clock gating */
 +#define XCHAL_CLOCK_GATING_FUNCUNIT	1	/* funct. unit clock gating */
@@ -256,34 +287,34 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_UNALIGNED_LOAD_HW		1	/* unaligned loads work in hw */
 +#define XCHAL_UNALIGNED_STORE_HW	1	/* unaligned stores work in hw*/
 +
-+#define XCHAL_SW_VERSION		1100003	/* sw version of this header */
++#define XCHAL_SW_VERSION		1200012	/* sw version of this header */
 +
-+#define XCHAL_CORE_ID			"esp32_v3_49_prod"	/* alphanum core name
++#define XCHAL_CORE_ID			"LX7_ESP32_S3_MP"	/* alphanum core name
 +						   (CoreID) set in the Xtensa
 +						   Processor Generator */
 +
-+#define XCHAL_BUILD_UNIQUE_ID		0x0005FE96	/* 22-bit sw build ID */
++#define XCHAL_BUILD_UNIQUE_ID		0x00090F1F	/* 22-bit sw build ID */
 +
 +/*
 + *  These definitions describe the hardware targeted by this software.
 + */
-+#define XCHAL_HW_CONFIGID0		0xC2BCFFFE	/* ConfigID hi 32 bits*/
-+#define XCHAL_HW_CONFIGID1		0x1CC5FE96	/* ConfigID lo 32 bits*/
-+#define XCHAL_HW_VERSION_NAME		"LX6.0.3"	/* full version name */
-+#define XCHAL_HW_VERSION_MAJOR		2600	/* major ver# of targeted hw */
-+#define XCHAL_HW_VERSION_MINOR		3	/* minor ver# of targeted hw */
-+#define XCHAL_HW_VERSION		260003	/* major*100+minor */
-+#define XCHAL_HW_REL_LX6		1
-+#define XCHAL_HW_REL_LX6_0		1
-+#define XCHAL_HW_REL_LX6_0_3		1
++#define XCHAL_HW_CONFIGID0		0xC2F0FFFE	/* ConfigID hi 32 bits*/
++#define XCHAL_HW_CONFIGID1		0x23090F1F	/* ConfigID lo 32 bits*/
++#define XCHAL_HW_VERSION_NAME		"LX7.0.12"	/* full version name */
++#define XCHAL_HW_VERSION_MAJOR		2700	/* major ver# of targeted hw */
++#define XCHAL_HW_VERSION_MINOR		12	/* minor ver# of targeted hw */
++#define XCHAL_HW_VERSION		270012	/* major*100+minor */
++#define XCHAL_HW_REL_LX7		1
++#define XCHAL_HW_REL_LX7_0		1
++#define XCHAL_HW_REL_LX7_0_12		1
 +#define XCHAL_HW_CONFIGID_RELIABLE	1
 +/*  If software targets a *range* of hardware versions, these are the bounds: */
-+#define XCHAL_HW_MIN_VERSION_MAJOR	2600	/* major v of earliest tgt hw */
-+#define XCHAL_HW_MIN_VERSION_MINOR	3	/* minor v of earliest tgt hw */
-+#define XCHAL_HW_MIN_VERSION		260003	/* earliest targeted hw */
-+#define XCHAL_HW_MAX_VERSION_MAJOR	2600	/* major v of latest tgt hw */
-+#define XCHAL_HW_MAX_VERSION_MINOR	3	/* minor v of latest tgt hw */
-+#define XCHAL_HW_MAX_VERSION		260003	/* latest targeted hw */
++#define XCHAL_HW_MIN_VERSION_MAJOR	2700	/* major v of earliest tgt hw */
++#define XCHAL_HW_MIN_VERSION_MINOR	12	/* minor v of earliest tgt hw */
++#define XCHAL_HW_MIN_VERSION		270012	/* earliest targeted hw */
++#define XCHAL_HW_MAX_VERSION_MAJOR	2700	/* major v of latest tgt hw */
++#define XCHAL_HW_MAX_VERSION_MINOR	12	/* minor v of latest tgt hw */
++#define XCHAL_HW_MAX_VERSION		270012	/* latest targeted hw */
 +
 +
 +/*----------------------------------------------------------------------
@@ -291,9 +322,9 @@ index 000000000000..f3f4e45f001f
 +  ----------------------------------------------------------------------*/
 +
 +#define XCHAL_ICACHE_LINESIZE		4	/* I-cache line size in bytes */
-+#define XCHAL_DCACHE_LINESIZE		4	/* D-cache line size in bytes */
++#define XCHAL_DCACHE_LINESIZE		16	/* D-cache line size in bytes */
 +#define XCHAL_ICACHE_LINEWIDTH		2	/* log2(I line size in bytes) */
-+#define XCHAL_DCACHE_LINEWIDTH		2	/* log2(D line size in bytes) */
++#define XCHAL_DCACHE_LINEWIDTH		4	/* log2(D line size in bytes) */
 +
 +#define XCHAL_ICACHE_SIZE		0	/* I-cache size in bytes or 0 */
 +#define XCHAL_DCACHE_SIZE		0	/* D-cache size in bytes or 0 */
@@ -326,11 +357,14 @@ index 000000000000..f3f4e45f001f
 +				CACHE
 +  ----------------------------------------------------------------------*/
 +
-+#define XCHAL_HAVE_PIF			1	/* any outbound PIF present */
++#define XCHAL_HAVE_PIF			1	/* any outbound bus present */
++
 +#define XCHAL_HAVE_AXI			0	/* AXI bus */
++#define XCHAL_HAVE_AXI_ECC		0	/* ECC on AXI bus */
++#define XCHAL_HAVE_ACELITE		0	/* ACELite bus */
 +
 +#define XCHAL_HAVE_PIF_WR_RESP			0	/* pif write response */
-+#define XCHAL_HAVE_PIF_REQ_ATTR			0	/* pif attribute */
++#define XCHAL_HAVE_PIF_REQ_ATTR			1	/* pif attribute */
 +
 +/*  If present, cache size in bytes == (ways * 2^(linewidth + setwidth)).  */
 +
@@ -347,6 +381,8 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_DCACHE_LINE_LOCKABLE	0
 +#define XCHAL_ICACHE_ECC_PARITY		0
 +#define XCHAL_DCACHE_ECC_PARITY		0
++#define XCHAL_ICACHE_ECC_WIDTH		1
++#define XCHAL_DCACHE_ECC_WIDTH		1
 +
 +/*  Cache access size in bytes (affects operation of SICW instruction):  */
 +#define XCHAL_ICACHE_ACCESS_SIZE	1
@@ -361,58 +397,32 @@ index 000000000000..f3f4e45f001f
 +/*----------------------------------------------------------------------
 +			INTERNAL I/D RAM/ROMs and XLMI
 +  ----------------------------------------------------------------------*/
-+
-+#define XCHAL_NUM_INSTROM		1	/* number of core instr. ROMs */
-+#define XCHAL_NUM_INSTRAM		2	/* number of core instr. RAMs */
-+#define XCHAL_NUM_DATAROM		1	/* number of core data ROMs */
-+#define XCHAL_NUM_DATARAM		2	/* number of core data RAMs */
++#define XCHAL_NUM_INSTROM		0	/* number of core instr. ROMs */
++#define XCHAL_NUM_INSTRAM		1	/* number of core instr. RAMs */
++#define XCHAL_NUM_DATAROM		0	/* number of core data ROMs */
++#define XCHAL_NUM_DATARAM		1	/* number of core data RAMs */
 +#define XCHAL_NUM_URAM			0	/* number of core unified RAMs*/
-+#define XCHAL_NUM_XLMI			1	/* number of core XLMI ports */
-+
-+/*  Instruction ROM 0:  */
-+#define XCHAL_INSTROM0_VADDR		0x40800000	/* virtual address */
-+#define XCHAL_INSTROM0_PADDR		0x40800000	/* physical address */
-+#define XCHAL_INSTROM0_SIZE		4194304	/* size in bytes */
-+#define XCHAL_INSTROM0_ECC_PARITY	0	/* ECC/parity type, 0=none */
++#define XCHAL_NUM_XLMI			0	/* number of core XLMI ports */
 +
 +/*  Instruction RAM 0:  */
 +#define XCHAL_INSTRAM0_VADDR		0x40000000	/* virtual address */
 +#define XCHAL_INSTRAM0_PADDR		0x40000000	/* physical address */
-+#define XCHAL_INSTRAM0_SIZE		4194304	/* size in bytes */
++#define XCHAL_INSTRAM0_SIZE		67108864	/* size in bytes */
 +#define XCHAL_INSTRAM0_ECC_PARITY	0	/* ECC/parity type, 0=none */
-+
-+/*  Instruction RAM 1:  */
-+#define XCHAL_INSTRAM1_VADDR		0x40400000	/* virtual address */
-+#define XCHAL_INSTRAM1_PADDR		0x40400000	/* physical address */
-+#define XCHAL_INSTRAM1_SIZE		4194304	/* size in bytes */
-+#define XCHAL_INSTRAM1_ECC_PARITY	0	/* ECC/parity type, 0=none */
-+
-+/*  Data ROM 0:  */
-+#define XCHAL_DATAROM0_VADDR		0x3F400000	/* virtual address */
-+#define XCHAL_DATAROM0_PADDR		0x3F400000	/* physical address */
-+#define XCHAL_DATAROM0_SIZE		4194304	/* size in bytes */
-+#define XCHAL_DATAROM0_ECC_PARITY	0	/* ECC/parity type, 0=none */
-+#define XCHAL_DATAROM0_BANKS		1	/* number of banks */
++#define XCHAL_HAVE_INSTRAM0		1
++#define XCHAL_INSTRAM0_HAVE_IDMA	0	/* idma supported by this local memory */
 +
 +/*  Data RAM 0:  */
-+#define XCHAL_DATARAM0_VADDR		0x3FF80000	/* virtual address */
-+#define XCHAL_DATARAM0_PADDR		0x3FF80000	/* physical address */
-+#define XCHAL_DATARAM0_SIZE		524288	/* size in bytes */
++#define XCHAL_DATARAM0_VADDR		0x3C000000	/* virtual address */
++#define XCHAL_DATARAM0_PADDR		0x3C000000	/* physical address */
++#define XCHAL_DATARAM0_SIZE		67108864	/* size in bytes */
 +#define XCHAL_DATARAM0_ECC_PARITY	0	/* ECC/parity type, 0=none */
 +#define XCHAL_DATARAM0_BANKS		1	/* number of banks */
++#define XCHAL_HAVE_DATARAM0		1
++#define XCHAL_DATARAM0_HAVE_IDMA	0	/* idma supported by this local memory */
 +
-+/*  Data RAM 1:  */
-+#define XCHAL_DATARAM1_VADDR		0x3F800000	/* virtual address */
-+#define XCHAL_DATARAM1_PADDR		0x3F800000	/* physical address */
-+#define XCHAL_DATARAM1_SIZE		4194304	/* size in bytes */
-+#define XCHAL_DATARAM1_ECC_PARITY	0	/* ECC/parity type, 0=none */
-+#define XCHAL_DATARAM1_BANKS		1	/* number of banks */
-+
-+/*  XLMI Port 0:  */
-+#define XCHAL_XLMI0_VADDR		0x3FF00000	/* virtual address */
-+#define XCHAL_XLMI0_PADDR		0x3FF00000	/* physical address */
-+#define XCHAL_XLMI0_SIZE		524288	/* size in bytes */
-+#define XCHAL_XLMI0_ECC_PARITY	0	/* ECC/parity type, 0=none */
++#define XCHAL_HAVE_IDMA			0
++#define XCHAL_HAVE_IDMA_TRANSPOSE	0
 +
 +#define XCHAL_HAVE_IMEM_LOADSTORE	1	/* can load/store to IROM/IRAM*/
 +
@@ -533,6 +543,9 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_INTTYPE_MASK_NMI		0x00004000
 +#define XCHAL_INTTYPE_MASK_WRITE_ERROR	0x00000000
 +#define XCHAL_INTTYPE_MASK_PROFILING	0x00000800
++#define XCHAL_INTTYPE_MASK_IDMA_DONE	0x00000000
++#define XCHAL_INTTYPE_MASK_IDMA_ERR	0x00000000
++#define XCHAL_INTTYPE_MASK_GS_ERR	0x00000000
 +
 +/*  Interrupt numbers assigned to specific interrupt sources:  */
 +#define XCHAL_TIMER0_INTERRUPT		6	/* CCOMPARE0 */
@@ -540,7 +553,7 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_TIMER2_INTERRUPT		16	/* CCOMPARE2 */
 +#define XCHAL_TIMER3_INTERRUPT		XTHAL_TIMER_UNCONFIGURED
 +#define XCHAL_NMI_INTERRUPT		14	/* non-maskable interrupt */
-+#define XCHAL_PROFILING_INTERRUPT	11	/* profiling interrupt */
++#define XCHAL_PROFILING_INTERRUPT	11
 +
 +/*  Interrupt numbers for levels at which only one interrupt is configured:  */
 +#define XCHAL_INTLEVEL7_NUM		14
@@ -688,7 +701,7 @@ index 000000000000..f3f4e45f001f
 +
 +/*  Misc  */
 +#define XCHAL_HAVE_DEBUG_ERI		1	/* ERI to debug module */
-+#define XCHAL_HAVE_DEBUG_APB		1	/* APB to debug module */
++#define XCHAL_HAVE_DEBUG_APB		0	/* APB to debug module */
 +#define XCHAL_HAVE_DEBUG_JTAG		1	/* JTAG to debug module */
 +
 +/*  On-Chip Debug (OCD)  */
@@ -702,7 +715,7 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_TRAX			1	/* TRAX in debug module */
 +#define XCHAL_TRAX_MEM_SIZE		16384	/* TRAX memory size in bytes */
 +#define XCHAL_TRAX_MEM_SHAREABLE	1	/* start/end regs; ready sig. */
-+#define XCHAL_TRAX_ATB_WIDTH		32	/* ATB width (bits), 0=no ATB */
++#define XCHAL_TRAX_ATB_WIDTH		0	/* ATB width (bits), 0=no ATB */
 +#define XCHAL_TRAX_TIME_WIDTH		0	/* timestamp bitwidth, 0=none */
 +
 +/*  Perf counters  */
@@ -725,24 +738,37 @@ index 000000000000..f3f4e45f001f
 +#define XCHAL_HAVE_PTP_MMU		0	/* full MMU (with page table
 +						   [autorefill] and protection)
 +						   usable for an MMU-based OS */
-+/*  If none of the above last 4 are set, it's a custom TLB configuration.  */
++
++/*  If none of the above last 5 are set, it's a custom TLB configuration.  */
 +
 +#define XCHAL_MMU_ASID_BITS		0	/* number of bits in ASIDs */
 +#define XCHAL_MMU_RINGS			1	/* number of rings (1..4) */
 +#define XCHAL_MMU_RING_BITS		0	/* num of bits in RING field */
 +
++/*----------------------------------------------------------------------
++				MPU
++  ----------------------------------------------------------------------*/
++#define XCHAL_HAVE_MPU			0
++#define XCHAL_MPU_ENTRIES		0
++
++#define XCHAL_MPU_ALIGN_REQ		1	/* MPU requires alignment of entries to background map */
++#define XCHAL_MPU_BACKGROUND_ENTRIES	0	/* number of entries in bg map*/
++#define XCHAL_MPU_BG_CACHEADRDIS	0	/* default CACHEADRDIS for bg */
++
++#define XCHAL_MPU_ALIGN_BITS		0
++#define XCHAL_MPU_ALIGN			0
++
 +#endif /* !XTENSA_HAL_NON_PRIVILEGED_ONLY */
 +
 +
 +#endif /* _XTENSA_CORE_CONFIGURATION_H */
-+
-diff --git a/arch/xtensa/variants/esp32/include/variant/tie-asm.h b/arch/xtensa/variants/esp32/include/variant/tie-asm.h
+diff --git a/arch/xtensa/variants/esp32s3/include/variant/tie-asm.h b/arch/xtensa/variants/esp32s3/include/variant/tie-asm.h
 new file mode 100644
-index 000000000000..831d8676ae2c
+index 000000000000..104dc10fd414
 --- /dev/null
-+++ b/arch/xtensa/variants/esp32/include/variant/tie-asm.h
-@@ -0,0 +1,323 @@
-+/* 
++++ b/arch/xtensa/variants/esp32s3/include/variant/tie-asm.h
+@@ -0,0 +1,429 @@
++/*
 + * tie-asm.h -- compile-time HAL assembler definitions dependent on CORE & TIE
 + *
 + *  NOTE:  This header file is not meant to be included directly.
@@ -752,7 +778,7 @@ index 000000000000..831d8676ae2c
 +   macros, etc.) for this specific Xtensa processor's TIE extensions
 +   and options.  It is customized to this Xtensa processor configuration.
 +
-+   Customer ID=11657; Build=0x5fe96; Copyright (c) 1999-2016 Cadence Design Systems Inc.
++   Customer ID=15128; Build=0x90f1f; Copyright (c) 1999-2021 Cadence Design Systems Inc.
 +
 +   Permission is hereby granted, free of charge, to any person obtaining
 +   a copy of this software and associated documentation files (the
@@ -861,20 +887,6 @@ index 000000000000..831d8676ae2c
 +	xchal_sa_align	\ptr, 0, 996, 4, 4
 +	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 24
 +	.endif
-+	// Custom caller-saved registers not used by default by the compiler:
-+	.ifeq (XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\select)
-+	xchal_sa_align	\ptr, 0, 1008, 4, 4
-+	rur.F64R_LO	\at1		// ureg 234
-+	s32i	\at1, \ptr, .Lxchal_ofs_+0
-+	rur.F64R_HI	\at1		// ureg 235
-+	s32i	\at1, \ptr, .Lxchal_ofs_+4
-+	rur.F64S	\at1		// ureg 236
-+	s32i	\at1, \ptr, .Lxchal_ofs_+8
-+	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 12
-+	.elseif ((XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\alloc)) == 0
-+	xchal_sa_align	\ptr, 0, 1008, 4, 4
-+	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 12
-+	.endif
 +    .endm	// xchal_ncp_store
 +
 +    /*
@@ -941,26 +953,12 @@ index 000000000000..831d8676ae2c
 +	xchal_sa_align	\ptr, 0, 996, 4, 4
 +	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 24
 +	.endif
-+	// Custom caller-saved registers not used by default by the compiler:
-+	.ifeq (XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\select)
-+	xchal_sa_align	\ptr, 0, 1008, 4, 4
-+	l32i	\at1, \ptr, .Lxchal_ofs_+0
-+	wur.F64R_LO	\at1		// ureg 234
-+	l32i	\at1, \ptr, .Lxchal_ofs_+4
-+	wur.F64R_HI	\at1		// ureg 235
-+	l32i	\at1, \ptr, .Lxchal_ofs_+8
-+	wur.F64S	\at1		// ureg 236
-+	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 12
-+	.elseif ((XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\alloc)) == 0
-+	xchal_sa_align	\ptr, 0, 1008, 4, 4
-+	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 12
-+	.endif
 +    .endm	// xchal_ncp_load
 +
 +
 +#define XCHAL_NCP_NUM_ATMPS	1
 +
-+    /* 
++    /*
 +     *  Macro to store the state of TIE coprocessor FPU.
 +     *  Required parameters:
 +     *      ptr         Save area pointer address register (clobbered)
@@ -1002,7 +1000,7 @@ index 000000000000..831d8676ae2c
 +	.endif
 +    .endm	// xchal_cp0_store
 +
-+    /* 
++    /*
 +     *  Macro to load the state of TIE coprocessor FPU.
 +     *  Required parameters:
 +     *      ptr         Save area pointer address register (clobbered)
@@ -1045,6 +1043,143 @@ index 000000000000..831d8676ae2c
 +    .endm	// xchal_cp0_load
 +
 +#define XCHAL_CP0_NUM_ATMPS	1
++    /*
++     *  Macro to store the state of TIE coprocessor cop_ai.
++     *  Required parameters:
++     *      ptr         Save area pointer address register (clobbered)
++     *                  (register must contain a 16 byte aligned address).
++     *      at1..at4    Four temporary address registers (first XCHAL_CP3_NUM_ATMPS
++     *                  registers are clobbered, the remaining are unused).
++     *  Optional parameters are the same as for xchal_ncp_store.
++     */
++#define xchal_cp_cop_ai_store	xchal_cp3_store
++    .macro	xchal_cp3_store  ptr at1 at2 at3 at4  continue=0 ofs=-1 select=XTHAL_SAS_ALL alloc=0
++	xchal_sa_start \continue, \ofs
++	// Custom caller-saved registers not used by default by the compiler:
++	.ifeq (XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\select)
++	xchal_sa_align	\ptr, 0, 0, 16, 16
++	rur.ACCX_0	\at1		// ureg 0
++	s32i	\at1, \ptr, .Lxchal_ofs_+0
++	rur.ACCX_1	\at1		// ureg 1
++	s32i	\at1, \ptr, .Lxchal_ofs_+4
++	rur.QACC_H_0	\at1		// ureg 2
++	s32i	\at1, \ptr, .Lxchal_ofs_+8
++	rur.QACC_H_1	\at1		// ureg 3
++	s32i	\at1, \ptr, .Lxchal_ofs_+12
++	rur.QACC_H_2	\at1		// ureg 4
++	s32i	\at1, \ptr, .Lxchal_ofs_+16
++	rur.QACC_H_3	\at1		// ureg 5
++	s32i	\at1, \ptr, .Lxchal_ofs_+20
++	rur.QACC_H_4	\at1		// ureg 6
++	s32i	\at1, \ptr, .Lxchal_ofs_+24
++	rur.QACC_L_0	\at1		// ureg 7
++	s32i	\at1, \ptr, .Lxchal_ofs_+28
++	rur.QACC_L_1	\at1		// ureg 8
++	s32i	\at1, \ptr, .Lxchal_ofs_+32
++	rur.QACC_L_2	\at1		// ureg 9
++	s32i	\at1, \ptr, .Lxchal_ofs_+36
++	rur.QACC_L_3	\at1		// ureg 10
++	s32i	\at1, \ptr, .Lxchal_ofs_+40
++	rur.QACC_L_4	\at1		// ureg 11
++	s32i	\at1, \ptr, .Lxchal_ofs_+44
++	rur.SAR_BYTE	\at1		// ureg 13
++	s32i	\at1, \ptr, .Lxchal_ofs_+48
++	rur.FFT_BIT_WIDTH	\at1		// ureg 14
++	s32i	\at1, \ptr, .Lxchal_ofs_+52
++	rur.UA_STATE_0	\at1		// ureg 15
++	s32i	\at1, \ptr, .Lxchal_ofs_+56
++	rur.UA_STATE_1	\at1		// ureg 16
++	s32i	\at1, \ptr, .Lxchal_ofs_+60
++	rur.UA_STATE_2	\at1		// ureg 17
++	s32i	\at1, \ptr, .Lxchal_ofs_+64
++	rur.UA_STATE_3	\at1		// ureg 18
++	s32i	\at1, \ptr, .Lxchal_ofs_+68
++	st.qr	q0, \ptr, .Lxchal_ofs_+80
++	st.qr	q1, \ptr, .Lxchal_ofs_+96
++	st.qr	q2, \ptr, .Lxchal_ofs_+112
++	addi	\ptr, \ptr, 128
++	st.qr	q3, \ptr, .Lxchal_ofs_+0
++	st.qr	q4, \ptr, .Lxchal_ofs_+16
++	st.qr	q5, \ptr, .Lxchal_ofs_+32
++	st.qr	q6, \ptr, .Lxchal_ofs_+48
++	st.qr	q7, \ptr, .Lxchal_ofs_+64
++	.set	.Lxchal_pofs_, .Lxchal_pofs_ + 128
++	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 80
++	.elseif ((XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\alloc)) == 0
++	xchal_sa_align	\ptr, 0, 0, 16, 16
++	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 208
++	.endif
++    .endm	// xchal_cp3_store
++
++    /*
++     *  Macro to load the state of TIE coprocessor cop_ai.
++     *  Required parameters:
++     *      ptr         Save area pointer address register (clobbered)
++     *                  (register must contain a 16 byte aligned address).
++     *      at1..at4    Four temporary address registers (first XCHAL_CP3_NUM_ATMPS
++     *                  registers are clobbered, the remaining are unused).
++     *  Optional parameters are the same as for xchal_ncp_load.
++     */
++#define xchal_cp_cop_ai_load	xchal_cp3_load
++    .macro	xchal_cp3_load  ptr at1 at2 at3 at4  continue=0 ofs=-1 select=XTHAL_SAS_ALL alloc=0
++	xchal_sa_start \continue, \ofs
++	// Custom caller-saved registers not used by default by the compiler:
++	.ifeq (XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\select)
++	xchal_sa_align	\ptr, 0, 0, 16, 16
++	l32i	\at1, \ptr, .Lxchal_ofs_+0
++	wur.ACCX_0	\at1		// ureg 0
++	l32i	\at1, \ptr, .Lxchal_ofs_+4
++	wur.ACCX_1	\at1		// ureg 1
++	l32i	\at1, \ptr, .Lxchal_ofs_+8
++	wur.QACC_H_0	\at1		// ureg 2
++	l32i	\at1, \ptr, .Lxchal_ofs_+12
++	wur.QACC_H_1	\at1		// ureg 3
++	l32i	\at1, \ptr, .Lxchal_ofs_+16
++	wur.QACC_H_2	\at1		// ureg 4
++	l32i	\at1, \ptr, .Lxchal_ofs_+20
++	wur.QACC_H_3	\at1		// ureg 5
++	l32i	\at1, \ptr, .Lxchal_ofs_+24
++	wur.QACC_H_4	\at1		// ureg 6
++	l32i	\at1, \ptr, .Lxchal_ofs_+28
++	wur.QACC_L_0	\at1		// ureg 7
++	l32i	\at1, \ptr, .Lxchal_ofs_+32
++	wur.QACC_L_1	\at1		// ureg 8
++	l32i	\at1, \ptr, .Lxchal_ofs_+36
++	wur.QACC_L_2	\at1		// ureg 9
++	l32i	\at1, \ptr, .Lxchal_ofs_+40
++	wur.QACC_L_3	\at1		// ureg 10
++	l32i	\at1, \ptr, .Lxchal_ofs_+44
++	wur.QACC_L_4	\at1		// ureg 11
++	l32i	\at1, \ptr, .Lxchal_ofs_+48
++	wur.SAR_BYTE	\at1		// ureg 13
++	l32i	\at1, \ptr, .Lxchal_ofs_+52
++	wur.FFT_BIT_WIDTH	\at1		// ureg 14
++	l32i	\at1, \ptr, .Lxchal_ofs_+56
++	wur.UA_STATE_0	\at1		// ureg 15
++	l32i	\at1, \ptr, .Lxchal_ofs_+60
++	wur.UA_STATE_1	\at1		// ureg 16
++	l32i	\at1, \ptr, .Lxchal_ofs_+64
++	wur.UA_STATE_2	\at1		// ureg 17
++	l32i	\at1, \ptr, .Lxchal_ofs_+68
++	wur.UA_STATE_3	\at1		// ureg 18
++	ld.qr	q0, \ptr, .Lxchal_ofs_+80
++	ld.qr	q1, \ptr, .Lxchal_ofs_+96
++	ld.qr	q2, \ptr, .Lxchal_ofs_+112
++	addi	\ptr, \ptr, 128
++	ld.qr	q3, \ptr, .Lxchal_ofs_+0
++	ld.qr	q4, \ptr, .Lxchal_ofs_+16
++	ld.qr	q5, \ptr, .Lxchal_ofs_+32
++	ld.qr	q6, \ptr, .Lxchal_ofs_+48
++	ld.qr	q7, \ptr, .Lxchal_ofs_+64
++	.set	.Lxchal_pofs_, .Lxchal_pofs_ + 128
++	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 80
++	.elseif ((XTHAL_SAS_TIE | XTHAL_SAS_NOCC | XTHAL_SAS_CALR) & ~(\alloc)) == 0
++	xchal_sa_align	\ptr, 0, 0, 16, 16
++	.set	.Lxchal_ofs_, .Lxchal_ofs_ + 208
++	.endif
++    .endm	// xchal_cp3_load
++
++#define XCHAL_CP3_NUM_ATMPS	1
 +#define XCHAL_SA_NUM_ATMPS	1
 +
 +	/*  Empty macros for unconfigured coprocessors:  */
@@ -1052,8 +1187,6 @@ index 000000000000..831d8676ae2c
 +	.macro xchal_cp1_load	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +	.macro xchal_cp2_store	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +	.macro xchal_cp2_load	p a b c d continue=0 ofs=-1 select=-1 ; .endm
-+	.macro xchal_cp3_store	p a b c d continue=0 ofs=-1 select=-1 ; .endm
-+	.macro xchal_cp3_load	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +	.macro xchal_cp4_store	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +	.macro xchal_cp4_load	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +	.macro xchal_cp5_store	p a b c d continue=0 ofs=-1 select=-1 ; .endm
@@ -1064,14 +1197,13 @@ index 000000000000..831d8676ae2c
 +	.macro xchal_cp7_load	p a b c d continue=0 ofs=-1 select=-1 ; .endm
 +
 +#endif /*_XTENSA_CORE_TIE_ASM_H*/
-+
-diff --git a/arch/xtensa/variants/esp32/include/variant/tie.h b/arch/xtensa/variants/esp32/include/variant/tie.h
+diff --git a/arch/xtensa/variants/esp32s3/include/variant/tie.h b/arch/xtensa/variants/esp32s3/include/variant/tie.h
 new file mode 100644
-index 000000000000..e178799708e2
+index 000000000000..e7671b1979e4
 --- /dev/null
-+++ b/arch/xtensa/variants/esp32/include/variant/tie.h
-@@ -0,0 +1,182 @@
-+/* 
++++ b/arch/xtensa/variants/esp32s3/include/variant/tie.h
+@@ -0,0 +1,207 @@
++/*
 + * tie.h -- compile-time HAL definitions dependent on CORE & TIE configuration
 + *
 + *  NOTE:  This header file is not meant to be included directly.
@@ -1081,7 +1213,7 @@ index 000000000000..e178799708e2
 +   that extend basic Xtensa core functionality.  It is customized to this
 +   Xtensa processor configuration.
 +
-+   Customer ID=11657; Build=0x5fe96; Copyright (c) 1999-2016 Cadence Design Systems Inc.
++   Customer ID=15128; Build=0x90f1f; Copyright (c) 1999-2021 Cadence Design Systems Inc.
 +
 +   Permission is hereby granted, free of charge, to any person obtaining
 +   a copy of this software and associated documentation files (the
@@ -1105,9 +1237,9 @@ index 000000000000..e178799708e2
 +#ifndef _XTENSA_CORE_TIE_H
 +#define _XTENSA_CORE_TIE_H
 +
-+#define XCHAL_CP_NUM			1	/* number of coprocessors */
-+#define XCHAL_CP_MAX			1	/* max CP ID + 1 (0 if none) */
-+#define XCHAL_CP_MASK			0x01	/* bitmask of all CPs by ID */
++#define XCHAL_CP_NUM			2	/* number of coprocessors */
++#define XCHAL_CP_MAX			4	/* max CP ID + 1 (0 if none) */
++#define XCHAL_CP_MASK			0x09	/* bitmask of all CPs by ID */
 +#define XCHAL_CP_PORT_MASK		0x00	/* bitmask of only port CPs */
 +
 +/*  Basic parameters of each coprocessor:  */
@@ -1116,14 +1248,17 @@ index 000000000000..e178799708e2
 +#define XCHAL_CP0_SA_SIZE		72	/* size of state save area */
 +#define XCHAL_CP0_SA_ALIGN		4	/* min alignment of save area */
 +#define XCHAL_CP_ID_FPU             	0	/* coprocessor ID (0..7) */
++#define XCHAL_CP3_NAME			"cop_ai"
++#define XCHAL_CP3_IDENT			cop_ai
++#define XCHAL_CP3_SA_SIZE		208	/* size of state save area */
++#define XCHAL_CP3_SA_ALIGN		16	/* min alignment of save area */
++#define XCHAL_CP_ID_COP_AI          	3	/* coprocessor ID (0..7) */
 +
 +/*  Filler info for unassigned coprocessors, to simplify arrays etc:  */
 +#define XCHAL_CP1_SA_SIZE		0
 +#define XCHAL_CP1_SA_ALIGN		1
 +#define XCHAL_CP2_SA_SIZE		0
 +#define XCHAL_CP2_SA_ALIGN		1
-+#define XCHAL_CP3_SA_SIZE		0
-+#define XCHAL_CP3_SA_ALIGN		1
 +#define XCHAL_CP4_SA_SIZE		0
 +#define XCHAL_CP4_SA_ALIGN		1
 +#define XCHAL_CP5_SA_SIZE		0
@@ -1134,12 +1269,12 @@ index 000000000000..e178799708e2
 +#define XCHAL_CP7_SA_ALIGN		1
 +
 +/*  Save area for non-coprocessor optional and custom (TIE) state:  */
-+#define XCHAL_NCP_SA_SIZE		48
++#define XCHAL_NCP_SA_SIZE		36
 +#define XCHAL_NCP_SA_ALIGN		4
 +
 +/*  Total save area for optional and custom state (NCP + CPn):  */
-+#define XCHAL_TOTAL_SA_SIZE		128	/* with 16-byte align padding */
-+#define XCHAL_TOTAL_SA_ALIGN		4	/* actual minimum alignment */
++#define XCHAL_TOTAL_SA_SIZE		336	/* with 16-byte align padding */
++#define XCHAL_TOTAL_SA_ALIGN		16	/* actual minimum alignment */
 +
 +/*
 + * Detailed contents of save areas.
@@ -1181,7 +1316,7 @@ index 000000000000..e178799708e2
 + *		...what you want to expand...
 + */
 +
-+#define XCHAL_NCP_SA_NUM	12
++#define XCHAL_NCP_SA_NUM	9
 +#define XCHAL_NCP_SA_LIST(s)	\
 + XCHAL_SA_REG(s,1,2,1,1,      threadptr, 4, 4, 4,0x03E7,  ur,231, 32,0,0,0) \
 + XCHAL_SA_REG(s,1,0,0,1,          acclo, 4, 4, 4,0x0210,  sr,16 , 32,0,0,0) \
@@ -1191,10 +1326,7 @@ index 000000000000..e178799708e2
 + XCHAL_SA_REG(s,0,0,0,1,             m0, 4, 4, 4,0x0220,  sr,32 , 32,0,0,0) \
 + XCHAL_SA_REG(s,0,0,0,1,             m1, 4, 4, 4,0x0221,  sr,33 , 32,0,0,0) \
 + XCHAL_SA_REG(s,0,0,0,1,             m2, 4, 4, 4,0x0222,  sr,34 , 32,0,0,0) \
-+ XCHAL_SA_REG(s,0,0,0,1,             m3, 4, 4, 4,0x0223,  sr,35 , 32,0,0,0) \
-+ XCHAL_SA_REG(s,0,0,1,0,        f64r_lo, 4, 4, 4,0x03EA,  ur,234, 32,0,0,0) \
-+ XCHAL_SA_REG(s,0,0,1,0,        f64r_hi, 4, 4, 4,0x03EB,  ur,235, 32,0,0,0) \
-+ XCHAL_SA_REG(s,0,0,1,0,           f64s, 4, 4, 4,0x03EC,  ur,236, 32,0,0,0)
++ XCHAL_SA_REG(s,0,0,0,1,             m3, 4, 4, 4,0x0223,  sr,35 , 32,0,0,0)
 +
 +#define XCHAL_CP0_SA_NUM	18
 +#define XCHAL_CP0_SA_LIST(s)	\
@@ -1223,8 +1355,34 @@ index 000000000000..e178799708e2
 +#define XCHAL_CP2_SA_NUM	0
 +#define XCHAL_CP2_SA_LIST(s)	/* empty */
 +
-+#define XCHAL_CP3_SA_NUM	0
-+#define XCHAL_CP3_SA_LIST(s)	/* empty */
++#define XCHAL_CP3_SA_NUM	26
++#define XCHAL_CP3_SA_LIST(s)	\
++ XCHAL_SA_REG(s,0,0,1,0,         accx_0,16, 4, 4,0x0300,  ur,0  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,         accx_1, 4, 4, 4,0x0301,  ur,1  ,  8,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_h_0, 4, 4, 4,0x0302,  ur,2  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_h_1, 4, 4, 4,0x0303,  ur,3  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_h_2, 4, 4, 4,0x0304,  ur,4  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_h_3, 4, 4, 4,0x0305,  ur,5  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_h_4, 4, 4, 4,0x0306,  ur,6  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_l_0, 4, 4, 4,0x0307,  ur,7  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_l_1, 4, 4, 4,0x0308,  ur,8  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_l_2, 4, 4, 4,0x0309,  ur,9  , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_l_3, 4, 4, 4,0x030A,  ur,10 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       qacc_l_4, 4, 4, 4,0x030B,  ur,11 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,       sar_byte, 4, 4, 4,0x030D,  ur,13 ,  4,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,  fft_bit_width, 4, 4, 4,0x030E,  ur,14 ,  4,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,     ua_state_0, 4, 4, 4,0x030F,  ur,15 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,     ua_state_1, 4, 4, 4,0x0310,  ur,16 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,     ua_state_2, 4, 4, 4,0x0311,  ur,17 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,1,0,     ua_state_3, 4, 4, 4,0x0312,  ur,18 , 32,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q0,16,16,16,0x1008,   q,0  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q1,16,16,16,0x1009,   q,1  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q2,16,16,16,0x100A,   q,2  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q3,16,16,16,0x100B,   q,3  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q4,16,16,16,0x100C,   q,4  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q5,16,16,16,0x100D,   q,5  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q6,16,16,16,0x100E,   q,6  ,128,0,0,0) \
++ XCHAL_SA_REG(s,0,0,2,0,             q7,16,16,16,0x100F,   q,7  ,128,0,0,0)
 +
 +#define XCHAL_CP4_SA_NUM	0
 +#define XCHAL_CP4_SA_LIST(s)	/* empty */
@@ -1239,20 +1397,19 @@ index 000000000000..e178799708e2
 +#define XCHAL_CP7_SA_LIST(s)	/* empty */
 +
 +/* Byte length of instruction from its first nibble (op0 field), per FLIX.  */
-+#define XCHAL_OP0_FORMAT_LENGTHS	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3
++#define XCHAL_OP0_FORMAT_LENGTHS	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4
 +/* Byte length of instruction from its first byte, per FLIX.  */
 +#define XCHAL_BYTE0_FORMAT_LENGTHS	\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,\
-+	3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4,\
++	3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4, 3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,4
 +
 +#endif /*_XTENSA_CORE_TIE_H*/
-+
 -- 
 2.30.2
 
