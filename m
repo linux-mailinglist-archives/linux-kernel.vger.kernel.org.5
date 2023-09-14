@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6877A01CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC647A01CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 12:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbjINKhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 06:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S237432AbjINKh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 06:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237570AbjINKhL (ORCPT
+        with ESMTP id S237318AbjINKhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 06:37:11 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00461FD4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:37:05 -0700 (PDT)
-X-QQ-mid: bizesmtp82t1694687798trgejy0d
+        Thu, 14 Sep 2023 06:37:24 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0721BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 03:37:19 -0700 (PDT)
+X-QQ-mid: bizesmtp89t1694687810trhko363
 Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 14 Sep 2023 18:36:36 +0800 (CST)
-X-QQ-SSF: 01200000000000907000000A0000000
-X-QQ-FEAT: PS/N6jJLnDY3DbnSlWdnt226ni/utfNEYD6jhRaHVL5Udll79hFKkE02mz/x3
-        5uqP+ZE0PYc6/8JwZD9KN4XmkjVepoi9C9TUrFQOmNJ+BTJ+ylx/MNfkynGxHYtJJjNrXpK
-        KgPfQl+2LQnEFjOUwxmAiWaqqaNZFmrth99olnI9AcmkUOH/4BRtARoFXYWyB7k2o6gp1sC
-        FKmyM7pNacRon5YHZaoud+82aBfneiyKajxZj4BEvNzWVO5x6qnjBalhO8V4pMgcy005Gh9
-        aQAnNfmQ18izJWV+GZP/z/4io+ZbRS6t+CyHUukw1j+CHU1aom9ge6c2cRS7H3uadRl7mEX
-        WxhiOp7WKgwGPUhE0LfwJ1a9V8tlBBMw5NfWcpQvasITr1MCqkYffU8LpnfZw==
+        id ; Thu, 14 Sep 2023 18:36:48 +0800 (CST)
+X-QQ-SSF: 00200000000000907000000A0000000
+X-QQ-FEAT: I8hG9CuxGDK9htxS4giykKhdSKm0WfZ2rkQbe2+M7ckZgA0VYqnbJCboHIX7t
+        /EV3DmDQ28zupomg5/x5+bl55fWx9dbWnbUD3+Xpgz/Gd0roHog9nljRxYM1VvOn6iOPdJy
+        7TuNplcJFa9FvBXjTOYqm+jrXaCD5bom5i0nLCfuC1Ao1sK0oJyKcO6Oi7q60TNZ8bqe75Q
+        dllQatPD0IdZietuBdXUp0lpngTVckYb/mUAECdARNfIJt9T5qSyb1ahqpv1r8ZMfonMA6b
+        UUDnBcrSzvNnQxiS1m57SbZN8gKLZTecoxDTVlOmt0g/Qmgchsf3CN2n4RV9Sw66eg1PcU6
+        wf+8GAqr6aqFSgiq0h7g2Z+8VORzkiN/p0wqMqCD4bHPXZHfnhxp/uGS88f/g==
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5100208277114909592
+X-BIZMAIL-ID: 2437291328918488194
 From:   Yuan Tan <tanyuan@tinylab.org>
 To:     tglx@linutronix.de, mingo@redhat.com
 Cc:     bp@alien8.de, dave.hansen@linux.intel.com,
         linux-kernel@vger.kernel.org, x86@kernel.org, falcon@tinylab.org,
-        w@1wt.eu, linux@weissschuh.net, tanyuan@tinylab.org
-Subject: [PATCH v3 2/3] Kconfig: Add dependencies of POWER_RESET for x86
-Date:   Thu, 14 Sep 2023 18:36:35 +0800
-Message-Id: <0f2cbd3026357a3936c0853057ed41b63db83d59.1694687048.git.tanyuan@tinylab.org>
+        w@1wt.eu, linux@weissschuh.net, tanyuan@tinylab.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 3/3] x86/config: Simplify i386_defconfig and x86_64_defconfig
+Date:   Thu, 14 Sep 2023 18:36:47 +0800
+Message-Id: <d992371d07c4e423b70d56abef7806f506696814.1694687048.git.tanyuan@tinylab.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694687048.git.tanyuan@tinylab.org>
 References: <cover.1694687048.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
@@ -47,35 +50,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x86 and x86_64's power off depends on ACPI and PCI to work. Enable them
-when POWER_RESET is set for convenience.
+Simplify i386_defconfig and x86_64_defconfig with POWER_RESET dependences.
 
-Suggested-by: Zhangjin Wu <falcon@tinylab.org>
+Regenerate i386_defconfig and x86_64_defconfig with 'make savedefconfig'.
+
+Suggested-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
 ---
- arch/x86/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/configs/i386_defconfig   | 2 +-
+ arch/x86/configs/x86_64_defconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3b3594f96330..9571507ad40f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -58,6 +58,7 @@ config X86
- 	#
- 	# Note: keep this list sorted alphabetically
- 	#
-+	select ACPI		if POWER_RESET
- 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_32BIT_OFF_T			if X86_32
-@@ -286,6 +287,7 @@ config X86
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
- 	select NEED_SG_DMA_LENGTH
-+	select PCI		if POWER_RESET
- 	select PCI_DOMAINS			if PCI
- 	select PCI_LOCKLESS_CONFIG		if PCI
- 	select PERF_EVENTS
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index babd91c8091a..470ce962eb58 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -121,7 +121,6 @@ CONFIG_MAC80211_LEDS=y
+ CONFIG_RFKILL=y
+ CONFIG_NET_9P=y
+ CONFIG_NET_9P_VIRTIO=y
+-CONFIG_PCI=y
+ CONFIG_PCIEPORTBUS=y
+ CONFIG_HOTPLUG_PCI=y
+ CONFIG_PCCARD=y
+@@ -186,6 +185,7 @@ CONFIG_NVRAM=y
+ CONFIG_HPET=y
+ # CONFIG_HPET_MMAP is not set
+ CONFIG_I2C_I801=y
++CONFIG_POWER_RESET=y
+ CONFIG_WATCHDOG=y
+ CONFIG_AGP=y
+ CONFIG_AGP_AMD64=y
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index babd91c8091a..470ce962eb58 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -121,7 +121,6 @@ CONFIG_MAC80211_LEDS=y
+ CONFIG_RFKILL=y
+ CONFIG_NET_9P=y
+ CONFIG_NET_9P_VIRTIO=y
+-CONFIG_PCI=y
+ CONFIG_PCIEPORTBUS=y
+ CONFIG_HOTPLUG_PCI=y
+ CONFIG_PCCARD=y
+@@ -186,6 +185,7 @@ CONFIG_NVRAM=y
+ CONFIG_HPET=y
+ # CONFIG_HPET_MMAP is not set
+ CONFIG_I2C_I801=y
++CONFIG_POWER_RESET=y
+ CONFIG_WATCHDOG=y
+ CONFIG_AGP=y
+ CONFIG_AGP_AMD64=y
 -- 
 2.34.1
 
