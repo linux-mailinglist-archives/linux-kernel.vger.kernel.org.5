@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E708D7A063D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB767A0654
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 15:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239683AbjINNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 09:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        id S239307AbjINNpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 09:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239637AbjINNjz (ORCPT
+        with ESMTP id S239146AbjINNph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 09:39:55 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E044498
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:37:50 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-450711d9bf1so542519137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:37:50 -0700 (PDT)
+        Thu, 14 Sep 2023 09:45:37 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0241B46BF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:38:47 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1c504386374so543693fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 06:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694698669; x=1695303469; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9UjaH6awq5V/b/h5EjTWTj3DotldQx6AS4c6JYOsrlY=;
-        b=f/Z4cmnj6enPrTWIXfYtVYxLN/CuOVi/hJmahdCSxfkLgWuObcXL2lVi4MU73/mlxd
-         JtkjE11DJvw9BW/m9VEeL8yRwgEqIP4j2g7Z+bW6S3L5WzmFbOshHOZhzB8m/YoZimzM
-         oofKzUIl+ifzdSdc4fv2h6hjTp/pYYqipmqIiojKtUMUO0RYmvNvQV2nTkNg3BXXjUDl
-         MPhiML5iW6jnXawv6lPfdMs1Ega7J4XL2l2MId32YMHy8WalCepieaEDO6bw7/vyn/DP
-         Df2zcegRn/c3QmxJ/0qX66hMDNwscsdkM3unsQgxl22AQsRnqgXGrsEQZtlXEGJvzIoH
-         LBlw==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694698724; x=1695303524; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:mime-version:in-reply-to:references
+         :user-agent:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cmkM3eTScVXDHH0jlpqEzGVs0jKDHtYdRBTAlD8i+NE=;
+        b=WHSGpmzDv7YQ6LAEcUfCTvT+zySYeHW9piPmwbEBMNrKob5+FuKksuJrlgy7l8ReIq
+         FJtgDqp2sKw9dvyZvBaW29kSB0zhle1NfNM/JZOUEAH89t6PH2YTcb9qWCOVQVjJWaSr
+         VZvKKLg4HQzO+tWBy2jg0McK9ZL5UYNb0yOneJp5gs/kmY3u+hRiqRkvV9TVrset2AN6
+         zF8NjyQ2idIHuxv1McBDLoX9tROHuG81fv/yMHIHdzyUwKmNbhMWLK1ZDjd7pJPVsb+z
+         OT/Krp0yes9OMZGNqHhYcvNWXXPOiBIqIrR3ibiMF+y8hdQWaTb5fWmzmKT+OoxUhA0G
+         BkHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694698669; x=1695303469;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1694698724; x=1695303524;
+        h=cc:to:subject:message-id:date:mime-version:in-reply-to:references
+         :user-agent:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9UjaH6awq5V/b/h5EjTWTj3DotldQx6AS4c6JYOsrlY=;
-        b=ITgHVHlPADfFy8HSFkXBTSRm2auM4j71zso930FY11zSIeilsZLze479ksMdK8KKdr
-         gsGRp6YBET4Yw0Ep7oyfDIt+YpEljOraMjDIWxFCVcs7QqzSJDnM/tHCXrD2ufkUZCA9
-         H6yvZjXy4E04mmmDM7OikijaMm65rq/RXXKTOsHIql0f7BJj8G0wZzRMBdFaZw2+zinL
-         OCmJwdoTfR5njsqde9Hx/gT+GjgxJ+aqeB5m/oLpw4ymNBBkBttVRC/QypLK778HIrdQ
-         siQP1oDoTLKrbOxJfYVhiArl/9+jiN+nBzdLoI2GjZrbUggFN5Bv7ngQcrWwP71lFhy8
-         SiWw==
-X-Gm-Message-State: AOJu0YyB7ltds+FpNUHio0vMQdxrn1vYVQDZtMbAqDTX5WCfzeMGALsG
-        1V40FCfgcecohbd/hl9AhhUFNQ==
-X-Google-Smtp-Source: AGHT+IHw2m/QzL3fWk6Anxsy/+dsxwjlnmmZnMwridhM308Ybhxzx8YwAeHDxESxqJxU9dr3tEIeCA==
-X-Received: by 2002:a67:f84d:0:b0:44d:634c:1125 with SMTP id b13-20020a67f84d000000b0044d634c1125mr5277278vsp.13.1694698669249;
-        Thu, 14 Sep 2023 06:37:49 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:35bb])
-        by smtp.gmail.com with ESMTPSA id h16-20020a0cf410000000b0064713c8fab7sm476813qvl.59.2023.09.14.06.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 06:37:48 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 09:37:48 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] mm: page_alloc: fix move_freepages_block() range
- error
-Message-ID: <20230914133748.GE48476@cmpxchg.org>
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-5-hannes@cmpxchg.org>
- <2f2985f0-f1a7-f085-fd18-107f3fba9478@suse.cz>
+        bh=cmkM3eTScVXDHH0jlpqEzGVs0jKDHtYdRBTAlD8i+NE=;
+        b=Ekfm15ArGZQ/mYN1PxyfaPso5ipoiogRv0h7Q6JW1eVO7DuEP1VZXJjWD7lUBPlnik
+         eft73UpzhZ+OdwWsWo2qmUDBPDBNQNfJe2Emu/iNC1156bAZocR0m6vi6UKzj2e2hSHO
+         goX7cksi7shq8IBPenWatIsNw8qJE+bB6mHpnBetymRES3ZX/qDOotYOFDzweyHC6uxC
+         dqx1CL0X7zkDofYL9rjx1FZzII/Efm1XcjQhAuWUoAoI7uwTm9zSZg4Hgi3jgInC2ATl
+         1HEI0GP1/o15DqfWzJgVwhpcdCU7bFjxxa5m/6Xu+BarcuBAk2txnSTfrfcorup+peck
+         +sYg==
+X-Gm-Message-State: AOJu0YwemSKsqEq078Dm+K9M4vw3xS7ziuulgZDTkZpbKr77VGVoGMrv
+        GL8mJJctNaWQNulkhdT0Zu4X4BIVtadD79nz4nKXIA==
+X-Google-Smtp-Source: AGHT+IFh7Yh89j5toiLrapBEM+lFJrnPKMRKQDggX4YR83wnaK2tnE/8N6Y+YLTaga5Qlr9XmuCrRhn8q0u0c8VABfw=
+X-Received: by 2002:a05:6870:b69d:b0:1d5:b0b9:f6f1 with SMTP id
+ cy29-20020a056870b69d00b001d5b0b9f6f1mr6386214oab.8.1694698724531; Thu, 14
+ Sep 2023 06:38:44 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 14 Sep 2023 13:38:43 +0000
+From:   Guillaume Ranquet <granquet@baylibre.com>
+User-Agent: meli 0.7.3
+References: <20230914131058.2472260-1-jani.nikula@intel.com>
+In-Reply-To: <20230914131058.2472260-1-jani.nikula@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f2985f0-f1a7-f085-fd18-107f3fba9478@suse.cz>
+Date:   Thu, 14 Sep 2023 13:38:43 +0000
+Message-ID: <CABnWg9sy_u5+TRvuRXEN8FB8BGdSadYimUQ-R6=PYEKZn2RZRw@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek/dp: fix memory leak on ->get_edid callback
+ error path
+To:     Jani Nikula <jani.nikula@intel.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
+        Guillaume Ranquet <granquet@baylibre.com>,
+        Bo-Chen Chen <rex-bc.chen@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:40:48PM +0200, Vlastimil Babka wrote:
-> On 9/11/23 21:41, Johannes Weiner wrote:
-> > When a block is partially outside the zone of the cursor page, the
-> > function cuts the range to the pivot page instead of the zone
-> > start. This can leave large parts of the block behind, which
-> > encourages incompatible page mixing down the line (ask for one type,
-> > get another), and thus long-term fragmentation.
-> > 
-> > This triggers reliably on the first block in the DMA zone, whose
-> > start_pfn is 1. The block is stolen, but everything before the pivot
-> > page (which was often hundreds of pages) is left on the old list.
-> > 
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On Thu, 14 Sep 2023 15:10, Jani Nikula <jani.nikula@intel.com> wrote:
+>Setting new_edid to NULL leaks the buffer.
+>
+>Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
+>Cc: Markus Schneider-Pargmann <msp@baylibre.com>
+>Cc: Guillaume Ranquet <granquet@baylibre.com>
+>Cc: Bo-Chen Chen <rex-bc.chen@mediatek.com>
+>Cc: CK Hu <ck.hu@mediatek.com>
+>Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>Cc: Matthias Brugger <matthias.bgg@gmail.com>
+>Cc: dri-devel@lists.freedesktop.org
+>Cc: linux-mediatek@lists.infradead.org
+>Cc: linux-kernel@vger.kernel.org
+>Cc: linux-arm-kernel@lists.infradead.org
+>Cc: <stable@vger.kernel.org> # v6.1+
+>Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+>
 
-Thanks!
-
-> > @@ -1652,7 +1652,7 @@ int move_freepages_block(struct zone *zone, struct page *page,
-> >  
-> >  	/* Do not cross zone boundaries */
-> >  	if (!zone_spans_pfn(zone, start_pfn))
-> > -		start_pfn = pfn;
-> > +		start_pfn = zone->zone_start_pfn;
-> >  	if (!zone_spans_pfn(zone, end_pfn))
-> >  		return 0;
-> 
-> Culdn't we also adjust end_pfn to zone_end_pfn() so we don't just ignore the
-> last half-pageblock for no good reason? (or am I missing any?)
-> Also would stop treating end_pfn as inclusive here and in move_freepages(),
-> it's rather uncommon.
-
-You raise a good point here and in the reply to 5/6. Let me reply to
-the other email.
+Reviewed-by: Guillaume Ranquet <granquet@baylibre.com>
+>---
+>
+>UNTESTED
+>---
+> drivers/gpu/drm/mediatek/mtk_dp.c | 1 +
+> 1 file changed, 1 insertion(+)
+>
+>diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+>index 2cb47f663756..8fc6eff68e30 100644
+>--- a/drivers/gpu/drm/mediatek/mtk_dp.c
+>+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+>@@ -2049,6 +2049,7 @@ static struct edid *mtk_dp_get_edid(struct drm_bridge *bridge,
+> 	 */
+> 	if (mtk_dp_parse_capabilities(mtk_dp)) {
+> 		drm_err(mtk_dp->drm_dev, "Can't parse capabilities\n");
+>+		kfree(new_edid);
+> 		new_edid = NULL;
+> 	}
+>
+>--
+>2.39.2
+>
