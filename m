@@ -2,119 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3BB7A00A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4257A00AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbjINJrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        id S237543AbjINJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237244AbjINJrK (ORCPT
+        with ESMTP id S231668AbjINJs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:47:10 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 79CA72129
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 02:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qpxN8
-        eVhvHSwP7MYIGTUCMjzSWsG1rKKF7waZF1XVSA=; b=P7lOW5nz4xza+9v5cvwhk
-        4OaLP/hTu/c5QIkH+AHxQos0zYU0v4Fc6wX8pTIck4joSPTifB19xMj56VoKyYTt
-        PcsO3HECdZmZyzgQLLHj1yjxLvxOvu6yRVg2MaZ1Rh4oMMvvYRiTOi3E3kwv9hFL
-        Zg3alRUaDRmRWh6s3LuHLk=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wAHhT1u1gJlztArCA--.43438S4;
-        Thu, 14 Sep 2023 17:46:35 +0800 (CST)
-From:   Yuanjun Gong <ruc_gongyuanjun@163.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Yuanjun Gong <ruc_gongyuanjun@163.com>
-Subject: [PATCH 1/1] powerpc: fix a memory leak
-Date:   Thu, 14 Sep 2023 17:46:20 +0800
-Message-Id: <20230914094620.3379729-1-ruc_gongyuanjun@163.com>
-X-Mailer: git-send-email 2.37.2
+        Thu, 14 Sep 2023 05:48:26 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEF9EB;
+        Thu, 14 Sep 2023 02:48:22 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c337aeefbdso6622695ad.0;
+        Thu, 14 Sep 2023 02:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694684902; x=1695289702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6a6zOmRc9M17KBB4YTJsUWil+fUKVUovM7Jzzxz9wQA=;
+        b=Pf8D2dbTYflsskyaGzZKKhLfvVPYej0ZtgSe61g0rbaG/C5RPrFUdy9pknbHttzdFV
+         XttC0/5e9psvk3DWwaE8N744jgNKp6ZhIR0UGb3FJXwbEqPQuiqHNgCdLxtyaP2E0/FA
+         TysaFiRRJWBWF8+1c69UkzlXQb1ruDi/AAeXEc1w6t4v4mq5OLofRumGfeEgi8T+33a1
+         jpPIgHWa4ipVKjrQsVlEsVwK/YjuSB7rrjpzi0K/0G/mKYRmUChGLzCIHXWwY66gtzZ2
+         fNLF+uk2gauMG4hg544tdoMVZCxBbH1kesPi90nGYN3wQ/FyoPUeygj60a7lGJg4Zi6N
+         qDxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694684902; x=1695289702;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6a6zOmRc9M17KBB4YTJsUWil+fUKVUovM7Jzzxz9wQA=;
+        b=ZQhcp6wCwPPhytWPKZcSJLWUxadSVyqDO1ZdQlx+6ZX453kP+f/Kzw3KPBsEJsbZ1x
+         ZZlhc2KTfpsL6IKjgI7djj5D5e+OMHb3OnjLphpZKJ0SXBRY6HOwoSBRLBoFAesJjBys
+         A3Z0s2ALQ4eJSZ9vOalPs8f8uG5lWbavzZTFnrr8FHjekbxALv0WWvC5RqqSIpxH8xrD
+         sELcAUuNcepuM4otsCdWq8CVeGJNAdGEPaP4qLw0YG8m42oZemFjeLswcGw1lL5zlOSk
+         +8BYIxD7AYCtIlC4+XZIvt6OnauGMRhdYt8VSzRwrA7q+C/0TmHJLt31XMWkneVPDEs1
+         bgQw==
+X-Gm-Message-State: AOJu0YyjAl5oUg+3VVj7bPg/MLmJr6m6vk2BeQZuBvoiSOJDj0PmN01h
+        itQHrYnR3BLgG9xi3AdNK9LLfIwr94toUJlb
+X-Google-Smtp-Source: AGHT+IEkROg8UtWXf8V6V1l+hYAFMFEcRdNd3m8GStklMRXJydb7AcIAPBJPyt2Prh9QhQhOKRy9UQ==
+X-Received: by 2002:a17:902:c081:b0:1c3:4444:3c9e with SMTP id j1-20020a170902c08100b001c344443c9emr5372684pld.58.1694684901797;
+        Thu, 14 Sep 2023 02:48:21 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id z14-20020a170902d54e00b001bd28b9c3ddsm1143914plf.299.2023.09.14.02.48.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 02:48:21 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: selftests: Remove obsolete and incorrect test case metadata
+Date:   Thu, 14 Sep 2023 17:48:03 +0800
+Message-ID: <20230914094803.94661-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAHhT1u1gJlztArCA--.43438S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF4UGrW8Jr4fAFykuw4xtFb_yoW8ur1UpF
-        WkGr48Kr48Wr18Ka90qFs8CF12yr40q3y7trZxC3sFya4Yqr1DtF1rAr1vvFWxArZ5A3W8
-        KFsrtFyruFsrC3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziHmh7UUUUU=
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5uxfsw5rqj53pdqm30i6rwjhhfrp/1tbiRB3q5WI0UusmfgAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When one of the methods xive_native_alloc_irq_on_chip, irq_create_mapping
-or irq_get_handler_data fails, the function will directly return without
-disposing vinst->name and vinst. Fix it.
+From: Like Xu <likexu@tencent.com>
 
-Fixes: c20e1e299d93 ("powerpc/vas: Alloc and setup IRQ and trigger port address")
-Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
+Delete inaccurate descriptions and obsolete metadata for test cases.
+It adds zero value, and has a non-zero chance of becoming stale and
+misleading in the future. No functional changes intended.
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Like Xu <likexu@tencent.com>
 ---
- arch/powerpc/platforms/powernv/vas.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+V1:
+https://lore.kernel.org/kvm/20230629142633.86034-1-likexu@tencent.com/
+V1 -> V2 Changelog:
+- Delete the incorrect metadata instead of fix; (Sean)
+- More selftests related files are covered;
 
-diff --git a/arch/powerpc/platforms/powernv/vas.c b/arch/powerpc/platforms/powernv/vas.c
-index b65256a63e87..780740b478f0 100644
---- a/arch/powerpc/platforms/powernv/vas.c
-+++ b/arch/powerpc/platforms/powernv/vas.c
-@@ -54,7 +54,7 @@ static int init_vas_instance(struct platform_device *pdev)
- 	struct xive_irq_data *xd;
- 	uint32_t chipid, hwirq;
- 	struct resource *res;
--	int rc, cpu, vasid;
-+	int rc, cpu, vasid, ret;
+ tools/testing/selftests/kvm/include/ucall_common.h       | 2 --
+ tools/testing/selftests/kvm/lib/x86_64/apic.c            | 2 --
+ tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c     | 2 --
+ tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c  | 2 --
+ tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh | 1 -
+ tools/testing/selftests/kvm/x86_64/tsc_scaling_sync.c    | 4 ----
+ tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c     | 4 ----
+ 7 files changed, 17 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/include/ucall_common.h b/tools/testing/selftests/kvm/include/ucall_common.h
+index 112bc1da732a..ce33d306c2cb 100644
+--- a/tools/testing/selftests/kvm/include/ucall_common.h
++++ b/tools/testing/selftests/kvm/include/ucall_common.h
+@@ -1,7 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * tools/testing/selftests/kvm/include/kvm_util.h
+- *
+  * Copyright (C) 2018, Google LLC.
+  */
+ #ifndef SELFTEST_KVM_UCALL_COMMON_H
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/apic.c b/tools/testing/selftests/kvm/lib/x86_64/apic.c
+index 7168e25c194e..89153a333e83 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/apic.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/apic.c
+@@ -1,7 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * tools/testing/selftests/kvm/lib/x86_64/processor.c
+- *
+  * Copyright (C) 2021, Google LLC.
+  */
  
- 	rc = of_property_read_u32(dn, "ibm,vas-id", &vasid);
- 	if (rc) {
-@@ -102,6 +102,7 @@ static int init_vas_instance(struct platform_device *pdev)
- 	res = &pdev->resource[3];
- 	if (res->end > 62) {
- 		pr_err("Bad 'paste_win_id_shift' in DT, %llx\n", res->end);
-+		ret = -ENODEV
- 		goto free_vinst;
- 	}
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c b/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
+index e446d76d1c0c..6c1278562090 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
+@@ -1,7 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * KVM_GET/SET_* tests
+- *
+  * Copyright (C) 2022, Red Hat, Inc.
+  *
+  * Tests for Hyper-V extensions to SVM.
+diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
+index 7f36c32fa760..18ac5c1952a3 100644
+--- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
++++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
+@@ -1,7 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * tools/testing/selftests/kvm/nx_huge_page_test.c
+- *
+  * Usage: to be run via nx_huge_page_test.sh, which does the necessary
+  * environment setup and teardown
+  *
+diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
+index 0560149e66ed..7cbb409801ee 100755
+--- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
++++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
+@@ -4,7 +4,6 @@
+ # Wrapper script which performs setup and cleanup for nx_huge_pages_test.
+ # Makes use of root privileges to set up huge pages and KVM module parameters.
+ #
+-# tools/testing/selftests/kvm/nx_huge_page_test.sh
+ # Copyright (C) 2022, Google LLC.
  
-@@ -111,21 +112,24 @@ static int init_vas_instance(struct platform_device *pdev)
- 	if (!hwirq) {
- 		pr_err("Inst%d: Unable to allocate global irq for chip %d\n",
- 				vinst->vas_id, chipid);
--		return -ENOENT;
-+		ret = -ENOENT;
-+		goto free_vinst;
- 	}
+ set -e
+diff --git a/tools/testing/selftests/kvm/x86_64/tsc_scaling_sync.c b/tools/testing/selftests/kvm/x86_64/tsc_scaling_sync.c
+index 5b669818e39a..59c7304f805e 100644
+--- a/tools/testing/selftests/kvm/x86_64/tsc_scaling_sync.c
++++ b/tools/testing/selftests/kvm/x86_64/tsc_scaling_sync.c
+@@ -1,10 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * svm_vmcall_test
+- *
+  * Copyright © 2021 Amazon.com, Inc. or its affiliates.
+- *
+- * Xen shared_info / pvclock testing
+  */
  
- 	vinst->virq = irq_create_mapping(NULL, hwirq);
- 	if (!vinst->virq) {
- 		pr_err("Inst%d: Unable to map global irq %d\n",
- 				vinst->vas_id, hwirq);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free_vinst;
- 	}
+ #include "test_util.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+index 05898ad9f4d9..9ec9ab60b63e 100644
+--- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
+@@ -1,10 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * svm_vmcall_test
+- *
+  * Copyright © 2021 Amazon.com, Inc. or its affiliates.
+- *
+- * Xen shared_info / pvclock testing
+  */
  
- 	xd = irq_get_handler_data(vinst->virq);
- 	if (!xd) {
- 		pr_err("Inst%d: Invalid virq %d\n",
- 				vinst->vas_id, vinst->virq);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free_vinst;
- 	}
- 
- 	vinst->irq_port = xd->trig_page;
-@@ -168,7 +172,7 @@ static int init_vas_instance(struct platform_device *pdev)
- free_vinst:
- 	kfree(vinst->name);
- 	kfree(vinst);
--	return -ENODEV;
-+	return ret;
- 
- }
- 
+ #include "test_util.h"
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
 -- 
-2.37.2
+2.42.0
 
