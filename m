@@ -2,497 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EBC79FD7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B472279FD80
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 09:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbjINHvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 03:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
+        id S235317AbjINHwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 03:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjINHvf (ORCPT
+        with ESMTP id S231274AbjINHwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 03:51:35 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D65A1BF9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 00:51:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qgh82-0001Gw-Be; Thu, 14 Sep 2023 09:51:10 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qgh80-006FdC-R5; Thu, 14 Sep 2023 09:51:08 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qgh80-009P8Q-2G;
-        Thu, 14 Sep 2023 09:51:08 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: [PATCH net-next v5 2/2] net: dsa: microchip: Add drive strength configuration
-Date:   Thu, 14 Sep 2023 09:51:07 +0200
-Message-Id: <20230914075107.2239886-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230914075107.2239886-1-o.rempel@pengutronix.de>
-References: <20230914075107.2239886-1-o.rempel@pengutronix.de>
+        Thu, 14 Sep 2023 03:52:09 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2073.outbound.protection.outlook.com [40.107.13.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC2B1BF9;
+        Thu, 14 Sep 2023 00:52:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IFNlSsQ3tAxzikWJsaZVFkpIfiqafTjIvGYmQRmruOfIEe7nV6FqL7nZQRNyEOWgUXHRT6v5BzfE6BX9RMbE5IVmZP3EWbeb0C48t7ne+dN/2c4JSb/QWN9+HY2nbGJcVQ10nkEppxMbKhqjsgNY93TjpLbCCw4KYvGQX4AF92DHUlBvWxAx4zIyBBb8Jkyazaj4cjXS9eK1apC9r31hrIj0IJ8BEuT/T+R5Nstk0goY1f/TqzWMtyLzed2AXRsRaMv+7jIr4hbK+7h9amxJOafUuzsYkxpedCODyRfy72mTDvKctvNhffjJi3zpwl07s6viiNELvJtge4do/Zkgug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z3r/yy6dfBeGDY6tF/ZjGpDlvLkjiyewLjqN5nZNTY4=;
+ b=WB4+xy7x0FhHONuxqvZ/JTqjYoPcRBOgnpRXTxPlhBOqUESw8SVvB20w2EJw9vIV1ae69jDntOi3a55ha+ILy4esC0kamgjaAnk9EK8J6Z/yZ6+cuWK1HuiLjSO9AbGUPzGFStZQaMvM5QDBavqHg0O62ezPJ24n8s7T85MRTeAAvIhliFSwIv4DR69IOSQifoqNDrHe4tEnetuEAWVIRs9FW0qfvr/8ydiSCMmNLm0eZ+hh4FIKj44ya+a9uEvjShJ23TjUAZ9B6vdLPYCgqBTxvymwATfwJ/RzKXSDyZrSTtKhraaRgaq/R674opnwGdNiCV/ZKMRg6Uy7Kk4RLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z3r/yy6dfBeGDY6tF/ZjGpDlvLkjiyewLjqN5nZNTY4=;
+ b=dNilvkVBBv9PJdr96ACKkOcC1GHeE4+hU6EJsF0EckZVjwRhnV3I0w3A3gsRNM2cNDO2UFP+hM5JAYCACdCIku673HWhDhQkPBdwj5/NgYGhMD+cj9KYrHDE3FB/rnwbNT5WbJIESJfyr8fKM7sAVa9dIrnHqUQn1tWzrjPf4Wk=
+Received: from DB9PR04MB9284.eurprd04.prod.outlook.com (2603:10a6:10:36c::8)
+ by AS1PR04MB9262.eurprd04.prod.outlook.com (2603:10a6:20b:4c6::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Thu, 14 Sep
+ 2023 07:52:02 +0000
+Received: from DB9PR04MB9284.eurprd04.prod.outlook.com
+ ([fe80::964e:b1f3:bf81:867d]) by DB9PR04MB9284.eurprd04.prod.outlook.com
+ ([fe80::964e:b1f3:bf81:867d%7]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
+ 07:52:02 +0000
+From:   Hui Fang <hui.fang@nxp.com>
+To:     "tfiga@chromium.org" <tfiga@chromium.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>
+CC:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anle Pan <anle.pan@nxp.com>, Xuegang Liu <xuegang.liu@nxp.com>
+Subject: RE: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Thread-Topic: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Thread-Index: AQHZ5t7nwJrRJ7WJYEaDKJh4zDlG3LAZ8MSA
+Date:   Thu, 14 Sep 2023 07:52:02 +0000
+Message-ID: <DB9PR04MB928456C515C3D53744A04B1087F7A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+References: <20230914145812.12851-1-hui.fang@nxp.com>
+In-Reply-To: <20230914145812.12851-1-hui.fang@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR04MB9284:EE_|AS1PR04MB9262:EE_
+x-ms-office365-filtering-correlation-id: 6ba4a9aa-4026-41a0-e648-08dbb4f77b65
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EXCL2yKA0MQAbTRnt6jqoIXu4WD7vtldoOp0R30tf7zXKV/9D8o047j1foTOzlWsSVKZnrqnzy03sVl+V6wgy+GPHpEtqI2vduoWvfoBPyPwfvXp9cj66Nn9sx6RJ38At+GsC93gez9FAIL8n2+eBVk+ZLgb705PrcEXY3Foy8dLCnVWwoQwDPVlSwzduINnfKb56XiWt3uV3cr3Lx8dzl2yE2BxxfQLID7R/XHcN6tQgpCQDtLMB9LUiWpDULBEV/yM22X2UItQ92DqZTy1Xmk6URRLLscmGc9qTYEqugCfDRzSNl5/eoeg8Uw7+oCRvnKdFpWYXBjJcTJKIFGMYbCiIcGDjQd3jbxvCUBLXdwNCIJpEM6bgRoMPmW4FHh+aw6Dr3ksJNjL2MXXCKR7KoLta6dXaX3hvNUETNxFlQrmyQGW72y//YKaP8Go/WsurH1ACx/DgstG7xIUjTE2Dh2xinG7R+FZv8vFoGW1utrk60kvmNn3A+GKl7iv0ay/IkD432ikSKmjYS8MjPZCxEQZS5/qoe08tbMzX5sCaKRwRlC/5Slu3/dlXhny+1nC7nGj6vN4gaRslnMv1QKLhANesC6PWiV4Oa8U7V3MvL/I5NEpjXriHunWvZqajSWn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9284.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(136003)(39860400002)(186009)(451199024)(1800799009)(71200400001)(26005)(83380400001)(53546011)(110136005)(64756008)(66946007)(316002)(44832011)(478600001)(54906003)(66446008)(9686003)(76116006)(66476007)(122000001)(41300700001)(66556008)(7696005)(6506007)(38100700002)(38070700005)(2906002)(4744005)(5660300002)(86362001)(4326008)(8676002)(55016003)(33656002)(52536014)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?M2Z0a1Y4bkJ2Vk5iVWhqMWp2eDRETUFwamhqUzNROGZSenRKSHhlVEllU1g3?=
+ =?utf-8?B?Zk9MZU5GMXRXNXp1emdNOEFyK1Q0SkNtOFQzYWdaVjVPWmlLN2l3SUhocWhK?=
+ =?utf-8?B?QjNKZC9wMVhmOFJTeStNWGNqNjd3SzZXeVVlREVFdVZFalRia2xtb0NkMjQ2?=
+ =?utf-8?B?NE1oYVlNV3NzeUJ4WDRZWTcwK3R1MmRpUHN0VFpyLzBid3N6UHVCbkU0aEZo?=
+ =?utf-8?B?ZW0vRnMvZVNNQVRSd0E4aW12Mkd5TGp2T1dqT0ppWjdHTk9zTHc0ZGRXc2ww?=
+ =?utf-8?B?cjl4NjcvVzc0MmNsME1HdXExaUlQY1ZrMjNwZTdkYm5NQUtPS0RFSmxzUUUr?=
+ =?utf-8?B?ek5pUERpdTkxREhvaHpPN25ZVWtUUmZqSGF2THFDY1RTNndDd1FvKzVZbHBZ?=
+ =?utf-8?B?THZxZjFrN2ZkUU9qVlE2aHVtUnBHN1dzbDltUHp5SXFOUy9CR0trbjhVSk83?=
+ =?utf-8?B?MWIvOG9BMStaOGJWVzhCYXpSa0VCSXEraDliYzVTZ2ZhTFlRZ2VpcmtxN3VD?=
+ =?utf-8?B?VjFHWllma0FiUFgzLzl5T1lBOWw3Vy84eEx5Wjd0UzE4ZFdnR1l1eGtNeSs4?=
+ =?utf-8?B?V1ZjZ2doUmRBaG5yV1hEUmphd0diQUxtZkJHMnZWR0lZdytpUVorVlpTb3ps?=
+ =?utf-8?B?Z1I1UHZxeFpVMDFVTW50blpGV2d6M1h1SWc0bFRhMW1JT2t2M0ltSVA1U0Np?=
+ =?utf-8?B?UDZ0bXN6WEZ6aldFNnh1bHhDRndleFp2bWMyUGVicFJHSFJsb1dNSWthc092?=
+ =?utf-8?B?RzM1K1U3SkFZSS9USVNUUUxUQmxJZDAwNjVKKzhiMlk4eFNGVUgzbWx3em4z?=
+ =?utf-8?B?SWVHZmZsaWVJenR3ckhaa2ZmTk9HUVZGWWxxYlZBc2Y0RkIzNXgxekxDUkNV?=
+ =?utf-8?B?Z0dFWngrRDJCWWVUcktNZkNaRy9XbHRJUDQyM2hlVTJJTlRvZ2hTd1QrLys4?=
+ =?utf-8?B?Z3E0aCtObUdQcGgwSmZYNEIzVHFrVlB2OW5lOWp2WjJRbkFSMC81NGJwU2ZS?=
+ =?utf-8?B?N01hb0Q1N1QrY1ZvbUxTNU1La2RjaW90VWdkYmg0UStpdE9FbVV3Z0xQSFlU?=
+ =?utf-8?B?SmFUSS9RVUZJekVET08rcmhvaXlOeldwT09EU3dydzhmZjV0MXVNci8weUVk?=
+ =?utf-8?B?RkVpblE0NDFwUGFZL2Nhc3RzcldxTXZYWjg3Q052SDBWN2RPVDhJWXZwb2p3?=
+ =?utf-8?B?dThSZnlNS0RjanZ0dlpWQXZEWTlHbkRPVmN6L2tVZlBBRHZNUmZmUUR6YTRS?=
+ =?utf-8?B?dHJ0ZmYySC9IU1M2bG9qRi9xUDRYKzNPaElENEhkRkI4UHF2UlV2bk10Rlpv?=
+ =?utf-8?B?azk0Nk9jSWcwV0RVaGJ5LzA3UFE1bjR1N3BjYzM4VStzRWRXbDdpdC9QQ0Fy?=
+ =?utf-8?B?Y2xPOHJIYzQ1aC9MbDN5VWZORWp4OFgyajZqbndZQlhmQjljUVJqSTVYVzJz?=
+ =?utf-8?B?S2dPZnhVdkRnQWp3dmN5T2FSbWU4WStSeHpuQ3o3VW5TZnJsb1BOWVZ2RE40?=
+ =?utf-8?B?Qy90QUsxZ2dxQnpRZVBsclAyNG53ZjcxbmptMTlBT05iK2R2amFFcEpzOWM5?=
+ =?utf-8?B?K2xpSnA3UGp4aFNIYnhvTDU4eHVWRzJQTC80UDJpUGJSWUM3THp3TlFVODQy?=
+ =?utf-8?B?TXFUeWRoV2UxNUI1YTFTRlFUVXJKRU1DVjdlU0FDNElybGFxZVlPczN3TURh?=
+ =?utf-8?B?amYyTjRleWlUODFYQndsbjFLK0Izb2lsQkZDcS9PaE5PODk4d29KbldvQ2x4?=
+ =?utf-8?B?akxXY3YrMkE4V3ovN3Z0N0JxYTdjelpPUkthZ1ZNNW5ndThDKzdlWTU0dkFk?=
+ =?utf-8?B?T0I3bGZ4clJUaWNLTlZlUmhRcDMvUldDNXN0Rm9FOWdLSkRFQlZTU2FsdndW?=
+ =?utf-8?B?aGNTWkxYYVg1c0IxMHAwSlR5SXpmc29CWDVVanB6MThScDBSY3gzdUdKNzM5?=
+ =?utf-8?B?K2tueHlUVkdaVTFibk1jdzd5YU1iOGJZbEROL2x0ZFNZWFJmZFNKblFtVVRO?=
+ =?utf-8?B?SGFSeXB3bXljUzYyZmxPaldVTE56Wk00Y25CYmVXZkg1anZNNjYvaEQxQWRB?=
+ =?utf-8?B?SXdrUlMwdnJpMTUxSkxyZ2RTUUtOWmcxZ1B2ZS93VThyR3AxRHExY0VRcHNV?=
+ =?utf-8?Q?XFfQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9284.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ba4a9aa-4026-41a0-e648-08dbb4f77b65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2023 07:52:02.3100
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oRVM8MS2WjmD+k0OO45vtGJd98JHllNhtbeNCVb4hUNGP7jZk25eE6OGDUz9AFyaNahB0i8hV645gH/h0Wy4oQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9262
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree based drive strength configuration support. It is needed to
-pass EMI validation on our hardware.
-
-Configuration values are based on the vendor's reference driver.
-
-Tested on KSZ9563R.
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/net/dsa/microchip/ksz8795_reg.h |  14 --
- drivers/net/dsa/microchip/ksz9477_reg.h |  13 -
- drivers/net/dsa/microchip/ksz_common.c  | 309 ++++++++++++++++++++++++
- drivers/net/dsa/microchip/ksz_common.h  |  20 ++
- 4 files changed, 329 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
-index 7a57c6088f80..d33db4f86c64 100644
---- a/drivers/net/dsa/microchip/ksz8795_reg.h
-+++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-@@ -442,20 +442,6 @@
- #define TOS_PRIO_M			KS_PRIO_M
- #define TOS_PRIO_S			KS_PRIO_S
- 
--#define REG_SW_CTRL_20			0xA3
--
--#define SW_GMII_DRIVE_STRENGTH_S	4
--#define SW_DRIVE_STRENGTH_M		0x7
--#define SW_DRIVE_STRENGTH_2MA		0
--#define SW_DRIVE_STRENGTH_4MA		1
--#define SW_DRIVE_STRENGTH_8MA		2
--#define SW_DRIVE_STRENGTH_12MA		3
--#define SW_DRIVE_STRENGTH_16MA		4
--#define SW_DRIVE_STRENGTH_20MA		5
--#define SW_DRIVE_STRENGTH_24MA		6
--#define SW_DRIVE_STRENGTH_28MA		7
--#define SW_MII_DRIVE_STRENGTH_S		0
--
- #define REG_SW_CTRL_21			0xA4
- 
- #define SW_IPV6_MLD_OPTION		BIT(3)
-diff --git a/drivers/net/dsa/microchip/ksz9477_reg.h b/drivers/net/dsa/microchip/ksz9477_reg.h
-index cba3dba58bc3..504e085aab52 100644
---- a/drivers/net/dsa/microchip/ksz9477_reg.h
-+++ b/drivers/net/dsa/microchip/ksz9477_reg.h
-@@ -112,19 +112,6 @@
- 
- #define REG_SW_IBA_SYNC__1		0x010C
- 
--#define REG_SW_IO_STRENGTH__1		0x010D
--#define SW_DRIVE_STRENGTH_M		0x7
--#define SW_DRIVE_STRENGTH_2MA		0
--#define SW_DRIVE_STRENGTH_4MA		1
--#define SW_DRIVE_STRENGTH_8MA		2
--#define SW_DRIVE_STRENGTH_12MA		3
--#define SW_DRIVE_STRENGTH_16MA		4
--#define SW_DRIVE_STRENGTH_20MA		5
--#define SW_DRIVE_STRENGTH_24MA		6
--#define SW_DRIVE_STRENGTH_28MA		7
--#define SW_HI_SPEED_DRIVE_STRENGTH_S	4
--#define SW_LO_SPEED_DRIVE_STRENGTH_S	0
--
- #define REG_SW_IBA_STATUS__4		0x0110
- 
- #define SW_IBA_REQ			BIT(31)
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 42db7679c360..54048b82db71 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -186,6 +186,72 @@ static const struct ksz_mib_names ksz9477_mib_names[] = {
- 	{ 0x83, "tx_discards" },
- };
- 
-+struct ksz_driver_strength_prop {
-+	const char *name;
-+	int offset;
-+	int value;
-+};
-+
-+enum ksz_driver_strength_type {
-+	KSZ_DRIVER_STRENGTH_HI,
-+	KSZ_DRIVER_STRENGTH_LO,
-+	KSZ_DRIVER_STRENGTH_IO,
-+};
-+
-+/**
-+ * struct ksz_drive_strength - drive strength mapping
-+ * @reg_val:	register value
-+ * @microamp:	microamp value
-+ */
-+struct ksz_drive_strength {
-+	u32 reg_val;
-+	u32 microamp;
-+};
-+
-+/* ksz9477_drive_strengths - Drive strength mapping for KSZ9477 variants
-+ *
-+ * This values are not documented in KSZ9477 variants but confirmed by
-+ * Microchip that KSZ9477, KSZ9567, KSZ8567, KSZ9897, KSZ9896, KSZ9563, KSZ9893
-+ * and KSZ8563 are using same register (drive strength) settings like KSZ8795.
-+ *
-+ * Documentation in KSZ8795CLX provides more information with some
-+ * recommendations:
-+ * - for high speed signals
-+ *   1. 4 mA or 8 mA is often used for MII, RMII, and SPI interface with using
-+ *      2.5V or 3.3V VDDIO.
-+ *   2. 12 mA or 16 mA is often used for MII, RMII, and SPI interface with
-+ *      using 1.8V VDDIO.
-+ *   3. 20 mA or 24 mA is often used for GMII/RGMII interface with using 2.5V
-+ *      or 3.3V VDDIO.
-+ *   4. 28 mA is often used for GMII/RGMII interface with using 1.8V VDDIO.
-+ *   5. In same interface, the heavy loading should use higher one of the
-+ *      drive current strength.
-+ * - for low speed signals
-+ *   1. 3.3V VDDIO, use either 4 mA or 8 mA.
-+ *   2. 2.5V VDDIO, use either 8 mA or 12 mA.
-+ *   3. 1.8V VDDIO, use either 12 mA or 16 mA.
-+ *   4. If it is heavy loading, can use higher drive current strength.
-+ */
-+static const struct ksz_drive_strength ksz9477_drive_strengths[] = {
-+	{ SW_DRIVE_STRENGTH_2MA,  2000 },
-+	{ SW_DRIVE_STRENGTH_4MA,  4000 },
-+	{ SW_DRIVE_STRENGTH_8MA,  8000 },
-+	{ SW_DRIVE_STRENGTH_12MA, 12000 },
-+	{ SW_DRIVE_STRENGTH_16MA, 16000 },
-+	{ SW_DRIVE_STRENGTH_20MA, 20000 },
-+	{ SW_DRIVE_STRENGTH_24MA, 24000 },
-+	{ SW_DRIVE_STRENGTH_28MA, 28000 },
-+};
-+
-+/* ksz8830_drive_strengths - Drive strength mapping for KSZ8830, KSZ8873, ..
-+ *			     variants.
-+ * This values are documented in KSZ8873 and KSZ8863 datasheets.
-+ */
-+static const struct ksz_drive_strength ksz8830_drive_strengths[] = {
-+	{ 0,  8000 },
-+	{ KSZ8873_DRIVE_STRENGTH_16MA, 16000 },
-+};
-+
- static const struct ksz_dev_ops ksz8_dev_ops = {
- 	.setup = ksz8_setup,
- 	.get_port_addr = ksz8_get_port_addr,
-@@ -3530,6 +3596,245 @@ static void ksz_parse_rgmii_delay(struct ksz_device *dev, int port_num,
- 	dev->ports[port_num].rgmii_tx_val = tx_delay;
- }
- 
-+/**
-+ * ksz_drive_strength_to_reg() - Convert drive strength value to corresponding
-+ *				 register value.
-+ * @array:	The array of drive strength values to search.
-+ * @array_size:	The size of the array.
-+ * @microamp:	The drive strength value in microamp to be converted.
-+ *
-+ * This function searches the array of drive strength values for the given
-+ * microamp value and returns the corresponding register value for that drive.
-+ *
-+ * Returns: If found, the corresponding register value for that drive strength
-+ * is returned. Otherwise, -EINVAL is returned indicating an invalid value.
-+ */
-+static int ksz_drive_strength_to_reg(const struct ksz_drive_strength *array,
-+				     size_t array_size, int microamp)
-+{
-+	int i;
-+
-+	for (i = 0; i < array_size; i++) {
-+		if (array[i].microamp == microamp)
-+			return array[i].reg_val;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+/**
-+ * ksz_drive_strength_error() - Report invalid drive strength value
-+ * @dev:	ksz device
-+ * @array:	The array of drive strength values to search.
-+ * @array_size:	The size of the array.
-+ * @microamp:	Invalid drive strength value in microamp
-+ *
-+ * This function logs an error message when an unsupported drive strength value
-+ * is detected. It lists out all the supported drive strength values for
-+ * reference in the error message.
-+ */
-+static void ksz_drive_strength_error(struct ksz_device *dev,
-+				     const struct ksz_drive_strength *array,
-+				     size_t array_size, int microamp)
-+{
-+	char supported_values[100];
-+	size_t remaining_size;
-+	int added_len;
-+	char *ptr;
-+	int i;
-+
-+	remaining_size = sizeof(supported_values);
-+	ptr = supported_values;
-+
-+	for (i = 0; i < array_size; i++) {
-+		added_len = snprintf(ptr, remaining_size,
-+				     i == 0 ? "%d" : ", %d", array[i].microamp);
-+
-+		if (added_len >= remaining_size)
-+			break;
-+
-+		ptr += added_len;
-+		remaining_size -= added_len;
-+	}
-+
-+	dev_err(dev->dev, "Invalid drive strength %d, supported values are %s\n",
-+		microamp, supported_values);
-+}
-+
-+/**
-+ * ksz9477_drive_strength_write() - Set the drive strength for specific KSZ9477
-+ *				    chip variants.
-+ * @dev:       ksz device
-+ * @props:     Array of drive strength properties to be applied
-+ * @num_props: Number of properties in the array
-+ *
-+ * This function configures the drive strength for various KSZ9477 chip variants
-+ * based on the provided properties. It handles chip-specific nuances and
-+ * ensures only valid drive strengths are written to the respective chip.
-+ *
-+ * Return: 0 on successful configuration, a negative error code on failure.
-+ */
-+static int ksz9477_drive_strength_write(struct ksz_device *dev,
-+					struct ksz_driver_strength_prop *props,
-+					int num_props)
-+{
-+	size_t array_size = ARRAY_SIZE(ksz9477_drive_strengths);
-+	int i, ret, reg;
-+	u8 mask = 0;
-+	u8 val = 0;
-+
-+	if (props[KSZ_DRIVER_STRENGTH_IO].value != -1)
-+		dev_warn(dev->dev, "%s is not supported by this chip variant\n",
-+			 props[KSZ_DRIVER_STRENGTH_IO].name);
-+
-+	if (dev->chip_id == KSZ8795_CHIP_ID ||
-+	    dev->chip_id == KSZ8794_CHIP_ID ||
-+	    dev->chip_id == KSZ8765_CHIP_ID)
-+		reg = KSZ8795_REG_SW_CTRL_20;
-+	else
-+		reg = KSZ9477_REG_SW_IO_STRENGTH;
-+
-+	for (i = 0; i < num_props; i++) {
-+		if (props[i].value == -1)
-+			continue;
-+
-+		ret = ksz_drive_strength_to_reg(ksz9477_drive_strengths,
-+						array_size, props[i].value);
-+		if (ret < 0) {
-+			ksz_drive_strength_error(dev, ksz9477_drive_strengths,
-+						 array_size, props[i].value);
-+			return ret;
-+		}
-+
-+		mask |= SW_DRIVE_STRENGTH_M << props[i].offset;
-+		val |= ret << props[i].offset;
-+	}
-+
-+	return ksz_rmw8(dev, reg, mask, val);
-+}
-+
-+/**
-+ * ksz8830_drive_strength_write() - Set the drive strength configuration for
-+ *				    KSZ8830 compatible chip variants.
-+ * @dev:       ksz device
-+ * @props:     Array of drive strength properties to be set
-+ * @num_props: Number of properties in the array
-+ *
-+ * This function applies the specified drive strength settings to KSZ8830 chip
-+ * variants (KSZ8873, KSZ8863).
-+ * It ensures the configurations align with what the chip variant supports and
-+ * warns or errors out on unsupported settings.
-+ *
-+ * Return: 0 on success, error code otherwise
-+ */
-+static int ksz8830_drive_strength_write(struct ksz_device *dev,
-+					struct ksz_driver_strength_prop *props,
-+					int num_props)
-+{
-+	size_t array_size = ARRAY_SIZE(ksz8830_drive_strengths);
-+	int microamp;
-+	int i, ret;
-+
-+	for (i = 0; i < num_props; i++) {
-+		if (props[i].value == -1 || i == KSZ_DRIVER_STRENGTH_IO)
-+			continue;
-+
-+		dev_warn(dev->dev, "%s is not supported by this chip variant\n",
-+			 props[i].name);
-+	}
-+
-+	microamp = props[KSZ_DRIVER_STRENGTH_IO].value;
-+	ret = ksz_drive_strength_to_reg(ksz8830_drive_strengths, array_size,
-+					microamp);
-+	if (ret < 0) {
-+		ksz_drive_strength_error(dev, ksz8830_drive_strengths,
-+					 array_size, microamp);
-+		return ret;
-+	}
-+
-+	return ksz_rmw8(dev, KSZ8873_REG_GLOBAL_CTRL_12,
-+			KSZ8873_DRIVE_STRENGTH_16MA, ret);
-+}
-+
-+/**
-+ * ksz_parse_drive_strength() - Extract and apply drive strength configurations
-+ *				from device tree properties.
-+ * @dev:	ksz device
-+ *
-+ * This function reads the specified drive strength properties from the
-+ * device tree, validates against the supported chip variants, and sets
-+ * them accordingly. An error should be critical here, as the drive strength
-+ * settings are crucial for EMI compliance.
-+ *
-+ * Return: 0 on success, error code otherwise
-+ */
-+static int ksz_parse_drive_strength(struct ksz_device *dev)
-+{
-+	struct ksz_driver_strength_prop of_props[] = {
-+		[KSZ_DRIVER_STRENGTH_HI] = {
-+			.name = "microchip,hi-drive-strength-microamp",
-+			.offset = SW_HI_SPEED_DRIVE_STRENGTH_S,
-+			.value = -1,
-+		},
-+		[KSZ_DRIVER_STRENGTH_LO] = {
-+			.name = "microchip,lo-drive-strength-microamp",
-+			.offset = SW_LO_SPEED_DRIVE_STRENGTH_S,
-+			.value = -1,
-+		},
-+		[KSZ_DRIVER_STRENGTH_IO] = {
-+			.name = "microchip,io-drive-strength-microamp",
-+			.offset = 0, /* don't care */
-+			.value = -1,
-+		},
-+	};
-+	struct device_node *np = dev->dev->of_node;
-+	bool have_any_prop = false;
-+	int i, ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(of_props); i++) {
-+		ret = of_property_read_u32(np, of_props[i].name,
-+					   &of_props[i].value);
-+		if (ret && ret != -EINVAL)
-+			dev_warn(dev->dev, "Failed to read %s\n",
-+				 of_props[i].name);
-+		if (ret)
-+			continue;
-+
-+		have_any_prop = true;
-+	}
-+
-+	if (!have_any_prop)
-+		return 0;
-+
-+	switch (dev->chip_id) {
-+	case KSZ8830_CHIP_ID:
-+		return ksz8830_drive_strength_write(dev, of_props,
-+						    ARRAY_SIZE(of_props));
-+	case KSZ8795_CHIP_ID:
-+	case KSZ8794_CHIP_ID:
-+	case KSZ8765_CHIP_ID:
-+	case KSZ8563_CHIP_ID:
-+	case KSZ9477_CHIP_ID:
-+	case KSZ9563_CHIP_ID:
-+	case KSZ9567_CHIP_ID:
-+	case KSZ9893_CHIP_ID:
-+	case KSZ9896_CHIP_ID:
-+	case KSZ9897_CHIP_ID:
-+		return ksz9477_drive_strength_write(dev, of_props,
-+						    ARRAY_SIZE(of_props));
-+	default:
-+		for (i = 0; i < ARRAY_SIZE(of_props); i++) {
-+			if (of_props[i].value == -1)
-+				continue;
-+
-+			dev_warn(dev->dev, "%s is not supported by this chip variant\n",
-+				 of_props[i].name);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int ksz_switch_register(struct ksz_device *dev)
- {
- 	const struct ksz_chip_data *info;
-@@ -3612,6 +3917,10 @@ int ksz_switch_register(struct ksz_device *dev)
- 	for (port_num = 0; port_num < dev->info->port_cnt; ++port_num)
- 		dev->ports[port_num].interface = PHY_INTERFACE_MODE_NA;
- 	if (dev->dev->of_node) {
-+		ret = ksz_parse_drive_strength(dev);
-+		if (ret)
-+			return ret;
-+
- 		ret = of_get_phy_mode(dev->dev->of_node, &interface);
- 		if (ret == 0)
- 			dev->compat_interface = interface;
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index a4de58847dea..ca37b5b87946 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -689,6 +689,26 @@ static inline int is_lan937x(struct ksz_device *dev)
- #define KSZ8_LEGAL_PACKET_SIZE		1518
- #define KSZ9477_MAX_FRAME_SIZE		9000
- 
-+#define KSZ8873_REG_GLOBAL_CTRL_12	0x0e
-+/* Drive Strength of I/O Pad
-+ * 0: 8mA, 1: 16mA
-+ */
-+#define KSZ8873_DRIVE_STRENGTH_16MA	BIT(6)
-+
-+#define KSZ8795_REG_SW_CTRL_20		0xa3
-+#define KSZ9477_REG_SW_IO_STRENGTH	0x010d
-+#define SW_DRIVE_STRENGTH_M		0x7
-+#define SW_DRIVE_STRENGTH_2MA		0
-+#define SW_DRIVE_STRENGTH_4MA		1
-+#define SW_DRIVE_STRENGTH_8MA		2
-+#define SW_DRIVE_STRENGTH_12MA		3
-+#define SW_DRIVE_STRENGTH_16MA		4
-+#define SW_DRIVE_STRENGTH_20MA		5
-+#define SW_DRIVE_STRENGTH_24MA		6
-+#define SW_DRIVE_STRENGTH_28MA		7
-+#define SW_HI_SPEED_DRIVE_STRENGTH_S	4
-+#define SW_LO_SPEED_DRIVE_STRENGTH_S	0
-+
- #define KSZ9477_REG_PORT_OUT_RATE_0	0x0420
- #define KSZ9477_OUT_RATE_NO_LIMIT	0
- 
--- 
-2.39.2
-
+T24gVGh1LCBTZXAgMTQsIDIwMjMgYXQgMTU6NDHigK9QTSBGYW5nIEh1aSA8aHVpLmZhbmdAbnhw
+LmNvbT4gd3JvdGU6IA0KPiBPbiBzeXN0ZW0gd2l0aCAiQ09ORklHX1pPTkVfRE1BMzI9eSIsIGlm
+IHRoZSBhbGxvY2F0ZWQgcGh5c2ljYWwgYWRkcmVzcyBpcw0KPiBncmVhdGVyIHRoYW4gNEcsIHN3
+aW90bGIgd2lsbCBiZSB1c2VkLiBJdCB3aWxsIGxlYWQgYmVsb3cgZGVmZWN0cy4NCj4gMSkgSW1w
+YWN0IHBlcmZvcm1hbmNlIGR1ZSB0byBhbiBleHRyYSBtZW1jcHkuDQo+IDIpIE1heSBtZWV0IGJl
+bG93IGVycm9yIGR1ZSB0byBzd2lvdGxiX21heF9tYXBwaW5nX3NpemUoKQ0KPiAgICBpcyAyNTZL
+IChJT19UTEJfU0laRSAqIElPX1RMQl9TRUdTSVpFKS4NCj4gInN3aW90bGIgYnVmZmVyIGlzIGZ1
+bGwgKHN6OiAzOTMyMTYgYnl0ZXMpLCB0b3RhbCA2NTUzNiAoc2xvdHMpLCB1c2VkIDIzNTggKHNs
+b3RzKSINCj4gDQo+IFRvIGF2b2lkIHRob3NlIGRlZmVjdHMsIHVzZSBkbWFfYWxsb2NfcGFnZXMo
+KSBpbnN0ZWFkIG9mIGFsbG9jX3BhZ2VzKCkgaW4NCj4gdmIyX2RtYV9zZ19hbGxvY19jb21wYWN0
+ZWQoKS4NCj4gDQo+IFN1Z2dlc3RlZC1ieTogVG9tYXN6IEZpZ2EgPHRmaWdhQGNocm9taXVtLm9y
+Zz4NCj4gU2lnbmVkLW9mZi1ieTogRmFuZyBIdWkgPGh1aS5mYW5nQG54cC5jb20+DQogLS0tDQpU
+d28gdGhpbmdzLg0KMS4gRm9yIGRtYV9kYXRhX2RpcmVjdGlvbiBwYXJhIChETUFfQklESVJFQ1RJ
+T05BTCBpcyB1c2VkKSBvZiBkbWFfYWxsb2NfcGFnZXMoKSwNCiAgbWF5YmUgYmV0dGVyIHBhc3Mg
+ZnJvbSBjYWxsZXJzPyBJbiBEZXZpY2VBc1dlYmNhbSBjYXNlLCBpdCdzIERNQV9UT19ERVZJQ0Uu
+DQoNCjIuICJNQS0yMTY1NCIgKE5YUCB0aWNrZXQgbnVtYmVyKSBzaG91bGQgYmUgcmVtb3ZlZCBp
+biB0aGUgY29tbWVudCwgbmVlZCBJDQogIHJlLXB1c2ggb3IgaXQgd2lsbCBiZSBkb25lIG9uIHlv
+dXIgc2lkZSwgdGhhbmtzIQ0KDQpCUnMsDQpGYW5nIEh1aQ0K
