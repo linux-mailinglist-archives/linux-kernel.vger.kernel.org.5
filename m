@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 042B77A0FAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0077A0FB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjINVSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S229593AbjINVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjINVSo (ORCPT
+        with ESMTP id S229531AbjINVUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:18:44 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8B426B2;
-        Thu, 14 Sep 2023 14:18:40 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 57E1F864F1;
-        Thu, 14 Sep 2023 23:18:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1694726317;
-        bh=GaCjucgmR2ewr/vach/jiJUHP6lxAeRNjrbpvetIbhs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W4ifAGTqsSa9eHpgsVjOY1+CAYl9DanA2tnNIWVs2BvES+m9hqf+S8FbE0sQ9lY++
-         L1KOLJlDCYVT/bgCK9fAcufKw53sZ2YDPkhZpbBoCoANkPXNUMwakvpTUfU7CXUP1A
-         WMBChieM5Hh1gLucp4OqDnpAz73h5xMSbZjGzSSiQnac2zUqI0HLc3qxcDwViLiOP7
-         7BThGVgKobx7lrxVEbfi5fDBCxdZ44IxG3aM8536i7s4gW0+amNXoXCgOcUz7EVMxT
-         fDmeAO6hkAZZG8Ec3FPBVA5/rwaRIviUWGbCpzcw3wDUbWAZ0N1FBeM4FQKqPcBHXB
-         8BLxWtb8/wCKg==
-Date:   Thu, 14 Sep 2023 23:18:31 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230914231831.0f406585@wsk>
-In-Reply-To: <20230913184206.6dmfw4weoomjqwfp@skbuf>
-References: <20230912092909.4yj4b2b4xrhzdztu@skbuf>
-        <20230912160326.188e1d13@wsk>
-        <20230912160326.188e1d13@wsk>
-        <20230912142644.u4sdkveei3e5hwaf@skbuf>
-        <20230912170641.5bfc3cfe@wsk>
-        <20230912215523.as4puqamj65dikip@skbuf>
-        <20230913102219.773e38f8@wsk>
-        <20230913105806.g5p3wck675gbw5fo@skbuf>
-        <20230913141548.70658940@wsk>
-        <20230913135102.hoyl4tifyf77kdo2@skbuf>
-        <20230913184206.6dmfw4weoomjqwfp@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f7Bh6uyRP=wObsNfKuHGfr2";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+        Thu, 14 Sep 2023 17:20:01 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAE026BE
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:19:57 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58c9d29588aso18785667b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694726397; x=1695331197; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gyCa8y2D4tfagLdEhZkffRRlznGd/QDpuIxcjKD4E/c=;
+        b=ULpz5Oo6VSuE8V0wxV+/CzBqWNORlkgya7siYPEDDVTpgoSW2zSIUaCIjVseg27xgh
+         bNjZ5GX4ED6wx0gosbObdjzy/fb59mevqy343lBYpSc6yqbfcegDmfbcYKibcJovHLZ1
+         tjBQo6YNPuKNTG08+2DfrZbsT+zgeazub8uOYn/xRdUEzghEcp9pOI40GjFPiaktP01Y
+         qWGxCnefPBne7FXi6sdBXmswWzNGWNy7Wl8ngZcNXPv6JUMi9UtE0zEDWYlXFWVaUHeb
+         oYkMoXW6FiOCPxlyadX1Pq0AK/WAFIME79OF3nLnZYJKktMSVXkaC6whwCw4cSAULCVW
+         PHEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694726397; x=1695331197;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gyCa8y2D4tfagLdEhZkffRRlznGd/QDpuIxcjKD4E/c=;
+        b=CIkqFLW/RgMHsDYtX9DatWyWggaOyKAbySyxbQhFSPBbJLwpmYcjXJJ9VPB9GKWVtx
+         6EtgOtu/IDVPYYXlcgTS6h5c8WM22xmxs+0aJ2v5wB6A/0JEjCXLjpalgIl00DtjBA/v
+         5SqG4dB8SOwWd9XxDIOr7dED0z8lfcf6yTCLE+wRJPJ4S0sqZIVzGoSQe9eG6AvLV/8U
+         Jd+EB8W4OIjKiqSpqJ6MxoZSUunf49RNnNuZpAFLrkzSfzUGBruau/kjO37uDlOd3D1x
+         qp8KBzQycmyO1Zi2iPSBae9DMMJ9Z+ZbR8/7KJ1lncbIySfuoG75QowXLeCpWPBvfDuL
+         VXAg==
+X-Gm-Message-State: AOJu0Yx0Jce+wHkKMXsNv9I3YQvPJqDKkChW3CdsKr1stC8GIfTXQAPT
+        7avlZKpkb5qbOX9+9V0AjiEsnjUTM+Pe
+X-Google-Smtp-Source: AGHT+IFICCNKx7p+w3Fwj7ubun2Y+fAPBczDWbh5iaJborCvmiUiAZpQehTzmuFkOiLw/9n5Yvv+V5nsTa3o
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5357:1d03:3084:aacb])
+ (user=irogers job=sendgmr) by 2002:a05:690c:a8a:b0:59b:c6bb:babb with SMTP id
+ ci10-20020a05690c0a8a00b0059bc6bbbabbmr148679ywb.6.1694726397030; Thu, 14 Sep
+ 2023 14:19:57 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 14:19:43 -0700
+Message-Id: <20230914211948.814999-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Subject: [PATCH v1 0/5] Enable BPF skeletons by default
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Patrice Duroux <patrice.duroux@gmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/f7Bh6uyRP=wObsNfKuHGfr2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Enable BPF skeletons by default but warn don't fail if they can't be
+supported. This was the intended behavior for Linux 6.4 but it caused
+an issue captured in this thread:
+https://lore.kernel.org/lkml/20230503211801.897735-1-acme@kernel.org/
 
-Hi Vladimir,
+This issue isn't repeated here as the previous issue related to
+generating vmlinux.h, which is no longer performed by default as a
+checked-in vmlinux.h is used instead.
 
-> On Wed, Sep 13, 2023 at 04:51:02PM +0300, Vladimir Oltean wrote:
-> > > I'm really stunned, how much extra work is required to add two
-> > > callbacks to DSA subsystem (to have already implemented feature)
-> > > for a single chip IC. =20
-> >=20
-> > Some observations are best kept to yourself. This is only the
-> > second HSR offload in the entire kernel. To complain that the
-> > infrastructure needs some extensions, for something that wasn't
-> > even needed for the first implementation (tracking a MAC address),
-> > is unrealistic. =20
->=20
-> Can you please test the attached incremental patch, which applies on
-> top of your RFC v4 series? It contains an implementation of my own
-> review feedback.
+Unlike with those changes, the BUILD_BPF_SKEL is kept and setting it
+to 0 disables BPF skeletons. Also, rather than fail the build due to a
+missed dependency, dependencies are checked and BPF skeletons disabled
+if they aren't present.
 
-Thanks for preparing the patch - it clarified all the point from
-previous e-mails... (and shed some light on mine understanding of DSA
-internals)
+Some related commits:
+b7a2d774c9c5 perf build: Add ability to build with a generated vmlinux.h
+a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+a2af0f6b8ef7 perf build: Add system include paths to BPF builds
+5be6cecda080 perf bpf skels: Make vmlinux.h use bpf.h and perf_event.h in source directory
+9a2d5178b9d5 Revert "perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL"
+a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+1d7966547e11 perf build: Add warning for when vmlinux.h generation fails
+a980755beb5a perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL
 
-It works when applied on top of v4. No performance regressions (with
-nuttcp) observed.
+Ian Rogers (5):
+  perf version: Add status of bpf skeletons
+  perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+  perf test: Update build test for changed BPF skeleton defaults
+  perf test: Ensure EXTRA_TESTS is covered in build test
+  perf test: Detect off-cpu support from build options
 
-I've also tested the scenario when one tried to alter lan1 after HW
-offloading enabled. It was not possible to alter the MAC address.
+ tools/perf/Makefile.config              | 78 ++++++++++++++++---------
+ tools/perf/Makefile.perf                |  8 +--
+ tools/perf/builtin-version.c            |  1 +
+ tools/perf/tests/make                   |  7 ++-
+ tools/perf/tests/shell/record_offcpu.sh |  2 +-
+ 5 files changed, 59 insertions(+), 37 deletions(-)
 
+-- 
+2.42.0.459.ge4e396fd5e-goog
 
-As fair as I understood from the commit message - some part of this
-patch needs to be applied before HSR offloading v4.
-
-Hence I will wait for it to be posted and upstreamed.
-
-Only then some of this patch code would be squashed to v5 of hsr
-support.
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/f7Bh6uyRP=wObsNfKuHGfr2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUDeKcACgkQAR8vZIA0
-zr2aiQgAjbddYHIsZ5gXqPROrAWEQ6T4afqk4bryUfpgNiXiT6uDYt+m0ohRfezL
-gzEU+D1pom+5m9YPNXJpM67lIO1HKx55v30d7vOo3wY4xwPYBDvo9kkK2j0gtEHl
-6iJoJn6tTqZnY6Oyusd4WfUo2YSmFyM6PwyaRf5vYtGDhnjogKEn7oBf7nPMJt71
-D+fGRo5eJuV8Ckdez7BzePskYzCr3VygnBoZfVWcQhfSA4JlhQfednx/WslgPNFS
-75XhnDxePuozbC1rUt1LBAzXYvEOgWG6T6oElIXBCB2TsrIWcuIXeIS9Ys26ZsH/
-F+IqSoVI5kWml9IvOiscMxUwFkTx2w==
-=5sNg
------END PGP SIGNATURE-----
-
---Sig_/f7Bh6uyRP=wObsNfKuHGfr2--
