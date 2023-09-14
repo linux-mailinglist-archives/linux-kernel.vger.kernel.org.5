@@ -2,129 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B5C7A0A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0CA7A0A34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241347AbjINQCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
+        id S241741AbjINQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241718AbjINQCO (ORCPT
+        with ESMTP id S241646AbjINQCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:02:14 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E061FF2;
-        Thu, 14 Sep 2023 09:02:00 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rmhlw1C71z67Jb4;
-        Thu, 14 Sep 2023 23:57:16 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 17:01:56 +0100
-Date:   Thu, 14 Sep 2023 17:01:55 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 31/35] arm64: psci: Ignore DENIED CPUs
-Message-ID: <20230914170155.000065cf@Huawei.com>
-In-Reply-To: <20230913163823.7880-32-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-32-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 12:02:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EFF26A6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:02:18 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8101D21854;
+        Thu, 14 Sep 2023 16:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694707337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vxq7URRkJPD07kiqLp7Cddy/GBYZW44bm+UVbfRiEz8=;
+        b=ncDcfYgXND8KGTmBiH+nM4Byog92W+/0dnYtD6wHrpuCnTaxIXSdlgPD7m+v1z0RdYlT7o
+        bolTgqHeL/geUfsJ8RjjDU/bwAPKmgeu17dFnhzE06SORWeyv6UA23L0wFwqIOxuMcPqdZ
+        aWlFI/lpF2VcFqHmNGazTHDEg+GMkic=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 207CF2C142;
+        Thu, 14 Sep 2023 16:02:17 +0000 (UTC)
+Date:   Thu, 14 Sep 2023 18:02:16 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v4 6/8] printk: nbcon: Add sequence handling
+Message-ID: <ZQMuiDPabS3t5TtT@alley>
+References: <20230908185008.468566-1-john.ogness@linutronix.de>
+ <20230908185008.468566-7-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908185008.468566-7-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:19 +0000
-James Morse <james.morse@arm.com> wrote:
-
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+On Fri 2023-09-08 20:56:06, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> When a CPU is marked as disabled, but online capable in the MADT, PSCI
-> applies some firmware policy to control when it can be brought online.
-> PSCI returns DENIED to a CPU_ON request if this is not currently
-> permitted. The OS can learn the current policy from the _STA enabled bit.
+> Add an atomic_long_t field @nbcon_seq to the console struct to
+> store the sequence number for nbcon consoles. For nbcon consoles
+> this will be used instead of the non-atomic @seq field. The new
+> field allows for safe atomic sequence number updates without
+> requiring any locking.
 > 
-> Handle the PSCI DENIED return code gracefully instead of printing an
-> error.
-
-Specification reference would be good particularly as it's only been
-added as a possibility fairly recently.
-
+> On 64bit systems the new field stores the full sequence number.
+> On 32bit systems the new field stores the lower 32 bits of the
+> sequence number, which are expanded to 64bit as needed by
+> folding the values based on the sequence numbers available in
+> the ringbuffer.
 > 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> [ morse: Rewrote commit message ]
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  arch/arm64/kernel/psci.c     | 2 +-
->  arch/arm64/kernel/smp.c      | 3 ++-
->  drivers/firmware/psci/psci.c | 2 ++
->  3 files changed, 5 insertions(+), 2 deletions(-)
+> For 32bit systems, having a 32bit representation in the console
+> is sufficient. If a console ever gets more than 2^31 records
+> behind the ringbuffer then this is the least of the problems.
 > 
-> diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-> index 29a8e444db83..4fcc0cdd757b 100644
-> --- a/arch/arm64/kernel/psci.c
-> +++ b/arch/arm64/kernel/psci.c
-> @@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)
->  {
->  	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
->  	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
-> -	if (err)
-> +	if (err && err != -EPROBE_DEFER)
+> diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+> index 644c4b9a4540..d23aa132fdcb 100644
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> +/**
+> + * nbcon_seq_init - Helper function to initialize the console sequence
+> + * @con:	Console to work on
+> + *
+> + * Set @con->nbcon_seq to the starting record (specified with con->seq).
+> + * If the starting record no longer exists, the oldest available record
+> + * is chosen. This is especially important on 32bit systems because only
+> + * the lower 32 bits of the sequence number are stored. The upper 32 bits
+> + * are derived from the sequence numbers available in the ringbuffer.
+> + *
+> + * For init only. Do not use for runtime updates.
+> + */
+> +static void nbcon_seq_init(struct console *con)
+> +{
+> +	u64 seq = max_t(u64, con->seq, prb_first_valid_seq(prb));
+> +
+> +	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(seq));
+> +
+> +	/* Clear con->seq since nbcon consoles use con->nbcon_seq instead. */
+> +	con->seq = 0;
+> +}
+> +
+> +/**
+> + * nbcon_seq_read - Read the current console sequence
+> + * @con:	Console to read the sequence of
+> + *
+> + * Return:	Sequence number of the next record to print on @con.
+> + */
+> +u64 nbcon_seq_read(struct console *con)
+> +{
+> +	unsigned long nbcon_seq = atomic_long_read(&ACCESS_PRIVATE(con, nbcon_seq));
+> +
+> +	return __nbcon_seq_to_seq(nbcon_seq);
+> +}
+> +
+> +/**
+> + * nbcon_seq_force - Force console sequence to a specific value
+> + * @con:	Console to work on
+> + * @seq:	Sequence number value to set
+> + *
+> + * Only to be used in extreme situations (such as panic with
+> + * CONSOLE_REPLAY_ALL).
+> + */
+> +void nbcon_seq_force(struct console *con, u64 seq)
+> +{
+> +	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(seq));
 
-Hmm. EPROBE_DEFER has very specific meaning around driver requesting a retry
-when some other bit of the system has finished booting. 
-I'm not sure it's a good idea for this use case.  Maybe just keep to EPERM
-as psci_to_linux_errno() will return anyway.  Seems valid to me, or
-is the requirement to use EPROBE_DEFER coming from further up the stack?
+We should actually do the same trick as in nbcon_seq_init() to make
+sure that the 32-bit seq is shrinked against the prb_first_valid_seq().
+I mean to do:
 
+	/* If the starting record no longer exists, the oldest available record
+	 * is chosen. This is especially important on 32bit systems because only
+	 * the lower 32 bits of the sequence number are stored. The upper 32 bits
+	 * are derived from the sequence numbers available in the ringbuffer.
+	 */
+	u64 valid_seq = max_t(u64, seq, prb_first_valid_seq(prb));
 
+	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(valid));
 
->  		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
+> +}
+
+And we might implement nbcon_seq_init() using nbcon_seq_force(). I mean:
+
+static void nbcon_seq_init(struct console *con)
+{
+	nbcon_seq_force(con->seq);
+
+	/* Clear con->seq since nbcon consoles use con->nbcon_seq instead. */
+	con->seq = 0;
+}
+
+> @@ -540,11 +649,14 @@ static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_s
+>  	nbcon_context_release(ctxt);
 >  
->  	return err;
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 8c8f55721786..e958db987665 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -124,7 +124,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
->  	/* Now bring the CPU into our world */
->  	ret = boot_secondary(cpu, idle);
->  	if (ret) {
-> -		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
-> +		if (ret != -EPROBE_DEFER)
-> +			pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
->  		return ret;
->  	}
->  
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index d9629ff87861..f7ab3fed3528 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -218,6 +218,8 @@ static int __psci_cpu_on(u32 fn, unsigned long cpuid, unsigned long entry_point)
->  	int err;
->  
->  	err = invoke_psci_fn(fn, cpuid, entry_point, 0);
-> +	if (err == PSCI_RET_DENIED)
-> +		return -EPROBE_DEFER;
->  	return psci_to_linux_errno(err);
+>  	/*
+> -	 * It is not known whether the handover succeeded. The outermost
+> -	 * callsite has to make the final decision whether printing
+> -	 * should proceed or not (via reacquire, possibly hostile). The
+> -	 * console is now unlocked so go back all the way instead of
+> -	 * trying to implement heuristics in tons of places.
+> +	 * It is not clear whether the waiter really took over ownership. The
+> +	 * outermost callsite must make the final decision whether console
+> +	 * ownership is needed for it to proceed. If yes, it must reacquire
+> +	 * ownership (possibly hostile) before carefully proceeding.
+> +	 *
+> +	 * The calling context no longer owns the console so go back all the
+> +	 * way instead of trying to implement reacquire heuristics in tons of
+> +	 * places.
+>  	 */
+>  	return false;
 >  }
->  
 
+This change probably should have been done in the patch introducing
+nbcon_context_can_proceed().
+
+> @@ -636,6 +748,8 @@ bool nbcon_alloc(struct console *con)
+>   *
+>   * nbcon_alloc() *must* be called and succeed before this function
+>   * is called.
+> + *
+> + * This function expects that the legacy @con->seq has been set.
+>   */
+>  void nbcon_init(struct console *con)
+>  {
+
+Best Regards,
+Petr
