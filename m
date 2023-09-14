@@ -2,149 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F2E79F70C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E3679F6AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbjINB67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S233883AbjINB4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234205AbjINB6X (ORCPT
+        with ESMTP id S233793AbjINBzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:58:23 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569171BF8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:08 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c1fe87fc29so4090285ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694656568; x=1695261368; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=JU2E1RY5jYghlRVsn3OuL2a/W8MVmnBu3lS2NKbXZTA=;
-        b=oAq7aV5afuCDrDhksAp6R3Y2m/B9q8Zz1fCcjIeqx2bSsmI6MI0B9fHUW8quNlCfN0
-         q+oUpTgw0YdUMQaapPASrAjK+qmBMAHEIEcyDQm4zvG4VutP0aJICCRwOocO1rhcnt3c
-         cFemar5xl2oCEzJycWRVwb0Bg06tyE0Rm0VgyspJk0g4p1syt4HVg/uiCjZLXwSZrIx9
-         mn9WOa/WpTBaNJkUP/51L9NHWTaLbkice/GZV3ifVSVAUXQ1G4+OXXTQvDoSnC6CYhLI
-         iJZrG2WaITXLCY3WqU9WRUtYJJdL28xlQUskut7kJ2r25pQRjV9cKun3ucr8tfD4MnEB
-         vc/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694656568; x=1695261368;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JU2E1RY5jYghlRVsn3OuL2a/W8MVmnBu3lS2NKbXZTA=;
-        b=lc6BUsduhLPbo4HIgBF4FSR1isJgUa/OXYRndEzXNzNHWPRxJDlrr5hcl1FZYz6Ojt
-         y8hSye5Kwz22MfsNhmct0uD9pu3RdPE4cM9C2i1vKqyVNrT7z6WAWPfJmlSkNn2dRrxz
-         2DH9BurGR9PUTXFJ4KDIUAcTH/IwsqNkE6QaAH8cZUwEXWoCX6bMuodycnQaFA3Audl0
-         5SyMFkC4AfRb3Rew3h4kVDrclPrjGOQbtGVyDA8oVtOjLs1w+pDZI531tMQzKgyD3HAr
-         is8DWWyfAaI7g97xUFjhg0y4P4dml1MVhj5P+xqoHnIMFYF1aBZC8rj1CXN3igrpDgxo
-         bl9g==
-X-Gm-Message-State: AOJu0YwBtWtDcjzKywRsC8MzVrO5ZwGo7p2N+viU+Ydf4FaKg6Hm1Lkd
-        RuwOhSUsr9QgVeLR+Db4DkWz7IDgBRE=
-X-Google-Smtp-Source: AGHT+IHMQPQ3k0d/UtHxD4b9hamrYXMHgCSNyIGKdggb9SAJfpQFP9N68H8VlXpWCI6NE2xrZ7HMeRXjSd4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:da8e:b0:1c0:e87e:52b9 with SMTP id
- j14-20020a170902da8e00b001c0e87e52b9mr204006plx.12.1694656567699; Wed, 13 Sep
- 2023 18:56:07 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Sep 2023 18:55:14 -0700
-In-Reply-To: <20230914015531.1419405-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230914015531.1419405-17-seanjc@google.com>
-Subject: [RFC PATCH v12 16/33] KVM: x86: "Reset" vcpu->run->exit_reason early
- in KVM_RUN
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Sep 2023 21:55:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55642696;
+        Wed, 13 Sep 2023 18:55:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 325C6C433CB;
+        Thu, 14 Sep 2023 01:55:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694656532;
+        bh=H8J6x+2Y6tppzE18uo4IDaHZGGtg6t6HrzYXaGUNOes=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qvzLWIBe2AOKn1ZnpUkPKNGGpdSOGvm6UsDAlcV9DQpYcLJuEyMCxUxOLsm4my0Yv
+         HxmGkNP9X2vrD6t0FCWUAyOY41QCk2uKq3TtYECEhRHrEC1OH/EO9NIM2Ng75ahneM
+         kAj89ST4jkTcY7mW4RSv1Zj1uzBcX9jvCs8w9C0IkN8YpII57o2vUPvX2BYhZIWlJy
+         P9TngpjwyS/ewXAmJ049+7Le28OXWMItNg+bAX/LkV/mMUc+ftBJ8hEPfhFXXAvwlk
+         0eeoqvXW+wsoP7ABFNHoXmNSRX8RAaiFUCEp69fpTeCebMCSg0retda+JBHSUwNNI1
+         ynj980ktmx0wA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot+97522333291430dd277f@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        andrii@kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 4/6] bpf: Annotate bpf_long_memcpy with data_race
+Date:   Wed, 13 Sep 2023 21:55:14 -0400
+Message-Id: <20230914015523.51894-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230914015523.51894-1-sashal@kernel.org>
+References: <20230914015523.51894-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.53
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize run->exit_reason to KVM_EXIT_UNKNOWN early in KVM_RUN to reduce
-the probability of exiting to userspace with a stale run->exit_reason that
-*appears* to be valid.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-To support fd-based guest memory (guest memory without a corresponding
-userspace virtual address), KVM will exit to userspace for various memory
-related errors, which userspace *may* be able to resolve, instead of using
-e.g. BUS_MCEERR_AR.  And in the more distant future, KVM will also likely
-utilize the same functionality to let userspace "intercept" and handle
-memory faults when the userspace mapping is missing, i.e. when fast gup()
-fails.
+[ Upstream commit 6a86b5b5cd76d2734304a0173f5f01aa8aa2025e ]
 
-Because many of KVM's internal APIs related to guest memory use '0' to
-indicate "success, continue on" and not "exit to userspace", reporting
-memory faults/errors to userspace will set run->exit_reason and
-corresponding fields in the run structure fields in conjunction with a
-a non-zero, negative return code, e.g. -EFAULT or -EHWPOISON.  And because
-KVM already returns  -EFAULT in many paths, there's a relatively high
-probability that KVM could return -EFAULT without setting run->exit_reason,
-in which case reporting KVM_EXIT_UNKNOWN is much better than reporting
-whatever exit reason happened to be in the run structure.
+syzbot reported a data race splat between two processes trying to
+update the same BPF map value via syscall on different CPUs:
 
-Note, KVM must wait until after run->immediate_exit is serviced to
-sanitize run->exit_reason as KVM's ABI is that run->exit_reason is
-preserved across KVM_RUN when run->immediate_exit is true.
+  BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
 
-Link: https://lore.kernel.org/all/20230908222905.1321305-1-amoorthy@google.com
-Link: https://lore.kernel.org/all/ZFFbwOXZ5uI%2Fgdaf@google.com
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+  write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+   copy_map_value_long include/linux/bpf.h:464 [inline]
+   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+   __sys_bpf+0x28a/0x780
+   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+  write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+   copy_map_value_long include/linux/bpf.h:464 [inline]
+   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+   __sys_bpf+0x28a/0x780
+   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+  value changed: 0x0000000000000000 -> 0xfffffff000002788
+
+The bpf_long_memcpy is used with 8-byte aligned pointers, power-of-8 size
+and forced to use long read/writes to try to atomically copy long counters.
+It is best-effort only and no barriers are here since it _will_ race with
+concurrent updates from BPF programs. The bpf_long_memcpy() is called from
+bpf(2) syscall. Marco suggested that the best way to make this known to
+KCSAN would be to use data_race() annotation.
+
+Reported-by: syzbot+97522333291430dd277f@syzkaller.appspotmail.com
+Suggested-by: Marco Elver <elver@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Marco Elver <elver@google.com>
+Link: https://lore.kernel.org/bpf/000000000000d87a7f06040c970c@google.com
+Link: https://lore.kernel.org/bpf/57628f7a15e20d502247c3b55fceb1cb2b31f266.1693342186.git.daniel@iogearbox.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8356907079e1..8d21b7b09bb5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10951,6 +10951,7 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
- {
- 	int r;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8cef9ec3a89c2..5b53d4c166506 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -301,7 +301,7 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
  
-+	vcpu->run->exit_reason = KVM_EXIT_UNKNOWN;
- 	vcpu->arch.l1tf_flush_l1d = true;
+ 	size /= sizeof(long);
+ 	while (size--)
+-		*ldst++ = *lsrc++;
++		data_race(*ldst++ = *lsrc++);
+ }
  
- 	for (;;) {
+ /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
 -- 
-2.42.0.283.g2d96d420d3-goog
+2.40.1
 
