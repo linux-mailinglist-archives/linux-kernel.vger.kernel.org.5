@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F21379F6BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F45979F71B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 03:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbjINB4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 21:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
+        id S234673AbjINB7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 21:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbjINBzq (ORCPT
+        with ESMTP id S234480AbjINB6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 21:55:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F06C1BDA;
-        Wed, 13 Sep 2023 18:55:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67831C4339A;
-        Thu, 14 Sep 2023 01:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694656535;
-        bh=CMgqSXeu39equ/IeQc9QMRMfTv48bjmXevTlznhYML4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qEtStP6VsbgL1CF9f8sNJxIO01xV8CH5jbME5R9hZoEeWiAc+R53afw4rsIX2grLE
-         BmbI3eGFEbJWr0aoFVN+zDZy/yD2u3e9mL4JFAgvbFuNRrLsCTGQTWyMOBtbxdQXXg
-         h+btGZvKA5MzNSD7qJFyD5zf2mZ7YmkDIbRWjN2ekDIaiBBHwzI6km+R9r/9QC0HOX
-         /f/WHDwhGL/XWR8A6eICDovAdLhA77ttbW9NdHqfeGU0MLGQljtGYMvuonwd/kid7g
-         ryYaJpZsZPzJG7iSW5dn/YoGJJ2JSfxWLBcZRYQBqlX52q4LOdB5cmUgDb4Y0ha+wN
-         E39rsfVh4Vs3A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tobias Schramm <t.schramm@manjaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, wens@csie.org,
-        jernej.skrabec@gmail.com, samuel@sholland.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 6/6] spi: sun6i: fix race between DMA RX transfer completion and RX FIFO drain
-Date:   Wed, 13 Sep 2023 21:55:16 -0400
-Message-Id: <20230914015523.51894-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230914015523.51894-1-sashal@kernel.org>
-References: <20230914015523.51894-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.53
-Content-Transfer-Encoding: 8bit
+        Wed, 13 Sep 2023 21:58:33 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B45C210D
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:14 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5924b2aac52so6443157b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 18:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694656573; x=1695261373; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=TEdWNzKShragyniQ9J+Ve2p49++UXy1fA45JB0RVd2M=;
+        b=h9V/U3frJpGPr9/ZrV/PZMNnMcU+CkRlFhv70JYTud9Ejn9icNw4ec9L81Uv7rs5yH
+         rXWqSZZxrH2nqGYx25EhtWppAwILZ6lPQhxMqCDJ9G5FrfH0KavOQbxJgjh7zypWZDO6
+         4F3lMCQOrEWKl59wNiJmdoURkihezNibt9aS+j8HkGQgcsXmgSSBaKaNZBnUBAvfBT8M
+         /O4HZ25mSZuzSj7WB2M2XX2Bcm4J2vCq79Z2mcnH7YhjDp/mwSbdKS2NW5QwdVCc6wB5
+         c+W2iX8Pign1/YTLJQlIk4VH8g/P5i7RaBc/0sSUd27K3AfyHKe0GStTBIe7SOyDLTUv
+         smNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694656573; x=1695261373;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TEdWNzKShragyniQ9J+Ve2p49++UXy1fA45JB0RVd2M=;
+        b=OIU1xoV5OBuKun/JNw5OpnZJ7YnEc7D97DqpIvVhW2fi7NEE4Pjhnb/zp0j+hyAMA4
+         WF/5IpALAhlgMTlK6hgp1Jn9rWjjkMcLc6WcKydzBUupVbXIyJUVSHisScgjTqaTMF5P
+         iaJf4amrrbHTTnpTDW9aMpcmn0ZgIctbd8P+3EGyU4JgtXJsSC3ACR92aml021brBCxf
+         XOEByLxrNB8sfwy0YJMoZFqwhP9cqlmR/3BSM/vFoqUri7ymLfY8Vkd68cfmGskVhZP6
+         2Lp12VKJKOWeZzEyY0+5MMihcXYuh2FbADILQBlNzR73a1XEFstoeQ9gzSagLqDW42wq
+         vdLA==
+X-Gm-Message-State: AOJu0YzPnqj9QWx7dgI5NwJq6oOQupGl/23LjkmW0DBZFCS07ErUc+r6
+        xDR0uSPOI4NIjNOUamWQPF75mXI/19U=
+X-Google-Smtp-Source: AGHT+IGYm//r9vLVsRhCBexYLsW+kyUM6dthNH5+IPZo7SQZB/dk4at291uiQmKPgon5iad9USRf5MgW9tA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:400c:0:b0:589:a855:7af with SMTP id
+ l12-20020a81400c000000b00589a85507afmr107415ywn.7.1694656573483; Wed, 13 Sep
+ 2023 18:56:13 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 13 Sep 2023 18:55:17 -0700
+In-Reply-To: <20230914015531.1419405-1-seanjc@google.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Message-ID: <20230914015531.1419405-20-seanjc@google.com>
+Subject: [RFC PATCH v12 19/33] KVM: Drop superfluous __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
+ macro
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Schramm <t.schramm@manjaro.org>
+Drop __KVM_VCPU_MULTIPLE_ADDRESS_SPACE and instead check the value of
+KVM_ADDRESS_SPACE_NUM.
 
-[ Upstream commit 1f11f4202caf5710204d334fe63392052783876d ]
+No functional change intended.
 
-Previously the transfer complete IRQ immediately drained to RX FIFO to
-read any data remaining in FIFO to the RX buffer. This behaviour is
-correct when dealing with SPI in interrupt mode. However in DMA mode the
-transfer complete interrupt still fires as soon as all bytes to be
-transferred have been stored in the FIFO. At that point data in the FIFO
-still needs to be picked up by the DMA engine. Thus the drain procedure
-and DMA engine end up racing to read from RX FIFO, corrupting any data
-read. Additionally the RX buffer pointer is never adjusted according to
-DMA progress in DMA mode, thus calling the RX FIFO drain procedure in DMA
-mode is a bug.
-Fix corruptions in DMA RX mode by draining RX FIFO only in interrupt mode.
-Also wait for completion of RX DMA when in DMA mode before returning to
-ensure all data has been copied to the supplied memory buffer.
-
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
-Link: https://lore.kernel.org/r/20230827152558.5368-3-t.schramm@manjaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/spi/spi-sun6i.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/kvm_host.h | 1 -
+ include/linux/kvm_host.h        | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index 2bfe87873edb3..d79853ba7792a 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -95,6 +95,7 @@ struct sun6i_spi {
- 	struct reset_control	*rstc;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 91a28ddf7cfd..78d641056ec5 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -2126,7 +2126,6 @@ enum {
+ #define HF_SMM_MASK		(1 << 1)
+ #define HF_SMM_INSIDE_NMI_MASK	(1 << 2)
  
- 	struct completion	done;
-+	struct completion	dma_rx_done;
+-# define __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
+ # define KVM_ADDRESS_SPACE_NUM 2
+ # define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
+ # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 18d8f02a99a3..aea1b4306129 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -692,7 +692,7 @@ bool kvm_arch_irqchip_in_kernel(struct kvm *kvm);
+ #define KVM_MEM_SLOTS_NUM SHRT_MAX
+ #define KVM_USER_MEM_SLOTS (KVM_MEM_SLOTS_NUM - KVM_INTERNAL_MEM_SLOTS)
  
- 	const u8		*tx_buf;
- 	u8			*rx_buf;
-@@ -189,6 +190,13 @@ static size_t sun6i_spi_max_transfer_size(struct spi_device *spi)
- 	return SUN6I_MAX_XFER_SIZE - 1;
- }
- 
-+static void sun6i_spi_dma_rx_cb(void *param)
-+{
-+	struct sun6i_spi *sspi = param;
-+
-+	complete(&sspi->dma_rx_done);
-+}
-+
- static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
- 				 struct spi_transfer *tfr)
+-#ifndef __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
++#if KVM_ADDRESS_SPACE_NUM == 1
+ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
  {
-@@ -213,6 +221,8 @@ static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
- 						 DMA_PREP_INTERRUPT);
- 		if (!rxdesc)
- 			return -EINVAL;
-+		rxdesc->callback_param = sspi;
-+		rxdesc->callback = sun6i_spi_dma_rx_cb;
- 	}
- 
- 	txdesc = NULL;
-@@ -268,6 +278,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 		return -EINVAL;
- 
- 	reinit_completion(&sspi->done);
-+	reinit_completion(&sspi->dma_rx_done);
- 	sspi->tx_buf = tfr->tx_buf;
- 	sspi->rx_buf = tfr->rx_buf;
- 	sspi->len = tfr->len;
-@@ -426,6 +437,22 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	start = jiffies;
- 	timeout = wait_for_completion_timeout(&sspi->done,
- 					      msecs_to_jiffies(tx_time));
-+
-+	if (!use_dma) {
-+		sun6i_spi_drain_fifo(sspi);
-+	} else {
-+		if (timeout && rx_len) {
-+			/*
-+			 * Even though RX on the peripheral side has finished
-+			 * RX DMA might still be in flight
-+			 */
-+			timeout = wait_for_completion_timeout(&sspi->dma_rx_done,
-+							      timeout);
-+			if (!timeout)
-+				dev_warn(&master->dev, "RX DMA timeout\n");
-+		}
-+	}
-+
- 	end = jiffies;
- 	if (!timeout) {
- 		dev_warn(&master->dev,
-@@ -453,7 +480,6 @@ static irqreturn_t sun6i_spi_handler(int irq, void *dev_id)
- 	/* Transfer complete */
- 	if (status & SUN6I_INT_CTL_TC) {
- 		sun6i_spi_write(sspi, SUN6I_INT_STA_REG, SUN6I_INT_CTL_TC);
--		sun6i_spi_drain_fifo(sspi);
- 		complete(&sspi->done);
- 		return IRQ_HANDLED;
- 	}
-@@ -611,6 +637,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- 	}
- 
- 	init_completion(&sspi->done);
-+	init_completion(&sspi->dma_rx_done);
- 
- 	sspi->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 	if (IS_ERR(sspi->rstc)) {
+ 	return 0;
 -- 
-2.40.1
+2.42.0.283.g2d96d420d3-goog
 
