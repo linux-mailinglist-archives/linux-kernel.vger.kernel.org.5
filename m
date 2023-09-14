@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36777A100F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967097A1011
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 23:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjINVvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 17:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
+        id S229787AbjINVwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 17:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjINVvy (ORCPT
+        with ESMTP id S229447AbjINVwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 17:51:54 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5A3270B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:51:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8011973047so1670926276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 14:51:48 -0700 (PDT)
+        Thu, 14 Sep 2023 17:52:18 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E08D1BFA;
+        Thu, 14 Sep 2023 14:52:14 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-271914b8aa4so1097626a91.1;
+        Thu, 14 Sep 2023 14:52:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694728308; x=1695333108; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZlU0Kf/Gcn2G/sI4bkJCwhLYRSeXEzqS2NQ4Iszo2s=;
-        b=zFFXD4nYP3g8vduEG2wQpmlZC0rGS3wvsdeGjYc0KUCGZ0KZeFIyry4osfRAjpGXRY
-         d0cCLNQYe+bb4lE+2BUL7kRRVe7/fefh/IyWFJifQY82ysw66ViVl4MIl1qHK6XMrRdk
-         FqYV1RTRKgvCBiUcgF1/liJcFJsHiAjWadGAMelyF6+mkFRFoWU0lAU+7M9ifeQbSxKx
-         s4BlvVFp31wupGO5MADIRgHrB8j57cTydJolnHC9mP+lMEZFTKU7a+AxuQACw1YmCsih
-         33zbY+MTMHEavXjMJI+zgF+U3LjYZr+Wui6eY/NkpR55E93TUIpTdHl6CjxrALdrz6OD
-         z6/w==
+        d=gmail.com; s=20221208; t=1694728334; x=1695333134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gHdSXUe2YO9OjLwFdWgsvV1wdj09sbciRHGaU5xVoJs=;
+        b=S/uVCLwkOg/8fs95EUeYN+UodRWH/0sTOrPco0h37xqlhKmpWRPwqt4aPIVz0d6u+u
+         9OCxI9wkVGG7jDVr92reSEKEls/GQBikRaFYr8O19ZZCz+I2Zf5Jax4KuIZHhmfYNUsi
+         5XzhCy1nNGghk/GPC7ic/e5iDnXbTsivGO9GRvL1SOHfrQuODa+7YZ3S+TGICI4dXA2a
+         xNJi0jfGIqIbHyxrFCc6tRgxIhwswkooa9MnhMJVxHcXtUkrEjduwbXss1wxLGP7hOue
+         xT9YtlhA/sodn7Z8Ums4n23LbNf1HdnCCz8oNitiGAsJkJ+rfPVAsvTR1vN6wHM0EfX1
+         rt6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694728308; x=1695333108;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZlU0Kf/Gcn2G/sI4bkJCwhLYRSeXEzqS2NQ4Iszo2s=;
-        b=Vw4/3XJBMBRkV74tNOXGvI/Xz4Ly2GsLjfNwSssN5HOPMVBWK6Ued8AIZda5rDCopM
-         DXesoU4sLW/vbiatTDrEQ0Od+PfW0oVQkf4LbHLGBCOmco8drI9gcQmJ9S05fgcJA21U
-         5iKzH6eXHba3sBjLlGctO+TNpEDKj/cKZV7r7D2gWP4VF28MGS34t0X+5Bm7yavGwk5y
-         mozDqEsahGU40CJxWLVOlBMHXNOQplQdQOYpPMj03FEafQyysFHuh4UElzfk5tNKHL+3
-         cgkMev4VcRIFKGAnXdrB0iIKAt75bJ/8KTUEQkYnP+7AwtFMxhaDU9BFnjij/YKzrfei
-         +7Ng==
-X-Gm-Message-State: AOJu0YypPR576B3CovXquTsIIsUiQUn55zDeIAgGm6CdhaTjmDmvjylq
-        iXOtxQM75krODWNB2JycVkm0IoSI9w==
-X-Google-Smtp-Source: AGHT+IFs2QTkWETQW88X7lVAYojwqxgUvIgWK6HjjeZUUZaPFEtRPnJAVID9TsxJZMd+RrcvrrEDfAobkg==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a25:40d:0:b0:d7a:6a4c:b657 with SMTP id
- 13-20020a25040d000000b00d7a6a4cb657mr166298ybe.0.1694728308004; Thu, 14 Sep
- 2023 14:51:48 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 21:51:41 +0000
-In-Reply-To: <20230914215141.3399584-1-rmoar@google.com>
-Mime-Version: 1.0
-References: <20230914215141.3399584-1-rmoar@google.com>
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230914215141.3399584-2-rmoar@google.com>
-Subject: [PATCH 2/2] kunit: tool: add attributes output to kunit.py
-From:   Rae Moar <rmoar@google.com>
-To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
-        brendan.higgins@linux.dev
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1694728334; x=1695333134;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gHdSXUe2YO9OjLwFdWgsvV1wdj09sbciRHGaU5xVoJs=;
+        b=mka6VC6Uqe5nhZPrq7I1L9om3poG0C0xOSz2qHXIHNUN+iWy+2kP/PGDZ7/2IGt8p/
+         Wm+tK2z69lhDR3R7CP2oYpVn6SSJshgMqxF6AhkAUIZxJ7I0mT4+2kkyULrv/HhKw170
+         /yhsiArjjJHqDA+soK8hxmwMFAT1foodUePiBuE0c+KPUtiuC4veSraSa5a+GgLLQcxG
+         dShOLhl8XcgIDm7FQMXCHCxEqqCA0q2YAAe8e8R/MJgHqBA7vPqSKk8hEtMt1ytJexCs
+         rBCslTP2F1fZp8x49097Jr17jLkRi6ZEjE+fybv5xu7NND/SXwAXPlTX1nIRcV4t4+Zh
+         MELQ==
+X-Gm-Message-State: AOJu0Yzfde+KEUcsH59kYTmbJ5Iq4jwjTWMNZVFQEELA7WF3kjVIPmmd
+        ht4ti98CSEeE4ZATL7zoUEs=
+X-Google-Smtp-Source: AGHT+IHkVYJPEorfPQ8KAPWgvo1j0blda6r6Vu03J32w1cBLrnmwap8eY+BMOr0QV0YqAeIv2BpvIg==
+X-Received: by 2002:a17:90b:f04:b0:274:6d36:5b32 with SMTP id br4-20020a17090b0f0400b002746d365b32mr2736464pjb.30.1694728333969;
+        Thu, 14 Sep 2023 14:52:13 -0700 (PDT)
+Received: from [10.67.51.148] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t14-20020a17090ae50e00b002676e961261sm3834685pjy.1.2023.09.14.14.52.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 14:52:13 -0700 (PDT)
+Message-ID: <41d02786-ffcb-89b0-4087-bd8fb138177f@gmail.com>
+Date:   Thu, 14 Sep 2023 14:52:11 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH tty v1 22/74] serial: bcm63xx-uart: Use port lock wrappers
+Content-Language: en-US
+To:     John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Yangtao Li <frank.li@vivo.com>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>
+References: <20230914183831.587273-1-john.ogness@linutronix.de>
+ <20230914183831.587273-23-john.ogness@linutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230914183831.587273-23-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Output attributes in kunit.py results.
+On 9/14/23 11:37, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> When a serial port is used for kernel console output, then all
+> modifications to the UART registers which are done from other contexts,
+> e.g. getty, termios, are interference points for the kernel console.
+> 
+> So far this has been ignored and the printk output is based on the
+> principle of hope. The rework of the console infrastructure which aims to
+> support threaded and atomic consoles, requires to mark sections which
+> modify the UART registers as unsafe. This allows the atomic write function
+> to make informed decisions and eventually to restore operational state. It
+> also allows to prevent the regular UART code from modifying UART registers
+> while printk output is in progress.
+> 
+> All modifications of UART registers are guarded by the UART port lock,
+> which provides an obvious synchronization point with the console
+> infrastructure.
+> 
+> To avoid adding this functionality to all UART drivers, wrap the
+> spin_[un]lock*() invocations for uart_port::lock into helper functions
+> which just contain the spin_[un]lock*() invocations for now. In a
+> subsequent step these helpers will gain the console synchronization
+> mechanisms.
+> 
+> Converted with coccinelle. No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Example of format:
-
-[21:33:23] =================== example (7 subtests) ===================
-[21:33:23] module: kunit_example_test
-[21:33:23] [PASSED] example_simple_test
-...
-[21:33:23] [PASSED] example_slow_test
-[21:33:23] speed: slow
-[21:33:23] =================== [PASSED] example =======================
-
-The attributes are outputted directly below the associated test.
-
-Note that the attributes lines are saved in the log and then the log is
-parsed for attributes rather than saving attributes in their own field.
-
-This is due to diagnostic lines being saved prior to the creation of the
-associated test object.
-
-Signed-off-by: Rae Moar <rmoar@google.com>
----
- tools/testing/kunit/kunit_parser.py | 31 +++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index ce34be15c929..ffa9cfdcf5d6 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -509,6 +509,34 @@ def print_test_header(test: Test) -> None:
- 			message += f'({test.expected_count} subtests)'
- 	stdout.print_with_timestamp(format_test_divider(message, len(message)))
- 
-+TEST_HEADER_ATTR = re.compile(r'^\s*# (.*): (.*)$')
-+TEST_ATTR = re.compile(r'^\s*# (.*)\.(.*): (.*)$')
-+
-+def print_test_attr(test: Test) -> None:
-+	"""
-+	Attributes, if present, will be printed in a list separated by
-+	commas.
-+
-+	Example:
-+	'module: example_test, speed: slow'
-+
-+	Parameters:
-+	test - Test object representing current test being printed
-+	"""
-+	attr_list = ["module", "speed"]
-+	output = []
-+
-+	for line in test.log:
-+		test_match = TEST_ATTR.match(line)
-+		header_match = TEST_HEADER_ATTR.match(line)
-+		if test_match and (test_match.group(1) == test.name
-+					  and (test_match.group(2) in attr_list)):
-+			output.append(test_match.group(2) + ": " + test_match.group(3))
-+		elif header_match and (header_match.group(1) in attr_list):
-+			output.append(header_match.group(1) + ": " + header_match.group(2))
-+	if output:
-+		stdout.print_with_timestamp(", ".join(output))
-+
- def print_log(log: Iterable[str]) -> None:
- 	"""Prints all strings in saved log for test in yellow."""
- 	formatted = textwrap.dedent('\n'.join(log))
-@@ -741,6 +769,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
- 			test.log.extend(parse_diagnostic(lines))
- 			parse_test_plan(lines, test)
- 			print_test_header(test)
-+			print_test_attr(test)
- 	expected_count = test.expected_count
- 	subtests = []
- 	test_num = 1
-@@ -763,6 +792,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
- 				test.counts.add_status(
- 					TestStatus.TEST_CRASHED)
- 				print_test_result(sub_test)
-+				print_test_attr(sub_test)
- 			else:
- 				test.log.extend(sub_log)
- 				break
-@@ -796,6 +826,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
- 		print_test_footer(test)
- 	elif is_subtest:
- 		print_test_result(test)
-+		print_test_attr(test)
- 	return test
- 
- def parse_run_tests(kernel_output: Iterable[str]) -> Test:
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.42.0.459.ge4e396fd5e-goog
+Florian
 
