@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D31D7A0F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF38F7A0F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjINUbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
+        id S230161AbjINUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjINUb1 (ORCPT
+        with ESMTP id S231303AbjINUb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:31:27 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A59D2704
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:31:23 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id gszUqMvFz7mcCgszhqSuk1; Thu, 14 Sep 2023 22:31:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694723482;
-        bh=c1IUka5tijpIrp0HcvGSlR2aksa59ckg6dwZ4iF3jNc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Nq8wEKbOwyagqkhVYlXixP+fuOOqU8zwUvxYo6II81d5G4IkN0J0t3Nf+/UaVUTfw
-         yQh6KOw1za3vgcL8WO9nEpJUo6zZiN2jJxvdDS3kq93kfpDqj01vJEKdW7BrcxHnV6
-         zRKqvZsvZa0kF9c7uC9fHidpGwVFGtt3SafoXXB//Wo/kyK3EG+1y+nOJmawmnEcV9
-         X+7Vo/4J/l8Nm4spTLkfl1zKyKkCvG51dtOVQy+ini++O8oMm0iZ7NEX4mCoMTdBly
-         wuLvQzI08zUcZYd+ryss/AoT7/lKvx8BgD4QSLuksdc2c2JELJgKLnoLS474/Rx72p
-         TK4vxugtfiFpw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 14 Sep 2023 22:31:22 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
-        sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        shengjiu.wang@nxp.com
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2 5/5] clk: imx: imx8: Simplify clk_imx_acm_detach_pm_domains()
-Date:   Thu, 14 Sep 2023 22:31:06 +0200
-Message-Id: <b95fbefbb960573637e78ab71bfd889ae7a9d49c.1694722339.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
+        Thu, 14 Sep 2023 16:31:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25C8271C;
+        Thu, 14 Sep 2023 13:31:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40BACC433C7;
+        Thu, 14 Sep 2023 20:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694723508;
+        bh=89k015Gz7Ucfa7Gt/0hyjJ/9BQs4PGxPaTPa/kgHOS0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=E+YofmZcXE0gNWkZ+7cHh1uL2cmTO+OXsR/gPC2Vf7IIbQ1qtlYtv65NFq+GwLfeP
+         pZtoTJ4oCVBoo4aPXjjL/2fnW4iGhh29WccaG2lGZOskJHlyJgYHvxUMq4xgZstrVp
+         xIJ9P0iTqPq+h68UbGt1YqwdWh7a7tGlgwIAx0NznoSwSHme6VKdFbtzjTZEltU8w9
+         IlL1yFx6ul2W/rI+tZyUdNLxA8FAQLd1Q9ZqFUHLasBvxuMEw4H9e277d3Q+f8PKgJ
+         EcTl7Lx1ryd6T6tr6Lo+rm7/BfMcR+lSbQubtWVL/+A8aJ8T6L6ZYgdd04OqoQbkBx
+         nledCokN4sPfQ==
+Date:   Thu, 14 Sep 2023 15:31:46 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 1/1] PCI: mediatek: Correct type for virt_to_phys()
+Message-ID: <20230914203146.GA77870@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914192324.672997-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value of clk_imx_acm_detach_pm_domains() is never used.
-Simplify the code and turn it into a void function.
+On Thu, Sep 14, 2023 at 10:23:24PM +0300, Andy Shevchenko wrote:
+> virt_to_phys() takes a regular pointer, while driver supplies __iomem
+> annotated one. Force type to void to make sparse happy, otherwise
+> 
+>    pcie-mediatek.c:400:40: sparse:     expected void volatile *address
+>    pcie-mediatek.c:400:40: sparse:     got void [noderef] __iomem *
+> 
+>    pcie-mediatek.c:523:44: sparse:     expected void volatile *address
+>    pcie-mediatek.c:523:44: sparse:     got void [noderef] __iomem *
+> 
+> Reported-by: Huacai Chen <chenhuacai@kernel.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.com/
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/pci/controller/pcie-mediatek.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> index 66a8f73296fc..5e795afd1cee 100644
+> --- a/drivers/pci/controller/pcie-mediatek.c
+> +++ b/drivers/pci/controller/pcie-mediatek.c
+> @@ -397,7 +397,7 @@ static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>  	phys_addr_t addr;
+>  
+>  	/* MT2712/MT7622 only support 32-bit MSI addresses */
+> -	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
+> +	addr = virt_to_phys((__force void *)port->base + PCIE_MSI_VECTOR);
 
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/clk/imx/clk-imx8-acm.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Lots of these drivers use either virt_to_phys() or
+platform_get_resource_byname() to get a physical address that they
+then use as the MSI target.
 
-diff --git a/drivers/clk/imx/clk-imx8-acm.c b/drivers/clk/imx/clk-imx8-acm.c
-index c744fb78bb44..735b08296cc8 100644
---- a/drivers/clk/imx/clk-imx8-acm.c
-+++ b/drivers/clk/imx/clk-imx8-acm.c
-@@ -310,20 +310,18 @@ static int clk_imx_acm_attach_pm_domains(struct device *dev,
-  * @dev: deivice pointer
-  * @dev_pm: multi power domain for device
-  */
--static int clk_imx_acm_detach_pm_domains(struct device *dev,
--					 struct clk_imx_acm_pm_domains *dev_pm)
-+static void clk_imx_acm_detach_pm_domains(struct device *dev,
-+					  struct clk_imx_acm_pm_domains *dev_pm)
- {
- 	int i;
- 
- 	if (dev_pm->num_domains <= 1)
--		return 0;
-+		return;
- 
- 	for (i = 0; i < dev_pm->num_domains; i++) {
- 		device_link_del(dev_pm->pd_dev_link[i]);
- 		dev_pm_domain_detach(dev_pm->pd_dev[i], false);
- 	}
--
--	return 0;
- }
- 
- static int imx8_acm_clk_probe(struct platform_device *pdev)
--- 
-2.34.1
+But I don't think that's quite right -- the MSI is a DMA transaction
+on PCI, and in general there's no guarantee that bus addresses are
+identical to CPU physical addresses, so shouldn't we use a dma_addr_t
+obtained from the DMA API?
 
+dw_pcie_msi_host_init() has a complicated version of this that uses
+dmam_alloc_coherent().
+
+>  	msg->address_hi = 0;
+>  	msg->address_lo = lower_32_bits(addr);
+>  
+> @@ -520,7 +520,7 @@ static void mtk_pcie_enable_msi(struct mtk_pcie_port *port)
+>  	u32 val;
+>  	phys_addr_t msg_addr;
+>  
+> -	msg_addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
+> +	msg_addr = virt_to_phys((__force void *)port->base + PCIE_MSI_VECTOR);
+>  	val = lower_32_bits(msg_addr);
+>  	writel(val, port->base + PCIE_IMSI_ADDR);
+>  
+> -- 
+> 2.40.0.1.gaa8946217a0b
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
