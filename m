@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30387A0EA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC93C7A0EA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 22:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjINUBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 16:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S229748AbjINUCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 16:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjINUBD (ORCPT
+        with ESMTP id S229592AbjINUCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 16:01:03 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A98526BC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:00:59 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6c0f3f24c27so740716a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 13:00:59 -0700 (PDT)
+        Thu, 14 Sep 2023 16:02:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6E226BC;
+        Thu, 14 Sep 2023 13:02:46 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-573c62b3cd2so1032634a12.3;
+        Thu, 14 Sep 2023 13:02:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694721658; x=1695326458; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694721765; x=1695326565; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lb/CMKCE21GbjlUYU65iP3ZBpMrzy3WpMR7I9tPJHKc=;
-        b=MNwKRmsSi9lB5NEzZZC7y/QDjBwaJQoy2DpFOpZJGYZIhcSJ5HrAlRZB+EB0SqlCHQ
-         h0cj4VAr1e+YIka+1IoEIbpZJf622sYtC5xuwcIXtA+hcgt0KUhizrsqB90bqz/vixfL
-         nT00FKIinpDXxmzifaiYE999OL9d/v0W5sSZ+cYLdSKVQFUJecFtn+F6tIZz3cK4vdRb
-         g740Mfehu62hkZaH83a76AkJjcmaGfaTiomlf5zp9yktkxkBttdyLj266AftxQVyU+7q
-         Ynf3BI3FfDvf45xMOajTb2B7nE2jxNjrCV6e53RsrvwbQ/kLbHLgGytDZ7lS7MjHQful
-         mkkA==
+        bh=A9kaqIbiQMAt0qlEWTpOzlY6l1PPJ/Q7QNkCIjKHZSY=;
+        b=PTsQQNcnexJIgMspZAd+C0u2Vi+ewaw5pteVbmX2uRMMpI6W7xWf8PVF78Y93G+awb
+         Gi14Y7jczypsYnkl4zERvE+cBWKHFSdfe0tQCOJLad8z6XkRpfFT0sz2Vv9H+rXsJ60q
+         6OoMB0cjq3PLqM6luTtIRIyzCLrChhg/jZgTXf3l+vTyrFAVJp5kALCS0aEJ0yIPTQMG
+         d0nCUE86zOULR8YC8PSbIhxh5JEv6sNcNeQF1YRePJtB/yPHDmsxnR0WeHK4DKwVIkcv
+         hoMEEINee+FU2fZiMwD/V6UYk1YYcgD+k2WRNG4irgRpYipa+9NA28zRf8DcfHJTI7LG
+         lUZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694721658; x=1695326458;
+        d=1e100.net; s=20230601; t=1694721765; x=1695326565;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lb/CMKCE21GbjlUYU65iP3ZBpMrzy3WpMR7I9tPJHKc=;
-        b=biLmlbyeD3nUQM1NEwsNa8fwTnYNMcUNlEy28TEEPYc1v9IYwkE38lLHusHrr8n6s9
-         sRRva/6JZQTBX3CYXY3QSMoyyCXCi6ZTNJzJsIg8I89y0oKde0jQr1ue+pv+gAfX/eL6
-         Gefds3HxAVa8l4IDtUpecyj/YAc81JmIsUd5G4vlWUvIzhg6neeQWPhykW5kcdx9kBDz
-         62pYbzc/LxS2o6a8YJkD3lVUSb2JRkBWgFBSYgTg/DnD/6vKlG4iePtGiumvLyFGCgUB
-         SysJV39tJtkNE/tixwvOT7dwvoeE4NHwR/a6vTjK+Q2pZRVYvWVxM0W8P9nUUECxpV1u
-         pXog==
-X-Gm-Message-State: AOJu0Yx1B19js7P2F/4Tz2WTVXQFnkawuDBlHr2sKy4MX9zxr1UX/ANp
-        3xjPv3Fmkt6D62ke9RzjWaYpoKBFFWqol+G/iGeYMg==
-X-Google-Smtp-Source: AGHT+IHvfdYyltmAKPaJ3EMcnOv2Vgsan85cKtIyJ3zr2EyhbA9TT5S7py2VsiSTfs0auAsW5sUHMOUITwApT2T6FAo=
-X-Received: by 2002:a05:6830:195:b0:6b9:bf1e:c141 with SMTP id
- q21-20020a056830019500b006b9bf1ec141mr6884165ota.23.1694721658164; Thu, 14
- Sep 2023 13:00:58 -0700 (PDT)
+        bh=A9kaqIbiQMAt0qlEWTpOzlY6l1PPJ/Q7QNkCIjKHZSY=;
+        b=K9pK2jWpjOcWaUTu50b51OlMRNle1q9PbS7Lo4XYLd0P2hzkfkNJN8fukYePxnAe+l
+         jR92NH/8EUw2zUrz+qzmNF2m7dMvYnkxdNxYZKnejrwY6UMXoL2iXUjssko8P4c3ORrn
+         WfNMrRLdqJQ7j5N+aka+tCTac0y0Z3MVOT9/3Ib696RqFnav0tgGywHYAG/NIj+9/9qA
+         6Wwmgd1qHZ3t6FWPJtzduXvG084xJa9pgxkHOv/+yaV8PyKgTgLR/U71j83edTyauffK
+         6Ft61Nlfmx0oi6qx3qwhl5rs3KlsfPFoA5NRNWjtxRUNFVct9G1Mixw4TW6ulCHuWnm/
+         X+Nw==
+X-Gm-Message-State: AOJu0Yxklwoxe1B8U95NGd03i9cuQpV0PUBuJZn15SkOrn0ntJJiWcm3
+        vYNDAmOeZEKxx2gWrlwwEn/8rigHLIaBYSNYt0nG9Pfmzqk=
+X-Google-Smtp-Source: AGHT+IF0AonOjgLve5XE/1tDMMKqZ4Phey7WW/x6Zy6mHY7woUjaH+9Urd+32q7KgKeFme4YyXkDWu1Gt6tz2NfKmV0=
+X-Received: by 2002:a05:6a20:7d85:b0:13a:12c2:359e with SMTP id
+ v5-20020a056a207d8500b0013a12c2359emr7914124pzj.2.1694721765383; Thu, 14 Sep
+ 2023 13:02:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000f392a60604a65085@google.com> <ZP/3hgDCXeceE9uU@casper.infradead.org>
- <ZQB76G/6NxVgoE9u@casper.infradead.org> <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com>
- <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
- <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com>
- <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com>
- <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com> <ZQNaT/3xPxATKJVR@casper.infradead.org>
-In-Reply-To: <ZQNaT/3xPxATKJVR@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 14 Sep 2023 20:00:45 +0000
-Message-ID: <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <20230913211449.668796-1-jcmvbkbc@gmail.com> <20230913211449.668796-2-jcmvbkbc@gmail.com>
+ <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org> <20230914-stumbling-smother-2b048381952c@spud>
+In-Reply-To: <20230914-stumbling-smother-2b048381952c@spud>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 14 Sep 2023 13:02:34 -0700
+Message-ID: <CAMo8BfJTr2q5+8jmUsDPsWY795udvO3vb-fEMUrsLuiFuV-eFw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: serial: document esp32-uart bindings
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 7:09=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Sep 14, 2023 at 06:20:56PM +0000, Suren Baghdasaryan wrote:
-> > I think I found the problem and the explanation is much simpler. While
-> > walking the page range, queue_folios_pte_range() encounters an
-> > unmovable page and queue_folios_pte_range() returns 1. That causes a
-> > break from the loop inside walk_page_range() and no more VMAs get
-> > locked. After that the loop calling mbind_range() walks over all VMAs,
-> > even the ones which were skipped by queue_folios_pte_range() and that
-> > causes this BUG assertion.
+On Thu, Sep 14, 2023 at 7:48=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+> On Thu, Sep 14, 2023 at 07:55:35AM +0200, Krzysztof Kozlowski wrote:
+> > On 13/09/2023 23:14, Max Filippov wrote:
+> > > +description: |
+> > > +  ESP32 UART controller is a part of ESP32 SoC series.
 > >
-> > Thinking what's the right way to handle this situation (what's the
-> > expected behavior here)...
-> > I think the safest way would be to modify walk_page_range() and make
-> > it continue calling process_vma_walk_lock() for all VMAs in the range
-> > even when __walk_page_range() returns a positive err. Any objection or
-> > alternative suggestions?
+> > 1. Company name?
+> > 2. ESP32 SoC series suggests esp32 is a series.
+> >
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - description: UART controller for the ESP32 SoC
+> > > +        const: esp,esp32-uart
+> >
+> > Also, the vendor prefix looks incorrect, so again - what is the company
+> > name?
 >
-> So we only return 1 here if MPOL_MF_MOVE* & MPOL_MF_STRICT were
-> specified.  That means we're going to return an error, no matter what,
-> and there's no point in calling mbind_range().  Right?
->
-> +++ b/mm/mempolicy.c
-> @@ -1334,6 +1334,8 @@ static long do_mbind(unsigned long start, unsigned =
-long len,
->         ret =3D queue_pages_range(mm, start, end, nmask,
->                           flags | MPOL_MF_INVERT, &pagelist, true);
->
-> +       if (ret =3D=3D 1)
-> +               ret =3D -EIO;
->         if (ret < 0) {
->                 err =3D ret;
->                 goto up_out;
->
-> (I don't really understand this code, so it can't be this simple, can
-> it?  Why don't we just return -EIO from queue_folios_pte_range() if
-> this is the right answer?)
+> esp32 is made by expressif, which would match with "esp" as a vendor
+> prefix.
 
-Yeah, I'm trying to understand the expected behavior of this function
-to make sure we are not missing anything. I tried a simple fix that I
-suggested in my previous email and it works but I want to understand a
-bit more about this function's logic before posting the fix.
+It's 'Espressif', but otherwise yes, this is a registered vendor prefix. Se=
+e
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml?h=3Dv6.6-rc1#n443
+
+--=20
+Thanks.
+-- Max
