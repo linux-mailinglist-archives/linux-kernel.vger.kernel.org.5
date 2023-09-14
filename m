@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7547579FC05
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214C379FC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbjINGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
+        id S235659AbjINGcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235910AbjINGb6 (ORCPT
+        with ESMTP id S235662AbjINGcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:31:58 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE76BCF1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:31:38 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-501bd7711e8so936695e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:31:38 -0700 (PDT)
+        Thu, 14 Sep 2023 02:32:04 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0216CE7E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:32:00 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso2710355e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694673097; x=1695277897; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9y3W4w8Vrvb3itSQ1aZxY0flcAM2wszFYoNzBZyBoc=;
-        b=HNlHriWIC+fTrXsbXmor1+yeLntBpO6AvNlKd1bszG63N1+7p2+d/ZFTXK01sBwADx
-         G+R7ZNEEligoRZmEVYDzoriL6dWYFOXWcTdWDeZNXII8FUiSgUKLCPred62GIriQ+k6L
-         0El1xHHKbT564UCp9+cCow5/fNOsL+TSfz37rng211mDLapV3gh0bF8lOqUJJ1e1f3tm
-         mk9YUHVV7BR9TBnCY+kSs/BQSe+GsF9RPiZ909Iw4wk2hhM7neGjWjwxQQrAiOX/5SUC
-         emJTi54pY3XqhqJ9EHpLgGUXg2ehfoOkDkoklGAgL2z7TNQgmyCpnt3/IpB+yKAYgwVh
-         Os9A==
+        d=linaro.org; s=google; t=1694673118; x=1695277918; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OqMv56oIlyq1yZUHYezHOhINRufdy3f4MtOJTEMiAsI=;
+        b=UcHSsd0QJJS5AF08mpp46jgYBcgzN7GLhjCdv+Azo5LQMiIFXMjWdOWZXyyx0LFIx5
+         OsOKFpnvpE0VVkd1dYI6p81IOcANf5Q2utvCXQi3SXxCLe960itY1WMg4YOT8+9g7BMx
+         TmqRfhCG6QOUZditzf7/bi/c+Nn9z33NGuDjB4rj/LNXL0dKyPEZGIT5CRs2265mOQCg
+         XDWMIEsxKV32UlgnIus9OuQ/9qeJyGLKxjYh3pdKxofn3Czb/rmNnEfX6sXdoloy0nXZ
+         Pw/AoRhALw2VRBnlyn+/8uvzrQ5e9E+8SSHh3ZafLEv+sXVm8a8RsXXPwvzi8v0WlCOy
+         wtGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694673097; x=1695277897;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V9y3W4w8Vrvb3itSQ1aZxY0flcAM2wszFYoNzBZyBoc=;
-        b=USluBVJzSpY/1rUKpDX0e9yGp2EjjBrhWlz8PxazLxA2CAOtMvnLYF0UxthZy68lc4
-         bpxOwzdFfhf9newQnjtgF1tOU2X8VQGe+4gzTH47sOPg3OhqI+GCvCdzvaLWhXoyzkNv
-         S9FRnzgUQnnKdwukgvMeJxo/VqTyDRx5jo4lx89ppoy4wxF5NI4Hw6pojJXT4TH0mfUW
-         c5sPh0IvwmZ4insT/LtkQj7v4oM9S8DkJPUcDMi+xKJoLZGp1jx4mRnN3hp3FgKJj0n8
-         BIy7x9XaPMr8ZCvzVj1i6cnibJjqdi/qUqFfAQ2LXT11JUEbu59umGAKh91rj2WdMgLi
-         2lew==
-X-Gm-Message-State: AOJu0YxnQiWTyGxtm6lRi3+352YrzLAJaeXVxQ/ha0soGHBYlxcBawU5
-        cnHVLIezMWIYC+Hj+fWc6G2H/EAxsYhvSH+DS1Y=
-X-Google-Smtp-Source: AGHT+IEZbGELgFj+ivRiRQ+TIEYto5EpOmtl+6TCMIpbdj0vBdu2MWWww5vUgZ71rmW/zJdr3albrg==
-X-Received: by 2002:a05:6512:2311:b0:500:7cab:efc3 with SMTP id o17-20020a056512231100b005007cabefc3mr4731734lfu.11.1694673096532;
-        Wed, 13 Sep 2023 23:31:36 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id a26-20020a056512021a00b004ffad0ec2d5sm145003lfo.111.2023.09.13.23.31.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 23:31:36 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 14 Sep 2023 08:31:35 +0200
-Subject: [PATCH] ARC: mm: Make virt_to_pfn() a static inline
+        d=1e100.net; s=20230601; t=1694673118; x=1695277918;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OqMv56oIlyq1yZUHYezHOhINRufdy3f4MtOJTEMiAsI=;
+        b=RTY6byAQ9PqqcWdOGEwZd+2GSCtn8MTTrqtC8RxZaAWbPNpjgR5XcrHybaSdyoAOxw
+         nMPSR2D2b9aiOLqvYo+IMbLoIvnT77t+4pl7/LWhs5yDU2hxfLM2wMmlZY+BjW0nWiLH
+         kiM2tNr98T4VngRtazhK1VDqewtUDYaISET3NcOwvxRP2o/899xC1h37aX10jmDyCLJw
+         eXnjjO2aNLqzK5VGD/CUDDawL4br+OQHehxtrNkMRZSgAzbDe8rtkpLC1DlD5+1Ro1jX
+         BwillXyYOic2p4H9DZQ7YkFDgb9nsH5ltVC99uSDRvt6UJ1z4S+nMLTG/mMwKR+JKy4Y
+         HKaQ==
+X-Gm-Message-State: AOJu0YyKuxI/riWogQKrmClM6KI7GTyj8F6OJ5GDvgtn0eVhmCrl6k7Z
+        iQMe89OYAyh5N4+ha1RnqKT+fA==
+X-Google-Smtp-Source: AGHT+IH/ckypx3vpKLPW6uGJks68NV9sYYN9vT0iwO7z8Oo36uYXId5kT/9X7Oj/IcnxZ00H7qkRlw==
+X-Received: by 2002:adf:cf08:0:b0:317:2574:c2b1 with SMTP id o8-20020adfcf08000000b003172574c2b1mr4150728wrj.30.1694673118411;
+        Wed, 13 Sep 2023 23:31:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id b12-20020adfe64c000000b003177074f830sm832026wrn.59.2023.09.13.23.31.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 23:31:57 -0700 (PDT)
+Message-ID: <9fc4817d-00ae-aaf4-bfb6-b24361f55799@linaro.org>
+Date:   Thu, 14 Sep 2023 08:31:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 5/5] arm64: dts: imx93: update gpio node
+Content-Language: en-US
+To:     Peng Fan <peng.fan@nxp.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230914-vf610-gpio-v1-0-3ed418182a6a@nxp.com>
+ <20230914-vf610-gpio-v1-5-3ed418182a6a@nxp.com>
+ <bc122417-6d59-4c1d-3f73-c20711f9a32f@linaro.org>
+ <DU0PR04MB941722CE1A9BF9F87946DE0A88F7A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <DU0PR04MB941722CE1A9BF9F87946DE0A88F7A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230914-virt-to-phys-arc-v1-1-9dc0008dc0b0@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAMaoAmUC/x3MQQqAIBBA0avErBvQBMmuEi3SppxNxRhRiHdPW
- r7F/xkSCVOCockgdHPiY6/QbQMhzvtGyEs1dKozymmDN8uF14FnfBPOEtArb7UJtndeQc1OoZW
- ffzlOpXwV57JzYgAAAA==
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Making virt_to_pfn() a static inline taking a strongly typed
-(const void *) makes the contract of a passing a pointer of that
-type to the function explicit and exposes any misuse of the
-macro virt_to_pfn() acting polymorphic and accepting many types
-such as (void *), (unitptr_t) or (unsigned long) as arguments
-without warnings.
+On 14/09/2023 08:04, Peng Fan wrote:
+>> Subject: Re: [PATCH 5/5] arm64: dts: imx93: update gpio node
+>>
+>> On 14/09/2023 04:21, Peng Fan (OSS) wrote:
+>>> From: Peng Fan <peng.fan@nxp.com>
+>>>
+>>> Per binding doc, i.MX93 GPIO supports two interrupts, and not
+>>> compatible with i.MX7ULP. So update the node
+>>>
+>>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>>> ---
+>>>  arch/arm64/boot/dts/freescale/imx93.dtsi | 20 ++++++++++++--------
+>>>  1 file changed, 12 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi
+>>> b/arch/arm64/boot/dts/freescale/imx93.dtsi
+>>> index 6f85a05ee7e1..011c34a57c53 100644
+>>> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
+>>> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+>>> @@ -825,11 +825,12 @@ usdhc3: mmc@428b0000 {
+>>>  		};
+>>>
+>>>  		gpio2: gpio@43810080 {
+>>> -			compatible = "fsl,imx93-gpio", "fsl,imx7ulp-gpio";
+>>> +			compatible = "fsl,imx93-gpio", "fsl,imx8ulp-gpio";
+>>
+>> As your driver change points, it is breaking users, so no :(
+> 
+> ok. Although i.MX93 GPIO is not compatible with i.MX7ULP from HW
+> perspective, the compatible string should keep as it is now and binding
 
-In order to do this we move the virt_to_phys() and
-below the definition of the __pa() and __va() macros so it
-compiles. The macro version was also able to do recursive
-symbol resolution.
+If it is not compatible, then how could it work before?
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/arc/include/asm/page.h           | 21 ++++++++++++---------
- arch/arc/include/asm/pgtable-levels.h |  2 +-
- 2 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-index 02b53ad811fb..def0dfb95b43 100644
---- a/arch/arc/include/asm/page.h
-+++ b/arch/arc/include/asm/page.h
-@@ -84,15 +84,6 @@ typedef struct {
- 
- typedef struct page *pgtable_t;
- 
--/*
-- * Use virt_to_pfn with caution:
-- * If used in pte or paddr related macros, it could cause truncation
-- * in PAE40 builds
-- * As a rule of thumb, only use it in helpers starting with virt_
-- * You have been warned !
-- */
--#define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
--
- /*
-  * When HIGHMEM is enabled we have holes in the memory map so we need
-  * pfn_valid() that takes into account the actual extents of the physical
-@@ -122,6 +113,18 @@ extern int pfn_valid(unsigned long pfn);
- #define __pa(vaddr)  		((unsigned long)(vaddr))
- #define __va(paddr)  		((void *)((unsigned long)(paddr)))
- 
-+/*
-+ * Use virt_to_pfn with caution:
-+ * If used in pte or paddr related macros, it could cause truncation
-+ * in PAE40 builds
-+ * As a rule of thumb, only use it in helpers starting with virt_
-+ * You have been warned !
-+ */
-+static inline unsigned long virt_to_pfn(const void *kaddr)
-+{
-+	return __pa(kaddr) >> PAGE_SHIFT;
-+}
-+
- #define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
- #define virt_addr_valid(kaddr)  pfn_valid(virt_to_pfn(kaddr))
- 
-diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-index fc417c75c24d..86e148226463 100644
---- a/arch/arc/include/asm/pgtable-levels.h
-+++ b/arch/arc/include/asm/pgtable-levels.h
-@@ -159,7 +159,7 @@
- #define pmd_clear(xp)		do { pmd_val(*(xp)) = 0; } while (0)
- #define pmd_page_vaddr(pmd)	(pmd_val(pmd) & PAGE_MASK)
- #define pmd_pfn(pmd)		((pmd_val(pmd) & PAGE_MASK) >> PAGE_SHIFT)
--#define pmd_page(pmd)		virt_to_page(pmd_page_vaddr(pmd))
-+#define pmd_page(pmd)		virt_to_page((void *)pmd_page_vaddr(pmd))
- #define set_pmd(pmdp, pmd)	(*(pmdp) = pmd)
- #define pmd_pgtable(pmd)	((pgtable_t) pmd_page(pmd))
- 
-
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230913-virt-to-phys-arc-b0b613c689b0
 
 Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
+Krzysztof
 
