@@ -2,49 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B85517A0A02
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C557A0A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241451AbjINQAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        id S241482AbjINQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241383AbjINQAj (ORCPT
+        with ESMTP id S241396AbjINQAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:00:39 -0400
+        Thu, 14 Sep 2023 12:00:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615561FC0;
-        Thu, 14 Sep 2023 09:00:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01ADDC433C7;
-        Thu, 14 Sep 2023 16:00:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5130F1FD2;
+        Thu, 14 Sep 2023 09:00:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D58C433CA;
+        Thu, 14 Sep 2023 16:00:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694707235;
-        bh=LcuB9zR375+7iGkeQHoDASa4rDIgGV48HpSpQaqIAaA=;
+        s=k20201202; t=1694707236;
+        bh=s03MGFQBL0QBju8gHOwhnm7b8DWId+2tVRQJS/iUXnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K9Y16kT3WenNTuzTz3vmI65HUvSDGe+Vkm8urSaY4/qyFmeYD669MYzV+vKImSjF8
-         j2WwrX9EEp5AwhKHrwGwdx5q9lEQrDGyR+LuooGHJM31W8lVaL5syA1rf87HxWhfca
-         x8fKBjglBjf941YxJ4NT/i+d9ep2EyNDKosn+6baQmgITl6dZ/pivmItsi+MLgpVjB
-         05TV7OJpLsEjsAu+BUPd/qI0xJeuAtMasiPs/Mzk0yG0M8jGtXNHAoBbV15u3So8l7
-         tuZJscn5jDhG3e9SGFbOhLLhEs2WAaeAg8pMu+xQCK3UKZUIJwtJTIHhM47wCHGbh+
-         JCxbuH5eStBww==
+        b=dPVVmqmCN63HSGnyuDOfrzvWPDWOmAbfgciw8Mbgts0IWth0iLMsA/LK+EOvdVTh3
+         U3bj/kj+TCLLORubXKvPytR1Bc5gatZsfrazZmQLbz4xWoxSl8VbQA+OjkxvZ36ktx
+         zlxRmhGMCVB/0uWT4zDloBt8WsEIxe9LzwCWbip6r7BUt6hmseae0MahFArOjTtqok
+         ZLDpQBOBn36d2B8tD0PUd4TaORvVv/nUkJB2XYPNXPjjbZNVijU9vdrDgXMDsy1EW/
+         JySavq2mz7SqYO9+xDp0kkq4o5GSN9Eb+HlzTqTW2hIEGAIEVJE9k5W89XuQZ594Qt
+         t+d9+699DT38Q==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/7] 8550 dma coherent and more
-Date:   Thu, 14 Sep 2023 09:04:22 -0700
-Message-ID: <169470744881.681825.862550509087910761.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8250-edo: Set UART alias and stdout-path
+Date:   Thu, 14 Sep 2023 09:04:23 -0700
+Message-ID: <169470744883.681825.16969162035585041637.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
+In-Reply-To: <20230912-topic-edoconsole-v1-1-b392ea67e539@linaro.org>
+References: <20230912-topic-edoconsole-v1-1-b392ea67e539@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,18 +49,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 30 Aug 2023 14:48:39 +0200, Konrad Dybcio wrote:
-> Qualcomm made some under-the-hood changes and made more peripherals
-> capable of coherent transfers with SM8550.
-> 
-> This series marks them as such and brings fixups to usb and psci-cpuidle.
+On Tue, 12 Sep 2023 15:48:31 +0200, Konrad Dybcio wrote:
+> The GENI UART driver requires one specifies a numeric alias. Do so and
+> set the stdout-path to route the console to the debug uart in the microSD
+> slot by default.
 > 
 > 
 
 Applied, thanks!
 
-[2/7] dt-bindings: qcom: geni-se: Allow dma-coherent
-      commit: 274707b773378f4ce8ba214002b3d67a4d0785ae
+[1/1] arm64: dts: qcom: sm8250-edo: Set UART alias and stdout-path
+      commit: 2e754956848889d5b04d8023753fa28de679373d
 
 Best regards,
 -- 
