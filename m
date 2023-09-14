@@ -2,144 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6727A1154
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ABE7A1159
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 01:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjINW6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
+        id S230183AbjINXAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 19:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjINW6v (ORCPT
+        with ESMTP id S229818AbjINXAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:58:51 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E738C2707
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:58:46 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-573d44762e4so1246004a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694732326; x=1695337126; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBvN087+LWsLjnRA9Q/StMUiztB5piJc+GOWYwv7hrg=;
-        b=p3JssecyoEX9wuIVN0J7z8qmLVKXKzxNoq3mjO4yI95IflwOVTbu9mFZQjU0enJb/6
-         sbOSw3kaCV3XPKw8/AbII/ly2LbVcY+50VKFZACDajJlsvLWnMto0bk3BxRJ/rdWdqHy
-         iQ1W76kU69HA6FJ5IVeMNTFO0vsl22k5zRCy6K7mw4HLeJpMc9UuDCvZun/wsAkVD+s9
-         ZkrrwT+BTSpcq9x7qn7ZSwbnxe0PIeHP281nueNpSMKRyzpkAsz7198rnLhoixgJxcDu
-         nNSPPgNeC4jgHQ4MabFMPln+95ePlenHHRYtcmQsuajUyIrXmcQV+rFg82bgLZwko9xO
-         it2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694732326; x=1695337126;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBvN087+LWsLjnRA9Q/StMUiztB5piJc+GOWYwv7hrg=;
-        b=usPfoMjfn0diifMpxL6MArfYUlt3S3XlmfkCRU3uebV3aeVYUFOx/4tlNlINQYItst
-         LgznPTjQql6wbmiUTYexS0dFaMnOZePZzkBBalWHmYZa8FIDi6vpW9o6fLpHXcMQ+e4J
-         e9+HUR+ST8niCKcdagucqWJMc9ArqoA1nRNKDe16yCwaOldzcjh2egYChS0gUNnM30ea
-         7NbyW51TVMF3CbLAIE74dQvlwieucBdfjF5msfE1NyC7s0QbRbzF+mZDHoH9w/1LtYAu
-         tieLUYTAY8nwuyEMDqzX5xSZq3jByAhrtbO4OmG5dyjDjqQAUCSKccwjvvFjlbVG2LaZ
-         qyqw==
-X-Gm-Message-State: AOJu0YxnMyZDc+b6+zizxn71mBn3GhwkwPsi9aSV/CAjoOvkAflQPzuG
-        WT+r2ZgN+QoO2V7y7sc/MW7dUmr+e+2XfQ==
-X-Google-Smtp-Source: AGHT+IEpNEc4jLhITi/avuNxdjVhmv5rK3VAkgg6J4TclKm4i8qSATiM+JZ1b0hGZt0buZsf8KqVFPQcOiYGIg==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a63:6d8a:0:b0:578:1b5a:6367 with SMTP id
- i132-20020a636d8a000000b005781b5a6367mr19710pgc.12.1694732326211; Thu, 14 Sep
- 2023 15:58:46 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 22:58:44 +0000
-In-Reply-To: <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230913073846.1528938-1-yosryahmed@google.com>
- <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
- <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
-Message-ID: <20230914225844.woz7mke6vnmwijh7@google.com>
-Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+        Thu, 14 Sep 2023 19:00:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA63E6A;
+        Thu, 14 Sep 2023 16:00:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694732439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y9UPmbkXZRNuioCyvMTxakQr1LFj1kbpXONIFu2xSbU=;
+        b=lg2xYIiFHmDQ94KTGhglBSA6Z0t67NpbKHOIiF7u/MK/QNmaP++hoHuiLV+K+pCpRbvrny
+        3/iljaw4BlgVWi/Axp6VS4fmMqKGyXg21eMc5ZV4tP/U4RlYANeOwmzU8va1MEOljqy3TT
+        btUeGlhB3sh0EMaUYvltsYDxwKSXnXEylIIdoo/fFFa9bHszzToBmfF7mWfvAeUCCTtYF7
+        dLVR6DZAro2zzE9j6g8fxSwh1UCUDJaHZwjyB+5Hh3UOpHfdYzQSP58MDIwDkxgh0AroPW
+        ApRPA6r3z/oN2U1ADa5bw8cimXbGYP6+gkTTb8YmUICXl2qp0JQtDGwblbFK+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694732439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y9UPmbkXZRNuioCyvMTxakQr1LFj1kbpXONIFu2xSbU=;
+        b=48C9u5FtSr/8YhitFLfTJzZIuTnlSrzcd0C4TaCewwtRO7Oehv/gGi/6/V2pnG6aVMDDrx
+        +xZpy5dDgM7R8iDQ==
+To:     andrew.cooper3@citrix.com, Xin Li <xin3.li@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        jiangshanlai@gmail.com
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+In-Reply-To: <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com>
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+ <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com>
+Date:   Fri, 15 Sep 2023 01:00:39 +0200
+Message-ID: <87y1h81ht4.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:56:52AM -0700, Yosry Ahmed wrote:
-[...]
-> >
-> > 1. How much delayed/stale stats have you observed on real world workload?
-> 
-> I am not really sure. We don't have a wide deployment of kernels with
-> rstat yet. These are problems observed in testing and/or concerns
-> expressed by our userspace team.
-> 
+Andrew!
 
-Why sleep(2) not good enough for the tests?
+On Thu, Sep 14 2023 at 15:05, andrew wrote:
+> On 14/09/2023 5:47 am, Xin Li wrote:
+>> +static __always_inline void wrmsrns(u32 msr, u64 val)
+>> +{
+>> +	__wrmsrns(msr, val, val >> 32);
+>> +}
+>
+> This API works in terms of this series where every WRMSRNS is hidden
+> behind a FRED check, but it's an awkward interface to use anywhere else
+> in the kernel.
 
-> I am trying to solve this now because any problems that result from
-> this staleness will be very hard to debug and link back to stale
-> stats.
-> 
+Agreed.
 
-I think first you need to show if this (2 sec stale stats) is really a
-problem.
+> I fully understand that you expect all FRED capable systems to have
+> WRMSRNS, but it is not a hard requirement and you will end up with
+> simpler (and therefore better) logic by deleting the dependency.
 
-> >
-> > 2. What is acceptable staleness in the stats for your use-case?
-> 
-> Again, unfortunately I am not sure, but right now it can be O(seconds)
-> which is not acceptable as we have workloads querying the stats every
-> 1s (and sometimes more frequently).
-> 
+According to the CPU folks FRED systems are guaranteed to have WRMSRNS -
+I asked for that :). It's just not yet documented.
 
-It is 2 seconds in most cases and if it is higher, the system is already
-in bad shape. O(seconds) seems more dramatic. So, why 2 seconds
-staleness is not acceptable? Is 1 second acceptable? or 500 msec? Let's
-look at the use-cases below.
+But that I aside, I agree that we should opt for the safe side with a
+fallback like the one you have in XEN even for the places which are
+strictly FRED dependent.
 
-> >
-> > 3. What is your use-case?
-> 
-> A few use cases we have that may be affected by this:
-> - System overhead: calculations using memory.usage and some stats from
-> memory.stat. If one of them is fresh and the other one isn't we have
-> an inconsistent view of the system.
-> - Userspace OOM killing: We use some stats in memory.stat to gauge the
-> amount of memory that will be freed by killing a task as sometimes
-> memory.usage includes shared resources that wouldn't be freed anyway.
-> - Proactive reclaim: we read memory.stat in a proactive reclaim
-> feedback loop, stale stats may cause us to mistakenly think reclaim is
-> ineffective and prematurely stop.
-> 
+> As a "normal" user of the WRMSR APIs, the programmer only cares about:
+>
+> 1) wrmsr() -> needs to be serialising
+> 2) wrmsr_ns() -> safe to be non-serialising
 
-I don't see why userspace OOM killing and proactive reclaim need
-subsecond accuracy. Please explain. Same for system overhead but I can
-see the complication of two different sources for stats. Can you provide
-the formula of system overhead? I am wondering why do you need to read
-stats from memory.stat files. Why not the memory.current of top level
-cgroups and /proc/meminfo be enough. Something like:
+Correct.
 
-Overhead = MemTotal - MemFree - SumOfTopCgroups(memory.current)
+> In Xen, I added something of the form:
+>
+> /* Non-serialising WRMSR, when available.=C2=A0 Falls back to a serialisi=
+ng
+> WRMSR. */
+> static inline void wrmsr_ns(uint32_t msr, uint32_t lo, uint32_t hi)
+> {
+> =C2=A0=C2=A0=C2=A0 /*
+> =C2=A0=C2=A0=C2=A0=C2=A0 * WRMSR is 2 bytes.=C2=A0 WRMSRNS is 3 bytes.=C2=
+=A0 Pad WRMSR with a redundant CS
+> =C2=A0=C2=A0=C2=A0=C2=A0 * prefix to avoid a trailing NOP.
+> =C2=A0=C2=A0=C2=A0=C2=A0 */
+> =C2=A0=C2=A0=C2=A0 alternative_input(".byte 0x2e; wrmsr",
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ".byte 0x0f,0x01,0xc=
+6", X86_FEATURE_WRMSRNS,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "c" (msr), "a" (lo),=
+ "d" (hi));
+> }
+>
+> and despite what Juergen said, I'm going to recommend that you do wire
+> this through the paravirt infrastructure, for the benefit of regular
+> users having a nice API, not because XenPV is expecting to do something
+> wildly different here.
 
-> >
-> > I know I am going back on some of the previous agreements but this
-> > whole locking back and forth has made in question the original
-> > motivation.
-> 
-> That's okay. Taking a step back, having flushing being indeterministic
+I fundamentaly hate adding this to the PV infrastructure. We don't want
+more PV ops, quite the contrary.
 
-I would say atmost 2 second stale instead of indeterministic.
+For the initial use case at hand, there is an explicit FRED dependency
+and the code in question really wants to use WRMSRNS directly and not
+through a PV function call.
 
-> in this way is a time bomb in my opinion. Note that this also affects
-> in-kernel flushers like reclaim or dirty isolation
+I agree with your reasoning for the more generic use case where we can
+gain performance independent of FRED by using WRMSRNS for cases where
+the write has no serialization requirements.
 
-Fix the in-kernel flushers separately. Also the problem Cloudflare is
-facing does not need to be tied with this.
+But this made me look into PV ops some more. For actual performance
+relevant code the current PV ops mechanics are a horrorshow when the op
+defaults to the native instruction.
+
+Let's look at wrmsrl():
+
+wrmsrl(msr, val
+ wrmsr(msr, (u32)val, (u32)val >> 32))
+  paravirt_write_msr(msr, low, high)
+    PVOP_VCALL3(cpu.write_msr, msr, low, high)
+
+Which results in
+
+	mov	$msr, %edi
+	mov	$val, %rdx
+	mov	%edx, %esi
+	shr	$0x20, %rdx
+	call	native_write_msr
+
+and native_write_msr() does at minimum:
+
+	mov    %edi,%ecx
+	mov    %esi,%eax
+	wrmsr
+        ret
+
+In the worst case 'ret' is going through the return thunk. Not to talk
+about function prologues and whatever.
+
+This becomes even more silly for trivial instructions like STI/CLI or in
+the worst case paravirt_nop().
+
+The call makes only sense, when the native default is an actual
+function, but for the trivial cases it's a blatant engineering
+trainwreck.
+
+I wouldn't care at all if CONFIG_PARAVIRT_XXL would be the esoteric use
+case, but AFAICT it's default enabled on all major distros.
+
+So no. I'm fundamentally disagreeing with your recommendation. The way
+forward is:
+
+  1) Provide the native variant for wrmsrns(), i.e. rename the proposed
+     wrmsrns() to native_wrmsr_ns() and have the X86_FEATURE_WRMSRNS
+     safety net as you pointed out.
+
+     That function can be used in code which is guaranteed to be not
+     affected by the PV_XXL madness.
+
+  2) Come up with a sensible solution for the PV_XXL horrorshow
+
+  3) Implement a sane general variant of wrmsr_ns() which handles
+     both X86_FEATURE_WRMSRNS and X86_MISFEATURE_PV_XXL
+
+  4) Convert other code which benefits from the non-serializing variant
+     to wrmsr_ns()
+
+Thanks,
+
+        tglx
