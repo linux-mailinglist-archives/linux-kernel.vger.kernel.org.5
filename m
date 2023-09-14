@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C5979FBE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D157979FBF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 08:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjING1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 02:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
+        id S235443AbjINGal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 02:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjING1k (ORCPT
+        with ESMTP id S233867AbjINGaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 02:27:40 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D66F9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:27:35 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so79828666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 23:27:35 -0700 (PDT)
+        Thu, 14 Sep 2023 02:30:39 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B680E7;
+        Wed, 13 Sep 2023 23:30:35 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31c65820134so479408f8f.1;
+        Wed, 13 Sep 2023 23:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694672854; x=1695277654; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SvJPiborPazhY3z/eKkSPzi9+TFXrHaaVb21iB43NoQ=;
-        b=Kt5Tw5KR9yw442FFTMzUcHXDs7uzfWT+mNEtIECVVpNzH8SFpWcs09yMVwD7e6tp34
-         ptKbVPIEBSAtR85/HXRaw+s4MsR6KRJ8V1eXou9qz0HJiGEgiPgXU1r2+OIwShuLLAa3
-         zqZqmU13K2FUsIo57K0W11N1R7sEQgsyNyw1zO7EYOOZG5BWI0xFdaKmwYzZgtOIZaPZ
-         o5hPfPnTpHVDvZDl/N2DQkLBb9PYAen1/KnlABwl7R3JmEmINJseHxUyq51MUTapAN8B
-         kfrSz9RBwzF6uPGabJXVmSZss5paewZ3WAwKEEogqHSBmMilR6rVi+TH2Zmrb3R6KFW6
-         7mog==
+        d=gmail.com; s=20221208; t=1694673034; x=1695277834; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pqrbsszNPWGJmRm+hq+F8aeQwjVZEj8yw2XLI124orQ=;
+        b=PH6lh+0TiA38KVKdfqiL9NuWucs0+Fv+cl2ujYsewf6lpiFCPTEk5kcsWiVLnKN1r1
+         EZRIrzZ/J4Ibn7c9vgQKIYLuhiWy7Eh+b+vIbwwV5S3Ka+QksD1dJ2MJlvWY7lr8AWlD
+         cINkCGum4egXJ1J6ckJnGBPymEAQ6yvsOJnlZNoAgd0P6a1qmDl2QkCeOHMNSJO2JKXX
+         9PNZ6kTQVxwOuiD+6/48qFCV/R+85+YT6zmZ7trbqEnVz+KCpBtnG0ZJxVY5LWtMJgwx
+         mrvJ8lA4Ge5QzQkO5REfBIA6OCVKAWHlu8maT8QOR0cAqQgtSl5vAb2c+Y8ev/hllC56
+         0Jgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694672854; x=1695277654;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SvJPiborPazhY3z/eKkSPzi9+TFXrHaaVb21iB43NoQ=;
-        b=PFQ69Pk32hzZUkd/WLFdbE+ROEPoG4p+Hl7n3RAVZhylczpSxor7q36/gEzXHWg+h6
-         HfP7TiKQBYPEdW5Zvz+kc6cBnjygJI6vtOUJcXtEF4iJFBKrpKo4jotQ6od/UuVlTm3q
-         DW/ynFA829DeTUAE9LHRr7pALW4i1HHNRgEWaV5gEiTMZdmJbhSUd00fwcwGMiV5wjPz
-         4z8PdMBT9lUQvmzr2THbLcEdWBqy1tG8ZkBZoqO4or+DHeWl7LRxkcEuciD5V827dY49
-         H5J5O39zsLSAisOmhYjAwHxw+z138aQPUX/KQMSXxHA85Bc+0gCGPqaCdKqlZp8G5Rkj
-         IHiA==
-X-Gm-Message-State: AOJu0Yx4y7dsFGGnfJt5iBSKBV8sZV91hJnVgx8ELX3VvvstGqThq87Q
-        +3TgtBCZ9k0j/FhQ2O+8vrFnuQ==
-X-Google-Smtp-Source: AGHT+IGPactfC2yeS6QW7dJXDUIVllwKVb9ZV2x84EqGoOiQTTqwSd/i3KRUMgYtnIcrqxiZZV4dKA==
-X-Received: by 2002:a17:906:3091:b0:9a5:c944:8e71 with SMTP id 17-20020a170906309100b009a5c9448e71mr3578755ejv.60.1694672854226;
-        Wed, 13 Sep 2023 23:27:34 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id mh25-20020a170906eb9900b0099297782aa9sm517731ejb.49.2023.09.13.23.27.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 23:27:33 -0700 (PDT)
-Message-ID: <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
-Date:   Thu, 14 Sep 2023 08:27:31 +0200
+        d=1e100.net; s=20230601; t=1694673034; x=1695277834;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pqrbsszNPWGJmRm+hq+F8aeQwjVZEj8yw2XLI124orQ=;
+        b=ecA8o1g/dDpFZjm4Nz2t2ujQwchndSzn+5P0co4XPg6n3ra98vYDVS9mz6iPGjobFo
+         /MkhFo+1EtWjy5xDTAx+pbMq+JAee/qetEODV6VzvFXwGFyFfElkfv54wjtwmInf/Vta
+         adKyawGDHo0j0bRAwCsoc38Cm/4mxfPHN7L6EMofCDPwcqft3NzdDkyKsYQWOsN8ipzr
+         lw1sYQs9Q4p+wYp07AGtmzltsXbAz/DFCyynQHQTTyl7KXi80bds/EYSpR0C6T2DJ24u
+         mfMmmRsomNqGdWX8vEmb110MTuukOJRVtZmQsmmx/dKBjepql07IpZzvkyAXQ8tJ/WuT
+         Mt4g==
+X-Gm-Message-State: AOJu0Yxb3gtIafRA175wAijmCFiA29OP7es0O0d/gp+kEztYqegE3flG
+        bFSTAzwjdy08v8rZQ/ZkMEM=
+X-Google-Smtp-Source: AGHT+IFloPuoVMqwYqNAhjxlxIGlUZ3r6nTexrsPHeVVWQubS4P5bMZvZAOmmO2qUmDhVXXzpFq6fw==
+X-Received: by 2002:a5d:65c6:0:b0:31f:b0ba:f2ce with SMTP id e6-20020a5d65c6000000b0031fb0baf2cemr4008727wrw.9.1694673033297;
+        Wed, 13 Sep 2023 23:30:33 -0700 (PDT)
+Received: from gmail.com (1F2EF048.nat.pool.telekom.hu. [31.46.240.72])
+        by smtp.gmail.com with ESMTPSA id z4-20020a5d4c84000000b003197c7d08ddsm818496wrs.71.2023.09.13.23.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 23:30:32 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 14 Sep 2023 08:30:30 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and
+ strncpy
+Message-ID: <ZQKohp0plVd4S5St@gmail.com>
+References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+ <ZPhsSzHG6YMViOSk@gmail.com>
+ <bce762af-0da7-bb5e-1580-b42803c183f6@redhat.com>
+ <ZPiH/ds9oeimXDdb@gmail.com>
+ <953f2e40-7b0e-27b5-b017-a1ac2175bb47@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
-Content-Language: en-US
-To:     Nitin Yadav <n-yadav@ti.com>, nm@ti.com, vigneshr@ti.com,
-        rogerq@ti.com
-Cc:     kristo@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230913114711.2937844-1-n-yadav@ti.com>
- <20230913114711.2937844-2-n-yadav@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913114711.2937844-2-n-yadav@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <953f2e40-7b0e-27b5-b017-a1ac2175bb47@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 13:47, Nitin Yadav wrote:
-> Add support for AM62Q NAND card: X8 NAND EXPANSION
-> BOARD card (PROC143E1) for AM62x LP SK board.
+
+* Hans de Goede <hdegoede@redhat.com> wrote:
+
+> >> Which IMHO is much more readable then what has landed now. But since 
+> >> v2 has already landed I guess the best thing is just to stick with 
+> >> what we have upstream now...
+> > 
+> > Well, how about we do a delta patch with all the changes you suggested? 
+> > I'm all for readability.
 > 
-> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
->  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
->  2 files changed, 31 insertions(+)
+> So I started doing this and notices that all the string manipulation + 
+> parsing done here is really just a DYI implementation of 
+> sysfs_match_string().
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> index 284b90c94da8..e93e79d8083f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
->  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->  		status = "disabled";
->  	};
-> +	gpmc0: memory-controller@3b000000 {
-> +		status = "disabled";
+> So I have prepared a patch to switch to sysfs_match_string(), which 
+> completely removes the need to make a copy of the val string.
+> 
+> I'll submit the patch right after this email.
 
-status is never first in DTSI. Really, where did you see such code?
+Thank you - that looks a far more thorough cleanup indeed.
 
-> +		compatible = "ti,am64-gpmc";
-> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
-
-First is compatible, second is reg/reg-names/ranges.
-
-
-Best regards,
-Krzysztof
-
+	Ingo
