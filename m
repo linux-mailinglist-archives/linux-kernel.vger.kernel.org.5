@@ -2,149 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E71F77A0232
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DD17A0236
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 13:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbjINLLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 07:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S232633AbjINLPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 07:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjINLLM (ORCPT
+        with ESMTP id S229485AbjINLPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 07:11:12 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CA410E6;
-        Thu, 14 Sep 2023 04:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mJIualwweUZGp55FBJbOqzxQCkNxNmUE1MPBTrTAheg=; b=lQUPBh86IwhBsrufNHvbGJoswo
-        o9WAIvldkMVcmqVtmLe5/6bLSewxs+Z2zKOFUciTaBwoznYr/4l9q1BrCNdgMNpyyPJ/FQAJQqRpt
-        HHPuTWXi9FGJI4Fsakq2zuSMCKpyqM9oWOuYFQg3YEY87mcZjBbVyzCG8PlrEOJO4eUs3JYcUsNSV
-        8M1bStdBbGXRz//qXyqilYXz8P/SR3qc6qUFRIBYgyqe6k/ZgeXQE3yBRrtC1g7RGzGLmqTUy/SDw
-        /fKly5ax5mvdKXPRIs0p+eZHMMcY7PYLdgGANRVsDAltijZWEvJAGZoJa9kIJdA5fKcBYM17kUQa+
-        XM7+8THQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55622)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgkFT-0003wU-1z;
-        Thu, 14 Sep 2023 12:11:03 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgkFT-0004iX-Gc; Thu, 14 Sep 2023 12:11:03 +0100
-Date:   Thu, 14 Sep 2023 12:11:03 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 02/35] drivers: base: Use present CPUs in
- GENERIC_CPU_DEVICES
-Message-ID: <ZQLqRzSeOlBiKCuB@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-3-james.morse@arm.com>
- <ZQLCZsw+ZGbTM8oK@shell.armlinux.org.uk>
- <20230914115613.0000778e@Huawei.com>
+        Thu, 14 Sep 2023 07:15:50 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA941FC9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:15:46 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703a0453fso12973751fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 04:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694690144; x=1695294944; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gzE1xt1UAc3po3dWiOSU5lTtw+EXYGxz3mz1wJE3HBQ=;
+        b=OqcT+919fW9qJI5PbffBEAxN/r27PT+8+mUqybL+hgR41opi+eURCmBRd875WNWYau
+         SBnjoRGhsBpBM27I2ibiWrgHo/qViVpCorAOqDbC2rcLDyzBm8JT+kNfKw1fJ/KJ2g0x
+         9/MUOO8Ieb6j2zI96/1RCbWIwpkn3Jixt2o4/xSclvIg45HaiqnckHcUl+6Knoz2f4E0
+         4DEM2HcJYQkb/8GBrNp/NY/U3mXP7ICsih+kn0era65jlsFu+ica1qZ6AQZ3EruNhZ9h
+         sZ4yXTJCMiRdwj7hcdcIl9LT/kJYK6EITL8AyKvQj75z9YN6hTv20b3uIsXtrN8pqzVQ
+         PuMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694690144; x=1695294944;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gzE1xt1UAc3po3dWiOSU5lTtw+EXYGxz3mz1wJE3HBQ=;
+        b=nVde7mG0wu5wn2/uKqCC6GRbJjYG1QE9zpsu5XCcOGersdivuQelHKqlInMjcF1dIs
+         S9o779umlJ8B/gZPQjEaEvujdDvegzyBx74kL/5jnZxH+hnn7Z/nsgu4ZeDUClhWlyBB
+         YQbZAF7Oi86lBGiOMAWtOxKEkRiFP9PC3n8NiHxqkuFKE96Ijv5ICHlSTaqVGPyWX5mj
+         2+3+ewaFv7EsU+ykJ4OyewRSGXtEhAnaoDU8MoqZe/4SMnzpZQ76WSGFVXzess6jnKfC
+         oA6JWoMhw/fE4Kl7DOrTcijgqaWFtO8ncchW+xxrel7zjzYeL1D9HVhKoyVQ4SSfEBNs
+         SFRQ==
+X-Gm-Message-State: AOJu0YwsefgEZInI/riHz/TJPzfUavbXWY8pTjJnEnR3Glmgs1GVLATP
+        LdcI8xkURK9mTrQMZuud44TKnA==
+X-Google-Smtp-Source: AGHT+IFrBiYjOlea2kd9kb+iMjELbn9Wk4OW2mFSrduXUIuoK1ikB3rZCDxxmDHUihe0dYvLiIO/Mg==
+X-Received: by 2002:a05:6512:3115:b0:500:b5db:990c with SMTP id n21-20020a056512311500b00500b5db990cmr3752849lfb.57.1694690144110;
+        Thu, 14 Sep 2023 04:15:44 -0700 (PDT)
+Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
+        by smtp.gmail.com with ESMTPSA id y26-20020ac2447a000000b005009d9c6bf0sm234605lfl.207.2023.09.14.04.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 04:15:43 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andreas Farber <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/17] pmdomain: Move Kconfig options/files to the pmdomain subsystem
+Date:   Thu, 14 Sep 2023 13:15:26 +0200
+Message-Id: <20230914111526.586400-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914115613.0000778e@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:56:13AM +0100, Jonathan Cameron wrote:
-> On Thu, 14 Sep 2023 09:20:54 +0100
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> 
-> > On Wed, Sep 13, 2023 at 04:37:50PM +0000, James Morse wrote:
-> > > Three of the five ACPI architectures create sysfs entries using
-> > > register_cpu() for present CPUs, whereas arm64, riscv and all
-> > > GENERIC_CPU_DEVICES do this for possible CPUs.
-> > > 
-> > > Registering a CPU is what causes them to show up in sysfs.
-> > > 
-> > > It makes very little sense to register all possible CPUs. Registering
-> > > a CPU is what triggers the udev notifications allowing user-space to
-> > > react to newly added CPUs.
-> > > 
-> > > To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
-> > > it to use for_each_present_cpu(). Making the ACPI architectures use
-> > > GENERIC_CPU_DEVICES is a pre-requisite step to centralise their
-> > > cpu_register() logic, before moving it into the ACPI processor driver.
-> > > When ACPI is disabled this work would be done by
-> > > cpu_dev_register_generic().
-> > > 
-> > > Of the ACPI architectures that register possible CPUs, arm64 and riscv
-> > > do not support making possible CPUs present as they use the weak 'always
-> > > fails' version of arch_register_cpu().
-> > > 
-> > > Only two of the eight architectures that use GENERIC_CPU_DEVICES have a
-> > > distinction between present and possible CPUs.
-> > > 
-> > > The following architectures use GENERIC_CPU_DEVICES but are not SMP,
-> > > so possible == present:
-> > >  * m68k
-> > >  * microblaze
-> > >  * nios2
-> > > 
-> > > The following architectures use GENERIC_CPU_DEVICES and consider
-> > > possible == present:
-> > >  * csky: setup_smp()
-> > >  * parisc: smp_prepare_boot_cpu() marks the boot cpu as present,
-> > >    processor_probe() sets possible for all CPUs and present for all CPUs
-> > >    except the boot cpu.  
-> > 
-> > However, init/main.c::start_kernel() calls boot_cpu_init() which sets
-> > the boot CPU in the online, active, present and possible masks. So,
-> > _every_ architecture gets the boot CPU in all these masks no matter
-> > what.
-> > 
-> > Only of something then clears the boot CPU from these masks (which
-> > would be silly) would the boot CPU not be in all of these masks.
-> Hi Russel,
-> 
-> Upshot is that the code in parisc smp_prepare_boot_cpu() can be dropped?
-> Seems like another useful simplification to add to front of this series.
+Recently we added a new subsystem to host pmdomain (genpd) providers and moved
+a bunch of code for them in there. However, their corresponding Kconfig
+options/files was not moved in that first step, but instead that is taken care
+of in this series. Ideally it should be easier to keep Kconfig options closer
+to their corresponding implementations.
 
-Yes - but I personally (and probably others) would like to see progress
-made towards getting at least some of the changes in this series merged,
-rather than seeing this series hang around longer and grow. Nothing in
-this series touches any architecture's smp_prepare_boot_cpu(), so such
-a change would not interfere with this series.
+Note that, I am planning to queue this up via my pmdomain tree [1] as soon as I
+have received enough of reviewed/acked-by tags from soc maintainers. If you
+have reasons to belive that this can be problem, due to conflicts etc, please
+let me know so we can figure out a way forward.
 
-Therefore, I suggest that removing those two set_cpu_*() calls in
-smp_prepare_boot_cpu() is something that could happen irrespective of
-anything in this series, and I would encourage PA-RISC folk to do that
-anway.
+Kind regards
+Uffe
 
-The same is true of Loongarch, mips, sh, and sparc32, and they can
-independently sort this.
+[1]
+git git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git next
 
-> Seems there are lots of other empty implementations of smp_prepare_boot_cpu()
-> maybe worth making that optional whilst here and dropping all the empty ones?
+Ulf Hansson (17):
+  pmdomain: Prepare to move Kconfig files into the pmdomain subsystem
+  pmdomain: actions: Move Kconfig file to the pmdomain subsystem
+  pmdomain: amlogic: Move Kconfig options to the pmdomain subsystem
+  pmdomain: apple: Move Kconfig option to the pmdomain subsystem
+  pmdomain: bcm: Move Kconfig options to the pmdomain subsystem
+  pmdomain: imx: Move Kconfig options to the pmdomain subsystem
+  pmdomain: mediatek: Move Kconfig options to the pmdomain subsystem
+  pmdomain: qcom: Move Kconfig options to the pmdomain subsystem
+  pmdomain: renesas: Move Kconfig options to the pmdomain subsystem
+  pmdomain: rockchip: Move Kconfig option to the pmdomain subsystem
+  pmdomain: samsung: Move Kconfig option to the pmdomain subsystem
+  pmdomain: st: Add a Kconfig option for the ux500 power domain
+  pmdomain: starfive: Move Kconfig file to the pmdomain subsystem
+  pmdomain: sunxi: Move Kconfig option to the pmdomain subsystem
+  pmdomain: tegra: Move Kconfig option to the pmdomain subsystem
+  pmdomain: ti: Move and add Kconfig options to the pmdomain subsystem
+  pmdomain: xilinx: Move Kconfig option to the pmdomain subsystem
 
-Yes, and again, this could be a series separate from this one. If one
-arch wants to add the empty weak version of smp_prepare_boot_cpu(),
-then it would be a matter of others deleting their empty implementation
-(possibly after first having cleaned up the unnecessary set_cpu_*()
-calls).
-
-In any case, I would expect that patches doing any of the above would
-end up being cherry-picked from a series by arch maintainers, so at
-least to me it makes zero sense to include it with this already large
-series, and would make the management of this series more complex.
+ MAINTAINERS                                |   4 +-
+ drivers/Kconfig                            |   2 +
+ drivers/firmware/imx/Kconfig               |   6 --
+ drivers/pmdomain/Kconfig                   |  21 ++++
+ drivers/{soc => pmdomain}/actions/Kconfig  |   0
+ drivers/pmdomain/amlogic/Kconfig           |  39 ++++++++
+ drivers/pmdomain/apple/Kconfig             |  18 ++++
+ drivers/pmdomain/bcm/Kconfig               |  46 +++++++++
+ drivers/pmdomain/imx/Kconfig               |  29 ++++++
+ drivers/pmdomain/mediatek/Kconfig          |  29 ++++++
+ drivers/pmdomain/qcom/Kconfig              |  41 ++++++++
+ drivers/pmdomain/renesas/Kconfig           | 109 +++++++++++++++++++++
+ drivers/pmdomain/rockchip/Kconfig          |  16 +++
+ drivers/pmdomain/samsung/Kconfig           |   8 ++
+ drivers/pmdomain/st/Kconfig                |   5 +
+ drivers/pmdomain/st/Makefile               |   2 +-
+ drivers/{soc => pmdomain}/starfive/Kconfig |   0
+ drivers/pmdomain/sunxi/Kconfig             |  10 ++
+ drivers/pmdomain/tegra/Kconfig             |   6 ++
+ drivers/pmdomain/ti/Kconfig                |  22 +++++
+ drivers/pmdomain/ti/Makefile               |   2 +-
+ drivers/pmdomain/xilinx/Kconfig            |  10 ++
+ drivers/soc/Kconfig                        |   2 -
+ drivers/soc/amlogic/Kconfig                |  35 -------
+ drivers/soc/apple/Kconfig                  |  13 ---
+ drivers/soc/bcm/Kconfig                    |  42 --------
+ drivers/soc/imx/Kconfig                    |  19 ----
+ drivers/soc/mediatek/Kconfig               |  23 -----
+ drivers/soc/qcom/Kconfig                   |  37 -------
+ drivers/soc/renesas/Kconfig                | 105 --------------------
+ drivers/soc/rockchip/Kconfig               |  12 ---
+ drivers/soc/samsung/Kconfig                |   4 -
+ drivers/soc/sunxi/Kconfig                  |   9 --
+ drivers/soc/tegra/Kconfig                  |   5 -
+ drivers/soc/ti/Kconfig                     |  12 ---
+ drivers/soc/xilinx/Kconfig                 |   9 --
+ 36 files changed, 415 insertions(+), 337 deletions(-)
+ create mode 100644 drivers/pmdomain/Kconfig
+ rename drivers/{soc => pmdomain}/actions/Kconfig (100%)
+ create mode 100644 drivers/pmdomain/amlogic/Kconfig
+ create mode 100644 drivers/pmdomain/apple/Kconfig
+ create mode 100644 drivers/pmdomain/bcm/Kconfig
+ create mode 100644 drivers/pmdomain/imx/Kconfig
+ create mode 100644 drivers/pmdomain/mediatek/Kconfig
+ create mode 100644 drivers/pmdomain/qcom/Kconfig
+ create mode 100644 drivers/pmdomain/renesas/Kconfig
+ create mode 100644 drivers/pmdomain/rockchip/Kconfig
+ create mode 100644 drivers/pmdomain/samsung/Kconfig
+ create mode 100644 drivers/pmdomain/st/Kconfig
+ rename drivers/{soc => pmdomain}/starfive/Kconfig (100%)
+ create mode 100644 drivers/pmdomain/sunxi/Kconfig
+ create mode 100644 drivers/pmdomain/tegra/Kconfig
+ create mode 100644 drivers/pmdomain/ti/Kconfig
+ create mode 100644 drivers/pmdomain/xilinx/Kconfig
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
