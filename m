@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C6A7A0766
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797C47A076A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237107AbjINOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S235380AbjINOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjINOcO (ORCPT
+        with ESMTP id S233693AbjINOeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:32:14 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B79E1A2;
-        Thu, 14 Sep 2023 07:32:10 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RmfmH4clgz67KXG;
-        Thu, 14 Sep 2023 22:27:27 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 14 Sep
- 2023 15:32:08 +0100
-Date:   Thu, 14 Sep 2023 15:32:07 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 23/35] ACPI: Warn when the present bit changes
- but the feature is not enabled
-Message-ID: <20230914153207.00006492@Huawei.com>
-In-Reply-To: <20230913163823.7880-24-james.morse@arm.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-24-james.morse@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Sep 2023 10:34:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6881A2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:34:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC3CCC433C7;
+        Thu, 14 Sep 2023 14:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694702051;
+        bh=9S7VIQV7YxfxsrOKvFr7Zd7ehjJmNmiY2E7KkfD5TvE=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=DstQJ4b9OBCNoWWvU0xCDU0aEnvcxyudZYIHGCRUJJqqLg9y5HoR9sxwszcOI1gT1
+         /O7mQOKgCgZ5xjBIENcYxyK3jGoeG3+lNsLRRgWEcHn3n2cHtcazZe/y3O3PTQxIDp
+         LRn5qXgvuSq5+gMhkYzbdyqrekN2kAbfakpk4z837Y+S6aWXrexkLndqe0v6zbIxc9
+         TaGkX3OwtCobkBWY1L4Ex0n5YAeAJvQONPlAPOTXpzp1YKSDZuYVQsMfVuMXtzCxM4
+         L16OaTA/vFhMyMYFYOgofXD+3xncI3VZSTTvuuEjfQ9SIcoG3wdXG/PexvJG1m/+ju
+         eKmfkqGAgvP/g==
+From:   Mark Brown <broonie@kernel.org>
+To:     shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20230913102656.2966757-1-chancel.liu@nxp.com>
+References: <20230913102656.2966757-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH v2] ASoC: imx-rpmsg: Set ignore_pmdown_time for
+ dai_link
+Message-Id: <169470204840.386807.4356692554775825839.b4-ty@kernel.org>
+Date:   Thu, 14 Sep 2023 15:34:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+X-Mailer: b4 0.13-dev-034f2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 16:38:11 +0000
-James Morse <james.morse@arm.com> wrote:
+On Wed, 13 Sep 2023 18:26:56 +0800, Chancel Liu wrote:
+> i.MX rpmsg sound cards work on codec slave mode. MCLK will be disabled
+> by CPU DAI driver in hw_free(). Some codec requires MCLK present at
+> power up/down sequence. So need to set ignore_pmdown_time to power down
+> codec immediately before MCLK is turned off.
+> 
+> Take WM8962 as an example, if MCLK is disabled before DAPM power down
+> playback stream, FIFO error will arise in WM8962 which will have bad
+> impact on playback next.
+> 
+> [...]
 
-> ACPI firmware can trigger the events to add and remove CPUs, but the
-> OS may not support this.
-> 
-> Print a warning when this happens.
-> 
-> This gives early warning on arm64 systems that don't support
-> CONFIG_ACPI_HOTPLUG_PRESENT_CPU, as making CPUs not present has
-> side effects for other parts of the system.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-Seem like a good idea to me.
+Applied to
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> ---
->  drivers/acpi/acpi_processor.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 2cafea1edc24..b67616079751 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -188,8 +188,10 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
->  	acpi_status status;
->  	int ret;
->  
-> -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-> +		pr_err_once("Changing CPU present bit is not supported\n");
->  		return -ENODEV;
-> +	}
->  
->  	if (invalid_phys_cpuid(pr->phys_id))
->  		return -ENODEV;
-> @@ -462,8 +464,10 @@ static void acpi_processor_make_not_present(struct acpi_device *device)
->  {
->  	struct acpi_processor *pr;
->  
-> -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-> +		pr_err_once("Changing CPU present bit is not supported");
->  		return;
-> +	}
->  
->  	pr = acpi_driver_data(device);
->  	if (pr->id >= nr_cpu_ids)
+Thanks!
+
+[1/1] ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
+      commit: fac58baf8fcfcd7481e8f6d60206ce2a47c1476c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
