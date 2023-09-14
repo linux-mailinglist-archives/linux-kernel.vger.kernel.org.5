@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEDB79FFC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4356A79FFCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 11:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236837AbjINJLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 05:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
+        id S236651AbjINJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 05:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236701AbjINJL0 (ORCPT
+        with ESMTP id S236647AbjINJNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 05:11:26 -0400
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0471BF9;
-        Thu, 14 Sep 2023 02:11:10 -0700 (PDT)
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id 41459E801F5;
-        Thu, 14 Sep 2023 11:11:09 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id C9E14160258; Thu, 14 Sep 2023 11:11:08 +0200 (CEST)
-Date:   Thu, 14 Sep 2023 11:11:08 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jan Hendrik Farr <kernel@jfarr.cc>, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, Baoquan He <bhe@redhat.com>,
-        bhelgaas@google.com, Luca Boccassi <bluca@debian.org>
-Subject: Re: [PATCH 0/1] x86/kexec: UKI support
-Message-ID: <ZQLOLLbu0fh27LpQ@gardel-login>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
- <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
- <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
- <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
- <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
- <CVH4GZXQFZ1F.2V5BIZNSKQ1FA@suppilovahvero>
- <5a67051d-eb21-4a96-acc4-40f829a59e23@app.fastmail.com>
- <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
- <1c342231-7672-450e-b945-e57cd17b4ae7@app.fastmail.com>
- <CVHVCHYZT8KG.3L0IH30QYT0WH@suppilovahvero>
+        Thu, 14 Sep 2023 05:13:20 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C7DCEB;
+        Thu, 14 Sep 2023 02:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L+ZvunpRm/z7cLGwWtc8p4pqmaQZLwzk2ltMH7TsBcE=; b=MvZnjsC0cuO4NL7t43EdAEwAev
+        ibMEroKhi7xfh5lE6WqVj0OJmYeHXQ4sAGx46jXSsbICeukb1UMRIF6zUuoF0HxR1yWg8MnxL3IQ5
+        0pqZWCCPCvY3ITDz+AV4ZgP8UPiVXYZOduI775IH8SN5jkVfCZpvfa0w+6S1LmmizxgYvmcH10HqV
+        6vnpf8llmtMF1+fzYjVfJgeet/MvBSnsmsL/2i4jkLEkgOyhODFEIV6Z6s8QMg6EMzLpnBuqEcHFQ
+        hSsQv78+jPi/I+mTTYB0Syeamr9Tt8rE/XUW5KMchEjMd3Oe29S0zSY3EHpxSc+jtzSQJp8ZO77Cf
+        VWWVrVeA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgiOn-007l6s-0A;
+        Thu, 14 Sep 2023 09:12:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BE8230036C; Thu, 14 Sep 2023 11:12:34 +0200 (CEST)
+Date:   Thu, 14 Sep 2023 11:12:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     Jirka Hladky <jhladky@redhat.com>,
+        Breno Leitao <leitao@debian.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, leit@fb.com,
+        dcostantino@meta.com,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
+Message-ID: <20230914091234.GE16631@noisy.programming.kicks-ass.net>
+References: <20230616115316.3652155-1-leitao@debian.org>
+ <20230616132954.GG4253@hirez.programming.kicks-ass.net>
+ <ZQHiJxHSSGNk+ul5@gmail.com>
+ <CAE4VaGBXO5Joynan_o13XpT=mNrwt4D84NTZF6H62GXJjpMbBA@mail.gmail.com>
+ <f06ef3dd-dd71-4ba4-a4fa-18a08788c035@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CVHVCHYZT8KG.3L0IH30QYT0WH@suppilovahvero>
+In-Reply-To: <f06ef3dd-dd71-4ba4-a4fa-18a08788c035@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mi, 13.09.23 17:45, Jarkko Sakkinen (jarkko@kernel.org) wrote:
+On Thu, Sep 14, 2023 at 02:25:40PM +0530, Sandipan Das wrote:
+> Hi Breno, Jirka,
+> 
+> On 9/14/2023 2:15 PM, Jirka Hladky wrote:
+> > Hi Breno,
+> > 
+> > I'm definitively voting for using WARN_ON_ONCE - in the current
+> > implementation, we are getting thousands of the same warnings and Call
+> > Traces, causing the system to become unusable.
+> > 
+> >> Anyway, please let me know whatever is your preferred way and I will submit a v2.
+> > @Peter Zijlstra and @Sandipan - could you please comment on the
+> > preferred implementation of the patch?
+> > 
+> 
+> I agree with using WARN_ON_ONCE() to make this less intrusive.
 
-> On Tue Sep 12, 2023 at 11:49 PM EEST, Jan Hendrik Farr wrote:
-> >
-> > > These are sort of "tautological" arguments. There must be some
-> > > objective reasons why this architecture was chosen instead of
-> > > other (i.e. using what already pre-exists).
-> >
-> > I think I misunderstood you in my earlier reply. I do not understand
-> > in what way you think my arguments are tautological. Can you
-> > elaborate?
->
-> current Linux kernel has these features *already* in
-> place:
->
-> 1. CONFIG_EFI_STUB
-> 2. CONFIG_CMDLINE
-> 3. CONFIG_INITRAMFS_SOURCE
-> 4. Secure boot with MOK keys and .machine keyring to manage them.
->
-> Given that every single feature in IKU does exists in some form
-> in the Linux kernel, I think it is fair to ask why scrape away
-> this all existing science and reinvent the wheel?
-
-Nah, systemd-stub does considerably more than what you list above.
-
-1. It measures the components of the UKI separately into PCR 11, 12,
-   13, which makes the mesaurements predictable, and allows vendors to
-   provide a signed PCR policy with can be used to unlock TPM2 secrets
-   that ause a PolicyAuthorize policy. This is a fundamental
-   improvement over mechanisms that bind to literal PCR values, since
-   the "brittleness" goes away.
-2. That said signed PCR policy is included in the UKI in another PE
-   section, that is made available to userspace.
-3. If you like it brings a boot splash to screen before passing
-   control off to the kernel, which is also contained
-4. It can contain a devicetree blob, which it will setup for the
-   kernel it spawns
-5. There's a random seed maintained by systemd-stub in the ESP that is
-   updated and passed to the kernel, which includes in in the pool.
-6. It picks up "credentials" (which are TPM protected, encrypted,
-   authenticated supported by systemd) that can be used to securely
-   parameterize the invoked system from the backing fs (i.e. the
-   ESP). Similar it can pick up sysext images (which is another
-   systemd thing, i.e. dm-verity protected, signed disk images which
-   can extend the initrd and the host, by being overlayed on /usr).
-7. It picks up "add-ons" -- which are PE binaries that actually contain
-   no code, but are SecureBoot signed/shim signed "mules" for carrying
-   addition kernel cmdlines, devictree blobs (and maybe in future
-   initrds) that allow some form of modularity in the UKI model.
-
-And there's more. This is just off the top of my head.
-
-Now, I can totally see you personally might not need any of this
-stuff, fine, but a claim that this stuff is redundant is just bogus.
-
-Afaics all big distributions are preparing to providing UKIs
-soonishly. It would be fantastic if kexec would just work with this
-too, and the dissection would be done on the kernel side instead of
-userspace.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+Could you send a patch that AMD is happy with? I think you wrote this
+was a firmware bug and is sorted with a new firmware, so perhaps make it
+WARN_ONCE() and tell the users to upgrade their firmware to $ver ?
