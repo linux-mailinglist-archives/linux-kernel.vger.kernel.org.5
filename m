@@ -2,182 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09407A080C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BA97A080D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240493AbjINOzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
+        id S240516AbjINOzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240504AbjINOzr (ORCPT
+        with ESMTP id S234000AbjINOzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:55:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7DB1FD8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:55:42 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EDD6E1F854;
-        Thu, 14 Sep 2023 14:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694703340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HrHgPkh8Ohakc8NUNO+y/2a9KUeM3lj7Jc30unn6Hew=;
-        b=B/YZ0+vz1pIFZChYxAMyGvk/OxX8nSIzcvKLCbP+D44jl/d2iu1mI7miFjoEya3tZQF+rY
-        3LGml+EOFm3Yj4t5YikN094RTZe0mxG+ihOBPiQf/Dkn4RnlpjG7GH/7jhpkJ+HQpCUcW5
-        hwzz4wYIc0ep3mDOr+1V6ihR+lK4Y3E=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 927882C142;
-        Thu, 14 Sep 2023 14:55:40 +0000 (UTC)
-Date:   Thu, 14 Sep 2023 16:55:40 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v4 4/8] printk: nbcon: Add buffer management
-Message-ID: <ZQMe7PA4BR0aemIu@alley>
-References: <20230908185008.468566-1-john.ogness@linutronix.de>
- <20230908185008.468566-5-john.ogness@linutronix.de>
+        Thu, 14 Sep 2023 10:55:48 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCB61FC9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:55:44 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a88fd9ef66so2525183b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 07:55:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694703344; x=1695308144;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UniBWXhjoIRRH+Lbg5RT6divqoiHPEl+OKkmkBBM0Rk=;
+        b=qPHZxbeN/SuJTAIw50h5gZJwxfVv3QmjXKWj2Tw+NTSg7xFPeWu0Hpj3p+gJK0Zgc2
+         0Cfb1Jq2OclSovuBQNQpRzrbh6jlIr+VMjWowrd9Qolf9IZPpg0KxGJvpWw9VgyrWCzf
+         YJPIcJraCAFg14AWFnPcqmwTxdmGVq2EjOicyUQU9e9h+QjumCD/djUa6Hgc9BGivxzZ
+         vFHhWcgglSAU8bGja6kcpxI8ChgDmdXE5hTuQptTEs5PtXoiqxVu1ZjMzO8zmRmhxx8P
+         82PhopRgpgFH79C3E9SEG1BeVf28as8nIqr9VpApHcg9uBmwKjuACMXXmbu/Hm9xGHyV
+         vYQw==
+X-Gm-Message-State: AOJu0YwRQYoYtsUcXqCooVs+MK0PFtU17AvoHO5ssHMhPNzuewXXMdO8
+        xiZ7oaW6Dtva7H/saZM2jn4bU/koMKJPstKH8dWrU7ywJZ2v
+X-Google-Smtp-Source: AGHT+IHhg/1FtlbZgxc9UKz3Z5Ng8JG/tDtDrVnWE1ITPoaHT8ro5bQO5sHUNjuGBe0wZmQ0oE4LU3chmPYC95RsXY9+KrPQYl+M
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908185008.468566-5-john.ogness@linutronix.de>
+X-Received: by 2002:a05:6808:1992:b0:3a1:c163:6022 with SMTP id
+ bj18-20020a056808199200b003a1c1636022mr874984oib.4.1694703342442; Thu, 14 Sep
+ 2023 07:55:42 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 07:55:42 -0700
+In-Reply-To: <864c84f9-5acc-132d-0cd8-826d041cff96@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b9dd47060552decb@google.com>
+Subject: Re: [syzbot] [io-uring?] UBSAN: array-index-out-of-bounds in io_setup_async_msg
+From:   syzbot <syzbot+a4c6e5ef999b68b26ed1@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2023-09-08 20:56:04, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> In case of hostile takeovers it must be ensured that the previous
-> owner cannot scribble over the output buffer of the emergency/panic
-> context. This is achieved by:
-> 
->  - Adding a global output buffer instance for the panic context.
->    This is the only situation where hostile takeovers can occur and
->    there is always at most 1 panic context.
-> 
->  - Allocating an output buffer per non-boot console upon console
->    registration. This buffer is used by the console owner when not
->    in panic context. (For boot consoles, the existing shared global
->    legacy output buffer is used instead. Boot console printing will
->    be synchronized with legacy console printing.)
-> 
->  - Choosing the appropriate buffer is handled in the acquire/release
->    functions.
-> 
-> --- a/kernel/printk/nbcon.c
-> +++ b/kernel/printk/nbcon.c
-> @@ -20,6 +21,9 @@
->   * region and aborts the operation if it detects a takeover.
->   *
->   * In case of panic the nesting context can take over the console forcefully.
-> + * If the interrupted context touches the assigned record buffer after
-> + * takeover, it does not cause harm because the interrupting single panic
-> + * context is assigned its own panic record buffer.
->   *
->   * A concurrent writer on a different CPU with a higher priority can directly
->   * take over if the console is not in an unsafe state by carefully writing
+Hello,
 
-The above chunk had a merge conflict with my proposed changes for
-the 2nd patch. It uses a completely different text from the commit
-message. I added the info into the new text the following way:
+syzbot tried to test the proposed patch but the build/boot failed:
 
-@@ -73,6 +74,10 @@
-  *      the console is an unsafe state. It is used only in panic() by
-  *      the final attempt to flush consoles in a try and hope mode.
-  *
-+ *      Note that separate record buffers are used in panic(). As a result,
-+ *      the messages can be read and formatted without any risk even after
-+ *      using the hostile takeover in unsafe state.
-+ *
-  * The release function simply clears the 'prio' and 'cpu' fields.
-  *
-  * All operations on @console::nbcon_state are atomic cmpxchg based
+failed to checkout kernel repo https://github.com/isilence/linux.git/netmsg-init-base: failed to run ["git" "fetch" "--force" "2335d1373be159a02254ea7a962dfc5bc7a540d3" "netmsg-init-base"]: exit status 128
+fatal: couldn't find remote ref netmsg-init-base
 
 
-> @@ -426,6 +431,12 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
->  
->  	nbcon_context_acquire_hostile(ctxt, &cur);
->  success:
-> +	/* Assign the appropriate buffer for this context. */
-> +	if (atomic_read(&panic_cpu) == cpu)
-> +		ctxt->pbufs = &panic_nbcon_pbufs;
-> +	else
-> +		ctxt->pbufs = con->pbufs;
-> +
->  	return true;
->  }
 
-Also the above chunk had conflict with the proposed changes. I
-resolbed it the following way:
+Tested on:
 
-@@ -496,7 +502,18 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
- 
- 	err = nbcon_context_try_acquire_hostile(ctxt, &cur);
- out:
--	return !err;
-+	if (err)
-+		return false;
-+
-+	/* Acquire succeded */
-+
-+	/* Assign the appropriate buffer for this context. */
-+	if (atomic_read(&panic_cpu) == cpu)
-+		ctxt->pbufs = &panic_nbcon_pbufs;
-+	else
-+		ctxt->pbufs = con->pbufs;
-+
-+	return true;
- }
- 
- static bool nbcon_owner_matches(struct nbcon_state *cur, int expected_cpu,
+commit:         [unknown 
+git tree:       https://github.com/isilence/linux.git netmsg-init-base
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f4894cf58531f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4c6e5ef999b68b26ed1
+compiler:       
 
-
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3448,6 +3442,15 @@ void register_console(struct console *newcon)
->  		goto unlock;
->  	}
->  
-> +	if (newcon->flags & CON_NBCON) {
-> +		/*
-> +		 * Ensure the nbcon console buffers can be allocated
-> +		 * before modifying any global data.
-> +		 */
-> +		if (!nbcon_alloc(newcon))
-> +			goto unlock;
-> +	}
-> +
->  	/*
->  	 * See if we want to enable this console driver by default.
->  	 *
-
-We have to call nbcon_free() when try_enable_*_console() failed.
-Something like:
-
-@@ -3484,8 +3484,10 @@ void register_console(struct console *newcon)
- 		err = try_enable_preferred_console(newcon, false);
- 
- 	/* printk() messages are not printed to the Braille console. */
--	if (err || newcon->flags & CON_BRL)
-+	if (err || newcon->flags & CON_BRL) {
-+		nbcon_free(newcon);
- 		goto unlock;
-+	}
- 
- 	/*
- 	 * If we have a bootconsole, and are switching to a real console,
-
-
-With the proposed changes:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+Note: no patches were applied.
