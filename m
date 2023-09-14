@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262D47A1149
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6727A1154
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 00:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjINWu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 18:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        id S230133AbjINW6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 18:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjINWuZ (ORCPT
+        with ESMTP id S229499AbjINW6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 18:50:25 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857D526B8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:50:21 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bdae1ef38so35558617b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:50:21 -0700 (PDT)
+        Thu, 14 Sep 2023 18:58:51 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E738C2707
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:58:46 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-573d44762e4so1246004a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 15:58:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694731820; x=1695336620; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wrenr5WHs2dK5hnlbbyL0EycRKjoEDbDNwq7CnxxIaU=;
-        b=BxugndSsenTM9NF1aOCW4ZO/a1jXQgUDDQ9ubb3sKS1Ev0pBTHSqm//oPKCUZG33dn
-         +IDUP66N300o9+XksnMg5cDPIFDFxkcsPwO2j+tzjfvqooIFtT61kpn2waKHY164Bgsg
-         dFgkaZzbCbvTJsGmT2sQ79BXa4Ns1A/gSs1VZFHipi7fzgvaCLBeDxDKFjY4FY1EPqsy
-         3dEmTXoLOBlv6XJVimtn6xD6xix+mSWXcbD3goZCRcw0ftb6DoPrqdngHUk+j+NeqbsL
-         rPFs63g3CQlzsY9Gx+TF9cQ+wqvv6x/G3jgAmhXDbhyiFrH3SbMi17bZxVurW/BLWAAS
-         81eA==
+        d=google.com; s=20230601; t=1694732326; x=1695337126; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OBvN087+LWsLjnRA9Q/StMUiztB5piJc+GOWYwv7hrg=;
+        b=p3JssecyoEX9wuIVN0J7z8qmLVKXKzxNoq3mjO4yI95IflwOVTbu9mFZQjU0enJb/6
+         sbOSw3kaCV3XPKw8/AbII/ly2LbVcY+50VKFZACDajJlsvLWnMto0bk3BxRJ/rdWdqHy
+         iQ1W76kU69HA6FJ5IVeMNTFO0vsl22k5zRCy6K7mw4HLeJpMc9UuDCvZun/wsAkVD+s9
+         ZkrrwT+BTSpcq9x7qn7ZSwbnxe0PIeHP281nueNpSMKRyzpkAsz7198rnLhoixgJxcDu
+         nNSPPgNeC4jgHQ4MabFMPln+95ePlenHHRYtcmQsuajUyIrXmcQV+rFg82bgLZwko9xO
+         it2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694731821; x=1695336621;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wrenr5WHs2dK5hnlbbyL0EycRKjoEDbDNwq7CnxxIaU=;
-        b=Ta1lEZG2idAXxQuzTReqA6tzoHF/OHBQtTIUr/pQbX2EWRFLVgCqFg9X8Yc485akeO
-         S08I6Mlz9YJgvMsA/7hMbWeIcxFpZvOgvm+v8MerI0hMKNTihNXh6AbTxRzmXsrp79fl
-         PdWTWrrlZUfvkfAZ4EYwBCUFSQZM58ZjDfTZJSG604TgvvyGA9QasqOond0vgMoZkmNV
-         XgD9dB6MXjuN4mUKa4vzUlgR7FZ5FFfjporGi9WBcX+eaSR7/dEWuUnMZgN2aoNrvbrH
-         VfYOAr5KYoWQWvXusxRiEQAf1Bn2Mtt0fPKMuw81Y5jdg4KmQdl0mL4diHPNG4/g1ZdJ
-         EFow==
-X-Gm-Message-State: AOJu0YxCGoyVZxpBIda1avbqZ38nWEgUwBm/Z0Ia4FM/8eA/pm2HrBTR
-        yPzxHzGpBUlQYV3/oLJH94baei24AsBTbrcfwQ==
-X-Google-Smtp-Source: AGHT+IFqrDocdDDYwMpT4qE4iWOo5ZoiN4++kHE+CY4yKvqynUceKA1T5/Jq8WXi8hvg81Z+gTnwNQ1IpfMPouoe0w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:c748:0:b0:d15:53b5:509f with SMTP
- id w69-20020a25c748000000b00d1553b5509fmr85146ybe.2.1694731820834; Thu, 14
- Sep 2023 15:50:20 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 22:50:15 +0000
+        d=1e100.net; s=20230601; t=1694732326; x=1695337126;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OBvN087+LWsLjnRA9Q/StMUiztB5piJc+GOWYwv7hrg=;
+        b=usPfoMjfn0diifMpxL6MArfYUlt3S3XlmfkCRU3uebV3aeVYUFOx/4tlNlINQYItst
+         LgznPTjQql6wbmiUTYexS0dFaMnOZePZzkBBalWHmYZa8FIDi6vpW9o6fLpHXcMQ+e4J
+         e9+HUR+ST8niCKcdagucqWJMc9ArqoA1nRNKDe16yCwaOldzcjh2egYChS0gUNnM30ea
+         7NbyW51TVMF3CbLAIE74dQvlwieucBdfjF5msfE1NyC7s0QbRbzF+mZDHoH9w/1LtYAu
+         tieLUYTAY8nwuyEMDqzX5xSZq3jByAhrtbO4OmG5dyjDjqQAUCSKccwjvvFjlbVG2LaZ
+         qyqw==
+X-Gm-Message-State: AOJu0YxnMyZDc+b6+zizxn71mBn3GhwkwPsi9aSV/CAjoOvkAflQPzuG
+        WT+r2ZgN+QoO2V7y7sc/MW7dUmr+e+2XfQ==
+X-Google-Smtp-Source: AGHT+IEpNEc4jLhITi/avuNxdjVhmv5rK3VAkgg6J4TclKm4i8qSATiM+JZ1b0hGZt0buZsf8KqVFPQcOiYGIg==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a63:6d8a:0:b0:578:1b5a:6367 with SMTP id
+ i132-20020a636d8a000000b005781b5a6367mr19710pgc.12.1694732326211; Thu, 14 Sep
+ 2023 15:58:46 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 22:58:44 +0000
+In-Reply-To: <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIACaOA2UC/x3NwQqDMAyA4VeRnBeodYO5VxlDXJrOHGxLIuoQ3
- 31lx+/y/wcYq7DBozlAeRWTnCraSwM0jenDKKEavPOd69sr2qKJyheDyspqOG1zTjhSkaHkjXW YeWFFQuqjD3d3694coeaKcpT9v3q+zvMHDxSl8XoAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694731820; l=1404;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=K3iZ/hNNCktU+LFT+e2eCRR8wtHujlZPGvgREL3k5N0=; b=AMgFe1H+bSBII/rO5u6ibPsdFEANAgzsVzlwm/0r26kBLn7wO36XET/m1sJz644C8oxgiiZ7R
- YlZOH5dfwGzCrRlgTODJ7YveNEm/+t8Y38//F6Nts1+INz+B7Gxxjzc
-X-Mailer: b4 0.12.3
-Message-ID: <20230914-strncpy-drivers-hwmon-acpi_power_meter-c-v1-1-905297479fe8@google.com>
-Subject: [PATCH] hwmon: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
+ <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
+Message-ID: <20230914225844.woz7mke6vnmwijh7@google.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Sep 14, 2023 at 10:56:52AM -0700, Yosry Ahmed wrote:
+[...]
+> >
+> > 1. How much delayed/stale stats have you observed on real world workload?
+> 
+> I am not really sure. We don't have a wide deployment of kernels with
+> rstat yet. These are problems observed in testing and/or concerns
+> expressed by our userspace team.
+> 
 
-We should prefer more robust and less ambiguous string interfaces.
+Why sleep(2) not good enough for the tests?
 
-A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-NUL-termination on the destination buffer without unnecessarily NUL-padding.
+> I am trying to solve this now because any problems that result from
+> this staleness will be very hard to debug and link back to stale
+> stats.
+> 
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/hwmon/acpi_power_meter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think first you need to show if this (2 sec stale stats) is really a
+problem.
 
-diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
-index fa28d447f0df..9bafe7c85ff7 100644
---- a/drivers/hwmon/acpi_power_meter.c
-+++ b/drivers/hwmon/acpi_power_meter.c
-@@ -803,7 +803,7 @@ static int read_capabilities(struct acpi_power_meter_resource *resource)
- 			goto error;
- 		}
- 
--		strncpy(*str, element->string.pointer, element->string.length);
-+		strscpy(*str, element->string.pointer, element->string.length);
- 		str++;
- 	}
- 
+> >
+> > 2. What is acceptable staleness in the stats for your use-case?
+> 
+> Again, unfortunately I am not sure, but right now it can be O(seconds)
+> which is not acceptable as we have workloads querying the stats every
+> 1s (and sometimes more frequently).
+> 
 
----
-base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-change-id: 20230914-strncpy-drivers-hwmon-acpi_power_meter-c-c9f2d8053bef
+It is 2 seconds in most cases and if it is higher, the system is already
+in bad shape. O(seconds) seems more dramatic. So, why 2 seconds
+staleness is not acceptable? Is 1 second acceptable? or 500 msec? Let's
+look at the use-cases below.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> >
+> > 3. What is your use-case?
+> 
+> A few use cases we have that may be affected by this:
+> - System overhead: calculations using memory.usage and some stats from
+> memory.stat. If one of them is fresh and the other one isn't we have
+> an inconsistent view of the system.
+> - Userspace OOM killing: We use some stats in memory.stat to gauge the
+> amount of memory that will be freed by killing a task as sometimes
+> memory.usage includes shared resources that wouldn't be freed anyway.
+> - Proactive reclaim: we read memory.stat in a proactive reclaim
+> feedback loop, stale stats may cause us to mistakenly think reclaim is
+> ineffective and prematurely stop.
+> 
 
+I don't see why userspace OOM killing and proactive reclaim need
+subsecond accuracy. Please explain. Same for system overhead but I can
+see the complication of two different sources for stats. Can you provide
+the formula of system overhead? I am wondering why do you need to read
+stats from memory.stat files. Why not the memory.current of top level
+cgroups and /proc/meminfo be enough. Something like:
+
+Overhead = MemTotal - MemFree - SumOfTopCgroups(memory.current)
+
+> >
+> > I know I am going back on some of the previous agreements but this
+> > whole locking back and forth has made in question the original
+> > motivation.
+> 
+> That's okay. Taking a step back, having flushing being indeterministic
+
+I would say atmost 2 second stale instead of indeterministic.
+
+> in this way is a time bomb in my opinion. Note that this also affects
+> in-kernel flushers like reclaim or dirty isolation
+
+Fix the in-kernel flushers separately. Also the problem Cloudflare is
+facing does not need to be tied with this.
