@@ -2,167 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45DD7A0A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446797A0A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 18:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236000AbjINQKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 12:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
+        id S235264AbjINQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 12:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232594AbjINQKq (ORCPT
+        with ESMTP id S231552AbjINQM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 12:10:46 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85F1BF8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 09:10:42 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EG8qJs010389;
-        Thu, 14 Sep 2023 16:10:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=wxM/CRoD3JKaVnkmsw2ndIN0bmN3lKAlmmoxIO/1ADQ=;
- b=db84Z3l2Ma3GLDVNLusEIncP22DwWYdzo1c3anhq3g0GCzkhTFQogQCG1lsVgVro71dO
- Lp8+phjrmaihwlCsZ8NkkXbpkIEF3eLc+sAlgNpcUwAghQKAPjCGfZcKrg2QoMIMP63P
- Oecb6eBo3QZQ1pJ23J1YM0nXKx4JNQ8lB0K7iSEPoIby+EevnAg+JBW2BryVf7PfK8Iy
- O7lpkhypPOdIpel520S30TLm0AKnu4BdmEr8Moo5m/35su29IfHOPnD3FtQ+99M3GEVJ
- cGPua7kgKXzzXxMU6H+s/DDIolg3QtNEJvpjFyNvIWAdk9x5YdthZyZZB7ibyVulE4xC rQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4584rax5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 16:10:27 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38EG9ZlL017308;
-        Thu, 14 Sep 2023 16:10:27 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4584rasy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 16:10:26 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38EECXUc024033;
-        Thu, 14 Sep 2023 16:10:25 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131tmjax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Sep 2023 16:10:25 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38EGAOH83342852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Sep 2023 16:10:24 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF31A58051;
-        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2CC2E5805C;
-        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
-Received: from [9.61.37.125] (unknown [9.61.37.125])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Sep 2023 16:10:24 +0000 (GMT)
-Message-ID: <54bf92e8-f884-1567-2149-caf638ff8f68@linux.ibm.com>
-Date:   Thu, 14 Sep 2023 09:10:23 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/1] powerpc: fix a memory leak
-Content-Language: en-US
-To:     Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230914094620.3379729-1-ruc_gongyuanjun@163.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-In-Reply-To: <20230914094620.3379729-1-ruc_gongyuanjun@163.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ehf7fiFyzaUOI7NGdKsAxMSqMMcW1_UN
-X-Proofpoint-ORIG-GUID: ZG1ahKUKrOA4vxNeAv_OcJngxTe42jz-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_09,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 malwarescore=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 impostorscore=0 bulkscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309140139
+        Thu, 14 Sep 2023 12:12:26 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15AE1BE1;
+        Thu, 14 Sep 2023 09:12:22 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6692D5C0129;
+        Thu, 14 Sep 2023 12:12:20 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute6.internal (MEProxy); Thu, 14 Sep 2023 12:12:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694707940; x=1694794340; bh=Xi
+        qTMf+G8Iz9Kt1AWAyD7uk9c3iPMZoPGJgLyaqb6qE=; b=oPki5SIt24YuSDY/d5
+        5pfroamgkkvQnJuupS/qtTCycZHGJfgm+Rb2vrFHqZm+qeJQtSfJftgL1taTDfTC
+        qU4KN13e3qz8Nc49Uj2B77tmK7nqUjC+D4cs468Tu20ALTMUu+QkGKARsei/cn3f
+        Ix/qKy073jUF+HaiKm6lr0FQCKcdZuAtu5LSOHt7X1ixOjfcpT0lbc7tWd5iFXfA
+        k+xUqrbpKtDb4us6vWTd24KYnuUlAZOXLenv8kG7BLC919g226faiJV+EPBMXP23
+        6NO+3LcP3cpi2Ac1juvrjIB+okWOSbNc5jdT2/AsgeAFpBTQxcFBHYdxW8B3ngqj
+        Su2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1694707940; x=1694794340; bh=XiqTMf+G8Iz9K
+        t1AWAyD7uk9c3iPMZoPGJgLyaqb6qE=; b=I64Z4tAGR9egiP5LgMRtbzWXcS5B5
+        /fib2M8O3suwHu3fnzlvf7gJxna0WEKf/Tdh+TIhcXm0xUjHJFPgm+qEuaW5Dob5
+        cVCaDVLyitDnfcHl0QXstNOgt86KgVAVI2wdFbLcu6O4fxiqVebH6vh5Fbrn5az1
+        837aYqE2Z+1rNiuN/FAnRauZ8K0AxP5gEgA99beK3IgFRHkaesEVwiG0aFss/C+t
+        IliAxaxkia6BDWmcdnS2ibWfr8ov4kTe/23ALGumQ0Ddm7m1J70WlTBgn3F0TRZY
+        g1x9vvECUfoOvkw/R9cZtuQZEKFS0AySsjVUUbZpzeoGlPA7EWL2zXhJw==
+X-ME-Sender: <xms:4zADZVqzLGck7Jw3IZtS4FNB9lSY2OjrYb6hpeetkkpJLI_K5jnA9A>
+    <xme:4zADZXpVGcKNgz-LYvqTlUdsZXKKqoVh9Fzxe0fA7ebFoLhplM4CTgmL16YERcnIj
+    LE75XTdxaNvL5TIIIw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejtddgleeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdludehmdenucfjughrpefofgggkfgjfhffhffvvefutgesthdtredt
+    reertdenucfhrhhomhepfdflrghnucfjvghnughrihhkucfhrghrrhdfuceokhgvrhhnvg
+    hlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepudejhfffvdffieekvdekfeei
+    uedtffetleegteffhfekffehieehheevtdehteeinecuffhomhgrihhnpehgihhthhhusg
+    drtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehkvghrnhgvlhesjhhfrghrrhdrtggt
+X-ME-Proxy: <xmx:4zADZSNZbfeiJt9mlJSJF6F1Voifxz28Tn6MxObKeHDxS-oDyISJuw>
+    <xmx:4zADZQ7Sy2Jbf7NfA4nlzNjfj0JCgreM6P_yqASq1c7quhY8eJ-PZA>
+    <xmx:4zADZU7IrDT94V-ilgSeVu_UIE_kl9FW92-sPojBqmhtTzD3XfbxTw>
+    <xmx:5DADZfJ7-DbCMojJ61nCSeh51SextikzNfEEVdhI82Q0ePyK5hFrKg>
+Feedback-ID: i0fc947c4:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 096B915A0091; Thu, 14 Sep 2023 12:12:18 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <e215acd4-52fd-429c-a569-a20ba5a49d7e@app.fastmail.com>
+In-Reply-To: <CVIR0BGHX3VS.39FY5QL8KXR0F@suppilovahvero>
+References: <20230911052535.335770-1-kernel@jfarr.cc>
+ <20230913160045.40d377f9@rotkaeppchen> <ZQLTJFb3S/xn5CWo@gardel-login>
+ <CVIN0M3IHRKL.3U005Y5QTOJL5@suppilovahvero>
+ <CVIR0BGHX3VS.39FY5QL8KXR0F@suppilovahvero>
+Date:   Thu, 14 Sep 2023 18:11:02 +0200
+From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
+        "Lennart Poettering" <mzxreary@0pointer.de>,
+        "Philipp Rudo" <prudo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
+        vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
+        bhelgaas@google.com, "Luca Boccassi" <bluca@debian.org>,
+        mjg59@google.com, James.Bottomley@HansenPartnership.com
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 02:46, Yuanjun Gong wrote:
-> When one of the methods xive_native_alloc_irq_on_chip, irq_create_mapping
-> or irq_get_handler_data fails, the function will directly return without
-> disposing vinst->name and vinst. Fix it.
-> 
-> Fixes: c20e1e299d93 ("powerpc/vas: Alloc and setup IRQ and trigger port address")
-> Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
-> ---
->  arch/powerpc/platforms/powernv/vas.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/platforms/powernv/vas.c b/arch/powerpc/platforms/powernv/vas.c
-> index b65256a63e87..780740b478f0 100644
-> --- a/arch/powerpc/platforms/powernv/vas.c
-> +++ b/arch/powerpc/platforms/powernv/vas.c
-> @@ -54,7 +54,7 @@ static int init_vas_instance(struct platform_device *pdev)
->  	struct xive_irq_data *xd;
->  	uint32_t chipid, hwirq;
->  	struct resource *res;
-> -	int rc, cpu, vasid;
-> +	int rc, cpu, vasid, ret;
+> BTW, would not be a bad idea to extend CC list to at least Matthew and
+> James Bottomley on this patch.
 
-You can you reuse rc for the return value in the error path instead of
-introducing a new ret variable.
+Sure. Added Matthew and James in CC
 
--Tyrel
-
-> 
->  	rc = of_property_read_u32(dn, "ibm,vas-id", &vasid);
->  	if (rc) {
-> @@ -102,6 +102,7 @@ static int init_vas_instance(struct platform_device *pdev)
->  	res = &pdev->resource[3];
->  	if (res->end > 62) {
->  		pr_err("Bad 'paste_win_id_shift' in DT, %llx\n", res->end);
-> +		ret = -ENODEV
->  		goto free_vinst;
->  	}
-> 
-> @@ -111,21 +112,24 @@ static int init_vas_instance(struct platform_device *pdev)
->  	if (!hwirq) {
->  		pr_err("Inst%d: Unable to allocate global irq for chip %d\n",
->  				vinst->vas_id, chipid);
-> -		return -ENOENT;
-> +		ret = -ENOENT;
-> +		goto free_vinst;
->  	}
-> 
->  	vinst->virq = irq_create_mapping(NULL, hwirq);
->  	if (!vinst->virq) {
->  		pr_err("Inst%d: Unable to map global irq %d\n",
->  				vinst->vas_id, hwirq);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto free_vinst;
->  	}
-> 
->  	xd = irq_get_handler_data(vinst->virq);
->  	if (!xd) {
->  		pr_err("Inst%d: Invalid virq %d\n",
->  				vinst->vas_id, vinst->virq);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto free_vinst;
->  	}
-> 
->  	vinst->irq_port = xd->trig_page;
-> @@ -168,7 +172,7 @@ static int init_vas_instance(struct platform_device *pdev)
->  free_vinst:
->  	kfree(vinst->name);
->  	kfree(vinst);
-> -	return -ENODEV;
-> +	return ret;
-> 
->  }
-> 
-
+Also, I already made some minor changes. cmdline is now used from the syscall if there is no .cmdline section included in the UKI. find_section now returns the section_header as an ERR_PTR. You can find them in the uki-v3-wip branch at https://github.com/Cydox/linux/commits/uki-v3-wip
