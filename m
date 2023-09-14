@@ -2,117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8830A79F7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE4879F7F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 04:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbjINCYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 22:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        id S233888AbjINCYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 22:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjINCYe (ORCPT
+        with ESMTP id S233483AbjINCYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 22:24:34 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC64198
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:24:30 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8141d6fbe3so614419276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 19:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694658270; x=1695263070; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mr6eRGX/mot4ysHxW2nXh0B8TIVosY14z+Vg1QOhCRI=;
-        b=jEYk0O0GqLNvr7w9JKUGQI+pV7PWXZkv7SPKQ6XmSFZM+C65Os5joK590+nvWe0Lwp
-         +cPeGLyn5AHJprhBXPkRPGbGVfwYK3FbRyGZW/UQwoU9d7NuSGq9cKuoVKd03FTvwDkJ
-         d2kbo6e2MC/mvUhloIR9kQsQaRE5DLZfHh1ySYE8YVGqEKwV9B00o9id9KPPXIEv8H+L
-         imxqA6AX8lzhDhPa67jwHIQfpIZVp5oGXgyb8DRBj8Un0hwkKW9V14eGpm5NFLgQI025
-         cvzaEahlleo4OBZIMIgU/z06YjqswoIp6toq+2RBh4yGoqYp74rWesSoe8p4A4rM3uPk
-         QQkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694658270; x=1695263070;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mr6eRGX/mot4ysHxW2nXh0B8TIVosY14z+Vg1QOhCRI=;
-        b=jC1M67RlHWvNA/S/GxyXEws461853pPwSL/kEK2PkFjGCACpyB3uGXgXjb6alNdT2T
-         Ow3n+Qhb71km4y3p15UljGE0iGA6bWl9TPZ0TfYtZ0nAXz98afg9gYoFW6+DPGIq1nk2
-         KWAf04Sz7d7VeS5wA1sZ1bxSC4LnF4FL/1WGsnQNH4fdPDIOBUbYVWHNks/g9Z59s7RQ
-         +nFDD31Yn+AmE35lkRQ7C83kVT5TBl+iBT6PztvTtt1YgP7AAzsLG5GU5XW6Gh4o5zaR
-         JP/4QL10UxuDLQY0ExXmaPRNFvNng3L21osYBNWYpUibB2E8BORt7RmGW3amesxSQQEu
-         zzUA==
-X-Gm-Message-State: AOJu0YwdRLLZg/2mpfPUPmrJRWxGF0N1amkzaKt4rVKQPmhBA00kStCL
-        vNT0y2wf4pe1jyT6WJCCeVfmTCCgsOBB
-X-Google-Smtp-Source: AGHT+IG0qp2pzoQ+1PCyVwi/VCysIK1PqTEdrLS85yYQCAAqNmlaQqZSyKSExA9+ptRGctE4ca7HtSwxoZlJ
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7612:4bb6:bcf1:779c])
- (user=irogers job=sendgmr) by 2002:a5b:8d:0:b0:d78:245a:aac4 with SMTP id
- b13-20020a5b008d000000b00d78245aaac4mr100091ybp.1.1694658270080; Wed, 13 Sep
- 2023 19:24:30 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 19:24:25 -0700
-Message-Id: <20230914022425.1489035-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Subject: [PATCH v1] perf pmu: Ensure all alias variables are initialized
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Sep 2023 22:24:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC9A198;
+        Wed, 13 Sep 2023 19:24:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F841C433C7;
+        Thu, 14 Sep 2023 02:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694658286;
+        bh=traoJTyA0GnqPdbwWPW0u5/RrCWzv703PFaKmzg6di8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=dRyHjGtNk/YMdNs8cVw1m1xwaSlfoX1FLI8mKGuHqKbRjvbl4DsL2zH6HzoVPPOK+
+         Y3kbkTH0465sd9jTzj1fnMgYYfrZNzpdnS65gTYg1/4mC/Q2wZNOCtVyRvHhE4Gs/r
+         SGGnfV9OS4/KHHw3o9ShXK8Gk3DaYWqvLYSaWxO8JJp2ZU6WxCK3k3tPN5Dbt5FCGe
+         y2L2/rYF69Wmi4xPHXT3gvEdF+xXlVakk7qi1SGYP2grIzBgU0su9DNxezx0fzkVoc
+         I/7lxFn4d0T1jyDaIxdv0YMv7hgn8RehOIPVL0yOQb3H16ydC3h9lwSv2YxNy+zd2a
+         eURdy2kSPknlg==
+Content-Type: multipart/mixed; boundary="------------zPUgE2h3WJYekH07ls6McJAe"
+Message-ID: <bed98fc9-fb84-4912-6c73-5b7db575c375@kernel.org>
+Date:   Thu, 14 Sep 2023 11:24:43 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] linux/export: fix reference to exported functions for
+ parisc64
+Content-Language: en-US
+To:     John David Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20230905190828.790400-1-masahiroy@kernel.org>
+ <c8a92dc8-de78-7484-bcc8-d4a91bec77de@bell.net>
+ <c6568683-86b4-c48d-ed37-f1f87677eb44@bell.net>
+ <97859bf1-c8c3-7294-8322-b0c9c408ba5e@bell.net>
+ <CAK7LNAR_4rVgAQToSoYmbgYnWoSpowcrKi2ciiH9HyhJUGdmWg@mail.gmail.com>
+ <CAK7LNAQQ1Vp4YtvU8Bq9aE+NWxnnOTX2dcZ5Gc9fC+vjRmCe4w@mail.gmail.com>
+ <CAK7LNATktSBFe=7cE8kHEGx2R90iVV6AJsCfgg5ZD2+ssMmzow@mail.gmail.com>
+ <040a0941-936b-87ab-aedd-5a933383b500@bell.net>
+ <b919c7fd-babb-5557-dd8d-c2b8bb428d54@bell.net>
+ <4fee8886-daa3-fb03-f9e7-89358fb5fc38@bell.net>
+ <b9ceba24-345e-20dc-783b-3759a9819359@bell.net>
+ <10887293-fa2e-83e1-9305-487905a8afd2@kernel.org>
+ <3e4040cf-bb54-7652-72cc-0ad2d1288cb8@bell.net>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <3e4040cf-bb54-7652-72cc-0ad2d1288cb8@bell.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an error detected by memory sanitizer:
-```
-==4033==WARNING: MemorySanitizer: use-of-uninitialized-value
-    #0 0x55fb0fbedfc7 in read_alias_info tools/perf/util/pmu.c:457:6
-    #1 0x55fb0fbea339 in check_info_data tools/perf/util/pmu.c:1434:2
-    #2 0x55fb0fbea339 in perf_pmu__check_alias tools/perf/util/pmu.c:1504:9
-    #3 0x55fb0fbdca85 in parse_events_add_pmu tools/perf/util/parse-events.c:1429:32
-    #4 0x55fb0f965230 in parse_events_parse tools/perf/util/parse-events.y:299:6
-    #5 0x55fb0fbdf6b2 in parse_events__scanner tools/perf/util/parse-events.c:1822:8
-    #6 0x55fb0fbdf8c1 in __parse_events tools/perf/util/parse-events.c:2094:8
-    #7 0x55fb0fa8ffa9 in parse_events tools/perf/util/parse-events.h:41:9
-    #8 0x55fb0fa8ffa9 in test_event tools/perf/tests/parse-events.c:2393:8
-    #9 0x55fb0fa8f458 in test__pmu_events tools/perf/tests/parse-events.c:2551:15
-    #10 0x55fb0fa6d93f in run_test tools/perf/tests/builtin-test.c:242:9
-    #11 0x55fb0fa6d93f in test_and_print tools/perf/tests/builtin-test.c:271:8
-    #12 0x55fb0fa6d082 in __cmd_test tools/perf/tests/builtin-test.c:442:5
-    #13 0x55fb0fa6d082 in cmd_test tools/perf/tests/builtin-test.c:564:9
-    #14 0x55fb0f942720 in run_builtin tools/perf/perf.c:322:11
-    #15 0x55fb0f942486 in handle_internal_command tools/perf/perf.c:375:8
-    #16 0x55fb0f941dab in run_argv tools/perf/perf.c:419:2
-    #17 0x55fb0f941dab in main tools/perf/perf.c:535:3
-```
+This is a multi-part message in MIME format.
+--------------zPUgE2h3WJYekH07ls6McJAe
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files
-from sysfs")
+On 9/14/23 09:29, John David Anglin wrote:
+> I think the issue is with the root ST373207LW drive.  The console output indicates that the
+> ROOT drive doesn't exist when the boot fails.
+> 
+> Your change only appeared to affect actual SCSI drives.  That's why I tried disabling CDL.
+>>
+>> Could you send a full dmesg output for a clean boot and for a failed one so that
+>> I can compare ?
+> I'll try to get this together tomorrow.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please try the attached patch. That should address the issue with your drive.
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index d85602aa4b9f..8de6f39abd1b 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -520,7 +520,7 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
- 		pmu_name = pe->pmu;
- 	}
- 
--	alias = malloc(sizeof(*alias));
-+	alias = zalloc(sizeof(*alias));
- 	if (!alias)
- 		return -ENOMEM;
- 
+
 -- 
-2.42.0.459.ge4e396fd5e-goog
+Damien Le Moal
+Western Digital Research
 
+--------------zPUgE2h3WJYekH07ls6McJAe
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-scsi-Do-no-try-to-probe-for-CDL-on-old-drives.patch"
+Content-Disposition: attachment;
+ filename="0001-scsi-Do-no-try-to-probe-for-CDL-on-old-drives.patch"
+Content-Transfer-Encoding: base64
+
+RnJvbSA5NGQwNWNlNTFkNWM4YTZmNDczODNhZmQxNDEzNGYzYzc3OWQ4OWUyIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW1pZW4gTGUgTW9hbCA8ZGxlbW9hbEBrZXJuZWwu
+b3JnPgpEYXRlOiBUaHUsIDE0IFNlcCAyMDIzIDExOjA4OjU4ICswOTAwClN1YmplY3Q6IFtQ
+QVRDSF0gc2NzaTogRG8gbm8gdHJ5IHRvIHByb2JlIGZvciBDREwgb24gb2xkIGRyaXZlcwoK
+U29tZSBvbGQgZHJpdmVzIChlLmcuIGFuIFVsdHJhMzIwIFNDU0kgZGlzayBhcyByZXBvcnRl
+ZCBieSBKb2huKSBkbyBub3QKc2VlbSB0byBleGVjdXRlIE1BSU5URU5BTkNFX0lOIC8gTUlf
+UkVQT1JUX1NVUFBPUlRFRF9PUEVSQVRJT05fQ09ERVMKY29tbWFuZHMgY29ycmVjdGx5IGFu
+ZCBoYW5nIHdoZW4gYSBub24temVybyBzZXJ2aWNlIGFjdGlvbiBpcyBzcGVjaWZpZWQKKG9u
+ZSBjb21tYW5kIGZvcm1hdCB3aXRoIHNlcnZpY2UgYWN0aW9uIGNhc2UgaW4gc2NzaV9yZXBv
+cnRfb3Bjb2RlKCkpLgoKQ3VycmVudGx5LCBDREwgcHJvYmluZyB3aXRoIHNjc2lfY2RsX2No
+ZWNrX2NtZCgpIGlzIHRoZSBvbmx5IGNhbGxlcgp1c2luZyBhIG5vbiB6ZXJvIHNlcnZpY2Ug
+YWN0aW9uIGZvciBzY3NpX3JlcG9ydF9vcGNvZGUoKS4gVG8gYXZvaWQKaXNzdWVzIHdpdGgg
+dGhlc2Ugb2xkIGRyaXZlcywgZG8gbm90IGF0dGVtcHQgQ0RMIHByb2JlIGlmIHRoZSBkZXZp
+Y2UKcmVwb3J0cyBzdXBwb3J0IGZvciBhbiBTUEMgdmVyc2lvbiBsb3dlciB0aGFuIDUgKENE
+TCB3YXMgaW50cm9kdWNlZCBpbgpTUEMtNSkuIFRvIGtlZXAgdGhpbmdzIHdvcmtpbmcgd2l0
+aCBBVEEgZGV2aWNlcyB3aGljaCBwcm9iZSBmb3IgdGhlIENETApUMkEgYW5kIFQyQiBwYWdl
+cyBpbnRyb2R1Y2VkIHdpdGggU1BDLTYsIG1vZGlmeSBhdGFfc2NzaW9wX2lucV9zdGQoKSB0
+bwpjbGFpbSBTUEMtNiB2ZXJzaW9uIGNvbXBhdGliaWxpdHkgZm9yIEFUQSBkcml2ZXMgc3Vw
+cG9ydGluZyBDREwuCgppbmNsdWRlL3Njc2kvc2NzaS5oIGlzIGFsc28gbW9kaWZpZWQgdG8g
+YWRkIHRoZSBtaXNzaW5nIGRlZmluaXRpb25zIGZvcgp0aGUgU0NTSV9TUENfNCBhbmQgU0NT
+SV9TUENfNSB2ZXJzaW9ucy4gU0NTSV9TUENfNiBpcyBub3QgYWRkZWQgYXMsCm9kZGx5LCB0
+aGUgbGF0ZXN0IFNQQy02IHNwZWNpZmljYXRpb24gZGVmaW5lcyB0aGUgc2FtZSA3aCB2ZXJz
+aW9uIGNvZGUKYXMgU1BDLTUuCgpSZXBvcnRlZC1ieTogSm9obiBEYXZpZCBBbmdsaW4gPGRh
+dmUuYW5nbGluQGJlbGwubmV0PgpGaXhlczogNjI0ODg1MjA5ZjMxICgic2NzaTogY29yZTog
+RGV0ZWN0IHN1cHBvcnQgZm9yIGNvbW1hbmQgZHVyYXRpb24gbGltaXRzIikKQ2M6IHN0YWJs
+ZUB2Z2VyLmtlcm5lbC5vcmcKU2lnbmVkLW9mZi1ieTogRGFtaWVuIExlIE1vYWwgPGRsZW1v
+YWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL2F0YS9saWJhdGEtc2NzaS5jIHwgIDMgKysr
+CiBkcml2ZXJzL3Njc2kvc2NzaS5jICAgICAgIHwgMTEgKysrKysrKysrKysKIGluY2x1ZGUv
+c2NzaS9zY3NpLmggICAgICAgfCAgMiArKwogMyBmaWxlcyBjaGFuZ2VkLCAxNiBpbnNlcnRp
+b25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9hdGEvbGliYXRhLXNjc2kuYyBiL2RyaXZl
+cnMvYXRhL2xpYmF0YS1zY3NpLmMKaW5kZXggOTJhZTRiNGYzMGFjLi42NTRlZTlhMGMwNjQg
+MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvYXRhL2xpYmF0YS1zY3NpLmMKKysrIGIvZHJpdmVycy9h
+dGEvbGliYXRhLXNjc2kuYwpAQCAtMTgyOCw2ICsxODI4LDkgQEAgc3RhdGljIHVuc2lnbmVk
+IGludCBhdGFfc2NzaW9wX2lucV9zdGQoc3RydWN0IGF0YV9zY3NpX2FyZ3MgKmFyZ3MsIHU4
+ICpyYnVmKQogCQloZHJbMl0gPSAweDc7IC8qIGNsYWltIFNQQy01IHZlcnNpb24gY29tcGF0
+aWJpbGl0eSAqLwogCX0KIAorCWlmIChhcmdzLT5kZXYtPmZsYWdzICYgQVRBX0RGTEFHX0NE
+TCkKKwkJaGRyWzJdID0gMHg3OyAvKiBjbGFpbSBTUEMtNiB2ZXJzaW9uIGNvbXBhdGliaWxp
+dHkgKi8KKwogCW1lbWNweShyYnVmLCBoZHIsIHNpemVvZihoZHIpKTsKIAltZW1jcHkoJnJi
+dWZbOF0sICJBVEEgICAgICIsIDgpOwogCWF0YV9pZF9zdHJpbmcoYXJncy0+aWQsICZyYnVm
+WzE2XSwgQVRBX0lEX1BST0QsIDE2KTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS9zY3Np
+LmMgYi9kcml2ZXJzL3Njc2kvc2NzaS5jCmluZGV4IGQwOTExYmMyODY2My4uODkzNjdjNGJm
+MGVmIDEwMDY0NAotLS0gYS9kcml2ZXJzL3Njc2kvc2NzaS5jCisrKyBiL2RyaXZlcnMvc2Nz
+aS9zY3NpLmMKQEAgLTYxMyw2ICs2MTMsMTcgQEAgdm9pZCBzY3NpX2NkbF9jaGVjayhzdHJ1
+Y3Qgc2NzaV9kZXZpY2UgKnNkZXYpCiAJYm9vbCBjZGxfc3VwcG9ydGVkOwogCXVuc2lnbmVk
+IGNoYXIgKmJ1ZjsKIAorCS8qCisJICogU3VwcG9ydCBmb3IgQ0RMIHdhcyBkZWZpbmVkIGlu
+IFNQQy01LiBJZ25vcmUgZGV2aWNlcyByZXBvcnRpbmcgYW4KKwkgKiBsb3dlciBTUEMgdmVy
+c2lvbi4gVGhpcyBhbHNvIGF2b2lkcyBwcm9ibGVtcyB3aXRoIG9sZCBkcml2ZXMgY2hva2lu
+ZworCSAqIG9uIE1BSU5URU5BTkNFX0lOIC8gTUlfUkVQT1JUX1NVUFBPUlRFRF9PUEVSQVRJ
+T05fQ09ERVMgd2l0aCBhCisJICogc2VydmljZSBhY3Rpb24gc3BlY2lmaWVkLCBhcyBkb25l
+IGluIHNjc2lfY2RsX2NoZWNrX2NtZCgpLgorCSAqLworCWlmIChzZGV2LT5zY3NpX2xldmVs
+IDwgU0NTSV9TUENfNSkgeworCQlzZGV2LT5jZGxfc3VwcG9ydGVkID0gMDsKKwkJcmV0dXJu
+OworCX0KKwogCWJ1ZiA9IGttYWxsb2MoU0NTSV9DRExfQ0hFQ0tfQlVGX0xFTiwgR0ZQX0tF
+Uk5FTCk7CiAJaWYgKCFidWYpIHsKIAkJc2Rldi0+Y2RsX3N1cHBvcnRlZCA9IDA7CmRpZmYg
+LS1naXQgYS9pbmNsdWRlL3Njc2kvc2NzaS5oIGIvaW5jbHVkZS9zY3NpL3Njc2kuaAppbmRl
+eCBlYzA5MzU5NGJhNTMuLjM5ZjZiYzdiZmYwZiAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zY3Np
+L3Njc2kuaAorKysgYi9pbmNsdWRlL3Njc2kvc2NzaS5oCkBAIC0xNTcsNiArMTU3LDggQEAg
+ZW51bSBzY3NpX2Rpc3Bvc2l0aW9uIHsKICNkZWZpbmUgU0NTSV8zICAgICAgICAgIDQgICAg
+ICAgIC8qIFNQQyAqLwogI2RlZmluZSBTQ1NJX1NQQ18yICAgICAgNQogI2RlZmluZSBTQ1NJ
+X1NQQ18zICAgICAgNgorI2RlZmluZSBTQ1NJX1NQQ180CTcKKyNkZWZpbmUgU0NTSV9TUENf
+NQk4CiAKIC8qCiAgKiBJTlEgUEVSSVBIRVJBTCBRVUFMSUZJRVJTCi0tIAoyLjQxLjAKCg==
+
+
+--------------zPUgE2h3WJYekH07ls6McJAe--
