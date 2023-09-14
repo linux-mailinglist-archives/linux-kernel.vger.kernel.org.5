@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C69179FB5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD07479FB63
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 07:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbjINFya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 01:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S235104AbjINFzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 01:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbjINFy3 (ORCPT
+        with ESMTP id S234940AbjINFzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 01:54:29 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E458CC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:54:24 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-313e742a787so336717f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:54:24 -0700 (PDT)
+        Thu, 14 Sep 2023 01:55:44 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F48CC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:55:39 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so474596f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 22:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694670863; x=1695275663; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694670938; x=1695275738; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vont974mPR+vR1R39yYi+/MSVKxLVG/yjvIZF0kTQRc=;
-        b=yl2CJ87hp4cn8MtdgQLfoCHnHcykGpuXop7iShtXDX7LhcLlqybZO98Kx/IjGSQAni
-         +nC+k0jCfvsFkYLyNAvoMputiAr0cHhLfcE5jyAt56FkSYiSnNONx5RTk0WTbcyxLGHn
-         ++axWqnoT2npLOC1EN+nF0XfGI2kUEDd/tdPUxfhD7nYsBBTGYotVeixUUn0B9TDNq7u
-         eQyrN08COo63Dobzuqpc981PobbI7/xHNxADPu9DGHKi5qetJrgfiPkadOtkTNkmBDv3
-         S8FG36YEjzW8W6PFvP8yMUYb1DCcv9/e7IYGdDkoIV6PEZu+Er9T1u7NOTxWyQ2OlksC
-         8bqQ==
+        bh=KVqz5fTFaZOPkRTloQdqhhX4Yfas1CeW5UW/reBPVug=;
+        b=Ts1zjQnHej8q0dX+4eQ0t0eHxXNz+upMSVOHdTbRwUlC4DWVUWcOKWnNZJzcBRgjsP
+         djmj57EkNaeVUpb2rkdLL8J6c1HvjWp1Xsja+XThINc5nSklD1JV6Vi7Ab6rQhUR3ARd
+         f+p1vsvNnIBjd8H1sSBEuFkVkncVzzVB9ElWSkAWr0BC7dAVmLmMA0tXZlaZEJ52eHQe
+         leDU+d+RwmcyPH4Fi9OZFk/CtMCU4oBYmRQ3zC2gi8tu1FY624IOP3mlitUAhbS+eQUE
+         BiVA/gjmJMw0jWPk9/2+QyGcd1ulni1rL6NiEDvvoyuCTQ0YVPVeKqvnO9xwAe9t3zzu
+         AomQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694670863; x=1695275663;
+        d=1e100.net; s=20230601; t=1694670938; x=1695275738;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vont974mPR+vR1R39yYi+/MSVKxLVG/yjvIZF0kTQRc=;
-        b=kXcLgfHD9/F0Jqonke3BSXceKWpnyDpa+IQyGE1nqtfJ44HZOShgrBTTcKy9iFcbYz
-         c3T5VrUitIoeJHysz279hBJsW6Bnes9s9pS/Pmi+7yBrTrWye5V+lU1FatTns9rLLHb0
-         byZyEo4Q/u4vX94MUk9cUGiPNzPYZJw6qOp6ZxStwcIXYtO9YW1kYucIURrmnL/g4r1s
-         gbhH2NSeJRX7yGeWBR1ljDXyBv1IZ4Pm4f1x9amY9iFN5rkFv8er8DbT5Ekevfxb6q54
-         lWbA+jKXB1vN78IgJi7P72WGjO2hpzlSjOrO6QGghCLC7+jDml+9NGPE4LScaTCz8vIv
-         d+0Q==
-X-Gm-Message-State: AOJu0YyYU6whWf0VFAQBJvLIPH8PQENcXIXVc9hkhpegLysFsAt95mXH
-        9Y/zvqSEB8xJM/VAVdPdn5RBYw==
-X-Google-Smtp-Source: AGHT+IFCo+0UH+egV7WEJxmQZmqKJAcM2k6gd0KiChB1i4jHeNdtLdZ6CD4BZ9jTtvogt60rDLTlgg==
-X-Received: by 2002:a5d:4c49:0:b0:31f:c9a4:667b with SMTP id n9-20020a5d4c49000000b0031fc9a4667bmr538888wrt.31.1694670863060;
-        Wed, 13 Sep 2023 22:54:23 -0700 (PDT)
+        bh=KVqz5fTFaZOPkRTloQdqhhX4Yfas1CeW5UW/reBPVug=;
+        b=MA2ktmUFy8U2VRzdqCS9DrwWGYpbtDAmvojMA7HREIqT0C1b3L9LdgzAgmn/V281gd
+         MsatBpFCZdwSbnbnYBx8hfLB6twZfCM2uw1wUhqoYRiB52F+yKvlX2rkUBerbunBEZKb
+         pseKyyCHT7YFb1SMLddERc+15kCL8YluFP/UkDh9wvuL5N9xXKi+yTk09sk63wcAOt+4
+         rOrvJl6VLSMEm1Cm9PTWgF8YBXjHgyG3kAV6yWtRy4E0zWNWNgZWPnsaiRkOazyg2D0n
+         0rQh6FvxxuK/8qhO+56zjpQASVgDpoZDlnDj7Gce/8plZnfwIBs7frxDG1WOi27C2tN2
+         9ldA==
+X-Gm-Message-State: AOJu0YwZKADpReE3T65wyrTNL7kjaAA6Fq6MaTj1bFXP9ElGIf74PBcy
+        1pAqgkCANQGYk3HedeZ9MQLqNg==
+X-Google-Smtp-Source: AGHT+IG0W3wyhxluqtBNYusc57CPjlOiC3XamIm1oevXpauiZO52uIinBPwKk77BV+JH8o7fg2a7pg==
+X-Received: by 2002:a5d:58e8:0:b0:319:666e:b466 with SMTP id f8-20020a5d58e8000000b00319666eb466mr3280085wrd.42.1694670938069;
+        Wed, 13 Sep 2023 22:55:38 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d560a000000b003142e438e8csm747480wrv.26.2023.09.13.22.54.21
+        by smtp.gmail.com with ESMTPSA id c3-20020a05600c0ac300b003fef6881350sm962830wmr.25.2023.09.13.22.55.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 22:54:22 -0700 (PDT)
-Message-ID: <465dc390-a5ff-547a-2bd3-54b29e1b6c43@linaro.org>
-Date:   Thu, 14 Sep 2023 07:54:20 +0200
+        Wed, 13 Sep 2023 22:55:37 -0700 (PDT)
+Message-ID: <d7bf0ae3-d263-4231-9656-2b7af4b372a3@linaro.org>
+Date:   Thu, 14 Sep 2023 07:55:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
@@ -102,61 +102,20 @@ On 13/09/2023 23:14, Max Filippov wrote:
 > +  - Max Filippov <jcmvbkbc@gmail.com>
 > +
 > +description: |
-
-Do not need '|' unless you need to preserve formatting.
-
 > +  ESP32 UART controller is a part of ESP32 SoC series.
+
+1. Company name?
+2. ESP32 SoC series suggests esp32 is a series.
+
 > +
 > +properties:
 > +  compatible:
 > +    oneOf:
-
-That's just enum. Your descriptions are useless - tell nothing - so drop
-them.
-
 > +      - description: UART controller for the ESP32 SoC
 > +        const: esp,esp32-uart
 
-Looks quite generic, so just to be sure? This is not a family name,
-right? Neither family names nor wildcards are allowed.
-
-> +      - description: UART controller for the ESP32S3 SoC
-> +        const: esp,esp32s3-uart
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    serial0: serial@60000000 {
-
-Drop unused label.
-
-> +            compatible = "esp,esp32s3-uart";
-
-Use 4 spaces for example indentation.
-
-> +            reg = <0x60000000 0x80>;
-> +            interrupts = <27 1 0>;
-
-Use proper define for IRQ flags.
-
-> +            clocks = <&serial_clk>;
-> +    };
+Also, the vendor prefix looks incorrect, so again - what is the company
+name?
 
 Best regards,
 Krzysztof
