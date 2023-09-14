@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A317A06E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B4B7A06F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 16:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239715AbjINOHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 10:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        id S239733AbjINOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 10:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbjINOHc (ORCPT
+        with ESMTP id S239652AbjINOKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 10:07:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DDD1BF8;
-        Thu, 14 Sep 2023 07:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GIdT/cJmFA2qx50pgPlJRNzy/bheI4vUqGYQu+a7PMI=; b=raixHrVeNVHHMS+SmMW0fsVxI+
-        rZLO2b1FApnkXyJLVlkjBZUzsfFxmDi2JMVVu/R8wleWSzTAHzOFKzQL/zWb/JJhTJQkeyGGl2H3d
-        1EsUw8fAPKHCZzu4CyyEqx+rG9yuFwm7T+vos+z7VLqGttytZaDieHznwmb3696A6aPLvSAslWr7a
-        thmdyxIrHQUHf4/fW3Cr1tTqOrfips0KHORhG+5wXWbJd9QGypzhjjzPeg+uOfhgIbBdTkF3z9ckY
-        NUhze25dfC5TxiZv0q43BsedV3/l/zOQC9B/nOQb7gFNThJ/nZ0J8fzai0g8EC7sBDROC7wVMPZBJ
-        p/hgjtbQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37510)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qgn08-0004Jo-2O;
-        Thu, 14 Sep 2023 15:07:24 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qgn06-0004ol-Vs; Thu, 14 Sep 2023 15:07:22 +0100
-Date:   Thu, 14 Sep 2023 15:07:22 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 06/35] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
-Message-ID: <ZQMTmi7blj/4FpbI@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-7-james.morse@arm.com>
- <20230914122715.000076be@Huawei.com>
+        Thu, 14 Sep 2023 10:10:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA281A2;
+        Thu, 14 Sep 2023 07:10:14 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-500913779f5so1709628e87.2;
+        Thu, 14 Sep 2023 07:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694700613; x=1695305413; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ff2smVWjK7Bcd33u1xwQxm/zbvIof/RmQVV4BlHgZCI=;
+        b=bwZmstpIm1wvrebX9ZGky0Wlv+6ljEDiRpboTco/2iKaHcJQV6a9MMdju047XCD3Ni
+         I+kN1MVarFzY5CKGVl4Y+M2R9yLwGGoRC9cDLbFKIfio/NXI8WU4jHfsTUbS2ABYh3y3
+         kyKQriZIC5lJVCOsvltDzSHP1CxOizCZM3RPSa0FMec8lM+Vw+1QSwwAZxfjuUONOajr
+         sCUPAePQrlA+XW4aJ6BJCFD6vX3KeU5oQUiDp4buRGGPmqV4E+0hronJIBDU//GouvK0
+         8Cikl9T2OFudgYMYXZ8n3+WqbARa+XAxZC5EK4+Qq/LSHUsM7ZSE2WdcU2mukQ3lB82o
+         ZFEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694700613; x=1695305413;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ff2smVWjK7Bcd33u1xwQxm/zbvIof/RmQVV4BlHgZCI=;
+        b=k9iR5cBTJaXj23K8841g1nWLKo84Mpi8PXVf9oMqwW/4e9beAIUiRIbZ+cVqf71Gj7
+         O7pthhufRYZPazq68cJS4h8gtE5C2nPV/tIiBPSY2v3yLyaMi73OwnbqfAsLjDfaxxmu
+         7JtMLh0exh5wFqfS0Oc9W2mSYErXUeRCCWCihP3SAjBZBIMZxruCyniY9ilkdDUlDcnS
+         Dc39oLFeNkrSsNiXSW9bLGKKq9+t3r0KFUNrwjB8R2zZ+S/ZmtIITGNdc91YcGXTbtsK
+         rWkvWNzozWUHaF6gXTyQ8ork0YLOke1mKTuYzXg+VqZE7T8D2ZBHYPDoSfAOcH0K8dXW
+         ie8Q==
+X-Gm-Message-State: AOJu0YzAR+RkQQoF8PzGo+K30WARaiITJXRRHzaZBRlw3ocFe45RBT+m
+        PXjutfTHpB7OkAIR6iYKLwM=
+X-Google-Smtp-Source: AGHT+IFt2SsAcVqIZdtIn5+HS/JXbfUNWZaTcxCBpsfU+ve85sLDRrU8FVC1JxI6PJHYSqJPTC5HhQ==
+X-Received: by 2002:a05:6512:108f:b0:502:9fce:b6da with SMTP id j15-20020a056512108f00b005029fceb6damr6187058lfg.21.1694700612508;
+        Thu, 14 Sep 2023 07:10:12 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.128.120])
+        by smtp.gmail.com with ESMTPSA id z7-20020aa7cf87000000b0052718577668sm961495edx.11.2023.09.14.07.10.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 07:10:12 -0700 (PDT)
+Message-ID: <d27afdc7-7251-61b0-2311-ba2e27e73682@gmail.com>
+Date:   Thu, 14 Sep 2023 15:08:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914122715.000076be@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [io-uring?] UBSAN: array-index-out-of-bounds in
+ io_setup_async_msg
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     syzbot <syzbot+a4c6e5ef999b68b26ed1@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000002770be06053c7757@google.com>
+ <e8d6c6ba-e9f0-45ac-219e-c1427424d31a@gmail.com>
+ <864c84f9-5acc-132d-0cd8-826d041cff96@gmail.com>
+In-Reply-To: <864c84f9-5acc-132d-0cd8-826d041cff96@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 12:27:15PM +0100, Jonathan Cameron wrote:
-> On Wed, 13 Sep 2023 16:37:54 +0000
-> James Morse <james.morse@arm.com> wrote:
+On 9/14/23 15:06, Pavel Begunkov wrote:
+> On 9/13/23 14:10, Pavel Begunkov wrote:
+>> On 9/13/23 13:11, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    0bb80ecc33a8 Linux 6.6-rc1
+>>> git tree:       upstream
+>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=12d1eb78680000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=f4894cf58531f
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a4c6e5ef999b68b26ed1
+>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16613002680000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13912e30680000
+>>>
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/eeb0cac260c7/disk-0bb80ecc.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/a3c360110254/vmlinux-0bb80ecc.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/22b81065ba5f/bzImage-0bb80ecc.xz
+>>>
+>>> The issue was bisected to:
+>>>
+>>> commit 2af89abda7d9c2aeb573677e2c498ddb09f8058a
+>>> Author: Pavel Begunkov <asml.silence@gmail.com>
+>>> Date:   Thu Aug 24 22:53:32 2023 +0000
+>>>
+>>>      io_uring: add option to remove SQ indirection
+>>>
+>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15892e30680000
+>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17892e30680000
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=13892e30680000
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+a4c6e5ef999b68b26ed1@syzkaller.appspotmail.com
+>>> Fixes: 2af89abda7d9 ("io_uring: add option to remove SQ indirection")
+>>>
+>>> ================================================================================
+>>> UBSAN: array-index-out-of-bounds in io_uring/net.c:189:55
+>>> index 3779567444058 is out of range for type 'iovec [8]'
+>>> CPU: 1 PID: 5039 Comm: syz-executor396 Not tainted 6.6.0-rc1-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+>>> Call Trace:
+>>>   <TASK>
+>>>   __dump_stack lib/dump_stack.c:88 [inline]
+>>>   dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+>>>   ubsan_epilogue lib/ubsan.c:217 [inline]
+>>>   __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
+>>>   io_setup_async_msg+0x2a0/0x2b0 io_uring/net.c:189
+>>
+>> Which is
+>>
+>> /* if were using fast_iov, set it to the new one */
+>> if (iter_is_iovec(&kmsg->msg.msg_iter) && !kmsg->free_iov) {
+>>      size_t fast_idx = iter_iov(&kmsg->msg.msg_iter) - kmsg->fast_iov;
+>>      async_msg->msg.msg_iter.__iov = &async_msg->fast_iov[fast_idx];
+>> }
+>>
+>> The bisection doesn't immediately make sense, I'll try
+>> it out
 > 
-> > To allow ACPI's _STA value to hide CPUs that are present, but not
-> > available to online right now due to VMM or firmware policy, the
-> > register_cpu() call needs to be made by the ACPI machinery when ACPI
-> > is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> > 
-> > Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> > five ACPI architectures to be modified at once.
-> > 
-> > Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> > that populates the hotpluggable flag. arch_register_cpu() is also the
-> > interface the ACPI machinery expects.
-> > 
-> > The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> > it to use the one GENERIC_CPU_DEVICES provides.
-> > 
-> > This changes the CPUs visible in sysfs from possible to present, but
-> > on arm64 smp_prepare_cpus() ensures these are the same.
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
+> #syz test: https://github.com/isilence/linux.git netmsg-init-base
 > 
-> After this the earlier question about ordering of cpu_dev_init()
-> and node_dev_init() is relevant.   
-> 
-> Why won't node_dev_init() call
-> get_cpu_devce() which queries per_cpu(cpu_sys_devices)
-> and get NULL as we haven't yet filled that in?
-> 
-> Or does it do so but that doesn't matter as well create the
-> relevant links later?
+> First just test upstream because I'm curious about reproducibility
 
-node_dev_init() will walk through the nodes calling register_one_node()
-on each. This will trickle down to __register_one_node() which walks
-all present CPUs, calling register_cpu_under_node() on each.
+Couldn't repro myself, I think this is the fix
 
-register_cpu_under_node() will call get_cpu_device(cpu) for each and
-will return NULL until the CPU is registered using register_cpu(),
-which will now happen _after_ node_dev_init().
-
-So, at this point, CPUs won't get registered, and initially one might
-think that's a problem.
-
-However, register_cpu() will itself call register_cpu_under_node(),
-where get_cpu_device() will return the now populated entry, and the
-sysfs links will be created.
-
-So, I think what you've spotted is a potential chunk of code that
-isn't necessary when using GENERIC_CPU_DEVICES after this change!
+#syz test: https://github.com/isilence/linux.git netmsg-init
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Pavel Begunkov
