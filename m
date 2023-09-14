@@ -2,488 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DE27A0BBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C267A0BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 19:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238571AbjINR1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 13:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        id S233171AbjINR1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 13:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239870AbjINR12 (ORCPT
+        with ESMTP id S239301AbjINR1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 13:27:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1271C30F0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694712337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Aol6jxzlWnzdNb3Rodg0NX62ZcMK0/Glt3uyTv0sUs=;
-        b=DBh8b44et54sHdhT0x9ixvf7S1Rd6mvRiDVfb2V7mS2LtcmVtDyehkqIGNNZKhrbXonQkH
-        OuP1bEkA0STWJnQ0aswFSgQ4y8/Pbq8kpGJqoonLxjj1wd4f/HYyRWm9Tf5f0btzfnbWTy
-        s//311HAabSDsNo2xGPCsm0gBNKqy04=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-0HXPP6nDOva5prAJirAhAw-1; Thu, 14 Sep 2023 13:25:35 -0400
-X-MC-Unique: 0HXPP6nDOva5prAJirAhAw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a65094d873so94674066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:25:35 -0700 (PDT)
+        Thu, 14 Sep 2023 13:27:19 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66206268E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:26:51 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a65f9147ccso165687366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 10:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694712410; x=1695317210; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPpwdq8G8RSqUrohA8xVfXt68tiwNJksEyoBIju0/jI=;
+        b=J7d0KB3brYaw1NVG650yQgPo1xitv05+FSDFoZVlPf5d5GgJlogz7qCsB0M3xyuJe7
+         diclStL0J423eM6d8VQf+Suq1QSIliW4TuWd2EdLHGbSx+G52k1Eqmr6CuuBdQyCxGPG
+         54+5UOkRmQEtig2tqyV6s1H1m9vqd5oq9VMXV90YZOjnv87y0KLZXnFNhDLRXJqVxMf1
+         r4AHWnfC6pVNUZx3mvn0uF/Fa7gIrf6hetsYoau+Mah3JJASQK78yyI3n0qMTe2P9OHK
+         OR94KK2y+eQf+9LXlnkpcTAjnkCJtdBQ0SxCY40/JwZQYcsSDWuwogq3+VkmIt9WwDSF
+         9EUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694712334; x=1695317134;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0Aol6jxzlWnzdNb3Rodg0NX62ZcMK0/Glt3uyTv0sUs=;
-        b=txEmkSCUP/fvmO3PGvzmOMfhJJikeqn7OP45FGhbTFw1KepawysDfCAR4ZJvPhi4qP
-         5CHinlgiXR1BChPCA2ELyqL7UfB2NEfXjd3S70d+4ly1UIVh0yxS4P1Swh6OR7VZsMxD
-         xdwZTeKmFjjqZbnBaTJ5mbhEHUv3pmI50GIVHP4xQPBDFav84odLoCfvjHI1hl3qNr5q
-         lDE4Wg++RvcJ4E5T3RSiWfYt1nk8r8AMEmRepxLmx4sXHsXhitSyg/O5vUzIKMrWevxs
-         DFeEUkhjDFL1WmkwH4f/MiC1bodRX4oqO+9c3+hsKo0Ybh6TB1OQ65xJi+DbGVFJc9pK
-         Fp1Q==
-X-Gm-Message-State: AOJu0YyXUWYOjw9fO/lpzRG68k9cu7kPeBRtqSB+EAuZm1Dmi5zj8Gmi
-        PB338jBM5Qdkr8KZgPzviqD4PfuNyGIqeuwwmAd5T+xAcmATGORx+Bv6GYY9MGPWLhEFkGsrhJx
-        hCO/aAYy3s8zCk1KuUgyd5lowBrWvL+ml
-X-Received: by 2002:a17:906:cc58:b0:9a9:f3df:80cd with SMTP id mm24-20020a170906cc5800b009a9f3df80cdmr4499942ejb.72.1694712333766;
-        Thu, 14 Sep 2023 10:25:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH47inJm7FoAmrJdqXXrLDU5mF4jvBJ0EWuzOIG7HxwUpDSiewi1WBkIlurKQHelbeLV7HiYw==
-X-Received: by 2002:a17:906:cc58:b0:9a9:f3df:80cd with SMTP id mm24-20020a170906cc5800b009a9f3df80cdmr4499920ejb.72.1694712333361;
-        Thu, 14 Sep 2023 10:25:33 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id u22-20020a170906409600b0099d9dee8108sm1290752ejj.149.2023.09.14.10.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 10:25:32 -0700 (PDT)
-Message-ID: <803e4aa0-0c46-05ba-e90b-188771227f0a@redhat.com>
-Date:   Thu, 14 Sep 2023 19:25:31 +0200
+        d=1e100.net; s=20230601; t=1694712410; x=1695317210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DPpwdq8G8RSqUrohA8xVfXt68tiwNJksEyoBIju0/jI=;
+        b=MNT33TiichH7g+0Zz5gxupKSBIposwqzIYwGFbNL+P3A27OB9lN0lgQmNeKL/emtBJ
+         HkADRX1mn/vB4/mbOCJnUo8pCqjoi1+XBIY7hkO6Ngqvno55/isbiMEG2JyxQxxBrohq
+         kAKehgPH40SeW/+jhTzjQYfbdaUxAif4IoJq9Nq0hwMoe3tQPfIGeD4YrYvgOC5YoqOI
+         /16dufg8/PGM6Oh6k0/bgZA+ekDqNS4YwgVV2F7LWX8JpNyR6Z7hCmfskYeJLXvpE9++
+         DHVPpt5QZ4Z13jnSaqIwqzkPL3kB9faQW4WfrLlwqyhI1xoSvvlkH0JGHnx12/eG3rBz
+         Y/ww==
+X-Gm-Message-State: AOJu0Yxs0gJczNMRJKg75YXaynj1EWSWaSFVw0hYb87olVEsCp9AFjgB
+        yQ2Fi1NJUoi41p3Vh3voRhB3NVt516gIZ5eZcxHe1w==
+X-Google-Smtp-Source: AGHT+IHzc3by5RZfH01NpCRYp2iBm0qf84qHRUGRD6axGr0/E/X2ANUEnA+CGS2ev4TU9lsPuI18ZMpno/NlwmcprGU=
+X-Received: by 2002:a17:906:5385:b0:9a5:852f:10ae with SMTP id
+ g5-20020a170906538500b009a5852f10aemr4983073ejo.60.1694712409563; Thu, 14 Sep
+ 2023 10:26:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <20230913153758.GB45543@cmpxchg.org>
+ <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com>
+ <20230914160646.GA101038@cmpxchg.org> <CAJD7tkaLQ8H4-EiZimyZ4a=CbLb_0KEPE8RkPofFRVceSOqtnw@mail.gmail.com>
+In-Reply-To: <CAJD7tkaLQ8H4-EiZimyZ4a=CbLb_0KEPE8RkPofFRVceSOqtnw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 14 Sep 2023 10:26:13 -0700
+Message-ID: <CAJD7tkbx4X6KM+2X6qTPhr+RvJQCOyCutCj4zFVE9-fATMbcpA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230909153125.30032-1-dakr@redhat.com>
- <20230909153125.30032-7-dakr@redhat.com>
- <62d9b00a-547a-2106-5ec3-6f6a88023496@linux.intel.com>
- <c620c142-ea38-415d-729e-2561f1f4bae3@redhat.com>
- <476c46cfddaef125108a117b47ea9f76299ea85c.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <476c46cfddaef125108a117b47ea9f76299ea85c.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 19:21, Thomas Hellström wrote:
-> On Thu, 2023-09-14 at 18:36 +0200, Danilo Krummrich wrote:
->> On 9/14/23 15:48, Thomas Hellström wrote:
->>> Hi, Danilo
->>>
->>> Some additional minor comments as xe conversion progresses.
->>>
->>> On 9/9/23 17:31, Danilo Krummrich wrote:
->>>> So far the DRM GPUVA manager offers common infrastructure to
->>>> track GPU VA
->>>> allocations and mappings, generically connect GPU VA mappings to
->>>> their
->>>> backing buffers and perform more complex mapping operations on
->>>> the GPU VA
->>>> space.
->>>>
->>>> However, there are more design patterns commonly used by drivers,
->>>> which
->>>> can potentially be generalized in order to make the DRM GPUVA
->>>> manager
->>>> represent a basic GPU-VM implementation. In this context, this
->>>> patch aims
->>>> at generalizing the following elements.
->>>>
->>>> 1) Provide a common dma-resv for GEM objects not being used
->>>> outside of
->>>>      this GPU-VM.
->>>>
->>>> 2) Provide tracking of external GEM objects (GEM objects which
->>>> are
->>>>      shared with other GPU-VMs).
->>>>
->>>> 3) Provide functions to efficiently lock all GEM objects dma-resv
->>>> the
->>>>      GPU-VM contains mappings of.
->>>>
->>>> 4) Provide tracking of evicted GEM objects the GPU-VM contains
->>>> mappings
->>>>      of, such that validation of evicted GEM objects is
->>>> accelerated.
->>>>
->>>> 5) Provide some convinience functions for common patterns.
->>>>
->>>> Rather than being designed as a "framework", the target is to
->>>> make all
->>>> features appear as a collection of optional helper functions,
->>>> such that
->>>> drivers are free to make use of the DRM GPUVA managers basic
->>>> functionality and opt-in for other features without setting any
->>>> feature
->>>> flags, just by making use of the corresponding functions.
->>>>
->>>> Big kudos to Boris Brezillon for his help to figure out locking
->>>> for drivers
->>>> updating the GPU VA space within the fence signalling path.
->>>>
->>>> Suggested-by: Matthew Brost <matthew.brost@intel.com>
->>>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->>>> ---
->>>>
->>>> +/**
->>>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gem_object to /
->>>> from a
->>>> + * &drm_gpuvms evicted list
->>>> + * @obj: the &drm_gem_object to add or remove
->>>> + * @evict: indicates whether the object is evicted
->>>> + *
->>>> + * Adds a &drm_gem_object to or removes it from all &drm_gpuvms
->>>> evicted
->>>> + * list containing a mapping of this &drm_gem_object.
->>>> + */
->>>> +void
->>>> +drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict)
->>>> +{
->>>> +    struct drm_gpuvm_bo *vm_bo;
->>>> +
->>>> +    drm_gem_for_each_gpuvm_bo(vm_bo, obj) {
->>>> +        if (evict)
->>>> +            drm_gpuvm_bo_list_add(vm_bo, evict);
->>>> +        else
->>>> +            drm_gpuvm_bo_list_del(vm_bo, evict);
->>>> +    }
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_evict);
->>>> +
->>>
->>> We need a drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, ...) that
->>> puts a single gpuvm_bo on the list, the above function could
->>> perhaps be renamed as drm_gpuvm_gem_obj_evict(obj, ....).
->>
->> Makes sense - gonna change that.
->>
->>>
->>> Reason is some vm's are faulting vms which don't have an evict
->>> list, but validate from the pagefault handler. Also evict == false
->>> is dangerous because if called from within an exec, it might remove
->>> the obj from other vm's evict list before they've had a chance to
->>> rebind their VMAs.
->>>
->>>>    static int
->>>>    __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
->>>>               struct drm_gpuva *va)
->>>> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
->>>> index afa50b9059a2..834bb6d6617e 100644
->>>> --- a/include/drm/drm_gpuvm.h
->>>> +++ b/include/drm/drm_gpuvm.h
->>>> @@ -26,10 +26,12 @@
->>>>     */
->>>>    #include <linux/list.h>
->>>> +#include <linux/dma-resv.h>
->>>>    #include <linux/rbtree.h>
->>>>    #include <linux/types.h>
->>>>    #include <drm/drm_gem.h>
->>>> +#include <drm/drm_exec.h>
->>>>    struct drm_gpuvm;
->>>>    struct drm_gpuvm_bo;
->>>> @@ -259,6 +261,38 @@ struct drm_gpuvm {
->>>>         * space
->>>>         */
->>>>        struct dma_resv *resv;
->>>> +
->>>> +    /**
->>>> +     * @extobj: structure holding the extobj list
->>>> +     */
->>>> +    struct {
->>>> +        /**
->>>> +         * @list: &list_head storing &drm_gpuvm_bos serving as
->>>> +         * external object
->>>> +         */
->>>> +        struct list_head list;
->>>> +
->>>> +        /**
->>>> +         * @lock: spinlock to protect the extobj list
->>>> +         */
->>>> +        spinlock_t lock;
->>>> +    } extobj;
->>>> +
->>>> +    /**
->>>> +     * @evict: structure holding the evict list and evict list
->>>> lock
->>>> +     */
->>>> +    struct {
->>>> +        /**
->>>> +         * @list: &list_head storing &drm_gpuvm_bos currently
->>>> being
->>>> +         * evicted
->>>> +         */
->>>> +        struct list_head list;
->>>> +
->>>> +        /**
->>>> +         * @lock: spinlock to protect the evict list
->>>> +         */
->>>> +        spinlock_t lock;
->>>> +    } evict;
->>>>    };
->>>>    void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device
->>>> *drm,
->>>> @@ -268,6 +302,21 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm,
->>>> struct drm_device *drm,
->>>>                const struct drm_gpuvm_ops *ops);
->>>>    void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
->>>> +/**
->>>> + * drm_gpuvm_is_extobj() - indicates whether the given
->>>> &drm_gem_object is an
->>>> + * external object
->>>> + * @gpuvm: the &drm_gpuvm to check
->>>> + * @obj: the &drm_gem_object to check
->>>> + *
->>>> + * Returns: true if the &drm_gem_object &dma_resv differs from
->>>> the
->>>> + * &drm_gpuvms &dma_resv, false otherwise
->>>> + */
->>>> +static inline bool drm_gpuvm_is_extobj(struct drm_gpuvm *gpuvm,
->>>> +                       struct drm_gem_object *obj)
->>>> +{
->>>> +    return obj && obj->resv != gpuvm->resv;
->>>> +}
->>>> +
->>>>    static inline struct drm_gpuva *
->>>>    __drm_gpuva_next(struct drm_gpuva *va)
->>>>    {
->>>> @@ -346,6 +395,128 @@ __drm_gpuva_next(struct drm_gpuva *va)
->>>>    #define drm_gpuvm_for_each_va_safe(va__, next__, gpuvm__) \
->>>>        list_for_each_entry_safe(va__, next__, &(gpuvm__)->rb.list,
->>>> rb.entry)
->>>> +/**
->>>> + * struct drm_gpuvm_exec - &drm_gpuvm abstraction of &drm_exec
->>>> + *
->>>> + * This structure should be created on the stack as &drm_exec
->>>> should be.
->>>> + *
->>>> + * Optionally, @extra can be set in order to lock additional
->>>> &drm_gem_objects.
->>>> + */
->>>> +struct drm_gpuvm_exec {
->>>> +    /**
->>>> +     * @exec: the &drm_exec structure
->>>> +     */
->>>> +    struct drm_exec exec;
->>>> +
->>>> +    /**
->>>> +     * @vm: the &drm_gpuvm to lock its DMA reservations
->>>> +     */
->>>> +    struct drm_gpuvm *vm;
->>>> +
->>>> +    /**
->>>> +     * @extra: Callback and corresponding private data for the
->>>> driver to
->>>> +     * lock arbitrary additional &drm_gem_objects.
->>>> +     */
->>>> +    struct {
->>>> +        /**
->>>> +         * @fn: The driver callback to lock additional
->>>> &drm_gem_objects.
->>>> +         */
->>>> +        int (*fn)(struct drm_gpuvm_exec *vm_exec,
->>>> +              unsigned int num_fences);
->>>> +
->>>> +        /**
->>>> +         * @priv: driver private data for the @fn callback
->>>> +         */
->>>> +        void *priv;
->>>> +    } extra;
->>>> +};
->>>> +
->>>> +/**
->>>> + * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
->>>> + * @gpuvm: the &drm_gpuvm
->>>> + * @exec: the &drm_exec context
->>>> + * @num_fences: the amount of &dma_fences to reserve
->>>> + *
->>>> + * Calls drm_exec_prepare_obj() for the GPUVMs dummy
->>>> &drm_gem_object.
->>>> + *
->>>> + * Using this function directly, it is the drivers
->>>> responsibility to call
->>>> + * drm_exec_init() and drm_exec_fini() accordingly.
->>>> + *
->>>> + * Returns: 0 on success, negative error code on failure.
->>>> + */
->>>> +static inline int
->>>> +drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
->>>> +             struct drm_exec *exec,
->>>> +             unsigned int num_fences)
->>>> +{
->>>> +    return drm_exec_prepare_obj(exec, &gpuvm->d_obj,
->>>> num_fences);
->>>> +}
->>>> +
->>>> +int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
->>>> +                  struct drm_exec *exec,
->>>> +                  unsigned int num_fences);
->>>> +
->>>> +int drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm,
->>>> +                struct drm_exec *exec,
->>>> +                u64 addr, u64 range,
->>>> +                unsigned int num_fences);
->>>> +
->>>> +int drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
->>>> +            unsigned int num_fences,
->>>> +            bool interruptible);
->>>> +
->>>> +int drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
->>>> +                  struct drm_gem_object **objs,
->>>> +                  unsigned int num_objs,
->>>> +                  unsigned int num_fences,
->>>> +                  bool interruptible);
->>>> +
->>>> +int drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
->>>> +                  u64 addr, u64 range,
->>>> +                  unsigned int num_fences,
->>>> +                  bool interruptible);
->>>> +
->>>> +/**
->>>> + * drm_gpuvm_lock() - lock all dma-resv of all assoiciated BOs
->>>> + * @gpuvm: the &drm_gpuvm
->>>> + *
->>>> + * Releases all dma-resv locks of all &drm_gem_objects
->>>> previously acquired
->>>> + * through drm_gpuvm_lock() or its variants.
->>>> + *
->>>> + * Returns: 0 on success, negative error code on failure.
->>>> + */
->>>> +static inline void
->>>> +drm_gpuvm_exec_unlock(struct drm_gpuvm_exec *vm_exec)
->>>> +{
->>>> +    drm_exec_fini(&vm_exec->exec);
->>>> +}
->>>> +
->>>> +int drm_gpuvm_validate(struct drm_gpuvm *gpuvm);
->>>> +void drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
->>>> +                  struct drm_exec *exec,
->>>> +                  struct dma_fence *fence,
->>>> +                  enum dma_resv_usage private_usage,
->>>> +                  enum dma_resv_usage extobj_usage);
->>>> +
->>>> +/**
->>>> + * drm_gpuvm_exec_resv_add_fence()
->>>> + * @vm_exec: the &drm_gpuvm_exec abstraction
->>>> + * @fence: fence to add
->>>> + * @private_usage: private dma-resv usage
->>>> + * @extobj_usage: extobj dma-resv usage
->>>> + *
->>>> + * See drm_gpuvm_resv_add_fence().
->>>> + */
->>>> +static inline void
->>>> +drm_gpuvm_exec_resv_add_fence(struct drm_gpuvm_exec *vm_exec,
->>>> +                  struct dma_fence *fence,
->>>> +                  enum dma_resv_usage private_usage,
->>>> +                  enum dma_resv_usage extobj_usage)
->>>> +{
->>>> +    drm_gpuvm_resv_add_fence(vm_exec->vm, &vm_exec->exec, fence,
->>>> +                 private_usage, extobj_usage);
->>>> +}
->>>> +
->>>>    /**
->>>>     * struct drm_gpuvm_bo - structure representing a &drm_gpuvm
->>>> and
->>>>     * &drm_gem_object combination
->>>> @@ -398,6 +569,18 @@ struct drm_gpuvm_bo {
->>>>                 * gpuva list.
->>>>                 */
->>>>                struct list_head gem;
->>>> +
->>>> +            /**
->>>> +             * @evict: List entry to attach to the &drm_gpuvms
->>>> +             * extobj list.
->>>> +             */
->>>> +            struct list_head extobj;
->>>> +
->>>> +            /**
->>>> +             * @evict: List entry to attach to the &drm_gpuvms
->>>> evict
->>>> +             * list.
->>>> +             */
->>>> +            struct list_head evict;
->>>>            } entry;
->>>>        } list;
->>>>    };
->>>> @@ -432,6 +615,9 @@ struct drm_gpuvm_bo *
->>>>    drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
->>>>              struct drm_gem_object *obj);
->>>> +void drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict);
->>>> +void drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo);
->>>> +
->>>>    /**
->>>>     * drm_gpuvm_bo_for_each_va() - iterator to walk over a list of
->>>> &drm_gpuva
->>>>     * @va__: &drm_gpuva structure to assign to in each iteration
->>>> step
->>>> @@ -837,6 +1023,17 @@ struct drm_gpuvm_ops {
->>>>         * used.
->>>>         */
->>>>        int (*sm_step_unmap)(struct drm_gpuva_op *op, void *priv);
->>>> +
->>>> +    /**
->>>> +     * @bo_validate: called from drm_gpuvm_validate()
->>>> +     *
->>>> +     * Drivers receive this callback for every evicted
->>>> &drm_gem_object being
->>>> +     * mapped in the corresponding &drm_gpuvm.
->>>> +     *
->>>> +     * Typically, drivers would call their driver specific
->>>> variant of
->>>> +     * ttm_bo_validate() from within this callback.
->>>> +     */
->>>> +    int (*bo_validate)(struct drm_gem_object *obj);
->>>
->>> Same here. Could we have a vm_bo as an argument instead, so that
->>> the callback knows what gpuvm we're targeting and can mark all its
->>> gpu_vas for revalidation? Or is that intended to be done elsewhere?
->>
->> Makes sense as well. I'll change that too.
-> 
-> I forgot, drm_gpuvm_validate() would preferably take an drm_gpuvm_exec
-> argument because we need it in the validate callback. It's also easy
-> for the driver to subclass further if needed, to pass even more
-> arguments to its validate callback.
+On Thu, Sep 14, 2023 at 10:22=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> [..]
+> > > > > -
+> > > > > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> > > > > +     /* A coalesced root flush is in order. Are we the designate=
+d flusher? */
+> > > > > +     spin_lock(&root_flusher_lock);
+> > > >
+> > > > I can't say I'm crazy about this.
+> > > >
+> > > > Let's say you have a fairly sprawling and active cgroup tree with l=
+ots
+> > > > of updates in lots of groups in the system.
+> > > >
+> > > > Add a periodic memory.stat reader to one of the subgroups, and that
+> > > > reader will do very fast, localized aggregation.
+> > > >
+> > > > Now add a periodic memory.stat reader to some other subgroup. They
+> > > > might still both do very fast, localized aggregation. Or they might
+> > > > collide; and now - despite having nothing in common, and sharing no
+> > > > data besides the rstat lock - will have to flush the entire massive
+> > > > tree. The rate at which this happens is purely dependent on timing =
+of
+> > > > what should be independent actors. This is really not great for the
+> > > > p50 vs p99 gap.
+> > >
+> > > Initially I had a few retry iterations for the subtree flush, where w=
+e
+> > > fsleep for a bit and trylock again. I thought it was a little bit too
+> > > complicated and the fsleep duration would be a magic value.
+> >
+> > Hm, how is that different than a mutex / sleepable lock?
+>
+> It is essentially a lock with a timeout, which IIUC we don't support
+> explicitly in the kernel. What I was trying to do was basically to try
+> and do a subtree flush, but if we are waiting for too long then a lot
+> of people are probably flushing, so let's all switch to a root flush
+> and wait for one flusher instead of contending among ourselves.
+>
+> >
+> > > > I think this whole thing is getting away from us.
+> > > >
+> > > > When we first switched to rstat, every reader would take the global
+> > > > rstat lock and then flush its local subtree of interest.
+> > > >
+> > > > This was changed in the following commit:
+> > > >
+> > > > commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
+> > > > Author: Shakeel Butt <shakeelb@google.com>
+> > > > Date:   Fri Nov 5 13:37:34 2021 -0700
+> > > >
+> > > >     memcg: unify memcg stat flushing
+> > > >
+> > > >     The memcg stats can be flushed in multiple context and potentia=
+lly in
+> > > >     parallel too.  For example multiple parallel user space readers=
+ for
+> > > >     memcg stats will contend on the rstat locks with each other.  T=
+here is
+> > > >     no need for that.  We just need one flusher and everyone else c=
+an
+> > > >     benefit.
+> > > >
+> > > >     In addition after aa48e47e3906 ("memcg: infrastructure to flush=
+ memcg
+> > > >     stats") the kernel periodically flush the memcg stats from the =
+root, so,
+> > > >     the other flushers will potentially have much less work to do.
+> > > >
+> > > >     Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb=
+@google.com
+> > > >     Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > >     Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > >     Cc: Michal Hocko <mhocko@kernel.org>
+> > > >     Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
+> > > >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > >     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > >
+> > > > The idea was that we can avoid lock contention if somebody is alrea=
+dy
+> > > > doing the flushing. However, you're now bringing global serializati=
+on.
+> > > > Clearly that idea didn't work out. What would be an obstacle to go
+> > > > back to the original way of doing it?
+> > >
+> > > The obstacle is high concurrency among flushers. A good example is
+> > > reclaim code, we can have a lot of concurrent reclaimers. When I trie=
+d
+> > > to go back to the original way of doing it, a stress test with high
+> > > reclaim concurrency (100s or 1000s) would be 2x-3x slower. I think
+> > > high concurrency among userspace reads would have a similar outcome,
+> > > but I hadn't really checked.
+> > >
+> > > Basically this patch is trying to switch to root flushing when the
+> > > cost of contending on the lock is roughly the same as a root flush (o=
+r
+> > > waiting for one). It's doing that too eagerly now of course (if
+> > > contenders > 1), we can try to calibrate this better.
+> >
+> > I don't quite understand this.
+> >
+> > If you have two readers on separate subtrees, why is it cheaper to
+> > flush the entire tree in sequence (where both readers don't care about
+> > the majority of the data), than having each reader flush their own
+> > small subset one after another? It's not like the whole tree flush
+> > parallelizes its work.
+> >
+> > Where is that overhead actually coming from?
+>
+> If you have N concurrent readers flushing different parts of the
+> subtree, at some point the overhead of N sequential subtree flushes
+> will exceed the overhead of a single root flush.
+>
+> Ideally, we would be able to identify this point, and switch to a
+> single root flush with everyone else waiting.
+>
+> >
+> > > > With one reader, this will work the same as in your proposal.
+> > > >
+> > > > With two readers, just like in your proposal, flushing must be
+> > > > serialized against the root level. But at least the two flushes onl=
+y
+> > > > aggregate the local data they actually care about - not the entire
+> > > > tree data that doesn't even have readers! This is much better for l=
+ock
+> > > > contention and performance.
+> > >
+> > > Keep in mind that in my testing, I noticed that synchronization using
+> > > a completion is more performant than serialization on a lock. I am
+> > > assuming because when we contend on the underlying lock, we serially
+> > > wake up and do the flush. Even if there is nothing to do (as you
+> > > mention below), we still do this work. On the contrary, in this
+> > > proposal we just wait for the root flush to finish and return
+> > > immediately, and all waiters return at once (that's a lie because of
+> > > scheduling internals).
+> >
+> > Right, because rstat's do-nothing case is still somewhat costly due to
+> > the per-cpu loop and the tree walk.
+> >
+> > But that should be possible to avoid with the outlined caching of
+> > recently-flushed state at the memcg level.
+>
+> This helps only if concurrent flushers are overlapping, right?
+>
+> >
+> > > Also, in the current code, in the two reader scenario, the first
+> > > reader will flush the entire tree anyway. The only difference is that
+> > > the second reader will wait for it to finish instead of just skipping=
+,
+> > > which is the right thing to do from a correctness point of view. Righ=
+t
+> > > now it's a coin flip on whether you get updated stats if someone else
+> > > is already flushing.
+> >
+> > Agreed, it should wait. My mutex would accomplish this, right?
+>
+> I think what you're describing here is v4 of the patchset I mention in
+> the cover letter:
+> https://lore.kernel.org/lkml/20230831165611.2610118-5-yosryahmed@google.c=
+om/
+>
+> The problem with that was that with very high concurrency among
+> readers, the read latency is unbounded and can get out of hand. Wei
+> shared some numbers in that thread.
+>
+> What this patch is trying to do is to switch to root flushing if the
+> mutex is contended to avoid that scenario.  Also, if we keep acquiring
+> more flushers at some point we just skip the flush in favor of
+> performance (if the number of waiters exceeds the number of cpus). Now
+> that I think about it, perhaps we can just go back to the mutex
+> approach w/ limiting the number of waiters, without ever falling back
+> to a root flush. Not sure how that would work.
+>
+> Taking a step back, I think what you are implying is that if we make
+> the thresholding code per cpu instead of global, this should mitigate
 
-Hm.. that implies that a driver open coding the drm_exec loop, still needs
-to use a struct drm_gpuvm_exec rather than just a struct drm_exec. What is
-this needed for in Xe? Do we expect other drivers needing it? Might a priv
-void pointer maybe make more sense?
+per cgroup*
 
-> 
-> /Thomas
-> 
-> 
->>
->>>
->>>>    };
->>>>    int drm_gpuvm_sm_map(struct drm_gpuvm *gpuvm, void *priv,
->>>
->>> Thanks,
->>>
->>> Thomas
->>>
->>>
->>
-> 
-
+> the issue in a different way than falling back to root flushing or
+> limiting the number of waiters, is that right?
+> If yes, I think it will work in some cases where the flushes are
+> overlapping as I mentioned above, but not if concurrent readers are
+> flushing different parts of the tree. Right?
+>
+> >
+> > > > One concern is the thresholding code. The cost of flushing on every
+> > > > read is too high: even when there is no flush work, checking for it=
+ is
+> > > > kind of expensive due to the locks and the for_each_possible_cpu().
+> > > >
+> > > > Could we do something like the following?
+> > > >
+> > > >         mem_cgroup_flush(memcg)
+> > > >         {
+> > > >                 mutex_lock(&memcg_flush_mutex);
+> > > >                 if (atomic_read(&memcg->stat_delta) > THRESHOLD)
+> > > >                         cgroup_rstat_flush(memcg);
+> > > >                 mutex_unlock(&memcg_flush_mutex);
+> > > >         }
+> > > >
+> > > >         mem_cgroup_css_rstat_flush(css, cpu)
+> > > >         {
+> > > >                 ...
+> > > >                 /*
+> > > >                  * Reset here instead of mem_cgroup_flush()
+> > > >                  * so that each flushed subgroup is reset
+> > > >                  * recursively. A recent parent flush will
+> > > >                  * allow a child flush to skip.
+> > > >                  */
+> > > >                 atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0=
+);
+> > > >         }
+> > > >
+> > > >         memcg_rstat_updated(memcg, val)
+> > > >         {
+> > > >                 atomic_add(&memcg->stat_delta, val);
+> > >
+> > > We need to do this for each parent in the hierarchy, not just the
+> > > memcg being updated, right? I guess that may be too expensive for the
+> > > update path.
+> >
+> > How so?
+> >
+> > We need to mark the subgroups that are flushed, so that if you have
+> >
+> >         root - a - a1 - foo
+> >                 `- a2
+> >
+> > and somebody flushes a, then a1 and a2 also don't need to be flushed
+> > for a while.
+> >
+> > But if we flush a1 first, foo is aggregated into a1. Reading a still
+> > needs to aggregate a1 and a2 into a.
+> >
+> > Maybe I'm missing something blatant, but I don't see how we have to
+> > mark parents in any way. We only have to tag cgroups up to the point
+> > to which they were recently flushed, and we already visit all those.
+> >
+> > Let me know if I'm missing something blatant here.
+>
+> I think we are talking about different paths. I believe you are
+> talking about resetting memcg->stat_delta, which I agree should be
+> done during the flush. What I am talking about is updating
+> memcg->stat_delta when memcg_rstat_updated() is called. We would need
+> to update that for all parents. In your example hierarchy, if stat
+> updates happened in a2, and someone tries to flush a, they should be
+> aware that there are stats to flush.
