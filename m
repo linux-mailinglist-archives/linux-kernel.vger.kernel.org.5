@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A40A67A2346
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFD87A2348
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236449AbjIOQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
+        id S235486AbjIOQIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236490AbjIOQHj (ORCPT
+        with ESMTP id S235818AbjIOQHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:07:39 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C342EC1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:07:33 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4046f7d49a9so5748425e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:07:33 -0700 (PDT)
+        Fri, 15 Sep 2023 12:07:45 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D056CC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:07:40 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4047ef37f55so1659865e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694794052; x=1695398852; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694794059; x=1695398859; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8mEl920j4bMU1c1j+prGL8R31kmbWRsQYB45PK9cGhQ=;
-        b=mUU03TXfHtoyJKck8C9DFE+9nRQLVwvu3/vszAy51/4Tt5o28Oq6gZ8WzPhwPiDL0P
-         eNS+pClIa6tksOpYUNHBm8K0vmPZRK1ueAlGTGlheirE48U+Re1G6GgGbYatD1hDAECK
-         RIJUg8rLaSbeeCMcNB9Tdl6ytrujqDnqSx32/o/VjXB32pfoIPwYRO5d2cwDoxkp2HXh
-         a5iU+pxWODOmIil7EJD6KZxNAs7esKRVKyIycgi/1EnkCoc9/2IykjwUat8TeoXw8+9m
-         tGTLZdsvJF237THExjxPRnqiNdnYKhD+GVwQiMQd6IDoCYXf+eG2mNYTGXWoNQUIRP+w
-         jjHA==
+        bh=z8+9VTkbBAtEYZ5WKhgH4h5UYlHRNkMT6NJfQFUOH+k=;
+        b=Z34zDam7CwwkeIJii0YB8uumRYArpS7CoXZUi1vV9nC3kPhhitB6Ww0Id4+XORpiyH
+         0QrJG4WSlGqXlOcHneTuqWnMfMBMwLNDCJOwcYHpd6qT0AZh4YHIDygmClZ3LKeNjzDD
+         cxSO48blGwKKdOLMkcq+Jti3W3Nh74h7GUE9OpvLY9UWZFonJmaC3uCqUfPDa1OIcxCq
+         e1H9oqwW7UQ85Dm9B3CNVYiNY4f/C+ZUYMPMODwqx5if6FlJHfHc3yQflf9Y77FuXO8B
+         y/dYzWX9E9XYHVxxEVSgPdIplm0JrBw6WGVGmUXGGzBoEbz/9woZcxcgIBDOOFzUb2z8
+         zIuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694794052; x=1695398852;
+        d=1e100.net; s=20230601; t=1694794059; x=1695398859;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8mEl920j4bMU1c1j+prGL8R31kmbWRsQYB45PK9cGhQ=;
-        b=qv7tchd4OArPzULTtAUuo3/HfqeIzsSj8aZYh/Fp3xqelJZdlWJ+3eN+gJMEWK6k92
-         X0lzOFk23vZy0bE+D8CEkBYeFszzNjDm/gbLaZler+xds9IR1yZV12UH/cR/xOzaBgRq
-         trL68BjW6rkxtEYJ9EGr9URnyX1g265vSfcEdBmHDyFK+0CVUYyJC+tKw/Wl5arhSdWB
-         vfLX/gzgp8wkZdI8Q0czrgiH8eA6HyINg6gxtC9ilS0Ppqc4xMe8+SBhpVq9C+XEjYKw
-         LkAMJke+SB+myfJh7tXg+aPp1SXzAagkYAVT8rUrbiWit617FE5RVbXpz8RBc5eBkggy
-         n0mQ==
-X-Gm-Message-State: AOJu0YwhxHksLF7zZhfe5g3K09XzBPV8PDIfmD3P9ryIg3np7FfO12pP
-        taaI6hapDF/2qQtNlY38R5I=
-X-Google-Smtp-Source: AGHT+IFuO50yzHNl10RIZSyAAE218Gy11mrpopmrZ5Z+zuljjIKx6D52kWfYVUFCf51Y6tfzWv/s1A==
-X-Received: by 2002:a05:600c:3b03:b0:3ff:8617:672b with SMTP id m3-20020a05600c3b0300b003ff8617672bmr2058173wms.2.1694794052198;
-        Fri, 15 Sep 2023 09:07:32 -0700 (PDT)
+        bh=z8+9VTkbBAtEYZ5WKhgH4h5UYlHRNkMT6NJfQFUOH+k=;
+        b=Yg/OaGreeY4vvnvk8v4szixF8syw9VSNLkstyb/I7nKwc4VYaOb3B9qsowijOkUY3s
+         fGCM9j2dezDSA7qsGG3ajSyrtGSn312sj0hYIKGq/I2mLWHig76RFgzNa9rQfWHD1z4V
+         R43bEXMB6FqQjm7wZDlTf1VNShIpisTKqji8rbGZbU6OJB3uEOnKA/zl/d6czg/LCocf
+         HxX8MjmAyVUXPUnzJXc02wwtpwCIrZ00gFRO8aKaxNkBR29Vv+20tyQ9upGqlAZlvieB
+         rIqJzFPZ5BxDwMEUZMJgal16JfndMpDFfiXvzEMhnrgiykPh7HWAUj4hakrZAGniV3DW
+         ZzKg==
+X-Gm-Message-State: AOJu0YycvZS7VUv5qcEvEaDlBmXfvbbhCmxPiFOJC9p0lOmMcHfPaRrm
+        /jpQL9LgcJPUy6Z8EJIayxreqpmob9lqfw==
+X-Google-Smtp-Source: AGHT+IEMz0Cuk/KznlLMCr55N+i+cr7n6FnthXKQ62l7UkydGt9f+g5SOG+eXXcHV0qRuXdChPvEkg==
+X-Received: by 2002:a7b:cd91:0:b0:3fe:d46a:ef4b with SMTP id y17-20020a7bcd91000000b003fed46aef4bmr1918796wmj.1.1694794058704;
+        Fri, 15 Sep 2023 09:07:38 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id f10-20020adff8ca000000b0031ffa453affsm617386wrq.17.2023.09.15.09.07.31
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d4288000000b00317a29af4b2sm4761826wrq.68.2023.09.15.09.07.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 09:07:31 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 18:07:30 +0200
+        Fri, 15 Sep 2023 09:07:38 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 18:07:36 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/16] staging: rtl8192e: Replace struct rtllib_hdr_3addr in
- structs of rtllib.h
-Message-ID: <e327712027b022561759d7cadcf51bf8274ab05a.1694792595.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 07/16] staging: rtl8192e: Remove unused struct rtllib_hdr and
+ two enums
+Message-ID: <4bdb5e4d604eb3bd46c7853ad6d9a60f6208dd4a.1694792595.git.philipp.g.hortmann@gmail.com>
 References: <cover.1694792595.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,184 +71,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace struct rtllib_hdr_3addr with struct ieee80211_hdr_3addr to avoid
-proprietary struct in structs of rtllib.h.
+Remove struct rtllib_hdr, enum rt_ps_mode and enum fw_cmd_io_type as those
+are not used.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib.h         | 24 +++++++----------------
- drivers/staging/rtl8192e/rtllib_rx.c      |  2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c | 18 ++++++++---------
- 3 files changed, 17 insertions(+), 27 deletions(-)
+ drivers/staging/rtl8192e/rtllib.h | 40 -------------------------------
+ 1 file changed, 40 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index c13268ad6b56..55f96f446f9e 100644
+index 55f96f446f9e..717b74dc005d 100644
 --- a/drivers/staging/rtl8192e/rtllib.h
 +++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -685,16 +685,6 @@ struct rtllib_hdr {
- 	u8 payload[];
+@@ -679,12 +679,6 @@ struct rtllib_pspoll_hdr {
+ 	u8 ta[ETH_ALEN];
  } __packed;
  
--struct rtllib_hdr_3addr {
+-struct rtllib_hdr {
 -	__le16 frame_ctl;
 -	__le16 duration_id;
--	u8 addr1[ETH_ALEN];
--	u8 addr2[ETH_ALEN];
--	u8 addr3[ETH_ALEN];
--	__le16 seq_ctl;
 -	u8 payload[];
 -} __packed;
 -
  struct rtllib_hdr_4addr {
  	__le16 frame_ctl;
  	__le16 duration_id;
-@@ -736,7 +726,7 @@ struct rtllib_info_element {
- } __packed;
+@@ -1157,13 +1151,6 @@ enum fsync_state {
+ 	SW_Fsync
+ };
  
- struct rtllib_authentication {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	__le16 algorithm;
- 	__le16 transaction;
- 	__le16 status;
-@@ -745,23 +735,23 @@ struct rtllib_authentication {
- } __packed;
+-enum rt_ps_mode {
+-	eActive,
+-	eMaxPs,
+-	eFastPs,
+-	eAutoPs,
+-};
+-
+ enum ips_callback_function {
+ 	IPS_CALLBACK_NONE = 0,
+ 	IPS_CALLBACK_MGNT_LINK_REQUEST = 1,
+@@ -1220,33 +1207,6 @@ enum scan_op_backup_opt {
+ 	SCAN_OPT_MAX
+ };
  
- struct rtllib_disauth {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	__le16 reason;
- } __packed;
- 
- struct rtllib_disassoc {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	__le16 reason;
- } __packed;
- 
- struct rtllib_probe_request {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	/* SSID, supported rates */
- 	struct rtllib_info_element info_element[];
- } __packed;
- 
- struct rtllib_probe_response {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	u32 time_stamp[2];
- 	__le16 beacon_interval;
- 	__le16 capability;
-@@ -775,7 +765,7 @@ struct rtllib_probe_response {
- #define rtllib_beacon rtllib_probe_response
- 
- struct rtllib_assoc_request_frame {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	__le16 capability;
- 	__le16 listen_interval;
- 	/* SSID, supported rates, RSN */
-@@ -783,7 +773,7 @@ struct rtllib_assoc_request_frame {
- } __packed;
- 
- struct rtllib_assoc_response_frame {
--	struct rtllib_hdr_3addr header;
-+	struct ieee80211_hdr_3addr header;
- 	__le16 capability;
- 	__le16 status;
- 	__le16 aid;
-diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index dddd38bbc648..0c2135431f5b 100644
---- a/drivers/staging/rtl8192e/rtllib_rx.c
-+++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -2483,7 +2483,7 @@ static inline void rtllib_process_probe_response(
- 	short renew;
- 	struct rtllib_network *network = kzalloc(sizeof(struct rtllib_network),
- 						 GFP_ATOMIC);
--	__le16 frame_ctl = beacon->header.frame_ctl;
-+	__le16 frame_ctl = beacon->header.frame_control;
- 
- 	if (!network)
- 		return;
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index e3b15fa0edcb..3c61b6f4f69f 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -331,7 +331,7 @@ static inline struct sk_buff *rtllib_probe_req(struct rtllib_device *ieee)
- 	skb_reserve(skb, ieee->tx_headroom);
- 
- 	req = skb_put(skb, sizeof(struct rtllib_probe_request));
--	req->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_PROBE_REQ);
-+	req->header.frame_control = cpu_to_le16(RTLLIB_STYPE_PROBE_REQ);
- 	req->header.duration_id = 0;
- 
- 	eth_broadcast_addr(req->header.addr1);
-@@ -739,9 +739,9 @@ rtllib_authentication_req(struct rtllib_network *beacon,
- 
- 	auth = skb_put(skb, sizeof(struct rtllib_authentication));
- 
--	auth->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_AUTH);
-+	auth->header.frame_control = cpu_to_le16(RTLLIB_STYPE_AUTH);
- 	if (challengelen)
--		auth->header.frame_ctl |= cpu_to_le16(RTLLIB_FCTL_WEP);
-+		auth->header.frame_control |= cpu_to_le16(RTLLIB_FCTL_WEP);
- 
- 	auth->header.duration_id = cpu_to_le16(0x013a);
- 	ether_addr_copy(auth->header.addr1, beacon->bssid);
-@@ -860,7 +860,7 @@ static struct sk_buff *rtllib_probe_resp(struct rtllib_device *ieee,
- 	if (encrypt)
- 		beacon_buf->capability |= cpu_to_le16(WLAN_CAPABILITY_PRIVACY);
- 
--	beacon_buf->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_PROBE_RESP);
-+	beacon_buf->header.frame_control = cpu_to_le16(RTLLIB_STYPE_PROBE_RESP);
- 	beacon_buf->info_element[0].id = MFIE_TYPE_SSID;
- 	beacon_buf->info_element[0].len = ssid_len;
- 
-@@ -1076,7 +1076,7 @@ rtllib_association_req(struct rtllib_network *beacon,
- 
- 	hdr = skb_put(skb, sizeof(struct rtllib_assoc_request_frame) + 2);
- 
--	hdr->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_ASSOC_REQ);
-+	hdr->header.frame_control = cpu_to_le16(RTLLIB_STYPE_ASSOC_REQ);
- 	hdr->header.duration_id = cpu_to_le16(37);
- 	ether_addr_copy(hdr->header.addr1, beacon->bssid);
- 	ether_addr_copy(hdr->header.addr2, ieee->dev->dev_addr);
-@@ -2488,7 +2488,7 @@ static struct sk_buff *rtllib_get_beacon_(struct rtllib_device *ieee)
- 		return NULL;
- 
- 	b = (struct rtllib_probe_response *)skb->data;
--	b->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_BEACON);
-+	b->header.frame_control = cpu_to_le16(RTLLIB_STYPE_BEACON);
- 
- 	return skb;
- }
-@@ -2503,7 +2503,7 @@ struct sk_buff *rtllib_get_beacon(struct rtllib_device *ieee)
- 		return NULL;
- 
- 	b = (struct rtllib_probe_response *)skb->data;
--	b->header.seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
-+	b->header.seq_ctrl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
- 
- 	if (ieee->seq_ctrl[0] == 0xFFF)
- 		ieee->seq_ctrl[0] = 0;
-@@ -2730,7 +2730,7 @@ rtllib_disauth_skb(struct rtllib_network *beacon,
- 	skb_reserve(skb, ieee->tx_headroom);
- 
- 	disauth = skb_put(skb, sizeof(struct rtllib_disauth));
--	disauth->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_DEAUTH);
-+	disauth->header.frame_control = cpu_to_le16(RTLLIB_STYPE_DEAUTH);
- 	disauth->header.duration_id = 0;
- 
- 	ether_addr_copy(disauth->header.addr1, beacon->bssid);
-@@ -2757,7 +2757,7 @@ rtllib_disassociate_skb(struct rtllib_network *beacon,
- 	skb_reserve(skb, ieee->tx_headroom);
- 
- 	disass = skb_put(skb, sizeof(struct rtllib_disassoc));
--	disass->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_DISASSOC);
-+	disass->header.frame_control = cpu_to_le16(RTLLIB_STYPE_DISASSOC);
- 	disass->header.duration_id = 0;
- 
- 	ether_addr_copy(disass->header.addr1, beacon->bssid);
+-enum fw_cmd_io_type {
+-	FW_CMD_DIG_ENABLE = 0,
+-	FW_CMD_DIG_DISABLE = 1,
+-	FW_CMD_DIG_HALT = 2,
+-	FW_CMD_DIG_RESUME = 3,
+-	FW_CMD_HIGH_PWR_ENABLE = 4,
+-	FW_CMD_HIGH_PWR_DISABLE = 5,
+-	FW_CMD_RA_RESET = 6,
+-	FW_CMD_RA_ACTIVE = 7,
+-	FW_CMD_RA_REFRESH_N = 8,
+-	FW_CMD_RA_REFRESH_BG = 9,
+-	FW_CMD_RA_INIT = 10,
+-	FW_CMD_IQK_ENABLE = 11,
+-	FW_CMD_TXPWR_TRACK_ENABLE = 12,
+-	FW_CMD_TXPWR_TRACK_DISABLE = 13,
+-	FW_CMD_TXPWR_TRACK_THERMAL = 14,
+-	FW_CMD_PAUSE_DM_BY_SCAN = 15,
+-	FW_CMD_RESUME_DM_BY_SCAN = 16,
+-	FW_CMD_RA_REFRESH_N_COMB = 17,
+-	FW_CMD_RA_REFRESH_BG_COMB = 18,
+-	FW_CMD_ANTENNA_SW_ENABLE = 19,
+-	FW_CMD_ANTENNA_SW_DISABLE = 20,
+-	FW_CMD_TX_FEEDBACK_CCX_ENABLE = 21,
+-	FW_CMD_LPS_ENTER = 22,
+-	FW_CMD_LPS_LEAVE = 23,
+-};
+-
+ #define RT_MAX_LD_SLOT_NUM	10
+ struct rt_link_detect {
+ 	u32				NumRecvBcnInPeriod;
 -- 
 2.42.0
 
