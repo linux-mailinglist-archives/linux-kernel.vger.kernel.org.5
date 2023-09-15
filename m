@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3707A1755
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2AA7A175A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbjIOH0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40736 "EHLO
+        id S232351AbjIOH07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbjIOH0b (ORCPT
+        with ESMTP id S232125AbjIOH06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:26:31 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB04170E;
-        Fri, 15 Sep 2023 00:26:26 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F5m0pM022659;
-        Fri, 15 Sep 2023 07:26:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Q2y1vB9/nEJ316+CPedZ4jQOttq3EObW8nIvIUnXxs0=;
- b=k5yS6RKtnsdZx4k2aqlMEouwwsEUA5x26pvYy2GD2iydkFt5RQBe5o4ihhOWNZA95sIZ
- 7ZqXfig6l6GDSycnGgWKurgzQtSGicll+ML7mnsCJJmMOW8iGbc9Cg2xIWC+W2SzXSIP
- zn9VF5sDgrCE14hHI5RmVOlzn6ImG/ikOx/mZ1AiKTggfhGIXwcnfNjPSVMChxoQx9RK
- PrxU87sQNgH0rzy6SlByfhmrIfMV76+SmgSriV+8T8pJHnMZqRjLjI9+2QhTucC9B8JV
- S5HZSTx7PmNUZV1VPjrPuOnLRj+cis2DN2ZBDgP5+bqHjcHA6bDUx9U0TgCAHgnBgjMs Sw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4fwn0cu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 07:26:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38F7QAh5012377
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 07:26:10 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 00:26:03 -0700
-Message-ID: <f683eb4a-f48e-4214-a700-92c171d512fa@quicinc.com>
-Date:   Fri, 15 Sep 2023 15:26:00 +0800
+        Fri, 15 Sep 2023 03:26:58 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE7519A6;
+        Fri, 15 Sep 2023 00:26:40 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5776089b652so1384102a12.2;
+        Fri, 15 Sep 2023 00:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694762800; x=1695367600; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lmxSozsjyQbgMnJPbBrqJiUPwUPx63V+RTOPBnTrVeI=;
+        b=mPo6iw9tRu1ZlDkDi1VrugcuT17EM9AoSKfnVYIJ46wyl1wn/iePU7A0cfetT8+B02
+         /ZFBCXX3+Q/ocPgs0B6HFssyf0rzjNGZ/bDLSBOHTseW5O22gZcMAosnchriIP9mmyVN
+         O4b7OErzJOUHp4Xh9v81GQvWuEIU277/AeSgcCC9h8571p9fZzY+sDOqH35uGGH39OyY
+         PhI7zSsBe+opPgOnCaI8p5UuLenSO0w48eNCEpqI5QZASu5sTORv+qQJ/+uWt62RhJ2z
+         xwNDM8P9wGC1J+Ik2db354kHNHsu3HlIeFy/s1KeZ2zxniBthll8vdK72Je69Dl+LcfR
+         mvKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694762800; x=1695367600;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lmxSozsjyQbgMnJPbBrqJiUPwUPx63V+RTOPBnTrVeI=;
+        b=OZrzFS8DXdHMRouq37rm7E+cnrMvxP+JugptbhNoFC4gifs2+3NHQ6pmYnWuiBVEXT
+         6t/+YCiQL4uq/kJM184YWg+jYjxj//3AWK27MKdahpLguslax4yxPikuUV8Kska1ntlP
+         gr4N3Vp41UueecyBq/SY/8O9ccdBnSWwAaD+Uj06X10+LGVeyn8VTycDd7PTzLyimsey
+         SytkdVHAT9oHRKGy2/8dESgjN2OsWydodsOzPxGX2oBOCxfU/NPLIRSNQdAOoe5EeEdc
+         CMTI7FlV+9XwZplH6tC4CBlI5vJC1wXtu/LPGi/D1QsAaD/5gnyKj8G4Yuyv1PyjOvKZ
+         rGjw==
+X-Gm-Message-State: AOJu0Yx4RyLbHocI6xlPwQjEwZVjSgpr1dmo2srsnuzvs6cYqmwHdfMj
+        Z2eOSk7cNBUB2rA7egCMYE7e2fUmIvTj0Q==
+X-Google-Smtp-Source: AGHT+IGa6j32V1x4tl06O/eJUeO2dvjf2EDNjj2i7ll9q98yTmiqb3goHPZMF8yaQeznxj+9hgsHRw==
+X-Received: by 2002:a17:902:d491:b0:1b5:561a:5c9a with SMTP id c17-20020a170902d49100b001b5561a5c9amr1033676plg.39.1694762799968;
+        Fri, 15 Sep 2023 00:26:39 -0700 (PDT)
+Received: from localhost.localdomain ([222.95.63.58])
+        by smtp.gmail.com with ESMTPSA id c17-20020a170903235100b001bde65894c8sm2757385plh.268.2023.09.15.00.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 00:26:39 -0700 (PDT)
+From:   Wang Chen <unicornxw@gmail.com>
+X-Google-Original-From: Wang Chen <wangchen20@iscas.ac.cn>
+To:     linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Subject: [PATCH 11/12] riscv: dts: sophgo: Add sophgo,sg2024-uart compatibles
+Date:   Fri, 15 Sep 2023 15:26:24 +0800
+Message-Id: <20230915072624.118388-1-wangchen20@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: interconnect: Add Qualcomm SM4450
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <kernel@quicinc.com>
-References: <20230915020129.19611-1-quic_tengfan@quicinc.com>
- <20230915020129.19611-2-quic_tengfan@quicinc.com>
- <a48d1d09-e967-3226-7173-4e2a58ffae1d@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <a48d1d09-e967-3226-7173-4e2a58ffae1d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jDhv8GE9QwzX6iEM8o6qSepsIfAF8g8d
-X-Proofpoint-ORIG-GUID: jDhv8GE9QwzX6iEM8o6qSepsIfAF8g8d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_05,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxscore=0 phishscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- spamscore=0 mlxlogscore=758 bulkscore=0 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309150064
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add compatible for uart.
 
+Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+---
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-在 9/15/2023 3:17 PM, Krzysztof Kozlowski 写道:
-> On 15/09/2023 04:01, Tengfei Fan wrote:
->> The Qualcomm SM4450 SoC has several bus fabrics that could be controlled
->> and tuned dynamically according to the bandwidth demand.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
-> 
-> qcom,sm4450-rpmh.example.dtb: interconnect@1700000: reg: [[0, 24117248],
-> [0, 200832]] is too long
-> 
-> Did you test it before sending? No, you did not. Eh :(
-> 
-> Best regards,
-> Krzysztof
-> 
-I did test, maybe miss this warning, will test again and update.
-
+diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
+index 5c4b82f13207..87f7667bbe63 100644
+--- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
++++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
+@@ -492,7 +492,7 @@ &cpu63_intc  0xffffffff &cpu63_intc  9
+ 		};
+ 
+ 		uart0: serial@7040000000 {
+-			compatible = "snps,dw-apb-uart";
++			compatible = "sophgo,sg2042-uart", "snps,dw-apb-uart";
+ 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <SOC_PERIPHERAL_IRQ(112) IRQ_TYPE_LEVEL_HIGH>;
 -- 
-Thx and BRs,
-Tengfei Fan
+2.25.1
+
