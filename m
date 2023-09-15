@@ -2,155 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B5C7A1C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6148C7A1C55
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbjIOKdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S232803AbjIOKef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbjIOKdc (ORCPT
+        with ESMTP id S231341AbjIOKee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:33:32 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC6BA1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:33:27 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so258686566b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694774006; x=1695378806; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AHNXmBxDw1apCLxAkHOvDRkSwOFlN5lNz8sn0ic2gIM=;
-        b=VPsVL5xRkvbuvEgWP0ER5qiuhLMWxCjPNEeFcFdGl/JkhtMlJaYfpRkkzH6Di2OMNm
-         aByN0vvnplJuNI9Ezt322xJasx7pkndsOn1z1DaLi3XC2O38SC3CR/GS0vj2NgG5l5Vw
-         gyuVJhFFDBQbP0+COl2imyqZF1HW6D2ZCm2jx8zKl+jSLTKywCrBFC49t70UPkhVpMZI
-         AhfTbClL6fjWnptS/eDw0WD3vviUrWcg7PEdavIBlK5txrIjWL5oG2ER9AKPp0/MZA5y
-         Jvul2gadtuS+FNmfkwZsCD7oqlPoAKdJJy4gPkS6Fwy3/UTKOOJBcKrSsNhlIwHgUbQ+
-         0HPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774006; x=1695378806;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AHNXmBxDw1apCLxAkHOvDRkSwOFlN5lNz8sn0ic2gIM=;
-        b=lQYTXtne2Dl06wO/ocbe5b9OG0pM8UmjoVgsAckl4s5XGCQ4t/RWXfRPGpN0feTYIO
-         WD4yqg9Xfof0bXIgZOKjkm8zVA8nyBTmraF8qRdycoNbhGTKjcAkuoPlXCUxNpJOSJEd
-         OLZV12CjrB4GHcgVGoEBZJ+VFs7DBVhKWxZaZw+cyijfbwW6EHRlU6XPg4/Vku1RKbBK
-         mZR1wBzOlDKC9LTWaXpsHglXsVxCBm1BFSRHoK2wYw5hahTi2K/44+TP75M2gTC7/ZTv
-         +kjkYteq/xTQW1DaWVmi81d/Gt7HIcrUAh3E/kI6exW+4THh8lfHIeMN3BaJpvPSr/Jb
-         GVmg==
-X-Gm-Message-State: AOJu0YyhjADdd6Os7Zsml3gt0GS4ESIXnt5uZhlNuywT4hgkJb6ANMjt
-        wchiHiNte2ELIFW7Ns2I2FxIxw==
-X-Google-Smtp-Source: AGHT+IHJvOEsaBTHM8g8l1b4WaIw/WLvZKGU9znyrRyylohvQ/GtYWnnh3DUhsMGba8RbxKv1HP+iw==
-X-Received: by 2002:a17:906:18aa:b0:9a5:d657:47e1 with SMTP id c10-20020a17090618aa00b009a5d65747e1mr1032731ejf.43.1694774006100;
-        Fri, 15 Sep 2023 03:33:26 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id n4-20020a170906088400b009928b4e3b9fsm2232224eje.114.2023.09.15.03.33.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:33:25 -0700 (PDT)
-Message-ID: <726e7f51-ce2c-5ac1-5347-21d6cf40c8c8@linaro.org>
-Date:   Fri, 15 Sep 2023 12:33:23 +0200
+        Fri, 15 Sep 2023 06:34:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC14694;
+        Fri, 15 Sep 2023 03:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1694774042; x=1695378842; i=quwenruo.btrfs@gmx.com;
+ bh=x/A/6HDRV/DEv2IU2AOAk1jCxExujYKDMAmoocyxG3Y=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=rgHNAN7KmKrvLZ8Mrur/wjbwcw9/Nna3vkFP1t4M7TPZpqbztWR7y/ak2zLqlgNbjHxvGoXW6lI
+ pSVCpxd8v+Ar9eUZQHJ0YgqkZtwPjUoAwBkhUDF4j3PD22Te39SBFcksdfIKAR2qoRNKI+/RXKFAM
+ 7GsJMLnFRmORzZIEp3KPjIV9zQJ+vAWenbIpNOLVO9WMhY2wIAmZZV+bFsjUMRZra2dC+drKAb02+
+ hwhpj8X8DBxybBDyVRGP61rTJndDjwfVQPH0wGDpmyT0GOUeHDD82AJAj+ht1klOOwgB7vqzxfYXg
+ 2+jRf3AxTO0WQnLS/Y/tIMl2Fzk1DHipFlEw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fmq-1rj4jp2Ge8-011x5j; Fri, 15
+ Sep 2023 12:34:02 +0200
+Message-ID: <e2b069ba-deff-4cfc-992e-ad8e1d9b6f02@gmx.com>
+Date:   Fri, 15 Sep 2023 20:03:55 +0930
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 07/10] dt-bindings: rng: add st,rng-lock-conf
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 01/11] btrfs: add raid stripe tree definitions
 Content-Language: en-US
-To:     Gatien CHEVALLIER <gatien.chevallier@foss.st.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230908165120.730867-1-gatien.chevallier@foss.st.com>
- <20230908165120.730867-8-gatien.chevallier@foss.st.com>
- <20230911150958.GA1255978-robh@kernel.org>
- <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
+ <20230914-raid-stripe-tree-v9-1-15d423829637@wdc.com>
+ <b1330370-3261-4845-8a1b-f639ce7fe6b1@suse.com>
+ <3e1ed108-44c5-4616-922e-542524c0657e@suse.com>
+ <c85e00e7-e9d6-40b0-8bc9-7d966bbd1026@wdc.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <c85e00e7-e9d6-40b0-8bc9-7d966bbd1026@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:PQyKgVL61AGwA7x4odr7CBvbWATSudSElD6aVVzepymjsUq4JnN
+ aTjmWi1sUbiPhxGNTivUs8jnYNKIq7+L5611Nb/5S3zoP7xRECSGBu+17VXh6yjkrA5Uo1L
+ h1h813vplq2Jr+SrkaLVHR8/UTTI7un0MZC5o4Iic7SeE4dpCJm5ZTk97Mw7CmOFglL94y7
+ GBpDAuD+aAISo9Ug0fbjA==
+UI-OutboundReport: notjunk:1;M01:P0:BVjIWWxt7h0=;18YlsnrHP61VHSGsC4lytmZi12q
+ Qp0lzr6W3sHxPpX6CgePYS6xRY/IWdQI6WjrF2dUbHfQmQcSjl06exdJpvoIUei/OJWMMR81B
+ pY+pg8F6stIY2/PrEAttEJsDbHtY+D/vujke1yFcJztW30EVdoPmu5NcmT45ifX4IAbR6VMuh
+ g/cthpMOYTbuoyTs8wD1F2SVkMDPT9viT52wU9mXQZT6KheVSWQw8hQHQCxRF9zywh6ob5vnT
+ zMYQi9ZV/qjep7HZGYIZWEyHRcBfkr1ip70AxVrSdhEBRrBHQ0c1DYeDKs5OudOOJ8VwhuOmM
+ uPQk9E0IVVx0evfCbJQK3thSUpG1iKq4wwAZ9QVetOqGNNa3W/Ktqc5LGudGXqU7Au+N5fJ/j
+ lOiZXPRgVpyvZrb/sq0kbQPXE8tZ9wB5nVNirCq0OyDJM/IkyXvplujNBkljdspkEipyJDKRZ
+ pwn/J6Eby3oYmp/3LO5e4HFoBpsTrCVEgj6/QGNs+2YelBXKWJBlOOi5brxX4lsCN71ocRkD+
+ 5HZxVC1pzOP5iLpmj5ywOij4l9xgAuJ8Vot0SvWUsHiY+8vjMjSsGbl6XdXea3VZ3GMgPmgW/
+ HEpTBf7xBUA41wDOYgg/i9+sgqRwlr8SFuYUy8i40ccgS1Sg6TzaaHCac3d+yjU8x7HqVKR7k
+ yYxAgF3+Rv7bQnLN6qg0blSv+wM3pGZ/JSaQD4IVP5yQGQAQlubrRg5R9sOAQmK5BWzM3CeYt
+ NdRux3hlUDurKwodLmel4SVwXMcULjCsQhbeTbu2wGaIBd5AU34ffoPJFmzAjNmk2cSMiYIdX
+ MvYcA0gdprqwC7yCQ8uYobpuyweEgRPdcM83bNukwM5sUQCmsI+mdHtoySzTwHV3aCClPeiWj
+ MYadBuYLATjkzrgS5n9LirijA6z+2HRTJ9y4axUbFQ5VqYC1t4qeW0bej2KIQO+yOS8GFDK77
+ h4NWSbJA9eVASeRC8WLHoPlribw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 11:28, Gatien CHEVALLIER wrote:
-> Hello Rob,
-> 
-> On 9/11/23 17:09, Rob Herring wrote:
->> On Fri, Sep 08, 2023 at 06:51:17PM +0200, Gatien Chevallier wrote:
->>> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
->>> and RNG_NSCR will be locked. It is supported starting from the RNG
->>> version present in the STM32MP13
+
+
+On 2023/9/15 19:25, Johannes Thumshirn wrote:
+> On 15.09.23 02:27, Qu Wenruo wrote:
+>>>>   =C2=A0 /*
+>>>>   =C2=A0=C2=A0 * Records the overall state of the qgroups.
+>>>>   =C2=A0=C2=A0 * There's only one instance of this key present,
+>>>> @@ -719,6 +724,32 @@ struct btrfs_free_space_header {
+>>>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __le64 num_bitmaps;
+>>>>   =C2=A0 } __attribute__ ((__packed__));
+>>>> +struct btrfs_raid_stride {
+>>>> +=C2=A0=C2=A0=C2=A0 /* The btrfs device-id this raid extent lives on =
+*/
+>>>> +=C2=A0=C2=A0=C2=A0 __le64 devid;
+>>>> +=C2=A0=C2=A0=C2=A0 /* The physical location on disk */
+>>>> +=C2=A0=C2=A0=C2=A0 __le64 physical;
+>>>> +=C2=A0=C2=A0=C2=A0 /* The length of stride on this disk */
+>>>> +=C2=A0=C2=A0=C2=A0 __le64 length;
 >>
->> This should be squashed into the prior binding patch.
+>> Forgot to mention, for btrfs_stripe_extent structure, its key is
+>> (PHYSICAL, RAID_STRIPE_KEY, LENGTH) right?
 >>
->>>
->>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->>> ---
->>>   .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
->>>   1 file changed, 14 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->>> index 59abdc85a9fb..0055f14a8e3f 100644
->>> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->>> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->>> @@ -37,6 +37,20 @@ required:
->>>     - reg
->>>     - clocks
->>>   
->>> +allOf:
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            enum:
->>> +              - st,stm32mp13-rng
->>> +    then:
->>> +      properties:
->>> +        st,rng-lock-conf:
->>> +          type: boolean
->>> +          description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
->>> +                       RNG_NSCR will be locked.
->>
->> Define the property at the top-level and then restrict its presence in
->> a if/then schema.
->>
-> 
-> Can you please point me to an example of such case. I can't find a way
-> to define at the top-level the property then restrict it to specific
-> compatibles.
+>> So is the length in the btrfs_raid_stride duplicated and we can save 8
+>> bytes?
+>
+> Nope. The length in the key is the stripe length. The length in the
+> stride is the stride length.
+>
+> Here's an example for why this is needed:
+>
+> wrote 32768/32768 bytes at offset 0
+> XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> wrote 131072/131072 bytes at offset 0
+> XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> wrote 8192/8192 bytes at offset 65536
+> XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>
+> [snip]
+>
+>           item 0 key (XXXXXX RAID_STRIPE_KEY 32768) itemoff XXXXX itemsi=
+ze 32
+>                           encoding: RAID0
+>                           stripe 0 devid 1 physical XXXXXXXXX length 327=
+68
+>           item 1 key (XXXXXX RAID_STRIPE_KEY 131072) itemoff XXXXX
+> itemsize 80
 
-You can check my slides from the talks about not reaching 10 iterations
-of bindings patches.
+Maybe you want to put the whole RAID_STRIPE_KEY definition into the header=
+s.
 
-Or open example-schema (this should be your starting point):
-https://elixir.bootlin.com/linux/v5.19/source/Documentation/devicetree/bindings/example-schema.yaml#L212
+In fact my initial assumption of such case would be something like this:
+
+            item 0 key (X+0 RAID_STRIPE 32K)
+		stripe 0 devid 1 physical XXXXX len 32K
+	   item 1 key (X+32K RAID_STRIPE 32K)
+		stripe 0 devid 1 physical XXXXX + 32K len 32K
+	   item 2 key (X+64K RAID_STRIPE 64K)
+		stripe 0 devid 2 physical YYYYY len 64K
+	   item 3 key (X+128K RAID_STRIPE 32K)
+		stripe 0 devid 1 physical XXXXX + 64K len 32K
+            ...
+
+AKA, each RAID_STRIPE_KEY would only contain a continous physical stripe.
+And in above case, item 0 and item 1 can be easily merged, also length
+can be removed.
+
+And this explains why the lookup code is more complex than I initially
+thought.
+
+BTW, would the above layout make the code a little easier?
+Or is there any special reason for the existing one layout?
+
+Thank,
+Qu
 
 
-Also:
-https://elixir.bootlin.com/linux/v6.4-rc7/source/Documentation/devicetree/bindings/net/qcom,ipa.yaml#L174
-> 
-> Else I'd change
-> additionalProperties :false to
-> unevaluatedProperties: false
-> 
-> so the definition of the property is seen.
+>                           encoding: RAID0
+>                           stripe 0 devid 1 physical XXXXXXXXX length 327=
+68
+>                           stripe 1 devid 2 physical XXXXXXXXX length 655=
+36
+>                           stripe 2 devid 1 physical XXXXXXXXX length 327=
+68
 
-No, why? Definition is there when you move it to the top as asked.
+This current layout has another problem.
+For RAID10 the interpretation of the RAID_STRIPE item can be very complex.
+While
 
-Best regards,
-Krzysztof
-
+>           item 2 key (XXXXXX RAID_STRIPE_KEY 8192) itemoff XXXXX itemsiz=
+e 32
+>                           encoding: RAID0
+>                           stripe 0 devid 1 physical XXXXXXXXX length 819=
+2
+>
+> Without the length in the stride, we don't know when to select the next
+> stride in item 1 above.
