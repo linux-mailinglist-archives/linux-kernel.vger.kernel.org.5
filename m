@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF507A1DD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7C17A1DDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbjIOMBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S234488AbjIOMCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjIOMBx (ORCPT
+        with ESMTP id S232836AbjIOMCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:01:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06B1CD8;
-        Fri, 15 Sep 2023 05:01:48 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FAvu8n017595;
-        Fri, 15 Sep 2023 12:01:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=KneCxW+fsSm5iPKMXaWR7d8pfoct1Dtf5/CQtyzoB0s=;
- b=ejcIUTgAo3wRGF9aIuu2a/3TYFeSf7dS1xSiHSDLjKCOGaYeWqs6WYOnRpJff+2JvmMh
- kUqleIdKs4mYv+9ffPqxGTzDsYPIhNPaGclkVMlTvR16TbKQj2vPicOOmsFFiaOLBmC9
- l2IQtuf1wtEDVa97S4+uoM+G8bMn6O98IldA4x2aWOu2X9wFNfoQ8moS7UV8lQyGIxVv
- r+g1Kej870wNOUzghz1OAc2e4oy2HNDVjDoQRS1uYwGRX+G7pBUmBKZaest5eDZ9uqZV
- wWBhHfA/A+a1OnWN+pPyU/8AhBlPm1Hr+ENOe/ZGRRlOcKzJknVvRfI3pFR463LurfHN kg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g3grw02-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 12:01:39 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FC1bP8020122
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 12:01:37 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 15 Sep 2023 05:01:34 -0700
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-To:     <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <srinivas.kandagatla@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-Subject: [PATCH V2 1/1] dt-bindings: nvmem: Add compatible for IPQ5018
-Date:   Fri, 15 Sep 2023 17:31:20 +0530
-Message-ID: <20230915120120.805317-1-quic_srichara@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 15 Sep 2023 08:02:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2164E1FF1;
+        Fri, 15 Sep 2023 05:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694779315; x=1726315315;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ge0rc2WPYKSx8MYcdUbDDS1gOtJoE56w9sC9a+IVtOI=;
+  b=cKo8F8WfnP++cJzvCn4A6YMhijkQjv9zpog32B/S5QzXAkaPi40yNfsY
+   N8i9Be0MSdKrXQ8MZN6ntXIhXJmGmEYM3k4sUnXL7soqgE+dTdkkeoajk
+   bZ+cf7JG83Tz6MHA/6bhOb6ps9clzfQeocYs7AlSEyIk90rH39t5ZgPcj
+   ZrLpRVEDtlFPf44Qt6VhnYv/j6o+WMqjvWNCuoKZYfotaWRx4eUO8eHJD
+   2mJNMHdlxp4sh8FlW+i6iQetZxhSfmrdls1pLRGNTzgdmaCELXBkN19Kq
+   jv4/7fr/OPm2sPma6XYAgvVwQ7J0Tdh053Vigr+zm7+5gjb/zj7NYV6Q2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="378145904"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="378145904"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:01:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="774292728"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="774292728"
+Received: from srdoo-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.38.99])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:01:50 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 00/10] Add PCIe Bandwidth Controller
+Date:   Fri, 15 Sep 2023 15:01:32 +0300
+Message-Id: <20230915120142.32987-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qyyHGceH-G4dcabm3VP3xyGmrssdA_bv
-X-Proofpoint-ORIG-GUID: qyyHGceH-G4dcabm3VP3xyGmrssdA_bv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_08,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxlogscore=847 phishscore=0 impostorscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150107
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the QFPROM on IPQ5018.
+Hi all,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
----
- [v2] Added Reviewed tag
+This series adds PCIe bandwidth controller (bwctrl) and associated PCIe
+cooling driver to the thermal core side for limiting PCIe Link Speed
+due to thermal reasons. PCIe bandwidth controller is a PCI express bus
+port service driver. A cooling device is created for each port the
+service driver finds if they support changing speeds.
 
- Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+This series only adds support for controlling PCIe Link Speed.
+Controlling PCIe Link Width might also be useful but AFAIK, there is no
+mechanism for that until PCIe 6.0 (L0p). Based on feedback for v1, the
+thermal/cooling device side prefers Link Speed and Link Width to be
+separate cooling devices [1] which is taken into account in naming the
+cooling device for Link Speed but the Link Width one is not added yet
+as it would not be able to control anything at the moment.
 
-diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-index 8740938c32eb..e26621ac1ca7 100644
---- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -18,6 +18,7 @@ properties:
-       - enum:
-           - qcom,apq8064-qfprom
-           - qcom,apq8084-qfprom
-+          - qcom,ipq5018-qfprom
-           - qcom,ipq5332-qfprom
-           - qcom,ipq6018-qfprom
-           - qcom,ipq8064-qfprom
+bwctrl is built on top of BW notifications revert. I'm just not sure
+what is the best practice when re-adding some old functionality in a
+modified form so please let me know if I need to somehow alter that
+patch.
+
+[1] https://lore.kernel.org/linux-pci/f35db90cd67adf4b0f48cd6f2a6ad8fbd0c1a679.camel@linux.intel.com/
+
+v2:
+- Adds LNKCTL2 to RMW safe list in Documentation/PCI/pciebus-howto.rst
+- Renamed cooling devices from PCIe_Port_* to PCIe_Port_Link_Speed_* in
+  order to plan for possibility of adding Link Width cooling devices
+  later on
+- Moved struct thermal_cooling_device declaration to the correct patch
+- Small tweaks to Kconfig texts
+- Series rebased to resolve conflict (in the selftest list)
+
+Ilpo Järvinen (10):
+  PCI: Protect Link Control 2 Register with RMW locking
+  drm/radeon: Use RMW accessors for changing LNKCTL2
+  drm/amdgpu: Use RMW accessors for changing LNKCTL2
+  drm/IB/hfi1: Use RMW accessors for changing LNKCTL2
+  PCI: Store all PCIe Supported Link Speeds
+  PCI: Cache PCIe device's Supported Speed Vector
+  PCI/LINK: Re-add BW notification portdrv as PCIe BW controller
+  PCI/bwctrl: Add "controller" part into PCIe bwctrl
+  thermal: Add PCIe cooling driver
+  selftests/pcie_bwctrl: Create selftests
+
+ Documentation/PCI/pciebus-howto.rst           |   8 +-
+ MAINTAINERS                                   |   8 +
+ drivers/gpu/drm/amd/amdgpu/cik.c              |  41 +--
+ drivers/gpu/drm/amd/amdgpu/si.c               |  41 +--
+ drivers/gpu/drm/radeon/cik.c                  |  40 +--
+ drivers/gpu/drm/radeon/si.c                   |  40 +--
+ drivers/infiniband/hw/hfi1/pcie.c             |  30 +-
+ drivers/pci/pcie/Kconfig                      |   9 +
+ drivers/pci/pcie/Makefile                     |   1 +
+ drivers/pci/pcie/bwctrl.c                     | 309 ++++++++++++++++++
+ drivers/pci/pcie/portdrv.c                    |   9 +-
+ drivers/pci/pcie/portdrv.h                    |  10 +-
+ drivers/pci/probe.c                           |  38 ++-
+ drivers/pci/remove.c                          |   2 +
+ drivers/thermal/Kconfig                       |  10 +
+ drivers/thermal/Makefile                      |   2 +
+ drivers/thermal/pcie_cooling.c                | 107 ++++++
+ include/linux/pci-bwctrl.h                    |  33 ++
+ include/linux/pci.h                           |   3 +
+ include/uapi/linux/pci_regs.h                 |   1 +
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/pcie_bwctrl/Makefile  |   2 +
+ .../pcie_bwctrl/set_pcie_cooling_state.sh     | 122 +++++++
+ .../selftests/pcie_bwctrl/set_pcie_speed.sh   |  67 ++++
+ 24 files changed, 799 insertions(+), 135 deletions(-)
+ create mode 100644 drivers/pci/pcie/bwctrl.c
+ create mode 100644 drivers/thermal/pcie_cooling.c
+ create mode 100644 include/linux/pci-bwctrl.h
+ create mode 100644 tools/testing/selftests/pcie_bwctrl/Makefile
+ create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
+ create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
+
 -- 
-2.34.1
+2.30.2
 
