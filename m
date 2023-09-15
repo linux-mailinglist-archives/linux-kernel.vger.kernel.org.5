@@ -2,262 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26397A1CC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E81C7A1CBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjIOKu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S233839AbjIOKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbjIOKuU (ORCPT
+        with ESMTP id S233775AbjIOKuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:50:20 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F5E101
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694775003; x=1726311003;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DKjC95D5FLYGJ2k5Y7Td//OS6gmY6yBLKMX5iys/gPw=;
-  b=jr/52YhEHWX6XuOyFzQpnwECkY669hpoiUsXyt18kNZYDSRKOQum5RxK
-   tbVFRE2pxJU7poGZQwwqFY2bLDsaJadIo9RovedPBXKUyaPD9WpqWfSGL
-   m99LmODrLV+k4DVx1TkmZwnmkfB4/Ulwr8OadZfhGx3RYrEjt9h3F1LJo
-   mxELTV0GrK1KzSdOO44g2C4fP1yIo71Ko04nXF6l82GUia1wmBypGIcKl
-   7vih2fwl9yUTO1mPjsjMOdVaP08y1RQcWL77jaubigxLvKaDIRladkHFY
-   XGCX2zXruoiBmNAKlS8hKbuWxqfimlFs7hLoM5dCtXK853fNWiOhcHw5O
-   Q==;
-X-CSE-ConnectionGUID: 73qnCoHmSNKYnTQ8TG6wWw==
-X-CSE-MsgGUID: lP8R/OL0QNuUXb1YEg9LQQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="235382798"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Sep 2023 03:49:57 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 15 Sep 2023 03:49:47 -0700
-Received: from che-lt-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 15 Sep 2023 03:49:40 -0700
-From:   Manikandan Muralidharan <manikandan.m@microchip.com>
-To:     <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <lee@kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <Hari.PrasathGE@microchip.com>,
-        <Balamanikandan.Gunasundar@microchip.com>,
-        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
-        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
-        <Balakrishnan.S@microchip.com>,
-        Manikandan Muralidharan <manikandan.m@microchip.com>,
-        Durai Manickam KR <durai.manickamkr@microchip.com>
-Subject: [PATCH v5 8/8] drm: atmel-hlcdc: add support for DSI output formats
-Date:   Fri, 15 Sep 2023 16:18:49 +0530
-Message-ID: <20230915104849.187146-9-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230915104849.187146-1-manikandan.m@microchip.com>
-References: <20230915104849.187146-1-manikandan.m@microchip.com>
+        Fri, 15 Sep 2023 06:50:13 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE3D18D
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:49:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso2363395a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694774991; x=1695379791; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6A7AJrKsm3kj4VKQZj/CxbnuNiC61KN1keejYnfTK6I=;
+        b=NIUA9Er7wq83NeastDeLmwWiChHbJnuYQpRsKuEWTF7PPteT8tiG24vHhpGu9KUnw7
+         SZ3/oYitqZE/FhGnmX0iaEHeD4A54TFY48Ebs3pVHFlQiewkpD4gwksuupoQghm4nO+l
+         ptF0mYpTBn8FbOxJ+91yKH1k4YGMmW3cFO1e9HiwNs8TEa6J4O/Wgst73gZQEz/2ryam
+         znwEHROZcctx8Gx2R+TL1+kYDTo9UoSWiluDbrZyvTGRKORYZHUNJGxo65AuSrMsdF0A
+         qqcnPYgdV6dqS/TLESanDAkyQnCR1fprVrpZyzyhy1WrukyqbbIIXSG7huKOy4qixv1C
+         Jqiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694774991; x=1695379791;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6A7AJrKsm3kj4VKQZj/CxbnuNiC61KN1keejYnfTK6I=;
+        b=LX1r5SYwWUI19YvdDE/YhCx0DSIgDAJFgC9X9sFmKVjzh7MW46R7gUbuXUK1egoC3V
+         6T8mC6wveS4rn2fbBMdm6xVgmc8VHdyyIkZ+iQ4YgT07BN/TM0uFIYVn3MU4ygvqIoDu
+         BvnGIbi1HYDIp23+UDn2gPNWUCG6juZ6UPSAtXOXOu6Gkf9kSdNNt+eP9YxzWeUEeQzt
+         Mhi1UafW54CP/fmFg5XgunNMex4o6HqjF+MGopQnvdbJH7n6PEIuYwhVNg+GrRBqgfKP
+         hbfwhsNx7Ev3MomLSXTRI9ZWxDCCYtrOWVZVx0X7DNfhWKhV/16lceWKogVt25WbiLMh
+         NewQ==
+X-Gm-Message-State: AOJu0YxcJqR8Zf7kQA8wEM6CCudXSlV77kVQgM7yz3dc7wKHRpUxXWeE
+        w4GghaBX7dqFRU4FNRpMn56E6Q==
+X-Google-Smtp-Source: AGHT+IHhSMQp1tp0GYzPk0wOrNW4u1uBvsA1qi4P5f35BkrGd6Ib7iszOkHLTk/A2gdvG/WGwnxlcA==
+X-Received: by 2002:aa7:d4c5:0:b0:523:363e:f6e3 with SMTP id t5-20020aa7d4c5000000b00523363ef6e3mr1069556edr.15.1694774991395;
+        Fri, 15 Sep 2023 03:49:51 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id v15-20020a056402348f00b005308a170845sm639680edc.29.2023.09.15.03.49.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:49:50 -0700 (PDT)
+Message-ID: <09783255-332f-5ea8-9b5f-a37facb04fa3@linaro.org>
+Date:   Fri, 15 Sep 2023 12:49:48 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 21/42] dt-bindings: net: Add Cirrus EP93xx
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+ <20230915-ep93xx-v4-21-a1d779dcec10@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915-ep93xx-v4-21-a1d779dcec10@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the following DPI mode if the encoder type
-is DSI as per the XLCDC IP datasheet:
-- 16BPPCFG1
-- 16BPPCFG2
-- 16BPPCFG3
-- 18BPPCFG1
-- 18BPPCFG2
-- 24BPP
+On 15/09/2023 10:11, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
 
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-[durai.manickamkr@microchip.com: update output format using is_xlcdc flag]
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 123 +++++++++++++-----
- 1 file changed, 88 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-index b0051ec02f7f..f59eb65000da 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
-@@ -295,11 +295,18 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
- 
- }
- 
--#define ATMEL_HLCDC_RGB444_OUTPUT	BIT(0)
--#define ATMEL_HLCDC_RGB565_OUTPUT	BIT(1)
--#define ATMEL_HLCDC_RGB666_OUTPUT	BIT(2)
--#define ATMEL_HLCDC_RGB888_OUTPUT	BIT(3)
--#define ATMEL_HLCDC_OUTPUT_MODE_MASK	GENMASK(3, 0)
-+#define ATMEL_HLCDC_RGB444_OUTPUT		BIT(0)
-+#define ATMEL_HLCDC_RGB565_OUTPUT		BIT(1)
-+#define ATMEL_HLCDC_RGB666_OUTPUT		BIT(2)
-+#define ATMEL_HLCDC_RGB888_OUTPUT		BIT(3)
-+#define ATMEL_HLCDC_DPI_RGB565C1_OUTPUT		BIT(4)
-+#define ATMEL_HLCDC_DPI_RGB565C2_OUTPUT		BIT(5)
-+#define ATMEL_HLCDC_DPI_RGB565C3_OUTPUT		BIT(6)
-+#define ATMEL_HLCDC_DPI_RGB666C1_OUTPUT		BIT(7)
-+#define ATMEL_HLCDC_DPI_RGB666C2_OUTPUT		BIT(8)
-+#define ATMEL_HLCDC_DPI_RGB888_OUTPUT		BIT(9)
-+#define ATMEL_HLCDC_OUTPUT_MODE_MASK		GENMASK(3, 0)
-+#define ATMEL_XLCDC_OUTPUT_MODE_MASK		GENMASK(9, 0)
- 
- static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- {
-@@ -313,53 +320,99 @@ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
- 	if (!encoder)
- 		encoder = connector->encoder;
- 
--	switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
--	case 0:
--		break;
--	case MEDIA_BUS_FMT_RGB444_1X12:
--		return ATMEL_HLCDC_RGB444_OUTPUT;
--	case MEDIA_BUS_FMT_RGB565_1X16:
--		return ATMEL_HLCDC_RGB565_OUTPUT;
--	case MEDIA_BUS_FMT_RGB666_1X18:
--		return ATMEL_HLCDC_RGB666_OUTPUT;
--	case MEDIA_BUS_FMT_RGB888_1X24:
--		return ATMEL_HLCDC_RGB888_OUTPUT;
--	default:
--		return -EINVAL;
--	}
--
--	for (j = 0; j < info->num_bus_formats; j++) {
--		switch (info->bus_formats[j]) {
--		case MEDIA_BUS_FMT_RGB444_1X12:
--			supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+	if (encoder->encoder_type == DRM_MODE_ENCODER_DSI) {
-+		/*
-+		 * atmel-hlcdc to support DSI formats with DSI video pipeline
-+		 * when DRM_MODE_ENCODER_DSI type is set by
-+		 * connector driver component.
-+		 */
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
- 		case MEDIA_BUS_FMT_RGB565_1X16:
--			supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB666_1X18:
--			supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+			return ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
- 		case MEDIA_BUS_FMT_RGB888_1X24:
--			supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
--			break;
-+			return ATMEL_HLCDC_DPI_RGB888_OUTPUT;
- 		default:
-+			return -EINVAL;
-+		}
-+
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |=
-+					ATMEL_HLCDC_DPI_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	} else {
-+		switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
-+		case 0:
- 			break;
-+		case MEDIA_BUS_FMT_RGB444_1X12:
-+			return ATMEL_HLCDC_RGB444_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB565_1X16:
-+			return ATMEL_HLCDC_RGB565_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB666_1X18:
-+			return ATMEL_HLCDC_RGB666_OUTPUT;
-+		case MEDIA_BUS_FMT_RGB888_1X24:
-+			return ATMEL_HLCDC_RGB888_OUTPUT;
-+		default:
-+			return -EINVAL;
- 		}
--	}
- 
-+		for (j = 0; j < info->num_bus_formats; j++) {
-+			switch (info->bus_formats[j]) {
-+			case MEDIA_BUS_FMT_RGB444_1X12:
-+				supported_fmts |= ATMEL_HLCDC_RGB444_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB565_1X16:
-+				supported_fmts |= ATMEL_HLCDC_RGB565_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB666_1X18:
-+				supported_fmts |= ATMEL_HLCDC_RGB666_OUTPUT;
-+				break;
-+			case MEDIA_BUS_FMT_RGB888_1X24:
-+				supported_fmts |= ATMEL_HLCDC_RGB888_OUTPUT;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	}
- 	return supported_fmts;
- }
- 
- static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- {
--	unsigned int output_fmts = ATMEL_HLCDC_OUTPUT_MODE_MASK;
-+	unsigned int output_fmts;
- 	struct atmel_hlcdc_crtc_state *hstate;
- 	struct drm_connector_state *cstate;
- 	struct drm_connector *connector;
--	struct atmel_hlcdc_crtc *crtc;
-+	struct atmel_hlcdc_crtc *crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
- 	int i;
-+	bool is_xlcdc = crtc->dc->desc->is_xlcdc;
- 
--	crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
-+	output_fmts = is_xlcdc ? ATMEL_XLCDC_OUTPUT_MODE_MASK :
-+		      ATMEL_HLCDC_OUTPUT_MODE_MASK;
- 
- 	for_each_new_connector_in_state(state->state, connector, cstate, i) {
- 		unsigned int supported_fmts = 0;
-@@ -380,7 +433,7 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
- 
- 	hstate = drm_crtc_state_to_atmel_hlcdc_crtc_state(state);
- 	hstate->output_mode = fls(output_fmts) - 1;
--	if (crtc->dc->desc->is_xlcdc) {
-+	if (is_xlcdc) {
- 		/* check if MIPI DPI bit needs to be set */
- 		if (fls(output_fmts) > 3) {
- 			hstate->output_mode -= 4;
--- 
-2.25.1
+
+> +  mdio:
+> +    $ref: mdio.yaml#
+> +    unevaluatedProperties: false
+> +    description: optional node for embedded MDIO controller
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - phy-handle
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    ethernet@80010000 {
+> +        compatible = "cirrus,ep9301-eth";
+> +        reg = <0x80010000 0x10000>;
+> +        interrupt-parent = <&vic1>;
+> +        interrupts = <7>;
+> +        phy-handle = <&phy0>;
+
+Would be nice to extend the example with mdio, to be complete as much as
+possible. Anyway:
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
