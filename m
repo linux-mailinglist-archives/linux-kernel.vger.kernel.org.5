@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B35A7A15A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFC97A15A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbjIOFqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S232131AbjIOFrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbjIOFqp (ORCPT
+        with ESMTP id S231997AbjIOFrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:46:45 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77287270A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:39 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so3901128a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:39 -0700 (PDT)
+        Fri, 15 Sep 2023 01:47:14 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18712723
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:50 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6c0bbbbad81so1028180a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1694756798; x=1695361598; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dBFecL9CWJp1g51f9tBvXZNbnBULvxEsI9jL0YhvbgI=;
-        b=VFpOepHyhERpGBZraBCMkTsmwtJXinh95opofI3a4yui2AxBH/On8d1BeVKLiT4hrK
-         BBNicKwuLfjRmWo7KFbCFb5ruwxAzFZTlXPwE3zTT65SzRapaBVAzOVEdUYEVZq2u1ht
-         zd+7bgo5EPY9J69KftU/scB9i6PSLhQq3STqdFl1Tv8gZ9GHLzSV/xt+cEw3bbVNOMce
-         zHCJ6pDN8BtgJrbGkSmzgf/MKHZSF0UZHHC7wBCEUB4kidM+KYlGgGbhbw15hAaBbQXE
-         Inh2942nc5OaLQGQh29gu5HwzpewqjIcWBcgj28oQzAkwcm6eLac8o8lYIw47PaMyWjU
-         zQOw==
+        d=bytedance.com; s=google; t=1694756810; x=1695361610; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/CZRQ4CQ6CK+YkV5XceF78ucYRwapU0IqEIE5QvZWaU=;
+        b=Zz+uMINPeTq/PinHIQ6ze0FrNAmyBRdXSSBPWVQKf4y+ALbKu2w4HqPU/p3ae9qmGb
+         VzJ6xWNvRQnmeXYvL4V941hWdV8OUORhreFef9ybd3XWnagY4kFHG2lp4HN7amAzoXmd
+         NipFyr2+4dP3RH6MW1x58aU0Fzg+FYWnwuF2qjCpS1wz+TIjmXMaEmnsem5snXTuAUrW
+         o34gcjGhU5fB+e4zNZ/q7P2U1d/pzfgsU91e2arzXSjUSFul1XiXzGwo+JarxiIFjhlk
+         2ZJNKUFTCHmkz9MEmZa/LK4ljxOLA8iVn0W+kONL9UMP9sO5xjyX+DP0/AM0MMS05Z7W
+         vdVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694756798; x=1695361598;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dBFecL9CWJp1g51f9tBvXZNbnBULvxEsI9jL0YhvbgI=;
-        b=jVB+9eXQsaXcRh6OsQPD91YCP9Y7HXBk2xqEp1uMpKtcsUgf4QBEJ91jx4o1naAtrN
-         wvskTrwGsoMSxpC3ZSPvqb6qilq/afD7Df4tAcriLxxUChO7arpHzeDg2iMHhPaE98/3
-         YOKNqYghaGHyTC8wbVWHEC5scZBzzJYSI6/5AY0yiU2EczkdD/8AXla6E3yL5XaaCRsU
-         Fwt9Djh0W2e30CWoLiMVhird4eMTdZD21gjcTNu2scR7HGMp7Nxj/nW0+OgiW2eRt+8z
-         fI9QBE0Ci2PMggc3dIwhFDgsL7d8RwMdvR/OokyNDYMnQvk/GArWO0vpXUzUu0/lRYYi
-         58ow==
-X-Gm-Message-State: AOJu0Yxm4q+iSXZAr5PbhoR9gx1/bsmus0NruuaHKTguPKGsivPKsHfh
-        68Fhia6tHopXVn9V/rkR1Z4o1Q==
-X-Google-Smtp-Source: AGHT+IEODL+RpbrigRr6ILUXdOUTmvcIqPQeQU6mBp3NXEa+wUaHYHJhFKWyE/sQXCzyI5YAWAIO1Q==
-X-Received: by 2002:a05:6402:3485:b0:522:c226:34ea with SMTP id v5-20020a056402348500b00522c22634eamr4759852edc.7.1694756797898;
-        Thu, 14 Sep 2023 22:46:37 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id u23-20020aa7d997000000b0052a3edff5c3sm1742625eds.87.2023.09.14.22.46.35
+        d=1e100.net; s=20230601; t=1694756810; x=1695361610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/CZRQ4CQ6CK+YkV5XceF78ucYRwapU0IqEIE5QvZWaU=;
+        b=exdjlECcIYIjztkidq7DuSVzN/2JoIVNpRRVe+m0b3Zxi5pGdn7M3nlcUDLOrFYa8T
+         P44n4iQdecpKOx6KFzU6QdHL/derXBm+j7HmJW2g0IFwXcDzr4hQ5RaNvubml76knqtA
+         thZp799EFH7mecTKWa9QbQ+/1ruglgROXzyeyE3dPGuTFTA20nSfIj4w6Tohnh/aP/3r
+         JUlo27/7D0/pd1WbRVg354ALfpoJ3Po2us7isjWPBWLtzRtH1IraykG2tUfs83nft6/x
+         3g/jPEOcQKx1McicoKrgNwXzZFkD0SZE3DlTJt0GwH7EOWc4jThRpoka9yDwkWsogf1T
+         1jBw==
+X-Gm-Message-State: AOJu0YypPFNskomVOstD0Xwe6AtYuAVOavDEK2SENvPa7LVBcq6R4hAl
+        PYLel7HuXZvVbO9Ha9JSI7CY/g==
+X-Google-Smtp-Source: AGHT+IEAf62T3zogBmbVWVikOJPTGmIh1M7XLPIKHovm7Mf2QTBEXIlgbiBNth20Wm493LlEXcFXGQ==
+X-Received: by 2002:a9d:7316:0:b0:6bc:63ca:a245 with SMTP id e22-20020a9d7316000000b006bc63caa245mr579623otk.10.1694756809901;
+        Thu, 14 Sep 2023 22:46:49 -0700 (PDT)
+Received: from [10.84.145.144] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id j4-20020aa78dc4000000b00686fe7b7b48sm2190209pfr.121.2023.09.14.22.46.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 22:46:37 -0700 (PDT)
-Message-ID: <305ec65a-bc73-62fc-84a4-4f84ccd1ff1a@tuxon.dev>
-Date:   Fri, 15 Sep 2023 08:46:35 +0300
+        Thu, 14 Sep 2023 22:46:49 -0700 (PDT)
+Message-ID: <8f388b8f-bc19-5ad1-00ee-e67cdcdd9d4f@bytedance.com>
+Date:   Fri, 15 Sep 2023 13:46:43 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 07/37] clk: renesas: rzg2l: lock around writes to mux
- register
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-8-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdXo14JwdJE+b1zdnJ7Re5cn8ugzxueD1a=-n=PUQz7VKw@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdXo14JwdJE+b1zdnJ7Re5cn8ugzxueD1a=-n=PUQz7VKw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [External] Re: [PATCH bpf-next v2 5/6] bpf: teach the verifier to
+ enforce css_iter and process_iter in RCU CS
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
+        ast@kernel.org
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
+ <20230912070149.969939-6-zhouchuyi@bytedance.com>
+ <4c15c9fc-7c9f-9695-5c67-d3f214d04bd9@bytedance.com>
+ <1f9cae15-979c-c049-78a9-f89d5cd1b53e@bytedance.com>
+ <CAEf4BzZ18pjmav45mxhQ9eigJuAWnowgSm=+c==8dY0AUm2WdQ@mail.gmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CAEf4BzZ18pjmav45mxhQ9eigJuAWnowgSm=+c==8dY0AUm2WdQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,95 +81,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello.
 
+在 2023/9/15 07:26, Andrii Nakryiko 写道:
+> On Thu, Sep 14, 2023 at 1:56 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>
+>>
+>>
+>> 在 2023/9/13 21:53, Chuyi Zhou 写道:
+>>> Hello.
+>>>
+>>> 在 2023/9/12 15:01, Chuyi Zhou 写道:
+>>>> css_iter and process_iter should be used in rcu section. Specifically, in
+>>>> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
+>>>> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
+>>>> use them directly.
+>>>>
+>>>> This patch checks whether we are in rcu cs before we want to invoke
+>>>> bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
+>>>> mark_stack_slots_iter(). If the rcu protection is guaranteed, we would
+>>>> let st->type = PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() will
+>>>> reject if reg->type is UNTRUSTED.
+>>>
+>>> I use the following BPF Prog to test this patch:
+>>>
+>>> SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+>>> int iter_task_for_each_sleep(void *ctx)
+>>> {
+>>>       struct task_struct *task;
+>>>       struct task_struct *cur_task = bpf_get_current_task_btf();
+>>>
+>>>       if (cur_task->pid != target_pid)
+>>>           return 0;
+>>>       bpf_rcu_read_lock();
+>>>       bpf_for_each(process, task) {
+>>>           bpf_rcu_read_unlock();
+>>>           if (task->pid == target_pid)
+>>>               process_cnt += 1;
+>>>           bpf_rcu_read_lock();
+>>>       }
+>>>       bpf_rcu_read_unlock();
+>>>       return 0;
+>>> }
+>>>
+>>> Unfortunately, we can pass the verifier.
+>>>
+>>> Then I add some printk-messages before setting/clearing state to help
+>>> debug:
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index d151e6b43a5f..35f3fa9471a9 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -1200,7 +1200,7 @@ static int mark_stack_slots_iter(struct
+>>> bpf_verifier_env *env,
+>>>                   __mark_reg_known_zero(st);
+>>>                   st->type = PTR_TO_STACK; /* we don't have dedicated reg
+>>> type */
+>>>                   if (is_iter_need_rcu(meta)) {
+>>> +                       printk("mark reg_addr : %px", st);
+>>>                           if (in_rcu_cs(env))
+>>>                                   st->type |= MEM_RCU;
+>>>                           else
+>>> @@ -11472,8 +11472,8 @@ static int check_kfunc_call(struct
+>>> bpf_verifier_env *env, struct bpf_insn *insn,
+>>>                           return -EINVAL;
+>>>                   } else if (rcu_unlock) {
+>>>                           bpf_for_each_reg_in_vstate(env->cur_state,
+>>> state, reg, ({
+>>> +                               printk("clear reg_addr : %px MEM_RCU :
+>>> %d PTR_UNTRUSTED : %d\n ", reg, reg->type & MEM_RCU, reg->type &
+>>> PTR_UNTRUSTED);
+>>>                                   if (reg->type & MEM_RCU) {
+>>> -                                       printk("clear reg addr : %lld",
+>>> reg);
+>>>                                           reg->type &= ~(MEM_RCU |
+>>> PTR_MAYBE_NULL);
+>>>                                           reg->type |= PTR_UNTRUSTED;
+>>>                                   }
+>>>
+>>>
+>>> The demsg log:
+>>>
+>>> [  393.705324] mark reg_addr : ffff88814e40e200
+>>>
+>>> [  393.706883] clear reg_addr : ffff88814d5f8000 MEM_RCU : 0
+>>> PTR_UNTRUSTED : 0
+>>>
+>>> [  393.707353] clear reg_addr : ffff88814d5f8078 MEM_RCU : 0
+>>> PTR_UNTRUSTED : 0
+>>>
+>>> [  393.708099] clear reg_addr : ffff88814d5f80f0 MEM_RCU : 0
+>>> PTR_UNTRUSTED : 0
+>>> ....
+>>> ....
+>>>
+>>> I didn't see ffff88814e40e200 is cleared as expected because
+>>> bpf_for_each_reg_in_vstate didn't find it.
+>>>
+>>> It seems when we are doing bpf_read_unlock() in the middle of iteration
+>>> and want to clearing state through bpf_for_each_reg_in_vstate, we can
+>>> not find the previous reg which we marked MEM_RCU/PTR_UNTRUSTED in
+>>> mark_stack_slots_iter().
+>>>
+>>
+>> bpf_get_spilled_reg will skip slots if they are not STACK_SPILL, but in
+>> mark_stack_slots_iter() we has marked the slots *STACK_ITER*
+>>
+>> With the following change, everything seems work OK.
+>>
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index a3236651ec64..83c5ecccadb4 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -387,7 +387,7 @@ struct bpf_verifier_state {
+>>
+>>    #define bpf_get_spilled_reg(slot, frame)                               \
+>>           (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
+>> -         (frame->stack[slot].slot_type[0] == STACK_SPILL))             \
+>> +         (frame->stack[slot].slot_type[0] == STACK_SPILL ||
+>> frame->stack[slot].slot_type[0] == STACK_ITER))            \
+>>            ? &frame->stack[slot].spilled_ptr : NULL)
+>>
+>> I am not sure whether this would harm some logic implicitly when using
+>> bpf_get_spilled_reg/bpf_for_each_spilled_reg in other place. If so,
+>> maybe we should add a extra parameter to control the picking behaviour.
+>>
+>> #define bpf_get_spilled_reg(slot, frame, stack_type)
+>>                          \
+>>          (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
+>>            (frame->stack[slot].slot_type[0] == stack_type))              \
+>>           ? &frame->stack[slot].spilled_ptr : NULL)
+>>
+>> Thanks.
+> 
+> I don't think it's safe to just make bpf_get_spilled_reg, and
+> subsequently bpf_for_each_reg_in_vstate and bpf_for_each_spilled_reg
+> just suddenly start iterating iterator states and/or dynptrs. At least
+> some of existing uses of those assume they are really working just
+> with registers.
 
-On 14.09.2023 15:13, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> SD MUX output (SD0) is further divided by 4 in G2{L, UL}. The divided
->> clock is SD0_DIV4. SD0_DIV4 is registered with CLK_SET_RATE_PARENT which
->> means a rate request for it is propagated to the MUX and could reach
->> rzg2l_cpg_sd_clk_mux_set_parent() concurrently with the users of SD0.
->> Add proper locking to avoid concurrent access on SD MUX set rate
->> registers.
->>
->> Fixes: eaff33646f4cb ("clk: renesas: rzg2l: Add SDHI clk mux support")
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/drivers/clk/renesas/rzg2l-cpg.c
->> +++ b/drivers/clk/renesas/rzg2l-cpg.c
->> @@ -189,6 +189,7 @@ static int rzg2l_cpg_sd_clk_mux_set_parent(struct clk_hw *hw, u8 index)
->>         u32 shift = GET_SHIFT(hwdata->conf);
->>         const u32 clk_src_266 = 2;
->>         u32 msk, val, bitmask;
->> +       unsigned long flags;
->>         int ret;
->>
->>         /*
->> @@ -203,25 +204,27 @@ static int rzg2l_cpg_sd_clk_mux_set_parent(struct clk_hw *hw, u8 index)
->>          * the index to value mapping is done by adding 1 to the index.
->>          */
->>         bitmask = (GENMASK(GET_WIDTH(hwdata->conf) - 1, 0) << shift) << 16;
->> +       spin_lock_irqsave(&priv->rmw_lock, flags);
->>         if (index != clk_src_266) {
->>                 writel(bitmask | ((clk_src_266 + 1) << shift), priv->base + off);
->>
->>                 msk = off ? CPG_CLKSTATUS_SELSDHI1_STS : CPG_CLKSTATUS_SELSDHI0_STS;
->>
->> -               ret = readl_poll_timeout(priv->base + CPG_CLKSTATUS, val,
->> -                                        !(val & msk), 100,
->> -                                        CPG_SDHI_CLK_SWITCH_STATUS_TIMEOUT_US);
->> -               if (ret) {
->> -                       dev_err(priv->dev, "failed to switch clk source\n");
->> -                       return ret;
->> -               }
->> +               ret = readl_poll_timeout_atomic(priv->base + CPG_CLKSTATUS, val,
->> +                                               !(val & msk), 100,
-> 
-> According to the read_poll_timeout_atomic() documentation,
-> delay_us should be less than ~10us.
+IIUC, when we are doing bpf_rcu_unlock, we do need to clear the state of 
+reg including STACK_ITER.
 
-I'll update it, thanks for pointing it.
+Maybe here we only need change the logic when using 
+bpf_for_each_reg_in_vstate to clear state in bpf_rcu_unlock and keep 
+everything else unchanged ?
 
-> 
->> +                                               CPG_SDHI_CLK_SWITCH_STATUS_TIMEOUT_US);
-> 
-> CPG_SDHI_CLK_SWITCH_STATUS_TIMEOUT_US = 20 ms, which is a long timeout
-> for an atomic poll.
-
-I'll have to find the the rationale behind the original timeout. It may be
-random, experimental or hardware related.
-
-> 
->> +               if (ret)
->> +                       goto unlock;
->>         }
->>
->>         writel(bitmask | ((index + 1) << shift), priv->base + off);
->>
->> -       ret = readl_poll_timeout(priv->base + CPG_CLKSTATUS, val,
->> -                                !(val & msk), 100,
->> -                                CPG_SDHI_CLK_SWITCH_STATUS_TIMEOUT_US);
->> +       ret = readl_poll_timeout_atomic(priv->base + CPG_CLKSTATUS, val,
->> +                                       !(val & msk), 100,
->> +                                       CPG_SDHI_CLK_SWITCH_STATUS_TIMEOUT_US);
-> 
-> Likewise.
-> 
->> +unlock:
->> +       spin_unlock_irqrestore(&priv->rmw_lock, flags);
->> +
->>         if (ret)
->>                 dev_err(priv->dev, "failed to switch clk source\n");
-> 
-> The rest LGTM.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Thanks.
