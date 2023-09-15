@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC697A1CFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86077A1CFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbjIOLAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S234361AbjIOLAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbjIOLAY (ORCPT
+        with ESMTP id S234311AbjIOLAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:00:24 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8BD1BF2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:59:59 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d817775453dso2243041276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:59:59 -0700 (PDT)
+        Fri, 15 Sep 2023 07:00:33 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EC61BC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:00:02 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bdb9fe821so26710147b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:00:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694775598; x=1695380398; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694775601; x=1695380401; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PIsfdB6xTDxZC/lwkP7uk8Z8Jcdw9pIYLJmg+xNA39E=;
-        b=2vUDZjgvuJgT6Dxl96lpPH2wdVDJTwodMyV+fgNSXrXWT39dB78Ag5ylWhOB6Ng213
-         VcaopasHaEJZl7Q1UrT0FoVUJCkrcCSlnxLz7I8g0tcGM6BG0T7LAszHfQj3JZ6ZpKbB
-         YQR+GK0WpNc27Qu6Wi0ouGX/KiDXdd6qZIHy75+0tPXuhBa2bXos3QzUmgA4BAbqb78o
-         YaGcHh2ENF3PkXvYE8zSppYsW/skio12alDCH5V3jj4Sxp/sGgS+O87Dy3Hu9twJf+co
-         uO2aPSyDPkJqlrjaJ4Uedwr484h3CKPnSQ2RQH4Wn0O+uqhfmz8oQ7pjmOk955rdW4KC
-         XhjA==
+        bh=Rgcw5kSlwTUZsnv8liQ/ZCTx1m6umum1AvnN+yk4ci0=;
+        b=YNj4ReoeIxRcOkpVq1wXRHDJ4kBOiomlcsoOyIJsPeKpmSe6sUS5axgSozT2cUiDNF
+         UqI+EpaBrjvu03Qa7dvD7SvLO6kwCl712RRDvHxermpsNFzBOfEx0m2UTPF3z4jl/yLX
+         jAzEnQWYLo1Gr8mGDGsrEewV5ZCk+Qp1X4OdwvOo2McV2JMSEODYU6cn8qcsuVFHSs9D
+         pe7+CgbeAs/3c5IuHTQe+Yisg3r0qXFFz2uPZuY9j0Zk/bEVTlEwga3EDXK+r/YFMjye
+         M2PHAbgQnmBkUROVb6AQ29yPfOW61rTSNVZXaPYhPAELyisAzA3LWZgqHhCCRktRPcAY
+         HeEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694775598; x=1695380398;
+        d=1e100.net; s=20230601; t=1694775601; x=1695380401;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PIsfdB6xTDxZC/lwkP7uk8Z8Jcdw9pIYLJmg+xNA39E=;
-        b=HvFKJ989LZ31hK/FmbNHdJVBMcSE7xRx3yZ5fBWDx4DYKiZDXmY3KXgF0KtUSs4wFv
-         g9Tv+p0FoW5ZATgcnFEcz7WE8Z9UgOpecjVBIAKanQN5AyCWTJvsJRnWL98rXFe/Nvzq
-         12fRIioRTPFuZO3GRyfAbRL64LGzy3a4bVWfR/HdXOPtMhCTVgsKTxEsR1aeuf5c2qB5
-         WtgRO4w2QiHXerVIgZ7ldmupCWCyoysdmjGhJR5Pv2/ITpbLWVfGMDBZ3k8PilA4RFiq
-         yntW7mSmb9qsyVJXS/HMIMKuQl1wrA8Ct2aJPT92aRcMhSRBttrLbgEvataBdAqPWHxL
-         fa1Q==
-X-Gm-Message-State: AOJu0YzNklRA4AcQEuiYTpPGWOwRx2N0pV432HGquAIJITXjB3nMdQrV
-        dw9kgBZm6GebK3InocMp7wbYp+9syqI1b4CDbw==
-X-Google-Smtp-Source: AGHT+IHof1ICS1lqUlllRxkXI3ZaCAbe0FHMFloFuiAiVd7ISUWF8gEW5L/+IOYmFoxGVNOKnVGZCUEbaXvmEPeHwA==
+        bh=Rgcw5kSlwTUZsnv8liQ/ZCTx1m6umum1AvnN+yk4ci0=;
+        b=tGgXusZqk5IQ8QBTh8B6jr8PVEE6dXbjeOrTfMzYfFGyNcqoSt8UaSZudU6kR1f44P
+         TlA8kU30/uBvam2zfv2V8XHd1f/f64a1V1YnroFGqKvvFoUWUZEHLKs8B6MWoIprLkrm
+         vx1TcapFqolhY1+cV+ctXunlqep9kN828dDYSSH4jLH/HqdVzs7ArlEJpeWgGHolojPV
+         29JdN9xSjC8V99H3SxW3Q0uhLu+snTApEwdW34qEDkJcedb/27+frUrih3RfjxgJOJAV
+         Y1kN5FP7i4Gt0Vu5PyJ1xUmP8qPTJ9I1dVVfYvnPjlN9PtZYfiMrsFh2XL0OhTYDciMI
+         K6Hg==
+X-Gm-Message-State: AOJu0YzMt8OhCKL557OFF5gaTTnddrJBFCXJnhy3TY7GzNIjiDqVO/J+
+        H6xr1Mk+VyDDZoXQRKdibKgnCwgyeRvcRD5v6A==
+X-Google-Smtp-Source: AGHT+IEcouH8JvuJElm8N08gEPWOgDsvJMW1WGDf8e1nxWq0e0tWAe1u3fFjyWd///wS5TI4Lwp37X8nvTPZK0q/lg==
 X-Received: from mr-cloudtop2.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:2a6])
- (user=matteorizzo job=sendgmr) by 2002:a5b:d10:0:b0:d81:7f38:6d65 with SMTP
- id y16-20020a5b0d10000000b00d817f386d65mr22869ybp.2.1694775598311; Fri, 15
- Sep 2023 03:59:58 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 10:59:27 +0000
+ (user=matteorizzo job=sendgmr) by 2002:a81:ae43:0:b0:59b:f493:813d with SMTP
+ id g3-20020a81ae43000000b0059bf493813dmr28901ywk.1.1694775601139; Fri, 15 Sep
+ 2023 04:00:01 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 10:59:28 +0000
 In-Reply-To: <20230915105933.495735-1-matteorizzo@google.com>
 Mime-Version: 1.0
 References: <20230915105933.495735-1-matteorizzo@google.com>
 X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230915105933.495735-9-matteorizzo@google.com>
-Subject: [RFC PATCH 08/14] security: introduce CONFIG_SLAB_VIRTUAL
+Message-ID: <20230915105933.495735-10-matteorizzo@google.com>
+Subject: [RFC PATCH 09/14] mm/slub: add the slab freelists to kmem_cache
 From:   Matteo Rizzo <matteorizzo@google.com>
 To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -78,53 +78,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jann Horn <jannh@google.com>
 
-SLAB_VIRTUAL is a mitigation for the SLUB allocator which prevents reuse
-of virtual addresses across different slab caches and therefore makes
-some types of use-after-free bugs unexploitable.
-
-SLAB_VIRTUAL is incompatible with KASAN and we believe it's not worth
-adding support for it. This is because SLAB_VIRTUAL and KASAN are aimed
-at two different use cases: KASAN is meant for catching bugs as early as
-possible in debug/fuzz/testing builds, and it's not meant to be used in
-production. SLAB_VIRTUAL on the other hand is an exploit mitigation that
-doesn't attempt to highlight bugs but instead tries to make them
-unexploitable. It doesn't make sense to enable it in debugging builds or
-during fuzzing, and instead we expect that it will be enabled in
-production kernels.
-
-SLAB_VIRTUAL is not currently compatible with KFENCE, removing this
-limitation is future work.
+With SLAB_VIRTUAL enabled, unused slabs which still have virtual memory
+allocated to them but no physical memory are kept in a per-cache list so
+that they can be reused later if the cache needs to grow again.
 
 Signed-off-by: Jann Horn <jannh@google.com>
 Co-developed-by: Matteo Rizzo <matteorizzo@google.com>
 Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
 ---
- security/Kconfig.hardening | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/linux/slub_def.h | 16 ++++++++++++++++
+ mm/slub.c                | 23 +++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 0f295961e773..9f4e6e38aa76 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -355,4 +355,18 @@ config GCC_PLUGIN_RANDSTRUCT
- 	   * https://grsecurity.net/
- 	   * https://pax.grsecurity.net/
- 
-+config SLAB_VIRTUAL
-+	bool "Allocate slab objects from virtual memory"
-+	depends on SLUB && !SLUB_TINY
-+	# If KFENCE support is desired, it could be implemented on top of our
-+	# virtual memory allocation facilities
-+	depends on !KFENCE
-+	# ASAN support will require that shadow memory is allocated
-+	# appropriately.
-+	depends on !KASAN
-+	help
-+	  Allocate slab objects from kernel-virtual memory, and ensure that
-+	  virtual memory used as a slab cache is never reused to store
-+	  objects from other slab caches or non-slab data.
+diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+index 0adf5ba8241b..693e9bb34edc 100644
+--- a/include/linux/slub_def.h
++++ b/include/linux/slub_def.h
+@@ -86,6 +86,20 @@ struct kmem_cache_cpu {
+ /*
+  * Slab cache management.
+  */
++struct kmem_cache_virtual {
++#ifdef CONFIG_SLAB_VIRTUAL
++	/* Protects freed_slabs and freed_slabs_min */
++	spinlock_t freed_slabs_lock;
++	/*
++	 * Slabs on this list have virtual memory of size oo allocated to them
++	 * but no physical memory
++	 */
++	struct list_head freed_slabs;
++	/* Same as freed_slabs but with memory of size min */
++	struct list_head freed_slabs_min;
++#endif
++};
 +
- endmenu
+ struct kmem_cache {
+ #ifndef CONFIG_SLUB_TINY
+ 	struct kmem_cache_cpu __percpu *cpu_slab;
+@@ -107,6 +121,8 @@ struct kmem_cache {
+ 
+ 	/* Allocation and freeing of slabs */
+ 	struct kmem_cache_order_objects min;
++	struct kmem_cache_virtual virtual;
++
+ 	gfp_t allocflags;	/* gfp flags to use on each alloc */
+ 	int refcount;		/* Refcount for slab cache destroy */
+ 	void (*ctor)(void *);
+diff --git a/mm/slub.c b/mm/slub.c
+index 42e7cc0b4452..4f77e5d4fe6c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4510,8 +4510,20 @@ static int calculate_sizes(struct kmem_cache *s)
+ 	return !!oo_objects(s->oo);
+ }
+ 
++static inline void slab_virtual_open(struct kmem_cache *s)
++{
++#ifdef CONFIG_SLAB_VIRTUAL
++	/* WARNING: this stuff will be relocated in bootstrap()! */
++	spin_lock_init(&s->virtual.freed_slabs_lock);
++	INIT_LIST_HEAD(&s->virtual.freed_slabs);
++	INIT_LIST_HEAD(&s->virtual.freed_slabs_min);
++#endif
++}
++
+ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+ {
++	slab_virtual_open(s);
++
+ 	s->flags = kmem_cache_flags(s->size, flags, s->name);
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+ 	s->random = get_random_long();
+@@ -4994,6 +5006,16 @@ static int slab_memory_callback(struct notifier_block *self,
+  * that may be pointing to the wrong kmem_cache structure.
+  */
+ 
++static inline void slab_virtual_bootstrap(struct kmem_cache *s, struct kmem_cache *static_cache)
++{
++	slab_virtual_open(s);
++
++#ifdef CONFIG_SLAB_VIRTUAL
++	list_splice(&static_cache->virtual.freed_slabs, &s->virtual.freed_slabs);
++	list_splice(&static_cache->virtual.freed_slabs_min, &s->virtual.freed_slabs_min);
++#endif
++}
++
+ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
+ {
+ 	int node;
+@@ -5001,6 +5023,7 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
+ 	struct kmem_cache_node *n;
+ 
+ 	memcpy(s, static_cache, kmem_cache->object_size);
++	slab_virtual_bootstrap(s, static_cache);
+ 
+ 	/*
+ 	 * This runs very early, and only the boot processor is supposed to be
 -- 
 2.42.0.459.ge4e396fd5e-goog
 
