@@ -2,93 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5317A1C66
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C117A1C6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbjIOKhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
+        id S233324AbjIOKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbjIOKhi (ORCPT
+        with ESMTP id S233131AbjIOKht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:37:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F98EA1;
-        Fri, 15 Sep 2023 03:37:33 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so17752565ad.1;
-        Fri, 15 Sep 2023 03:37:33 -0700 (PDT)
+        Fri, 15 Sep 2023 06:37:49 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA895C1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:43 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-98377c5d53eso250244066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694774252; x=1695379052; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EYaRwmAQ1s3MYUiuLQYxUzG6o/LB4qv4cOCg1g/HVsg=;
-        b=jO4h6z8YJPO6zL6RHXDmTE56i0vokyURqeMauBCgC1PWbNOWr4Ati72LaT6gjmiOIw
-         aawNlZ7fos2LrrPFn7ZXfFlXanKrwnopALAmfZB25y2t8LPF/NfCNO9WMulZ7y1VdcF+
-         y7D/noE/062nVgt90ajTK8cj45wRiIqoOsn+h+RDfaJU4PuZsK7btYGsa+gnm6qrw60s
-         9HDvsLdFp2jaP50jRGLEKDsycrUI9wyMoZH41latrxaonIRfle2qpDxj5f4435f7xs3w
-         +CUeDetH5WdxY60kY+Mll8XJAJiwl+kp1dKmv2wlJ+UmbsOCjRw7c8GpDOGb2DUOV1f7
-         n9vw==
+        d=linaro.org; s=google; t=1694774262; x=1695379062; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=98LorT2C/IEceI1kVOQrQwUEnGbTB4Xy5v+bq2wc0hc=;
+        b=BzPrOHR5uGbOEhxIQoanxet6tHwWnnqEVu5Q17GZzgSffD0VEAOj9s5fQSyp0UJeuH
+         EdKtJJD8C8YbsAodJ0q11Mvx/exHAk+Dnb4krNYGB1OiiBwLMZ1uFhp4u2po08OnuYNH
+         IWNsERUtC5QPUHrxlPMI9dZ717gkQeMhl7dAl4DhOCRFVEz0aSM2tx5uyuakAZoRCOHJ
+         Bs/a+lqROoK4dZrQmI4U5kqd0mBqZyC9elJD6WHr9cwxVnjo+oD3H32oaj+ILRjoTeNH
+         zyNssDWDYpGSGsXU04+LuuAsp5tJ/EdouvgjVjureHOCLMp2SV94G6N3QhO0Gil3hrfO
+         JUSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774252; x=1695379052;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EYaRwmAQ1s3MYUiuLQYxUzG6o/LB4qv4cOCg1g/HVsg=;
-        b=p+mM0sEXNfYb0bbpxiaVpR6tKOCeaEHOjrOPr/rg5S2gqWc74V3Em6ADp3T+B2YnE0
-         l03v7hb5fh3VNJV9tJ/i2KVP3vtZLTswMJuOB8Q7xL181xstOcFTZHLfGUVT9s4ug+Wk
-         MLv1qrnJmLaE+V5ND50m1ILUT1qDMvJVIXgndoVDPeCbO4TFHSomoMmkvGva2+ekhPjD
-         XeDTdjj4T0KLIYX52pJUspEeGhW7jynwxXENz5rVhSIxlb2Vw1QbNXcHTU+AM4tr74tL
-         3/nzdrXUAZmR2/gWGeBhN1ZY1Wg/Pj9liURY0XfsB+dy8A+X25D7R/ISbOkdJk2X6cDS
-         0gJg==
-X-Gm-Message-State: AOJu0YyZI8b71TESyr9aG4g9JW1Q+frFnjCF/TEyyuyrRmH7bKDaN+2v
-        cvdOy1M/K5BYu+EJ75DgIfs=
-X-Google-Smtp-Source: AGHT+IHEdd9tXYlZx7iAaWCUy3Zd3XnfkheVE9Ouv9Jazd+2BxOo7CqsEUkhSnnEGWEUwXgvzw+7NA==
-X-Received: by 2002:a17:902:e552:b0:1c3:3682:f83f with SMTP id n18-20020a170902e55200b001c33682f83fmr1503331plf.30.1694774252370;
-        Fri, 15 Sep 2023 03:37:32 -0700 (PDT)
-Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
-        by smtp.gmail.com with ESMTPSA id z14-20020a170902d54e00b001bd28b9c3ddsm3164643plf.299.2023.09.15.03.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:37:32 -0700 (PDT)
-Sender: Herbert Xu <herbertx@gmail.com>
-Date:   Fri, 15 Sep 2023 18:37:31 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3]  hwrng: ks-sa - simple cleanups
-Message-ID: <ZQQz64WxYDeirM7X@gondor.apana.org.au>
-References: <20230824194037.1575276-1-martin@kaiser.cx>
+        d=1e100.net; s=20230601; t=1694774262; x=1695379062;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=98LorT2C/IEceI1kVOQrQwUEnGbTB4Xy5v+bq2wc0hc=;
+        b=aaccJoY1ZKoPf8gGnyFB079XM2rDgCYl/TnCryxucZeBAleOq+CcuyP7882erMXNz5
+         lIBeupWPqun00oXQmpw//+QiGLzshNObyKw2P9oCRGDMQI+o2/uhbULXdhTcnj2gtzZQ
+         syoj43MQU+Ilba+f88qRpjwIJdo3dWjHBDoQYs9+w8T5KMHZWOBMrcSDxvihnz3QysPU
+         GTUuGE8XU8miPTqYhr2XxRucCjsPXVwftudfLF0xONL1IAXHdtpwNWMjH1QmjAnBncfw
+         HcPnxIJSf7NLAHUqkrluSHIZLklEewBZqva+DoM/3CDMkWYAyJG38VlCIbNbVSgLyYXH
+         ctkA==
+X-Gm-Message-State: AOJu0YyLJrTN2WxEbMpNXKl0yXHb82n7dS9sgIrk3o2xTS2Cvmk6pz+o
+        sZyLjnpdwxuefP4Wb6FYO4QYKA==
+X-Google-Smtp-Source: AGHT+IEQafJGx4l388iNt4dr4fwEIJ2pK6342pfCYa+9DReCIi2MelRzA414gIgWF+YORHSNocMX7A==
+X-Received: by 2002:a17:906:8465:b0:993:d5bd:a757 with SMTP id hx5-20020a170906846500b00993d5bda757mr967607ejc.19.1694774262271;
+        Fri, 15 Sep 2023 03:37:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id uz3-20020a170907118300b009ad8acac02asm2280677ejb.172.2023.09.15.03.37.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:37:41 -0700 (PDT)
+Message-ID: <7014b3dd-76f2-bd71-adda-45db6835c008@linaro.org>
+Date:   Fri, 15 Sep 2023 12:37:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824194037.1575276-1-martin@kaiser.cx>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 05/42] dt-bindings: pinctrl: Add Cirrus EP93xx
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+ <20230915-ep93xx-v4-5-a1d779dcec10@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915-ep93xx-v4-5-a1d779dcec10@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 09:40:34PM +0200, Martin Kaiser wrote:
-> Some simple cleanups of the ks-sa-rng driver. Compile-tested only.
+On 15/09/2023 10:10, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> Martin Kaiser (3):
->   hwrng: ks-sa - access private data via struct hwrng
->   hwrng: ks-sa - remove dev from struct ks_sa_rng
->   hwrng: ks-sa - use dev_err_probe
+> Add YAML bindings for ep93xx SoC pinctrl.
 > 
->  drivers/char/hw_random/ks-sa-rng.c | 26 +++++++-------------------
->  1 file changed, 7 insertions(+), 19 deletions(-)
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../bindings/pinctrl/cirrus,ep9301-pinctrl.yaml    | 57 ++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
 > 
-> -- 
-> 2.39.2
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..1dbdc5ccc232
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/cirrus,ep9301-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cirrus ep93xx pins mux controller
+> +
+> +maintainers:
+> +  - Nikita Shubin <nikita.shubin@maquefel.me>
+> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: cirrus,ep9301-pinctrl
+> +      - items:
+> +          - enum:
+> +              - cirrus,ep9302-pinctrl
+> +              - cirrus,ep9307-pinctrl
+> +              - cirrus,ep9312-pinctrl
+> +              - cirrus,ep9315-pinctrl
+> +          - const: cirrus,ep9301-pinctrl
+> +
+> +patternProperties:
+> +  '^pins-':
+> +    type: object
+> +    description: pin node
+> +    $ref: pinmux-node.yaml#
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Still missing unevaluatedProperties: false
+
+> +
+> +    properties:
+> +      function:
+> +        enum: [ spi, ac97, i2s, pwm, keypad, pata, lcd, gpio ]
+> +
+> +      groups:
+> +        enum: [ ssp, ac97, i2s_on_ssp, i2s_on_ac97, pwm1, gpio1agrp,
+> +                gpio2agrp, gpio3agrp, gpio4agrp, gpio6agrp, gpio7agrp,
+> +                rasteronsdram0grp, rasteronsdram3grp, keypadgrp, idegrp ]
+> +
+> +    required:
+> +      - function
+> +      - groups
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+
+Why this was changed? I did not ask for this. I commented in different
+place on different level of indentation.
+
+This is unfortunately still wrong. :(
+
+Best regards,
+Krzysztof
+
