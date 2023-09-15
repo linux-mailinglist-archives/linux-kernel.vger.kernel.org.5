@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5F57A27A9
+	by mail.lfdr.de (Postfix) with ESMTP id F29BA7A27AA
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbjIOUHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
+        id S237318AbjIOUHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237215AbjIOUG6 (ORCPT
+        with ESMTP id S237263AbjIOUHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:06:58 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAB930C0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:06:14 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fdd6011f2so2114903b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:06:14 -0700 (PDT)
+        Fri, 15 Sep 2023 16:07:02 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B1E273D
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:06:29 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c3f97f2239so22146965ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694808374; x=1695413174; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694808389; x=1695413189; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NA1Kdxb7daymV0YxfPouFeomYl6O2u2EVjnI/tmIwsA=;
-        b=Q1ojVrp61o1NMmfOUHB+383ZE0NJvaWN03BIYigZnGyB+tP6ep+s95LNYiJ6OnYwLT
-         2uboiFQTTSsqWfKUsiYscjMumY5ln1U76vmX+JcRqxT0UMnOFI9wMoLglX+jHx0tNzQT
-         ylyfblLl8ZTnyNnFjb6eeg2b5gL7qCEEPgaEo=
+        bh=dB1pwLSw3TfsJDfFAPemy9b5TtNPX4UXkiSYwc3PxLw=;
+        b=j6TqJJdlR2DW/SYrp7PPvx3W7j1C+SV0WzE/ji76VnUlPlwTCuzFeRDvtlzOB24Vgl
+         XwdTT24f6aK2+sby0LpgXYyYVxWaXIH5o7gCqBgK4hKit/wKZtufvy9dI0SFdrEgX2pa
+         kVIA00KXA9JvJnIbKd+bAlVGlzTI0E+UMpJEA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694808374; x=1695413174;
+        d=1e100.net; s=20230601; t=1694808389; x=1695413189;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NA1Kdxb7daymV0YxfPouFeomYl6O2u2EVjnI/tmIwsA=;
-        b=gzW3CcdsrGBWul2Xut96GbFBMMSFL9zJxwKkOwooMdpprqXdRwpdKMQmnDwnOAP0Nx
-         NJMdca4CDvJPT/yH0JPHRce9TpZK5iV79z/yboAuQhdf/TCh4bj8Ao8LxWg9Fy28p3H+
-         NGe2LRTAZ8WY+6TZZM1kuWkwaOypCKiN7Hyz9MIi4rdEFnwnuK6esbka22rwaNRtvWRW
-         aqS/0+C+9mQz8SdNWqsNPG0ocFye0OLSRupEuAoyYa00QNVc442ZfRqAkUO8k32KM7G6
-         k/wxbsDK6ylxxpLeGC7s/ArNjSi23GBFq2FFhYPvpNjBtNU0zEyXmXhclIEH+OWsI1WW
-         O0WA==
-X-Gm-Message-State: AOJu0Yy6PxKD9rue+QTvpwvZ2w01mkY2aAIDxweLzCwNd+rL4QEKSzZx
-        ZC/9K4mJ8U2v9qt8hh4Il1DQ6w==
-X-Google-Smtp-Source: AGHT+IFke9xOUg8o+dOHQMGmNXaiNCKQ4Q7uIE2umqN8LSN8Mp8jp4PO0FBx8ts/vz9hu+v/WYKIrg==
-X-Received: by 2002:a05:6a00:148c:b0:68e:2c3a:8775 with SMTP id v12-20020a056a00148c00b0068e2c3a8775mr2968885pfu.33.1694808374440;
-        Fri, 15 Sep 2023 13:06:14 -0700 (PDT)
+        bh=dB1pwLSw3TfsJDfFAPemy9b5TtNPX4UXkiSYwc3PxLw=;
+        b=pK/XBL6K7PDiXAJ1PQSba63YLWCaSI8jKjVQh3tam/ImTuB45tqnfSWoK9whwy88yb
+         7rIYNVcmEDwi8tyuGaDHbDk4CAm/ha4Ou51kELUcdpjaH2rM7JL53MznrQi5jafuut/o
+         WMcZumN/bGrarceuOLVGET51FTOhUqPQ4jjSqDfNcaZLJB4cmmMhsWPSSSHfQqzPF5ed
+         +mxgMGKcDw9GxLOYfXx6jLHBcqPowM2GpFYGnL6vvUEJs46mINMZ9DKEHkWT730vAEkN
+         8psrRvmz0UIbs41DKLqfTQwVcP2QkN7smSY593QeWhNXIGMI1jysjvlkcY+iNiWe/FMz
+         6Q2w==
+X-Gm-Message-State: AOJu0Yyg+26ajhuaHQSmhwNEQC17a1M8K4S4HH2448nwYXugPGt7q4Og
+        vkoztnToIETJwMbtmXGrgZb9KA==
+X-Google-Smtp-Source: AGHT+IFSEywbcZOC5XShL0oLvSifwuso6NQoEWHYLsrVN3EG8OWtaO4bmtwSMFub6Nj8jMAXdfGJXA==
+X-Received: by 2002:a17:902:c94c:b0:1c3:cee1:cc8e with SMTP id i12-20020a170902c94c00b001c3cee1cc8emr2842576pla.68.1694808389168;
+        Fri, 15 Sep 2023 13:06:29 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x42-20020a056a000bea00b0068fcb70ccafsm3331958pfu.129.2023.09.15.13.06.13
+        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b001a80ad9c599sm3857764plg.294.2023.09.15.13.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 13:06:13 -0700 (PDT)
+        Fri, 15 Sep 2023 13:06:28 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Kees Cook <keescook@chromium.org>, Kalle Valo <kvalo@kernel.org>,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] wifi: mt76: Annotate struct mt76_rx_tid with __counted_by
-Date:   Fri, 15 Sep 2023 13:06:12 -0700
-Message-Id: <20230915200612.never.786-kees@kernel.org>
+Subject: [PATCH] wifi: wcn36xx: Annotate struct wcn36xx_hal_ind_msg with __counted_by
+Date:   Fri, 15 Sep 2023 13:06:27 -0700
+Message-Id: <20230915200622.never.820-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1585; i=keescook@chromium.org;
- h=from:subject:message-id; bh=F+6DHSa+ER+x+MQqlg0EvaQeoh8qJvI3pA3g8dGL8RY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLk0Jorek+I1OQBAgJduc/L4Xg3jOs5WnEWt9
- MGRZATCBjSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS5NAAKCRCJcvTf3G3A
- JjWhD/9tOUC/st1EceKH0gvMzRBD27QO4Nk+fG6Y9rJZUv16gV9EFMsoYqUSuRwgZy8/P9I+BVc
- mkHZtoGs6fWhEJtny0ZlAMmZdUHnicF2M7xIxIb7tZFMp8ryHV7g7tiV44qtuz3uQN5OR5/G52S
- Bn/tXp6kou8NrfLsJt1aauJtm7CgcykOJt93RH8I49CjsLVQ0mYrF78RZc+bromdT1TGY3lCbYu
- YDSjb1YGbcNcpayfbzfJ5jPwJU1gQAn2ZxQWEyrqc2J7py+yj914/HyikOMrYaVlgUrqBoOQpYm
- l5vhqamxGJPeuQpBh4WtZukLo3z/zlEjghImla5afiElmNqimHsGWRI55luMz6VjGivM2ekVN/S
- OzaBZMte8ZaHt365A6WesjhOeByhDLffpDTS5K13NGnlNJQZchkZYpeoPEx5OT0frP4OOB9o8vr
- C3RTak4zrGO4iFO1qPK1oI0qgvYa6AsmHUgus5elElfv5xavrh7yAAOJsGsbDmCh3TmV8te0Zb1
- 0/wQs/l4sO4COIHIOrBNqNqVd8eilEgy2mRzPiEdVkwor2g0GCSU0wZbw2TABQ0flcoKda5qOjB
- PpNql+uzB7LJjZUtMa8HdL83infm7t7Kex3RaoAOWdRDfWmcI7i1ap4tETW5nwk4KrP0kRt2sxt
- gysLmbT Unzq0a5g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1231; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=Tx0rD4QGaivxM7sy4gGEy8kvfFVy4mGnM/BvvbkoZzI=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLlD6p2BXFHtSwKtnpPyeTLWDyraFgZ0S036T
+ HLIIfFDiyOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS5QwAKCRCJcvTf3G3A
+ JjD6D/93UiQLOjttIT0EbU7ldsmyJjtmhfaLaIneAYcFlDcgnsftgejYn1pA9AYok+xUnAnpfkp
+ 9bViv791IaDIYWP4k7xICVG5IYyfS7++UJmcABftzpgHlbVMGImJjEYazHI67tLbGcbQBXYWc5e
+ Ym8BsbfK9qPbjraHzs2LjoOO8CZdHH3Z7qhqffj8zZTZKVqCg8gM6YHRbOu6lgrYuhljGdvKfgC
+ o4TcAE7B6pIhNsxLKFjTxXX/EtlJcjU1u3qaxXTsygt0vg5e75SLyTRlTJoAFpC3ZPoMMKV+QXd
+ HwxRtLb42r+4RdH113rVtXOVQvJPUMZ/7bUzRZj1WmQpbBaFAvGX8jLI2bfRfOzlHu3oe9KTsNP
+ 3UJlPIOac29tVYOWVc3GyU7CbYrfzr7/FV9O2uK2yUJUvQVeEk6JdHh6yadyhRzeNTD1LySHwzo
+ Y98YLn7hXO3WHcUw7IiF4gVyRuAHC8Zjb2a92QpqBQtCCnJ4s6aNi5wEnzycdmdpdi/epGSvsBS
+ xj5tHVSwsuKT1ul56Q2o7/B/c9m+1DbhxZG7Wv9C+qJeHHb9ZHz6mWI55QkZMz/yPk1gIq27ZZ+
+ HaaAk8OznFr0MKtZtid95deMwVBswNBl95zDNuIdr+z8YaicpZBr4ol4fxLSmGuiQZ+zIBRI3B7
+ QNnIVu0 Rm0JoYKQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -101,39 +91,32 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct mt76_rx_tid.
+As found with Coccinelle[1], add __counted_by for struct wcn36xx_hal_ind_msg.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Cc: Felix Fietkau <nbd@nbd.name>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Cc: Shayne Chen <shayne.chen@mediatek.com>
-Cc: Sean Wang <sean.wang@mediatek.com>
+Cc: Loic Poulain <loic.poulain@linaro.org>
 Cc: Kalle Valo <kvalo@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: wcn36xx@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt76.h | 2 +-
+ drivers/net/wireless/ath/wcn36xx/smd.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
-index e8757865a3d0..03ef617b1527 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76.h
-@@ -376,7 +376,7 @@ struct mt76_rx_tid {
- 
- 	u8 started:1, stopped:1, timer_pending:1;
- 
--	struct sk_buff *reorder_buf[];
-+	struct sk_buff *reorder_buf[] __counted_by(size);
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.h b/drivers/net/wireless/ath/wcn36xx/smd.h
+index cf15cde2a364..2c1ed9e570bf 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.h
++++ b/drivers/net/wireless/ath/wcn36xx/smd.h
+@@ -47,7 +47,7 @@ struct wcn36xx_fw_msg_status_rsp {
+ struct wcn36xx_hal_ind_msg {
+ 	struct list_head list;
+ 	size_t msg_len;
+-	u8 msg[];
++	u8 msg[] __counted_by(msg_len);
  };
  
- #define MT_TX_CB_DMA_DONE		BIT(0)
+ struct wcn36xx;
 -- 
 2.34.1
 
