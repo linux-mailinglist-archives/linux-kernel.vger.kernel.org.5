@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491AF7A26C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB507A26CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236961AbjIOTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        id S236948AbjIOTAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236897AbjIOTAO (ORCPT
+        with ESMTP id S237067AbjIOTAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:00:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58540B2;
-        Fri, 15 Sep 2023 12:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3p6LB8CUVtVpbNZXHYcZX6Y+ucECGrNpDuWVv6vgFXg=; b=dNxhWAjfCz0PbN7mvJZP6JwFY5
-        5fCPxIkPJOoCSBE85XQGJvvRkZC2/YAQxa/+f5Vv6bKKfu81JKW58q9ZhErtujzXMWWsN3Y4vJ89O
-        F2rAR1D6mK5LHeBUsq2HM/KUiCkia0SIHKzi4txeFdrF0AAwVO3ryczOHA8RNYzFyEySKyMs9ZaWN
-        UZ2BzBig0eC0X9vDFqF2kHgJBmiU4+25LnK6Buvpm9KjqCath/hceLMcD7jqherGHfno4EW3liwgf
-        KLVKD+FlFd6igEsNbCDpz7t5PFR56mmng7nwR+9R2NPGD9P9oMpAqrlCNKbiMMBjq2G5HSljBsQhu
-        9GcC7+uQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qhE2w-00BSCj-T7; Fri, 15 Sep 2023 19:00:06 +0000
-Date:   Fri, 15 Sep 2023 20:00:06 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pankaj Raghav <kernel@pankajraghav.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        p.raghav@samsung.com, david@fromorbit.com, da.gomez@samsung.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
-        mcgrof@kernel.org, gost.dev@samsung.com
-Subject: Re: [RFC 03/23] filemap: add folio with at least mapping_min_order
- in __filemap_get_folio
-Message-ID: <ZQSpthmXGzHDbx1h@casper.infradead.org>
-References: <20230915183848.1018717-1-kernel@pankajraghav.com>
- <20230915183848.1018717-4-kernel@pankajraghav.com>
+        Fri, 15 Sep 2023 15:00:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930BA270A;
+        Fri, 15 Sep 2023 12:00:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF916C4339A;
+        Fri, 15 Sep 2023 19:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694804429;
+        bh=MwYH2ME9s5GR5J22JIc9pHMsg8/BLoZqEWB3h/MNKug=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dc8ehB5SmqvG+DNp8dNDSxMhG6TsX6M2Tx1knthy1ka7AXh1nnnTV+JKs/Ham9X1W
+         3md8hC7WO1cITCN5OrswcKVsh5Fy1W7DIf5Ax8oN5FfaBJ5yZWyR3k9tEURxkhX9ZF
+         qNGNd+NHhuu+6+i4FytLLtQYvu8N7xtCcLFQFfIWMbuR28NGsHHVMMqeU7Z5M+OjOw
+         7HgYmICKCdR35+1RWyxVxRCMOFdSPFz+StmTuRGIBMd2E0SKfLvdGwAL+AtAPECYAo
+         kTi27M/ImM9c0gDUg/Q8A+JdhRNsC1gbUNUaw0o3YyuJkPjVDCUotXiTehzBM32kWj
+         FeCGvVBwtoKhg==
+Date:   Fri, 15 Sep 2023 13:01:23 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] mlxsw: Use size_mul() in call to struct_size()
+Message-ID: <ZQSqA80YyLQsnd1L@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915183848.1018717-4-kernel@pankajraghav.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 08:38:28PM +0200, Pankaj Raghav wrote:
-> +++ b/mm/filemap.c
-> @@ -1862,6 +1862,10 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
->  		fgf_t fgp_flags, gfp_t gfp)
->  {
->  	struct folio *folio;
-> +	int min_order = mapping_min_folio_order(mapping);
-> +	int nr_of_pages = (1U << min_order);
-> +
-> +	index = round_down(index, nr_of_pages);
->  
->  repeat:
->  	folio = filemap_get_entry(mapping, index);
-> @@ -1929,8 +1933,14 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
->  			err = -ENOMEM;
->  			if (order == 1)
->  				order = 0;
-> +			if (order < min_order)
-> +				order = min_order;
+If, for any reason, the open-coded arithmetic causes a wraparound, the
+protection that `struct_size()` adds against potential integer overflows
+is defeated. Fix this by hardening call to `struct_size()` with `size_mul()`.
 
-... oh, you do something similar here to what I recommend in my previous
-response.  I don't understand why you need the previous patch.
+Fixes: 2285ec872d9d ("mlxsw: spectrum_acl_bloom_filter: use struct_size() in kzalloc()")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +			if (min_order)
-> +				VM_BUG_ON(index & ((1UL << order) - 1));
-
-You don't need the 'if' here; index & ((1 << 0) - 1) becomes false.
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
+index e2aced7ab454..95f63fcf4ba1 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
+@@ -496,7 +496,7 @@ mlxsw_sp_acl_bf_init(struct mlxsw_sp *mlxsw_sp, unsigned int num_erp_banks)
+ 	 * is 2^ACL_MAX_BF_LOG
+ 	 */
+ 	bf_bank_size = 1 << MLXSW_CORE_RES_GET(mlxsw_sp->core, ACL_MAX_BF_LOG);
+-	bf = kzalloc(struct_size(bf, refcnt, bf_bank_size * num_erp_banks),
++	bf = kzalloc(struct_size(bf, refcnt, size_mul(bf_bank_size, num_erp_banks)),
+ 		     GFP_KERNEL);
+ 	if (!bf)
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.34.1
 
