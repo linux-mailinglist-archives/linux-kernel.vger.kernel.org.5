@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112927A2854
+	by mail.lfdr.de (Postfix) with ESMTP id 64FAF7A2855
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbjIOUoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S237295AbjIOUoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjIOUnf (ORCPT
+        with ESMTP id S233313AbjIOUne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:43:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F994199
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694810610; x=1726346610;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=18dz03K1cAItjEKem7F0jRTTAN1G5rxKaRlf9jhGURc=;
-  b=Sl40B523GDETfGjE6IQLj0TGVfel9iEertjMA6MWIczV5VBYoqZ/zHdb
-   p6KKjiTDCkRiSsJf70I4lxgCq8xQfbhWCyi53kRaTpEn0JFe8n8u7SPZP
-   bXv8/L6DsItRP5rx4zJi46MIPuqhk3/Xae8ai9uUiPSoB8d4X947HB4e0
-   Mq01obrBSNGKYf+dKIKqEG47fX183Zm9syLzHjzWLnNQwqPf/f+Miyb9e
-   Vt8R/mY3dZcwCTqhZkKhOTfvBgsZNWAXH0NyWXG8Cq7j8h2eOUF3r5d+z
-   pfvanxhKlBtL6DjRhELgIC+ej8yrB+z1Ts4IenkcXXZLlAPc2TpxKvBLq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359587485"
-X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
-   d="scan'208";a="359587485"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 13:43:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="991992077"
-X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
-   d="scan'208";a="991992077"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Sep 2023 13:43:28 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhFer-0003Ps-1p;
-        Fri, 15 Sep 2023 20:43:25 +0000
-Date:   Sat, 16 Sep 2023 04:42:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: include/linux/kasan-checks.h:38:27: warning: 'space_args' may be
- used uninitialized
-Message-ID: <202309160440.jECtzdr6-lkp@intel.com>
+        Fri, 15 Sep 2023 16:43:34 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EF418D;
+        Fri, 15 Sep 2023 13:43:29 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B6DA766072BE;
+        Fri, 15 Sep 2023 21:43:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694810607;
+        bh=kDX5Yws24juaWMmgBhmpCp9TZ/myYfWBHnXaef5fOzw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BcQZmvB+w08zKhoo4FheZE8owlX0OKnJvSQ0LbZemQ16N8hSod/HTg5oNF4aCPm4L
+         buZB4IaIefT5RKPyEuUxX0TtUx5ul7l8zHmAvl1pdQl55g4nUN/dBjqEs09FbjiweM
+         elDm88eSf7ksoxdDV9qlS7q84AV9w9mRvH3Ldxw4Ozka+eeX5lnLN8h29/X9K5l8Ri
+         uPmaLwLj6Gjx3n8lelEmnUXNekpZlN0L55eoX8yzRzs9G2l0WRoSYLRzE88lN3SWqb
+         sbA61++Msiocxf+orUrE6MwGIa/WsrtO7K4mAVsDsld5AEP5LtSO+WPmdfYJipM6CD
+         dGyS7fS5kXysg==
+Received: by mercury (Postfix, from userid 1000)
+        id 16726106044B; Fri, 15 Sep 2023 22:43:25 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 22:43:25 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Grant B Adams <nemith592@gmail.com>
+Cc:     linux-omap@vger.kernel.org, tony@atomide.com,
+        Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] power: supply: Fix tps65217-charger vs vbus irq
+ conflict
+Message-ID: <20230915204325.mokj2nmdwjdekxfo@mercury.elektranox.org>
+References: <20230823085430.6610-1-nemith592@gmail.com>
+ <20230823085430.6610-2-nemith592@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="flopxljazsb4eo7e"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230823085430.6610-2-nemith592@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9fdfb15a3dbf818e06be514f4abbfc071004cbe7
-commit: 5aa4ac64e6add3e40d5049e31275b2822daf885d LoongArch: Add KASAN (Kernel Address Sanitizer) support
-date:   9 days ago
-config: loongarch-randconfig-002-20230916 (https://download.01.org/0day-ci/archive/20230916/202309160440.jECtzdr6-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309160440.jECtzdr6-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309160440.jECtzdr6-lkp@intel.com/
+--flopxljazsb4eo7e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
-http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
+Hi,
 
-All warnings (new ones prefixed by >>):
+On Wed, Aug 23, 2023 at 10:54:29AM +0200, Grant B Adams wrote:
+> Enabling the tps65217-charger driver/module causes an interrupt conflict
+> with the vbus driver resulting in a probe failure.
+> The conflict is resolved by changing both driver's threaded interrupt
+> request function from IRQF_ONESHOT to IRQF_SHARED.
+>=20
+> Signed-off-by: Grant B Adams <nemith592@gmail.com>
+> ---
 
-   In file included from include/asm-generic/rwonce.h:26,
-                    from ./arch/loongarch/include/generated/asm/rwonce.h:1,
-                    from include/linux/compiler.h:246,
-                    from include/linux/export.h:5,
-                    from include/linux/linkage.h:7,
-                    from include/linux/kernel.h:17,
-                    from fs/btrfs/ioctl.c:6:
-   In function 'instrument_copy_from_user_before',
-       inlined from '_copy_from_user' at include/linux/uaccess.h:148:3,
-       inlined from 'copy_from_user' at include/linux/uaccess.h:183:7,
-       inlined from 'btrfs_ioctl_space_info' at fs/btrfs/ioctl.c:2993:6:
->> include/linux/kasan-checks.h:38:27: warning: 'space_args' may be used uninitialized [-Wmaybe-uninitialized]
-      38 | #define kasan_check_write __kasan_check_write
-   include/linux/instrumented.h:129:9: note: in expansion of macro 'kasan_check_write'
-     129 |         kasan_check_write(to, n);
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/kasan-checks.h: In function 'btrfs_ioctl_space_info':
-   include/linux/kasan-checks.h:20:6: note: by argument 1 of type 'const volatile void *' to '__kasan_check_write' declared here
-      20 | bool __kasan_check_write(const volatile void *p, unsigned int size);
-         |      ^~~~~~~~~~~~~~~~~~~
-   fs/btrfs/ioctl.c:2975:39: note: 'space_args' declared here
-    2975 |         struct btrfs_ioctl_space_args space_args;
-         |                                       ^~~~~~~~~~
+Your commit message does not explain why IRQF_ONESHOT is dropped;
+IRQF_ONESHOT and IRQF_SHARED are not mutually exclusive.
 
+-- Sebastian
 
-vim +/space_args +38 include/linux/kasan-checks.h
+>  drivers/power/supply/tps65217_charger.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supp=
+ly/tps65217_charger.c
+> index a4bc9f2a10bc..6f68becdbfd0 100644
+> --- a/drivers/power/supply/tps65217_charger.c
+> +++ b/drivers/power/supply/tps65217_charger.c
+> @@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_dev=
+ice *pdev)
+>  	for (i =3D 0; i < NUM_CHARGER_IRQS; i++) {
+>  		ret =3D devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
+>  						tps65217_charger_irq,
+> -						IRQF_ONESHOT, "tps65217-charger",
+> +						IRQF_SHARED, "tps65217-charger",
+>  						charger);
+>  		if (ret) {
+>  			dev_err(charger->dev,
+> --=20
+> 2.34.1
+>=20
 
-7d8ad890dad00f Marco Elver     2019-07-11  31  
-7d8ad890dad00f Marco Elver     2019-07-11  32  /*
-7d8ad890dad00f Marco Elver     2019-07-11  33   * kasan_check_*: Only available when the particular compilation unit has KASAN
-7d8ad890dad00f Marco Elver     2019-07-11  34   * instrumentation enabled. May be used in header files.
-7d8ad890dad00f Marco Elver     2019-07-11  35   */
-7d8ad890dad00f Marco Elver     2019-07-11  36  #ifdef __SANITIZE_ADDRESS__
-7d8ad890dad00f Marco Elver     2019-07-11  37  #define kasan_check_read __kasan_check_read
-7d8ad890dad00f Marco Elver     2019-07-11 @38  #define kasan_check_write __kasan_check_write
-64f8ebaf115bcd Andrey Ryabinin 2016-05-20  39  #else
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  40  static inline bool kasan_check_read(const volatile void *p, unsigned int size)
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  41  {
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  42  	return true;
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  43  }
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  44  static inline bool kasan_check_write(const volatile void *p, unsigned int size)
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  45  {
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  46  	return true;
-b5f6e0fc7d60e0 Marco Elver     2019-07-11  47  }
-64f8ebaf115bcd Andrey Ryabinin 2016-05-20  48  #endif
-64f8ebaf115bcd Andrey Ryabinin 2016-05-20  49  
+--flopxljazsb4eo7e
+Content-Type: application/pgp-signature; name="signature.asc"
 
-:::::: The code at line 38 was first introduced by commit
-:::::: 7d8ad890dad00f6cd64bfb44d9be4fceb10cf819 mm/kasan: introduce __kasan_check_{read,write}
+-----BEGIN PGP SIGNATURE-----
 
-:::::: TO: Marco Elver <elver@google.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUEweIACgkQ2O7X88g7
++pqBFg//TKpyJrIWxj3CQDqbQlO4Ws8EmT0gAZP8DVzjXF7KZn+RDJ1tCu4QarWl
+iOJR72KDBckp2eMwJ3sFdm9MVclv+Z6SvQ9mCv21pCcsZR5I4lClaVHK+FxO23en
+vapSg22m8mMtPV7EJsr5UXj4uvRGvBtvZy6VyFc+Afk+u/EmHj8ZUxX27w2oEL/f
+xyFBYrXDGkf7hEdzaY9nU9dHjD9qQef9sDE8RlC6GAi4iahW8SysrGhEtPB8yYUR
+/HYVAg5S8FEmB+tt5arQO2lkn7Fxz1RKVZlPUaRxx/3HQ2vTqmWBvpG5JkNwezVS
+hcD1L0jvBByGxLI/oLNxLW6t56QM6Pz4YkxWdqLJbM+vQiTFaULcKpqxNiNhPBzX
+UagvMg8uvGLxZ0rUMg3+EQ1JrkKUAJikZaeoYxUealnAa53i6ozKKG5Y92PeLYyK
+yhRtX8FgxKeOT5GyBAn8xT6EUFexigdZ+CZYmsB7B/aWz3S9+rXPNJ5Fxo29g+Bh
+H36olrsqE8hqkD1uWrr0dqoIQ0MoWvZxczeiIuMQqtn8yDe24ntxYSAyq62EwPp8
+fEVjJwtCsJfqQOiACXtbipOjg0BFY4cwHHJOGy2f9mzL9pJAOTxJq7vWCcZJZaSl
+EoPuk2/NG2C6UPB2paj19j/WJAWlgWeKZX1KDP/B/FRCqTMnAZg=
+=fRtN
+-----END PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--flopxljazsb4eo7e--
