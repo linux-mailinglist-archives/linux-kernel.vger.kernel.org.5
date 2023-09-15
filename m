@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE837A18CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55DA7A1881
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbjIOI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S232894AbjIOIVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbjIOI2J (ORCPT
+        with ESMTP id S233440AbjIOIVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:28:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B0F3C22;
-        Fri, 15 Sep 2023 01:27:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 040FCC43142;
-        Fri, 15 Sep 2023 08:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694765857;
-        bh=fFC1jw61OTix2DWS7/ncGs4xq27X8yWSfDU5VGasx5k=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uVB6fr/cpGQpb81G4sPLflS+dAFm6jZwTvI9r14VWp13+hfCf/0WaN0uC98iS08kc
-         0uP4Cy4OLNjDY5ulOCtSsWM36TusiU4o6QkziN2Rvq1cqK91ytkPCbRHyuuN5ScPAq
-         tZjbVSwETcB0KmurCgvtfJVxu/ZDvR9XP2RU1+S1ZrIHrgvd4APgb8x+Yx/Zf0+1Xj
-         19V5ZeLzRYuqrbqPLtMRYHjQe+QTHwTYOkBhuOwfn87djP96Kw+R0c8Sgzbhq9ILdv
-         FqaiWKKj2Ia7OLc4DsHm6AjaaYSxggXJ5ewVeml/8tn1bqWQNlpHveWIe08VxEV254
-         s+Dd0A88qy8qg==
-Message-ID: <b3093f17-9329-dae7-0aae-df9e056d2564@kernel.org>
-Date:   Fri, 15 Sep 2023 17:17:35 +0900
+        Fri, 15 Sep 2023 04:21:39 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE858420A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:19:25 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4018af103bcso12333805e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694765963; x=1695370763; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JiFcpf2wLcf/YIfsCPE49E87uqZdxujW2soFuaVwGVg=;
+        b=gnfkUaKzRQXL7IycvJpD2Otuqp6an+/+gne9ObRAQOaqwhgYBZYsWrPKKS1VoCAoCV
+         JBBbP4+kgBvjbASDUSQpOnYF2HbJYTWTrfBpD2SBEaID72SgORrz37yznohvdFF8syU2
+         QrguegbigvnzbDQLDwwJTIG33vuDiPJOsjkkyLZZhJWN9Sk+42br/yt5DiptPyXDmkWd
+         pxeyzHRe1FbeQaa5XaE0S1aZv5Brg/s9lG+Sliavy0DYgWVV2J9pEOSqTDkA1OoO3HiJ
+         AV24RylOYosEZlAlDT5s4EB0sG2c2/aw1pEdLljo+MDn7qpGcZFediPoVJe/m/JiDUL8
+         isQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694765963; x=1695370763;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JiFcpf2wLcf/YIfsCPE49E87uqZdxujW2soFuaVwGVg=;
+        b=GAcfimXdly6NVrqpjILTp0baFzQ/j3+kUOSurhMQU+CdTM60UuNSmVcWF5h1BRYZX+
+         uiJ6yypW/PVtoMRGUo6ZOPKo9cqyHB/LpIwgdUfNFW5Wrhlskwl81dmiK7+2HO1jKSpE
+         v+DQqCtxpsyqHYDbGaOE3/RYScfkDQZlfD1v1rTR6UTl5c+HcC2nzf/gmgSmxAt3Wa29
+         CSDxSkWx/XjnZKPg1eEIaf/YM62uOyHpNpcOx75tFCrWwkgA6Ipie+r/A8FsCMBw2aU8
+         O1CRA82c9blKjvSZw7y4YBF6JYxGySl64aqSZKbOCrEbB8X4GammdxSTgEcAsXrma3Be
+         GVLA==
+X-Gm-Message-State: AOJu0Yxv33yaotWqfihNCCZYjfoliuRHm18/ken34VlDJD9eriod0FXC
+        wfv4bKPgVLB+7T/J0Vv612o21g==
+X-Google-Smtp-Source: AGHT+IFXzNFNR749dSovFhgKLlWMgw4PZnj0RueOlEVM+d1kUCki23FYGgz8dPsbomfUaXNFUXtojA==
+X-Received: by 2002:a05:600c:895:b0:401:b393:da18 with SMTP id l21-20020a05600c089500b00401b393da18mr3232700wmp.6.1694765962718;
+        Fri, 15 Sep 2023 01:19:22 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id c4-20020a05600c0ac400b004030c778396sm6878763wmr.4.2023.09.15.01.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 01:19:22 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] ARM: dts: aspeed: greatlakes: use proper "mellanox" DT vendor prefix
+Date:   Fri, 15 Sep 2023 10:19:15 +0200
+Message-Id: <20230915081917.22368-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 28/42] ata: pata_ep93xx: add device tree support
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me, Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-28-a1d779dcec10@maquefel.me>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230915-ep93xx-v4-28-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 17:11, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Add OF ID match table.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+"mlx" Devicetree vendor prefix is not documented and instead "mellanox"
+should be used.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
+index 7a53f54833a0..9a6757dd203f 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
+@@ -66,7 +66,7 @@ &mac3 {
+ 	pinctrl-0 = <&pinctrl_rmii4_default>;
+ 	no-hw-checksum;
+ 	use-ncsi;
+-	mlx,multi-host;
++	mellanox,multi-host;
+ 	ncsi-ctrl,start-redo-probe;
+ 	ncsi-ctrl,no-channel-monitor;
+ 	ncsi-package = <1>;
 -- 
-Damien Le Moal
-Western Digital Research
+2.34.1
 
