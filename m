@@ -2,232 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E7F7A289F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8408C7A2871
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237538AbjIOUt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S237544AbjIOUrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237467AbjIOUtY (ORCPT
+        with ESMTP id S237691AbjIOUro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:49:24 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8306F2D53;
-        Fri, 15 Sep 2023 13:48:55 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FJspku030456;
-        Fri, 15 Sep 2023 20:48:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=VZb1ha5h3UOsogFmuuapQzRa0Mzd4pCRunMyJKJGIvA=;
- b=ZZH5MNnCRPSoxccsgy/f+FfJR4pQyag1k61XwhfEIQjmVrI2884DyQ9ugaH7K/BRM2uC
- 2LiVYswSIHaXDbXo4OvcBfPomEFZ1tjDGOwXeBKgSl3dxD9oLwe/Wmvsk/ta791BUXZb
- g2DmvZCsqlCUi2qG2zfpUA+2UNLw+h4oPgtCL+29b6kJupHQrrPdTXN+bYA/duYAcmEL
- zucOnzbbqYkNb7fS0i6EJe96QsayPb2DTn8zVzEuAojekQa7qAJtEe2rOxwdkGyHkf86
- 67D/qq7F3axn6b+hujr3woXFplOJD7dpUMPki5XpElidUMFq+HSquYEwpvDRY0Hye7iy gg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g2xj82m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:48:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKmZHH002257
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:48:35 GMT
-Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 15 Sep 2023 13:48:34 -0700
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <andersson@kernel.org>
-CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/7] drm/msm/dp: add pm_runtime_force_suspend()/resume()
-Date:   Fri, 15 Sep 2023 13:48:07 -0700
-Message-ID: <1694810888-24461-7-git-send-email-quic_khsieh@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1694810888-24461-1-git-send-email-quic_khsieh@quicinc.com>
-References: <1694810888-24461-1-git-send-email-quic_khsieh@quicinc.com>
+        Fri, 15 Sep 2023 16:47:44 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EFE273F
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:47:14 -0700 (PDT)
+Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
+        by cmsmtp with ESMTP
+        id h8dGqbD6cez0ChFiFqBwUQ; Fri, 15 Sep 2023 20:46:51 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id hFibqTfjTyBEYhFibqk0kI; Fri, 15 Sep 2023 20:47:13 +0000
+X-Authority-Analysis: v=2.4 cv=durItns4 c=1 sm=1 tr=0 ts=6504c2d1
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=P-IC7800AAAA:8 a=sozttTNsAAAA:8 a=JfrnYn6hAAAA:8 a=cm27Pg_UAAAA:8
+ a=VwQbUJbxAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
+ a=d3PnA9EDa4IxuAV0gXij:22 a=aeg5Gbbo78KNqacMgKqU:22 a=1CNFftbPRP8L7MoqJWF3:22
+ a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=OJCQwVBr4oMmx1OajRhUTQW8+WMKMrIsQ1SjzAZI0kw=; b=iLVLOqm/ucWxBdREakyaAZKEZW
+        VyWAV4xwP/gdKvpIXbyLjtyVtj5G0qiLMdtI4MpK0B5MXMoOWm7vPCfqLm+lIder34rh2kjBdSHKJ
+        0X/kumYodifIFYehekFVjfFKsu52UTk+0r6JCGI0KOOUTnVNtYrwrmfSosWHhp3t/KY85qxKHA8X7
+        zBmvAp3bJ7jD559M/SrLjKmDAPk6hTJMjSf0xIre7zJ95KVwm5O9yBMgK1DSpM0CNEUItK+PZoAbL
+        jY8Hjw6tc+GS39Ce0FFc2/+MXHg/EmtSAprs+nLPyG+P7TzzuRnzuse4EeJq6i2aYMgLAgF4HiEGJ
+        gXlqB6Jw==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:49856 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qhFiZ-002c5c-3D;
+        Fri, 15 Sep 2023 15:47:12 -0500
+Message-ID: <e0fba1f9-fc9d-81eb-4bd9-9f6db9d75df8@embeddedor.com>
+Date:   Fri, 15 Sep 2023 14:48:07 -0600
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: SbBs5s1lDUeKc8ja4UNGhcAf7iIm2D_P
-X-Proofpoint-ORIG-GUID: SbBs5s1lDUeKc8ja4UNGhcAf7iIm2D_P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- phishscore=0 impostorscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150186
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mtd: Annotate struct lpddr_private with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230915201159.never.112-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230915201159.never.112-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qhFiZ-002c5c-3D
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:49856
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 289
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLtONZVm0Mh3AsO5TxHlNUffkeM+G5rzkc6f3r7atmB5DfGVZKo+sY6K004SW39tbWvRyMdA/sZJE+R5YD5PiZvLohDUgyqk7fyGh047/QV0jVqzxQWX
+ Ce+24JrtIMyyQ4ojoigI0a9u3sq8yQHYbbo/kZiRJrlSNUQoMzBcilW4gu94nhF2Ptu8J1xq9f/Mcd7HlJvzmt/3NK1Fu1vzC7qTnZ2OXrHUL4qrTOAgMaC4
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pm_runtime_force_suspend()/resume() to complete incorporating pm
-runtime framework into DP driver. Both dp_pm_prepare() and dp_pm_complete()
-are added to set hpd_state to correct state. After resume, DP driver will
-re training its main link after .hpd_enable() callback enabled HPD
-interrupts and bring up display accordingly.
 
-Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 87 +++++--------------------------------
- 1 file changed, 10 insertions(+), 77 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index b6992202..b58cb02 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1333,101 +1333,35 @@ static int dp_pm_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
--static int dp_pm_resume(struct device *dev)
-+static void dp_pm_complete(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct msm_dp *dp_display = platform_get_drvdata(pdev);
--	struct dp_display_private *dp;
--	int sink_count = 0;
--
--	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+	struct dp_display_private *dp = dev_get_dp_display_private(dev);
- 
- 	mutex_lock(&dp->event_mutex);
- 
- 	drm_dbg_dp(dp->drm_dev,
--		"Before, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
-+		"type=%d core_inited=%d phy_inited=%d power_on=%d\n",
- 		dp->dp_display.connector_type, dp->core_initialized,
--		dp->phy_initialized, dp_display->power_on);
-+		dp->phy_initialized, dp->dp_display.power_on);
- 
- 	/* start from disconnected state */
- 	dp->hpd_state = ST_DISCONNECTED;
- 
--	/* turn on dp ctrl/phy */
--	dp_display_host_init(dp);
--
--	if (dp_display->is_edp)
--		dp_catalog_ctrl_hpd_enable(dp->catalog);
--
--	if (dp_catalog_link_is_connected(dp->catalog)) {
--		/*
--		 * set sink to normal operation mode -- D0
--		 * before dpcd read
--		 */
--		dp_display_host_phy_init(dp);
--		dp_link_psm_config(dp->link, &dp->panel->link_info, false);
--		sink_count = drm_dp_read_sink_count(dp->aux);
--		if (sink_count < 0)
--			sink_count = 0;
--
--		dp_display_host_phy_exit(dp);
--	}
--
--	dp->link->sink_count = sink_count;
--	/*
--	 * can not declared display is connected unless
--	 * HDMI cable is plugged in and sink_count of
--	 * dongle become 1
--	 * also only signal audio when disconnected
--	 */
--	if (dp->link->sink_count) {
--		dp->dp_display.link_ready = true;
--	} else {
--		dp->dp_display.link_ready = false;
--		dp_display_handle_plugged_change(dp_display, false);
--	}
--
--	drm_dbg_dp(dp->drm_dev,
--		"After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
--		dp->dp_display.connector_type, dp->link->sink_count,
--		dp->dp_display.link_ready, dp->core_initialized,
--		dp->phy_initialized, dp_display->power_on);
--
- 	mutex_unlock(&dp->event_mutex);
--
--	return 0;
- }
- 
--static int dp_pm_suspend(struct device *dev)
-+static int dp_pm_prepare(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct msm_dp *dp_display = platform_get_drvdata(pdev);
--	struct dp_display_private *dp;
--
--	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+	struct dp_display_private *dp = dev_get_dp_display_private(dev);
- 
- 	mutex_lock(&dp->event_mutex);
- 
--	drm_dbg_dp(dp->drm_dev,
--		"Before, type=%d core_inited=%d  phy_inited=%d power_on=%d\n",
--		dp->dp_display.connector_type, dp->core_initialized,
--		dp->phy_initialized, dp_display->power_on);
--
- 	/* mainlink enabled */
- 	if (dp_power_clk_status(dp->power, DP_CTRL_PM))
- 		dp_ctrl_off_link_stream(dp->ctrl);
- 
--	dp_display_host_phy_exit(dp);
--
--	/* host_init will be called at pm_resume */
--	dp_display_host_deinit(dp);
--
- 	dp->hpd_state = ST_SUSPENDED;
- 
--	drm_dbg_dp(dp->drm_dev,
--		"After, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
--		dp->dp_display.connector_type, dp->core_initialized,
--		dp->phy_initialized, dp_display->power_on);
--
- 	mutex_unlock(&dp->event_mutex);
- 
- 	return 0;
-@@ -1435,8 +1369,10 @@ static int dp_pm_suspend(struct device *dev)
- 
- static const struct dev_pm_ops dp_pm_ops = {
- 	SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
--	.suspend = dp_pm_suspend,
--	.resume =  dp_pm_resume,
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+                                pm_runtime_force_resume)
-+	.prepare = dp_pm_prepare,
-+	.complete = dp_pm_complete,
- };
- 
- static struct platform_driver dp_display_driver = {
-@@ -1670,9 +1606,6 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
- 
- 	dp_display = container_of(dp, struct dp_display_private, dp_display);
- 
--	if (dp->is_edp)
--		dp_hpd_unplug_handle(dp_display, 0);
--
- 	mutex_lock(&dp_display->event_mutex);
- 
- 	state = dp_display->hpd_state;
+On 9/15/23 14:12, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct lpddr_private.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
 -- 
-2.7.4
+Gustavo
 
+> ---
+>   include/linux/mtd/qinfo.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mtd/qinfo.h b/include/linux/mtd/qinfo.h
+> index 2e3f43788d48..0421f12156b5 100644
+> --- a/include/linux/mtd/qinfo.h
+> +++ b/include/linux/mtd/qinfo.h
+> @@ -24,7 +24,7 @@ struct lpddr_private {
+>   	struct qinfo_chip *qinfo;
+>   	int numchips;
+>   	unsigned long chipshift;
+> -	struct flchip chips[];
+> +	struct flchip chips[] __counted_by(numchips);
+>   };
+>   
+>   /* qinfo_query_info structure contains request information for
