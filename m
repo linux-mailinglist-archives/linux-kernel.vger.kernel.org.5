@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 040117A2755
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBBD7A2757
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237050AbjIOToI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        id S236442AbjIOTol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237024AbjIOTnh (ORCPT
+        with ESMTP id S237116AbjIOToY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:43:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEA21FC9;
-        Fri, 15 Sep 2023 12:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0azTSzwIO5wB3GjrjXO4srn8WzFckAJ3B02EBtBBaAM=; b=C9/rSjcoPUh83yvuYT6V9HdPDk
-        6NZtX7sEyAlPQ+xzU2EUKDtgrkAYfJ/sDrJ0RRW3Hl7HCLdA/HGZcClVAs+2MrrcwQgSIVqPsqbHn
-        kMypNEs/d22C3W1VJp9oSnmdUwXQ8l52qTb4no+CrXXKt4CqRj9uN4IrJ+ku5dsLYxilzy+t6bBtX
-        hqcksK4ufOtltzXJepTD3NjIOc0KzbxzYmJPJbxJ5eL9HdOBJLGbnNPOzBgFHbz2G9OS7wRmuRSbs
-        D/gBMKLBS1PjL4GRTudevFiq5/W0OkDwgT26S7PaRIZGwQsSKKHmm4A6MWvjR/4qz2uC+9zgoMDDP
-        ZS85RvVA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qhEiu-00Bfub-Ib; Fri, 15 Sep 2023 19:43:28 +0000
-Date:   Fri, 15 Sep 2023 20:43:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pankaj Raghav <kernel@pankajraghav.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        p.raghav@samsung.com, david@fromorbit.com, da.gomez@samsung.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        djwong@kernel.org, linux-mm@kvack.org, chandan.babu@oracle.com,
-        mcgrof@kernel.org, gost.dev@samsung.com
-Subject: Re: [RFC 04/23] filemap: set the order of the index in
- page_cache_delete_batch()
-Message-ID: <ZQSz4JttC/uTZwGw@casper.infradead.org>
-References: <20230915183848.1018717-1-kernel@pankajraghav.com>
- <20230915183848.1018717-5-kernel@pankajraghav.com>
+        Fri, 15 Sep 2023 15:44:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DED1FC9;
+        Fri, 15 Sep 2023 12:44:18 -0700 (PDT)
+Received: from mercury (unknown [185.209.196.239])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BE421660297B;
+        Fri, 15 Sep 2023 20:44:16 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694807056;
+        bh=UfM/WY+yZp82kwRj0FLayuIAOI8JPsZwqB6MaXzG7lM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=boot5EGykAUi+bHQCndXM29YiNOme+TkKVg9opL1ziJiIcD217+cxxdSBX4RmfEzs
+         gZkDqW0UVJ7B2UQ6ntqtpb5l8NemESngzepR9K+8kzM7aeNkzVOXebtE3ZUT04yaiz
+         vgF9I8qQE1W+PqTwux7FsZ8o20F86kzmfdGYLmH4yeYNiIx3FOcx5b+YcrEAYC+FIu
+         f6KSNLB40GiiSo4yf4TY7a2TvWIW7/Yrqy+v9XdI8xQSWNew8vxX3FV4BiphVSMg+v
+         WC4N/xs35xdD/5EJTHIaFLidYtP3VT9S5vWJSuUTif9tvgpcIzolrTOANhcPdUNvek
+         X/9V61/Wi/lgg==
+Received: by mercury (Postfix, from userid 1000)
+        id 7437E106044B; Fri, 15 Sep 2023 21:44:14 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+In-Reply-To: <20230915-power-of-v2-1-ca54c441867e@axis.com>
+References: <20230915-power-of-v2-1-ca54c441867e@axis.com>
+Subject: Re: [PATCH v2] power: supply: Propagate of_node to child device
+Message-Id: <169480705445.566362.8727206650054420020.b4-ty@collabora.com>
+Date:   Fri, 15 Sep 2023 21:44:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915183848.1018717-5-kernel@pankajraghav.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 08:38:29PM +0200, Pankaj Raghav wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Similar to page_cache_delete(), call xas_set_order for non-hugetlb pages
-> while deleting an entry from the page cache.
 
-Is this necessary?  As I read xas_store(), if you're storing NULL, it
-will wipe out all sibling entries.  Was this based on "oops, no, it
-doesn't" or "here is a gratuitous difference, change it"?
+On Fri, 15 Sep 2023 09:02:14 +0200, Vincent Whitchurch wrote:
+> Ensure that the dynamically created power supply device sets its
+> ->of_node if the driver supplies one.  This brings it in line with
+> several other subsystems (see git grep 'of_node =.*parent.*of_node') and
+> allows easier identification of the device from udev rules and similar.
+> 
+> Before this patch:
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] power: supply: Propagate of_node to child device
+      commit: 58e4aacb746321d8692996f40a1dcfb9e8b34c23
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
 
