@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB647A1F4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20867A1F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbjIOMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        id S235166AbjIOM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbjIOMzv (ORCPT
+        with ESMTP id S235117AbjIOM4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:55:51 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762F01BEB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:55:45 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-401f68602a8so22780485e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:55:45 -0700 (PDT)
+        Fri, 15 Sep 2023 08:56:32 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA0310E
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:56:26 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-41761e9181eso241441cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694782544; x=1695387344; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m7EqKPxcYmhqUUSygv21qZ32ZU2BZ3oQxs47F0gcyJg=;
-        b=QPOSQVtkQ4WGiENEJdIkRA5ESI2hotgNjGg76vwqM8yjmNIjgXT6Rz/ZTm8pzKq5/q
-         LYWEkvB3Cu/wl876W7dBzp/7p0kY0AaZYr7PIBVicum3JCHV8dPK0rxos00Mym5YFrk5
-         aeWjQCiiI9+DJxZSCJ2RGdO0/9y3fGxuMl5OE27+N2yAnaygCXTKanG+hPTGx7w2bGqZ
-         PFwYb9mSvIozJMg60Bd4XcZ4OlFdwlec53eMk89riR+q/Q5Bc+xSayE9H6FoqClJ36Lo
-         WGRhazGk4+hVoKEDBUuRqEQ45hv14ogWcDLwt2ecXy3vSeQeGDkhwqPNtp1eGGGbyrES
-         x/AQ==
+        d=google.com; s=20230601; t=1694782585; x=1695387385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=POzX7W8BdLozOP6jMEbD1FJiIlYH4jYiXUDV3kPwj2A=;
+        b=4oUuiIgBJX8CCHZaLRQsCQnKf1CUrHMxySXrBX29xfOr2vDsvR9D6ECmEhb7qsYVBs
+         +QnQpF3yJcJJ1Tn6JE6BvyFR8TS9U7jlKglu7sCJUGvnfJhSaQz7kKYefvuHEYsu7meT
+         8kmDge9EWosB3+3SWqsHLZZ/WUXAjmHla50dmu6fNeaQTHZpXun9ZG8R0uwrqqOGwi5J
+         yjQaNrPlO5bjQktWx9ReWUxj6m1f5iydLCQb35fmaxclso9OhYRIJpJSeAkw+vK9Rqa3
+         88tDEk6vUS871y4t1G08zP1w0QKnr6OvC0cAeZ2uOD7HO1idd1CRcj2j0+FDCgvMxknp
+         7ePQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694782544; x=1695387344;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m7EqKPxcYmhqUUSygv21qZ32ZU2BZ3oQxs47F0gcyJg=;
-        b=NumR6yxMzLpYd0ITnDjuvS6evXVt3ad1MjKEnqEEIy++VXAsFU+1Ba4oY/52j5HCgD
-         NFEbly1FJPNN1eM1LVos7ObdOdQuc4QS/iETUvUcAY0jMR1jat3hHHauCMKI3MbheQP8
-         QZNWdjahmgi4PJNRIwWDrYafimO5VBxXAkgszhjeF9fjvOUHBRZgHwA07NedXxG++/Yw
-         53t7tw/JuuYnFXJWXjCcPqAVhf/lV9DMbk0RP87F4sFN6wsKzSWttkkLt0luOc3dApZq
-         PsBnvtwLxUYXPIPobuvgEP74IGzBeNNUDEDMpXiOwLVmSDi5B0ud2cCcq6sD0qSFi2Wf
-         O6LQ==
-X-Gm-Message-State: AOJu0YwDLXcHyArAY4ebl5C0BNx+myjvAWGFjFfjIGJ4QJtfdDZypcqX
-        Vrzh7vQaxORg0wT1mi54MpytEg==
-X-Google-Smtp-Source: AGHT+IEto7bO2ll96rxIxYH9bIhRuf0HO3ll8ym/KB6KqDjLJQEEz6UfL9AXbJCbFh2iCQTgp03viQ==
-X-Received: by 2002:a1c:ed19:0:b0:403:bb04:2908 with SMTP id l25-20020a1ced19000000b00403bb042908mr1359308wmh.23.1694782543945;
-        Fri, 15 Sep 2023 05:55:43 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id r10-20020adfdc8a000000b0031aeca90e1fsm4408590wrj.70.2023.09.15.05.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 05:55:43 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 15:55:40 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/2] bcachefs: acl: Uninitialized variable in bch2_acl_chmod()
-Message-ID: <ce3a4798-f467-4776-939b-b094c365cc5c@moroto.mountain>
+        d=1e100.net; s=20230601; t=1694782585; x=1695387385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=POzX7W8BdLozOP6jMEbD1FJiIlYH4jYiXUDV3kPwj2A=;
+        b=p2wnsP8d/sPbPNoBBL8jEBbe1XYDGfMtS9Ath4+wUoxlo0Kl/0TO69oVsN3x8NhKx8
+         yPqjQ7TC2iQKuGJ2fbeAnqDpzZtUDHWPLTOW3IRQlFXuG7D0rnRD2KPYzk8I8cv1IfDW
+         vw9S35IGwjeGrwjlBXEjE5CJnR3XupCMDY1d+q6mS2Fo2+NvPpk6M6tbdKKcutonqMzc
+         ON+esvQilWeTQP9roPAxGO0PUX15GCitJ9jEjErl3OENuM1G8CbbbERF5RzaQKST4Rdm
+         jdGHtzGIr/ssWRCDz0Zc73FZF8G13KLuGm2dX9ixwReeWpmMcHu/vODFuznMQxYyGD4o
+         74DQ==
+X-Gm-Message-State: AOJu0Yygmv0WqnzNAjDABmntsoTR1vlRqCpA8QBGQqOHAKS+k6fLi/0v
+        JusCzS9l9B6Kakei5oe7fUM8BSk3TpCFh5LekDRW/g==
+X-Google-Smtp-Source: AGHT+IEBO2PWMF56UV0o0XFzzvl3p5wa/2hiGnEufkAATdc1riorwCp2tXZ4FHLdUicqUGrNwtSr8L7GdgG/ywhe4Bo=
+X-Received: by 2002:ac8:5b53:0:b0:410:653f:90ea with SMTP id
+ n19-20020ac85b53000000b00410653f90eamr165544qtw.1.1694782585290; Fri, 15 Sep
+ 2023 05:56:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230915105036.3406718-1-make_ruc2021@163.com>
+In-Reply-To: <20230915105036.3406718-1-make_ruc2021@163.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Sep 2023 14:56:14 +0200
+Message-ID: <CANn89i+On15D1y92SusrAbMZB9qrNCXZE-PwjzDaF3zpQb7d2g@mail.gmail.com>
+Subject: Re: [PATCH] net: sched: qfq: dont intepret cls results when asked to drop
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clean up code at the end of the function uses "acl" so it needs
-to be initialized to NULL.
+On Fri, Sep 15, 2023 at 1:08=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote:
+>
+> If asked to drop a packet via TC_ACT_SHOT it is unsafe to
+> assume that res.class contains a valid pointer.
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  net/sched/sch_qfq.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/sched/sch_qfq.c b/net/sched/sch_qfq.c
+> index 546c10adcacd..20d52dc484b6 100644
+> --- a/net/sched/sch_qfq.c
+> +++ b/net/sched/sch_qfq.c
+> @@ -695,6 +695,8 @@ static struct qfq_class *qfq_classify(struct sk_buff =
+*skb, struct Qdisc *sch,
+>         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
+>         fl =3D rcu_dereference_bh(q->filter_list);
+>         result =3D tcf_classify(skb, NULL, fl, &res, false);
+> +       if (result =3D=3D TC_ACT_SHOT)
+> +               return NULL;
+>         if (result >=3D 0) {
+>  #ifdef CONFIG_NET_CLS_ACT
+>                 switch (result) {
+> --
+> 2.37.2
+>
 
-Fixes: 53306e096d91 ("bcachefs: Always check for transaction restarts")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- fs/bcachefs/acl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/acl.c b/fs/bcachefs/acl.c
-index 9653401957b3..6b1579e96dfe 100644
---- a/fs/bcachefs/acl.c
-+++ b/fs/bcachefs/acl.c
-@@ -417,7 +417,7 @@ int bch2_acl_chmod(struct btree_trans *trans, subvol_inum inum,
- 	struct btree_iter iter;
- 	struct bkey_s_c_xattr xattr;
- 	struct bkey_i_xattr *new;
--	struct posix_acl *acl;
-+	struct posix_acl *acl = NULL;
- 	struct bkey_s_c k;
- 	int ret;
- 
--- 
-2.39.2
-
+Same comment, it seems already handled at line 706
