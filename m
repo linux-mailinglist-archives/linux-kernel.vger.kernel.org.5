@@ -2,141 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EFD7A1FBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77D47A1FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbjIONWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S235325AbjIONZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235270AbjIONWb (ORCPT
+        with ESMTP id S235250AbjIONZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:22:31 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C30730D1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:21:48 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41761e9181eso250731cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694784107; x=1695388907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UQik1sImnP3JtDcAUVKtHO2B2JhgasNq9FvI7Jv8Wqk=;
-        b=hZrphL8DPTEGN7qAAAhqLE8+4x4H2fDUQAuAkFd9V8k/T8ibASLW+okXtt2S0rHlry
-         6TyLq1FWg7qaouQXhKktUsR0Sb2kalOe2dQjobYhoXtefI60zivG1s31hgkTDzoB5Yxl
-         1L4VYwjra8NLaGJ4STo6zk+Efbslir5MGdyNxfBApnXjVwhmCMIAvwF0Yye8uwQgdRQh
-         RdpMh91/hOgZvWPSOt+/JaRkQTDZlBe2PmZqt+Gu2qm2QO+g4790Dscw6U7zi/hdcLR5
-         PQCpfO+nSx9Upd0Gx9xLuqkNH+IDoWcYAKYdJPC/mYFxpWqZUxVGJPHrhzGEjHrEVJez
-         nKpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694784107; x=1695388907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UQik1sImnP3JtDcAUVKtHO2B2JhgasNq9FvI7Jv8Wqk=;
-        b=GPPftiWVhjZbqDWte1J3a3m5KHaHT4rbbTjSBy6niIjbcIb2H1CgDWYWbvt0yeP8nC
-         LIZl7V+QlCqwlTBjOodZ2g4mbypj4h1FU3sCaGDBXqC/AW8T9WAeg9zt2QA6KI4yeIW0
-         0Sa1zkRRfwSYy94lzHWGhedlGDQZ3paexFHZ7439H25r0nOGfhZ3f4UgZT+IbVu3FnGh
-         gf6MbB8E7c9u5FUjW0luJzt5z32Hf1PcKpcftTR9nHJnqLDDkEN6ALRfWwHUjUbqZkU0
-         rJv2Z4Yzmhve1uA1tcCLzbKWPj7MNr3tzg7V0VR70o7apiLhEGonxhUyj0GxKscVDVf8
-         jKRQ==
-X-Gm-Message-State: AOJu0YzifFj85etg5/hR/5C5UQ2Qu1Y5p0aRVFnZHi8HuVzdhwnKZuQH
-        s/Vn1xbg93Moh5S9PBQXK/hyaw1EybnmtaTPA+9rsA==
-X-Google-Smtp-Source: AGHT+IEQu5D6irDVWU7e+S2C9j3gtbNyXsRlrL8KmuOpuqyhVi1cnfZwaAM9GgbgpDlteEZdm9a6WBLXqXQHJn8nkOA=
-X-Received: by 2002:ac8:4e51:0:b0:3de:1aaa:42f5 with SMTP id
- e17-20020ac84e51000000b003de1aaa42f5mr218397qtw.15.1694784107649; Fri, 15 Sep
- 2023 06:21:47 -0700 (PDT)
+        Fri, 15 Sep 2023 09:25:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BA41FF1;
+        Fri, 15 Sep 2023 06:24:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694784295; x=1726320295;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xhawzRG3TJlJdNBVQGus4/qbVTl5JLFakyWXXMvo36U=;
+  b=Cd9C3N27LDJ5yjcAGo/07VP1pGuLUWZLNm9liTtx0CX3Z4kKWGJI5JIZ
+   R8icJhzDPtQP6WTUcZV/ErXyFC6EyX1YmEDTcfewXGwMAjfJZPgDElDNr
+   jwhDmPmbhz75IYWvWuNhQLrygt/iJ0Obval+YauMmsBfhcHnkmwG9PKhu
+   7Q3RwHgtvoLpLzxwwrGXvq3FEBAMwZ6wC9zbLvmwzNxwY4Osr1/0bIev9
+   W682JVIgv+qn0gUnqujtpD1LvQW9DcPdtrpWl0eaJhGencfh0kNph5Lpi
+   jARH2pUxtJP9an77tdqv3tvW8LhFyrmX8lLdV7c6ho/2cENrh82J6j63Q
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="443307482"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="443307482"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 06:23:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="780091501"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="780091501"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga001.jf.intel.com with SMTP; 15 Sep 2023 06:23:22 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 15 Sep 2023 16:23:21 +0300
+Date:   Fri, 15 Sep 2023 16:23:21 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] usb: typec: tps6598x: add reset gpio support
+Message-ID: <ZQRayaqdtrqYl4AT@kuha.fi.intel.com>
+References: <20230912-topic-tps6598x_reset-v2-0-02a12e2ec50a@wolfvision.net>
+ <20230912-topic-tps6598x_reset-v2-1-02a12e2ec50a@wolfvision.net>
+ <ZQRUsD1QLke70VG2@kuha.fi.intel.com>
+ <8937c928-1938-4864-08e1-25f88caadb9a@wolfvision.net>
 MIME-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com> <ZQQiUxh5vmeZnp7s@gmail.com>
- <ZQRAckHVxQZRNEGA@gmail.com>
-In-Reply-To: <ZQRAckHVxQZRNEGA@gmail.com>
-From:   Ard Biesheuvel <ardb@google.com>
-Date:   Fri, 15 Sep 2023 15:21:36 +0200
-Message-ID: <CAGnOC3Zw49_30FkGY=RRLn-sCHNgFY_T0ugNJZCgg_T3opHm+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8937c928-1938-4864-08e1-25f88caadb9a@wolfvision.net>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 1:31=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrot=
-e:
->
->
-> * Ingo Molnar <mingo@kernel.org> wrote:
->
-> > > Ard Biesheuvel (15):
-> > >   x86/efi: Drop EFI stub .bss from .data section
-> > >   x86/efi: Disregard setup header of loaded image
-> > >   x86/efi: Drop alignment flags from PE section headers
-> > >   x86/boot: Remove the 'bugger off' message
-> > >   x86/boot: Omit compression buffer from PE/COFF image memory footpri=
-nt
-> > >   x86/boot: Drop redundant code setting the root device
-> > >   x86/boot: Grab kernel_info offset from zoffset header directly
-> > >   x86/boot: Drop references to startup_64
-> >
-> > I've applied these first 8 patches to tip:x86/boot with minor edits.
+Hi,
 
-Thanks.
+On Fri, Sep 15, 2023 at 03:17:28PM +0200, Javier Carrasco wrote:
+> On 15.09.23 14:57, Heikki Krogerus wrote:
+> > On Fri, Sep 15, 2023 at 02:23:48PM +0200, Javier Carrasco wrote:
+> >> The TPS6598x PD controller provides an active-high hardware reset input
+> >> that reinitializes all device settings. If it is not grounded by
+> >> design, the driver must be able to de-assert it in order to initialize
+> >> the device.
+> >>
+> >> The PD controller is not ready for registration right after the reset
+> >> de-assertion and a delay must be introduced in that case. According to
+> >> TI, the delay can reach up to 1000 ms [1], which is in line with the
+> >> experimental results obtained with a TPS65987D.
+> >>
+> >> Add a GPIO descriptor for the reset signal and basic reset management
+> >> for initialization and suspend/resume.
+> >>
+> >> [1] https://e2e.ti.com/support/power-management-group/power-management/
+> >> f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
+> >> to-normal-operation/4809389#4809389
+> >>
+> >> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> >> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-> > (Please preserve existing comment capitalization conventions ...)
-> >
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Ack
+> >> ---
+> >>  drivers/usb/typec/tipd/core.c | 20 ++++++++++++++++++++
+> >>  1 file changed, 20 insertions(+)
+> >>
+> >> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> >> index 37b56ce75f39..3068ef300073 100644
+> >> --- a/drivers/usb/typec/tipd/core.c
+> >> +++ b/drivers/usb/typec/tipd/core.c
+> >> @@ -8,6 +8,7 @@
+> >>  
+> >>  #include <linux/i2c.h>
+> >>  #include <linux/acpi.h>
+> >> +#include <linux/gpio/consumer.h>
+> >>  #include <linux/module.h>
+> >>  #include <linux/of.h>
+> >>  #include <linux/power_supply.h>
+> >> @@ -43,6 +44,9 @@
+> >>  /* TPS_REG_SYSTEM_CONF bits */
+> >>  #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
+> >>  
+> >> +/* reset de-assertion to ready for operation */
+> >> +#define SETUP_MS			1000
+> >> +
+> >>  enum {
+> >>  	TPS_PORTINFO_SINK,
+> >>  	TPS_PORTINFO_SINK_ACCESSORY,
+> >> @@ -86,6 +90,7 @@ struct tps6598x {
+> >>  	struct mutex lock; /* device lock */
+> >>  	u8 i2c_protocol:1;
+> >>  
+> >> +	struct gpio_desc *reset;
+> >>  	struct typec_port *port;
+> >>  	struct typec_partner *partner;
+> >>  	struct usb_pd_identity partner_identity;
+> >> @@ -717,6 +722,13 @@ static int tps6598x_probe(struct i2c_client *client)
+> >>  	mutex_init(&tps->lock);
+> >>  	tps->dev = &client->dev;
+> >>  
+> >> +	tps->reset = devm_gpiod_get_optional(tps->dev, "reset", GPIOD_OUT_LOW);
+> >> +	if (IS_ERR(tps->reset))
+> >> +		return dev_err_probe(tps->dev, PTR_ERR(tps->reset),
+> >> +				     "failed to get reset GPIO\n");
+> >> +	if (tps->reset)
+> >> +		msleep(SETUP_MS);
+> >> +
+> >>  	tps->regmap = devm_regmap_init_i2c(client, &tps6598x_regmap_config);
+> >>  	if (IS_ERR(tps->regmap))
+> >>  		return PTR_ERR(tps->regmap);
+> >> @@ -892,6 +904,9 @@ static void tps6598x_remove(struct i2c_client *client)
+> >>  	tps6598x_disconnect(tps, 0);
+> >>  	typec_unregister_port(tps->port);
+> >>  	usb_role_switch_put(tps->role_sw);
+> >> +
+> >> +	if (tps->reset)
+> >> +		gpiod_set_value_cansleep(tps->reset, 1);
+> > 
+> > Do you need that "if (tps->reset)" in this case? That function is NULL safe,
+> > right?
+> > 
+> The function makes use of the VALIDATE_DESC_VOID macro to make it NULL
+> safe, but this macro also calls pr_warn if the descriptor is NULL and I
+> do not want to add warnings for an optional property that did not exist
+> before because it could be confusing. But if that is the desired
+> behavior, I will remove the checks.
 
-> > >   x86/boot: Set EFI handover offset directly in header asm
-> > >   x86/boot: Define setup size in linker script
-> > >   x86/boot: Derive file size from _edata symbol
-> > >   x86/boot: Construct PE/COFF .text section from assembler
-> > >   x86/boot: Drop PE/COFF .reloc section
-> > >   x86/boot: Split off PE/COFF .data section
-> > >   x86/boot: Increase section and file alignment to 4k/512
-> >
-> > The rest conflicted with recent upstream changes, and I suppose it's
-> > prudent to test these changes bit by bit anyway.
->
+No, I don't want noise either.
 
-Agreed. So you mean this conflicts with other stuff queued up in -tip
-already, right?
+> >>  }
+> >>  
+> >>  static int __maybe_unused tps6598x_suspend(struct device *dev)
+> >> @@ -902,6 +917,8 @@ static int __maybe_unused tps6598x_suspend(struct device *dev)
+> >>  	if (tps->wakeup) {
+> >>  		disable_irq(client->irq);
+> >>  		enable_irq_wake(client->irq);
+> >> +	} else if (tps->reset) {
+> >> +		gpiod_set_value_cansleep(tps->reset, 1);
+> >>  	}
+> >>  
+> >>  	if (!client->irq)
+> >> @@ -918,6 +935,9 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
+> >>  	if (tps->wakeup) {
+> >>  		disable_irq_wake(client->irq);
+> >>  		enable_irq(client->irq);
+> >> +	} else if (tps->reset) {
+> >> +		gpiod_set_value_cansleep(tps->reset, 0);
+> >> +		msleep(SETUP_MS);
+> >>  	}
+> >>  
+> >>  	if (!client->irq)
+> >>
+> >> -- 
+> >> 2.39.2
 
-> So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootu=
-p,
-> due to the 8th patch:
->
->   988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
->   commit 988b52b207a9fe74c3699bda8c2256714926b94b
->   Author: Ard Biesheuvel <ardb@kernel.org>
->   Date:   Tue Sep 12 09:01:01 2023 +0000
->
->       x86/boot: Define setup size in linker script
->
-> I've removed it for now - but this side effect was not expected.
->
+thanks,
 
-No, definitely not expected. I tested various combinations of i386 /
-x86_64 built with GCC / Clang doing EFI or BIOS boot.
-
-I'll rebase the remaining stuff onto -tip and see if I can reproduce this.
+-- 
+heikki
