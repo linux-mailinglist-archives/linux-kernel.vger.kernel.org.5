@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439B37A2128
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCBA7A20BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbjIOOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        id S235624AbjIOOV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235633AbjIOOhZ (ORCPT
+        with ESMTP id S235323AbjIOOVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:37:25 -0400
-X-Greylist: delayed 911 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Sep 2023 07:37:20 PDT
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.214])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3BC931AC;
-        Fri, 15 Sep 2023 07:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GNsVK
-        vTS98xa9PYmw/wBQ5bwtcO5/g2y0Ou7JL7DMuI=; b=LjbTTRrsAaTyMK/KjzFTe
-        08QsaTkRIbyZQz/iVB5B//9t+zslNFpuiYvqJHpSbsN2MEJ/bF5A79Ya7ebgcuCI
-        W97PwJQtPyhDSjj8vM9lpdgc4DOKenbNXj8zrNBHgMBytplTK/0FL26uxS+wSHob
-        4e/kuCcisjs5LQGNnkADao=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wD3ZiBKaARlfESGCA--.51912S4;
-        Fri, 15 Sep 2023 22:21:06 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] net: sched: drr: dont intepret cls results when asked to drop
-Date:   Fri, 15 Sep 2023 22:20:56 +0800
-Message-Id: <20230915142056.3411330-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 15 Sep 2023 10:21:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAEEF3;
+        Fri, 15 Sep 2023 07:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HhqRWnfOFQmhtzhnv8gfqh6lm+Imi8Fsr7KKLz7N0CA=; b=ZAFN3W4nMASD2f9xgs7ZQX6ljK
+        ZE54cWK5jw2+Sxw46PIOJA0UT2U5uUkdTZr2k8KtDrXX41eNaAyPpkouQr6gf2KB8iRM8JlWgsjPq
+        t5J8O6xrgRo4ZmbpLLDrG0qoZub5CnCxyF7xiWItr/5duXyu508Qh+WsEzlNdenRG20Q1ZqBJGjrT
+        P3pHnkskJkhMaKdgyszIiS2taMgR4RYA9tvPdRy46Qyos8b+Pf1/YITWhln/UD8jr6YsVX77kS86O
+        Jfgys6odI16/xcwKtGf2mj3NH9cxT2EOf0oVU6upGq60J67ibRP5ZTz6zAZLmzeIzhKi8c1Z+62nx
+        ZyxDzIsg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qh9h3-00ACmq-G6; Fri, 15 Sep 2023 14:21:13 +0000
+Date:   Fri, 15 Sep 2023 15:21:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hannes Reineke <hare@suse.de>, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] block: Remove special-casing of compound pages
+Message-ID: <ZQRoWVntO22VWL8K@casper.infradead.org>
+References: <20230814144100.596749-1-willy@infradead.org>
+ <94635da5-ce28-a8fb-84e3-7a9f5240fe6a@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3ZiBKaARlfESGCA--.51912S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFW7uryUWr17Gry3Zw4kCrg_yoWDWFc_ua
-        4rWr93Cr1xCF18Cr4IkF42k395KFyfZ3WfJws7t3srW3yFvr98Ar1kGa93J3ykGF4Fkry7
-        X3sFgry5Gr9F9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKpnQ7UUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivgXrC1ZcivHc5wACsT
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94635da5-ce28-a8fb-84e3-7a9f5240fe6a@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If asked to drop a packet via TC_ACT_SHOT it is unsafe to
-assume that res.class contains a valid pointer.
+On Wed, Aug 16, 2023 at 01:27:17PM -0700, Hugh Dickins wrote:
+> > This problem predates the folio work; it could for example have been
+> > triggered by mmaping a THP in tmpfs and using that as the target of an
+> > O_DIRECT read.
+> > 
+> > Fixes: 800d8c63b2e98 ("shmem: add huge pages support")
+> 
+> No. It's a good catch, but bug looks specific to the folio work to me.
+> 
+> Almost all shmem pages are dirty from birth, even as soon as they are
+> brought back from swap; so it is not necessary to re-mark them dirty.
+> 
+> The exceptions are pages allocated to holes when faulted: so you did
+> get me worried as to whether khugepaged could collapse a pmd-ful of
+> those into a THP without marking the result as dirty.
+> 
+> But no, in v6.5-rc6 the collapse_file() success path has
+> 	if (is_shmem)
+> 		folio_mark_dirty(folio);
+> and in v5.10 the same appears as
+> 		if (is_shmem)
+> 			set_page_dirty(new_page);
+> 
+> (IIRC, that or marking pmd dirty was missed from early shmem THP
+> support, but fairly soon corrected, and backported to stable then.
+> I have a faint memory of versions which assembled pmd_dirty from
+> collected pte_dirtys.)
+> 
+> And the !is_shmem case is for CONFIG_READ_ONLY_THP_FOR_FS: writing
+> into those pages, by direct IO or whatever, is already prohibited.
+> 
+> It's dem dirty (or not dirty) folios dat's the trouble!
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- net/sched/sch_drr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/sched/sch_drr.c b/net/sched/sch_drr.c
-index 19901e77cd3b..a535dc3b0e05 100644
---- a/net/sched/sch_drr.c
-+++ b/net/sched/sch_drr.c
-@@ -310,6 +310,8 @@ static struct drr_class *drr_classify(struct sk_buff *skb, struct Qdisc *sch,
- 	fl = rcu_dereference_bh(q->filter_list);
- 	result = tcf_classify(skb, NULL, fl, &res, false);
- 	if (result >= 0) {
-+		if (result == TC_ACT_SHOT)
-+			return NULL;
- #ifdef CONFIG_NET_CLS_ACT
- 		switch (result) {
- 		case TC_ACT_QUEUED:
-@@ -317,8 +319,6 @@ static struct drr_class *drr_classify(struct sk_buff *skb, struct Qdisc *sch,
- 		case TC_ACT_TRAP:
- 			*qerr = NET_XMIT_SUCCESS | __NET_XMIT_STOLEN;
- 			fallthrough;
--		case TC_ACT_SHOT:
--			return NULL;
- 		}
- #endif
- 		cl = (struct drr_class *)res.class;
--- 
-2.37.2
-
+Thanks for the correction!  Could it happen with anon THP?
+They're not kept dirty from birth ... are they?
