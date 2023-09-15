@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6697A2861
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C197A285D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237386AbjIOUpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
+        id S237375AbjIOUpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237405AbjIOUp2 (ORCPT
+        with ESMTP id S231834AbjIOUok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:45:28 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBB299;
-        Fri, 15 Sep 2023 13:45:23 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FJuHn5000812;
-        Fri, 15 Sep 2023 20:44:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=TwFdUJBoBZv3Jp0TbnAsoL/CZRjAWRikLTj/EymlHiY=;
- b=pEKuRDpvlw7ZKG+NV4FuTr9/vFxVHglZM50wCiSCYqioskILmTox/6cPy5cMGVMNG10f
- 0D2DBvfmD3i52lGGQCkNYu2VkvNddBXUykBuD9VYKcpNwb/iIt/PRJLyzaQp1/Ua5rHV
- yFeN10SZAbHQwcj1XvuWHZkYNDWPLQoowtmGcSbLW3ycs0BethoiUpxajA9sUH/MJXJg
- MhiveogFRtFdM0QWMN1gNEIwLRjts3ri0UFI+CAoXpz4oszFGKDat0aAqqODDggyOG6S
- ZH8Gocf9WsbGR9yzVVBu38/A+pW3gCx33GH8UZMVlIswJi8E1HsT6sKI6vZ/Lt17E5R1 7w== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g2xj7ur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:44:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKiZYZ021895
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:44:35 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 15 Sep 2023 13:44:35 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>, Hai Li <hali@codeaurora.org>
-CC:     <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/msm/dsi: skip the wait for video mode done if not applicable
-Date:   Fri, 15 Sep 2023 13:44:25 -0700
-Message-ID: <20230915204426.19011-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 15 Sep 2023 16:44:40 -0400
+Received: from dd20004.kasserver.com (dd20004.kasserver.com [85.13.150.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAED818D;
+        Fri, 15 Sep 2023 13:44:31 -0700 (PDT)
+Received: from dd20004.kasserver.com (dd0806.kasserver.com [85.13.161.252])
+        by dd20004.kasserver.com (Postfix) with ESMTPSA id 37CC96320BA2;
+        Fri, 15 Sep 2023 22:44:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silentcreek.de;
+        s=kas202306171005; t=1694810669;
+        bh=GTAOtFXfmJE5tMJE+b2ZF9kJaBinx/6Zrq5uUHmsRiY=;
+        h=Subject:To:References:Cc:From:In-Reply-To:Date:From;
+        b=MLShIkK3WmQ5Jthg3oQker3OrjJzHIR+RHpiZ+vylYdomMeOjvP8EVCmtaqBAkcrk
+         NxCUHrpC8HrGnQOjvCcy2iBzQEgDq+HCJvOqHFPp7JxVsCW7lhgfin93Kxvxu9nw5H
+         qfVF8j/GIAt/1Sx9UGQWHHJ1/8AUqDxgRfMmvxUoV/hh6mV+xALtgFRJKW0mdmpdjq
+         oC/vaQExav7xH4AItkRgx81Wm+/J+goaJzeIv+cW1uwhGH51tudeayMBPiqWvPGWk7
+         HUCPNKkG56jozD+SP1EqtWvHVWLGdfRkaEpSNW7KB70+XPjnzv0OZH55eShLF9mG7W
+         nXSjDMjZ2qEXw==
+Subject: Re: Regression: Commit "netfilter: nf_tables: disallow rule addition
+ to bound chain via NFTA_RULE_CHAIN_ID" breaks ruleset loading in linux-stable
+To:     carnil@debian.org
+References: <20230911213750.5B4B663206F5@dd20004.kasserver.com>
+ <ZP+bUpxJiFcmTWhy@calendula>
+ <20230912113959.8F8B26321005@dd20004.kasserver.com><ZQC4bcVVK99Q8WrO@eldamar.lan>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        regressions@lists.linux.dev, sashal@kernel.org,
+        1051592@bugs.debian.org, arturo@debian.org
+From:   "Timo Sigurdsson" <public_timo.s@silentcreek.de>
+User-Agent: ALL-INKL Webmail 2.11
+X-SenderIP: 89.246.185.100
 MIME-Version: 1.0
+In-Reply-To: <ZQC4bcVVK99Q8WrO@eldamar.lan>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JHAsSsF9gtJJnr0se6qijXhe-eXgAngG
-X-Proofpoint-ORIG-GUID: JHAsSsF9gtJJnr0se6qijXhe-eXgAngG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- phishscore=0 impostorscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150186
+Message-Id: <20230915204429.37CC96320BA2@dd20004.kasserver.com>
+Date:   Fri, 15 Sep 2023 22:44:29 +0200 (CEST)
+X-Spamd-Bar: /
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -81,55 +60,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dsi_wait4video_done() API waits for the DSI video mode engine to
-become idle so that we can transmit the DCS commands in the
-beginning of BLLP. However, with the current sequence, the MDP
-timing engine is turned on after the panel's pre_enable() callback
-which can send out the DCS commands needed to power up the panel.
+Hi,
 
-During those cases, this API will always timeout and print out the
-error spam leading to long bootup times and log flooding.
+Salvatore Bonaccorso schrieb am 12.09.2023 21:13 (GMT +02:00):
 
-Fix this by checking if the DSI video engine was actually busy before
-waiting for it to become idle otherwise this is a redundant wait.
+> Hi Timo,
+> 
+> On Tue, Sep 12, 2023 at 01:39:59PM +0200, Timo Sigurdsson wrote:
+>> Hi Pablo,
+>> 
+>> Pablo Neira Ayuso schrieb am 12.09.2023 00:57 (GMT +02:00):
+>> 
+>> > Hi Timo,
+>> > 
+>> > On Mon, Sep 11, 2023 at 11:37:50PM +0200, Timo Sigurdsson wrote:
+>> >> Hi,
+>> >> 
+>> >> recently, Debian updated their stable kernel from 6.1.38 to 6.1.52
+>> >> which broke nftables ruleset loading on one of my machines with lots
+>> >> of "Operation not supported" errors. I've reported this to the
+>> >> Debian project (see link below) and Salvatore Bonaccorso and I
+>> >> identified "netfilter: nf_tables: disallow rule addition to bound
+>> >> chain via NFTA_RULE_CHAIN_ID" (0ebc1064e487) as the offending commit
+>> >> that introduced the regression. Salvatore also found that this issue
+>> >> affects the 5.10 stable tree as well (observed in 5.10.191), but he
+>> >> cannot reproduce it on 6.4.13 and 6.5.2.
+>> >> 
+>> >> The issue only occurs with some rulesets. While I can't trigger it
+>> >> with simple/minimal rulesets that I use on some machines, it does
+>> >> occur with a more complex ruleset that has been in use for months
+>> >> (if not years, for large parts of it). I'm attaching a somewhat
+>> >> stripped down version of the ruleset from the machine I originally
+>> >> observed this issue on. It's still not a small or simple ruleset,
+>> >> but I'll try to reduce it further when I have more time.
+>> >> 
+>> >> The error messages shown when trying to load the ruleset don't seem
+>> >> to be helpful. Just two simple examples: Just to give two simple
+>> >> examples from the log when nftables fails to start:
+>> >> /etc/nftables.conf:99:4-44: Error: Could not process rule: Operation not
+>> >> supported
+>> >>                         tcp option maxseg size 1-500 counter drop
+>> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>> >> /etc/nftables.conf:308:4-27: Error: Could not process rule: Operation not
+>> >> supported
+>> >>                         tcp dport sip-tls accept
+>> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^
+>> > 
+>> > I can reproduce this issue with 5.10.191 and 6.1.52 and nftables v1.0.6,
+>> > this is not reproducible with v1.0.7 and v1.0.8.
+>> > 
+>> >> Since the issue only affects some stable trees, Salvatore thought it
+>> >> might be an incomplete backport that causes this.
+>> >> 
+>> >> If you need further information, please let me know.
+>> > 
+>> > Userspace nftables v1.0.6 generates incorrect bytecode that hits a new
+>> > kernel check that rejects adding rules to bound chains. The incorrect
+>> > bytecode adds the chain binding, attach it to the rule and it adds the
+>> > rules to the chain binding. I have cherry-picked these three patches
+>> > for nftables v1.0.6 userspace and your ruleset restores fine.
+>> 
+>> hmm, that doesn't explain why Salvatore didn't observe this with
+>> more recent kernels.
+>> 
+>> Salvatore, did you use newer userspace components when you tested
+>> your 6.4.13 and 6.5.2 builds?
+> 
+> It does explain now because understanding the issue better. While one
+> while experinting should only change each one constraint for the
+> 6.4.13 and 6.5.2 testing I indeed switched to a Debian unstable
+> system, which has newer userpace nftables and so not triggering the
+> issue. This was missleading for the report.
+> 
+>> As for the regression and how it be dealt with: Personally, I don't
+>> really care whether the regression is solved in the kernel or
+>> userspace. If everybody agrees that this is the best or only viable
+>> option and Debian decides to push a nftables update to fix this,
+>> that works for me. But I do feel the burden to justify this should
+>> be high. A kernel change that leaves users without a working packet
+>> filter after upgrading their machines is serious, if you ask me. And
+>> since it affects several stable/longterm trees, I would assume this
+>> will hit other stable (non-rolling) distributions as well, since
+>> they will also use older userspace components (unless this is
+>> behavior specific to nftables 1.0.6 but not older versions). They
+>> probably should get a heads up then.
+> 
+> So if it is generally believed on kernel side there should not happen
+> any further changes to work with older userland, I guess in Debian we
+> will need to patch nftables. I'm CC'ing Arturo Borrero Gonzalez
+> <arturo@debian.org>, maintainer for the package. The update should go
+> ideally in the next point releases from October (and maybe released
+> earlier as well trough the stable-updates mechanism).
 
-changes in v2:
-	- move the reg read below the video mode check
-	- minor fixes in commit text
-
-Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/34
-Fixes: a689554ba6ed ("drm/msm: Initial add DSI connector support")
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- drivers/gpu/drm/msm/dsi/dsi_host.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index 0c4ec0530efc..1a2afe31fa86 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -1075,9 +1075,21 @@ static void dsi_wait4video_done(struct msm_dsi_host *msm_host)
+So, I built nftables 1.0.6-2+deb12u1 with the three cherry-picked patches from Pablo and can confirm that they resolve the issue for me on bookworm. I can now run linux 6.1.52-1 and load my original nftables ruleset again.
  
- static void dsi_wait4video_eng_busy(struct msm_dsi_host *msm_host)
- {
-+	u32 data;
-+
- 	if (!(msm_host->mode_flags & MIPI_DSI_MODE_VIDEO))
- 		return;
- 
-+	data = dsi_read(msm_host, REG_DSI_STATUS0);
-+
-+	/* if video mode engine is not busy, its because
-+	 * either timing engine was not turned on or the
-+	 * DSI controller has finished transmitting the video
-+	 * data already, so no need to wait in those cases
-+	 */
-+	if (!(data & DSI_STATUS0_VIDEO_MODE_ENGINE_BUSY))
-+		return;
-+
- 	if (msm_host->power_on && msm_host->enabled) {
- 		dsi_wait4video_done(msm_host);
- 		/* delay 4 ms to skip BLLP */
--- 
-2.40.1
+> FWIW: In Debian bullseye we have 0.9.8 based nftables, in bookworm
+> 1.0.6, so both will need those fixes.
+> 
+> As 0ebc1064e487 is to address CVE-2023-4147 other distros picking the
+> fix will likely encounter the problem at some point. It looks Red Hat
+> has taken it (some RHSA's were released), I assume Ubuntu will shortly
+> as well release USN's containing a fix.
 
+SUSE has also picked this patch for SLES/SLED. I hope maintainers follow the mailing lists cc'ed here or that someone gives them a heads up before this hits more production systems.
+
+Thanks and regards,
+
+Timo
