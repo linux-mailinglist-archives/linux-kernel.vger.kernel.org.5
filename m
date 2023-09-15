@@ -2,250 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF42F7A23A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269747A23A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbjIOQbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        id S235139AbjIOQb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234952AbjIOQbK (ORCPT
+        with ESMTP id S231490AbjIOQbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:31:10 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E61AC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:31:01 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-573249e73f8so1386089eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1694795461; x=1695400261; darn=vger.kernel.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8zW1uvOGtqvqh7qOFi217pWEIRVGtYIUXxk78m6XlA0=;
-        b=FwpR4GfsoPHKYCXdf6IRbhS96ZB/GkIZaL39SGDeEVPdG7G9Z/tuPEdwIxx8womBYp
-         JYsXkRb8bT7RxN94DmFfF7ctLy30VxMqQrWwpq3r0Fur7PvndQd8hRP2GTqJ17WHar5v
-         k20cx9ywp5rWERkPYZ1to0f62z3YI6UiNY21w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694795461; x=1695400261;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zW1uvOGtqvqh7qOFi217pWEIRVGtYIUXxk78m6XlA0=;
-        b=XDUzoAT2w9S0CmSC6bGzMfHh538mdMii/CWLxNrDDjuCBlDCaggPQEI/qI4FUlaFYz
-         j4wZECbE9fLDxVvpa19latLHGEr5GavimqqER2msAayuMPzmJGSOm7Kuyv0kP3Qjt6hZ
-         I4v0RXVd+H4sZghLTtd/qiBEDDUXmhpJEa6gsbAP4nGYEZ76S/waKYiojkrS5lCaApbt
-         Ugm4zcTgMu+mcigupt647K2/S1gS5tnGbcpKhQ2L+kI10C41i997l7XWq6LgmHxvRIWh
-         szvSzQlG/oKLzSUTqym8ChbrGpO0EhVZf34DY/xd5lczjRE818V9rzO2TdmfIFnZVYfS
-         VAAQ==
-X-Gm-Message-State: AOJu0YyDPIUKu+pikWpgG8Q91gJJ+UYOW2HyJOyrdZe4gmoprYXSYjwO
-        usDqBPNm3tDDu/ZGl3maOtzRFA==
-X-Google-Smtp-Source: AGHT+IH9f3ADCI/59RSTEiUOC9HhCU2jhg8ihwpIk9gmIuGtau7zFuA8Rg58crVle/qE5I9DWWauhw==
-X-Received: by 2002:a05:6358:7249:b0:134:f28f:aa47 with SMTP id i9-20020a056358724900b00134f28faa47mr2905530rwa.23.1694795461046;
-        Fri, 15 Sep 2023 09:31:01 -0700 (PDT)
-Received: from [10.67.51.148] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y9-20020a0cd989000000b0063d2a70dff5sm1387579qvj.72.2023.09.15.09.30.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 09:31:00 -0700 (PDT)
-Message-ID: <71ab660c-bee3-038f-665c-cda04f18cf6d@broadcom.com>
-Date:   Fri, 15 Sep 2023 09:30:58 -0700
+        Fri, 15 Sep 2023 12:31:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97315199;
+        Fri, 15 Sep 2023 09:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694795473; x=1726331473;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6M6rOq00dYpxIP2fvrgkrYRZSgkfk+XdNAGJQxwQQW0=;
+  b=Cg2sSg7QKCndcfx8NeNaaHZT/dVMeeVvsTvTyOfclKP9VfStozh9cErT
+   I7CzJRxJmxW9Lm9j7Nzx6LEjL5XTblMBxplSSeYFEv1pY1xm5KBDNJL15
+   pKzLGPYSiBbMSFlfTF27PwvM45/XJ2aAiavamcJlZoD8P2oYkYpTeb3J9
+   qs/u8npbvCEXf5tqwH4/mErmECtJ3QKUuO5QyOEmI7BvO/nmIV/NRXObC
+   acHtzENgdBWhUrvf+H+8cwl13aeVrmVLIU4Ff2rR6K2m7kuo0ufsHDnRs
+   9TSPcuMbG3Dx2Ap4EvsMe9LDBV7lxL5Po37GS7UQY4SuZSagEJ8+4D7E2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="364339397"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="364339397"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:31:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="868769690"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="868769690"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Sep 2023 09:31:12 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 15 Sep 2023 09:31:06 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 15 Sep 2023 09:31:06 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 15 Sep 2023 09:31:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W+E/e0jNBbkNKqUAPW+xqMYkw4a5m1MHnTFzmh4k1q9GpyZ9VzjEEkDgJYgbPV0DpxnBMmFQGOXe0uY9qEg4ToyRXfqP3M8dv2C8jDn1iqMGk6HhkPjUgUtT1p3+6ztvq1KHDpcNtZ2LW9Wuwb9YbHQMYvp7vJTsbjpp94gVF+TRExHLm1Dkt/Nzzt8xa6mcafjvOT6yCuvP4yD65j1xujb9u4zC8/vNxE69G0SUAfdWq6bEWvLm5hb+7nPPxm77UTUMeHbCfE9kYniTYJD7ptRBl6rzAtdod3o6HSyze609BC+gfzv8d39SWipEfAud8nk6/iucBFwCEcJCSPrJxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4F9nWtdOt8gQVfBNOJ7ufAEnojYX3o9PqEZUgqgXDQk=;
+ b=oHe/9B8ikTPNMYE/ydOSK5UwZcbcE4WngMHjFMxhA7u/kR9et/37sidgSqclXFQkSeJYjfXW3dCmP1xe4aMqWMlOPe7Klvu5DdiFifhSiUIztq1oiT0reuUdttmqk9RYkizKdjRDfPkoBovQvP23xvK3GX1fXfJSx1voT1cX2x5xZjSCz4YbDykcSv8Z7XKJF7vbGma/RW5TEII1KFOgaVIh+vmIT0alyryvpQcD43ReXB0ei4dEs0Msd9OILKADve25rRhq6hOc4tYoAbdGEH4yWYQMyimarSIaGeusD2mU6iCMSjCo+VFAQwbaeFNnACjKInczyL/mNaspCNC1bQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by SA0PR11MB4637.namprd11.prod.outlook.com (2603:10b6:806:97::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
+ 2023 16:31:04 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::bbd6:576b:132:74e4]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::bbd6:576b:132:74e4%6]) with mapi id 15.20.6768.029; Fri, 15 Sep 2023
+ 16:31:03 +0000
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Enlin Mu <enlin.mu@outlook.com>,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "gpiccoli@igalia.com" <gpiccoli@igalia.com>,
+        "enlin.mu@unisoc.com" <enlin.mu@unisoc.com>,
+        "enlinmu@gmail.com" <enlinmu@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH] printk: add cpu id information to printk() output
+Thread-Topic: [PATCH] printk: add cpu id information to printk() output
+Thread-Index: AQHZ56gGj/rt1aCNXkiaM2mvxEzR1rAcFCLg
+Date:   Fri, 15 Sep 2023 16:31:03 +0000
+Message-ID: <SJ1PR11MB608326C26516C66ADC0526D8FCF6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
+In-Reply-To: <JH0PR04MB7072A4B6946EAEEB1EB8B0BE8AF6A@JH0PR04MB7072.apcprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SA0PR11MB4637:EE_
+x-ms-office365-filtering-correlation-id: 2a713f6c-0454-4602-ae76-08dbb60927a9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iYXerLD8199MWJvXOh4HSJ7BLBNmNEc7w01l5YJaMiPAnB8xcKFrK/1r0wzPY6tzc7dpvKmrHOsT7XZ3gL8OFPjQXfVYHEMaQ38jOhSjU2uBI5IN/N7YjPMYwa7sOAu+ntDbDV+W7MjZ2Y1+NFw3A8YBwvjFMPAZQud4UI/QUqqN/UT0F85MatvsMMC2XVOt/oKOGpYJf/eLHJHG0p1+YTR64PGgl2ePI5IIscz0ItzraFOIwM+J+EK5MRaMqEoa9CH/HP0rjuaYXSXj2l/J3xiKUhy7r2HSRwLMFgCmdZAWenCjfIZ/XPwao5tGooVuE1SV4cxi68w/xTmgLyuxbRchtau+FEx8cMH8RJffTO3ukwh+i8O+3pNV3zL+zpsF+HT4OOzLRtPqw8HxFYU+dOmA8as7wVYG8cHglRkuTEFip+CiSgg9I40qVNyI6r4QBTGnJDogOvxAPUmCMZC8Y/WkUlF7BFP+aRHLtZcN1UMpWxjbx3CXTIuRoCTvpIp51lQtRmW/FHV+kc7FtyqDhSdoR1qnnFMIdQlWYAIZojzUR4qnIO4/aEAldrU0+h2AuAdqBYOFC4UGG8knYNBH0tneypkqR7kA91cB+JLsj6GQzf37y3NoXlz2BtLbCpJf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(396003)(376002)(136003)(451199024)(186009)(1800799009)(316002)(76116006)(66446008)(66946007)(64756008)(66476007)(66556008)(54906003)(41300700001)(110136005)(55016003)(478600001)(71200400001)(122000001)(38070700005)(38100700002)(82960400001)(7416002)(33656002)(558084003)(2906002)(86362001)(5660300002)(52536014)(8676002)(4326008)(8936002)(26005)(83380400001)(6506007)(7696005)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KHPXQdwh5XNura4xaDKesyUStFl2moEgL9gPazNAnXj6MO2b2aXTY42fdUVV?=
+ =?us-ascii?Q?KJ56mLqZbFXcaBZeEqrelTJku+CBM2wEW3noiXJZenx7mG9y7jwzzO8iZpmc?=
+ =?us-ascii?Q?ds2Csj2EnlXERQ5OYw5MEIlcL1Imj0tO8N7Ua4GFZduWj9X/n6+jwf5+KT00?=
+ =?us-ascii?Q?dOxKD2oOy4WpEIkydALkGAfIEzMKT1fkNXFSHlawxjFqsYaJpMLpp1Fs+S8z?=
+ =?us-ascii?Q?9VSkAwLKVUw9/xpNjh0jkbjC8IWLdVDJEiFWMks7a/gEje4qDMpx843avZoG?=
+ =?us-ascii?Q?mXsH0GpHOIkVQyQcBz/74gptLmj0vvNne69hYcu+IotfATviLKYFDrrIDr+r?=
+ =?us-ascii?Q?lyS4l6A/BnQnkuVlP2lDl+6EPmwCsCCS3GVP/k8MPiOFxBnF5HvP9UaVJJUl?=
+ =?us-ascii?Q?OhaIcnlIeDZ7Oh4biPa2Kh1bAjRSfvmFzFy8HsOsnJ+IN5sOT30B4f1JCeFW?=
+ =?us-ascii?Q?2BNHS7kbV+vdQr03zfJVhlAH0586S3ZdyKejzUR+IjhgUDjeQZaokV3pdcy3?=
+ =?us-ascii?Q?o38kwa3/2hV30TiRq5iVV44a5L1dtJjC4eB8Fx6XcMbC7ArHpE55MHWUJ3FF?=
+ =?us-ascii?Q?XYNd+JC59CPQpf8oMtkOKxcXwaJ26ook/Lzha1cA0lgSQfGhPi4YevOfEWr6?=
+ =?us-ascii?Q?9z8yeVa/w4C0qaGoUFduzHWzZhdRwoZDcplr4ox3dmBTbq3djl30gmMl20B3?=
+ =?us-ascii?Q?FC/cBaYee0VTVecr6LX+W90kjIo4dcQLOrxWGPCRLOKzFSVQtPOsKUme4J0i?=
+ =?us-ascii?Q?MfhoL9TmcrOoWuuJ0ch7+U20f1syqCNcL5qOgZGUN5zlz0hKvRGSzBfJ2LGE?=
+ =?us-ascii?Q?/ulkHrIhGcPZiahNpzgocO6Jd9LJBqnjxOE2UmXZELgMB58Yd5FNjEU0aMst?=
+ =?us-ascii?Q?a3oKt9hhEvxr5jeZPmY0AIq3bqOGtgnpRZQOZXR06vvywwrGbdzVXJoIcazA?=
+ =?us-ascii?Q?JJYlmE789JUYFcCR5xaOIMSmFK4wG4F6pprIYvArhFyNJY4Yb+C1A4hD32W7?=
+ =?us-ascii?Q?FNhWfTkW38ApN06indZosBY/AGvZS5/KjOhjUMdAA3S5PJCGYXYsX2UeLs+n?=
+ =?us-ascii?Q?pwQa7BlHU43DP2Jm2vUVlFm2VPnaBAX0EuG5+1EXSoJ98EoHIrHZwRXyxwlR?=
+ =?us-ascii?Q?i5Nx2AlwqBypfTHlJqX5SxqRcg+k+MzcB9Vgpm1i4EATUrDV/E8XlXt5QPDF?=
+ =?us-ascii?Q?CUR6rs8QQHPTtDESotpCsd+yTETPkA5B8lAm9ea2uZjwTrvzCXuCH83t1m46?=
+ =?us-ascii?Q?U9nX/mL7BlZuQdJimw/Qg4y/XE7wwhQfNJlB/yznnsQaG8Y5bXZI7DK55VDK?=
+ =?us-ascii?Q?wYuzcNclNJzKe4Qrw00LZ9vAM8WcOHBJ0qRPvUGxvlq4RhMP3xzbvv9jnKGe?=
+ =?us-ascii?Q?cXEgKi6p/cEfycOMzJHJzK5ZWnvBea6nYznQ498u0hzI4TvmooS3Lh/ti9cM?=
+ =?us-ascii?Q?oFKFQgOnIHqzy/BinePQtvbqGjpBLy3aTrkxEFDs5zOufFqjWtxqVNc97i7+?=
+ =?us-ascii?Q?Be/KS2ChnWe85pdXWHpIr/aXoxel4SB6ebVpYQJyAfDiQ5HD/GCGLJFbkCrN?=
+ =?us-ascii?Q?9RbuxIkblIQP81mrafr8Md7Sy13W3azvtOcEP6h6?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 05/17] pmdomain: bcm: Move Kconfig options to the
- pmdomain subsystem
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-mips@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-References: <20230915092003.658361-1-ulf.hansson@linaro.org>
- <20230915092003.658361-6-ulf.hansson@linaro.org>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-In-Reply-To: <20230915092003.658361-6-ulf.hansson@linaro.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000716ed906056851ff"
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a713f6c-0454-4602-ae76-08dbb60927a9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2023 16:31:03.9138
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /FelIW0PTcnKh0jLtO/HZvLv8Xs+HSlCz31m4yzmEUn2taR9DSLKGjx6gMWf/LBLYEAT0E0AxRS/L+TqyVdm8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4637
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000716ed906056851ff
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+> +	return in_task() ? task_pid_nr(current) | (smp_processor_id() << CPU_ID=
+_SHIFT) :
 
-On 9/15/23 02:19, Ulf Hansson wrote:
-> The Kconfig options belongs closer to the corresponding implementations,
-> hence let's move them from the soc subsystem to the pmdomain subsystem.
-> 
-> Cc: Florian Fainelli <florian.fainelli@broadcom.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: <linux-mips@vger.kernel.org>
-> Cc: <linux-rpi-kernel@lists.infradead.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->   drivers/pmdomain/Kconfig     |  1 +
->   drivers/pmdomain/bcm/Kconfig | 46 ++++++++++++++++++++++++++++++++++++
->   drivers/soc/bcm/Kconfig      | 42 --------------------------------
->   3 files changed, 47 insertions(+), 42 deletions(-)
->   create mode 100644 drivers/pmdomain/bcm/Kconfig
-> 
-> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
-> index 482d9e970e14..ddc05d6af100 100644
-> --- a/drivers/pmdomain/Kconfig
-> +++ b/drivers/pmdomain/Kconfig
-> @@ -4,5 +4,6 @@ menu "PM Domains"
->   source "drivers/pmdomain/actions/Kconfig"
->   source "drivers/pmdomain/amlogic/Kconfig"
->   source "drivers/pmdomain/apple/Kconfig"
-> +source "drivers/pmdomain/bcm/Kconfig"
->   
->   endmenu
-> diff --git a/drivers/pmdomain/bcm/Kconfig b/drivers/pmdomain/bcm/Kconfig
-> new file mode 100644
-> index 000000000000..9311e90b7707
-> --- /dev/null
-> +++ b/drivers/pmdomain/bcm/Kconfig
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +menu "Broadcom PM Domains"
-> +
-> +config BCM2835_POWER
-> +	bool "BCM2835 power domain driver"
-> +	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
-> +	default y if ARCH_BCM2835
-> +	select PM_GENERIC_DOMAINS if PM
-> +	select RESET_CONTROLLER
-> +	help
-> +	  This enables support for the BCM2835 power domains and reset
-> +	  controller.  Any usage of power domains by the Raspberry Pi
-> +	  firmware means that Linux usage of the same power domain
-> +	  must be accessed using the RASPBERRYPI_POWER driver
-> +
-> +config RASPBERRYPI_POWER
-> +	bool "Raspberry Pi power domain driver"
-> +	depends on ARCH_BCM2835 || (COMPILE_TEST && OF)
-> +	depends on RASPBERRYPI_FIRMWARE=y
-> +	select PM_GENERIC_DOMAINS if PM
-> +	help
-> +	  This enables support for the RPi power domains which can be enabled
-> +	  or disabled via the RPi firmware.
-> +
-> +config BCM_PMB
-> +	bool "Broadcom PMB (Power Management Bus) driver"
-> +	depends on ARCH_BCMBCA || (COMPILE_TEST && OF)
-> +	default ARCH_BCMBCA
-> +	select PM_GENERIC_DOMAINS if PM
-> +	help
-> +	  This enables support for the Broadcom's PMB (Power Management Bus) that
-> +	  is used for disabling and enabling SoC devices.
-> +
-> +if SOC_BCM63XX
-> +
-> +config BCM63XX_POWER
-> +	bool "BCM63xx power domain driver"
-> +	depends on BMIPS_GENERIC || (COMPILE_TEST && OF)
-> +	select PM_GENERIC_DOMAINS if PM
-> +	help
-> +	  This enables support for the BCM63xx power domains controller on
-> +	  BCM6318, BCM6328, BCM6362 and BCM63268 SoCs.
-> +
-> +endif # SOC_BCM63XX
+There are contexts and CONFIG options around pre-emption where smp_processo=
+r_id()
+will throw a warning. Use raw_smp_processor_id().
 
-That is confusing, SOC_BCM63XX remains defined in 
-drivers/soc/bcm/Kconfig, but we now made BCM63XX_POWER's visibility 
-conditional upon a Kconfig symbol defined elsewhere, I would just drop 
-the "if" condition completely.
--- 
-Florian
-
-
---000000000000716ed906056851ff
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHMjXR1Mb7tkrghY
-ifSmy9W60ovmR8CAnz8OdMRHYVlDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDkxNTE2MzEwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDyWA17HJtEb5UqEon5RPKcLAmXcpGwUXDK
-Y7AMPYwTdFy9U4bZjFNIYNQrViUKd4+JM8tWMcOA82I0bC6/TwQonm5keBC17RA54r86lXSdmGG0
-vOZSMVH5KflygqfyTwn0Zj+Zp2U8aUZkq21GZ8tLokxUzXsqDEPYp9qvctXCsBN5Rnse8lZPRWZ6
-i4e9FvqONeyebeeyQEByHAUdDrgu/x0Y3ne+rgGZP5F+fPXGkTnvpp3vuByjs38BHyhNRJsSebhy
-uTOa4yVtKqTgRznhOYLVUElWzX9qZEq7PlOkeyasI2FywC6+8W6D+NYh7rBcgexdY05AKAL0wUoL
-BATO
---000000000000716ed906056851ff--
+-Tony
