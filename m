@@ -2,213 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A537A1691
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE04D7A169D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjIOGyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        id S232499AbjIOG42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjIOGyj (ORCPT
+        with ESMTP id S232454AbjIOG4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:54:39 -0400
-X-Greylist: delayed 12719 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Sep 2023 23:54:26 PDT
-Received: from sphereful.davidgow.net (sphereful.davidgow.net [IPv6:2404:9400:4:0:216:3eff:fee2:5328])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2417271D;
-        Thu, 14 Sep 2023 23:54:26 -0700 (PDT)
-Received: by sphereful.davidgow.net (Postfix, from userid 119)
-        id A95151D5805; Fri, 15 Sep 2023 14:54:24 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
-        s=201606; t=1694760864;
-        bh=XQJ2LhjuNHohn0bHVIdFmH9hk8s09g6V1/dd6q+mxl4=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=Hi7bUTflxnCeGBuuAKp14El2swhWK5tWcAapHEg3de2fTQU6NBfDRPKa4jXx2zmUe
-         P3OS1/0zKsB0I0ubf/NJLGCyc2TnTCE16rlAvDg0GOMR0xVDCI4qNZ1QZVAO8qxY6J
-         udSVZJQG7wgRG5FbYBcOyEOsQ8s/OzsZcAuESJ0aaePWqWt65nBk0CxLeOpKJNh3Gn
-         DbLWw+i1FrhidC5iGnOYXIzw//tiqa4JHbGheXZe98W/TCFD7kV1TaBTjDzn3h15Lz
-         8gIijtfs6seGFfwgbuOJKW8l0hlScP/oXIhh3Pyef616LpuaqkMBHU5g16TNJ1c8oD
-         Q0b5RvN/COip609Jmc48of4fiTtZdHY/0U7ifuMa7PTF/QN3OJuh8VG6r+mgBikNEX
-         bTUz4uAp2e5wcfBjOYQQDYfQEzHdazOs4nR5gBoQKNxRt6zY+YX86O0E1t2taUvVsa
-         BsBPgTz+uIdkx4gD2z9qxZXMpIVcTfvhSsxwIMaG0drLHcrQJ2zsM/nerJeXdkATnW
-         dqp3hMyKbvn0fACk4hCwVR0TwgWIwSs1j+W7D0DMXDXeCE8YQZyDOWb9mzbnCqjtgR
-         w3DMqvnfuHx2PJhY07WvXoXlMlWBptgG6OSebLag6FOjlY3SY/WWEsizMX+wXbRdsL
-         SRD3S/bYUwwkqz7xuEMgRVD8=
+        Fri, 15 Sep 2023 02:56:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C222A2708
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694760912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0HShZr8WZAcOFv96ZYRXyE10lt4rZkRojb7JS1wDFwg=;
+        b=gX5VR43G1GAG9ZCMVTBIMSNO+ytvnE7ViXSZs+DRH/Pc55b+D6961r3EMKltCAIjOQ5Iip
+        AQfEDEuITQII1vg4/K0joRUuXz35wTpaBxA9sglkPWW6A/De3/gq5t+bzhcheGgCp3kzf4
+        poJcbfQDv6Rt3fRotuXTX6/7V+FD5wE=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-261-xIfDFrLbM0WNcOY2e9g7RQ-1; Fri, 15 Sep 2023 02:55:10 -0400
+X-MC-Unique: xIfDFrLbM0WNcOY2e9g7RQ-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5009121067cso2128293e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:55:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694760909; x=1695365709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0HShZr8WZAcOFv96ZYRXyE10lt4rZkRojb7JS1wDFwg=;
+        b=PWr01elMBBc0nU+L5YRfATN85lesAaqYKXy0G5dVDrhafGZAUkrCUG52VTGqqSal+X
+         b26sii6OCOVxLCkJvyMb3oJh7Se3tUfAHiBDzC13g6+MViluu5DWDuYyXc++iwh0tpei
+         8R4wuqQnRyQsYPsLaKzk+xKkoEHMdM7gX433Y4i7YLQBYB8JhH5cN16EwbpO5jFsHsm3
+         mvic77HB8SBt/R/ZWQbNUDAYG8Wc9myJ20aLsJSTMDyBtHSkkId1sfRbUjxf5uQGEGVJ
+         PBbUS/HL4KoV1uptmaH26cpuFC8WkIsF4ob/WUdqkU/IPj8cCb2t9Z5xYi18ZPhLAzFf
+         c7QQ==
+X-Gm-Message-State: AOJu0Yx4Tn0rWTKbmtpmjiS42D+mpGedUmqOaXNLd3n8XSkL8cS11Rxl
+        JDo9memBfobBKY6JytMf8RGxU9FFSFQlMbKejkPa3l3lKbGNlF1LaWRo7GdH4ELXv2EObRps/y2
+        IFXCvq1wPNSbT6WXsUoMP8zkT5EbZjaMhrwp/u+q0
+X-Received: by 2002:a05:6512:539:b0:4ff:a25b:bca1 with SMTP id o25-20020a056512053900b004ffa25bbca1mr644178lfc.33.1694760908896;
+        Thu, 14 Sep 2023 23:55:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGeELldMxnOhRlb4+WRmIeNCxjyPnSW1K3CuLG2wJF+pe+C7IWcZIM+xDb7X7fDmVIC/VIS638CajnbteLXSh0=
+X-Received: by 2002:a05:6512:539:b0:4ff:a25b:bca1 with SMTP id
+ o25-20020a056512053900b004ffa25bbca1mr644163lfc.33.1694760908532; Thu, 14 Sep
+ 2023 23:55:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230831155702.1080754-1-dtatulea@nvidia.com>
+In-Reply-To: <20230831155702.1080754-1-dtatulea@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 15 Sep 2023 14:54:57 +0800
+Message-ID: <CACGkMEsgZig_Ek+ZsEr3hhBznZb_d733QK+0BVoe_WMLsKd+Pg@mail.gmail.com>
+Subject: Re: [PATCH v2] vdpa/mlx5: Fix firmware error on creation of 1k VQs
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@mellanox.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from [IPV6:2001:8003:8824:9e00::bec] (unknown [IPv6:2001:8003:8824:9e00::bec])
-        by sphereful.davidgow.net (Postfix) with ESMTPSA id BBF301D57EA;
-        Fri, 15 Sep 2023 14:54:22 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
-        s=201606; t=1694760862;
-        bh=XQJ2LhjuNHohn0bHVIdFmH9hk8s09g6V1/dd6q+mxl4=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=Jej7U/B4T8o2MgYP5f8UWtS28guozrDrTC7WC6oqvXoSKGqaWbRMEGVpKUhrEZQGg
-         EbibmUQ6IxYXOSlKUPfQKpVFC6cIGeBnb2D4c06lfpshqqNValvN/dlh+WBk20t6cE
-         fNtZKkQ64+PLc1ISP7u4li7ZivHnHKdWovnlxw23nfDnt0DaKPNk547v9mDpv8IBci
-         WHyIutQ8GYLYc1X9fKbMpcWircDacFZbfkm/NbE3eyuNo3yJIBhJUeZ5kNIukNgM1d
-         dIEG7A2RbBu8Ln6cyy+ZzhKNp1raRpn6XGHoM2HY7+NYhV0TCQ2l0xbHb+xqZlgaPz
-         aCE1Bj9LKLbaNEmPbfREQy7a+C2midogYrFUcij2iFM86fDe36r2nMluOOVonw6k/z
-         xERgOWxCroNQ/vj5flzR7RFU9Bb5LNAojq+8JFKuVH32aB9GL1ji84DuD0NHtsSvrR
-         9B1C2zkTyyTUNm0yx0vE0C/ucxIUZ/yFtNFsnB40Y/3VMT2iI1WNjTijxTEF+9S/q3
-         C3SV0L3/OUrt5Q5crk3gab5Q6jbxX2C4fUw7jW0oE/7ayZL+6BXpdH37gdr5PtZ4vz
-         3T3Jj+qCetW8q62Epm0SotdKBUB1avEM5Q81zdeayxq9uxFrrb9/L4wn6ZZ7BZNB9N
-         qd9VQgBgjMiN+AXVVTxi7SlU=
-Message-ID: <658b9285-e030-4987-86a7-57cdb6c7f161@davidgow.net>
-Date:   Fri, 15 Sep 2023 14:54:19 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   David Gow <david@davidgow.net>
-Subject: Re: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe
- SATA to Constantly Reset
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        patenteng <dimitar@daskalov.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-References: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
- <ZQHRQHAPQdG+Nu1o@x1-carbon>
- <59f6ff78-6b45-465a-bd41-28c7a5d10931@davidgow.net>
- <10f65dfe-5e8a-10ab-4d89-efe693c07caa@kernel.org>
-Content-Language: fr
-In-Reply-To: <10f65dfe-5e8a-10ab-4d89-efe693c07caa@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 2023/09/15 à 13:41, Damien Le Moal a écrit :
-> On 9/15/23 12:22, David Gow wrote:
->> Le 2023/09/13 à 23:12, Niklas Cassel a écrit :
->>> On Wed, Sep 13, 2023 at 06:25:31PM +0700, Bagas Sanjaya wrote:
->>>> Hi,
->>>>
->>>> I notice a regression report on Bugzilla [1]. Quoting from it:
->>>>
->>>>> After upgrading to 6.5.2 from 6.4.12 I keep getting the following kernel messages around three times per second:
->>>>>
->>>>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>>>> [ 9683.270399] ata16.00: configured for UDMA/66
->>>>>
->>>>> So I've tracked the offending device:
->>>>>
->>>>> ll /sys/class/ata_port/ata16
->>>>> lrwxrwxrwx 1 root root 0 Sep 10 21:51 /sys/class/ata_port/ata16 -> ../../devices/pci0000:00/0000:00:1c.7/0000:0a:00.0/ata16/ata_port/ata16
->>>>>
->>>>> cat /sys/bus/pci/devices/0000:0a:00.0/uevent
->>>>> DRIVER=ahci
->>>>> PCI_CLASS=10601
->>>>> PCI_ID=1B4B:9130
->>>>> PCI_SUBSYS_ID=1043:8438
->>>>> PCI_SLOT_NAME=0000:0a:00.0
->>>>> MODALIAS=pci:v00001B4Bd00009130sv00001043sd00008438bc01sc06i01
->>>>>
->>>>> lspci | grep 0a:00.0
->>>>> 0a:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9128 PCIe SATA 6 Gb/s RAID controller with HyperDuo (rev 11)
->>>>>
->>>>> I am not using the 88SE9128, so I have no way of knowing whether it works or not. It may simply be getting reset a couple of times per second or it may not function at all.
->>>>
->>>> See Bugzilla for the full thread.
->>>>
->>>> patenteng: I have asked you to bisect this regression. Any conclusion?
->>>>
->>>> Anyway, I'm adding this regression to regzbot:
->>>>
->>>> #regzbot: introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217902
->>>
->>> Hello Bagas, patenteng,
->>>
->>>
->>> FYI, the prints:
->>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>> [ 9683.270399] ata16.00: configured for UDMA/66
->>>
->>> Just show that ATA error handler has been invoked.
->>> There was no reset performed.
->>>
->>> If there was a reset, you would have seen something like:
->>> [    1.441326] ata8: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
->>> [    1.541250] ata8.00: configured for UDMA/133
->>> [    1.541411] ata8: hard resetting link
->>>
->>>
->>> Could you please try this patch and see if it improves things for you:
->>> https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
->>>
->>
->> FWIW, I'm seeing a very similar issue both in 6.5.2 and in git master
->> [aed8aee11130 ("Merge tag 'pmdomain-v6.6-rc1' of
->> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm") with that
->> patch applied.
->>
->>
->> The log is similar (the last two lines repeat several times a second):
->> [    0.369632] ata14: SATA max UDMA/133 abar m2048@0xf7c10000 port
->> 0xf7c10480 irq 33
->> [    0.683693] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->> [    1.031662] ata14.00: ATAPI: MARVELL VIRTUALL, 1.09, max UDMA/66
->> [    1.031852] ata14.00: configured for UDMA/66
->> [    1.414145] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->> [    1.414505] ata14.00: configured for UDMA/66
->> [    1.744094] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->> [    1.744368] ata14.00: configured for UDMA/66
->> [    2.073916] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->> [    2.074276] ata14.00: configured for UDMA/66
->>
->>
->> lspci shows:
->> 09:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9230 PCIe 2.0
->> x2 4-port SATA 6 Gb/s RAID Controller (rev 10) (prog-if 01 [AHCI 1.0])
->>           Subsystem: Gigabyte Technology Co., Ltd Device b000
->>           Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
->> ParErr- Stepping- SERR- FastB2B- DisINTx+
->>           Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
->> <TAbort- <MAbort- >SERR- <PERR- INTx-
->>           Latency: 0, Cache Line Size: 64 bytes
->>           Interrupt: pin A routed to IRQ 33
->>           Region 0: I/O ports at b050 [size=8]
->>           Region 1: I/O ports at b040 [size=4]
->>           Region 2: I/O ports at b030 [size=8]
->>           Region 3: I/O ports at b020 [size=4]
->>           Region 4: I/O ports at b000 [size=32]
->>           Region 5: Memory at f7c10000 (32-bit, non-prefetchable) [size=2K]
->>           Expansion ROM at f7c00000 [disabled] [size=64K]
->>           Capabilities: <access denied>
->>           Kernel driver in use: ahci
->>
->> The controller in question lives on a Gigabyte Z87X-UD5H-CF motherboard.
->> I'm using the controller for several drives, and it's working, it's just
->> spammy. (At worst, there's some performance hitching, but that might
->> just be journald rotating logs as they fill up with the message).
->>
->> I haven't had a chance to bisect yet (this is a slightly awkward machine
->> for me to install test kernels on), but can also confirm it worked with
->> 6.4.12.
->>
->> Hopefully that's useful. I'll get back to you if I manage to bisect it.
-> 
-> Bisect will definitely be welcome. But first, please try adding the patch that
-> Niklas mentioned above:
-> 
-> https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
-> 
-> If that fixes the issue, we know the culprit :)
-> 
+On Thu, Aug 31, 2023 at 11:58=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
+m> wrote:
+>
+> A firmware error is triggered when configuring a 9k MTU on the PF after
+> switching to switchdev mode and then using a vdpa device with larger
+> (1k) rings:
+> mlx5_cmd_out_err: CREATE_GENERAL_OBJECT(0xa00) op_mod(0xd) failed, status=
+ bad resource(0x5), syndrome (0xf6db90), err(-22)
+>
+> This is due to the fact that the hw VQ size parameters are computed
+> based on the umem_1/2/3_buffer_param_a/b capabilities and all
+> device capabilities are read only when the driver is moved to switchdev m=
+ode.
+>
+> The problematic configuration flow looks like this:
+> 1) Create VF
+> 2) Unbind VF
+> 3) Switch PF to switchdev mode.
+> 4) Bind VF
+> 5) Set PF MTU to 9k
+> 6) create vDPA device
+> 7) Start VM with vDPA device and 1K queue size
+>
+> Note that setting the MTU before step 3) doesn't trigger this issue.
+>
+> This patch reads the forementioned umem parameters at the latest point
+> possible before the VQs of the device are created.
+>
+> v2:
+> - Allocate output with kmalloc to reduce stack frame size.
+> - Removed stable from cc.
+>
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devic=
+es")
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Sorry: I wasn't clear. I did try with that patch (applied on top of 
-torvalds/master), and the issue remained.
+Thanks
 
-I've started bisecting, but fear it'll take a while.
-
-Thanks,
--- David
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 63 ++++++++++++++++++++++++++-----
+>  drivers/vdpa/mlx5/net/mlx5_vnet.h |  9 +++++
+>  2 files changed, 63 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 40a03b08d7cf..ef5907b1d513 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -625,30 +625,70 @@ static void cq_destroy(struct mlx5_vdpa_net *ndev, =
+u16 idx)
+>         mlx5_db_free(ndev->mvdev.mdev, &vcq->db);
+>  }
+>
+> +static int read_umem_params(struct mlx5_vdpa_net *ndev)
+> +{
+> +       u32 in[MLX5_ST_SZ_DW(query_hca_cap_in)] =3D {};
+> +       u16 opmod =3D (MLX5_CAP_VDPA_EMULATION << 1) | (HCA_CAP_OPMOD_GET=
+_CUR & 0x01);
+> +       struct mlx5_core_dev *mdev =3D ndev->mvdev.mdev;
+> +       int out_size;
+> +       void *caps;
+> +       void *out;
+> +       int err;
+> +
+> +       out_size =3D MLX5_ST_SZ_BYTES(query_hca_cap_out);
+> +       out =3D kzalloc(out_size, GFP_KERNEL);
+> +       if (!out)
+> +               return -ENOMEM;
+> +
+> +       MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP)=
+;
+> +       MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
+> +       err =3D mlx5_cmd_exec_inout(mdev, query_hca_cap, in, out);
+> +       if (err) {
+> +               mlx5_vdpa_warn(&ndev->mvdev,
+> +                       "Failed reading vdpa umem capabilities with err %=
+d\n", err);
+> +               goto out;
+> +       }
+> +
+> +       caps =3D  MLX5_ADDR_OF(query_hca_cap_out, out, capability);
+> +
+> +       ndev->umem_1_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_1_buffer_param_a);
+> +       ndev->umem_1_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_1_buffer_param_b);
+> +
+> +       ndev->umem_2_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_2_buffer_param_a);
+> +       ndev->umem_2_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_2_buffer_param_b);
+> +
+> +       ndev->umem_3_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_3_buffer_param_a);
+> +       ndev->umem_3_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
+ps, umem_3_buffer_param_b);
+> +
+> +out:
+> +       kfree(out);
+> +       return 0;
+> +}
+> +
+>  static void set_umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_v=
+irtqueue *mvq, int num,
+>                           struct mlx5_vdpa_umem **umemp)
+>  {
+> -       struct mlx5_core_dev *mdev =3D ndev->mvdev.mdev;
+> -       int p_a;
+> -       int p_b;
+> +       u32 p_a;
+> +       u32 p_b;
+>
+>         switch (num) {
+>         case 1:
+> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_1_buffer_p=
+aram_a);
+> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_1_buffer_p=
+aram_b);
+> +               p_a =3D ndev->umem_1_buffer_param_a;
+> +               p_b =3D ndev->umem_1_buffer_param_b;
+>                 *umemp =3D &mvq->umem1;
+>                 break;
+>         case 2:
+> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_2_buffer_p=
+aram_a);
+> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_2_buffer_p=
+aram_b);
+> +               p_a =3D ndev->umem_2_buffer_param_a;
+> +               p_b =3D ndev->umem_2_buffer_param_b;
+>                 *umemp =3D &mvq->umem2;
+>                 break;
+>         case 3:
+> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_3_buffer_p=
+aram_a);
+> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_3_buffer_p=
+aram_b);
+> +               p_a =3D ndev->umem_3_buffer_param_a;
+> +               p_b =3D ndev->umem_3_buffer_param_b;
+>                 *umemp =3D &mvq->umem3;
+>                 break;
+>         }
+> +
+>         (*umemp)->size =3D p_a * mvq->num_ent + p_b;
+>  }
+>
+> @@ -2679,6 +2719,11 @@ static int setup_driver(struct mlx5_vdpa_dev *mvde=
+v)
+>                 goto out;
+>         }
+>         mlx5_vdpa_add_debugfs(ndev);
+> +
+> +       err =3D read_umem_params(ndev);
+> +       if (err)
+> +               goto err_setup;
+> +
+>         err =3D setup_virtqueues(mvdev);
+>         if (err) {
+>                 mlx5_vdpa_warn(mvdev, "setup_virtqueues\n");
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.h b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.h
+> index 36c44d9fdd16..65ebbba20662 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.h
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.h
+> @@ -65,6 +65,15 @@ struct mlx5_vdpa_net {
+>         struct hlist_head macvlan_hash[MLX5V_MACVLAN_SIZE];
+>         struct mlx5_vdpa_irq_pool irqp;
+>         struct dentry *debugfs;
+> +
+> +       u32 umem_1_buffer_param_a;
+> +       u32 umem_1_buffer_param_b;
+> +
+> +       u32 umem_2_buffer_param_a;
+> +       u32 umem_2_buffer_param_b;
+> +
+> +       u32 umem_3_buffer_param_a;
+> +       u32 umem_3_buffer_param_b;
+>  };
+>
+>  struct mlx5_vdpa_counter {
+> --
+> 2.41.0
+>
 
