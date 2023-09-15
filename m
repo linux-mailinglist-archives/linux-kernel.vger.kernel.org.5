@@ -2,129 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CDD7A2380
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E766C7A2385
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbjIOQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        id S234823AbjIOQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIOQWS (ORCPT
+        with ESMTP id S229445AbjIOQWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:22:18 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3045C268E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:22:03 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-274928c74b0so910830a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694794922; x=1695399722; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K0bvV0lS/2rkOpCVyMIWA7y2gWbDIjEZJpDVOU8Ykh0=;
-        b=naZ8bGRn5kOtwUE3wvTswyBTJYOjtXYTFCFh5a6ZyYqsyjXCpiTEekTXqURc45gKNW
-         NE8UMcobj6AHulSDAXF8rTqunyV8YG2S6gno1rKFVJRlX+T1HYEtK0s2daeXTS3EGdbB
-         nJqYHORSMz5bXEj5funhuVvE1qzJSsqJzd9xhu8wXmvD/RWsyZzY4r27LBEDdP1DChQ3
-         VTYr3MjRhdn50xIWC8Pf+OoW35jZkxoB4oRbqMNTxjKfC8tT7kMcHqN7r7XV1ez3b76i
-         rtHb4SiyhnZjjOk9cVQi/JNctU6nQREpVUCfHmQ3hOlaR+5KKozQLvVpBUMlv1uzApm9
-         h1tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694794922; x=1695399722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K0bvV0lS/2rkOpCVyMIWA7y2gWbDIjEZJpDVOU8Ykh0=;
-        b=Kr18ViX2UEXhoey6vYZQecJTBkKtPkEDk0m1kETgvlTo64oKYmjthcpfYCp/RghRm0
-         OLoegMQEI1Kz7zryRLv62oJuUPlYlZapdF8hSD2Am99gezGbWefUPwBp5HdJRQJnHFkp
-         mUqmFBBOgr3dfyLJHK4f/hoLQi+TcuZd7BOLiVnDWVOlEGQICp7/Bbfd09GHSCtGwdTe
-         0fOMk5AuQhOOwrHQyY1O5jg5FJMEu7KmHHstxILuFm5vNNJ6vS68c1JZLFWvIUdqU2cM
-         8AOc8hlTgsTaC7DnEElEHqQDeKh+1jG8aIB85TIxKd3EFkr5+1Vi0Jprb8M6qCB0eWHS
-         A9Gw==
-X-Gm-Message-State: AOJu0YxxT6gysE194ZkxvEDnDPrJDhAvKUSdXSULfe1qFATFVD/XEtOl
-        TQmsGElV1jY8PsMrNo3EL0zeqaFUfmAmc+hmBXoM2w==
-X-Google-Smtp-Source: AGHT+IGmdsjkEoyrmozqQGISPa/L6l5kiDRhunGvgCTv75BYOda1wSHPi1ysUKby0AhJp/Ks/CD/IE4Danj+623PZ74=
-X-Received: by 2002:a17:90b:4398:b0:262:fb5d:147b with SMTP id
- in24-20020a17090b439800b00262fb5d147bmr1970432pjb.19.1694794922471; Fri, 15
- Sep 2023 09:22:02 -0700 (PDT)
+        Fri, 15 Sep 2023 12:22:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43254AF;
+        Fri, 15 Sep 2023 09:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694794967; x=1726330967;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=gZr9jiChR+PI/11CHpgMrz1spTSHcnF3wv8jDHSpulI=;
+  b=ITi63aVg4C7WDxIpV7PX7EENe6+PJyq0qRUYiw44GUXhtPA6RBibS7Fn
+   uP/eo8yFGuNcVcdJUad8m4NflTbyMLFRfbdNhUK+EJnK9GoXL2qGGEbZ5
+   Lwry5ODgHrhja2XwDMiu8/NSbH2YJSYNdq+JkWUR1WsvR8nOVJSNc95RG
+   VWi1VR+B8TGbL7+GsnfIAJtOJbPBUPVVTkTnGvlAMKsxFscjNiCToUnOf
+   xNxl8SogTQ2kPBerkZh8m54T0CVRGAiViNARPTB0D1J7c4XoiC4kLACHw
+   2bMwAZWmnYHLbDpxow3g7TdyasIDCiM/f7b6q6WRcj8KhMVruV/2ae9S1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="465647686"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="465647686"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:22:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="888277863"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="888277863"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:22:07 -0700
+Date:   Fri, 15 Sep 2023 19:22:40 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     hdegoede@redhat.com, markgross@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        patches@lists.linux.dev, ravi.v.shankar@intel.com,
+        pengfei.xu@intel.com
+Subject: Re: [PATCH 01/10] platform/x86/intel/ifs: Store IFS generation
+ number
+In-Reply-To: <20230913183348.1349409-2-jithu.joseph@intel.com>
+Message-ID: <e7f8136d-d07a-1668-2667-d2836c7112a@linux.intel.com>
+References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-2-jithu.joseph@intel.com>
 MIME-Version: 1.0
-References: <20230915083914.65538-1-larysa.zaremba@intel.com>
-In-Reply-To: <20230915083914.65538-1-larysa.zaremba@intel.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 15 Sep 2023 09:21:51 -0700
-Message-ID: <CAKH8qBut66YcXeGypSH=MTos97Ljwv95VkzZw1uABYF8i4Rz1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Allow to use kfunc XDP hints and frags together
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 1:45=E2=80=AFAM Larysa Zaremba <larysa.zaremba@inte=
-l.com> wrote:
->
-> There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX hin=
-ts
-> cannot coexist in a single program.
->
-> Allow those features to be used together by modifying the flags condition
-> for dev-bound-only programs, segments are still prohibited for fully
-> offloaded programs, hence additional check.
->
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=3DOKMdsxEkyML36VsAuZpcrsX=
-cyqjdKXSJCBq=3DQ@mail.gmail.com/
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+On Wed, 13 Sep 2023, Jithu Joseph wrote:
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+> IFS generation number is reported via MSR_INTEGRITY_CAPS.
 
-Thank you!
+Please use more characters per line, the limit is 72 characters.
 
+> As IFS support gets added to newer CPUs, some differences
+> are expected during IFS image loading and test flows.
+> 
+> Define MSR bitmasks to extract and store the generation in
+> driver data, so that driver can modify its MSR interaction
+> appropriately.
+> 
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 > ---
->  kernel/bpf/offload.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> index ee35f33a96d1..9d8e508c9b86 100644
-> --- a/kernel/bpf/offload.c
-> +++ b/kernel/bpf/offload.c
-> @@ -232,7 +232,14 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, u=
-nion bpf_attr *attr)
->             attr->prog_type !=3D BPF_PROG_TYPE_XDP)
->                 return -EINVAL;
->
-> -       if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> +       if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS=
-_FRAGS))
-> +               return -EINVAL;
-> +
-> +       /* Frags are allowed only if program is dev-bound-only, but not
-> +        * if it is requesting bpf offload.
-> +        */
-> +       if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-> +           !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
->                 return -EINVAL;
->
->         if (attr->prog_type =3D=3D BPF_PROG_TYPE_SCHED_CLS &&
-> --
-> 2.41.0
->
+>  arch/x86/include/asm/msr-index.h      | 2 ++
+>  drivers/platform/x86/intel/ifs/ifs.h  | 2 ++
+>  drivers/platform/x86/intel/ifs/core.c | 2 ++
+>  3 files changed, 6 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 1d111350197f..a71a86a01488 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -222,6 +222,8 @@
+>  #define MSR_INTEGRITY_CAPS_ARRAY_BIST          BIT(MSR_INTEGRITY_CAPS_ARRAY_BIST_BIT)
+>  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT	4
+>  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST	BIT(MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT)
+> +#define MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT	9
+> +#define MSR_INTEGRITY_CAPS_SAF_GEN_REV_MASK	(0x3ull << MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT)
+
+GENMASK_ULL(), don't add _SHIFT at all as FIELD_GET/PREP() will handle 
+it for you.
+
+>  #define MSR_LBR_NHM_FROM		0x00000680
+>  #define MSR_LBR_NHM_TO			0x000006c0
+> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
+> index 93191855890f..d666aeed20fc 100644
+> --- a/drivers/platform/x86/intel/ifs/ifs.h
+> +++ b/drivers/platform/x86/intel/ifs/ifs.h
+> @@ -229,6 +229,7 @@ struct ifs_test_caps {
+>   * @status: it holds simple status pass/fail/untested
+>   * @scan_details: opaque scan status code from h/w
+>   * @cur_batch: number indicating the currently loaded test file
+> + * @generation: IFS test generation enumerated by hardware
+>   */
+>  struct ifs_data {
+>  	int	loaded_version;
+> @@ -238,6 +239,7 @@ struct ifs_data {
+>  	int	status;
+>  	u64	scan_details;
+>  	u32	cur_batch;
+> +	u32	generation;
+>  };
+>  
+>  struct ifs_work {
+> diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
+> index 306f886b52d2..88d84aad9334 100644
+> --- a/drivers/platform/x86/intel/ifs/core.c
+> +++ b/drivers/platform/x86/intel/ifs/core.c
+> @@ -94,6 +94,8 @@ static int __init ifs_init(void)
+>  	for (i = 0; i < IFS_NUMTESTS; i++) {
+>  		if (!(msrval & BIT(ifs_devices[i].test_caps->integrity_cap_bit)))
+>  			continue;
+> +		ifs_devices[i].rw_data.generation = (msrval & MSR_INTEGRITY_CAPS_SAF_GEN_REV_MASK)
+> +							>> MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT;
+
+FIELD_GET(), don't forget to make sure use have the include for it.
+
+>  		ret = misc_register(&ifs_devices[i].misc);
+>  		if (ret)
+>  			goto err_exit;
+> 
+
+-- 
+ i.
+
