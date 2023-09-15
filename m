@@ -2,57 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B297A2426
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2990B7A2441
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjIORC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
+        id S234981AbjIORFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIORB4 (ORCPT
+        with ESMTP id S235290AbjIORFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:01:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BC519BC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:01:50 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694797308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1mScgsqRtsZh1knvFTAiHj57hZ7Ur+YFgcnVaMkleNc=;
-        b=qXmXheqC2kPe8n4aEP0cfb/Pr3VjgFc+weiHrQkc3J/YG09EV3w2f3DAPxyUsw8blYN67I
-        xh6xzseRqprtmJCknLa7r0PJne3hSXMuTMloKeGn7Yif49aI3sk9bKDJDQe3M1n4E3XQqy
-        RXMwqgh5neLAf5uLIEAuSruml6DHnNPkcy7k4e94PX9gUU4zVUZzFVUMPIjXqOkp64Z6zK
-        jNE0OlFDaY/7pl3zpc+hE8klbPGeQ4DJlwT3tBQoBxYwszNLgE09pzHLC1JrqzzL2SFLg5
-        KIuNmzwfNDUgWG7k621tr3GkQ5ZhRamEoyvmpbF+4EMu61qNtDKh1yhSHHzz1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694797308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1mScgsqRtsZh1knvFTAiHj57hZ7Ur+YFgcnVaMkleNc=;
-        b=h4Xh6Ep7KYi7Ouo6573ZXhOci3Ja7fgXG843McCfS6lwSrvWZvGVpFEFIL82x5B1vfzMCD
-        dqhhUkeqp2uLGBCQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v4 2+/8] printk: nbcon: Add acquire/release logic
-In-Reply-To: <ZQMJZiPgfbIAlVqS@alley>
-References: <20230908185008.468566-1-john.ogness@linutronix.de>
- <20230908185008.468566-3-john.ogness@linutronix.de>
- <ZQMHqJaNffsKFymG@alley> <ZQMJZiPgfbIAlVqS@alley>
-Date:   Fri, 15 Sep 2023 19:07:43 +0206
-Message-ID: <87v8cbv094.fsf@jogness.linutronix.de>
+        Fri, 15 Sep 2023 13:05:14 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12748270B
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:04:41 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4047c6ec21dso3075e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694797479; x=1695402279; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LlAvjtLPcGmDg4A7voaF5Wo0HxRPXZyKmdzluEIsWow=;
+        b=mug5uoFyuMNWFd1336n+BAfpL49sRARFE/++qKubqYNlg/SQB6DRYQW5oX9iZb4wif
+         irEws6SLUYQRfH6S6rKGM8oRfI3Hl+qxwBd0uPl1KYuqpT/IjBBEHLBqPlUBqSJTWYn0
+         H4J/30GSOQEibweMuGNo+gk7y0wZF6vLEC2gFhaOomHGu47KD6Cfa7gCr7wGnWzPzyHu
+         hIt8uu6ozlNgawUi48BphAZec1zwpAHSmqZlQXx7gxxMjZbZ5bqYZ3AGqxmwfs0eNFtq
+         UhechiHgO0aIczmaVgmU8mTjAyHWx6eui6bkSG8Xw617mgDKdiErCbV6LCsfWxXCPCRX
+         NM4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694797479; x=1695402279;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LlAvjtLPcGmDg4A7voaF5Wo0HxRPXZyKmdzluEIsWow=;
+        b=kJoJNZ898pLcmE0HB3IKF77wsjH5keX40Hd2aQPnhKYCdnHHzQRfu1Lfmw9tb9/WT6
+         ScAQAHro70DgzWjM0LsUW1QfVKyKWg2Jqx4akHQogb4rfval3nzYwafmvSGhZmwEu8ln
+         5/2jYaEg3Hz9kYuq1YOxyx4V+ZGlshu+fNS1fIyOZGjWoVU1lTV47usUeiuQMXYWefBK
+         R4KKLkji3xvsNDUK8Em3NTnXHr1gqrmXMuaJ/08XNtmhj39EBmXMoF2/tV4AQcn95h/O
+         AKEaGUJP6XWxQS3Q3pkfgOELVsJ3LjymjF6HsnxI6muTe9U5vBGbMFA3Oc3QvrlgP2Kk
+         QPxQ==
+X-Gm-Message-State: AOJu0YxdldsVaUf4j8u7n4wBK2h9pJheGgpKlzZ6EmagLhTUzWJaN8eu
+        p6se1rdixDVLvZWTCZdS0iQfVd4JBad0xf9yg/obKA==
+X-Google-Smtp-Source: AGHT+IEonzgZqc+V81TNYkvowwdDOWM/CYqm2sY+5KYoHV7zxqDLiUjikh2qIP4geMp2o3XvkFv+g/ec00ROIhSqgW8=
+X-Received: by 2002:a05:600c:1e07:b0:3f6:f4b:d4a6 with SMTP id
+ ay7-20020a05600c1e0700b003f60f4bd4a6mr2391wmb.7.1694797479400; Fri, 15 Sep
+ 2023 10:04:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <CA+fCnZePgv=V65t4FtJvcyKvhM6yA3amTbPnwc5Ft5YdzpeeRg@mail.gmail.com>
+ <20230915024559.32806-1-haibo.li@mediatek.com> <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
+In-Reply-To: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 15 Sep 2023 19:04:00 +0200
+Message-ID: <CAG48ez3GSubTFA8+hw=YDZoVHC79JVwNi+xFTQt9ssy_+O1aaw@mail.gmail.com>
+Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Haibo Li <haibo.li@mediatek.com>, akpm@linux-foundation.org,
+        angelogioacchino.delregno@collabora.com, dvyukov@google.com,
+        glider@google.com, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
+        mark.rutland@arm.com, matthias.bgg@gmail.com,
+        ryabinin.a.a@gmail.com, vincenzo.frascino@arm.com,
+        xiaoming.yu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,186 +77,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-14, Petr Mladek <pmladek@suse.com> wrote:
-> // This patch includes my proposed changes on top of
-> // https://lore.kernel.org/all/20230908185008.468566-3-john.ogness@linutronix.de/
+On Fri, Sep 15, 2023 at 6:51=E2=80=AFPM Andrey Konovalov <andreyknvl@gmail.=
+com> wrote:
+> On Fri, Sep 15, 2023 at 4:46=E2=80=AFAM 'Haibo Li' via kasan-dev
+> <kasan-dev@googlegroups.com> wrote:
+> >
+> > The patch checks each shadow address,so it introduces extra overhead.
+>
+> Ack. Could still be fine, depends on the overhead.
+>
+> But if the message printed by kasan_non_canonical_hook is good enough
+> for your use case, I would rather stick to that.
+>
+> > Now kasan_non_canonical_hook only works for CONFIG_KASAN_INLINE.
+> >
+> > And CONFIG_KASAN_OUTLINE is set in my case.
+> >
+> > Is it possible to make kasan_non_canonical_hook works for both
+> > INLINE and OUTLINE by simply remove the "#ifdef CONFIG_KASAN_INLINE"?
+>
+> Yes, it should just work if you remove the ifdefs in mm/kasan/report.c
+> and in include/linux/kasan.h.
+>
+> Jann, do you have any objections to enabling kasan_non_canonical_hook
+> for the outline mode too?
 
-The changes in the code are fine. I agree with them and they pass all my
-runtime tests. However, there are a couple places where I disagree with
-your comments (or lack thereof) and would like to add some
-clarification.
-
-Following is your patched version, with my comments inline:
-
-> static int nbcon_context_try_acquire_requested(struct nbcon_context *ctxt,
-> 					       struct nbcon_state *cur)
-> {
-> 	unsigned int cpu = smp_processor_id();
-> 	struct console *con = ctxt->console;
-> 	struct nbcon_state new;
-> 
-> 	/* Note that the caller must still remove the request! */
-> 	if (other_cpu_in_panic())
-> 		return -EPERM;
-
-You have no comments here. The following waiter check is an obvious
-check to make. But what I think is not obvious, is that it will also
-catch the situation when an unsafe hostile takeover has occurred. (My v4
-had an explicit test for that case, but actually it is enough to check
-the waiter.) I am adding comments here to mention that.
-
-       /*
-        * Note that the waiter will also change if there was an unsafe
-        * hostile takeover.
-        */
-
-> 	if (!nbcon_waiter_matches(cur, ctxt->prio))
-> 		return -EPERM;
-> 
-> 	/* If still locked, caller should continue waiting. */
-> 	if (cur->prio != NBCON_PRIO_NONE)
-> 		return -EBUSY;
-> 
-> 	/*
-> 	 * The previous owner should have never released ownership
-> 	 * in an unsafe region. And this function should not be
-> 	 * called when the 'unsafe_takeover' is set.
-> 	 */
-
-The above comment says this function should not be called when
-@unsafe_takeover is set. But that can legally occur. While spinning
-there is a udelay(1) and then the state is re-read. During the udelay()
-an unsafe hostile takeover is allowed to occur. This is another reason
-why I wanted to explicitly mention that in the comment above. And I am
-removing the 2nd sentence of this comment.
-
-> 	WARN_ON_ONCE(cur->unsafe);
-
-[...]
-
-> static int nbcon_context_try_acquire_handover(struct nbcon_context *ctxt,
-> 					      struct nbcon_state *cur)
-> {
-> 	unsigned int cpu = smp_processor_id();
-> 	struct console *con = ctxt->console;
-> 	struct nbcon_state new;
-> 	int timeout;
-> 	int request_err = -EBUSY;
-> 
-> 	/*
-> 	 * Check that the handover is called when the direct acquire failed
-> 	 * with -EBUSY.
-> 	 */
-> 	WARN_ON_ONCE(ctxt->prio <= cur->prio || ctxt->prio <= cur->req_prio);
-> 	WARN_ON_ONCE(!cur->unsafe);
-> 
-> 	/* Handover is not possible on the same CPU. */
-> 	if (cur->cpu == cpu)
-> 		return -EBUSY;
-> 
-> 	/*
-> 	 * Console stays unsafe after an unsafe takeover until re-initialized.
-> 	 * Waiting is not going to help in this case.
-> 	 */
-> 	if (cur->unsafe_takeover)
-> 		return -EBUSY;
-> 
-> 	/* Is the caller willing to wait? */
-> 	if (ctxt->spinwait_max_us == 0)
-> 		return -EBUSY;
-> 
-> 	/*
-> 	 * Setup a request for the handover. The caller should try to acquire
-> 	 * the conosle directly when the current state has been modified.
-> 	 */
-> 	new.atom = cur->atom;
-> 	new.req_prio = ctxt->prio;
-> 	if (!nbcon_state_try_cmpxchg(con, cur, &new))
-> 		return -EAGAIN;
-> 
-> 	cur->atom = new.atom;
-> 
-> 	/* Wait until there is no owner and then acquire the console. */
-> 	for (timeout = ctxt->spinwait_max_us; timeout >= 0; timeout--) {
-> 		/* On successful acquire, this request is cleared. */
-> 		request_err = nbcon_context_try_acquire_requested(ctxt, cur);
-> 		if (!request_err)
-> 			return 0;
-> 
-> 		/*
-> 		 * If the acquire should be aborted, it must be ensured
-> 		 * that the request is removed before returning to caller.
-> 		 */
-> 		if (request_err == -EPERM)
-> 			break;
-> 
-> 		udelay(1);
-> 
-> 		/* Re-read the state because some time has passed. */
-> 		nbcon_state_read(con, cur);
-> 	}
-> 
-> 	/* Timed out or aborted. Carefully remove handover request. */
-> 	do {
-> 		/* No need to remove request if there is a new waiter. */
-
-For me it was not obvious why -EPERM should be returned here. I am
-extending this comment to provide some more details that may not be
-immediately obvious.
-
-               /*
-                * No need to remove request if there is a new waiter. This
-                * can only happen if a higher priority context has taken over
-                * the console or the handover request.
-                */
-
-> 		if (!nbcon_waiter_matches(cur, ctxt->prio))
-> 			return -EPERM;
-
-[...]
-
-> static int nbcon_context_try_acquire_hostile(struct nbcon_context *ctxt,
-> 					     struct nbcon_state *cur)
-> {
-> 	unsigned int cpu = smp_processor_id();
-> 	struct console *con = ctxt->console;
-> 	struct nbcon_state new;
-> 
-> 	if (!ctxt->allow_unsafe_takeover)
-> 		return -EPERM;
-> 
-> 	/*
-> 	 * Check that the system is going to die and lower priorities will
-> 	 * always be ignored. Using an unsafe consoles could break the running
-> 	 * system. Also switching back to lower priorities would create a race
-> 	 * in nbcon_waiter_matches().
-> 	 */
-
-Three things about this comment. First, it is not just a "check" but
-actually an "enforcement". The if-statement prevents the hostile
-takeover from happening.
-
-Second, it mentions that "lower priorities will always be ignored". I
-was confused by this because lower priorities are _always_ ignored. Only
-higher priorities can ever take over ownership.
-
-Third, it mentions switching back to lower priorities would create races
-in nbcon_waiter_matches(). This seems like a strange place to talk about
-that race. The comments within nbcon_waiter_matches() talk about why
-that race does not exist. The unsafe hostile takeover is not a part of
-that explanation.
-
-It should also be clear that after all pending records have been flushed
-in panic, the panic CPU _will_ release the console. What will prevent
-other CPUs from taking ownership after that is _not_ a PANIC-prio owner
-of the console, but rather because it is a panic situation and other
-CPUs are not the panic CPU.
-
-I am just simplifying the comment to:
-
-        /* Ensure caller is allowed to perform unsafe hostile takeovers. */
-
-> 	if (WARN_ON_ONCE(ctxt->prio != NBCON_PRIO_PANIC))
-> 		return -EPERM;
-
-John Ogness
+No objections from me.
