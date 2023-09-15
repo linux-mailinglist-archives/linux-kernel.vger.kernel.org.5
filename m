@@ -2,264 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE04D7A169D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69187A1696
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjIOG42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        id S232473AbjIOGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbjIOG4Z (ORCPT
+        with ESMTP id S232310AbjIOGzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:56:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C222A2708
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694760912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0HShZr8WZAcOFv96ZYRXyE10lt4rZkRojb7JS1wDFwg=;
-        b=gX5VR43G1GAG9ZCMVTBIMSNO+ytvnE7ViXSZs+DRH/Pc55b+D6961r3EMKltCAIjOQ5Iip
-        AQfEDEuITQII1vg4/K0joRUuXz35wTpaBxA9sglkPWW6A/De3/gq5t+bzhcheGgCp3kzf4
-        poJcbfQDv6Rt3fRotuXTX6/7V+FD5wE=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-261-xIfDFrLbM0WNcOY2e9g7RQ-1; Fri, 15 Sep 2023 02:55:10 -0400
-X-MC-Unique: xIfDFrLbM0WNcOY2e9g7RQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5009121067cso2128293e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:55:10 -0700 (PDT)
+        Fri, 15 Sep 2023 02:55:37 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD96270B;
+        Thu, 14 Sep 2023 23:55:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so28794731fa.3;
+        Thu, 14 Sep 2023 23:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694760920; x=1695365720; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wLUQAZI1IJf0z26Sa3mrW7ObnZWoziopCsj/BOvrL+A=;
+        b=POy51eqE6RgR+nYQHxVheC3/KEXo4T/wgDx5/292EQ4WLkJKiznBUu8T2zFWg0/0mE
+         8ZmujBMWZGLzMvfWuh97DdRrru4ooTwp9EhSubpd+oMVlEphMcnXgqGhztdlQ9HbQW9d
+         R+86vIT2UlnTRfq7W0LVRpzJZi1L0hsvBHsPIqmJKBFOdhewGTzzyOu+eF3UI304/syd
+         lIJdeKGLm0ysY3j45JzOwidb+4++R1AuNxuK75DZLRsoBekkBXn7zehSr7oy5sME5bNs
+         jfRAnXeJ6mgRrCuSieAhBNJgGvAWQZX1W8kduVNUAlixC8IUh3vDhyefhxLB6hr5AaHV
+         0Q1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694760909; x=1695365709;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0HShZr8WZAcOFv96ZYRXyE10lt4rZkRojb7JS1wDFwg=;
-        b=PWr01elMBBc0nU+L5YRfATN85lesAaqYKXy0G5dVDrhafGZAUkrCUG52VTGqqSal+X
-         b26sii6OCOVxLCkJvyMb3oJh7Se3tUfAHiBDzC13g6+MViluu5DWDuYyXc++iwh0tpei
-         8R4wuqQnRyQsYPsLaKzk+xKkoEHMdM7gX433Y4i7YLQBYB8JhH5cN16EwbpO5jFsHsm3
-         mvic77HB8SBt/R/ZWQbNUDAYG8Wc9myJ20aLsJSTMDyBtHSkkId1sfRbUjxf5uQGEGVJ
-         PBbUS/HL4KoV1uptmaH26cpuFC8WkIsF4ob/WUdqkU/IPj8cCb2t9Z5xYi18ZPhLAzFf
-         c7QQ==
-X-Gm-Message-State: AOJu0Yx4Tn0rWTKbmtpmjiS42D+mpGedUmqOaXNLd3n8XSkL8cS11Rxl
-        JDo9memBfobBKY6JytMf8RGxU9FFSFQlMbKejkPa3l3lKbGNlF1LaWRo7GdH4ELXv2EObRps/y2
-        IFXCvq1wPNSbT6WXsUoMP8zkT5EbZjaMhrwp/u+q0
-X-Received: by 2002:a05:6512:539:b0:4ff:a25b:bca1 with SMTP id o25-20020a056512053900b004ffa25bbca1mr644178lfc.33.1694760908896;
-        Thu, 14 Sep 2023 23:55:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGeELldMxnOhRlb4+WRmIeNCxjyPnSW1K3CuLG2wJF+pe+C7IWcZIM+xDb7X7fDmVIC/VIS638CajnbteLXSh0=
-X-Received: by 2002:a05:6512:539:b0:4ff:a25b:bca1 with SMTP id
- o25-20020a056512053900b004ffa25bbca1mr644163lfc.33.1694760908532; Thu, 14 Sep
- 2023 23:55:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694760920; x=1695365720;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wLUQAZI1IJf0z26Sa3mrW7ObnZWoziopCsj/BOvrL+A=;
+        b=bH4PEVoSCD52G3OEsc0bmLoKSNK2+znpXkJ453ITEKMeC3tQLz34vxAdnuQPkLvEFG
+         0OKzVtSp/wRnsj5ETzJ3sMUoi3WPf97WClkdeb7FyVVB5a6Ox2L+ozvl8kMJaiSfu40j
+         xM5uIBC9Cb0vRG/63t1IrP5ex5Id2pEkdqMPS3YI9CRt9kuAElUC4CiWM9tJOrN6FTxB
+         F57pxCxCHK+Q/37hL5gsySBTRf0PG9z+kVfnsbHR1MFD3wEF4nDdnQrt55aMPA9k6vcv
+         +vvZbGDVk0cE6omeqcp3qSsOfGy/wFozvek6U/kzYZwc7yBYzt4Bipnr0dh3VnAOLjWP
+         Ssaw==
+X-Gm-Message-State: AOJu0YzBfpIFlOqUUYx3nrV8zlum2mrV5abcmM4L3gzNDFUOoB+aCqJC
+        5cZ1Diz+xDp13kAGB1rwJUAsxIBRtG4=
+X-Google-Smtp-Source: AGHT+IHCa2xUJfJ3TOSTgesCkm61mYyaWL6K/zu5jtpe2osqpGmJx+MhZfRnMY0bQh46HyvH4GtsHQ==
+X-Received: by 2002:a2e:8887:0:b0:2bf:7dac:a51 with SMTP id k7-20020a2e8887000000b002bf7dac0a51mr832166lji.51.1694760919713;
+        Thu, 14 Sep 2023 23:55:19 -0700 (PDT)
+Received: from dc78bmyyyyyyyyyyyyybt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::3])
+        by smtp.gmail.com with ESMTPSA id k2-20020a2ea282000000b002bfc5c77579sm583203lja.120.2023.09.14.23.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 23:55:18 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 09:55:07 +0300
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Benjamin Bara <bbara93@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Support ROHM BM1390 pressure sensor
+Message-ID: <cover.1694760170.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
-References: <20230831155702.1080754-1-dtatulea@nvidia.com>
-In-Reply-To: <20230831155702.1080754-1-dtatulea@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 15 Sep 2023 14:54:57 +0800
-Message-ID: <CACGkMEsgZig_Ek+ZsEr3hhBznZb_d733QK+0BVoe_WMLsKd+Pg@mail.gmail.com>
-Subject: Re: [PATCH v2] vdpa/mlx5: Fix firmware error on creation of 1k VQs
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Parav Pandit <parav@mellanox.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uwiU7FLUKbshnF8E"
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 11:58=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
->
-> A firmware error is triggered when configuring a 9k MTU on the PF after
-> switching to switchdev mode and then using a vdpa device with larger
-> (1k) rings:
-> mlx5_cmd_out_err: CREATE_GENERAL_OBJECT(0xa00) op_mod(0xd) failed, status=
- bad resource(0x5), syndrome (0xf6db90), err(-22)
->
-> This is due to the fact that the hw VQ size parameters are computed
-> based on the umem_1/2/3_buffer_param_a/b capabilities and all
-> device capabilities are read only when the driver is moved to switchdev m=
-ode.
->
-> The problematic configuration flow looks like this:
-> 1) Create VF
-> 2) Unbind VF
-> 3) Switch PF to switchdev mode.
-> 4) Bind VF
-> 5) Set PF MTU to 9k
-> 6) create vDPA device
-> 7) Start VM with vDPA device and 1K queue size
->
-> Note that setting the MTU before step 3) doesn't trigger this issue.
->
-> This patch reads the forementioned umem parameters at the latest point
-> possible before the VQs of the device are created.
->
-> v2:
-> - Allocate output with kmalloc to reduce stack frame size.
-> - Removed stable from cc.
->
-> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devic=
-es")
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+--uwiU7FLUKbshnF8E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
+ROHM BM1390 Pressure sensor (BM1390GLV-Z) can measure pressures ranging
+=66rom 300 hPa to 1300 hPa with configurable measurement averaging and an
+internal FIFO. The sensor does also provide temperature measurements
+although, according to the data sheet, sensor performs internal
+temperature compensation for the MEMS.
 
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 63 ++++++++++++++++++++++++++-----
->  drivers/vdpa/mlx5/net/mlx5_vnet.h |  9 +++++
->  2 files changed, 63 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index 40a03b08d7cf..ef5907b1d513 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -625,30 +625,70 @@ static void cq_destroy(struct mlx5_vdpa_net *ndev, =
-u16 idx)
->         mlx5_db_free(ndev->mvdev.mdev, &vcq->db);
->  }
->
-> +static int read_umem_params(struct mlx5_vdpa_net *ndev)
-> +{
-> +       u32 in[MLX5_ST_SZ_DW(query_hca_cap_in)] =3D {};
-> +       u16 opmod =3D (MLX5_CAP_VDPA_EMULATION << 1) | (HCA_CAP_OPMOD_GET=
-_CUR & 0x01);
-> +       struct mlx5_core_dev *mdev =3D ndev->mvdev.mdev;
-> +       int out_size;
-> +       void *caps;
-> +       void *out;
-> +       int err;
-> +
-> +       out_size =3D MLX5_ST_SZ_BYTES(query_hca_cap_out);
-> +       out =3D kzalloc(out_size, GFP_KERNEL);
-> +       if (!out)
-> +               return -ENOMEM;
-> +
-> +       MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP)=
-;
-> +       MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
-> +       err =3D mlx5_cmd_exec_inout(mdev, query_hca_cap, in, out);
-> +       if (err) {
-> +               mlx5_vdpa_warn(&ndev->mvdev,
-> +                       "Failed reading vdpa umem capabilities with err %=
-d\n", err);
-> +               goto out;
-> +       }
-> +
-> +       caps =3D  MLX5_ADDR_OF(query_hca_cap_out, out, capability);
-> +
-> +       ndev->umem_1_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_1_buffer_param_a);
-> +       ndev->umem_1_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_1_buffer_param_b);
-> +
-> +       ndev->umem_2_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_2_buffer_param_a);
-> +       ndev->umem_2_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_2_buffer_param_b);
-> +
-> +       ndev->umem_3_buffer_param_a =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_3_buffer_param_a);
-> +       ndev->umem_3_buffer_param_b =3D MLX5_GET(virtio_emulation_cap, ca=
-ps, umem_3_buffer_param_b);
-> +
-> +out:
-> +       kfree(out);
-> +       return 0;
-> +}
-> +
->  static void set_umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_v=
-irtqueue *mvq, int num,
->                           struct mlx5_vdpa_umem **umemp)
->  {
-> -       struct mlx5_core_dev *mdev =3D ndev->mvdev.mdev;
-> -       int p_a;
-> -       int p_b;
-> +       u32 p_a;
-> +       u32 p_b;
->
->         switch (num) {
->         case 1:
-> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_1_buffer_p=
-aram_a);
-> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_1_buffer_p=
-aram_b);
-> +               p_a =3D ndev->umem_1_buffer_param_a;
-> +               p_b =3D ndev->umem_1_buffer_param_b;
->                 *umemp =3D &mvq->umem1;
->                 break;
->         case 2:
-> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_2_buffer_p=
-aram_a);
-> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_2_buffer_p=
-aram_b);
-> +               p_a =3D ndev->umem_2_buffer_param_a;
-> +               p_b =3D ndev->umem_2_buffer_param_b;
->                 *umemp =3D &mvq->umem2;
->                 break;
->         case 3:
-> -               p_a =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_3_buffer_p=
-aram_a);
-> -               p_b =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, umem_3_buffer_p=
-aram_b);
-> +               p_a =3D ndev->umem_3_buffer_param_a;
-> +               p_b =3D ndev->umem_3_buffer_param_b;
->                 *umemp =3D &mvq->umem3;
->                 break;
->         }
-> +
->         (*umemp)->size =3D p_a * mvq->num_ent + p_b;
->  }
->
-> @@ -2679,6 +2719,11 @@ static int setup_driver(struct mlx5_vdpa_dev *mvde=
-v)
->                 goto out;
->         }
->         mlx5_vdpa_add_debugfs(ndev);
-> +
-> +       err =3D read_umem_params(ndev);
-> +       if (err)
-> +               goto err_setup;
-> +
->         err =3D setup_virtqueues(mvdev);
->         if (err) {
->                 mlx5_vdpa_warn(mvdev, "setup_virtqueues\n");
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.h b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.h
-> index 36c44d9fdd16..65ebbba20662 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.h
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.h
-> @@ -65,6 +65,15 @@ struct mlx5_vdpa_net {
->         struct hlist_head macvlan_hash[MLX5V_MACVLAN_SIZE];
->         struct mlx5_vdpa_irq_pool irqp;
->         struct dentry *debugfs;
-> +
-> +       u32 umem_1_buffer_param_a;
-> +       u32 umem_1_buffer_param_b;
-> +
-> +       u32 umem_2_buffer_param_a;
-> +       u32 umem_2_buffer_param_b;
-> +
-> +       u32 umem_3_buffer_param_a;
-> +       u32 umem_3_buffer_param_b;
->  };
->
->  struct mlx5_vdpa_counter {
-> --
-> 2.41.0
->
+Sensor does also contain IIR filter implemented in HW. The data-sheet
+says the IIR filter can be configured to be "weak", "middle" or
+"strong". Some RMS noise figures are provided in data sheet but no
+accurate maths for the filter configurations is provided.
 
+I actually asked if we can define 3db frequencies corresponding to these
+IIR filter settings - and I received values 0.452Hz, 0.167Hz, and 0.047Hz
+but I am not at all sure we understood each others with the HW
+colleagues... Hence, the IIR filter configuration is not supported by this
+driver and the filter is just configured to the "middle" setting.
+(at least for now)
+
+It would also be possible to not use IIR filter but just do some simple
+averaging. I wonder if it would make sense to implement the OVERSAMPLING
+value setting so that if this value is written, IIR filter is disabled and
+number of samples to be averaged is set to value requested by
+OVERSAMPLING. The data-sheet has a mention that if IIR is used, the
+number of averaged samples must be set to a fixed value.
+
+The FIFO measurement mode (in sensor hardware) is only measuring the
+pressure and not the temperature. The driver measures temperature when
+FIFO is flushed and simply uses the same measured temperature value to
+all reported temperatures. This should not be a problem when temperature
+is not changing very rapidly (several degrees C / second) but allows users
+to get the temperature measurements from sensor without any additional
+logic.
+
+This driver has received limited amount of testing this far. It's in a
+state 'works on my machine, for my use cases' - and all feedback is
+appreciated!
+
+Revision history:
+Major changes here, please see the head room of individual patches for
+more detailed list.
+v1 =3D> v2:
+	rebased on v6.6-rc1
+	dt-bindings:
+	  - fix compatible in the example
+	sensor driver:
+	  - drop unnecessary write_raw callback
+	  - plenty of small improvements and fixes
+	MAINTAINERS:
+	  - No changes
+
+
+Matti Vaittinen (3):
+  dt-bindings: Add ROHM BM1390 pressure sensor
+  iio: pressure: Support ROHM BU1390
+  MAINTAINERS: Add ROHM BM1390
+
+ .../bindings/iio/pressure/rohm,bm1390.yaml    |  52 +
+ MAINTAINERS                                   |   6 +
+ drivers/iio/pressure/Kconfig                  |   9 +
+ drivers/iio/pressure/Makefile                 |   1 +
+ drivers/iio/pressure/rohm-bm1390.c            | 899 ++++++++++++++++++
+ 5 files changed, 967 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/rohm,bm1=
+390.yaml
+ create mode 100644 drivers/iio/pressure/rohm-bm1390.c
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+--=20
+2.41.0
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--uwiU7FLUKbshnF8E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUD/8UACgkQeFA3/03a
+ocUi5gf9FQ2cEZ5N8RsOwIIThE48bc5t1JyMYWqyOpX1T0tSWiwbhuPfPl1VuFoh
+q+4yM0d4dQOs5GVRPovwQU781weiP88uIMQC0qNcw3L9kGceWS2mCJRAVPx05aPr
+WTX6kHpNjAAYH4T8Pq1NRkbdhvK31g/+OoDPViq483znQJsoxrxrP6pK36Jv3zCx
+wcd1nMZn64jUdDbRjn51AiD4sLFU3ZH9DMz9/7IF0YFDQflXIyQfBajDFfBswtGj
+pEgUMBE1VMq4tDx7NJSFco9SgzoEGF9WyxM/FS2BK7wETI+A0hnmvihc98Jqt85/
+OfGDe1PHUGbI5vgb8Ug6cDWo9TQXdg==
+=xmOv
+-----END PGP SIGNATURE-----
+
+--uwiU7FLUKbshnF8E--
