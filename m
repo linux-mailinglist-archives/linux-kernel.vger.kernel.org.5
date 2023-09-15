@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C757A247C
+	by mail.lfdr.de (Postfix) with ESMTP id 608017A247D
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235820AbjIORRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S235868AbjIORRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjIORRL (ORCPT
+        with ESMTP id S235520AbjIORRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:17:11 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE3B83
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:17:05 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-31fb093a53aso1537096f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:17:05 -0700 (PDT)
+        Fri, 15 Sep 2023 13:17:12 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0831A186
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:17:07 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-597f461adc5so30987857b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694798223; x=1695403023; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694798226; x=1695403026; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=89g8O0FeFLI+vAm3VnFZD9BW/eMlaApKHGhLfa7SlGI=;
-        b=sqt3v+Gslbmwnsz9rQ7GnAQ5ScLQDz6UeJXuiKYq9fEQhB7XYS5CRRQhxMRiTAE4Tj
-         URORcrpwnusJmj67M0QDuhT7T7kjKkYBKwL8+19vUV/i09vSU3oN/ER9etjRGxCPuEN/
-         672CxdpiBJmfQmFYxkwFi6Txy2jYuzc8CL0AVxyJqFhAu/nrfiQo+21MrB9d8tZLY1dK
-         yz+AHFi9j1WNeZFu7VS3nEhodnqjFNL5sMFvoX50E53Jxm7qg3BsEIET2Q6R1HA01hCm
-         5cECVXPtAFPEPb2ebBgVwHgCo0bxxX1FZ6LbGB19SCZ2T1JlEEdOLE9zdPXpHKcpEZeU
-         DNIw==
+        bh=dns2e/ei4HJSlkg9p+qs7vYRajpuivxlD+SN4Zxl2pk=;
+        b=pqpk2r9XYHF+apKjWTnl/WWsCOmsuUnMtJa/Na2vk6HgEx4DwaIzYZ/5YQvWFG+bQf
+         tZ2Ogf+JRHstddgdgFrMNM0pC3ZwN7Jj+KPXEB8FDZijW6DnpmV1lLV66aaFHcmzCw/l
+         nmM0lyh1Am4TqwjxFgYC3m4ejm8ZKT7JSBZhI68FjkXc2UBOQwoz6D72W7y7aIUt1J6b
+         H1iRD2M7Z6RHUW6W/6UoVtG5beFy+g1l/ewqL9usGtjilh+ZqywszlHQoEjlIwcII/k1
+         ZBnMXwjSe/ZldqPsOJnpT6EApQTdT/zxZPcfl/AlQde/fRpqBp5zYLX3+UrYxnOkY3vZ
+         GVgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694798223; x=1695403023;
+        d=1e100.net; s=20230601; t=1694798226; x=1695403026;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=89g8O0FeFLI+vAm3VnFZD9BW/eMlaApKHGhLfa7SlGI=;
-        b=liF1vg9399qJT/PC1MVSwzUbbDnrxuewNLML2h/+kU186iaezkmM27O5Guk8HXbUzm
-         9o5j/aglX6rSOrd5XSiRRH2bU7y37CFGiF+GHPrgIBGTyGMDZVk7Tf39JSDZL/jVVjKQ
-         sAp7u+vIT1K5fpjFIVaqHeX89qemaTwd8cDmO+PAiVkUC25sa2BBB9slAB5uM2hPLkZM
-         +ZXDFYbEq1Je1Nq2fdHLecgKIVHqdbYo4Zbmi4tNMMbKeEwbu5xYGi6xfIaRV+cRsW/z
-         45YyzAhJ3MGYsxk5RqDVbsNnoBo4R8AuHj6fDeYymNprG9zySWkqDj8uqtUc4XVZpDCA
-         nDNw==
-X-Gm-Message-State: AOJu0YyQBcYO9Xaz+A/Wj3rMv/ci3IQd9wq8g/ZllCAi854n5G1xxwOW
-        doa9qDs12PkHT8cPZnfL0tY1cnJq
-X-Google-Smtp-Source: AGHT+IFMSui6f+3/+Y4hY8Qz91p3kTgd5GjtcwDQx1xLiE0TLyDco4yn73I+CQFu3f+LXtULspQ/3LFq
+        bh=dns2e/ei4HJSlkg9p+qs7vYRajpuivxlD+SN4Zxl2pk=;
+        b=Rkrja8YqaA7jvfPLEjcR1X37KuzVxTNedjOeOAxup1zXzPKaVzXgPvSNcHBJH6NHyY
+         Nw750EiyQ2OeXtl78tYllGXEpwhmeKT93evi0BrfrWKNynTJtyQ2i+j2r4Gue4gq+Jx9
+         kUec9Vwio87NXGOicc7NRARjcJT/Ii9v8IA5or0GZeldnh9b5PyzhpzmGcDmU/dXfAzU
+         WHGoXEMiumPyTCps0BhsR0197vMTm38ZybNmpgOeyU/PJkuWToSLqGAC1VMQahrrroqb
+         GF0c6jbY5ksKxRJGo0Fuk1HmRe8X18rglyTrJcBpPzZAkWgf0n0oSPyNejF8Gq5TNdBl
+         3woQ==
+X-Gm-Message-State: AOJu0YwBtT1jLKDMFcQFQHl4XNQ4xBSMBM+03bFkZFmkaK0Swfx9AqId
+        dZMzZY4qjWPvo3dgYzrweO99Ap99
+X-Google-Smtp-Source: AGHT+IHLYL8pZ9okrcG3wXehu9nmH1Z33BBwmEsvO4umKO/EgeDtMVmWiIqhuzTiuT2DYjHRN0TVE4Ud
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a5d:4152:0:b0:319:6fc6:151 with SMTP id
- c18-20020a5d4152000000b003196fc60151mr26188wrq.10.1694798223502; Fri, 15 Sep
- 2023 10:17:03 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 17:16:27 +0000
+ (user=ardb job=sendgmr) by 2002:a81:ad41:0:b0:59b:ea96:8875 with SMTP id
+ l1-20020a81ad41000000b0059bea968875mr54512ywk.2.1694798226304; Fri, 15 Sep
+ 2023 10:17:06 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 17:16:28 +0000
 In-Reply-To: <20230915171623.655440-10-ardb@google.com>
 Mime-Version: 1.0
 References: <20230915171623.655440-10-ardb@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3059; i=ardb@kernel.org;
- h=from:subject; bh=be7iDzl8pMuNbGRQpSLTpnBfKOp7BhO0eZKOBUcXTVM=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVlYvarrBa1T7tCypYv8zz8v+iMLdPCvVM+nX3w+OanZ
- cFPl3uIdZSyMIhxMMiKKbIIzP77bufpiVK1zrNkYeawMoEMYeDiFICJuDxn+KdeJ977bN5qft94
- 28rfTS+DYouehc9+F5q8M2euULvph3mMDJPyd9+YwTAj3815m+mSQ4YOWgvWloc+1rurapWRerX Ngw0A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5004; i=ardb@kernel.org;
+ h=from:subject; bh=el53dGhwvl4Ez0cZfyU3upsy6TEtXMx3UHruCwXxMPY=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVlYo5J9+M7uWI7vxu/lDir/0upt0H11td3znGrynsqa
+ sPurXDrKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABNJ5GL4H3NT3Yk9tfppY83Z
+ U9P6D+n0pX9eMrs6aV3TtP/X5h7e4szIsGWZyPTt1gVrQxTs1nLM3mshu2yH3E4Ro1/x06crve2 LYwEA
 X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230915171623.655440-13-ardb@google.com>
-Subject: [PATCH v3 3/8] x86/boot: Define setup size in linker script
+Message-ID: <20230915171623.655440-14-ardb@google.com>
+Subject: [PATCH v3 4/8] x86/boot: Derive file size from _edata symbol
 From:   Ard Biesheuvel <ardb@google.com>
 To:     linux-efi@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
@@ -85,89 +85,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-The setup block contains the real mode startup code that is used when
-booting from a legacy BIOS, along with the boot_params/setup_data that
-is used by legacy x86 bootloaders to pass the command line and initial
-ramdisk parameters, among other things.
+Tweak the linker script so that the value of _edata represents the
+decompressor binary's file size rounded up to the appropriate alignment.
+This removes the need to calculate it in the build tool, and will make
+it easier to refer to the file size from the header directly in
+subsequent changes to the PE header layout.
 
-The setup block also contains the PE/COFF header of the entire combined
-image, which includes the compressed kernel image, the decompressor and
-the EFI stub.
-
-This PE header describes the layout of the executable image in memory,
-and currently, the fact that the setup block precedes it makes it rather
-fiddly to get the right values into the right place in the final image.
-
-Let's make things a bit easier by defining the setup_size in the linker
-script so it can be referenced from the asm code directly, rather than
-having to rely on the build tool to calculate it. For the time being,
-add 64 bytes of fixed padding for the .reloc and .compat sections - this
-will be removed in a subsequent patch after the PE/COFF header has been
-reorganized.
+While adding _edata to the sed regex that parses the compressed
+vmlinux's symbol list, tweak the regex a bit for conciseness.
 
 This change has no impact on the resulting bzImage binary when
-configured with CONFIG_EFI_MIXED=y.
+configured with CONFIG_EFI_STUB=y.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/boot/header.S      | 2 +-
- arch/x86/boot/setup.ld      | 4 ++++
- arch/x86/boot/tools/build.c | 6 ------
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ arch/x86/boot/Makefile                 |  2 +-
+ arch/x86/boot/compressed/vmlinux.lds.S |  3 ++
+ arch/x86/boot/header.S                 |  2 +-
+ arch/x86/boot/tools/build.c            | 30 +++++---------------
+ 4 files changed, 12 insertions(+), 25 deletions(-)
 
+diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+index 0e98bc503699..cc04917b1ac6 100644
+--- a/arch/x86/boot/Makefile
++++ b/arch/x86/boot/Makefile
+@@ -89,7 +89,7 @@ $(obj)/vmlinux.bin: $(obj)/compressed/vmlinux FORCE
+ 
+ SETUP_OBJS = $(addprefix $(obj)/,$(setup-y))
+ 
+-sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi32_stub_entry\|efi64_stub_entry\|efi_pe_entry\|efi32_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\|z_.*\)$$/\#define ZO_\2 0x\1/p'
++sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._stub_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\|_edata\|z_.*\)$$/\#define ZO_\2 0x\1/p'
+ 
+ quiet_cmd_zoffset = ZOFFSET $@
+       cmd_zoffset = $(NM) $< | sed -n $(sed-zoffset) > $@
+diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+index 4ff6ab1b67d9..b688598db28e 100644
+--- a/arch/x86/boot/compressed/vmlinux.lds.S
++++ b/arch/x86/boot/compressed/vmlinux.lds.S
+@@ -47,6 +47,9 @@ SECTIONS
+ 		_data = . ;
+ 		*(.data)
+ 		*(.data.*)
++
++		/* Add 4 bytes of extra space for a CRC-32 checksum */
++		. = ALIGN(. + 4, 0x20);
+ 		_edata = . ;
+ 	}
+ 	. = ALIGN(L1_CACHE_BYTES);
 diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index 72744ba440f6..06bd72a324c1 100644
+index 06bd72a324c1..34e9b35b827c 100644
 --- a/arch/x86/boot/header.S
 +++ b/arch/x86/boot/header.S
-@@ -231,7 +231,7 @@ sentinel:	.byte 0xff, 0xff        /* Used to detect broken loaders */
- 
- 	.globl	hdr
+@@ -233,7 +233,7 @@ sentinel:	.byte 0xff, 0xff        /* Used to detect broken loaders */
  hdr:
--setup_sects:	.byte 0			/* Filled in by build.c */
-+		.byte setup_sects - 1
+ 		.byte setup_sects - 1
  root_flags:	.word ROOT_RDONLY
- syssize:	.long 0			/* Filled in by build.c */
+-syssize:	.long 0			/* Filled in by build.c */
++syssize:	.long ZO__edata / 16
  ram_size:	.word 0			/* Obsolete */
-diff --git a/arch/x86/boot/setup.ld b/arch/x86/boot/setup.ld
-index b11c45b9e51e..9bd5c1ada599 100644
---- a/arch/x86/boot/setup.ld
-+++ b/arch/x86/boot/setup.ld
-@@ -39,6 +39,10 @@ SECTIONS
- 	.signature	: {
- 		setup_sig = .;
- 		LONG(0x5a5aaa55)
-+
-+		/* Reserve some extra space for the reloc and compat sections */
-+		setup_size = ALIGN(ABSOLUTE(.) + 64, 512);
-+		setup_sects = ABSOLUTE(setup_size / 512);
- 	}
- 
- 
+ vid_mode:	.word SVGA_MODE
+ root_dev:	.word 0			/* Default to major/minor 0/0 */
 diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index 069497543164..745d64b6d930 100644
+index 745d64b6d930..e792c6c5a634 100644
 --- a/arch/x86/boot/tools/build.c
 +++ b/arch/x86/boot/tools/build.c
-@@ -48,12 +48,7 @@ typedef unsigned int   u32;
- u8 buf[SETUP_SECT_MAX*512];
- 
- #define PECOFF_RELOC_RESERVE 0x20
--
--#ifdef CONFIG_EFI_MIXED
- #define PECOFF_COMPAT_RESERVE 0x20
--#else
--#define PECOFF_COMPAT_RESERVE 0x0
--#endif
+@@ -52,6 +52,7 @@ u8 buf[SETUP_SECT_MAX*512];
  
  static unsigned long efi_pe_entry;
  static unsigned long efi32_pe_entry;
-@@ -388,7 +383,6 @@ int main(int argc, char ** argv)
- #endif
++static unsigned long _edata;
+ static unsigned long _end;
  
- 	/* Patch the setup code with the appropriate size parameters */
--	buf[0x1f1] = setup_sectors-1;
- 	put_unaligned_le32(sys_size, &buf[0x1f4]);
+ /*----------------------------------------------------------------------*/
+@@ -308,6 +309,7 @@ static void parse_zoffset(char *fname)
+ 	while (p && *p) {
+ 		PARSE_ZOFS(p, efi_pe_entry);
+ 		PARSE_ZOFS(p, efi32_pe_entry);
++		PARSE_ZOFS(p, _edata);
+ 		PARSE_ZOFS(p, _end);
  
- 	update_pecoff_text(setup_sectors * 512, i + (sys_size * 16));
+ 		p = strchr(p, '\n');
+@@ -320,7 +322,6 @@ int main(int argc, char ** argv)
+ {
+ 	unsigned int i, sz, setup_sectors;
+ 	int c;
+-	u32 sys_size;
+ 	struct stat sb;
+ 	FILE *file, *dest;
+ 	int fd;
+@@ -368,24 +369,14 @@ int main(int argc, char ** argv)
+ 		die("Unable to open `%s': %m", argv[2]);
+ 	if (fstat(fd, &sb))
+ 		die("Unable to stat `%s': %m", argv[2]);
+-	sz = sb.st_size;
++	if (_edata != sb.st_size)
++		die("Unexpected file size `%s': %u != %u", argv[2], _edata,
++		    sb.st_size);
++	sz = _edata - 4;
+ 	kernel = mmap(NULL, sz, PROT_READ, MAP_SHARED, fd, 0);
+ 	if (kernel == MAP_FAILED)
+ 		die("Unable to mmap '%s': %m", argv[2]);
+-	/* Number of 16-byte paragraphs, including space for a 4-byte CRC */
+-	sys_size = (sz + 15 + 4) / 16;
+-#ifdef CONFIG_EFI_STUB
+-	/*
+-	 * COFF requires minimum 32-byte alignment of sections, and
+-	 * adding a signature is problematic without that alignment.
+-	 */
+-	sys_size = (sys_size + 1) & ~1;
+-#endif
+-
+-	/* Patch the setup code with the appropriate size parameters */
+-	put_unaligned_le32(sys_size, &buf[0x1f4]);
+-
+-	update_pecoff_text(setup_sectors * 512, i + (sys_size * 16));
++	update_pecoff_text(setup_sectors * 512, i + _edata);
+ 
+ 
+ 	crc = partial_crc32(buf, i, crc);
+@@ -397,13 +388,6 @@ int main(int argc, char ** argv)
+ 	if (fwrite(kernel, 1, sz, dest) != sz)
+ 		die("Writing kernel failed");
+ 
+-	/* Add padding leaving 4 bytes for the checksum */
+-	while (sz++ < (sys_size*16) - 4) {
+-		crc = partial_crc32_one('\0', crc);
+-		if (fwrite("\0", 1, 1, dest) != 1)
+-			die("Writing padding failed");
+-	}
+-
+ 	/* Write the CRC */
+ 	put_unaligned_le32(crc, buf);
+ 	if (fwrite(buf, 1, 4, dest) != 4)
 -- 
 2.42.0.459.ge4e396fd5e-goog
 
