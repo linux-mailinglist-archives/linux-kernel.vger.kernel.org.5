@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 584897A293D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521157A2943
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237508AbjIOVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        id S237574AbjIOVWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237845AbjIOVUD (ORCPT
+        with ESMTP id S237390AbjIOVW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:20:03 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6130186;
-        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso21909105ad.3;
-        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
+        Fri, 15 Sep 2023 17:22:29 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460E4101
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:22:23 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso41641731fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:22:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694812795; x=1695417595; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Iw52vl+Z+yGr72ggsy+mqPbqGnewTwN16MWm8ruh5F0=;
-        b=jkeTzA8dFgV5aBQIFDSnd1B/G8ZaoBz3z8S6nqhosfzWZsy00eOuNnn+DVR0BytN4O
-         3MoIKGW5Vc7bZ3TmFEJbJ4FuaEfHV8nQa1m1g2K44Qmvpbb3kwX/JHv2vRHotaoMmkuj
-         6E6bcmOIdzJ/VkaCdQM3fih+vNAglNWAlPoYWYMmPsJbrWipswtB6F4EdsHnJYF6Hf71
-         CWr896VIUsrzhCWl3MedHN5wjzJLcjF0nzJOZK6tOq5mEc9+lWSoUXDubhFy04FXYJSp
-         rbM+aP9Llj/K/ftx9cX24QvD0WdgvQTr3dZqPiT3trltSNzje4fQklqgTD9om177JYDE
-         JfYw==
+        d=linux-foundation.org; s=google; t=1694812941; x=1695417741; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5/BraNFl/71q7+qGtNJcgBsbKAvg8Dj64vUtil4VRKI=;
+        b=KzkyV/e+RXyR16FMk2RXU8Wcnx0mQ+XM82yOWmK3yVZXcSmzCwav+yajkdm2R3sPUC
+         Qm9r5rCqZ4+at4vi+bJjT2sDRygJ0Ej68XPBiSFFSb0gjmc/x946WTeRTvh4vnK6X3wL
+         +dxd8iNZ5tM1Gh92yHSC+5hdygGJrirY3C18I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694812795; x=1695417595;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iw52vl+Z+yGr72ggsy+mqPbqGnewTwN16MWm8ruh5F0=;
-        b=HdcSXb+kC2diM++ViQ0gp/+kH6QSzHpKxx23DRFTPrAIhogaLV7Q9WFxdS2Y6Mq3Cf
-         CEAa88B0MtNc6A4fMOIh+yn/UJjtWMlFI4DcS2DnuD3WEmBpEDHA1KCqhvG8Zlk8g2uA
-         bcJDnhDmUQVDnY7ntLU609jS0kZ4INdRpV5p3wtnL49+mtm6FVEkpAmCeHz3RJG5isKn
-         SYh3smOMp5xR6i8W0KF+CHI1L1XNsR/sXTTonZRCyoPPAfmMo8s0eOepSfI1IjWyc2h+
-         SNZKdnllgnEDoibu/htKZc5MjqJvSrnqY6v+rL933cv442fRT6LM71gVitSaYqBo0oIP
-         DHsA==
-X-Gm-Message-State: AOJu0YwbKdhbK2K7EqxhuLo3NtSMYDb/I5uYqgTaH79rzsg/RZovthgv
-        ugZBvvr2qrgmqPFZTWF6pGw=
-X-Google-Smtp-Source: AGHT+IGJEvixLhBQnqBK5nGDCqIx0gyypqZITE/hp4lvlRPtD6bVQk4UKPJ6k/vTcWGQ4lNzcV9GhA==
-X-Received: by 2002:a17:903:120f:b0:1bc:e6a:205f with SMTP id l15-20020a170903120f00b001bc0e6a205fmr3131079plh.20.1694812795125;
-        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902ab8400b001c0af36dd64sm3918112plr.162.2023.09.15.14.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 14:19:54 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 15 Sep 2023 14:19:52 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     David Ober <dober6023@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net,
-        dober@lenovo.com, mpearson@lenovo.com
-Subject: Re: [PATCH] hwmon:Add MEC172x Micro Chip driver for Lenovo
- motherboards
-Message-ID: <8a566102-5ea6-4449-9083-8feebe711065@roeck-us.net>
-References: <20230915150340.301067-1-dober6023@gmail.com>
+        d=1e100.net; s=20230601; t=1694812941; x=1695417741;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5/BraNFl/71q7+qGtNJcgBsbKAvg8Dj64vUtil4VRKI=;
+        b=PUNOoEyd0lvyEhKhSqmEwxeS3g7TzM3rKuLIcGVOWDSIFQhPv3BdDom6MvC+YAZ/JL
+         b+/HbW41049FK9k4BRjiv5VjsgnmApKNprSJccoVMndk/SQjzxianwE5YhShUOYEW8KW
+         Mh7fKQapQKyxYIGwcH5kLFtKCefyH8L6FUvYr0Qv3YCXd5HtbUDMADgUcBpBG7fAGzbH
+         VnWyd92obt6gu2Oph7MUkGSrRufMSD9rg6YQnE/GqEBSnBZ2zKY3b62s9+8ehUF9Kvzd
+         7l9VtFr8GYTDyWXuwBOkL0R4B9d5DHdDrax4HzbXGsysdPePfPM0U37hJlCOnrTjckZf
+         1lag==
+X-Gm-Message-State: AOJu0Yx2AftDrFYs7Dubhqx7bCZLB+ytwQGlVxbAzz0OL+hnjPMlHD/4
+        bZaL0ola1sfDNA6AJOdZ4v+UIU3Gj+C2uRlXccHW8d/c
+X-Google-Smtp-Source: AGHT+IFkvZJreH1mhhDobB5cvNkVzB2+/+P9lCBOqRHzuduPB42bLfPCuraISuQSsUant3MWrey7mQ==
+X-Received: by 2002:a2e:b60c:0:b0:2be:58f3:ccee with SMTP id r12-20020a2eb60c000000b002be58f3cceemr2498025ljn.41.1694812941359;
+        Fri, 15 Sep 2023 14:22:21 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id fi8-20020a170906da0800b00997e00e78e6sm2888114ejb.112.2023.09.15.14.22.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 14:22:20 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-530a6cbbb47so785501a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:22:20 -0700 (PDT)
+X-Received: by 2002:a05:6402:150f:b0:523:a45f:419a with SMTP id
+ f15-20020a056402150f00b00523a45f419amr2327902edw.41.1694812939897; Fri, 15
+ Sep 2023 14:22:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915150340.301067-1-dober6023@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+ <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com> <20230915210851.GA23174@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230915210851.GA23174@noisy.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 14:22:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+Message-ID: <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,47 +82,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:03:40AM -0400, David Ober wrote:
-> This addition adds in the ability for the system to scan the
-> MEC172x EC chip in Lenovo ThinkStation systems to get the
-> current fan RPM speeds and the Maximum speed value for each
-> fan also provides the current CPU and DIMM thermal status
-> 
-> Signed-off-by: David Ober <dober6023@gmail.com>
-> 
-> Written by David Ober from Lenovo using this gmail address since
-> my corporate email address does not comply with git email
+On Fri, 15 Sept 2023 at 14:08, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> So in the perf-event conversion patches I do have this:
+>
+>         struct task_struct *task __free(put_task) = NULL;
+>
+>         ...
+>
+>         if (pid != -1) {
+>                 task = find_lively_task_by_vpid(pid);
+>                 if (!task)
+>                         return -ESRCH;
+>         }
+>
+>         ...
+>
+> pattern. The having of task is fully optional in the code-flow.
 
-FWIW, this needs to be after '---'
+Yeah, if you end up having conditional initialization, you can't have
+the cleanup declaration in the same place, since it would be in an
+inner scope and get free'd immediately.
 
-Anyway, thinking about this submission makes me even more concerned.
+Still, I think that's likely the exception rather than the rule.
 
-This isn't really a driver for MEC172x; it is simply a driver
-accessing an EC on a set of PCs and/or laptops from Lenovo
-which uses a vertain API for communication between EC and main
-CPU.
+Side note: I hope your code snippets are "something like this" rather
+than the real deal.
 
-Such ECs are typically accessed through ACPI. Yet, in this driver
-there is no mention of ACPI, much less any protection against
-parallel use by ACPI code (that access lock in get_ec_reg() doesn't
-even protect against parallel access from userspace, much less
-against parallel access from other drivers or ACPI, for example
-by using request_region() to reserve the used memory ranges).
+Because code like this:
 
-There needs to be explanations and clarifications 
-- Why this driver will only be used for communication with MEC172X
-  based chips, and why the exact EC chip is relevant in the first place
-  to be mentioned as much as it is.
-- How it is guaranteed that the EC is not and will never be accessed
-  through ACPI.
-- How it is guaranteed that there will never be any other kernel drivers
-  accessing the chip.
+> But a little later in that same function I then have:
+>
+>      do {
+>              struct rw_semaphore *exec_update_lock __free(up_read) = NULL;
+>              if (task) {
+>                      err = down_read_interruptible(&task->signal->exec_update_lock);
+>
+>              struct rw_semaphore *exec_update_lock __free(up_read) = NULL;
 
-> ---
->  drivers/hwmon/Kconfig             |  10 +
->  drivers/hwmon/Makefile            |   1 +
->  drivers/hwmon/lenovo-ec-sensors.c | 471 ++++++++++++++++++++++++++++++
+is just garbage. That's not a "freeing" function. That should be "__cleanup()".
 
-Documentation missing.
+The last thing we want is misleading naming, making people think that
+you are "freeing" a lock.
 
-Guenter
+Naming is hard, let's not make it worse by making it actively misleading.
+
+And honestly, I think the above is actually a *HORIBLE* argument for
+doing that "initialize to NULL, change later". I think the above is
+exactly the kind of code that we ABSOLUTELY DO NOT WANT.
+
+You should aim for a nice
+
+        struct rw_semaphore *struct rw_semaphore *exec_update_lock
+            __cleanup(release_exec_update_lock) = get_exec_update_lock(task);
+
+and simply have proper constructors and destructors. It's going to be
+much cleaner.
+
+You can literally do something like
+
+    static inline void release_exec_update_lock(struct rw_semaphore *sem)
+    { if (!IS_ERR_OR_NULL(sem)) up_read(sem); }
+
+    static inline void get_exec_update_lock(struct task_struct *tsk)
+    {
+        if (!task)
+                return NULL;
+        if (down_read_interruptible(&task->signal->exec_update_lock))
+                return ERR_PTR(-EINTR);
+        retuin &task->signal->exec_update_lock;
+    }
+
+and the code will be *much* cleaner, wouldn't you say?
+
+Please use proper constructors and destructors when you do these kinds
+of automatic cleanup things. Don't write ad-hoc garbage.
+
+You'll thank me a year from now when the code is actually legible.
+
+                 Linus
