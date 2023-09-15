@@ -2,189 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEA37A280D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D92B7A2814
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbjIOUZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S237104AbjIOU17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237481AbjIOUZk (ORCPT
+        with ESMTP id S237263AbjIOU1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:25:40 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3F32703;
-        Fri, 15 Sep 2023 13:25:31 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403012f27e1so26789435e9.1;
-        Fri, 15 Sep 2023 13:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694809530; x=1695414330; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cIpYKgze7l+4kxt1H4ShRKX1dLLu6xyjGygZfgTzVnI=;
-        b=icqbDhBrxpoXaDTB9GXlyDfU7To5JzmT/Ju285ozn1a7hb8zvUXbfaWaUYaXsZTgGU
-         ys9xSEU8uDGvej9UXTbhlU6jVuIpk72zKT9k28vRpG4f7CBuqlDAVSLl5qbA0hOxv9PQ
-         z6oYAjAuyfHVH1wJo5mTr9rBPH3Y0Lbol3c4C3AdCO8BGslmK45ATfnHsC8we+nOSg7c
-         LPMCs5e7DAmrEG9CrsbNtJvFDP8UFsN5xRacVyYZFkEZp6q5RgUXv6mtyHZXXVxBn0TT
-         c+Bi7Wx99JUH/HNSLm0SL9W/L6PM7yGIePjQD0w5FC4wC42JtZffHTMCFjjwv3p4WRhU
-         mX3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694809530; x=1695414330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cIpYKgze7l+4kxt1H4ShRKX1dLLu6xyjGygZfgTzVnI=;
-        b=jk6O0RydNyeYGKWKDs2prkoi3W0TsPrNfLni9i+t8dVTXW/Vselq89bLpAzpSrZelh
-         4yTc/KjcohlFV15/k240rz4j4GJyahborUrybeCoJsRX5+B4lCPN91pgtDzq4lFqvLap
-         eP9pNFY6CALhWFfBH8M4HJrKZaxwJp7B4Cl1Apgqc2YX+GSFKRqm1L/YH204UGAHQvKO
-         /ptrSSy2qJpAI63XWVPLHrE3uTbEmMEB55+jS1CEzvaSLZKIBokdBRGxB9XSbO6bKuSX
-         2FHnkS65eyGFhf2g4D+9Gde9yLIk5bMl/lrdmZgkl5g5n0UggnwRCSNSx0AaLxznatOF
-         5w/Q==
-X-Gm-Message-State: AOJu0Yy7tidOKhfVcnF1+5dtweR9jfqPE3wkuiGmhMq6HKE7ZCrtK89k
-        Uk4Q/ScSYsjl/+UOfuUSS2DEBuwg26BYjiPl3ely+QYJmdQ=
-X-Google-Smtp-Source: AGHT+IG9s5SGn1Iitdi65l5D5QpKcBg4gsnqw516p5ES4HtgkralaS7E1nXYs0UJnfktXmPsryviKO4Z2Xlz+dflCpI=
-X-Received: by 2002:adf:fb08:0:b0:31f:e534:2d6f with SMTP id
- c8-20020adffb08000000b0031fe5342d6fmr1961692wrr.11.1694809529639; Fri, 15 Sep
- 2023 13:25:29 -0700 (PDT)
+        Fri, 15 Sep 2023 16:27:45 -0400
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA43B2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:27:40 -0700 (PDT)
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+        by cmsmtp with ESMTP
+        id hCX9q0TgODKaKhFPfqIVT5; Fri, 15 Sep 2023 20:27:39 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id hFPeqZK3GnxNghFPeq37uy; Fri, 15 Sep 2023 20:27:39 +0000
+X-Authority-Analysis: v=2.4 cv=PrSA0iA3 c=1 sm=1 tr=0 ts=6504be3b
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8 a=f5UIiaV4ZOzLQmTLUEEA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=j3w//0Z46CGNssGNDXKmprOdLy+/NVzaiaJIdMDoPNc=; b=ZmiXgWU0KYg4YC4bYpjMAA1/NB
+        HwUpbKzMcCWbUlNaS2U9E/kMDSTXJhlwFuyrzYa1OZC9giqk3rnUWzyhp9I/WKi7lp82MR+D6n/uP
+        Fasd1Sr7o3nwJcyESLRYQbabTIRDAfSavwnZ9PUkY7VpcCgAbhkyC5tGln67EbFPGiTOIUWoZu9qt
+        Aqn89NJaNK+spuPCTnXvGOuRe9oW73PXpBv5kcYh6FniYN9JJ05YHoriOEF4qy3jz70Lm+QNAwJTd
+        xKUkKRBLNgiac7ak9iN+Vj8b+hcTxLyt1GYHL9Fe/kbe9N9KlzC7eBTbgEfuJfdlu+4U+q7CaN4RR
+        4bjuQXRg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:39180 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qhFPd-002JVV-2Y;
+        Fri, 15 Sep 2023 15:27:37 -0500
+Message-ID: <6d98461f-a794-a258-9640-78fa277b6e76@embeddedor.com>
+Date:   Fri, 15 Sep 2023 14:28:33 -0600
 MIME-Version: 1.0
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-5-zhouchuyi@bytedance.com> <CAEf4BzY4qabpk3SD-GA5n5++REcXCxTtA4ythsR9HKHtGi33xA@mail.gmail.com>
- <8f27e07e-e23c-af80-90eb-b1123e1f68cd@bytedance.com>
-In-Reply-To: <8f27e07e-e23c-af80-90eb-b1123e1f68cd@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 15 Sep 2023 13:25:18 -0700
-Message-ID: <CAEf4BzaFaf4K7T5QxXrSYQjWSg+2fqNP8bTud7TJcg3etGrR=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] md/md-linear: Annotate struct linear_conf with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Song Liu <song@kernel.org>
+Cc:     linux-raid@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230915200328.never.064-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230915200328.never.064-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qhFPd-002JVV-2Y
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:39180
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 68
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfI19jwdY/kb0APVYXfS8RwX088xkLmqd3etBfb+mksSJ8vfKY9O4tDhQVGQlalTG3hFDE9GxduJ2HXJQN1DAl7NzTlmPOlM2lV7wD7HyKjNzE/HNw+N7
+ dSFmzZS5nlVDezIEiGHWPm0AU/g4G1RkkQR1IfKlQ3s22eZjUCa4uEYsXfBrDdVhpkeBC6DumSop0RPKqZNHFbdDTBCm/1FR8Fl4dmwTQvg2Nh16pAK/yRVF
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 4:57=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
-> Hello.
->
-> =E5=9C=A8 2023/9/15 07:26, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Tue, Sep 12, 2023 at 12:02=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
-e.com> wrote:
-> >>
-> >> This Patch adds kfuncs bpf_iter_css_{pre,post}_{new,next,destroy} whic=
-h
-> >> allow creation and manipulation of struct bpf_iter_css in open-coded
-> >> iterator style. These kfuncs actually wrapps css_next_descendant_{pre,
-> >> post}. BPF programs can use these kfuncs through bpf_for_each macro fo=
-r
-> >> iteration of all descendant css under a root css.
-> >>
-> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> >> ---
-> >>   include/uapi/linux/bpf.h       |  8 +++++
-> >>   kernel/bpf/helpers.c           |  6 ++++
-> >>   kernel/bpf/task_iter.c         | 53 ++++++++++++++++++++++++++++++++=
-++
-> >>   tools/include/uapi/linux/bpf.h |  8 +++++
-> >>   tools/lib/bpf/bpf_helpers.h    | 12 ++++++++
-> >>   5 files changed, 87 insertions(+)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index befa55b52e29..57760afc13d0 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -7326,4 +7326,12 @@ struct bpf_iter_process {
-> >>          __u64 __opaque[1];
-> >>   } __attribute__((aligned(8)));
-> >>
-> >> +struct bpf_iter_css_pre {
-> >> +       __u64 __opaque[2];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >> +struct bpf_iter_css_post {
-> >> +       __u64 __opaque[2];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index 9b7d2c6f99d1..ca1f6404af9e 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -2510,6 +2510,12 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, K=
-F_ITER_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> >>   BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL=
-)
-> >>   BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_new, KF_ITER_NEW)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_next, KF_ITER_NEXT | KF_RET_NULL)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_destroy, KF_ITER_DESTROY)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_new, KF_ITER_NEW)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_next, KF_ITER_NEXT | KF_RET_NULL=
-)
-> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_destroy, KF_ITER_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> >> index 9d1927dc3a06..8963fc779b87 100644
-> >> --- a/kernel/bpf/task_iter.c
-> >> +++ b/kernel/bpf/task_iter.c
-> >> @@ -880,6 +880,59 @@ __bpf_kfunc void bpf_iter_process_destroy(struct =
-bpf_iter_process *it)
-> >>   {
-> >>   }
-> >>
-> >> +struct bpf_iter_css_kern {
-> >> +       struct cgroup_subsys_state *root;
-> >> +       struct cgroup_subsys_state *pos;
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >> +__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-> >> +               struct cgroup_subsys_state *root)
-> >
-> > similar to my comment on previous patches, please see
-> > kernel/bpf/cgroup_iter.c for iter/cgroup iterator program. Let's stay
-> > consistent. We have one iterator that accepts parameters defining
-> > iteration order and starting cgroup. Unless there are some technical
-> > reasons we can't follow similar approach with this open-coded iter,
-> > let's use the same approach. We can even reuse
-> > BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> > BPF_CGROUP_ITER_ANCESTORS_UP enums.
-> >
->
-> I know your concern. It would be nice if we keep consistent with
-> kernel/bpf/cgroup_iter.c
->
-> But this patch actually want to support iterating css
-> (cgroup_subsys_state) not cgroup (css is more low lever).
-> With css_iter we can do something like
-> "for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre"
-> in BPF Progs which is hard for cgroup_iter. In the future we can use
-> this iterator to plug some customizable policy in other resource control
-> system.
 
-That's fine if it's not exactly cgroup iter and returns a different
-kernel object. But let's at least consistently use
-BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST/BPF_CGROUP=
-_ITER_ANCESTORS_UP
-approach as a way to specify iteration order?
 
->
-> BTW, what I did in RFC actually very similar with the approach of
-> cgroup_iter.
-> (https://lore.kernel.org/all/20230827072057.1591929-4-zhouchuyi@bytedance=
-.com/).
->
-> Thanks.
+On 9/15/23 14:03, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct linear_conf.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Song Liu <song@kernel.org>
+> Cc: linux-raid@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
+> ---
+>   drivers/md/md-linear.c | 26 +++++++++++++-------------
+>   drivers/md/md-linear.h |  2 +-
+>   2 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/md/md-linear.c b/drivers/md/md-linear.c
+> index 71ac99646827..ae2826e9645b 100644
+> --- a/drivers/md/md-linear.c
+> +++ b/drivers/md/md-linear.c
+> @@ -69,6 +69,19 @@ static struct linear_conf *linear_conf(struct mddev *mddev, int raid_disks)
+>   	if (!conf)
+>   		return NULL;
+>   
+> +	/*
+> +	 * conf->raid_disks is copy of mddev->raid_disks. The reason to
+> +	 * keep a copy of mddev->raid_disks in struct linear_conf is,
+> +	 * mddev->raid_disks may not be consistent with pointers number of
+> +	 * conf->disks[] when it is updated in linear_add() and used to
+> +	 * iterate old conf->disks[] earray in linear_congested().
+> +	 * Here conf->raid_disks is always consitent with number of
+> +	 * pointers in conf->disks[] array, and mddev->private is updated
+> +	 * with rcu_assign_pointer() in linear_addr(), such race can be
+> +	 * avoided.
+> +	 */
+> +	conf->raid_disks = raid_disks;
+> +
+>   	cnt = 0;
+>   	conf->array_sectors = 0;
+>   
+> @@ -112,19 +125,6 @@ static struct linear_conf *linear_conf(struct mddev *mddev, int raid_disks)
+>   			conf->disks[i-1].end_sector +
+>   			conf->disks[i].rdev->sectors;
+>   
+> -	/*
+> -	 * conf->raid_disks is copy of mddev->raid_disks. The reason to
+> -	 * keep a copy of mddev->raid_disks in struct linear_conf is,
+> -	 * mddev->raid_disks may not be consistent with pointers number of
+> -	 * conf->disks[] when it is updated in linear_add() and used to
+> -	 * iterate old conf->disks[] earray in linear_congested().
+> -	 * Here conf->raid_disks is always consitent with number of
+> -	 * pointers in conf->disks[] array, and mddev->private is updated
+> -	 * with rcu_assign_pointer() in linear_addr(), such race can be
+> -	 * avoided.
+> -	 */
+> -	conf->raid_disks = raid_disks;
+> -
+>   	return conf;
+>   
+>   out:
+> diff --git a/drivers/md/md-linear.h b/drivers/md/md-linear.h
+> index 24e97db50ebb..5587eeedb882 100644
+> --- a/drivers/md/md-linear.h
+> +++ b/drivers/md/md-linear.h
+> @@ -12,6 +12,6 @@ struct linear_conf
+>   	struct rcu_head		rcu;
+>   	sector_t		array_sectors;
+>   	int			raid_disks; /* a copy of mddev->raid_disks */
+> -	struct dev_info		disks[];
+> +	struct dev_info		disks[] __counted_by(raid_disks);
+>   };
+>   #endif
