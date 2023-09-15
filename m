@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931727A2133
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9D77A2135
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbjIOOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S235806AbjIOOkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235633AbjIOOkT (ORCPT
+        with ESMTP id S235795AbjIOOkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:40:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9AC1AC;
-        Fri, 15 Sep 2023 07:40:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6453C433C9;
-        Fri, 15 Sep 2023 14:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694788814;
-        bh=PvlOjbLkc3tgSHNCaVnS82ty1H0lvym1p0dyZTkOFDQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GsMXd6mZ8RM6Ehv3+oeXSFdJBK4XfA1s5jG3qJW397E3aH+o329rZ/VtgcJhEI2Ek
-         GIJfdrxXDV/D+2h214W5hbDliVTBm3yN1eUgvtUVVZ1/ZgLJyELtBnprCB74Mvp2bO
-         Y9yAjyDUJYhLQ2LABIiRFS7SjQAloadGL5GvZIH6h3ow+QooG9ilUBP37mYSe/gnfx
-         Oe0um8v+i1YG5HcXkyDRJwPVS8rwGOnzAUkEZB8JlS5KwPI8HWoWokIviZ30JYSJLI
-         VjWkPZQ6+IEwE3hlmnfM8EB719A4Al+/b90kwWaliUnxciX021zodiQcb+zRxyFzBc
-         v2OPDzI9ovPwA==
-Date:   Fri, 15 Sep 2023 16:40:06 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230915-brust-gratis-156b7572a7c9@brauner>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
- <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
- <20230914165805.GJ800259@ZenIV>
- <20230915-elstern-etatplanung-906c6780af19@brauner>
- <20230915-zweit-frech-0e06394208a3@brauner>
- <20230915142814.GL800259@ZenIV>
+        Fri, 15 Sep 2023 10:40:35 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D412A1713
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:40:29 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-41513d2cca7so345751cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694788829; x=1695393629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ian4KdZXmKFMo5ATT66+8ryOQHatJUEavAax22/9xtM=;
+        b=L3qVWDW1dbmk8GpWmRPl0hqNX2AGqrzf4fsv7AvEWCnSyfdgcrgiCZz/fUEERA40ay
+         Hqu0RFaz1cNIyejGluY2McxJXGiHtnw7tFMDsA6GthLJudivDlvopP6aY+6G156T2T6U
+         v+F6HaKLtO6KOxbXl/XLmi81WQb3gBm07u5iUyeu33pU6RByqShfAEd90POP/p/lv47A
+         kDLZ+1BHyVkoL0zk4oLXXo1DrKw8lPxoMqaAwH0+l7c7o/Q+JAIFaOPXRvwET3MbNuZX
+         TFtw0iXWAJf2rHPyfJ4mtGP8rOns5PgLcTbtrqCwrvrRCeHtn2uWNtsZoGUqV/qmEB+2
+         s+5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694788829; x=1695393629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ian4KdZXmKFMo5ATT66+8ryOQHatJUEavAax22/9xtM=;
+        b=rJzyfcj06QsIAwFhtAnjMZ1JVkiqXDBgYmCxyfNrvfxrMqZDSIGBkT1vR2IV1mD7fk
+         85jvaHMvYKHznMtYOUKIRrcH47hdtwEcV/xeL/VpFBcIsyJeZ55uOMDrL9P/FRU/4BZF
+         zLrtkGhZPm0XYzQdsNXKj6wK4946vWeTIWWhkmwUXNt4Ql8uNZHRsClHXIifP3xsThYD
+         sVMPlCm9QAxjK7ba9ry0io0gFJdosT8lcRY9dCwI57M4d/Rq5GVauAAn08JYVYiSKthJ
+         3SjT9II69TT9Y6HFDiVWJtV8OZMZlggJACGK3FBHA1R9ai8V7nbTPTfvBosj12sOg2Ig
+         t9PA==
+X-Gm-Message-State: AOJu0YwdTx3Cc/kdCRQRWIiy1Yk95wMat33KA75w/2FbimHrm7voNWRG
+        VTzxHr3ncNCZ1lcOHgeBKKhJBIz5Khahfr2wequVoQ==
+X-Google-Smtp-Source: AGHT+IEvTGUFvnjnnBA1AteMbyFSqSQVTo/tJ9sREckup1RnXB1Q25mSsTPQKnY1pjk3jEb1DZA3eESSv+sSMHy9O6w=
+X-Received: by 2002:ac8:598e:0:b0:40f:d1f4:aa58 with SMTP id
+ e14-20020ac8598e000000b0040fd1f4aa58mr247843qte.8.1694788828644; Fri, 15 Sep
+ 2023 07:40:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230915142814.GL800259@ZenIV>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230915142719.3411733-1-make_ruc2021@163.com>
+In-Reply-To: <20230915142719.3411733-1-make_ruc2021@163.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Sep 2023 16:40:17 +0200
+Message-ID: <CANn89iJVM4J8DG4V3MdPcyimuKsbiko_vB=wYRyxnwzp_SiMTA@mail.gmail.com>
+Subject: Re: [PATCH] net: sched: htb: dont intepret cls results when asked to drop
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,9 +71,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Lifetime rules for fs-private parts of superblock are really private to
+On Fri, Sep 15, 2023 at 4:27=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote:
+>
+> If asked to drop a packet via TC_ACT_SHOT it is unsafe to
+> assume that res.class contains a valid pointer.
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  net/sched/sch_htb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
+> index 0d947414e616..7b2e5037b713 100644
+> --- a/net/sched/sch_htb.c
+> +++ b/net/sched/sch_htb.c
+> @@ -243,6 +243,8 @@ static struct htb_class *htb_classify(struct sk_buff =
+*skb, struct Qdisc *sch,
+>
+>         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
+>         while (tcf && (result =3D tcf_classify(skb, NULL, tcf, &res, fals=
+e)) >=3D 0) {
+> +               if (result =3D=3D TC_ACT_SHOT)
+> +                       return NULL;
+>  #ifdef CONFIG_NET_CLS_ACT
+>                 switch (result) {
+>                 case TC_ACT_QUEUED:
+> @@ -250,8 +252,6 @@ static struct htb_class *htb_classify(struct sk_buff =
+*skb, struct Qdisc *sch,
+>                 case TC_ACT_TRAP:
+>                         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_STOLEN;
+>                         fallthrough;
+> -               case TC_ACT_SHOT:
+> -                       return NULL;
+>                 }
+>  #endif
+>                 cl =3D (void *)res.class;
 
-Fine, I'll drop that. It's still correct that a filesystem needs to take
-care when it frees sb->s_fs_info. See the RCU fun you just encountered.
-
-
+Can you please stop sending patches that are not needed,
+as already pointed out ?
