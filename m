@@ -2,173 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 059F27A25A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3985C7A25AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbjIOSZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        id S236367AbjIOS0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235441AbjIOSYp (ORCPT
+        with ESMTP id S236593AbjIOSZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:24:45 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C11151FD7;
-        Fri, 15 Sep 2023 11:24:39 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id 60255212BE7C; Fri, 15 Sep 2023 11:24:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 60255212BE7C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1694802279;
-        bh=TGsvvgWpwhxqiST3JXUN8KZ0za3/WKQ/h15qpNdLHjA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUYOEGki4l0DI/ZaWsQJSQfr+HuJwxaixKsemOd0tT3KrY5Z52yLZbtxyrZshZQoZ
-         pHCa6MCfbTbSJYuvCeKekobB8o0/RWBr72YuZI29G+yXYuLWOmL5eC+qkLzLWIhkek
-         4y/A2+SzHT8MgFApfAjMYGjym1aA4xiMFcqHacDM=
-From:   sharmaajay@linuxonhyperv.com
-To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v6 5/5] RDMA/mana_ib : Send event to qp
-Date:   Fri, 15 Sep 2023 11:24:30 -0700
-Message-Id: <1694802270-17452-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1694802270-17452-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1694802270-17452-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 14:25:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761212D5D
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:25:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9961EC433C8;
+        Fri, 15 Sep 2023 18:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694802336;
+        bh=tI4aIfone71e2rJtw81f/6/MavNYU+k1+mNvMUh5TA4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Atqv/D9RjXan1oJbtAgBvbdJRn03JAT/MvFlzWwRNZ2oZr8jFZU7pJDgBdecw7Go0
+         7edHXyg9udHnr4MAzrNPXWy4+2/AzvvCsBTY0/q2ZhUKTEmkVwAtSE5eKCNTdMY7+r
+         EJ3k0zKnaCj9goknDZrM8VkHhp2gF1l2IvwY0UuvH5fZBhUHwhUkD0A2P6cNJyLb4+
+         r0LGQRkScxsxsRsnrV9mZjY16b8iU8youOptYenFLfegaRrHRWjqG9odXzuxCa9Mel
+         VVB4n9LvB8i7Th2N6X2+iTQJs3thylSoy2+CjUpsumRLpKoLjPD8eDjsxN6V1JBejg
+         MExPW/2nAS3zg==
+Date:   Fri, 15 Sep 2023 20:25:31 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] seqlock: introduce seqprop_lock/unlock
+Message-ID: <ZQShm4QAeAtjR8EK@example.org>
+References: <20230913154907.GA26210@redhat.com>
+ <20230913155000.GA26248@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913155000.GA26248@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
+On Wed, Sep 13, 2023 at 05:50:00PM +0200, Oleg Nesterov wrote:
+> which can be used to take/release the corresponding lock.
+> 
+> Thanks to the previous patch, it is trivial to pass 2 arguments to
+> the new __seqprop_##lockname##_lock/unlock "methods", plus we do not
+> loose the type info and thus the new seqprop's are "type safe".
+> 
+> So for example
+> 
+> 	void func(seqcount_rwlock_t *s, rwlock_t *l)
+> 	{
+> 		seqprop_lock(s, l);
+> 	}
+> 
+> happily compiles, but this one
+> 
+> 	void func(seqcount_rwlock_t *s, spinlock_t *l)
+> 	{
+> 		seqprop_lock(s, l);
+> 	}
+> 
+> doesn't.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  include/linux/seqlock.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index 41e36f8afad4..9831683a0102 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -241,6 +241,21 @@ static __always_inline void						\
+>  __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
+>  {									\
+>  	__SEQ_LOCK(lockdep_assert_held(s->lock));			\
+> +}									\
+> +									\
+> +static __always_inline void						\
+> +__seqprop_##lockname##_lock(seqcount_##lockname##_t *s,			\
+> +				locktype *lock)				\
+> +{									\
+> +	__SEQ_LOCK(WARN_ON_ONCE(s->lock != lock));			\
+> +	lockbase##_lock(lock);						\
+> +}									\
+> +									\
+> +static __always_inline void						\
+> +__seqprop_##lockname##_unlock(seqcount_##lockname##_t *s,		\
+> +				locktype *lock)				\
+> +{									\
+> +	lockbase##_unlock(lock); 					\
+>  }
 
-Send the QP fatal error event to only the
-context that created the qp.
+Why are you creating a new method with an unused argument s ?
 
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  4 ++++
- drivers/infiniband/hw/mana/main.c    | 11 ++++++++---
- drivers/infiniband/hw/mana/mana_ib.h | 18 +++++++++---------
- drivers/infiniband/hw/mana/qp.c      |  2 ++
- 4 files changed, 23 insertions(+), 12 deletions(-)
+>  
+>  /*
+> @@ -306,6 +321,12 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+>  #define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
+>  #define seqprop_assert(s)		__seqprop(s, assert)(s)
+>  
+> +/* seqcount_t doesn't have these methods */
+> +static inline void __seqprop_lock   (seqcount_t *s, void *l) { BUILD_BUG(); }
+> +static inline void __seqprop_unlock (seqcount_t *s, void *l) { BUILD_BUG(); }
+> +#define seqprop_lock(s, l)		__seqprop(s, lock)(s, l)
+> +#define seqprop_unlock(s, l)		__seqprop(s, unlock)(s, l)
+> +
+>  /**
+>   * __read_seqcount_begin() - begin a seqcount_t read section w/o barrier
+>   * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
+> -- 
+> 2.25.1.362.g51ebf55
+> 
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index e15da43c73a0..fcc8083e2783 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -101,6 +101,8 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
- 
-+	xa_init(&mib_dev->rq_to_qp_lookup_table);
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-@@ -112,6 +114,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 
- destroy_adapter:
- 	mana_ib_destroy_adapter(mib_dev);
-+	xa_destroy(&mib_dev->rq_to_qp_lookup_table);
- free_error_eq:
- 	mana_gd_destroy_queue(mib_dev->gc, mib_dev->fatal_err_eq);
- deregister_device:
-@@ -129,6 +132,7 @@ static void mana_ib_remove(struct auxiliary_device *adev)
- 	mana_ib_destroy_adapter(mib_dev);
- 	mana_gd_deregister_device(&mib_dev->gc->mana_ib);
- 	ib_unregister_device(&mib_dev->ib_dev);
-+	xa_destroy(&mib_dev->rq_to_qp_lookup_table);
- 	ib_dealloc_device(&mib_dev->ib_dev);
- }
- 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 82923475267d..29be8fd1ec7f 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -556,13 +556,18 @@ static void mana_ib_critical_event_handler(void *ctx, struct gdma_queue *queue,
- {
- 	struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
- 	struct ib_event mib_event;
-+	struct mana_ib_qp *qp;
-+	u64 rq_id;
- 	switch (event->type) {
- 	case GDMA_EQE_SOC_EVENT_NOTIFICATION:
-+		rq_id = event->details[0] & 0xFFFFFF;
-+		qp = xa_load(&mib_dev->rq_to_qp_lookup_table, rq_id);
- 		mib_event.event = IB_EVENT_QP_FATAL;
- 		mib_event.device = &mib_dev->ib_dev;
--		mib_event.element.qp =
--				(struct ib_qp*)(event->details[0] & 0xFFFFFF);
--		ib_dispatch_event(&mib_event);
-+		if (qp && qp->ibqp.event_handler)
-+			qp->ibqp.event_handler(&mib_event, qp->ibqp.qp_context);
-+		else
-+			ibdev_dbg(&mib_dev->ib_dev, "found no qp or event handler");
- 		ibdev_dbg(&mib_dev->ib_dev, "Received critical notification");
- 		break;
- 	default:
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 6b9406738cb2..243572b52336 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -48,15 +48,6 @@ struct mana_ib_adapter_caps {
- 	u32 max_inline_data_size;
- };
- 
--struct mana_ib_dev {
--	struct ib_device ib_dev;
--	struct gdma_dev *gdma_dev;
--	struct gdma_context *gc;
--	struct gdma_queue *fatal_err_eq;
--	mana_handle_t adapter_handle;
--	struct mana_ib_adapter_caps adapter_caps;
--};
--
- struct mana_ib_wq {
- 	struct ib_wq ibwq;
- 	struct ib_umem *umem;
-@@ -113,6 +104,15 @@ struct mana_ib_ucontext {
- 	u32 doorbell;
- };
- 
-+struct mana_ib_dev {
-+	struct ib_device ib_dev;
-+	struct gdma_dev *gdma_dev;
-+	struct gdma_context *gc;
-+	struct gdma_queue *fatal_err_eq;
-+	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
-+	struct xarray rq_to_qp_lookup_table;
-+};
- struct mana_ib_rwq_ind_table {
- 	struct ib_rwq_ind_table ib_ind_table;
- };
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index ef3275ac92a0..19fae28985c3 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		wq->id = wq_spec.queue_index;
- 		cq->id = cq_spec.queue_index;
- 
-+		xa_store(&mib_dev->rq_to_qp_lookup_table, wq->id, qp, GFP_KERNEL);
-+
- 		ibdev_dbg(&mib_dev->ib_dev,
- 			  "ret %d rx_object 0x%llx wq id %llu cq id %llu\n",
- 			  ret, wq->rx_object, wq->id, cq->id);
 -- 
-2.25.1
+Rgrds, legion
 
