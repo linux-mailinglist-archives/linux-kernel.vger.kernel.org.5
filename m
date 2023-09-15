@@ -2,134 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD1B7A1AA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662237A1AA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbjIOJe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S233708AbjIOJf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233371AbjIOJey (ORCPT
+        with ESMTP id S233117AbjIOJf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:34:54 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE6E1FDE;
-        Fri, 15 Sep 2023 02:34:49 -0700 (PDT)
-Received: from lhrpeml100004.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rn86g6pjjz6D9DT;
-        Fri, 15 Sep 2023 17:30:03 +0800 (CST)
-Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
- lhrpeml100004.china.huawei.com (7.191.162.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 10:34:46 +0100
-Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
- lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
- Fri, 15 Sep 2023 10:34:46 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        James Morse <james.morse@arm.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
-        "justin.he@arm.com" <justin.he@arm.com>
-Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
- first?]
-Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
- [code first?]
-Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAABq9gIAAG4DQ
-Date:   Fri, 15 Sep 2023 09:34:46 +0000
-Message-ID: <80e36ff513504a0382a1cbce83e42295@huawei.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-28-james.morse@arm.com>
-        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
-        <20230914155459.00002dba@Huawei.com>
-        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
-        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
-        <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
- <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.174.239]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 15 Sep 2023 05:35:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCFE171C;
+        Fri, 15 Sep 2023 02:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694770522; x=1726306522;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=UgXXbWdkQH1ECa9Ar2m27pqTIEtUL3zv5cVAncIx9xA=;
+  b=GzU/R+l/VeqrxKSV4lmZ3EAwKftyJMUjsWcbKXrEOhQRrl8Zf++Cxclv
+   DF6Q+pYt0/Wuu25yo10gry6OKR+NCIInr0DaUq7OExH0ui4ds9iOJj83o
+   ZMRrfBv/mzXm0xGWsBoOiSGQ/cHIELmbyiv0TMmjdBouGRooCoYVZmsMl
+   pRjvz2XvqGzjiYuE9Bk6txyRfXohX2+mfUDoymxkSkKoRwhSbOXcohkkN
+   vho9n05Bzsj6RpZ1Qgq/3+g3gKo742kv/xNK1auukvFh1n+gp8cjOSD9p
+   pDu0Ea6uFBXTv6Gc1KnJVoaHtsVPl2R6EJd0K3R9jdGLF/hw+wWy+K/w4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="445666742"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="445666742"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 02:35:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="868646146"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="868646146"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 02:35:19 -0700
+Date:   Fri, 15 Sep 2023 12:35:17 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     John Ogness <john.ogness@linutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH tty v1 06/74] serial: 8250: Use port lock wrappers
+In-Reply-To: <20230914183831.587273-7-john.ogness@linutronix.de>
+Message-ID: <2045de5e-b7f8-18fe-dc92-e1d88a62f810@linux.intel.com>
+References: <20230914183831.587273-1-john.ogness@linutronix.de> <20230914183831.587273-7-john.ogness@linutronix.de>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IEZyb206IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWxAa2VybmVsLm9yZz4NCj4gU2VudDog
-RnJpZGF5LCBTZXB0ZW1iZXIgMTUsIDIwMjMgOTo0NSBBTQ0KPiBUbzogUnVzc2VsbCBLaW5nIChP
-cmFjbGUpIDxsaW51eEBhcm1saW51eC5vcmcudWs+DQo+IENjOiBTYWxpbCBNZWh0YSA8c2FsaWwu
-bWVodGFAaHVhd2VpLmNvbT47IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+Ow0KPiBK
-b25hdGhhbiBDYW1lcm9uIDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+OyBKYW1lcyBNb3Jz
-ZQ0KPiA8amFtZXMubW9yc2VAYXJtLmNvbT47IGxpbnV4LXBtQHZnZXIua2VybmVsLm9yZzsgbG9v
-bmdhcmNoQGxpc3RzLmxpbnV4LmRldjsNCj4gbGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxp
-bnV4LWFyY2hAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9y
-ZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC0NCj4gcmlzY3ZA
-bGlzdHMuaW5mcmFkZWFkLm9yZzsga3ZtYXJtQGxpc3RzLmxpbnV4LmRldjsgeDg2QGtlcm5lbC5v
-cmc7IEplYW4tDQo+IFBoaWxpcHBlIEJydWNrZXIgPGplYW4tcGhpbGlwcGVAbGluYXJvLm9yZz47
-IGppYW55b25nLnd1QGFybS5jb207DQo+IGp1c3Rpbi5oZUBhcm0uY29tDQo+IFN1YmplY3Q6IFJl
-OiBbUkZDIFBBVENIIHYyIDI3LzM1XSBBQ1BJQ0E6IEFkZCBuZXcgTUFEVCBHSUNDIGZsYWdzIGZp
-ZWxkcw0KPiBbY29kZSBmaXJzdD9dDQo+IA0KPiBPbiBGcmksIFNlcCAxNSwgMjAyMyBhdCA5OjA5
-4oCvQU0gUnVzc2VsbCBLaW5nIChPcmFjbGUpDQo+IDxsaW51eEBhcm1saW51eC5vcmcudWs+IHdy
-b3RlOg0KPiA+DQo+ID4gT24gRnJpLCBTZXAgMTUsIDIwMjMgYXQgMDI6Mjk6MTNBTSArMDAwMCwg
-U2FsaWwgTWVodGEgd3JvdGU6DQo+ID4gPiBPbiB4ODYsIGR1cmluZyBpbml0LCBpZiB0aGUgTUFE
-VCBlbnRyeSBmb3IgTEFQSUMgaXMgZm91bmQgdG8gYmUNCj4gPiA+IG9ubGluZS1jYXBhYmxlIGFu
-ZCBpcyBlbmFibGVkIGFzIHdlbGwgdGhlbiBwb3NzaWJsZSBhbmQgcHJlc2VudA0KPiA+DQo+ID4g
-Tm90ZSB0aGF0IHRoZSBBQ1BJIHNwZWMgc2F5cyBlbmFibGVkICsgb25saW5lLWNhcGFibGUgaXNu
-J3QgZGVmaW5lZC4NCj4gPg0KPiA+ICJUaGUgaW5mb3JtYXRpb24gY29udmV5ZWQgYnkgdGhpcyBi
-aXQgZGVwZW5kcyBvbiB0aGUgdmFsdWUgb2YgdGhlDQo+ID4gRW5hYmxlZCBiaXQuIElmIHRoZSBF
-bmFibGVkIGJpdCBpcyBzZXQsIHRoaXMgYml0IGlzIHJlc2VydmVkIGFuZA0KPiA+IG11c3QgYmUg
-emVyby4iDQo+ID4NCj4gPiBTbywgaWYgeDg2IGlzIGRvaW5nIHNvbWV0aGluZyB3aXRoIHRoZSBl
-bmFibGVkICYmIG9ubGluZS1jYXBhYmxlDQo+ID4gc3RhdGUgKG90aGVyIHRoYW4gaWdub3Jpbmcg
-dGhlIG9ubGluZS1jYXBhYmxlKSB0aGVuIHRlY2huaWNhbGx5IGl0DQo+ID4gaXMgZG9pbmcgc29t
-ZXRoaW5nIHRoYXQgdGhlIHNwZWMgZG9lc24ndCBkZWZpbmUNCj4gDQo+IEFuZCBzbyBpdCBpcyB3
-cm9uZy4NCg0KDQpPciBtYXliZSwgc3BlY2lmaWNhdGlvbiBoYXMgbm90IGJlZW4gdXBkYXRlZCB5
-ZXQuIGNvZGUtZmlyc3Q/DQoNCg0KPiANCj4gPiAtIGFuZCBpdCdzDQo+ID4gY29tcGxldGVseSBm
-aW5lIGlmIGFhcmNoNjQgZG9lcyBzb21ldGhpbmcgZWxzZSAobWF5YmUgdHJlYXRpbmcgaXQNCj4g
-PiBzdHJpY3RseSBhcyBwZXIgdGhlIHNwZWMgYW5kIGlnbm9yaW5nIG9ubGluZS1jYXBhYmxlLikN
-Cj4gDQo+IFRoYXQgYWN0dWFsbHkgaXMgdGhlIG9ubHkgY29tcGxpYW50IHRoaW5nIHRoYXQgY2Fu
-IGJlIGRvbmUuDQoNClllcywgYnV0IHRoZSBxdWVzdGlvbiBpcyBpdCB3aGF0IGlzIHJlcXVpcmVk
-IGFuZCBkb2VzIGl0IHNvbHZlcw0KdGhlIHByb2JsZW0gb2YgSG90cGx1Zy4gSSB0aGluayBuby4g
-DQoNCkJ5IGNvbXBseWluZyB3aXRoIHdoYXQgaXMgdGhlcmUgaW4gdGhlIHNwZWMgbWVhbnMgd2Ug
-aGF2ZSB0bw0KZG8gdGhlIHRyYWRlb2ZmIGJldHdlZW4gaGF2aW5nIG5vdCB0byBzdXBwb3J0IGhv
-dCh1bilwbHVnZ2luZw0Kb2YgdGhlIGNvbGQtcGx1Z2dlZCBDUFVzIFZzIHJpc2sgb2YgYnJlYWtp
-bmcgdGhlIGxlZ2FjeSBPUw0KYXR0ZW1wdGluZyB0byB1c2UgbmV3ZXIgcGxhdGZvcm1zIHdpdGgg
-SG90cGx1ZyBzdXBwb3J0LiBMYXRlcg0KaXMgbW9yZSBvZiBhIEFSTSBwcm9ibGVtIGFzIHdlIGFy
-ZSBub3QgYWxsb3dlZCB0byB0d2VhayB0aGUNCkFDUEkgdGFibGVzIG9uY2UgdGhlIHN5c3RlbSBo
-YXMgYm9vdGVkLg0KDQoNCj4gDQo+IEFzIHBlciB0aGUgc3BlYyAocXVvdGVkIGFib3ZlKSwgYSBw
-bGF0Zm9ybSBmaXJtd2FyZSBzZXR0aW5nDQo+IG9ubGluZS1jYXBhYmxlIHRvIDEgd2hlbiBFbmFi
-bGVkIGlzIHNldCBpcyBub3QgY29tcGxpYW50IGFuZCBpdCBpcw0KPiBpbnZhbGlkIHRvIHRyZWF0
-IHRoaXMgYXMgbWVhbmluZ2Z1bCBkYXRhLg0KDQpDb3JyZWN0LiBidXQgaXMgaXQgcmVhbGx5IHdo
-YXQgd2UgbmVlZD8gV2UgbmVlZCBib3RoIG9mIHRoZQ0KQml0cyB0byBiZSBzZXQgZm9yIHN1cHBv
-cnRpbmcgaG90KHVuKXBsdWdnaW5nIG9mIGNvbGQgYm9vdGVkDQpDUFVzLg0KDQoNCj4gDQo+IEFz
-IGN1cnJlbnRseSBkZWZpbmVkLCBvbmxpbmUtY2FwYWJsZSBpcyBvbmx5IGFwcGxpY2FibGUgdG8g
-Q1BVcyB0aGF0DQo+IGFyZSBub3QgZW5hYmxlZCB0byBzdGFydCB3aXRoIGFuZCBpdHMgcm9sZSBp
-cyB0byBtYWtlIGl0IGNsZWFyIHdoZXRoZXINCj4gb3Igbm90IHRoZXkgY2FuIGJlIGVuYWJsZWQg
-bGF0ZXIgQUZBSUNTLg0KDQpDb3JyZWN0Lg0KDQo+IA0KPiBJZiB0aGVyZSBpcyBhIG5lZWQgdG8g
-cmVwcmVzZW50IHRoZSBjYXNlIGluIHdoaWNoIGEgQ1BJIHRoYXQgaXMNCj4gZW5hYmxlZCB0byBz
-dGFydCB3aXRoIGNhbiBiZSBkaXNhYmxlZCwgYnV0IGNhbm5vdCBiZSBlbmFibGVkIGFnYWluLA0K
-PiB0aGUgc3BlYyBuZWVkcyB0byBiZSB1cGRhdGVkLg0KDQpBYnNvbHV0ZWx5LiBBbmQgdGhhdOKA
-mXMgd2hhdCBteSBodW1ibGUgc3VnZ2VzdGlvbiBpcyBhcyB3ZWxsLg0KDQoNClRoYW5rcw0KU2Fs
-aWwuDQoNCg==
+On Thu, 14 Sep 2023, John Ogness wrote:
+
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> When a serial port is used for kernel console output, then all
+> modifications to the UART registers which are done from other contexts,
+> e.g. getty, termios, are interference points for the kernel console.
+> 
+> So far this has been ignored and the printk output is based on the
+> principle of hope. The rework of the console infrastructure which aims to
+> support threaded and atomic consoles, requires to mark sections which
+> modify the UART registers as unsafe. This allows the atomic write function
+> to make informed decisions and eventually to restore operational state. It
+> also allows to prevent the regular UART code from modifying UART registers
+> while printk output is in progress.
+> 
+> All modifications of UART registers are guarded by the UART port lock,
+> which provides an obvious synchronization point with the console
+> infrastructure.
+> 
+> To avoid adding this functionality to all UART drivers, wrap the
+> spin_[un]lock*() invocations for uart_port::lock into helper functions
+> which just contain the spin_[un]lock*() invocations for now. In a
+> subsequent step these helpers will gain the console synchronization
+> mechanisms.
+> 
+> Converted with coccinelle. No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/tty/serial/8250/8250_core.c |  12 ++--
+>  drivers/tty/serial/8250/8250_port.c | 100 ++++++++++++++--------------
+>  2 files changed, 56 insertions(+), 56 deletions(-)
+
+
+> @@ -3403,9 +3403,9 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+>  	touch_nmi_watchdog();
+>  
+>  	if (oops_in_progress)
+> -		locked = spin_trylock_irqsave(&port->lock, flags);
+> +		locked = uart_port_trylock_irqsave(port, &flags);
+>  	else
+> -		spin_lock_irqsave(&port->lock, flags);
+> +		uart_port_lock_irqsave(port, &flags);
+
+Not related to any problem (with this patch) but I'm a bit curious is this 
+construct going to remain there after the follow-up work? And there's the 
+similar one in some other drivers (with some variations related to 
+local_irq_save()):
+
+        if (port->sysrq) {
+                locked = 0;
+        } else if (oops_in_progress) {
+                locked = spin_trylock(&port->lock);
+        } else {
+                spin_lock(&port->lock);
+                locked = 1;
+        }
+
+
+-- 
+ i.
+
+
+
+>  	/*
+>  	 *	First save the IER then disable the interrupts
+> @@ -3475,7 +3475,7 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+>  		serial8250_modem_status(up);
+>  
+>  	if (locked)
+> -		spin_unlock_irqrestore(&port->lock, flags);
+> +		uart_port_unlock_irqrestore(port, flags);
+>  }
+>  
+>  static unsigned int probe_baud(struct uart_port *port)
+> 
