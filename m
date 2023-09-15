@@ -2,347 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B7A7A23E0
+	by mail.lfdr.de (Postfix) with ESMTP id 8C09C7A23E1
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbjIOQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        id S235147AbjIOQr0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 12:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbjIOQrA (ORCPT
+        with ESMTP id S235340AbjIOQrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:47:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FDC268E;
-        Fri, 15 Sep 2023 09:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694796405; x=1726332405;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=+zobR5lGXgXP3onpep1hv+W0ln3Xl8Jm5wQKIz7tcPs=;
-  b=SUNHJa+odKVu2FB5e+qMvfRujCWWojamFSdSRMTZTXXIGsQo3A+D+20q
-   wX5lbTs09mrCKPZhTKUzTcZsZyQFjCGt7/1EZywwU8tKo6SPJNQsG58pl
-   klNrKAFW626w2AgLLVGnkM9rdq3Pb8zeCkoRUH7nBDNUKE0njDhRCnUbT
-   hMDflA77fOS280bc9H75Qi99ifAV3APnMgPMVJboSBrYd5ZFTqZJuc9A+
-   fkcg5suz8jST1EJHEsvlMh4JNrWE6rXIJiv6Magx/zaZQBfgratzZXEJA
-   MSzQBmL/OZ4EYQlrF17wKefbfamBvd90iEA0GOsEeeGYE8u7yRmmIO884
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="378205613"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="378205613"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:46:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="694779664"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="694779664"
-Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:46:40 -0700
-Date:   Fri, 15 Sep 2023 19:46:38 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Jithu Joseph <jithu.joseph@intel.com>
-cc:     hdegoede@redhat.com, markgross@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        patches@lists.linux.dev, ravi.v.shankar@intel.com,
-        pengfei.xu@intel.com
-Subject: Re: [PATCH 03/10] platform/x86/intel/ifs: Image loading for new
- generations
-In-Reply-To: <20230913183348.1349409-4-jithu.joseph@intel.com>
-Message-ID: <ba753b39-1819-35ff-1248-6ce2c2824ae9@linux.intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-4-jithu.joseph@intel.com>
+        Fri, 15 Sep 2023 12:47:03 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163632701;
+        Fri, 15 Sep 2023 09:46:48 -0700 (PDT)
+Received: from lhrpeml100005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnKnn2zm4z67LX2;
+        Sat, 16 Sep 2023 00:46:05 +0800 (CST)
+Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
+ lhrpeml100005.china.huawei.com (7.191.160.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 15 Sep 2023 17:46:45 +0100
+Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
+ lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
+ Fri, 15 Sep 2023 17:46:45 +0100
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     Russell King <linux@armlinux.org.uk>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>
+Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
+ first?]
+Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
+ [code first?]
+Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAABq9gIAAG4DQ////VACAAFZdgP///CGAgAAf/qA=
+Date:   Fri, 15 Sep 2023 16:46:45 +0000
+Message-ID: <4ec689fa42474d0abc99a2f2055ddcff@huawei.com>
+References: <20230913163823.7880-28-james.morse@arm.com>
+        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+        <20230914155459.00002dba@Huawei.com>
+        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
+        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
+        <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
+        <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
+        <80e36ff513504a0382a1cbce83e42295@huawei.com>
+        <CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com>
+        <cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com>
+ <ZQR1R+okAxfJrS0p@shell.armlinux.org.uk>
+In-Reply-To: <ZQR1R+okAxfJrS0p@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.174.239]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023, Jithu Joseph wrote:
+Hi Russel,
 
-> Scan image loading flow for newer IFS generations (1 and 2) are slightly
-> different from that of current generation (0). In newer schemes,
-> loading need not be done once for each socket as was done in gen0.
+> From: Russell King <linux@armlinux.org.uk>
+> Sent: Friday, September 15, 2023 4:16 PM
+> To: Salil Mehta <salil.mehta@huawei.com>
+> Cc: Rafael J. Wysocki <rafael@kernel.org>; Ard Biesheuvel
+> <ardb@kernel.org>; Jonathan Cameron <jonathan.cameron@huawei.com>; James
+> Morse <james.morse@arm.com>; linux-pm@vger.kernel.org;
+> loongarch@lists.linux.dev; linux-acpi@vger.kernel.org; linux-
+> arch@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-riscv@lists.infradead.org;
+> kvmarm@lists.linux.dev; x86@kernel.org; Jean-Philippe Brucker <jean-
+> philippe@linaro.org>; jianyong.wu@arm.com; justin.he@arm.com
+> Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
+> [code first?]
 > 
-> Also the width of CHUNK related bitfields in SCAN_HASHES_STATUS MSR has
-> increased from 8 -> 16 bits. Similarly there are width differences
-> for CHUNK_AUTHENTICATION_STATUS too.
+> On Fri, Sep 15, 2023 at 02:49:41PM +0000, Salil Mehta wrote:
+> > I am not aware of any on x86. Maybe we can do it on ARM first and
+> > let other Arch pitch-in their objection later? Afterall, there is
+> > a legitimate use-case in case of ARM. Having mutually exclusive
+> > bits breaks certain use-cases and we have to do the tradeoffs.
 > 
-> Further the parameter to AUTHENTICATE_AND_COPY_CHUNK is passed
-> differently in newer generations.
+> ... but let's not use that as an argument to delay the forward
+> progress of getting aarch64 vCPU hotplug patches merged.
+
+
+Why would anybody do that? We have been working with ARM for almost
+3 years to get to the current point where we have overcome most of
+the architecture issues and have made this feature viable at the
+first place. It is totally out of wits that anyone of us would
+want to delay its acceptance.
+
+
 > 
-> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> ---
->  drivers/platform/x86/intel/ifs/ifs.h  |  27 ++++++
->  drivers/platform/x86/intel/ifs/load.c | 113 +++++++++++++++++++++++++-
->  2 files changed, 138 insertions(+), 2 deletions(-)
+> If we want to later propose that Enabled=1 Online-Capable=1 means
+> that the CPU can be hot-unplugged, then that's something that can
+> be added to the spec later, and added to the kernel later. There
+> is no need to go through more iterations of patch sets to add this
+> feature before considering that aarch64 vCPU hotplug is ready to
+> be merged.
+
+Absolutely but again these two things can be done in parallel.
+And whether patch-set is ready to get accepted is up to the
+Maintainers to decide and other community members as well.
+Yourself, James, I and others have been making efforts in this
+direction already.
+
+But I understand your concern that maybe current discussion might
+create a bit of a distraction and can be held.
+
 > 
-> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-> index d666aeed20fc..886dc74de57d 100644
-> --- a/drivers/platform/x86/intel/ifs/ifs.h
-> +++ b/drivers/platform/x86/intel/ifs/ifs.h
-> @@ -137,6 +137,8 @@
->  #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
->  #define MSR_ACTIVATE_SCAN			0x000002c6
->  #define MSR_SCAN_STATUS				0x000002c7
-> +#define MSR_SAF_CTRL				0x000004f0
-> +
->  #define SCAN_NOT_TESTED				0
->  #define SCAN_TEST_PASS				1
->  #define SCAN_TEST_FAIL				2
-> @@ -158,6 +160,19 @@ union ifs_scan_hashes_status {
->  	};
->  };
->  
-> +union ifs_scan_hashes_status_gen2 {
-> +	u64	data;
-> +	struct {
-> +		u16	chunk_size;
-> +		u16	num_chunks;
-> +		u8	error_code;
-> +		u32	chunks_in_stride :9;
-> +		u32	rsvd		:2;
-> +		u32	max_core_limit	:12;
-> +		u32	valid		:1;
+> Like I said in my other email, it's time to stop this "well, if we
+> do this, then we can do that" cycle - stop playing games with what
+> can be done.
 
-This doesn't look it would be guaranteed to provide the alignment you seem 
-to want for the fields.
+Don't know which cyclic games are being referred here - really!
 
-> +	};
-> +};
-> +
->  /* MSR_CHUNKS_AUTH_STATUS bit fields */
->  union ifs_chunks_auth_status {
->  	u64	data;
-> @@ -170,6 +185,16 @@ union ifs_chunks_auth_status {
->  	};
->  };
->  
-> +union ifs_chunks_auth_status_gen2 {
-> +	u64	data;
-> +	struct {
-> +		u16	valid_chunks;
-> +		u16	total_chunks;
-> +		u8	error_code;
-> +		u32	rsvd		:24;
+I will leave it up to James to answer that.
 
-Ditto.
+> Delaying merging this code means not only does the maintenance
+> burden keep increasing (because more and more patches accumulate
+> which have to be constantly forward ported) but those who *want*
+> this feature are deprived for what, another year? two years?
+> decades? before it gets merged.
 
-> +	};
-> +};
-> +
->  /* MSR_ACTIVATE_SCAN bit fields */
->  union ifs_scan {
->  	u64	data;
-> @@ -230,6 +255,7 @@ struct ifs_test_caps {
->   * @scan_details: opaque scan status code from h/w
->   * @cur_batch: number indicating the currently loaded test file
->   * @generation: IFS test generation enumerated by hardware
-> + * @chunk_size: size of a test chunk
->   */
->  struct ifs_data {
->  	int	loaded_version;
-> @@ -240,6 +266,7 @@ struct ifs_data {
->  	u64	scan_details;
->  	u32	cur_batch;
->  	u32	generation;
-> +	u32	chunk_size;
->  };
->  
->  struct ifs_work {
-> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
-> index 851c97cc6a6b..e8fb03dd8bcf 100644
-> --- a/drivers/platform/x86/intel/ifs/load.c
-> +++ b/drivers/platform/x86/intel/ifs/load.c
-> @@ -26,6 +26,11 @@ union meta_data {
->  
->  #define IFS_HEADER_SIZE	(sizeof(struct microcode_header_intel))
->  #define META_TYPE_IFS	1
-> +#define INVALIDATE_STRIDE (0x1UL)
+It is good to know that there are customers waiting for this
+feature at your side as well. Let us hope this can get accepted
+quickly.
 
-Unnecessary parenthesis. 
+> So please, stop dreaming up new features. Let's get aarch64 vCPU
+> hotplug that is compliant with the current ACPI spec, merged into
+> upstream. If we _then_ want to consider additional features, that's
+> the time to do it.
 
-Align.
 
-> +#define IFS_GEN_STRIDE_AWARE	2
-> +#define AUTH_INTERRUPTED_ERROR	5
-> +#define IFS_AUTH_RETRY_CT	10
-> +
->  static  struct microcode_header_intel *ifs_header_ptr;	/* pointer to the ifs image header */
->  static u64 ifs_hash_ptr;			/* Address of ifs metadata (hash) */
->  static u64 ifs_test_image_ptr;			/* 256B aligned address of test pattern */
-> @@ -44,7 +49,10 @@ static const char * const scan_hash_status[] = {
->  static const char * const scan_authentication_status[] = {
->  	[0] = "No error reported",
->  	[1] = "Attempt to authenticate a chunk which is already marked as authentic",
-> -	[2] = "Chunk authentication error. The hash of chunk did not match expected value"
-> +	[2] = "Chunk authentication error. The hash of chunk did not match expected value",
-> +	[3] = "Reserved",
-> +	[4] = "Chunk outside the current stride",
-> +	[5] = "Authentication flow interrupted"
+That's what I suggested earlier as well but the discussions for the
+problem cannot be ignored.
 
-Add the trailing comma to avoid the need to touch the line later if more
-entries are added.
 
->  };
->  
->  #define MC_HEADER_META_TYPE_END		(0)
-> @@ -154,6 +162,104 @@ static void copy_hashes_authenticate_chunks(struct work_struct *work)
->  	complete(&ifs_done);
->  }
->  
-> +static int get_num_chunks(int gen, union ifs_scan_hashes_status_gen2 status)
-> +{
-> +	return  gen >= IFS_GEN_STRIDE_AWARE ? status.chunks_in_stride : status.num_chunks;
+> If you're not prepared to do that, do not be surprised if someone
+> else (such as myself) decides to fork James' work in order to get
+> it merged upstream - and yes, I _will_ do that if these games
+> carry on. I have already started to do that by proposing a patch
+> that is different from what James has to at least get some of
+> James' desired changes upstream - and I will continue doing that
+> all the time that (a) I see that there's a better way to address
+> something in James' patch and (b) I think in the longer term it
+> will reduce the maintenance burden of this patch set.
 
-Remove extra space.
+Are you changing the approach of the kernel?
 
-> +}
-> +
-> +static bool need_copy_scan_hashes(struct ifs_data *ifsd)
-> +{
-> +	if (!ifsd->loaded || ifsd->generation < IFS_GEN_STRIDE_AWARE ||
-> +	    ifsd->loaded_version != ifs_header_ptr->rev) {
-> +		return true;
-> +	}
-> +	return false;
 
-IMO, this would be easier to read:
-
-	return !ifsd->loaded ||
-	       ifsd->generation < IFS_GEN_STRIDE_AWARE ||
-	       ifsd->loaded_version != ifs_header_ptr->rev;
-
-> +}
-> +
-> +static int copy_hashes_authenticate_chunks_gen2(struct device *dev)
-> +{
-> +	union ifs_scan_hashes_status_gen2 hashes_status;
-> +	union ifs_chunks_auth_status_gen2 chunk_status;
-> +	u32 err_code, valid_chunks, total_chunks;
-> +	int i, num_chunks, chunk_size;
-> +	union meta_data *ifs_meta;
-> +	int starting_chunk_nr;
-> +	struct ifs_data *ifsd;
-> +	u64 linear_addr, base;
-> +	u64 chunk_table[2];
-> +	int retry_count;
-> +
-> +	ifsd = ifs_get_data(dev);
-> +
-> +	if (need_copy_scan_hashes(ifsd)) {
-> +		wrmsrl(MSR_COPY_SCAN_HASHES, ifs_hash_ptr);
-> +		rdmsrl(MSR_SCAN_HASHES_STATUS, hashes_status.data);
-> +
-> +		/* enumerate the scan image information */
-> +		chunk_size = hashes_status.chunk_size * 1024;
-
-SZ_1K ?
-
-> +		err_code = hashes_status.error_code;
-> +
-> +		num_chunks = get_num_chunks(ifsd->generation, hashes_status);
-> +
-> +		if (!hashes_status.valid) {
-> +			hashcopy_err_message(dev, err_code);
-> +			return -EIO;
-> +		}
-> +		ifsd->loaded_version = ifs_header_ptr->rev;
-> +		ifsd->chunk_size = chunk_size;
-> +	} else {
-> +		num_chunks = ifsd->valid_chunks;
-> +		chunk_size = ifsd->chunk_size;
-> +	}
-> +
-> +	if (ifsd->generation >= IFS_GEN_STRIDE_AWARE) {
-> +		wrmsrl(MSR_SAF_CTRL, INVALIDATE_STRIDE);
-> +		rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-> +		if (chunk_status.valid_chunks != 0) {
-> +			dev_err(dev, "Couldn't invalidate installed stride - %d\n",
-> +				chunk_status.valid_chunks);
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	base = ifs_test_image_ptr;
-> +	ifs_meta = (union meta_data *)find_meta_data(ifs_header_ptr, META_TYPE_IFS);
-> +	starting_chunk_nr = ifs_meta->starting_chunk;
-> +
-> +	/* scan data authentication and copy chunks to secured memory */
-> +	for (i = 0; i < num_chunks; i++) {
-> +		retry_count = IFS_AUTH_RETRY_CT;
-> +		linear_addr = base + i * chunk_size;
-> +
-> +		chunk_table[0] = starting_chunk_nr + i;
-> +		chunk_table[1] = linear_addr;
-> +auth_retry:
-> +		wrmsrl(MSR_AUTHENTICATE_AND_COPY_CHUNK, (u64)chunk_table);
-> +		rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-> +		err_code = chunk_status.error_code;
-> +		if (err_code == AUTH_INTERRUPTED_ERROR && --retry_count)
-> +			goto auth_retry;
-
-do {
-
-} while ();
-
-> +		if (err_code) {
-> +			ifsd->loading_error = true;
-> +			auth_err_message(dev, err_code);
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	valid_chunks = chunk_status.valid_chunks;
-> +	total_chunks = chunk_status.total_chunks;
-> +
-> +	if (valid_chunks != total_chunks) {
-> +		ifsd->loading_error = true;
-> +		dev_err(dev, "Couldn't authenticate all the chunks.Authenticated %d total %d.\n",
-
-Missing whitespace.
-
-> +			valid_chunks, total_chunks);
-> +		return -EIO;
-> +	}
-> +	ifsd->valid_chunks = valid_chunks;
-> +
-> +	return 0;
-> +}
-> +
->  static int validate_ifs_metadata(struct device *dev)
->  {
->  	struct ifs_data *ifsd = ifs_get_data(dev);
-> @@ -206,7 +312,9 @@ static int scan_chunks_sanity_check(struct device *dev)
->  		return ret;
->  
->  	ifsd->loading_error = false;
-> -	ifsd->loaded_version = ifs_header_ptr->rev;
-> +
-> +	if (ifsd->generation > 0)
-> +		return copy_hashes_authenticate_chunks_gen2(dev);
->  
->  	/* copy the scan hash and authenticate per package */
->  	cpus_read_lock();
-> @@ -226,6 +334,7 @@ static int scan_chunks_sanity_check(struct device *dev)
->  		ifs_pkg_auth[curr_pkg] = 1;
->  	}
->  	ret = 0;
-> +	ifsd->loaded_version = ifs_header_ptr->rev;
->  out:
->  	cpus_read_unlock();
->  
-> 
-
--- 
- i.
-
+Thanks
+Salil.
