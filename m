@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54897A20B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF027A20B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235506AbjIOOT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S235589AbjIOOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbjIOOT0 (ORCPT
+        with ESMTP id S235277AbjIOOT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:19:26 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4C6F3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1694787557; bh=176LZTE9f+ZeUVaUfrPwdkcY1mDZJcgB9YwcRXOgUNM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=M3PoYplXoLAUov40mxtbCoQp8PGM+SnXBpOpmDdNA1WhCxr9e4zdGzPdncYzd+2de
-         eDcaHXvk2D7czctgwSAXLhmGCy5EXzIPpHikXD6ZP55jyxhJCj7DyzWOPjL20VsIr2
-         1p8+n2irKhIcgH7fkmkw7bDXzxriGwR04w2nqNXQ=
-Received: from [192.168.9.172] (unknown [101.88.25.36])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 67FF16010F;
-        Fri, 15 Sep 2023 22:19:17 +0800 (CST)
-Message-ID: <2bbc2df8-5fcf-b216-7aa0-192e27bac6e7@xen0n.name>
-Date:   Fri, 15 Sep 2023 22:19:15 +0800
+        Fri, 15 Sep 2023 10:19:58 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75E71FCE;
+        Fri, 15 Sep 2023 07:19:53 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9338e4695so33779291fa.2;
+        Fri, 15 Sep 2023 07:19:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694787592; x=1695392392; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9p1y/dHKWZ4mldBm4B4C2rsKuH8pDG1nwww6AtIwFhc=;
+        b=S55yFmX9FkgupeoDzmLQsFhYECFXPAPyXlVzrqvOBCbkrinGZZ2WUVj2MrtRWKICEs
+         qdLYdYb6iO3bktSn9ocUfX6yM7zTD8ODoOfzk3+ALd9IuACWpUBVTzZxGmmmWR3l11A0
+         20XNEUNwKMKCpJceqsh0ChI/xV+4Zgx4j0PyvdskAsm/81uGrz5etlwKPP1Np9rRrCZ4
+         Fc/hRyc41U+oAD1r4CfkAMWjkd8Xl0xIXszEZilSjV3AMAtTgz/8OSXrx/mXdbhmiVRB
+         KE5ICLV1qqJVg9hKRC071h0SWuvC5Sx+F1wfr8CmQZfUthOz9IGJNvadjAyxbFR3tIzF
+         eFQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694787592; x=1695392392;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9p1y/dHKWZ4mldBm4B4C2rsKuH8pDG1nwww6AtIwFhc=;
+        b=ZLcHW7B7cgBMWiwC4sQLJf9GF+9FFTPjVCNMmsE8NiKRi68qsgGf7S8gsJSTjD2S3V
+         eIsE9sTLJOtekmAJHkYnYYM04yvtUoDPFUwdCJklOmg3bnUdL3SIEUoVwokiwBxdnhIS
+         THUkgGTO4pKoWkZhX2wTYbmjtSRJRM5GJZzCCZCSkeZqxug9yD/o7fKwlfyMbHIWUdUp
+         YOsSJ+mZGOUpAbTQ/P+3QrohumpXVetvinnGGC084ewsnTIe8tLcQ4od/G/3d6PivxsC
+         KjysS4KzUPzGyssk7jvjRdgugi9I9eihh/Y/uHaYIpZrPIp74chgGJuxdBb7mtP/9zfI
+         TbEQ==
+X-Gm-Message-State: AOJu0YwILZxV3t9+kGDcOAbMxIYynSJAGpUuMX+SfqZpvWeLVlCiYNcB
+        ZIOrkV4sIREE5cE+g8dNXUE=
+X-Google-Smtp-Source: AGHT+IHmpAzcVMy9/mTX5cEnVsuC3NbKv+46JVCvmYw71ilIB49LnenXkrLGAxFC5kVwaYrjAoW6Xg==
+X-Received: by 2002:a05:651c:cc:b0:2b6:e2c1:6cda with SMTP id 12-20020a05651c00cc00b002b6e2c16cdamr1625717ljr.46.1694787591541;
+        Fri, 15 Sep 2023 07:19:51 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id x18-20020a2e9c92000000b002b6cb25e3f1sm696566lji.108.2023.09.15.07.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 07:19:51 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 17:19:48 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Cc:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v5 0/3] Move Loongson1 MAC arch-code to the driver dir
+Message-ID: <bwwxpczznbfaqpzuzvtgbkmluk6wfxfp25coy6t7mjq3axjnvs@5pvgxumiyjkd>
+References: <20230914114435.481900-1-keguang.zhang@gmail.com>
+ <ueevvju7i42wik6fevdmvbtypm4su77guyo4zizhrfreexken7@nrcovxfnyuvq>
+ <f69ac27a-943c-3966-385a-e12ecd71d33a@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] LoongArch: Fix lockdep static memory detection
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-References: <ZQC5jS/Kc/JiBEOa@p100>
- <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
- <b1c729bf-86b9-8a1f-c6af-a69be2b4a44c@gmx.de>
- <CAAhV-H44mDiP2DWATVyvKq6n8qj=sLhjHxzMo_+_zyggoGR1pw@mail.gmail.com>
- <1160d063-8396-b126-15ca-a46807ec4258@gmx.de>
- <644b77db-7214-88c3-7ba6-9c805a134e63@roeck-us.net>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <644b77db-7214-88c3-7ba6-9c805a134e63@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+In-Reply-To: <f69ac27a-943c-3966-385a-e12ecd71d33a@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,92 +88,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 15, 2023 at 03:23:44PM +0200, Philippe Mathieu-Daud� wrote:
+> On 15/9/23 11:55, Serge Semin wrote:
+> > Hi Keguang
+> > 
+> > On Thu, Sep 14, 2023 at 07:44:32PM +0800, Keguang Zhang wrote:
+> > > In order to convert Loongson1 MAC platform devices to the devicetree
+> > > nodes, Loongson1 MAC arch-code should be moved to the driver dir.
+> > > Add dt-binding document and update MAINTAINERS file accordingly.
+> > > In other words, this patchset is a preparation for converting
+> > > Loongson1 platform devices to devicetree.
+> > 
+> > No more comments from my side. Thank you for the patches and
+> > especially for the patience in the review process.
+> > 
+> > For the entire series:
+> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> > 
+> > * I'll also send individual Rb tags to each patch so b4 would be able
+> > * to take it into account.
+> 
 
-On 9/15/23 22:07, Guenter Roeck wrote:
-> Hi Helge,
->
-> On 9/15/23 03:10, Helge Deller wrote:
->> On 9/15/23 11:23, Huacai Chen wrote:
->>> On Fri, Sep 15, 2023 at 4:16 PM Helge Deller <deller@gmx.de> wrote:
->>>>
->>>> On 9/15/23 05:22, Huacai Chen wrote:
->>>>> Hi Helge,
->>>>>
->>>>> On Wed, Sep 13, 2023 at 3:18 AM Helge Deller <deller@gmx.de> wrote:
->>>>>>
->>>>>> Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection 
->>>>>> even
->>>>>> more") the lockdep code uses is_kernel_core_data(), 
->>>>>> is_kernel_rodata()
->>>>>> and init_section_contains() to verify if a lock is located inside a
->>>>>> kernel static data section.
->>>>>>
->>>>>> This change triggers a failure on LoongArch, for which the 
->>>>>> vmlinux.lds.S
->>>>>> script misses to put the locks (as part of in the .data.rel symbols)
->>>>>> into the Linux data section.
->>>>>> This patch fixes the lockdep problem by moving *(.data.rel*) symbols
->>>>>> into the kernel data section (from _sdata to _edata).
->>>>>>
->>>>>> Additionally, move other wrongly assigned symbols too:
->>>>>> - altinstructions into the _initdata section,
->>>>
->>>>> I think altinstructions cannot  be put into _initdata because it will
->>>>> be used by modules.
->>>>
->>>> No.
->>>> arch/loongarch/kernel/vmlinux.lds.S is used for the static parts of 
->>>> the kernel
->>>> and altinstructions are replaced before modules are loaded.
->>>> For altinstructions in modules the linker script 
->>>> scripts/module.lds.S is used.
->>
->>> OK, then what about .got/.plt? It seems arm64 also doesn't put them in
->>> the data section.
->>
->> arm64 seems to throw away all plt entries already at link time (and 
->> just keeps
->> the got.plt in the read-only data section).
->> It even checks at link time, that there are no plt entries in the 
->> binary:
->>          ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure 
->> linkages detected!")
->>
->> I don't know for loongarch, but if you need the plt entries for 
->> loongarch, it's
->> safest & best to put them into the read-only data section too, which 
->> is what my patch does.
->> Up to now, you have them completely outside of code & data sections.
->>
->> In the end you need to decide for your platform. My patch is a 
->> suggestion, which I think
->> is correct (untested by me, but Guenter replied he tested it).
->> But to fix the lockdep problem at minimum the move of the .data.rel 
->> section
->> is needed.
->>
->
-> Just my $0.02 .. it might make sense to concentrate on the minimum to 
-> get the immediate
-> problem fixed. Loongarch maintainers can then decide at their own pace 
-> if they want
-> to apply any of the other changes you suggested. After all, unless I 
-> am missing
-> something, those additional changes are not really needed in stable 
-> releases.
+> Maintainers using b4 should use the '-t' option, then you don't need
+> to do that:
+> 
+>  -t, --apply-cover-trailers
+> 
+>  By default, b4 will not apply any code review trailers sent to
+>  the cover letter (but will let you know when it finds those).
+>  This lets you automatically apply these trailers to all commits
+>  in the series. This will become the default in a future version
+>  of b4.
+> 
+> https://b4.docs.kernel.org/en/latest/maintainer/am-shazam.html#common-flags
 
-Sorry for coming late, but as reviewer of arch/loongarch, I'd agree with 
-Guenter and Helge here: let's fix the immediate problem and investigate 
-the rest later -- it's not like the problems are *definitely* orthogonal 
-in this case, and at least *some* progress would be appreciated.
+Oh, got it. Can't believe I didn't figure out to take a closer look at
+the help-page. Thanks for pointing it out to me.
 
-I'll try to reproduce the problem and test the fix during the weekend, 
-so hopefully Huacai can get the fix in before -rc2 or -rc3. Thanks for 
-the attention and fix.
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+-Serge(y)
