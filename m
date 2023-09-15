@@ -2,79 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1A57A1E83
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6A37A1E80
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbjIOMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        id S234717AbjIOMVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbjIOMVu (ORCPT
+        with ESMTP id S234748AbjIOMVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:21:50 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EABD32709;
-        Fri, 15 Sep 2023 05:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dTIfm
-        qOZ6/rzP+g15gUWGim8V3a/CDi1SZpWPBMFvtQ=; b=RVzXvd3lnEGOVye2DJ55Q
-        opPw59a5Mf+VEM8ft6kcVvAgQQNSsJDUhrNePcdYbaSst8hPh7C8+Ni4gydLllfZ
-        XwkwZRoX+U7n0I3Sl+ZP9qT3BWesEyoe+VUmcNNFlFaZ0VsW31LDLr8kppwhDCLq
-        OjLfasPFUWSjbnFDDRkmKM=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g4-0 (Coremail) with SMTP id _____wC3v4OjSwRlNllmCA--.56515S4;
-        Fri, 15 Sep 2023 20:18:52 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] net: sched: hfsc: dont intepret cls results when asked to drop
-Date:   Fri, 15 Sep 2023 20:18:41 +0800
-Message-Id: <20230915121841.3408778-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 15 Sep 2023 08:21:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE80A272C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:19:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694780392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S6YdaabWMt5kMqbNYNBaQroIwASFlYwE8xKBnDy2tD0=;
+        b=fBkFJSU5ys6bpOwGN3QWLepnmKGp5DnhO1pSM6RMHC6LRdzJiLbIgljhvcyplKDKJRSGZW
+        coO7QmI3S7pnST/Y1EflUef+M6Hjn1xXaDFyXj253P/eCFM28P6KcNwduBcWjxiSCXDx84
+        MWwIPZKcbb1PqTobqB3lIsvh8bHb7Ls=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-426-7G8sFEHCP9WrzceNBoHclg-1; Fri, 15 Sep 2023 08:19:49 -0400
+X-MC-Unique: 7G8sFEHCP9WrzceNBoHclg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CEA2E857F8A;
+        Fri, 15 Sep 2023 12:19:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B0591004145;
+        Fri, 15 Sep 2023 12:19:46 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com>
+References: <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com> <20230914221526.3153402-1-dhowells@redhat.com> <20230914221526.3153402-10-dhowells@redhat.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        "Christian Brauner" <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Brendan Higgins" <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wC3v4OjSwRlNllmCA--.56515S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFW7ur4fuw4UWrW8tr1kXwb_yoW3GrX_J3
-        4xWFyxJF48Gr1DGa17J34jkrWFk3WIvwn7X39xtrnrGw4rAr98Ar18CFsxJ393Gr4Yka4k
-        Aa4qgFW5Jr1a9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKpnQ7UUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFRLrC2B9oIfuoAAAsT
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3545839.1694780385.1@warthog.procyon.org.uk>
+Date:   Fri, 15 Sep 2023 13:19:45 +0100
+Message-ID: <3545840.1694780385@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If asked to drop a packet via TC_ACT_SHOT it is unsafe to assume
-res.class contains a valid pointer.
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- net/sched/sch_hfsc.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Isn't that going to be completely dominated by the cache fills
+> from memory?
+> 
+> I'd have thought you'd need to use something with a lot of
+> small fragments so that the iteration code dominates the copy.
 
-diff --git a/net/sched/sch_hfsc.c b/net/sched/sch_hfsc.c
-index 3554085bc2be..2a76027b14e6 100644
---- a/net/sched/sch_hfsc.c
-+++ b/net/sched/sch_hfsc.c
-@@ -1135,6 +1135,8 @@ hfsc_classify(struct sk_buff *skb, struct Qdisc *sch, int *qerr)
- 	head = &q->root;
- 	tcf = rcu_dereference_bh(q->root.filter_list);
- 	while (tcf && (result = tcf_classify(skb, NULL, tcf, &res, false)) >= 0) {
-+		if (result == TC_ACT_SHOT)
-+			return NULL;
- #ifdef CONFIG_NET_CLS_ACT
- 		switch (result) {
- 		case TC_ACT_QUEUED:
--- 
-2.37.2
+Okay, if I switch it to using MAP_ANON for the big 256MiB buffer, switch all
+the benchmarking tests to use copy_from_iter() rather than copy_to_iter() and
+make the iovec benchmark use a separate iovec for each page, there's then a
+single page replicated across the mapping.
+
+Given that, without my macro-to-inline-func patches applied, I see:
+
+	iov_kunit_benchmark_bvec: avg 3184 uS, stddev 16 uS
+	iov_kunit_benchmark_bvec: avg 3189 uS, stddev 17 uS
+	iov_kunit_benchmark_bvec: avg 3190 uS, stddev 16 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3731 uS, stddev 10 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3735 uS, stddev 10 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3738 uS, stddev 11 uS
+	iov_kunit_benchmark_bvec_split: avg 3403 uS, stddev 10 uS
+	iov_kunit_benchmark_bvec_split: avg 3405 uS, stddev 18 uS
+	iov_kunit_benchmark_bvec_split: avg 3407 uS, stddev 29 uS
+	iov_kunit_benchmark_iovec: avg 6616 uS, stddev 20 uS
+	iov_kunit_benchmark_iovec: avg 6619 uS, stddev 22 uS
+	iov_kunit_benchmark_iovec: avg 6621 uS, stddev 46 uS
+	iov_kunit_benchmark_kvec: avg 2671 uS, stddev 12 uS
+	iov_kunit_benchmark_kvec: avg 2671 uS, stddev 13 uS
+	iov_kunit_benchmark_kvec: avg 2675 uS, stddev 12 uS
+	iov_kunit_benchmark_ubuf: avg 6191 uS, stddev 1946 uS
+	iov_kunit_benchmark_ubuf: avg 6418 uS, stddev 3263 uS
+	iov_kunit_benchmark_ubuf: avg 6443 uS, stddev 3275 uS
+	iov_kunit_benchmark_xarray: avg 3689 uS, stddev 5 uS
+	iov_kunit_benchmark_xarray: avg 3689 uS, stddev 6 uS
+	iov_kunit_benchmark_xarray: avg 3698 uS, stddev 22 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4202 uS, stddev 3 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4204 uS, stddev 9 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4210 uS, stddev 9 uS
+
+and with, I get:
+
+	iov_kunit_benchmark_bvec: avg 3241 uS, stddev 13 uS
+	iov_kunit_benchmark_bvec: avg 3245 uS, stddev 16 uS
+	iov_kunit_benchmark_bvec: avg 3248 uS, stddev 15 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3705 uS, stddev 12 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3706 uS, stddev 10 uS
+	iov_kunit_benchmark_bvec_outofline: avg 3709 uS, stddev 9 uS
+	iov_kunit_benchmark_bvec_split: avg 3446 uS, stddev 10 uS
+	iov_kunit_benchmark_bvec_split: avg 3447 uS, stddev 12 uS
+	iov_kunit_benchmark_bvec_split: avg 3448 uS, stddev 12 uS
+	iov_kunit_benchmark_iovec: avg 6587 uS, stddev 22 uS
+	iov_kunit_benchmark_iovec: avg 6587 uS, stddev 22 uS
+	iov_kunit_benchmark_iovec: avg 6590 uS, stddev 27 uS
+	iov_kunit_benchmark_kvec: avg 2671 uS, stddev 12 uS
+	iov_kunit_benchmark_kvec: avg 2672 uS, stddev 12 uS
+	iov_kunit_benchmark_kvec: avg 2676 uS, stddev 19 uS
+	iov_kunit_benchmark_ubuf: avg 6241 uS, stddev 2199 uS
+	iov_kunit_benchmark_ubuf: avg 6266 uS, stddev 2245 uS
+	iov_kunit_benchmark_ubuf: avg 6513 uS, stddev 3899 uS
+	iov_kunit_benchmark_xarray: avg 3695 uS, stddev 6 uS
+	iov_kunit_benchmark_xarray: avg 3695 uS, stddev 7 uS
+	iov_kunit_benchmark_xarray: avg 3703 uS, stddev 11 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4215 uS, stddev 16 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4217 uS, stddev 20 uS
+	iov_kunit_benchmark_xarray_outofline: avg 4224 uS, stddev 10 uS
+
+Interestingly, most of them are quite tight, but UBUF is all over the place.
+That's with the test covering the entire 256M span with a single UBUF
+iterator, so it would seem unlikely that the difference is due to the
+iteration framework.
+
+David
 
