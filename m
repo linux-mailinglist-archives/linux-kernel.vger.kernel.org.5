@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791757A1352
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DCA7A1354
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbjIOBys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S231754AbjIOBzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbjIOByh (ORCPT
+        with ESMTP id S231726AbjIOBy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:54:37 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF211449C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:51:48 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2749b3e682aso122924a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694742708; x=1695347508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qqLoBm8H6ZiMRz1kerNsf8O/I1x2KB0Fau5qTkJBuRw=;
-        b=m5w/4qnveZmS5IZO4IZnnmlhpD3AfLeZQyWl81dAoslfoHVPyE13zlKELRGOyfkGxA
-         YM4x0wXWSTpDdHE1EH2y2ACx+bsDfxI6L7df/EE5FuhQoYVsJrqK17wNyp/Op5yKPpDd
-         4So6PA/X+VO9NKibg/y5+NAIPGnQyPPBIjhgFnE0rGDB2bj/0KNXuApENvjzT08mM6nc
-         5KEGCi1xplLjw/HsxxVC3sv1ryPWdYJu2J5n/p5n8XB7BZYOQ5x4e1Ec8cM+hvnhSRim
-         6xD3v0BDNv0hU1HKASQxE23XiRVpVGIG6ENwMzV1bwxqcnmwLIDCpHLy4ruXTSzf5dne
-         GYUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694742708; x=1695347508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qqLoBm8H6ZiMRz1kerNsf8O/I1x2KB0Fau5qTkJBuRw=;
-        b=SFo7VYIIjEmSzdWwcoJgde/MOG/RrGjCxGTxxVS0+ms0kCNHfujA+GrXDZNTmVPwVo
-         QFrLLbCS6Po59yfREu9Gqa/9cLknzEUh+zgqLbO0dJavm5pTFNa38fWQIhpxnL+Wyz7j
-         MYPJyNrRdUIyZIK7lX/Gd3g7t68Y4W6DCLW1V4jiIdUFbJMlFuo8us7Yy00/AmK8Sae4
-         ULwpolje0QbpiIo4MBgOqeEeKsZkhr3OlRsVsSkaaR4yAmEl8J+kVvvxh+ATWUPS/uyV
-         /MRJ0ZD1437gH1KOdzF+JihkLbjnHZGEYQj7WT8D952ao8DbemqwKAj0MJDs08hIO9gt
-         Zhfg==
-X-Gm-Message-State: AOJu0Yw2cBU2gQn0O2vLshZ1qP/I+oV8Z1tTZBzi8oF+ZXlIhghb+Qbi
-        B8vDy9VD1sC+JiYBmBc+Lm9zaoG4pKg9HmVxXTw=
-X-Google-Smtp-Source: AGHT+IHypl50ozXbVNpyt6MCHdaoxCaRqBl2NAiMm+S4Y/6YOO7S8XoNh0lYeLcNgC9idrJZOsUI38MTb7wkV8Iedjg=
-X-Received: by 2002:a17:90b:a49:b0:268:60d9:92cc with SMTP id
- gw9-20020a17090b0a4900b0026860d992ccmr210845pjb.43.1694742708242; Thu, 14 Sep
- 2023 18:51:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230914080833.50026-1-haibo.li@mediatek.com> <20230914112915.81f55863c0450195b4ed604a@linux-foundation.org>
- <CA+fCnZemM-jJxX+=2W162NJkUC6aZXNJiVLa-=ia=L3CmE8ZTQ@mail.gmail.com> <CAG48ez0aenPmr=d35UGa4_BiCwYU1-JHhD_2ygThvjOEXEM7bQ@mail.gmail.com>
-In-Reply-To: <CAG48ez0aenPmr=d35UGa4_BiCwYU1-JHhD_2ygThvjOEXEM7bQ@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Fri, 15 Sep 2023 03:51:37 +0200
-Message-ID: <CA+fCnZePgv=V65t4FtJvcyKvhM6yA3amTbPnwc5Ft5YdzpeeRg@mail.gmail.com>
-Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
-To:     Jann Horn <jannh@google.com>, Haibo Li <haibo.li@mediatek.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, xiaoming.yu@mediatek.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 14 Sep 2023 21:54:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11394C3D;
+        Thu, 14 Sep 2023 18:52:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5BF461F74B;
+        Fri, 15 Sep 2023 01:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694742721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfSlGTI78LzrwujVTg1Dy+42n81WkfT7MFhFZD+AQD0=;
+        b=pS2xFeLYt//6VYt6FylnPEa5GnGp1mDfir1JQJy9HTTsu+Zehw0BbdF5fqzQuxMc6a2Ci7
+        R16/zb0GZk1KcxwdG1S4i/+TsUvTIr5+9X7t01i+kioI+zS+Hoviu2G8mysjzDBtmjyeWl
+        ni12+CG7FnOk47TF237ETI59azcTFwE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694742721;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfSlGTI78LzrwujVTg1Dy+42n81WkfT7MFhFZD+AQD0=;
+        b=3cMNy0f/HuRqRw45J11T2+bi0J60kVuWqEMJL8CUF4/BuK2H8xg3//FtfywIaLOozZfqik
+        pSQqPGnlRVxBSnCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42B601358A;
+        Fri, 15 Sep 2023 01:51:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id t12gOb24A2XkEQAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 15 Sep 2023 01:51:57 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chuck Lever III" <chuck.lever@oracle.com>
+Cc:     "Chuck Lever" <cel@kernel.org>,
+        "Linux NFS Mailing List" <linux-nfs@vger.kernel.org>,
+        "Liam Howlett" <liam.howlett@oracle.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "David Gow" <davidgow@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+Subject: Re: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
+In-reply-to: <DB109932-C918-4F1E-BAF2-92D921238D54@oracle.com>
+References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>,
+ <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>,
+ <20230911111333.4d1a872330e924a00acb905b@linux-foundation.org>,
+ <4D5C2693-40E9-467D-9F2F-59D92CBE9D3B@oracle.com>,
+ <20230911140439.b273bf9e120881f038da0de7@linux-foundation.org>,
+ <169447439989.19905.9386812394578844629@noble.neil.brown.name>,
+ <20230911183025.5f808a70a62df79a3a1e349e@linux-foundation.org>,
+ <DB109932-C918-4F1E-BAF2-92D921238D54@oracle.com>
+Date:   Fri, 15 Sep 2023 11:51:54 +1000
+Message-id: <169474271454.8274.2673279792882072455@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:41=E2=80=AFPM Jann Horn <jannh@google.com> wrote=
-:
->
-> > Accessing unmapped memory with KASAN always led to a crash when
-> > checking shadow memory. This was reported/discussed before. To improve
-> > crash reporting for this case, Jann added kasan_non_canonical_hook and
-> > Mark integrated it into arm64. But AFAIU, for some reason, it stopped
-> > working.
-> >
-> > Instead of this patch, we need to figure out why
-> > kasan_non_canonical_hook stopped working and fix it.
-> >
-> > This approach taken by this patch won't work for shadow checks added
-> > by compiler instrumentation. It only covers explicitly checked
-> > accesses, such as via memcpy, etc.
->
-> FWIW, AFAICS kasan_non_canonical_hook() currently only does anything
-> under CONFIG_KASAN_INLINE;
+On Fri, 15 Sep 2023, Chuck Lever III wrote:
+>=20
+> > On Sep 11, 2023, at 9:30 PM, Andrew Morton <akpm@linux-foundation.org> wr=
+ote:
+> >=20
+> > On Tue, 12 Sep 2023 09:19:59 +1000 "NeilBrown" <neilb@suse.de> wrote:
+> >=20
+> >> Plain old list_heads (which the code currently uses) require a spinlock
+> >> to be taken to insert something into the queue.  As this is usually in
+> >> bh context, it needs to be a spin_lock_bh().  My understanding is that
+> >> the real-time developers don't much like us disabling bh.  It isn't an
+> >> enormous win switching from a list_head list to a llist_node list, but
+> >> there are small gains such as object size reduction and less locking.  I
+> >> particularly wanted an easy-to-use library facility that could be
+> >> plugged in to two different uses cases in the sunrpc code and there
+> >> didn't seem to be one.  I could have written one using list_head, but
+> >> llist seemed a better fix.  I think the code in sunrpc that uses this
+> >> lwq looks a lot neater after the conversion.
+> >=20
+> > Thanks.  Could we please get words such as these into the changelog,
+> > describing why it was felt necessary to add more library code?
+> >=20
+> > And also into the .c file, to help people who are looking at it and
+> > wondering "can I use this".  And to help reviewers who are wondering
+> > "could they have used Neil's thing".
+>=20
+> Neil, are you planning to send along a replacement for 11/17,
+> or would you like me to fold the above into the patch description
+> I have now?
 
-Ah, right. I was thinking about the inline mode, but the patch refers
-to the issue with the outline mode.
+Sorry I didn't reply sooner - been busy.
+I'll send a patch that can be squashed in to 11/17 which adds some more
+explanatory text.  Hopefully soonish.
 
-However, I just checked kasan_non_canonical_hook for SW_TAGS with the
-inline mode: it does not work when accessing 0x42ffffb80aaaaaaa, the
-addr < KASAN_SHADOW_OFFSET check fails. It appears there's something
-unusual about how instrumentation calculates the shadow address. I
-didn't investigate further yet.
-
-> I think the idea when I added that was that
-> it assumes that when KASAN checks an access in out-of-line
-> instrumentation or a slowpath, it will do the required checks to avoid
-> this kind of fault?
-
-Ah, no, KASAN doesn't do it.
-
-However, I suppose we could add what the original patch proposes for
-the outline mode. For the inline mode, it seems to be pointless, as
-most access checks happen though the compiler inserted code anyway.
-
-I also wonder how much slowdown this patch will introduce.
-
-Haibo, could you check how much slower the kernel becomes with your
-patch? If possible, with all GENERIC/SW_TAGS and INLINE/OUTLINE
-combinations.
-
-If the slowdown is large, we can just make kasan_non_canonical_hook
-work for both modes (and fix it for SW_TAGS).
+NeilBrown
