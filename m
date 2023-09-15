@@ -2,101 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6A27A23EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFC47A23F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbjIOQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
+        id S235190AbjIOQwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbjIOQvE (ORCPT
+        with ESMTP id S234753AbjIOQvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:51:04 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F54118
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:51:00 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-564af0ac494so1751505a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694796659; x=1695401459; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C9N4U7m1ENfkMXf6AuPL4MT6Lni4JryuzWdzOGtlKI8=;
-        b=MkevyBfJB5MBR3LKBsMzv8LqJ6MZNOhvM0Cx1VeEtxay0CLOnKeG1zjDl+uLQY4RVc
-         f3NQcgAmjrb9H2aLXJkqdgBIiSJf2z5DUxvaiWkD/Bq/YS0e9YgtLrEsfItDKixwIEux
-         dEAtfffVq1cguuzKKc7aY/OLS+8PSzP+wMOJWAGQKOhtrdpfKFdk10W7VV9UV5q6XolB
-         jPXIMXUq5OZ1dSm0XOqSOFeQgFVz+weZVbaHSKFMMchnXMSP3ZshwMm5QMrI5iodQIu0
-         W74vdMyjOv7CAZLGuUzdqua2r/J/k47l5EdnYTamnYpImugmx3Ut80FMEoGvou+kdiMk
-         Y8hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694796659; x=1695401459;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C9N4U7m1ENfkMXf6AuPL4MT6Lni4JryuzWdzOGtlKI8=;
-        b=Y72f0nuVsuAbaqvGd5rSnQVYgG0IUOkmA2wXIh9VwXZ0GluzrlKvmYaaoxSxvezI6b
-         5bFKy92kIKvFdkUgaZUkJTvqVvXONOjgiXiOjjw2EmM+Czuuov4EZO3k3avHsZwKYOic
-         MIalM3DDK7Bvvyma1QC4SrqsXOMHDWOic8Gfdjd/PXYwh14BGDo1Nz9Fut+zCjheLexu
-         E128i8vE099ylbXK5u6tOtQegBPd3UIM6yPtLnA/Bp3vk9mNFvBSHM4MwY1OWvHU57NV
-         oUStlhg39Uu4dH/7oc6ELBfWO3RSMZiZ8+ARrQ918ZfFZdo7TMwrBcdLea3Vk2CKBoyE
-         85+A==
-X-Gm-Message-State: AOJu0YxdiHHEAnoSz7s8+9vjvHWVHOe+vug78SVbdpAPq7GJLuRbQ968
-        huF5c8D2/pnc4ZUBr/jcJZWGbdbmQr6LwCoOHm0=
-X-Google-Smtp-Source: AGHT+IGbqKZHfQYVZyeiRIfx3Rau8VcK1iGF77tUw+uQyQtNqnu5UagzuHOH8rpnQb8Ka+6MLiQbWH8tpwggqtgwVnk=
-X-Received: by 2002:a17:90a:f312:b0:273:e42b:34c1 with SMTP id
- ca18-20020a17090af31200b00273e42b34c1mr1902942pjb.42.1694796659560; Fri, 15
- Sep 2023 09:50:59 -0700 (PDT)
+        Fri, 15 Sep 2023 12:51:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D68E6E;
+        Fri, 15 Sep 2023 09:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694796700; x=1726332700;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=hV7ri2QcMrtTel/YBw6177BdZCvTJg4PvROjGVpyhUA=;
+  b=Gr/z95WPSGQ6ufwDozoi71y+0gFxmJy47BeCT54kX4B8/mZjZG0+abP1
+   YFSnOPnbhUoZ1LmNYLSAzekGWCpWBqS2mXT7L8WTMouTcW216Bjq1ZOvI
+   J4cyKGGcHDmZ0Uhij+fpVoda1FSoiKQ1ktNpg4UmTyltic0c95E26j94C
+   p7/uylIdx/epOLY2LSzHSJTmIfGYSTcR88P4zp543azdsHqlKbzdeR1Ro
+   QGq4WljEu2dcFBDGk9t1HF6ZWeJPKDRLO4Qja/asfCyDc2YMn7xoawGGW
+   Y8GEoBugEUuOBE+iUiAMcgtiSG5BEUg4wuUL5feWoEiC7QoP7tf+dbx3n
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="465654679"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="465654679"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:51:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774380992"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="774380992"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:51:34 -0700
+Date:   Fri, 15 Sep 2023 19:51:32 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     hdegoede@redhat.com, markgross@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        patches@lists.linux.dev, ravi.v.shankar@intel.com,
+        pengfei.xu@intel.com
+Subject: Re: [PATCH 04/10] platform/x86/intel/ifs: Scan test for new
+ generations
+In-Reply-To: <20230913183348.1349409-5-jithu.joseph@intel.com>
+Message-ID: <74882e91-f41e-7672-3835-d74f1364bbdd@linux.intel.com>
+References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-5-jithu.joseph@intel.com>
 MIME-Version: 1.0
-References: <CA+fCnZePgv=V65t4FtJvcyKvhM6yA3amTbPnwc5Ft5YdzpeeRg@mail.gmail.com>
- <20230915024559.32806-1-haibo.li@mediatek.com>
-In-Reply-To: <20230915024559.32806-1-haibo.li@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Fri, 15 Sep 2023 18:50:48 +0200
-Message-ID: <CA+fCnZfuaovc4fk6Z+p1haLk7iemgtpF522sej3oWYARhBYYUQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan:fix access invalid shadow address when input is illegal
-To:     Haibo Li <haibo.li@mediatek.com>, jannh@google.com
-Cc:     akpm@linux-foundation.org, angelogioacchino.delregno@collabora.com,
-        dvyukov@google.com, glider@google.com, kasan-dev@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
-        mark.rutland@arm.com, matthias.bgg@gmail.com,
-        ryabinin.a.a@gmail.com, vincenzo.frascino@arm.com,
-        xiaoming.yu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 4:46=E2=80=AFAM 'Haibo Li' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
->
-> The patch checks each shadow address,so it introduces extra overhead.
+On Wed, 13 Sep 2023, Jithu Joseph wrote:
 
-Ack. Could still be fine, depends on the overhead.
+> Make changes to scan test flow such that MSRs are populated
+> appropriately based on the generation supported by hardware.
+> 
+> Width of chunk related bitfields is ACTIVATE_SCAN and SCAN_STATUS MSRs
+> are different in newer IFS generation compared to gen0.
+> 
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>  drivers/platform/x86/intel/ifs/ifs.h     | 14 ++++++++++++++
+>  drivers/platform/x86/intel/ifs/runtest.c | 23 ++++++++++++++++++-----
+>  2 files changed, 32 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
+> index 886dc74de57d..3265a6d8a6f3 100644
+> --- a/drivers/platform/x86/intel/ifs/ifs.h
+> +++ b/drivers/platform/x86/intel/ifs/ifs.h
+> @@ -205,6 +205,12 @@ union ifs_scan {
+>  		u32	delay	:31;
+>  		u32	sigmce	:1;
+>  	};
+> +	struct {
+> +		u16	start;
+> +		u16	stop;
+> +		u32	delay	:31;
+> +		u32	sigmce	:1;
+> +	} gen2;
 
-But if the message printed by kasan_non_canonical_hook is good enough
-for your use case, I would rather stick to that.
+I don't like the way old struct is left without genx naming. It makes the 
+code below more confusing as is.
 
-> Now kasan_non_canonical_hook only works for CONFIG_KASAN_INLINE.
->
-> And CONFIG_KASAN_OUTLINE is set in my case.
->
-> Is it possible to make kasan_non_canonical_hook works for both
-> INLINE and OUTLINE by simply remove the "#ifdef CONFIG_KASAN_INLINE"?
+>  };
+>  
+>  /* MSR_SCAN_STATUS bit fields */
+> @@ -219,6 +225,14 @@ union ifs_status {
+>  		u32	control_error		:1;
+>  		u32	signature_error		:1;
+>  	};
+> +	struct {
+> +		u16	chunk_num;
+> +		u16	chunk_stop_index;
+> +		u8	error_code;
+> +		u32	rsvd1			:22;
+> +		u32	control_error		:1;
+> +		u32	signature_error		:1;
 
-Yes, it should just work if you remove the ifdefs in mm/kasan/report.c
-and in include/linux/kasan.h.
+Again, I don't think the alignment will be correct in this case.
 
-Jann, do you have any objections to enabling kasan_non_canonical_hook
-for the outline mode too?
+> +	} gen2;
+>  };
+>  
+>  /* MSR_ARRAY_BIST bit fields */
+> diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
+> index 1061eb7ec399..4bbab6be2fa2 100644
+> --- a/drivers/platform/x86/intel/ifs/runtest.c
+> +++ b/drivers/platform/x86/intel/ifs/runtest.c
+> @@ -171,6 +171,8 @@ static void ifs_test_core(int cpu, struct device *dev)
+>  	union ifs_status status;
+>  	unsigned long timeout;
+>  	struct ifs_data *ifsd;
+> +	int to_start, to_stop;
+> +	int status_chunk;
+>  	u64 msrvals[2];
+>  	int retries;
+>  
+> @@ -179,13 +181,21 @@ static void ifs_test_core(int cpu, struct device *dev)
+>  	activate.rsvd = 0;
+>  	activate.delay = IFS_THREAD_WAIT;
+>  	activate.sigmce = 0;
+> -	activate.start = 0;
+> -	activate.stop = ifsd->valid_chunks - 1;
+> +	to_start = 0;
+> +	to_stop = ifsd->valid_chunks - 1;
+> +
+> +	if (ifsd->generation) {
+> +		activate.gen2.start = to_start;
+> +		activate.gen2.stop = to_stop;
+> +	} else {
+> +		activate.start = to_start;
+> +		activate.stop = to_stop;
+> +	}
+>  
+>  	timeout = jiffies + HZ / 2;
+>  	retries = MAX_IFS_RETRIES;
+>  
+> -	while (activate.start <= activate.stop) {
+> +	while (to_start <= to_stop) {
+>  		if (time_after(jiffies, timeout)) {
+>  			status.error_code = IFS_SW_TIMEOUT;
+>  			break;
+> @@ -202,7 +212,8 @@ static void ifs_test_core(int cpu, struct device *dev)
+>  		if (!can_restart(status))
+>  			break;
+>  
+> -		if (status.chunk_num == activate.start) {
+> +		status_chunk = ifsd->generation ? status.gen2.chunk_num : status.chunk_num;
+> +		if (status_chunk == to_start) {
+>  			/* Check for forward progress */
+>  			if (--retries == 0) {
+>  				if (status.error_code == IFS_NO_ERROR)
+> @@ -211,7 +222,9 @@ static void ifs_test_core(int cpu, struct device *dev)
+>  			}
+>  		} else {
+>  			retries = MAX_IFS_RETRIES;
+> -			activate.start = status.chunk_num;
+> +			ifsd->generation ? (activate.gen2.start = status_chunk) :
+> +			 (activate.start = status_chunk);
 
-> Since kasan_non_canonical_hook is only used after kernel fault,it
-> is better if there is no limit.
+Misaligned.
+
+> +			to_start = status_chunk;
+>  		}
+>  	}
+>  
+> 
+
+-- 
+ i.
+
