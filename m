@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A57437A15BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E987A15C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbjIOFtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S232114AbjIOFv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbjIOFtd (ORCPT
+        with ESMTP id S231978AbjIOFvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:49:33 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07552710
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:49:27 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3aa17bcf306so2309779b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:49:27 -0700 (PDT)
+        Fri, 15 Sep 2023 01:51:54 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE421FC8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:51:46 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso2016075a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1694757105; x=1695361905; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RAviJiHnDWn37yrY/+TDS6dv356bJe/3IP+axIRqyaY=;
+        b=PrUxW2H8unYtNgDLDeqdFYWFgVpt/4cUd3x7liLJvrutVZVewvdFn8vZQkUsh32tSz
+         ZXBIvEDbXswEYTir+wlToCQYaSglOSki/p1hSjqIxrlZ98tevtYKwMSOtX5vCCy7GYZY
+         GLjmYY+8I8mOpLIzkBOdpa2o03l82+nU7GBqo0X8pgYRfIOEv20P4M1UAVGCBRjfz/JF
+         c10y2w4bDG4IeIpbiqJE7DMu5lXfMzZ1NDVZ7VvZbxENFDgFV0fYMGml8jO4ekkKowBH
+         7yXGxICf/yzY1VtbMJOl5ODVZPEH3srPhVkglre8iNFPIkdvwL37gJpAFpjL8ODJBd5m
+         e5cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694756967; x=1695361767;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1694757105; x=1695361905;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cXDLU6GhPRgxvgHhWczS2W48hUEzfbdQ+kiAI/fzXHg=;
-        b=QXqGWRaBytulVHHAudvrhY5Jzw8SEAKIwZxS/2BPmS2/lq4m69MA7rp3BlMdPcoFOB
-         NY++G/TR0BYrGLxW3aSdfvHgmEUwQRsBgZsGT9vxJ/LCSEr+OwWbJqoJP6kL8YX9K973
-         /hq97NDB2BpaiSI1Y8dWxRXeTx/vBdvf/XpN0FGEdpbdSBqHh7M2iZCjTej2cgddhf/d
-         AGl/1wwaEV8boVVT32AlZ6RM94NmaFpsFQ8uLd4F/KExxwEnJyjsayHvY3C9M5JxPZ/G
-         m+GhVlfLjAe6FWfXeFiMpOrrh73xlA+f6AKrI6AAOinaDokOC4lnC/HwHQPxmSkR1vGD
-         6WJw==
-X-Gm-Message-State: AOJu0Yxlt9sdJsbIoEVtWAvvXPRPlptsOhjfxI0OKGoz/tvL2Mwm4lVo
-        yIv6zzHZLx6Et7Z6G6DPyH6uVr/6zAu5XiLdxzRJjvy6C1jx
-X-Google-Smtp-Source: AGHT+IEK2iRnTBP7FWvcpup3PZIp5C/uidyAVstqvSMHqPBS3p8eOnCe7wZYxiiKDvJ4/y6F7OlBJBSHymT20OCuq70KuwKnRc0U
+        bh=RAviJiHnDWn37yrY/+TDS6dv356bJe/3IP+axIRqyaY=;
+        b=I3/YizgUMcWbFL+h8ucez9E3Dq0wOFBY0x4cwTRBaFSBfCYPMHE1fyf/aDU7s4aE5p
+         NQsWnRnlFLfJ5vHJX5hE20guu+xRgsk1BEwUJooa6I42IXgY+uBnWIDWWUHl6OXHVjFs
+         5dmOtNlyHOWhH5vKGqOC8QMN5lI5ouxllawzaG9Ix33x/oOJA9hsRKStshtCTqcTcacy
+         rpr+JTVfBKmgn9Htj8XXpBjBe+aUJq+XCoKo1k2KMHDg/CRjptN/jK5i8mK/ptvOivow
+         ps+jvjCkJn6mo92SEPgeslKbZEZ0UZEv3vfp5/edrWW97M3RXtSmgf5WupptbOIxDlkW
+         zYhw==
+X-Gm-Message-State: AOJu0YxvO55jVTslewvVPw8KYQzTfAT/6rE21OBFdK8p6lhmrcTukZer
+        HneHBzF4O9OT3ct5KyscNNnKRw==
+X-Google-Smtp-Source: AGHT+IF8/RuLa2dvtV/6+atyydlIiT0muAbHJl0SRDscKsAC1bMSvB/A1IkkRbsxTp4mEQITtSGTeA==
+X-Received: by 2002:a05:6402:164b:b0:523:2e63:b9b with SMTP id s11-20020a056402164b00b005232e630b9bmr571283edx.24.1694757104741;
+        Thu, 14 Sep 2023 22:51:44 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.145])
+        by smtp.gmail.com with ESMTPSA id u24-20020a056402065800b005231e3d89efsm1747955edx.31.2023.09.14.22.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 22:51:44 -0700 (PDT)
+Message-ID: <f0aa7983-0300-ce21-8726-41d033f6afbe@tuxon.dev>
+Date:   Fri, 15 Sep 2023 08:51:41 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2115:b0:3ab:81e4:4d78 with SMTP id
- r21-20020a056808211500b003ab81e44d78mr311949oiw.8.1694756967306; Thu, 14 Sep
- 2023 22:49:27 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 22:49:27 -0700
-In-Reply-To: <0000000000000534da05faa4d3d4@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000045d4d06055f5bff@google.com>
-Subject: Re: [syzbot] [f2fs?] WARNING: lock held when returning to user space
- in f2fs_write_single_data_page
-From:   syzbot <syzbot+eb6201248f684e99b9f8@syzkaller.appspotmail.com>
-To:     chao@kernel.org, hdanton@sina.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nogikh@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 12/37] clk: renesas: rzg2l: reduce the critical area
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-13-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVLx1d-6=5xx_GLAb7LxxRR9FwhAU56fxNc3b=9wj286g@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdVLx1d-6=5xx_GLAb7LxxRR9FwhAU56fxNc3b=9wj286g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit 5079e1c0c879311668b77075de3e701869804adf
-Author: Chao Yu <chao@kernel.org>
-Date:   Fri Jun 2 08:36:05 2023 +0000
 
-    f2fs: avoid dead loop in f2fs_issue_checkpoint()
+On 14.09.2023 16:12, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> spinlock in rzg2l_mod_clock_endisable() is intended to protect the accesses
+>> to hardware register. There is no need to protect the instructions that set
+>> temporary variable which will be then written to register. Thus limit the
+>> spinlock only to the hardware register access.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/drivers/clk/renesas/rzg2l-cpg.c
+>> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+>> @@ -912,13 +912,13 @@ static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
+>>
+>>         dev_dbg(dev, "CLK_ON %u/%pC %s\n", CLK_ON_R(reg), hw->clk,
+>>                 enable ? "ON" : "OFF");
+>> -       spin_lock_irqsave(&priv->rmw_lock, flags);
+>>
+>>         value = bitmask << 16;
+>>         if (enable)
+>>                 value |= bitmask;
+>> -       writel(value, priv->base + CLK_ON_R(reg));
+>>
+>> +       spin_lock_irqsave(&priv->rmw_lock, flags);
+>> +       writel(value, priv->base + CLK_ON_R(reg));
+>>         spin_unlock_irqrestore(&priv->rmw_lock, flags);
+> 
+> After this, it becomes obvious there is nothing to protect at all,
+> so the locking can just be removed from this function?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15aae552680000
-start commit:   c8c655c34e33 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5eadbf0d3c2ece89
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb6201248f684e99b9f8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13130a1c280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d919f8280000
+I tend to be paranoid when writing to hardware resources thus I kept it.
+Would you prefer to remove it at all?
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: f2fs: avoid dead loop in f2fs_issue_checkpoint()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
