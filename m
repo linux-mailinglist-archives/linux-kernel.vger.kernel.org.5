@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 214CE7A1F94
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D3D7A1F92
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbjIONO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233739AbjIONOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233891AbjIONOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Sep 2023 09:14:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0C0601713
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694783642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sb5wr0wfo93KZmmG9iONfAq+eRQpW+VSRFFBiRCmnG8=;
-        b=ME90bPtPrqAK51sH/D1eRBecNBH8eVB0ed92BhbTjJtvNyzo2qzSR23+3TDqKtvhD7T038
-        beKJ5wMpyOE94Saae2m2jTiqoKWOTrvw2pR4YPzu0eu8z4PPXgkpzes5D5HR5VwyZuUn4l
-        dECaujLAGd/slmOscEP5wodgtWYwdJs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-219-qPOpJlElMJyjGulFdS2cwQ-1; Fri, 15 Sep 2023 09:13:52 -0400
-X-MC-Unique: qPOpJlElMJyjGulFdS2cwQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C1227858285;
-        Fri, 15 Sep 2023 13:13:51 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 806C32026D68;
-        Fri, 15 Sep 2023 13:13:50 +0000 (UTC)
-Date:   Fri, 15 Sep 2023 21:13:47 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     kernel test robot <lkp@intel.com>, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-        thunder.leizhen@huawei.com, catalin.marinas@arm.com,
-        chenjiahao16@huawei.com, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v3 6/9] x86: kdump: use generic interface to simplify
- crashkernel reservation code
-Message-ID: <ZQRYixr2AtJtRFrh@MiWiFi-R3L-srv>
-References: <20230914033142.676708-7-bhe@redhat.com>
- <202309141534.moH4dTcz-lkp@intel.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231648AbjIONOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Sep 2023 09:14:52 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FEED1BEB;
+        Fri, 15 Sep 2023 06:14:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-56a8794b5adso1731275a12.2;
+        Fri, 15 Sep 2023 06:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694783686; x=1695388486; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YeXQAgEvCG5lWU7YEjnooq5zm07TURELH4onh5xtUHg=;
+        b=SF6/yCazStqz90JyRnf4bGTsvxmvNUL5qe+jxCom9j2QOvqvu62tTyruQtDyqFhskK
+         GMP6Prg7zpkMpACf9Vg88HyjADobrUbXdwD97fy/5TKrlZdzx7gyrYjJgcXHiV8Xp/Kv
+         ZNbBbwiX9PXMKwEyC+4Jp/+9sncNBT8JaZX9bwzoPJiADxZsQlDqM3+/C4wwKzk04NaI
+         QTSHzm1XBNGCM6x9fk0RcQAzU0w4jZ0/5Ws4MCAs3M8SoFu/D83y8rodDaORO5SScLad
+         J3h3l6TPnzH71ZxfazwtTUAhVcIvoB4UZw2Mx8aJiIqsSMbA2jP2ird01ZODQuXHUw0H
+         +tCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694783686; x=1695388486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YeXQAgEvCG5lWU7YEjnooq5zm07TURELH4onh5xtUHg=;
+        b=IB0kVRYS9S/7+Thmm1zy1uOxtecuMQD3pnS8mz8IEYvlpZdAGGGaleFHjUJr13OAjw
+         iplalxMLsSy46B71/1Jt+cyr8NfyrXBm11qs5LVC+5pVvPu07JquO6B3IIlxRb0AaQ2U
+         tUydNsPQxi3F6q2awKggihSpTKENn4KF9YhsV1wxbJVyIUZ7lGQsKRQb697b75SKaZjP
+         K5zX9LSAIIU2L0QspwOXUSaQrDxyR/9tqefaYyXPZ4xSV+cfCJ9eXcK2XSHN1HPcnwqj
+         pqjR31Rjt/x5rvgt3CrFonl7886sHNaOeP46wFKb5+7Z2/BUg2Y85j0ad+Itd0jdTdnx
+         Jp4A==
+X-Gm-Message-State: AOJu0YxmIH4ut09bYNJFrXx2c7PHxv0kRQ63feJ/8TSC30/XU7LDZ3ii
+        Zj4UlY6fi8rt9h+H+DALWYJ3boAm0HODe+0sb9NqvKqv5RY=
+X-Google-Smtp-Source: AGHT+IGwQdOfBBcGiIToYcNqwva/3tvlNZxrGwwaqB/mVbsMDwp6XECrBHtfCJ1OyOlS/idai/gsl5ynbq923kvw+3Y=
+X-Received: by 2002:a17:90b:88f:b0:271:9e59:df28 with SMTP id
+ bj15-20020a17090b088f00b002719e59df28mr1287536pjb.29.1694783686026; Fri, 15
+ Sep 2023 06:14:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309141534.moH4dTcz-lkp@intel.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230911140959.2046340-1-longqi90@gmail.com> <f4f0ed21-1e3b-a7c5-79f8-3469c4cfc471@linaro.org>
+In-Reply-To: <f4f0ed21-1e3b-a7c5-79f8-3469c4cfc471@linaro.org>
+From:   Zhang LongQi <longqi90@gmail.com>
+Date:   Fri, 15 Sep 2023 21:14:34 +0800
+Message-ID: <CAC0WRTWr66kUnaTvdJXWP=hw1MmXB=5R+zqn0OgOqNqGr==BdQ@mail.gmail.com>
+Subject: Re: [PATCH] fixes the pin settings of two LEDs on board nanopi neo plus2
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/14/23 at 04:12pm, kernel test robot wrote:
-> Hi Baoquan,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on powerpc/next]
-> [also build test WARNING on powerpc/fixes linus/master v6.6-rc1 next-20230914]
-> [cannot apply to arm64/for-next/core tip/x86/core]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/crash_core-c-remove-unnecessary-parameter-of-function/20230914-113546
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> patch link:    https://lore.kernel.org/r/20230914033142.676708-7-bhe%40redhat.com
-> patch subject: [PATCH v3 6/9] x86: kdump: use generic interface to simplify crashkernel reservation code
-> config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230914/202309141534.moH4dTcz-lkp@intel.com/config)
-> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309141534.moH4dTcz-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309141534.moH4dTcz-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> arch/x86/kernel/setup.c:476:15: warning: no previous prototype for function 'crash_low_size_default' [-Wmissing-prototypes]
->    unsigned long crash_low_size_default(void)
->                  ^
->    arch/x86/kernel/setup.c:476:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    unsigned long crash_low_size_default(void)
->    ^
->    static 
->    1 warning generated.
+Thanks Krzysztof, I will modify and submit.
 
-Thanks for reporting this. I can reproduced this warning on x86_64
-machine by retrieving the LKP's config and build it with below command:
-
-	make ARCH=i386 -j128 W=1 arch/x86/kernel/
-
-I can fix it by moving crash_low_size_default() into arch/x86/include/asm/crash_core.h 
-and make it as static inline as below draft change.
-
-Hi Andrew,
-
-I should post v4 of the whole series or just v4 of this patch?
-
-[PATCH v3 6/9] x86: kdump: use generic interface to simplify crashkernel reservation code
+sorry for the previous email which is the html format.
 
 
-diff --git a/arch/x86/include/asm/crash_core.h b/arch/x86/include/asm/crash_core.h
-index 5fc5e4f94521..76af98f4e801 100644
---- a/arch/x86/include/asm/crash_core.h
-+++ b/arch/x86/include/asm/crash_core.h
-@@ -18,6 +18,7 @@
-  * no good way to detect the paging mode of the target kernel which will be
-  * loaded for dumping.
-  */
-+extern unsigned long swiotlb_size_or_default(void);
- 
- #ifdef CONFIG_X86_32
- # define CRASH_ADDR_LOW_MAX     SZ_512M
-@@ -29,6 +30,13 @@
- 
- # define DEFAULT_CRASH_KERNEL_LOW_SIZE crash_low_size_default()
- 
--extern unsigned long crash_low_size_default(void);
-+static inline unsigned long crash_low_size_default(void)
-+{
-+#ifdef CONFIG_X86_64
-+	return max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
-+#else
-+	return 0;
-+#endif
-+}
- 
- #endif /* _X86_CRASH_CORE_H */
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 0acc86587fc0..d7baa567c68e 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -470,18 +470,6 @@ static void __init memblock_x86_reserve_range_setup_data(void)
- 	}
- }
- 
--/*
-- * --------- Crashkernel reservation ------------------------------
-- */
--unsigned long crash_low_size_default(void)
--{
--#ifdef CONFIG_X86_64
--	return max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
--#else
--	return 0;
--#endif
--}
--
- static void __init arch_reserve_crashkernel(void)
- {
- 	unsigned long long crash_base, crash_size, low_size = 0;
-
+On Mon, Sep 11, 2023 at 10:42=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 11/09/2023 16:09, longqi wrote:
+> > Signed-off-by: longqi <longqi90@gmail.com>
+>
+> Thank you for your patch. There is something to discuss/improve.
+>
+> Please use subject prefixes matching the subsystem. You can get them for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching.
+>
+> Your commit msg is missing. Please describe the bug or the problem thus
+> it will be obvious why this change is needed.
+>
+>
+> Best regards,
+> Krzysztof
+>
