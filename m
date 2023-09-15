@@ -2,115 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44E87A1C59
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C407A1C5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbjIOKfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        id S232837AbjIOKgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIOKfi (ORCPT
+        with ESMTP id S232599AbjIOKgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:35:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE33CA1;
-        Fri, 15 Sep 2023 03:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QqoJwBNCiyqSvQr0zdz0P988LVcIrm0PsE963tNYtsY=; b=LCgA4w+tdceGRYZsXiQVZ/5vMQ
-        4vBB49KzxqusDcPYTbcsbAMIWmWG48ADLyl0NcUTRFXqDGPk99siElEJgEkMdo4Ur2jkXRjb54COa
-        HXLUca0aNoSjYnaeWkZFAD9vNzgncr43wqvyyZqXKEl1Ns5ajEaVMxGT/2fvcEadgBRQmE1B+41Pf
-        H6f0NFM4J/wOzubauqpQDPqC/scGtP5QfljOuuNyeWBwYjqa3nDwKE7UTjhVLWK7ej7I0K31vg9i+
-        A/Wk66vx9NTQF/zF/4Z6r1sDvxA2D+pdmALguSQ5Mde7qxTrZCQh1SRUBlSzBrwAmE4yhOqyQYVKU
-        YFNMTKzQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qh6AL-009A3c-28; Fri, 15 Sep 2023 10:35:13 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B6E1A3003F2; Fri, 15 Sep 2023 12:35:12 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 12:35:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Lukas Wunner <lukas@wunner.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [tip: core/urgent] panic: Reenable preemption in WARN slowpath
-Message-ID: <20230915103512.GC6721@noisy.programming.kicks-ass.net>
-References: <3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de>
- <169477058360.27769.17772363826818333894.tip-bot2@tip-bot2>
- <ZQQnnjzxbTwpn61F@gmail.com>
+        Fri, 15 Sep 2023 06:36:09 -0400
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E483CA1;
+        Fri, 15 Sep 2023 03:36:01 -0700 (PDT)
+Received: from [192.168.42.133] (host-178-72-203-90.ip.nej.cz [178.72.203.90])
+        by mx.gpxsee.org (Postfix) with ESMTPSA id 8AE1032A49;
+        Fri, 15 Sep 2023 12:35:59 +0200 (CEST)
+Message-ID: <295b434c-d0cf-4917-9d63-972f79445d34@gpxsee.org>
+Date:   Fri, 15 Sep 2023 12:35:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQQnnjzxbTwpn61F@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v9 0/2] Digiteq Automotive MGB4 driver
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+References: <20230912120745.902-1-tumic@gpxsee.org>
+ <179c7dd2-1d72-4a95-bab5-326188554b98@xs4all.nl>
+From:   =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>
+In-Reply-To: <179c7dd2-1d72-4a95-bab5-326188554b98@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:45:02AM +0200, Ingo Molnar wrote:
-> 
-> * tip-bot2 for Lukas Wunner <tip-bot2@linutronix.de> wrote:
-> 
-> > The following commit has been merged into the core/urgent branch of tip:
-> > 
-> > Commit-ID:     cccd32816506cbac3a4c65d9dff51b3125ef1a03
-> > Gitweb:        https://git.kernel.org/tip/cccd32816506cbac3a4c65d9dff51b3125ef1a03
-> > Author:        Lukas Wunner <lukas@wunner.de>
-> > AuthorDate:    Fri, 15 Sep 2023 09:55:39 +02:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Fri, 15 Sep 2023 11:28:08 +02:00
-> > 
-> > panic: Reenable preemption in WARN slowpath
-> > 
-> > Commit:
-> > 
-> >   5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during WARN/BUG")
-> > 
-> > amended warn_slowpath_fmt() to disable preemption until the WARN splat
-> > has been emitted.
-> > 
-> > However the commit neglected to reenable preemption in the !fmt codepath,
-> > i.e. when a WARN splat is emitted without additional format string.
-> > 
-> > One consequence is that users may see more splats than intended.  E.g. a
-> > WARN splat emitted in a work item results in at least two extra splats:
-> > 
-> >   BUG: workqueue leaked lock or atomic
-> >   (emitted by process_one_work())
-> > 
-> >   BUG: scheduling while atomic
-> >   (emitted by worker_thread() -> schedule())
-> > 
-> > Ironically the point of the commit was to *avoid* extra splats. ;)
-> > 
-> > Fix it.
-> 
-> > diff --git a/kernel/panic.c b/kernel/panic.c
-> > index 07239d4..ffa037f 100644
-> > --- a/kernel/panic.c
-> > +++ b/kernel/panic.c
-> > @@ -697,6 +697,7 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
-> >  	if (!fmt) {
-> >  		__warn(file, line, __builtin_return_address(0), taint,
-> >  		       NULL, NULL);
-> > +		warn_rcu_exit(rcu);
-> >  		return;
-> 
-> BTW., one more thing we might want to consider here is to re-enable 
-> preemption in warn_rcu_exit() a bit more gently, without forcing a
-> pending reschedule, ie. preempt_enable_no_resched() or so?
+Hi Hans,
 
-nah, it's a warn, if that triggers you get to keep the pieces. Also
-preempt_enable_no_resched() isn't exported because its a horribly
-dangerous function.
+On 15. 09. 23 11:02, Hans Verkuil wrote:
+> Hi Martin,
+> 
+> On 12/09/2023 14:07, tumic@gpxsee.org wrote:
+>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>
+>> Hi,
+>> This patch adds a driver for the Digiteq Automotive MGB4 grabber card.
+>> MGB4 is a modular frame grabber PCIe card for automotive video interfaces
+>> (FPD-Link and GMSL for now). It is based on a Xilinx FPGA and uses their
+>> XDMA IP core for DMA transfers. Additionally, Xilinx I2C and SPI IP cores
+>> which already have drivers in linux are used in the design.
+>>
+>> The driver is a quite standard v4l2 driver, with one exception - there are
+>> a lot of sysfs options that may/must be set before opening the v4l2 device
+>> to adapt the card on a specific signal (see mgb4.rst for details)
+>> as the card must be able to work with various signal sources (or displays)
+>> that can not be auto-detected.
+> 
+> First of all, there is no need to resend patches. Just check if they are in
+> patchwork.linuxtv.org. It is fine to ping me, but resending just means the
+> same patches end up twice in patchwork.
+> 
+
+Ok, sorry for that. I was trying to follow the submit guide 
+(https://docs.kernel.org/process/submitting-patches.html) altough now, 
+after the Prague summit, when I know how "understaffed" the v4l2 team is 
+I wait a much longer time than the "minimum of one week" :-) Just 
+writing a "ping" email to you is also much easier for me, so I will 
+gladly switch to that next time.
+
+> Secondly, when running my build script I found a number of issues:
+> 
+> sparse: WARNINGS:
+> 
+> drivers/media/pci/mgb4/mgb4_core.c:572:78: warning: Using plain integer as NULL pointer
+> drivers/media/pci/mgb4/mgb4_vin.c:605:41: warning: Using plain integer as NULL pointer
+> drivers/media/pci/mgb4/mgb4_vout.c:336:41: warning: Using plain integer as NULL pointer
+> drivers/media/pci/mgb4/mgb4_sysfs_out.c:67:43: warning: Using plain integer as NULL pointer
+> drivers/media/pci/mgb4/mgb4_sysfs_out.c:67:60: warning: Using plain integer as NULL pointer
+> drivers/media/pci/mgb4/mgb4_sysfs_out.c:83:9: warning: context imbalance in 'video_source_store' - different lock contexts for basic block
+> 
+> smatch: WARNINGS:
+> 
+> drivers/media/pci/mgb4/mgb4_cmt.c:187 freq_srch() error: uninitialized symbol 'm'.
+> 
+> Those should be fixed.
+> 
+
+All except the lock context are trivial fixes (probably due to me also 
+writing some c++03 code in parallel) and I will easily fix them. I have 
+however a problem with this one:
+
+drivers/media/pci/mgb4/mgb4_sysfs_out.c:83:9: warning: context imbalance 
+in 'video_source_store' - different lock contexts for basic block
+
+as to me it looks the locks are properly released in the reverse order. 
+So for me it looks like a false positive of the analysis tool rather 
+than a bug in the code. Maybe the tool assumes that the set of 
+NULL/non-NULL pointers can differ when locking/unlocking which can not 
+happen. Can you please have a look at it and eventually allow an 
+exception here rather than me trying to silence the tool by some 
+"artificial" code changes?
+
+(The code shall simply lock all input/output devices and see if any of 
+them is used. If all are unused it can reconfigure the inputs/outputs, 
+otherwise it shall return EBUSY.
+
+I admit, that this specific code is not very nice but I don't think it 
+can be written much more "nice" than it is. In fact this is the part I 
+hate most on the HW - the inputs/outputs are not independent and when 
+fideling with the loopback mode, you get code like this... But from the 
+users point of view the loopback is quite useful as most of them want 
+the input also go in the original display and not fiddle with a SW video 
+stream loop. Not to mention two useless DMA transfers from/to the card.)
+
+> You can run the same tests yourself, see this announcement:
+> 
+> https://lore.kernel.org/linux-media/18989016-6392-a77b-6cf7-1223c9161def@xs4all.nl/
+> 
+
+I will eventually try to make it run on my machine when I'm "forced" to 
+somehow fiddle with the locking warning, thanks for the link.
+
+M.
+
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>> Changes in v9:
+>> * Renamed all sysfs show/store functions using the propper naming convention.
+>> * Now using device_add_groups() when initializing the sysfs properties.
+>> * Fixed build without debugfs support.
+>> * Fixed documentation (vsync/hsync) + added default values where applicable.
+>> * Fixed the rest of minor issues from v8 review.
+>>
+>> Changes in v8:
+>> * Fixed broken video buffer size computation.
+>> * Fixed switched I2C deserializers addresses.
+>> * Do not depend on hwmon.
+>>
+>> Changes in v7:
+>> * Now using hwmon for FPGA temperature reporting.
+>> * Now using VIDIOC_S_FMT and v4l2_pix_format.bytesperline for setting
+>>    the alignment.
+>> * Removed the magic sleep when loading the i2c/spi adapter modules (solved by
+>>    request_module() calls with propper - "platform:" prefixed - module
+>>    names).
+>> * Now properly reporting all the timings info in the VIDIOC_G_DV_TIMINGS
+>>    ioctls.
+>> * Updated the documentation.
+>> * Minor fixes as discussed in the v6 review.
+>> * Added debugfs access to the FPGA registers.
+>>
+>> Changes in v6:
+>> * Rebased to current master that includes the Xilinx XDMA driver.
+>>
+>> Changes in v5:
+>> * Removed unused <linux/version.h> includes
+>>
+>> Changes in v4:
+>> * Redesigned the signal change handling logic. Now using the propper timings
+>>    API in the video input driver and a propper open() syscall check/logic in
+>>    the video output driver.
+>> * Fixed all minor issues from v3 review.
+>> * 'checkpatch.pl --strict' used for checking the code.
+>>
+>> Changes in v3:
+>> * Rebased the DMA transfers part to use the new XDMA driver from Xilinx/AMD
+>>
+>> Changes in v2:
+>> * Completely rewritten the original Xilinx's XDMA driver to meet kernel code
+>>    standards.
+>> * Added all required "to" and "cc" mail addresses.
+>>
+>>
+>> ===== v4l2-compliance results - input =====
+>>
+>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+>>
+>> Compliance test for mgb4 device /dev/video0:
+>>
+>> Driver Info:
+>>          Driver name      : mgb4
+>>          Card type        : MGB4 PCIe Card
+>>          Bus info         : PCI:0000:01:00.0
+>>          Driver version   : 6.4.0
+>>          Capabilities     : 0x85200001
+>>                  Video Capture
+>>                  Read/Write
+>>                  Streaming
+>>                  Extended Pix Format
+>>                  Device Capabilities
+>>          Device Caps      : 0x05200001
+>>                  Video Capture
+>>                  Read/Write
+>>                  Streaming
+>>                  Extended Pix Format
+>>
+>> Required ioctls:
+>>          test VIDIOC_QUERYCAP: OK
+>>          test invalid ioctls: OK
+>>
+>> Allow for multiple opens:
+>>          test second /dev/video0 open: OK
+>>          test VIDIOC_QUERYCAP: OK
+>>          test VIDIOC_G/S_PRIORITY: OK
+>>          test for unlimited opens: OK
+>>
+>> Debug ioctls:
+>>          test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+>>          test VIDIOC_LOG_STATUS: OK (Not Supported)
+>>
+>> Input ioctls:
+>>          test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>>          test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>>          test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>>          test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>>          test VIDIOC_G/S/ENUMINPUT: OK
+>>          test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>>          Inputs: 1 Audio Inputs: 0 Tuners: 0
+>>
+>> Output ioctls:
+>>          test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>>          test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>>          test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>>          test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+>>          test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>>          Outputs: 0 Audio Outputs: 0 Modulators: 0
+>>
+>> Input/Output configuration ioctls:
+>>          test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>>          test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
+>>          test VIDIOC_DV_TIMINGS_CAP: OK
+>>          test VIDIOC_G/S_EDID: OK (Not Supported)
+>>
+>> Control ioctls (Input 0):
+>>          test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>>          test VIDIOC_QUERYCTRL: OK (Not Supported)
+>>          test VIDIOC_G/S_CTRL: OK (Not Supported)
+>>          test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>>                  warn: v4l2-test-controls.cpp(1139): V4L2_CID_DV_RX_POWER_PRESENT not found for input 0
+>>          test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>>          test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>>          Standard Controls: 0 Private Controls: 0
+>>
+>> Format ioctls (Input 0):
+>>          test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>>          test VIDIOC_G/S_PARM: OK
+>>          test VIDIOC_G_FBUF: OK (Not Supported)
+>>          test VIDIOC_G_FMT: OK
+>>          test VIDIOC_TRY_FMT: OK
+>>          test VIDIOC_S_FMT: OK
+>>          test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>>          test Cropping: OK (Not Supported)
+>>          test Composing: OK (Not Supported)
+>>          test Scaling: OK (Not Supported)
+>>
+>> Codec ioctls (Input 0):
+>>          test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+>>          test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>>          test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+>>
+>> Buffer ioctls (Input 0):
+>>          test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>>          test VIDIOC_EXPBUF: OK
+>>          test Requests: OK (Not Supported)
+>>
+>> Total for mgb4 device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 1
+>>
+>> ===== v4l2-compliance results - output =====
+>>
+>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+>>
+>> Compliance test for mgb4 device /dev/video2:
+>>
+>> Driver Info:
+>>          Driver name      : mgb4
+>>          Card type        : MGB4 PCIe Card
+>>          Bus info         : PCI:0000:01:00.0
+>>          Driver version   : 6.4.0
+>>          Capabilities     : 0x85200002
+>>                  Video Output
+>>                  Read/Write
+>>                  Streaming
+>>                  Extended Pix Format
+>>                  Device Capabilities
+>>          Device Caps      : 0x05200002
+>>                  Video Output
+>>                  Read/Write
+>>                  Streaming
+>>                  Extended Pix Format
+>>
+>> Required ioctls:
+>>          test VIDIOC_QUERYCAP: OK
+>>          test invalid ioctls: OK
+>>
+>> Allow for multiple opens:
+>>          test second /dev/video2 open: OK
+>>          test VIDIOC_QUERYCAP: OK
+>>          test VIDIOC_G/S_PRIORITY: OK
+>>          test for unlimited opens: OK
+>>
+>> Debug ioctls:
+>>          test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+>>          test VIDIOC_LOG_STATUS: OK (Not Supported)
+>>
+>> Input ioctls:
+>>          test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>>          test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>>          test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>>          test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>>          test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+>>          test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>>          Inputs: 0 Audio Inputs: 0 Tuners: 0
+>>
+>> Output ioctls:
+>>          test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>>          test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>>          test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>>          test VIDIOC_G/S/ENUMOUTPUT: OK
+>>          test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>>          Outputs: 1 Audio Outputs: 0 Modulators: 0
+>>
+>> Input/Output configuration ioctls:
+>>          test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>>          test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+>>          test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+>>          test VIDIOC_G/S_EDID: OK (Not Supported)
+>>
+>> Control ioctls (Output 0):
+>>          test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+>>          test VIDIOC_QUERYCTRL: OK (Not Supported)
+>>          test VIDIOC_G/S_CTRL: OK (Not Supported)
+>>          test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+>>          test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+>>          test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>>          Standard Controls: 0 Private Controls: 0
+>>
+>> Format ioctls (Output 0):
+>>          test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>>          test VIDIOC_G/S_PARM: OK (Not Supported)
+>>          test VIDIOC_G_FBUF: OK (Not Supported)
+>>          test VIDIOC_G_FMT: OK
+>>          test VIDIOC_TRY_FMT: OK
+>>          test VIDIOC_S_FMT: OK
+>>          test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>>          test Cropping: OK (Not Supported)
+>>          test Composing: OK (Not Supported)
+>>          test Scaling: OK (Not Supported)
+>>
+>> Codec ioctls (Output 0):
+>>          test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+>>          test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>>          test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+>>
+>> Buffer ioctls (Output 0):
+>>          test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>>          test VIDIOC_EXPBUF: OK
+>>          test Requests: OK (Not Supported)
+>>
+>> Total for mgb4 device /dev/video2: 45, Succeeded: 45, Failed: 0, Warnings: 0
+>>
+>> Martin Tůma (2):
+>>    Added Digiteq Automotive MGB4 driver
+>>    Added Digiteq Automotive MGB4 driver documentation
+>>
+>>   Documentation/admin-guide/media/mgb4.rst      | 374 +++++++
+>>   .../admin-guide/media/pci-cardlist.rst        |   1 +
+>>   .../admin-guide/media/v4l-drivers.rst         |   1 +
+>>   MAINTAINERS                                   |   7 +
+>>   drivers/media/pci/Kconfig                     |   1 +
+>>   drivers/media/pci/Makefile                    |   1 +
+>>   drivers/media/pci/mgb4/Kconfig                |  17 +
+>>   drivers/media/pci/mgb4/Makefile               |   6 +
+>>   drivers/media/pci/mgb4/mgb4_cmt.c             | 244 +++++
+>>   drivers/media/pci/mgb4/mgb4_cmt.h             |  17 +
+>>   drivers/media/pci/mgb4/mgb4_core.c            | 685 +++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_core.h            |  72 ++
+>>   drivers/media/pci/mgb4/mgb4_dma.c             | 123 +++
+>>   drivers/media/pci/mgb4/mgb4_dma.h             |  18 +
+>>   drivers/media/pci/mgb4/mgb4_i2c.c             | 140 +++
+>>   drivers/media/pci/mgb4/mgb4_i2c.h             |  35 +
+>>   drivers/media/pci/mgb4/mgb4_io.h              |  33 +
+>>   drivers/media/pci/mgb4/mgb4_regs.c            |  30 +
+>>   drivers/media/pci/mgb4/mgb4_regs.h            |  35 +
+>>   drivers/media/pci/mgb4/mgb4_sysfs.h           |  18 +
+>>   drivers/media/pci/mgb4/mgb4_sysfs_in.c        | 753 ++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_sysfs_out.c       | 693 +++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_sysfs_pci.c       |  71 ++
+>>   drivers/media/pci/mgb4/mgb4_trigger.c         | 208 ++++
+>>   drivers/media/pci/mgb4/mgb4_trigger.h         |   8 +
+>>   drivers/media/pci/mgb4/mgb4_vin.c             | 932 ++++++++++++++++++
+>>   drivers/media/pci/mgb4/mgb4_vin.h             |  69 ++
+>>   drivers/media/pci/mgb4/mgb4_vout.c            | 594 +++++++++++
+>>   drivers/media/pci/mgb4/mgb4_vout.h            |  65 ++
+>>   29 files changed, 5251 insertions(+)
+>>   create mode 100644 Documentation/admin-guide/media/mgb4.rst
+>>   create mode 100644 drivers/media/pci/mgb4/Kconfig
+>>   create mode 100644 drivers/media/pci/mgb4/Makefile
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
+>>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
+>>
+>>
+>> base-commit: 374a7f47bf401441edff0a64465e61326bf70a82
+> 
+
