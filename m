@@ -2,192 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 970DC7A1798
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A327A17EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbjIOHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S232553AbjIOIFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjIOHkt (ORCPT
+        with ESMTP id S230454AbjIOIFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:40:49 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812CB98
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:40:43 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rn5bh47ktztSrF;
-        Fri, 15 Sep 2023 15:36:32 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 15 Sep
- 2023 15:40:40 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH v6] mm: vmscan: try to reclaim swapcache pages if no swap space
-Date:   Fri, 15 Sep 2023 16:34:17 +0800
-Message-ID: <20230915083417.3190512-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+        Fri, 15 Sep 2023 04:05:04 -0400
+X-Greylist: delayed 553 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Sep 2023 01:04:59 PDT
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD8D1998
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:04:59 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 90A232800BC39;
+        Fri, 15 Sep 2023 09:55:44 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 8356E50E339; Fri, 15 Sep 2023 09:55:44 +0200 (CEST)
+Message-Id: <3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Wed, 15 Sep 2023 09:55:39 +0200
+Subject: [PATCH] panic: Reenable preemption in WARN slowpath
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When spaces of swap devices are exhausted, only file pages can be
-reclaimed.  But there are still some swapcache pages in anon lru list.
-This can lead to a premature out-of-memory.
+Commit 5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during
+WARN/BUG") amended warn_slowpath_fmt() to disable preemption until the
+WARN splat has been emitted.
 
-The problem is found with such step:
+However the commit neglected to reenable preemption in the !fmt codepath,
+i.e. when a WARN splat is emitted without additional format string.
 
- Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
- memory limit, then runs an program to allocates about 15MB memory.
+One consequence is that users may see more splats than intended.  E.g. a
+WARN splat emitted in a work item results in at least two extra splats:
 
-The problem occurs occasionally, which may need about 100 times [1].
+  BUG: workqueue leaked lock or atomic
+  (emitted by process_one_work())
 
-Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
-If the number is not zero, return true and set swapcache_only to 1.
-When scan anon lru list in swapcache_only mode, non-swapcache pages will
-be skipped to isolate in order to accelerate reclaim efficiency.
+  BUG: scheduling while atomic
+  (emitted by worker_thread() -> schedule())
 
-However, in swapcache_only mode, the scan count still increased when scan
-non-swapcache pages because there are large number of non-swapcache pages
-and rare swapcache pages in swapcache_only mode, and if the non-swapcache
-is skipped and do not count, the scan of pages in isolate_lru_folios() can
-eventually lead to hung task, just as Sachin reported [2].
+Ironically the point of the commit was to *avoid* extra splats. ;)
 
-By the way, since there are enough times of memory reclaim before OOM, it
-is not need to isolate too much swapcache pages in one times.
+Fix it.
 
-[1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
-[2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
-
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-Tested-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Fixes: 5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during WARN/BUG")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v6.1+
+Cc: Peter Zijlstra <peterz@infradead.org>
 ---
-v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
+The original commit went in through the tip tree, hence submitting to
+tip maintainers.  The commit was backported to v6.1-stable (even though
+it wasn't tagged for stable), hence this fix needs a stable designation.
 
- include/linux/swap.h |  6 ++++++
- mm/memcontrol.c      |  8 ++++++++
- mm/vmscan.c          | 24 ++++++++++++++++++++++++
- 3 files changed, 38 insertions(+)
+ kernel/panic.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 493487ed7c38..19f30a29e1f1 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -658,6 +658,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
- }
- 
- extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-+extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
- extern bool mem_cgroup_swap_full(struct folio *folio);
- #else
- static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-@@ -680,6 +681,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return get_nr_swap_pages();
- }
- 
-+static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	return total_swapcache_pages();
-+}
-+
- static inline bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	return vm_swap_full();
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 34bae9e63ff2..26ae2e08fd9a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7573,6 +7573,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return nr_swap_pages;
- }
- 
-+long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled())
-+		return total_swapcache_pages();
-+
-+	return memcg_page_state(memcg, NR_SWAPCACHE);
-+}
-+
- bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	struct mem_cgroup *memcg;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 3df0e2a59052..48c092cc6088 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -136,6 +136,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
-+	unsigned int swapcache_only:1;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -319,10 +322,22 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 		 */
- 		if (get_nr_swap_pages() > 0)
- 			return true;
-+		/* Is there any swapcache pages to reclaim? */
-+		if (total_swapcache_pages() > 0) {
-+			if (sc)
-+				sc->swapcache_only = 1;
-+			return true;
-+		}
- 	} else {
- 		/* Is the memcg below its swap limit? */
- 		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
- 			return true;
-+		/* Is there any swapcache pages in memcg to reclaim? */
-+		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-+			if (sc)
-+				sc->swapcache_only = 1;
-+			return true;
-+		}
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 07239d4..ffa037fa 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -697,6 +697,7 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
+ 	if (!fmt) {
+ 		__warn(file, line, __builtin_return_address(0), taint,
+ 		       NULL, NULL);
++		warn_rcu_exit(rcu);
+ 		return;
  	}
  
- 	/*
-@@ -1642,6 +1657,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
- 		 */
- 		scan += nr_pages;
- 
-+		/*
-+		 * Count non-swapcache too because the swapcache pages may
-+		 * be rare and it takes too much times here if not count
-+		 * the non-swapcache pages.
-+		 */
-+		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
-+		    !folio_test_swapcache(folio)))
-+			goto move;
-+
- 		if (!folio_test_lru(folio))
- 			goto move;
- 		if (!sc->may_unmap && folio_mapped(folio))
 -- 
-2.25.1
+2.39.2
 
