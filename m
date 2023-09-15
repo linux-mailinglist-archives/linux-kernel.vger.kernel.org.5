@@ -2,141 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2677A1E7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AC47A1E86
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbjIOMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S234778AbjIOMWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234691AbjIOMUe (ORCPT
+        with ESMTP id S234791AbjIOMV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:20:34 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA192273E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:20:06 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcd7a207f7so32995321fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694780405; x=1695385205; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=52tjejpvxnE8EVFiMbyAusvH4BJALwybD9Pcm4LTKkU=;
-        b=oPX4L/hHHkRvPGad9Q1rYbcez0sv5sc/Q8IXU5t9YF2q/OMWHDS96L9AXIYxiVXl1j
-         d4IISqFLxHvdtvBHQEDRxYfblAmqnaiBNvll7hBHV6BoX6SY7LszjiH0gEq3U8Hqgt88
-         Wh0TrcP8ez7MivCMYSFKrXRWrJBpOLcxKBCnlbw38VKzZYhPF9VA2bRXiH6nHiRfEEDy
-         BBLCdQ8bU2wdpM/PjvsrKbIiH/kDhD4lR9rQHyOyTjq3+62xM9Vglk/MRSuoYhdPPe8B
-         u17WKgO4BZ9RVKFnRjBySYhVNd4hLlb3KWoU5OvaAnv4w4hhRCfZAPlg/yOmdGeGshq/
-         DypA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694780405; x=1695385205;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=52tjejpvxnE8EVFiMbyAusvH4BJALwybD9Pcm4LTKkU=;
-        b=u55lx6ORrv+FEpyScVLzH+j1eJV6R/XPNhz9Bka6F9twGcI9vgTrSMuv0bnbpCfQxb
-         EbfPVhG4aZMmM5Fo7yTcnh2UcPmseXSNZz5ycVEMde0kEf2WWJbFAEOwLco1o01mNtUZ
-         FVejX/t28gyq8XWJJsjBLKOpIaBmKu2C7q9w+1w3OVluOFr2hHSXK3lEpVVb3HZ91JXQ
-         RmE/IoJWKvh4oShGxWPcIIFgDnZSvWQ1fljzc5sLzemNKEVa3z5CIBJ/JldwU/3kWbbQ
-         HTOmtJFmYX0LnXSptpDT3urs6t+v42ackz18Oqcvna5+xH37UiL01Af4MfS2nRLPKZrQ
-         t+0g==
-X-Gm-Message-State: AOJu0Yyovsk0rdh6M4/8zxqxWPvioTbF26AnO1mYRJ47E7s/E6j87XcS
-        1fKcKmCj/3g53YE7XlmCs8GgyA==
-X-Google-Smtp-Source: AGHT+IEuaLoRu6BfkkK0RfPqU4MzcognEb/aFkTu1WQhdb96RMqVBnMjoxxbgnJqGTaec9hd0t0CDA==
-X-Received: by 2002:a2e:9f0a:0:b0:2bc:be3c:9080 with SMTP id u10-20020a2e9f0a000000b002bcbe3c9080mr1318797ljk.27.1694780404833;
-        Fri, 15 Sep 2023 05:20:04 -0700 (PDT)
-Received: from ?IPV6:2a00:f41:cbe:bc7d:62a6:5d09:5ba7:be5b? ([2a00:f41:cbe:bc7d:62a6:5d09:5ba7:be5b])
-        by smtp.gmail.com with ESMTPSA id y15-20020a2e978f000000b002bce38190a3sm696858lji.34.2023.09.15.05.19.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 05:20:04 -0700 (PDT)
-Message-ID: <76f3bc23-8677-42bd-a3a5-43b17cbe552e@linaro.org>
-Date:   Fri, 15 Sep 2023 14:19:56 +0200
+        Fri, 15 Sep 2023 08:21:58 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FCF2130
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:21:45 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38FCLReC055595;
+        Fri, 15 Sep 2023 07:21:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694780487;
+        bh=TWpbAq6I3kBmGNuyWKN72N3R+tyapGx8TSRGW6J2IEA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=aFbI2P+sBFgmfKtIgi3XtPmM/+u2ojzdbGy0pJ+R5B3x4veK0ENy++Zaxg7D4O1N6
+         /aZpSZjwX8t0woDkTY3UdKY0DzTrr2SOuExFd0kUdmNNjhx5xsUNrqg4B0UHupHQLj
+         ChXcrxCjaOXMOticlJx/xh4i2m7KYEcHpkSovgX4=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38FCLRVJ017986
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Sep 2023 07:21:27 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Sep 2023 07:21:27 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Sep 2023 07:21:27 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38FCLR15099803;
+        Fri, 15 Sep 2023 07:21:27 -0500
+Date:   Fri, 15 Sep 2023 07:21:27 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Neha Malcom Francis <n-francis@ti.com>
+CC:     <ssantosh@kernel.org>, <t-konduru@ti.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>
+Subject: Re: [PATCH v2 1/2] soc: ti: k3-socinfo: Revamp driver to accommodate
+ different rev structs
+Message-ID: <20230915122127.f4cogffx4sc3towe@uncork>
+References: <20230915064650.2287638-1-n-francis@ti.com>
+ <20230915064650.2287638-2-n-francis@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/11] clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT
- flag from PLL clocks
-Content-Language: en-US
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
-        Varadarajan Narayanan <quic_varada@quicinc.com>,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Devi Priya <quic_devipriy@quicinc.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
- <20230913-gpll_cleanup-v2-1-c8ceb1a37680@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230913-gpll_cleanup-v2-1-c8ceb1a37680@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230915064650.2287638-2-n-francis@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
-> GPLL, NSS crypto PLL clock rates are fixed and shouldn't be scaled based
-> on the request from dependent clocks. Doing so will result in the
-> unexpected behaviour. So drop the CLK_SET_RATE_PARENT flag from the PLL
-> clocks.
+On 12:16-20230915, Neha Malcom Francis wrote:
+> k3-socinfo.c driver assumes silicon revisions to be 1.0, 2.0 etc. for
+> every platform. However this typical style is not followed by J721E
+> (1.0, 1.1) and need not be followed by upcoming silicon revisions as
+> well. Adapt the driver to be similar to its U-Boot counterpart
+> (drivers/soc/soc_ti_k3.c) that accounts for this difference on the
+> basis of partno/family.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: b8e7e519625f ("clk: qcom: ipq8074: add remaining PLL’s")
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
-Stephen, do you think there should be some sort of error
-or at least warning thrown when SET_RATE_PARENT is used with
-RO ops?
+> Note that we change the order of invocation of
+> k3_chipinfo_partno_to_names before k3_chipinfo_variant_to_sr so we
+> have the family name in case error is returned.
 
-Konrad
+Drop reference to U-boot and others. How about this:
+
+The driver assumes that the silicon revisions for every platform are
+incremental and one-to-one, corresponding to JTAG_ID's variant field:
+1.0, 2.0, and so on. This assumption is wrong for SoCs such as J721E,
+where the variant field to revision mapping is 1,0, 1.1. Further,
+there are SoCs such as AM65x where the sub-variant version requires
+custom decoding of other registers.
+
+Address this by using conditional handling per JTAG ID that requires
+an exception with J721E as the first example. To facilitate this
+conversion, use macros to identify the JTAG_ID part number and map them
+to predefined string array.
+
+> 
+> Signed-off-by: Thejasvi Konduru <t-konduru@ti.com>
+
+Maintain original From or drop this or use Co-developed-by as applicable?
+
+> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+> ---
+>  drivers/soc/ti/k3-socinfo.c | 71 +++++++++++++++++++++++++++++--------
+>  1 file changed, 56 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
+> index 6ea9b8c7d335..6de1e3531af9 100644
+> --- a/drivers/soc/ti/k3-socinfo.c
+> +++ b/drivers/soc/ti/k3-socinfo.c
+> @@ -33,19 +33,37 @@
+>  
+>  #define CTRLMMR_WKUP_JTAGID_MFG_TI		0x17
+>  
+> +#define JTAG_ID_PARTNO_AM65X		0xBB5A
+> +#define JTAG_ID_PARTNO_J721E		0xBB64
+> +#define JTAG_ID_PARTNO_J7200		0xBB6D
+> +#define JTAG_ID_PARTNO_AM64X		0xBB38
+> +#define JTAG_ID_PARTNO_J721S2		0xBB75
+> +#define JTAG_ID_PARTNO_AM62X		0xBB7E
+> +#define JTAG_ID_PARTNO_J784S4		0xBB80
+> +#define JTAG_ID_PARTNO_AM62AX		0xBB8D
+> +#define JTAG_ID_PARTNO_AM62PX		0xBB9D
+> +
+>  static const struct k3_soc_id {
+>  	unsigned int id;
+>  	const char *family_name;
+>  } k3_soc_ids[] = {
+> -	{ 0xBB5A, "AM65X" },
+> -	{ 0xBB64, "J721E" },
+> -	{ 0xBB6D, "J7200" },
+> -	{ 0xBB38, "AM64X" },
+> -	{ 0xBB75, "J721S2"},
+> -	{ 0xBB7E, "AM62X" },
+> -	{ 0xBB80, "J784S4" },
+> -	{ 0xBB8D, "AM62AX" },
+> -	{ 0xBB9D, "AM62PX" },
+> +	{ JTAG_ID_PARTNO_AM65X, "AM65X" },
+> +	{ JTAG_ID_PARTNO_J721E, "J721E" },
+> +	{ JTAG_ID_PARTNO_J7200, "J7200" },
+> +	{ JTAG_ID_PARTNO_AM64X, "AM64X" },
+> +	{ JTAG_ID_PARTNO_J721S2, "J721S2"},
+> +	{ JTAG_ID_PARTNO_AM62X, "AM62X" },
+> +	{ JTAG_ID_PARTNO_J784S4, "J784S4" },
+> +	{ JTAG_ID_PARTNO_AM62AX, "AM62AX" },
+> +	{ JTAG_ID_PARTNO_AM62PX, "AM62PX" },
+> +};
+> +
+> +static char *j721e_rev_string_map[] = {
+
+static const?
+
+> +	"1.0", "1.1",
+> +};
+> +
+> +static char *k3_rev_string_map[] = {
+
+We can drop this (See below)
+
+> +	"1.0", "2.0", "3.0",
+>  };
+>  
+>  static int
+> @@ -63,6 +81,29 @@ k3_chipinfo_partno_to_names(unsigned int partno,
+>  	return -EINVAL;
+>  }
+>  
+> +static int
+> +k3_chipinfo_variant_to_sr(unsigned int partno, unsigned int variant,
+> +			  struct soc_device_attribute *soc_dev_attr)
+> +{
+> +	switch (partno) {
+> +	case JTAG_ID_PARTNO_J721E:
+> +		if (variant >= ARRAY_SIZE(j721e_rev_string_map))
+> +			goto bail;
+> +		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%s",
+> +						   j721e_rev_string_map[variant]);
+> +		break;
+> +	default:
+> +		if (variant >= ARRAY_SIZE(k3_rev_string_map))
+> +			goto bail;
+> +		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%s",
+> +						   k3_rev_string_map[variant]);
+
+How about retaining the old logic as is?
+
+soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%x.0", variant);
+
+> +	}
+
+what if !soc_dev_attr->revision error handling?
+
+> +	return 0;
+> +
+> +bail:
+
+Rename to something like err_unknown_variant ?
+
+> +	return -EINVAL;
+return -ENODEV instead to help distinguish between not having memory Vs
+not finding a match?
+
+> +}
+> +
+>  static int k3_chipinfo_probe(struct platform_device *pdev)
+>  {
+>  	struct device_node *node = pdev->dev.of_node;
+> @@ -94,7 +135,6 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
+>  
+>  	variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
+>  		  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
+> -	variant++;
+>  
+>  	partno_id = (jtag_id & CTRLMMR_WKUP_JTAGID_PARTNO_MASK) >>
+>  		 CTRLMMR_WKUP_JTAGID_PARTNO_SHIFT;
+> @@ -103,15 +143,16 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
+>  	if (!soc_dev_attr)
+>  		return -ENOMEM;
+>  
+> -	soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%x.0", variant);
+> -	if (!soc_dev_attr->revision) {
+> -		ret = -ENOMEM;
+> +	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
+> +	if (ret) {
+> +		dev_err(dev, "Unknown SoC JTAGID[0x%08X]\n", jtag_id);
+
+Might be worthwhile to print the errno to distinguish between no mem
+fail vs nodev match fail. - see below for k3_chipinfo_partno_to_names
+
+> +		ret = -ENODEV;
+
+don't over-ride the return value - that is probably a preceding cleanup patch
+for k3_chipinfo_partno_to_names - also to distinguish between -ENOMEM vs
+-ENODEV.
+
+>  		goto err;
+>  	}
+>  
+> -	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
+> +	ret = k3_chipinfo_variant_to_sr(partno_id, variant, soc_dev_attr);
+>  	if (ret) {
+> -		dev_err(dev, "Unknown SoC JTAGID[0x%08X]\n", jtag_id);
+> +		dev_err(dev, "Unknown revision for %s\n", soc_dev_attr->family);
+>  		ret = -ENODEV;
+>  		goto err_free_rev;
+>  	}
+> -- 
+> 2.34.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
