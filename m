@@ -2,46 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF5D7A1F47
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5F47A1F4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbjIOMyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
+        id S235129AbjIOMz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235034AbjIOMyI (ORCPT
+        with ESMTP id S234962AbjIOMzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:54:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDACE19AE;
-        Fri, 15 Sep 2023 05:53:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02C4E1FB;
-        Fri, 15 Sep 2023 05:54:37 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29E353F5A1;
-        Fri, 15 Sep 2023 05:53:58 -0700 (PDT)
-Message-ID: <73655f9b-9ea4-cb46-d712-20f1c4ac7c95@arm.com>
-Date:   Fri, 15 Sep 2023 13:53:56 +0100
+        Fri, 15 Sep 2023 08:55:25 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022F71713
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:55:21 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-41761e9181eso241161cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694782520; x=1695387320; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vPHy6FbUY6qMDmcdSpgvW83WHD8MuvuLRYVKW+S0nuI=;
+        b=FYbllhMbbEtVzEYLkr5eCj8ggR9cnp3YNPCc/t5Av80CURgM5FSLvPSmnrpV43ox96
+         2G6wFsboNZmFUbx8g7lqr3rM/8rGgTC+D9mX4+ZVFde0iCYHxgoN+4J8UHXMaj27w2Nc
+         K76nL2KL2ag8CqMDB9iFi9udkxG8VKxE+FYDdeoKs3EHgbRpw0yBHnW6J7YDIcnTFSLu
+         gBu3QBWYuXn8FopcNXJfcriJnig8NA0yemexJWxvgqNI5+Ii0J1ym4i97niGmdXwIv+X
+         2OmeXntdnDyaCLjQ9rqNwykFHaUl/nVke4YCgMwzyfovAjsxUcg9OlLXgRU70Hx/Qf1W
+         /UTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694782520; x=1695387320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vPHy6FbUY6qMDmcdSpgvW83WHD8MuvuLRYVKW+S0nuI=;
+        b=EoD4IE7ZBPHlleQXx92cxmaDTgdUIhwzpzpYifn3mWhHY9vTPhaTMCc7SsweKP0w3B
+         rcG5v4ih6PyyymdlGx6r2V3wSLAWrCxHe/PfFxpffMOZCS0ZtowI50NBtOzss9WNaNm2
+         kS3GJxTwXYu7O5hyt3UonncqvcbyO2JBNzTvjHoa23poqnfqLUkJ62lkxziqKRhpo2RD
+         j3L1ADeDvZVrTq74ddf/SaLGkOOTD+C34xQLIt7GUPiiMONG8FN8xThBnUlU6abIi8zA
+         U3NmwPmbf7an4c36Pbi1JO5kmi7zXUUgCGvFGos76ZHbFoGrA4MVd/4OO9KIRsDJesT7
+         7/4A==
+X-Gm-Message-State: AOJu0YzvVJc6qP08zP80toiSvmRroMUAOmHIcNIkLXLBT1NohXP0JScy
+        jqBjcGoMz2kEQVYaakL3Nj6QxiWcn94YezmIXsvEjQrJLrtz+xrKdMI=
+X-Google-Smtp-Source: AGHT+IGQo6Ocl0mq1s8C1s55rpOfzpETFjdpA0DIog96ZmkP65gu2xfgg5C8jNL1i4mKojDFDv16uHfi4OY7OUM2Qoc=
+X-Received: by 2002:a05:622a:1a86:b0:3f2:1441:3c11 with SMTP id
+ s6-20020a05622a1a8600b003f214413c11mr236689qtc.2.1694782519819; Fri, 15 Sep
+ 2023 05:55:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/5] hwtracing: hisi_ptt: Add dummy callback
- pmu::read()
-Content-Language: en-US
-To:     Yicong Yang <yangyicong@huawei.com>, mathieu.poirier@linaro.org,
-        jonathan.cameron@huawei.com, linux-kernel@vger.kernel.org
-Cc:     alexander.shishkin@linux.intel.com, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, prime.zeng@hisilicon.com,
-        linuxarm@huawei.com, yangyicong@hisilicon.com, hejunhao3@huawei.com
-References: <20230914112223.27165-1-yangyicong@huawei.com>
- <20230914112223.27165-6-yangyicong@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230914112223.27165-6-yangyicong@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230915104156.3406380-1-make_ruc2021@163.com>
+In-Reply-To: <20230915104156.3406380-1-make_ruc2021@163.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Sep 2023 14:55:08 +0200
+Message-ID: <CANn89iJyktWcztc76Pw16MP-k-DfSjstW+WFgRxwUat7p25CGw@mail.gmail.com>
+Subject: Re: [PATCH] net: sched: drr: dont intepret cls results when asked to drop
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,48 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 12:22, Yicong Yang wrote:
-> From: Junhao He <hejunhao3@huawei.com>
-> 
-> When start trace with perf option "-C $cpu" and immediately stop it
-> with SIGTERM or others, the perf core will invoke pmu::read() while
-> the driver doesn't implement it. Add a dummy pmu::read() to avoid
-> any issues.
-
-What issues are we talking about here ? Shouldn't the core perf
-skip the call, if pmu::read() is not available ?
-
-Suzuki
-
-> 
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Fri, Sep 15, 2023 at 12:42=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote=
+:
+>
+> If asked to drop a packet via TC_ACT_SHOT it is unsafe to
+> assume res.class contains a valid pointer.
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
 > ---
->   drivers/hwtracing/ptt/hisi_ptt.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
-> index 62a444f5228e..c1b5fd2b8974 100644
-> --- a/drivers/hwtracing/ptt/hisi_ptt.c
-> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
-> @@ -1184,6 +1184,10 @@ static void hisi_ptt_pmu_del(struct perf_event *event, int flags)
->   	hisi_ptt_pmu_stop(event, PERF_EF_UPDATE);
->   }
->   
-> +static void hisi_ptt_pmu_read(struct perf_event *event)
-> +{
-> +}
-> +
->   static void hisi_ptt_remove_cpuhp_instance(void *hotplug_node)
->   {
->   	cpuhp_state_remove_instance_nocalls(hisi_ptt_pmu_online, hotplug_node);
-> @@ -1227,6 +1231,7 @@ static int hisi_ptt_register_pmu(struct hisi_ptt *hisi_ptt)
->   		.stop		= hisi_ptt_pmu_stop,
->   		.add		= hisi_ptt_pmu_add,
->   		.del		= hisi_ptt_pmu_del,
-> +		.read		= hisi_ptt_pmu_read,
->   	};
->   
->   	reg = readl(hisi_ptt->iobase + HISI_PTT_LOCATION);
+>  net/sched/sch_drr.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/sched/sch_drr.c b/net/sched/sch_drr.c
+> index 19901e77cd3b..2b854cb6edf9 100644
+> --- a/net/sched/sch_drr.c
+> +++ b/net/sched/sch_drr.c
+> @@ -309,6 +309,8 @@ static struct drr_class *drr_classify(struct sk_buff =
+*skb, struct Qdisc *sch,
+>         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
+>         fl =3D rcu_dereference_bh(q->filter_list);
+>         result =3D tcf_classify(skb, NULL, fl, &res, false);
+> +       if (result =3D=3D TC_ACT_SHOT)
+> +               return NULL;
+>         if (result >=3D 0) {
+>  #ifdef CONFIG_NET_CLS_ACT
+>                 switch (result) {
+> --
+> 2.37.2
+>
 
+ I do not see a bug, TC_ACT_SHOT is handled in the switch (result) just fin=
+e
+at line 320 ?
