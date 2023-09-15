@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BE17A20E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8867A20E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbjIOO2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S234569AbjIOO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234569AbjIOO2p (ORCPT
+        with ESMTP id S235696AbjIOO2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:28:45 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2BAD1FC9;
-        Fri, 15 Sep 2023 07:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4Lvqk
-        wMnGvJjRQ4h90L6sdZDECeah6lwsJd/8WR5NmQ=; b=Ad/cZ/aU278bMw80MDtD2
-        LcHVM5GRUruIkBVpttf048dqEs9ZPBCdmMQUTo5cFe4QuaCsVa7+UbJ6ZePBUq+h
-        0OEma/RFo/7uOlUiPM9jPZ+ZEoE83zHIXhy6pqfptQgOd8dp8OSrp81Xtcmw8KeE
-        xfFKOWJ8APYxHV5mWI3/qk=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wAXtirJaQRlm7SGCA--.42638S4;
-        Fri, 15 Sep 2023 22:27:31 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] net: sched: htb: dont intepret cls results when asked to drop
-Date:   Fri, 15 Sep 2023 22:27:19 +0800
-Message-Id: <20230915142719.3411733-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 15 Sep 2023 10:28:46 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314181FCE;
+        Fri, 15 Sep 2023 07:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LQfJYvE2Csoxjb0lVlLN4FcWufcYVyyJCyyuwAbWOnU=; b=KQXtAOeuJAErVKd6uCAVlHA6pg
+        YEjxPW8qCQSdnT0BpMPpiEQUqoWgnx96ACyemvrrs070Hx49chE8bD/RX6bVGcgAlD6+Fhi1XO6xX
+        Z7rkRFy5u2HkFO69DEB0fz1XiCQ6zqT0Ehti6NRcEE4vBRecafV5pY9/6maldCvxzy9GqM2PkwGUO
+        zlWUKy5Hawds6CoeWyMvCxmVhsjtC1qzXqXjtAmxjElm/ZsL0IqcA07elyzjW84yZ98nj+bPoR6K2
+        eCbtX9jR50Qsk1JCgWNbndDpqTBH5bhOB+TqRtHzjkA2YK2vLvSMHdrNBIgByv8unzvp4sIU6+y/M
+        YHMHee/A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qh9nq-006KYh-18;
+        Fri, 15 Sep 2023 14:28:14 +0000
+Date:   Fri, 15 Sep 2023 15:28:14 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230915142814.GL800259@ZenIV>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230914023705.GH800259@ZenIV>
+ <20230914053843.GI800259@ZenIV>
+ <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
+ <20230914165805.GJ800259@ZenIV>
+ <20230915-elstern-etatplanung-906c6780af19@brauner>
+ <20230915-zweit-frech-0e06394208a3@brauner>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAXtirJaQRlm7SGCA--.42638S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFW7ury8JrW7Xw48ZF1DJrb_yoWDWrc_Za
-        4kGrs3CFyxCrn5Cw1xuFs2kryFkF1fZ3ZxJwsxKrZrXw1rCrZ8Cr18Gws3J397WFWIka4U
-        ZrZFg3Z3GrnrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRt6pPUUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiPRXrC2I0YecgCwAAsz
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915-zweit-frech-0e06394208a3@brauner>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If asked to drop a packet via TC_ACT_SHOT it is unsafe to
-assume that res.class contains a valid pointer.
+On Fri, Sep 15, 2023 at 04:12:07PM +0200, Christian Brauner wrote:
+> +	static void some_fs_kill_sb(struct super_block *sb)
+> +	{
+> +		struct some_fs_info *info = sb->s_fs_info;
+> +
+> +		kill_*_super(sb);
+> +		kfree(info);
+> +	}
+> +
+> +It's best practice to never deviate from this pattern.
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- net/sched/sch_htb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The last part is flat-out incorrect.  If e.g. fatfs or cifs ever switches
+to that pattern, you'll get UAF - they need freeing of ->s_fs_info
+of anything that ever had been mounted done with RCU delay; moreover,
+unload_nls() in fatfs needs to be behind the same.
 
-diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
-index 0d947414e616..7b2e5037b713 100644
---- a/net/sched/sch_htb.c
-+++ b/net/sched/sch_htb.c
-@@ -243,6 +243,8 @@ static struct htb_class *htb_classify(struct sk_buff *skb, struct Qdisc *sch,
- 
- 	*qerr = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
- 	while (tcf && (result = tcf_classify(skb, NULL, tcf, &res, false)) >= 0) {
-+		if (result == TC_ACT_SHOT)
-+			return NULL;
- #ifdef CONFIG_NET_CLS_ACT
- 		switch (result) {
- 		case TC_ACT_QUEUED:
-@@ -250,8 +252,6 @@ static struct htb_class *htb_classify(struct sk_buff *skb, struct Qdisc *sch,
- 		case TC_ACT_TRAP:
- 			*qerr = NET_XMIT_SUCCESS | __NET_XMIT_STOLEN;
- 			fallthrough;
--		case TC_ACT_SHOT:
--			return NULL;
- 		}
- #endif
- 		cl = (void *)res.class;
--- 
-2.37.2
-
+Lifetime rules for fs-private parts of superblock are really private to
+filesystem; their use by sget/sget_fc callbacks might impose restrictions
+on those, but that again is none of the VFS business.
