@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCFB7A267D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD707A2685
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbjIOSq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
+        id S236593AbjIOSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237246AbjIOSqY (ORCPT
+        with ESMTP id S236721AbjIOSrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:46:24 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360FA49E0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:11 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d81b42a3108so1574797276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:11 -0700 (PDT)
+        Fri, 15 Sep 2023 14:47:41 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F36E26B8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:45 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3ab244f2c89so1608632b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694803508; x=1695408308; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694803544; x=1695408344; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mb/JbSxTOf6YSrodg1aYhJ0ml5QYx/b8sq5qwirE40g=;
-        b=rVYwpiEHoZUTb1RScl189CXIouKvFDbkstbiscDXabsDRCbOkQytbby89efW935GVw
-         Y7iB7bty48aTBdwfgSVDtMTpq67HjL+hX5phLgUhI4laX6oC1huweqVHOFr0oP0KxNqq
-         7bIe/ssZObIkQ2Lqbw3MfS7pu1fvw6+adj5tNUW6VaW3KAs4nbUQgRMWR25zr4MMsX7x
-         Krjss6t7VlOOJQsEjSxqa2n2EJwQqDLT4eflNwpbf/yLG9YE1ilfLItiQBQm5ybigNQT
-         ib961tpk2lBHMIDi1YxrT4dJZY8Aixjrpf54+p3GW7tuurNzBUOVn0hEL0yhEdNbk+RT
-         gT8A==
+        bh=Xc6N8q1gZ95xd8ZpHAufgS4nDSL1wE+rjEdZ65KQsuw=;
+        b=qaGc3i2kjpKiLBAflyHXKX/F+6iOeJ+awGWr88gEK67InMTl5x/kuRDzAKHO4bD2rj
+         EMTcLNDozSD5VlUEBf1zaHmcu0MNKrkDcTamASiqNbvuLnLSE44Or5sCLEXqPgExxIrT
+         a5oOlZyC7j2973zEvGxNjCcPtH1MRzYz0+FB8e6xqxh0Aioau0Qh2boDzwn0tbTYjDog
+         QwL1n3Q6ENrblqq4zn1Mfzdhz++wodZDJESN7U25WsbTp7N9S9i8we1Ugcowsm0N6xCY
+         XGPF5aYlECdwT3QVIkWslAzBGzUX6gtJ4XlvQM7ZgoU6+rqoVKwDp9XXD571GxzMmEbO
+         l3UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694803508; x=1695408308;
+        d=1e100.net; s=20230601; t=1694803544; x=1695408344;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mb/JbSxTOf6YSrodg1aYhJ0ml5QYx/b8sq5qwirE40g=;
-        b=ErtBPbtq622F9x4lVV5w2xMyEz1hDkIUBKzRhege0pShtkqJ9XESgeGN/yUMgirPGN
-         ySbzwxoNmb9ZsPuqSTOGEXfFfRpDR6vIlc0W98oqpbrJ/jSfYjwRZw9lGUEcAtT9Zw7r
-         vvcTlWWBsrU7k4WtWQ2/d11rbdIA/2Cs96uvujNp7OvEJUDPU0nTabjcDskfNmB2ixtk
-         phB27m32SCKqGsSc2qTziuxgYU2+f9WiaNgiua/Uxz7GjtuAh0cJRh5p3mbc1zlhtT8+
-         4OqE076v8iw5o9nxEAVU3Sa0eNINt0+tXtMMtm4wduMGMkVQv4Xrxuiy8z+XEP8u4oI8
-         kXtA==
-X-Gm-Message-State: AOJu0Yx7H+aNQ4c28PHvxpnBcH+ZKzsaqz4WO47Eqkm4XKKqMBbURgFH
-        ky1GNdy526I+bTN+2V95X2wiecJrRPb7V8kfdMxYdg==
-X-Google-Smtp-Source: AGHT+IEgvKwcttxHaal71JQerDkqCTheLo6v9lIh37KHgKPxJxzPu18/C942DDKEdzyC+RRK7Px6UodLsnRJQPamVkw=
-X-Received: by 2002:a25:cf09:0:b0:d0e:c8fb:986a with SMTP id
- f9-20020a25cf09000000b00d0ec8fb986amr2587928ybg.42.1694803508490; Fri, 15 Sep
- 2023 11:45:08 -0700 (PDT)
+        bh=Xc6N8q1gZ95xd8ZpHAufgS4nDSL1wE+rjEdZ65KQsuw=;
+        b=KY41wR8/c0SZ0JMt/cOhCE8Io457owW5aKa7FG83IqGsBYNqod4MCmjxD3ue73nmny
+         KtJQ5LF1MBdL9x/thp7g9EomDEPlF6X4oYQ5gO447XUCdq4gMcLmbXPUZ1Oz0WnuttBJ
+         QcO7k/3s022BBo61EplgBbBvGhv//DospcAvNss82UP1QuPjjrtGtJ+y9wcdY6OPAq63
+         RwK/c0wHgkpSI5a41YufNfxoh6RQtECR8Vplsrm5G9HHrTzoS+xAO21eJuAekL4vngi4
+         IU2J+mf+nGAsLiJf83s1GP2kWS/CJPsPaUvngAc7WgUyAi0w3vBGWR4IUtEbAWQMCxV9
+         W54g==
+X-Gm-Message-State: AOJu0YzQZaN8HAFGvAcV7fFcyhRQYLQTmHbHZxPE/nEIAsJ4jqa8J6yv
+        6MYx46ujOzsn8Y0l196xC0hZ+F953H2mm7MXdaVrQw==
+X-Google-Smtp-Source: AGHT+IHzJEqXtPBsPW5jLeFQcrS9Dk5aUh3URVKOBbbZYM9R7XAZ4gEp09I5Ct3eiDOjHZCwgOeYUuK9STXkvNcsKSs=
+X-Received: by 2002:a54:418a:0:b0:3a7:45e0:c0eb with SMTP id
+ 10-20020a54418a000000b003a745e0c0ebmr2846439oiy.24.1694803544202; Fri, 15 Sep
+ 2023 11:45:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230915121504.806672-1-quic_srichara@quicinc.com> <20230915121504.806672-4-quic_srichara@quicinc.com>
-In-Reply-To: <20230915121504.806672-4-quic_srichara@quicinc.com>
+References: <20230915121504.806672-1-quic_srichara@quicinc.com> <20230915121504.806672-3-quic_srichara@quicinc.com>
+In-Reply-To: <20230915121504.806672-3-quic_srichara@quicinc.com>
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 15 Sep 2023 21:44:57 +0300
-Message-ID: <CAA8EJpqJaY3ocZYMxWyDhzoCvCrn6d-YyD=jtumAM7aXe_DEdg@mail.gmail.com>
-Subject: Re: [PATCH V2 3/4] thermal/drivers/tsens: Add support for IPQ5018 tsens
+Date:   Fri, 15 Sep 2023 21:45:33 +0300
+Message-ID: <CAA8EJpo6hb=cxJ8wTLf+fEc8B30dhT67XWbqiNrMoRfUxUnqSw@mail.gmail.com>
+Subject: Re: [PATCH V2 2/4] thermal/drivers/qcom: Add new feat for soc without rpm
 To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>
 Cc:     krzysztof.kozlowski@linaro.org, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -65,148 +65,23 @@ Cc:     krzysztof.kozlowski@linaro.org, agross@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 15:16, Sricharan Ramabadhran
+On Fri, 15 Sept 2023 at 15:15, Sricharan Ramabadhran
 <quic_srichara@quicinc.com> wrote:
 >
-> IPQ5018 has tsens IP V1.0, 4 sensors and 1 interrupt.
-> The soc does not have a RPM, hence tsens has to be reset and
-> enabled in the driver init. Adding the driver support for same.
+> In IPQ5018, Tsens IP doesn't have RPM. Hence the early init to
+> enable tsens would not be done. So add a flag for that in feat
+> and skip enable checks. Without this, tsens probe fails.
 >
 > Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> ---
->  [v2] Used tsens_calibrate_common instead of legacy
->       and addressed comments from Dmitry.
->
->  drivers/thermal/qcom/tsens-v1.c | 58 +++++++++++++++++++++++++++++++++
->  drivers/thermal/qcom/tsens.c    |  3 ++
->  drivers/thermal/qcom/tsens.h    |  2 +-
->  3 files changed, 62 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/qcom/tsens-v1.c b/drivers/thermal/qcom/tsens-v1.c
-> index dc1c4ae2d8b0..ed5c017905ab 100644
-> --- a/drivers/thermal/qcom/tsens-v1.c
-> +++ b/drivers/thermal/qcom/tsens-v1.c
-> @@ -79,6 +79,18 @@ static struct tsens_features tsens_v1_feat = {
->         .trip_max_temp  = 120000,
->  };
->
-> +static struct tsens_features tsens_v1_ipq5018_feat = {
-> +       .ver_major      = VER_1_X,
-> +       .crit_int       = 0,
-> +       .combo_int      = 0,
-> +       .adc            = 1,
-> +       .srot_split     = 1,
-> +       .max_sensors    = 11,
-> +       .trip_min_temp  = -40000,
-> +       .trip_max_temp  = 120000,
-> +       .ignore_enable  = 1,
-> +};
-> +
->  static const struct reg_field tsens_v1_regfields[MAX_REGFIELDS] = {
->         /* ----- SROT ------ */
->         /* VERSION */
-> @@ -150,6 +162,39 @@ static int __init init_8956(struct tsens_priv *priv) {
->         return init_common(priv);
->  }
->
-> +static int init_ipq5018(struct tsens_priv *priv)
-> +{
-> +       int ret;
-> +       u32 mask;
-> +
-> +       init_common(priv);
 
-Please take care of init_common()'s return code. Don't continue init
-if init_common() fails.
-
-> +       if (!priv->tm_map)
-> +               return -ENODEV;
-
-Why?
-
-> +
-> +       ret = regmap_field_write(priv->rf[TSENS_SW_RST], 1);
-> +       if (ret) {
-> +               dev_err(priv->dev, "Reset failed\n");
-> +               return ret;
-> +       }
-> +
-> +       mask = GENMASK(priv->num_sensors, 0);
-> +       ret = regmap_field_update_bits(priv->rf[SENSOR_EN], mask, mask);
-> +       if (ret) {
-> +               dev_err(priv->dev, "Sensor Enable failed\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = regmap_field_write(priv->rf[TSENS_EN], 1);
-> +       if (ret) {
-> +               dev_err(priv->dev, "Enable failed\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = regmap_field_write(priv->rf[TSENS_SW_RST], 0);
-> +
-> +       return ret;
-> +}
-> +
->  static const struct tsens_ops ops_generic_v1 = {
->         .init           = init_common,
->         .calibrate      = calibrate_v1,
-> @@ -187,3 +232,16 @@ struct tsens_plat_data data_8976 = {
->         .feat           = &tsens_v1_feat,
->         .fields         = tsens_v1_regfields,
->  };
-> +
-> +const struct tsens_ops ops_ipq5018 = {
-> +       .init           = init_ipq5018,
-> +       .calibrate      = tsens_calibrate_common,
-> +       .get_temp       = get_temp_tsens_valid,
-> +};
-> +
-> +struct tsens_plat_data data_ipq5018 = {
-> +       .num_sensors    = 5,
-> +       .ops            = &ops_ipq5018,
-> +       .feat           = &tsens_v1_ipq5018_feat,
-> +       .fields         = tsens_v1_regfields,
-> +};
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index 0a43ccf02ec4..c792b9dc6676 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -1101,6 +1101,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
->
->  static const struct of_device_id tsens_table[] = {
->         {
-> +               .compatible = "qcom,ipq5018-tsens",
-> +               .data = &data_ipq5018,
-> +       }, {
->                 .compatible = "qcom,ipq8064-tsens",
->                 .data = &data_8960,
->         }, {
-> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-> index e254cd2df904..b6594b546d11 100644
-> --- a/drivers/thermal/qcom/tsens.h
-> +++ b/drivers/thermal/qcom/tsens.h
-> @@ -645,7 +645,7 @@ extern struct tsens_plat_data data_8960;
->  extern struct tsens_plat_data data_8226, data_8909, data_8916, data_8939, data_8974, data_9607;
->
->  /* TSENS v1 targets */
-> -extern struct tsens_plat_data data_tsens_v1, data_8976, data_8956;
-> +extern struct tsens_plat_data data_tsens_v1, data_8976, data_8956, data_ipq5018;
->
->  /* TSENS v2 targets */
->  extern struct tsens_plat_data data_8996, data_ipq8074, data_tsens_v2;
-> --
-> 2.34.1
->
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
 -- 
