@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742CB7A13C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C237A13A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjIOCT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 22:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
+        id S231497AbjIOCQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 22:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjIOCT1 (ORCPT
+        with ESMTP id S229584AbjIOCQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 22:19:27 -0400
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7E11BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 19:19:22 -0700 (PDT)
-Received: from localhost (unknown [124.16.138.129])
-        by APP-03 (Coremail) with SMTP id rQCowAAXH6MMvwNlW4gRDQ--.10658S2;
-        Fri, 15 Sep 2023 10:18:53 +0800 (CST)
-From:   Chen Ni <nichen@iscas.ac.cn>
-To:     cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        kai.vehmanen@linux.intel.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        brent.lu@intel.com, amadeuszx.slawinski@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] ASoC: hdaudio.c: Add missing check for devm_kstrdup
-Date:   Fri, 15 Sep 2023 02:13:44 +0000
-Message-Id: <20230915021344.3078-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Sep 2023 22:16:32 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95FD1BEB;
+        Thu, 14 Sep 2023 19:16:28 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F1VAFp015091;
+        Fri, 15 Sep 2023 02:15:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=ZjPVyq1MqpeBUl5lequMmDSTzopZyeP+Od7ITsvG1gc=;
+ b=JwHKDU+3rZBVtJi7ROkIYDRs4Xq12q4cgYs8d8+PfL3ug6bUSZ5aGvez0ybcmp7RIoov
+ 6x/jXu0N2ZWIjy5o8phlkwugm/OlJbt2+y5GvGr3+n+ffYeSKn9w450NP+ujzBw9hRUR
+ dlpaAZjgdogO9y9QpBrj5j3NdAlvIPIm1slEcfYgiJJVqjpeSt+VXoStPKX6utgB02/J
+ KD14wkyFsEmHYDu424pAbA4Lss/JoL3bB4SI0166mCiZWEIxSNr1hktK/e+MMVpyYU62
+ Mb96lKfRSxcj9saH7cVOpU7yh0zbmuemZC/bBX5EpxAHgPFp9oZgCDf3FHHoQsMyrZWg WQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4dncr2h0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 02:15:43 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38F2Fgv1005246
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 02:15:42 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 14 Sep 2023 19:15:34 -0700
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <catalin.marinas@arm.com>
+CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v2 0/8] soc: qcom: Add uart console support for SM4450
+Date:   Fri, 15 Sep 2023 10:15:00 +0800
+Message-ID: <20230915021509.25773-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowAAXH6MMvwNlW4gRDQ--.10658S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr18KryUtF1ftr4kAF4rAFb_yoWfKrX_Cw
-        4kCa1kuFyDXrsagw4qy3ySk3WFg3W7CFyUtr95tF9rA3s5Jw43Kr13trn5uay8XrZ2yr45
-        ZF1qgr4xtr9rJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-        67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUHWlkUUUUU=
-X-Originating-IP: [124.16.138.129]
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XdDXLfqqc3EedxKW86OfvWgPS5NuQ0TH
+X-Proofpoint-ORIG-GUID: XdDXLfqqc3EedxKW86OfvWgPS5NuQ0TH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_02,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=492 mlxscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because of the potential failure of the devm_kstrdup(), the 
-dl[i].codecs->name could be NULL.
-Therefore, we need to check it and return -ENOMEM in order to transfer
-the error.
+This series add base description of UART, TLMM, interconnect, TCSRCC
+RPMHCC, GCC, RPMh PD and SMMU nodes which helps SM4450 boot to shell
+with console on boards with this SoC.
 
-Fixes: 97030a43371e ("ASoC: Intel: avs: Add HDAudio machine board")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
- sound/soc/intel/avs/boards/hdaudio.c | 3 +++
- 1 file changed, 3 insertions(+)
+This patch series depends on below patch series:
+"[PATCH v2 0/4] clk: qcom: Add support for GCC and RPMHCC on SM4450"
+https://lore.kernel.org/linux-arm-msm/20230909123431.1725728-1-quic_ajipan@quicinc.com/
+"[PATCH v2 0/2] pinctl: qcom: Add SM4450 pinctrl driver"
+https://lore.kernel.org/linux-arm-msm/20230915015808.18296-1-quic_tengfan@quicinc.com/
+"[PATCH v2 0/2] interconnect: qcom: Add SM4450 interconnect"
+https://lore.kernel.org/linux-arm-msm/20230915020129.19611-1-quic_tengfan@quicinc.com/
 
-diff --git a/sound/soc/intel/avs/boards/hdaudio.c b/sound/soc/intel/avs/boards/hdaudio.c
-index cb00bc86ac94..8876558f19a1 100644
---- a/sound/soc/intel/avs/boards/hdaudio.c
-+++ b/sound/soc/intel/avs/boards/hdaudio.c
-@@ -55,6 +55,9 @@ static int avs_create_dai_links(struct device *dev, struct hda_codec *codec, int
- 			return -ENOMEM;
- 
- 		dl[i].codecs->name = devm_kstrdup(dev, cname, GFP_KERNEL);
-+		if (!dl[i].codecs->name)
-+			return -ENOMEM;
-+
- 		dl[i].codecs->dai_name = pcm->name;
- 		dl[i].num_codecs = 1;
- 		dl[i].num_cpus = 1;
+v1 -> v2:
+  - setting "qcom,rpmh-rsc" compatible to the first property
+  - keep order by unit address
+  - move tlmm node into soc node
+  - update arm,smmu.yaml
+  - add enable pinctrl and interconnect defconfig patches
+  - remove blank line
+  - redo dtbs_check check
+
+previous discussion here:
+[1]
+https://lore.kernel.org/linux-arm-msm/20230908065847.28382-1-quic_tengfan@quicinc.com
+
+Ajit Pandey (2):
+  arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db node
+  arm64: dts: qcom: sm4450: Add RPMH and Global clock controller
+
+Tengfei Fan (6):
+  dt-bindings: firmware: document Qualcomm SM4450 SCM
+  dt-bindings: mfd: qcom,tcsr: Add compatible for sm4450
+  dt-bindings: interrupt-controller: qcom,pdc: document qcom,sm4450-pdc
+  dt-bindings: arm-smmu: Add compatible for SM4450 SoC
+  arm64: dts: qcom: add uart console support for SM4450
+  arm64: defconfig: enable interconnect and pinctrl for SM4450
+
+ .../bindings/firmware/qcom,scm.yaml           |   3 +
+ .../interrupt-controller/qcom,pdc.yaml        |   1 +
+ .../devicetree/bindings/iommu/arm,smmu.yaml   |   3 +
+ .../devicetree/bindings/mfd/qcom,tcsr.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/sm4450-qrd.dts       |  18 +-
+ arch/arm64/boot/dts/qcom/sm4450.dtsi          | 309 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   2 +
+ 7 files changed, 335 insertions(+), 2 deletions(-)
+
+
+base-commit: 98897dc735cf6635f0966f76eb0108354168fb15
 -- 
-2.25.1
+2.17.1
 
