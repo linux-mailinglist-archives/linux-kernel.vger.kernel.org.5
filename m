@@ -2,234 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BD87A21A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E807A21D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbjIOPAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S235749AbjIOPDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjIOPAP (ORCPT
+        with ESMTP id S229568AbjIOPDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:00:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D35110D;
-        Fri, 15 Sep 2023 08:00:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC6F2C433C9;
-        Fri, 15 Sep 2023 15:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694790010;
-        bh=FqlUd/YRLEnI9bITXzGJS4ipTYUOfDz0uPKjftQZN2Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MQbpzNDYPYhuQa28l/as2SlN2tEJNV0vEbEBwQUjbqbxor8r91qBnz7702aJ5/E4b
-         HFFTkqYaTPo7Xx0/glpwrLxZOP5KcgfAU4ey2nfRV3mFf4h68zsv4oAumyixNJoLC3
-         +lO1yjTukDJoA/Nbt1nlBU7Bq69eZ8R3vSq7+bCSuwvrQQ9879/2Qna2Q8A34sx6ik
-         cX664ASLfLfr9f8RL8QlPF9Eo9JNFm+OAmuaf3V68SD35lN9wqRCBjltLu8BmF3cWf
-         HButuETjOQWEbzgw68ws2lZa8IP21+NbmY2kDwAP/kSCF4UC1I/H/nbXnwQmEkFv0l
-         l2pnnTIJtD/Sg==
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing/timerlat: Hotplug support for the user-space interface
-Date:   Fri, 15 Sep 2023 17:00:05 +0200
-Message-Id: <b619d9fd08a3bb47018cf40afa95783844a3c1fd.1694789910.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.38.1
+        Fri, 15 Sep 2023 11:03:39 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36442211E
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:32 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f853f2f3aso2228466f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694790210; x=1695395010; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v2icBidhNqLF921D274+HegN9s4sM/PCTy5BqMLL57c=;
+        b=x+TQ3jbvdGtso1IF9KzIw5VBjDCeGxZzua2+ltbfk/Q6ccsT9ckmoEmB6Vwww8Ya1p
+         x5DEBj9e9fMTtm6x+6Z2KWv4RlbqCFxIIwHL33FE9p9rmWg+5ukU9483ehDlE8JwYaC4
+         zsn/OdN83lSofAYFsMvVkOMdacpmEp2t0EGMOcH6Fb+VNv0ufeuzvJx+XlKxmcFtpJ8V
+         smnsfxxDR9EB27ePdweKgXpclwitYh3hPI+/aGIQVwO/OOBsNIRekL2s4bu9xgYtCOfK
+         rWC0JVR66XXSWKKiIM9TJdNIzliWaIu0LksZ2JB8O0wh9WbJELVM7Pzm3s7T/rOL6dzb
+         uaHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694790210; x=1695395010;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v2icBidhNqLF921D274+HegN9s4sM/PCTy5BqMLL57c=;
+        b=d7GZwHb8Y9RSfKKovz8gbpEVJtDetrsXT/7aXQNPmzgcx8lcJUXJFKF/Not2Jn/Rx0
+         lPf7Og+EI2L83g0NqAHmk+TFvP/09nQIDY/uujpUVzcCuvTHTj5VUcGOVoGf8lVYpnPR
+         3CcLgwTbp9Ph8/ytTbw7xEJKytadaNu6OwR28erzRoZL1j0xhdFWKIej09fn7a2GJNIO
+         2e2DLP7fKGGQ3T6ZCI0zNa6g65k+5J5kp2uURrXo2LA0k4cWGiHCc7W3do6BFUm6fif2
+         gU9reY1i3Fq6B56Jm3MpGm/OZrYi5qrqjH2tyYHFuSxfPSS/A1Z8NxnHkn6FxYF8no3F
+         F3sw==
+X-Gm-Message-State: AOJu0YyI5Hme3efjuZ4MsnsgcDVoKKzCU9l6bocyBfVf7fWSiQjynSNx
+        FutENDQR9aR4hVlkPIXs/rUvWQ==
+X-Google-Smtp-Source: AGHT+IEfWgq+54eJPYGOwbdJHlYxpAVHAOywpVSMyAjN9QotMhlImJ8mbahol9G3z4CPEP99bWShMQ==
+X-Received: by 2002:a5d:6f15:0:b0:31f:ecb2:d774 with SMTP id ay21-20020a5d6f15000000b0031fecb2d774mr2343475wrb.19.1694790210397;
+        Fri, 15 Sep 2023 08:03:30 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:aa19:4569:aeeb:c0d3])
+        by smtp.gmail.com with ESMTPSA id hn40-20020a05600ca3a800b003fef19bb55csm4853369wmb.34.2023.09.15.08.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 08:03:29 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v3 00/11] gpiolib: work towards removing gpiochip_find()
+Date:   Fri, 15 Sep 2023 17:03:15 +0200
+Message-Id: <20230915150327.81918-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The osnoise/per_cpu/CPU$/timerlat_fd is create for each possible
-CPU, but it might create confusion if the CPU is not online.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Create the file only for online CPUs, also follow hotplug by
-creating and deleting as CPUs come and go.
+This is a reduced subset of patches from the initial sumbission[1]
+limited only to changes inside GPIOLIB. Once this is upstream, we can
+then slowly merge patches for other subsystems (like HTE) and then
+eventually remove gpiochip_find() entirely.
 
-Fixes: e88ed227f639 ("tracing/timerlat: Add user-space interface")
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 101 ++++++++++++++++++++++++++---------
- 1 file changed, 77 insertions(+), 24 deletions(-)
+The GPIO subsystem does not handle hot-unplug events very well. We have
+recently patched the user-space part of it so that at least a rouge user
+cannot crash the kernel but in-kernel users are still affected by a lot of
+issues: from incorrect locking or lack thereof to using structures that are
+private to GPIO drivers. Since almost all GPIO controllers can be unbound,
+not to mention that we have USB devices registering GPIO expanders as well as
+I2C-on-USB HID devices on which I2C GPIO expanders can live, various media
+gadgets etc., we really need to make GPIO hotplug/unplug friendly.
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index bd0d01d00fb9..1af01eec3e36 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -229,6 +229,19 @@ static inline struct osnoise_variables *this_cpu_osn_var(void)
- }
- 
- #ifdef CONFIG_TIMERLAT_TRACER
-+
-+/*
-+ * osnoise/per_cpu dir
-+ */
-+static struct dentry		*osnoise_per_cpu_fd;
-+
-+struct osnoise_per_cpu_dir {
-+	struct dentry *root;
-+	struct dentry *timerlat_fd;
-+};
-+
-+static DEFINE_PER_CPU(struct osnoise_per_cpu_dir, osnoise_per_cpu_dir);
-+
- /*
-  * Runtime information for the timer mode.
-  */
-@@ -2000,6 +2013,9 @@ static int start_kthread(unsigned int cpu)
- 	char comm[24];
- 
- 	if (timerlat_enabled()) {
-+		if (!test_bit(OSN_WORKLOAD, &osnoise_options))
-+			return 0;
-+
- 		snprintf(comm, 24, "timerlat/%d", cpu);
- 		main = timerlat_main;
- 	} else {
-@@ -2065,19 +2081,64 @@ static int start_per_cpu_kthreads(void)
- 	return retval;
- }
- 
-+#ifdef CONFIG_TIMERLAT_TRACER
-+static const struct file_operations timerlat_fd_fops;
-+static int timerlat_add_per_cpu_interface(long cpu)
-+{
-+	struct dentry *timerlat_fd, *cpu_dir_fd;
-+	char cpu_str[30]; /* see trace.c: tracing_init_tracefs_percpu() */
-+
-+	if (!osnoise_per_cpu_fd)
-+		return 0;
-+
-+	snprintf(cpu_str, 30, "cpu%ld", cpu);
-+	cpu_dir_fd = tracefs_create_dir(cpu_str, osnoise_per_cpu_fd);
-+
-+	if (cpu_dir_fd) {
-+		timerlat_fd = trace_create_file("timerlat_fd", TRACE_MODE_READ,
-+					       cpu_dir_fd, NULL, &timerlat_fd_fops);
-+		WARN_ON_ONCE(!timerlat_fd);
-+		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = cpu_dir_fd;
-+		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = timerlat_fd;
-+
-+		/* Record the CPU */
-+		d_inode(timerlat_fd)->i_cdev = (void *)(cpu);
-+
-+		return 0;
-+	}
-+
-+	return -ENOMEM;
-+}
-+
-+static void timerlat_rm_per_cpu_interface(long cpu)
-+{
-+	struct dentry *cpu_dir = per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root;
-+
-+	if (cpu_dir) {
-+		tracefs_remove(cpu_dir);
-+		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->root = NULL;
-+		per_cpu_ptr(&osnoise_per_cpu_dir, cpu)->timerlat_fd = NULL;
-+	}
-+}
-+#else
-+static int timerlat_add_per_cpu_interface(long cpu) { return 0; };
-+static void timerlat_rm_per_cpu_interface(long cpu) {};
-+#endif
-+
- #ifdef CONFIG_HOTPLUG_CPU
- static void osnoise_hotplug_workfn(struct work_struct *dummy)
- {
- 	unsigned int cpu = smp_processor_id();
- 
- 	mutex_lock(&trace_types_lock);
--
--	if (!osnoise_has_registered_instances())
--		goto out_unlock_trace;
--
- 	mutex_lock(&interface_lock);
- 	cpus_read_lock();
- 
-+	timerlat_add_per_cpu_interface(cpu);
-+
-+	if (!osnoise_has_registered_instances())
-+		goto out_unlock;
-+
- 	if (!cpumask_test_cpu(cpu, &osnoise_cpumask))
- 		goto out_unlock;
- 
-@@ -2086,7 +2147,6 @@ static void osnoise_hotplug_workfn(struct work_struct *dummy)
- out_unlock:
- 	cpus_read_unlock();
- 	mutex_unlock(&interface_lock);
--out_unlock_trace:
- 	mutex_unlock(&trace_types_lock);
- }
- 
-@@ -2106,6 +2166,7 @@ static int osnoise_cpu_init(unsigned int cpu)
-  */
- static int osnoise_cpu_die(unsigned int cpu)
- {
-+	timerlat_rm_per_cpu_interface(cpu);
- 	stop_kthread(cpu);
- 	return 0;
- }
-@@ -2708,10 +2769,7 @@ static int init_timerlat_stack_tracefs(struct dentry *top_dir)
- 
- static int osnoise_create_cpu_timerlat_fd(struct dentry *top_dir)
- {
--	struct dentry *timerlat_fd;
--	struct dentry *per_cpu;
--	struct dentry *cpu_dir;
--	char cpu_str[30]; /* see trace.c: tracing_init_tracefs_percpu() */
-+	int retval;
- 	long cpu;
- 
- 	/*
-@@ -2720,29 +2778,24 @@ static int osnoise_create_cpu_timerlat_fd(struct dentry *top_dir)
- 	 * Because osnoise/timerlat have a single workload, having
- 	 * multiple files like these are wast of memory.
- 	 */
--	per_cpu = tracefs_create_dir("per_cpu", top_dir);
--	if (!per_cpu)
-+	osnoise_per_cpu_fd = tracefs_create_dir("per_cpu", top_dir);
-+	if (!osnoise_per_cpu_fd)
- 		return -ENOMEM;
- 
--	for_each_possible_cpu(cpu) {
--		snprintf(cpu_str, 30, "cpu%ld", cpu);
--		cpu_dir = tracefs_create_dir(cpu_str, per_cpu);
--		if (!cpu_dir)
-+	for_each_online_cpu(cpu) {
-+		retval = timerlat_add_per_cpu_interface(cpu);
-+		if (retval < 0)
- 			goto out_clean;
--
--		timerlat_fd = trace_create_file("timerlat_fd", TRACE_MODE_READ,
--						cpu_dir, NULL, &timerlat_fd_fops);
--		if (!timerlat_fd)
--			goto out_clean;
--
--		/* Record the CPU */
--		d_inode(timerlat_fd)->i_cdev = (void *)(cpu);
- 	}
- 
- 	return 0;
- 
- out_clean:
--	tracefs_remove(per_cpu);
-+	tracefs_remove(osnoise_per_cpu_fd);
-+	/* tracefs_remove() recursively deletes all the other files */
-+	osnoise_per_cpu_fd = NULL;
-+	for_each_online_cpu(cpu)
-+		timerlat_rm_per_cpu_interface(cpu);
- 	return -ENOMEM;
- }
- 
+Before we can even get to fixing the locking, we need to address a serious
+abuse of the GPIO driver API - accessing struct gpio_chip by anyone who isn't
+the driver owning this object. This structure is owned by the GPIO provider
+and its lifetime is tied to that of that provider. It is destroyed when the
+device is unregistered and this may happen at any moment. struct gpio_device
+is the opaque, reference counted interface to struct gpio_chip (which is the
+low-level implementation) and all access should pass through it.
+
+The end-goal is to make all gpio_device manipulators check the existence of
+gdev->chip and then lock it for the duration of any of the calls using SRCU.
+Before we can get there, we need to first provide a set of functions that will
+replace any gpio_chip functions and convert all in-kernel users.
+
+This series adds several new helpers to the public GPIO API and uses
+them across the core GPIO code.
+
+Note that this does not make everything correct just yet. Especially the
+GPIOLIB internal users release the reference returned by the lookup function
+after getting the descriptor of interest but before requesting it. This will
+eventually be addressed. This is not a regression either.
+
+[1] https://lore.kernel.org/lkml/20230905185309.131295-1-brgl@bgdev.pl/T/
+
+v2 -> v3:
+- use gpio_device_get_chip() consistently
+- clarify comments
+- fix buggy chip assignment
+- check for PTR_ERR() in automatic cleanup
+- rearrange code as requested by Andy
+
+v1 -> v2:
+- drop all non-GPIOLIB patches
+- collect tags
+- fix kernel docs
+- use gpio_device_get_chip() and gpio_device_get_desc() where applicable
+
+Bartosz Golaszewski (11):
+  gpiolib: make gpio_device_get() and gpio_device_put() public
+  gpiolib: add support for scope-based management to gpio_device
+  gpiolib: provide gpio_device_find()
+  gpiolib: provide gpio_device_find_by_label()
+  gpiolib: provide gpio_device_get_desc()
+  gpiolib: reluctantly provide gpio_device_get_chip()
+  gpiolib: replace find_chip_by_name() with gpio_device_find_by_label()
+  gpio: of: replace gpiochip_find_* with gpio_device_find_*
+  gpio: acpi: replace gpiochip_find() with gpio_device_find()
+  gpio: swnode: replace gpiochip_find() with gpio_device_find_by_label()
+  gpio: sysfs: drop the mention of gpiochip_find() from sysfs code
+
+ drivers/gpio/gpiolib-acpi.c   |  12 +-
+ drivers/gpio/gpiolib-of.c     |  33 +++---
+ drivers/gpio/gpiolib-swnode.c |  33 +++---
+ drivers/gpio/gpiolib-sysfs.c  |   2 +-
+ drivers/gpio/gpiolib.c        | 202 ++++++++++++++++++++++++++--------
+ drivers/gpio/gpiolib.h        |  10 --
+ include/linux/gpio/driver.h   |  16 +++
+ 7 files changed, 216 insertions(+), 92 deletions(-)
+
 -- 
-2.38.1
+2.39.2
 
