@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99277A28EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3717A28F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237700AbjIOVEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S237659AbjIOVFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237753AbjIOVDj (ORCPT
+        with ESMTP id S237800AbjIOVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:03:39 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFFD1A5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:03:23 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68fc081cd46so2481526b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:03:23 -0700 (PDT)
+        Fri, 15 Sep 2023 17:05:36 -0400
+Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C9DC7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:05:30 -0700 (PDT)
+Received: by mail-oo1-xc4a.google.com with SMTP id 006d021491bc7-5735a879147so3672732eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694811803; x=1695416603; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=APHJKdyAi/Un1XPHZn1Z1pQZW4vCCHalitDLmyiouTQ=;
-        b=dx8DPTvbuSlh9TpzZol3/Gyx4GRxRBcPwEjUuOrFdZrrcIkqYUyXgAfBmgY4WsF03M
-         hPSwrZPbIXM6+8W2CTfEJ/r3EcWQ8DnB2VTdZ8+5HDZ62Fj5w4nHKOruLoJ9uNXREkya
-         nkJnIDPHkznSwrax0w/JCkGyXb1kCiTaYYts4=
+        d=google.com; s=20230601; t=1694811929; x=1695416729; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yleJC+7YBNlUjlYVNZzM9vt9cQFuPW3G+hVjyHJnwaw=;
+        b=ogYHCZ2nyrdLNWE91OqecuE80rv024odTbCeKa7WT8GM/View0HLXL2xILl+Fs6nk2
+         T7NjFUrAfuO6olCOMtbd8Ik97WXqPabhkIaT84HZzjK44vlEmdKYD/NlTtt85n1uYokM
+         6JU2vXeqU9cgAmBieBC0IrXp2bthviZGvvIMD5wZKlGVdRM2ElX6XSsJpDRtCDVTGARU
+         qJ7eAMvHsgmnlbjKRUeknfoOZeL2nCrUjMSs0IzGqOytc7nfCzdzkzuJgeBb22sNXHL/
+         wNvo9WV6ascGkLS1cTXkzEpyWlcvTlAx5DUq64U3kdziKTqEYhCJ2whNmhvzXt5eph5G
+         T5sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694811803; x=1695416603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=APHJKdyAi/Un1XPHZn1Z1pQZW4vCCHalitDLmyiouTQ=;
-        b=q0HV7s4noxs4uXbyft7ph8Ci+YGSv5BwhGS9kLhHNtTvC/fSa4KO4VkJUd870oxYsU
-         7f2AxKVLZ+AKNaX2rQxp2Od7rw6vg+2wudVAX/w/b5uWIS/EA5em3ggYBvEXdzoTSguH
-         sBXUvO1zEi3hQE9T+UbIXaHeSlTK7qv08lf8cKTuPUnvvUsfsHfFojxBFb4nAeryQVpF
-         8JgDB2pg9im1NFp+YRZ/wqONR1s+tBDfmCNHX1ngYH7i2lPrIryufEBQWEJX9gjgo3TQ
-         x3S8buuIvqM79y/A3o5+PVZ80ewFQ8nX1j+gwthbymd01ojqxLy+tg71ylZUYNnlnAaQ
-         Le8w==
-X-Gm-Message-State: AOJu0YyY1epgu2V9XAkiAtURGxRcJ6Cn/p7tMnUZOqU9Rg2PYf0R9Ntk
-        SmrX8V/h4DXlcY7Fs/QS4f2vPGZNWe1/qLkaBSF74Q==
-X-Google-Smtp-Source: AGHT+IH9giN0oiNJip6NSPrpp8FYJe9UYAjCNYEhPQYuBGuLm0ngXdsbwkHYQMIrzQrQbvKrNld2xQ==
-X-Received: by 2002:a05:6a20:320d:b0:14b:8023:33c8 with SMTP id hl13-20020a056a20320d00b0014b802333c8mr2834160pzc.2.1694811803227;
-        Fri, 15 Sep 2023 14:03:23 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id bv6-20020a632e06000000b0056001f43726sm3098867pgb.92.2023.09.15.14.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 14:03:22 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 14:03:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Matteo Rizzo <matteorizzo@google.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
-        jannh@google.com, evn@google.com, poprdi@google.com,
-        jordyzomer@google.com
-Subject: Re: [RFC PATCH 06/14] mm/slub: pass additional args to
- alloc_slab_page
-Message-ID: <202309151403.49D5C3CB@keescook>
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <20230915105933.495735-7-matteorizzo@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915105933.495735-7-matteorizzo@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1694811929; x=1695416729;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yleJC+7YBNlUjlYVNZzM9vt9cQFuPW3G+hVjyHJnwaw=;
+        b=mZZEJQzpBTTZVOJ1WWnLg5dR+TPdADoEtv+9k8RFDeVzy4CbVXIiarAxiVdo/ab5bp
+         Emvd2ah/KmzYaSvP2AcxL6ZYylGaAQC3ltru4anWGy2aeFPPJAln02MfE5T6HrK9QDf4
+         sqQeEKP6OnY4cmr8B1WRPlIVhOrEzZy10MOQpgoxaScYX0xF82BKAwAAp8bCbAUIjdLG
+         yfNDxveWlndY9Zdmt1hDd1g/VmZKOy2tn9Lh7JzEuW96KZ+yPMEw3s9IEoqgTMAlvO7W
+         P3qqDq6QA/qcrslRY3YEcNXHJZClphelIDAGeJzQGstPXc1O5EdoRkD+pfj8dASgUDY/
+         71RQ==
+X-Gm-Message-State: AOJu0YwdbD0tc4aSar+2vTmxlc5fxCizpc7rRsFzksH+WLWvOu5o5H/Y
+        OgrgCk5IJ71iZzsuwfTewZCTlrOo2Z4=
+X-Google-Smtp-Source: AGHT+IF9PpTOkzcgimAJrduyF4qwfWt2KP5EbzIhLTMy/s4gm21Ep/5FIgTjRytGlNZlubXZjpDBAQBvLB0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a4a:2c02:0:b0:571:1762:7718 with SMTP id
+ o2-20020a4a2c02000000b0057117627718mr908496ooo.1.1694811929595; Fri, 15 Sep
+ 2023 14:05:29 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 14:05:27 -0700
+In-Reply-To: <d4166c97-6ab3-89a2-eb12-f492f7521f69@intel.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-2-seanjc@google.com>
+ <d4166c97-6ab3-89a2-eb12-f492f7521f69@intel.com>
+Message-ID: <ZQTHF3J+6FXwRx98@google.com>
+Subject: Re: [RFC PATCH v12 01/33] KVM: Tweak kvm_hva_range and hva_handler_t
+ to allow reusing for gfn ranges
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 10:59:25AM +0000, Matteo Rizzo wrote:
-> From: Jann Horn <jannh@google.com>
+On Fri, Sep 15, 2023, Xiaoyao Li wrote:
+> On 9/14/2023 9:54 AM, Sean Christopherson wrote:
+> > Rework and rename "struct kvm_hva_range" into "kvm_mmu_notifier_range" so
+> > that the structure can be used to handle notifications that operate on gfn
+> > context, i.e. that aren't tied to a host virtual address.
+> > 
+> > Practically speaking, this is a nop for 64-bit kernels as the only
+> > meaningful change is to store start+end as u64s instead of unsigned longs.
+> > 
+> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   virt/kvm/kvm_main.c | 34 +++++++++++++++++++---------------
+> >   1 file changed, 19 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 486800a7024b..0524933856d4 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -541,18 +541,22 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+> >   	return container_of(mn, struct kvm, mmu_notifier);
+> >   }
+> > -typedef bool (*hva_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
+> > +typedef bool (*gfn_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
 > 
-> This is refactoring in preparation for SLAB_VIRTUAL.
-> 
-> The implementation of SLAB_VIRTUAL needs access to struct kmem_cache in
-> alloc_slab_page in order to take unused slabs from the slab freelist,
-> which is per-cache.
-> 
-> In addition to that it passes two different sets of GFP flags.
-> meta_gfp_flags is used for the memory backing the metadata region and
-> page tables, and gfp_flags for the data memory.
-> 
-> Signed-off-by: Jann Horn <jannh@google.com>
+> Is it worth mentioning the rename of it as well in changelog?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Meh, I suppose.  At some point, we do have to assume a certain level of code
+literacy though :-)
