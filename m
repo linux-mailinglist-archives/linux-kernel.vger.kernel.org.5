@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3860D7A1C64
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5317A1C66
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbjIOKha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
+        id S233001AbjIOKhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbjIOKh2 (ORCPT
+        with ESMTP id S231341AbjIOKhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:37:28 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257ACDD;
-        Fri, 15 Sep 2023 03:37:23 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-69002ef0104so1626288b3a.1;
-        Fri, 15 Sep 2023 03:37:23 -0700 (PDT)
+        Fri, 15 Sep 2023 06:37:38 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F98EA1;
+        Fri, 15 Sep 2023 03:37:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so17752565ad.1;
+        Fri, 15 Sep 2023 03:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694774242; x=1695379042; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694774252; x=1695379052; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=phxDcl2cePpng3hZcoSl3/Urge1v5nDXVIV2EedNyt8=;
-        b=IM2ODcbHk9e/7MC9cqeqssLDQ+OjcYO+0NfxuqT9d6W9NbhueWSI/6rnWzp5KWm333
-         8Wmqz2zpw0L62P8WKdhsKOp+v7B16kGUDkxONMwFVJ/gByImUz7yOjX0XWHFTKlq3pi4
-         1V1GMpGK2uKDFuhsyK80af4R2nSo8gOttYeITSBz0tjqwvlLP+0eZfxKgTpGNIsSMm1h
-         wT8k/smvdjVcxKNY70KnYXncAKWEnaNg0nVU/qEXXgfGRDzQOgTzBe5/Y9muKYQ59woA
-         w/gSTlyR8xwxOXljxXXh7b5B2RW+Q8XlLqmfkW9/ksMsDlEgW48VpFuQPrsuSSzMG469
-         h1Ew==
+        bh=EYaRwmAQ1s3MYUiuLQYxUzG6o/LB4qv4cOCg1g/HVsg=;
+        b=jO4h6z8YJPO6zL6RHXDmTE56i0vokyURqeMauBCgC1PWbNOWr4Ati72LaT6gjmiOIw
+         aawNlZ7fos2LrrPFn7ZXfFlXanKrwnopALAmfZB25y2t8LPF/NfCNO9WMulZ7y1VdcF+
+         y7D/noE/062nVgt90ajTK8cj45wRiIqoOsn+h+RDfaJU4PuZsK7btYGsa+gnm6qrw60s
+         9HDvsLdFp2jaP50jRGLEKDsycrUI9wyMoZH41latrxaonIRfle2qpDxj5f4435f7xs3w
+         +CUeDetH5WdxY60kY+Mll8XJAJiwl+kp1dKmv2wlJ+UmbsOCjRw7c8GpDOGb2DUOV1f7
+         n9vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774242; x=1695379042;
+        d=1e100.net; s=20230601; t=1694774252; x=1695379052;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=phxDcl2cePpng3hZcoSl3/Urge1v5nDXVIV2EedNyt8=;
-        b=HeRTSp5g02r6P6BbFd4+2MMJuHAOCbrsMBspYamjfeCfVPXPw8XWQxhyN85SQJtyK5
-         ONjbWXq/nmdP/qWqFb/nFg+C0u/kY8wG4m0OWaxMmwUpmBWuJdzraU2hPpqd8uyBisLY
-         GCUkN1egHtzFH3s58btaahtGe7+5iuuUzXvFt7gOS3oCUD92x9jPSf2pWw4xFvN/3OTh
-         H3lZGaMO6xsgpN5AWS8zYK7wWSTytWrSJqOKjyrr5lSro3EeeOo7v3JZZx2tJL/wGuQ6
-         QVdzMPvhyUpO+hZiCvrsZl1ubOtZvaLhLzhrWy4MgjMxTGdIhNon1oj8tKamoHD52lwd
-         SM1w==
-X-Gm-Message-State: AOJu0YzrvRXsJZOvD16ZrCokWb79i0L49IQqk1n+pkHw1Upg/Z64d6fS
-        eZly9jmxYHR2AsjS9csV/I8=
-X-Google-Smtp-Source: AGHT+IHa0aA6BIMxwvmQgFz+Tfi4Cq8fvLjfQGmUolZXWmsr7ZwZPhOgXA4TgTozW1H7LuXlxJxuHg==
-X-Received: by 2002:a05:6a20:244e:b0:14d:e075:fc5d with SMTP id t14-20020a056a20244e00b0014de075fc5dmr1444888pzc.40.1694774242269;
-        Fri, 15 Sep 2023 03:37:22 -0700 (PDT)
+        bh=EYaRwmAQ1s3MYUiuLQYxUzG6o/LB4qv4cOCg1g/HVsg=;
+        b=p+mM0sEXNfYb0bbpxiaVpR6tKOCeaEHOjrOPr/rg5S2gqWc74V3Em6ADp3T+B2YnE0
+         l03v7hb5fh3VNJV9tJ/i2KVP3vtZLTswMJuOB8Q7xL181xstOcFTZHLfGUVT9s4ug+Wk
+         MLv1qrnJmLaE+V5ND50m1ILUT1qDMvJVIXgndoVDPeCbO4TFHSomoMmkvGva2+ekhPjD
+         XeDTdjj4T0KLIYX52pJUspEeGhW7jynwxXENz5rVhSIxlb2Vw1QbNXcHTU+AM4tr74tL
+         3/nzdrXUAZmR2/gWGeBhN1ZY1Wg/Pj9liURY0XfsB+dy8A+X25D7R/ISbOkdJk2X6cDS
+         0gJg==
+X-Gm-Message-State: AOJu0YyZI8b71TESyr9aG4g9JW1Q+frFnjCF/TEyyuyrRmH7bKDaN+2v
+        cvdOy1M/K5BYu+EJ75DgIfs=
+X-Google-Smtp-Source: AGHT+IHEdd9tXYlZx7iAaWCUy3Zd3XnfkheVE9Ouv9Jazd+2BxOo7CqsEUkhSnnEGWEUwXgvzw+7NA==
+X-Received: by 2002:a17:902:e552:b0:1c3:3682:f83f with SMTP id n18-20020a170902e55200b001c33682f83fmr1503331plf.30.1694774252370;
+        Fri, 15 Sep 2023 03:37:32 -0700 (PDT)
 Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
-        by smtp.gmail.com with ESMTPSA id j2-20020a17090a588200b0026f4bb8b2casm4590581pji.6.2023.09.15.03.37.20
+        by smtp.gmail.com with ESMTPSA id z14-20020a170902d54e00b001bd28b9c3ddsm3164643plf.299.2023.09.15.03.37.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:37:21 -0700 (PDT)
+        Fri, 15 Sep 2023 03:37:32 -0700 (PDT)
 Sender: Herbert Xu <herbertx@gmail.com>
-Date:   Fri, 15 Sep 2023 18:37:21 +0800
+Date:   Fri, 15 Sep 2023 18:37:31 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        alex@shruggie.ro, olivia@selenic.com
-Subject: Re: [PATCH] char: hw_random: hisi-rng: removed unneeded call to
- platform_set_drvdata()
-Message-ID: <ZQQz4eDvCjVCePY/@gondor.apana.org.au>
-References: <20230823112139.4012-1-aboutphysycs@gmail.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3]  hwrng: ks-sa - simple cleanups
+Message-ID: <ZQQz64WxYDeirM7X@gondor.apana.org.au>
+References: <20230824194037.1575276-1-martin@kaiser.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230823112139.4012-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230824194037.1575276-1-martin@kaiser.cx>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -74,18 +73,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 02:21:39PM +0300, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
+On Thu, Aug 24, 2023 at 09:40:34PM +0200, Martin Kaiser wrote:
+> Some simple cleanups of the ks-sa-rng driver. Compile-tested only.
 > 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/char/hw_random/hisi-rng.c | 2 --
->  1 file changed, 2 deletions(-)
+> Martin Kaiser (3):
+>   hwrng: ks-sa - access private data via struct hwrng
+>   hwrng: ks-sa - remove dev from struct ks_sa_rng
+>   hwrng: ks-sa - use dev_err_probe
+> 
+>  drivers/char/hw_random/ks-sa-rng.c | 26 +++++++-------------------
+>  1 file changed, 7 insertions(+), 19 deletions(-)
+> 
+> -- 
+> 2.39.2
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
