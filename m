@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2D57A1FB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EFD7A1FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbjIONUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
+        id S235319AbjIONWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbjIONUn (ORCPT
+        with ESMTP id S235270AbjIONWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:20:43 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59583171C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:20:37 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68fbbb953cfso1815908b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:20:37 -0700 (PDT)
+        Fri, 15 Sep 2023 09:22:31 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C30730D1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:21:48 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41761e9181eso250731cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:21:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694784037; x=1695388837; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BaoDBq4J2WQTMoM6JUbluW9HfoAxhmWc40Mme5H8iVo=;
-        b=qLTmk4z/j8Rgs/Y/z2xJvzcsFsNxWeJOcBgx6EzfgdXtYFhjvYc1hOll2SgfQju6hx
-         FgDryovX7syL8CribAbv0S9MDeEy5/kMtIkSu1dRg9pt4dwkMcVkf6KIj/VWGPzM5bpJ
-         0BK/jhU5uTp93B1++arpeX59XGctwvJ6I6/dlLn8Ent9zZwW7gytH1wZp6XHIcH8yKyC
-         FM4LxqHYYdJw9449tkRjM3yJErElZzQkvm13U6QCkBJArI5ELvATd/dYX4WBjg17acJy
-         Xz4kBWrLZ9d1FglMgTJ/wlFKAle8p6m9sdCf5a8cZ7USlke3nAo1QvlxNgicV7o1uDWy
-         Ejeg==
+        d=google.com; s=20230601; t=1694784107; x=1695388907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UQik1sImnP3JtDcAUVKtHO2B2JhgasNq9FvI7Jv8Wqk=;
+        b=hZrphL8DPTEGN7qAAAhqLE8+4x4H2fDUQAuAkFd9V8k/T8ibASLW+okXtt2S0rHlry
+         6TyLq1FWg7qaouQXhKktUsR0Sb2kalOe2dQjobYhoXtefI60zivG1s31hgkTDzoB5Yxl
+         1L4VYwjra8NLaGJ4STo6zk+Efbslir5MGdyNxfBApnXjVwhmCMIAvwF0Yye8uwQgdRQh
+         RdpMh91/hOgZvWPSOt+/JaRkQTDZlBe2PmZqt+Gu2qm2QO+g4790Dscw6U7zi/hdcLR5
+         PQCpfO+nSx9Upd0Gx9xLuqkNH+IDoWcYAKYdJPC/mYFxpWqZUxVGJPHrhzGEjHrEVJez
+         nKpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694784037; x=1695388837;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BaoDBq4J2WQTMoM6JUbluW9HfoAxhmWc40Mme5H8iVo=;
-        b=pi7wyZW0HsxVe6wnLjlsEv/FNoIjlBJBZZ2nwtbwJfvE959hPQtXgC9XGp8XH14BZS
-         S6SjwhxoTMDQ66vetFDnlE5vjeNr7q9fhY0BcaBjq5VEbu8eXyGsGxGAwrVXqI6uW3Gt
-         HNtDUZbT/wdXNaMQzvqViZL0iD1Tisdu4GmvtqkDzGo3MZG81XYl+kd3l0S2nQvEqf39
-         3Mg7xjFsqb6n+dOdlRo++QYISBy6z364ls6vbq2qFs4tOgW+poFDMHLJ/NnRmCzaYp2k
-         cDgMjtE0dwpPJ6xxHnKIN7VOTCIsZaQI8oOvcJO3FTvoeWLLXZboKlPx6u4DpDfunzs9
-         btag==
-X-Gm-Message-State: AOJu0YxxfuT6+YevD85bCaI1rsDaO9paMV9Bg69O7Gj0YIIKviaOYf2Z
-        m6xwQfHaE1iQojzZU4daONPfpFW5UmYnBs7Xng0oug==
-X-Google-Smtp-Source: AGHT+IEvUA9BR5BcrVOwtToL5WSZnMVL5hq1LhRR/C2UP2bV5CCmF6GnSfYb0YjLTzwW2flky6W/bE61lpkBlQ/Gnuc=
-X-Received: by 2002:a17:90a:4b06:b0:26f:2c5a:bbb3 with SMTP id
- g6-20020a17090a4b0600b0026f2c5abbb3mr1316852pjh.40.1694784036728; Fri, 15 Sep
- 2023 06:20:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694784107; x=1695388907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UQik1sImnP3JtDcAUVKtHO2B2JhgasNq9FvI7Jv8Wqk=;
+        b=GPPftiWVhjZbqDWte1J3a3m5KHaHT4rbbTjSBy6niIjbcIb2H1CgDWYWbvt0yeP8nC
+         LIZl7V+QlCqwlTBjOodZ2g4mbypj4h1FU3sCaGDBXqC/AW8T9WAeg9zt2QA6KI4yeIW0
+         0Sa1zkRRfwSYy94lzHWGhedlGDQZ3paexFHZ7439H25r0nOGfhZ3f4UgZT+IbVu3FnGh
+         gf6MbB8E7c9u5FUjW0luJzt5z32Hf1PcKpcftTR9nHJnqLDDkEN6ALRfWwHUjUbqZkU0
+         rJv2Z4Yzmhve1uA1tcCLzbKWPj7MNr3tzg7V0VR70o7apiLhEGonxhUyj0GxKscVDVf8
+         jKRQ==
+X-Gm-Message-State: AOJu0YzifFj85etg5/hR/5C5UQ2Qu1Y5p0aRVFnZHi8HuVzdhwnKZuQH
+        s/Vn1xbg93Moh5S9PBQXK/hyaw1EybnmtaTPA+9rsA==
+X-Google-Smtp-Source: AGHT+IEQu5D6irDVWU7e+S2C9j3gtbNyXsRlrL8KmuOpuqyhVi1cnfZwaAM9GgbgpDlteEZdm9a6WBLXqXQHJn8nkOA=
+X-Received: by 2002:ac8:4e51:0:b0:3de:1aaa:42f5 with SMTP id
+ e17-20020ac84e51000000b003de1aaa42f5mr218397qtw.15.1694784107649; Fri, 15 Sep
+ 2023 06:21:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901130312.247719-1-vincent.guittot@linaro.org>
- <20230901130312.247719-2-vincent.guittot@linaro.org> <be527eb1-d253-b9fe-ecc9-4c7b04da9efd@arm.com>
-In-Reply-To: <be527eb1-d253-b9fe-ecc9-4c7b04da9efd@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 15 Sep 2023 15:20:25 +0200
-Message-ID: <CAKfTPtANMnLAdw9y86zsx_HdjpWxQPA+Gnaa=qvXC+4xWwNa=A@mail.gmail.com>
-Subject: Re: [PATCH 1/4] sched: consolidate and cleanup access to CPU's max
- compute capacity
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, viresh.kumar@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
-        conor.dooley@microchip.com, suagrfillet@gmail.com,
-        ajones@ventanamicro.com, lftan@kernel.org
+References: <20230912090051.4014114-17-ardb@google.com> <ZQQiUxh5vmeZnp7s@gmail.com>
+ <ZQRAckHVxQZRNEGA@gmail.com>
+In-Reply-To: <ZQRAckHVxQZRNEGA@gmail.com>
+From:   Ard Biesheuvel <ardb@google.com>
+Date:   Fri, 15 Sep 2023 15:21:36 +0200
+Message-ID: <CAGnOC3Zw49_30FkGY=RRLn-sCHNgFY_T0ugNJZCgg_T3opHm+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sept 2023 at 22:46, Dietmar Eggemann
-<dietmar.eggemann@arm.com> wrote:
+On Fri, Sep 15, 2023 at 1:31=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrot=
+e:
 >
-> On 01/09/2023 15:03, Vincent Guittot wrote:
-> > Remove struct rq cpu_capacity_orig field and use arch_scale_cpu_capacity()
-> > instead.
-> >
-> > Scheduler uses 3 methods to get access to the CPU's max compute capacity:
-> > - arch_scale_cpu_capacity(cpu) which is the default way to get CPU's capacity.
-> > - cpu_capacity_orig field which is periodically updated with
-> >   arch_scale_cpu_capacity().
-> > - capacity_orig_of(cpu) which encapsulates rq->cpu_capacity_orig
-> >
-> > There is no real need to save the value returned by arch_scale_cpu_capacity()
-> > in struct rq. arch_scale_cpu_capacity() returns:
-> > - either a per_cpu variable.
-> > - or a const value for systems which have only one capacity.
-> >
-> > Remove cpu_capacity_orig and use arch_scale_cpu_capacity() everywhere.
-> >
-> > No functional changes.
-> >
-> > some tests of Arm64:
-> > small SMP device (hikey): no noticeable changes
-> > HMP device (RB5): hackbench shows minor improvement (1-2%)
-> > large smp (thx2): hackbench and tbench shows minor improvement (1%)
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 >
-> Next to util_fits_cpu() which uses capacity_orig as a local variable
-> (which is fine) there is sis() referring to capacity_orig in a comment.
+> * Ingo Molnar <mingo@kernel.org> wrote:
 >
-> Documentation/scheduler/sched-capacity.rst uses the term `capacity_orig`
-> in chapter 1.2 to explain the difference between CPU's maximum
-> (attainable) capacity and capacity as the former reduced by pressure.
+> > > Ard Biesheuvel (15):
+> > >   x86/efi: Drop EFI stub .bss from .data section
+> > >   x86/efi: Disregard setup header of loaded image
+> > >   x86/efi: Drop alignment flags from PE section headers
+> > >   x86/boot: Remove the 'bugger off' message
+> > >   x86/boot: Omit compression buffer from PE/COFF image memory footpri=
+nt
+> > >   x86/boot: Drop redundant code setting the root device
+> > >   x86/boot: Grab kernel_info offset from zoffset header directly
+> > >   x86/boot: Drop references to startup_64
+> >
+> > I've applied these first 8 patches to tip:x86/boot with minor edits.
 
-ok, I will have a look at those references to capacity_orig
+Thanks.
 
->
-> Not sure if you want to change those refs as well with this patch?
-> People might get confused about the term `capacity_orig` pretty soon.
->
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > (Please preserve existing comment capitalization conventions ...)
+> >
 
-Thanks
+Ack
+
+> > >   x86/boot: Set EFI handover offset directly in header asm
+> > >   x86/boot: Define setup size in linker script
+> > >   x86/boot: Derive file size from _edata symbol
+> > >   x86/boot: Construct PE/COFF .text section from assembler
+> > >   x86/boot: Drop PE/COFF .reloc section
+> > >   x86/boot: Split off PE/COFF .data section
+> > >   x86/boot: Increase section and file alignment to 4k/512
+> >
+> > The rest conflicted with recent upstream changes, and I suppose it's
+> > prudent to test these changes bit by bit anyway.
+>
+
+Agreed. So you mean this conflicts with other stuff queued up in -tip
+already, right?
+
+> So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootu=
+p,
+> due to the 8th patch:
+>
+>   988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
+>   commit 988b52b207a9fe74c3699bda8c2256714926b94b
+>   Author: Ard Biesheuvel <ardb@kernel.org>
+>   Date:   Tue Sep 12 09:01:01 2023 +0000
+>
+>       x86/boot: Define setup size in linker script
+>
+> I've removed it for now - but this side effect was not expected.
+>
+
+No, definitely not expected. I tested various combinations of i386 /
+x86_64 built with GCC / Clang doing EFI or BIOS boot.
+
+I'll rebase the remaining stuff onto -tip and see if I can reproduce this.
