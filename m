@@ -2,179 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EC07A2360
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4967A2384
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbjIOQPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
+        id S234763AbjIOQXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235051AbjIOQOq (ORCPT
+        with ESMTP id S234332AbjIOQWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:14:46 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B2910E6;
-        Fri, 15 Sep 2023 09:14:40 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FDivV8020663;
-        Fri, 15 Sep 2023 16:14:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=erJuSEpdqAIVPeaGsYnZ3SEDURTnASwcYNladoGLgmc=;
- b=MQRHmAKUpdVaOWJn/41L5e0pO+oLk7nF3R/b3HCuFLarZsGsWBky91VxvrVoVGyT46+V
- xkj7E1Hl0jZoyPgmkQmtDAgOy+AHquQ5Qe2U5bPOkc7h7I6StumcT4fa4cK/MPjUPTMn
- IVAzBRrHH+KDs3zf631A/NbFAb4WFyyi0JDY16Hm2O16/ErP7O/l0zaCQ41gmhnfFdKD
- d9fXjNzhGas2E2Y6q8Zdah1t3OKZbBrGLCxxG+YiAosZQynz7+Ku6xl7yIzuH2R5yuHu
- 3xAYYGE2RZwi385QVZ+pki8lO6MmpiMfxvnDQROaNVEqlYcQtOXyfhrD/no49qk3/pGz JQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4dvqsv9m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 16:14:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FGEMNG006287
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 16:14:22 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 09:14:17 -0700
-Message-ID: <c9719d64-33c1-d13e-0ab6-289011282044@quicinc.com>
-Date:   Fri, 15 Sep 2023 21:44:13 +0530
+        Fri, 15 Sep 2023 12:22:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACDFAC;
+        Fri, 15 Sep 2023 09:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694794966; x=1726330966;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pg5Qfsfw4EoHhGK5PwUoF4RZdbDdImVbr3P2mO/lLhU=;
+  b=XDLYtxnNHb8sI4DP4dOSrp7voPG6MSUQtqvMrcAIH7nh1fjCcuQ277ng
+   X+b3Kxgka//bbk7VUVjmGVVimoIk9MyNBFPHTYPMNup21poSY+5vuke3g
+   2SazdlB8TItkjujLId9k/K83fPaiI18QkuZNJpG58PoGk9p8Mtxaqymgw
+   tvn0vRDW5H3wIOsYgAMWC/VIVmSDhosvoEnIWEHni8o9II4zIarUBxWPm
+   UEbCPSg+ihNDj6e7/LWgDz16Iqgjda9eiuXcF3FZJqmvceBXvZ84XW+dE
+   iKzyDrw+lwML75ufM5PhJ5JFz3K521FqhlTVwSqthR7h8RY0q6aeWYvcy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="383111975"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="383111975"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:18:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="991892255"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="991892255"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:18:34 -0700
+Date:   Fri, 15 Sep 2023 19:18:31 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Fernando Eckhardt Valle <fevalle@ipt.br>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>, corbet@lwn.net,
+        hmh@hmh.eng.br, markgross@kernel.org, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2] platform/x86: thinkpad_acpi: sysfs interface to
+ auxmac
+In-Reply-To: <20230915123136.4286-1-fevalle@ipt.br>
+Message-ID: <97ac516a-5d9f-f58d-2313-d7d3453f58cb@linux.intel.com>
+References: <20230915123136.4286-1-fevalle@ipt.br>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH V3 2/2] phy: qcom-qmp-ufs: Add Phy Configuration support
- for SC7280
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Manish Pandey <quic_mapa@quicinc.com>
-References: <20230823091757.31311-1-quic_nitirawa@quicinc.com>
- <20230823091757.31311-3-quic_nitirawa@quicinc.com>
- <24cff590-c71f-4a30-9b80-fa9a0bd27957@linaro.org>
-Content-Language: en-US
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <24cff590-c71f-4a30-9b80-fa9a0bd27957@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nDrCdLQcMKzJTFPT7rnpBt26XwOzkXPh
-X-Proofpoint-ORIG-GUID: nDrCdLQcMKzJTFPT7rnpBt26XwOzkXPh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_12,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0 clxscore=1011
- mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150145
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 Sep 2023, Fernando Eckhardt Valle wrote:
 
+> Newer Thinkpads have a feature called Mac Address Passthrough.
+> This patch provides a sysfs interface that userspace can use
+> to get this auxiliary mac address.
+> 
+> Changes in v2:
+> - Added documentation
+> - All handling of the auxmac value is done in the _init function.
+> 
+> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
+> ---
+>  .../admin-guide/laptops/thinkpad-acpi.rst     | 20 +++++
+>  drivers/platform/x86/thinkpad_acpi.c          | 78 +++++++++++++++++++
+>  2 files changed, 98 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> index e27a1c3f6..6207c363f 100644
+> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> @@ -53,6 +53,7 @@ detailed description):
+>  	- Lap mode sensor
+>  	- Setting keyboard language
+>  	- WWAN Antenna type
+> +	- Auxmac
+>  
+>  A compatibility table by model and feature is maintained on the web
+>  site, http://ibm-acpi.sf.net/. I appreciate any success or failure
+> @@ -1511,6 +1512,25 @@ Currently 2 antenna types are supported as mentioned below:
+>  The property is read-only. If the platform doesn't have support the sysfs
+>  class is not created.
+>  
+> +Auxmac
+> +------
+> +
+> +sysfs: auxmac
+> +
+> +Some newer Thinkpads have a feature called MAC Address Passthrough. This
+> +feature is implemented by the system firmware to provide a system unique MAC,
+> +that can override a dock or USB ethernet dongle MAC, when connected to a
+> +network. This property enables user-space to easily determine the MAC address
+> +if the feature is enabled.
+> +
+> +The values of this auxiliary MAC are:
+> +
+> +        cat /sys/devices/platform/thinkpad_acpi/auxmac
+> +
+> +If the feature is disabled, the value will be 'disabled'.
+> +
+> +This property is read-only.
+> +
+>  Adaptive keyboard
+>  -----------------
+>  
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index d70c89d32..05cc3a1e2 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10785,6 +10785,79 @@ static struct ibm_struct dprc_driver_data = {
+>  	.name = "dprc",
+>  };
+>  
+> +/*
+> + * Auxmac
+> + *
+> + * This auxiliary mac address is enabled in the bios through the
+> + * Mac Address Passthrough feature. In most cases, there are three
+> + * possibilities: Internal Mac, Second Mac, and disabled.
+> + *
+> + */
+> +
+> +#define AUXMAC_LEN 12
+> +#define AUXMAC_START 9
+> +#define AUXMAC_STRLEN 22
+> +static char auxmac[AUXMAC_LEN];
+> +
+> +static int auxmac_init(struct ibm_init_struct *iibm)
+> +{
+> +	acpi_status status;
+> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	union acpi_object *obj;
+> +
+> +	status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
+> +
+> +	if (ACPI_FAILURE(status))
+> +		return -ENODEV;
+> +
+> +	obj = (union acpi_object *)buffer.pointer;
+> +
+> +	if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
+> +		pr_info("Invalid buffer for mac addr passthrough.\n");
 
-On 9/6/2023 1:34 AM, Dmitry Baryshkov wrote:
-> On 23/08/2023 12:17, Nitin Rawat wrote:
->> Add SC7280 specific register layout and table configs.
->>
->> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
->> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
->> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 142 ++++++++++++++++++++++++
->>   1 file changed, 142 insertions(+)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c 
->> b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
->> index 3927eba8e468..514fa14df634 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> 
-> [skipped tables programming]
-> 
-> 4),
-Sorry I quite didn't get this comment. what exactly is skipped ?Please 
-can you help explain?
+MAC address
 
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (strncmp(obj->string.pointer + 0x8, "#", 1) != 0 ||
+> +	    strncmp(obj->string.pointer + 0x15, "#", 1) != 0) {
 
->> @@ -888,6 +993,40 @@ static const struct qmp_phy_cfg 
->> sa8775p_ufsphy_cfg = {
->>       .regs            = ufsphy_v5_regs_layout,
->>   };
->>
->> +static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
->> +    .lanes                  = 2,
->> +
->> +    .offsets                = &qmp_ufs_offsets,
->> +
->> +    .tbls = {
->> +        .serdes         = sm8150_ufsphy_serdes,
->> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_serdes),
->> +        .tx             = sc7280_ufsphy_tx,
->> +        .tx_num         = ARRAY_SIZE(sc7280_ufsphy_tx),
->> +        .rx             = sc7280_ufsphy_rx,
->> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_rx),
->> +        .pcs            = sc7280_ufsphy_pcs,
->> +        .pcs_num        = ARRAY_SIZE(sc7280_ufsphy_pcs),
->> +    },
->> +    .tbls_hs_b = {
->> +        .serdes         = sm8150_ufsphy_hs_b_serdes,
->> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
->> +    },
->> +    .tbls_hs_g4 = {
->> +        .tx             = sm8250_ufsphy_hs_g4_tx,
->> +        .tx_num         = ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
->> +        .rx             = sc7280_ufsphy_hs_g4_rx,
->> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_hs_g4_rx),
->> +        .pcs            = sm8150_ufsphy_hs_g4_pcs,
->> +        .pcs_num        = ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
->> +    },
->> +    .clk_list               = sm8450_ufs_phy_clk_l,
->> +    .num_clks               = ARRAY_SIZE(sm8450_ufs_phy_clk_l),
-> 
-> This doesn't correspond to the bindings. This array has 3 enries, while 
-> in the bindings you have opted for two clocks for this PHY.
-Sure. I'll update the bindings.
+Why use strncmp with (..., 1)? These offsets should defines above and not 
+use literals.
 
+> +		pr_info("Invalid header for mac addr passthrough.\n");
+
+MAC address
+
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (strncmp(obj->string.pointer + 0x9, "XXXXXXXXXXXX", AUXMAC_LEN) == 0)
+
+Why you're not using AUXMAC_START here?
+
+It's also bit confusing that some of the offset are hex and some non-hex 
+numbers. 
+
+> +		memcpy(auxmac, "disabled", 9);
+
+Don't use memcpy() for copying a string.
+
+> +	else
+> +		memcpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN);
+
+What about the termination of auxmac? It's given 
+
+> +
+> +	kfree(obj);
+> +	return 0;
+> +
+> +auxmacinvalid:
+> +	kfree(obj);
+> +	memcpy(auxmac, "unavailable", 11);
+
+Again, don't use memcpy() to copy a string. You even got it wrong here 
+compared with the other case where you copied also the zero terminator.
+
+> +	return 0;
+> +}
+> +
+> +static struct ibm_struct auxmac_data = {
+> +	.name = "auxmac",
+> +};
+> +
+> +static ssize_t auxmac_show(struct device *dev,
+> +			   struct device_attribute *attr,
+> +			   char *buf)
+> +{
+> +	return sysfs_emit(buf, "%s\n", auxmac);
+
+This requires proper termination for the string but you didn't ensure it 
+above.
+
+-- 
+ i.
+
+> +}
+> +static DEVICE_ATTR_RO(auxmac);
+> +
+> +static struct attribute *auxmac_attributes[] = {
+> +	&dev_attr_auxmac.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group auxmac_attr_group = {
+> +	.attrs = auxmac_attributes,
+> +};
+> +
+>  /* --------------------------------------------------------------------- */
+>  
+>  static struct attribute *tpacpi_driver_attributes[] = {
+> @@ -10843,6 +10916,7 @@ static const struct attribute_group *tpacpi_groups[] = {
+>  	&proxsensor_attr_group,
+>  	&kbdlang_attr_group,
+>  	&dprc_attr_group,
+> +	&auxmac_attr_group,
+>  	NULL,
+>  };
+>  
+> @@ -11414,6 +11488,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
+>  		.init = tpacpi_dprc_init,
+>  		.data = &dprc_driver_data,
+>  	},
+> +	{
+> +		.init = auxmac_init,
+> +		.data = &auxmac_data,
+> +	},
+>  };
+>  
+>  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
 > 
->> +    .vreg_list              = qmp_phy_vreg_l,
->> +    .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
->> +    .regs                   = ufsphy_v4_regs_layout,
->> +};
->> +
->>   static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
->>       .lanes            = 2,
->>
->> @@ -1648,6 +1787,9 @@ static const struct of_device_id 
->> qmp_ufs_of_match_table[] = {
->>       }, {
->>           .compatible = "qcom,sa8775p-qmp-ufs-phy",
->>           .data = &sa8775p_ufsphy_cfg,
->> +    }, {
->> +        .compatible = "qcom,sc7280-qmp-ufs-phy",
->> +        .data = &sc7280_ufsphy_cfg,
->>       }, {
->>           .compatible = "qcom,sc8180x-qmp-ufs-phy",
->>           .data = &sm8150_ufsphy_cfg,
->> -- 
->> 2.17.1
->>
-> 
-Thanks,
-Nitin
+
