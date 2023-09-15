@@ -2,190 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF397A2A7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A587A2A94
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237793AbjIOWmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S237915AbjIOWnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236780AbjIOWmE (ORCPT
+        with ESMTP id S237871AbjIOWms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:42:04 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CA1101;
-        Fri, 15 Sep 2023 15:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694817716;
-        bh=mjPh7CflK5Hh9QsVLWzR7ZRmmuSXtlKu+2F1df3iAg0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EbEVUMEoTWi0KYlwkmVl8VJSvYRKKmHZp6pT+c60wmDXPOjzzsiO9i7Nnu63dvBk5
-         ppvf8tI61dfraitTxNtmsCTBtMP95Kzt/rYyyJtq6kWXF/ZtGi4iAgQZZlB5Cv/8n+
-         K5v9KPlBn7xOsoHNIiYMp/OQk3NLLFJwXxSfgju8=
-Date:   Sat, 16 Sep 2023 00:41:55 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Sebastian Ott <sebott@redhat.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH RFC] binfmt_elf: fully allocate bss pages
-Message-ID: <6bdff5d5-0be5-499c-84d4-2a2315fd3b05@t-8ch.de>
-References: <20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net>
- <CAKbZUD2r7e673gDF8un8vw4GAVgMLG=Lk7F0-HfK5Mz59Sxzxw@mail.gmail.com>
+        Fri, 15 Sep 2023 18:42:48 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2063.outbound.protection.outlook.com [40.107.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100CE2707;
+        Fri, 15 Sep 2023 15:42:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bXupIn+ZCUEy7pK10iQ2Eb32mmytFgZoSo8346UMBMKRc84EqImHe2b3qVMyvRpu7Lzcdf3VR0vZaTqNomGRQ7930OFpKTKczNrPa3hJJfiNczLssDPCetPtlbrRY68ppYXcaVlgsznutsgx104PstHVfKaf+FkocE8nbyDns8SXAwoix0cLFW/n3tO5DY1qkebul2xkd0LiESWEcuUpak218kMW6W+n/D65mgofTLsTNc1N2rOiPc7KSX2+1qC/qiHH1O452tvjkYgJuQhgUY95LbHDrk8xZvVYvJNaMpQncD0u7njgyPTHwiUUiLz58Q63hP8zRxqF1bh41iYpiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1QVjIdzxao2eyL3lM2f05IM8g8b7VkG8jzkBNwmCk1M=;
+ b=cKyzbMIQ3rKmb2+xAl7f1xmy/jURD6guyZA9/HZhG/DklK3paPyfJz+6oM9VjyaSRSjxQzQei5U36ri8gJBVkNELukkoPdevLIlYYjvBsK4Nll7bGaWaBUbC9+Ftpg4wvq+jmlHMmcvb2TosEtoGIjHIzO3qSKvowV6MYTnaRPL339QxmT1o91/6P5/AIfvPmfpbBZk9QTR+HU8ybjpNxRQqOGsvRCH9BYdAXpsuiwmPOMwIDrDjYUXfHBTukk6EbHKuA7nuA4hnJ1h6drE4981G6xdCEOd5ksf0+QMloTltm7/jcqet1c5Yet8a0YxLF8L3+lJ5IdS3DVfeYBxd0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1QVjIdzxao2eyL3lM2f05IM8g8b7VkG8jzkBNwmCk1M=;
+ b=ZXRexcqt9vGRPyK26I7KlJbAWLzy+nIDNpdDPN4d3kmo0CxQ4fp5FSlhoUWIlUxLI3PI7KYVUzFpNe2vydN+AzwVAPgFL7qOvFMNyaTHIa4oA5l2ANPNw0S3Fmc4PGabbFRx59VcAKsDNKuBEzyXeMJrwF9zsD/iQCnx14DZyg8=
+Received: from CY5P221CA0104.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:9::32) by
+ SJ0PR12MB6991.namprd12.prod.outlook.com (2603:10b6:a03:47c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
+ 2023 22:42:37 +0000
+Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
+ (2603:10b6:930:9:cafe::f2) by CY5P221CA0104.outlook.office365.com
+ (2603:10b6:930:9::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
+ Transport; Fri, 15 Sep 2023 22:42:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.140) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.20 via Frontend Transport; Fri, 15 Sep 2023 22:42:35 +0000
+Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
+ 2023 17:42:33 -0500
+From:   Babu Moger <babu.moger@amd.com>
+To:     <corbet@lwn.net>, <reinette.chatre@intel.com>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
+CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
+        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
+        <songmuchun@bytedance.com>, <peterz@infradead.org>,
+        <jpoimboe@kernel.org>, <pbonzini@redhat.com>, <babu.moger@amd.com>,
+        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
+        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
+        <sandipan.das@amd.com>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
+        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
+        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
+        <quic_jiles@quicinc.com>, <peternewman@google.com>
+Subject: [PATCH v10 00/10] x86/resctrl: Miscellaneous resctrl features
+Date:   Fri, 15 Sep 2023 17:42:17 -0500
+Message-ID: <20230915224227.1336967-1-babu.moger@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKbZUD2r7e673gDF8un8vw4GAVgMLG=Lk7F0-HfK5Mz59Sxzxw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|SJ0PR12MB6991:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5e50a36a-5b9a-4bec-e507-08dbb63d0e9e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jOL8q6SxngZEtRrPxwZytiv8UrnDQrOJheZn/y8JvE5brzCSMGjIWoNIcSH7Erk8HD23LmDi0ouvCYfJ+RIdiEkiCGVAuZopS4n+6zl/Za/dMEH3R0WUWX3lFPOAtDKFR35dfXZayRYPeIk6vy7coq3AGPFol3wZ5s+/DiyXWFdB7/1Owvg/OjBiHD5omI1Ql82vPRARlc/9ljnDCSOBwyHFYGgyH2DIUR0QnU+wgNya8j5rXbzSdRF1StpBYHWtJc4VnT0j6ey+5B6zH1L+NXWjiOhsjKCSG9PKNDU1Ef7ewO9bv4zBf9jDAcboNNdVGIacxyRBlbz1yZHqOyGbh99ZoHsH8xGbzv0xK/1SsH0srbZqo2NEBHWloBHSC4+C5iTHcBuaa0j/OiBcg6KuFulW9WeD2DSrmPueuiAk6ELiSYpfa1H0H+vRl7km1Ayw7FW0RCjczzvNzL95mBI33Qh3gsOKCGUE43uWMf9WEym8mil8ajnf8jEJ2iPXIO8lcXFd2Y2Mi2tVczkTJU0/4TAoCHBrWms9OPTLV8taNl30BgnJ6glvrO1F4F5mW9ORkqld6/cuQ3ppECObkHGl9yRteYtXJ3rIzGeuDoCkBxjVE1CAKID1dowkFNuSIgI37s8pG44ptVrSGRS6Mkm16tnrUSK/oMZL94HlTJsQG8gx0dPS6mcorlMWC9sWGNe8lC2PanZDRPxAJYDHGTMeoGCCiSItnR0hO+KrMGZXrTHXnva4b5ONEqti67XnEOvqRa/uOOE8sa7HbvRZInCUTMb2SnvDWt0P3ZDj7a6Y+LY=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(376002)(39860400002)(82310400011)(186009)(1800799009)(451199024)(40470700004)(36840700001)(46966006)(40460700003)(356005)(2906002)(86362001)(26005)(336012)(16526019)(966005)(2616005)(1076003)(426003)(478600001)(6666004)(36756003)(7696005)(83380400001)(36860700001)(81166007)(47076005)(82740400003)(40480700001)(4326008)(8676002)(8936002)(7406005)(7416002)(41300700001)(70206006)(110136005)(54906003)(70586007)(5660300002)(44832011)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 22:42:35.6049
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e50a36a-5b9a-4bec-e507-08dbb63d0e9e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6991
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-15 23:15:05+0100, Pedro Falcato wrote:
-> On Fri, Sep 15, 2023 at 4:54 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> >
-> > When allocating the pages for bss the start address needs to be rounded
-> > down instead of up.
-> > Otherwise the start of the bss segment may be unmapped.
-> >
-> > The was reported to happen on Aarch64:
-> >
-> > Memory allocated by set_brk():
-> > Before: start=0x420000 end=0x420000
-> > After:  start=0x41f000 end=0x420000
-> >
-> > The triggering binary looks like this:
-> >
-> >     Elf file type is EXEC (Executable file)
-> >     Entry point 0x400144
-> >     There are 4 program headers, starting at offset 64
-> >
-> >     Program Headers:
-> >       Type           Offset             VirtAddr           PhysAddr
-> >                      FileSiz            MemSiz              Flags  Align
-> >       LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
-> >                      0x0000000000000178 0x0000000000000178  R E    0x10000
-> >       LOAD           0x000000000000ffe8 0x000000000041ffe8 0x000000000041ffe8
-> >                      0x0000000000000000 0x0000000000000008  RW     0x10000
-> >       NOTE           0x0000000000000120 0x0000000000400120 0x0000000000400120
-> >                      0x0000000000000024 0x0000000000000024  R      0x4
-> >       GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
-> >                      0x0000000000000000 0x0000000000000000  RW     0x10
-> >
-> >      Section to Segment mapping:
-> >       Segment Sections...
-> >        00     .note.gnu.build-id .text .eh_frame
-> >        01     .bss
-> >        02     .note.gnu.build-id
-> >        03
-> >
-> > Reported-by: Sebastian Ott <sebott@redhat.com>
-> > Closes: https://lore.kernel.org/lkml/5d49767a-fbdc-fbe7-5fb2-d99ece3168cb@redhat.com/
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> >
-> > I'm not really familiar with the ELF loading process, so putting this
-> > out as RFC.
-> >
-> > A example binary compiled with aarch64-linux-gnu-gcc 13.2.0 is available
-> > at https://test.t-8ch.de/binfmt-bss-repro.bin
-> > ---
-> >  fs/binfmt_elf.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> > index 7b3d2d491407..4008a57d388b 100644
-> > --- a/fs/binfmt_elf.c
-> > +++ b/fs/binfmt_elf.c
-> > @@ -112,7 +112,7 @@ static struct linux_binfmt elf_format = {
-> >
-> >  static int set_brk(unsigned long start, unsigned long end, int prot)
-> >  {
-> > -       start = ELF_PAGEALIGN(start);
-> > +       start = ELF_PAGESTART(start);
-> >         end = ELF_PAGEALIGN(end);
-> >         if (end > start) {
-> >                 /*
-> 
-> I don't see how this change can be correct. set_brk takes the start of
-> .bss as the start, so doing ELF_PAGESTART(start) will give you what
-> may very well be another ELF segment. In the common case, you'd map an
-> anonymous page on top of someone's .data, which will misload the ELF.
+These series adds support few minor features.
+1. Support assigning multiple tasks to control/mon groups in one command.
+2. Add debug mount option for resctrl interface.
+3. Add RMID and CLOSID in resctrl interface when mounted with debug option.
+4. Moves the default control group creation during the mount instead of during init.
+5. While doing these above changes, found that rftype flags needed some cleanup.
+   They were named inconsistently. Re-arranged them much more cleanly now and added
+   few comments. Hope it can help future additions.
+---
+v10:
+   Patches 1-2: no code changes. Added "Reviewed-by" from Fenghua.
+   Patch 3: Added the new flag RFTYPE_MON_BASE [comment for Reinette].
+            Removed the Reviewed as the patch has changed.
+   patch 4: No code change.  Added "Reviewed-by" from Fenghua.
+   Patch 5: Removed empty lines in rdt_disable_ctx().
+   Patch 6: No changes. Added "Reviewed-by".
+   Patch 7: No changes.
+   Patch 8: No changes.
+   Patch 9: New patch. Added support for the files for MON groups only.
+   Patch 10: Modified. This patch only adds changes for "mon_hw_id" interface.
+v9:
+   Changes since v8:
+   Split the RMID display in a separate patch. RMID is a special case here as it
+   should be printed only if monitoring is enabled.
+   Made rdtgroup_setup_root and rdtgroup_destroy_root as static functions.
+   Added code to print pid_str in case of task parse error.
+  
+v8:
+   Changes since v7:
+   Earlier moved both default group initialization and file creation on mount.
+   Now kept the group initialization as is and only moved the file creation on mount.
+   Re-organized the RFTYPE flags comments little more to avoid confusion. Thanks
+   to Reinette for feedback.
+   Re-factored the rdt_enable_ctx and added rdt_disable_ctx to unwind the errors.
+   And same call also used in rdt_kill_sb which simplifies the code.
+   Few other minor text changes.
+   
+v7:
+   Changes since v6:
+   While moving the default group file creation on mount, I also moved the
+   initialization of default group data structures. Reinette suggested to move
+   only the filesystem creation and keep the group initialization as is. Addressed it now.
+   Added a new function rdt_disable_ctx to unwind the context related features.
+   Few other minor text changes.
 
-That does make sense, and indeed it breaks more complex binaries.
+v6:
+   Changes since v5:
+   Moved the default group creation during mount instead of kernel init.
+   The rdt_root creation moved to rdt_get_tree as suggested by Reinette.
+   https://lore.kernel.org/lkml/8f68ace7-e05b-ad6d-fa74-5ff8e179aec9@intel.com/
+   Needed to modify rdtgroup_setup_root to take care of this.
+   Re-arraged the patches to move the default group creation earlier.
+   Others are mostly text changes and few minor changes.
+   Patches are based on tip/master commit 1a2945f27157825a561be7840023e3664111ab2f
 
-> The current logic looks OK to me (gosh this code would ideally take a
-> good refactoring...). I still can't quite tell how padzero() (in the
-> original report) is -EFAULTing though.
+v5:
+   Changes since v4:
+   Moved the default group creation during mount instead of kernel init.
+   Tried to address most of the comments on commit log. Added more context and details.
+   Addressed feedback about the patch4. Removed the code changes and only kept the comments.
+   I am ok to drop patch4. But I will wait for the comment on that.
+   There were lots of comments. Hope I did not miss anything. Even if I missed, it is
+   not intentional. 
 
-As a test I replaced the asm clear_user() in padzero() with the generic
-memset()-based implementation from include/asm-generic/uaccess.h.
-It does provide better diagnostics, see below.
+v4: Changes since v3
+    Addressed comments from Reinette and others.
+    Removed newline requirement when adding tasks.
+    Dropped one of the changes on flags. Kept the flag names mostly same.
+    Changed the names of closid and rmid to ctrl_hw_id and mon_hw_id respectively.
+    James had some concerns about adding these files. Addressed it by making these
+    files x86 specific.
+    Tried to address Reinette's comment on patch 7. But due to current code design
+    I could not do it exact way. But changed it little bit to make it easy debug
+    file additions in the future.  
 
-Who should have mapped this partial .bss page if there is no .data?
-Maybe the logic needs to be a bit more complex and check if this page
-has been already mapped for .data and in that case don't map it again.
+v3: Changes since v2
+    Still waiting for more comments. While waiting, addressed few comments from Fenghua.
+    Added few more texts in the documentation about multiple tasks assignment feature.
+    Added pid in last_cmd_status when applicable.
+    Introduced static resctrl_debug to save the debug option.
+    Few minor text changes.
+  
+v2: Changes since v1
+  a. Removed the changes to add the task's threads automatically. It required
+     book keeping to handle the failures and gets complicated. Removed that change
+     for now.
+  b. Added -o debug option to mount in debug mode(comment from Fenghua)
+  c. Added debug files rmid and closid. Stephane wanted to rename them more
+     generic to accommodate ARM. It kind of loses meaning if is renamed differently.
+     Kept it same for now. Will change if he feels strong about it. 
+
+v9: https://lore.kernel.org/lkml/20230907235128.19120-1-babu.moger@amd.com/
+v8: https://lore.kernel.org/lkml/20230821233048.434531-1-babu.moger@amd.com/
+v7: https://lore.kernel.org/lkml/169178429591.1147205.4030367096506551808.stgit@bmoger-ubuntu/
+v6: https://lore.kernel.org/lkml/168980872063.1619861.420806535295905172.stgit@bmoger-ubuntu/
+v5: https://lore.kernel.org/lkml/168564586603.527584.10518315376465080920.stgit@bmoger-ubuntu/
+v4: https://lore.kernel.org/lkml/168177435378.1758847.8317743523931859131.stgit@bmoger-ubuntu/
+v3: https://lore.kernel.org/lkml/167778850105.1053859.14596357862185564029.stgit@bmoger-ubuntu/
+v2: https://lore.kernel.org/lkml/167537433143.647488.9641864719195184123.stgit@bmoger-ubuntu/
+v1: https://lore.kernel.org/lkml/167278351577.34228.12803395505584557101.stgit@bmoger-ubuntu/
 
 
+*** BLURB HERE ***
 
-[    5.620235] Run /init as init process
-[    5.662763] CUSTOM DEBUG ELF_PAGEALIGN(start)=0x420000 ELF_PAGEALIGN(end)=0x420000 ELF_PAGESTART(0x41f000)
-[    5.667176] Unable to handle kernel paging request at virtual address 000000000041ffe8
-[    5.668062] Mem abort info:
-[    5.668429]   ESR = 0x0000000096000045
-[    5.669400]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    5.670119]   SET = 0, FnV = 0
-[    5.670608]   EA = 0, S1PTW = 0
-[    5.671172]   FSC = 0x05: level 1 translation fault
-[    5.672024] Data abort info:
-[    5.673273]   ISV = 0, ISS = 0x00000045, ISS2 = 0x00000000
-[    5.674169]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-[    5.674991]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[    5.676871] user pgtable: 4k pages, 39-bit VAs, pgdp=0000000043f20000
-[    5.677776] [000000000041ffe8] pgd=0800000043c62003, p4d=0800000043c62003, pud=0800000043c62003, pmd=0000000000000000
-[    5.681522] Internal error: Oops: 0000000096000045 [#1] PREEMPT SMP
-[    5.682604] Modules linked in:
-[    5.683576] CPU: 0 PID: 1 Comm: init Not tainted 6.6.0-rc1+ #241 00a261b9689606c4fc0c90eb29739c5b0eec7b82
-[    5.684706] Hardware name: linux,dummy-virt (DT)
-[    5.685462] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    5.686094] pc : __memset+0x50/0x188
-[    5.686572] lr : padzero+0x84/0xa0
-[    5.686956] sp : ffffffc08003bc70
-[    5.687307] x29: ffffffc08003bc70 x28: 0000000000000000 x27: ffffff80026afa00
-[    5.688091] x26: 000000000041fff0 x25: 000000000041ffe8 x24: 0000000000400144
-[    5.688698] x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000000
-[    5.689275] x20: 0000000000000fe8 x19: 000000000041ffe8 x18: ffffffffffffffff
-[    5.689928] x17: ffffffdf46cd2984 x16: ffffffdf46cd2880 x15: 0720072007200720
-[    5.690597] x14: 0720072007200720 x13: 0720072007200720 x12: 0000000000000000
-[    5.691192] x11: 00000000ffffefff x10: 0000000000000000 x9 : ffffffdf46e1ba28
-[    5.691906] x8 : 000000000041ffe8 x7 : 0000000000000000 x6 : 0000000000057fa8
-[    5.692496] x5 : 0000000000000fff x4 : 0000000000000008 x3 : 0000000000000000
-[    5.693168] x2 : 0000000000000018 x1 : 0000000000000000 x0 : 000000000041ffe8
-[    5.693985] Call trace:
-[    5.694318]  __memset+0x50/0x188
-[    5.694708]  load_elf_binary+0x630/0x15d0
-[    5.695132]  bprm_execve+0x2bc/0x7c0
-[    5.695505]  kernel_execve+0x144/0x1c8
-[    5.695882]  run_init_process+0xf8/0x110
-[    5.696264]  kernel_init+0x8c/0x200
-[    5.696624]  ret_from_fork+0x10/0x20
-[    5.697216] Code: d65f03c0 cb0803e4 f2400c84 54000080 (a9001d07)
-[    5.698936] ---[ end trace 0000000000000000 ]---
-[    5.701625] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    5.702502] SMP: stopping secondary CPUs
-[    5.703608] Kernel Offset: 0x1ec6a00000 from 0xffffffc080000000
-[    5.704119] PHYS_OFFSET: 0x40000000
-[    5.704491] CPU features: 0x0000000d,00020000,0000420b
-[    5.705276] Memory Limit: none
+Babu Moger (10):
+  x86/resctrl: Add multiple tasks to the resctrl group at once
+  x86/resctrl: Simplify rftype flag definitions
+  x86/resctrl: Rename rftype flags for consistency
+  x86/resctrl: Add comments on RFTYPE flags hierarchy
+  x86/resctrl: Unwind the errors inside rdt_enable_ctx()
+  x86/resctrl: Move default group file creation to mount
+  x86/resctrl: Introduce "-o debug" mount option
+  x86/resctrl: Display CLOSID for resource group
+  x86/resctrl: Add support for the files for MON groups only
+  x86/resctrl: Display RMID of resource group
+
+ Documentation/arch/x86/resctrl.rst     |  22 ++-
+ arch/x86/kernel/cpu/resctrl/internal.h |  88 +++++++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 253 ++++++++++++++++++-------
+ 3 files changed, 281 insertions(+), 82 deletions(-)
+
+-- 
+2.34.1
+
