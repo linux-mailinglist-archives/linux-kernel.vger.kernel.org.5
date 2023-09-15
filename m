@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C939D7A1670
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0AE7A1672
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbjIOGvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        id S232406AbjIOGvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjIOGvH (ORCPT
+        with ESMTP id S230109AbjIOGvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:51:07 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8312707
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:51:01 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401da71b83cso20348035e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694760660; x=1695365460; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E+yPchd1OF14YEx7hFDIQf6gB7Zd0Tpalu5rQeIxJmg=;
-        b=p1W+rftkN7pyqeh6UUjd26aMZUgtFNHsxZemI8zQkJq+1heReN9LHUbhAXooHRyNfO
-         yy9ndz0Nv2kJdKOxOyepZkXu6RA08LIFNba7eeCUyNitDJVdkj7en/49ufdAR8ooF2hP
-         G9qGyUwl1wtXc6yi4cmdKTUwZZLuHGa9YK865q06eP2AaiFf4sumNDchDZsywatfjeIH
-         P1V9bM9lF8rUQifoVuX83vpPnyX0Q/8wmUsKHDxAv/7W5Nqxp2RTbzhc+kDW6wM9SOga
-         flEzW/VES0aah+9b2JVc6Cv/hx+JrlY5rd0vV8K48OvCmoy3KacQxM0wzwv8qTs24vob
-         dg/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694760660; x=1695365460;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E+yPchd1OF14YEx7hFDIQf6gB7Zd0Tpalu5rQeIxJmg=;
-        b=CFiDEmScd4Pxe0/NuW3KQ194hrSgoQPksOcqIKqVBm+XVeUwQNz9DYYK7eaXMvdKdL
-         Te/oTsJUE8FM3VV1RkYwMDfh9NOQxcw8LoNjkNupqDirbbQnhYEZ2KeYjd9wtLv30Ljo
-         1f3mqm3FH5AeRulRIcJxRmBFzRyH1xs24IeQhcKmWl0xB80HaJUdaM8YnnW0ybQeYoL1
-         UJhE2v5HDl+fvfOiu9Q6BUWlu5LkDuVxN2dnV7YzpZUkJ89pfoWV1KvDi9zwbo7t8Ggf
-         7alQB/u0m73w3mIB3lG/cnfquDHsdLUXwkd9FmD80HxoIFLZioXuE3C4+brdRR1MiI8Q
-         17AA==
-X-Gm-Message-State: AOJu0YyXMW2KK45s6AxLEYnZxcmAkCalSz9yabO61Udg6nUzCErJZAd+
-        NUVhSv4z7zvRnYVgqNWMv1KnNg==
-X-Google-Smtp-Source: AGHT+IH/8g+avoYqVMdv6S+pJjql4rz2e+Urfb+s7H/AE/YkelrHE8ZK2/YVDITmpvOiEWInE9tw1Q==
-X-Received: by 2002:a05:600c:ac8:b0:402:f54d:745 with SMTP id c8-20020a05600c0ac800b00402f54d0745mr778159wmr.17.1694760660045;
-        Thu, 14 Sep 2023 23:51:00 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id h16-20020a5d5490000000b0031773a8e5c4sm3559298wrv.37.2023.09.14.23.50.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 23:50:59 -0700 (PDT)
-Message-ID: <6438f3ad-23ff-0392-e549-d64ef499d739@linaro.org>
-Date:   Fri, 15 Sep 2023 08:50:57 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/4] dt-bindings: serial: document esp32s3-acm bindings
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
+        Fri, 15 Sep 2023 02:51:36 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EA32707
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:51:29 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qh2fg-0006XC-V7; Fri, 15 Sep 2023 08:51:20 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qh2fg-006TUD-5a; Fri, 15 Sep 2023 08:51:20 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qh2fg-007DWU-2j; Fri, 15 Sep 2023 08:51:20 +0200
+Date:   Fri, 15 Sep 2023 08:51:20 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kernel@pengutronix.de,
+        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-References: <20230913211449.668796-1-jcmvbkbc@gmail.com>
- <20230913211449.668796-4-jcmvbkbc@gmail.com>
- <196fb9ac-53b7-51a6-6ce4-9f980215fde4@linaro.org>
- <CAMo8Bf+u3hkk8zW6EQUtQcAC5t-hUJ5+HoE8JDskBj4KyFK7xA@mail.gmail.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAMo8Bf+u3hkk8zW6EQUtQcAC5t-hUJ5+HoE8JDskBj4KyFK7xA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain
+ dependency
+Message-ID: <20230915065120.GQ637806@pengutronix.de>
+References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
+ <20230904115816.1237684-2-s.hauer@pengutronix.de>
+ <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
+ <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
+ <20230913065843.GF637806@pengutronix.de>
+ <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+In-Reply-To: <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,119 +75,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 22:47, Max Filippov wrote:
-> On Wed, Sep 13, 2023 at 10:57 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 13/09/2023 23:14, Max Filippov wrote:
->>> Add documentation for the ESP32S3 ACM controller.
->>
->> A nit, subject: drop second/last, redundant "bindings". The
->> "dt-bindings" prefix is already stating that these are bindings.
+On Wed, Sep 13, 2023 at 01:48:12PM -0700, Saravana Kannan wrote:
+> On Tue, Sep 12, 2023 at 11:58 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >
+> > On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
+> > > On Tue, Sep 12, 2023 at 4:07 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > >
+> > > > Top posting to bring Saravana Kannan into this discussion.
+> > > >
+> > > > This looks like a big hack to me, Saravana has been working
+> > > > tirelessly to make the device tree probe order "sort itself out"
+> > > > and I am pretty sure this issue needs to be fixed at the DT
+> > > > core level and not in a driver.
+> > >
+> > > We could merge all the IO domain stuff into the pinctrl node/driver,
+> > > like is done for Allwinner? Maybe that would simplify things a bit?
+> >
+> > I thought about this as well. On Rockchip the pinctrl driver and the IO
+> > domain driver even work on the same register space, so putting these
+> > into a single node/driver would even feel more natural than what we have
+> > now.
 > 
-> Ok.
+> Then we should try to do this and fix any issues blocking us.
 > 
->>> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
->>> ---
->>>  .../bindings/serial/esp,esp32-acm.yaml        | 40 +++++++++++++++++++
->>>  1 file changed, 40 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml b/Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
->>> new file mode 100644
->>> index 000000000000..dafbae38aa64
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
->>> @@ -0,0 +1,40 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/serial/esp,esp32-acm.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: ESP32S3 ACM controller
->>> +
->>> +maintainers:
->>> +  - Max Filippov <jcmvbkbc@gmail.com>
->>> +
->>> +description: |
->>
->> Do not need '|' unless you need to preserve formatting.
+> > However, with that the pinctrl node would get the supplies that the IO
+> > domain node now has and we would never get into the probe of the pinctrl
+> > driver due to the circular dependencies.
 > 
-> Ok.
+> From a fw_devlink perspective, the circular dependency shouldn't be a
+> problem. It's smart enough to recognize all cycle possibilities (since
+> 6.3) and not enforce ordering between nodes in a cycle.
 > 
->>> +  ESP32S3 ACM controller is a communication device found in the ESP32S3
->>
->> What is "ACM"?
-> 
-> It's an 'Abstract Control Model' as in USB CDC-ACM: 'Communication Device Class
-> - Abstract Control Model'.
-> 
->> Why is this in serial? Only serial controllers are in serial.
-> 
-> Because it's a serial communication device. The SoC TRM calls this peripheral
-> 'USB Serial', but the USB part is fixed and is not controllable on the SoC side.
-> When you plug it into a host USB socket you get a serial port called ttyACM on
-> the host.
-> 
->> The description is very vague, way too vague.
-> 
-> Is the following better?
-> 
->   Fixed function USB CDC-ACM device controller of the Espressif ESP32S3 SoC.
+> So, this is really only a matter of pinctrl not trying to do
+> regulator_get() in its probe function. You need to do the
+> regulator_get() when the pins that depend on the io-domain are
+> requested. And if the regulator isn't ready yet, return -EPROBE_DEFER?
 
-Yes.
+That's basically what my series does already, I return -EPROBE_DEFER
+from the pinctrl driver when a pin is requested and the IO domain is not
+yet ready.
 
 > 
->>> +  SoC that is connected to one of its USB controllers.
->>
->> Same comments as previous patch.
->>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: esp,esp32s3-acm
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - interrupts
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    acm@60038000 {
+> Is there something that prevents us from doing that?
 
-So this must be named "serial" now. ACM describes how this is interfaces
-to the SoC, right? Otherwise it would not be in "serial" directory and
-you would not be able to put serial devices as children.
+No. We could do that, but it wouldn't buy us anthing. I am glad to hear
+that fw_devlink can break the circular dependencies. With this we could
+add the supplies to the pinctrl node and the pinctrl driver would still
+be probed.
 
+With the IO domain supplies added to the pinctrl node our binding would
+be cleaner, but still we would have to defer probe of many requested
+pins until finally the I2C driver providing access to the PMIC comes
+along. We also still need a "Do not defer probe for these pins" property
+in the pingrp needed for the I2C driver.
 
->>> +            compatible = "esp,esp32s3-acm";
->>
->> Use 4 spaces for example indentation.
+I would consider this being a way to cleanup the bindings, but not a
+solution at DT core level that Linus was aiming at.
+
 > 
-> Ok.
+> > >
+> > > IIRC on Allwinner SoCs the PMIC pins don't have a separate power rail,
+> > > or if they do they almost certainly use the default I/O rail that is
+> > > always on, and so we omit it to work around the dependency cycle.
+> >
+> > I looked into sun50i as an example. This one has two pinctrl nodes, pio
+> > and r_pio. Only the former has supplies whereas the latter, where the
+> > PMIC is connected to, has (found in sun50i-a64-pinephone.dtsi):
+> >
+> > &r_pio {
+> >         /*
+> >          * FIXME: We can't add that supply for now since it would
+> >          * create a circular dependency between pinctrl, the regulator
+> >          * and the RSB Bus.
+> >          *
+> >          * vcc-pl-supply = <&reg_aldo2>;
+> >          */
+> > };
+> >
+> > At least it show me that I am not the first one who has this problem ;)
+> >
+> > We could add the supplies to the pingroup subnodes of the pinctrl driver
+> > to avoid that, but as Saravana already menioned, that would feel like
+> > overkill.
 > 
->>> +            reg = <0x60038000 0x1000>;
->>> +            interrupts = <96 3 0>;
->>
->> Same comments as previous patch.
+> So my comment yesterday was that it'd be an overkill to make every
+> struct pin_desc into a device. But if you can split that rockchip
+> pinctrl into two devices, that should be okay and definitely not an
+> overkill.
 > 
-> These are not IRQ flags. In any case the contents of the IRQ
-> specification cells is not relevant here, right?
-
-Yes, if 0 is not an IRQ flag :)
+> Maybe something like:
 > 
+> pinctrl {
+>     compatible = "rockchip,rk3568-pinctrl";
+>     i2c0 {
+>                 /omit-if-no-ref/
+>                 i2c0_xfer: i2c0-xfer {
+>                         rockchip,pins =
+>                                 /* i2c0_scl */
+>                                 <0 RK_PB1 1 &pcfg_pull_none_smt>,
+>                                 /* i2c0_sda */
+>                                 <0 RK_PB2 1 &pcfg_pull_none_smt>;
+>                 };
+>     }
+>     ...
+>     ...
+>     pinctrl-io {
+>         compatible = "rockchip,rk3568-pinctrl-io";
+>         pmuio1-supply = <&vcc3v3_pmu>;
+>         cam {
+>             ....
+>         }
+>         ....
+>         ....
+> }
+> 
+> So pinctrl will probe successfully and add it's child device
+> pinctrl-io. i2c0 will probe once pinctrl is available. Then eventually
+> the regulator will probe. And after all that, pinctrl-io would probe.
+> 
+> This has no cycles and IMHO represents the hardware accurately. You
+> have a pinctrl block and there's a sub component of it (pinctrl-io)
+> that works differently and has additional dependencies.
+> 
+> Any thoughts on this?
 
-Best regards,
-Krzysztof
+By making the IO domain device a child node of the pinctrl node we
+wouldn't need a phandle from the pinctrl node to the IO domain node
+anymore, but apart from that the approach is equivalent to what we have
+already.
 
+Given that fw_devlink allows us to add the supplies directly to the
+pinctrl node, I would prefer doing that. But as said, it doesn't solve
+the problem.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
