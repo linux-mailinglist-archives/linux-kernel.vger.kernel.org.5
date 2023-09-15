@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3985C7A25AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6517A25AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbjIOS0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
+        id S236389AbjIOS2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236593AbjIOSZ7 (ORCPT
+        with ESMTP id S236071AbjIOS1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:25:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761212D5D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:25:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9961EC433C8;
-        Fri, 15 Sep 2023 18:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694802336;
-        bh=tI4aIfone71e2rJtw81f/6/MavNYU+k1+mNvMUh5TA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Atqv/D9RjXan1oJbtAgBvbdJRn03JAT/MvFlzWwRNZ2oZr8jFZU7pJDgBdecw7Go0
-         7edHXyg9udHnr4MAzrNPXWy4+2/AzvvCsBTY0/q2ZhUKTEmkVwAtSE5eKCNTdMY7+r
-         EJ3k0zKnaCj9goknDZrM8VkHhp2gF1l2IvwY0UuvH5fZBhUHwhUkD0A2P6cNJyLb4+
-         r0LGQRkScxsxsRsnrV9mZjY16b8iU8youOptYenFLfegaRrHRWjqG9odXzuxCa9Mel
-         VVB4n9LvB8i7Th2N6X2+iTQJs3thylSoy2+CjUpsumRLpKoLjPD8eDjsxN6V1JBejg
-         MExPW/2nAS3zg==
-Date:   Fri, 15 Sep 2023 20:25:31 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] seqlock: introduce seqprop_lock/unlock
-Message-ID: <ZQShm4QAeAtjR8EK@example.org>
-References: <20230913154907.GA26210@redhat.com>
- <20230913155000.GA26248@redhat.com>
+        Fri, 15 Sep 2023 14:27:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BC52D60
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f5vxbstncXGDTYF4k8iBAO/uRU8zJv+hlaWNzlrq5m4=; b=fWK/ibyb6ETNzkHlnHyn9gX1RS
+        Fmd7YQNPRUfcacHqJp6y9G+nRfF0x6E75zxeHzf95FBuFmoCiiZe1a3cJDq+Gfm8sreTmj3EajlvQ
+        JF7/jGs0EwsxeHvQyg4ZySBqsCi2XtlteoDCDTl9bGfG2ophERMZ89K++B9Z7YHXlbCXQobz03emV
+        Yy5XRpP3xa/DHm84iSkQcAtBmaAOyjQlyOCrXQuYqLpDROULAcbUJiXNapPCyB6bnhxDndGxG/p7R
+        jie1+97gfLzKQQYMkh3q7MRww2A2G78LL5GQ4xtZ0fHnnHCUBvE+jJZawlNIePSdb1jFk9Wm/7gma
+        9y8MlWZw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhDW7-00BJSR-LJ; Fri, 15 Sep 2023 18:26:11 +0000
+Date:   Fri, 15 Sep 2023 19:26:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
+Message-ID: <ZQShw8lESIBle7GF@casper.infradead.org>
+References: <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
+ <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com>
+ <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com>
+ <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com>
+ <ZQNaT/3xPxATKJVR@casper.infradead.org>
+ <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com>
+ <CAJuCfpGp2CwGJmmwzK7WdudOyL1CCWVaERRK9qTtNA8SZ365SA@mail.gmail.com>
+ <ZQN58hFWfgn+OfvG@casper.infradead.org>
+ <CAJuCfpGRSJhBBZop_L-UubuveUWBca4YtyPBzM2KZGEx7iwhXg@mail.gmail.com>
+ <da13f5a-b87f-d776-e58a-d492fa2773f9@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913155000.GA26248@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <da13f5a-b87f-d776-e58a-d492fa2773f9@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 05:50:00PM +0200, Oleg Nesterov wrote:
-> which can be used to take/release the corresponding lock.
+On Thu, Sep 14, 2023 at 09:26:15PM -0700, Hugh Dickins wrote:
+> On Thu, 14 Sep 2023, Suren Baghdasaryan wrote:
+> > Yes, I just finished running the reproducer on both upstream and
+> > linux-next builds listed in
+> > https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023 and the
+> > problem does not happen anymore.
+> > I'm fine with your suggestion too, just wanted to point out it would
+> > introduce change in the behavior. Let me know how you want to proceed.
 > 
-> Thanks to the previous patch, it is trivial to pass 2 arguments to
-> the new __seqprop_##lockname##_lock/unlock "methods", plus we do not
-> loose the type info and thus the new seqprop's are "type safe".
+> Well done, identifying the mysterious cause of this problem:
+> I'm glad to hear that you've now verified that hypothesis.
 > 
-> So for example
+> You're right, it would be a regression to follow Matthew's suggestion.
 > 
-> 	void func(seqcount_rwlock_t *s, rwlock_t *l)
-> 	{
-> 		seqprop_lock(s, l);
-> 	}
+> Traditionally, modulo bugs and inconsistencies, the queue_pages_range()
+> phase of do_mbind() has done the best it can, gathering all the pages it
+> can that need migration, even if some were missed; and proceeds to do the
+> mbind_range() phase if there was nothing "seriously" wrong (a gap causing
+> -EFAULT).  Then at the end, if MPOL_MF_STRICT was set, and not all the
+> pages could be migrated (or MOVE was not specified and not all pages
+> were well placed), it returns -EIO rather than 0 to inform the caller
+> that not all could be done.
 > 
-> happily compiles, but this one
-> 
-> 	void func(seqcount_rwlock_t *s, spinlock_t *l)
-> 	{
-> 		seqprop_lock(s, l);
-> 	}
-> 
-> doesn't.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->  include/linux/seqlock.h | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-> index 41e36f8afad4..9831683a0102 100644
-> --- a/include/linux/seqlock.h
-> +++ b/include/linux/seqlock.h
-> @@ -241,6 +241,21 @@ static __always_inline void						\
->  __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
->  {									\
->  	__SEQ_LOCK(lockdep_assert_held(s->lock));			\
-> +}									\
-> +									\
-> +static __always_inline void						\
-> +__seqprop_##lockname##_lock(seqcount_##lockname##_t *s,			\
-> +				locktype *lock)				\
-> +{									\
-> +	__SEQ_LOCK(WARN_ON_ONCE(s->lock != lock));			\
-> +	lockbase##_lock(lock);						\
-> +}									\
-> +									\
-> +static __always_inline void						\
-> +__seqprop_##lockname##_unlock(seqcount_##lockname##_t *s,		\
-> +				locktype *lock)				\
-> +{									\
-> +	lockbase##_unlock(lock); 					\
->  }
+> There have been numerous tweaks, but I think most importantly
+> 5.3's d883544515aa ("mm: mempolicy: make the behavior consistent when
+> MPOL_MF_MOVE* and MPOL_MF_STRICT were specified") added those "return 1"s
+> which stop the pagewalk early.  In my opinion, not an improvement - makes
+> it harder to get mbind() to do the best job it can (or is it justified as
+> what you're asking for if you say STRICT?).
 
-Why are you creating a new method with an unused argument s ?
-
->  
->  /*
-> @@ -306,6 +321,12 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
->  #define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
->  #define seqprop_assert(s)		__seqprop(s, assert)(s)
->  
-> +/* seqcount_t doesn't have these methods */
-> +static inline void __seqprop_lock   (seqcount_t *s, void *l) { BUILD_BUG(); }
-> +static inline void __seqprop_unlock (seqcount_t *s, void *l) { BUILD_BUG(); }
-> +#define seqprop_lock(s, l)		__seqprop(s, lock)(s, l)
-> +#define seqprop_unlock(s, l)		__seqprop(s, unlock)(s, l)
-> +
->  /**
->   * __read_seqcount_begin() - begin a seqcount_t read section w/o barrier
->   * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-> -- 
-> 2.25.1.362.g51ebf55
-> 
-
--- 
-Rgrds, legion
+I suspect you agree that it's inconsistent to stop early.  Userspace
+doesn't know at which point we found an unmovable page, so it can't behave
+rationally.  Perhaps we should remove the 'early stop' and attempt to
+migrate every page in the range, whether it's before or after the first
+unmovable page?
 
