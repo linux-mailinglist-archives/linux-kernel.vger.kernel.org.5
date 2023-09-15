@@ -2,109 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD597A2492
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCBE7A249B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235622AbjIORXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
+        id S235765AbjIORYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235812AbjIORW7 (ORCPT
+        with ESMTP id S235618AbjIORXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:22:59 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B9BC1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:22:53 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59bbed7353aso33433767b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694798573; x=1695403373; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2RWBQs5T7WlFgpSGFhWkY3V6/ADmjD9odSx9zwtedk=;
-        b=BKqeG12RUC2P6P27TdIGj2kcFAKtz0V1WMD4fw7YQBhg6a/ISIfhIPexmxFw8KtxUO
-         FKfAanKwp4kZ35JtRWlbeeMojHCzExkqVHirUC9qwtB9eVu0HAFecunUZQuWEHACHCbL
-         8Asnl8Is0LpZ9TrT8hwoPVziChX8/1e4d5uxzuTc7DuJfOnZ9kwRVg7dwqOufMyknRyK
-         VczGBgRiUFM6O7eZVVmXlJKzBFcI4kiKw8Vp3d/VRJqp5ppDsDan+LI5kkpzGhl7DVDN
-         KqGTb+vVZCX1qwlAuixGVY1l2/CvXSRCeWDnZcDmKUXSowL/+60hL/ZUWPAPYpPqpZs7
-         dctg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694798573; x=1695403373;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g2RWBQs5T7WlFgpSGFhWkY3V6/ADmjD9odSx9zwtedk=;
-        b=Jk9Jsr2oQplxnvPnqGfHooT4eUZkLPeLjSCrveB39Rr8KYevGf/n4P0cv8zgEE7TMU
-         Jjt1ahg/OnvCUtJAGemSuyN5FL+M7m9Rsx2cZAbscQmfF9IDo34Qjiy31754AhE9Lvt7
-         eikEzF7T4OrXT0pmDDzn6rCgjkh4HxFMx6T/kd+qaFiBr8WpXfnOlkwasKo0ATkEi07x
-         e1CY0L/arJB8C396VPZFQPTO5pTN5TGiYFVxLbEROHHVOXHYNArJNH0O3OxVfSzCELyd
-         BC7FogYjXRq0lm/OQ+jGTPXp8GJ7yxj+hq23eymSqWFuaD4FuB7HNt6Heh+q7uqwO817
-         vIjQ==
-X-Gm-Message-State: AOJu0YzBPiu4MWntBnETgYIbN7efperBqS5HJb7U6PWsz77QTQjRm/Eb
-        iySRP9RTmkqPwdM31iiipO3dFCU/2zjjm8UFQcqJJ+fW95R9I349
-X-Google-Smtp-Source: AGHT+IEH3oyPJB6QRNmpFNv17Lsy4u+2YFb7tHTfo1hIUqWNwwlxVVYFnU71LiQ5pZupfJE3oQ1KkAF8wseVhhS8n3I=
-X-Received: by 2002:a0d:d653:0:b0:59b:cf74:ee8d with SMTP id
- y80-20020a0dd653000000b0059bcf74ee8dmr5997877ywd.10.1694798573063; Fri, 15
- Sep 2023 10:22:53 -0700 (PDT)
+        Fri, 15 Sep 2023 13:23:53 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8CEA610F7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:23:47 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 09EFA92009D; Fri, 15 Sep 2023 19:23:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 03E9292009C;
+        Fri, 15 Sep 2023 18:23:44 +0100 (BST)
+Date:   Fri, 15 Sep 2023 18:23:44 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        linux-kernel@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
+        Thierry Reding <treding@nvidia.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Davis <afd@ti.com>,
+        Matthew Howell <matthew.howell@sealevel.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        linux-mediatek@lists.infradead.org, Lukas Wunner <lukas@wunner.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+        Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Hongyu Xie <xiehongyu1@kylinos.cn>,
+        Jiamei Xie <jiamei.xie@arm.com>, Rob Herring <robh@kernel.org>,
+        delisun <delisun@pateo.com.cn>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        Yangtao Li <frank.li@vivo.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Richard Genoud <richard.genoud@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sergey Organov <sorganov@gmail.com>, Tom Rix <trix@redhat.com>,
+        Marek Vasut <marex@denx.de>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Shan-Chun Hung <schung@nuvoton.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+        Lucas Tanure <tanure@linux.com>,
+        linux-amlogic@lists.infradead.org,
+        Taichi Sugaya <sugaya.taichi@socionext.com>,
+        Takao Orito <orito.takao@socionext.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-actions@lists.infradead.org,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yuan Can <yuancan@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-unisoc@lists.infradead.org,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Isaac True <isaac.true@canonical.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Hu <nick.hu@sifive.com>,
+        Ruan Jinjie <ruanjinjie@huawei.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        linux-riscv@lists.infradead.org, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Hammer Hsieh <hammerh0314@gmail.com>,
+        Timur Tabi <timur@kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Michal Simek <michal.simek@amd.com>
+Subject: Re: [PATCH tty v1 00/74] serial: wrappers for uart port lock
+In-Reply-To: <87il8b1w3l.ffs@tglx>
+Message-ID: <alpine.DEB.2.21.2309151739290.57368@angie.orcam.me.uk>
+References: <20230914183831.587273-1-john.ogness@linutronix.de> <alpine.DEB.2.21.2309141959100.57368@angie.orcam.me.uk> <87il8b1w3l.ffs@tglx>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
-In-Reply-To: <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
-From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date:   Fri, 15 Sep 2023 19:22:42 +0200
-Message-ID: <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
-Subject: Re: Buggy __free(kfree) usage pattern already in tree
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        akpm@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 19:04, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, 15 Sept 2023 at 02:56, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Fri, 15 Sep 2023, Thomas Gleixner wrote:
+
+> >> Patches 2-74 switch all uart port locking call sites to use the new
+> >> wrappers. These patches were automatically generated using coccinelle.
 > >
-> > __free() got some usage and some of the usage is buggy:
->
-> Yeah, that's sad.
->
-> I think the '__free(kfree)' thing should *only* be used in the form
->
->         struct obj *p __free(kfree) = kmalloc(...);
->
-> which is what our docs mention. Anything else is simply buggy.
->
-> But how do we *notice* this?
->
-> I do want to stress how I was unhappy about this conversion to begin with
->
->     https://lore.kernel.org/lkml/CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com/
->
-> but I reacted to the wrong issue.
->
-> This stuff needs to be done *way* more carefully.
->
->               Linus
+> >  Hmm, no need to do this for drivers/tty/serial/zs.c?
+> 
+> zs.c does not use port lock at all. It has like a couple of other
+> drivers a local homebrewn spinlock.
 
-This is why I started with a *testing* driver. It's got "simulator" in
-the name for a reason. It doesn't deal with real HW and is mostly run
-in VMs anyway. Few people even build it at all so it makes for good
-testing grounds for experimental features.
+ Ah, right, that's because there are registers shared between two ports 
+within one SCC, so the spinlock has to be shared as well.
 
-IMO this feature has much more potential at fixing existing memory
-leaks than introducing new ones. I agree, I should have been more
-careful, but I wouldn't exaggerate the issue. It's a bug, I sent a
-fix, it'll be fine in a few days. I hope it won't be seen as an
-argument against __free(). It just needs some time to mature.
+ This also indicates that dz.c is wrong and shouldn't be using a per-port 
+spinlock as the DZ has a shared register set between all the four ports 
+(it's a serial line multiplexer rather than a set discrete ports; up to 8 
+lines are architecturally supported, though we don't have support in Linux 
+for systems having those), e.g. there's only one 16-bit receiver buffer 
+register for all the four ports, supplying the 8-bit character received 
+along with the receive status and the number of the line this data arrived 
+on, and similarly there's only one transmit data register, which supplies 
+data to the next enabled line whose transmit buffer needs servicing, and 
+the chip routes the data itself.  Therefore the driver ought to use a 
+shared spinlock too.
 
-Bartosz
+ I guess it wasn't noticed so far because DZ devices aren't that common 
+(and my usual test machine is currently broken too, pending an SRAM chip 
+replacement, hopefully in the next few weeks) and then hardly ever more 
+than one serial line has been used at a time with these devices.  It looks 
+like the first issue for me to look into once the machine has been fixed.
+
+ Maybe dz.c shouldn't be touched by this series then?  (Though obviously 
+both drivers will have to be eventually adapted for the ultimate console 
+rework.)
+
+ Thanks for your input, as it turns out it has had an unexpected outcome.
+
+  Maciej
