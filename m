@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CCE7A1821
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080D97A1830
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjIOIMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S233029AbjIOIMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbjIOIMQ (ORCPT
+        with ESMTP id S232893AbjIOIMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:12:16 -0400
+        Fri, 15 Sep 2023 04:12:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABDD2720
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79C42722
         for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:12:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C0350C4AF1E;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CB7ECC433CC;
         Fri, 15 Sep 2023 08:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694765528;
-        bh=X78QprckOYkkAyNg8Ml+IrF0WiJ2gWwRdmG2kEHquPA=;
+        bh=9XN2hAnsjMncIYnm1bQ8cbwe7mkvYM4tX+INvhk45BM=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=Xr9s4yHyb+8iQw+jJkg5NgnYy+hoCUg1NpWpa8U2dB3VErZbj4Ioh/mdm/Sg/QaGH
-         uCMz4RHNC27zHvFyC2Jb129H3RXCKc3rtDswZp1nEZN8deBbYLgQZTyVNh9qomxROE
-         DfrNZSjQPmAHOKWzrnkl7TQpnPYhSXrmLiQRzRv4yUjUCV1IYN+HbFr0RiLGtfcQpj
-         0xrzfv7LQ7qZRQJIzJ3Xy92pAtJfkoRcA9b2jW9PbWPkIw8Aeb42sqSlAcO+9hbN6b
-         Rrof/yuUWO3kDVJKXGhLo7psOxtOuM2mmWXuWIwBOVoEkpLj0Iyl/VLM/5Y3Qu8VC2
-         vDHXNASJymNyQ==
+        b=WhF9JtSPUk7uvD80kqNZ0E622R9fqIpsx7qyApbNpbxhfrdtVMTSBT/Rn7/capybI
+         M2tu8DwymSPN0QBcEGmfVAeqnNoy2xGXcZeT4baa247/UtNWl3bFK/z60MShbhDbIn
+         B8bED/LX6Oky0dcc8+l+38ufS1bfu7ga+Uas9Kjhp7QOT/Xv50lgpPTMm/Otq72l/1
+         saGQkJdY6hPR4wu5uXaPfMVcbgRfQDIpeirKxwkELkzmgosn5zUT0jMl1FnFYWzCM3
+         tqADH0nhVzT+OWSpoqfhBVLj9hUHoXdkLOSiQEpFsIjdFz7njyv97z/CtthHtSbUsr
+         Hc5TI9k9hT0ew==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id AE57EEE6439;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id B96AFEE643C;
         Fri, 15 Sep 2023 08:12:08 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Fri, 15 Sep 2023 11:10:53 +0300
-Subject: [PATCH v4 11/42] dt-bindings: timers: Add Cirrus EP93xx
+Date:   Fri, 15 Sep 2023 11:10:54 +0300
+Subject: [PATCH v4 12/42] clocksource: ep93xx: Add driver for Cirrus Logic
+ EP93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-ep93xx-v4-11-a1d779dcec10@maquefel.me>
+Message-Id: <20230915-ep93xx-v4-12-a1d779dcec10@maquefel.me>
 References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=1730;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=7739;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=1YCRVxosT/z3Q6cBGPOs3eYKE/8hqoIndRMA5myVMN0=; =?utf-8?q?b=3DjWYsJZclQlk1?=
- =?utf-8?q?Zj1nriFBP3sFX8+kQHl8xhcQXT9BiBBbKaioO2KN9pcx6GQJIFaGZ7RfHDjfpE6m?=
- whuQAoWKARsFzCF2a6vVRbfL5YffSEehaG5g0/KwQY92quA4i7BT
+ bh=lUOF5SVzhbiow4dRhadRUEJmNA99wtTxdMoHv87TsaA=; =?utf-8?q?b=3Da53bx6eIi5tw?=
+ =?utf-8?q?y0PulluwI7uPi7YVdIn3lS7DWfNXu5XCJq4SXQGKPkBJBp2vFrZr6NjzLGjawFvU?=
+ k4Jhl25EByFWko24uWAe1BgcAAxZjXr73geHtbW7XYcUyq9cBr2a
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -74,70 +68,247 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add device tree bindings for the Cirrus Logic EP93xx timer block
-used in these SoCs.
+Rewrite EP93xx timer driver located in arch/arm/mach-ep93xx/timer-ep93xx.c
+trying to do everything the device tree way:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+- Make every IO-access relative to a base address and dynamic
+  so we can do a dynamic ioremap and get going.
+- Find register range and interrupt from the device tree.
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/timer/cirrus,ep9301-timer.yaml        | 49 ++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/clocksource/Kconfig        |  11 +++
+ drivers/clocksource/Makefile       |   1 +
+ drivers/clocksource/timer-ep93xx.c | 190 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 202 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml b/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index c4d671a5a13d..f1b84b05b281 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -739,4 +739,15 @@ config GOLDFISH_TIMER
+ 	help
+ 	  Support for the timer/counter of goldfish-rtc
+ 
++config EP93XX_TIMER
++	bool "Cirrus Logic ep93xx timer driver" if COMPILE_TEST
++	depends on ARCH_EP93XX
++	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
++	select CLKSRC_MMIO
++	select TIMER_OF
++	help
++	  Enables support for the Cirrus Logic timer block
++	  EP93XX.
++
+ endmenu
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index 5d93c9e3fc55..b6a3cf1f5b9d 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -90,3 +90,4 @@ obj-$(CONFIG_MSC313E_TIMER)		+= timer-msc313e.o
+ obj-$(CONFIG_GOLDFISH_TIMER)		+= timer-goldfish.o
+ obj-$(CONFIG_GXP_TIMER)			+= timer-gxp.o
+ obj-$(CONFIG_CLKSRC_LOONGSON1_PWM)	+= timer-loongson1-pwm.o
++obj-$(CONFIG_EP93XX_TIMER)		+= timer-ep93xx.o
+diff --git a/drivers/clocksource/timer-ep93xx.c b/drivers/clocksource/timer-ep93xx.c
 new file mode 100644
-index 000000000000..e463e11e259d
+index 000000000000..bc0ca6e12334
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/cirrus,ep9301-timer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/clocksource/timer-ep93xx.c
+@@ -0,0 +1,190 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Cirrus Logic EP93xx timer driver.
++ * Copyright (C) 2021 Nikita Shubin <nikita.shubin@maquefel.me>
++ *
++ * Based on a rewrite of arch/arm/mach-ep93xx/timer.c:
++ */
 +
-+title: Cirrus Logic EP93xx timer
++#include <linux/clockchips.h>
++#include <linux/clocksource.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/sched_clock.h>
 +
-+maintainers:
-+  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-+  - Nikita Shubin <nikita.shubin@maquefel.me>
++#include <asm/mach/time.h>
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: cirrus,ep9301-timer
-+      - items:
-+          - enum:
-+              - cirrus,ep9302-timer
-+              - cirrus,ep9307-timer
-+              - cirrus,ep9312-timer
-+              - cirrus,ep9315-timer
-+          - const: cirrus,ep9301-timer
++/*************************************************************************
++ * Timer handling for EP93xx
++ *************************************************************************
++ * The ep93xx has four internal timers.  Timers 1, 2 (both 16 bit) and
++ * 3 (32 bit) count down at 508 kHz, are self-reloading, and can generate
++ * an interrupt on underflow.  Timer 4 (40 bit) counts down at 983.04 kHz,
++ * is free-running, and can't generate interrupts.
++ *
++ * The 508 kHz timers are ideal for use for the timer interrupt, as the
++ * most common values of HZ divide 508 kHz nicely.  We pick the 32 bit
++ * timer (timer 3) to get as long sleep intervals as possible when using
++ * CONFIG_NO_HZ.
++ *
++ * The higher clock rate of timer 4 makes it a better choice than the
++ * other timers for use as clock source and for sched_clock(), providing
++ * a stable 40 bit time base.
++ *************************************************************************
++ */
 +
-+  reg:
-+    maxItems: 1
++#define EP93XX_TIMER1_LOAD		0x00
++#define EP93XX_TIMER1_VALUE		0x04
++#define EP93XX_TIMER1_CONTROL		0x08
++#define EP93XX_TIMER123_CONTROL_ENABLE	BIT(7)
++#define EP93XX_TIMER123_CONTROL_MODE	BIT(6)
++#define EP93XX_TIMER123_CONTROL_CLKSEL	BIT(3)
++#define EP93XX_TIMER1_CLEAR		0x0c
++#define EP93XX_TIMER2_LOAD		0x20
++#define EP93XX_TIMER2_VALUE		0x24
++#define EP93XX_TIMER2_CONTROL		0x28
++#define EP93XX_TIMER2_CLEAR		0x2c
++/*
++ * This read-only register contains the low word of the time stamp debug timer
++ * ( Timer4). When this register is read, the high byte of the Timer4 counter is
++ * saved in the Timer4ValueHigh register.
++ */
++#define EP93XX_TIMER4_VALUE_LOW		0x60
++#define EP93XX_TIMER4_VALUE_HIGH	0x64
++#define EP93XX_TIMER4_VALUE_HIGH_ENABLE	BIT(8)
++#define EP93XX_TIMER3_LOAD		0x80
++#define EP93XX_TIMER3_VALUE		0x84
++#define EP93XX_TIMER3_CONTROL		0x88
++#define EP93XX_TIMER3_CLEAR		0x8c
 +
-+  interrupts:
-+    maxItems: 1
++#define EP93XX_TIMER123_RATE		508469
++#define EP93XX_TIMER4_RATE		983040
 +
-+  resets:
-+    maxItems: 1
++struct ep93xx_tcu {
++	void __iomem *base;
++};
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
++static struct ep93xx_tcu *ep93xx_tcu;
 +
-+additionalProperties: false
++static u64 ep93xx_clocksource_read(struct clocksource *c)
++{
++	struct ep93xx_tcu *tcu = ep93xx_tcu;
 +
-+examples:
-+  - |
-+    timer@80810000 {
-+      compatible = "cirrus,ep9301-timer";
-+      reg = <0x80810000 0x100>;
-+      interrupt-parent = <&vic1>;
-+      interrupts = <19>;
-+    };
-+...
++	return lo_hi_readq(tcu->base + EP93XX_TIMER4_VALUE_LOW) & GENMASK_ULL(39, 0);
++}
++
++static u64 notrace ep93xx_read_sched_clock(void)
++{
++	return ep93xx_clocksource_read(NULL);
++}
++
++static int ep93xx_clkevt_set_next_event(unsigned long next,
++					struct clock_event_device *evt)
++{
++	struct ep93xx_tcu *tcu = ep93xx_tcu;
++	/* Default mode: periodic, off, 508 kHz */
++	u32 tmode = EP93XX_TIMER123_CONTROL_MODE |
++	EP93XX_TIMER123_CONTROL_CLKSEL;
++
++	/* Clear timer */
++	writel(tmode, tcu->base + EP93XX_TIMER3_CONTROL);
++
++	/* Set next event */
++	writel(next, tcu->base + EP93XX_TIMER3_LOAD);
++	writel(tmode | EP93XX_TIMER123_CONTROL_ENABLE,
++	       tcu->base + EP93XX_TIMER3_CONTROL);
++	return 0;
++}
++
++static int ep93xx_clkevt_shutdown(struct clock_event_device *evt)
++{
++	struct ep93xx_tcu *tcu = ep93xx_tcu;
++	/* Disable timer */
++	writel(0, tcu->base + EP93XX_TIMER3_CONTROL);
++
++	return 0;
++}
++
++static struct clock_event_device ep93xx_clockevent = {
++	.name			= "timer1",
++	.features		= CLOCK_EVT_FEAT_ONESHOT,
++	.set_state_shutdown	= ep93xx_clkevt_shutdown,
++	.set_state_oneshot	= ep93xx_clkevt_shutdown,
++	.tick_resume		= ep93xx_clkevt_shutdown,
++	.set_next_event		= ep93xx_clkevt_set_next_event,
++	.rating			= 300,
++};
++
++static irqreturn_t ep93xx_timer_interrupt(int irq, void *dev_id)
++{
++	struct ep93xx_tcu *tcu = ep93xx_tcu;
++	struct clock_event_device *evt = dev_id;
++
++	/* Writing any value clears the timer interrupt */
++	writel(1, tcu->base + EP93XX_TIMER3_CLEAR);
++
++	evt->event_handler(evt);
++
++	return IRQ_HANDLED;
++}
++
++static int __init ep93xx_timer_of_init(struct device_node *np)
++{
++	int irq;
++	unsigned long flags = IRQF_TIMER | IRQF_IRQPOLL;
++	struct ep93xx_tcu *tcu;
++	int ret;
++
++	tcu = kzalloc(sizeof(*tcu), GFP_KERNEL);
++	if (!tcu)
++		return -ENOMEM;
++
++	tcu->base = of_iomap(np, 0);
++	if (!tcu->base) {
++		pr_err("Can't remap registers\n");
++		ret = -ENXIO;
++		goto out_free;
++	}
++
++	ep93xx_tcu = tcu;
++
++	irq = irq_of_parse_and_map(np, 0);
++	if (irq == 0)
++		irq = -EINVAL;
++	if (irq < 0) {
++		pr_err("EP93XX Timer Can't parse IRQ %d", irq);
++		goto out_free;
++	}
++
++	/* Enable and register clocksource and sched_clock on timer 4 */
++	writel(EP93XX_TIMER4_VALUE_HIGH_ENABLE,
++	       tcu->base + EP93XX_TIMER4_VALUE_HIGH);
++	clocksource_mmio_init(NULL, "timer4",
++				EP93XX_TIMER4_RATE, 200, 40,
++				ep93xx_clocksource_read);
++	sched_clock_register(ep93xx_read_sched_clock, 40,
++			     EP93XX_TIMER4_RATE);
++
++	/* Set up clockevent on timer 3 */
++	if (request_irq(irq, ep93xx_timer_interrupt, flags, "ep93xx timer",
++		&ep93xx_clockevent))
++		pr_err("Failed to request irq %d (ep93xx timer)\n", irq);
++
++	clockevents_config_and_register(&ep93xx_clockevent,
++				EP93XX_TIMER123_RATE,
++				1,
++				UINT_MAX);
++
++	return 0;
++
++out_free:
++	kfree(tcu);
++	return ret;
++}
++TIMER_OF_DECLARE(ep93xx_timer, "cirrus,ep9301-timer", ep93xx_timer_of_init);
 
 -- 
 2.39.2
