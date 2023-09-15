@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8297A14A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 06:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516DC7A14A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 06:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbjIOEDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 00:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        id S231772AbjIOEEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 00:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjIOEDf (ORCPT
+        with ESMTP id S229762AbjIOEEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 00:03:35 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAA7270C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 21:03:30 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1362173a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 21:03:30 -0700 (PDT)
+        Fri, 15 Sep 2023 00:04:06 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23592710;
+        Thu, 14 Sep 2023 21:03:59 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-564b6276941so1354196a12.3;
+        Thu, 14 Sep 2023 21:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694750610; x=1695355410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdckIkCIpFym7NUpRG7gX2O8Kgm1I4+FpTJ9+N9Nf8w=;
-        b=esQwlkVDCg0AEMMAu81jaIgDB7TJXZTvEYj+Lw0TbrqWJ4jCs5JfMw1ULHWt3w+0uV
-         9i5eYpW39cdLGlAfLhH8ZbEruBai0g4AuMR372XYpbwmHAhJksMsvmSUbIgyPwlkVOZP
-         6UOkm5iEQCBM/flEgnKHqAtkDZtCMBG06f2jA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694750610; x=1695355410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1694750639; x=1695355439; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bdckIkCIpFym7NUpRG7gX2O8Kgm1I4+FpTJ9+N9Nf8w=;
-        b=DBJH9YP+f6FSG59+s3R4f8iZbB8W1VvhDqaRN5fV9kxna9+ipwwnODj4bJDMKytCBS
-         uMcPoMJ1dq6E08mnBq+6xhK7Vh0gdV7uLK+6nvg3ZqGjCwaYBXgdBUS8osoT7G6xEQpc
-         S7mydliLHcNLyKLW/njS3VUOMiFNizYd7TczU/Jb5ck7wfJFjj3dk1N806+V8jxNZCTO
-         ilzkHg4Sl7XVqSwI8fucVLiaAehFaJfhHjDsD/z96zBZcCLu2UiXqAGuDdo0KZ0PcPUo
-         qHk5Y+kS4S3eywC4fYupy6JuwveZwryg3liEAgGF7zRy8qbYzyU03URbms634v+g4UAz
-         vtKw==
-X-Gm-Message-State: AOJu0YzSUnI15ip4vZ/LauR6lfngQ1SxfzI+kKQQ+C0beIKDlOlw2tG9
-        AfNLYD3IjOkyrXaHFnNIHojKuw==
-X-Google-Smtp-Source: AGHT+IEE1WYc4bw/B4ik03Qzn2D6jVmzYFDS1WbU6ybgM/bCKoZwSIktSE3iQqs/niV/77/brIgkqw==
-X-Received: by 2002:a05:6a20:3ca1:b0:14d:a97c:911 with SMTP id b33-20020a056a203ca100b0014da97c0911mr866067pzj.5.1694750609891;
-        Thu, 14 Sep 2023 21:03:29 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170902ee8900b001bf095dfb76sm2336357pld.237.2023.09.14.21.03.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 21:03:29 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 21:03:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] firmware: ti_sci: refactor deprecated strncpy
-Message-ID: <202309142103.6DFFDEB@keescook>
-References: <20230913-strncpy-drivers-firmware-ti_sci-c-v1-1-740db471110d@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913-strncpy-drivers-firmware-ti_sci-c-v1-1-740db471110d@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        bh=4+ZIL8vxkKury4gaJX7IxLzJ7K795bJGx8CLgfM6pGQ=;
+        b=GZFalzEc/M+1zhwSClavF8aDmdfAH3p2W5sk0C8Td7K92uFCGe1aLAPuX3jlms0ybh
+         MW/ls7i2eUIXWzHbh3cAwseRA1oad0wmjeeC2nywCBAooT5MvJAyOzVB3DWWejXnvzAe
+         i/mT69N24E7BgaUapAwUjhMhhsMDdfOzRE8IyJMiiwRDbfYtISkjhwKrqeoaMqnt2ItM
+         jwGxKWYSI8zr5352r+FiOsne0bAKAXvYgIx8OpodOqA0vrmafwaXem0QPgUmBpnj0d7F
+         PBLZBOUC8FGtUNPfeXQm4rl+IkymZcTpmsS/AHiJiNXPujduri/CCwLjWkCqxvZzWkWX
+         T03g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694750639; x=1695355439;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4+ZIL8vxkKury4gaJX7IxLzJ7K795bJGx8CLgfM6pGQ=;
+        b=ott/+yZF7O4xUEBqi7MuZ54o+UXBB9adb/1V7AAnbhJuP7Kzm2P2ZueJDNmnjFKedx
+         RvJnTFXIeW7BMlMyRbKkprb7r4EjTJ3buykylFRgHGYdX/ZtVa04aunC1HwLtJ+Tq7KY
+         cJLblwLXEwnopuicX7qShPvDaezjF7isLfo7NS1kJX3Cf63Oejhm59EAL/eufsIoek8i
+         UdmF3OQ5Ccx+2k1t/50qpfb4DC56N5E/0umANsRLMzo4sEw7KNt3q5I/zueM/D21l9+y
+         wN97kICRK+f4aFX3xSfzoRggGgrvkiTQGAtlFVh/3PtJIZQ+g7eYg8VzMVZD9bI3JARL
+         FmTA==
+X-Gm-Message-State: AOJu0Yy+v7Mh4puC2HSOHO6H18bbRCdyhEKKLsjKbmrEpX9CT3gz8t38
+        vCL4JWKR+J8B0j8IayrbcOM=
+X-Google-Smtp-Source: AGHT+IEZp04o2gCMuvK4o4hL6liWFm8iNM2Qd7x8YnSj4zycDj4ibf1Z6UVzaQXW3E3B1ED9FNVXbA==
+X-Received: by 2002:a05:6a21:819b:b0:11d:4c79:90ee with SMTP id pd27-20020a056a21819b00b0011d4c7990eemr631536pzb.25.1694750638999;
+        Thu, 14 Sep 2023 21:03:58 -0700 (PDT)
+Received: from smtpclient.apple (c-73-162-233-46.hsd1.ca.comcast.net. [73.162.233.46])
+        by smtp.gmail.com with ESMTPSA id a15-20020a170902eccf00b001c0c79b386esm2373948plh.95.2023.09.14.21.03.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Sep 2023 21:03:58 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <CAJuCfpGWkzDUL4+9evD-Kx5uGoc+=g808CXtc1hrSUdCRMtRgA@mail.gmail.com>
+Date:   Thu, 14 Sep 2023 21:03:45 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>, lokeshgidra@google.com,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>, mhocko@suse.com,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, Liam.Howlett@oracle.com,
+        Jann Horn <jannh@google.com>, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C04B3D0F-A757-49A5-9CF4-3387EED41562@gmail.com>
+References: <20230914152620.2743033-1-surenb@google.com>
+ <20230914152620.2743033-3-surenb@google.com>
+ <4F9BBE45-22D0-4F8D-BA56-CA3459998DC4@gmail.com>
+ <CAJuCfpGWkzDUL4+9evD-Kx5uGoc+=g808CXtc1hrSUdCRMtRgA@mail.gmail.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+X-Mailer: Apple Mail (2.3731.700.6)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,27 +90,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:23:02PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> We should prefer more robust and less ambiguous string interfaces.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-> NUL-termination on the destination buffer.
-> 
-> It does not seem like `ver->firmware_description` requires NUL-padding
-> (which is a behavior that strncpy provides) but if it does let's opt for
-> `strscpy_pad()`.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Looks right to me.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> On Sep 14, 2023, at 8:28 PM, Suren Baghdasaryan <surenb@google.com> =
+wrote:
+>=20
+> On Thu, Sep 14, 2023 at 2:57=E2=80=AFPM Nadav Amit =
+<nadav.amit@gmail.com> wrote:
+>>=20
+>>=20
+>>> On Sep 14, 2023, at 8:26 AM, Suren Baghdasaryan <surenb@google.com> =
+wrote:
+>>>=20
+>>> +     if (!pte_same(ptep_clear_flush(src_vma, src_addr, src_pte),
+>>> +             orig_src_pte))
+>>> +             BUG_ON(1);
+>>=20
+>> Just a minor detail regarding these few lines:
+>>=20
+>> Besides the less-than-ideal use of BUG_ON() here, I think that this =
+code
+>> assumes that the PTE cannot change at this point. However, as the PTE =
+was
+>> still mapped at this point, I think the access and dirty bits can be =
+set.
+>=20
+> At this point we are holding PTLs for both PTEs (see
+> double_pt_lock()).  Can a PTE be modified from under us in this
+> situation?
 
--- 
-Kees Cook
+PTEs has several parts: access-control bits (e.g., writable), physical
+frame number, software-only bits and log-bits. The log-bits, which are
+=E2=80=9Caccess=E2=80=9D and =E2=80=9Cdirty=E2=80=9D on x86, track =
+whether the PTE has ever been used
+for translation or write correspondingly.
+
+Without getting into all the subtleties (e.g., =E2=80=9Caccess" can be =
+set
+speculatively even if no actual access take place), as long as the PTE
+is present, it might be used for access (and write if it is writable)
+by other cores. The page-table locks are irrelevant here, because the
+PTE is not updated by software, but it is updated by the CPU itself
+during the page-walk/write.
+
