@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C40A7A255F
+	by mail.lfdr.de (Postfix) with ESMTP id C0CA77A2560
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236274AbjIOSL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S236326AbjIOSLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjIOSK5 (ORCPT
+        with ESMTP id S236321AbjIOSLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:10:57 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9A41FCC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:10:52 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FI7KnE014381;
-        Fri, 15 Sep 2023 18:10:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Xl6QxNxh6UG2lv6i3UYJr6tBAW4v7WrM4aye6DYatvc=;
- b=Ncg5YQzQBmV7/kRHkrTKLV9U2foKfHNwD0D2ppfDz3HA2iMvIVK6a7Dd09J/vv/W80by
- QQZrnnQQxUCblVKJmtWaVqmOCEn+z/8SdzAjMz2ba/WmAn5w8JeLoM435FNhjeZE5kM8
- 9ULM4UetPj96AT9SxPF8Iq3Kos9swjrFNaj0M1+Uxyvp3FpN6EYAev8rgLql9knTyaKH
- mpQQFtGagIB5oriuxaRqnRR5g0bW4Re+JbCTCc5n16A0/E5H/h+Wxj0qBDz94HNfEMqz
- Uw8k2AUCtrPu9mdRDQn7TMxkEIdIVddMT/Lc6QNSn6qdqHjjQfqT5mg3vzDVYwBDsNHR cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4u5khtkf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 18:10:31 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38FI7bP2016977;
-        Fri, 15 Sep 2023 18:10:31 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4u5khtjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 18:10:31 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38FHBRQG002932;
-        Fri, 15 Sep 2023 18:10:30 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hmp1w1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 18:10:30 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38FIATbA59703658
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Sep 2023 18:10:30 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8560558067;
-        Fri, 15 Sep 2023 18:10:29 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B81F158052;
-        Fri, 15 Sep 2023 18:10:24 +0000 (GMT)
-Received: from [9.179.25.49] (unknown [9.179.25.49])
-        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 15 Sep 2023 18:10:24 +0000 (GMT)
-Message-ID: <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
-Date:   Fri, 15 Sep 2023 23:40:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
+        Fri, 15 Sep 2023 14:11:06 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2059.outbound.protection.outlook.com [40.107.101.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8031FD6;
+        Fri, 15 Sep 2023 11:11:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F1v13VKAPc+Txzxgo2Hv1PvRH9yGFCXkEj6yeAb93b9X010o5/k5OKuPJ5Ap9wHAcTl8Na56IrJFgnwqC6wyFTMsuG93U8u+YGn2r9eGnvEmVF10EYXPEHa5qGR/vuiFxw+wta3dyKiLpZ5h3yHJhvFLPn/iEiH4IHamy+8cbiFmdGJYCFxWW6ZtJuMeT7qW2y6FiNhEuziOzwt+PXCkJjLmF9Zeet3snZPiW+3UKRK26RUbZ516wE76bVMYVR4J0Zs6TpkNm8qScAevdu5KbPcu63JMRimWnZHdp+ZQc8RlJBZWGJDT3/ezZq7shRBhlIyjvRYuiIe1+zMKiHPSTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M7GKTeesLukhp0emuGe/ao4XZWmhl0e24sIAHlaCGlE=;
+ b=HTMGJBPLo3bJI5zuocp73jrZ59dBfuczKfLmjamwYFf7vQhr9KmIVeYsj6Hpn/PzqLwMRH6lP3K0wbtOSW/cECphXnHp9zrjyPjTOBUzYydkbB6qjamHupyZ3q9It6MtujmTZJ9c/U4u5VRg+J8t8LStGf7IBg+3dTV9xuHKkBPZSQgeoPl2m22vx/Mnprmm2xUrj3JG7WtOIJGOGWume0tiWTfz45JH2Wx+JxK+e5trOQ9OMadrXtTe3hgvN+ePZRZ2dMYfE29YA9SZ0683ctwis4JJkGmf3EqnCnneXoNlF8HM3qwiW7n9dXx/GJbQHPkultMTNLug9o0EulKwug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M7GKTeesLukhp0emuGe/ao4XZWmhl0e24sIAHlaCGlE=;
+ b=OYILhAv9tCPqSeJYdIdNWMesx16uGM5z6zwwwlsazTyQP0x9X0AIhIUt+8IPspzl99BlpCyffqg0s2kveNMS05cYR5LidqN2p53FtavadcvVatxdaThviXYyI5iVR+8hzNO4DWgS2PzMvqqhcpXML2dOZFikshQ1OUNw7K//G9Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by MW4PR12MB6778.namprd12.prod.outlook.com (2603:10b6:303:1e8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 15 Sep
+ 2023 18:10:59 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6792.020; Fri, 15 Sep 2023
+ 18:10:59 +0000
+Message-ID: <5536b749-4db2-467d-875f-410c4a4a0e9c@amd.com>
+Date:   Fri, 15 Sep 2023 14:10:54 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: fix the ability to use lower resolution
+ modes on eDP
 Content-Language: en-US
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, quentin.perret@arm.com,
-        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
-        mingo@kernel.org, pierre.gondois@arm.com, yu.c.chen@intel.com,
-        tim.c.chen@linux.intel.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org
-References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
- <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
- <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
- <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     Stylon Wang <stylon.wang@amd.com>, Alan Liu <haoping.liu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        dri-devel@lists.freedesktop.org, Wayne Lin <wayne.lin@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Joshua Ashton <joshua@froggi.es>
+References: <20230914175354.102709-1-hamza.mahfooz@amd.com>
+ <3630bc42-c04c-4c22-99f2-5dc6bd5d8e2f@amd.com>
+ <290648a9-4882-4228-bdbd-1045e20b71f7@amd.com>
+ <e44d8385-1137-4f41-a3db-9af88ff87bb9@amd.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <e44d8385-1137-4f41-a3db-9af88ff87bb9@amd.com>
 Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: hrFofkiGLhKYZwd9-AOKkNVZF4Si72ND
-X-Proofpoint-GUID: od3rc8zXu6N_w7MXHXaMvrAhCfFx2Obd
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YT4P288CA0044.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:b01:d3::26) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_14,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 suspectscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 impostorscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309150162
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|MW4PR12MB6778:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30002e78-2fa5-42a8-e106-08dbb6171ceb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QGIG+S3aCEsqEpq3okUgv/p97aLWs2boP3xCN9DX8RcHAM+UD47yTX5/tv2/In+/CfaNyBlZQwocpwD5z/NhJCsBoTdVDZ3svXAivH2kTYKsASEEHMNRvszCPIGgOwFQ/zZEHJw+TCmdwnAKMQ4mzq+YILK8HdRXmALkODaofW1qNrrSLa0G/4rTP1pbrHaQSxVj13GAO4Isq2jX/1XO5RHnLjLSFG/R9AscrtfC2IL/c/iSp292+EpUfms38MlXeAhK7B42LE0g9PnGeUAhpyb2UdBRpUt6OHLB5Tuq/NAc+XGf8PhFwDIsli6P12jnYHFXEdotsB5TK0PTwzh1VLCXJzaiGpC+VTjL1c/odESp3TaLT3BJx5VFWupezanMIB2B/tmvQcPDkrUqm+MobRkXztUp2CygAlEQxiFWdS+AvsbhBmG/5BLIX5zZtKLMo5pF2FTRMObuw+UhacJs8lsVWZEieKJbn6PVMdt8Uh4JYUbeEJrYT0YQqtgMfZjTY0CFe1pEM0iLpVTTYlqwnt1l5GAk7ZVOrMbrZqj8AjFI7uDnBkSxEmzb+z0dHMsqYLbjC7TzhFpW3SHNSZxMWutPyv6kLG2VJFwjvHuVLZK/zIe2JxVzdH5WVNasNEoX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(396003)(136003)(451199024)(186009)(1800799009)(31686004)(6666004)(6486002)(53546011)(41300700001)(38100700002)(6512007)(6506007)(83380400001)(36756003)(31696002)(66556008)(86362001)(4326008)(478600001)(2906002)(26005)(8936002)(2616005)(966005)(54906003)(5660300002)(44832011)(66476007)(316002)(8676002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RnJUTzhRNGRBNDBXanFYY2lzdnYxN3BEUWhOa2VQU0dBZEI0YkRwK0VDeGlw?=
+ =?utf-8?B?SzRHeVF2aFRMb1pybzU0WTAzL2FQRUpxUW1McndneWNPT0RZZVBMUEw0OHA0?=
+ =?utf-8?B?dmRNcWxrUkhUNjNkaUF2TmFWUlZaVzExeXpCNmZrOHBVWkVuZW4rU0xZc1Vq?=
+ =?utf-8?B?dWJxUWRxOGJjZFNEVGtlS1k0UHQ4RThnOHdoVzZKd216R0g5SmN5cnk2QUR0?=
+ =?utf-8?B?eVVmOVBQZERydmVBOWd3MU1YaE5YemtxaXBRZWpLSVFlcEd4eCs0L1ZYWXNz?=
+ =?utf-8?B?YTdsRWlWQVBkM3Bqa2Z6V05WZnZpQ0lLaGt3dE1NNWFrRzhkeVRTcHVWWDdo?=
+ =?utf-8?B?TEJTcFg2cERJdHg4SUlFU3BGeFU1aDhTUnc2TEZObUt0QUJQb05RcGlMemFF?=
+ =?utf-8?B?RHhQSnhiQmRGNnlDK3R0YVBOVlhuMDFObW9yZkF4d21tOFFCK2YyUjdTeTVv?=
+ =?utf-8?B?YW9GSUlwM3N0RHNLS2hxUzEyOElwNjJ0aGE3am0yUWJXVTBaUG9GcFRVaGdS?=
+ =?utf-8?B?bFNmeEZiQkZXUmlGOFlXZmFsQ0lqVDZTaVY2RVNVcmg0Y0pyZ3N3WXM3aE56?=
+ =?utf-8?B?V0I1eExlOTFwTnJQaHRUTzhMb3M5NkVTTG81Y0RVT0UwSkhkSDREdkI1bDl2?=
+ =?utf-8?B?anMvZWszNUQwOWdHRFpkc2ppS0NRU3lJQllKVUJKclVCNHJ2QXRyWUl3bHJ0?=
+ =?utf-8?B?bnZtN1MwZ1piSklMbGkvZ0NmN20xTXRYVi9uc2QxWWdLNzB5WEljSmxjMzEw?=
+ =?utf-8?B?djVCTkxSb3FMaFc2Vkoxc3krTWo4YVQvYXh3NzdOVGNGaVRGRldCYjNsNWlO?=
+ =?utf-8?B?Ty9ZY2tUTTd1U0dndVQ3dThyYU40b1MxcllkOTVMa0MrZVhlWlUwSmJyRitK?=
+ =?utf-8?B?cVpOYkZISW1iUUNJUEJDZGlBRllzSlpsTHVjR2czanMrWWV4ZW0vUXduZmJH?=
+ =?utf-8?B?Sis1Y2FxL2dqTlN6dEhINnlYODZQanJGVnRVcXJtUTJHSHp4MGE1bG1MTGZt?=
+ =?utf-8?B?enkzNmgzR2hXSzVib09NTTRmTXZNK29JWjI3UXBFVFpxM0d2WStqbUJZcWZJ?=
+ =?utf-8?B?SktqTVNxWWUwWEk2Y0YwRVRuZDVndURpSXhqU3NLamV0RUhnWGgxdDY1S0k3?=
+ =?utf-8?B?RjdCeUdkeG9ic3ovalljWmxMSXFGcno0dWN1eU9xb3d3K1lCOGd6SUxHcDVC?=
+ =?utf-8?B?bkRaL0ZYcnZUS0JNM0NrOTRjNFR1NTNpUHE1TVlrbk42bFBmSU5XRGtpT0xN?=
+ =?utf-8?B?VEF5czE0cWJ4bWVpTjRuVzZyWGkrZEI3eFpwSTBQYlJMMkswc1B0VUJYaWY0?=
+ =?utf-8?B?MjN3NlR1NE1BNHJWZWlZY2Q5V0pEWG1zVDB4OWNPK0lpQStuT1N5cTE2Yi82?=
+ =?utf-8?B?YjB2RnExcmllUnlSQnBEc0I1YjFmYmNEeGo0ZytnTUtRRlc2QmZ2elkxdUx3?=
+ =?utf-8?B?S3QvL09BWFZIWlVmY0JYeGdkc3kyZUdYdTdqR2xRTlhYS0lnUi9OeUhTd0hz?=
+ =?utf-8?B?VVM4dW9zdVNXVWQ4THUwSWQyM0JzV3p6dFl0dkw2KyswR2hYSGY5ZFNnRDJ2?=
+ =?utf-8?B?R2t4a2dadFBYMDlZZzYvMDRxLzk0T085V3h1ZGxoMWdlZHpUYWZDeGJEUWhS?=
+ =?utf-8?B?WkFrZ3I3VHE0QkpEcC9WS040WUlMc1p0Y1Bieis1Y1NEVm5kVXh0cko2TnRP?=
+ =?utf-8?B?dnVER0lkb2hhSmRqUDhITzYxeW9RUFV1WDExVThuTGhQUlVMQXhoY2FPKys2?=
+ =?utf-8?B?OHNqRlRCQlJuVkZBUy84Ym83MlhpOUhLRDZSSjRnZTM4ZldOemswUlc3aS9j?=
+ =?utf-8?B?M1hUZ1FYWm9qbHR3QUtqTjB5SE4rcVZoN1FXR0U2MXVmM05SSjZxOUxaL21q?=
+ =?utf-8?B?YWhuNDc5UDR0VnJQdjM2U2pkWHZ6SWtnVCtuQmFqVkdhM1hsNjZSVWRGWFNR?=
+ =?utf-8?B?eXNuL1ZCNDduNlhmOHI4dk5SdU4ydUc4OS9SQ1hEcjUrdlc4SGlYYzc4Lzc3?=
+ =?utf-8?B?eURQd1RBakRYNUxGQ1RiU1VZRlUyMUdyVVdyREVwWmgvVnEwektaTUoyTzZz?=
+ =?utf-8?B?WkR3YlRPWEVCVll0SDUzdzVnQndOcmpzdEhzRGhHVlIwaU03UEpxc3pCQUl3?=
+ =?utf-8?Q?nVp8/3e4+AwW0E+8IHscEYQ1K?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30002e78-2fa5-42a8-e106-08dbb6171ceb
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 18:10:59.0893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /epAu+FJfZkYujyeQSrkuU7GKefU/SMC81+46KUQvLejCrQI+0VHADbUq7q9aDnK7lYeBoVVmTKL+CJ82uqzIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6778
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -105,90 +141,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/15/23 5:30 PM, Valentin Schneider wrote:
-> On 14/09/23 23:26, Shrikanth Hegde wrote:
->> On 9/14/23 9:51 PM, Valentin Schneider wrote:
->>> On 13/09/23 17:18, Shrikanth Hegde wrote:
->>>> sysctl_sched_energy_aware is available for the admin to disable/enable
->>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
->>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
->>>> valid cpufreq policy, frequency invariant load tracking. It is possible
->>>> platform when booting may not have EAS capability, but can do that after.
->>>> For example, changing/registering the cpufreq policy.
->>>>
->>>> At present, though platform doesn't support EAS, this sysctl is still
->>>> present and it ends up calling rebuild of sched domain on write to 1 and
->>>> NOP when writing to 0. That is confusing and un-necessary.
+On 2023-09-14 17:12, Hamza Mahfooz wrote:
+> 
+> On 9/14/23 17:04, Hamza Mahfooz wrote:
+>>
+>> On 9/14/23 16:40, Harry Wentland wrote:
+>>> On 2023-09-14 13:53, Hamza Mahfooz wrote:
+>>>> On eDP we can receive invalid modes from dm_update_crtc_state() for
+>>>> entirely new streams for which drm_mode_set_crtcinfo() shouldn't be
+>>>> called on. So, instead of calling drm_mode_set_crtcinfo() from within
+>>>> create_stream_for_sink() we can instead call it from
+>>>> amdgpu_dm_connector_mode_valid(). Since, we are guaranteed to only call
+>>>> drm_mode_set_crtcinfo() for valid modes from that function (invalid
+>>>> modes are rejected by that callback) and that is the only user
+>>>> of create_validate_stream_for_sink() that we need to call
+>>>> drm_mode_set_crtcinfo() for (as before commit cb841d27b876
+>>>> ("drm/amd/display: Always pass connector_state to stream validation"),
+>>>> that is the only place where create_validate_stream_for_sink()'s
+>>>> dm_state was NULL).
 >>>>
 >>>
+>>> I don't seem to see how a NULL dm_state in
+>>> create_validate_stream_for_sink() (or create_stream_for_sink() for that
+>>> matter) has an impact on the drm_mode_set_crtcinfo() call. That one depends
+>>> on !old_stream and &mode.
 >>
->> Hi Valentin, Thanks for taking a look at this patch.
+>> If we look back to commit 4a2df0d1f28e ("drm/amd/display: Fixed
+>> non-native modes not lighting up") it seems like the intent was to only
+>> have drm_mode_set_crtcinfo() called for
+>> amdgpu_dm_connector_mode_valid(). Since, even if we go that far back
+>> create_stream_for_sink()'s dm_state was only NULL when it was called
+>> from amdgpu_dm_connector_mode_valid().
 >>
->>> But why would you write to it in the first place? Or do you mean to use
->>> this as an indicator for userspace that EAS is supported?
 >>>
+>>> It does look like &mode is an empty mode if we can't find a preferred_mode,
+>>> though. Not sure if that can cause an issue.
 >>
->> Since this sysctl is present and its value being 1, it gives the
->> impression to the user that EAS is supported when it is not.
->> So its an attempt to correct that part.
+>> I don't think it should be an issue, since before commit 4a2df0d1f28e
+>> ("drm/amd/display: Fixed non-native modes not lighting up") we always
+> 
+> I meant to refer to commit bd49f19039c1 ("drm/amd/display: Always set
+> crtcinfo from create_stream_for_sink") here.
+> 
+>> called drm_mode_set_crtcinfo() in the aforementioned case (and only for that case).
 >>
-> 
-> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
-> supported? And on top of it, prevent all writes when EAS isn't supported
-> (perf domains cannot be built, so there would be no point in forcing a
-> rebuild that will do nothing).
 
-Yes. That's another way. Thats what I had as possible approach in 
-https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
+That's quite the tale of patches upon patches making things slightly
+worse until it no longer works right. Thanks for untangling this all
+the way back to 2018. It makes sense now.
 
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 
+Harry
 
-> 
-> I can never remember how to properly use the sysctl API, so that's a very
-> crude implementation, but something like so?
-> 
-> ---
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 05a5bc678c089..dadfc5afc4121 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
->  	if (write && !capable(CAP_SYS_ADMIN))
->  		return -EPERM;
-> 
-> +	if (!sched_energy_enabled()) {
+>>>
+>>> Harry
+>>>
+>>>> Cc: stable@vger.kernel.org
+>>>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2693
+>>>> Fixes: cb841d27b876 ("drm/amd/display: Always pass connector_state to stream validation")
+>>>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+>>>> ---
+>>>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 ++--
+>>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>>>> index 933c9b5d5252..beef4fef7338 100644
+>>>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>>>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>>>> @@ -6128,8 +6128,6 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+>>>>       if (recalculate_timing)
+>>>>           drm_mode_set_crtcinfo(&saved_mode, 0);
+>>>> -    else if (!old_stream)
+>>>> -        drm_mode_set_crtcinfo(&mode, 0);
+>>>>       /*
+>>>>        * If scaling is enabled and refresh rate didn't change
+>>>> @@ -6691,6 +6689,8 @@ enum drm_mode_status amdgpu_dm_connector_mode_valid(struct drm_connector *connec
+>>>>           goto fail;
+>>>>       }
+>>>> +    drm_mode_set_crtcinfo(mode, 0);
+>>>> +
+>>>>       stream = create_validate_stream_for_sink(aconnector, mode,
+>>>>                            to_dm_connector_state(connector->state),
+>>>>                            NULL);
+>>>
 
-Use of sched_energy_enabled won't work as Pierre has indicated. 
-
-Instead this can be done by adding those checks in a helper function to
-do similar checks as done build_perf_domains. 
-
-I can send v4 with this approach if it makes more sense. Please let me know.
-
-> +		if (write)
-> +			return -EOPNOTSUPP;
-> +		else {
-> +			size_t len;
-> +
-> +			if (*ppos) {
-> +				*lenp = 0;
-> +				return 0;
-> +			}
-> +
-> +			len = snprintf((char *)buffer, 3, "0\n");
-> +
-> +			*lenp = len;
-> +			*ppos += len;
-> +			return 0;
-> +		}
-> +	}
-> +
->  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
->  	if (!ret && write) {
-> -		state = static_branch_unlikely(&sched_energy_present);
-> +		state = sched_energy_enabled();
->  		if (state != sysctl_sched_energy_aware)
->  			rebuild_sched_domains_energy();
->  	}
-> 
