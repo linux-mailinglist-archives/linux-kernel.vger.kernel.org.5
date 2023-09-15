@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EE17A1A50
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B207A1A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbjIOJVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S233729AbjIOJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233571AbjIOJVi (ORCPT
+        with ESMTP id S233586AbjIOJVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 05:21:38 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E1D2709
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8726270E
         for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:21:23 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bfc5218dd8so29976921fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:21:22 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bf66a32f25so29934411fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694769681; x=1695374481; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694769682; x=1695374482; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZuAjnu1aml6mLrGf4NjQSS9NQOpzPUDHjaWJhb6ElQI=;
-        b=s5TADoJZjIV1YQ5UMnw5KulHyneootBKndBYX6dx7y3ZX0ISe79Rt5vhPvcKEkEKET
-         qTSHM6wY+pZOb7qdk4IEOuM6l+XggqfUu7f8m1EY02lXEUK5JEA9xarFhSsryARliEZz
-         En6YLln0u0sOMD3Fm9ofTQIB+hpQL93cXH+CQ2PSotPpupBqdLj1RrIbWFJ+oPaSBYua
-         se6eX/p4t4dF1F6IBuZJYGvle/1mgObf9W9Z378i0lp2VagfSF1gT+ZOVwkR6tR9PwpC
-         mikAlJd0IElNb/NIbpgxGRpPwY/BgJrM3rVcnU5kYBbbhp6xMGVYW3Lr/Jr/vArBwIR3
-         6S/g==
+        bh=1Os6bv0Dt3LeB6u/HS9K4uZVY2Yt4IFbSegYd0tcLec=;
+        b=lJwaHkbZHaSzWzs2VvefBPHGWQa4zX05rV6Yj+V5gIwQ7EyL/cuQhgXGDWIA7v1VZL
+         hjCLuzehSmkWLhAWgFn+n3HpGjzZKlPZC5W09STyutM28hv+Cu2IAgUjlivQKwCZ4kec
+         VVy1Z8ctGvPG6HN5D35KISqR9PO52JfWY/SoRGN6DSv5s576IbL2kwf9IBKuPY4a46tZ
+         gsRdkSLtKQZWhCTs18K84CTXcuPFL19Dg3nIhPMI4tR0hOQpNOjGXYuPMBTmM/ppjFYL
+         luqkYToi2WPr2avKtX/4wefvcdt08EPdJ+UPIrxmBZTT4mx8U8ShewlZzanxCA72elMA
+         U6eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694769681; x=1695374481;
+        d=1e100.net; s=20230601; t=1694769682; x=1695374482;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZuAjnu1aml6mLrGf4NjQSS9NQOpzPUDHjaWJhb6ElQI=;
-        b=SpAesNqq2HW1B00C0XZxOaidvVdPsO+GVCzj7Kunra/TcpvtEevKnk7dZ9SSKfCwpD
-         i6X825tuLN91gr+KyFWhMjQ5v15x20C2Vns4B3OPES3xkRupPaSJ1gLWVwvLzI61UkvA
-         oPIfB3A+M8aBEFP6i4rQSaOnnOoqjoAGXic+s14/5oQJ+DD3e4INJf+fBjTVKifkoAWM
-         /nUSiKusJas76BhhtyL75b15JYkyh46+j+AtVCklgbrfaYzGzt/GF7AatUDgSfPbtEhe
-         OyXIkaaRhNQIouEsng3YsdOf7yq9tt7zUfIbHdStwtsSirDLXzWS6t2pZMps6EFofv2T
-         bsJw==
-X-Gm-Message-State: AOJu0YwHYSWj5xqltU2AZEuAeLfdtcpeeA06FDfA7Vo+DPXlM2Xba04o
-        mGx1YRuq92A7UIOHkQCvmYcfsg==
-X-Google-Smtp-Source: AGHT+IHXR2CQ7Hv88Rx2+B5/Du0EO5B0lQBAb20t9J+UIEwpeQW6vZcWCwAfDkQD/PfD2zXRvkmw0A==
-X-Received: by 2002:a2e:880c:0:b0:2b6:cf64:7a8e with SMTP id x12-20020a2e880c000000b002b6cf647a8emr1038527ljh.19.1694769681271;
-        Fri, 15 Sep 2023 02:21:21 -0700 (PDT)
+        bh=1Os6bv0Dt3LeB6u/HS9K4uZVY2Yt4IFbSegYd0tcLec=;
+        b=xSeFHFJWz1w+Bcwh1x6kHoJiW3/I7mrnVuwv0Yei/zIrSQGhWdg88nx4EcyXokWyEK
+         hyeUvyG+/dxRdawAVI14DFkMcayyYGiQCLFpGjnxsHBzElukn/HlyZAqNPcGYYMoDHgx
+         YxiGxIYSXBzEv/nYzKnqIJ2lLyOmI9vHeaB1iR2u+YDM6bC8UnhdqwmsZQ7dxs9k1l6K
+         ahYTQfQjt9tYxrhGSKBwTHnYiHfzO8B1OPKpTUkC+Y/zbkhakkVZDfyB03pq0I4rHoBV
+         cvjxYS21TN0gwxQRvXpcnipazc7KzY6mb+80ImZEBdoSPA5I1KUsGZX10T2ipWeSI4gB
+         bbiw==
+X-Gm-Message-State: AOJu0YwIrh5/VXPxXadgFZEW8W5k6Eb4PdDSR1RVK0o6O3ytuJdxFMZ/
+        jydVWnBWRwB1dHbVPClfviZAxQ==
+X-Google-Smtp-Source: AGHT+IE/zpxUF1uu6BoDONyVpbXJeKhY3xFLEPlW57X6jw1Xtx2VwUTkRcH+jl50/wFagGsRc7Grsg==
+X-Received: by 2002:a2e:b001:0:b0:2bc:ee89:6976 with SMTP id y1-20020a2eb001000000b002bcee896976mr1063977ljk.24.1694769682154;
+        Fri, 15 Sep 2023 02:21:22 -0700 (PDT)
 Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id p8-20020a2e7408000000b002b9ec22d9fasm639376ljc.29.2023.09.15.02.21.20
+        by smtp.gmail.com with ESMTPSA id p8-20020a2e7408000000b002b9ec22d9fasm639376ljc.29.2023.09.15.02.21.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 02:21:20 -0700 (PDT)
+        Fri, 15 Sep 2023 02:21:21 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
 Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>, kernel@pengutronix.de,
-        linux-imx@nxp.com
-Subject: [PATCH v2 06/17] pmdomain: imx: Move Kconfig options to the pmdomain subsystem
-Date:   Fri, 15 Sep 2023 11:19:52 +0200
-Message-Id: <20230915092003.658361-7-ulf.hansson@linaro.org>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 07/17] pmdomain: mediatek: Move Kconfig options to the pmdomain subsystem
+Date:   Fri, 15 Sep 2023 11:19:53 +0200
+Message-Id: <20230915092003.658361-8-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230915092003.658361-1-ulf.hansson@linaro.org>
 References: <20230915092003.658361-1-ulf.hansson@linaro.org>
@@ -78,119 +77,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The Kconfig options belongs closer to the corresponding implementations,
-hence let's move them from the soc- and firmware subsystem to the pmdomain
-subsystem.
+hence let's move them from the soc subsystem to the pmdomain subsystem.
 
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Peng Fan <peng.fan@nxp.com>
-Cc: <kernel@pengutronix.de>
-Cc: <linux-imx@nxp.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: <linux-mediatek@lists.infradead.org>
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/firmware/imx/Kconfig |  6 ------
- drivers/pmdomain/Kconfig     |  1 +
- drivers/pmdomain/imx/Kconfig | 29 +++++++++++++++++++++++++++++
- drivers/soc/imx/Kconfig      | 19 -------------------
- 4 files changed, 30 insertions(+), 25 deletions(-)
- create mode 100644 drivers/pmdomain/imx/Kconfig
+ drivers/pmdomain/Kconfig          |  1 +
+ drivers/pmdomain/mediatek/Kconfig | 29 +++++++++++++++++++++++++++++
+ drivers/soc/mediatek/Kconfig      | 23 -----------------------
+ 3 files changed, 30 insertions(+), 23 deletions(-)
+ create mode 100644 drivers/pmdomain/mediatek/Kconfig
 
-diff --git a/drivers/firmware/imx/Kconfig b/drivers/firmware/imx/Kconfig
-index c027d99f2a59..183613f82a11 100644
---- a/drivers/firmware/imx/Kconfig
-+++ b/drivers/firmware/imx/Kconfig
-@@ -22,9 +22,3 @@ config IMX_SCU
- 
- 	  This driver manages the IPC interface between host CPU and the
- 	  SCU firmware running on M4.
--
--config IMX_SCU_PD
--	bool "IMX SCU Power Domain driver"
--	depends on IMX_SCU
--	help
--	  The System Controller Firmware (SCFW) based power domain driver.
 diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
-index ddc05d6af100..e2c85f20a0c3 100644
+index e2c85f20a0c3..b1d9dc7d71e3 100644
 --- a/drivers/pmdomain/Kconfig
 +++ b/drivers/pmdomain/Kconfig
-@@ -5,5 +5,6 @@ source "drivers/pmdomain/actions/Kconfig"
- source "drivers/pmdomain/amlogic/Kconfig"
+@@ -6,5 +6,6 @@ source "drivers/pmdomain/amlogic/Kconfig"
  source "drivers/pmdomain/apple/Kconfig"
  source "drivers/pmdomain/bcm/Kconfig"
-+source "drivers/pmdomain/imx/Kconfig"
+ source "drivers/pmdomain/imx/Kconfig"
++source "drivers/pmdomain/mediatek/Kconfig"
  
  endmenu
-diff --git a/drivers/pmdomain/imx/Kconfig b/drivers/pmdomain/imx/Kconfig
+diff --git a/drivers/pmdomain/mediatek/Kconfig b/drivers/pmdomain/mediatek/Kconfig
 new file mode 100644
-index 000000000000..00203615c65e
+index 000000000000..21305c4f17fe
 --- /dev/null
-+++ b/drivers/pmdomain/imx/Kconfig
++++ b/drivers/pmdomain/mediatek/Kconfig
 @@ -0,0 +1,29 @@
 +# SPDX-License-Identifier: GPL-2.0-only
-+menu "i.MX PM Domains"
 +
-+config IMX_GPCV2_PM_DOMAINS
-+	bool "i.MX GPCv2 PM domains"
-+	depends on ARCH_MXC || (COMPILE_TEST && OF)
++menu "MediaTek PM Domains"
++	depends on ARCH_MEDIATEK || COMPILE_TEST
++
++config MTK_SCPSYS
++	bool "MediaTek SCPSYS Support"
++	default ARCH_MEDIATEK
++	depends on OF
++	select REGMAP
++	select MTK_INFRACFG
++	select PM_GENERIC_DOMAINS if PM
++	help
++	  Say yes here to add support for the MediaTek SCPSYS power domain
++	  driver.
++
++config MTK_SCPSYS_PM_DOMAINS
++	bool "MediaTek SCPSYS generic power domain"
++	default ARCH_MEDIATEK
 +	depends on PM
 +	select PM_GENERIC_DOMAINS
-+	select REGMAP_MMIO
-+	default y if SOC_IMX7D
-+
-+config IMX8M_BLK_CTRL
-+	bool
-+	default SOC_IMX8M && IMX_GPCV2_PM_DOMAINS
-+	depends on PM_GENERIC_DOMAINS
-+	depends on COMMON_CLK
-+
-+config IMX9_BLK_CTRL
-+	bool
-+	default SOC_IMX9 && IMX_GPCV2_PM_DOMAINS
-+	depends on PM_GENERIC_DOMAINS
-+
-+config IMX_SCU_PD
-+	bool "IMX SCU Power Domain driver"
-+	depends on IMX_SCU
++	select REGMAP
 +	help
-+	  The System Controller Firmware (SCFW) based power domain driver.
++	  Say y here to enable power domain support.
++	  In order to meet high performance and low power requirements, the System
++	  Control Processor System (SCPSYS) has several power management related
++	  tasks in the system.
 +
 +endmenu
-diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
-index 76a4593baf0a..2a90ddd20104 100644
---- a/drivers/soc/imx/Kconfig
-+++ b/drivers/soc/imx/Kconfig
-@@ -1,14 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "i.MX SoC drivers"
+diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+index a88cf04fc803..0810b5b0c688 100644
+--- a/drivers/soc/mediatek/Kconfig
++++ b/drivers/soc/mediatek/Kconfig
+@@ -49,29 +49,6 @@ config MTK_REGULATOR_COUPLER
+ 	default ARCH_MEDIATEK
+ 	depends on REGULATOR
  
--config IMX_GPCV2_PM_DOMAINS
--	bool "i.MX GPCv2 PM domains"
--	depends on ARCH_MXC || (COMPILE_TEST && OF)
+-config MTK_SCPSYS
+-	bool "MediaTek SCPSYS Support"
+-	default ARCH_MEDIATEK
+-	depends on OF
+-	select REGMAP
+-	select MTK_INFRACFG
+-	select PM_GENERIC_DOMAINS if PM
+-	help
+-	  Say yes here to add support for the MediaTek SCPSYS power domain
+-	  driver.
+-
+-config MTK_SCPSYS_PM_DOMAINS
+-	bool "MediaTek SCPSYS generic power domain"
+-	default ARCH_MEDIATEK
 -	depends on PM
 -	select PM_GENERIC_DOMAINS
--	select REGMAP_MMIO
--	default y if SOC_IMX7D
+-	select REGMAP
+-	help
+-	  Say y here to enable power domain support.
+-	  In order to meet high performance and low power requirements, the System
+-	  Control Processor System (SCPSYS) has several power management related
+-	  tasks in the system.
 -
- config SOC_IMX8M
- 	tristate "i.MX8M SoC family support"
- 	depends on ARCH_MXC || COMPILE_TEST
-@@ -28,15 +20,4 @@ config SOC_IMX9
- 	help
- 	  If you say yes here, you get support for the NXP i.MX9 family
- 
--config IMX8M_BLK_CTRL
--	bool
--	default SOC_IMX8M && IMX_GPCV2_PM_DOMAINS
--	depends on PM_GENERIC_DOMAINS
--	depends on COMMON_CLK
--
--config IMX9_BLK_CTRL
--	bool
--	default SOC_IMX9 && IMX_GPCV2_PM_DOMAINS
--	depends on PM_GENERIC_DOMAINS
--
- endmenu
+ config MTK_MMSYS
+ 	tristate "MediaTek MMSYS Support"
+ 	default ARCH_MEDIATEK
 -- 
 2.34.1
 
