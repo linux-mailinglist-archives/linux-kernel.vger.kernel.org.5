@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687687A174A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287537A17E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbjIOH0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
+        id S232346AbjIOICD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbjIOH0B (ORCPT
+        with ESMTP id S230454AbjIOICB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:26:01 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BBC1BE6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:25:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1694762734;
-        bh=AaT+Zd5A+u64/jZniFM2Hfp9z5ZX8DVUs5Jk9m7d9J8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=lxTpMv/MD/jC11s2upB8FzLsS7hAoDNJTH9BYMPSJhnRvlKts1RGzbHXQ4+14yaNA
-         3/7vXyisYcev6W7Xy9vcVG6BM+rn3Qhof1+JUWTZFmDTAHGhxV/mDjSxM+89aSTOne
-         ctESIfeqCXLrqzlOvrXJOKS87qAkU0SDUzkz6eyKcd36wBLiU1fmLxW41G8Tp9/jzq
-         nBTYFoGZyeILYg3MWKI76aD/DYMu5NX4b3YUlHEqbmSc07sF4EvHPMl9HjR1lzdJxF
-         nsVLzUxJA/ro8VVQte2SmLQNb5QMjV30mDKeCmIJbMRlm7onvDMzIG0Q7XmPu3tXsO
-         qga/WMC5Xv9oQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rn5M22HYpz4wxg;
-        Fri, 15 Sep 2023 17:25:32 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] powerpc/82xx: Select FSL_SOC
-In-Reply-To: <c481fa91-0cfb-1c19-2da7-cf768bc56aea@csgroup.eu>
-References: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
- <87led86zaq.fsf@mail.lhotse>
- <c481fa91-0cfb-1c19-2da7-cf768bc56aea@csgroup.eu>
-Date:   Fri, 15 Sep 2023 17:25:27 +1000
-Message-ID: <875y4b7va0.fsf@mail.lhotse>
+        Fri, 15 Sep 2023 04:02:01 -0400
+X-Greylist: delayed 1202 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Sep 2023 01:01:55 PDT
+Received: from 17.mo584.mail-out.ovh.net (17.mo584.mail-out.ovh.net [46.105.41.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C19BAC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:01:55 -0700 (PDT)
+Received: from director2.ghost.mail-out.ovh.net (unknown [10.108.16.216])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id AAD2626F8B
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:25:48 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-wk657 (unknown [10.110.208.116])
+        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 5F6DE1FE5D;
+        Fri, 15 Sep 2023 07:25:48 +0000 (UTC)
+Received: from RCM-web7.webmail.mail.ovh.net ([151.80.29.19])
+        by ghost-submission-6684bf9d7b-wk657 with ESMTPSA
+        id f7YJF/wGBGUpJgAAKs0qSA
+        (envelope-from <rafal@milecki.pl>); Fri, 15 Sep 2023 07:25:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 15 Sep 2023 09:25:48 +0200
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: Re: [PATCH] nvmem: brcm_nvram: store a copy of NVRAM content
+In-Reply-To: <28fad55f-1253-deb2-9615-b32746129664@gmail.com>
+References: <20230914064922.3986-1-zajec5@gmail.com>
+ <28fad55f-1253-deb2-9615-b32746129664@gmail.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <58a017a92ee82f95972b0a14c604f313@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 31.11.218.106
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 503277259095976943
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddguddujecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgffhueeihfeitdettdehfefhieefffevkedvgeetteekteejtdeivddvhffgffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudehuddrkedtrddvledrudelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekgedpmhhouggvpehsmhhtphhouhht
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 15/09/2023 =C3=A0 02:43, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> It used to be impossible to select CONFIG_CPM2 without selecting
->>> CONFIG_FSL_SOC at the same time because CONFIG_CPM2 was dependent
->>> on CONFIG_8260 and CONFIG_8260 was selecting CONFIG_FSL_SOC.
->>>
->>> But after commit eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260
->>> and CONFIG_8272") CONFIG_CPM2 depends on CONFIG_MPC82xx instead
->>                                             ^
->>                                             CONFIG_PPC_82xx
->>=20
->> All the references to CONFIG_MPC82xx should be CONFIG_PPC_82xx right?
->> I can update when applying.
->
-> Ah right, I mixed things up. This is CONFIG_PPC_82xx, CONFIG_PPC_8xx,=20
-> CONFIG_PPC_83xx and CONFIG_PPC_MPC512x
+On 2023-09-14 23:26, Florian Fainelli wrote:
+> On 9/13/23 23:49, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>> 
+>> This driver uses MMIO access for reading NVRAM from a flash device.
+>> Underneath there is a flash controller that reads data and provides
+>> mapping window.
+>> 
+>> Using MMIO interface affects controller configuration and may break 
+>> real
+>> controller driver. It was reported by multiple users of devices with
+>> NVRAM stored on NAND.
+>> 
+>> Modify driver to read & cache all NVRAM content during init and use 
+>> that
+>> copy to provide NVMEM data when requested.
+>> 
+>> Link: 
+>> https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
+>> Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+>> Cc: Scott Branden <scott.branden@broadcom.com>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+> [snip]
+>> -	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>> -	if (IS_ERR(priv->base))
+>> -		return PTR_ERR(priv->base);
+>> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>> +	if (IS_ERR(base))
+>> +		return PTR_ERR(base);
+>> +
+>> +	priv->size = resource_size(res);
+>> +
+>> +	priv->data = devm_kzalloc(dev, priv->size, GFP_KERNEL);
+> 
+> These can conceivably quite big data structures, how about using 
+> kvmalloc()?
 
-Thanks.
+Good idea.
 
-cheers
+Actual NVRAM data usually doesn't take much space, but it reserves quite 
+a lot and we need all of that to full expose NVMEM device content.
+
+-- 
+Rafał Miłecki
