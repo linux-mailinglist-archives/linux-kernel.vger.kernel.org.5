@@ -2,102 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A87B97A1C49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03B57A1C35
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbjIOKch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
+        id S234265AbjIOK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbjIOKcZ (ORCPT
+        with ESMTP id S234336AbjIOK0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:32:25 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8155730EB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:21 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso243291966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694773400; x=1695378200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZU4AuTd77SCi2z8SlZIHecF6Q/OBga20jXZU+Tyw7RM=;
-        b=T+ArXf90tZNK6WJAB/Arf6yieCKcCF0mVThlCkVvgBzgPsSl6Y/1agYxy8iGFUwPaZ
-         NeaMIero5ajJK3OD72L2C9rxVpcDMn7CVUc1y/0lb9TrQxIHE5T/Bl0nve5QTzJ2uCmh
-         DTVEZxeFsejwAMOaY2ycjJTv7OaniPmTfllcmEfwfR49pGoctK3vN8eXAyzWMw5ioyPM
-         2uEbl4iuW2GL+vwJDph5oSzEUDfghLO/XfLpea0Ybq+qYGQ6Sg5NBKasuH92WqUlYgdz
-         IQDDOi3FzdVm/HND7pnIl4MVO+NPgp1WHW6ovHZCEov+693P72TDEokX9/jOBhzgM+qW
-         55Xw==
+        Fri, 15 Sep 2023 06:26:05 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39C13A93
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:31 -0700 (PDT)
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 386FC3F67B
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694773407;
+        bh=z7JHAgWlYbo6190D8eD4+RynEQye8I21JfDjXnFF0Ck=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=pAWESwKbofXfirKQ+cu2GippwrcotREwgJ54a47CcWzLElpmUEpadEShek2P8Ob+g
+         TQ0mG/8px4AIq/RjsyDUITFlluo2Aed8XeaM8zSZK0IlSSLDtgglyRp9I/gfmjto6t
+         bMVv6SzWDLqe1bjsnTOMw/0SULcybFd6vgEoHboleE/dlj+LG/5tuf7NEgT1sTZ4TY
+         DWHyO+xoHHGgzLqahCt2BH/KCXiv7YhPOXMUc5j6OWjIEw+jiOEXz+f8+6BCx8qTh8
+         IBs89jqDa7XQw297bvsgrwUsH1TYmz2G8f31rmxQEo2BJ2MYg2Es9QdvI0/+VisMjt
+         l+iDkDjGMLrww==
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9aa20a75780so141641966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694773400; x=1695378200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZU4AuTd77SCi2z8SlZIHecF6Q/OBga20jXZU+Tyw7RM=;
-        b=oTwczKr2g+xu1ViavazgjSuJi6g+nXqQSLIJBvw5B90+/sLAjuf1F5yb3eIOZKJrdn
-         6N18gNMhChx7ZfFMVux6oML/ExnEr0g+jKWFflEEGNGaoI0tZnYTHxZorK8SG6Yx5x46
-         h7oCVMC/SfrIezR3lhs2kN14SshXQ2zSPNo4QedgQ5aiZ83XmltIG3zbnsr8go46eIVL
-         jA8Bo1ZmnwFg6CVZUrFUZ8XQ1ejBHeHmQRK3P9yEGY3XWppv3PvmE7DETTYCatKULj3w
-         aPP0CQ2yzYoN3Gs92H+3Bkhw6mg95W6pl66uWsF3tSMzol3LpsQmlT7RjF12FuIZ4zRz
-         X5KQ==
-X-Gm-Message-State: AOJu0YwqdoOeCT2Jq7BohNAGLbQH9WzAJSFqQcnkzJ+oLygYYjoXhM0r
-        OWHcMrqgyQZGvl8uSiuVSitVZw==
-X-Google-Smtp-Source: AGHT+IHd2NUDtrOHeXSqw9jdD6L2t5IYy7aq0QEiscLzMW/L1cneK//YI9eejtz2lfL2eEwyr27C6w==
-X-Received: by 2002:a17:906:74d5:b0:99c:5056:4e2e with SMTP id z21-20020a17090674d500b0099c50564e2emr951471ejl.31.1694773399810;
-        Fri, 15 Sep 2023 03:23:19 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170906831500b009ad87d1be17sm2211358ejx.22.2023.09.15.03.23.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:23:19 -0700 (PDT)
-Message-ID: <a711407d-4419-4b75-99db-b8461b3bbdfe@linaro.org>
-Date:   Fri, 15 Sep 2023 11:23:17 +0100
+        d=1e100.net; s=20230601; t=1694773406; x=1695378206;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z7JHAgWlYbo6190D8eD4+RynEQye8I21JfDjXnFF0Ck=;
+        b=B5qsGL9IH1C61QKU/o+RwSbR0H9/gqZQL0DfK9hxuNqRpckOWv47LSauAducajf1Fv
+         LZJy1ZQG5Jddfqn5DQT8I4BUcQEPFKeUhcL9vkydieOR98qfw5VpPZd7DirHueTKs+Uj
+         T2vEBnc7+wXv7wTvvpUbeKTxct4B5w+p4+rQPaRxw5gTTFUT52Y6T3ubgMWjBo+4+nGJ
+         chDYRCRDT7Op/MqEAYS/IvdJVG4RA/XrLRkvkI/0fcGC460XRKPOJqoJS4nxg64QEyvC
+         jHUOcSJGiz+VwjygRxd53BErsT+TtWH11KFoNh7pdYSIy+MOttbmJ33BxfY6Bayinch0
+         GarQ==
+X-Gm-Message-State: AOJu0YznPPR4F8uEEWN8LIjL8KFT2snh72fDsFYFKPW0BxNiwppGUrh2
+        BvMPLrS04Ibxr8P7mkJrPzHEUnrJXNCnNWWgFztTtjVpQjCIHWqJMDkr3C4sbHy7efDS798Stcw
+        b4KJhj9sIGok6yRwqs5f94NNSBp+JNd5lZUEGDlacqQ==
+X-Received: by 2002:a17:907:784f:b0:9a2:2635:daa8 with SMTP id lb15-20020a170907784f00b009a22635daa8mr941252ejc.56.1694773406593;
+        Fri, 15 Sep 2023 03:23:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+FiyghSmdvhT78+MTXJZGFKg/xOgd32F1+tb9mlsD409KTBDcb1ilWTv89DV9DYE//HViLA==
+X-Received: by 2002:a17:907:784f:b0:9a2:2635:daa8 with SMTP id lb15-20020a170907784f00b009a22635daa8mr941235ejc.56.1694773406299;
+        Fri, 15 Sep 2023 03:23:26 -0700 (PDT)
+Received: from work.lan (77-169-125-32.fixed.kpn.net. [77.169.125.32])
+        by smtp.gmail.com with ESMTPSA id o9-20020a170906600900b0099bcd1fa5b0sm2189818ejj.192.2023.09.15.03.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 03:23:25 -0700 (PDT)
+From:   Roxana Nicolescu <roxana.nicolescu@canonical.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com
+Cc:     x86@kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: x86 - load optimized sha1/sha256 modules based on CPU features
+Date:   Fri, 15 Sep 2023 12:23:25 +0200
+Message-Id: <20230915102325.35189-1-roxana.nicolescu@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] usb: typec: tps6598x: add reset gpio support
-Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco@wolfvision.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230912-topic-tps6598x_reset-v1-0-78dc0bf61790@wolfvision.net>
- <20230912-topic-tps6598x_reset-v1-1-78dc0bf61790@wolfvision.net>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230912-topic-tps6598x_reset-v1-1-78dc0bf61790@wolfvision.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 07:50, Javier Carrasco wrote:
-> The TPS6598x PD controller provides an active-high hardware reset input
-> that reinitializes all device settings. If it is not grounded by
-> design, the driver must be able to de-assert it in order to initialize
-> the device.
-> 
-> The PD controller is not ready for registration right after the reset
-> de-assertion and a delay must be introduced in that case. According to
-> TI, the delay can reach up to 1000 ms [1], which is in line with the
-> experimental results obtained with a TPS65987D.
-> 
-> Add a GPIO descriptor for the reset signal and basic reset management
-> for initialization and suspend/resume.
-> 
-> [1] https://e2e.ti.com/support/power-management-group/power-management/
-> f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
-> to-normal-operation/4809389#4809389
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+x86 optimized crypto modules are built as modules rather than build-in and
+they are not loaded when the crypto API is initialized, resulting in the
+generic builtin module (sha1-generic) being used instead.
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+It was discovered when creating a sha1/sha256 checksum of a 2Gb file by
+using kcapi-tools because it would take significantly longer than creating
+a sha512 checksum of the same file. trace-cmd showed that for sha1/256 the
+generic module was used, whereas for sha512 the optimized module was used
+instead.
+
+Add module aliases() for these x86 optimized crypto modules based on CPU
+feature bits so udev gets a chance to load them later in the boot
+process. This resulted in ~3x decrease in the real-time execution of
+kcapi-dsg.
+
+Fix is inspired from commit
+aa031b8f702e ("crypto: x86/sha512 - load based on CPU features")
+where a similar fix was done for sha512.
+
+Cc: stable@vger.kernel.org # 5.15+
+Suggested-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Suggested-by: Julian Andres Klode <julian.klode@canonical.com>
+Signed-off-by: Roxana Nicolescu <roxana.nicolescu@canonical.com>
+---
+ arch/x86/crypto/sha1_ssse3_glue.c   | 12 ++++++++++++
+ arch/x86/crypto/sha256_ssse3_glue.c | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/arch/x86/crypto/sha1_ssse3_glue.c b/arch/x86/crypto/sha1_ssse3_glue.c
+index 44340a1139e0..959afa705e95 100644
+--- a/arch/x86/crypto/sha1_ssse3_glue.c
++++ b/arch/x86/crypto/sha1_ssse3_glue.c
+@@ -24,8 +24,17 @@
+ #include <linux/types.h>
+ #include <crypto/sha1.h>
+ #include <crypto/sha1_base.h>
++#include <asm/cpu_device_id.h>
+ #include <asm/simd.h>
+ 
++static const struct x86_cpu_id module_cpu_ids[] = {
++	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
++	X86_MATCH_FEATURE(X86_FEATURE_AVX, NULL),
++	X86_MATCH_FEATURE(X86_FEATURE_SSSE3, NULL),
++	{}
++};
++MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
++
+ static int sha1_update(struct shash_desc *desc, const u8 *data,
+ 			     unsigned int len, sha1_block_fn *sha1_xform)
+ {
+@@ -301,6 +310,9 @@ static inline void unregister_sha1_ni(void) { }
+ 
+ static int __init sha1_ssse3_mod_init(void)
+ {
++	if (!x86_match_cpu(module_cpu_ids))
++		return -ENODEV;
++
+ 	if (register_sha1_ssse3())
+ 		goto fail;
+ 
+diff --git a/arch/x86/crypto/sha256_ssse3_glue.c b/arch/x86/crypto/sha256_ssse3_glue.c
+index 3a5f6be7dbba..d25235f0ccaf 100644
+--- a/arch/x86/crypto/sha256_ssse3_glue.c
++++ b/arch/x86/crypto/sha256_ssse3_glue.c
+@@ -38,11 +38,20 @@
+ #include <crypto/sha2.h>
+ #include <crypto/sha256_base.h>
+ #include <linux/string.h>
++#include <asm/cpu_device_id.h>
+ #include <asm/simd.h>
+ 
+ asmlinkage void sha256_transform_ssse3(struct sha256_state *state,
+ 				       const u8 *data, int blocks);
+ 
++static const struct x86_cpu_id module_cpu_ids[] = {
++	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
++	X86_MATCH_FEATURE(X86_FEATURE_AVX, NULL),
++	X86_MATCH_FEATURE(X86_FEATURE_SSSE3, NULL),
++	{}
++};
++MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
++
+ static int _sha256_update(struct shash_desc *desc, const u8 *data,
+ 			  unsigned int len, sha256_block_fn *sha256_xform)
+ {
+@@ -366,6 +375,9 @@ static inline void unregister_sha256_ni(void) { }
+ 
+ static int __init sha256_ssse3_mod_init(void)
+ {
++	if (!x86_match_cpu(module_cpu_ids))
++		return -ENODEV;
++
+ 	if (register_sha256_ssse3())
+ 		goto fail;
+ 
+
+base-commit: aed8aee11130a954356200afa3f1b8753e8a9482
+-- 
+2.34.1
 
