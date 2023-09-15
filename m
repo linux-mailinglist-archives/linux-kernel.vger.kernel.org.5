@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119DD7A2928
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518DD7A292B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238069AbjIOVMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        id S237507AbjIOVOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238035AbjIOVMT (ORCPT
+        with ESMTP id S238081AbjIOVNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:12:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126D219E;
-        Fri, 15 Sep 2023 14:12:11 -0700 (PDT)
-Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C1C056607326;
-        Fri, 15 Sep 2023 22:12:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694812329;
-        bh=bYLYR835uDXMEL/Pj2+98z3BbfLx3uwnjanJiXP0eRY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=TQ+YkK+gpa+RQR1tayz/p4ym9lJK+x7P1J6dv9rb37mBkSpQArzWnnAHinOQJp1Ej
-         vgT4cpePR7ujKkRz8grqjxufeZrFq+RMyGbpA9YnOp8RlwHq6X6WDISs4Ex/4U2l/N
-         lRsVlk77pfUhmRikXC7aWWCHS/aldnqzq8x3T9wi1jomqNIAZbtcHMaiuxx3iN3cfZ
-         got4k7pjPSxoJAi1BGoVTRMkCuhepZBt2DjBiobMyOAgX4zGYi6BTwZMlJ4H3664zg
-         veanXU/Q6adBvHTU8/UARCsSy8e9QFtvWYEEd96P6tGHbDI/OvduJgIi3BofSrs0/t
-         df7YDBs87rEiw==
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-Date:   Fri, 15 Sep 2023 23:11:36 +0200
-Subject: [PATCH v12 7/7] media: chips-media: wave5: Add wave5 driver to
- maintainers file
+        Fri, 15 Sep 2023 17:13:36 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F844CD0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:13:05 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2745cd2ba68so2110767a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694812385; x=1695417185; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AZHk7vThpLpskZtqajJEmCcHKvsPyXWDUd5X6GjbEhM=;
+        b=oc7I+p+6FvfuU9el2G07pmZZeSF2QT32N24IMQTgseIYtZ+zm+hxwT+p5D7B239YdE
+         JgNQ6SKWIt1wCWtz2CjTxBLR7cOFgHfhDt97dVKoIwWoohYv6zLWXU0Jb1UZV8uCrnMb
+         qMRhQEU3J+aoYsqOLIesAlKpcVBPW9rqGgMRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694812385; x=1695417185;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AZHk7vThpLpskZtqajJEmCcHKvsPyXWDUd5X6GjbEhM=;
+        b=WROreyZFP1Ny4XVY3li6kdSBoc17xU0HEcUqyRyyKlIeRGVxsAx1LULOfUtIlMLhHo
+         gbJ6iGR9AGvig0sfZa3jnLwiGs+tfHDH9nLXGesnrFpler1UrgWx2di1+h+RksmUEhYZ
+         dQKKkvIZ+327zCBdbuq/SafsQ3P+bTf4D5Tag4MWNpd9SPLEVSKhTC/1odAo5lau1FL+
+         XoFkKA62AS9xminDQQv/kNtNahmbAUT2kKhqvpDdR6c2pL3hK3eEFuEVDD9663JTcmeT
+         oVNuGvpEkk6kxBKz+UqT6SlAwIckNWaIXmz6SspsQ+M9hObVGwLHtKfRwPcSqmVhfP2d
+         Rq/g==
+X-Gm-Message-State: AOJu0YzMgcgM3Gl24kRUmgaG8JtEqcrw41CGekDWCUKcH7xx1fE3i/ow
+        wSHmQh2VjJhCAngfj1agsJ3f+w==
+X-Google-Smtp-Source: AGHT+IHm6HySe6IHe1hP6qL3CE05/JQnD5U2WP+Yncfwbd9pJNQNoXCcc43i0dypm9WA1Axo89FeCA==
+X-Received: by 2002:a17:90b:1952:b0:268:14a0:f8a with SMTP id nk18-20020a17090b195200b0026814a00f8amr2739464pjb.39.1694812384792;
+        Fri, 15 Sep 2023 14:13:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ie18-20020a17090b401200b0026971450601sm3428843pjb.7.2023.09.15.14.13.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 14:13:04 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 14:13:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Matteo Rizzo <matteorizzo@google.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
+        jannh@google.com, evn@google.com, poprdi@google.com,
+        jordyzomer@google.com, ardb@google.com
+Subject: Re: [RFC PATCH 10/14] x86: Create virtual memory region for SLUB
+Message-ID: <202309151410.E65B8300F@keescook>
+References: <20230915105933.495735-1-matteorizzo@google.com>
+ <20230915105933.495735-11-matteorizzo@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-wave5_v12_on_media_master-v12-7-92fc66cd685d@collabora.com>
-References: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
-In-Reply-To: <20230915-wave5_v12_on_media_master-v12-0-92fc66cd685d@collabora.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-X-Mailer: b4 0.11.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694812307; l=1012;
- i=sebastian.fricke@collabora.com; s=linux-media; h=from:subject:message-id;
- bh=oe7G1BPYvCGvF+TquXvdzFGyRHh7qNc/vt2UNcQusZA=;
- b=DOeNLhi2ebCCtD0TaZNM6efAQsWbAp17fUrDJm+l5CsR+H0mAxpG7BGKiUpjXEKCS0dCJCi3W/Vd
- eRKGzy6jAP9x7nsffTNGEVzhn0ShuAD+u7Bu4Scp6HMVg94NNvJM
-X-Developer-Key: i=sebastian.fricke@collabora.com; a=ed25519;
- pk=pYXedPwrTtErcj7ERYeo/IpTrpe4QbJuEzSB52fslBg=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915105933.495735-11-matteorizzo@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+On Fri, Sep 15, 2023 at 10:59:29AM +0000, Matteo Rizzo wrote:
+> From: Jann Horn <jannh@google.com>
+> 
+> SLAB_VIRTUAL reserves 512 GiB of virtual memory and uses them for both
+> struct slab and the actual slab memory. The pointers returned by
+> kmem_cache_alloc will point to this range of memory.
 
-Add the Chips&Media wave5 encoder/decoder driver to the maintainers file
+I think the 512 GiB limit may be worth mentioning in the Kconfig help
+text.
 
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+And in the "640K is enough for everything" devil's advocacy, why is 512
+GiB enough here? Is there any greater risk of a pathological allocation
+pattern breaking a system any more (or less) than is currently possible?
+> 
+> Signed-off-by: Jann Horn <jannh@google.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 063a11791bbf..b6a592c14caa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23206,6 +23206,14 @@ F:	include/linux/watchdog.h
- F:	include/trace/events/watchdog.h
- F:	include/uapi/linux/watchdog.h
- 
-+WAVE5 VPU CODEC DRIVER
-+M:	Nas Chung <nas.chung@chipsnmedia.com>
-+M:	Jackson Lee <jackson.lee@chipsnmedia.com>
-+L:	linux-media@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/media/cnm,wave5.yaml
-+F:	drivers/media/platform/chips-media/wave5/
-+
- WHISKEYCOVE PMIC GPIO DRIVER
- M:	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
- L:	linux-gpio@vger.kernel.org
+But, yes, I'm still a fan, and I think it interacts well here with the
+rest of the KASLR initialization:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Have you tried to make this work on arm64? I imagine it should be
+roughly as easy?
 
 -- 
-2.25.1
+Kees Cook
