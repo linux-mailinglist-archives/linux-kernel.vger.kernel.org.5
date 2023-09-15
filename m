@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC8B7A2A3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22CC7A2A43
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237097AbjIOWK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
+        id S237025AbjIOWOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237399AbjIOWKw (ORCPT
+        with ESMTP id S231444AbjIOWNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:10:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B88B7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:10:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D109C433C8;
-        Fri, 15 Sep 2023 22:10:46 +0000 (UTC)
-Date:   Fri, 15 Sep 2023 18:11:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        Fri, 15 Sep 2023 18:13:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E58B7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nTcrc1WI4o6opPx+ch/98DWgJ1PnGcifLTiurtvgQxc=; b=lub14jPrTEx+0tuussJqRGSykT
+        OboUeGnY5+kd6utFHiv5AFJY3QeT91ddyUKUO2LqRkLqEFNSMz387BC92Q2XzMLagLtWpDIVhCiWU
+        ufL9qda9jDZ1Ea/6a1cmbCeYv73E4MIU0zqDx+2LhveuTxsM3SYuJnKe4bL1zjWLNy9SvDyUc/Yyp
+        +rk3BESsqhGmiAvxndPrnALHUkgvUP5DhiWz2Q7yLEe0jRrnogCyj3glVbmEtJN1/MPDqH82fHdd/
+        9YPq+34iQ9ZwXIwvJyjDXIsFrYkAh/E3F3g603e1Hs8catbWno1ywoAfaOLHy2eh0o7kqlz78/xJe
+        lSBlD5IQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhH48-00CNVR-S8; Fri, 15 Sep 2023 22:13:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 871903003F2; Sat, 16 Sep 2023 00:13:32 +0200 (CEST)
+Date:   Sat, 16 Sep 2023 00:13:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>
-Subject: Re: [GIT PULL] tracing: Add eventfs file to help with debugging any
- more issues
-Message-ID: <20230915181110.1cbf1ff0@gandalf.local.home>
-In-Reply-To: <20230915180118.4bd1cb5f@gandalf.local.home>
-References: <20230913192905.0a92bcab@gandalf.local.home>
-        <CAHk-=whAkgy10YVwjQGn1AO=1ZFc193ujvMXwmDOJAc=Jaeg5A@mail.gmail.com>
-        <20230915163637.77c673a6@gandalf.local.home>
-        <CAHk-=whNU3JaPMq_E7mwVGpTKxxeQxV=13o84u-tTeqfB_t05g@mail.gmail.com>
-        <20230915171334.5c231ca7@gandalf.local.home>
-        <CAHk-=whbDQb5VzJbn6qQswxfbcp67uzfwpJ+R1DxHk0dHdg4pQ@mail.gmail.com>
-        <CAHk-=wiheWEbUfQy1JY_BQ6mJukOLa6hEdEzN1N_hgz1nxY9hQ@mail.gmail.com>
-        <20230915180118.4bd1cb5f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+Message-ID: <20230915221332.GC23174@noisy.programming.kicks-ass.net>
+References: <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+ <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net>
+ <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+ <20230915213231.GB23174@noisy.programming.kicks-ass.net>
+ <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sep 2023 18:01:18 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Sep 15, 2023 at 02:50:48PM -0700, Linus Torvalds wrote:
+> On Fri, 15 Sept 2023 at 14:32, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> >
+> > It also got me thinking about named_guard() for the myriad of
+> > conditional locks we have.
+> >
+> >         named_guard(try_mutex, foo_guard)(&foo->lock);
+> >         if (foo_guard) {
+> >                 // we got the lock, do our thing
+> >         }
+> 
+> Hmm. It looks ugly to me. I really hate the "named_guard" thing. One
+> of the reasons I liked the guard/scoped_guard() macros was because how
+> it created _anonymous_ guards, and made it completely unnecessary to
+> make up a pointless name.
 
-> > To me, if that's really a major issue, that just says "ok, this
-> > eventfs abstraction was mis-designed, and hid data that the main
-> > developer actually wants".
+Yeah, the anonymous thing is very nice.
 
-Just to clarify the objective of the show_event_dentries file was the
-heisenberg effect.
+My ulterior motive for the above was perhaps extending it to allow the
+lock argument to be NULL. Which would give us a handy conditional
+pattern.
 
-Just doing a 'ls' in the eventfs will create the dentries.
+	struct rw_semaphore *exec_update_lock = task ?  &task->exec_update_lock : NULL;
+	named_guard(rwsem_read_interruptible, exec_lock_guard)(exec_update_lock);
+	if (task && !exec_lock_guard)
+		return -EINTR;
 
-I'm interested in knowing that the dentries do not exist before the 'ls',
-so I look at that file to make sure they are not there.
+And yes, that is definitely not pretty, but it does provide a fairly
+wide array of options.
 
-Then I do an 'ls' where I see all the files.
+> If trylock ends up being a common pattern, I think we should strive to
+> make it a lot easier to use.
+> 
+> Can we make it act like "scoped_guard()", except the lock function is
+> fundamentally conditional?
+> 
+> Call it "cond_guard()", and make the syntax otherwise be the same as
+> "scoped_guard()", iow, using a unique ID for the guard name.
+> 
+> So
+> 
+>         cond_guard(try_mutex)(&foo->lock) {
+>                 .. this is the "we got the lock" region ..
+>         }
+> 
+> would I think be a much better syntax.
+> 
+> Could we live with that?
 
-I then look at the file again to make sure the ref counts are correct.
+For the trypical use-case that is definitely the more appealing syntax.
 
-I then run a memory pressure test, and look at the file to make sure that
-the dentries are all cleaned up.
+Something like:
 
-For kicks I'll do another 'ls' and see all the files again.
+  #define cond_guard(_name, args...) \
+	  for (CLASS(_name, scope)(args), *done = NULL; \
+	       !done && scope; done = (void *)1)
+	     
+works for the simple cases, but something like: try_spinlock_irqsave
+would be a bit of a challenge because that would end up with one of
+those structs that is not a pointer and they don't cast to a boolean :/
 
-You may be correct that once I did the above, the code could be considered
-working. My fear is that something might change in vfs that causes it to
-break, and this file could be useful in catching that.
-
-But if it never breaks, then the file becomes useless, which I guess is
-what you are saying.
-
-I'll keep the code around locally, and if vfs ever changes and breaks this
-code where this file helps in solving it, I'll then do another pull request
-to put this file upstream ;-)
-
--- Steve
+I think I can make it work, I'll go have a play, but perhaps not now,
+it's past midnight ;-)
