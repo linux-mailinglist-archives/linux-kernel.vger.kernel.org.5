@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9D77A2135
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B497A213E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbjIOOkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
+        id S235798AbjIOOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235795AbjIOOkf (ORCPT
+        with ESMTP id S235633AbjIOOnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:40:35 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D412A1713
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:40:29 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-41513d2cca7so345751cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:40:29 -0700 (PDT)
+        Fri, 15 Sep 2023 10:43:43 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2273C1BE6;
+        Fri, 15 Sep 2023 07:43:38 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99de884ad25so298024366b.3;
+        Fri, 15 Sep 2023 07:43:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694788829; x=1695393629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ian4KdZXmKFMo5ATT66+8ryOQHatJUEavAax22/9xtM=;
-        b=L3qVWDW1dbmk8GpWmRPl0hqNX2AGqrzf4fsv7AvEWCnSyfdgcrgiCZz/fUEERA40ay
-         Hqu0RFaz1cNIyejGluY2McxJXGiHtnw7tFMDsA6GthLJudivDlvopP6aY+6G156T2T6U
-         v+F6HaKLtO6KOxbXl/XLmi81WQb3gBm07u5iUyeu33pU6RByqShfAEd90POP/p/lv47A
-         kDLZ+1BHyVkoL0zk4oLXXo1DrKw8lPxoMqaAwH0+l7c7o/Q+JAIFaOPXRvwET3MbNuZX
-         TFtw0iXWAJf2rHPyfJ4mtGP8rOns5PgLcTbtrqCwrvrRCeHtn2uWNtsZoGUqV/qmEB+2
-         s+5A==
+        d=gmail.com; s=20230601; t=1694789016; x=1695393816; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4v+k4iIOLRA11slfCdOqaI7i0UaMHyxjjtS6ZrpJ86g=;
+        b=XdAaHq4oJ0oRKmOqlGMHlZw0voyyXWnFE35T9tdQfmzKRLzuU/p0tji8iJabcQ752H
+         smDdWY5zBNgLOI9fbmkJ1dnwx1YyaX8KohglUr/tfF4I5bbEE7KEj4ZWoOAjs3thMYHE
+         1ERhwP1ZouhbSQthSN1sQmIiUJM1kfgNwEAiw+uRQTgXKuE1+s4Yiz+ClyEwocxZB43X
+         eDEytNmEmiCJqbdZJgbQ2yi6d9BCUY5ljzLuCapB/B9usdKfuUUnnqWEst9OabD/DGc2
+         lYy4F/sQSXWUaav38ClUeksipekqRpi+4stvqG8nd/mafFoaOmrKmQK6SO78mseJbT5e
+         2aTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694788829; x=1695393629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ian4KdZXmKFMo5ATT66+8ryOQHatJUEavAax22/9xtM=;
-        b=rJzyfcj06QsIAwFhtAnjMZ1JVkiqXDBgYmCxyfNrvfxrMqZDSIGBkT1vR2IV1mD7fk
-         85jvaHMvYKHznMtYOUKIRrcH47hdtwEcV/xeL/VpFBcIsyJeZ55uOMDrL9P/FRU/4BZF
-         zLrtkGhZPm0XYzQdsNXKj6wK4946vWeTIWWhkmwUXNt4Ql8uNZHRsClHXIifP3xsThYD
-         sVMPlCm9QAxjK7ba9ry0io0gFJdosT8lcRY9dCwI57M4d/Rq5GVauAAn08JYVYiSKthJ
-         3SjT9II69TT9Y6HFDiVWJtV8OZMZlggJACGK3FBHA1R9ai8V7nbTPTfvBosj12sOg2Ig
-         t9PA==
-X-Gm-Message-State: AOJu0YwdTx3Cc/kdCRQRWIiy1Yk95wMat33KA75w/2FbimHrm7voNWRG
-        VTzxHr3ncNCZ1lcOHgeBKKhJBIz5Khahfr2wequVoQ==
-X-Google-Smtp-Source: AGHT+IEvTGUFvnjnnBA1AteMbyFSqSQVTo/tJ9sREckup1RnXB1Q25mSsTPQKnY1pjk3jEb1DZA3eESSv+sSMHy9O6w=
-X-Received: by 2002:ac8:598e:0:b0:40f:d1f4:aa58 with SMTP id
- e14-20020ac8598e000000b0040fd1f4aa58mr247843qte.8.1694788828644; Fri, 15 Sep
- 2023 07:40:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694789016; x=1695393816;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4v+k4iIOLRA11slfCdOqaI7i0UaMHyxjjtS6ZrpJ86g=;
+        b=guEX697M4/vL4Zi4BctYJnBlv7leSq3IkN0kTJTKal8+3bk/ywtchy4SGSfYVOOBir
+         sW+LX7GNmc1sh8gUCZiYHMvUuIgAfLqTnAOpEsmnTx4ALNSfbXyh8tJYMUJ+5YuBeAk0
+         AXXvWFDIDcwOyMAB/Z5D694eeIs/+1wVkHorhEgeJNm8T4sKtEHxwdq9Rxt7RgiIxFgl
+         ba0YqVTxKB1itQ4jkSTrKuxq093iSDDUt5ckCx8XxdXEe6+DAXil7v2pnzSV53O6bWv+
+         9OUbLdns2JCv9wv9Fg8i4jpqhqBJ/OkTDsxgzvyAX9yh31AfoIFWVVdCI1GMHUJiRFLC
+         4G1A==
+X-Gm-Message-State: AOJu0YwMeUmWvyekrJWdqsEdLf6KcSQL/YQudMx3dW9vbxGrv8nraJH/
+        4snKfYJ8ojIE3GzbRhi1FR09nIpgKqcZmw==
+X-Google-Smtp-Source: AGHT+IGADNU8LriUdPkveoqZ6kGPTfZELrBXIpf1W/4OA+1Lv7BZl2faW4IoQ4vDbdcJb+EmbhEQQg==
+X-Received: by 2002:a17:906:30c2:b0:9a9:f2fd:2a2b with SMTP id b2-20020a17090630c200b009a9f2fd2a2bmr1582575ejb.73.1694789016335;
+        Fri, 15 Sep 2023 07:43:36 -0700 (PDT)
+Received: from skbuf ([188.26.56.202])
+        by smtp.gmail.com with ESMTPSA id bq14-20020a170906d0ce00b0099ddc81903asm2497650ejb.221.2023.09.15.07.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 07:43:36 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 17:43:33 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Petr Machata <petrm@nvidia.com>,
+        Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH net-next 2/2] net: dsa: microchip: Add partial ACL
+ support for ksz9477 switches
+Message-ID: <20230915144333.2rfp33pujgacsjie@skbuf>
+References: <20230914131145.23336-1-o.rempel@pengutronix.de>
+ <20230914131145.23336-1-o.rempel@pengutronix.de>
+ <20230914131145.23336-2-o.rempel@pengutronix.de>
+ <20230914131145.23336-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20230915142719.3411733-1-make_ruc2021@163.com>
-In-Reply-To: <20230915142719.3411733-1-make_ruc2021@163.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 15 Sep 2023 16:40:17 +0200
-Message-ID: <CANn89iJVM4J8DG4V3MdPcyimuKsbiko_vB=wYRyxnwzp_SiMTA@mail.gmail.com>
-Subject: Re: [PATCH] net: sched: htb: dont intepret cls results when asked to drop
-To:     Ma Ke <make_ruc2021@163.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914131145.23336-2-o.rempel@pengutronix.de>
+ <20230914131145.23336-2-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,41 +87,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 4:27=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote:
->
-> If asked to drop a packet via TC_ACT_SHOT it is unsafe to
-> assume that res.class contains a valid pointer.
->
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+On Thu, Sep 14, 2023 at 03:11:45PM +0200, Oleksij Rempel wrote:
+> This patch adds partial Access Control List (ACL) support for the
+> ksz9477 family of switches. ACLs enable filtering of incoming layer 2
+> MAC, layer 3 IP, and layer 4 TCP/UDP packets on each port. They provide
+> additional capabilities for filtering routed network protocols and can
+> take precedence over other forwarding functions.
+> 
+> ACLs can filter ingress traffic based on header fields such as
+> source/destination MAC address, EtherType, IPv4 address, IPv4 protocol,
+> UDP/TCP ports, and TCP flags. The ACL is an ordered list of up to 16
+> access control rules programmed into the ACL Table. Each entry specifies
+> a set of matching conditions and action rules for controlling packet
+> forwarding and priority.
+> 
+> The ACL also implements a count function, generating an interrupt
+> instead of a forwarding action. It can be used as a watchdog timer or an
+> event counter. The ACL consists of three parts: matching rules, action
+> rules, and processing entries. Multiple match conditions can be either
+> AND'ed or OR'ed together.
+> 
+> This patch introduces support for a subset of the available ACL
+> functionality, specifically layer 2 matching and prioritization of
+> matched packets. For example:
+> 
+> tc qdisc add dev lan2 clsact
+> tc filter add dev lan2 ingress protocol 0x88f7 flower action skbedit prio 7
+> 
+> tc qdisc add dev lan1 clsact
+> tc filter add dev lan1 ingress protocol 0x88f7 flower action skbedit prio 7
+> 
+> The hardware offloading implementation was benchmarked against a
+> configuration without hardware offloading. This latter setup relied on a
+> software-based Linux bridge. No noticeable differences were observed
+> between the two configurations. Here is an example of software-based
+> test:
+> 
+> ip l s dev enu1u1 up
+> ip l s dev enu1u2 up
+> ip l s dev enu1u4 up
+> ethtool -A enu1u1 autoneg off rx off tx off
+> ethtool -A enu1u2 autoneg off rx off tx off
+> ethtool -A enu1u4 autoneg off rx off tx off
+> ip l a name br0 type bridge
+> ip l s dev br0 up
+> ip l s enu1u1 master br0
+> ip l s enu1u2 master br0
+> ip l s enu1u4 master br0
+> 
+> tc qdisc add dev enu1u1 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> tc qdisc add dev enu1u4 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> tc qdisc add dev enu1u2 root handle 1:  ets strict 4 priomap 3 3 2 2 1 1 0 0
+> 
+> tc qdisc add dev enu1u1 clsact
+> tc filter add dev enu1u1 ingress protocol ipv4  flower action skbedit prio 7
+> 
+> tc qdisc add dev enu1u4 clsact
+> tc filter add dev enu1u4 ingress protocol ipv4  flower action skbedit prio 0
+> 
+> On a system attached to the port enu1u2 I run two iperf3 server
+> instances:
+> iperf3 -s -p 5210 &
+> iperf3 -s -p 5211 &
+> 
+> On systems attached to enu1u4 and enu1u1 I run:
+> iperf3 -u -c  172.17.0.1 -p 5210 -b100M  -l1472 -t100
+> and
+> iperf3 -u -c  172.17.0.1 -p 5211 -b100M  -l1472 -t100
+> 
+> As a result, IP traffic on port enu1u1 will be prioritized and take
+> precedence over IP traffic on port enu1u4
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  net/sched/sch_htb.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
-> index 0d947414e616..7b2e5037b713 100644
-> --- a/net/sched/sch_htb.c
-> +++ b/net/sched/sch_htb.c
-> @@ -243,6 +243,8 @@ static struct htb_class *htb_classify(struct sk_buff =
-*skb, struct Qdisc *sch,
->
->         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
->         while (tcf && (result =3D tcf_classify(skb, NULL, tcf, &res, fals=
-e)) >=3D 0) {
-> +               if (result =3D=3D TC_ACT_SHOT)
-> +                       return NULL;
->  #ifdef CONFIG_NET_CLS_ACT
->                 switch (result) {
->                 case TC_ACT_QUEUED:
-> @@ -250,8 +252,6 @@ static struct htb_class *htb_classify(struct sk_buff =
-*skb, struct Qdisc *sch,
->                 case TC_ACT_TRAP:
->                         *qerr =3D NET_XMIT_SUCCESS | __NET_XMIT_STOLEN;
->                         fallthrough;
-> -               case TC_ACT_SHOT:
-> -                       return NULL;
->                 }
->  #endif
->                 cl =3D (void *)res.class;
 
-Can you please stop sending patches that are not needed,
-as already pointed out ?
+I think it is an inconsistent style decision for ksz9477_port_acl_init()
+to be called from ksz_port_setup() -> dev->dev_ops->port_setup() while
+ksz9477_port_acl_free() is called directly from ksz_port_teardown()
+without an intermediary (and similar) dev->dev_ops->port_teardown(),
+but that is only a style nitpick and should not block the merging of
+this patch.
+
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
