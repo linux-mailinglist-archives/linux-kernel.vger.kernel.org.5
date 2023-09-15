@@ -2,157 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6C77A27F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD9C7A27F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbjIOUS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
+        id S237067AbjIOUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237089AbjIOUSV (ORCPT
+        with ESMTP id S237354AbjIOUUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:18:21 -0400
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3422D5B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:16:49 -0700 (PDT)
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-        by cmsmtp with ESMTP
-        id hD7oqPbfiWU1chFFAqTTlM; Fri, 15 Sep 2023 20:16:48 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hFF9qUpnd5ftlhFFAqfpKY; Fri, 15 Sep 2023 20:16:48 +0000
-X-Authority-Analysis: v=2.4 cv=K8UxogaI c=1 sm=1 tr=0 ts=6504bbb0
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=pGLkceISAAAA:8 a=Q-fNiiVtAAAA:8 a=VwQbUJbxAAAA:8 a=PW-KNzBFAAAA:8
- a=20KFwNOVAAAA:8 a=bUQKSiCPAAAA:8 a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9
- a=QEXdDO2ut3YA:10 a=Fp8MccfUoT0GBdDC_Lng:22 a=AjGcO6oz07-iQ99wixmX:22
- a=84zbTXrhsdUYOv-GFPQN:22 a=-fHZXUhsFbuwFN3fwQAr:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KtMnX6dW2uHowtokVprvS0xbcPmVacza6Mwf4ovlm7w=; b=EbirQaotkGX6sWPICYXtUjafnE
-        K5Fz5wFHy8qSGnU7st/4bZkpJoi5AJfGYoJKDWVSm3LPzpyZF4jjD0wLj3bXnxT2E0gpilJ2nAnzc
-        oAAuuTwxVYi7E9AAvHJDoLKJ2n0ljTRHjrgjaEAeq8sbzwzrpUD3YU5Uwh7U5TYrrgyHJrmu1R2na
-        F7ultmNNhHqszIdAVJOTRmQARekSBr3yjtewPZIecgO+q82YmmCcMZkuZIWHebH0QROncxbQCywdi
-        QfGw9PbYmgrTces/Oq2tr50AgwqXOGY0i26gmG46us4VYrSk+OHM2X1LyT/mAnr7VVGxxAYFN0GGD
-        5Ppbrtnw==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:59654 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhFF6-002AbG-2w;
-        Fri, 15 Sep 2023 15:16:44 -0500
-Message-ID: <fe901465-7820-104c-1761-2095d45cb96a@embeddedor.com>
-Date:   Fri, 15 Sep 2023 14:17:39 -0600
+        Fri, 15 Sep 2023 16:20:15 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14330C4;
+        Fri, 15 Sep 2023 13:17:57 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FKGPlS027253;
+        Fri, 15 Sep 2023 20:17:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4iyMK8yURRpW6wHtBGMckqRocChvhmWY4LY6hP5z4SA=;
+ b=WHZ5nr5hoEa7mYjtoTaQTiOkh3Q/4CCmt63ldro8facP/O15pJMHvH/zlVxNQWzXScNn
+ fY+gWCOLTI2RO15bRx99mgKqGVlZu5a2YEUv8n1B8NsLwxYy1cT++0iFj7A/3pQUAqrG
+ KpHbvi7Njkou4LMV6u4u9S+6hoo1D6jTF9q9ORsN66hcDhWODegbVEZq+5pD6Iv2/yrY
+ m9Vni1qAU8H6F/arkakVENDigW3bz637mC0rY9jd383jFt4t2L4mLIPLPH63sv+00V2n
+ PVIlVvJUW8Kh5IbbUcgbIHDQovf1LoUORzHCpyj1WhJanZNNarPHiT1ErNPRxV6Oo8OX tA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g86t218-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:17:50 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKHnHe016283
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:17:49 GMT
+Received: from [10.110.47.184] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
+ 2023 13:17:49 -0700
+Message-ID: <bed7d2d2-3c66-b174-7b4e-9a2f2c0d5f1c@quicinc.com>
+Date:   Fri, 15 Sep 2023 13:17:43 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] wifi: brcmfmac: Annotate struct brcmf_gscan_config with
- __counted_by
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2] usb: dwc3: core: Avoid resume dwc3 if already
+ suspended in pm resume
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Arend van Spriel <aspriel@gmail.com>
-Cc:     Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Ryohei Kondo <ryohei.kondo@cypress.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230915200542.never.417-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915200542.never.417-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     William Wu <william.wu@rock-chips.com>,
+        <Thinh.Nguyen@synopsys.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <frank.wang@rock-chips.com>, <jianwei.zheng@rock-chips.com>,
+        <yangbin@rock-chips.com>
+References: <20230911033112.3321-1-william.wu@rock-chips.com>
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <20230911033112.3321-1-william.wu@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhFF6-002AbG-2w
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:59654
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfF679Qrno5iJCAidWRETzhXCSG/nu4M1GhkrlIn94lZdHWF6CrKk6AtsUSeYNE+2R5+y74IwLfogBl4JlU+CcMjFbdRGuKaiDSbQEJfbPm+SVNPcQ2e7
- s5G6Q8LXxLXJYTp35ZRLxLCo6VCloQbOhLczUWu1te4RxyRClOuKmgnuX7X0lJpGdY9MMrL4PkxhywJSMeqpYhj5WTDDznHtG17FVflYrsOqDWmp3Y2Yi28U
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5TrgP3HF_RkO9fHa3nZBuwKTVtjMNU8B
+X-Proofpoint-ORIG-GUID: 5TrgP3HF_RkO9fHa3nZBuwKTVtjMNU8B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_16,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=413
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150181
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi William,
 
+On 9/10/2023 8:31 PM, William Wu wrote:
+> If we enable PM runtime auto suspend for dwc3 on rockchip
+> platforms (e.g. RK3562), it allows the dwc3 controller to
+> enter runtime suspend if usb cable detached and power off
+> the power domain of the controller. When system resume, if
+> the dwc3 already in runtime suspended, it Shouldn't access
+> the dwc3 registers in dwc3_resume() because its power domain
+> maybe power off.
+> 
+> Test on RK3562 tablet, this patch can help to avoid kernel
+> panic when accessing the dwc3 registers in dwc3_resume() if
+> the dwc3 is in runtime suspended and it's power domain is
+> power off.
+> 
+> Kernel panic - not syncing: Asynchronous SError Interrupt
+> Hardware name: Rockchip RK3562 RK817 TABLET LP4 Board (DT)
+> Call trace:
+> dump_backtrace.cfi_jt+0x0/0x8
+>    dump_stack_lvl+0xc0/0x13c
+>    panic+0x174/0x468
+>    arm64_serror_panic+0x1b0/0x200
+>    do_serror+0x184/0x1e4
+>    el1_error+0x94/0x118
+>    el1_abort+0x40/0x68
+>    el1_sync_handler+0x58/0x88
+>    el1_sync+0x8c/0x140
+>    dwc3_readl+0x30/0x1a0
+>    dwc3_phy_setup+0x38/0x510
+>    dwc3_core_init+0x68/0xcd4
+>    dwc3_core_init_for_resume+0x10c/0x25c
+>    dwc3_resume_common+0x44/0x3d0
+>    dwc3_resume+0x5c/0xb8
+>    dpm_run_callback+0x70/0x488
+>    device_resume+0x250/0x2f8
+>    dpm_resume+0x258/0x9dc
+> 
+> Signed-off-by: William Wu <william.wu@rock-chips.com>
+> ---
+> Changes in v2:
+> - Remove Change-Id.
+> 
+>   drivers/usb/dwc3/core.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index 9c6bf054f15d..8274a44f2d6a 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -2185,9 +2185,11 @@ static int dwc3_resume(struct device *dev)
+>   
+>   	pinctrl_pm_select_default_state(dev);
+>   
+> -	ret = dwc3_resume_common(dwc, PMSG_RESUME);
+> -	if (ret)
+> -		return ret;
+> +	if (!pm_runtime_suspended(dwc->dev)) {
+> +		ret = dwc3_resume_common(dwc, PMSG_RESUME);
+> +		if (ret)
+> +			return ret;
+> +	}
+>   
+>   	pm_runtime_disable(dev);
+>   	pm_runtime_set_active(dev);
 
-On 9/15/23 14:05, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct brcmf_gscan_config.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Arend van Spriel <aspriel@gmail.com>
-> Cc: Franky Lin <franky.lin@broadcom.com>
-> Cc: Hante Meuleman <hante.meuleman@broadcom.com>
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Hector Martin <marcan@marcan.st>
-> Cc: Ryohei Kondo <ryohei.kondo@cypress.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: brcm80211-dev-list.pdl@broadcom.com
-> Cc: SHA-cyfmac-dev-list@infineon.com
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+In case DWC3 is runtime suspended, then we will avoid the 
+dwc3_resume_common() call, but the current flow would also set the RPM 
+state to RPM_ACTIVE. (from pm_runtime_set_active())  In this case, what 
+happens if there is a pm_runtime_get/resume on the DWC3 device?
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+I think it would avoid calling rpm_resume() since the RPM state is 
+already active, so we wouldn't be calling dwc3_runtime_resume().  Do you 
+want to also extend the RPM suspended check to cover if we need to force 
+PM runtime state back to active?
 
 Thanks
---
-Gustavo
-
-> ---
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-> index bece26741d3a..6eef6bc430e2 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-> @@ -1209,7 +1209,7 @@ struct brcmf_gscan_config {
->   	u8 count_of_channel_buckets;
->   	u8 retry_threshold;
->   	__le16  lost_ap_window;
-> -	struct brcmf_gscan_bucket_config bucket[];
-> +	struct brcmf_gscan_bucket_config bucket[] __counted_by(count_of_channel_buckets);
->   };
->   
->   /**
+Wesley Cheng
