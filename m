@@ -2,85 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB777A17E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D907A17E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbjIOH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
+        id S232698AbjIOICV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjIOH6Q (ORCPT
+        with ESMTP id S232720AbjIOICS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:58:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9519193
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:58:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D4B6C433C9;
-        Fri, 15 Sep 2023 07:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694764691;
-        bh=t+ZshDk3vSry1uc6hCwYDbU+R1dULuj35xmF6dRVMrk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rvwj7lj8FTEWHvf1wUbhIc8CK5XVM4UyBTKgXnVGlvnMvDvIiuwrT/7wJJHf8L0/j
-         DQLpHPOpajgELw/genwY5AfrHU5D1bHCuW6T49J9ge+LlUSOPyhj7o9KzuqPyblGT4
-         iBeGAJoKwE5SH581mv/T5N5N1tit9oDbbA4VThjaayi07QnsmCLKIFl/rIQvc0lfUQ
-         JEb+NxHkp8yCmzPRNnSUk11iIZijw9jWj90cvNjn2WzJPll/L01f1DCDP7JJVJit+l
-         03onA6v36HsZ/+RKmw/UU+AOoCqlTnxeWDIm7kfiuGeBOIxMSvceyppdQTViv7Yp1p
-         P5P33W5K4xkuA==
-From:   Michael Walle <mwalle@kernel.org>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Jitao Shi <jitao.shi@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Walle <mwalle@kernel.org>
-Subject: [PATCH] drm/mediatek: dsi: Fix EOTp generation
-Date:   Fri, 15 Sep 2023 09:57:56 +0200
-Message-Id: <20230915075756.263591-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Fri, 15 Sep 2023 04:02:18 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37871998
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:02:12 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bee08c13aso19627487b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:02:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694764932; x=1695369732; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nYHOLD3pC1ETWfuw0uWECAQ4XpRjNOYMe7pbZvIcA3Y=;
+        b=XJQCaoN0KcwY+7BwYotsvDSK76B/0eu03bH8/9JGtpJ7BAEfQvWhWN4EaybjHvq3QQ
+         c+EcTl7towL+8bjQ94gNTj50RI09Vrdy2R5KlkXQ6L9hqWIqw3Fcd27lCmz9hkCFSyr1
+         ykRA9ZNCf1maX4b7MtlQXzCwkQe3TD1VrcZKpz/JOjVLZvVFegGgolAcnU0fpIzKthB2
+         +pe5Zate8eDUER1dobjPIyAhJlv53OPti5m5nZuG1m99MVUm2BWA/DefLLTCG+qC56e1
+         FU8jMVD+1zGpBiyyP59cwVLcRnSTiZz24aiT7JtMp9ppkm1vzEtqaggWDbq5Dm8myuck
+         hZnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694764932; x=1695369732;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nYHOLD3pC1ETWfuw0uWECAQ4XpRjNOYMe7pbZvIcA3Y=;
+        b=ES8NGbS7ZRE0RFD98eYPfk9VRE21rXx8T8wwl/qbm3KsnGuiw017+2ee04POcI6G1a
+         mtu154MIuE12rMP+UGevT/v0SCnrrzOA8lfI8FbTLbjI/cSL3A+RuSTXussB0Ks5Eriq
+         DmnoUsDfrlxvCIb51oCEANtqAWF3x83oZLHXe1cEc1TIOpQYLfhWeKt9PUJyH13gCABo
+         PY6DPzrEJYeMRNjXO1xkcBlpSsVQjHr838JudBQx/zyQlENqubxJTi0gOrZoxac9vqyc
+         gb1KAwrKOa6azXmp0uA8hgblsedTxDy/ftCNOMZ8wZ/VZ/cQxPx/xN3mzgelV7lzF9Xz
+         L3fA==
+X-Gm-Message-State: AOJu0YxdVSmlvejOOJHEau4jNTW6iNMFF6w8lDO1M5wvnFoGZZZua4Vn
+        0mvnk2LJtmTCh64EK6XK7WSAdaegGG5Gm0Wd58Y=
+X-Google-Smtp-Source: AGHT+IEBkVpfnKY2Kc1b5lhLbb3lUeKAdHI9zibbYxgIirsFQzqmlHQnNu7KDmP9DNW9umpoOOkxO7YqWTCOMv1mW3w=
+X-Received: from aniketm.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:3387])
+ (user=aniketmaurya job=sendgmr) by 2002:a81:ae25:0:b0:58c:b45f:3e94 with SMTP
+ id m37-20020a81ae25000000b0058cb45f3e94mr19665ywh.8.1694764932176; Fri, 15
+ Sep 2023 01:02:12 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 08:02:04 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230915080204.2701640-1-aniketmaurya@google.com>
+Subject: [RFC] i3c: master: Simplify table prep for ENTDAA
+From:   Aniket <aniketmaurya@google.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        "=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=" 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Aniket <aniketmaurya@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register
-definition") inverted the logic of the control bit. Maybe it was because
-of the bad naming which was fixed in commit 0f3b68b66a6d ("drm/dsi: Add
-_NO_ to MIPI_DSI_* flags disabling features"). In any case, the logic
-wrong and there will be no EOTp on the DSI link by default. Fix it.
+Before ENTDAA, device address table is populated with
+the dynamic addresses to be assigned to the discovered
+devices.
+Since these addresses are referenced using consecutive
+indices of the table, simply get indices starting
+from the last unused position of free_pos. Subsequent
+positions are expected to be empty.
 
-Fixes: c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register definition")
-Signed-off-by: Michael Walle <mwalle@kernel.org>
+Signed-off-by: Aniket <aniketmaurya@google.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ The current way of preparing table seems unnecessarily compilcated.
+ The device table index is incremented one by one, so we anyways assume
+ that all positions are empty after the last occupied one. So we can
+ omit those checks.
+ drivers/i3c/master/dw-i3c-master.c | 30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index d67e5c61a9b9..8024b20f6b13 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -407,7 +407,7 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
- 	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
- 		tmp_reg |= HSTX_CKLP_EN;
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index 9332ae5f6419..dbbc96bc1587 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -782,17 +782,15 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
+ 	struct dw_i3c_master *master = to_dw_i3c_master(m);
+ 	struct dw_i3c_xfer *xfer;
+ 	struct dw_i3c_cmd *cmd;
+-	u32 olddevs, newdevs;
+ 	u8 p, last_addr = 0;
+-	int ret, pos;
++	int ret, pos, start_idx, end_idx;
  
--	if (!(dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
-+	if (dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
- 		tmp_reg |= DIS_EOT;
+-	olddevs = ~(master->free_pos);
++	start_idx = dw_i3c_master_get_free_pos(master);
++	if (start_idx < 0)
++		return start_idx;
  
- 	writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
+ 	/* Prepare DAT before launching DAA. */
+-	for (pos = 0; pos < master->maxdevs; pos++) {
+-		if (olddevs & BIT(pos))
+-			continue;
+-
++	for (pos = start_idx; pos < master->maxdevs; pos++) {
+ 		ret = i3c_master_get_free_addr(m, last_addr + 1);
+ 		if (ret < 0)
+ 			return -ENOSPC;
+@@ -811,15 +809,10 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
+ 	if (!xfer)
+ 		return -ENOMEM;
+ 
+-	pos = dw_i3c_master_get_free_pos(master);
+-	if (pos < 0) {
+-		dw_i3c_master_free_xfer(xfer);
+-		return pos;
+-	}
+ 	cmd = &xfer->cmds[0];
+ 	cmd->cmd_hi = 0x1;
+-	cmd->cmd_lo = COMMAND_PORT_DEV_COUNT(master->maxdevs - pos) |
+-		      COMMAND_PORT_DEV_INDEX(pos) |
++	cmd->cmd_lo = COMMAND_PORT_DEV_COUNT(master->maxdevs - start_idx) |
++		      COMMAND_PORT_DEV_INDEX(start_idx) |
+ 		      COMMAND_PORT_CMD(I3C_CCC_ENTDAA) |
+ 		      COMMAND_PORT_ADDR_ASSGN_CMD |
+ 		      COMMAND_PORT_TOC |
+@@ -829,13 +822,10 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
+ 	if (!wait_for_completion_timeout(&xfer->comp, XFER_TIMEOUT))
+ 		dw_i3c_master_dequeue_xfer(master, xfer);
+ 
+-	newdevs = GENMASK(master->maxdevs - cmd->rx_len - 1, 0);
+-	newdevs &= ~olddevs;
++	end_idx = master->maxdevs - cmd->rx_len;
+ 
+-	for (pos = 0; pos < master->maxdevs; pos++) {
+-		if (newdevs & BIT(pos))
+-			i3c_master_add_i3c_dev_locked(m, master->devs[pos].addr);
+-	}
++	for (pos = start_idx; pos < end_idx; pos++)
++		i3c_master_add_i3c_dev_locked(m, master->devs[pos].addr);
+ 
+ 	dw_i3c_master_free_xfer(xfer);
+ 
 -- 
-2.39.2
+2.42.0.459.ge4e396fd5e-goog
 
