@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7177A23D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D177A23DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbjIOQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S235051AbjIOQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235090AbjIOQpm (ORCPT
+        with ESMTP id S235522AbjIOQqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:45:42 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B886E69
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:45:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50098cc8967so3795321e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:45:37 -0700 (PDT)
+        Fri, 15 Sep 2023 12:46:44 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4462126
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:46:38 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-273ca7ab3f5so2046776a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694796335; x=1695401135; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bJwjiYuT81Vygr2N0E8vRZWFku28/3vgWmNofvmCcbw=;
-        b=Zsf17i2BHOg2bqX/csLCyCR4KncD6guhNdeey+swDy2GajbCyni0b9CyCekbnyCxct
-         fZukDkB7bS2yeF3CazzZV2xOrO6qWw5SR/Zo9nrfdBhjdkucHrYY2rWwwh5wRqb7KTrr
-         oADYr704P5ISNQXfYxGVF1n0jZtF0UmJFC6Qw=
+        d=gmail.com; s=20230601; t=1694796398; x=1695401198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YSRPmYTgQYAS8/W7DnTR2CfDhO5J0xkkJUsesS4GK9E=;
+        b=Vit4AOoM1pfZLosrGDWXMErQi6wxAhNKlZRB0TXIxYZp5/VrMrSaTyR1+qJlc4omKX
+         Ehi/wbxkxzNhsC487xdQduvAAitCFH4lAFtEHpQ9ZdH3Q4fdj3WOD5NPagzelvJi63Xy
+         ZQAwrr/2qx8KvEEarx14MSWMj8N5TOqRzIgDbFu/t4oUjUsZzoK6q55cld0c8Ou79OOz
+         XAyp9zpZeCnFTT/B16UnjdoPkpjqI8jVzTBmhiDbqoSfbQ97q1FcEyQ1DkrNYamDUGOM
+         G9+w7cIaSJSiIvGLEKNeQ2VRyrez7l7qc0wGZDS1UH5dXJ/GgLKTQmUoxsyeBRuALmfy
+         f9lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694796335; x=1695401135;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bJwjiYuT81Vygr2N0E8vRZWFku28/3vgWmNofvmCcbw=;
-        b=vjSPlRtj1KsLNjbmGFyyDoe1DNTD+CG01Mv40uDVndga2uEgS/ju9liocL1xWqRz2F
-         sfxDcGewZo5sAIUubnI/Kbu1p2WZvUH2CAsn0o4+f5UDT7VHsnrJBRvjwok/+YpcntZH
-         YnIZciH5B0wShLH+kbg5whAarXQ8RS8N7PWqHTPwJhOCutQx2y1w9TsJkZ1YdmhjIKKD
-         XWlJ6A7y3EzBUgVujA0dnsc0H9IVceYJ/Fhs+zbM90HRwqzfGCDiuBTT++9BP89BOdB9
-         htXCfs8yB8rG6JxwbZxkHxchV/7AVsvtuflBFbUsJ830zaBpTbQ627kkAM38/mNIBN+n
-         uO6Q==
-X-Gm-Message-State: AOJu0YxUrfyUPYJxX0VfDCZbzWxR0DpW3FUJ1RyMDs7Ci+nECOcPvCqT
-        fEsVAfus6fE2XbTI+wj8/ZUG6T+HzbmdGu9hKPNTGg==
-X-Google-Smtp-Source: AGHT+IGBXL/pvbXhnch+112SFJ3ZqaHktYVcTuquRrNnKaYYUZhNK68LTytXD6mbOT2lv8FSeq+N/g==
-X-Received: by 2002:ac2:4e02:0:b0:500:b3f2:73e2 with SMTP id e2-20020ac24e02000000b00500b3f273e2mr2159465lfr.50.1694796335029;
-        Fri, 15 Sep 2023 09:45:35 -0700 (PDT)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id mf13-20020a170906cb8d00b0099caf5bed64sm2610168ejb.57.2023.09.15.09.45.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 09:45:33 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9a645e54806so289715066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:45:33 -0700 (PDT)
-X-Received: by 2002:a17:906:300e:b0:9a6:6c5b:ae0c with SMTP id
- 14-20020a170906300e00b009a66c5bae0cmr2000660ejz.23.1694796333328; Fri, 15 Sep
- 2023 09:45:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694796398; x=1695401198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSRPmYTgQYAS8/W7DnTR2CfDhO5J0xkkJUsesS4GK9E=;
+        b=J5pXFKWESAImPIK71tv/TaEoBJhj58b59t/ZGxcMOgECXJg1OAp8F9znBtO5Q/BwlH
+         35pP5aLuZu/5g7M0WJbmniU6G0wjgMles20iZCh+Ohrk5zslxqUjgwwhpCTJHRA+bz42
+         qCQukQGdENx5Upg8hAFRwqrCL/xg52fASR20ppXAr96nhBp44+q3CDcIa7bJJ5cwZeYa
+         LH9PrS3w3HXUePKGunOjlBGbDEnaFXcrSQEn1Yu6k/FhFnL+4sI6S2SrK7Wv1HSWxMC1
+         RV/7+xg1G6Nj6hubrNZw3mfR1cgpauGn7mFgWOCbiVuDrjYTbkXvJ5hgiYi2mQi+wKaf
+         RZyw==
+X-Gm-Message-State: AOJu0Yy5rppCFj4PqYIypcISKv2nsr0ZKU4SUkwKXsMfCMODUmEJrR+L
+        LvDF7RgWCTL+qJgtrQAfkYHF3WcDkmlGBe9lhi+JIkv4
+X-Google-Smtp-Source: AGHT+IEOtjirqqcCLbCJZlVginOX7AS80MzI8LVvOQ0btY7fBc41HeWsM460QdZ43c9w8NOJfuT3+XsWmuae+ebovy8=
+X-Received: by 2002:a17:90a:300e:b0:274:922d:4b35 with SMTP id
+ g14-20020a17090a300e00b00274922d4b35mr2051394pjb.1.1694796397759; Fri, 15 Sep
+ 2023 09:46:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906185941.53527-1-ubizjak@gmail.com> <169477710252.27769.14094735545135203449.tip-bot2@tip-bot2>
-In-Reply-To: <169477710252.27769.14094735545135203449.tip-bot2@tip-bot2>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 09:45:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiOH-VK8XLUBU-=kzPij9X=m7HwnviXF-o8X54Z=Ey_xw@mail.gmail.com>
-Message-ID: <CAHk-=wiOH-VK8XLUBU-=kzPij9X=m7HwnviXF-o8X54Z=Ey_xw@mail.gmail.com>
-Subject: Re: [tip: x86/asm] x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+References: <cover.1694625260.git.andreyknvl@google.com> <658f5f34d4f94721844ad8ba41452d54b4f8ace5.1694625260.git.andreyknvl@google.com>
+ <CANpmjNP8O-GLQ9m06riX+kjbPSD9sBo+XGtTE2xW=pq9uJFGAg@mail.gmail.com>
+In-Reply-To: <CANpmjNP8O-GLQ9m06riX+kjbPSD9sBo+XGtTE2xW=pq9uJFGAg@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Fri, 15 Sep 2023 18:46:26 +0200
+Message-ID: <CA+fCnZdS1LobT9Wg3zxtq1Lec9hbgM8gRSmy=A=UyQzAr-BCtQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/19] lib/stackdepot: use fixed-sized slots for stack records
+To:     Marco Elver <elver@google.com>
+Cc:     andrey.konovalov@linux.dev,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,65 +77,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 04:25, tip-bot2 for Uros Bizjak
-<tip-bot2@linutronix.de> wrote:
+On Fri, Sep 15, 2023 at 10:56=E2=80=AFAM Marco Elver <elver@google.com> wro=
+te:
+> > --- a/lib/Kconfig
+> > +++ b/lib/Kconfig
+> > @@ -708,13 +708,19 @@ config ARCH_STACKWALK
+> >         bool
+> >
+> >  config STACKDEPOT
+> > -       bool
+> > +       bool "Stack depot: stack trace storage that avoids duplication"
+> >         select STACKTRACE
+> >
+> >  config STACKDEPOT_ALWAYS_INIT
+> > -       bool
+> > +       bool "Always initialize stack depot during early boot"
+> >         select STACKDEPOT
 >
-> Several places in mm/slub.o improve from e.g.:
+> This makes both STACKDEPOT and STACKDEPOT_ALWAYS_INIT configurable by
+> users: https://www.kernel.org/doc/html/next/kbuild/kconfig-language.html#=
+menu-attributes
 >
-[...]
+> Usually the way to add documentation for non-user-configurable options
+> is to add text in the "help" section of the config.
 >
-> to:
->
->     53bc:       48 8d 4a 40             lea    0x40(%rdx),%rcx
->     53c0:       49 8b 1c 07             mov    (%r15,%rax,1),%rbx
->     53c4:       4c 89 f8                mov    %r15,%rax
->     53c7:       48 8d 37                lea    (%rdi),%rsi
->     53ca:       e8 00 00 00 00          call   53cf <...>
->                         53cb: R_X86_64_PLT32     this_cpu_cmpxchg16b_emu-0x4
->     53cf:       75 bb                   jne    538c <...>
+> I think the change here is not what was intended.
 
-Honestly, if y ou care deeply about this code sequence, I think you
-should also move the "lea" out of the inline asm.
-
-Both
-
-    call this_cpu_cmpxchg16b_emu
-
-and
-
-    cmpxchg16b %gs:(%rsi)
-
-are 5 bytes, and I suspect it's easiest to just always put the address
-in %rsi - whether you call the function or not.
-
-It doesn't really make the code generation for the non-call sequence
-worse, and it gives the compiler more information (ie instead of
-clobbering %rsi, the compiler knows what %rsi contains).
-
-IOW, something like this:
-
--       asm qual (ALTERNATIVE("leaq %P[var], %%rsi; call
-this_cpu_cmpxchg16b_emu", \
-+       asm qual (ALTERNATIVE("call this_cpu_cmpxchg16b_emu",           \
-...
--                   "c" (new__.high)                                    \
--                 : "memory", "rsi");                                   \
-+                   "c" (new__.high),                                   \
-+                   "S" (&_var)                                   \
-+                 : "memory");                                          \
-
-should do it.
-
-Note that I think this is particularly true of the slub code, because
-afaik, the slub code will *only* use the slow call-out.
-
-Why? Because if the CPU actually supports the cmpxchgb16 instruction,
-then the slub code won't even take this path at all - it will do the
-__CMPXCHG_DOUBLE path, which does an unconditional locked cmpxchg16b.
-
-Maybe I'm misreading it. And no, none of this matters. But since I saw
-the patch fly by, and slub.o mentioned, I thought I'd point out how
-silly this all is. It's optimizing a code-path that is basically never
-taken, and when it *is* taken, it can be improved further, I think.
-
-                   Linus
+Ah, didn't know about that. Will fix in v3. Thanks!
