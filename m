@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EE07A1AA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DAE7A1AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233703AbjIOJge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
+        id S233739AbjIOJhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbjIOJgd (ORCPT
+        with ESMTP id S233117AbjIOJhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:36:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4744171C;
-        Fri, 15 Sep 2023 02:36:26 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 09:36:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694770584;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UFxc2R4QX3SL6qKcyTQop/43MwcshPy66p2kRtRIxKc=;
-        b=p0EiLuh6t09J8EmNaD7SQJRVmcG+YZ6GUWswNIUMiipyySKFp1AoW1BfnDWUfIiltKeZBd
-        d6n4JNYVZN2CcozrXuLA0NW5qS85ctrVU51NBdeacmBrB6XkBa6DbuTuN6ccXaIEJ6Vr3i
-        HICxcO5hujpPwzgl1S4ni6YbGVvWUrQY5lH21ZslTcoai9Piyd0ktaNl509MCCi22Iz91v
-        US1df2IVcec9CSRX3Jl8Hk/XW9DLdXHn8JbHb09KY+ytjC6+N/knHctk4ud9UK32ZLq8DF
-        p6TMHmK/Fy8Geq7SSuULIsaHhnMY9ba4h/K5WslkxfJC5aXL+uGNrZh0kd3x1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694770584;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UFxc2R4QX3SL6qKcyTQop/43MwcshPy66p2kRtRIxKc=;
-        b=iOyHCMeM7XpKke5X81o3PnfrvhS+RPJmhECKpWGDY2PDvCI1RSM3grSFtiliiNp36AoSFz
-        6N2y7wWt1uhjaaBw==
-From:   "tip-bot2 for Lukas Wunner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/urgent] panic: Reenable preemption in WARN slowpath
-Cc:     Lukas Wunner <lukas@wunner.de>, Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        Fri, 15 Sep 2023 05:37:12 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A960CED;
+        Fri, 15 Sep 2023 02:37:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CB431FB;
+        Fri, 15 Sep 2023 02:37:44 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.62.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3F1603F67D;
+        Fri, 15 Sep 2023 02:37:03 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de>
-References: <3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de>
+Subject: [PATCH V5 - RESEND 0/3] coresight: etm: Make cycle count threshold user configurable
+Date:   Fri, 15 Sep 2023 15:06:46 +0530
+Message-Id: <20230915093649.435163-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <169477058360.27769.17772363826818333894.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/urgent branch of tip:
+This series makes ETM TRCCCCTRL based 'cc_threshold' user configurable via
+the perf event attribute. But first, this implements an errata work around
+affecting ETM TRCIDR3.CCITMIN value on certain cpus, overriding the field.
 
-Commit-ID:     cccd32816506cbac3a4c65d9dff51b3125ef1a03
-Gitweb:        https://git.kernel.org/tip/cccd32816506cbac3a4c65d9dff51b3125ef1a03
-Author:        Lukas Wunner <lukas@wunner.de>
-AuthorDate:    Fri, 15 Sep 2023 09:55:39 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 15 Sep 2023 11:28:08 +02:00
+This series applies on coresight/for-next/queue.
 
-panic: Reenable preemption in WARN slowpath
+Cc: Catalin Marinas <catalin.marinas@arm.com> 
+Cc: Will Deacon <will@kernel.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com> 
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-Commit:
+Changes in V5:
 
-  5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during WARN/BUG")
+https://lore.kernel.org/all/20230821045216.641499-1-anshuman.khandual@arm.com/
 
-amended warn_slowpath_fmt() to disable preemption until the WARN splat
-has been emitted.
+- Replaced 'where as' with single word 'whereas'
+- Reworked 'cc_threshold' fallback to ETM_CYC_THRESHOLD_DEFAULT
 
-However the commit neglected to reenable preemption in the !fmt codepath,
-i.e. when a WARN splat is emitted without additional format string.
+Changes in V4:
 
-One consequence is that users may see more splats than intended.  E.g. a
-WARN splat emitted in a work item results in at least two extra splats:
+https://lore.kernel.org/all/20230818112051.594986-1-anshuman.khandual@arm.com/
 
-  BUG: workqueue leaked lock or atomic
-  (emitted by process_one_work())
+- Fixed a typo s/rangess/ranges,
+- Renamed etm4_work_around_wrong_ccitmin() as etm4_core_reads_wrong_ccitmin()
+- Moved drvdata->ccitmin value check for 256 inside etm4_core_reads_wrong_ccitmin()
+- Moved the comment inside etm4_core_reads_wrong_ccitmin()
 
-  BUG: scheduling while atomic
-  (emitted by worker_thread() -> schedule())
+Changes in V3:
 
-Ironically the point of the commit was to *avoid* extra splats. ;)
+https://lore.kernel.org/all/20230811034600.944386-1-anshuman.khandual@arm.com/
 
-Fix it.
+- Added errata work around affecting TRCIDR3.CCITMIN
+- Split the document update into a separate patch
 
-Fixes: 5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during WARN/BUG")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Link: https://lore.kernel.org/r/3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de
----
- kernel/panic.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes in V2:
 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 07239d4..ffa037f 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -697,6 +697,7 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
- 	if (!fmt) {
- 		__warn(file, line, __builtin_return_address(0), taint,
- 		       NULL, NULL);
-+		warn_rcu_exit(rcu);
- 		return;
- 	}
- 
+https://lore.kernel.org/all/20230808074533.380537-1-anshuman.khandual@arm.com/
+
+- s/treshhold/threshold
+
+Changes in V1:
+
+https://lore.kernel.org/all/20230804044720.1478900-1-anshuman.khandual@arm.com/
+
+Anshuman Khandual (3):
+  coresight: etm: Override TRCIDR3.CCITMIN on errata affected cpus
+  coresight: etm: Make cycle count threshold user configurable
+  Documentation: coresight: Add cc_threshold tunable
+
+ Documentation/arch/arm64/silicon-errata.rst   | 10 +++++
+ Documentation/trace/coresight/coresight.rst   |  4 ++
+ .../hwtracing/coresight/coresight-etm-perf.c  |  2 +
+ .../coresight/coresight-etm4x-core.c          | 45 ++++++++++++++++++-
+ 4 files changed, 59 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
