@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCEE7A22DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84347A22C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbjIOPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S236220AbjIOPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236326AbjIOPpb (ORCPT
+        with ESMTP id S236250AbjIOPoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:45:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA389E78;
-        Fri, 15 Sep 2023 08:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694792724; x=1726328724;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=m9DmAo53kMkAK+lCVH7xp30k1iLpqm4CmpnavugfAy0=;
-  b=G7zzZVBR9HCzsHNUFMNFTZnMBf6YoSuIqbuFj4vw+U9xivShEet2xrCQ
-   +KjV+kUhzw7pCTD4CEIYH7JyuBU3VQTKxplI5qnBC3+7fXtD9BJrjoKta
-   4Z2rMjulUNytfA5ZYc8ph/3vWlyMfGJzZ3wANWeFQbP00fPPFqcsARsNd
-   MWXIG6BLgVCWgTqkf6n+vwCfrkSQTpFPX9zS0X2jrn44jTwD+uyk8mLTx
-   L04zWqXNUlmUdjkrO7hiOhtiY3AiQ27x/Nr2OBb6nN2/fG0GS0A66GWc4
-   Wk7bDtYviaLsx7l7wSgXrB6ee9SIRFpTAVfFjKolY1iVa5cUQYDrBAozP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="443338387"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="443338387"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 08:45:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="991879110"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="991879110"
-Received: from srdoo-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.38.99])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 08:45:21 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 6/6] selftests/resctrl: Reduce failures due to outliers in MBA/MBM tests
-Date:   Fri, 15 Sep 2023 18:44:38 +0300
-Message-Id: <20230915154438.82931-7-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
-References: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
+        Fri, 15 Sep 2023 11:44:54 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AE0F3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:44:45 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4142ca41b89so13475721cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1694792684; x=1695397484; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ad1gGutAVP5/Tgl+c7iRZuNausX9kqPfW/rFp80jjCw=;
+        b=uncMKVYFg6E+IO0/LthlqxYKHvF/Lt6BnSataDD12U0PjFjNRKjHufTyChsXVSqAC0
+         FOqZnzKWo2iCKOwoeubNc17ZiP1D4sbizCo/P3aal8KrXGWKNYXjCPOlNShHj3VjRpgr
+         Q+Pc7iw6shrlmQszD6UxkczHCx9AR0b34ozywWVEAhkdXB3v7BKed5a1XrhMNSv8r/5a
+         x/ctnC1k2bJ0qh6XeZdiX5rK7/ilnmesrLYkBc0/YRBObhrvt/102kfwooQOrzkGo6iN
+         3KTFW3L6N3R6uqzhaPL5/6LoYe0UTT4ZoKmas5noOF5kJ3drrkXBxzxsqH7x6ak7cu+y
+         p6nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694792684; x=1695397484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ad1gGutAVP5/Tgl+c7iRZuNausX9kqPfW/rFp80jjCw=;
+        b=sG8VQ8ugjCa1oqjpi0dojF0j31lDbs0M14BxlAi/gK+vWL+K596melOrTjJHra2Gmf
+         sueKU7HzpqnNejCo51blZu+CWsulPNzKV6D+kogD+iDVE4OB4CXj60re3eEerZScXSve
+         p/RTYCd+BUoBYlEO3RYKe+fRTEANqnc/OcQx1WX4RzzzhRdqYbIn3b8KieiL2vsZYLdm
+         Z612c6DEsh0VSi5k3VUtxpHm8BFXG9miE81ScCR6lEvkqF3I72sSplY7xvf0NjRsWv+e
+         ds9U9ev4aJpupzyjKkOo7kfGuVQjq5l9eoOku609ZUg+nnreVjv3Ol1Np9X4PZliIETF
+         eV4g==
+X-Gm-Message-State: AOJu0YzRSi3Nanc0OUzOeX9et3/h6Jeib8I+MZYGrig6r1JVWy3U6a6e
+        uFVQ5UO3WSdepj0n4wv+lM6fb16IME8YCXNSQAJapA==
+X-Google-Smtp-Source: AGHT+IFCCAFQe2QKdmHmHF9P0nc3PPnFxwxNjA+I3SGdpiNMgEx9ZYpDNLvzY1Q1/ZD232OHwktajw==
+X-Received: by 2002:ac8:5d0b:0:b0:403:b395:b450 with SMTP id f11-20020ac85d0b000000b00403b395b450mr2764065qtx.2.1694792684693;
+        Fri, 15 Sep 2023 08:44:44 -0700 (PDT)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id ih17-20020a05622a6a9100b004100c132990sm1225549qtb.44.2023.09.15.08.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 08:44:43 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 11:44:40 -0400
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Greg Ungerer <gerg@uclinux.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>
+Subject: Re: [PATCH] proc: nommu: /proc/<pid>/maps: release mmap read lock
+Message-ID: <ZQR76GSNEmG6w2oe@dell-precision-5540>
+References: <20230914163019.4050530-2-ben.wolsieffer@hefring.com>
+ <20230915121514.GA2768@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915121514.GA2768@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initial value of 5% chosen for the maximum allowed percentage
-difference between resctrl mbm value and IMC mbm value in commit
-06bd03a57f8c ("selftests/resctrl: Fix MBA/MBM results reporting
-format") was "randomly chosen value" (as admitted by the changelog).
+On Fri, Sep 15, 2023 at 02:15:15PM +0200, Oleg Nesterov wrote:
+> Sorry for the offtopic question. I know NOTHING about nommu and when I tried to
+> review this patch I was puzzled by
+> 
+> 	/* See m_next(). Zero at the start or after lseek. */
+> 	if (addr == -1UL)
+> 		return NULL;
+> 
+> at the start of m_start(). OK, lets look at
+> 
+> 	static void *m_next(struct seq_file *m, void *_p, loff_t *pos)
+> 	{
+> 		struct vm_area_struct *vma = _p;
+> 
+> 		*pos = vma->vm_end;
+> 		return find_vma(vma->vm_mm, vma->vm_end);
+> 	}
+> 
+> where does this -1UL come from? Does this mean that on nommu
+> 
+> 	last_vma->vm_end == -1UL
+> 
+> or what?
+> 
+> fs/proc/task_mmu.c has the same check at the start, but in this case
+> the "See m_next()" comment actually helps.
 
-When running tests in our lab across a large number platforms, 5%
-difference upper bound for success seems a bit on the low side for the
-MBA and MBM tests. Some platforms produce outliers that are slightly
-above that, typically 6-7%, which leads MBA/MBM test frequently
-failing.
+Yes, this is another copying mistake from the MMU implementation. In
+fact, it turns out that no-MMU /proc/<pid>/maps is completely broken
+after 0c563f148043 ("proc: remove VMA rbtree use from nommu"). It just
+returns an empty file.
 
-Replace the "randomly chosen value" with a success bound that is based
-on those measurements across large number of platforms by relaxing the
-MBA/MBM success bound to 8%. The relaxed bound removes the failures due
-the frequent outliers.
+This happens because find_vma() doesn't do what we want here. It "look[s]
+up the first VMA in which addr resides, NULL if none", and the address
+will be zero in in m_start(), which makes find_vma() return NULL (unless
+presumably the zero address is actually part of the process's address
+space).
 
-Fixes: 06bd03a57f8c ("selftests/resctrl: Fix MBA/MBM results reporting format")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- tools/testing/selftests/resctrl/mba_test.c | 2 +-
- tools/testing/selftests/resctrl/mbm_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I didn't run into this because I developed my patch against an older
+kernel, and didn't test the latest version until today.
 
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index cf8284dadcb2..d3bf4368341e 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -12,7 +12,7 @@
- 
- #define RESULT_FILE_NAME	"result_mba"
- #define NUM_OF_RUNS		5
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define ALLOCATION_MAX		100
- #define ALLOCATION_MIN		10
- #define ALLOCATION_STEP		10
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 1ae131a2e246..d3c0d30c676a 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -11,7 +11,7 @@
- #include "resctrl.h"
- 
- #define RESULT_FILE_NAME	"result_mbm"
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define NUM_OF_RUNS		5
- 
- static int
--- 
-2.30.2
+I'm preparing a second patch to fix this bug.
 
+> 
+> Just curious, thanks.
+> 
+> Oleg.
+> 
+
+Thanks, Ben
