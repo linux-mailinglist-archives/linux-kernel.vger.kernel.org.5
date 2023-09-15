@@ -2,202 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9967A21E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0627A21E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbjIOPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S235882AbjIOPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbjIOPEL (ORCPT
+        with ESMTP id S235959AbjIOPFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:04:11 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F2F271B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:57 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c4194f7635so12103335ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694790237; x=1695395037; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYaTEiec+VTKSIfvTEBOea2V06zSSSiqn+piG2v1UMY=;
-        b=PMuxnMhb32gX7gC1k8o+3kYuHVnbWmoAEFoD8bkfrqKt6TdH4lCTL8LArPXVa7XZaO
-         watcEU1rfP4JpgIkWRulNd17mS6rt8rIhd3jLsbc6o4WRZNpyEHDRWdISQPTT8wtPOZC
-         TuTFGsFcW0kN3MoNzo6YdVg/fFossXfN3zX5srnPl93r/d5OvTqsZ/DCAYv75vBUbiOp
-         3m/r38YxcQWeXXl0bEOO5zumhI6OsS0pfSdsbuuDk+H/UvOJYvLyp9CKzur1g/j6KVs2
-         WXzY42AJLjpt6I7zYnfEz14ZeKbbxNtaBKFyeYW6KcKGci3KKjN1xy38wpRy/Ez2ZbnO
-         bZMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694790237; x=1695395037;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VYaTEiec+VTKSIfvTEBOea2V06zSSSiqn+piG2v1UMY=;
-        b=lFdKxnKUhJySDH22gmGvFiKScb/pbIwmaHzR/mQGNN7P02ZhYx7CSJLpdWTOU0KQv/
-         kgrOEuEfAeZJJGqQcSVqbLb5VGrLDOgBwXHfY1PU1X6TIteJT2iD2NwzOxqLH/uhKef9
-         MJSfZeZh552GgIif1q59YH7ijo1AK4UDabXTbb/zOomS/ySSumxZXnNEQSAw78HjLVC3
-         8XUcSs8CkvYbu2/Ssmq/oF/p7eB06xh4T/t0m6tuFOIjysZ0RQmEMA20gZUgF6N0t9ak
-         Tne2IxSDF4yXNUXxiEmZuOHoX+w6Yradnxs6/EeYQMxTBrzV2rG+jYW8xNxc4X8eEuIn
-         VeQg==
-X-Gm-Message-State: AOJu0Yw3kZndJUTRU+gdu4DvceLMrCbBG6xMtY6WfFBldu/DDVs9K8QQ
-        opgcp24F/bjgcmML9icAIJDfJQ==
-X-Google-Smtp-Source: AGHT+IG7yPkHkH4Ec5YHVK6WB9g0C+AWUASnwVaFsz01N8/vP+da6nD4AmscR53xEkuCQ8BiUF7gPw==
-X-Received: by 2002:a17:902:e80b:b0:1bc:3908:14d with SMTP id u11-20020a170902e80b00b001bc3908014dmr7842218plg.2.1694790236600;
-        Fri, 15 Sep 2023 08:03:56 -0700 (PDT)
-Received: from [10.5.75.238] ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id q6-20020a17090311c600b001bbb25dd3a7sm3607798plh.187.2023.09.15.08.03.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 08:03:55 -0700 (PDT)
-Message-ID: <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com>
-Date:   Fri, 15 Sep 2023 23:03:50 +0800
+        Fri, 15 Sep 2023 11:05:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9471D3AAB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:04:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B063CC433C7;
+        Fri, 15 Sep 2023 15:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694790276;
+        bh=tVYfV/FQ4TuHJ0bVqoaP+aOcfUDlOtABzOf5hv1Hfg4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EweW9D8o+n+9qE2ej+Iyg7KegRJ6h600oZdgnpuS3nogKT+8Ut0LB0udvbKp6URtf
+         VgVYssOyUxBbRyhE71kNoUVm6UCDS/603L0nJ9DEy2bIlm+V3nG9OmsujAHEBvlRhC
+         Ea+BlYnS9B33UbSfpwh4/Msl3vJldpvv2Di+FlIGh4Ry7ts6CzrVTuaoy4B8wYt0vd
+         ug0tcUtN9OHnPNf3gThuKKmRkQtGyqSc7gi71J0rxrh0ibcjtv/+SteUsAzh7JT2k6
+         /u8hetHcSXSHqusB854BDIpUb+uuMsm/oh17XBRGdGbijdHV8T4MCv2PBn7qDFVeOo
+         rcA/SQTj3ug+w==
+Received: (nullmailer pid 3731047 invoked by uid 1000);
+        Fri, 15 Sep 2023 15:04:33 -0000
+Date:   Fri, 15 Sep 2023 10:04:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wang Chen <unicornxw@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH 05/12] dt-bindings: interrupt-controller: Add SOPHGO's
+ SG2042 PLIC
+Message-ID: <20230915150433.GA3730052-robh@kernel.org>
+References: <20230915072358.118045-1-wangchen20@iscas.ac.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: Introduce process open coded
- iterator kfuncs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-4-zhouchuyi@bytedance.com>
- <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915072358.118045-1-wangchen20@iscas.ac.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/9/15 07:26, Andrii Nakryiko 写道:
-> On Tue, Sep 12, 2023 at 12:02 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
->> creation and manipulation of struct bpf_iter_process in open-coded iterator
->> style. BPF programs can use these kfuncs or through bpf_for_each macro to
->> iterate all processes in the system.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   include/uapi/linux/bpf.h       |  4 ++++
->>   kernel/bpf/helpers.c           |  3 +++
->>   kernel/bpf/task_iter.c         | 29 +++++++++++++++++++++++++++++
->>   tools/include/uapi/linux/bpf.h |  4 ++++
->>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
->>   5 files changed, 45 insertions(+)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index de02c0971428..befa55b52e29 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -7322,4 +7322,8 @@ struct bpf_iter_css_task {
->>          __u64 __opaque[1];
->>   } __attribute__((aligned(8)));
->>
->> +struct bpf_iter_process {
->> +       __u64 __opaque[1];
->> +} __attribute__((aligned(8)));
->> +
->>   #endif /* _UAPI__LINUX_BPF_H__ */
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index d6a16becfbb9..9b7d2c6f99d1 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2507,6 +2507,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
->> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> index d8539cc05ffd..9d1927dc3a06 100644
->> --- a/kernel/bpf/task_iter.c
->> +++ b/kernel/bpf/task_iter.c
->> @@ -851,6 +851,35 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
->>          kfree(kit->css_it);
->>   }
->>
->> +struct bpf_iter_process_kern {
->> +       struct task_struct *tsk;
->> +} __attribute__((aligned(8)));
->> +
+On Fri, Sep 15, 2023 at 03:23:58PM +0800, Wang Chen wrote:
+> Add compatible string for SOPHGO SG2042 plic.
 > 
-> Few high level thoughts. I think it would be good to follow
-> SEC("iter/task") naming and approach. Open-coded iterators in many
-> ways are in-kernel counterpart to iterator programs, so keeping them
-> close enough within reason is useful for knowledge transfer.
+> Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+> Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+
+Same problem with authorship and S-o-b order here.
+
+> ---
+>  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml         | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> SEC("iter/task") allows to:
-> a) iterate all threads in the system
-> b) iterate all threads for a given TGID
-> c) it also allows to "iterate" a single thread or process, but that's
-> a bit less relevant for in-kernel iterator, but we can still support
-> them, why not?
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> index dc1f28e55266..3abb1f68ea62 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> @@ -66,6 +66,7 @@ properties:
+>            - enum:
+>                - allwinner,sun20i-d1-plic
+>                - thead,th1520-plic
+> +              - sophgo,sg2042-plic
+>            - const: thead,c900-plic
+>        - items:
+>            - const: sifive,plic-1.0.0
+> -- 
+> 2.25.1
 > 
-> I'm not sure if it supports iterating all processes (as in group
-> leaders of each task group) in the system, but if it's possible I
-> think we should support it at least for open-coded iterator, seems
-> like a very useful functionality.
-> 
-> So to that end, let's design a small set of input arguments for
-> bpf_iter_process_new() that would allow to specify this as flags +
-> either (optional) struct task_struct * pointer to represent
-> task/process or PID/TGID.
-> 
-
-Another concern from Alexei was the readability of the API of open-coded 
-in BPF Program[1].
-
-bpf_for_each(task, curr) is straightforward. Users can easily understand 
-that this API does the same thing as 'for_each_process' in kernel.
-
-However, if we keep the approach of SEC("iter/task")
-
-enum ITER_ITEM {
-	ITER_TASK,
-	ITER_THREAD,
-}
-
-__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_process *it, struct 
-task_struct *group_task, enum ITER_ITEM type)
-
-the API have to chang:
-
-
-bpf_for_each(task, curr, NULL, ITERATE_TASK) // iterate all process in 
-the  system
-bpf_for_each(task, curr, group_leader, ITERATE_THREAD) // iterate all 
-thread of group_leader
-bpf_for_each(task, curr, NULL, ITERATE_THREAD) //iterate all threads of 
-all the process in the system
-
-Useres may guess what are this API actually doing....
-
-So, I'm thinking if we can add a layer of abstraction to hide the 
-details from the users:
-
-#define bpf_for_each_process(task) \
-	bpf_for_each(task, curr, NULL, ITERATE_TASK)
-
-
-It would be nice if you could give me some better suggestions.
-
-Thanks!
-
-[1] 
-https://lore.kernel.org/lkml/CAADnVQLbDWUxFen-RS67C86sOE5DykEPD8xyihJ2RnG1WEnTQg@mail.gmail.com/
