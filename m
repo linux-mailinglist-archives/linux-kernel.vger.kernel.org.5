@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E802D7A19E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF337A19DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbjIOJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S233230AbjIOJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbjIOJEN (ORCPT
+        with ESMTP id S233143AbjIOJDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:04:13 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8DB4684
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:01:11 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by andre.telenet-ops.be with bizsmtp
-        id m8y72A00F1C8whw018y7SS; Fri, 15 Sep 2023 10:58:07 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qh4e4-003lJJ-5b;
-        Fri, 15 Sep 2023 10:58:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qh4eN-00GdiB-4j;
-        Fri, 15 Sep 2023 10:58:07 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Magnus Damm <magnus.damm@gmail.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] soc: renesas: Kconfig: Remove blank line before ARCH_R9A07G043 help text
-Date:   Fri, 15 Sep 2023 10:58:05 +0200
-Message-Id: <2a3a9d595579b7cea416c12bf9abcfa2227243bb.1694768174.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Fri, 15 Sep 2023 05:03:20 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B1B30DA
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:01:47 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3496366072BA;
+        Fri, 15 Sep 2023 09:58:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694768317;
+        bh=QvOarZtm9q0/2Kba7YS408C3On3CckrdIr72iCDGik0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=R69HQPLoeSJeRPnLMYl37vbwbaKYVtZ638yOLvIiYj8GORIrmSChH0A86OyLeP3WK
+         szQREpUVuA8jzgUFa1NzVasateqS26xlwtwPcVMmnLLQmlKDdbnraH2fDpaAMRythX
+         pbctN3GX+1bMVJ18SZIHOgyF1WeOzbz8IsX00JFpnAlPV8Kp4yRj2FKGLttIc+83bg
+         V5ITMSFDWwLqcxc1+UNzeknVQ6RWXUTm4kt1xIqs1jMVxIP7yjjMdtidGnnjSofEwY
+         wmUAoyN9wNxHI9lSerXXcAcsKk+99WTGY0yYqfxPguiez+aWO/cUCcGJellnTtL4RA
+         xR7TrWis50apQ==
+Message-ID: <0a184b35-133b-483c-d475-01120fbdc2ca@collabora.com>
+Date:   Fri, 15 Sep 2023 10:58:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] drm/mediatek: dsi: Fix EOTp generation
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Jitao Shi <jitao.shi@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230915075756.263591-1-mwalle@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230915075756.263591-1-mwalle@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There should not be a blank line before the "help" keyword in the
-ARCH_R9A07G043 configuration section.
+Il 15/09/23 09:57, Michael Walle ha scritto:
+> The commit c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register
+> definition") inverted the logic of the control bit. Maybe it was because
+> of the bad naming which was fixed in commit 0f3b68b66a6d ("drm/dsi: Add
+> _NO_ to MIPI_DSI_* flags disabling features"). In any case, the logic
+> wrong and there will be no EOTp on the DSI link by default. Fix it.
+> 
+> Fixes: c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register definition")
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
-Fixes: c6a906cce61a8015 ("soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if dependencies are met")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-To be queued in renesas-devel for v6.7.
+Hello Michael,
+your commit is missing a small piece! :-)
 
- drivers/soc/renesas/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+Besides, I've already sent a fix for what you're trying to do here:
+https://lore.kernel.org/linux-arm-kernel/07c93d61-c5fd-f074-abb2-73fdaa81fd65@collabora.com/T/
 
-diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
-index bb1bb004b6a44b01..dd3f074d7b09b9bb 100644
---- a/drivers/soc/renesas/Kconfig
-+++ b/drivers/soc/renesas/Kconfig
-@@ -343,7 +343,6 @@ config ARCH_R9A07G043
- 	select DMA_GLOBAL_POOL
- 	select ERRATA_ANDES if RISCV_SBI
- 	select ERRATA_ANDES_CMO if ERRATA_ANDES
--
- 	help
- 	  This enables support for the Renesas RZ/Five SoC.
- 
--- 
-2.34.1
+Cheers,
+Angelo
+
+> ---
+>   drivers/gpu/drm/mediatek/mtk_dsi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> index d67e5c61a9b9..8024b20f6b13 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -407,7 +407,7 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
+>   	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
+>   		tmp_reg |= HSTX_CKLP_EN;
+>   
+> -	if (!(dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
+> +	if (dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+>   		tmp_reg |= DIS_EOT;
+>   
+>   	writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
+
 
