@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7015C7A25DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1DC7A2614
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236490AbjIOSgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S236778AbjIOSiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236470AbjIOSfm (ORCPT
+        with ESMTP id S236544AbjIOShr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:35:42 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A331FF5;
-        Fri, 15 Sep 2023 11:35:35 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 1570012d61148707; Fri, 15 Sep 2023 20:35:34 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id BF29E664080;
-        Fri, 15 Sep 2023 20:35:33 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v1] thermal: sysfs: Fix trip_point_hyst_store()
-Date:   Fri, 15 Sep 2023 20:35:33 +0200
-Message-ID: <2702371.mvXUDI8C0e@kreacher>
+        Fri, 15 Sep 2023 14:37:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736281BD3;
+        Fri, 15 Sep 2023 11:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=JjdcCeARBetsZH137aFl33BJ3ii6NFAsip2SWa5M3tY=; b=p17pTr3se0JO/f6M04cDpPtP+5
+        K/0tbeZ6PTE1lD28UmJtDp+MmcL/fkV6rpoqjooMTaFiT6A+wiZNO3LfFsTW0EJg0CtGJ3T2Htj7q
+        2vPlqyDoipOOe5joiIo8yawKYHtz72l/cRIJRH1Y7fKZZaXRjPnL96TuNG3d7I5exwb2fOz2bdJZx
+        hrZHp1wcxwHcn37XwnLC4Q98HIXkwl0RW4mQtwsuzJZ06on3fs6Qb0d6uUwUI1wZ+FxH8pQT4w73L
+        qS3WAWId/CoC7Q2weH7Kr/MQIOEamN7K1gZKEzWnitOC6RJa5VvnCInxTb738HTzJvu/bfYYBYciq
+        GcGIN+Ig==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhDgi-00BMIL-Vs; Fri, 15 Sep 2023 18:37:09 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        torvalds@linux-foundation.org, Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH 00/17] Add folio_end_read
+Date:   Fri, 15 Sep 2023 19:36:50 +0100
+Message-Id: <20230915183707.2707298-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudejvddguddvfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghl
- rdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The core of this patchset is the new folio_end_read() call which
+filesystems can use when finishing a page cache read instead of separate
+calls to mark the folio uptodate and unlock it.  As an illustration of
+its use, I converted ext4, iomap & mpage; more can be converted.
 
-After commit 2e38a2a981b2 ("thermal/core: Add a generic thermal_zone_set_trip()
-function") updating a trip point temperature doesn't actually work,
-because the value supplied by user space is subsequently overwritten
-with the current trip point hysteresis value.
+I think that's useful by itself, but the interesting optimisation is
+that we can implement that with a single XOR instruction that sets the
+uptodate bit, clears the lock bit, tests the waiter bit and provides a
+write memory barrier.  That removes one memory barrier and one atomic
+instruction from each page read, which seems worth doing.  That's in
+patch 15.
 
-Fix this by parsing the number string supplied by user space after
-retrieving the current trip point data from the thermal zone.
+The last two patches could be a separate series, but basically we can do
+the same thing with the writeback flag that we do with the unlock flag;
+clear it and test the waiters bit at the same time.
 
-Also drop a redundant tab character from the code in question.
+I don't have any performance numbers; I'm hoping Nick might provide some
+since PPC seems particularly unhappy with write-after-write hazards.
 
-Fixes: 2e38a2a981b2 ("thermal/core: Add a generic thermal_zone_set_trip() function")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 6.3+ <stable@vger.kernel.org> # 6.3+
----
- drivers/thermal/thermal_sysfs.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Matthew Wilcox (Oracle) (17):
+  iomap: Hold state_lock over call to ifs_set_range_uptodate()
+  iomap: Protect read_bytes_pending with the state_lock
+  mm: Add folio_end_read()
+  ext4: Use folio_end_read()
+  buffer: Use folio_end_read()
+  iomap: Use folio_end_read()
+  bitops: Add xor_unlock_is_negative_byte()
+  alpha: Implement xor_unlock_is_negative_byte
+  m68k: Implement xor_unlock_is_negative_byte
+  mips: Implement xor_unlock_is_negative_byte
+  powerpc: Implement arch_xor_unlock_is_negative_byte on 32-bit
+  riscv: Implement xor_unlock_is_negative_byte
+  s390: Implement arch_xor_unlock_is_negative_byte
+  mm: Delete checks for xor_unlock_is_negative_byte()
+  mm: Add folio_xor_flags_has_waiters()
+  mm: Make __end_folio_writeback() return void
+  mm: Use folio_xor_flags_has_waiters() in folio_end_writeback()
 
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -185,9 +185,6 @@ trip_point_hyst_store(struct device *dev
- 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
- 		return -EINVAL;
- 
--	if (kstrtoint(buf, 10, &trip.hysteresis))
--		return -EINVAL;
--
- 	mutex_lock(&tz->lock);
- 
- 	if (!device_is_registered(dev)) {
-@@ -198,7 +195,11 @@ trip_point_hyst_store(struct device *dev
- 	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
- 	if (ret)
- 		goto unlock;
--	
-+
-+	ret = kstrtoint(buf, 10, &trip.hysteresis);
-+	if (ret)
-+		goto unlock;
-+
- 	ret = thermal_zone_set_trip(tz, trip_id, &trip);
- unlock:
- 	mutex_unlock(&tz->lock);
+ arch/alpha/include/asm/bitops.h               | 20 +++++
+ arch/m68k/include/asm/bitops.h                | 13 ++++
+ arch/mips/include/asm/bitops.h                | 25 +++++-
+ arch/mips/lib/bitops.c                        | 14 ++++
+ arch/powerpc/include/asm/bitops.h             | 21 ++---
+ arch/riscv/include/asm/bitops.h               | 12 +++
+ arch/s390/include/asm/bitops.h                | 10 +++
+ arch/x86/include/asm/bitops.h                 | 11 ++-
+ fs/buffer.c                                   | 16 +---
+ fs/ext4/readpage.c                            | 14 +---
+ fs/iomap/buffered-io.c                        | 55 ++++++++-----
+ .../asm-generic/bitops/instrumented-lock.h    | 28 ++++---
+ include/asm-generic/bitops/lock.h             | 20 +----
+ include/linux/page-flags.h                    | 19 +++++
+ include/linux/pagemap.h                       |  1 +
+ kernel/kcsan/kcsan_test.c                     |  9 +--
+ kernel/kcsan/selftest.c                       |  9 +--
+ mm/filemap.c                                  | 77 ++++++++++---------
+ mm/kasan/kasan_test.c                         |  8 +-
+ mm/page-writeback.c                           | 35 ++++-----
+ 20 files changed, 248 insertions(+), 169 deletions(-)
 
-
+-- 
+2.40.1
 
