@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FD47A27E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658197A27E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbjIOUPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        id S237276AbjIOUPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237090AbjIOUPK (ORCPT
+        with ESMTP id S237409AbjIOUPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:15:10 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97812727
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:29 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c0db66af1bso20027665ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:29 -0700 (PDT)
+        Fri, 15 Sep 2023 16:15:23 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A4A30FB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:43 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68fc9e0e22eso2124885b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694808869; x=1695413669; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694808883; x=1695413683; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A3Wh5MfEW3doYb+GVlaZ1d5YV1bGIeT17SJ+vtMao2k=;
-        b=QEepu/aLtY4qccwIvqqABP1w/H5WEr5RFGpEbJoComvzU2Ma0vlgZLz39dELfEPlh/
-         Zib0Szi/qK+/dE8Vsx8ym4naerTfh4HtNo9788bMMaTGDKrMV/B+WQytjXdPKeF8BK8F
-         oh3YZEeUTWGQMzeU/5g9boONIJKcfvn6cCAKc=
+        bh=qkNg/tr3QrWcASJiKwsE4eOsWfikvegDZMItdS4GDes=;
+        b=dIQOpXFoq7qZUoDMH78/jDAu7QDLIHf9v1h6hsKjkbz++dZ0k9P4oD5/vgxC1n3nVT
+         wr8oXmowHzs4IUtHkHa5KEPIS1vcVsfMDu6dn0pQmENHED2eF8rTHpTZl1ymO7V0/j7Z
+         orTAjy3qNvmbSbm06uR5uoseLw4HWbVpmuPb0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694808869; x=1695413669;
+        d=1e100.net; s=20230601; t=1694808883; x=1695413683;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=A3Wh5MfEW3doYb+GVlaZ1d5YV1bGIeT17SJ+vtMao2k=;
-        b=cNjEXqje2VcABmH/175Nu4EpY0/DP+ts2XTNKdQx7smeYK8fev4+FJv+Jj6CjB5PiF
-         mNW6+sCJzV2fYG8BO7XFjS4RFzPixgiBkWc0kIb4t6/749/fhN3g/CMo9x74mYBrLkr+
-         S5HLm6RnlkFNwipNrg4gFp12p084T9eeER+4faka2Intv9qXD+OTm8yDGO3AdR8cPn2L
-         YZmFNf3pSEcZRhwpcoVvCxs1j9k+yFHYfN3/nLDny7iALEd5A8smyxX6NIRPE+iEuFpF
-         GfjOGFiX4SeocHUcPsGxLK/9KV1kwe+Wtsl8G5MzaU9ie3IFiVDwuji/R+cfvEtufNPE
-         8bHQ==
-X-Gm-Message-State: AOJu0Yze2FKzGgouV4NVbCBB1eZ+snznYF/7FCOtEw3lzYqLlZpHYc8W
-        oIHs8ZkTbeLAUqOdb4Ttt6c+1Q==
-X-Google-Smtp-Source: AGHT+IFjEYcnYF2l1R11y3riePthlRTy4BhFCC7EKD3yzuegAEdhz+e0FghE7BPVrngygglfbrCg4w==
-X-Received: by 2002:a17:902:d50c:b0:1c3:6e38:3943 with SMTP id b12-20020a170902d50c00b001c36e383943mr3120478plg.56.1694808869471;
-        Fri, 15 Sep 2023 13:14:29 -0700 (PDT)
+        bh=qkNg/tr3QrWcASJiKwsE4eOsWfikvegDZMItdS4GDes=;
+        b=p6zlJq5bvVuJdFYWPM962u4LyRwimiBq0/rjUxqNExSi/bn53tPd7xxD3FPSYF6Z/c
+         LLcME5b2hZRXxaAwHthfmpeU32K+PcSBNjW3iKWxVPW2lU2540WoG6LUclzSNyRfy0eo
+         z3YVsSTcXUnxtf2UElOhV1frRIjDCsRAfEX9b1h7tM1pfatV5A0BRoo2rMMKcNrkZmT6
+         G51SbVFSW7u/3e8p+Iogh/PWCNP6l1IbeNYS+iplkDZT0L+T4akpT7NHK6awo02sKXDs
+         eGJNFICBD9LJA+E4aV0zS1441XpCubbcBsfwLqA7C1yXZ6UykQ1gN4/N5kSFRJh+TqjF
+         oYvA==
+X-Gm-Message-State: AOJu0Yx/ZIUs3h7dJggCoSJ4jTwZZctkCTXmnL8EFKHNFGqjegkNSXl+
+        5WpNop4/SQVRKSbW2Ms/59itHQ==
+X-Google-Smtp-Source: AGHT+IHXhNmupyTLfTSXdb+UWAhDBj1zLCfg6DkMECc3KJ4exjVmqGLfno7q2nbXMLL41tgfhLkLTQ==
+X-Received: by 2002:a05:6a00:851:b0:690:42d5:4332 with SMTP id q17-20020a056a00085100b0069042d54332mr3152371pfk.6.1694808883096;
+        Fri, 15 Sep 2023 13:14:43 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jo5-20020a170903054500b001bf6ea340b3sm3862047plb.116.2023.09.15.13.14.29
+        by smtp.gmail.com with ESMTPSA id j16-20020aa79290000000b0068c90e1ec84sm3339012pfa.167.2023.09.15.13.14.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 13:14:29 -0700 (PDT)
+        Fri, 15 Sep 2023 13:14:42 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Trond Myklebust <trond.myklebust@hammerspace.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Anna Schumaker <anna@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-nfs@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] nfs41: Annotate struct nfs4_file_layout_dsaddr with __counted_by
-Date:   Fri, 15 Sep 2023 13:14:27 -0700
-Message-Id: <20230915201427.never.771-kees@kernel.org>
+Subject: [PATCH] NFS/flexfiles: Annotate struct nfs4_ff_layout_segment with __counted_by
+Date:   Fri, 15 Sep 2023 13:14:39 -0700
+Message-Id: <20230915201434.never.346-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1274; i=keescook@chromium.org;
- h=from:subject:message-id; bh=SaTfK3lpyJSSyLqYo6bry2dArg3sE8XflweiHaoI8UY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLsj9eKEqvjp1mnrSMAJ82NDlddaXaFNP2mEl
- nX0LeLPnkmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS7IwAKCRCJcvTf3G3A
- Jvx7EACzMY8uhS+c29WkzR+uaQe8YM8IcRIE0an3Tp3hKSe4Qsn1YrfptQ703/ZjufltQQYwTK3
- 6crA9Yqboe7PhB0+QXPWy2sDykXcFrS6Vp/KnGPy6cOziCBe/5r9+SduZZFUM7kurcHYoPCRL3a
- CYFSSoc0FbnHy4/I/lJpEjD+d/k76EhTwB+gshyW3Ex+75+OVjbhKm2NRWL1aFaaxeEJ10+Qnp0
- KN5Ij/AJSHXVq03irD6Iqb92YAAWXBqOhdo1TtabuKyRlGMdu7kjb08LbqpT615kH4fA2tdPaxg
- Fd1x5FBMj4k+f/9czeX3Zd/cr6rfbWLW2U5V04s5lCfITXMi+HoZRpqgQq1YGa4hnFab+wEf2Qd
- oaWkKawR6Li0KzJgKwW/OjxaMdCePA0hgElbqQF39q91h1Kij3CJYRVgO2lBBOCRGNAfGtggf30
- 7LJM2oJGbnRSclIUk6put5bdwX2nVY2K36q4Yw62aNAkK/0ByIRQW8hF/JFK0aFG7TxkIuTXQWA
- GpI0cnh6EFwilcg2I83Kwehss0Ap5NENU4OV64sWydaTwMMd0FcR/fOZ/1SUTABgqKmFUObRZL9
- kNg/SgUzv8YvFDXlSyfqW2siixtbL+sg6XdEwweO+Dp14SLWUYsHV8UWWdYHZwM2cj+DcaPOmoP
- MKF+K9t McubGENA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1294; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=ulAteUUegKxPPNYcaO1yT0Twc5GfPCHdyqd9WNVKmuo=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLsvlYHxhP8rtZTlzFEmT5U4B5FDD5sjM+zNr
+ VMPn0lzxlKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS7LwAKCRCJcvTf3G3A
+ JmiKD/4okdWMQlAOtNFwJ5mpfcjcBIwyOr+dV6DW3brxCulz1Sx4uB9/LXER2a9gfv2tvVAyMTN
+ XDHT5U46yT61zFXmmVQf/Q9Nehs9mPTBDRUtUKKyXbWpS22DzSZk7/SryP81AV8cUxtmHjeEMQ8
+ SIIQWiIXzvgA8rHMvY55qzEpxrmQx/6ohJ+0kHCBHeXs9EShu05fPwnSBsnIBHZr75zsBnwmOm8
+ 13zVz+dn1HrkVfnCsslNOCgU8cn5bVggkWqCay62gJOsZYDmxSJnm1dFKZWbG6FTxKb7snRjksj
+ lHjd5yQIavBmZ40R9L1Lk0AidCSNvx+gsnNWBBtKSl2MgbUaEtBG/MtCprtSz66r0GOsdbpq6lQ
+ m7O8dnOtI1Dl7WesCrgz71xVvQNjsfdRARa8OYvPAI6oEs+lzIKgA6M+gOkLtgSupQF0+NrakmA
+ hPHiFJ2PB5Svo/IJLQeDi3ORyPTvLwKditTekz3tO6GvCAS49b6iZQzdsYtiFZXwKR/UUPCVFLZ
+ /DTJbTPdOig5sA4lEhna5M0qUCZMrnWrPg4lxywbU8dzKDw0xnz2Pqpgq+e2JzjuA91/l79teeM
+ EHTB/zq59KZrmd4W+bfACwlCKDRRRfg4kpqnimfoBZIL7lm5T6G1yQa5tdjYyHJVsJfsxLVreHY
+ LP1DxLZ uPAY/z3g==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -92,32 +91,31 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct nfs4_file_layout_dsaddr.
+As found with Coccinelle[1], add __counted_by for struct nfs4_ff_layout_segment.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
 Cc: Anna Schumaker <anna@kernel.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc: linux-nfs@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/nfs/filelayout/filelayout.h | 2 +-
+ fs/nfs/flexfilelayout/flexfilelayout.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/filelayout/filelayout.h b/fs/nfs/filelayout/filelayout.h
-index aed0748fd6ec..c7bb5da93307 100644
---- a/fs/nfs/filelayout/filelayout.h
-+++ b/fs/nfs/filelayout/filelayout.h
-@@ -51,7 +51,7 @@ struct nfs4_file_layout_dsaddr {
- 	u32				stripe_count;
- 	u8				*stripe_indices;
- 	u32				ds_num;
--	struct nfs4_pnfs_ds		*ds_list[];
-+	struct nfs4_pnfs_ds		*ds_list[] __counted_by(ds_num);
+diff --git a/fs/nfs/flexfilelayout/flexfilelayout.h b/fs/nfs/flexfilelayout/flexfilelayout.h
+index 354a031c69b1..f84b3fb0dddd 100644
+--- a/fs/nfs/flexfilelayout/flexfilelayout.h
++++ b/fs/nfs/flexfilelayout/flexfilelayout.h
+@@ -99,7 +99,7 @@ struct nfs4_ff_layout_segment {
+ 	u64				stripe_unit;
+ 	u32				flags;
+ 	u32				mirror_array_cnt;
+-	struct nfs4_ff_layout_mirror	*mirror_array[];
++	struct nfs4_ff_layout_mirror	*mirror_array[] __counted_by(mirror_array_cnt);
  };
  
- struct nfs4_filelayout_segment {
+ struct nfs4_flexfile_layout {
 -- 
 2.34.1
 
