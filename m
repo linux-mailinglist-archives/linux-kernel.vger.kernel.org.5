@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0399A7A1E20
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1037A1E24
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbjIOMHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
+        id S234595AbjIOMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbjIOMHh (ORCPT
+        with ESMTP id S234437AbjIOMIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:07:37 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8D1272C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:04:47 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-500bbe3ef0eso2477467e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694779485; x=1695384285; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=icfi94Iw++0R/AP2toim4sb84mQcBzKxVTS6OAVvVDA=;
-        b=bF20TnzVDLQAx9XBtjZg/o9oA67v0QYYMjqD0x3vaChuSHcT3G9D5dAMBGjVbvcWSr
-         r5fB2Vuk9V1zsnC/Ee2V0TSS5zJ92IQ3gRw6+IVVHQvL12PO4lWD1GRaJsLlpTX+P2iU
-         LXVgpVu4OaZlYWNL6cuoFTQxGO904oe9yYFuEhN7AhBHos7SQ1akJ4KKK4ICdumBuyxJ
-         vFdbYHyZQfqOEKyZmNvI8bLEmZnf2/C/eKSDY3OMNKFd9+I5CvDLXPKR0LHH820RrxeW
-         ocQ70QvPs1DCfcSVtOAnTw89CL3yN+5bmCi32Z6EdZwUY2v8hNj+0fonWsD5+HJVSsWa
-         cJfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694779485; x=1695384285;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=icfi94Iw++0R/AP2toim4sb84mQcBzKxVTS6OAVvVDA=;
-        b=gSASUHeCwkq3ieRkkPMAPcTjr4PfZC7YTHCM9hUwsGJxfJbJPpglgHH6BI8CyCiFui
-         Rwtl5C6EIQ1h2gdmxz6J+2JFafjSlSnUexkwEqV0mR7+QKkhL0Wl4SPEZSdEH6VIRhdv
-         NPGcJppTsE/oXxa+WPDTAQSdY0rAm7+kD5tQ9wLE3BWaAG9soAkGBkcIuznXoBEgjYj0
-         WwKX25p5eEH6t+Y5Fc0wurgKpDJVwdlzIOVFs9jS8YawUeCvFpSPB2YnDhjgLZ152XLb
-         QFbzlc+cm8Z7UBk1fBsQDV5emQJNS4uksPHlFj635Jxgq0sCYoRU8qwvYnkkgy+ufrQL
-         78Cg==
-X-Gm-Message-State: AOJu0Yy89GoIrzN8L+mmWGjX6WTAQg/BN7NUkGnN6FfFNo4wshAaeE73
-        VaQNyuVD0K40Ey4Z1G1Qpb3u1A==
-X-Google-Smtp-Source: AGHT+IGC51QtLtToliH13uoTDIZ9HjuO7MczTafyoIlsaog7UILk/Ln075g2op/cY9P/VuE/ZnOIOQ==
-X-Received: by 2002:a05:6512:3096:b0:4fe:4896:b6ab with SMTP id z22-20020a056512309600b004fe4896b6abmr601778lfd.15.1694779484198;
-        Fri, 15 Sep 2023 05:04:44 -0700 (PDT)
-Received: from ?IPV6:2a00:f41:cbe:bc7d:62a6:5d09:5ba7:be5b? ([2a00:f41:cbe:bc7d:62a6:5d09:5ba7:be5b])
-        by smtp.gmail.com with ESMTPSA id l18-20020ac24312000000b004fa52552c7csm614093lfh.151.2023.09.15.05.04.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 05:04:43 -0700 (PDT)
-Message-ID: <b6ded7b6-1818-402f-8826-2ab1ecd05056@linaro.org>
-Date:   Fri, 15 Sep 2023 14:04:41 +0200
+        Fri, 15 Sep 2023 08:08:31 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E240430FF
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:05:47 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A25BB40E01A4;
+        Fri, 15 Sep 2023 12:05:45 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1_G8pgAPhPW5; Fri, 15 Sep 2023 12:05:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1694779543; bh=2wPZCYdmJSGcS7R40rFJDPDabOwTKkdMTTnMvA5piYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cX84+6mPOUM6MHA/aC9KjMClcLEA3Mz6L9uhXwcxQSN0yIOPNkK5uSc/tTX0pAGkT
+         pmN30Tn73pqt7wcee1q/7hHNmri+3w0PO0ySlAgvZ2V/a+/J8vm+uRTOjZHzFa37bF
+         OQetXvTvKgmdpXKXfw1UxbD4LJldmHsRAElFeoG0jnNyN9ezBaQsNbrrsyvzOsxwHj
+         1wEDECfDqh2fOGXlmRqDRBhMJheGlkff93x8JbjJCeBrGahHytEU7emo6fk56jHdcy
+         4TXOrGnvVk/hKbI5p1rCak8fwwCneXFWkiHepgKFMI8dMPO/kt0doGFr6dBp9+PCWZ
+         WzZxbhbS+B9Ms1HmMgmoaOAZifkIj1/JDKJSfdlLyno0DypIrHA6RmWnEsXhqLZBlo
+         9P1bAj5rDGNqCGqKddxJ/GmROG+uydRY6qEiI69DEeWhSB55noPYY16CZVz04+pfTI
+         ACfHNvWweLzc+2ceZEv96DbunX36j0DIujI0WAdQsbb0xvG8w7n9ZTIF1QQVm5JeHT
+         wS5iwqlDSSaIwRXBV75JWf26ZHHpQF3RFxyTeGqeD6UXRt+uq2pXnb8JrNf7RrM1oB
+         32h1rAq272Hg+Xy3XtfGjfnu+mEIW0nZuVnjlvTcNQBA8fk7lq+rfzmby55MwwAm3/
+         iyrfOdGmV0cdVL1D7pZGKklI=
+Received: from nazgul.tnic (unknown [78.130.214.203])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AECCF40E01A2;
+        Fri, 15 Sep 2023 12:05:35 +0000 (UTC)
+Date:   Fri, 15 Sep 2023 14:05:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
+        gregkh@linuxfoundation.org, nik.borisov@suse.com
+Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
+Message-ID: <20230915120553.GBZQRIoX+2s14BDaKw@fat_crate.local>
+References: <20230909075009.GAZPwjsYZ4sSALN/5+@fat_crate.local>
+ <20230909092554.GC2771@noisy.programming.kicks-ass.net>
+ <20230910144227.GAZP3V0/mQ73C2hx/l@fat_crate.local>
+ <20230912092709.GE35261@noisy.programming.kicks-ass.net>
+ <20230912094441.GA13926@noisy.programming.kicks-ass.net>
+ <20230913043738.GCZQE8kuw8p3WsnCXd@fat_crate.local>
+ <20230913084658.GA692@noisy.programming.kicks-ass.net>
+ <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
+ <20230915074647.GA6721@noisy.programming.kicks-ass.net>
+ <20230915075106.GA6787@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-sm8150: Fix gcc_sdcc2_apps_clk_src
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Danila Tikhonov <danila@jiaxyga.com>, agross@kernel.org,
-        andersson@kernel.org, dkatraga@codeaurora.org,
-        mturquette@baylibre.com, quic_tdas@quicinc.com, vkoul@kernel.org
-Cc:     adomerlee@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913175612.8685-1-danila@jiaxyga.com>
- <539752971c7a61ce7a5deddc1478686a.sboyd@kernel.org>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <539752971c7a61ce7a5deddc1478686a.sboyd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230915075106.GA6787@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2023 18:20, Stephen Boyd wrote:
-> Quoting Danila Tikhonov (2023-09-13 10:56:11)
->> Set .flags = CLK_OPS_PARENT_ENABLE to fix "gcc_sdcc2_apps_clk_src: rcg
->> didn't update its configuration" error.
->>
->> Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driver for SM8150")
->> Tested-by: Arseniy Velikanov <adomerlee@gmail.com>
->> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
->> ---
->>  drivers/clk/qcom/gcc-sm8150.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
->> index 41ab210875fb..05d115c52dfe 100644
->> --- a/drivers/clk/qcom/gcc-sm8150.c
->> +++ b/drivers/clk/qcom/gcc-sm8150.c
->> @@ -774,7 +774,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
->>                 .name = "gcc_sdcc2_apps_clk_src",
->>                 .parent_data = gcc_parents_6,
->>                 .num_parents = ARRAY_SIZE(gcc_parents_6),
->> -               .flags = CLK_SET_RATE_PARENT,
->> +               .flags = CLK_OPS_PARENT_ENABLE,
->>                 .ops = &clk_rcg2_floor_ops,
-> 
-> In what case are we getting the rcg stuck? I thought that you could
-> write the rcg registers while the parent was off and switch to that
-> parent if the parent isn't enabled and it wouldn't get stuck.
-I think the better question here would be "why isn't
-OPS_PARENT_ENABLE the default for all qc clocks on all
-platforms" :/
+On Fri, Sep 15, 2023 at 09:51:06AM +0200, Peter Zijlstra wrote:
+> > So I see what you did with that @n argument, but urgh, do we really need
+> > this? I mean, it just makes things harder to use and it doesn't actually
+> > fix anything.. :/
 
-Konrad
+It only addresses this repeating of the 661 labels:
+
+# 53 "./arch/x86/include/asm/page_64.h" 1
+	# ALT: oldnstr
+661:
+	# ALT: oldnstr
+661:
+	call clear_page_orig	#
+662:
+
+but this is only the produced asm which no one but me and you look at so
+I guess it is not worth the effort.
+
+I still think, though, that adding the comments explaining the situation
+more is worth it because we will forget.
+
+> That is, if we can magic this using __COUNTER__ without a user interface
+> penalty, then sure. But the last time I tried that I failed utterly and
+> ended up with labels like:
+> 
+>   .Lalt_old___COUNTER__:
+> 
+> no matter how many layers of CPP macro eval I stuck in it. So clearly I
+> wasn't having a good day ....
+
+Yeah, I tried it too because Matz said it should work with it but
+I failed too. Reportedly, the approach should be to do that in CPP and
+use CPP even for the asm macro but my CPP-fu is basic, to say the least.
+
+I'll poke him next time we meet - I might've missed an aspect.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
