@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8527A1266
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021B17A126D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjIOAgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 20:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
+        id S231143AbjIOAjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 20:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjIOAgn (ORCPT
+        with ESMTP id S229715AbjIOAjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 20:36:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1334B269D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 17:36:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE76BC433CA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694738198;
-        bh=+qbxUBHe+EIILZxn+XcMrO9roDx8RWwFA2dcxApnUkw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lHUN/KDpghJkNYy5FKNSdLgvhnWYAGmCQbcQ+r4R6iN5cY8NWdFk8umOBNjPzGd4f
-         rfVeD9X+moD6ef2DgeyUW2ZkO8+b5VnLUCF1lfmFxXl5BQ1Zr5gjAji9NCazklVwXP
-         rt7ZRJ2PufkZwke49eQF5n+wJGOJkqEQIA7tpaC+Tk9PvDwjjLvtEnFD5V0bDL+hHP
-         9/2bSbRYdEEai3CHF7/pp31kk9GiyT+87MZBToGgFulin5+xslBe9dFTCh4TZLtZ6K
-         Nk9SqLKZPoOO8NwKYKBQVoVIMVkOf8q2eiHD4dO49JE8GVTmg64LVIRitz9uLeApQK
-         auYyO+GlcxOZw==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-502934c88b7so2705917e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 17:36:38 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwK9r/2kA4W5RlQ7U+Lx0LUbWlNBT5xlZRPeO+WrT8GYeBv7h5M
-        2Y9kgBE0up21oAnAHEKWyS4xFei4g4p3sOVwFzg=
-X-Google-Smtp-Source: AGHT+IHwKzw38ZOBSzff8lAyHvC1kolSpF/FXRnIiwjQslprjSV+XDoUZtf0NmWK5BzGVa5yZ/5jx6G/mVt2YowIo04=
-X-Received: by 2002:a05:6512:2208:b0:500:af82:7dd9 with SMTP id
- h8-20020a056512220800b00500af827dd9mr217351lfu.62.1694738196898; Thu, 14 Sep
- 2023 17:36:36 -0700 (PDT)
+        Thu, 14 Sep 2023 20:39:53 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3252526A4;
+        Thu, 14 Sep 2023 17:39:49 -0700 (PDT)
+Received: from [172.27.2.41] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38F0cx0w3629046
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 14 Sep 2023 17:39:00 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38F0cx0w3629046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1694738342;
+        bh=Yoa4ZMiBLAyDfdX9HHdeF8UrASEf6ZDgmuoMlIr4Wlk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=V/5PwyV/E8csxXz6rtYneFFVtOBWMsVzU2Mg/Wgs3Dr0XDNzkBz/ZFAw/skVnCBBu
+         pIX81Kk5tOxjoHoHEboQ2vuQ8rbszdcv2meKkW38C4Fpsv6lbqTJOWxteQVsyxuMV+
+         N0x88IFTW0/iHUVnQRWy7QnRIyb+uLWCXwjVOPJcS01dEDvnV1ysdbLMRkUl8Xs89b
+         ZcefnQDEvbvnoxJ49fMSGYwXr8lIlAANDyg1/g4z9ndf07KJSlAj5idi2GE44ZXoYe
+         z7lFKDrHOhCcUgZ3oZxgazX52p1YHjmuUZWWY3SOVdnLUpcnAF9ptss3dUaGqF5cAN
+         VOwKYyWEwLGSQ==
+Message-ID: <5cf50d76-8e18-2863-4889-70e9c18298a1@zytor.com>
+Date:   Thu, 14 Sep 2023 17:38:57 -0700
 MIME-Version: 1.0
-References: <20230914103445.511285-1-andriy.shevchenko@linux.intel.com>
- <CAAhV-H6Q0sirFEDdc1v4BSfDY94eZvJazy0XLKM8V94GMJvQnQ@mail.gmail.com> <ZQNWh2DY319jGbfq@smile.fi.intel.com>
-In-Reply-To: <ZQNWh2DY319jGbfq@smile.fi.intel.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 15 Sep 2023 08:36:24 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H66LUWHP-eGp6VGvs0F+QD=QJ69uR3_1A3SqH9cyPUPoQ@mail.gmail.com>
-Message-ID: <CAAhV-H66LUWHP-eGp6VGvs0F+QD=QJ69uR3_1A3SqH9cyPUPoQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] LoongArch: Add missing headers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <kernel@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+Content-Language: en-US
+To:     andrew.cooper3@citrix.com, Thomas Gleixner <tglx@linutronix.de>,
+        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
+        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
+        ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+ <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
+ <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com> <87v8cc1ehe.ffs@tglx>
+ <50e96f85-66f8-2a4f-45c9-a685c757bb28@citrix.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <50e96f85-66f8-2a4f-45c9-a685c757bb28@citrix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andy,
+On 9/14/23 17:33, andrew.cooper3@citrix.com wrote:
+> 
+> It's an assumption about what "definitely won't" be paravirt in the future.
+> 
+> XenPV stack handling is almost-FRED-like and has been for the better
+> part of two decades.
+> 
+> You frequently complain that there's too much black magic holding XenPV
+> together.  A paravirt-FRED will reduce the differences vs native
+> substantially.
+> 
 
-On Fri, Sep 15, 2023 at 2:53=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Sep 14, 2023 at 11:25:22PM +0800, Huacai Chen wrote:
-> > Hi,  Andy,
-> >
-> > Thank you for your patch, can this patch solve the problem below?
-> > https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.c=
-om/T/#u
->
-> Nope, this just adds missing includes.
-> No functional change, so warnings will still be there.
-But I think a patch should solve a problem. If we don't get a build
-error or warning without this patch, does that mean the 'missing'
-headers are actually included indirectly?
+Call it "paravirtualized exception handling." In that sense, the 
+refactoring of the exception handling to benefit FRED is definitely 
+useful for reducing paravirtualization. The FRED-specific code is 
+largely trivial, and presumably what you would do is to replace the FRED 
+wrapper with a Xen wrapper and call the common handler routines.
 
-Huacai
+	-hpa
 
->
-> > If yes, please add a reference in the commit message. I have
-> > investigated this problem for a long time but failed to solve it.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
