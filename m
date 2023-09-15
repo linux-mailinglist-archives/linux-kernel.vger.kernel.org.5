@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F130F7A17D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC317A17DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjIOH4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
+        id S232622AbjIOH5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjIOH4t (ORCPT
+        with ESMTP id S230454AbjIOH5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:56:49 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F0AAC;
-        Fri, 15 Sep 2023 00:56:43 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c328b53aeaso15808435ad.2;
-        Fri, 15 Sep 2023 00:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694764602; x=1695369402; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sa23m9Sh+czmtoCmVFBbzydEhVvJnPH9LtopoO7enGk=;
-        b=JwhuK8y+7iv0ypni46TXh0EjHgRtvPEYOv1T5HePZESIWfe0SBo7Z0SOwpVT5O+BDZ
-         r1iZCoxYRr+HoLtrt1ZWtXImxVrmZv4SFyThU/W7VJhwREoVt38LCv3MiNPD0CaM5hJv
-         IiY9dIH2qGeyaP+nAYicC6VWZLU37C9C0KFNPW3nLPYGBISWnIcSvIluhC2Zy/sA6DEi
-         ufczMxgKub+Kq0S4s4YGdcPZik1TwVtT2gd2gOg7Xx59xbWU6qqK42LhZ/wPY6moLi6l
-         JitjGzYj+vapQCHLG/SZG6bLgek2/w6AyktzAynU5mmLfuE3g8mfiodA8XYvnCONQ/wU
-         v6EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694764602; x=1695369402;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sa23m9Sh+czmtoCmVFBbzydEhVvJnPH9LtopoO7enGk=;
-        b=FFf8vDC4m8P7o7Tj4ZUpEorNzplyObM7poTj70/ikXxg90a6MoMaAUbEsRhwcx25rE
-         VhkdklLqE3z8ijNPMTcThLVfOwehIgocoT/4AEfLXhxCN/3J0c8VKMePT/7CDalkYtI+
-         54zxOzBQHgS/YYKFflKMFrH9zRcpRgcVzQ7H+yW0qBgSOM/Ixpgw848h9f2DfkhJfgm+
-         ziZBSfJ/UVR7Ty3xLzhohm+hSHSh6hjqnkiBoakReRU907r3OX2nHA8ifI3G+M1ho4b+
-         Acz37ND4pyGsBYTORN1fDRfTF9fk8vvTUyfu6O7RbOI8uFV/lrzqsKPZgGkJxMXR49Vq
-         VLUg==
-X-Gm-Message-State: AOJu0YyF4KcVk4WUONeB02P7ueIDCjklt3h+XQXHKmcyN/MV8eowhJGl
-        /klzt/F1g6kyOPjx17WfbcY=
-X-Google-Smtp-Source: AGHT+IE9RcRJ910CnL7JvJNrqjoaC0IFvFSCZdBwD31Y9Swflcx2melRR4bsTZgiId84hdnlKqufcA==
-X-Received: by 2002:a17:903:1210:b0:1bb:7f71:df43 with SMTP id l16-20020a170903121000b001bb7f71df43mr1107314plh.34.1694764602592;
-        Fri, 15 Sep 2023 00:56:42 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id u5-20020a170902b28500b001bb750189desm2836147plr.255.2023.09.15.00.56.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 00:56:42 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 88F408AA8414; Fri, 15 Sep 2023 14:56:38 +0700 (WIB)
-Date:   Fri, 15 Sep 2023 14:56:38 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     angus gardner <angusg778@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: fbtft: Removed unnecessary parenthesis around
- conditions to comply with the checkpatch coding style.
-Message-ID: <ZQQONo8biMWlCiG3@debian.me>
-References: <ZQEKFR1OPoXGI2lO@midnight>
- <ZQERJIGOOeYxgX3E@debian.me>
- <CAC5tM5u8L50fAhReAmP0dqexSmv-PdZJKa_ES2hxZMp41MJjGQ@mail.gmail.com>
+        Fri, 15 Sep 2023 03:57:44 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABFB619A0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:57:38 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-319-ooYdAIyBNp-dk--bK--xgg-1; Fri, 15 Sep 2023 08:57:26 +0100
+X-MC-Unique: ooYdAIyBNp-dk--bK--xgg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 15 Sep
+ 2023 08:57:22 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 15 Sep 2023 08:57:22 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Evan Green' <evan@rivosinc.com>
+CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Sia Jee Heng" <jeeheng.sia@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        "Simon Hosie" <shosie@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        "Ley Foon Tan" <leyfoon.tan@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "Andy Chiu" <andy.chiu@sifive.com>
+Subject: RE: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+Thread-Topic: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+Thread-Index: AQHZ5t2uDoI3R+Ee30ay/cEMVFilT7AaADQQgABZ2YCAABclwIAAA5uAgAEQ8sA=
+Date:   Fri, 15 Sep 2023 07:57:22 +0000
+Message-ID: <abdde70ac5b947508c8c71d72ec4f294@AcuMS.aculab.com>
+References: <20230818194136.4084400-1-evan@rivosinc.com>
+ <20230818194136.4084400-2-evan@rivosinc.com>
+ <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
+ <CALs-Hsvu7BsK8P0+xeuLmKEqg-q=kQANbf8FkiPGPhwhnSXpmA@mail.gmail.com>
+ <CAMuHMdV594xA1UoTeVixpXm3i5LDFO5cT=dd_iRwWLwvxQctZg@mail.gmail.com>
+ <de95229a14614198894a8ce421c30d94@AcuMS.aculab.com>
+ <CALs-Hstcz3OAxUi80nm+U0R56VBUUPQT=+XMOLpVJsn2ZOcM1A@mail.gmail.com>
+ <172bc43cc2ac45239ec40477d53d263a@AcuMS.aculab.com>
+ <CALs-HsvMfrsPsG2b9imLNOJFH6Xk45G0=UPWGtExePiMKV6+1Q@mail.gmail.com>
+In-Reply-To: <CALs-HsvMfrsPsG2b9imLNOJFH6Xk45G0=UPWGtExePiMKV6+1Q@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jzeagO5P9A3kQsYx"
-Content-Disposition: inline
-In-Reply-To: <CAC5tM5u8L50fAhReAmP0dqexSmv-PdZJKa_ES2hxZMp41MJjGQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogRXZhbiBHcmVlbg0KPiBTZW50OiAxNCBTZXB0ZW1iZXIgMjAyMyAxNzozNw0KPiANCj4g
+T24gVGh1LCBTZXAgMTQsIDIwMjMgYXQgODo1NeKAr0FNIERhdmlkIExhaWdodCA8RGF2aWQuTGFp
+Z2h0QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogRXZhbiBHcmVlbg0KPiA+ID4g
+U2VudDogMTQgU2VwdGVtYmVyIDIwMjMgMTY6MDENCj4gPiA+DQo+ID4gPiBPbiBUaHUsIFNlcCAx
+NCwgMjAyMyBhdCAxOjQ34oCvQU0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1bGFiLmNv
+bT4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IEZyb206IEdlZXJ0IFV5dHRlcmhvZXZlbg0KPiA+
+ID4gPiA+IFNlbnQ6IDE0IFNlcHRlbWJlciAyMDIzIDA4OjMzDQo+ID4gPiA+IC4uLg0KPiA+ID4g
+PiA+ID4gPiAgICAgcnpmaXZlOg0KPiA+ID4gPiA+ID4gPiAgICAgICAgIGNwdTA6IFJhdGlvIG9m
+IGJ5dGUgYWNjZXNzIHRpbWUgdG8gdW5hbGlnbmVkIHdvcmQgYWNjZXNzIGlzDQo+ID4gPiA+ID4g
+PiA+IDEuMDUsIHVuYWxpZ25lZCBhY2Nlc3NlcyBhcmUgZmFzdA0KPiA+ID4gPiA+ID4NCj4gPiA+
+ID4gPiA+IEhybSwgSSdtIGEgbGl0dGxlIHN1cnByaXNlZCB0byBiZSBzZWVpbmcgdGhpcyBudW1i
+ZXIgY29tZSBvdXQgc28gY2xvc2UNCj4gPiA+ID4gPiA+IHRvIDEuIElmIHlvdSByZWJvb3QgYSBm
+ZXcgdGltZXMsIHdoYXQga2luZCBvZiB2YXJpYW5jZSBkbyB5b3UgZ2V0IG9uDQo+ID4gPiA+ID4g
+PiB0aGlzPw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gUm9jay1zb2xpZCBhdCAxLjA1IChldmVuIHdp
+dGggaW5jcmVhc2VkIHJlc29sdXRpb246IDEuMDU4NTMgb24gMyB0cmllcykNCj4gPiA+ID4NCj4g
+PiA+ID4gV291bGQgdGhhdCBtYXRjaCB6ZXJvIG92ZXJoZWFkIHVubGVzcyB0aGUgYWNjZXNzIGNy
+b3NzZXMgYQ0KPiA+ID4gPiBjYWNoZSBsaW5lIGJvdW5kYXJ5Pw0KPiA+ID4gPiAoSSBjYW4ndCBy
+ZW1lbWJlciB3aGV0aGVyIHRoZSB0ZXN0IGlzIHVzaW5nIGluY3JlYXNpbmcgYWRkcmVzc2VzLikN
+Cj4gPiA+DQo+ID4gPiBZZXMsIHRoZSB0ZXN0IGRvZXMgdXNlIGluY3JlYXNpbmcgYWRkcmVzc2Vz
+LCBpdCBjb3BpZXMgYWNyb3NzIDQgcGFnZXMuDQo+ID4gPiBXZSBzdGFydCB3aXRoIGEgd2FybXVw
+LCBzbyBjYWNoaW5nIGVmZmVjdHMgYmV5b25kIEwxIGFyZSBsYXJnZWx5IG5vdA0KPiA+ID4gdGFr
+ZW4gaW50byBhY2NvdW50Lg0KPiA+DQo+ID4gVGhhdCBzZWVtcyBlbnRpcmVseSBleGNlc3NpdmUu
+DQo+ID4gSWYgeW91IHdhbnQgdG8gYXZvaWQgZGF0YSBjYWNoZSBpc3N1ZXMgKHdoaWNoIHByb2Jh
+Ymx5IGRvKQ0KPiA+IHRoZW4ganVzdCByZXBlYXRpbmcgYSBzaW5nbGUgYWNjZXNzIHdvdWxkIGFs
+bW9zdCBjZXJ0YWlubHkNCj4gPiBzdWZmaWNlLg0KPiA+IFJlcGVhdGVkbHkgdXNpbmcgYSBzaG9y
+dCBidWZmZXIgKHNheSAyNTYgYnl0ZXMpIHdvbid0IGFkZA0KPiA+IG11Y2ggbG9vcCBvdmVyaGVh
+ZC4NCj4gPiBBbHRob3VnaCB5b3UgbWF5IHdhbnQgdG8gZG8gYSB0ZXN0IHRoYXQgYXZvaWRzIHRy
+YW5zZmVycw0KPiA+IHRoYXQgY3Jvc3MgY2FjaGUgbGluZSBhbmQgZXNwZWNpYWxseSBwYWdlIGJv
+dW5kYXJpZXMuDQo+ID4gRWl0aGVyIG9mIHRob3NlIGNvdWxkIGVhc2lseSBiZSBtdWNoIHNsb3dl
+ciB0aGFuIGEgcmVhZA0KPiA+IHRoYXQgaXMgZW50aXJlbHkgd2l0aGluIGEgY2FjaGUgbGluZS4N
+Cj4gDQo+IFdlIHdvbid0IGJlIGZhdWx0aW5nIG9uIGFueSBvZiB0aGVzZSBwYWdlcywgYW5kIHRo
+ZXkgc2hvdWxkIHJlbWFpbiBpbg0KPiB0aGUgVExCLCBzbyBJIGRvbid0IGV4cGVjdCBtYW55IHBh
+Z2UgYm91bmRhcnkgc3BlY2lmaWMgZWZmZWN0cy4gSWYNCj4gdGhlcmUgaXMgYSBzdGVlcCBwZW5h
+bHR5IGZvciBtaXNhbGlnbmVkIGxvYWRzIGFjcm9zcyBhIGNhY2hlIGxpbmUsDQo+IHN1Y2ggdGhh
+dCBpdCdzIHdvcnNlIHRoYW4gZG9pbmcgYnl0ZSBhY2Nlc3NlcywgSSB3YW50IHRoZSB0ZXN0IHJl
+c3VsdHMNCj4gdG8gYmUgZGluZ2VkIGZvciB0aGF0Lg0KDQpUaGF0IGlzIGFuIGVudGlyZWx5IGRp
+ZmZlcmVudCBpc3N1ZS4NCg0KQXJlIHlvdSBhYnNvbHV0ZWx5IGNlcnRhaW4gdGhhdCB0aGUgcmVh
+c29uIDggYnl0ZSBsb2FkcyB0YWtlDQphcyBsb25nIGFzIGEgNjQtYml0IG1pcy1hbGlnbmVkIGxv
+YWQgaXNuJ3QgYmVjYXVzZSB0aGUgZW50aXJlDQp0ZXN0IGlzIGxpbWl0ZWQgYnkgTDEgY2FjaGUg
+ZmlsbHM/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
+ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
+dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
---jzeagO5P9A3kQsYx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 15, 2023 at 11:58:47AM +1000, angus gardner wrote:
-> Thanks for the feedback Bagas,
->=20
-> "Then checkpatch is wrong, " lol
->=20
-> Ill double check my SoB.
->=20
-
-tl;dr:
-
-> A: http://en.wikipedia.org/wiki/Top_post
-> Q: Were do I find info about this thing called top-posting?
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
->=20
-> A: No.
-> Q: Should I include quotations after my reply?
->=20
-> http://daringfireball.net/2007/07/on_top
-
-Also, don't send HTML emails as mailing lists reject them away.
-
-Last but not least, this is the third time you do parentheses fixup, for
-which Greg's bot said:
-
->   You sent a patch that has been sent multiple times in the past few
->   days, and is identical to ones that has been recently rejected.
->   Please always look at the mailing list traffic to determine if you are
->   duplicating other people's work.
-
-Again, read all Documentation/process/*.rst docs so that you won't make
-mistakes again as kernel developer.
-
-Bye!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---jzeagO5P9A3kQsYx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQQOMQAKCRD2uYlJVVFO
-ozABAP9f4cJ4x4CFW0UEkBJrggxsKLo1ON0XZG0LmZPzzQI2JQD/fEkTFsH2KkSP
-z0qFevhjEpUHaH2/N4WS6Tya9TaUdwo=
-=iIZ2
------END PGP SIGNATURE-----
-
---jzeagO5P9A3kQsYx--
