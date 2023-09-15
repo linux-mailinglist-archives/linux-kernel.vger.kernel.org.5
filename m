@@ -2,710 +2,688 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49EE7A12BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68E67A1299
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjIOBFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S231138AbjIOAzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 20:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbjIOBF2 (ORCPT
+        with ESMTP id S229715AbjIOAzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:05:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D3C2707
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:05:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9789CC433CB;
-        Fri, 15 Sep 2023 01:05:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694739923;
-        bh=/+T2kHP+yN3i1UHDJJ9EztJ2b09LmvcDHhfaOKfFahQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dMzt4disWJkzHTxFN3bUfN7GkEZkVPUtevTTYC1IMRd4ABzfvyI69sjNGYdEhsNwv
-         QzF38iBkEarTp/dWqBHdgdJQLckOoamXtc2Q1Kuori2h6sw9le7Py7PcLVnoNQtloy
-         ij4yg7ZNoULCNxmWNt+z3LPaC4Dx5JAleCy0UxbaxoqBLv00PF92eHr7D01QypXwmb
-         6/UjYFBYnnhdq9wq+y5MjME2wEio78d9qobbXPQT6xtLjBVQUOr+pXcXWonOpMrqT6
-         Dko6viiNm/Gx7j4A4AXJ952vHy7bJKF9L3/qnpckNlQPbiIHKLlhIfY86RVxP5KW8/
-         O+AHF+dStJAvA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-stm32@st-md-mailman.stormreply.com,
-        johannes@sipsolutions.net,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] net: stmmac: fix incorrect rxq|txq_stats reference
-Date:   Fri, 15 Sep 2023 08:53:16 +0800
-Message-Id: <20230915005316.592-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
+        Thu, 14 Sep 2023 20:55:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D5626B8;
+        Thu, 14 Sep 2023 17:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1694739315; x=1695344115; i=quwenruo.btrfs@gmx.com;
+ bh=zgvJvCBGJ6wxCa+/riP5RT+ZvbZx9rU5uIeSqocmlPI=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=lv+yqyDRSOyviBa4U4Zs/bOsB2xOdFowj9rjTnf0HfNWqtLvwH1STbWMzWEs2BlfkRojo7EVqqm
+ qVOXbl9NXXpQCeXd+jgEFeWR959+Mh4LDh9y08rd0dlz7xDNPpUyKReenmUsBMc5+ai0w26mOnYHI
+ Fblz4K5q39tcOlASxw7ESjkgfhhJ6+gbgk0xfhiTGOxad5/eJWgHYDjdxwNzmbP3IeJxHdflba18Z
+ 2WwBEm+n9CprweeWuUudzz2vFekDVWuOxe10Oy+d1aVbaFCTVnDOp9VLHw+jWwc8iC+uZ/mgSscAn
+ umVL8vhBLwAKAll3VeicQwOzL0tB5gtbgKoA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.27.112.223] ([154.6.151.156]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7i8Y-1rkJIO2q94-014llP; Fri, 15
+ Sep 2023 02:55:15 +0200
+Message-ID: <ca55e159-3ce0-491f-9fc3-fdcbab2bcb05@gmx.com>
+Date:   Fri, 15 Sep 2023 10:25:09 +0930
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 03/11] btrfs: add support for inserting raid stripe
+ extents
+Content-Language: en-US
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
+ <20230914-raid-stripe-tree-v9-3-15d423829637@wdc.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20230914-raid-stripe-tree-v9-3-15d423829637@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/efh/nQBMRMNM8oK2uz852bqvvLQJL1W7OoSZp56etHxaXjOz66
+ Nea0GUhGm2M01Csi6o2gOTVyBO4u+z5ZSaI3znz2+cG8QE/4QkmtJsOSClJk25yxusYsL2D
+ DIFUOyaIfdCxmSH90YR+m+M3pqbBLNlDYZkUG9t/FCZzb4ZgktxHJy+ykfKQbxl4bXJS58Z
+ Kq4kcolMiH3l74sIm3Jlg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kwSikT+wcgM=;4Wyt2HI54hpVk14IduEcM0szyCR
+ Hks+6tl4UuQRsut3mdGDZDnGu1uTSmZhISwoWrz2c9TCvGpYmVp95WFbw5rPSAf4ZLDnClrjJ
+ 3+Jui41TD0YETkFYEOv3z6RvhOglEp4+wjO53l71P47Y1b8d2oGH+EWQ5a2UbnEDRWgt2nkXp
+ WEQpcZDp0gWpwUE5JTS3XOkCnRHImS5Ot3o31+2uySav5JWSc/1ESLtIVlZQIpdl9sLyQTcb3
+ fXtPdIyi0EzVBv1TE71v7Vva65wbO+v91WtrGV9hGLQ3I9ZdQF6jsEfpQ3b6YSw7er7nUlGQi
+ n/vwaqMpVMMykSe1hOf3HidMJuwOiSR43asKgpKSmcLce0KwfxlRBVg3w/pox1hbK5mixcyVa
+ h3HF4Hs8d92ktMsR1aNcqb48NtrsuZ8r+fu3mMBrWSgNpzx4zQR3Id3LlBmEWwoZNgjWznlNd
+ 0wNmIdhxJRt58YCIkizVNm7QwP2wkKQrkC92Askhclh5E62rivYb6BMEFP/3HGT8H1WqqjI/K
+ Dbs/CKEhjwevMFvXC0D1vBbMEl3KAv/Vk/IBdbMrTEvYt4pI0Zth8E8RUjApt4x+0zdgMGmJO
+ bQoKU79B6tPXcpTl1Va7ETBzmLLLkLhPuXThTsKlWWn2+wbYYipyjhEKuj7mLUVSghezLH2jU
+ U/kyjiqJf3NHW417gnZCc6i1AbUWoTLR+Igx2UkqAGyE8ztrUyzourGVqdrqI5VlEaZxHmVa+
+ AlO9gAjt0M0iAZ0VCzYLWNdbiiFjFKyysejzgxA4Q0scEJO99oFo1+wo4NpzQqXQ3jTkun1IG
+ YSIO2deRo3OTXG8hBxFPlzESy3py7NWmNcPyBPk75Bs8DJdhXxHm3eRaaauqdYKNnhSkwAPUp
+ BGq3W/CVnvhRjyS82R/3QoAK/G4C0P/3WyTlAy5+IkpYEAnZ4JPg3rqPmb/h9OrxUEqzf6JY+
+ Utv62jkdrDX3F1gDefxmM2QEGSw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics
-where necessary") caused one regression as found by Uwe, the backtrace
-looks like:
 
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3bbe1-dirty #21
-Hardware name: STM32 (Device Tree Support)
- unwind_backtrace from show_stack+0x18/0x1c
- show_stack from dump_stack_lvl+0x60/0x90
- dump_stack_lvl from register_lock_class+0x98c/0x99c
- register_lock_class from __lock_acquire+0x74/0x293c
- __lock_acquire from lock_acquire+0x134/0x398
- lock_acquire from stmmac_get_stats64+0x2ac/0x2fc
- stmmac_get_stats64 from dev_get_stats+0x44/0x130
- dev_get_stats from rtnl_fill_stats+0x38/0x120
- rtnl_fill_stats from rtnl_fill_ifinfo+0x834/0x17f4
- rtnl_fill_ifinfo from rtmsg_ifinfo_build_skb+0xc0/0x144
- rtmsg_ifinfo_build_skb from rtmsg_ifinfo+0x50/0x88
- rtmsg_ifinfo from __dev_notify_flags+0xc0/0xec
- __dev_notify_flags from dev_change_flags+0x50/0x5c
- dev_change_flags from ip_auto_config+0x2f4/0x1260
- ip_auto_config from do_one_initcall+0x70/0x35c
- do_one_initcall from kernel_init_freeable+0x2ac/0x308
- kernel_init_freeable from kernel_init+0x1c/0x138
- kernel_init from ret_from_fork+0x14/0x2c
 
-The reason is the rxq|txq_stats structures are not what expected
-because stmmac_open() -> __stmmac_open() the structure is overwritten
-by "memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));"
-This causes the well initialized syncp member of rxq|txq_stats is
-overwritten unexpectedly as pointed out by Johannes and Uwe.
+On 2023/9/15 01:36, Johannes Thumshirn wrote:
+> Add support for inserting stripe extents into the raid stripe tree on
+> completion of every write that needs an extra logical-to-physical
+> translation when using RAID.
+>
+> Inserting the stripe extents happens after the data I/O has completed,
+> this is done to a) support zone-append and b) rule out the possibility o=
+f
+> a RAID-write-hole.
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   fs/btrfs/Makefile           |   2 +-
+>   fs/btrfs/bio.c              |  23 +++++
+>   fs/btrfs/extent-tree.c      |   1 +
+>   fs/btrfs/inode.c            |   8 +-
+>   fs/btrfs/ordered-data.c     |   1 +
+>   fs/btrfs/ordered-data.h     |   2 +
+>   fs/btrfs/raid-stripe-tree.c | 245 ++++++++++++++++++++++++++++++++++++=
+++++++++
+>   fs/btrfs/raid-stripe-tree.h |  34 ++++++
+>   fs/btrfs/volumes.c          |   4 +-
+>   fs/btrfs/volumes.h          |  15 +--
+>   10 files changed, 326 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index c57d80729d4f..525af975f61c 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -33,7 +33,7 @@ btrfs-y +=3D super.o ctree.o extent-tree.o print-tree.=
+o root-tree.o dir-item.o \
+>   	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o =
+\
+>   	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
+>   	   subpage.o tree-mod-log.o extent-io-tree.o fs.o messages.o bio.o \
+> -	   lru_cache.o
+> +	   lru_cache.o raid-stripe-tree.o
+>
+>   btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) +=3D acl.o
+>   btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) +=3D ref-verify.o
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 31ff36990404..ddbe6f8d4ea2 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -14,6 +14,7 @@
+>   #include "rcu-string.h"
+>   #include "zoned.h"
+>   #include "file-item.h"
+> +#include "raid-stripe-tree.h"
+>
+>   static struct bio_set btrfs_bioset;
+>   static struct bio_set btrfs_clone_bioset;
+> @@ -415,6 +416,9 @@ static void btrfs_orig_write_end_io(struct bio *bio)
+>   	else
+>   		bio->bi_status =3D BLK_STS_OK;
+>
+> +	if (bio_op(bio) =3D=3D REQ_OP_ZONE_APPEND && !bio->bi_status)
+> +		stripe->physical =3D bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +
+>   	btrfs_orig_bbio_end_io(bbio);
+>   	btrfs_put_bioc(bioc);
+>   }
+> @@ -426,6 +430,8 @@ static void btrfs_clone_write_end_io(struct bio *bio=
+)
+>   	if (bio->bi_status) {
+>   		atomic_inc(&stripe->bioc->error);
+>   		btrfs_log_dev_io_error(bio, stripe->dev);
+> +	} else if (bio_op(bio) =3D=3D REQ_OP_ZONE_APPEND) {
+> +		stripe->physical =3D bio->bi_iter.bi_sector << SECTOR_SHIFT;
+>   	}
+>
+>   	/* Pass on control to the original bio this one was cloned from */
+> @@ -487,6 +493,7 @@ static void btrfs_submit_mirrored_bio(struct btrfs_i=
+o_context *bioc, int dev_nr)
+>   	bio->bi_private =3D &bioc->stripes[dev_nr];
+>   	bio->bi_iter.bi_sector =3D bioc->stripes[dev_nr].physical >> SECTOR_S=
+HIFT;
+>   	bioc->stripes[dev_nr].bioc =3D bioc;
+> +	bioc->size =3D bio->bi_iter.bi_size;
+>   	btrfs_submit_dev_bio(bioc->stripes[dev_nr].dev, bio);
+>   }
+>
+> @@ -496,6 +503,8 @@ static void __btrfs_submit_bio(struct bio *bio, stru=
+ct btrfs_io_context *bioc,
+>   	if (!bioc) {
+>   		/* Single mirror read/write fast path. */
+>   		btrfs_bio(bio)->mirror_num =3D mirror_num;
+> +		if (bio_op(bio) !=3D REQ_OP_READ)
+> +			btrfs_bio(bio)->orig_physical =3D smap->physical;
+>   		bio->bi_iter.bi_sector =3D smap->physical >> SECTOR_SHIFT;
+>   		if (bio_op(bio) !=3D REQ_OP_READ)
+>   			btrfs_bio(bio)->orig_physical =3D smap->physical;
+> @@ -688,6 +697,20 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bb=
+io, int mirror_num)
+>   			bio->bi_opf |=3D REQ_OP_ZONE_APPEND;
+>   		}
+>
+> +		if (is_data_bbio(bbio) && bioc &&
+> +		    btrfs_need_stripe_tree_update(bioc->fs_info,
+> +						  bioc->map_type)) {
+> +			/*
+> +			 * No locking for the list update, as we only add to
+> +			 * the list in the I/O submission path, and list
+> +			 * iteration only happens in the completion path,
+> +			 * which can't happen until after the last submission.
+> +			 */
+> +			btrfs_get_bioc(bioc);
+> +			list_add_tail(&bioc->ordered_entry,
+> +				      &bbio->ordered->bioc_list);
+> +		}
+> +
+>   		/*
+>   		 * Csum items for reloc roots have already been cloned at this
+>   		 * point, so they are handled as part of the no-checksum case.
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index cb12bfb047e7..959d7449ea0d 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -42,6 +42,7 @@
+>   #include "file-item.h"
+>   #include "orphan.h"
+>   #include "tree-checker.h"
+> +#include "raid-stripe-tree.h"
+>
+>   #undef SCRAMBLE_DELAYED_REFS
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index e02a5ba5b533..b5e0ed3a36f7 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -71,6 +71,7 @@
+>   #include "super.h"
+>   #include "orphan.h"
+>   #include "backref.h"
+> +#include "raid-stripe-tree.h"
+>
+>   struct btrfs_iget_args {
+>   	u64 ino;
+> @@ -3091,6 +3092,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered=
+_extent *ordered_extent)
+>
+>   	trans->block_rsv =3D &inode->block_rsv;
+>
+> +	ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
+> +	if (ret)
+> +		goto out;
+> +
+>   	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+>   		compress_type =3D ordered_extent->compress_type;
+>   	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
+> @@ -3224,7 +3229,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
+extent *ordered_extent)
+>   int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
+>   {
+>   	if (btrfs_is_zoned(btrfs_sb(ordered->inode->i_sb)) &&
+> -	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags))
+> +	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags) &&
+> +	    list_empty(&ordered->bioc_list))
+>   		btrfs_finish_ordered_zoned(ordered);
+>   	return btrfs_finish_one_ordered(ordered);
+>   }
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 345c449d588c..55c7d5543265 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -191,6 +191,7 @@ static struct btrfs_ordered_extent *alloc_ordered_ex=
+tent(
+>   	INIT_LIST_HEAD(&entry->log_list);
+>   	INIT_LIST_HEAD(&entry->root_extent_list);
+>   	INIT_LIST_HEAD(&entry->work_list);
+> +	INIT_LIST_HEAD(&entry->bioc_list);
+>   	init_completion(&entry->completion);
+>
+>   	/*
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 173bd5c5df26..1c51ac57e5df 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -151,6 +151,8 @@ struct btrfs_ordered_extent {
+>   	struct completion completion;
+>   	struct btrfs_work flush_work;
+>   	struct list_head work_list;
+> +
+> +	struct list_head bioc_list;
+>   };
+>
+>   static inline void
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> new file mode 100644
+> index 000000000000..7cdcc45a8796
+> --- /dev/null
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -0,0 +1,245 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#include <linux/btrfs_tree.h>
+> +
+> +#include "ctree.h"
+> +#include "fs.h"
+> +#include "accessors.h"
+> +#include "transaction.h"
+> +#include "disk-io.h"
+> +#include "raid-stripe-tree.h"
+> +#include "volumes.h"
+> +#include "misc.h"
+> +#include "print-tree.h"
+> +
+> +static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *tran=
+s,
+> +				 int num_stripes,
+> +				 struct btrfs_io_context *bioc)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> +	struct btrfs_key stripe_key;
+> +	struct btrfs_root *stripe_root =3D fs_info->stripe_root;
+> +	u8 encoding =3D btrfs_bg_flags_to_raid_index(bioc->map_type);
+> +	struct btrfs_stripe_extent *stripe_extent;
+> +	const size_t item_size =3D struct_size(stripe_extent, strides, num_str=
+ipes);
+> +	int ret;
+> +
+> +	stripe_extent =3D kzalloc(item_size, GFP_NOFS);
+> +	if (!stripe_extent) {
+> +		btrfs_abort_transaction(trans, -ENOMEM);
+> +		btrfs_end_transaction(trans);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
+> +	for (int i =3D 0; i < num_stripes; i++) {
+> +		u64 devid =3D bioc->stripes[i].dev->devid;
+> +		u64 physical =3D bioc->stripes[i].physical;
+> +		u64 length =3D bioc->stripes[i].length;
+> +		struct btrfs_raid_stride *raid_stride =3D
+> +						&stripe_extent->strides[i];
+> +
+> +		if (length =3D=3D 0)
+> +			length =3D bioc->size;
+> +
+> +		btrfs_set_stack_raid_stride_devid(raid_stride, devid);
+> +		btrfs_set_stack_raid_stride_physical(raid_stride, physical);
+> +		btrfs_set_stack_raid_stride_length(raid_stride, length);
+> +	}
+> +
+> +	stripe_key.objectid =3D bioc->logical;
+> +	stripe_key.type =3D BTRFS_RAID_STRIPE_KEY;
+> +	stripe_key.offset =3D bioc->size;
+> +
+> +	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_exte=
+nt,
+> +				item_size);
+> +	if (ret)
+> +		btrfs_abort_transaction(trans, ret);
+> +
+> +	kfree(stripe_extent);
+> +
+> +	return ret;
+> +}
+> +
+> +static int btrfs_insert_mirrored_raid_extents(struct btrfs_trans_handle=
+ *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	int num_stripes =3D btrfs_bg_type_to_factor(map_type);
+> +	struct btrfs_io_context *bioc;
+> +	int ret;
+> +
+> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
+> +		ret =3D btrfs_insert_one_raid_extent(trans, num_stripes, bioc);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int btrfs_insert_striped_mirrored_raid_extents(
+> +				      struct btrfs_trans_handle *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	struct btrfs_io_context *bioc;
+> +	struct btrfs_io_context *rbioc;
+> +	const int nstripes =3D list_count_nodes(&ordered->bioc_list);
+> +	const int index =3D btrfs_bg_flags_to_raid_index(map_type);
+> +	const int substripes =3D btrfs_raid_array[index].sub_stripes;
+> +	const int max_stripes =3D
+> +		trans->fs_info->fs_devices->rw_devices / substripes;
+> +	int left =3D nstripes;
+> +	int i;
+> +	int ret =3D 0;
+> +	u64 stripe_end;
+> +	u64 prev_end;
+> +
+> +	if (nstripes =3D=3D 1)
+> +		return btrfs_insert_mirrored_raid_extents(trans, ordered, map_type);
+> +
+> +	rbioc =3D kzalloc(struct_size(rbioc, stripes, nstripes * substripes),
+> +			GFP_NOFS);
+> +	if (!rbioc)
+> +		return -ENOMEM;
+> +
+> +	rbioc->map_type =3D map_type;
+> +	rbioc->logical =3D list_first_entry(&ordered->bioc_list, typeof(*rbioc=
+),
+> +					   ordered_entry)->logical;
+> +
+> +	stripe_end =3D rbioc->logical;
+> +	prev_end =3D stripe_end;
+> +	i =3D 0;
+> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
+> +
+> +		rbioc->size +=3D bioc->size;
+> +		for (int j =3D 0; j < substripes; j++) {
+> +			int stripe =3D i + j;
+> +			rbioc->stripes[stripe].dev =3D bioc->stripes[j].dev;
+> +			rbioc->stripes[stripe].physical =3D bioc->stripes[j].physical;
+> +			rbioc->stripes[stripe].length =3D bioc->size;
+> +		}
+> +
+> +		stripe_end +=3D rbioc->size;
+> +		if (i >=3D nstripes ||
+> +		    (stripe_end - prev_end >=3D max_stripes * BTRFS_STRIPE_LEN)) {
+> +			ret =3D btrfs_insert_one_raid_extent(trans,
+> +							   nstripes * substripes,
+> +							   rbioc);
+> +			if (ret)
+> +				goto out;
+> +
+> +			left -=3D nstripes;
+> +			i =3D 0;
+> +			rbioc->logical +=3D rbioc->size;
+> +			rbioc->size =3D 0;
+> +		} else {
+> +			i +=3D substripes;
+> +			prev_end =3D stripe_end;
+> +		}
+> +	}
+> +
+> +	if (left) {
+> +		bioc =3D list_prev_entry(bioc, ordered_entry);
+> +		ret =3D btrfs_insert_one_raid_extent(trans, substripes, bioc);
+> +	}
+> +
+> +out:
+> +	kfree(rbioc);
+> +	return ret;
+> +}
+> +
+> +static int btrfs_insert_striped_raid_extents(struct btrfs_trans_handle =
+*trans,
+> +				     struct btrfs_ordered_extent *ordered,
+> +				     u64 map_type)
+> +{
+> +	struct btrfs_io_context *bioc;
+> +	struct btrfs_io_context *rbioc;
+> +	const int nstripes =3D list_count_nodes(&ordered->bioc_list);
+> +	int i;
+> +	int ret =3D 0;
+> +
+> +	rbioc =3D kzalloc(struct_size(rbioc, stripes, nstripes), GFP_NOFS);
+> +	if (!rbioc)
+> +		return -ENOMEM;
+> +	rbioc->map_type =3D map_type;
+> +	rbioc->logical =3D list_first_entry(&ordered->bioc_list, typeof(*rbioc=
+),
+> +					   ordered_entry)->logical;
+> +
+> +	i =3D 0;
+> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
+> +		rbioc->size +=3D bioc->size;
+> +		rbioc->stripes[i].dev =3D bioc->stripes[0].dev;
+> +		rbioc->stripes[i].physical =3D bioc->stripes[0].physical;
+> +		rbioc->stripes[i].length =3D bioc->size;
+> +
+> +		if (i =3D=3D nstripes - 1) {
+> +			ret =3D btrfs_insert_one_raid_extent(trans, nstripes, rbioc);
+> +			if (ret)
+> +				goto out;
+> +
+> +			i =3D 0;
+> +			rbioc->logical +=3D rbioc->size;
+> +			rbioc->size =3D 0;
+> +		} else {
+> +			i++;
+> +		}
+> +	}
+> +
+> +	if (i && i < nstripes - 1)
+> +		ret =3D btrfs_insert_one_raid_extent(trans, i, rbioc);
+> +
+> +out:
+> +	kfree(rbioc);
+> +	return ret;
+> +}
+> +
+> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+> +			     struct btrfs_ordered_extent *ordered_extent)
+> +{
+> +	struct btrfs_io_context *bioc;
+> +	u64 map_type;
+> +	int ret;
+> +
+> +	if (!trans->fs_info->stripe_root)
+> +		return 0;
+> +
+> +	map_type =3D list_first_entry(&ordered_extent->bioc_list, typeof(*bioc=
+),
+> +				    ordered_entry)->map_type;
+> +
+> +	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> +	case BTRFS_BLOCK_GROUP_DUP:
+> +	case BTRFS_BLOCK_GROUP_RAID1:
+> +	case BTRFS_BLOCK_GROUP_RAID1C3:
+> +	case BTRFS_BLOCK_GROUP_RAID1C4:
+> +		ret =3D btrfs_insert_mirrored_raid_extents(trans, ordered_extent,
+> +							 map_type);
+> +		break;
+> +	case BTRFS_BLOCK_GROUP_RAID0:
+> +		ret =3D btrfs_insert_striped_raid_extents(trans, ordered_extent,
+> +							map_type);
+> +		break;
+> +	case BTRFS_BLOCK_GROUP_RAID10:
+> +		ret =3D btrfs_insert_striped_mirrored_raid_extents(trans, ordered_ext=
+ent, map_type);
+> +		break;
+> +	default:
+> +		btrfs_err(trans->fs_info, "unknown block-group profile %lld",
+> +			  map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
+> +		ASSERT(0);
+> +		ret =3D -EINVAL;
+> +		break;
+> +	}
+> +
+> +	while (!list_empty(&ordered_extent->bioc_list)) {
+> +		bioc =3D list_first_entry(&ordered_extent->bioc_list,
+> +					typeof(*bioc), ordered_entry);
+> +		list_del(&bioc->ordered_entry);
+> +		btrfs_put_bioc(bioc);
+> +	}
+> +
+> +	return ret;
+> +}
+> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
+> new file mode 100644
+> index 000000000000..884f0e99d5e8
+> --- /dev/null
+> +++ b/fs/btrfs/raid-stripe-tree.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#ifndef BTRFS_RAID_STRIPE_TREE_H
+> +#define BTRFS_RAID_STRIPE_TREE_H
+> +
+> +struct btrfs_io_context;
+> +struct btrfs_io_stripe;
+> +struct btrfs_ordered_extent;
+> +struct btrfs_trans_handle;
+> +
+> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+> +			     struct btrfs_ordered_extent *ordered_extent);
+> +
+> +static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *=
+fs_info,
+> +						 u64 map_type)
+> +{
+> +	u64 type =3D map_type & BTRFS_BLOCK_GROUP_TYPE_MASK;
+> +	u64 profile =3D map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
+> +
+> +	if (!fs_info->stripe_root)
+> +		return false;
 
-Fix this issue by moving rxq|txq_stats back to stmmac_extra_stats. For
-SMP cache friendly, we also mark stmmac_txq_stats and stmmac_rxq_stats
-as ____cacheline_aligned_in_smp.
+I found a corncer case that this can be problematic.
 
-Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where necessary")
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |   7 +-
- .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  16 +--
- .../net/ethernet/stmicro/stmmac/dwmac4_lib.c  |  16 +--
- .../net/ethernet/stmicro/stmmac/dwmac_lib.c   |  16 +--
- .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  16 +--
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   2 -
- .../ethernet/stmicro/stmmac/stmmac_ethtool.c  |  32 ++---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 125 ++++++++++--------
- 8 files changed, 120 insertions(+), 110 deletions(-)
+If we have a fs with RST root tree node/leaf corrupted, mounted with
+rescue=3Dibadroots, then fs_info->stripe_root would be NULL, and in the
+5th patch inside set_io_stripe() we just fall back to regular non-RST path=
+.
+This would bring us mostly incorrect data (and can be very problematic
+for nodatacsum files).
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 403cb397d4d3..1e996c29043d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -70,7 +70,7 @@ struct stmmac_txq_stats {
- 	u64 tx_tso_frames;
- 	u64 tx_tso_nfrags;
- 	struct u64_stats_sync syncp;
--};
-+} ____cacheline_aligned_in_smp;
- 
- struct stmmac_rxq_stats {
- 	u64 rx_bytes;
-@@ -79,7 +79,7 @@ struct stmmac_rxq_stats {
- 	u64 rx_normal_irq_n;
- 	u64 napi_poll;
- 	struct u64_stats_sync syncp;
--};
-+} ____cacheline_aligned_in_smp;
- 
- /* Extra statistic and debug information exposed by ethtool */
- struct stmmac_extra_stats {
-@@ -202,6 +202,9 @@ struct stmmac_extra_stats {
- 	unsigned long mtl_est_hlbf;
- 	unsigned long mtl_est_btre;
- 	unsigned long mtl_est_btrlm;
-+	/* per queue statistics */
-+	struct stmmac_txq_stats txq_stats[MTL_MAX_TX_QUEUES];
-+	struct stmmac_rxq_stats rxq_stats[MTL_MAX_RX_QUEUES];
- 	unsigned long rx_dropped;
- 	unsigned long rx_errors;
- 	unsigned long tx_dropped;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index 01e77368eef1..465ff1fd4785 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -441,8 +441,8 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
- 				     struct stmmac_extra_stats *x, u32 chan,
- 				     u32 dir)
- {
--	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
--	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
- 	int ret = 0;
- 	u32 v;
- 
-@@ -455,9 +455,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
- 
- 	if (v & EMAC_TX_INT) {
- 		ret |= handle_tx;
--		u64_stats_update_begin(&tx_q->txq_stats.syncp);
--		tx_q->txq_stats.tx_normal_irq_n++;
--		u64_stats_update_end(&tx_q->txq_stats.syncp);
-+		u64_stats_update_begin(&txq_stats->syncp);
-+		txq_stats->tx_normal_irq_n++;
-+		u64_stats_update_end(&txq_stats->syncp);
- 	}
- 
- 	if (v & EMAC_TX_DMA_STOP_INT)
-@@ -479,9 +479,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
- 
- 	if (v & EMAC_RX_INT) {
- 		ret |= handle_rx;
--		u64_stats_update_begin(&rx_q->rxq_stats.syncp);
--		rx_q->rxq_stats.rx_normal_irq_n++;
--		u64_stats_update_end(&rx_q->rxq_stats.syncp);
-+		u64_stats_update_begin(&rxq_stats->syncp);
-+		rxq_stats->rx_normal_irq_n++;
-+		u64_stats_update_end(&rxq_stats->syncp);
- 	}
- 
- 	if (v & EMAC_RX_BUF_UA_INT)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-index 980e5f8a37ec..9470d3fd2ded 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-@@ -171,8 +171,8 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
- 	const struct dwmac4_addrs *dwmac4_addrs = priv->plat->dwmac4_addrs;
- 	u32 intr_status = readl(ioaddr + DMA_CHAN_STATUS(dwmac4_addrs, chan));
- 	u32 intr_en = readl(ioaddr + DMA_CHAN_INTR_ENA(dwmac4_addrs, chan));
--	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
--	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
- 	int ret = 0;
- 
- 	if (dir == DMA_DIR_RX)
-@@ -201,15 +201,15 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
- 	}
- 	/* TX/RX NORMAL interrupts */
- 	if (likely(intr_status & DMA_CHAN_STATUS_RI)) {
--		u64_stats_update_begin(&rx_q->rxq_stats.syncp);
--		rx_q->rxq_stats.rx_normal_irq_n++;
--		u64_stats_update_end(&rx_q->rxq_stats.syncp);
-+		u64_stats_update_begin(&rxq_stats->syncp);
-+		rxq_stats->rx_normal_irq_n++;
-+		u64_stats_update_end(&rxq_stats->syncp);
- 		ret |= handle_rx;
- 	}
- 	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
--		u64_stats_update_begin(&tx_q->txq_stats.syncp);
--		tx_q->txq_stats.tx_normal_irq_n++;
--		u64_stats_update_end(&tx_q->txq_stats.syncp);
-+		u64_stats_update_begin(&txq_stats->syncp);
-+		txq_stats->tx_normal_irq_n++;
-+		u64_stats_update_end(&txq_stats->syncp);
- 		ret |= handle_tx;
- 	}
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-index aaa09b16b016..7907d62d3437 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-@@ -162,8 +162,8 @@ static void show_rx_process_state(unsigned int status)
- int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
- 			struct stmmac_extra_stats *x, u32 chan, u32 dir)
- {
--	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
--	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
- 	int ret = 0;
- 	/* read the status register (CSR5) */
- 	u32 intr_status = readl(ioaddr + DMA_STATUS);
-@@ -215,16 +215,16 @@ int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
- 			u32 value = readl(ioaddr + DMA_INTR_ENA);
- 			/* to schedule NAPI on real RIE event. */
- 			if (likely(value & DMA_INTR_ENA_RIE)) {
--				u64_stats_update_begin(&rx_q->rxq_stats.syncp);
--				rx_q->rxq_stats.rx_normal_irq_n++;
--				u64_stats_update_end(&rx_q->rxq_stats.syncp);
-+				u64_stats_update_begin(&rxq_stats->syncp);
-+				rxq_stats->rx_normal_irq_n++;
-+				u64_stats_update_end(&rxq_stats->syncp);
- 				ret |= handle_rx;
- 			}
- 		}
- 		if (likely(intr_status & DMA_STATUS_TI)) {
--			u64_stats_update_begin(&tx_q->txq_stats.syncp);
--			tx_q->txq_stats.tx_normal_irq_n++;
--			u64_stats_update_end(&tx_q->txq_stats.syncp);
-+			u64_stats_update_begin(&txq_stats->syncp);
-+			txq_stats->tx_normal_irq_n++;
-+			u64_stats_update_end(&txq_stats->syncp);
- 			ret |= handle_tx;
- 		}
- 		if (unlikely(intr_status & DMA_STATUS_ERI))
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-index fa69d64a8694..3cde695fec91 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-@@ -337,8 +337,8 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
- 				  struct stmmac_extra_stats *x, u32 chan,
- 				  u32 dir)
- {
--	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
--	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[chan];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[chan];
- 	u32 intr_status = readl(ioaddr + XGMAC_DMA_CH_STATUS(chan));
- 	u32 intr_en = readl(ioaddr + XGMAC_DMA_CH_INT_EN(chan));
- 	int ret = 0;
-@@ -367,15 +367,15 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
- 	/* TX/RX NORMAL interrupts */
- 	if (likely(intr_status & XGMAC_NIS)) {
- 		if (likely(intr_status & XGMAC_RI)) {
--			u64_stats_update_begin(&rx_q->rxq_stats.syncp);
--			rx_q->rxq_stats.rx_normal_irq_n++;
--			u64_stats_update_end(&rx_q->rxq_stats.syncp);
-+			u64_stats_update_begin(&rxq_stats->syncp);
-+			rxq_stats->rx_normal_irq_n++;
-+			u64_stats_update_end(&rxq_stats->syncp);
- 			ret |= handle_rx;
- 		}
- 		if (likely(intr_status & (XGMAC_TI | XGMAC_TBU))) {
--			u64_stats_update_begin(&tx_q->txq_stats.syncp);
--			tx_q->txq_stats.tx_normal_irq_n++;
--			u64_stats_update_end(&tx_q->txq_stats.syncp);
-+			u64_stats_update_begin(&txq_stats->syncp);
-+			txq_stats->tx_normal_irq_n++;
-+			u64_stats_update_end(&txq_stats->syncp);
- 			ret |= handle_tx;
- 		}
- 	}
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index 3401e888a9f6..cd7a9768de5f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -78,7 +78,6 @@ struct stmmac_tx_queue {
- 	dma_addr_t dma_tx_phy;
- 	dma_addr_t tx_tail_addr;
- 	u32 mss;
--	struct stmmac_txq_stats txq_stats;
- };
- 
- struct stmmac_rx_buffer {
-@@ -123,7 +122,6 @@ struct stmmac_rx_queue {
- 		unsigned int len;
- 		unsigned int error;
- 	} state;
--	struct stmmac_rxq_stats rxq_stats;
- };
- 
- struct stmmac_channel {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index b7ac7abecdd3..6aa5c0556d22 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -548,14 +548,14 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
- 
- 	pos = data;
- 	for (q = 0; q < tx_cnt; q++) {
--		struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[q];
-+		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[q];
- 		struct stmmac_txq_stats snapshot;
- 
- 		data = pos;
- 		do {
--			start = u64_stats_fetch_begin(&tx_q->txq_stats.syncp);
--			snapshot = tx_q->txq_stats;
--		} while (u64_stats_fetch_retry(&tx_q->txq_stats.syncp, start));
-+			start = u64_stats_fetch_begin(&txq_stats->syncp);
-+			snapshot = *txq_stats;
-+		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
- 
- 		p = (char *)&snapshot + offsetof(struct stmmac_txq_stats, tx_pkt_n);
- 		for (stat = 0; stat < STMMAC_TXQ_STATS; stat++) {
-@@ -566,14 +566,14 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
- 
- 	pos = data;
- 	for (q = 0; q < rx_cnt; q++) {
--		struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[q];
-+		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[q];
- 		struct stmmac_rxq_stats snapshot;
- 
- 		data = pos;
- 		do {
--			start = u64_stats_fetch_begin(&rx_q->rxq_stats.syncp);
--			snapshot = rx_q->rxq_stats;
--		} while (u64_stats_fetch_retry(&rx_q->rxq_stats.syncp, start));
-+			start = u64_stats_fetch_begin(&rxq_stats->syncp);
-+			snapshot = *rxq_stats;
-+		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
- 
- 		p = (char *)&snapshot + offsetof(struct stmmac_rxq_stats, rx_pkt_n);
- 		for (stat = 0; stat < STMMAC_RXQ_STATS; stat++) {
-@@ -637,14 +637,14 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
- 
- 	pos = j;
- 	for (i = 0; i < rx_queues_count; i++) {
--		struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[i];
-+		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[i];
- 		struct stmmac_rxq_stats snapshot;
- 
- 		j = pos;
- 		do {
--			start = u64_stats_fetch_begin(&rx_q->rxq_stats.syncp);
--			snapshot = rx_q->rxq_stats;
--		} while (u64_stats_fetch_retry(&rx_q->rxq_stats.syncp, start));
-+			start = u64_stats_fetch_begin(&rxq_stats->syncp);
-+			snapshot = *rxq_stats;
-+		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
- 
- 		data[j++] += snapshot.rx_pkt_n;
- 		data[j++] += snapshot.rx_normal_irq_n;
-@@ -654,14 +654,14 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
- 
- 	pos = j;
- 	for (i = 0; i < tx_queues_count; i++) {
--		struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[i];
-+		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[i];
- 		struct stmmac_txq_stats snapshot;
- 
- 		j = pos;
- 		do {
--			start = u64_stats_fetch_begin(&tx_q->txq_stats.syncp);
--			snapshot = tx_q->txq_stats;
--		} while (u64_stats_fetch_retry(&tx_q->txq_stats.syncp, start));
-+			start = u64_stats_fetch_begin(&txq_stats->syncp);
-+			snapshot = *txq_stats;
-+		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
- 
- 		data[j++] += snapshot.tx_pkt_n;
- 		data[j++] += snapshot.tx_normal_irq_n;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 9a3182b9e767..5a2b06c6e889 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2426,6 +2426,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
- {
- 	struct netdev_queue *nq = netdev_get_tx_queue(priv->dev, queue);
- 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[queue];
- 	struct xsk_buff_pool *pool = tx_q->xsk_pool;
- 	unsigned int entry = tx_q->cur_tx;
- 	struct dma_desc *tx_desc = NULL;
-@@ -2505,9 +2506,9 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
- 		tx_q->cur_tx = STMMAC_GET_ENTRY(tx_q->cur_tx, priv->dma_conf.dma_tx_size);
- 		entry = tx_q->cur_tx;
- 	}
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.tx_set_ic_bit += tx_set_ic_bit;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->tx_set_ic_bit += tx_set_ic_bit;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	if (tx_desc) {
- 		stmmac_flush_tx_descriptors(priv, queue);
-@@ -2547,6 +2548,7 @@ static void stmmac_bump_dma_threshold(struct stmmac_priv *priv, u32 chan)
- static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
- {
- 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[queue];
- 	unsigned int bytes_compl = 0, pkts_compl = 0;
- 	unsigned int entry, xmits = 0, count = 0;
- 	u32 tx_packets = 0, tx_errors = 0;
-@@ -2708,11 +2710,11 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
- 			      STMMAC_COAL_TIMER(priv->tx_coal_timer[queue]),
- 			      HRTIMER_MODE_REL);
- 
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.tx_packets += tx_packets;
--	tx_q->txq_stats.tx_pkt_n += tx_packets;
--	tx_q->txq_stats.tx_clean++;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->tx_packets += tx_packets;
-+	txq_stats->tx_pkt_n += tx_packets;
-+	txq_stats->tx_clean++;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	priv->xstats.tx_errors += tx_errors;
- 
-@@ -4112,6 +4114,7 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
- 	int nfrags = skb_shinfo(skb)->nr_frags;
- 	u32 queue = skb_get_queue_mapping(skb);
- 	unsigned int first_entry, tx_packets;
-+	struct stmmac_txq_stats *txq_stats;
- 	int tmp_pay_len = 0, first_tx;
- 	struct stmmac_tx_queue *tx_q;
- 	bool has_vlan, set_ic;
-@@ -4122,6 +4125,7 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
- 	int i;
- 
- 	tx_q = &priv->dma_conf.tx_queue[queue];
-+	txq_stats = &priv->xstats.txq_stats[queue];
- 	first_tx = tx_q->cur_tx;
- 
- 	/* Compute header lengths */
-@@ -4280,13 +4284,13 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
- 		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
- 	}
- 
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.tx_bytes += skb->len;
--	tx_q->txq_stats.tx_tso_frames++;
--	tx_q->txq_stats.tx_tso_nfrags += nfrags;
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->tx_bytes += skb->len;
-+	txq_stats->tx_tso_frames++;
-+	txq_stats->tx_tso_nfrags += nfrags;
- 	if (set_ic)
--		tx_q->txq_stats.tx_set_ic_bit++;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+		txq_stats->tx_set_ic_bit++;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	if (priv->sarc_type)
- 		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
-@@ -4357,6 +4361,7 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
- 	u32 queue = skb_get_queue_mapping(skb);
- 	int nfrags = skb_shinfo(skb)->nr_frags;
- 	int gso = skb_shinfo(skb)->gso_type;
-+	struct stmmac_txq_stats *txq_stats;
- 	struct dma_edesc *tbs_desc = NULL;
- 	struct dma_desc *desc, *first;
- 	struct stmmac_tx_queue *tx_q;
-@@ -4366,6 +4371,7 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
- 	dma_addr_t des;
- 
- 	tx_q = &priv->dma_conf.tx_queue[queue];
-+	txq_stats = &priv->xstats.txq_stats[queue];
- 	first_tx = tx_q->cur_tx;
- 
- 	if (priv->tx_path_in_lpi_mode && priv->eee_sw_timer_en)
-@@ -4517,11 +4523,11 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
- 		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
- 	}
- 
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.tx_bytes += skb->len;
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->tx_bytes += skb->len;
- 	if (set_ic)
--		tx_q->txq_stats.tx_set_ic_bit++;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+		txq_stats->tx_set_ic_bit++;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	if (priv->sarc_type)
- 		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
-@@ -4728,6 +4734,7 @@ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
- static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
- 				struct xdp_frame *xdpf, bool dma_map)
- {
-+	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[queue];
- 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
- 	unsigned int entry = tx_q->cur_tx;
- 	struct dma_desc *tx_desc;
-@@ -4787,9 +4794,9 @@ static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
- 		unsigned long flags;
- 		tx_q->tx_count_frames = 0;
- 		stmmac_set_tx_ic(priv, tx_desc);
--		flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--		tx_q->txq_stats.tx_set_ic_bit++;
--		u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+		flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+		txq_stats->tx_set_ic_bit++;
-+		u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 	}
- 
- 	stmmac_enable_dma_transmission(priv, priv->ioaddr);
-@@ -4934,7 +4941,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 				   struct dma_desc *p, struct dma_desc *np,
- 				   struct xdp_buff *xdp)
- {
--	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[queue];
- 	struct stmmac_channel *ch = &priv->channel[queue];
- 	unsigned int len = xdp->data_end - xdp->data;
- 	enum pkt_hash_types hash_type;
-@@ -4964,10 +4971,10 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
- 	skb_record_rx_queue(skb, queue);
- 	napi_gro_receive(&ch->rxtx_napi, skb);
- 
--	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
--	rx_q->rxq_stats.rx_pkt_n++;
--	rx_q->rxq_stats.rx_bytes += len;
--	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
-+	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-+	rxq_stats->rx_pkt_n++;
-+	rxq_stats->rx_bytes += len;
-+	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
- }
- 
- static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
-@@ -5040,6 +5047,7 @@ static struct stmmac_xdp_buff *xsk_buff_to_stmmac_ctx(struct xdp_buff *xdp)
- 
- static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- {
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[queue];
- 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
- 	unsigned int count = 0, error = 0, len = 0;
- 	int dirty = stmmac_rx_dirty(priv, queue);
-@@ -5203,9 +5211,9 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 	stmmac_finalize_xdp_rx(priv, xdp_status);
- 
--	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
--	rx_q->rxq_stats.rx_pkt_n += count;
--	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
-+	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-+	rxq_stats->rx_pkt_n += count;
-+	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
- 
- 	priv->xstats.rx_dropped += rx_dropped;
- 	priv->xstats.rx_errors += rx_errors;
-@@ -5233,6 +5241,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
- {
- 	u32 rx_errors = 0, rx_dropped = 0, rx_bytes = 0, rx_packets = 0;
-+	struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[queue];
- 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
- 	struct stmmac_channel *ch = &priv->channel[queue];
- 	unsigned int count = 0, error = 0, len = 0;
-@@ -5494,11 +5503,11 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 	stmmac_rx_refill(priv, queue);
- 
--	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
--	rx_q->rxq_stats.rx_packets += rx_packets;
--	rx_q->rxq_stats.rx_bytes += rx_bytes;
--	rx_q->rxq_stats.rx_pkt_n += count;
--	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
-+	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-+	rxq_stats->rx_packets += rx_packets;
-+	rxq_stats->rx_bytes += rx_bytes;
-+	rxq_stats->rx_pkt_n += count;
-+	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
- 
- 	priv->xstats.rx_dropped += rx_dropped;
- 	priv->xstats.rx_errors += rx_errors;
-@@ -5511,15 +5520,15 @@ static int stmmac_napi_poll_rx(struct napi_struct *napi, int budget)
- 	struct stmmac_channel *ch =
- 		container_of(napi, struct stmmac_channel, rx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
--	struct stmmac_rx_queue *rx_q;
-+	struct stmmac_rxq_stats *rxq_stats;
- 	u32 chan = ch->index;
- 	unsigned long flags;
- 	int work_done;
- 
--	rx_q = &priv->dma_conf.rx_queue[chan];
--	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
--	rx_q->rxq_stats.napi_poll++;
--	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
-+	rxq_stats = &priv->xstats.rxq_stats[chan];
-+	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-+	rxq_stats->napi_poll++;
-+	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
- 
- 	work_done = stmmac_rx(priv, budget, chan);
- 	if (work_done < budget && napi_complete_done(napi, work_done)) {
-@@ -5538,15 +5547,15 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
- 	struct stmmac_channel *ch =
- 		container_of(napi, struct stmmac_channel, tx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
--	struct stmmac_tx_queue *tx_q;
-+	struct stmmac_txq_stats *txq_stats;
- 	u32 chan = ch->index;
- 	unsigned long flags;
- 	int work_done;
- 
--	tx_q = &priv->dma_conf.tx_queue[chan];
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.napi_poll++;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+	txq_stats = &priv->xstats.txq_stats[chan];
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->napi_poll++;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	work_done = stmmac_tx_clean(priv, budget, chan);
- 	work_done = min(work_done, budget);
-@@ -5568,20 +5577,20 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 		container_of(napi, struct stmmac_channel, rxtx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
- 	int rx_done, tx_done, rxtx_done;
--	struct stmmac_rx_queue *rx_q;
--	struct stmmac_tx_queue *tx_q;
-+	struct stmmac_rxq_stats *rxq_stats;
-+	struct stmmac_txq_stats *txq_stats;
- 	u32 chan = ch->index;
- 	unsigned long flags;
- 
--	rx_q = &priv->dma_conf.rx_queue[chan];
--	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
--	rx_q->rxq_stats.napi_poll++;
--	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
-+	rxq_stats = &priv->xstats.rxq_stats[chan];
-+	flags = u64_stats_update_begin_irqsave(&rxq_stats->syncp);
-+	rxq_stats->napi_poll++;
-+	u64_stats_update_end_irqrestore(&rxq_stats->syncp, flags);
- 
--	tx_q = &priv->dma_conf.tx_queue[chan];
--	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
--	tx_q->txq_stats.napi_poll++;
--	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
-+	txq_stats = &priv->xstats.txq_stats[chan];
-+	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
-+	txq_stats->napi_poll++;
-+	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
- 	tx_done = stmmac_tx_clean(priv, budget, chan);
- 	tx_done = min(tx_done, budget);
-@@ -6924,7 +6933,7 @@ static void stmmac_get_stats64(struct net_device *dev, struct rtnl_link_stats64
- 	int q;
- 
- 	for (q = 0; q < tx_cnt; q++) {
--		struct stmmac_txq_stats *txq_stats = &priv->dma_conf.tx_queue[q].txq_stats;
-+		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[q];
- 		u64 tx_packets;
- 		u64 tx_bytes;
- 
-@@ -6939,7 +6948,7 @@ static void stmmac_get_stats64(struct net_device *dev, struct rtnl_link_stats64
- 	}
- 
- 	for (q = 0; q < rx_cnt; q++) {
--		struct stmmac_rxq_stats *rxq_stats = &priv->dma_conf.rx_queue[q].rxq_stats;
-+		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[q];
- 		u64 rx_packets;
- 		u64 rx_bytes;
- 
-@@ -7340,9 +7349,9 @@ int stmmac_dvr_probe(struct device *device,
- 	priv->dev = ndev;
- 
- 	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
--		u64_stats_init(&priv->dma_conf.rx_queue[i].rxq_stats.syncp);
-+		u64_stats_init(&priv->xstats.rxq_stats[i].syncp);
- 	for (i = 0; i < MTL_MAX_TX_QUEUES; i++)
--		u64_stats_init(&priv->dma_conf.tx_queue[i].txq_stats.syncp);
-+		u64_stats_init(&priv->xstats.txq_stats[i].syncp);
- 
- 	stmmac_set_ethtool_ops(ndev);
- 	priv->pause = pause;
--- 
-2.40.1
+Thus stripe_root itself is not a reliable way to determine if we're at
+RST routine, I'd say only super incompat flags is reliable.
 
+And fs_info->stripe_root should only be checked for functions that do
+RST tree operations, and return -EIO properly if it's not initialized.
+
+> +
+> +	if (type !=3D BTRFS_BLOCK_GROUP_DATA)
+> +		return false;
+> +
+> +	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
+> +		return true;
+
+Just a stupid quest, RAID0 DATA doesn't need RST purely because they are
+  the same as SINGLE, thus we only update the file items to the real
+written logical address, and no need for the extra mapping?
+
+Thus only profiles with duplication relies on RST, right?
+If so, then I guess DUP should also be covered by RST.
+
+> +
+> +	return false;
+> +}
+> +#endif
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index a1eae8b5b412..c2bac87912c7 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -5984,6 +5984,7 @@ static int find_live_mirror(struct btrfs_fs_info *=
+fs_info,
+>   }
+>
+>   static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs=
+_info *fs_info,
+> +						       u64 logical,
+>   						       u16 total_stripes)
+>   {
+>   	struct btrfs_io_context *bioc;
+> @@ -6003,6 +6004,7 @@ static struct btrfs_io_context *alloc_btrfs_io_con=
+text(struct btrfs_fs_info *fs_
+>   	bioc->fs_info =3D fs_info;
+>   	bioc->replace_stripe_src =3D -1;
+>   	bioc->full_stripe_logical =3D (u64)-1;
+> +	bioc->logical =3D logical;
+>
+>   	return bioc;
+>   }
+> @@ -6537,7 +6539,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
+ enum btrfs_map_op op,
+>   		goto out;
+>   	}
+>
+> -	bioc =3D alloc_btrfs_io_context(fs_info, num_alloc_stripes);
+> +	bioc =3D alloc_btrfs_io_context(fs_info, logical, num_alloc_stripes);
+>   	if (!bioc) {
+>   		ret =3D -ENOMEM;
+>   		goto out;
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 26397adc8706..2043aff6e966 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -390,12 +390,11 @@ struct btrfs_fs_devices {
+>
+>   struct btrfs_io_stripe {
+>   	struct btrfs_device *dev;
+> -	union {
+> -		/* Block mapping */
+> -		u64 physical;
+> -		/* For the endio handler */
+> -		struct btrfs_io_context *bioc;
+> -	};
+> +	/* Block mapping */
+> +	u64 physical;
+> +	u64 length;
+> +	/* For the endio handler */
+> +	struct btrfs_io_context *bioc;
+>   };
+>
+>   struct btrfs_discard_stripe {
+> @@ -428,6 +427,10 @@ struct btrfs_io_context {
+>   	atomic_t error;
+>   	u16 max_errors;
+>
+> +	u64 logical;
+> +	u64 size;
+> +	struct list_head ordered_entry;
+
+Considering this is only utlized by RST, can we rename it to be more
+specific?
+Like rst_ordered_entry?
+
+Or I'm pretty sure just weeks later I would need to dig to see what this
+list is used for.
+
+Thanks,
+Qu
+> +
+>   	/*
+>   	 * The total number of stripes, including the extra duplicated
+>   	 * stripe for replace.
+>
