@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03B87A1C7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04257A1C7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbjIOKkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S232976AbjIOKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIOKkJ (ORCPT
+        with ESMTP id S232404AbjIOKkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:40:09 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5233A1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:40:03 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31f71b25a99so1844138f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:40:03 -0700 (PDT)
+        Fri, 15 Sep 2023 06:40:23 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A384B1AD;
+        Fri, 15 Sep 2023 03:40:14 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf57366ccdso22520345ad.1;
+        Fri, 15 Sep 2023 03:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694774402; x=1695379202; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wg4RGJGXJ83gUY3aUzka2t/lAD8v0ssdxmSTV1UhJTU=;
-        b=eIxZwUs7BN00mH9i0BMvq1jlv3PQslM6mPcCJ8cwSFv3xyie5uKL5z3L0+FsKe0LB/
-         2owrqMyCZ8NXj4btjcg7DFLJN3/R3WydNDyvzLQbRakzei8S76SM5g0ZqDfc9CF3FkMb
-         h4VQd0mFM2d90HJmwPsq2w8417H73bx8hYCtMfot3nmun0PweR34lmf7mCntpuDWJpP5
-         DjPqtJ7XFGQEHZcKIK6U4tH1C1hs0zJKCF3KATie7gXdj/C3lqPvU/Yc2I+Xpypmnph9
-         oMUWi0KFn3eRazViztXwf6oX9urrc8sxOkNKjdC9SRN+dyOLpVMWsXFL0QcjKJoV7X46
-         HBTw==
+        d=gmail.com; s=20230601; t=1694774414; x=1695379214; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=buBIVholknHiWUJctiiDrt74bolRbOHTJ1nmcGC/y4c=;
+        b=ZyWMmAOTeNAi30Ls5H2RBheiDyTpZzj4qN+4HSQ98n1jDHU5vrawaR/Gcvhx5Axdwp
+         EKQkbjEtONTpPFKd8/34SYiBSuDiXH76nwJlStr+hepgjp/05zGr3h5o3/AIhMgZp6ck
+         VpxggaB5zNGWY0FiVVOtRPU7WlW33g5eArlNKt8pzvbwH3pTR57yHizogd1gFLfiVAUr
+         O7Hu1JOub+H58AM9R/1sVbLVf61OzJkNvGVVE0OSDJES3whaBnzN4+lRwU5P7BNTeePB
+         8kJhn33TdIayIUi8UWuHkIYj2h3GZB4DqpqHmpjPZ30SayidnTm/TajLyCFytM6v3kN/
+         BX5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774402; x=1695379202;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wg4RGJGXJ83gUY3aUzka2t/lAD8v0ssdxmSTV1UhJTU=;
-        b=V7iBExnXAqpZti7M47cFFUOVb6tqb1yYR9FuNxO7t9VV8auyYl4xrMDuArjBtP6Hxf
-         1RSReN0tlUUcy7XXta9x8I/XSy0/uGWscQP/Tl0LAaxcyniH7t1ijhJYRyuLWkyzvZQS
-         GaLE/EyFDHeRrqcNf89WfdOXtmA/yKEemogfqeKjKfmfgTW3sX4mqYgD9fpsDVLpGn/W
-         +lUcGaNpIrXGPw381idYeKUguHJFoTUzzPZ8bn4KZDzMB1me8f/jZ9a+TEfnMk/8pUFo
-         0Ck3KtNqVONWjFoGaXwQ+RifBZzAHPvaULFOBcMDdpN5ysftBOMO1RNwL8hK/RT5y/rL
-         3egg==
-X-Gm-Message-State: AOJu0YzJ4ZSIc9tHsd5fPgRSy+CZOU2UzFaiX5Z5qbr2VAIWAEGjAxTb
-        oNgx770/59utZh9o5JkGXjiY4ijDcdNupAnbScg=
-X-Google-Smtp-Source: AGHT+IEVHaZPwjMfzpRmIUehShY1icG9zi+gwSzKiSTLPWJUMBQfOp5Z2D/Bt6jniMMPJvQ+8WabWQ==
-X-Received: by 2002:a05:6000:1f89:b0:31f:f72c:df95 with SMTP id bw9-20020a0560001f8900b0031ff72cdf95mr772619wrb.21.1694774402077;
-        Fri, 15 Sep 2023 03:40:02 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id g13-20020a7bc4cd000000b003fc02e8ea68sm7152870wmk.13.2023.09.15.03.40.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:40:01 -0700 (PDT)
-Message-ID: <a72a1fe1-78d3-6a9b-fd1a-be0f687e3234@linaro.org>
-Date:   Fri, 15 Sep 2023 12:39:59 +0200
+        d=1e100.net; s=20230601; t=1694774414; x=1695379214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=buBIVholknHiWUJctiiDrt74bolRbOHTJ1nmcGC/y4c=;
+        b=eX5MU32+bveTJwjEOPqJ+GyNtLkPLgvvwkK9oZtVZM+Zy1skYU5E3/hl9RbBR4Y7QF
+         lVXkIHutKpiMyWx/5lptfgGPHkgNjvKl7K5nTmAMWvAnw/sEsn/FzXJmgngVJPl0pVq3
+         Q9+Z+knazguC85Io+KFj7qBJdtW5efempMf5c64dD7twjsCaXhtudsxFSzQi84LkelA9
+         q4pMk00jVSDp2+tO4hRZgtQELYEnsH/CZFqDHO7ayeCSNkJ5gi6kUe1VaTW0ji7FCkBn
+         7JAPkc96JhsSNq0KotrMLDx94LSjt89aK6vcwsJGK6e98IxWEIyBhGR1RSGbwkaxKscN
+         mD/w==
+X-Gm-Message-State: AOJu0YyEA+vKFk4S7kSCkbZ+V+hv0khDda8wB6Eq/7v4XQV5rh0CYyVk
+        twjNz47HGJMRBJD+QMJ3enI=
+X-Google-Smtp-Source: AGHT+IFCl8rJP+X5voFkMbpPc9mRMG0z9bYpbf/GMuWMKGwebJdeUijsk3q0w79tJBi4GxS4r6o4EA==
+X-Received: by 2002:a17:902:f7d4:b0:1c4:314a:d045 with SMTP id h20-20020a170902f7d400b001c4314ad045mr1496684plw.14.1694774413981;
+        Fri, 15 Sep 2023 03:40:13 -0700 (PDT)
+Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
+        by smtp.gmail.com with ESMTPSA id iz19-20020a170902ef9300b001c3bc7b8816sm3183808plb.284.2023.09.15.03.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 03:40:13 -0700 (PDT)
+Sender: Herbert Xu <herbertx@gmail.com>
+Date:   Fri, 15 Sep 2023 18:40:13 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     thomas.lendacky@amd.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] Fixes for dynamic boost control for 6.6
+Message-ID: <ZQQ0jdhE2jPz3A8i@gondor.apana.org.au>
+References: <20230829150759.156126-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 07/42] dt-bindings: power: reset: Add ep93xx reset
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me, Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-7-a1d779dcec10@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915-ep93xx-v4-7-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829150759.156126-1-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 10:10, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Tue, Aug 29, 2023 at 10:07:54AM -0500, Mario Limonciello wrote:
+> Testing the code that is submitted for kernel 6.6 found some occasional
+> problems with memory allocation and with the test suite and sample
+> application as merged.
 > 
-> Add YAML bindings for ep93xx reset.
+> This series fixes all problems found. Ideally all patches should
+> be submitted for a future 6.6-rc, but, the most important is
+> "crypto: ccp: Get a free page to use while fetching initial nonce"
+> if the rest must be pushed to 6.7.
 > 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  .../bindings/power/reset/cirrus,ep9301-reboot.yaml | 34 ++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+> This series merges together the two previous submissions, re-orders them
+> and fixes one more problem found with unfused tests.
+> Link: https://lore.kernel.org/linux-crypto/20230828190200.1598-1-mario.limonciello@amd.com/T/#m5f336a50707d2426c2a0d47d751f06d233e5c816
+> Link: https://lore.kernel.org/linux-crypto/20230824221932.2807-1-mario.limonciello@amd.com/#t
 > 
-> diff --git a/Documentation/devicetree/bindings/power/reset/cirrus,ep9301-reboot.yaml b/Documentation/devicetree/bindings/power/reset/cirrus,ep9301-reboot.yaml
-> new file mode 100644
-> index 000000000000..a5a718dec4b5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/reset/cirrus,ep9301-reboot.yaml
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/reset/cirrus,ep9301-reboot.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus EP93xx SoC family reset controller
-> +
-> +maintainers:
-> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> +  - Nikita Shubin <nikita.shubin@maquefel.me>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: cirrus,ep9301-reboot
-> +      - items:
-> +          - enum:
-> +              - cirrus,ep9302-reboot
-> +              - cirrus,ep9307-reboot
-> +              - cirrus,ep9312-reboot
-> +              - cirrus,ep9315-reboot
-> +          - const: cirrus,ep9301-reboot
-> +
-> +required:
-> +  - compatible
-> +
+> Mario Limonciello (5):
+>   crypto: ccp: Get a free page to use while fetching initial nonce
+>   crypto: ccp: Fix ioctl unit tests
+>   crypto: ccp: Fix DBC sample application error handling
+>   crypto: ccp: Fix sample application signature passing
+>   crypto: ccp: Fix some unfused tests
+> 
+>  drivers/crypto/ccp/dbc.c     |  2 +-
+>  tools/crypto/ccp/dbc.c       | 17 +++++++-------
+>  tools/crypto/ccp/dbc.py      |  8 +++----
+>  tools/crypto/ccp/test_dbc.py | 45 +++++++++++++++++++++---------------
+>  4 files changed, 41 insertions(+), 31 deletions(-)
+> 
+> 
+> base-commit: 85b9bf9a514d991fcecb118d0a8a35e754ff9265
+> -- 
+> 2.34.1
 
-The binding looks fine except... that's not needed. See my comment in
-next patches.
-
-Best regards,
-Krzysztof
-
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
