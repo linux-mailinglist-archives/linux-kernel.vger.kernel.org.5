@@ -2,78 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAD47A244C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E157A2452
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjIORHs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 13:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S234794AbjIORJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbjIORHa (ORCPT
+        with ESMTP id S231648AbjIORJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:07:30 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21473E7F;
-        Fri, 15 Sep 2023 10:07:25 -0700 (PDT)
-Received: from lhrpeml500001.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnL8v5Njxz67KXG;
-        Sat, 16 Sep 2023 01:02:39 +0800 (CST)
-Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
- lhrpeml500001.china.huawei.com (7.191.163.213) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 18:07:22 +0100
-Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
- lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
- Fri, 15 Sep 2023 18:07:21 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Russell King <linux@armlinux.org.uk>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        James Morse <james.morse@arm.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
-        "justin.he@arm.com" <justin.he@arm.com>
-Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
- first?]
-Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
- [code first?]
-Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAABq9gIAAG4DQgAA3wICAACNmMP///ZyAgAAmTMA=
-Date:   Fri, 15 Sep 2023 17:07:21 +0000
-Message-ID: <e13a455952964434a3f0a93bc472311a@huawei.com>
-References: <20230913163823.7880-28-james.morse@arm.com>
-        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
-        <20230914155459.00002dba@Huawei.com>
-        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
-        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
-        <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-        <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
-        <80e36ff513504a0382a1cbce83e42295@huawei.com>
-        <ZQRfaYYwrYQEfICN@shell.armlinux.org.uk>
-        <9e327ad1128045fa80eebf327abaa8f0@huawei.com>
- <ZQR7GY1Z57wK8RaX@shell.armlinux.org.uk>
-In-Reply-To: <ZQR7GY1Z57wK8RaX@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.174.239]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 15 Sep 2023 13:09:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A050EE7F
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:09:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A176EC433C7;
+        Fri, 15 Sep 2023 17:09:30 +0000 (UTC)
+Date:   Fri, 15 Sep 2023 18:09:28 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] swiotlb: fix the check whether a device has used
+ software IO TLB
+Message-ID: <ZQSPyBRjnSISNFmD@arm.com>
+References: <20230913114016.17752-1-petr@tesarici.cz>
+ <20230913121403.GB4544@lst.de>
+ <20230913142656.29e135d6@meshulam.tesarici.cz>
+ <ZQNQscYr0rQWdw66@arm.com>
+ <20230915111343.01496320@meshulam.tesarici.cz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230915111343.01496320@meshulam.tesarici.cz>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,127 +49,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russel,
-
-> From: Russell King <linux@armlinux.org.uk>
-> Sent: Friday, September 15, 2023 4:41 PM
-> To: Salil Mehta <salil.mehta@huawei.com>
-> Cc: Rafael J. Wysocki <rafael@kernel.org>; Ard Biesheuvel
-> <ardb@kernel.org>; Jonathan Cameron <jonathan.cameron@huawei.com>; James
-> Morse <james.morse@arm.com>; linux-pm@vger.kernel.org;
-> loongarch@lists.linux.dev; linux-acpi@vger.kernel.org; linux-
-> arch@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-riscv@lists.infradead.org;
-> kvmarm@lists.linux.dev; x86@kernel.org; Jean-Philippe Brucker <jean-
-> philippe@linaro.org>; jianyong.wu@arm.com; justin.he@arm.com
-> Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
-> [code first?]
+On Fri, Sep 15, 2023 at 11:13:43AM +0200, Petr Tesařík wrote:
+> On Thu, 14 Sep 2023 19:28:01 +0100
+> Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > What do the smp_wmb() barriers in swiotlb_find_slots() and
+> > swiotlb_dyn_alloc() order? The latter is even more unclear as it's at
+> > the end of the function and the "pairing" comment doesn't help.
 > 
-> On Fri, Sep 15, 2023 at 03:17:21PM +0000, Salil Mehta wrote:
-> > Hi Russel,
-> > Thanks for highlighting your concerns.
-> >
-> > > From: Russell King <linux@armlinux.org.uk>
-> > > Sent: Friday, September 15, 2023 2:43 PM
-> > > To: Salil Mehta <salil.mehta@huawei.com>
-> > > Cc: Rafael J. Wysocki <rafael@kernel.org>; Ard Biesheuvel
-> > > <ardb@kernel.org>; Jonathan Cameron <jonathan.cameron@huawei.com>; James
-> > > Morse <james.morse@arm.com>; linux-pm@vger.kernel.org;
-> > > loongarch@lists.linux.dev; linux-acpi@vger.kernel.org; linux-
-> > > arch@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
-> > > kernel@lists.infradead.org; linux-riscv@lists.infradead.org;
-> > > kvmarm@lists.linux.dev; x86@kernel.org; Jean-Philippe Brucker <jean-
-> > > philippe@linaro.org>; jianyong.wu@arm.com; justin.he@arm.com
-> > > Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
-> > > [code first?]
-> > >
-> > > On Fri, Sep 15, 2023 at 09:34:46AM +0000, Salil Mehta wrote:
-> > > > > > Note that the ACPI spec says enabled + online-capable isn't defined.
-> > > > > >
-> > > > > > "The information conveyed by this bit depends on the value of the
-> > > > > > Enabled bit. If the Enabled bit is set, this bit is reserved and
-> > > > > > must be zero."
-> > > > > >
-> > > > > > So, if x86 is doing something with the enabled && online-capable
-> > > > > > state (other than ignoring the online-capable) then technically it
-> > > > > > is doing something that the spec doesn't define
-> > > > >
-> > > > > And so it is wrong.
-> > > >
-> > > > Or maybe, specification has not been updated yet. code-first?
-> > >
-> > > What is the point in speculating. If you want to speculate about it,
-> > > fine, but please don't use speculation as a reason that "oh we need
-> > > to sort this out before we can merge the patches".
-> >
-> > [already replied in other thread but repeating it here]
-> >
-> > Sorry, I am not aware but I was suggesting this. Can we have this
-> > done for ARM first because there is a legitimate use-case. This
-> > can be done in parallel while other patches are getting reviewed.
-> > It would be great if they get accepted even in the current form.
-> >
-> >
-> > > This is precisely why engineers are bad at producing products. They
-> > > like to continually tweak the design, and the design never gets out
-> > > the door. You need someone who is a project manager to tell engineers
-> > > when to stop. Without a project manager to do that, eventually the
-> > > project fades into insignificance because it becomes no longer relevant
-> > > or has its funding cut.
-> > >
-> > > Hotplug VCPU on aarch64 feels exactly like that - it seems to be an
-> > > engineer project that is just going to for-ever rumble on and never
-> > > actually see the light of day.
-> >
-> >
-> > Sometimes things are not in single persons control. Yes, it is
-> > frustrating, I do understand that.
-> >
-> >
-> > > So please - stop speculating and lets get vCPU hotplug *actually*
-> > > delivered and usable. Even if it's not 100% perfect.
-> >
-> > We need to decide what is the criteria of acceptability and it can
-> > vary across organizations. It depends upon internal requirements.
-> > The issues what I pointed are,
-> >
-> > 1. Legacy OS will not boot on latest platform with hotplug support.
-> >    - Try running older windows on ARM platform with hotplug support.
-> >      - older windows will only see boot cpu with online-capable bit.
-> >      - Will windows use _OSC to check compatibility?
-> >    - We have verified this with older Linux and it only shows 1 CPU.
-> > 2. Hot(un)plug of cold-booted CPUs.
-> >    - Its use-case is subjective. Maybe you can throw light on this.
-> >
-> > With current composition of bits both 1 & 2 cannot be supported
-> > simultaneously.
-> >
-> > It is perfectly okay to live with them while clearly indicating
-> > what we intend to support or are in process of supporting it.
-> > But we do need an open discussion about how to proceed. This is
-> > to avoid surprises later on.
-> >
-> > BTW, I am just trying to make every one aware of the problems.
+> By the time swiotlb_find_slots() returns a valid slot index, the new
+> value of dev->dma_uses_io_tlb must be visible by all CPUs in
+> is_swiotlb_buffer(). The index is used to calculate the bounce buffer
+> address returned to device drivers. This address may be passed to
+> another CPU and used as an argument to is_swiotlb_buffer().
+
+Ah, I remember now. So the smp_wmb() ensures that dma_uses_io_tlb is
+seen by other CPUs before the slot address (presumably passed via other
+memory write). It may be worth updating the comment in the code (I'm
+sure I'll forget it in a month time). The smp_rmb() before READ_ONCE()
+in this patch is also needed for the same reasons (ordering after the
+read of the address passed to is_swiotlb_buffer()).
+
+BTW, you may want to use WRITE_ONCE() when setting dma_uses_io_tlb (it
+also matches the READ_ONCE() in is_swiotlb_buffer()). Or you can use
+smp_store_mb() (but check its semantics first).
+
+> I am not sure that the smp_wmb() in swiotlb_dyn_alloc() is needed, but
+> let me explain my thinking. Even if the dev->dma_uses_io_tlb flag is
+> set, is_swiotlb_buffer() returns false unless the buffer address is
+> found in the RCU list of swiotlb pools, which is walked without taking
+> any lock. In some iterations of the patch series, there was a direct
+> call to swiotlb_dyn_alloc(), and a smp_wmb() was necessary to make sure
+> that the list of swiotlb pools cannot be observed as empty by another
+> CPU. You have already explained to me that taking a spin lock in
+> add_mem_pool() is not sufficient, because it does not invalidate a
+> value that might have been speculatively read by another CPU before
+> entering the critical section. OTOH swiotlb_dyn_alloc() is always
+> called through schedule_work() in the current version. If that
+> implicitly provides necessary barriers, this smp_wmb() can be removed.
+
+Normally you'd need a barrier between pool update and flag update:
+
+	list_add_rcu(&pool->node, &mem->pools);
+	smp_wmb();
+	WRITE_ONCE(dev->dma_uses_io_tlb, true);
+
+The lock around mem->pools update doesn't help since since it only has
+release semantics on the unlock path (which doesn't prevent the
+dma_uses_io_tlb write from being reordered before).
+
+On the reader side, you need to make sure that if the dma_uses_io_tlb is
+true, the mem->pools access was not speculated and read earlier as
+empty, so another dma_rmb():
+
+	if (READ_ONCE(dev->dma_uses_io_tlb)) {
+		dma_rmb();
+		swiotlb_find_pool(...);
+	}
+
+That's missing in the code currently (and rcu_read_lock() only has
+acquire semantics).
+
+However, what confuses me is that mem->pools is populated asynchronously
+via schedule_work(). Not sure how the barriers help since the work can
+be scheduled on any CPU at any point after, potentially after
+dma_uses_io_tlb has been updated.
+
+On the transient dev->dma_io_tlb_pools updated in swiotlb_find_slots(),
+you'd need the barriers as I mentioned above (unless I misunderstood how
+this pool searching works; not entirely sure why swiotlb_find_pool()
+searches both).
+
+> FTR list_add_rcu() alone is not sufficient. It adds the new element
+> using rcu_assign_pointer(), which modifies the forward link with
+> smp_store_release(). However, list_for_each_entry_rcu() reads the head
+> with list_entry_rcu(), which is a simple READ_ONCE(); there is no
+> ACQUIRE semantics.
 > 
-> Please do it as a separate discussion then - rather than starting a
-> thread in response to a posting of patches which are _supposed_ to
-> be being reviewed.
+> Actually, I wonder when a newly added RCU list element is guaranteed to
+> be visible by all CPUs. Existing documentation deals mainly with
+> element removal, explaining that both the old state and the new state
+> of an RCU list are valid after addition. Is it assumed that the old
+> state of an RCU list after addition is valid indefinitely?
 
-Yes, we can discuss it as part of separate thread.
+When some write becomes visible to other CPUs, I don't think the
+architectures define precisely (more like in vague terms as
+"eventually"). That's why we can't talk about barriers in relation to a
+single write as the barrier doesn't make a write visible but rather
+makes it visible _before_ a subsequent write becomes visible (whenever
+that may be).
 
-> Bringing up issues which are in effect future enhancements without
-> explicitly stating that they are future enhancements makes it look like
-> the patch set isn't ready to be merged - and is a distraction to trying
-> to get the series merged.
+Anyway, as above, I think the current code is still missing some
+barriers between dma_uses_io_tlb update or read and the actual pool
+writes. But I haven't figured out how this works with the asynchronous
+swiotlb_dyn_alloc().
 
-I beg to disagree on this as these are not enhancements/features
-but problems. But yes, we can sort these out in a step wise fashion
-subsequently even after patches have been accepted. Totally agree
-that this can cause distraction so let us defer it for a moment.
-
-The original purpose was to highlight them here briefly, which 
-has been achieved!
-
-Thanks
-Salil.
-
+-- 
+Catalin
