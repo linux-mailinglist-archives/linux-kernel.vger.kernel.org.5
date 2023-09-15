@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 562767A28A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3307A28AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbjIOUuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
+        id S237586AbjIOUvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237597AbjIOUtc (ORCPT
+        with ESMTP id S237863AbjIOUus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:49:32 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883552D56
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:48:58 -0700 (PDT)
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
-        by cmsmtp with ESMTP
-        id hFD6qA6K2OzKlhFkIqIHcn; Fri, 15 Sep 2023 20:48:58 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hFkHqZoGYn5VDhFkHqR9C3; Fri, 15 Sep 2023 20:48:57 +0000
-X-Authority-Analysis: v=2.4 cv=bOkFndyZ c=1 sm=1 tr=0 ts=6504c339
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=P-IC7800AAAA:8 a=sozttTNsAAAA:8 a=JfrnYn6hAAAA:8 a=VwQbUJbxAAAA:8
- a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
- a=d3PnA9EDa4IxuAV0gXij:22 a=aeg5Gbbo78KNqacMgKqU:22 a=1CNFftbPRP8L7MoqJWF3:22
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9+YfmCRdOxV4l5YZYRTDTDswIsRzP0r4oOgTtdce9YU=; b=W0cwd4inAUdTCh2pnWAfsMnJBX
-        SJwASOBFhvZt3FmzCmDC4a/WS6hgyWG/OCUM8gA3MULCN8JQMeO1+rA9ASZykzwOfhSbtpkNoPwzH
-        3e1N2VGr/PRoCCeimc32acB0fkuDiIlCLp25Lu1qiIWZKCsDXoJq2eRoo9+1ngxxvUWW3srnmMZbF
-        fHUaNP6rx86MXQ6V24YfBmVa2oBPP1ADC/ws1eJ79DeN+zqaLrQSk5nb31iur7qdmz2OlckOCh9ZF
-        eZihd5C/zFDoaqCwqMqsTwy5JAm3mY9KrchePVdKK0aos2YK6DfwmvqEtjznkvjMDItK4wrbIvLrE
-        u/pDC7cg==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:38640 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhFkG-002e6L-0D;
-        Fri, 15 Sep 2023 15:48:56 -0500
-Message-ID: <d1189ce2-16ed-6932-94c1-8c6ef3788df7@embeddedor.com>
-Date:   Fri, 15 Sep 2023 14:49:51 -0600
+        Fri, 15 Sep 2023 16:50:48 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D73E35BB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:50:02 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c09673b006so20653085ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694811001; x=1695415801; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pixcN5Y1AubjMBamu4r0/OjVDhrvJd2jJgNFr0zPGBA=;
+        b=HuODhYelyacRY9HlytTsIm4B7wz8OazwsD1/3T8eipUeYOw7pRmK87nYD+La4M2ERL
+         c+7i0KKd0WStxwghrx1gk/tXpFGLX6oCJQ8XsXYFkD4z/28YqyucPyx/EH8c5tVvxeQ4
+         l6Cr7hN2AKgTyDnzeP4hXi1kaJYFNVGjzbZTA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694811001; x=1695415801;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pixcN5Y1AubjMBamu4r0/OjVDhrvJd2jJgNFr0zPGBA=;
+        b=knTZ3Kcqy3xx4nbERuHY8K0SpG0EtRveuLba4zMRGFeJuv9MboqsPtr0bRIZkyE9yH
+         1ZISl+KGZgtZJP2vWdS+ByzDz0nSh1NRsdfrrcrt4OVg1mMf6pv4vqWjbSFwqO15nW1W
+         9PbSGaJNBORhIY0BuNYuDQB49b+YOdmfcFFab9lxHA0Hml2GFbiYS2CbZaJqzlkpy8BM
+         wPe/jA6AJiz5UiDDeC/bKW/F35/9N1YRyTk3XyqVHv7oHYKHoLBSCbZqzcewx8brwQJk
+         kyqG4LaA1tAB6oSt0rgdTIt4ItdFIyUl/SUygr8no8dAgywmPXTzAlncYhl8r2Cy4oxN
+         jA1w==
+X-Gm-Message-State: AOJu0YxVZbNPY+BLbSFL4Ryx/6Q8wE9+zgSP03tp/2vDdlh3/iaU1gb8
+        uZ/xnjO8UZfe/Mp/YnrY0RDrGA==
+X-Google-Smtp-Source: AGHT+IFG5RbkUmAUyhtbRZ65uLoK2tgVIeCtTHS/dvTIeIuGjUg4Cs9dHFp2ggbnq+0cI4RujnJy7g==
+X-Received: by 2002:a17:902:d4c7:b0:1c1:e52e:49e3 with SMTP id o7-20020a170902d4c700b001c1e52e49e3mr2611409plg.36.1694811001209;
+        Fri, 15 Sep 2023 13:50:01 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q22-20020a170902bd9600b001bb9f104328sm3876566pls.146.2023.09.15.13.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 13:50:00 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 13:50:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Matteo Rizzo <matteorizzo@google.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
+        jannh@google.com, evn@google.com, poprdi@google.com,
+        jordyzomer@google.com
+Subject: Re: [RFC PATCH 01/14] mm/slub: don't try to dereference invalid
+ freepointers
+Message-ID: <202309151349.BEBA203D@keescook>
+References: <20230915105933.495735-1-matteorizzo@google.com>
+ <20230915105933.495735-2-matteorizzo@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mtd: rawnand: renesas: Annotate struct rnand_chip with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915201254.never.511-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915201254.never.511-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhFkG-002e6L-0D
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:38640
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 381
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfK+J6sTIqpjJHR05BNIkl+7F2u/TYy9w+30Qgex9tby7IoabY/TVxhw+nA/ya4SnhEqGYLkDLlAWfjSogYL6VUtM5bxwfwjWbgk7UqKXNeAR+U8JpXyV
- P1KmPlyXZsH7nIfyQVU2c9yQehOPH9cstUjlwjpgW84C5nK0xeVzH5kLnpU7cUJJOcwS6ft+xYqMiRDFlJ493uuFtO6t8WKAEgwCFTEvlxJpAGEFzRNZyoKI
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915105933.495735-2-matteorizzo@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/23 14:12, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Fri, Sep 15, 2023 at 10:59:20AM +0000, Matteo Rizzo wrote:
+> slab_free_freelist_hook tries to read a freelist pointer from the
+> current object even when freeing a single object. This is invalid
+> because single objects don't actually contain a freelist pointer when
+> they're freed and the memory contains other data. This causes problems
+> for checking the integrity of freelist in get_freepointer.
 > 
-> As found with Coccinelle[1], add __counted_by for struct rnand_chip.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-renesas-soc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
--- 
-Gustavo
-
+> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
 > ---
->   drivers/mtd/nand/raw/renesas-nand-controller.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  mm/slub.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/renesas-nand-controller.c b/drivers/mtd/nand/raw/renesas-nand-controller.c
-> index 589021ea9eb2..c9a01feff8df 100644
-> --- a/drivers/mtd/nand/raw/renesas-nand-controller.c
-> +++ b/drivers/mtd/nand/raw/renesas-nand-controller.c
-> @@ -210,7 +210,7 @@ struct rnand_chip {
->   	u32 tim_gen_seq1;
->   	u32 tim_gen_seq2;
->   	u32 tim_gen_seq3;
-> -	struct rnand_chip_sel sels[];
-> +	struct rnand_chip_sel sels[] __counted_by(nsels);
->   };
->   
->   struct rnandc {
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f7940048138c..a7dae207c2d2 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1820,7 +1820,9 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>  
+>  	do {
+>  		object = next;
+> -		next = get_freepointer(s, object);
+> +		/* Single objects don't actually contain a freepointer */
+> +		if (object != old_tail)
+> +			next = get_freepointer(s, object);
+>  
+>  		/* If object's reuse doesn't have to be delayed */
+>  		if (!slab_free_hook(s, object, slab_want_init_on_free(s))) {
+
+I find this loop's logic a bit weird, but, yes, this ends up being
+correct and avoids needless work.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
