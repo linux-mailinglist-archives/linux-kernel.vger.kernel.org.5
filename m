@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB657A127A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991AA7A1282
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjIOAoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 20:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S231130AbjIOAsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 20:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjIOAoL (ORCPT
+        with ESMTP id S229715AbjIOAsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 20:44:11 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2619326B8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 17:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1694738641;
-        bh=A2yKheXXYeVxgUYqKY0JwuarOyyrLHHqN46l251F9L0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KLdOsoMcXyPwJu7oy1hyRJvAzVA4MSQG8jN/N0hWl2RA8KGiWWCHGx5+mltwGIety
-         4TFaQCSjeOwQidv7aFM+mkBpP6zgOTHuqrOvE+5naIiZtKjHpKv7BSEpXQg9NnmzC8
-         F1IFQGGelU17mPoCRvPX+kyIZ6J3bRuHv802PzGro/RYpsiGuDes9t9A2Dw1cKEzM2
-         UfZ4FE4OFnrBh3BbRtCor//9DmNHmssOnMN/7eUe02mJD3qM+IyxXmFu1d26lLKwI6
-         Pwb7InIsfO2UK5xK33EVSk9iZd/4bQCjOQJQnG11F/Hj6nBlipabBAmi/T1H9D56oK
-         vuJXqqMRR6ZBQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmwRj26nkz4x3D;
-        Fri, 15 Sep 2023 10:44:01 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] powerpc/82xx: Select FSL_SOC
-In-Reply-To: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
-References: <7ab513546148ebe33ddd4b0ea92c7bfd3cce3ad7.1694705016.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 15 Sep 2023 10:43:57 +1000
-Message-ID: <87led86zaq.fsf@mail.lhotse>
+        Thu, 14 Sep 2023 20:48:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63C12700;
+        Thu, 14 Sep 2023 17:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694738890; x=1726274890;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0/Y8tr6+72dx/dGIQEQzCuenUy3CT3AAuLaoi6w6Aa4=;
+  b=Zze053DIteOK2ZbYjrABB5HX8yASziIOCb/AM7YnwjthxDnojQ31zRhM
+   DE2S7PmA9GFDeETF3H6v2GptCsu3UCQyX4hTXBJL6UZPvj7ywVt3b6IoG
+   zwuaXoE5eSFMVlRgK935qs1M+APgW9smEc5n5+V3u4kxQNn771HjDvzVq
+   aWmw3cQnsVqyn0xM1QhbaAboyFz1tQXfzKBMMQcH/1HGKAIUJSopXWYQ/
+   ZBQzZjHz9rG9+dvNaTTGivfSD/lZTmpgNFnzJFJXFS3sncL7Cjdf/rAro
+   Mu8J9dUNHMhM3B8k5z4unSFvapXstZ9VAZuAQNntIdeOTNoQfPmK/Utib
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="410063856"
+X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
+   d="scan'208";a="410063856"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 17:48:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="859950717"
+X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
+   d="scan'208";a="859950717"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Sep 2023 17:48:06 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgx07-0002Dx-2Z;
+        Fri, 15 Sep 2023 00:48:03 +0000
+Date:   Fri, 15 Sep 2023 08:47:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: Re: [PATCH v7 45/49] media: core: Add bitmap manage bufs array
+ entries
+Message-ID: <202309150835.kxjWQyEU-lkp@intel.com>
+References: <20230914133323.198857-46-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914133323.198857-46-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> It used to be impossible to select CONFIG_CPM2 without selecting
-> CONFIG_FSL_SOC at the same time because CONFIG_CPM2 was dependent
-> on CONFIG_8260 and CONFIG_8260 was selecting CONFIG_FSL_SOC.
->
-> But after commit eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260
-> and CONFIG_8272") CONFIG_CPM2 depends on CONFIG_MPC82xx instead
-                                           ^
-                                           CONFIG_PPC_82xx
+Hi Benjamin,
 
-All the references to CONFIG_MPC82xx should be CONFIG_PPC_82xx right?
-I can update when applying.
+kernel test robot noticed the following build errors:
 
-cheers
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc1]
+[cannot apply to next-20230914]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Gaignard/media-videobuf2-Rework-offset-cookie-encoding-pattern/20230914-221757
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230914133323.198857-46-benjamin.gaignard%40collabora.com
+patch subject: [PATCH v7 45/49] media: core: Add bitmap manage bufs array entries
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230915/202309150835.kxjWQyEU-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230915/202309150835.kxjWQyEU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309150835.kxjWQyEU-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   samples/v4l/v4l2-pci-skeleton.c: In function 'queue_setup':
+>> samples/v4l/v4l2-pci-skeleton.c:170:15: error: 'struct vb2_queue' has no member named 'num_buffers'
+     170 |         if (vq->num_buffers + *nbuffers < 3)
+         |               ^~
+   samples/v4l/v4l2-pci-skeleton.c:171:35: error: 'struct vb2_queue' has no member named 'num_buffers'
+     171 |                 *nbuffers = 3 - vq->num_buffers;
+         |                                   ^~
+--
+   drivers/input/touchscreen/sur40.c: In function 'sur40_queue_setup':
+>> drivers/input/touchscreen/sur40.c:851:14: error: 'struct vb2_queue' has no member named 'num_buffers'
+     851 |         if (q->num_buffers + *nbuffers < 3)
+         |              ^~
+   drivers/input/touchscreen/sur40.c:852:34: error: 'struct vb2_queue' has no member named 'num_buffers'
+     852 |                 *nbuffers = 3 - q->num_buffers;
+         |                                  ^~
 
 
-> but CONFIG_MPC82xx doesn't directly selects CONFIG_FSL_SOC.
->
-> Fix it by forcing CONFIG_MPC82xx to select CONFIG_FSL_SOC just
-> like already done by MPC8xx, MPC512x, MPC83xx, PPC_86xx.
->
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: eb5aa2137275 ("powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/platforms/82xx/Kconfig | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/powerpc/platforms/82xx/Kconfig b/arch/powerpc/platforms/82xx/Kconfig
-> index d9f1a2a83158..1824536cf6f2 100644
-> --- a/arch/powerpc/platforms/82xx/Kconfig
-> +++ b/arch/powerpc/platforms/82xx/Kconfig
-> @@ -2,6 +2,7 @@
->  menuconfig PPC_82xx
->  	bool "82xx-based boards (PQ II)"
->  	depends on PPC_BOOK3S_32
-> +	select FSL_SOC
->  
->  if PPC_82xx
->  
-> @@ -9,7 +10,6 @@ config EP8248E
->  	bool "Embedded Planet EP8248E (a.k.a. CWH-PPC-8248N-VE)"
->  	select CPM2
->  	select PPC_INDIRECT_PCI if PCI
-> -	select FSL_SOC
->  	select PHYLIB if NETDEVICES
->  	select MDIO_BITBANG if PHYLIB
->  	help
-> @@ -22,7 +22,6 @@ config MGCOGE
->  	bool "Keymile MGCOGE"
->  	select CPM2
->  	select PPC_INDIRECT_PCI if PCI
-> -	select FSL_SOC
->  	help
->  	  This enables support for the Keymile MGCOGE board.
->  
-> -- 
-> 2.41.0
+vim +170 samples/v4l/v4l2-pci-skeleton.c
+
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  145  
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  146  /*
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  147   * Setup the constraints of the queue: besides setting the number of planes
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  148   * per buffer and the size and allocation context of each plane, it also
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  149   * checks if sufficient buffers have been allocated. Usually 3 is a good
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  150   * minimum number: many DMA engines need a minimum of 2 buffers in the
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  151   * queue and you need to have another available for userspace processing.
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  152   */
+df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  153  static int queue_setup(struct vb2_queue *vq,
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  154  		       unsigned int *nbuffers, unsigned int *nplanes,
+36c0f8b32c4bd4 samples/v4l/v4l2-pci-skeleton.c               Hans Verkuil 2016-04-15  155  		       unsigned int sizes[], struct device *alloc_devs[])
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  156  {
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  157  	struct skeleton *skel = vb2_get_drv_priv(vq);
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  158  
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  159  	skel->field = skel->format.field;
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  160  	if (skel->field == V4L2_FIELD_ALTERNATE) {
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  161  		/*
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  162  		 * You cannot use read() with FIELD_ALTERNATE since the field
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  163  		 * information (TOP/BOTTOM) cannot be passed back to the user.
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  164  		 */
+3130a28a1568b1 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-23  165  		if (vb2_fileio_is_active(vq))
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  166  			return -EINVAL;
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  167  		skel->field = V4L2_FIELD_TOP;
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  168  	}
+5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  169  
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14 @170  	if (vq->num_buffers + *nbuffers < 3)
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  171  		*nbuffers = 3 - vq->num_buffers;
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  172  
+df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  173  	if (*nplanes)
+df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  174  		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  175  	*nplanes = 1;
+df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  176  	sizes[0] = skel->format.sizeimage;
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  177  	return 0;
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  178  }
+926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  179  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
