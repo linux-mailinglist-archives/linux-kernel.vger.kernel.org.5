@@ -2,50 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A857A1FE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209F27A1FE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbjIONgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        id S235394AbjIONgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235369AbjIONgL (ORCPT
+        with ESMTP id S235375AbjIONgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:36:11 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EC201BEB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:36:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A1BE1FB;
-        Fri, 15 Sep 2023 06:36:43 -0700 (PDT)
-Received: from [10.57.93.60] (unknown [10.57.93.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED193F5A1;
-        Fri, 15 Sep 2023 06:36:02 -0700 (PDT)
-Message-ID: <ff3a1e32-74c3-56bc-94dc-78d088faf8b7@arm.com>
-Date:   Fri, 15 Sep 2023 15:35:58 +0200
+        Fri, 15 Sep 2023 09:36:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC942126
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:36:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A4BE218EC;
+        Fri, 15 Sep 2023 13:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694784974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9rlrz3u2Vsb7vGlQTOlcmAup+cWeQZdVEYu0oGCHX8Q=;
+        b=Gsf1eUJ8XcQyXAK6NTaBzs+N2+cdSyYIzeO1b/6RlP7vdDItVhbz80p8Qj3Qn8t4LxdmrR
+        5QEwjUPmp+6VQDd1NSictR5mbiGJEIqRpC3GmW7A37Q1qaei5tpPCFdsg0cWBZYiULZLVQ
+        3SWSGOBae2UIwjvy8R2KcUi+cAr2xgI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694784974;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9rlrz3u2Vsb7vGlQTOlcmAup+cWeQZdVEYu0oGCHX8Q=;
+        b=zf2vbx7BqDgGUZ4WxbsB6fugz/uSdeVGa7gqa3pSZsnTM9EHCeGeqr1PthyoSONkMRrj/1
+        pT32eXfikGMIKbDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F024E1358A;
+        Fri, 15 Sep 2023 13:36:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VyDGOc1dBGUbYwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 15 Sep 2023 13:36:13 +0000
+Message-ID: <c5e0caf5-cefd-fc4a-9e3d-a3479323bd09@suse.cz>
+Date:   Fri, 15 Sep 2023 15:36:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
-To:     Valentin Schneider <vschneid@redhat.com>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, quentin.perret@arm.com,
-        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
-        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
-References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
- <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
- <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
- <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/4] mm/slub: refactor calculate_order() and
+ calc_slab_order()
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Jay Patel <jaypatel@linux.ibm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <202309111340.f59c3f22-oliver.sang@intel.com>
 Content-Language: en-US
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <202309111340.f59c3f22-oliver.sang@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,94 +82,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Valentin,
-
-On 9/15/23 14:00, Valentin Schneider wrote:
-> On 14/09/23 23:26, Shrikanth Hegde wrote:
->> On 9/14/23 9:51 PM, Valentin Schneider wrote:
->>> On 13/09/23 17:18, Shrikanth Hegde wrote:
->>>> sysctl_sched_energy_aware is available for the admin to disable/enable
->>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
->>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
->>>> valid cpufreq policy, frequency invariant load tracking. It is possible
->>>> platform when booting may not have EAS capability, but can do that after.
->>>> For example, changing/registering the cpufreq policy.
->>>>
->>>> At present, though platform doesn't support EAS, this sysctl is still
->>>> present and it ends up calling rebuild of sched domain on write to 1 and
->>>> NOP when writing to 0. That is confusing and un-necessary.
->>>>
->>>
->>
->> Hi Valentin, Thanks for taking a look at this patch.
->>
->>> But why would you write to it in the first place? Or do you mean to use
->>> this as an indicator for userspace that EAS is supported?
->>>
->>
->> Since this sysctl is present and its value being 1, it gives the
->> impression to the user that EAS is supported when it is not.
->> So its an attempt to correct that part.
->>
+On 9/11/23 07:56, kernel test robot wrote:
 > 
-> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
-> supported? And on top of it, prevent all writes when EAS isn't supported
-> (perf domains cannot be built, so there would be no point in forcing a
-> rebuild that will do nothing).
-
-I think the issue comes from the fact there is no variable representing
-whether EAS is supported or not. sched_energy_enabled()/sched_energy_present
-tells whether EAS is actively running on the system instead.
-
-So on a system with EAS running, I think what would happen is:
-# Disable EAS and set sched_energy_present=0
-echo 0 > /proc/sys/kernel/sched_energy_aware
-
-# sched_energy_present==0, so we get -EOPNOTSUPP
-echo 1 > /proc/sys/kernel/sched_energy_aware
-
-
 > 
-> I can never remember how to properly use the sysctl API, so that's a very
-> crude implementation, but something like so?
+> Hello,
 > 
-> ---
+> kernel test robot noticed "UBSAN:shift-out-of-bounds_in_mm/slub.c" on:
 > 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 05a5bc678c089..dadfc5afc4121 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
->   	if (write && !capable(CAP_SYS_ADMIN))
->   		return -EPERM;
->   
-> +	if (!sched_energy_enabled()) {
-> +		if (write)
-> +			return -EOPNOTSUPP;
-> +		else {
-> +			size_t len;
-> +
-> +			if (*ppos) {
-> +				*lenp = 0;
-> +				return 0;
-> +			}
-> +
-> +			len = snprintf((char *)buffer, 3, "0\n");
-> +
-> +			*lenp = len;
-> +			*ppos += len;
-> +			return 0;
-> +		}
-> +	}
-> +
->   	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
->   	if (!ret && write) {
-> -		state = static_branch_unlikely(&sched_energy_present);
-> +		state = sched_energy_enabled();
->   		if (state != sysctl_sched_energy_aware)
->   			rebuild_sched_domains_energy();
->   	}
+> commit: f04d441027621c16081803832a54f59272112cf5 ("[PATCH 4/4] mm/slub: refactor calculate_order() and calc_slab_order()")
+> url: https://github.com/intel-lab-lkp/linux/commits/Vlastimil-Babka/mm-slub-simplify-the-last-resort-slab-order-calculation/20230908-225506
+> base: git://git.kernel.org/cgit/linux/kernel/git/vbabka/slab.git for-next
+> patch link: https://lore.kernel.org/all/20230908145302.30320-10-vbabka@suse.cz/
+> patch subject: [PATCH 4/4] mm/slub: refactor calculate_order() and calc_slab_order()
 > 
+> in testcase: boot
+> 
+> compiler: clang-16
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> +-------------------------------------------------+------------+------------+
+> |                                                 | a17847b835 | f04d441027 |
+> +-------------------------------------------------+------------+------------+
+> | UBSAN:shift-out-of-bounds_in_mm/slub.c          | 0          | 12         |
+> +-------------------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202309111340.f59c3f22-oliver.sang@intel.com
+> 
+> 
+> [    0.901457][    T0] UBSAN: shift-out-of-bounds in mm/slub.c:463:34
+> [    0.902458][    T0] shift exponent 52 is too large for 32-bit type 'unsigned int'
+> [    0.903477][    T0] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G                T  6.5.0-rc1-00009-gf04d44102762 #1
+> [    0.904450][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [    0.904450][    T0] Call Trace:
+> [    0.904450][    T0]  <TASK>
+> [ 0.904450][ T0] dump_stack_lvl (lib/dump_stack.c:107) 
+> [ 0.904450][ T0] dump_stack (lib/dump_stack.c:114) 
+> [ 0.904450][ T0] ubsan_epilogue (lib/ubsan.c:218) 
+> [ 0.904450][ T0] __ubsan_handle_shift_out_of_bounds (lib/ubsan.c:?) 
+> [ 0.904450][ T0] ? tdx_handle_virt_exception (arch/x86/include/asm/shared/tdx.h:60 arch/x86/coco/tdx/tdx.c:375 arch/x86/coco/tdx/tdx.c:430 arch/x86/coco/tdx/tdx.c:650 arch/x86/coco/tdx/tdx.c:666) 
+> [ 0.904450][ T0] ? kmemleak_alloc (mm/kmemleak.c:977) 
+> [ 0.904450][ T0] __kmem_cache_create (mm/slub.c:? mm/slub.c:4159 mm/slub.c:4473 mm/slub.c:4507 mm/slub.c:5104) 
 
-Regards,
-Pierre
+Oh thanks, fixing up:
+
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4152,7 +4152,8 @@ static inline int calculate_order(unsigned int size)
+                        nr_cpus = nr_cpu_ids;
+                min_objects = 4 * (fls(nr_cpus) + 1);
+        }
+-       max_objects = order_objects(slub_max_order, size);
++       /* min_objects can't be 0 because get_order(0) is undefined */
++       max_objects = max(order_objects(slub_max_order, size), 1);
+        min_objects = min(min_objects, max_objects);
+ 
+        min_order = max(slub_min_order, (unsigned int)get_order(min_objects * size));
+l
+
