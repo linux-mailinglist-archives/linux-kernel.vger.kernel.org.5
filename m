@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B9E7A1CA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B105B7A1CAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbjIOKqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
+        id S233643AbjIOKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIOKql (ORCPT
+        with ESMTP id S232147AbjIOKq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:46:41 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5964F106;
-        Fri, 15 Sep 2023 03:46:36 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c43fe0c0bfso1615775ad.1;
-        Fri, 15 Sep 2023 03:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694774796; x=1695379596; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sSl/jwqe6RV3E0AIS7y6p1IAA1dCImMj5GR2Th+oWW0=;
-        b=ak3BdVRpa26zD/0oraNbY05qLIu8OvJr+Pts6hVR7s3Tz4eRDERd2H2LQRA0nMBJKe
-         J8jvFs7jfishtD0aGPQq6dKN/G1rzs1JleCc0BcwU82qFwv7nrRhl319tHNZBR1rK/2C
-         ByR359MbA74ogLuS7lH3UAMc+1g33gWstoiF8pjZRroxHasEpDAmE0NAkEAI2GZIKksG
-         7b8WCCcyp3l+ACjv4KPuM1lVHKgZwFlGfdxFGJHjRSpd1sO/srzITO9/isgzUkg4rJSh
-         e9t0o1EWF759Rl4Qf2v/ec+7IXDrB9GZlUFrm4Q3IDvlndw6W/kKyNTYDuVYD7lUSKZd
-         eBeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774796; x=1695379596;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sSl/jwqe6RV3E0AIS7y6p1IAA1dCImMj5GR2Th+oWW0=;
-        b=OqLtWLoaxgHK7nXXVWaIxky5LFGOE2Xjzk51TO63ypuarslM993gtLtkmcDHtfqggK
-         Htn+YlZi2d0IqeB7uPlIiBTKfpzgSPDnLPNzIxEejSQa0AcIz+R8SAjcGEuIfo2Us94z
-         2OyaMTLVALUD9Zf0XVNIVq1bavsY0bi5Nfo/Nd0tRQAJWhxtOQ/uBLxuimTEzgOW6lxn
-         VSCPCM6I9iZXrhOK5vF+8Nye6xzldZUnlFacOZe/uXFTccqekTSd0loEvG6+U9tyoTpu
-         RSPZ0HCV8W+1Oyo4oOAW/RkFN7nDwHt/jUaMfqDhW9GiF2R+P8YOoC+wMBtbsglFw61V
-         ju7A==
-X-Gm-Message-State: AOJu0Yyj1D3Rz+1PdqQArS9qfcEayKYU8ZnyTigmDk8VAOxiWQNTCQS9
-        nKqzLTmXxpla0MSDcKHyvf4=
-X-Google-Smtp-Source: AGHT+IEzXBmfXb/LKt9bJszwrWMGs2Jy9iUH3YJ3pOjhoVSFEReOW/GFXDqdF1jBJyVcUSgJGjiHsg==
-X-Received: by 2002:a17:902:f814:b0:1c4:3e6a:7ad4 with SMTP id ix20-20020a170902f81400b001c43e6a7ad4mr474188plb.13.1694774795719;
-        Fri, 15 Sep 2023 03:46:35 -0700 (PDT)
-Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
-        by smtp.gmail.com with ESMTPSA id m2-20020a170902768200b001acae9734c0sm3161284pll.266.2023.09.15.03.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:46:35 -0700 (PDT)
-Sender: Herbert Xu <herbertx@gmail.com>
-Date:   Fri, 15 Sep 2023 18:46:34 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jonas Gorski <jonas.gorski@gmail.com>
-Cc:     Andres Salomon <dilinger@queued.net>,
-        Olivia Mackall <olivia@selenic.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        "Timur I . Davletshin" <timur.davletshin@gmail.com>,
-        Jo-Philipp Wich <jo@mein.io>, linux-geode@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: geode: fix accessing registers
-Message-ID: <ZQQ2Cv1uL/YVxNBb@gondor.apana.org.au>
-References: <20230910083418.8990-1-jonas.gorski@gmail.com>
+        Fri, 15 Sep 2023 06:46:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E17DD;
+        Fri, 15 Sep 2023 03:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694774810; x=1726310810;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=A4k+Kycs5eiCi32oXVEr6wYi9aLQvheDDXp0X3nUgNg=;
+  b=FMkrh2N0tLgiYm58yyAcfyLtgio4MvXQxJcKkpb8myMMLoxVTiEc1kOJ
+   dpHtM2EMrL5reyp+wdVCqZDqQhwmjdTgg8LkC9vTdpXVUaZbj1/q3EITg
+   OFilelYDtGQsH1/vOk9II2IX/eEttF5IUSE6ofGvcoZi6fBjMrqEq0bNx
+   sCGtTDZycFt2RQ0/oXew/ohjcZ3LjGqcD7MIfTe2/JePU9gBlxxio5XDC
+   lkDhKZ08dOik+ZK0na1MTbBCrUw55LpLOR+LKWD6nLsqBe9H5D8HKRmVj
+   sPjVsSP1vlI5Uqv7Y30FFrJGAbqbwPAOptB3cMEs62c862LpZDTNIAVc5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465583143"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="465583143"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 03:46:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="748165841"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="748165841"
+Received: from andreipo-mobl1.ger.corp.intel.com (HELO [10.252.48.105]) ([10.252.48.105])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 03:46:48 -0700
+Message-ID: <11672c6d-e021-eeda-5907-3fefb307ce9d@linux.intel.com>
+Date:   Fri, 15 Sep 2023 13:46:45 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230910083418.8990-1-jonas.gorski@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] tracing/synthetic: Print out u64 values properly
+Content-Language: en-US
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, artem.bityutskiy@linux.intel.com,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230911141704.3585965-1-tero.kristo@linux.intel.com>
+ <20230915150101.ef50c4774ab85aa2ff7431ec@kernel.org>
+From:   Tero Kristo <tero.kristo@linux.intel.com>
+In-Reply-To: <20230915150101.ef50c4774ab85aa2ff7431ec@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 10, 2023 at 10:34:17AM +0200, Jonas Gorski wrote:
-> When the membase and pci_dev pointer were moved to a new struct in priv,
-> the actual membase users were left untouched, and they started reading
-> out arbitrary memory behind the struct instead of registers. This
-> unfortunately turned the RNG into a constant number generator, depending
-> on the content of what was at that offset.
-> 
-> To fix this, update geode_rng_data_{read,present}() to also get the
-> membase via amd_geode_priv, and properly read from the right addresses
-> again.
-> 
-> Fixes: 9f6ec8dc574e ("hwrng: geode - Fix PCI device refcount leak")
-> Reported-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217882
-> Tested-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-> Suggested-by: Jo-Philipp Wich <jo@mein.io>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> ---
->  drivers/char/hw_random/geode-rng.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+Hi Masami,
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+On 15/09/2023 09:01, Masami Hiramatsu (Google) wrote:
+> Hi Tero,
+>
+> On Mon, 11 Sep 2023 17:17:04 +0300
+> Tero Kristo <tero.kristo@linux.intel.com> wrote:
+>
+>> The synth traces incorrectly print pointer to the synthetic event values
+>> instead of the actual value when using u64 type. Fix by addressing the
+>> contents of the union properly.
+> Thanks for pointing it out.
+> But I would like to see a new "case 8:" print code instead of changing
+> "default". Can you keep the default as it is and add "case 8:" case there?
+
+Are you sure about that? I think keeping the default as is would just 
+print out a useless pointer value to the synth event itself (which is 
+what happened with u64 type.)
+
+Anyways, that requires a new patch to be created on top as this has hit 
+the mainline as a fix already.
+
+-Tero
+
+
+>
+> Thanks,
+>
+>> Fixes: ddeea494a16f ("tracing/synthetic: Use union instead of casts")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+>> ---
+>>   kernel/trace/trace_events_synth.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+>> index 7fff8235075f..070365959c0a 100644
+>> --- a/kernel/trace/trace_events_synth.c
+>> +++ b/kernel/trace/trace_events_synth.c
+>> @@ -337,7 +337,7 @@ static void print_synth_event_num_val(struct trace_seq *s,
+>>   		break;
+>>   
+>>   	default:
+>> -		trace_seq_printf(s, print_fmt, name, val, space);
+>> +		trace_seq_printf(s, print_fmt, name, val->as_u64, space);
+>>   		break;
+>>   	}
+>>   }
+>> -- 
+>> 2.40.1
+>>
+>
