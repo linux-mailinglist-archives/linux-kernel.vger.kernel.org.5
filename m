@@ -2,349 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 746F47A197A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1627A19C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjIOIyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S233393AbjIOI4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbjIOIy1 (ORCPT
+        with ESMTP id S233557AbjIOI4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:54:27 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8BC2733
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:54:17 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by baptiste.telenet-ops.be with bizsmtp
-        id m8uF2A00k1C8whw018uF2t; Fri, 15 Sep 2023 10:54:15 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qh4aK-003lIY-Ad;
-        Fri, 15 Sep 2023 10:54:15 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qh4ad-00Gddu-BK;
-        Fri, 15 Sep 2023 10:54:15 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v4 41/41] drm: renesas: shmobile: Add DT support
-Date:   Fri, 15 Sep 2023 10:53:56 +0200
-Message-Id: <6185ab76aa300fa402e4f6610b2109665f2d8a1c.1694767209.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694767208.git.geert+renesas@glider.be>
-References: <cover.1694767208.git.geert+renesas@glider.be>
+        Fri, 15 Sep 2023 04:56:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CE23C24;
+        Fri, 15 Sep 2023 01:54:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D29E3C433C7;
+        Fri, 15 Sep 2023 08:54:50 +0000 (UTC)
+Message-ID: <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl>
+Date:   Fri, 15 Sep 2023 10:54:49 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to decoder
+ driver
+Content-Language: en-US, nl
+To:     =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
+        <Yunfei.Dong@mediatek.com>,
+        "nhebert@chromium.org" <nhebert@chromium.org>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "nicolas.dufresne@collabora.com" <nicolas.dufresne@collabora.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "frkoenig@chromium.org" <frkoenig@chromium.org>,
+        "stevecho@chromium.org" <stevecho@chromium.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-13-yunfei.dong@mediatek.com>
+ <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
+ <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl>
+ <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT support, by:
-  1. Creating a panel bridge from DT, and attaching it to the encoder,
-  2. Replacing the custom connector with a bridge connector,
-  3. Obtaining clock configuration based on the compatible value.
+On 15/09/2023 10:25, Yunfei Dong (董云飞) wrote:
+> Hi Hans & Nicolas,
+> 
+> Thanks for your advice.
+> 
+> On Tue, 2023-09-12 at 11:30 +0200, Hans Verkuil wrote:
+>>  	 
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>  Hi,
+>>
+>> On 9/11/23 17:54, Nicolas Dufresne wrote:
+>>> Hi,
+>>>
+>>> Le lundi 11 septembre 2023 à 20:59 +0800, Yunfei Dong a écrit :
+>>>> Setting secure mode flag to kernel when trying to play secure
+>>
+>> video,
+>>>> then decoder driver will initialize tee related interface to
+>>
+>> support
+>>>> svp.
+>>>
+>>>
+>>> This is not what the patch is doing, please rework. This patch is
+>>
+>> an vendor API
+>>> addition introducing V4L2_CID_MPEG_MTK_SET_SECURE_MODE. I should
+>>
+>> not have to
+>>> read your patch to understand this.
+>>>
+>>>>
+>>>> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+>>>> ---
+>>>>  .../vcodec/decoder/mtk_vcodec_dec_stateless.c     | 15
+>>
+>> ++++++++++++++-
+>>>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         |  5 +++++
+>>>>  include/uapi/linux/v4l2-controls.h                |  1 +
+>>>>  3 files changed, 20 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git
+>>
+>> a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state
+>> less.c
+>> b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state
+>> less.c
+>>>> index d2b09ce9f1cf..a981178c25d9 100644
+>>>> ---
+>>
+>> a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state
+>> less.c
+>>>> +++
+>>
+>> b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state
+>> less.c
+>>>> @@ -535,6 +535,17 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl
+>>
+>> *ctrl)
+>>>>  ctrl->val = mtk_dma_contig_get_secure_handle(ctx, ctrl->val);
+>>>>  mtk_v4l2_vdec_dbg(3, ctx, "get secure handle: %d => 0x%x",
+>>
+>> sec_fd, ctrl->val);
+>>>>  break;
+>>>> +case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:
+>>>
+>>> Stepping back a little and focusing on the API, what makes your
+>>
+>> driver so
+>>> special that it should be the only one having a "secure mode" ? We
+>>
+>> are touching
+>>> in gap in the media pipeline in Linux, and this should come with
+>>
+>> consideration
+>>> of the global API.
+>>>
+>>> Why is this API better then let's say Google Android one, were they
+>>
+>> expose 2
+>>> device nodes in their fork of the MFC driver (a secure and a non
+>>
+>> secure one) ?
+>>
+>> Perhaps it is a good idea to first post an RFC with an uAPI proposal
+>> on how to
+>> handle secure video. I suspect this isn't mediatek specific, other
+>> SoCs with
+>> tee support could use this as well.
+>>
+>> As Nicolas said, it's long known to be a gap in our media support, so
+>> it is
+>> really great that you started work on this, but you need to look at
+>> this from
+>> a more generic point-of-view, and not mediatek-specific.
+>>
+> 
+> Whether your have any advice about how to do a more generic driver to
+> handle secure video playback?
+> 
+> There are several kind of buffer: output queue buffer/capture queue
+> buffer/working buffer.
+> 
+> output and capture queue buffer: user space will call tee related
+> interface to allocate secure handle. Will convert to secure handle with
+> v4l2 framework, then send secure handle to optee-os.
+> 
+> working buffer: calling dma_heap and dma_buf to get secure memory
+> handle, then covert secure iova in optee-os.
+> 
+> Using the same kernel driver for svp and non-svp playback, just the
+> buffer type are different. Normal is iova and secure is secure handle.
+> 
+> User driver will tell the kernel driver with CID control whether the
+> current playback is svp or non-svp.
 
-Note that for now the driver uses a fixed clock configuration selecting
-the bus clock, as the current code to select other clock inputs needs
-changes to support any other SoCs than SH7724.
+My understanding is that when you switch to secure mode, the driver makes
+some optee calls to set everything up. And userspace needs a way convert a
+dmabuf fd to a 'secure handle', which appears to be the DMA address of the
+buffer. Who uses that handle?
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v4:
-  - No changes,
+In any case, using a control to switch to secure mode and using a control
+to convert a dmabuf fd to a secure handle seems a poor choice to me.
 
-v3:
-  - No changes,
+I was wondering if it wouldn't be better to create a new V4L2_MEMORY_ type,
+e.g. V4L2_MEMORY_DMABUF_SECURE (or perhaps _DMABUF_OPTEE). That ensures that
+once you create buffers for the first time, the driver can switch into secure
+mode, and until all buffers are released again you know that the driver will
+stay in secure mode.
 
-v2:
-  - Use devm_drm_of_get_bridge(),
-  - Don't print bridge->of_node on failure, as this field depends on
-    CONFIG_OF.
+For converting the dmabuf fd into a secure handle: a new ioctl similar to
+VIDIOC_EXPBUF might be more suited for that.
 
-Notes:
-  - SH-Mobile AG5 (SH73A0) support is untested.
-  - Unbind crashes when drm_encoder_cleanup() calls drm_bridge_detach(),
-    as the bridge (allocated by devm_drm_panel_bridge_add()) has already
-    been freed by that time. This is a known issue with the bridge code.
----
- .../gpu/drm/renesas/shmobile/shmob_drm_crtc.c | 56 ++++++++++++++-----
- .../gpu/drm/renesas/shmobile/shmob_drm_crtc.h |  1 +
- .../gpu/drm/renesas/shmobile/shmob_drm_drv.c  | 27 ++++++++-
- .../gpu/drm/renesas/shmobile/shmob_drm_drv.h  |  6 ++
- 4 files changed, 74 insertions(+), 16 deletions(-)
+Note that I am the first to admit that I have no experience with secure
+video pipelines or optee-os, so I am looking at this purely from an uAPI
+perspective.
 
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-index 729028a15efae00c..2e2f37b9d0a4bafa 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-@@ -9,12 +9,16 @@
- 
- #include <linux/clk.h>
- #include <linux/media-bus-format.h>
-+#include <linux/of.h>
-+#include <linux/of_graph.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_atomic_uapi.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_fb_dma_helper.h>
-@@ -23,6 +27,7 @@
- #include <drm/drm_gem_dma_helper.h>
- #include <drm/drm_modeset_helper.h>
- #include <drm/drm_modeset_helper_vtables.h>
-+#include <drm/drm_panel.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_simple_kms_helper.h>
- #include <drm/drm_vblank.h>
-@@ -35,10 +40,6 @@
- #include "shmob_drm_plane.h"
- #include "shmob_drm_regs.h"
- 
--/*
-- * TODO: panel support
-- */
--
- /* -----------------------------------------------------------------------------
-  * Page Flip
-  */
-@@ -201,7 +202,7 @@ static void shmob_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- {
- 	struct shmob_drm_crtc *scrtc = to_shmob_crtc(crtc);
- 	struct shmob_drm_device *sdev = to_shmob_device(crtc->dev);
--	const struct shmob_drm_interface_data *idata = &sdev->pdata->iface;
-+	unsigned int clk_div = sdev->config.clk_div;
- 	struct device *dev = sdev->dev;
- 	u32 value;
- 	int ret;
-@@ -223,17 +224,17 @@ static void shmob_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- 	lcdc_write(sdev, LDPMR, 0);
- 
- 	value = sdev->lddckr;
--	if (idata->clk_div) {
-+	if (clk_div) {
- 		/* FIXME: sh7724 can only use 42, 48, 54 and 60 for the divider
- 		 * denominator.
- 		 */
- 		lcdc_write(sdev, LDDCKPAT1R, 0);
--		lcdc_write(sdev, LDDCKPAT2R, (1 << (idata->clk_div / 2)) - 1);
-+		lcdc_write(sdev, LDDCKPAT2R, (1 << (clk_div / 2)) - 1);
- 
--		if (idata->clk_div == 1)
-+		if (clk_div == 1)
- 			value |= LDDCKR_MOSEL;
- 		else
--			value |= idata->clk_div;
-+			value |= clk_div;
- 	}
- 
- 	lcdc_write(sdev, LDDCKR, value);
-@@ -406,7 +407,7 @@ int shmob_drm_crtc_create(struct shmob_drm_device *sdev)
- }
- 
- /* -----------------------------------------------------------------------------
-- * Encoder
-+ * Legacy Encoder
-  */
- 
- static bool shmob_drm_encoder_mode_fixup(struct drm_encoder *encoder,
-@@ -435,9 +436,14 @@ static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
- 	.mode_fixup = shmob_drm_encoder_mode_fixup,
- };
- 
-+/* -----------------------------------------------------------------------------
-+ * Encoder
-+ */
-+
- int shmob_drm_encoder_create(struct shmob_drm_device *sdev)
- {
- 	struct drm_encoder *encoder = &sdev->encoder;
-+	struct drm_bridge *bridge;
- 	int ret;
- 
- 	encoder->possible_crtcs = 1;
-@@ -447,13 +453,30 @@ int shmob_drm_encoder_create(struct shmob_drm_device *sdev)
- 	if (ret < 0)
- 		return ret;
- 
--	drm_encoder_helper_add(encoder, &encoder_helper_funcs);
-+	if (sdev->pdata) {
-+		drm_encoder_helper_add(encoder, &encoder_helper_funcs);
-+		return 0;
-+	}
-+
-+	/* Create a panel bridge */
-+	bridge = devm_drm_of_get_bridge(sdev->dev, sdev->dev->of_node, 0, 0);
-+	if (IS_ERR(bridge))
-+		return PTR_ERR(bridge);
-+
-+	/* Attach the bridge to the encoder */
-+	ret = drm_bridge_attach(encoder, bridge, NULL,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-+	if (ret) {
-+		dev_err(sdev->dev, "failed to attach bridge: %pe\n",
-+			ERR_PTR(ret));
-+		return ret;
-+	}
- 
- 	return 0;
- }
- 
- /* -----------------------------------------------------------------------------
-- * Connector
-+ * Legacy Connector
-  */
- 
- static inline struct shmob_drm_connector *to_shmob_connector(struct drm_connector *connector)
-@@ -563,13 +586,20 @@ shmob_drm_connector_init(struct shmob_drm_device *sdev,
- 	return connector;
- }
- 
-+/* -----------------------------------------------------------------------------
-+ * Connector
-+ */
-+
- int shmob_drm_connector_create(struct shmob_drm_device *sdev,
- 			       struct drm_encoder *encoder)
- {
- 	struct drm_connector *connector;
- 	int ret;
- 
--	connector = shmob_drm_connector_init(sdev, encoder);
-+	if (sdev->pdata)
-+		connector = shmob_drm_connector_init(sdev, encoder);
-+	else
-+		connector = drm_bridge_connector_init(&sdev->ddev, encoder);
- 	if (IS_ERR(connector)) {
- 		dev_err(sdev->dev, "failed to created connector: %pe\n",
- 			connector);
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-index 89a0746f9a35807d..16e1712dd04e0f2b 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-@@ -29,6 +29,7 @@ struct shmob_drm_crtc {
- 	wait_queue_head_t flip_wait;
- };
- 
-+/* Legacy connector */
- struct shmob_drm_connector {
- 	struct drm_connector base;
- 	struct drm_encoder *encoder;
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-index c498d0d9b4fc4fc5..e83c3e52251dedf9 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
-@@ -173,11 +174,13 @@ static void shmob_drm_remove(struct platform_device *pdev)
- static int shmob_drm_probe(struct platform_device *pdev)
- {
- 	struct shmob_drm_platform_data *pdata = pdev->dev.platform_data;
-+	const struct shmob_drm_config *config;
- 	struct shmob_drm_device *sdev;
- 	struct drm_device *ddev;
- 	int ret;
- 
--	if (pdata == NULL) {
-+	config = of_device_get_match_data(&pdev->dev);
-+	if (!config && !pdata) {
- 		dev_err(&pdev->dev, "no platform data\n");
- 		return -EINVAL;
- 	}
-@@ -193,7 +196,13 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 
- 	ddev = &sdev->ddev;
- 	sdev->dev = &pdev->dev;
--	sdev->pdata = pdata;
-+	if (config) {
-+		sdev->config = *config;
-+	} else {
-+		sdev->pdata = pdata;
-+		sdev->config.clk_source = pdata->clk_source;
-+		sdev->config.clk_div = pdata->iface.clk_div;
-+	}
- 	spin_lock_init(&sdev->irq_lock);
- 
- 	platform_set_drvdata(pdev, sdev);
-@@ -202,7 +211,7 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 	if (IS_ERR(sdev->mmio))
- 		return PTR_ERR(sdev->mmio);
- 
--	ret = shmob_drm_setup_clocks(sdev, pdata->clk_source);
-+	ret = shmob_drm_setup_clocks(sdev, sdev->config.clk_source);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -250,11 +259,23 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct shmob_drm_config shmob_arm_config = {
-+	.clk_source = SHMOB_DRM_CLK_BUS,
-+	.clk_div = 5,
-+};
-+
-+static const struct of_device_id shmob_drm_of_table[] __maybe_unused = {
-+	{ .compatible = "renesas,r8a7740-lcdc",	.data = &shmob_arm_config, },
-+	{ .compatible = "renesas,sh73a0-lcdc",	.data = &shmob_arm_config, },
-+	{ /* sentinel */ }
-+};
-+
- static struct platform_driver shmob_drm_platform_driver = {
- 	.probe		= shmob_drm_probe,
- 	.remove_new	= shmob_drm_remove,
- 	.driver		= {
- 		.name	= "shmob-drm",
-+		.of_match_table = of_match_ptr(shmob_drm_of_table),
- 		.pm	= &shmob_drm_pm_ops,
- 	},
- };
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-index 18907e5ace51c681..088ac5381e91e61a 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-@@ -20,9 +20,15 @@ struct clk;
- struct device;
- struct drm_device;
- 
-+struct shmob_drm_config {
-+	enum shmob_drm_clk_source clk_source;
-+	unsigned int clk_div;
-+};
-+
- struct shmob_drm_device {
- 	struct device *dev;
- 	const struct shmob_drm_platform_data *pdata;
-+	struct shmob_drm_config config;
- 
- 	void __iomem *mmio;
- 	struct clk *clock;
--- 
-2.34.1
+Regards,
+
+	Hans
+
+> 
+> Best Regards,
+> Yunfei Dong
+>> Regards,
+>>
+>> Hans
+>>
+>>>
+>>> regards,
+>>> Nicolas
+>>>
+>>> p.s. you forgot to document your control in the RST doc, please do
+>>
+>> in following
+>>> release.
+>>>
+>>>> +ctx->is_svp_mode = ctrl->val;
+>>>> +
+>>>> +if (ctx->is_svp_mode) {
+>>>> +ret = mtk_vcodec_dec_optee_open(ctx->dev->optee_private);
+>>>> +if (ret)
+>>>> +mtk_v4l2_vdec_err(ctx, "open secure mode failed.");
+>>>> +else
+>>>> +mtk_v4l2_vdec_dbg(3, ctx, "decoder in secure mode: %d", ctrl-
+>>>
+>>> val);
+>>>> +}
+>>>> +break;
+>>>>  default:
+>>>>  mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl id:
+>>>> 0x%x\n",
+>>
+>> hdr_ctrl->id);
+>>>>  return ret;
+>>>> @@ -573,7 +584,7 @@ static int mtk_vcodec_dec_ctrls_setup(struct
+>>
+>> mtk_vcodec_dec_ctx *ctx)
+>>>>  unsigned int i;
+>>>>  struct v4l2_ctrl *ctrl;
+>>>>  
+>>>> -v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 1);
+>>>> +v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 2);
+>>>>  if (ctx->ctrl_hdl.error) {
+>>>>  mtk_v4l2_vdec_err(ctx, "v4l2_ctrl_handler_init failed\n");
+>>>>  return ctx->ctrl_hdl.error;
+>>>> @@ -592,6 +603,8 @@ static int mtk_vcodec_dec_ctrls_setup(struct
+>>
+>> mtk_vcodec_dec_ctx *ctx)
+>>>>  
+>>>>  ctrl = v4l2_ctrl_new_std(&ctx->ctrl_hdl,
+>>
+>> &mtk_vcodec_dec_ctrl_ops,
+>>>>   V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE, 0, 65535, 1, 0);
+>>>> +ctrl = v4l2_ctrl_new_std(&ctx->ctrl_hdl,
+>>
+>> &mtk_vcodec_dec_ctrl_ops,
+>>>> + V4L2_CID_MPEG_MTK_SET_SECURE_MODE, 0, 65535, 1, 0);
+>>>>  
+>>>>  v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
+>>>>  
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>
+>> b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>>> index d8cf01f76aab..a507045a3f30 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>>> @@ -1042,6 +1042,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>>>  case V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES:return
+>>>> "Reference
+>>
+>> Frames for a P-Frame";
+>>>>  case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:return "Prepend
+>>
+>> SPS and PPS to IDR";
+>>>>  case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:return "MediaTek
+>>>> Decoder
+>>
+>> get secure handle";
+>>>> +case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:return "MediaTek Decoder
+>>
+>> set secure mode";
+>>>>  
+>>>>  /* AV1 controls */
+>>>>  case V4L2_CID_MPEG_VIDEO_AV1_PROFILE:return "AV1 Profile";
+>>>> @@ -1442,6 +1443,10 @@ void v4l2_ctrl_fill(u32 id, const char
+>>
+>> **name, enum v4l2_ctrl_type *type,
+>>>>  *type = V4L2_CTRL_TYPE_INTEGER;
+>>>>  *flags |= V4L2_CTRL_FLAG_WRITE_ONLY;
+>>>>  break;
+>>>> +case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:
+>>>> +*type = V4L2_CTRL_TYPE_INTEGER;
+>>>> +*flags |= V4L2_CTRL_FLAG_WRITE_ONLY;
+>>>> +break;
+>>>>  case V4L2_CID_USER_CLASS:
+>>>>  case V4L2_CID_CAMERA_CLASS:
+>>>>  case V4L2_CID_CODEC_CLASS:
+>>>> diff --git a/include/uapi/linux/v4l2-controls.h
+>>
+>> b/include/uapi/linux/v4l2-controls.h
+>>>> index 7b3694985366..88e90d943e38 100644
+>>>> --- a/include/uapi/linux/v4l2-controls.h
+>>>> +++ b/include/uapi/linux/v4l2-controls.h
+>>>> @@ -957,6 +957,7 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
+>>>>  /*  MPEG-class control IDs specific to the MediaTek Decoder
+>>
+>> driver as defined by V4L2 */
+>>>>  #define V4L2_CID_MPEG_MTK_BASE(V4L2_CTRL_CLASS_CODEC | 0x2000)
+>>>>  #define
+>>
+>> V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE(V4L2_CID_MPEG_MTK_BASE+8)
+>>>> +#define
+>>
+>> V4L2_CID_MPEG_MTK_SET_SECURE_MODE(V4L2_CID_MPEG_MTK_BASE+9)
+>>>>  
+>>>>  /*  Camera class control IDs */
+>>>>  
 
