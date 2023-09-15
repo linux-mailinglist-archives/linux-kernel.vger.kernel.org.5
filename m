@@ -2,141 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8DC7A1D3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DDA7A1D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbjIOLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S233131AbjIOLSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjIOLQv (ORCPT
+        with ESMTP id S230153AbjIOLSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:16:51 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C444C189;
-        Fri, 15 Sep 2023 04:16:45 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38FBGFs9004976;
-        Fri, 15 Sep 2023 06:16:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694776575;
-        bh=3iyqIz1bm5Ap2Jx3eiz+CK/eHKTJuDer271I8mtLQW4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=fySl1bYcuuZcNdtLhm3qG6VVnnfKnzPiwSsKR6xj/1Cb7tbQ4f1olro5Ywh/ZX8kL
-         MbCo+BM1+iw70FeDNB3LULf0w22Wj9HPIjM3FMQGUZ0aZ9yN684MBUbs3Ah7GQniBD
-         y3PTl88X5EDTqnwvwe5M1SJJQWihaIln7Pu4rWbg=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38FBGFcL013382
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Sep 2023 06:16:15 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
- Sep 2023 06:16:14 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 15 Sep 2023 06:16:14 -0500
-Received: from [10.250.135.44] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38FBG75X022097;
-        Fri, 15 Sep 2023 06:16:08 -0500
-Message-ID: <0994c10b-8805-7ce3-dc1b-13410b3a959c@ti.com>
-Date:   Fri, 15 Sep 2023 14:16:06 +0300
+        Fri, 15 Sep 2023 07:18:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55C89101;
+        Fri, 15 Sep 2023 04:18:11 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91C241FB;
+        Fri, 15 Sep 2023 04:18:47 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD0133F5A1;
+        Fri, 15 Sep 2023 04:18:07 -0700 (PDT)
+Message-ID: <b269f9d0-9d7a-4d06-a897-c173e1eb2d0e@arm.com>
+Date:   Fri, 15 Sep 2023 12:17:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
-To:     Nitin Yadav <n-yadav@ti.com>, <nm@ti.com>, <vigneshr@ti.com>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230913114711.2937844-1-n-yadav@ti.com>
- <20230913114711.2937844-2-n-yadav@ti.com>
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 2/3] perf pmus: Simplify perf_pmus__find_core_pmu()
 Content-Language: en-US
-From:   Roger Quadros <rogerq@ti.com>
-In-Reply-To: <20230913114711.2937844-2-n-yadav@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        acme@kernel.org
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230913153355.138331-1-james.clark@arm.com>
+ <20230913153355.138331-3-james.clark@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230913153355.138331-3-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitin,
 
-On 13.9.2023 14.47, Nitin Yadav wrote:
-> Add support for AM62Q NAND card: X8 NAND EXPANSION
-> BOARD card (PROC143E1) for AM62x LP SK board.
 
-This patch is not adding NAND support but GPMC and ELM nodes.
-
+On 13/09/2023 16:33, James Clark wrote:
+> Currently the while loop always either exits on the first iteration with
+> a core PMU, or exits with NULL on heterogeneous systems or when not all
+> CPUs are online.
 > 
-> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> Both of the latter behaviors are undesirable for platforms other than
+> Arm so simplify it to always return the first core PMU, or NULL if none
+> exist.
+> 
+> This behavior was depended on by the Arm version of
+> pmu_metrics_table__find(), so the logic has been moved there instead.
+> 
+> Suggested-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
+
+Turns out the "Simple expression parser" test is failing on
+heterogeneous arm systems without this patch. I didn't realise there was
+a dependency and should have put the commits the other way round. I will
+leave the error message here in case someone bumps into it, but no fix
+is required apart from applying the remaining patches in this set:
+
+ $ perf test expr -v
+  4: Simple expression parser                                        :
+ --- start ---
+ test child forked, pid 4902
+ Using CPUID 0x00000000410fd070
+ FAILED tests/expr.c:83 get_cpuid
+ test child finished with -1
+ ---- end ----
+ Simple expression parser: FAILED!
+
+
 > ---
->   arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
->   arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
->   2 files changed, 31 insertions(+)
+>  tools/perf/arch/arm64/util/pmu.c |  8 +++++++-
+>  tools/perf/util/pmus.c           | 14 +-------------
+>  2 files changed, 8 insertions(+), 14 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> index 284b90c94da8..e93e79d8083f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
->   		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->   		status = "disabled";
->   	};
-> +	gpmc0: memory-controller@3b000000 {
-> +		status = "disabled";
-> +		compatible = "ti,am64-gpmc";
-> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 80 0>;
-> +		clock-names = "fck";
-> +		reg = <0x00 0x03b000000 0x00 0x400>,
-> +		      <0x00 0x050000000 0x00 0x8000000>;
-> +		reg-names = "cfg", "data";
-> +		interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
-> +		gpmc,num-cs = <3>;
-> +		gpmc,num-waitpins = <2>;
-> +		#address-cells = <2>;
-> +		#size-cells = <1>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +	};
+> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+> index 3d9330feebd2..3099f5f448ba 100644
+> --- a/tools/perf/arch/arm64/util/pmu.c
+> +++ b/tools/perf/arch/arm64/util/pmu.c
+> @@ -10,8 +10,14 @@
+>  
+>  const struct pmu_metrics_table *pmu_metrics_table__find(void)
+>  {
+> -	struct perf_pmu *pmu = perf_pmus__find_core_pmu();
+> +	struct perf_pmu *pmu;
 > +
-> +	elm0: ecc@25010000 {
-> +		status = "disabled";
-> +		compatible = "ti,am3352-elm";
-> +		reg = <0x00 0x25010000 0x00 0x2000>;
-> +		interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
-> +		power-domains = <&k3_pds 54 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 54 0>;
-> +		clock-names = "fck";
-> +	};
->   };
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62.dtsi b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> index 11f14eef2d44..f7d8aad0a016 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-> @@ -76,6 +76,8 @@ cbass_main: bus@f0000 {
->   			 <0x00 0x70000000 0x00 0x70000000 0x00 0x00010000>, /* OCSRAM */
->   			 <0x01 0x00000000 0x01 0x00000000 0x00 0x00310000>, /* A53 PERIPHBASE */
->   			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
-> +			 <0x00 0x3b000000 0x00 0x3b000000 0x00 0x00000400>, /* GPMC0_CFG */
-> +			 <0x00 0x50000000 0x00 0x50000000 0x00 0x08000000>, /* GPMC0 DATA */
->   
->   			 /* MCU Domain Range */
->   			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>,
-
--- 
-cheers,
--roger
+> +	/* Metrics aren't currently supported on heterogeneous Arm systems */
+> +	if (perf_pmus__num_core_pmus() > 1)
+> +		return NULL;
+>  
+> +	/* Doesn't matter which one here because they'll all be the same */
+> +	pmu = perf_pmus__find_core_pmu();
+>  	if (pmu)
+>  		return perf_pmu__find_metrics_table(pmu);
+>  
+> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> index cec869cbe163..64e798e68a2d 100644
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -596,17 +596,5 @@ struct perf_pmu *evsel__find_pmu(const struct evsel *evsel)
+>  
+>  struct perf_pmu *perf_pmus__find_core_pmu(void)
+>  {
+> -	struct perf_pmu *pmu = NULL;
+> -
+> -	while ((pmu = perf_pmus__scan_core(pmu))) {
+> -		/*
+> -		 * The cpumap should cover all CPUs. Otherwise, some CPUs may
+> -		 * not support some events or have different event IDs.
+> -		 */
+> -		if (RC_CHK_ACCESS(pmu->cpus)->nr != cpu__max_cpu().cpu)
+> -			return NULL;
+> -
+> -		return pmu;
+> -	}
+> -	return NULL;
+> +	return perf_pmus__scan_core(NULL);
+>  }
