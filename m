@@ -2,96 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7679A7A22EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A67B7A22EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbjIOPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S236227AbjIOPte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236457AbjIOPs7 (ORCPT
+        with ESMTP id S236260AbjIOPtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:48:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDDC2710;
-        Fri, 15 Sep 2023 08:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=leftU7vnx6ubtSCIPio+hyF+23cQ6uL5tDPuDZIs4dk=; b=YYqjIA6Phg4gWr7cpr90C7AQMG
-        JPBckC5Gp1gat/6r+oY6tjpgDW2+MFCpZSMEDW3nt665gO51B+Du/Mg+YnEcWoAb7R3hkyhcBF0cT
-        PiGlO3s6ZnHcXbXKr9QsStIrRq0KhTZYMPGQ7jfzMdzS2VGcoau6RYdsgxnbVP072afdAkyhPatLG
-        T7R4OmlL1OWfWdfFPXGK0eifZ+B1dEwoWLHTAJiq6rYRw+hlrr5G9jZkOw2q3TFKN0+WiYKPfUx5q
-        n1WOC1qIBz9/wzIHSnpi6BegyzrRyOFcNMFftrs34uJ4iHR5x9pAKQsQnbWWnlbkq1dVk4OtR1B/P
-        BhPoA3uQ==;
-Received: from [2601:1c2:980:9ec0:e65e:37ff:febd:ee53]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qhB3C-00B13L-1W;
-        Fri, 15 Sep 2023 15:48:10 +0000
-Message-ID: <6b507126-c4e6-40f2-9574-fe1abb0463ee@infradead.org>
-Date:   Fri, 15 Sep 2023 08:48:08 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: kbuild: explain handling optional
- dependencies
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        Fri, 15 Sep 2023 11:49:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D6A2711;
+        Fri, 15 Sep 2023 08:48:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54CB4C433C8;
+        Fri, 15 Sep 2023 15:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694792923;
+        bh=sOwpmNRFVnGigJMQ+ZdHsMJYHy/EbqpeUv7bUvvmRaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mGaHVCjjcF+i8dJ3eDD3xDgzW8bUZ/mziODR02cl3jT83hZE14zonQZxdO4PVWAnx
+         X91ofFeXMH87QO39wBdAYpeX2hbDeGdNLaQXlr1hIK0uCcpOfRfyHnE7A4s8l85/U4
+         flwLjbnhsc/pKqNbRhcaGcrpedGKzBEVL18xxpkM87EhuDjeuD9cx74vvj5QvFwAn1
+         SmLj4zI/Mp1/JLwksdu8Ow5+4cAKbWfekluMfH+z2wszUfsu/tEnQFWpmPZQqUF/rc
+         4Go8cOxJomE0yVdVFRf3rKDSvSu+QKCWucJiEydCuQBM4GpCGXo69+ailwPisYUlfo
+         5bnS4c26BYPsg==
+Received: (nullmailer pid 3779770 invoked by uid 1000);
+        Fri, 15 Sep 2023 15:48:41 -0000
+Date:   Fri, 15 Sep 2023 10:48:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230913113801.1901152-1-arnd@kernel.org>
- <874jjwx44g.fsf@intel.com>
- <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
- <CAK7LNAR9Jt0FQNRidcxY-OxMh7N238Xs33Tyj+dpTZ5wGow0wQ@mail.gmail.com>
- <763b1599-06b7-490e-9cbf-eb07f1deedb3@app.fastmail.com>
- <87sf7fvqiz.fsf@intel.com>
- <bc27450a-74cd-49f5-bc88-f102b0edb345@app.fastmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <bc27450a-74cd-49f5-bc88-f102b0edb345@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Message-ID: <20230915154841.GA3776155-robh@kernel.org>
+References: <20230915140516.1294925-1-f.suligoi@asem.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915140516.1294925-1-f.suligoi@asem.it>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/23 00:44, Arnd Bergmann wrote:
-> On Fri, Sep 15, 2023, at 09:34, Jani Nikula wrote:
->>
->> IS_REACHABLE() considered harmful.
+On Fri, Sep 15, 2023 at 04:05:15PM +0200, Flavio Suligoi wrote:
+> The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
+> programmable switching frequency to optimize efficiency.
+> The brightness can be controlled either by I2C commands (called "analog"
+> mode) or by a PWM input signal (PWM mode).
+> This driver supports both modes.
 > 
-
-+1 absolutely.
-
-> Absolutely agreed, and I'm sorry I introduced it in the
-> first place in commit 9b174527e7b75 ("[media] Add and use
-> IS_REACHABLE macro").
+> For device driver details, please refer to:
+> - drivers/video/backlight/mp3309c_bl.c
 > 
-> At the time, it was only used by drivers/media, which used
-> to have a lot of open-coded instances of it and a lot of
-> wrong checks.
+> The datasheet is available at:
+> - https://www.monolithicpower.com/en/mp3309c.html
 > 
-> Having a formal syntax for it was an improvement for
-> drivers/media since it was more broken before, but it's
-> usually a mistake to use it when there is another solution,
-> and we probably should have tried harder to fix the
-> dependencies in drivers/media at the time.
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
 > 
->       Arnd
+> v2:
+>  - remove useless properties (dimming-mode, pinctrl-names, pinctrl-0,
+>    switch-on-delay-ms, switch-off-delay-ms, reset-gpios, reset-on-delay-ms,
+>    reset-on-length-ms)
+>  - add common.yaml#
+>  - remove already included properties (default-brightness, max-brightness)
+>  - substitute three boolean properties, used for the overvoltage-protection
+>    values, with a single enum property
+>  - remove some conditional definitions
+>  - remove the 2nd example
+> v1:
+>  - first version
+> 
+>  .../bindings/leds/backlight/mps,mp3309c.yaml  | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> new file mode 100644
+> index 000000000000..99ccdba2c08f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/backlight/mps,mp3309c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MPS MP3309C backlight
+> +
+> +maintainers:
+> +  - Flavio Suligoi <f.suligoi@asem.it>
+> +
+> +description: |
+> +  The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
+> +  programmable switching frequency to optimize efficiency.
+> +  It supports two different dimming modes:
+> +
+> +  - analog mode, via I2C commands (default)
+> +  - PWM controlled mode.
+> +
+> +  The datasheet is available at:
+> +  https://www.monolithicpower.com/en/mp3309c.html
+> +
+> +allOf:
+> +  - $ref: common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: mps,mp3309c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  pwms:
+> +    description: if present, the backlight is controlled in PWM mode.
+> +    maxItems: 1
+> +
+> +  enable-gpios:
+> +    description: GPIO used to enable the backlight in "analog-i2c" dimming mode.
+> +    maxItems: 1
+> +
+> +  mps,overvoltage-protection-microvolt:
+> +    description: Overvoltage protection (13.5V, 24V or 35.5V). If missing, the
+> +      hardware default of 35.5V is used.
 
--- 
-~Randy
+default: 35500000
+
+instead of prose saying the same thing.
+
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +    enum: [ 13500000, 24000000, 35500000 ]
+> +
+> +  mps,no-sync-mode:
+> +    description: disable synchronous rectification mode
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - max-brightness
+> +  - default-brightness
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        /* Backlight with PWM control */
+> +        backlight_pwm: backlight@17 {
+> +            compatible = "mps,mp3309c-backlight";
+> +            reg = <0x17>;
+> +            pwms = <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*10^9 */
+> +            max-brightness = <100>;
+> +            default-brightness = <80>;
+> +            overvoltage-protection-microvolt = <24000000>;
+> +        };
+> +    };
+> -- 
+> 2.34.1
+> 
