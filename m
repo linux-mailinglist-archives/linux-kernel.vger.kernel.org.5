@@ -2,212 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8E97A2041
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E997A2049
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbjIONwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S234875AbjION4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbjIONwp (ORCPT
+        with ESMTP id S234618AbjION4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:52:45 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC86EB8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:52:39 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso279895466b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694785958; x=1695390758; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dvBrYykFcdabK3VBwLNpD2+rQenLlz52r2r7e+pmXS0=;
-        b=h11Ea29jz8cI/slGn2bxtRgwXnIycO/3E0jAvk7b05WkC8XBHk34aAZFdQVdI/61h1
-         eawToXkFS67i8Fjfc0gSPz5p+CZCOwKPL3DUKbEVKVmexvM5kyB2IBaea/mPdLmzKpv4
-         P4ULJVlP6Ag7T3yDTVzdaEbU4y2+INL1LsfipuQrWln+vek+aV7Zm7zACM2/CGVujB4o
-         T5E4A0lP5F6f8WzoH8VtXNB3UbYHylbA92e+u/Ifigqy7xgXscOoil1Q4MztO9SFjut8
-         JMRZOkhk8xOrAoUg/0Tv/tqzkVkOFvTLfQpKFeHZ59PLmzGBE85jsYKrg2FqCtO8l7TJ
-         yfQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694785958; x=1695390758;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dvBrYykFcdabK3VBwLNpD2+rQenLlz52r2r7e+pmXS0=;
-        b=bboqxoprTM74mKlHsebGXTM2emq22jfL1YSx0oz/uUupxzIqOh4MMMcO7CTTMYg3KW
-         vM40HJbY8hYpqnjIz1xqFIzc5Cb1hXZ7xG3bkDxjFm28+Y5YkgtD/pLHpwbasz4Au35v
-         Wn+p6ZTks52IbCScqUsRdnQEq/9NwqQQYCDVa7iUtDj0eew04+LggT8Zb/T5MRhexpyN
-         Cr7OLsOFhtSDu30M1MjiAmO066UBGAJ3WdMszbdSbs/3BHIntaJzKmVH0eMieXsiAlXb
-         vWbuWYn5Z8EdzxwWtXJYR2SJwmV+2JQB+RHxAJgmO6e3fqnw/40Fe7cgHDU67To1ejsM
-         AeYA==
-X-Gm-Message-State: AOJu0YyyYiainNq927YWSJqjUc1wTcIFAAGiuBgZ6ZcXqz+vNFZuz2sp
-        /qI3ms22jSdOkSop2QlpNxmi9Q==
-X-Google-Smtp-Source: AGHT+IHsaTMwtzQx49I19iulLbUwwC8pP6k6/AWKSekg0Tcl7L3v+ZyQTkxLUhYXE/vuvtljp0dX1Q==
-X-Received: by 2002:a17:907:a064:b0:9a1:e8c0:7e2e with SMTP id ia4-20020a170907a06400b009a1e8c07e2emr1438238ejc.14.1694785958347;
-        Fri, 15 Sep 2023 06:52:38 -0700 (PDT)
-Received: from [192.168.37.232] (178235177024.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.24])
-        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm2467926ejf.90.2023.09.15.06.52.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 06:52:37 -0700 (PDT)
-Message-ID: <9ad1264f-efb5-40b5-bd7a-1477e86501a1@linaro.org>
-Date:   Fri, 15 Sep 2023 15:52:36 +0200
+        Fri, 15 Sep 2023 09:56:23 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD571BEB;
+        Fri, 15 Sep 2023 06:56:17 -0700 (PDT)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 1F7B920730;
+        Fri, 15 Sep 2023 15:56:12 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 15:56:10 +0200
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     David Lin <yu-hao.lin@nxp.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "amitkarwar@gmail.com" <amitkarwar@gmail.com>,
+        "ganapathi017@gmail.com" <ganapathi017@gmail.com>,
+        "huxinming820@gmail.com" <huxinming820@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Subject: Re: [PATCH v4 0/1] Patch History
+Message-ID: <ZQRieqAyA8Dxk1nP@francesco-nb.int.toradex.com>
+References: <PA4PR04MB9638B8753EFD81E174E55BC3D114A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/9] arm64: dts: qcom: msm8916: Reserve firmware memory
- dynamically
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
- <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
- <912f90ee-0816-43ae-bc6f-a9a9a3e33d8a@linaro.org>
- <9b1beb38-9ec2-4bdb-97f5-fccf98d3b0c3@linaro.org>
- <ZQGLioVhjCK3TRva@gerhold.net>
- <568b4e18-1ade-4a12-9766-d16d8ca9838d@linaro.org>
- <ZQMUDia6cYA0mGmL@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZQMUDia6cYA0mGmL@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2023 16:09, Stephan Gerhold wrote:
-> On Wed, Sep 13, 2023 at 09:39:50PM +0200, Konrad Dybcio wrote:
->> On 13.09.2023 12:14, Stephan Gerhold wrote:
->>> On Wed, Sep 13, 2023 at 10:12:12AM +0100, Bryan O'Donoghue wrote:
->>>> On 13/09/2023 10:06, Konrad Dybcio wrote:
->>>>> On 11.09.2023 19:41, Stephan Gerhold wrote:
->>>>>> Most of the reserved firmware memory on MSM8916 can be relocated when
->>>>>> respecting the required alignment. To avoid having to precompute the
->>>>>> reserved memory regions in every board DT, describe the actual
->>>>>> requirements (size, alignment, alloc-ranges) using the dynamic reserved
->>>>>> memory allocation.
->>>>>>
->>>>>> This approach has several advantages:
->>>>>>
->>>>>>   1. We can define "templates" for the reserved memory regions in
->>>>>>      msm8916.dtsi and keep only device-specific details in the board DT.
->>>>>>      This is useful for the "mpss" region size for example, which varies
->>>>>>      from device to device. It is no longer necessary to redefine all
->>>>>>      firmware regions to shift their addresses.
->>>>>>
->>>>>>   2. When some of the functionality (e.g. WCNSS, Modem, Venus) is not
->>>>>>      enabled or needed for a device, the reserved memory can stay
->>>>>>      disabled, freeing up the unused reservation for Linux.
->>>>>>
->>>>>>   3. Devices with special requirements for one of the firmware regions
->>>>>>      are handled automatically. For example, msm8916-longcheer-l8150
->>>>>>      has non-relocatable "wcnss" firmware that must be loaded exactly
->>>>>>      at address 0x8b600000. When this is defined as a static region,
->>>>>>      the other dynamic allocations automatically adjust to a different
->>>>>>      place with suitable alignment.
->>>>>>
->>>>>> All in all this approach significantly reduces the boilerplate necessary
->>>>>> to define the different firmware regions, and makes it easier to enable
->>>>>> functionality on the different devices.
->>>>>>
->>>>>> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
->>>>>> ---
->>>>> [...]
->>>>>
->>>>>>   		mpss_mem: mpss@86800000 {
->>>>>> +			/*
->>>>>> +			 * The memory region for the mpss firmware is generally
->>>>>> +			 * relocatable and could be allocated dynamically.
->>>>>> +			 * However, many firmware versions tend to fail when
->>>>>> +			 * loaded to some special addresses, so it is hard to
->>>>>> +			 * define reliable alloc-ranges.
->>>>>> +			 *
->>>>>> +			 * alignment = <0x0 0x400000>;
->>>>>> +			 * alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
->>>>>> +			 */
->>>>> Do we know of any devices that this would actually work on?
->> [...]
->>>  - On DB410c it works just fine. All addresses I tried work without any
->>>    problems.
->>>
->>>  - On longcheer-l8150 the modem firmare works fine when the memory
->>>    region starts somewhere between 0x86800000 and 0x8a800000. It also
->>>    works again after 0x8e800000. But on anything between 0x8a800000 and
->>>    0x8e800000 it's broken for who knows what reason.
->>> [...]
->> Were you able to find a phone (likely a very reference-design-based
->> one) that this worked on, btw?
+On Thu, Sep 14, 2023 at 06:28:31PM -0700, Brian Norris wrote:
+> On Wed, Sep 13, 2023 at 11:42 PM David Lin <yu-hao.lin@nxp.com> wrote:
+>>
+>> Current state of this patch is "Deferred". I wonder when can this patch be reviewed and merged.
+>>
+>> Is there anything I can do to speed up the acceptance of this patch by upstream?
 > 
-> Actually I would count the Longcheer devices (l8150 = Wileyfox Swift and
-> l8910 = BQ Aquaris X5) to the category of close-to-QRD-based devices.
-> Based on quick tests both behave like described above (only
-> 0x8a800000-0x8e800000 is broken). Same for wingtech-wt88047.
-> 
-> In other words, for those using the dynamic allocation would work fine,
-> because the alloc-ranges = <0x0 0x86800000 0x0 0x8000000>; only includes
-> working start addresses from 0x86800000 to ~0x89800000 (with a size of
-> 0x5000000).
-> 
-> I guess I could use it for them and only make other devices use a fixed
-> address. But I also don't quite have the capacity to test every device
-> to see if relocating the region works or not.
-> 
-> I think it's still easiest to allocate mpss on a fixed address
-> everywhere. The only real disadvantage is that overriding "reg", e.g.
-> 
-> 	&mpss_mem {
-> 		reg = <0x0 0x86800000 0x0 0x5100000>;
-> 	};
-> 
-> is a bit more ugly than overriding size:
-> 
-> 	&mpss_mem {
-> 		size = <0x0 0x5100000>;
-> 	};
-> 
-> but well, this is a very minor disadvantage.
-So in other words, this only *really* works on apq8016?
+> You still haven't sent this to the correct maintainers (i.e., me) for
+> one. I also thought there were outstanding unaddressed comments from
+> Francesco. And given how much Francesco looked, I'd appreciate getting
+> his Reviewed-by when he's actually happy with it.
 
-Konrad
+Ack, this fell off my radar.
+
+Francesco
+
