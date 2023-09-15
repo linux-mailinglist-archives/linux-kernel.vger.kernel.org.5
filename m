@@ -2,214 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F5B7A2505
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4237A2507
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbjIORoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S235789AbjIORom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjIORnj (ORCPT
+        with ESMTP id S235965AbjIORo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:43:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9A410C9;
-        Fri, 15 Sep 2023 10:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694799814; x=1726335814;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=9rYa5T+uXxG8Bk2pdqK9IaVnGVqZMnhK5f9q7DS0zfQ=;
-  b=jnN+wpz0ycNeIumaWb9bSlC4QB179JDJh0SyKXjboWXGvnoDhrhEHSMZ
-   8gs2OWBe3t9bRz5onlJCnRV2SrEwlKcRse3LNu31iAbUeXbBBgsBIrOG+
-   gls3EK8JgWohZZrI55xf6Bkn++HjDgHrs+tjzs8iHOg11gIxVrbWAXVvU
-   uXr10MBgHJ1hbIC8HqxAmCgHd0AccU0YsHl8bAFG0uTMhHg+aBD9NjD1l
-   Du3/HO3oTc6/Nlt2Na8fmS85PFoJL22PshIhcaXgfp1cn9Nn4gjOi3XFu
-   B7WObrO7yIE0rytx5f5IucvwGq+56kONRvDsUTV6gJ5meZI6Mhg3m7Nvw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359559683"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="359559683"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 10:43:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="860252646"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="860252646"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Sep 2023 10:43:33 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 15 Sep 2023 10:43:32 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 15 Sep 2023 10:43:32 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 15 Sep 2023 10:43:32 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.173)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 15 Sep 2023 10:43:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AJ8h5hR1fSIzGt/wwV8dXt3CLoyDEO4GPrBnuKUkKEdGZwlgm8IBx0wgAQbeurfYy1V/iD+EqDvhsuLDPSTDVQ5azx+382cisCws7VcnxlPXoqj+oRvCsATeEK4bse1+EauQT1D9hc1ImgzgdKnlHqCDGvlfgVkUM4OQiTTrr44iTF5hr9MAjjijGDJZ9WSDMfuDARhM7lZvx6lcy7EP104vkOVtXdKji4hVpXMM553eMuusHCa/vD925gPW2Kq7CYMV/ZA8w8ni8Lau5x+ric4FVSjnhNBsrbpGUcCigqZb1z/wkhbEOlfH43heLu5JjsgXPJoV9dPMs6msnM6+Nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9rYa5T+uXxG8Bk2pdqK9IaVnGVqZMnhK5f9q7DS0zfQ=;
- b=i+Z0pyZJKnsmBvn82KyacsY0uDUmqwMOVaTdRdgb4EvabvCE72BGwH0/pG9KMuuKYz6FfErvyYjUNFSTj2/14W93ulPhMZstn7B7jb78a3JWxHeRGE3Eyj8Uw68gT7el6uATLPVrOHlvMFKYWmltZQbAPEw43aBtrUfdMGXsgmcAPwHmrhxNB2+YwPBvX50zYx43ywf7Li9UTVxEWPhL3eY2TreD7imeiIoUVI9s4gygQgtEC2SS8Rbv5P07tl9sSk15iE0NJ6gClVz91bBRLPlpMrohmxQ/EHBZwJDuSvDKqYCiCu9wN4u+Oie2oI/V9MYX3wcHd0NLY2aIotveSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by IA1PR11MB7753.namprd11.prod.outlook.com (2603:10b6:208:421::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Fri, 15 Sep
- 2023 17:43:27 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::56f1:507b:133e:57cf]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::56f1:507b:133e:57cf%4]) with mapi id 15.20.6768.029; Fri, 15 Sep 2023
- 17:43:27 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Huang, Kai" <kai.huang@intel.com>
-CC:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shahar, Sagi" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v13 17/22] x86/kexec: Flush cache of TDX private memory
-Thread-Topic: [PATCH v13 17/22] x86/kexec: Flush cache of TDX private memory
-Thread-Index: AQHZ51OF0q1+5rEcHU+I1nLwKEUGdrAcKZsA
-Date:   Fri, 15 Sep 2023 17:43:27 +0000
-Message-ID: <fb70d8c29ebc91dc63e524a5d5cdf1f64cdbec73.camel@intel.com>
-References: <cover.1692962263.git.kai.huang@intel.com>
-         <1fa1eb80238dc19b4c732706b40604169316eb34.1692962263.git.kai.huang@intel.com>
-In-Reply-To: <1fa1eb80238dc19b4c732706b40604169316eb34.1692962263.git.kai.huang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|IA1PR11MB7753:EE_
-x-ms-office365-filtering-correlation-id: eb980520-0e70-4e99-18a5-08dbb61344af
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +VW9KOaybTIJmKeMKYkWD3b82mpNhvfo5YBc0rNXE86bJN1s5hoOFpxMSm/5u0rs3h0Y2jU0O2pM/LO3IOG3+HztDwvbd0L/HdDp456PsvqbT8XBmlWCWkLXXk3lm4BfjiagPBA1MC0zx36pifi9IPjrdEdaolXRvbpiLPKBNpap88jbV4Zxu2CQJGM9C+0vjIvvzP1rY/SCV4BrK51htlpOsFruB4ZEVPcHkKduIXZGKbbfVVtTiF5+jLJQvrNFEdErD0TA4Tx4yS2CHUwmpgsaWH58afRrWWAmIqmlnPenDToXkNVd9GA3+SkV41bJG8MBPX0Zh2oRnw99HPTM5IK14hz5ttbM09oPk6etqrq02/NtdOXD7OXoCYBZ+JQ6r2vSRjizmdoYlX+AVsCi2R7FIExQadeIzim/Cr4gRN7BrNSGFn5AwAnCkW7087I7eBJRV1UigFF2zQXaHr9Oado1OjQddEGAyY9ergoiQd6d4erooRfDLRT2zHqrnctufz5QH8Ct1CsqM/m1wTsjZ7HSy3S686v5eimxXR9a2As03szDh9DprK6fKPk/MvBaxOODtiDkr2xkxUmDX18B+hAjjr6umx6C1SwkIRaifg4VZuSHmykPQTlOZ4R5fzqP
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(39860400002)(346002)(376002)(451199024)(186009)(1800799009)(86362001)(6506007)(54906003)(6486002)(6512007)(4326008)(76116006)(110136005)(66476007)(7416002)(2906002)(66556008)(316002)(8676002)(41300700001)(8936002)(64756008)(66446008)(6636002)(66946007)(5660300002)(36756003)(71200400001)(478600001)(91956017)(83380400001)(38100700002)(2616005)(38070700005)(82960400001)(122000001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L25XUGozNHBMOUEzVm16OVJWUXR6OVpjVDlZLzlLMUxaUy9vaTUycmNXK3B0?=
- =?utf-8?B?bUdkYm4zNG00U3NkbXRQa1RRZUxqaU4zZUh4c09BdHJvLy9mNU9TMjdIejVB?=
- =?utf-8?B?Yzcrd25nMGNtc0lUTEczS1lZM0NnRVdVT0lQOUwxR0QrcENWTFlDc3MwM3Fy?=
- =?utf-8?B?UjBRbFU2bkhKbEkyQU1hQTNmcnlmOWFjRW1hM3prWmdSckRSeHpvUVNhK20y?=
- =?utf-8?B?Z1B1OExvT1RFWWg4RCtIS3hFTVZEa1FJbmkxenovWjJTVlUrMmQ0THBGNmND?=
- =?utf-8?B?Z25UMFNvSWR2RHZEdXlkZDRjU0JLNGtkQUpsSC9lRWo3ZjhQQ2swemdPZmlx?=
- =?utf-8?B?ZDFPcTNpMzg0ZkJOeXdQWUR0cE1VSnRwOE93bkNONU13OWJaM1VuS0ZKQnk1?=
- =?utf-8?B?YWNibTB1bWlMa2FzTlJXOVdHajBqRzcrT2JicnIvQUpqblEzRjhnbllVWlpG?=
- =?utf-8?B?d2pmVmpHSVJoWFhIV0dJVi81YjNZdnlhNXdlRFBpM0tBT20ybjllcmU0aTY3?=
- =?utf-8?B?M2E5TTVvQ1grZEFKUENqMGpHRmNQT2ZDSStzWU81cDZCMHUwY2dUTk5xU0Fl?=
- =?utf-8?B?UVp3Y29zU3pDZnFPNjVHcmNCbDY3bUM4dzlrUCtGRTRYcXNrTEo4dFJZS2ll?=
- =?utf-8?B?NXhhWFA3U3VtUEQvMFVwWWhkK2xTbmc3ZFc3d0k4dzM0TDI1NDJLcW52eGZj?=
- =?utf-8?B?R0JFNUZHYVFUM3F2SVBSVUQrT2hQVWF1MFU2QkR5YkNOWEU4bkg5TWxmRElB?=
- =?utf-8?B?SU9wQnFEMkpKRlU3TTJTdnV5YVc5VlZtajY1dTh3NHBRS1E3WWpZNWdXU2p3?=
- =?utf-8?B?QXE5S3Z4UVZlODdUTDQ1bkR0dFpYcC9TSWlEOTNxWlhMaXNBUFFuQ2t3RFpp?=
- =?utf-8?B?UzlWcTJlVHVHMnhGck5uYkZoOGhBSWZ2Qlg5Ymw0SzNZL1M3ZFVGQkJBbTJn?=
- =?utf-8?B?Q2JxbllTQ0RkV0ZteU43OTQxNXBlU0lvb1JoUUhrMmI2YW1DdENHWFZRTDJi?=
- =?utf-8?B?ZzlTZ1l6U3ZibW9qUjNrRE5mRDN0TzlmVWVBUEg3Y0h0Q1ZNamVTT2RIeE5L?=
- =?utf-8?B?VzVyS1l1d0pFT1RXUXhXOEZDVWNJT2IyWUZqb2xlR0FlbEFabk9SK1dRL0dH?=
- =?utf-8?B?OFY2ZGIvOHkvUE5tbmFGV1R0cDJBeFltbFBWb01OYU5PeHZGenprSGZyOWpZ?=
- =?utf-8?B?V3hlM1d4dWNxNjBaWllqNDdWYWRjV1lwY0xiUFZCbHNVR0U2RlJobW1IUEpV?=
- =?utf-8?B?YnowWS9JMGJXNVV5SFNTSVJuVVVkMnhFNG5rNnVLb29CVWVDSmNjR2I0ZlZk?=
- =?utf-8?B?a3NPTWZobm41UlBUWmkyV3NqMk1hWnUzR0NKVVROellQQ2duSDhvOHBuSWE3?=
- =?utf-8?B?VDl0dkJNWjVYWDd0bm5kYnNHK0JNOStMMHY1SXFMTWlDV0tlSGdLanVNN2dM?=
- =?utf-8?B?dDJDdW56YnNRY2hBQzFtMDlCTTBzWmZLRE85cHNEOFV1WUxLR1o3K090SmhO?=
- =?utf-8?B?Qk5kWE1qcmtVL1YzU0EvOGNVVElWNXhjTEU5RmFHOHZZREd4dGxVMk1JRkJX?=
- =?utf-8?B?WUtxdzJVT0R6UlVzazNYc1FWQnoxWkd2L1Z1Q1h3Vm1SNE9YallUZDB1SGg5?=
- =?utf-8?B?REhLMTRUcVFnQXFIV0NtMUJaOXcxTVJMVEtwVEJRNnZPOWdFWjJ0dkhCQk1o?=
- =?utf-8?B?end6M0tSS2trVmcrNXJGK2xUTXVXSEtvL0pPUU9pOU5sWFNtUTBINjRpdnB2?=
- =?utf-8?B?ckd3NzdOMmJFa20xdFlwWTJNbEJqTGtSYjlWaFVkYWRPdWxRMTdpRGtDY0VT?=
- =?utf-8?B?c2YwWlpVcVRQMnVUUDFtVTFpRzhZRGwweDE2QWpnOS84elo3aFhNRkdJUkor?=
- =?utf-8?B?MndBZ1dxMDAydndRUDVSbTVkcWZQWWN2a0o5TGpUUmFQcC9CZTBRUTl2SWt5?=
- =?utf-8?B?NjNKRTd6bUUxMHMyRjB6em8raFJJb2drdy8rVzdtdXBhL0tyWlo4V2k2clNI?=
- =?utf-8?B?VEJ1WC9wN1lpeFNMNCtoM3BONXVaMlZuWDg2VkIxOGFIdytYUENVYmNuTmgr?=
- =?utf-8?B?RjFIUVR3VU1TNkhjUlVLVlVUeHB1UnEwVmdMS1ErajEwM2FwVWRUZk5MQTR3?=
- =?utf-8?B?cXpoWFlQZjhsb2tDbWtzT3k4WUJyN3prN1NleHR3SjJtVFUwWnNmc2VJQUN4?=
- =?utf-8?Q?O25yt7hvWBL7pPNAIbsMLCA=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <67DE918E591A2F468DCF468D41780D7F@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 15 Sep 2023 13:44:27 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD19110C9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:44:19 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-79a2216a2d1so969916241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1694799859; x=1695404659; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IrfDCHJCwJUzfWjjYVo0sWuFa6L//oZVEoGV1Odt0OU=;
+        b=Y8GYJwrgRued7C+d1jIRJQ+U/750X4sgJzcSo5elsxB677g7X4MTyN79TwFSH4cH4o
+         dh/pwvsewvdCQzcqFhHajudpliddYXQqDsdqIDzDTtYVArQOA9tPB+d71uS0cmITWTEK
+         +wvZxmlzBS+K2RXG/yccHjBOoaG8PQnH8TOoqzkCFEcHyKuSrIIDsq/NXm6CGUbxx2GJ
+         NK1Yoqw3LAqtoU1uknDLoyaT4Diqn8M3y9myNmg+o3T3ocTXFh6gwFKYcBLt9uHV3n73
+         YxbfXKL8SJkivLU575jUXQ9bNjA8wZnhrCXCSCYiICdnI1rJwKBLOqH9XciBIKMpfs56
+         O1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694799859; x=1695404659;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IrfDCHJCwJUzfWjjYVo0sWuFa6L//oZVEoGV1Odt0OU=;
+        b=Fh0zuf3FM5LyIDEtbKMrZyQga/bio/j2BfC0HgZeohGVzqyfJiyjqjvXIdr/uEiwkX
+         yD6XGTVjbp7bQvRt2yVybMtokf+571SjOCrppmRVToYOFGh7FkyYtIp7nE2j+ZZdV00r
+         v+N+b4YRL+oD9JxCL+cyPuDSIvDbaELLFddH1jsVxMGzmT4M/TZTn8zjUE9RGRWw+0vX
+         jEcbSg3LkIxAEZfBADFteQHZ98zvr3PN5DE/SALZTvhxY3oyVqnKaoTA6zD716F6akba
+         /dG2+gvZSMaOhm63ghLicWR+lgLpGZR67yoiZ24bAcSLSvZkRxKoCzdviNgxuB6S3Q5W
+         TMzg==
+X-Gm-Message-State: AOJu0YxnIHhI4iN7uxkx4+mBydXZbPlpPyI9uxcOSKVxXVUWMmoHIIx9
+        ss+56YfQYN09lMWbtmMus2HeTkXhXU3fZ4KWD1M5/g==
+X-Google-Smtp-Source: AGHT+IH3pG5Thn+cLecMwujNEAXIYvHoLUkLYtO9djAzak4l1TblrUnYzqYIAQ37CRoWEJmihqC+vqkzhmL/JjF+ZJo=
+X-Received: by 2002:a05:6102:152:b0:451:40b:2210 with SMTP id
+ a18-20020a056102015200b00451040b2210mr2408170vsr.3.1694799858876; Fri, 15 Sep
+ 2023 10:44:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb980520-0e70-4e99-18a5-08dbb61344af
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2023 17:43:27.5916
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: A4oRV/Q2JkqUA84kvzski3CKlvBR0FnT+h3HjBvRIqun44wZ/kJAyB9XQpHhmAZ4NJj0UhxHxk9hd/8MbFL7wFgrZoFPxYfcqjEfsvKOVVU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7753
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915165946.4183839-1-kieran.bingham@ideasonboard.com> <20230915165946.4183839-3-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20230915165946.4183839-3-kieran.bingham@ideasonboard.com>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 15 Sep 2023 18:44:02 +0100
+Message-ID: <CAPY8ntCeo2LVCRbcrx8q+RSvo2B+KcUYRCAkoHCeVywioknM2A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] media: i2c: Add ROHM BU64754 Camera Autofocus Actuator
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIzLTA4LTI2IGF0IDAwOjE0ICsxMjAwLCBLYWkgSHVhbmcgd3JvdGU6DQo+IFRo
-ZXJlIGFyZSB0d28gcHJvYmxlbXMgaW4gdGVybXMgb2YgdXNpbmcga2V4ZWMoKSB0byBib290IHRv
-IGEgbmV3DQo+IGtlcm5lbA0KPiB3aGVuIHRoZSBvbGQga2VybmVsIGhhcyBlbmFibGVkIFREWDog
-MSkgUGFydCBvZiB0aGUgbWVtb3J5IHBhZ2VzIGFyZQ0KPiBzdGlsbCBURFggcHJpdmF0ZSBwYWdl
-czsgMikgVGhlcmUgbWlnaHQgYmUgZGlydHkgY2FjaGVsaW5lcw0KPiBhc3NvY2lhdGVkDQo+IHdp
-dGggVERYIHByaXZhdGUgcGFnZXMuDQoNCkRvZXMgVERYIHN1cHBvcnQgaGliZXJuYXRlPyBJJ20g
-d29uZGVyaW5nIGFib3V0IHR3byBwb3RlbnRpYWwgcHJvYmxlbXM6DQoxLiBSZWFkaW5nL3dyaXRp
-bmcgcHJpdmF0ZSBwYWdlcyBmcm9tIHRoZSBkaXJlY3QgbWFwIG9uIHNhdmUvcmVzdG9yZQ0KMi4g
-VGhlIHNlYW0gbW9kdWxlIG5lZWRpbmcgdG8gYmUgcmUtaW5pdGVkICh0aGUgdGR4X2VuYWJsZSgp
-IHN0dWZmKQ0KDQpJZiB0aGF0J3MgdGhlIGNhc2UgeW91IGNvdWxkIGhhdmUgc29tZXRoaW5nIGxp
-a2UgdGhlIGJlbG93IHRvIGp1c3QNCmJsb2NrIGl0IHdoZW4gVERYIGNvdWxkIGJlIGluIHVzZToN
-CmRpZmYgLS1naXQgYS9rZXJuZWwvcG93ZXIvaGliZXJuYXRlLmMgYi9rZXJuZWwvcG93ZXIvaGli
-ZXJuYXRlLmMNCmluZGV4IDJiNGE5NDZhNmZmNS4uM2IxYjcyMDI0NTJkIDEwMDY0NA0KLS0tIGEv
-a2VybmVsL3Bvd2VyL2hpYmVybmF0ZS5jDQorKysgYi9rZXJuZWwvcG93ZXIvaGliZXJuYXRlLmMN
-CkBAIC04NCw3ICs4NCw4IEBAIGJvb2wgaGliZXJuYXRpb25fYXZhaWxhYmxlKHZvaWQpDQogew0K
-ICAgICAgICByZXR1cm4gbm9oaWJlcm5hdGUgPT0gMCAmJg0KICAgICAgICAgICAgICAgICFzZWN1
-cml0eV9sb2NrZWRfZG93bihMT0NLRE9XTl9ISUJFUk5BVElPTikgJiYNCi0gICAgICAgICAgICAg
-ICAhc2VjcmV0bWVtX2FjdGl2ZSgpICYmICFjeGxfbWVtX2FjdGl2ZSgpOw0KKyAgICAgICAgICAg
-ICAgICFzZWNyZXRtZW1fYWN0aXZlKCkgJiYgIWN4bF9tZW1fYWN0aXZlKCkgJiYNCisgICAgICAg
-ICAgICAgICAhcGxhdGZvcm1fdGR4X2VuYWJsZWQoKTsNCiB9DQogDQogLyoqDQoNCk9yIG1heWJl
-IGJldHRlciwgaXQgY291bGQgY2hlY2sgdGR4X21vZHVsZV9zdGF0dXM/IEJ1dCB0aGVyZSBpcyBu
-byB3YXkNCnRvIHJlYWQgdGhhdCB2YXJpYWJsZSBmcm9tIGhpYmVybmF0ZS4NCg0K
+Hi Kieran
+
+On Fri, 15 Sept 2023 at 18:02, Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+>
+> Add support for the ROHM BU64754 Motor Driver for Camera Autofocus. A
+> V4L2 Subdevice is registered and provides a single
+> V4L2_CID_FOCUS_ABSOLUTE control.
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> ---
+>  MAINTAINERS                 |   1 +
+>  drivers/media/i2c/Kconfig   |  13 ++
+>  drivers/media/i2c/Makefile  |   1 +
+>  drivers/media/i2c/bu64754.c | 308 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 323 insertions(+)
+>  create mode 100644 drivers/media/i2c/bu64754.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f43e0ffcaf56..fd244560c317 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18576,6 +18576,7 @@ L:      linux-media@vger.kernel.org
+>  S:     Maintained
+>  T:     git git://linuxtv.org/media_tree.git
+>  F:     Documentation/devicetree/bindings/media/i2c/rohm,bu64754.yaml
+> +F:     drivers/media/i2c/bu64754.c
+>
+>  ROHM MULTIFUNCTION BD9571MWV-M PMIC DEVICE DRIVERS
+>  M:     Marek Vasut <marek.vasut+renesas@gmail.com>
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 74ff833ff48c..b7b8004816ed 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -641,6 +641,19 @@ config VIDEO_AK7375
+>           capability. This is designed for linear control of
+>           voice coil motors, controlled via I2C serial interface.
+>
+> +config VIDEO_BU64754
+> +       tristate "BU64754 Motor Driver for Camera Autofocus"
+> +       depends on I2C && VIDEO_DEV
+> +       select MEDIA_CONTROLLER
+> +       select VIDEO_V4L2_SUBDEV_API
+> +       select V4L2_ASYNC
+> +       select V4L2_CCI_I2C
+> +       help
+> +         This is a driver for the BU64754 Motor Driver for Camera
+> +         Autofocus. The BU64754 is an actuator driver IC which can
+> +         control the actuator position precisely using an internal
+> +         Hall Sensor.
+
+I can't find any data on this driver.
+Is it still expecting a VCM and hence near instantaneous movement? I
+was noting your comment on the hall sensor and thinking you
+potentially needed to be able to report whether the target position
+had been reached or not. Michael's series at [1] was trying to address
+that.
+
+[1] https://patchwork.linuxtv.org/project/linux-media/cover/20230406-feature-controls-lens-v2-0-faa8ad2bc404@wolfvision.net/
+
+> +
+>  config VIDEO_DW9714
+>         tristate "DW9714 lens voice coil support"
+>         depends on I2C && VIDEO_DEV
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index 80b00d39b48f..e62aa0df7b1a 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -22,6 +22,7 @@ obj-$(CONFIG_VIDEO_AR0521) += ar0521.o
+>  obj-$(CONFIG_VIDEO_BT819) += bt819.o
+>  obj-$(CONFIG_VIDEO_BT856) += bt856.o
+>  obj-$(CONFIG_VIDEO_BT866) += bt866.o
+> +obj-$(CONFIG_VIDEO_BU64754) += bu64754.o
+>  obj-$(CONFIG_VIDEO_CCS) += ccs/
+>  obj-$(CONFIG_VIDEO_CCS_PLL) += ccs-pll.o
+>  obj-$(CONFIG_VIDEO_CS3308) += cs3308.o
+> diff --git a/drivers/media/i2c/bu64754.c b/drivers/media/i2c/bu64754.c
+> new file mode 100644
+> index 000000000000..3367b6f17660
+> --- /dev/null
+> +++ b/drivers/media/i2c/bu64754.c
+> @@ -0,0 +1,308 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * The BU64754 is an actuator driver IC which can control the
+> + * actuator position precisely using an internal Hall Sensor.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <media/v4l2-cci.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +
+> +#define BU64754_REG_ACTIVE     CCI_REG16(0x07)
+> +#define BU64754_ACTIVE_MODE    0x8080
+> +
+> +#define BU64754_REG_SERVE      CCI_REG16(0xd9)
+> +#define BU64754_SERVE_ON       0x0404
+> +
+> +#define BU64754_REG_POSITION   CCI_REG16(0x45)
+> +#define BU64753_POSITION_MAX   1023 /* 0x3ff */
+> +
+> +#define BU64754_POWER_ON_DELAY 800 /* uS : t1, t3 */
+> +
+> +struct bu64754 {
+> +       struct device *dev;
+> +
+> +       struct v4l2_ctrl_handler ctrls_vcm;
+> +       struct v4l2_subdev sd;
+> +       struct regmap *cci;
+> +
+> +       u16 current_val;
+> +       struct regulator *vdd;
+> +       struct notifier_block notifier;
+> +};
+> +
+> +static inline struct bu64754 *sd_to_bu64754(struct v4l2_subdev *subdev)
+> +{
+> +       return container_of(subdev, struct bu64754, sd);
+> +}
+> +
+> +static int bu64754_set(struct bu64754 *bu64754, u16 position)
+> +{
+> +       int ret;
+> +
+> +       ret = cci_write(bu64754->cci, BU64754_REG_POSITION, position, NULL);
+> +       if (ret) {
+> +               dev_err(bu64754->dev, "Set position failed ret=%d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int bu64754_active(struct bu64754 *bu64754)
+> +{
+> +       int ret;
+> +
+> +       /* Power on */
+> +       ret = cci_write(bu64754->cci, BU64754_REG_ACTIVE, BU64754_ACTIVE_MODE,
+> +                       NULL);
+> +       if (ret < 0) {
+> +               dev_err(bu64754->dev, "Failed to set active mode ret = %d\n",
+> +                       ret);
+> +               return ret;
+> +       }
+> +
+> +       /* Serve on */
+> +       ret = cci_write(bu64754->cci, BU64754_REG_SERVE, BU64754_SERVE_ON,
+> +                       NULL);
+> +       if (ret < 0) {
+> +               dev_err(bu64754->dev, "Failed to enable serve ret = %d\n",
+> +                       ret);
+> +               return ret;
+> +       }
+> +
+> +       return bu64754_set(bu64754, bu64754->current_val);
+> +}
+> +
+> +static int bu64754_standby(struct bu64754 *bu64754)
+> +{
+> +       int ret;
+> +
+> +       cci_write(bu64754->cci, BU64754_REG_ACTIVE, 0, &ret);
+> +       if (ret < 0)
+> +               dev_err(bu64754->dev, "Failed to set active mode ret = %d\n",
+> +                       ret);
+> +
+> +       return ret;
+> +}
+> +
+> +static int bu64754_regulator_event(struct notifier_block *nb,
+> +                                  unsigned long action, void *data)
+> +{
+> +       struct bu64754 *bu64754 = container_of(nb, struct bu64754, notifier);
+> +
+> +       if (action & REGULATOR_EVENT_ENABLE) {
+> +               /*
+> +                * Initialisation delay between VDD low->high and availability
+> +                * i2c operation.
+> +                */
+> +               usleep_range(BU64754_POWER_ON_DELAY,
+> +                            BU64754_POWER_ON_DELAY + 100);
+> +
+> +               bu64754_active(bu64754);
+> +       } else if (action & REGULATOR_EVENT_PRE_DISABLE) {
+> +               bu64754_standby(bu64754);
+> +       }
+
+Presumably this is based on the assumption that the same regulator
+controls sensor and lens, so when the sensor is powered up the lens
+position gets restored.
+I'm sure when I suggested doing the same previously it was shot down
+in flames ... found it [2]
+
+Personally I think it makes sense that the lens powers up
+automagically, and have almost exactly the same code as this in a
+couple of our VCM drivers, but others disagree.
+
+  Dave
+
+[2] https://lore.kernel.org/all/CAPY8ntBZpZjecHNCMf-eMefcp2EgmbqkXMt4p=UeOe0n-o8WrA@mail.gmail.com/
+
+> +
+> +       return 0;
+> +}
+> +
+> +static int bu64754_set_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +       struct bu64754 *bu64754 = container_of(ctrl->handler,
+> +               struct bu64754, ctrls_vcm);
+> +
+> +       if (ctrl->id == V4L2_CID_FOCUS_ABSOLUTE) {
+> +               bu64754->current_val = ctrl->val;
+> +               return bu64754_set(bu64754, ctrl->val);
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops bu64754_vcm_ctrl_ops = {
+> +       .s_ctrl = bu64754_set_ctrl,
+> +};
+> +
+> +static int bu64754_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+> +{
+> +       return pm_runtime_resume_and_get(sd->dev);
+> +}
+> +
+> +static int bu64754_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+> +{
+> +       pm_runtime_put(sd->dev);
+> +       return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_internal_ops bu64754_int_ops = {
+> +       .open = bu64754_open,
+> +       .close = bu64754_close,
+> +};
+> +
+> +static const struct v4l2_subdev_ops bu64754_ops = { };
+> +
+> +static void bu64754_subdev_cleanup(struct bu64754 *bu64754)
+> +{
+> +       v4l2_async_unregister_subdev(&bu64754->sd);
+> +       v4l2_ctrl_handler_free(&bu64754->ctrls_vcm);
+> +       media_entity_cleanup(&bu64754->sd.entity);
+> +}
+> +
+> +static int bu64754_init_controls(struct bu64754 *bu64754)
+> +{
+> +       struct v4l2_ctrl_handler *hdl = &bu64754->ctrls_vcm;
+> +       const struct v4l2_ctrl_ops *ops = &bu64754_vcm_ctrl_ops;
+> +
+> +       v4l2_ctrl_handler_init(hdl, 1);
+> +
+> +       v4l2_ctrl_new_std(hdl, ops, V4L2_CID_FOCUS_ABSOLUTE,
+> +                         0, BU64753_POSITION_MAX, 1, 0);
+> +
+> +       bu64754->current_val = 0;
+> +
+> +       bu64754->sd.ctrl_handler = hdl;
+> +       if (hdl->error) {
+> +               dev_err(bu64754->dev, "%s fail error: 0x%x\n",
+> +                       __func__, hdl->error);
+> +               return hdl->error;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int bu64754_probe(struct i2c_client *client)
+> +{
+> +       struct bu64754 *bu64754;
+> +       int ret;
+> +
+> +       bu64754 = devm_kzalloc(&client->dev, sizeof(*bu64754), GFP_KERNEL);
+> +       if (!bu64754)
+> +               return -ENOMEM;
+> +
+> +       bu64754->dev = &client->dev;
+> +
+> +       bu64754->cci = devm_cci_regmap_init_i2c(client, 8);
+> +       if (IS_ERR(bu64754->cci)) {
+> +               dev_err(bu64754->dev, "Failed to initialize CCI\n");
+> +               return PTR_ERR(bu64754->cci);
+> +       }
+> +
+> +       bu64754->vdd = devm_regulator_get_optional(&client->dev, "vdd");
+> +       if (IS_ERR(bu64754->vdd)) {
+> +               if (PTR_ERR(bu64754->vdd) != -ENODEV)
+> +                       return PTR_ERR(bu64754->vdd);
+> +
+> +               bu64754->vdd = NULL;
+> +       } else {
+> +               bu64754->notifier.notifier_call = bu64754_regulator_event;
+> +
+> +               ret = regulator_register_notifier(bu64754->vdd,
+> +                                                 &bu64754->notifier);
+> +               if (ret) {
+> +                       dev_err(bu64754->dev,
+> +                               "could not register regulator notifier\n");
+> +                       return ret;
+> +               }
+> +       }
+> +
+> +       v4l2_i2c_subdev_init(&bu64754->sd, client, &bu64754_ops);
+> +       bu64754->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +       bu64754->sd.internal_ops = &bu64754_int_ops;
+> +       bu64754->sd.entity.function = MEDIA_ENT_F_LENS;
+> +
+> +       ret = bu64754_init_controls(bu64754);
+> +       if (ret)
+> +               goto err_cleanup;
+> +
+> +       ret = media_entity_pads_init(&bu64754->sd.entity, 0, NULL);
+> +       if (ret < 0)
+> +               goto err_cleanup;
+> +
+> +       ret = v4l2_async_register_subdev(&bu64754->sd);
+> +       if (ret < 0)
+> +               goto err_cleanup;
+> +
+> +       if (!bu64754->vdd)
+> +               pm_runtime_set_active(&client->dev);
+> +
+> +       pm_runtime_enable(&client->dev);
+> +       pm_runtime_idle(&client->dev);
+> +
+> +       return 0;
+> +
+> +err_cleanup:
+> +       v4l2_ctrl_handler_free(&bu64754->ctrls_vcm);
+> +       media_entity_cleanup(&bu64754->sd.entity);
+> +
+> +       return ret;
+> +}
+> +
+> +static void bu64754_remove(struct i2c_client *client)
+> +{
+> +       struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +       struct bu64754 *bu64754 = sd_to_bu64754(sd);
+> +
+> +       if (bu64754->vdd)
+> +               regulator_unregister_notifier(bu64754->vdd,
+> +                                             &bu64754->notifier);
+> +
+> +       pm_runtime_disable(&client->dev);
+> +
+> +       bu64754_subdev_cleanup(bu64754);
+> +}
+> +
+> +static int __maybe_unused bu64754_vcm_suspend(struct device *dev)
+> +{
+> +       struct i2c_client *client = to_i2c_client(dev);
+> +       struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +       struct bu64754 *bu64754 = sd_to_bu64754(sd);
+> +
+> +       if (bu64754->vdd)
+> +               return regulator_disable(bu64754->vdd);
+> +
+> +       return bu64754_standby(bu64754);
+> +}
+> +
+> +static int  __maybe_unused bu64754_vcm_resume(struct device *dev)
+> +{
+> +       struct i2c_client *client = to_i2c_client(dev);
+> +       struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +       struct bu64754 *bu64754 = sd_to_bu64754(sd);
+> +
+> +       if (bu64754->vdd)
+> +               return regulator_enable(bu64754->vdd);
+> +
+> +       return bu64754_active(bu64754);
+> +}
+> +
+> +static const struct of_device_id bu64754_of_table[] = {
+> +       { .compatible = "rohm,bu64754", },
+> +       { /* sentinel */ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, bu64754_of_table);
+> +
+> +static SIMPLE_DEV_PM_OPS(bu64754_pm, bu64754_vcm_suspend, bu64754_vcm_resume);
+> +
+> +static struct i2c_driver bu64754_i2c_driver = {
+> +       .driver = {
+> +               .name = "bu64754",
+> +               .pm = &bu64754_pm,
+> +               .of_match_table = bu64754_of_table,
+> +       },
+> +       .probe = bu64754_probe,
+> +       .remove = bu64754_remove,
+> +};
+> +
+> +module_i2c_driver(bu64754_i2c_driver);
+> +
+> +MODULE_AUTHOR("Kieran Bingham <kieran.bingham@ideasonboard.com>");
+> +MODULE_DESCRIPTION("ROHM BU64754 VCM driver");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.34.1
+>
