@@ -2,167 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9157A1877
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255617A188B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjIOITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S232955AbjIOIXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjIOIS7 (ORCPT
+        with ESMTP id S232922AbjIOIXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:18:59 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2071.outbound.protection.outlook.com [40.107.117.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9947F272E;
-        Fri, 15 Sep 2023 01:17:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TznqqpxYZo2fwreBS9mLkQPccWY6kct8aj0b73f4eFJklyBjNSacRoUmouylZxHXj/MLAvM3KNGHtq0h12lxlW4KzIFdbaOwx9jqtoAkLGW6BmjqBePtAr2wMiGIQPevUglxia3Ygc2vlDRkjWYmi/uvzHemSL6+7b5jDhoysJlS/B/lFwLBu1CyNzsVU8C6/xt2EFuo51ceQJNRcyL0IokGd1Jq6bWd2DMmXbqU5niXv3CGvg2BKkanPA/7Q1JwTxTq4Gy2zYSG/Gt2Y8l8u4xlW/eYvhjcTFK7nE50BBevMHphlmaVeSh1GfkAQyq3sDPAYJwa6Ojx5ppP04RBjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7K6XTCe0vWOpd32g+EmyaFNl6k1h6e62R/RUe87Y/VY=;
- b=B5idbvRWi5GsdAFBF/OT7cK9EXBIe0McLSHvMg+WogAnyLrUvtExIUdPDeoSC0k8P82kTXOHYSjgQsG9Usi1v3wI0ZIQjKkfsiYrDGIT32G3b47LDYN/pCYKyIprN1T6qDExOt1bPm5HTCZY/8D6FHizRrtUoeDs6cuv6vxapPwbdL1ZUQusvdlzbwhHw+kn1gYcN15bzAcGVYcT+v6JcwJJI/DAX593AgJPXezXM7chiDLRdFKSfu0wJ7zMgHKdU8VTOxHF659/o6Itgg+yK00ir2uAB/Qpxs7lzXyCoRROViEN4CdsSlvx2KvSGOkZEKqelVSLufeeFcH+4dFRTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wiwynn.com; dmarc=pass action=none header.from=wiwynn.com;
- dkim=pass header.d=wiwynn.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7K6XTCe0vWOpd32g+EmyaFNl6k1h6e62R/RUe87Y/VY=;
- b=dan+7jmXxmwaici2esdqVx7AEQJr14Qp+30sF2FLdIQqxonMKg9uD94xheOs+LjA9TEZFgTdS03CB69pLrD5mhngc4COOoDCZ52gWn/j59cPSmezD8yo4FNN4MKh9AdD9aU3VJzH5ISlqGVQ1vMPSy8OgpnTvpqWYrEDaQyaF9p1dNwZhH4JFw7qbp2fStWvrYo0DTFbeF6xxn3I3TTlBauzFXYYitxQmnx4c3ibhsuEatKx+oCtp6iwngwFoWnKg8+PYIYrqAhhtdycPIAULn+6oQgI4xs0l6m1qB0xI9NU/POfrT7BFUGDVFajXHShasWymu0bMoteyqJghhu2CQ==
-Received: from TYZPR04MB5853.apcprd04.prod.outlook.com (2603:1096:400:1f3::5)
- by KL1PR0401MB4163.apcprd04.prod.outlook.com (2603:1096:820:37::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
- 2023 08:13:46 +0000
-Received: from TYZPR04MB5853.apcprd04.prod.outlook.com
- ([fe80::5be7:ddc6:bdfa:73e4]) by TYZPR04MB5853.apcprd04.prod.outlook.com
- ([fe80::5be7:ddc6:bdfa:73e4%4]) with mapi id 15.20.6768.029; Fri, 15 Sep 2023
- 08:13:45 +0000
-From:   Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
-        Jean Delvare <jdelvare@suse.com>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] hwmon: max31790: support to config PWM as TACH
-Thread-Topic: [PATCH] hwmon: max31790: support to config PWM as TACH
-Thread-Index: AQHZ4J74hgtrGBuSsE+/2qt904rcN7AN+tyAgAp5vZCAAFkAgIACxZvQ
-Date:   Fri, 15 Sep 2023 08:13:45 +0000
-Message-ID: <TYZPR04MB5853FF0A3C621EEF94CAC35DD6F6A@TYZPR04MB5853.apcprd04.prod.outlook.com>
-References: <20230906084837.3043030-1-Delphine_CC_Chiu@wiwynn.com>
- <20230906084837.3043030-3-Delphine_CC_Chiu@wiwynn.com>
- <8a3b41a2-0ab2-6213-04a1-54ab7263c647@roeck-us.net>
- <TYZPR04MB58533E15AA65FCDA0F603FA3D6F0A@TYZPR04MB5853.apcprd04.prod.outlook.com>
- <29e27f2a-3347-b6f4-2dd9-4c93afea87b7@roeck-us.net>
-In-Reply-To: <29e27f2a-3347-b6f4-2dd9-4c93afea87b7@roeck-us.net>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wiwynn.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR04MB5853:EE_|KL1PR0401MB4163:EE_
-x-ms-office365-filtering-correlation-id: ce461d43-1323-4d4e-976a-08dbb5c3aecd
-x-ms-exchange-atpmessageproperties: SA
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: br2XHLZlIGR3YLU3koXn2rvYz9CrjCsyvpsP0Nqpgu8iv5pGM4B/bKllXvYMbTm+uNW4cKdCTYKi2RXB/jSqeU7L6uhkaKGGW0QuJ/UgHhstHKisg1Smp3XY3s1vFLJG6zWMGBUZBmMlHCURE1NFqbT4BNvhm92O2947rg+f7cj5Vvy4G7u1AQo2igHt64AWBC+Mi6hjbjWF9lnXX3LqQTOuUptDqyEso1OpGyxW/VobYAJtX7oNV5U5/eE1YTF2Eq+vImwkCng2XLjojMjdMPOq4HebbeCM1ynuqzY65F2c7PJhEVGeo9IgMaJpYb9JsxlWd27nqfbEKrrYbUQ+xt4w8YyagEUdAIeCDij7fHF5L/rdNEhXHTMcQ0xOwPgMjp4WkiP8orrmfKWpWRa3Rugq0RdL/jKah/etskavtmo/WyS9UhXgC10wG8IBI+zQeY2GbJUSAVDP2/Vhd0l+N8HzeuD07+eFNaCd5bjP6XMuzc1R+ZcFMEfmm7CMG4jhqPnZxTarU4nFRrNzTc4v7fDEwZ5iA+suakzyiw8igiM63JQv3dlva+tThhGqdQlugc/C9GjTapRlI+zpDPP8mCmWus4PXP2H8YdywhDgv43oSoLutFxhepeCSzi3hvPQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR04MB5853.apcprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(346002)(366004)(396003)(451199024)(186009)(1800799009)(38100700002)(38070700005)(122000001)(41300700001)(86362001)(110136005)(66946007)(4326008)(66556008)(76116006)(66476007)(2906002)(55016003)(8936002)(66446008)(54906003)(64756008)(316002)(26005)(8676002)(53546011)(83380400001)(5660300002)(6506007)(9686003)(7696005)(71200400001)(478600001)(52536014)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MW8zTmplMHdiK3JqbEV6aHh4MTZyZzFvTzEyRC9OTEluN0pldnhKZVV2SWJr?=
- =?utf-8?B?SDUzVjZIWWFGWElQRFA4dVpmb0NQUWI2bTlyVDVzcXVYd3M3RStqRGZiZW9w?=
- =?utf-8?B?aUQrRHhWaHRhVWdVeUJNOUpHMVlIZnRhdlBOc2EwMGJQZW1HOEE2WXNTZVZk?=
- =?utf-8?B?OWllcjZhMjNwL0hYR1g5RkgvNStGOTI2OS9WK243QnI2VmFDTE5wVW9uemJM?=
- =?utf-8?B?VWJLVzVWWmdJZnBCZmNMMlR6c2wwbHA1azdMVndWTDc3NTU3SVJQa2FmYTNr?=
- =?utf-8?B?WmZZOVV6OGJmdlVrbFlEQW1GbTlnaHBTd2ZuMW16cGxqdG50aEpnMzNsL05U?=
- =?utf-8?B?TUpwcXZFalVWN2EvdDdCNE1rVTNQMmxZYnpZTGZVazBZR2RMODZlMEd3Q25s?=
- =?utf-8?B?eEF2bndMYkE5WUY5aXdORlFwaVBPTVVnV2FSZW5vLzFWSG9LT2dXdEFabFJr?=
- =?utf-8?B?RzNRVkdlWVdxRHNNUHMrTWZkODlGU2Q4U0tjek9KbmN4QkFyLy9vVXA0NHM3?=
- =?utf-8?B?eWF3RkRiZmN1SDNpUHpsbXMxK3lHMUs5d3JBc2tlRFVjdXB5UlN3dWJBQXIy?=
- =?utf-8?B?RkcxSWpSSUYzTnJQcTl2QXB1T3FuVTZVMVYzREJYYndvM3VYYnlsNEpGUjIr?=
- =?utf-8?B?djVIOEpGbHp5Ujl2SGJFNW96QWp4Z2NwRDUwT1Y2YUpRaWFYQXdIT080QzF3?=
- =?utf-8?B?QzVpUyszdGFQMzZxQ0grQnNsVi92K3FDZkkxQlRycTZwV280dTNxOUZZOWZJ?=
- =?utf-8?B?WXQ5WWhJV0hzMnplL1NWSlRONlpjUHpmV3hsRzNsM2dWUmM2WTZRUFh4NENt?=
- =?utf-8?B?VWNwTm1QRTFudjVVL01EVDZLaSs5UkNuYVVONGl5emRnN1BRR1FUdEVzNmM5?=
- =?utf-8?B?T0grdjlzUkhyZ0J4bzNUamxzcGk1YjhzalRyOXpvZkhxMHZtaTllYXMxd29x?=
- =?utf-8?B?S3c4TFdDYkc3RDh3VVIyRGNvbi9vNkhzME9STjFtZ3R1T0VsbUI4ZDNrVXJR?=
- =?utf-8?B?aUlZOTU5TytadmJIYXJ2dGppd3VHWDZpWGV5WnlKMURlbGRvTTZkb3BZMGZY?=
- =?utf-8?B?LzJIU2huMGZHT2JObFVyNlQxSjhzV1lhZlc0V1dUaDJRL2U5WEdXcy8xMFBs?=
- =?utf-8?B?Q2s2STRrRjhmQjY2UWVQZEk2MzRERFVJSWtQdDRlVnZucFc3V1lGN0NIKzFE?=
- =?utf-8?B?Z3VhWXh1ZnV1SElmbmd0M0FRNXRMWEF2ektkYnNUMGxIWm9Dd0g1WTcybCsv?=
- =?utf-8?B?WlpXT0QvQzBiUEU5YlVqTm9tYW4rV2gxUnVMdjRENFNMVzdhZVBSQzBiZGha?=
- =?utf-8?B?dFJwTkNjUUhvYzJ5d0tSaGowNWtUSnd3ei96SEdJSERPWS8vamZHelowZXpo?=
- =?utf-8?B?UzBwcnVvMEZVRFJYejZTUUVCOVFmbmRKdkpPN2ZWanE1Qms4dTl2QjlHVVFW?=
- =?utf-8?B?djdWTVdZZzI1K2VENktxcHoyWjFlS1F5NnBqU291UDBEdnZ1SXN3N0JsZmlP?=
- =?utf-8?B?UlRSY3doNzJTLzN4a0dnRWRUbFM4K0tRK0xkc2FVTklKQjhnanBsT3RqbUEv?=
- =?utf-8?B?Nk5NV1VnYW1ldW5WZHUyeDFYcC9NYUc4empnS2k5aWtTc3U0T3Q1c3dRd0Nu?=
- =?utf-8?B?bG1lNk9UWWdxZktUVFpLNzNHdHoyalRVbEtOWEFpbnVHbTJERmpxVDNMSGxt?=
- =?utf-8?B?WEFlVXRnV1pBR3drWkFJUW10Z2lhMWtjeFhZZUtLdU5DMUNLbFZ5clZQeXl5?=
- =?utf-8?B?TTlHbVN0YnlYUGFEdW1IZWg3WE9Pdm0ydUNHU0pqWlBxZ2xHRjN5dUJVTkU2?=
- =?utf-8?B?ck1Mc2ZuSEJmTDE5NXIyeUVPa0g1QXZPRGNycTRoR0Rkdno1bTlkWU1aTDI4?=
- =?utf-8?B?bm5HR1k0UkxOSUdCK3FQSG9SR3dETHd4eUlUU1ZPdTFLSnRKVjJaNENmdW90?=
- =?utf-8?B?dnpSMnpSU3U2bXRqTXdTeHJCWlEraUhLanNHMGg0cnlaTkYwZHYwYmVMajM1?=
- =?utf-8?B?K3hzUS9tV2srVSs1dy9HMUJlK2hYY1dVNU5Fd1EvQ2J5R1djT1FkY1RGcUJR?=
- =?utf-8?B?WDdOemM3V1lCWTFjdUZ3WHhyeU5xYUZMNmgrbHY3WTR0NGd0VjBnUmJqQytF?=
- =?utf-8?Q?8+WrKRhuXMceFz1x25T78H7LL?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 15 Sep 2023 04:23:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7484496
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1694766124; x=1695370924; i=deller@gmx.de;
+ bh=OR4Did5RevJvBurZYl1SM45SkH4oF0Uw+9Fs3Z+P5S4=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=h9b6chk/BpUpZUpbv3+exlxHysKGLiDihuIeVmTmKQzIHxAAIGQoTQi7QJxdZPgwPuXWabCSGao
+ BW8EhIfQzLClsjXDi9QiQfGKY6Rw/8iEdpDfBLOPREahxCjW6E9+d81ow63vBAz6ejsn9gGM0MdF/
+ J8kqK65pWxIoa0A0vdqK3NrNKiu0tjJfkNLIscfxChdygsUUBLd5EU8JoaW2Z6K3sX/W02BUyGw7e
+ dQMqY9Ap85BGWk2V1BvhMHiPWsZSQNHnpNRN6fEuKlY2Vp1iehSoXiH3+IYg4kTmCgQqLqROWf74W
+ bXf3vpUuBPHQyWn1D0KKLiNzrNHCPqQfcY2w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.157.117]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2O2Q-1qiixJ250A-003sUe; Fri, 15
+ Sep 2023 10:16:03 +0200
+Message-ID: <b1c729bf-86b9-8a1f-c6af-a69be2b4a44c@gmx.de>
+Date:   Fri, 15 Sep 2023 10:16:01 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR04MB5853.apcprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce461d43-1323-4d4e-976a-08dbb5c3aecd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2023 08:13:45.8848
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BUG1UKr7L0rh59iBunaPEF8touIHsLNCKD0QGOY+IjByoF2IiSdr2WVkCoUHSZs0YyJwlQm5VXfcEdrbIFwh1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0401MB4163
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] LoongArch: Fix lockdep static memory detection
+Content-Language: en-US
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+References: <ZQC5jS/Kc/JiBEOa@p100>
+ <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:l9KjxxyKl6giIE9PfdGvuKtuG2ugvajJsOLnRAlh3ewEEEseOsw
+ E9XCYhPbB5r0g34yeYKGNJcBwSQk57JJjIRl3stdCSldzXMtkwu20W9BSyrAJzO5Cn+Os+X
+ sp54eGw5pR3TP8oMV2g5XyiSp/DQLEQvcXfS1SYLRnFlDQX1gEuGqZWb2frLq2lZSRwFHDG
+ 6Fa3YTbivgcwPkv9uiMEA==
+UI-OutboundReport: notjunk:1;M01:P0:2j3ob6BpQhw=;Fq5YiXn/BmMIZkWZpT+lAc3baoD
+ HfEKCK3uNjM/aKgA8Q/D/1MZNBdhFSf5MWChlI+P29dSmrPD5qAAf14E/q47OvgEY08Sp72JE
+ k6byETAFR4MFPSiE9mxYwekyRqfFzaNmQdC59omUUjKQhxl824MY8cVNU6efpAd6Q5GPQgfwp
+ fla/UkuFZp052nymqkeN94OiEaCUULsaRLDGwodirWdJzNNPjaLkeniWqYzETcivdgy3eww2c
+ 8w2AHW6XLsYiR6kVxwxP8OagYmmV2+G4ZS+riTQrnHmc5b6OcsuVtZYNPCEDkQ6peMGYZimtE
+ +Dlgta85RvN31Fs0r6x/e5lWLARHZ6VRBuqAnH1b5A/mMGMGuGkQERYn4/+8Czyp8pngOeeVb
+ yDdGiZu6JyC0TJ+HG3E84svdUuBsyMOezEQRSWp+hv2Dt+G93jr9hW/YohtmkmTQSj8h9klLy
+ cHIAZnAgMCwss8ZS1/EVab+dgRogs6G/BhHujfhE7nwQpiAlpcmj9g9u1nzMuF35zdTMy1OJe
+ r27QEYz5/HZ4NL1IwOBEDIU5moq2t8uDhTwnG1Z5owcQz4BdaosD4i8HyhkussdQkbj08MH1H
+ i3YTJT/Uv+emtDEeNHz/vdqXd4OxtmT0gt58A9mF8BseJY3b9CF5hVCNhVVvSsbu/FepuWaf5
+ jwXqq2QuNgn7vlU3cJpXRHqQi5x5baFl0MLIdd80l7+XxD7zJ+rlXqi5pYzbqTVKSQu5Y3Uki
+ tHPruowt/M5lMp6niPW8l8TDLtHoy1DdvuCqEmM1lnSn81611yVRxetswPCxpOFkxLE2wM3Jo
+ oXawoBURROXnkdcMied7PlM8+MxvleRoa9PgoLaFsdjFhDB/tqvbZwQmIC+SkYCr7j6yd0Srr
+ hTaRbNXUhBgwYbTUn7XkQOeL2HeonpTV06tE6YkuiVuvLoafXvw9jiKiRaFmMee3FHIyp1SiW
+ 7azqcdrYFOusnhb2X8XLKvwBzH4=
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3VlbnRlciBSb2VjayA8
-Z3JvZWNrN0BnbWFpbC5jb20+IE9uIEJlaGFsZiBPZiBHdWVudGVyIFJvZWNrDQo+IFNlbnQ6IFdl
-ZG5lc2RheSwgU2VwdGVtYmVyIDEzLCAyMDIzIDk6MzcgUE0NCj4gVG86IERlbHBoaW5lX0NDX0No
-aXUvV1lIUS9XaXd5bm4gPERlbHBoaW5lX0NDX0NoaXVAd2l3eW5uLmNvbT47DQo+IHBhdHJpY2tA
-c3R3Y3gueHl6OyBKZWFuIERlbHZhcmUgPGpkZWx2YXJlQHN1c2UuY29tPg0KPiBDYzogbGludXgt
-aHdtb25Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0hdIGh3bW9uOiBtYXgzMTc5MDogc3VwcG9ydCB0byBjb25maWcgUFdN
-IGFzIFRBQ0gNCj4gDQo+ICAgU2VjdXJpdHkgUmVtaW5kZXI6IFBsZWFzZSBiZSBhd2FyZSB0aGF0
-IHRoaXMgZW1haWwgaXMgc2VudCBieSBhbiBleHRlcm5hbA0KPiBzZW5kZXIuDQo+IA0KPiBPbiA5
-LzEzLzIzIDAxOjUxLCBEZWxwaGluZV9DQ19DaGl1L1dZSFEvV2l3eW5uIHdyb3RlOg0KPiANCj4g
-WyAuLi4gXQ0KPiANCj4gPj4NCj4gPj4gVGhpcyBhc3N1bWVzIHRoYXQgdGhlIGNoYW5uZWwgaXMg
-Y29uZmlndXJlZCBhcyBwd20uDQo+ID4+IFdoYXQgaWYgdGhlIEJJT1MgLyBST01NT04gY29uZmln
-dXJlZCBhbm90aGVyIGNoYW5uZWwgd2hpY2ggeW91IHdhbnQNCj4gPj4gYXMgcHdtIGNoYW5uZWwg
-YXMgZmFuIGlucHV0IGNoYW5uZWwgPw0KPiA+Pg0KPiA+IFRoaXMgd2lsbCBjb25maWcgdGhlIGNo
-YW5uZWwgYXMgVEFDSC4NCj4gPiBDb3VsZCB5b3UgcHJvdmlkZSBtb3JlIGluZm9ybWF0aW9uIGFi
-b3V0IHRoZSBzY2VuYXJpbyB5b3UgbWVudGlvbmVkPw0KPiA+IEluIG91ciBzeXN0ZW0sIHRoZXJl
-IGlzIG9ubHkgQk1DIHRoYXQgd2lsbCBzZXQgdGhlIGNvbmZpZyBvZiBmYW4gZGV2aWNlLg0KPiAN
-Cj4gUGxlYXNlIGtlZXAgaW4gbWluZCB0aGF0IHVwc3RyZWFtIGNvZGUgaXMgbm90IGludGVuZGVk
-IHRvIG9ubHkgc3VwcG9ydCB5b3VyDQo+IHNwZWNpZmljIHVzZSBjYXNlLCBidXQgdGhlIHVzZSBj
-YXNlIG9mIG90aGVycyBhcyB3ZWxsLiBZb3VyIHN5c3RlbSAodGhlIG9uZSB5b3UNCj4gaGF2ZSB0
-b2RheSkgbWF5IG9ubHkgdXNlIHRoZSBjaGlwIGZvciBmYW4gc3BlZWQgbWVhc3VyZW1lbnQuIE90
-aGVycyBtYXkNCj4gdXNlIGl0IHVzZSBpdCB0byBjb250cm9sIGZhbnMsIG9yIHlvdXIgaGFyZHdh
-cmUgbWlnaHQgdG9tb3Jyb3cgYnVpbGQgYW5vdGhlcg0KPiBzeXN0ZW0gd2hlcmUgdGhlIGNoaXAg
-dXMgdXNlZCB0byBjb250cm9sIHRoZSBmYW5zIGFzIHdlbGwuIFRob3NlIHVzZSBjYXNlcw0KPiBz
-aG91bGQgYmUgY292ZXJlZCBieSB5b3VyIHBhdGNoIGFzIHdlbGwuDQo+IA0KPiBHdWVudGVyDQpI
-aSBHdWVudGVyLA0KQWZ0ZXIgb3VyIGludGVybmFsIGRpc2N1c3Npb24sIHdlIHRob3VnaHQgdGhh
-dCB0aGUgUFdNIG91dHB1dCBjaGFubmVsIG9mDQptYXgzMTc5MCBzaG91bGQgZWl0aGVyIGJlIFBX
-TSBvdXRwdXQgb3IgVEFDSCBpbnB1dCBpbiBoYXJkd2FyZSBkZXNpZ24uDQpBbmQgdGhlIHByb3Bl
-cnR5ICJwd20tYXMtdGFjaCIgaXMgb3B0aW9uYWwsIGlmIHVzZXJzIGRvbid0IHdhbnQgdG8gY29u
-ZmlnDQphbnkgUFdNIG91dHB1dCBjaGFubmVsIGFzIFRBQ0ggaW5wdXQsIHRoZW4gdGhleSBkb24n
-dCBuZWVkIHRvIGFkZCB0aGlzDQpwcm9wZXJ0eSBpbiBEVFMuDQpXb3VsZCBsaWtlIHRvIGtub3cg
-aXMgdGhpcyBtZWV0IHlvdXIgZXhwZWN0YXRpb25zPw0KDQo=
+On 9/15/23 05:22, Huacai Chen wrote:
+> Hi Helge,
+>
+> On Wed, Sep 13, 2023 at 3:18=E2=80=AFAM Helge Deller <deller@gmx.de> wro=
+te:
+>>
+>> Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection even
+>> more") the lockdep code uses is_kernel_core_data(), is_kernel_rodata()
+>> and init_section_contains() to verify if a lock is located inside a
+>> kernel static data section.
+>>
+>> This change triggers a failure on LoongArch, for which the vmlinux.lds.=
+S
+>> script misses to put the locks (as part of in the .data.rel symbols)
+>> into the Linux data section.
+>> This patch fixes the lockdep problem by moving *(.data.rel*) symbols
+>> into the kernel data section (from _sdata to _edata).
+>>
+>> Additionally, move other wrongly assigned symbols too:
+>> - altinstructions into the _initdata section,
+
+> I think altinstructions cannot  be put into _initdata because it will
+> be used by modules.
+
+No.
+arch/loongarch/kernel/vmlinux.lds.S is used for the static parts of the ke=
+rnel
+and altinstructions are replaced before modules are loaded.
+For altinstructions in modules the linker script scripts/module.lds.S is u=
+sed.
+
+Helge
+
+
+>> - PLT symbols behind the read-only section, and
+>> - *(.la_abs) into the data section.
+>>
+>> Signed-off-by: Helge Deller <deller@gmx.de>
+>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>> Fixes: 0a6b58c5cd0d ("lockdep: fix static memory detection even more")
+>> Cc: stable <stable@kernel.org> # v6.4+
+>>
+>> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kerne=
+l/vmlinux.lds.S
+>> index b1686afcf876..bb2ec86f37a8 100644
+>> --- a/arch/loongarch/kernel/vmlinux.lds.S
+>> +++ b/arch/loongarch/kernel/vmlinux.lds.S
+>> @@ -53,33 +53,6 @@ SECTIONS
+>>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
+>>          _etext =3D .;
+>>
+>> -       /*
+>> -        * struct alt_inst entries. From the header (alternative.h):
+>> -        * "Alternative instructions for different CPU types or capabil=
+ities"
+>> -        * Think locking instructions on spinlocks.
+>> -        */
+>> -       . =3D ALIGN(4);
+>> -       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+>> -               __alt_instructions =3D .;
+>> -               *(.altinstructions)
+>> -               __alt_instructions_end =3D .;
+>> -       }
+>> -
+>> -#ifdef CONFIG_RELOCATABLE
+>> -       . =3D ALIGN(8);
+>> -       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
+>> -               __la_abs_begin =3D .;
+>> -               *(.la_abs)
+>> -               __la_abs_end =3D .;
+>> -       }
+>> -#endif
+>> -
+>> -       .got : ALIGN(16) { *(.got) }
+>> -       .plt : ALIGN(16) { *(.plt) }
+>> -       .got.plt : ALIGN(16) { *(.got.plt) }
+>> -
+>> -       .data.rel : { *(.data.rel*) }
+>> -
+>>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
+>>          __init_begin =3D .;
+>>          __inittext_begin =3D .;
+>> @@ -94,6 +67,18 @@ SECTIONS
+>>
+>>          __initdata_begin =3D .;
+>>
+>> +       /*
+>> +        * struct alt_inst entries. From the header (alternative.h):
+>> +        * "Alternative instructions for different CPU types or capabil=
+ities"
+>> +        * Think locking instructions on spinlocks.
+>> +        */
+>> +       . =3D ALIGN(4);
+>> +       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+>> +               __alt_instructions =3D .;
+>> +               *(.altinstructions)
+>> +               __alt_instructions_end =3D .;
+>> +       }
+>> +
+>>          INIT_DATA_SECTION(16)
+>>          .exit.data : {
+>>                  EXIT_DATA
+>> @@ -113,6 +98,11 @@ SECTIONS
+>>
+>>          _sdata =3D .;
+>>          RO_DATA(4096)
+>> +
+>> +       .got : ALIGN(16) { *(.got) }
+>> +       .plt : ALIGN(16) { *(.plt) }
+>> +       .got.plt : ALIGN(16) { *(.got.plt) }
+>> +
+>>          RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
+>>
+>>          .rela.dyn : ALIGN(8) {
+>> @@ -121,6 +111,17 @@ SECTIONS
+>>                  __rela_dyn_end =3D .;
+>>          }
+>>
+>> +       .data.rel : { *(.data.rel*) }
+>> +
+>> +#ifdef CONFIG_RELOCATABLE
+>> +       . =3D ALIGN(8);
+>> +       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
+>> +               __la_abs_begin =3D .;
+>> +               *(.la_abs)
+>> +               __la_abs_end =3D .;
+>> +       }
+>> +#endif
+>> +
+>>          .sdata : {
+>>                  *(.sdata)
+>>          }
+
