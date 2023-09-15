@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE41A7A1D5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48777A1D5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbjIOLYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:24:03 -0400
+        id S234289AbjIOLYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:24:05 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbjIOLYA (ORCPT
+        with ESMTP id S234183AbjIOLYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:24:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 829581B9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694776989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0FgfSRx3oRdPWwtJgpHE291K7gqnxGDzcnbdYAGADtA=;
-        b=hRM6iqX7rr2G/K/W7PxQLJV7vUxMzaeBXjsBssgP7F0NJCXxLijVkYDoGf4G8ir82AFBLJ
-        RxJu4ZQ11+8Tn3Iea5NL/rWRjoiYO1lhKfiQ/t5kzbgRNvYwd+OAT44TXGCewUzk8t/KXk
-        l0FuMd3tcFvb2M70JSQyJRGekYriRy8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-235-wzrmM9JrM0iDuLsov5_gxg-1; Fri, 15 Sep 2023 07:23:04 -0400
-X-MC-Unique: wzrmM9JrM0iDuLsov5_gxg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5BFD9803470;
-        Fri, 15 Sep 2023 11:23:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F20CB40C6EA8;
-        Fri, 15 Sep 2023 11:23:00 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com>
-References: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com> <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com> <20230914221526.3153402-1-dhowells@redhat.com> <20230914221526.3153402-10-dhowells@redhat.com> <3370515.1694772627@warthog.procyon.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, "Christoph Hellwig" <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "David Hildenbrand" <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
+        Fri, 15 Sep 2023 07:24:01 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CFC1B0;
+        Fri, 15 Sep 2023 04:23:56 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FB8BH0027314;
+        Fri, 15 Sep 2023 11:23:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7+tJ/KsIswTmNeKa3tLG1ExmR6SfnnZoUA5bR+lKBMU=;
+ b=bkEc/rhonQfrChQKspzo6V0xCg5+tTPJuGHuTBhoZBuBPFNvRgMy1P5XRQL0Cz2nn8+v
+ LnKIey2nwxwcZnA2YHTN0kOFa/keshp1ZNKDawssFKZWtKwISYfrCS5BkfnZFZ8qCIb9
+ QYGz99nxHhzCG4xAcC0+grlcth5NrvjGsqgr9eYh1mjHxAPZ6UbwlDYQ6MfmDwFjXE01
+ QQJ9hMZbCTRBuUadG+R0hsPIH+Alq0qeS3A8D/RL9EAZGT0nZd4iVPB3RnAkUxGR68j3
+ V+BYcM31fUVohOxa/J2LA/iZvfImlrJqcuEl3dnVpP4vrF2OPl5wzMwv0lUV/XHTcI4H ew== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4nrg0yb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 11:23:31 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38FANkxP024039;
+        Fri, 15 Sep 2023 11:23:30 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131tucsh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 11:23:30 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38FBNTC951118478
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Sep 2023 11:23:29 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2632158056;
+        Fri, 15 Sep 2023 11:23:29 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9E0E58050;
+        Fri, 15 Sep 2023 11:23:27 +0000 (GMT)
+Received: from [9.67.12.83] (unknown [9.67.12.83])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Sep 2023 11:23:27 +0000 (GMT)
+Message-ID: <6297a0bd-3101-d8cc-5a8f-24b3b82a92e6@linux.ibm.com>
+Date:   Fri, 15 Sep 2023 06:23:25 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3449351.1694776980.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 15 Sep 2023 12:23:00 +0100
-Message-ID: <3449352.1694776980@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v2] crypto: vmx: Improved AES/XTS performance of 6-way
+ unrolling for ppc.
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, leitao@debian.org,
+        nayna@linux.ibm.com, appro@cryptogams.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
+References: <20230830134911.179765-1-dtsen@linux.ibm.com>
+ <ZQQ06U7LEgoZMSY6@gondor.apana.org.au>
+Content-Language: en-US
+From:   Danny Tsen <dtsen@linux.ibm.com>
+In-Reply-To: <ZQQ06U7LEgoZMSY6@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: k1wFaZS8WDv_pgb1ahtL03Oaohp_mJzl
+X-Proofpoint-GUID: k1wFaZS8WDv_pgb1ahtL03Oaohp_mJzl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_08,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1015 mlxlogscore=678 spamscore=0 priorityscore=1501 adultscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309150098
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Laight <David.Laight@ACULAB.COM> wrote:
+Thanks Herbert.
 
-> > > Some measurements can be made using readv() and writev()
-> > > on /dev/zero and /dev/null.
-> > =
+-Danny
 
-> > Forget /dev/null; that doesn't actually engage any iteration code.  Th=
-e same
-> > for writing to /dev/zero.  Reading from /dev/zero does its own iterati=
-on thing
-> > rather than using iterate_and_advance(), presumably because it checks =
-for
-> > signals and resched.
-> =
-
-> Using /dev/null does exercise the 'copy iov from user' code.
-
-Ummm....  Not really:
-
-static ssize_t read_null(struct file *file, char __user *buf,
-			 size_t count, loff_t *ppos)
-{
-	return 0;
-}
-
-static ssize_t write_null(struct file *file, const char __user *buf,
-			  size_t count, loff_t *ppos)
-{
-	return count;
-}
-
-static ssize_t read_iter_null(struct kiocb *iocb, struct iov_iter *to)
-{
-	return 0;
-}
-
-static ssize_t write_iter_null(struct kiocb *iocb, struct iov_iter *from)
-{
-	size_t count =3D iov_iter_count(from);
-	iov_iter_advance(from, count);
-	return count;
-}
-
-David
-
+On 9/15/23 5:41 AM, Herbert Xu wrote:
+> On Wed, Aug 30, 2023 at 09:49:11AM -0400, Danny Tsen wrote:
+>> Improve AES/XTS performance of 6-way unrolling for PowerPC up
+>> to 17% with tcrypt.  This is done by using one instruction,
+>> vpermxor, to replace xor and vsldoi.
+>>
+>> The same changes were applied to OpenSSL code and a pull request was
+>> submitted.
+>>
+>> This patch has been tested with the kernel crypto module tcrypt.ko and
+>> has passed the selftest.  The patch is also tested with
+>> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+>>
+>> Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
+>> ---
+>>   drivers/crypto/vmx/aesp8-ppc.pl | 141 +++++++++++++++++++++-----------
+>>   1 file changed, 92 insertions(+), 49 deletions(-)
+> Patch applied.  Thanks.
