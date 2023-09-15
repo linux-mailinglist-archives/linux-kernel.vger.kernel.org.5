@@ -2,134 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4777A12B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CE67A12AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjIOBB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S231211AbjIOBBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjIOBB6 (ORCPT
+        with ESMTP id S230263AbjIOBBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:01:58 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E83F2712;
-        Thu, 14 Sep 2023 18:01:53 -0700 (PDT)
-Received: from [172.27.2.41] ([98.35.210.218])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38F112U03638576
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Thu, 14 Sep 2023 18:01:03 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38F112U03638576
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1694739666;
-        bh=XHN9I2OHU68RV5bG6y3WqExfCASkiZJ1qJvRtiUpKjE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=CC1wRaIWsm1+pSXkxshfOPybvCuX3+uD6m3yE7NNC9TLBPqtBenwiKAiRplm82uJj
-         cSIY9kVUKb9ouaCP3Hxth1CawYt4FplSJM68+yTs4aDQvCJJBZqTLEkthTrZ2P6U20
-         bCyJZJp+F6oLYIblgj9lMq59a5MPlxgiN9GJG0hXAG+6E1FvCbJwv3h+7PBLFKyVbz
-         ILRo/2CSfogqPR3gl77gxFuqEn50czOxR2s9uHMbkv9rLAq0GTw9gAzVtw3IOmfYnx
-         EHaNtPoY/WfRrgx4WS16sbfJs0md2J4u8kaa+3gsCHhH4mA1JQG08X8MitAXaDvOgZ
-         9SvBiKgshjFdQ==
-Message-ID: <0e7d37db-e1af-ac40-6eca-5565d1bebcde@zytor.com>
-Date:   Thu, 14 Sep 2023 18:01:01 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-US
-To:     andrew.cooper3@citrix.com, Thomas Gleixner <tglx@linutronix.de>,
-        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
-        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
-        ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
- <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 14 Sep 2023 21:01:50 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015E81FE8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:01:45 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bdac026f7so21441397b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694739700; x=1695344500; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJTS4bFwxQYCp+W2QwuD6ymPLJmZK+oQFYtEHbQSJpI=;
+        b=CQzisWFX8Q5XtrDFza1+V28zemiMBfXMSKzjy4iODIdwnQTPmhtQu4gUb6PNavwYPV
+         JCJAvwD2Q/DOb2AqTUlGReIWajG4L/XC3sF+wRcA54s4/IKCfkXH+GSqdmtQ8krAOSnT
+         7UWk8cBh7HrybfJi3w0z52fP07NduP28rzI8Lz9Q+jQhZ+S15F2z+VPNjsSNaUzDYz7b
+         ThXogwlGaTXLncK39Fvoxe2wi5WmCDvUMt27Uyc9IqxMzu0/SnuHAizARCJ66a5pZ5s2
+         8/ZoWofVKskT7Rq/ico6cjaXn2e1+o+C6C4/nEVVfOizbl9f/RiKIkKp3ConkNu2QmsG
+         g9dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694739700; x=1695344500;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJTS4bFwxQYCp+W2QwuD6ymPLJmZK+oQFYtEHbQSJpI=;
+        b=cXykTqxpbtDcX/SVc9kWILTVf728iQJEuW69LZOIup/+QaYy80WPG+n9YCWYEXQ3Aq
+         Zwe/DnDDpS6CYToFCxu8vihGTg1Ivh05iHlJ+krJvLimp5p3OvbCgaMFH1n6bbZtqss8
+         YR/NYfg9glTccj8/BTHxcFjYQy1ngWSD2vAR7q44br6lw9t/ojVouwwJgirtVO+DcVLx
+         wcahX8iOZ4scNxeLHbAZR0nmNFx6Sn+UVTageOeDo0WFDPQuRUt9wkFqlA1ilnw2jE0H
+         bp6fVzRlK+2TFo2QouBXva47miljZ4Uh2GOirffegSCuQsrF3Y7itOS3GyDrwWBTuUMY
+         khqA==
+X-Gm-Message-State: AOJu0YwaRcSDcMtgVsT6gqaMIJw0o1mZJfxTU3afNPnJHtY5pmUQs2EP
+        VxtCBijIG/bjhhJfRc5V1ugvNn8vHzWs3w==
+X-Google-Smtp-Source: AGHT+IEOzNRqkRYibXlHELNPk8FpKvyyeMfe2dmvHS4Me7k5V6CAZqzDONlvIYAGQvm00TP+p53hfu2Ftv+D0g==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:b21b:0:b0:d81:908f:6f99 with SMTP id
+ i27-20020a25b21b000000b00d81908f6f99mr3035ybj.5.1694739700642; Thu, 14 Sep
+ 2023 18:01:40 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 01:01:38 +0000
+In-Reply-To: <CAJD7tkb_pDxqqhB25aZpbfur=YodBRb1nmdpNZt1DB_1ozDpPQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
+ <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
+ <20230914225844.woz7mke6vnmwijh7@google.com> <CAJD7tkb_pDxqqhB25aZpbfur=YodBRb1nmdpNZt1DB_1ozDpPQ@mail.gmail.com>
+Message-ID: <20230915010138.knjli6ovpozxbpss@google.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> WRMSR has one complexity that most other PV-ops don't, and that's the
-> exception table reference for the instruction itself.
+On Thu, Sep 14, 2023 at 04:30:56PM -0700, Yosry Ahmed wrote:
+[...]
+> >
+> > I think first you need to show if this (2 sec stale stats) is really a
+> > problem.
 > 
-> In a theoretical future ought to look like:
+> That's the thing, my main concern is that if this causes a problem, we
+> probably won't be able to tell it was because of stale stats. It's
+> very hard to make that connection.
 > 
->     mov    $msr, %ecx
->     mov    $lo, %eax
->     mov    $hi, %edx
->     1: {call paravirt_blah(%rip) | cs...cs wrmsr | cs...cs wrmsrns }
->     _ASM_EXTABLE(1b, ...)
+
+Please articulate what the problem would look like which you did in the
+use-cases description below, let's discuss there.
+
+> Pre-rstat, reading stats would always yield fresh stats (as much as
+> possible). Now the stats can be up to 2s stale, and we don't really
+> know how this will affect our existing workloads.
 > 
-> In paravirt builds, the CALL needs to be the emitted form, because it
-> needs to function in very early boot.
+
+Pre-rstat the stat read would traverse the memcg tree. With rstat
+the tradeoff was made between expensive read and staleness.
+Yeah there
+might still be memcg update tree traversal which I would like to remove
+completely. However you are saying to 
+
+[...]
+> >
+> > I don't see why userspace OOM killing and proactive reclaim need
+> > subsecond accuracy. Please explain.
 > 
-> But once the paravirt-ness has been chosen and alternatives run, the
-> as-native paths are fully inline.
+> For proactive reclaim it is not about sub-second accuracy. It is about
+> doing the reclaim then reading the stats immediately to see the
+> effect. Naturally one would expect that a stat read after reclaim
+> would show the system state after reclaim.
 > 
-> The alternative which processes this site wants to conclude that, in the
-> case it does not alter from the CALL, to clobber the EXTABLE reference. 
-> CALL instructions can #GP, and you don't want to end up thinking you're
-> handling a WRMSR #GP when in fact it was a non-canonical function pointer.
+> For userspace OOM killing I am not really sure. It depends on how
+> dynamic the workload is. If a task recently had a spike in memory
+> usage causing a threshold to be hit, userspace can kill a different
+> task if the stats are stale.
+> 
 
+Please add above reasoning in your commit message (though I am not
+convinced but let's leave it at that).
 
-On 9/14/23 17:36, andrew.cooper3@citrix.com wrote:> On 15/09/2023 1:07 
-am, H. Peter Anvin wrote:
- >> Is *that* your concern?! Just put a NOP before WRMSR – you need 
-padding NOP bytes anyway – and the extable entry is no longer at the 
-same address. Problem solved.
- >>
- >> Either that, or use a direct call, which can't #GP in the address 
-range used by the kernel.
- >
- > For non-paravirt builds, I really hope the inlining DoesTheRightThing.
- > If it doesn't lets fix it to do so.
- >
- > For paravirt builds, the emitted form must be the indirect call so it
- > can function in boot prior to alternatives running [1].
- >
-No, it doesn't. You always have the option of a direct call to an 
-indirect JMP. This is in fact exactly what userspace does in the form of 
-the PLT.
+> I think the whole point is *not* about the amount of staleness. It is
+> more about that you expect a stats read after an event to reflect the
+> system state after the event.
 
- > So you still need some way of putting the EXTABLE reference at the
- > emitted site, not in the .altintr_replacement section where the
- > WRMSR{,NS} instruction lives.  This needs to be at build time because
- > the EXTABLE references aren't shuffled at runtime.
- >
- > How else do you propose getting an extable reference to midway through
- > an instruction on the "wrong" part of an alternative?
-Well, obviously there has to be a magic inline at the patch site. It 
-ends up looking something like this:
+The whole point is to understand the tradeoff between accuracy and cost
+of accuracy. I don't think you want to pay the cost of strong
+consistency/ordering between stats reading and an event. My worry is
+that you are enforcing a tradeoff which *might* be just applicable to
+your use-cases. Anyways this is not something that can not be changed
+later.
 
-	asm volatile("1:"
-		     ALTERNATIVE_2("call pv_wrmsr(%%rip)",
-			"nop; wrmsr", X86_FEATURE_NATIVE_MSR,
-			"nop; wrmsrns", X86_FEATURE_WRMSRNS)
-		     "2:"
-		     _ASM_EXTABLE_TYPE(1b+1, 2b, EX_TYPE_WRMSR)
-		     : : "c" (msr), "a" (low), "d" (high) : "memory");
+> 
+> > Same for system overhead but I can
+> > see the complication of two different sources for stats. Can you provide
+> > the formula of system overhead? I am wondering why do you need to read
+> > stats from memory.stat files. Why not the memory.current of top level
+> > cgroups and /proc/meminfo be enough. Something like:
+> >
+> > Overhead = MemTotal - MemFree - SumOfTopCgroups(memory.current)
+> 
+> We use the amount of compressed memory in zswap from memory.stat,
+> which is not accounted as memory usage in cgroup v1.
+> 
 
+There are zswap stats in /proc/meminfo. Will those work for you?
 
-[one can argue whether or not WRMSRNS specifically should require 
-"memory" or not.]
+[...]
+> > Fix the in-kernel flushers separately.
+> 
+> The in-kernel flushers are basically facing the same problem. For
+> instance, reclaim would expect a stats read after a reclaim iteration
+> to reflect the system state after the reclaim iteration.
+> 
 
-The whole bit with alternatives and pvops being separate is a major 
-maintainability problem, and honestly it never made any sense in the 
-first place. Never have two mechanisms to do one job; it makes it harder 
-to grok their interactions.
+I have not seen any complains on memory reclaim recently. Maybe
+reclaim does not really need that such accuracy :P
 
-As an alternative to the NOP, the EX_TYPE_*MSR* handlers could simply 
-look for a CALL opcode at the origin.
+> > Also the problem Cloudflare is facing does not need to be tied with this.
+> 
+> When we try to wait for flushing to complete we run into the same
+> latency problem of the root flush.
 
-	-hpa
+Not sure what wait for flushing has to do with Cloudflare's report. They
+are ok with no sync flushing at all stat read.
