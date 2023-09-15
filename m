@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B1B7A1D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDB17A1D3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbjIOLNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        id S233188AbjIOLPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjIOLNf (ORCPT
+        with ESMTP id S231745AbjIOLPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:13:35 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B43101;
-        Fri, 15 Sep 2023 04:13:29 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40434d284f7so19388295e9.3;
-        Fri, 15 Sep 2023 04:13:29 -0700 (PDT)
+        Fri, 15 Sep 2023 07:15:47 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B531BF
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:15:40 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31aec0a1a8bso1328522f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694776408; x=1695381208; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694776539; x=1695381339; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CisjoQlNizklEH7NF94JE2kh7VYoSvf5CMxswh9s23k=;
-        b=CrovmuKDfcGvk1Z+vUZq/D/vOlpZDxA1pYFZxOI+JScnxzuaERA4/k2BQZOCJEXeO/
-         qswprGpDtHuotwjcln8lXhOXUaeP2PuW/kAvGnHlJk0PvYnGaT05kvpq59Q3vGs65Em9
-         vU0z0Qm6t3fkzFdMb2sqQAYF5ZFoYNxk1sE8L5fnIbKrsFg28DRaDYp5K4X2dldMAtSw
-         Rw9JDcjxAfNGzSmQCOZVXhn6/xCl8sWQ8JjwC+dKr0tfxr+3/dlaUEu68Ed5CP0SlvXR
-         qDq4qeuVkKJkWSlRXn+wC7SKQRfqLHNfGFef7gqQkZLMfgPJGRvYm8lcOZ0VmQJZl3NZ
-         nyjA==
+        bh=qk/FijrZBqF14qcLhaLuag4OEieqki7GgwoaTvwFh3I=;
+        b=WnTenQ5hS4s+aJDNTI15k1smihROvyu8KUZ2PafzIEt7FtPDgM55OvulOqKERDeUA+
+         mkTwu3h6Vip5wP/dPuJP9kcJGgyp82+jzFKiywr1dKgdGp9HVxmYnKtRMxmE9QVUq/vz
+         qrUwtx8SxQ0hXn0xvSgy6FSLLkAde8pqrhQWXdgKhhMi1VPyx4MqPkzZw3sinnJCkOT4
+         USlh0YYOZg8el17cFw0i3R7+pVSqo9VDrjlAIPoYq/RsKPkIi7GQcqSU5/i+f185C9Lb
+         wPmqve2etMNItgb11RAOV7gKb+QQiirJT+pi0YLVEHZLf8AthxL61PP+3UJ+J0Q0FJQg
+         c1Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694776408; x=1695381208;
+        d=1e100.net; s=20230601; t=1694776539; x=1695381339;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CisjoQlNizklEH7NF94JE2kh7VYoSvf5CMxswh9s23k=;
-        b=LBSny7Fa2N37g0eLecV7u1+ffNxrUSCkl5yIumN+u4wGnd0UeIND2xv/Jjeuo+P+an
-         wzViOfGGmukZazVuw4H8Y2Jpx6e5WLsU/bh9NVW68U6a37gmrFwWh7zmvTzFxMRvCNnS
-         L2tVXo4PriXAOLLaiGecSq6QMtCcnG7Cxicw8uHAUfRj7Nk9CQquvKFl3sZeFZAJiv/F
-         7R1117jcSUqjgEeVV3BKCPsbKSXlKzyhkOCEBAQZ9WUAGZPVJq4VwzqUKclhI03896EO
-         AVxIf2N5s12Fu95vPwjy+x7KYb79HO444Vve73b5erht3X/ncQnsKr7uabOcwy7vFlNt
-         BODQ==
-X-Gm-Message-State: AOJu0Yyti9o+MnkQpbVavJdCc+Mgdohx6WT7sn8uezuKy6Y3ukSEeYEP
-        OuGPTDxOmL831EGCi2M3ycxdMPbduGw=
-X-Google-Smtp-Source: AGHT+IHpu14WW2T1XA6i7u/lcJ4jYs2usVWQ211sZQoOlaktsYXUhgfJpwoFShR10D2go/1ilQoh1Q==
-X-Received: by 2002:a05:600c:287:b0:402:bcac:5773 with SMTP id 7-20020a05600c028700b00402bcac5773mr1257018wmk.38.1694776407984;
-        Fri, 15 Sep 2023 04:13:27 -0700 (PDT)
+        bh=qk/FijrZBqF14qcLhaLuag4OEieqki7GgwoaTvwFh3I=;
+        b=mICZA+LRNNWlqmMvEaQopMh8Ig83QD5XMmsIx4l27UL+ykIilyBY1i6BV1lGXO9dto
+         5G2kBoeRDoT6v19YuVzs1zm88D2zMpgkttD6yyYbFTB4nZIPfV8nk00oDnnGi/L5NyzF
+         /o2GkaaY1cM/87ds/8FC8qBDx15QTjGAV/wkNqbI4dd3JAG7pn4gO4woJzjExMaq25l3
+         N9CWYoTmLI+qtcoVs9ZVneJ2v1WcCCL310ZZEv+qyDxkRSXw1BFqq80FyexfQjNwNUSn
+         jOpvXuu7BDxugJdhUOVKn3iy0nJ/ea85sjDGDXqwj2pcDdUhYpQpeltQNOwz8K+znHsx
+         ldzw==
+X-Gm-Message-State: AOJu0Ywod2SfZQvblwTm+Dbi3DDCKiCFcz7TuR95Cs84OlgunhsHeIMX
+        kfbjcKvYvt7QNdLgc4XIWzY=
+X-Google-Smtp-Source: AGHT+IHHR7071Lofsum0pnMAwHBLUJw+J3zW5LV0ooMobbEvwoQ17UGo6FfniAJGbwclNoqdmmLITg==
+X-Received: by 2002:adf:fc42:0:b0:31f:d8be:a313 with SMTP id e2-20020adffc42000000b0031fd8bea313mr965395wrs.5.1694776538932;
+        Fri, 15 Sep 2023 04:15:38 -0700 (PDT)
 Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id k21-20020a05600c0b5500b003fbe791a0e8sm4357737wmr.0.2023.09.15.04.13.26
+        by smtp.gmail.com with ESMTPSA id k15-20020a5d628f000000b0031f729d883asm4150018wru.42.2023.09.15.04.15.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 04:13:27 -0700 (PDT)
+        Fri, 15 Sep 2023 04:15:37 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 13:13:25 +0200
+Date:   Fri, 15 Sep 2023 13:15:35 +0200
 From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Lukas Wunner <lukas@wunner.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [tip: core/urgent] panic: Reenable preemption in WARN slowpath
-Message-ID: <ZQQ8VZdWbj9U/AuB@gmail.com>
-References: <3ec48fde01e4ee6505f77908ba351bad200ae3d1.1694763684.git.lukas@wunner.de>
- <169477058360.27769.17772363826818333894.tip-bot2@tip-bot2>
- <ZQQnnjzxbTwpn61F@gmail.com>
- <20230915103512.GC6721@noisy.programming.kicks-ass.net>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 2/2] x86/percpu: Use raw_cpu_try_cmpxchg in
+ preempt_count_set
+Message-ID: <ZQQ817oApcALz9jy@gmail.com>
+References: <20230830151623.3900-1-ubizjak@gmail.com>
+ <20230830151623.3900-2-ubizjak@gmail.com>
+ <ZQQoHWkJ5or/K7UH@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915103512.GC6721@noisy.programming.kicks-ass.net>
+In-Reply-To: <ZQQoHWkJ5or/K7UH@gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -82,69 +81,53 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-> > > panic: Reenable preemption in WARN slowpath
-> > > 
-> > > Commit:
-> > > 
-> > >   5a5d7e9badd2 ("cpuidle: lib/bug: Disable rcu_is_watching() during WARN/BUG")
-> > > 
-> > > amended warn_slowpath_fmt() to disable preemption until the WARN splat
-> > > has been emitted.
-> > > 
-> > > However the commit neglected to reenable preemption in the !fmt codepath,
-> > > i.e. when a WARN splat is emitted without additional format string.
-> > > 
-> > > One consequence is that users may see more splats than intended.  E.g. a
-> > > WARN splat emitted in a work item results in at least two extra splats:
-> > > 
-> > >   BUG: workqueue leaked lock or atomic
-> > >   (emitted by process_one_work())
-> > > 
-> > >   BUG: scheduling while atomic
-> > >   (emitted by worker_thread() -> schedule())
-> > > 
-> > > Ironically the point of the commit was to *avoid* extra splats. ;)
-> > > 
-> > > Fix it.
-> > 
-> > > diff --git a/kernel/panic.c b/kernel/panic.c
-> > > index 07239d4..ffa037f 100644
-> > > --- a/kernel/panic.c
-> > > +++ b/kernel/panic.c
-> > > @@ -697,6 +697,7 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
-> > >  	if (!fmt) {
-> > >  		__warn(file, line, __builtin_return_address(0), taint,
-> > >  		       NULL, NULL);
-> > > +		warn_rcu_exit(rcu);
-> > >  		return;
-> > 
-> > BTW., one more thing we might want to consider here is to re-enable 
-> > preemption in warn_rcu_exit() a bit more gently, without forcing a
-> > pending reschedule, ie. preempt_enable_no_resched() or so?
 > 
-> nah, it's a warn, if that triggers you get to keep the pieces.
+> * Uros Bizjak <ubizjak@gmail.com> wrote:
+> 
+> > Use raw_cpu_try_cmpxchg instead of raw_cpu_cmpxchg (*ptr, old, new) == old.
+> > x86 CMPXCHG instruction returns success in ZF flag, so this change saves a
+> > compare after cmpxchg (and related move instruction in front of cmpxchg).
+> > 
+> > Also, raw_cpu_try_cmpxchg implicitly assigns old *ptr value to "old" when
+> > cmpxchg fails. There is no need to re-read the value in the loop.
+> > 
+> > No functional change intended.
+> > 
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > ---
+> >  arch/x86/include/asm/preempt.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+> > index 2d13f25b1bd8..4527e1430c6d 100644
+> > --- a/arch/x86/include/asm/preempt.h
+> > +++ b/arch/x86/include/asm/preempt.h
+> > @@ -31,11 +31,11 @@ static __always_inline void preempt_count_set(int pc)
+> >  {
+> >  	int old, new;
+> >  
+> > +	old = raw_cpu_read_4(pcpu_hot.preempt_count);
+> >  	do {
+> > -		old = raw_cpu_read_4(pcpu_hot.preempt_count);
+> >  		new = (old & PREEMPT_NEED_RESCHED) |
+> >  			(pc & ~PREEMPT_NEED_RESCHED);
+> > -	} while (raw_cpu_cmpxchg_4(pcpu_hot.preempt_count, old, new) != old);
+> > +	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.preempt_count, &old, new));
+> 
+> It would be really nice to have a before/after comparison of generated 
+> assembly code in the changelog, to demonstrate the effectiveness of this 
+> optimization.
 
-But but ... my overall point is that since we just WARN()ed, we are facing 
-some sort of kernel bug, and scheduling policies are only a secondary 
-concern, debuggability & getting the bug fixed is the primary concern.
-
-So the scheduler should switch to a debugging-friendlier behavior:
-
-  'Schedule tasks around as little as possible, to keep the debug output 
-   tidy & to keep things working a bit better even if it's all broken 
-   already'.
-
-... or so. My suggestion was a small subset of that principle.
-
-> [...] Also preempt_enable_no_resched() isn't exported because its a 
-> horribly dangerous function.
-
-Special exception for RCU debugging only, or so - it's a core kernel 
-facility after all.
-
-No strong feelings either way though.
+Never mind, you did exactly that in the September 6 variation of these 
+changes. I'll apply those.
 
 Thanks,
 
