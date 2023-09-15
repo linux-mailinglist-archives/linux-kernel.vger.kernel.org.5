@@ -2,335 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C6C7A1E05
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0A17A1E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjIOMEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S234612AbjIOMGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbjIOMEd (ORCPT
+        with ESMTP id S234600AbjIOMGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:04:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8433A87;
-        Fri, 15 Sep 2023 05:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694779422; x=1726315422;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0aSOAVXV3pig4axO9+jHlML+tu/afJdMdghU/1L+h8Q=;
-  b=LYnF/WXkwsqXg5q3WVKYknZVhocc3RVjBdRDL2kcRSDtNX4/da+tX257
-   pAt6W13pGA8bdxdffCQTURqXVd4JJ/uPSZwEAS5R/IpubkuyDrpypBs8t
-   m4x97iMWHSzJS9EFQsJNw6PUXXnnTMfK+0KohRKcL/+BDpWXZx74nEALM
-   U2qWIlyp3e5EZOfKvcOafDJKDjEwFLTyiW+IrliP3acuIJtjegk+FkRKo
-   jACKJ2dcQFeyqKnHeS8sjXwMlakvhl6ubBu/52m99VrpSD+/vHes8qqtO
-   eSP6+WpUj7KBZ6qttBxwuY36wm1WdrySehQMsgfirnq/ND7KxChX3rHr5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="378146139"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="378146139"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:02:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="774293067"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="774293067"
-Received: from srdoo-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.38.99])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:02:51 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v2 10/10] selftests/pcie_bwctrl: Create selftests
-Date:   Fri, 15 Sep 2023 15:01:42 +0300
-Message-Id: <20230915120142.32987-11-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230915120142.32987-1-ilpo.jarvinen@linux.intel.com>
-References: <20230915120142.32987-1-ilpo.jarvinen@linux.intel.com>
+        Fri, 15 Sep 2023 08:06:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA492D68;
+        Fri, 15 Sep 2023 05:03:29 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 12:03:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694779407;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n91F6OwJCEQx/AxwlimYmmS9ThSoGKd78npqs+cy3MU=;
+        b=xnKujZeRswTQjFHSGYwpZOpNdumo2jCw3MXaxc82wIAZVyMbZukdWeo/7jI57PKlGgOHcO
+        u3f+mTZJYioffDuVw62URgYGH43wFeL4zaqK9JiC/pwyjT6x5wam7/2bDWjiaNCYuWxX0f
+        1tzTMMMQNUjJLIhaSDc4T9aHY3luvhatvRTnSGItlzvKmtRx+1R8vkMc2iPHXk89r2euNh
+        F5TavRTJEHmAT8jq/1RAmGJkGUDk257C3RoZjbcv+waUFdAQ6Z0kt9P5X0FvXkY19HrjGK
+        T7CtoGzssFpPNrfAVit2DM+sTxHJ0TvjBTQcNIOut1+W8vtR4DXT72Z37Sunvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694779407;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n91F6OwJCEQx/AxwlimYmmS9ThSoGKd78npqs+cy3MU=;
+        b=1sG/SWopaK+p8X7dtqKUk29q9DNDAg/LsABEQaS0yAdfNm1SV9ZSkDV9dXEsyP0XejyGdJ
+        G2BpDEpX+76WQ3Bw==
+From:   "tip-bot2 for Yury Norov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/topology: Fix sched_numa_find_nth_cpu() comment
+Cc:     Yury Norov <yury.norov@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230819141239.287290-7-yury.norov@gmail.com>
+References: <20230819141239.287290-7-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169477940678.27769.11961724945556415025.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create selftests for PCIe BW control through the PCIe cooling device
-sysfs interface.
+The following commit has been merged into the sched/core branch of tip:
 
-First, the BW control selftest finds the PCIe port to test with. By
-default, the PCIe port with the highest bus speed is selected but
-another PCIe port can be provided with -d parameter.
+Commit-ID:     6d08ad2166f7770341ea56afad45fa41cd16ae62
+Gitweb:        https://git.kernel.org/tip/6d08ad2166f7770341ea56afad45fa41cd16ae62
+Author:        Yury Norov <yury.norov@gmail.com>
+AuthorDate:    Sat, 19 Aug 2023 07:12:38 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 15 Sep 2023 13:48:11 +02:00
 
-The actual test steps the cur_state of the cooling device one-by-one
-from max_state to what the cur_state was initially. The speed change
-is confirmed by observing the current_link_speed for the corresponding
-PCIe port.
+sched/topology: Fix sched_numa_find_nth_cpu() comment
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reword sched_numa_find_nth_cpu() comment and make it kernel-doc compatible.
+
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Link: https://lore.kernel.org/r/20230819141239.287290-7-yury.norov@gmail.com
 ---
- MAINTAINERS                                   |   1 +
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/pcie_bwctrl/Makefile  |   2 +
- .../pcie_bwctrl/set_pcie_cooling_state.sh     | 122 ++++++++++++++++++
- .../selftests/pcie_bwctrl/set_pcie_speed.sh   |  67 ++++++++++
- 5 files changed, 193 insertions(+)
- create mode 100644 tools/testing/selftests/pcie_bwctrl/Makefile
- create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
- create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
+ kernel/sched/topology.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 32974417ad52..84e6687a646b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16575,6 +16575,7 @@ S:	Supported
- F:	drivers/pci/pcie/bwctrl.c
- F:	drivers/thermal/pcie_cooling.c
- F:	include/linux/pci-bwctrl.h
-+F:	tools/testing/selftests/pcie_bwctrl/
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index a60ecf4..a7b50bb 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -2112,13 +2112,15 @@ static int hop_cmp(const void *a, const void *b)
+ 	return -1;
+ }
  
- PCIE DRIVER FOR AMAZON ANNAPURNA LABS
- M:	Jonathan Chocron <jonnyc@amazon.com>
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 42806add0114..18ad9acd440a 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -59,6 +59,7 @@ TARGETS += net/mptcp
- TARGETS += net/openvswitch
- TARGETS += netfilter
- TARGETS += nsfs
-+TARGETS += pcie_bwctrl
- TARGETS += perf_events
- TARGETS += pidfd
- TARGETS += pid_namespace
-diff --git a/tools/testing/selftests/pcie_bwctrl/Makefile b/tools/testing/selftests/pcie_bwctrl/Makefile
-new file mode 100644
-index 000000000000..3e84e26341d1
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/Makefile
-@@ -0,0 +1,2 @@
-+TEST_PROGS = set_pcie_cooling_state.sh
-+include ../lib.mk
-diff --git a/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh b/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
-new file mode 100755
-index 000000000000..3a8f91f0309e
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
-@@ -0,0 +1,122 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+SYSFS=
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+retval=0
-+skipmsg="skip all tests:"
-+
-+PCIEPORTTYPE="PCIe_Port_Link_Speed"
-+
-+prerequisite()
-+{
-+	local ports
-+
-+	if [ $UID != 0 ]; then
-+		echo $skipmsg must be run as root >&2
-+		exit $ksft_skip
-+	fi
-+
-+	SYSFS=`mount -t sysfs | head -1 | awk '{ print $3 }'`
-+
-+	if [ ! -d "$SYSFS" ]; then
-+		echo $skipmsg sysfs is not mounted >&2
-+		exit $ksft_skip
-+	fi
-+
-+	if ! ls $SYSFS/class/thermal/cooling_device* > /dev/null 2>&1; then
-+		echo $skipmsg thermal cooling devices missing >&2
-+		exit $ksft_skip
-+        fi
-+
-+	ports=`grep -e "^$PCIEPORTTYPE" $SYSFS/class/thermal/cooling_device*/type | wc -l`
-+	if [ $ports -eq 0 ]; then
-+		echo $skipmsg pcie cooling devices missing >&2
-+		exit $ksft_skip
-+	fi
-+}
-+
-+testport=
-+find_pcie_port()
-+{
-+	local patt="$1"
-+	local pcieports
-+	local max
-+	local cur
-+	local delta
-+	local bestdelta=-1
-+
-+	pcieports=`grep -l -F -e "$patt" /sys/class/thermal/cooling_device*/type`
-+	if [ -z "$pcieports" ]; then
-+		return
-+	fi
-+	pcieports=${pcieports//\/type/}
-+	# Find the port with the highest PCIe Link Speed
-+	for port in $pcieports; do
-+		max=`cat $port/max_state`
-+		cur=`cat $port/cur_state`
-+		delta=$((max-cur))
-+		if [ $delta -gt $bestdelta ]; then
-+			testport="$port"
-+			bestdelta=$delta
-+		fi
-+	done
-+}
-+
-+sysfspcidev=
-+find_sysfs_pci_dev()
-+{
-+	local typefile="$1/type"
-+	local pcidir
-+
-+	pcidir="$SYSFS/bus/pci/devices/`sed -e "s|^${PCIEPORTTYPE}_||g" $typefile`"
-+
-+	if [ -r "$pcidir/current_link_speed" ]; then
-+		sysfspcidev="$pcidir/current_link_speed"
-+	fi
-+}
-+
-+usage()
-+{
-+	echo "Usage $0 [ -d dev ]"
-+	echo -e "\t-d: PCIe port BDF string (e.g., 0000:00:04.0)"
-+}
-+
-+pattern="$PCIEPORTTYPE"
-+parse_arguments()
-+{
-+	while getopts d:h opt; do
-+		case $opt in
-+			h)
-+				usage "$0"
-+				exit 0
-+				;;
-+			d)
-+				pattern="$PCIEPORTTYPE_$OPTARG"
-+				;;
-+			*)
-+				usage "$0"
-+				exit 0
-+				;;
-+		esac
-+	done
-+}
-+
-+parse_arguments "$@"
-+prerequisite
-+find_pcie_port "$pattern"
-+if [ -z "$testport" ]; then
-+	echo $skipmsg "pcie cooling device not found from sysfs" >&2
-+	exit $ksft_skip
-+fi
-+find_sysfs_pci_dev "$testport"
-+if [ -z "$sysfspcidev" ]; then
-+	echo $skipmsg "PCIe port device not found from sysfs" >&2
-+	exit $ksft_skip
-+fi
-+
-+./set_pcie_speed.sh "$testport" "$sysfspcidev"
-+retval=$?
-+
-+exit $retval
-diff --git a/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh b/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
-new file mode 100755
-index 000000000000..584596949312
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
-@@ -0,0 +1,67 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+set -e
-+
-+TESTNAME=set_pcie_speed
-+
-+declare -a PCIELINKSPEED=(
-+	"2.5 GT/s PCIe"
-+	"5.0 GT/s PCIe"
-+	"8.0 GT/s PCIe"
-+	"16.0 GT/s PCIe"
-+	"32.0 GT/s PCIe"
-+	"64.0 GT/s PCIe"
-+)
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+retval=0
-+
-+coolingdev="$1"
-+statefile="$coolingdev/cur_state"
-+maxfile="$coolingdev/max_state"
-+linkspeedfile="$2"
-+
-+oldstate=`cat $statefile`
-+maxstate=`cat $maxfile`
-+
-+set_state()
-+{
-+	local state=$1
-+	local linkspeed
-+	local expected_linkspeed
-+
-+	echo $state > $statefile
-+
-+	sleep 1
-+
-+	linkspeed="`cat $linkspeedfile`"
-+	expected_linkspeed=$((maxstate-state))
-+	expected_str="${PCIELINKSPEED[$expected_linkspeed]}"
-+	if [ ! "${expected_str}" = "${linkspeed}" ]; then
-+		echo "$TESTNAME failed: expected: ${expected_str}; got ${linkspeed}"
-+		retval=1
-+	fi
-+}
-+
-+cleanup_skip ()
-+{
-+	set_state $oldstate
-+	exit $ksft_skip
-+}
-+
-+trap cleanup_skip EXIT
-+
-+echo "$TESTNAME: testing states $maxstate .. $oldstate with $coolingdev"
-+for i in $(seq $maxstate -1 $oldstate); do
-+	set_state "$i"
-+done
-+
-+trap EXIT
-+if [ $retval -eq 0 ]; then
-+	echo "$TESTNAME [PASS]"
-+else
-+	echo "$TESTNAME [FAIL]"
-+fi
-+exit $retval
--- 
-2.30.2
-
+-/*
+- * sched_numa_find_nth_cpu() - given the NUMA topology, find the Nth next cpu
+- *                             closest to @cpu from @cpumask.
+- * cpumask: cpumask to find a cpu from
+- * cpu: Nth cpu to find
+- *
+- * returns: cpu, or nr_cpu_ids when nothing found.
++/**
++ * sched_numa_find_nth_cpu() - given the NUMA topology, find the Nth closest CPU
++ *                             from @cpus to @cpu, taking into account distance
++ *                             from a given @node.
++ * @cpus: cpumask to find a cpu from
++ * @cpu: CPU to start searching
++ * @node: NUMA node to order CPUs by distance
++ *
++ * Return: cpu, or nr_cpu_ids when nothing found.
+  */
+ int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+ {
