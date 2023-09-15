@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D267A12EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDC17A12FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjIOB3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
+        id S231313AbjIOBbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbjIOB27 (ORCPT
+        with ESMTP id S230193AbjIOBbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:28:59 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCFA2100;
-        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bc0d39b52cso13957675ad.2;
-        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694741334; x=1695346134; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Njb5nxfBOiRZsqkfkDCdtMn4zV0CHNcc0b53FSbSvDk=;
-        b=M1nRHYil2PdhrNp79H50VoXnhIm44DCeOO2CK3FIwgPI4hNHQwKcyQPwWvc5u4agoV
-         U1/aqJs0BlRXE70lbpkiZaqvK4dpTYyQOkVk8DOZCfyFi82Xj9JXvpo/5M5oUb9hV8w9
-         IWXHj8z0hrHf7sw0DAyq11xPVhBH3+ooR1+Vxf38jIvmwlwAucwm1eLUcfyTR3jESoRe
-         YIooab+Mqnkbye0Y1M1/LPdAJsPNb2qFW9ZRkNRxyshN75wMez/S4TgfdF7KEoez1OsC
-         LZEVytzZQ4itiC8FdFC3sx5WUdSva5s2oYDTqSBclVt21CroRphWZ5WkUBg/KWTxEEDw
-         ULoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694741334; x=1695346134;
-        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Njb5nxfBOiRZsqkfkDCdtMn4zV0CHNcc0b53FSbSvDk=;
-        b=Xw3EjkZgzPwScXurxLf50mvgDeuiutB51m+0AZl7gnUNb9sAvM0hOtWz34KzfrA15Y
-         hy8Qei/6OdzKyU4GQOTSZppKMygmXjHx5PAXob2+DyFSJRILwzw1uyE/zlCLvEQRGiAq
-         Vl4951ibPvX50JJDFHJqLe3GNnpZlrNQjUFcpqerPuxxILWSiiUu4ksNIWuXXEe/1TBm
-         dewuOm2gf4vg44Dz3LooOl4YcLhaZC9UKKJt+aXbt/Zb2aTcZ4W2OlD+36Jq/rwVHIKR
-         54Da+25In9w8L4pzNruIzTw51W1RR7idGUwi6DXvtADoOR3SbUePflCRLd9LiFR0PK5R
-         yAlQ==
-X-Gm-Message-State: AOJu0YzSwMcMtjaKZytkWGgvJhJOcMDnbLzyUClAPVZd3heYSOBZ2Lq4
-        XA0hVlcV5Y/z384+yRtiLjE=
-X-Google-Smtp-Source: AGHT+IHIoKHpNVoOGVVa41JrXrpya9Ksz+fxttZexrHmiutl1tkYeMKrQQqAHf/kcxk0JTqnZKL8qg==
-X-Received: by 2002:a17:902:f80d:b0:1bc:382b:6897 with SMTP id ix13-20020a170902f80d00b001bc382b6897mr294837plb.13.1694741334104;
-        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
-Received: from ?IPv6:2402:7500:5ce:c546:8426:5e14:d5b7:9128? ([2402:7500:5ce:c546:8426:5e14:d5b7:9128])
-        by smtp.gmail.com with ESMTPSA id w16-20020a1709027b9000b001c3a8b135ebsm2192536pll.282.2023.09.14.18.28.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
- encryption implementation
-From:   He-Jie Shih <bignose1007@gmail.com>
-In-Reply-To: <1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com>
-Date:   Fri, 15 Sep 2023 09:28:49 +0800
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        christoph.muellner@vrull.eu,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>
-Reply-To: 1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <481D910C-8D83-4A6D-9D22-3D3A7C4723E6@gmail.com>
-References: <20230711153743.1970625-1-heiko@sntech.de>
- <20230711153743.1970625-11-heiko@sntech.de>
- <20230721054036.GD847@sol.localdomain>
- <CCA32056-CCE2-4FB5-8CFC-62444CDDA89F@sifive.com>
- <CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com>
- <1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com>
-To:     CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com
-X-Mailer: Apple Mail (2.3445.9.7)
+        Thu, 14 Sep 2023 21:31:42 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F812100;
+        Thu, 14 Sep 2023 18:31:38 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CCA6B320047A;
+        Thu, 14 Sep 2023 21:31:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 14 Sep 2023 21:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694741496; x=1694827896; bh=0JHBCsnC5ZrLuDmlCEBUAWK22MKwJq+tD4g
+        Vi2w5PPg=; b=HXWfi0cEUBqQPIYddb9OehCOk3cBKCnsnoYh8PcT4MVUQGSdjy/
+        54sPgfa2PYuEg1qf+9cLKCJQ9f5Tp1wadq6kOqNG7abVGE3OwDJux93XWeir1/IA
+        QBfINh0scmMe4huDWtncrGPxQzY/NjL5igt71oj7SFMYWUsganjD4Zt0WPFLdqgU
+        ZwS0gdAUT2qI7eJmVqCQfSPK4WF4WEojxwHbBG1q+5cHKnMVft5inkpNXmtokQ7j
+        eVc9yY9XLsYtXopwOZzTAqlDOXmaLzHgPXfs3yefLuo3O7XehgFWI9Xo4fwHrSEO
+        n7CqPshDAfbyZg8KfRaH4IfRm6+bfwUKCiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694741496; x=1694827896; bh=0JHBCsnC5ZrLuDmlCEBUAWK22MKwJq+tD4g
+        Vi2w5PPg=; b=Yz9AZEYqFfn+F4huwafWBIZl8zESY2kNxWKeJt05mP6MSr9nE8Q
+        GftysHf5gjgMPRpTkbbaEZ5L6eMQVE+2DSl7/Nrb7ez5qnTv7v3klvF2ghuY+vLc
+        0v/DWvQeXhCGToVp33hGFqatas4frz6JvmitxcU4voHzysrXQk+ISZsN/tcKQcJf
+        5zjbWSd0CyAR4rOmBbkgjYcAzZQt0ZGfv700+Zj0VSeLV5A5hMIaMLizTLikoadq
+        ZmzBqGIoXwYlGqpZUzYGtVNOUwM/eNH5GSN4kC3Tu6PH324DQdHmc7jtBaJZ/cOq
+        pVBXOkOnIHUZ7TwQVQqWewDjNedf6OZJuNg==
+X-ME-Sender: <xms:-LMDZTt1bjkufVhwgbpbtSoOo5WHaqPx6X5rt5fKhXcRos1IzDSJxw>
+    <xme:-LMDZUcItTXOnRPIOMBdxWzOFyFgF_1IeQsxethE65P5_SvMBfMh-41ihLsR4u014
+    kJUvTl1sdOp>
+X-ME-Received: <xmr:-LMDZWyoWK4VBZCtbeWySozszNIzQbMmKpbdf70927aq3yWKPf7JVol1RXxxh45XaWu9kYZYQhVGjvYHkzXnFlZoG9i_hdWyJvBlVopHjUC7vzcpmp9d>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epuefhueeiieejueevkefgiedtteehgfdutdelfffhleeflefhudeuvdefhfeghfehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:-LMDZSMqhBM8a4-swjZ0ipZOL1zw41CRggIpXhlwx6cI7gvtfPrdCg>
+    <xmx:-LMDZT8nqXvtU49d508PJeG_NjhLVTcCSRUudOZ-F8ROv4ppB_aehw>
+    <xmx:-LMDZSXsQvHnFqJ3p_1dJv995ci4FJ091teFE61Tz0NFuN4s2QTQTw>
+    <xmx:-LMDZSVSMOe1zoa-CuvuX6CUrNpZlbeSYoY1LPF6E83EixhLDFonlQ>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Sep 2023 21:31:30 -0400 (EDT)
+Message-ID: <e4437a13-5cf7-c1bb-351f-b984495ad2bd@themaw.net>
+Date:   Fri, 15 Sep 2023 09:31:28 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 1/3] add unique mount ID
+Content-Language: en-US
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <20230913152238.905247-2-mszeredi@redhat.com>
+ <20230914-himmel-imposant-546bd73250a8@brauner>
+ <CAJfpegv8ZVyyZN7ppSYMD4g8i7rAP1_5UBxzSo869_SKmFhgvw@mail.gmail.com>
+ <20230914-jeweiligen-normung-47816c153531@brauner>
+ <CAJfpeguJ+H7HkZOgZrJ7VmTY_GhQ5uqueZH+DL9EuEeX5kgXQw@mail.gmail.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAJfpeguJ+H7HkZOgZrJ7VmTY_GhQ5uqueZH+DL9EuEeX5kgXQw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 12, 2023, at 15:15, Jerry Shih <jerry.shih@sifive.com> wrote:
+On 14/9/23 17:43, Miklos Szeredi wrote:
+> On Thu, 14 Sept 2023 at 11:36, Christian Brauner <brauner@kernel.org> wrote:
+>>> Yes, one concern is that humans confuse the old and the new ID.
+>>>
+>>> I also think it makes sense to allow the new interfaces to look up the
+>>> mount based on either the old or the new ID.   But I could be wrong
+>> Hm, mount id recycling may happen so quickly that for service restarts
+>> with a lot of mounts this becomes mostly useless...
+> Agreed.  The old ID is mostly useful for human interaction.
+>
+>>> there, since that might encourage bad code.  Maybe the new interface
+>>> should only use take the new ID, which means no mixed use of
+>>> /proc/$$/mountinfo and statmnt/listmnt.
+>> ... so I think that is indeed the better way of doing things. There's no
+>> need to encourage userspace to mix both identifiers.
+> Okay.
 
->> This pull request doesn't appear to contain any XTS code at all, only =
-CBC.
->=20
-> We have some license issues for upstream. We will append the =
-specialized
-> AES modes soon.
+I think having both is leaving more opportunity for confusion and the new
 
-We have the XTS and other specialized AES modes in OpenSSL PR[1] now.
-The specialized implementations all perform better than generic =
-implementation
-on FPGA.
-We will try to make that implementations happen in kernel.
+mount id has a different name so I think start the move to using that now
 
--Jerry
+and only allow the new one for lookups.
 
-[1]
-https://github.com/openssl/openssl/pull/21923
+
+>
+> But I'd still leave the 2^32 offset for human confusion avoidance.
+
+Yep, agreed.
+
+
+Ian
 
