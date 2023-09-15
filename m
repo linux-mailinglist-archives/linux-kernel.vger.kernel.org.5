@@ -2,103 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4C87A2B11
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBBB7A2B1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237971AbjIOXnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 19:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        id S238008AbjIOXyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 19:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237958AbjIOXmf (ORCPT
+        with ESMTP id S230318AbjIOXyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 19:42:35 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6B12105
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:42:31 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26f4bc74131so1953594a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:42:31 -0700 (PDT)
+        Fri, 15 Sep 2023 19:54:23 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8662102;
+        Fri, 15 Sep 2023 16:54:18 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68fb5bd8f02so2647575b3a.0;
+        Fri, 15 Sep 2023 16:54:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694821350; x=1695426150; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694822058; x=1695426858; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HvSLgTTIgHIGD+l7tl19R4elC30zzIy17VfAeigIAQE=;
-        b=O+vCxHPnFbw4lwwd/iT7keN8p8lJMYK8QK9z6u8vYIxH+D8qyOdZlI8Nc6xXhA1Nw+
-         mmDlK5jDy++a3/XIkvEQqH1NpBX7xwbPiaJV3YdNfPXWUaZ4UyycyL/Fv2wrJ8vhhA4c
-         rAj2FYfWYUzwE083ZpkTDIlCdc/taLfgFOfvKqgiAoZqh5aAikz9d1MSZmbfTZIpGIT8
-         KrqjI1q4H2plIIdCDmaOl990f+jaHDIIjCtcgRl9pErkGc4NKA10dKlX74dcR5MQ4ktD
-         4oFb+yhQscMx+/BXnKPplF9SR6TDjlcbvC8fkomrWM3J89A6jnjnvMSKF3/9/lTPiU9u
-         caOg==
+        bh=bKA9abMjC7sW4LBR9fGk0XQEXTIvl1CB0HpqC1ijf7s=;
+        b=DKstLab5FBHVgb1LbjR/vjug1a+BCby1v7+hP1+fCxPusyGnuA9Xu70AMeiyvntC7W
+         FaeNO+b0TBGoAoNJTNysleXYynVSE888BxO9iSA8z4oLj1E0giYUI306cjGkq9DgQODa
+         PJMP6atQPdCnV7QqfJq/M4QWklx5drWvl+YHaAZhG0Heu3ny2Zc9MY4cMLid8U1m8uTb
+         dCdKJ9IAp/A1tJ+ZW5m9MI22U1ws65tXs16Zjya9Rk4TDiqAJNzR7XyzvZF4dQ7BfBMd
+         4pXGDeGudADnibALyjwEWXsX3Q4x3ZvRtFL0qJgrFf5UclYGvF3rU6nz4qo3m+pChk6n
+         Viuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694821350; x=1695426150;
+        d=1e100.net; s=20230601; t=1694822058; x=1695426858;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HvSLgTTIgHIGD+l7tl19R4elC30zzIy17VfAeigIAQE=;
-        b=FfPn1CqC2ipqQvT/PTQfQv8T/NQqoQMllViUmg/PvBe54yeyy7Bwc2ILEFf80f+dHB
-         q8AdDPzhBulo6SvTONzD7TIx8ZiiwnlAJM37I2nib5KL9qndyZy2rng522BQrJu5zVNs
-         QjogFS6w7FqzqjccHcccK1IFBSPgxTDUgEVRxLNz1jkNxLcI4hOpSsQcLssqqtmNw/ZC
-         CmQDlJyx6L/rcNUVQCzOhoz3UYTezPH0nuRp00Wb/oxiy09fKP76tnuS0m7fWjGc0Eo/
-         0q6H3ibXkj0+SrMANgwb0YKhDKd+goqZtMkz8lKWcz1RB1H9yvTUzqtC1jWAhh0bPQiU
-         ARzA==
-X-Gm-Message-State: AOJu0YwMNVGysy98n4ljSPYUSZrbtCDoFoQsaArau2IrcXlUY48oxt0x
-        INtsm9l0b2yduacrccNoaeUhxNALYFCYa4EQ+xU=
-X-Google-Smtp-Source: AGHT+IHziJa53jxs/XUXF4tHjfe9Bu1xfg0fT9TSx83rjnJPL7ddsasQ91PExTWxXIx5RQn+yT/uPOeSlQY9Cc9pFL0=
-X-Received: by 2002:a17:90b:34a:b0:274:8951:b5ed with SMTP id
- fh10-20020a17090b034a00b002748951b5edmr3968062pjb.20.1694821350468; Fri, 15
- Sep 2023 16:42:30 -0700 (PDT)
+        bh=bKA9abMjC7sW4LBR9fGk0XQEXTIvl1CB0HpqC1ijf7s=;
+        b=iCLA4PHN8N3982fGufgGGpb2zqfgs+YKJxm3qQOAYWFSs2GtSeLkSesk8Vp7ZHHGmd
+         3lWujLnJ1EMLoG0PpzurjpD/82MbnTIiTKMhswp5bU1T/x1TNSmEmfxN9jyIX/tRIWab
+         JaemiI6fqVvnK5znal3FdO/hFk15N711feRW4kYBMhRvpzXZGeNZQvLuWErsPADvlpBq
+         v5Tis16oXWqvtb8DVdIPompv/qgwPXM950Z8NwkDs/tu2Lvlprg+wX1TFeO67wS9SfdD
+         HgkpPj2dOVGLdRN3NDRUf7uFtMuEghIn2WDGKG6B8kollqI9pRmYo2JLqFKh5JfQGlOC
+         VriQ==
+X-Gm-Message-State: AOJu0Yzw/YiO4DU9II+KdrbMu5+4zrl8uukf4XgBceoYrdJmDD9DlyOz
+        +cJOcVaB3ZoBzgV/sP+Ax82mejDd+Cjp8r3Szk4=
+X-Google-Smtp-Source: AGHT+IHgVUtldsOtaUsIGxCHFBt0zxYCSScNWymvy6s5gqnqKSyzuSQwXCwkNSVTVYPufAKo6Y3GUGQtOEY3IpkurE8=
+X-Received: by 2002:a05:6a20:394c:b0:125:f3d8:e65b with SMTP id
+ r12-20020a056a20394c00b00125f3d8e65bmr3235376pzg.18.1694822057804; Fri, 15
+ Sep 2023 16:54:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <2a161c99c47a45f8e9f7a21a732c60f0cd674a66.1694625260.git.andreyknvl@google.com>
- <CANpmjNMfpgE0J4e-nk7d0LQi2msX9KcMwK-j37BPuvnPhKPYKg@mail.gmail.com>
-In-Reply-To: <CANpmjNMfpgE0J4e-nk7d0LQi2msX9KcMwK-j37BPuvnPhKPYKg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sat, 16 Sep 2023 01:42:19 +0200
-Message-ID: <CA+fCnZfGqpCO_4rhKDaQJBD-LSB7vJmD6vMgp-ri=xeg5+acEA@mail.gmail.com>
-Subject: Re: [PATCH v2 14/19] lib/stackdepot, kasan: add flags to
- __stack_depot_save and rename
-To:     Marco Elver <elver@google.com>
-Cc:     andrey.konovalov@linux.dev,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+References: <20230913211449.668796-1-jcmvbkbc@gmail.com> <20230913211449.668796-5-jcmvbkbc@gmail.com>
+ <6f95d492-2f5e-42e8-acdd-210d6a03b14c@kernel.org>
+In-Reply-To: <6f95d492-2f5e-42e8-acdd-210d6a03b14c@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Fri, 15 Sep 2023 16:54:06 -0700
+Message-ID: <CAMo8BfJM4p5icMo1EFB+0gYVeyPSNi8nKUH=PCuBUWcd_ONGdg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] drivers/tty/serial: add ESP32S3 ACM device driver
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 10:32=E2=80=AFPM Marco Elver <elver@google.com> wro=
-te:
-> > +depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
-> > +                                           unsigned int nr_entries,
-> > +                                           gfp_t alloc_flags,
-> > +                                           depot_flags_t depot_flags)
-> >  {
-> >         struct list_head *bucket;
-> >         struct stack_record *found =3D NULL;
-> >         depot_stack_handle_t handle =3D 0;
-> >         struct page *page =3D NULL;
-> >         void *prealloc =3D NULL;
-> > +       bool can_alloc =3D depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC;
-> >         bool need_alloc =3D false;
-> >         unsigned long flags;
-> >         u32 hash;
-> >
-> > +       if (depot_flags & ~STACK_DEPOT_FLAGS_MASK)
-> > +               return 0;
-> > +
+On Thu, Sep 14, 2023 at 12:16=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> =
+wrote:
 >
-> Shouldn't this be a WARN due to invalid flags?
+> On 13. 09. 23, 23:14, Max Filippov wrote:
+> > Add driver for the ACM  controller of the Espressif ESP32S3 Soc.
+> > Hardware specification is available at the following URL:
+> >
+> >    https://www.espressif.com/sites/default/files/documentation/esp32-s3=
+_technical_reference_manual_en.pdf
+> >    (Chapter 33 USB Serial/JTAG Controller)
+> ...
+>
+> > +static void esp32s3_acm_put_char_sync(struct uart_port *port, unsigned=
+ char c)
+> > +{
+> > +     while (!esp32s3_acm_tx_fifo_free(port))
+> > +             cpu_relax();
+>
+> No limits...
 
-Good idea! Will fix. Thanks!
+Fixed.
+
+> > +     esp32s3_acm_put_char(port, c);
+> > +     esp32s3_acm_push(port);
+> > +}
+> > +
+> > +static void esp32s3_acm_transmit_buffer(struct uart_port *port)
+> > +{
+>
+> tx helper.
+
+Ok.
+
+> > +     struct circ_buf *xmit =3D &port->state->xmit;
+> > +     u32 tx_fifo_used =3D esp32s3_acm_tx_fifo_cnt(port);
+> > +
+> > +     if (esp32s3_acm_tx_fifo_free(port)) {
+> > +             while (!uart_circ_empty(xmit) && tx_fifo_used < ESP32S3_A=
+CM_TX_FIFO_SIZE) {
+> > +                     esp32s3_acm_put_char(port, xmit->buf[xmit->tail])=
+;
+> > +                     xmit->tail =3D (xmit->tail + 1) & (UART_XMIT_SIZE=
+ - 1);
+> > +                     port->icount.tx++;
+> > +                     ++tx_fifo_used;
+> > +             }
+> > +     }
+> > +
+> > +     if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+> > +             uart_write_wakeup(port);
+> > +
+> > +     if (uart_circ_empty(xmit)) {
+> > +             esp32s3_acm_stop_tx(port);
+> > +     } else {
+> > +             u32 int_ena;
+> > +
+> > +             int_ena =3D esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_EN=
+A_REG);
+> > +             esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> > +                               int_ena | USB_SERIAL_JTAG_SERIAL_IN_EMP=
+TY_INT_ENA_MASK);
+> > +     }
+> > +
+> > +     if (tx_fifo_used > 0 && tx_fifo_used < ESP32S3_ACM_TX_FIFO_SIZE)
+> > +             esp32s3_acm_write(port, USB_SERIAL_JTAG_EP1_CONF_REG,
+> > +                               USB_SERIAL_JTAG_WR_DONE_MASK);
+> > +}
+>
+>
+> > +static irqreturn_t esp32s3_acm_int(int irq, void *dev_id)
+> > +{
+> > +     struct uart_port *port =3D dev_id;
+> > +     u32 status;
+> > +
+> > +     status =3D esp32s3_acm_read(port, USB_SERIAL_JTAG_INT_ST_REG);
+> > +     esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_CLR_REG, status);
+> > +
+> > +     if (status & USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ST_MASK)
+> > +             esp32s3_acm_rxint(port);
+> > +     if (status & USB_SERIAL_JTAG_SERIAL_IN_EMPTY_INT_ST_MASK)
+> > +             esp32s3_acm_txint(port);
+> > +
+> > +     return IRQ_HANDLED;
+>
+> IRQ_STATUS()
+
+Ok.
+
+> > +}
+>
+> > +static int esp32s3_acm_startup(struct uart_port *port)
+> > +{
+> > +     int ret =3D 0;
+> > +
+> > +     esp32s3_acm_write(port, USB_SERIAL_JTAG_INT_ENA_REG,
+> > +                       USB_SERIAL_JTAG_SERIAL_OUT_RECV_PKT_INT_ENA_MAS=
+K);
+> > +     ret =3D devm_request_irq(port->dev, port->irq, esp32s3_acm_int, 0=
+,
+> > +                            DRIVER_NAME, port);
+> > +     return ret;
+>
+> No need for ret. Or not, you don't handle the failure properly again
+> (disable ints). And the order appears to be switched too.
+
+Fixed.
+
+> > +static void
+> > +esp32s3_acm_console_write(struct console *co, const char *s, unsigned =
+int count)
+> > +{
+> > +     struct uart_port *port =3D esp32s3_acm_ports[co->index];
+> > +     unsigned long flags;
+> > +     int locked =3D 1;
+>
+> bool? ANd in the otrher driver too.
+
+Ok.
+
+> > +
+> > +     if (port->sysrq)
+> > +             locked =3D 0;
+> > +     else if (oops_in_progress)
+> > +             locked =3D spin_trylock_irqsave(&port->lock, flags);
+> > +     else
+> > +             spin_lock_irqsave(&port->lock, flags);
+> > +
+> > +     esp32s3_acm_string_write(port, s, count);
+> > +
+> > +     if (locked)
+> > +             spin_unlock_irqrestore(&port->lock, flags);
+> > +}
+>
+>
+> > +#ifdef CONFIG_CONSOLE_POLL
+> > +static int esp32s3_acm_earlycon_read(struct console *con, char *s, uns=
+igned int n)
+> > +{
+> > +     struct earlycon_device *dev =3D con->data;
+> > +     int num_read =3D 0;
+>
+> num looks like should be unsigned?
+
+Ok.
+
+> > +
+> > +     while (num_read < n) {
+> > +             int c =3D esp32s3_acm_poll_get_char(&dev->port);
+> > +
+> > +             if (c =3D=3D NO_POLL_CHAR)
+> > +                     break;
+> > +             s[num_read++] =3D c;
+> > +     }
+> > +     return num_read;
+> > +}
+> > +#endif
+>
+>
+> > +static int esp32s3_acm_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device_node *np =3D pdev->dev.of_node;
+> > +     struct uart_port *port;
+> > +     struct resource *res;
+> > +     int ret;
+> > +
+> > +     port =3D devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
+> > +     if (!port)
+> > +             return -ENOMEM;
+> > +
+> > +     ret =3D of_alias_get_id(np, "serial");
+> > +     if (ret < 0) {
+> > +             dev_err(&pdev->dev, "failed to get alias id, errno %d\n",=
+ ret);
+> > +             return ret;
+> > +     }
+> > +     if (ret >=3D UART_NR) {
+> > +             dev_err(&pdev->dev, "driver limited to %d serial ports\n"=
+,
+> > +                     UART_NR);
+> > +             return -ENOMEM;
+> > +     }
+> > +
+> > +     port->line =3D ret;
+> > +
+> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +     if (!res)
+> > +             return -ENODEV;
+> > +
+> > +     port->mapbase =3D res->start;
+> > +     port->membase =3D devm_ioremap_resource(&pdev->dev, res);
+> > +     if (IS_ERR(port->membase))
+> > +             return PTR_ERR(port->membase);
+> > +
+> > +     port->dev =3D &pdev->dev;
+> > +     port->type =3D PORT_ESP32ACM;
+> > +     port->iotype =3D UPIO_MEM;
+> > +     port->irq =3D platform_get_irq(pdev, 0);
+> > +     port->ops =3D &esp32s3_acm_pops;
+> > +     port->flags =3D UPF_BOOT_AUTOCONF;
+> > +     port->has_sysrq =3D 1;
+> > +     port->fifosize =3D ESP32S3_ACM_TX_FIFO_SIZE;
+> > +
+> > +     esp32s3_acm_ports[port->line] =3D port;
+> > +
+> > +     platform_set_drvdata(pdev, port);
+> > +
+> > +     ret =3D uart_add_one_port(&esp32s3_acm_reg, port);
+> > +     return ret;
+>
+> return imm.
+
+Ok.
+
+--=20
+Thanks.
+-- Max
