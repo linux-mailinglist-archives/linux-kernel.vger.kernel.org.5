@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E6B7A12EC
+	by mail.lfdr.de (Postfix) with ESMTP id A8D267A12EE
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjIOB27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
+        id S231299AbjIOB3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjIOB25 (ORCPT
+        with ESMTP id S231265AbjIOB27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:28:57 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F5B2100
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-98377c5d53eso204405866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
+        Thu, 14 Sep 2023 21:28:59 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCFA2100;
+        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bc0d39b52cso13957675ad.2;
+        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694741329; x=1695346129; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1694741334; x=1695346134; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fBGNOe9gI9NaJRPLZ/Vx8tqTgrMHNSFjAjNWZOJ75IE=;
-        b=U1Pi6e7SQjnYLqhQ6iC1GT+CqA51C6lv7qHyeG7Tp4BJ4ZUi2KFmMS03JvLkzRFlZ1
-         x58lqaicroEAmHW8LjKIKOI8YlN8oTtRynf6QnQRtwjUFnDnr3zMkTQUVVHFl4PY3B1V
-         3K/RajSOYpCwq5l7lrIuDtdejlN1XgKTtMN70=
+        bh=Njb5nxfBOiRZsqkfkDCdtMn4zV0CHNcc0b53FSbSvDk=;
+        b=M1nRHYil2PdhrNp79H50VoXnhIm44DCeOO2CK3FIwgPI4hNHQwKcyQPwWvc5u4agoV
+         U1/aqJs0BlRXE70lbpkiZaqvK4dpTYyQOkVk8DOZCfyFi82Xj9JXvpo/5M5oUb9hV8w9
+         IWXHj8z0hrHf7sw0DAyq11xPVhBH3+ooR1+Vxf38jIvmwlwAucwm1eLUcfyTR3jESoRe
+         YIooab+Mqnkbye0Y1M1/LPdAJsPNb2qFW9ZRkNRxyshN75wMez/S4TgfdF7KEoez1OsC
+         LZEVytzZQ4itiC8FdFC3sx5WUdSva5s2oYDTqSBclVt21CroRphWZ5WkUBg/KWTxEEDw
+         ULoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694741329; x=1695346129;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694741334; x=1695346134;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fBGNOe9gI9NaJRPLZ/Vx8tqTgrMHNSFjAjNWZOJ75IE=;
-        b=lRzCqsGFfgMHTWVuN4dcIpKTOQqzT9A2KEL1FA7SXyDPJLMLi/8f+r7CAKj5BmFcJX
-         lzddjk7qwwvPNmV68QIu8zGS1bAtee0aCuDBKBNobiVvzsCGbLf4atkwhLHsL1q8qGRg
-         vVkvl+o2pVQazqFptKlglL9oSB4yR+H9lgQD6RQ/UOxw8J2bRHgasLacilSMfkeqwAN8
-         fLdKdNDF8iy9XGu1TofuOHSxwkqZADjbvUVU5sDcQefLFgRmGcUNmWAR1yNv7xkEjt0b
-         nSGVnyN3pEOSgllKiElylkSukfQoKLCqHx2q+n/Wt2Yc+MM5uOYtwcJPlrp+iI2Daowh
-         1g0w==
-X-Gm-Message-State: AOJu0YzXp/u3I7b4ZM3zdiRG/pINfHfi5QNv9VbPAdMo3+wMo/9rtpdM
-        0HV5U9KkHucfH09M5zTXjCJJpzMm+h2010LyyV8=
-X-Google-Smtp-Source: AGHT+IGf21eqPPMkmngTVsi8qiU+nLHHOJQNWt4OLnnEeE0eexxjUDsPrLpLstE6F0EfXgGBlCl1aw==
-X-Received: by 2002:a17:906:dc:b0:9a5:9f3c:9615 with SMTP id 28-20020a17090600dc00b009a59f3c9615mr89329eji.63.1694741328635;
-        Thu, 14 Sep 2023 18:28:48 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170906374600b009ad81554c1bsm1688214ejc.55.2023.09.14.18.28.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 18:28:46 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-98377c5d53eso204399966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:46 -0700 (PDT)
-X-Received: by 2002:a17:906:3191:b0:9a5:d899:cc36 with SMTP id
- 17-20020a170906319100b009a5d899cc36mr143392ejy.2.1694741326159; Thu, 14 Sep
- 2023 18:28:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <PA4PR04MB9638B8753EFD81E174E55BC3D114A@PA4PR04MB9638.eurprd04.prod.outlook.com>
- <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
-In-Reply-To: <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Thu, 14 Sep 2023 18:28:31 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
-Message-ID: <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/1] Patch History
-To:     David Lin <yu-hao.lin@nxp.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        "amitkarwar@gmail.com" <amitkarwar@gmail.com>,
-        "ganapathi017@gmail.com" <ganapathi017@gmail.com>,
-        "huxinming820@gmail.com" <huxinming820@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Francesco Dolcini <francesco@dolcini.it>
-Content-Type: text/plain; charset="UTF-8"
+        bh=Njb5nxfBOiRZsqkfkDCdtMn4zV0CHNcc0b53FSbSvDk=;
+        b=Xw3EjkZgzPwScXurxLf50mvgDeuiutB51m+0AZl7gnUNb9sAvM0hOtWz34KzfrA15Y
+         hy8Qei/6OdzKyU4GQOTSZppKMygmXjHx5PAXob2+DyFSJRILwzw1uyE/zlCLvEQRGiAq
+         Vl4951ibPvX50JJDFHJqLe3GNnpZlrNQjUFcpqerPuxxILWSiiUu4ksNIWuXXEe/1TBm
+         dewuOm2gf4vg44Dz3LooOl4YcLhaZC9UKKJt+aXbt/Zb2aTcZ4W2OlD+36Jq/rwVHIKR
+         54Da+25In9w8L4pzNruIzTw51W1RR7idGUwi6DXvtADoOR3SbUePflCRLd9LiFR0PK5R
+         yAlQ==
+X-Gm-Message-State: AOJu0YzSwMcMtjaKZytkWGgvJhJOcMDnbLzyUClAPVZd3heYSOBZ2Lq4
+        XA0hVlcV5Y/z384+yRtiLjE=
+X-Google-Smtp-Source: AGHT+IHIoKHpNVoOGVVa41JrXrpya9Ksz+fxttZexrHmiutl1tkYeMKrQQqAHf/kcxk0JTqnZKL8qg==
+X-Received: by 2002:a17:902:f80d:b0:1bc:382b:6897 with SMTP id ix13-20020a170902f80d00b001bc382b6897mr294837plb.13.1694741334104;
+        Thu, 14 Sep 2023 18:28:54 -0700 (PDT)
+Received: from ?IPv6:2402:7500:5ce:c546:8426:5e14:d5b7:9128? ([2402:7500:5ce:c546:8426:5e14:d5b7:9128])
+        by smtp.gmail.com with ESMTPSA id w16-20020a1709027b9000b001c3a8b135ebsm2192536pll.282.2023.09.14.18.28.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
+ encryption implementation
+From:   He-Jie Shih <bignose1007@gmail.com>
+In-Reply-To: <1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com>
+Date:   Fri, 15 Sep 2023 09:28:49 +0800
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Reply-To: 1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <481D910C-8D83-4A6D-9D22-3D3A7C4723E6@gmail.com>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230711153743.1970625-11-heiko@sntech.de>
+ <20230721054036.GD847@sol.localdomain>
+ <CCA32056-CCE2-4FB5-8CFC-62444CDDA89F@sifive.com>
+ <CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com>
+ <1BB805D3-FF47-4A58-8507-CCA72A27DD82@sifive.com>
+To:     CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com
+X-Mailer: Apple Mail (2.3445.9.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 11:42=E2=80=AFPM David Lin <yu-hao.lin@nxp.com> wro=
-te:
->
-> Hi Kalle,
->
->         Patch v4 (https://patchwork.kernel.org/project/linux-wireless/pat=
-ch/PA4PR04MB963838F12BADC1B9FD377CB7D114A@PA4PR04MB9638.eurprd04.prod.outlo=
-ok.com/) for host mlme had been submitted for a while.
->
->         Current state of this patch is "Deferred". I wonder when can this=
- patch be reviewed and merged.
->
->         Is there anything I can do to speed up the acceptance of this pat=
-ch by upstream?
+On Sep 12, 2023, at 15:15, Jerry Shih <jerry.shih@sifive.com> wrote:
 
-You still haven't sent this to the correct maintainers (i.e., me) for
-one. I also thought there were outstanding unaddressed comments from
-Francesco. And given how much Francesco looked, I'd appreciate getting
-his Reviewed-by when he's actually happy with it.
+>> This pull request doesn't appear to contain any XTS code at all, only =
+CBC.
+>=20
+> We have some license issues for upstream. We will append the =
+specialized
+> AES modes soon.
 
-(Like I said earlier, I'm not exactly happy that y'all are failing to
-maintain this driver, but then insisting the community review and
-accept new features. At least if your paying customers will help out
-this process, the bargain is less-bad...)
+We have the XTS and other specialized AES modes in OpenSSL PR[1] now.
+The specialized implementations all perform better than generic =
+implementation
+on FPGA.
+We will try to make that implementations happen in kernel.
 
-Brian
+-Jerry
+
+[1]
+https://github.com/openssl/openssl/pull/21923
+
