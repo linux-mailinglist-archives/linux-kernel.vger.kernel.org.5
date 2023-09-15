@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29547A178A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDF37A178C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbjIOHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S232513AbjIOHeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbjIOHdZ (ORCPT
+        with ESMTP id S232328AbjIOHeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:33:25 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CCDB8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:33:18 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-403012f27e3so20769955e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:33:18 -0700 (PDT)
+        Fri, 15 Sep 2023 03:34:08 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2427E6A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:34:02 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403004a96a4so20417665e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:34:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694763197; x=1695367997; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694763241; x=1695368041; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hfitv4X6lwToXcy41tlreOifKHqkBiKe2Y188NSkf/E=;
-        b=DRFs+qoTAtfypD5qI5Z2DRa2Q1cpzymtHLPLC5UOK/YOySkGliQwmQDyGc3NnkjZ28
-         Ik7WX2/aLQ/Y+XMxkJ4/e0/F9Zn1uiedp3WOoYnMB7HFXAUDn15CPbNLqFHXNneL09zA
-         bY/xW3d5EYcc5JZWg6RLqrGtT2HMyqN/94Ubc7Ux4oyxL1myPkmL9yec9Jq7gvmwbb5y
-         1L0C8PRKAIWi/2V1pxxHf+XBkXD+xT5vhM7wEoePcX9Nt45ZnLmCPx/+8R2GZiGZXtgz
-         +aE+RoZQBNOb8PMEjPF+6BKCyTgDyP69Wgq/+kWbAm8lhtOuAiSvOLwdGfntmOS7Q0xP
-         Qm6Q==
+        bh=gkYzzAYu6z6sZUC/njWzLy4El1Pk9IRes3LMwHpGr1Y=;
+        b=nWqP0hwdukE9JXld+4+n8qRo4E1AhXP+26lGis52fOupWJzXCsMXRRMXZMnsKY2P/7
+         k7Rl9BuubSg8aL44ttSkj2v2oNlDnohyzbRe3K0EznlUuWK6u3vEVqyLPjQBKMHCpurG
+         51kORJ3GYCBWfdG2TJepanNPKirXtuXZ1Rzo5T+3fJ2QiA0fPnGcN5O+fFZF12v6q3Ti
+         0v2DRsbOIFtpOSVc7dmj4+PgdGOaHY0gDQ6mkdiJL+FL1tiO2jSo8X4Mx9hepxVOGDOC
+         r3YRIS0Re/WRcW+hz9JaQ4OIl8o9t9tGDLtNH+ki/wkZSI24LmsrCQ2vNKTyMhkQLyGU
+         bKyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694763197; x=1695367997;
+        d=1e100.net; s=20230601; t=1694763241; x=1695368041;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hfitv4X6lwToXcy41tlreOifKHqkBiKe2Y188NSkf/E=;
-        b=k2f9nY9ugtvyiMEcJAxjUQjnxEAOgKtOLh7X7PaBQU1ia+ZPJDuWBpqaf8DK/gaeK5
-         PgKYwscZ3VbLYQlqsV+xexHc/gCgDsCR/qmXKo12eje2mxLIAQfuF3UYr5GgJVJ1guFj
-         lgsJOtetDQx026adQJLj9BTmB7azfQgSiq2B/nWX3h6ZU106YyJqWh4Y7/cTYBRlK7Fj
-         H/KwhQdowl4mhU9Ty2GB2vwMdDuxv9ikQtGGxKqafLMMU/suwoI8Ffxio2WgwhUlvLAg
-         3NsD9JqYjlgPFPInMrVHeyqA9hVvk+nftHCR01Iat+MWzujOPVQSVX8I0abTMrBTq749
-         rHsA==
-X-Gm-Message-State: AOJu0YzCZKeK1YcKb5URiCbYVwyWIYu0FSYaQzlhiAcaMPRi9m5btB0y
-        quEVQPsvrnJ/blA/qoeNfwN1ug==
-X-Google-Smtp-Source: AGHT+IHX3L0cvYtW1rLjajL2hbQapX8lSDljHUYvbrbSihTE5UDsyi8Cdbldh20ED7vBOil/5s2bYQ==
-X-Received: by 2002:adf:eccc:0:b0:316:efb9:ffa with SMTP id s12-20020adfeccc000000b00316efb90ffamr792560wro.35.1694763197069;
-        Fri, 15 Sep 2023 00:33:17 -0700 (PDT)
+        bh=gkYzzAYu6z6sZUC/njWzLy4El1Pk9IRes3LMwHpGr1Y=;
+        b=mISoiLgaNijAOabeNZCRHiJfoR5gOheBxFqQVbOPv7AQhJXNbBvPMqDpQF3LOg+DQW
+         TIeMFkfAiPUUK2qpUiK89knR4MNO7Dqq2HRsePupORzlDZMQ0TEHACRicuCaqXqsjuEU
+         mOefxAszxn+Ks5woXmNGu30d8dX0Lru/EefR47a0VEiEQ4ikuWXs+it1l6wp+YdeRbSb
+         ci34rdKDM/ibX4zVrE72EvgUkpBeeJlHkHPWutUl1rJ7TSP+VMgMRj+5i1ZNvOqsjjq1
+         WIb/cpLydbELovsaDqzD/huoe+Sw7DhrsklioUKUa6LWv8HaG2Mn1TjIZXrbnheDV0tC
+         dNRA==
+X-Gm-Message-State: AOJu0YxZIqz+83gHEtafkgOcgy04yD2pSh2rOAldSGFYPfjnDuncwYhv
+        DAJcI9klRg9/4lGDSpmoCWIQVg==
+X-Google-Smtp-Source: AGHT+IE2Obhc55XP1QiiY3UGOyxumTBVdfX/RVmrGFpCslUPIRsfXHxMYvSILZfNBxFmySF3oWKyRg==
+X-Received: by 2002:a05:600c:2194:b0:401:bf87:989c with SMTP id e20-20020a05600c219400b00401bf87989cmr775757wme.34.1694763241447;
+        Fri, 15 Sep 2023 00:34:01 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id f3-20020adff983000000b003143c6e09ccsm3663543wrr.16.2023.09.15.00.33.15
+        by smtp.gmail.com with ESMTPSA id n12-20020a05600c294c00b003ff3b964a9asm6743292wmd.39.2023.09.15.00.33.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 00:33:16 -0700 (PDT)
-Message-ID: <803daa8f-f4bd-34b7-f826-89e1db5f24f6@linaro.org>
-Date:   Fri, 15 Sep 2023 09:33:14 +0200
+        Fri, 15 Sep 2023 00:34:01 -0700 (PDT)
+Message-ID: <c4aa8d45-1248-5656-a045-a475ec737c0f@linaro.org>
+Date:   Fri, 15 Sep 2023 09:33:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 10/12] serial: 8250_dw: Add Sophgo SG2042 support
+Subject: Re: [PATCH 09/12] dt-bindings: serial: snps-dw-apb-uart: Add Sophgo
+ SG2042 uarts
 Content-Language: en-US
 To:     Wang Chen <unicornxw@gmail.com>, linux-riscv@lists.infradead.org,
         conor@kernel.org, aou@eecs.berkeley.edu,
@@ -65,9 +66,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
         xiaoguang.xing@sophgo.com,
         Emil Renner Berthing <emil.renner.berthing@canonical.com>
-References: <20230915072558.118325-1-wangchen20@iscas.ac.cn>
+References: <20230915072517.118266-1-wangchen20@iscas.ac.cn>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915072558.118325-1-wangchen20@iscas.ac.cn>
+In-Reply-To: <20230915072517.118266-1-wangchen20@iscas.ac.cn>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,43 +84,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 15/09/2023 09:25, Wang Chen wrote:
 > From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 > 
-> Add quirk to skip setting the input clock rate for the uarts on the
-> Sophgo SG2042 SoC similar to the StarFive JH7100.
+> Add compatible for the uarts on the Sophgo SG2042 RISC-V SoC.
 > 
 > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-Missing SoB.
+Missing Sob.
 
 > ---
->  drivers/tty/serial/8250/8250_dw.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-> index f4cafca1a7da..6c344877a07f 100644
-> --- a/drivers/tty/serial/8250/8250_dw.c
-> +++ b/drivers/tty/serial/8250/8250_dw.c
-> @@ -770,7 +770,7 @@ static const struct dw8250_platform_data dw8250_renesas_rzn1_data = {
->  	.quirks = DW_UART_QUIRK_IS_DMA_FC,
->  };
->  
-> -static const struct dw8250_platform_data dw8250_starfive_jh7100_data = {
-> +static const struct dw8250_platform_data dw8250_skip_set_rate_data = {
+> diff --git a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+> index 17c553123f96..6c23562f1b1e 100644
+> --- a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+> @@ -48,6 +48,9 @@ properties:
+>                - starfive,jh7100-hsuart
+>                - starfive,jh7100-uart
+>            - const: snps,dw-apb-uart
+> +      - items:
+> +          - const: sophgo,sg2042-uart
 
-Why? What is wrong with old name?
+No, you do not get your own entry. Stuff it into previous enum.
 
->  	.usr_reg = DW_UART_USR,
->  	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
->  };
-> @@ -780,7 +780,8 @@ static const struct of_device_id dw8250_of_match[] = {
->  	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
->  	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },
->  	{ .compatible = "renesas,rzn1-uart", .data = &dw8250_renesas_rzn1_data },
-> -	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_starfive_jh7100_data },
-> +	{ .compatible = "sophgo,sg2042-uart", .data = &dw8250_skip_set_rate_data },
-> +	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_skip_set_rate_data },
-
-So devices are fully compatible? Then use compatibility and drop this
-patch entirely.
 
 
 Best regards,
