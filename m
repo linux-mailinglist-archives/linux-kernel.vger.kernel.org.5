@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4177A205A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA4D7A205F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235459AbjIOOCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        id S235483AbjIOOCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjIOOC1 (ORCPT
+        with ESMTP id S234618AbjIOOCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:02:27 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00651FC9;
-        Fri, 15 Sep 2023 07:02:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694786540; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=jJgBM0A/RCl5flBAzysOw0vbwSOLmeG7/SiP/vB0IQ64kobSSu2giYWmQqQDhNQR63
-    KFPl1RZIYhxl0qgVpKSFnBvKgcNo6D7+6H0+G2iA2BydAuEHW4+rP/HpAEhm9BJdoha1
-    LmLRKZH3/XTZpyWToaqAPZ+x9R4jo8AmRa6h5sRtfMy2pJOfP+mX3VAY+xz0vPtCcVXz
-    pWlh0SKvU7Xbc+TsPWdeJZgLP5YLKJpJHEGm9xvLEsK/UiBXqCNzJH3C1kd6oJYVGS/W
-    qviqiKXTY4vKjWKlF/Nfcj66Tw4Oz4N2iehCh94S4Tr6P9q1t4ZptS+qeOFzXPJtCfyc
-    nVZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694786540;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DqmiWQfnDvc2zy7SPcWT284YAzXhu8L0TVNtUbpB44s=;
-    b=DTptKI8jsPoV3MzWr0dKzmzHXx3ToCeEMvcO6MB1X63LU01y72fSJGWPHKFoLAI1Cz
-    RyAVsVWAb/7OLNRTfzw92DLxHz1L75hNEcUoTkSvfNuOgS6vbtuw212qdR8eeDcMuVcW
-    cSSl2+se5+QR8px892xeM/lLFBN4xajJSIi2xh4BUnxvUyjqLQMwur+mb3K4+650+/jV
-    IrB/kjqodpYRzIB3lep5iDLlQbmW3YG7IcgeDAvr1sDL4rqNKMabZADXi6qjdnet+RON
-    7PE8LMRNGoLAsQMeKkfPlA8WbW4Q3gVnctTZGZIjqqF+9wCewkG5w4s9nU4mvaRsXDhJ
-    zaBQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694786540;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DqmiWQfnDvc2zy7SPcWT284YAzXhu8L0TVNtUbpB44s=;
-    b=DvK3nIJqNx+kq36iUt6kmJKP2AV0yT1NBbYe7M/9U3GfoPJVFp1FjteWmVn6Jsm7A0
-    uQzYfuzmxlyu2AIgcAcXrdhXMt962MvWW7CVWNeNjdXCyukOlZFKm4KxHI1TNEr3aCPG
-    RHZedutrm3C/FYccUIaFByVL7zV5xGDBT/OXOoyls/yeiw3aGI6tSMRlCaZFIuJGGxyA
-    xGwkbAPUUz/W3oEnTwzjd1wDtKW+cpcvPXjonaSkR1HxdZU9nWKhWcENMcKTu7pS90ar
-    f5T4s+3ycfG30PA2ZJOIEVgd9TVPgGKieCXQAW7lOqal0+GedmcameJ3Io67uMSetc8q
-    Lkrg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694786540;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DqmiWQfnDvc2zy7SPcWT284YAzXhu8L0TVNtUbpB44s=;
-    b=+QP854OVM2iect3wvvvMIhiThRaGXf7n6rI71WYADU7dpL2Ho0PxRWrn+k+oz+YlJo
-    SFVn79kmkcoFGG5+QQCA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8piJ1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z8FE2K80r
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 15 Sep 2023 16:02:20 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 16:02:18 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH 7/9] arm64: dts: qcom: msm8916/39: Disable unneeded
- firmware reservations
-Message-ID: <ZQRj6jHBuc6Zxkuh@gerhold.net>
-References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
- <20230911-msm8916-rmem-v1-7-b7089ec3e3a1@gerhold.net>
- <70b10fcc-6851-4d48-b27d-3e701ba95ae0@linaro.org>
+        Fri, 15 Sep 2023 10:02:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACD91FC9;
+        Fri, 15 Sep 2023 07:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694786560; x=1726322560;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=vK3PhL5kYdO2VTxiXNSaozjqYR5+kz/gZjFSYDl+0Ec=;
+  b=R+zlJ4Yxf+2TJmAU41EDdzherKUJvhgjB8mBtnxr7/ct7n1lJ5+lTHMV
+   2dGNQeRjwzhgpH2lPdxyPvm9I4+rF7ySBjwHvOUifk1m/ay9UmCTrpV82
+   BRVJDX8h/IRGE5wF+A1dBmL79l/5UtvuJO/uxqzhcRZ7eYaXfQW9cQlp4
+   JEyyLQNGRVUOgnXaIWUvXZmm75Fg75NU3DDLXOgECV6Zl1Ug4OCd+18bD
+   U0Q/QpJ+EEQWJtNrRJi5co/hgWRe/Vedk8V9M1PHBYWwUnLD96TVRusR0
+   bYxhEkjIoDaFRSvoqcuvG1jVSWu67UaPp3U8Z/t4QVivTgVoGNIYXHO7k
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="379170403"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="379170403"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:02:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="868715600"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="868715600"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:02:34 -0700
+Date:   Fri, 15 Sep 2023 17:02:31 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Dean Luick <dean.luick@cornelisnetworks.com>
+cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v2 04/10] drm/IB/hfi1: Use RMW accessors for changing
+ LNKCTL2
+In-Reply-To: <c0e07dbf-e19e-43b7-9c95-8025a12323b8@cornelisnetworks.com>
+Message-ID: <5ec088ff-c6fa-57af-117-c78376b9db31@linux.intel.com>
+References: <20230915120142.32987-1-ilpo.jarvinen@linux.intel.com> <20230915120142.32987-5-ilpo.jarvinen@linux.intel.com> <c0e07dbf-e19e-43b7-9c95-8025a12323b8@cornelisnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70b10fcc-6851-4d48-b27d-3e701ba95ae0@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1332323370-1694786558=:2347"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 03:51:03PM +0200, Konrad Dybcio wrote:
-> On 11.09.2023 19:41, Stephan Gerhold wrote:
-> > Now that we no longer have fixed addresses for the firmware memory
-> > regions, disable them by default and only enable them together with
-> > the actual user in the board DT.
-> > 
-> > This frees up unnecessary reserved memory for boards that do not use
-> > some of the remoteprocs and allows moving selected device-specific
-> > properties (such as firmware size) to the board-specific DT part in
-> > the next step.
-> > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> Wouldn't delete-node on the outliers be more concise?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1332323370-1694786558=:2347
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 15 Sep 2023, Dean Luick wrote:
+> On 9/15/2023 7:01 AM, Ilpo Järvinen wrote:
+> > Don't assume that only the driver would be accessing LNKCTL2. In the
+> > case of upstream (parent), the driver does not even own the device it's
+> > changing the registers for.
+> >
+> > Use RMW capability accessors which do proper locking to avoid losing
+> > concurrent updates to the register value. This change is also useful as
+> > a cleanup.
+> >
+> > Suggested-by: Lukas Wunner <lukas@wunner.de>
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 > 
+> I believe the subject should begin with "RDMA/hfi1:", the current expectation for all devices in drivers/infiniband.
 
-No, because you also need to delete the reference to it on the
-remoteproc node, i.e.
+Thanks, I'll update it. I hadn't realized given the shortlogs of the other 
+commits (no idea where I managed to get that "drm" from, but it's also 
+gone now).
 
-	/delete-node/ &wcnss_mem;
+> > ---
+> >  drivers/infiniband/hw/hfi1/pcie.c | 30 ++++++++----------------------
+> >  1 file changed, 8 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+> > index 08732e1ac966..60a177f52eb5 100644
+> > --- a/drivers/infiniband/hw/hfi1/pcie.c
+> > +++ b/drivers/infiniband/hw/hfi1/pcie.c
+> > @@ -1212,14 +1212,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+> >                   (u32)lnkctl2);
+> >       /* only write to parent if target is not as high as ours */
+> >       if ((lnkctl2 & PCI_EXP_LNKCTL2_TLS) < target_vector) {
+> > -             lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+> > -             lnkctl2 |= target_vector;
+> > -             dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+> > -                         (u32)lnkctl2);
+> > -             ret = pcie_capability_write_word(parent,
+> > -                                              PCI_EXP_LNKCTL2, lnkctl2);
+> > +             ret = pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL2,
+> > +                                                      PCI_EXP_LNKCTL2_TLS,
+> > +                                                      target_vector);
+> >               if (ret) {
+> > -                     dd_dev_err(dd, "Unable to write to PCI config\n");
+> > +                     dd_dev_err(dd, "Unable to change PCI target speed\n");
+> 
+> To differentiate from the dev_err below, add "parent", i.e. "Unable to change parent PCI target speed".
+> 
+> 
+> >                       return_error = 1;
+> >                       goto done;
+> >               }
+> > @@ -1228,22 +1225,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+> >       }
+> >
+> >       dd_dev_info(dd, "%s: setting target link speed\n", __func__);
+> > -     ret = pcie_capability_read_word(dd->pcidev, PCI_EXP_LNKCTL2, &lnkctl2);
+> > +     ret = pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL2,
+> > +                                              PCI_EXP_LNKCTL2_TLS,
+> > +                                              target_vector);
+> >       if (ret) {
+> > -             dd_dev_err(dd, "Unable to read from PCI config\n");
+> > -             return_error = 1;
+> > -             goto done;
+> > -     }
+> > -
+> > -     dd_dev_info(dd, "%s: ..old link control2: 0x%x\n", __func__,
+> > -                 (u32)lnkctl2);
+> > -     lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+> > -     lnkctl2 |= target_vector;
+> > -     dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+> > -                 (u32)lnkctl2);
+> > -     ret = pcie_capability_write_word(dd->pcidev, PCI_EXP_LNKCTL2, lnkctl2);
+> > -     if (ret) {
+> > -             dd_dev_err(dd, "Unable to write to PCI config\n");
+> > +             dd_dev_err(dd, "Unable to change PCI target speed\n");
+> 
+> To differentiate from the dev_err above, add "device", i.e. "Unable to change device PCI target speed".
 
-	&wcnss {
-		/delete-property/ memory-region;
-	};
+Okay, I'll change those. Thanks for taking a look.
 
-But IMO this would be inconsistent anyway. You already have to opt-in to
-get WCNSS at all (i.e.
+-- 
+ i.
 
-	&wcnss {
-		status = "okay";
-	};
-
-), so it would be weird to have the memory region opt-out IMO.
-
-Thanks,
-Stephan
+--8323329-1332323370-1694786558=:2347--
