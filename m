@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACA57A26E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4347A26E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbjIOTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S236997AbjIOTGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237002AbjIOTEn (ORCPT
+        with ESMTP id S237061AbjIOTGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:04:43 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED69B2;
-        Fri, 15 Sep 2023 12:04:38 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BD95D1536;
-        Fri, 15 Sep 2023 21:03:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694804582;
-        bh=BTus/aF+ZgDyAZjR1GTDuRFC/QbxDYyGIOGOqzEYQTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H0CN2sIKSQUudetuONXKVTGFx5JjajdfVh1wcxkz/3ZtaKhuVSzmDIDfuRxgUkIpr
-         742ZRBlET+0MJXTB8U78BT4wASXSTZS7G9liChZD0Z9f7F2jOne1EUHsvcpG2NBahz
-         eVSmQ5AJ3mm+EDIdMDgk39BHiJ4LmkqNcpFg7+hc=
-Date:   Fri, 15 Sep 2023 22:04:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jerry Liu <jerry.liu@technexion.com>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: uvcvideo: Modified uvc_ctrl_fill_xu_info
- 'kmalloc' to 'kzalloc'
-Message-ID: <20230915190449.GA12131@pendragon.ideasonboard.com>
-References: <20230915161213.42503-1-jerry.liu@technexion.com>
+        Fri, 15 Sep 2023 15:06:34 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035A2E7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:06:29 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-65643a83758so1000186d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694804788; x=1695409588; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/NNdNMoPNLRC5J4Us7rjn5YK+Bn2P8ki5j52BrAmQfc=;
+        b=IcUP3ZThw4r0yzR1wPf2MKuL86qqJTY3lGmO5wVIwizbo32mHmJNZZSk/HLCKHmzhW
+         Gla9MXisJOcGl205VuT46VlfVlhP6xgjKUvgEbqifKysED3psNQ5hqW3CZOjgckLmjeX
+         43LkHAbC+H1FUTt/bAuUJd+MV8LWoq2/Z74adGTaSMb3PVcM6bURd5o8B0Dd8ZnDhmch
+         F88soN5Lthi1YPNktkbKNwEd2wMiZaMQllXBNNsrJx1dLyIgTkvZTwdgw5Ap7ERCiBEj
+         aEE4u5wKUgjHR8vyQY0ZFUpZ7YEJ7LxF7BwF+AgWpkAv65snr4p5kovPzR4wE932OWEy
+         6kNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694804788; x=1695409588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/NNdNMoPNLRC5J4Us7rjn5YK+Bn2P8ki5j52BrAmQfc=;
+        b=nJJSmCsdUAagRRzx2jioivhBvLTRQcmwNy9HMWsEx7EVg9zkiTUdOmW/DtFF1VowFI
+         EJrLbvGpTYRlNO1aun7P0wqmRgVwvN9NBn1XAH4pxGWx4i314FFtcZC0e82W/+/VrqOB
+         vA25VR5igYhl/xfKNF6ha6Da0iHhWQh3X3hZDar7bBF2edB/5pgwJolCXpk3fl/zVnLC
+         7OT3pife13q+YYTAlVziMYPl2TtdeHS31OGVqLzMlFhHI3ofV0JfrecjSTFAY+uO5Amb
+         qqZiYOwMYDm6klx2vllA8k5p+EHVlwbS9QHfQPkkvIYxu6wiosSEb9d4k5ma8MFL+jJi
+         3eTw==
+X-Gm-Message-State: AOJu0Yx0gQQSeP2xm0qkrSSUcYoGzCIm0ZWv80al3NJxukG2waHUllXI
+        WQPMIw850gX/yFRpZhtL+PQlvDtuQMOniG9l5RvOTw==
+X-Google-Smtp-Source: AGHT+IHnUmEPsIeFlP8ufy20De8OLVwpSSqcrp7lDWmTe6PTj/7WjDAOWdhgq5G3z26K+KHrakYbT0n8GVD/uGs4Htc=
+X-Received: by 2002:a0c:e301:0:b0:651:65ca:141d with SMTP id
+ s1-20020a0ce301000000b0065165ca141dmr2504505qvl.37.1694804787931; Fri, 15 Sep
+ 2023 12:06:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230915161213.42503-1-jerry.liu@technexion.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915050125.3609689-1-davidgow@google.com>
+In-Reply-To: <20230915050125.3609689-1-davidgow@google.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 15 Sep 2023 12:05:50 -0700
+Message-ID: <CABCJKueOu+MwgvTcEUY51tJ1YjNjS-3zHhAHP=1TQUC1wd_1VA@mail.gmail.com>
+Subject: Re: [RFC PATCH] kunit: Add a macro to wrap a deferred action function
+To:     David Gow <davidgow@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Rae Moar <rmoar@google.com>, dlatypov@google.com,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerry,
+Hi David,
 
-Thank you for the patch.
+On Thu, Sep 14, 2023 at 10:01=E2=80=AFPM David Gow <davidgow@google.com> wr=
+ote:
+>
+> KUnit's deferred action API accepts a void(*)(void *) function pointer
+> which is called when the test is exited. However, we very frequently
+> want to use existing functions which accept a single pointer, but which
+> may not be of type void*. While this is probably dodgy enough to be on
+> the wrong side of the C standard, it's been often used for similar
+> callbacks, and gcc's -Wcast-function-type seems to ignore cases where
+> the only difference is the type of the argument, assuming it's
+> compatible (i.e., they're both pointers to data).
+>
+> However, clang 16 has introduced -Wcast-function-type-strict, which no
+> longer permits any deviation in function pointer type. This seems to be
+> because it'd break CFI, which validates the type of function calls.
+>
+> This rather ruins our attempts to cast functions to defer them, and
+> leaves us with a few options:
+> 1. Stick our fingers in our ears an ignore the warning. (It's worked so
+>    far, but probably isn't the right thing to do.)
+> 2. Find some horrible way of casting which fools the compiler into
+>    letting us do the cast. (It'd still break CFI, though.)
+> 3. Disable the warning, and CFI for this function. This isn't optimal,
+>    but may make sense for test-only code. However, I think we'd have to
+>    do this for every function called, not just the caller, so maybe it's
+>    not practical.
+> 4. Manually write wrappers around any such functions. This is ugly (do
+>    we really want two copies of each function, one of which has no type
+>    info and just forwards to the other). It could get repetitive.
+> 5. Generate these wrappers with a macro. That's what this patch does.
+>
+> I'm broadly okay with any of the options above, though whatever we go
+> with will no doubt require some bikeshedding of details (should these
+> wrappers be public, do we dedupe them, etc).
+>
+> Thoughts?
 
-On Fri, Sep 15, 2023 at 09:12:14AM -0700, Jerry Liu wrote:
-> If the request length of UVC XU is 1 (even though this is illegal), due
-> to 'data' may be the non-zero value, UVC_GET_LEN could potentially result
-> in a length that is not 1 because of the high byte is not zero. In order
-> to ensure that 2-byte data array is set to 0, 'kmalloc' is modified to 'kzalloc'.
+Using a macro to generate a wrapper is a reasonable approach IMO, and
+we've used it before in the kernel to fix type mismatches in
+indirectly called functions (v4l2-ioctl and cfg80211 come to mind at
+least).
 
-I don't think this can happen. The call to uvc_query_ctrl(UVC_GET_LEN)
-is given a length of 2. If the device responds with less than two bytes,
-the function will return an error, and uvc_ctrl_fill_xu_info() will
-propagate the error to the caller, without accessing the data array.
-
-> 
-> Signed-off-by: Jerry Liu <jerry.liu@technexion.com>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 5e9d3da862dd..054bc14f7a58 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -2088,7 +2088,7 @@ static int uvc_ctrl_fill_xu_info(struct uvc_device *dev,
->  	u8 *data;
->  	int ret;
->  
-> -	data = kmalloc(2, GFP_KERNEL);
-> +	data = kzalloc(2, GFP_KERNEL);
->  	if (data == NULL)
->  		return -ENOMEM;
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+Sami
