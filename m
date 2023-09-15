@@ -2,210 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255617A188B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5589D7A1883
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbjIOIXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S232867AbjIOIVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232922AbjIOIXk (ORCPT
+        with ESMTP id S232904AbjIOIVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:23:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7484496
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1694766124; x=1695370924; i=deller@gmx.de;
- bh=OR4Did5RevJvBurZYl1SM45SkH4oF0Uw+9Fs3Z+P5S4=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=h9b6chk/BpUpZUpbv3+exlxHysKGLiDihuIeVmTmKQzIHxAAIGQoTQi7QJxdZPgwPuXWabCSGao
- BW8EhIfQzLClsjXDi9QiQfGKY6Rw/8iEdpDfBLOPREahxCjW6E9+d81ow63vBAz6ejsn9gGM0MdF/
- J8kqK65pWxIoa0A0vdqK3NrNKiu0tjJfkNLIscfxChdygsUUBLd5EU8JoaW2Z6K3sX/W02BUyGw7e
- dQMqY9Ap85BGWk2V1BvhMHiPWsZSQNHnpNRN6fEuKlY2Vp1iehSoXiH3+IYg4kTmCgQqLqROWf74W
- bXf3vpUuBPHQyWn1D0KKLiNzrNHCPqQfcY2w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.157.117]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2O2Q-1qiixJ250A-003sUe; Fri, 15
- Sep 2023 10:16:03 +0200
-Message-ID: <b1c729bf-86b9-8a1f-c6af-a69be2b4a44c@gmx.de>
-Date:   Fri, 15 Sep 2023 10:16:01 +0200
+        Fri, 15 Sep 2023 04:21:44 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C31B2710;
+        Fri, 15 Sep 2023 01:19:27 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F5l7wq031886;
+        Fri, 15 Sep 2023 01:16:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=VrbC/opRa3bowTi+jCvbDXGelqHejkboudyRrfjNUGg=;
+ b=Oefx0vveY/TVlfpV9cEKJC4o0p+9y5uB7LPLqC4yd0vX7Lxdz2dwTnxJdpkB2cSDswJE
+ GfPRNbwMce/szrxdRDwkfOxKx9t/8h+CCmWX+5S/UNMgjSovNeJmqOAp4WmvWCH5nNKj
+ QgSsLzJdkU711KHw7mINnHZUgjkzvwnnEOMbfCoqiQU+IV/HBkXoKv1QagD47cryjDPB
+ eBZP8ef7Cjfv2IfNuDDxns89N+AH+5RaBmXbgxiOMa9h1u6ujV+ujmGFH3/EvVqK5+Ws
+ r/HDWqaZDRf95fIPVeWcBQzeYavmSU9e5Jf02uadlQuEDctXIJm8boUaZWuWBu7WdVEN eQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3t4gnd0hxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 01:16:21 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 15 Sep
+ 2023 01:16:19 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Fri, 15 Sep 2023 01:16:19 -0700
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 2A8D85B6932;
+        Fri, 15 Sep 2023 01:16:18 -0700 (PDT)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hgani@marvell.com>
+CC:     <egallen@redhat.com>, <mschmidt@redhat.com>,
+        <vimleshk@marvell.com>, Shinas Rasheed <srasheed@marvell.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [net-next PATCH] octeon_ep: support to fetch firmware info
+Date:   Fri, 15 Sep 2023 01:16:07 -0700
+Message-ID: <20230915081608.2155837-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] LoongArch: Fix lockdep static memory detection
-Content-Language: en-US
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-References: <ZQC5jS/Kc/JiBEOa@p100>
- <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:l9KjxxyKl6giIE9PfdGvuKtuG2ugvajJsOLnRAlh3ewEEEseOsw
- E9XCYhPbB5r0g34yeYKGNJcBwSQk57JJjIRl3stdCSldzXMtkwu20W9BSyrAJzO5Cn+Os+X
- sp54eGw5pR3TP8oMV2g5XyiSp/DQLEQvcXfS1SYLRnFlDQX1gEuGqZWb2frLq2lZSRwFHDG
- 6Fa3YTbivgcwPkv9uiMEA==
-UI-OutboundReport: notjunk:1;M01:P0:2j3ob6BpQhw=;Fq5YiXn/BmMIZkWZpT+lAc3baoD
- HfEKCK3uNjM/aKgA8Q/D/1MZNBdhFSf5MWChlI+P29dSmrPD5qAAf14E/q47OvgEY08Sp72JE
- k6byETAFR4MFPSiE9mxYwekyRqfFzaNmQdC59omUUjKQhxl824MY8cVNU6efpAd6Q5GPQgfwp
- fla/UkuFZp052nymqkeN94OiEaCUULsaRLDGwodirWdJzNNPjaLkeniWqYzETcivdgy3eww2c
- 8w2AHW6XLsYiR6kVxwxP8OagYmmV2+G4ZS+riTQrnHmc5b6OcsuVtZYNPCEDkQ6peMGYZimtE
- +Dlgta85RvN31Fs0r6x/e5lWLARHZ6VRBuqAnH1b5A/mMGMGuGkQERYn4/+8Czyp8pngOeeVb
- yDdGiZu6JyC0TJ+HG3E84svdUuBsyMOezEQRSWp+hv2Dt+G93jr9hW/YohtmkmTQSj8h9klLy
- cHIAZnAgMCwss8ZS1/EVab+dgRogs6G/BhHujfhE7nwQpiAlpcmj9g9u1nzMuF35zdTMy1OJe
- r27QEYz5/HZ4NL1IwOBEDIU5moq2t8uDhTwnG1Z5owcQz4BdaosD4i8HyhkussdQkbj08MH1H
- i3YTJT/Uv+emtDEeNHz/vdqXd4OxtmT0gt58A9mF8BseJY3b9CF5hVCNhVVvSsbu/FepuWaf5
- jwXqq2QuNgn7vlU3cJpXRHqQi5x5baFl0MLIdd80l7+XxD7zJ+rlXqi5pYzbqTVKSQu5Y3Uki
- tHPruowt/M5lMp6niPW8l8TDLtHoy1DdvuCqEmM1lnSn81611yVRxetswPCxpOFkxLE2wM3Jo
- oXawoBURROXnkdcMied7PlM8+MxvleRoa9PgoLaFsdjFhDB/tqvbZwQmIC+SkYCr7j6yd0Srr
- hTaRbNXUhBgwYbTUn7XkQOeL2HeonpTV06tE6YkuiVuvLoafXvw9jiKiRaFmMee3FHIyp1SiW
- 7azqcdrYFOusnhb2X8XLKvwBzH4=
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: L9E9cJZoaB3971lDCONrr1yMGxDWKGPO
+X-Proofpoint-ORIG-GUID: L9E9cJZoaB3971lDCONrr1yMGxDWKGPO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_05,2023-09-14_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 05:22, Huacai Chen wrote:
-> Hi Helge,
->
-> On Wed, Sep 13, 2023 at 3:18=E2=80=AFAM Helge Deller <deller@gmx.de> wro=
-te:
->>
->> Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection even
->> more") the lockdep code uses is_kernel_core_data(), is_kernel_rodata()
->> and init_section_contains() to verify if a lock is located inside a
->> kernel static data section.
->>
->> This change triggers a failure on LoongArch, for which the vmlinux.lds.=
-S
->> script misses to put the locks (as part of in the .data.rel symbols)
->> into the Linux data section.
->> This patch fixes the lockdep problem by moving *(.data.rel*) symbols
->> into the kernel data section (from _sdata to _edata).
->>
->> Additionally, move other wrongly assigned symbols too:
->> - altinstructions into the _initdata section,
+Add support to fetch firmware info such as heartbeat miss count,
+heartbeat interval. This shall be used for heartbeat monitor.
 
-> I think altinstructions cannot  be put into _initdata because it will
-> be used by modules.
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+---
+ .../marvell/octeon_ep/octep_cn9k_pf.c         | 10 +++-----
+ .../ethernet/marvell/octeon_ep/octep_config.h | 22 +++++++++++++----
+ .../marvell/octeon_ep/octep_ctrl_net.c        | 24 ++++++++++++++++++-
+ .../marvell/octeon_ep/octep_ctrl_net.h        | 18 ++++++++++++++
+ .../ethernet/marvell/octeon_ep/octep_main.c   | 16 +++++++++----
+ .../marvell/octeon_ep/octep_regs_cn9k_pf.h    |  4 ++++
+ 6 files changed, 77 insertions(+), 17 deletions(-)
 
-No.
-arch/loongarch/kernel/vmlinux.lds.S is used for the static parts of the ke=
-rnel
-and altinstructions are replaced before modules are loaded.
-For altinstructions in modules the linker script scripts/module.lds.S is u=
-sed.
-
-Helge
-
-
->> - PLT symbols behind the read-only section, and
->> - *(.la_abs) into the data section.
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->> Reported-by: Guenter Roeck <linux@roeck-us.net>
->> Fixes: 0a6b58c5cd0d ("lockdep: fix static memory detection even more")
->> Cc: stable <stable@kernel.org> # v6.4+
->>
->> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kerne=
-l/vmlinux.lds.S
->> index b1686afcf876..bb2ec86f37a8 100644
->> --- a/arch/loongarch/kernel/vmlinux.lds.S
->> +++ b/arch/loongarch/kernel/vmlinux.lds.S
->> @@ -53,33 +53,6 @@ SECTIONS
->>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
->>          _etext =3D .;
->>
->> -       /*
->> -        * struct alt_inst entries. From the header (alternative.h):
->> -        * "Alternative instructions for different CPU types or capabil=
-ities"
->> -        * Think locking instructions on spinlocks.
->> -        */
->> -       . =3D ALIGN(4);
->> -       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
->> -               __alt_instructions =3D .;
->> -               *(.altinstructions)
->> -               __alt_instructions_end =3D .;
->> -       }
->> -
->> -#ifdef CONFIG_RELOCATABLE
->> -       . =3D ALIGN(8);
->> -       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
->> -               __la_abs_begin =3D .;
->> -               *(.la_abs)
->> -               __la_abs_end =3D .;
->> -       }
->> -#endif
->> -
->> -       .got : ALIGN(16) { *(.got) }
->> -       .plt : ALIGN(16) { *(.plt) }
->> -       .got.plt : ALIGN(16) { *(.got.plt) }
->> -
->> -       .data.rel : { *(.data.rel*) }
->> -
->>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
->>          __init_begin =3D .;
->>          __inittext_begin =3D .;
->> @@ -94,6 +67,18 @@ SECTIONS
->>
->>          __initdata_begin =3D .;
->>
->> +       /*
->> +        * struct alt_inst entries. From the header (alternative.h):
->> +        * "Alternative instructions for different CPU types or capabil=
-ities"
->> +        * Think locking instructions on spinlocks.
->> +        */
->> +       . =3D ALIGN(4);
->> +       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
->> +               __alt_instructions =3D .;
->> +               *(.altinstructions)
->> +               __alt_instructions_end =3D .;
->> +       }
->> +
->>          INIT_DATA_SECTION(16)
->>          .exit.data : {
->>                  EXIT_DATA
->> @@ -113,6 +98,11 @@ SECTIONS
->>
->>          _sdata =3D .;
->>          RO_DATA(4096)
->> +
->> +       .got : ALIGN(16) { *(.got) }
->> +       .plt : ALIGN(16) { *(.plt) }
->> +       .got.plt : ALIGN(16) { *(.got.plt) }
->> +
->>          RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
->>
->>          .rela.dyn : ALIGN(8) {
->> @@ -121,6 +111,17 @@ SECTIONS
->>                  __rela_dyn_end =3D .;
->>          }
->>
->> +       .data.rel : { *(.data.rel*) }
->> +
->> +#ifdef CONFIG_RELOCATABLE
->> +       . =3D ALIGN(8);
->> +       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
->> +               __la_abs_begin =3D .;
->> +               *(.la_abs)
->> +               __la_abs_end =3D .;
->> +       }
->> +#endif
->> +
->>          .sdata : {
->>                  *(.sdata)
->>          }
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
+index 90c3a419932d..f282cd5b29ea 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
+@@ -16,9 +16,6 @@
+ #define CTRL_MBOX_MAX_PF	128
+ #define CTRL_MBOX_SZ		((size_t)(0x400000 / CTRL_MBOX_MAX_PF))
+ 
+-#define FW_HB_INTERVAL_IN_SECS		1
+-#define FW_HB_MISS_COUNT		10
+-
+ /* Names of Hardware non-queue generic interrupts */
+ static char *cn93_non_ioq_msix_names[] = {
+ 	"epf_ire_rint",
+@@ -250,12 +247,11 @@ static void octep_init_config_cn93_pf(struct octep_device *oct)
+ 		link = PCI_DEVFN(PCI_SLOT(oct->pdev->devfn), link);
+ 	}
+ 	conf->ctrl_mbox_cfg.barmem_addr = (void __iomem *)oct->mmio[2].hw_addr +
+-					   (0x400000ull * 7) +
++					   CN93_PEM_BAR4_INDEX_OFFSET +
+ 					   (link * CTRL_MBOX_SZ);
+ 
+-	conf->hb_interval = FW_HB_INTERVAL_IN_SECS;
+-	conf->max_hb_miss_cnt = FW_HB_MISS_COUNT;
+-
++	conf->fw_info.hb_interval = OCTEP_DEFAULT_FW_HB_INTERVAL;
++	conf->fw_info.hb_miss_count = OCTEP_DEFAULT_FW_HB_MISS_COUNT;
+ }
+ 
+ /* Setup registers for a hardware Tx Queue  */
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_config.h b/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
+index df7cd39d9fce..1622a6ebf036 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
+@@ -49,6 +49,11 @@
+ /* Default MTU */
+ #define OCTEP_DEFAULT_MTU    1500
+ 
++/* pf heartbeat interval in milliseconds */
++#define OCTEP_DEFAULT_FW_HB_INTERVAL           1000
++/* pf heartbeat miss count */
++#define OCTEP_DEFAULT_FW_HB_MISS_COUNT         20
++
+ /* Macros to get octeon config params */
+ #define CFG_GET_IQ_CFG(cfg)             ((cfg)->iq)
+ #define CFG_GET_IQ_NUM_DESC(cfg)        ((cfg)->iq.num_descs)
+@@ -181,6 +186,16 @@ struct octep_ctrl_mbox_config {
+ 	void __iomem *barmem_addr;
+ };
+ 
++/* Info from firmware */
++struct octep_fw_info {
++	/* interface pkind */
++	u16 pkind;
++	/* heartbeat interval in milliseconds */
++	u16 hb_interval;
++	/* heartbeat miss count */
++	u16 hb_miss_count;
++};
++
+ /* Data Structure to hold configuration limits and active config */
+ struct octep_config {
+ 	/* Input Queue attributes. */
+@@ -201,10 +216,7 @@ struct octep_config {
+ 	/* ctrl mbox config */
+ 	struct octep_ctrl_mbox_config ctrl_mbox_cfg;
+ 
+-	/* Configured maximum heartbeat miss count */
+-	u32 max_hb_miss_cnt;
+-
+-	/* Configured firmware heartbeat interval in secs */
+-	u32 hb_interval;
++	/* fw info */
++	struct octep_fw_info fw_info;
+ };
+ #endif /* _OCTEP_CONFIG_H_ */
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
+index 4c6d91a8c83e..5b5343fd2771 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
+@@ -26,7 +26,7 @@ static atomic_t ctrl_net_msg_id;
+ 
+ /* Control plane version in which OCTEP_CTRL_NET_H2F_CMD was added */
+ static const u32 octep_ctrl_net_h2f_cmd_versions[OCTEP_CTRL_NET_H2F_CMD_MAX] = {
+-	[OCTEP_CTRL_NET_H2F_CMD_INVALID ... OCTEP_CTRL_NET_H2F_CMD_LINK_INFO] =
++	[OCTEP_CTRL_NET_H2F_CMD_INVALID ... OCTEP_CTRL_NET_H2F_CMD_GET_INFO] =
+ 	 OCTEP_CP_VERSION(1, 0, 0)
+ };
+ 
+@@ -353,6 +353,28 @@ void octep_ctrl_net_recv_fw_messages(struct octep_device *oct)
+ 	}
+ }
+ 
++int octep_ctrl_net_get_info(struct octep_device *oct, int vfid,
++			    struct octep_fw_info *info)
++{
++	struct octep_ctrl_net_wait_data d = {0};
++	struct octep_ctrl_net_h2f_resp *resp;
++	struct octep_ctrl_net_h2f_req *req;
++	int err;
++
++	req = &d.data.req;
++	init_send_req(&d.msg, req, 0, vfid);
++	req->hdr.s.cmd = OCTEP_CTRL_NET_H2F_CMD_GET_INFO;
++	req->link_info.cmd = OCTEP_CTRL_NET_CMD_GET;
++	err = octep_send_mbox_req(oct, &d, true);
++	if (err < 0)
++		return err;
++
++	resp = &d.data.resp;
++	memcpy(info, &resp->info.fw_info, sizeof(struct octep_fw_info));
++
++	return 0;
++}
++
+ int octep_ctrl_net_uninit(struct octep_device *oct)
+ {
+ 	struct octep_ctrl_net_wait_data *pos, *n;
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
+index 1c2ef4ee31d9..b330f370131b 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
+@@ -41,6 +41,7 @@ enum octep_ctrl_net_h2f_cmd {
+ 	OCTEP_CTRL_NET_H2F_CMD_LINK_STATUS,
+ 	OCTEP_CTRL_NET_H2F_CMD_RX_STATE,
+ 	OCTEP_CTRL_NET_H2F_CMD_LINK_INFO,
++	OCTEP_CTRL_NET_H2F_CMD_GET_INFO,
+ 	OCTEP_CTRL_NET_H2F_CMD_MAX
+ };
+ 
+@@ -161,6 +162,11 @@ struct octep_ctrl_net_h2f_resp_cmd_state {
+ 	u16 state;
+ };
+ 
++/* get info request */
++struct octep_ctrl_net_h2f_resp_cmd_get_info {
++	struct octep_fw_info fw_info;
++};
++
+ /* Host to fw response data */
+ struct octep_ctrl_net_h2f_resp {
+ 	union octep_ctrl_net_resp_hdr hdr;
+@@ -171,6 +177,7 @@ struct octep_ctrl_net_h2f_resp {
+ 		struct octep_ctrl_net_h2f_resp_cmd_state link;
+ 		struct octep_ctrl_net_h2f_resp_cmd_state rx;
+ 		struct octep_ctrl_net_link_info link_info;
++		struct octep_ctrl_net_h2f_resp_cmd_get_info info;
+ 	};
+ } __packed;
+ 
+@@ -330,6 +337,17 @@ int octep_ctrl_net_set_link_info(struct octep_device *oct,
+  */
+ void octep_ctrl_net_recv_fw_messages(struct octep_device *oct);
+ 
++/** Get info from firmware.
++ *
++ * @param oct: non-null pointer to struct octep_device.
++ * @param vfid: Index of virtual function.
++ * @param info: non-null pointer to struct octep_fw_info.
++ *
++ * return value: 0 on success, -errno on failure.
++ */
++int octep_ctrl_net_get_info(struct octep_device *oct, int vfid,
++			    struct octep_fw_info *info);
++
+ /** Uninitialize data for ctrl net.
+  *
+  * @param oct: non-null pointer to struct octep_device.
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index 43eb6e871351..ec3fd7ca3125 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -918,9 +918,9 @@ static void octep_hb_timeout_task(struct work_struct *work)
+ 	int miss_cnt;
+ 
+ 	miss_cnt = atomic_inc_return(&oct->hb_miss_cnt);
+-	if (miss_cnt < oct->conf->max_hb_miss_cnt) {
++	if (miss_cnt < oct->conf->fw_info.hb_miss_count) {
+ 		queue_delayed_work(octep_wq, &oct->hb_task,
+-				   msecs_to_jiffies(oct->conf->hb_interval * 1000));
++				   msecs_to_jiffies(oct->conf->fw_info.hb_interval));
+ 		return;
+ 	}
+ 
+@@ -1013,8 +1013,7 @@ int octep_device_setup(struct octep_device *oct)
+ 
+ 	atomic_set(&oct->hb_miss_cnt, 0);
+ 	INIT_DELAYED_WORK(&oct->hb_task, octep_hb_timeout_task);
+-	queue_delayed_work(octep_wq, &oct->hb_task,
+-			   msecs_to_jiffies(oct->conf->hb_interval * 1000));
++
+ 	return 0;
+ 
+ unsupported_dev:
+@@ -1139,6 +1138,15 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		dev_err(&pdev->dev, "Device setup failed\n");
+ 		goto err_octep_config;
+ 	}
++
++	octep_ctrl_net_get_info(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
++				&octep_dev->conf->fw_info);
++	dev_info(&octep_dev->pdev->dev, "Heartbeat interval %u msecs Heartbeat miss count %u\n",
++		 octep_dev->conf->fw_info.hb_interval,
++		 octep_dev->conf->fw_info.hb_miss_count);
++	queue_delayed_work(octep_wq, &octep_dev->hb_task,
++			   msecs_to_jiffies(octep_dev->conf->fw_info.hb_interval));
++
+ 	INIT_WORK(&octep_dev->tx_timeout_task, octep_tx_timeout_task);
+ 	INIT_WORK(&octep_dev->ctrl_mbox_task, octep_ctrl_mbox_task);
+ 	INIT_DELAYED_WORK(&octep_dev->intr_poll_task, octep_intr_poll_task);
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h b/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
+index b25c3093dc7b..0a43983e9101 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
+@@ -370,4 +370,8 @@
+ /* bit 1 for firmware heartbeat interrupt */
+ #define CN93_SDP_EPF_OEI_RINT_DATA_BIT_HBEAT	BIT_ULL(1)
+ 
++#define CN93_PEM_BAR4_INDEX            7
++#define CN93_PEM_BAR4_INDEX_SIZE       0x400000ULL
++#define CN93_PEM_BAR4_INDEX_OFFSET     (CN93_PEM_BAR4_INDEX * CN93_PEM_BAR4_INDEX_SIZE)
++
+ #endif /* _OCTEP_REGS_CN9K_PF_H_ */
+-- 
+2.25.1
 
