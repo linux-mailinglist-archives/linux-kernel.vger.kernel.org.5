@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F8F7A1DC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6957A1DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjIOL7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S234450AbjIOMAG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 08:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjIOL7i (ORCPT
+        with ESMTP id S232836AbjIOMAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:59:38 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E65CD8;
-        Fri, 15 Sep 2023 04:59:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31ff1f3cde5so560736f8f.2;
-        Fri, 15 Sep 2023 04:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694779171; x=1695383971; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iniQNpxeJMnhN0yeQ4uN2ztNWPHxjhWGs1K97TxC2M4=;
-        b=GaVfTP2Ub/O67fDjJ0bLZN1+Dfd1ar3f/LVmpOCOtwD1bjTAWPu4v5JDIrc+00plw/
-         b0OsTYsAqSREPfDoons5J1mIkTpxyMWzLlHMGWFFgsCrE8Ia4OQowSuFBSxqQYo/L1Rl
-         1SEim7QUOabhZ77n6z8SVC+2CJromjSCw8xynCQf1vdK0vMpzdqObBEYIv7npxDVUoKk
-         nY9EqTw/XWXAtLeTf7Vz82jgW4SBeiKS33REVuAzNv9ttNpaUNcRUaRSekjQG8V1NOJ6
-         QLs+mCAZj0QOoa5Myp8M8O6fUXAHW2CB9yQLvRuyOcSZy9pXngQD8wZz1doFh8BKiI4x
-         78EQ==
+        Fri, 15 Sep 2023 08:00:05 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E2D1FF1;
+        Fri, 15 Sep 2023 04:59:57 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59bebd5bdadso20485277b3.0;
+        Fri, 15 Sep 2023 04:59:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694779171; x=1695383971;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694779196; x=1695383996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iniQNpxeJMnhN0yeQ4uN2ztNWPHxjhWGs1K97TxC2M4=;
-        b=KBHWfZrG6LsD4czHBRqFH11ktAoi60yIUj1zSbRZaJApLJvTxnSQYjVMYoyiHDZdqE
-         L1sJxUOKxdixb+s8P2BeMlssb2k5GIJ0iYRQ4Yu016bYzT3jWTs67/MtLuE7O8lYbJaT
-         4aQb5XApx2/olCiN12vBpg2vkSxE5NkRvGEu+ATKJSNlFjU8+pGhK+bZ8wSPPPOD2gEo
-         KW9XyaqZ9SegTZ8F+D3nM7O3ul3GJAzvN+glj9rQgdAWEZD+e4SmYUARtUtsnn3KZscC
-         L8vMOFdJy5fCmmco2fQd8c/RcQWGNaJmv/xJtAUUUQks+ZiAC9hZbwh3E6/E8slHDq2x
-         kSuA==
-X-Gm-Message-State: AOJu0YyL3z3EobmBEBVY+tUNsLmRYdwsbMC7jLdHItjWEUCoAEfBSs0z
-        PehUQkpWF7MgBio08T/XBWw=
-X-Google-Smtp-Source: AGHT+IFoOUevIZ6RMJ0jm/kPpnWnjjeV6chX8eEK6W6Hp4h6S/m2viQ2l13JZcpn/oFOu2cu86F4Tw==
-X-Received: by 2002:a05:6000:91:b0:314:1b4d:bb27 with SMTP id m17-20020a056000009100b003141b4dbb27mr1266743wrx.64.1694779171214;
-        Fri, 15 Sep 2023 04:59:31 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id q11-20020adff50b000000b0031c71693449sm4304510wro.1.2023.09.15.04.59.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 04:59:30 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 13:59:28 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
-Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page
- aligned
-Message-ID: <ZQRHIN7as8f+PFeh@gmail.com>
-References: <20230818233451.3615464-1-srutherford@google.com>
+        bh=n3w3Hc9oT+9ZccWQwVTHbvcVnVRL/HUfvJ1knY0q2Ic=;
+        b=QvdyYF7XWIEv80sdYY6EUpSVHSU/LFAaMJZ3D2+xk7UhXKvAQb7+m8qQh4c0+OFzmU
+         DnBTI0sFTVVdCCdyiIoN6I5pI6RznmlX6oYN6YOC74kgOxtM4RNb9vMUxmuPkA2kHITa
+         azl/pVvjpaN+T0Px8EkrWaZtuACKHj98Ue/idsYHXpVZKLgvq5wKEZ5ybLHhKw9K6zYX
+         Et1XaO4KO2SDuXR5llh72kNxHOkHsJaVTDj9uhT4QgFWVE9ScQ20SsjwlKSd0o1cXF2x
+         KPFzKKBS7ywyU24b+1D52gHbt8tZm8cQg257nSK5bbzEe3H6xAEfdWZL/dkuOKCp33tm
+         N0vQ==
+X-Gm-Message-State: AOJu0YxLd3xMyYCDly0SDA0xevtcc5RYbm1vV4FsiauDTQFpu30Xx+V+
+        HvBRCB69PT3ecBqDo8O71ZGoKQn4cwC+/w==
+X-Google-Smtp-Source: AGHT+IGu2Nx4aW4E+cePSYiOtC0ayVxYccNOTgkQKYTSdC/0cQKD2QCiezIjz7s0G+LmdHqX3R8bgw==
+X-Received: by 2002:a81:5fc2:0:b0:59b:4bb2:fc2c with SMTP id t185-20020a815fc2000000b0059b4bb2fc2cmr1598737ywb.48.1694779196081;
+        Fri, 15 Sep 2023 04:59:56 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id r82-20020a815d55000000b0059b2be24f88sm812554ywb.143.2023.09.15.04.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 04:59:55 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d7f0a60a159so1872051276.0;
+        Fri, 15 Sep 2023 04:59:55 -0700 (PDT)
+X-Received: by 2002:a25:2555:0:b0:d77:dcff:e7b2 with SMTP id
+ l82-20020a252555000000b00d77dcffe7b2mr1234044ybl.39.1694779195344; Fri, 15
+ Sep 2023 04:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818233451.3615464-1-srutherford@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-22-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20230912045157.177966-22-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Sep 2023 13:59:42 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWc6yy=oJDo4zMdvB-t8pjCuE1oJ_Y6Ck0aX_hPkfhPug@mail.gmail.com>
+Message-ID: <CAMuHMdWc6yy=oJDo4zMdvB-t8pjCuE1oJ_Y6Ck0aX_hPkfhPug@mail.gmail.com>
+Subject: Re: [PATCH 21/37] dt-bindings: clock: add r9a08g045 CPG clocks and
+ resets definitions
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add RZ/G3S (R9A08G045) Clock Pulse Generator (CPG) core clocks, module
+> clocks and resets.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-* Steve Rutherford <srutherford@google.com> wrote:
+Thanks for your patch!
 
-> early_set_memory_decrypted() assumes its parameters are page aligned.
-> Non-page aligned calls result in additional pages being marked as
-> decrypted via the encryption status hypercall, which results in
-> consistent corruption of pages during live migration. Live
-> migration requires accurate encryption status information to avoid
-> migrating pages from the wrong perspective.
-> 
-> Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when SEV is active")
-> Signed-off-by: Steve Rutherford <srutherford@google.com>
-> ---
->  arch/x86/kernel/kvm.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/r9a08g045-cpg.h
 
-I suppose this fix is going through the KVM tree, or should we pick it up
-in the x86 tree?
+> +/* R9A08G045 Module Clocks */
 
-Thanks,
+> +#define R9A08G045_USB_U2H0_HCLK                65
+> +#define R9A08G045_USB_U2H1_HCLK                66
+> +#define R9A08G045_USB_U2P_EXR_CPUCLK   67
+> +#define R9A08G045_USB_PCLK             68
+> +#define R9A08G045_USB_SCLK             69
 
-	Ingo
+There is no USB_SCLK bit in CPG_CLKON_USB, so please drop
+R9A08G045_USB_SCLK.
+
+> +/* R9A08G045 Resets */
+
+> +#define R9A08G045_SRAM_ACPU_ARESETN0   11
+> +#define R9A08G045_SRAM_ACPU_ARESETN1   12
+> +#define R9A08G045_SRAM_ACPU_ARESETN2   13
+
+There is no SRAM_ACPU_ARESETN2 bit in CPG_RST_SRAM_MCPU,
+so please drop R9A08G045_SRAM_ACPU_ARESETN2.
+
+The rest LGTM.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
