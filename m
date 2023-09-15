@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EF27A211E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3E07A2122
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbjIOOee convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 10:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S235779AbjIOOfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235633AbjIOOed (ORCPT
+        with ESMTP id S235633AbjIOOfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:34:33 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4271FCE;
-        Fri, 15 Sep 2023 07:34:28 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59c2ca01f27so563867b3.2;
-        Fri, 15 Sep 2023 07:34:28 -0700 (PDT)
+        Fri, 15 Sep 2023 10:35:43 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024C91AC;
+        Fri, 15 Sep 2023 07:35:39 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso297039766b.2;
+        Fri, 15 Sep 2023 07:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694788537; x=1695393337; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l5b78G1Xe/uMbbRctSNTpM0K2JqIF7YMEFr4py30NLE=;
+        b=HWxGzrJStLkjqprmbesLMwZHt2KgWITMMlVYsCUYqLcjNZQXNSH5bvEYeeG0kWYX3L
+         auMoieZp1kTmPj3NDPQjB0gwBHg7AL6z6V6vKXIKjcKW1b5Sk6Ij4u58Xlzi2+ffGCZy
+         Ru6nt/Djge5YekPGxgB1p/dD269JhKysMbY6QiNcPVara850Mte7ejlufyLqi2CaAFwc
+         csJkwvRd1GjKEzbjbUkV6K8b3Z+8sE3Q6O3vjWeZOCp7lY8rAedUhXqJOg7RlcYoI9/i
+         8OATMBT8q3VZPTu6UToSDC/vSylAuU/bFrDd1Yy6s1/V8LXkhrlY4M6daNNljuYUgJbW
+         jUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694788467; x=1695393267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Bg+/ZlDV5cEjktS5gTZzV6GvE3CfacbspJaXAFuHm8=;
-        b=d6Aop0qV/FY92P92vPrbPg3s28t7atINAVPHB+Cmh22mT+JkB4kcKtLirnOr8S+gYz
-         jBB2qogCy/yD9sUk8pwsGENeLuNpxZnlBzksFuduChnOLAYTCCghlZT7vvQ5fVbK/gNb
-         vFOnaUVAPnkaADrS+zycVYlyPHJjO+tu0l8QwkRm1kps03dW1tCKux52cDpOSNRt2FaH
-         XyWLQuhvuqfGVH7vT0KimmdEcumf4rRA3BUpSqPEdCTDSmy5rZWKBBqyMxPGlZz7rMZh
-         lwhPdgmT2/C/rVgzwJrTyOvyda3gkAkKnvgcPCTB/jajJnKWBkoiYtdn8X4FaevxDf4m
-         7m4A==
-X-Gm-Message-State: AOJu0YxrczgOTFioHVgOxuXDoHEsx1zQqOO5qaAgJ0pmkpSUEbaZLiy4
-        KmiOzPXxsQW0pdMGDiqRyXQRMvBZja31UA==
-X-Google-Smtp-Source: AGHT+IH6EveqHYcx/3C9xqQjrlqRaxedtE9rgp9QsIZ8zCtO0RoS5FOW+cOsuoEwcOqviJEJ61Uplw==
-X-Received: by 2002:a81:d551:0:b0:599:241d:3a31 with SMTP id l17-20020a81d551000000b00599241d3a31mr2021303ywj.43.1694788467430;
-        Fri, 15 Sep 2023 07:34:27 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id j20-20020a819214000000b00598d67585d7sm885341ywg.117.2023.09.15.07.34.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 07:34:26 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d7b91422da8so2102804276.2;
-        Fri, 15 Sep 2023 07:34:25 -0700 (PDT)
-X-Received: by 2002:a25:68ce:0:b0:d3c:58ef:ef7b with SMTP id
- d197-20020a2568ce000000b00d3c58efef7bmr1850354ybc.6.1694788465622; Fri, 15
- Sep 2023 07:34:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694788537; x=1695393337;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5b78G1Xe/uMbbRctSNTpM0K2JqIF7YMEFr4py30NLE=;
+        b=YkVc1P1ghCa+boRDAm7cEtFip4LIs/nAGYlIM91DVHkzo8o+OCvh1P6AVv8OKNOQDV
+         9ukKzN+0UgUbhfIkIzwmk9VJwnP1emoC/omjzvJm2GWSapbt9ZiyqkrPR4A+bjxze+rW
+         9qbm65RPtjV7CQGOdJ/3gpsLTWbIe35UFrRHvLxcNSUn2hImx61YSHXrNK3bfDYetku+
+         sJ26UeXJ/imVn2IShShkZCOyMK+eci0kip6hxJlWbgtQSb2YE+UXEC1u4RSlJmG/FBnF
+         nbuuFovb1hvsZe0zecSdKEcYSNd8pia0JBd90o4YlEts8fRUqtrOfxVtMGzyLOrihxyr
+         Af/Q==
+X-Gm-Message-State: AOJu0YxPJAu1E0usK4uf2EP7zahmkyzd17m352r3XCzJ/tjKlsyTxAum
+        Z8vR9lF8s1yg2FwYGhYDYLo=
+X-Google-Smtp-Source: AGHT+IHytT7TY6J2KcsVUkzYbrU3p/H/odEN/sgR1tTx2/e5kV95KT0xFxKFjrWPLpdywweLHcKAcQ==
+X-Received: by 2002:a17:906:150:b0:9a5:cab0:b061 with SMTP id 16-20020a170906015000b009a5cab0b061mr1613521ejh.51.1694788537224;
+        Fri, 15 Sep 2023 07:35:37 -0700 (PDT)
+Received: from skbuf ([188.26.56.202])
+        by smtp.gmail.com with ESMTPSA id kg11-20020a17090776eb00b009a1a653770bsm2531814ejc.87.2023.09.15.07.35.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 07:35:36 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 17:35:34 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Petr Machata <petrm@nvidia.com>,
+        Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH net-next 1/2] net: dsa: microchip: Move *_port_setup code
+ to dsa_switch_ops::port_setup()
+Message-ID: <20230915143534.upiemn6ytjhmcot7@skbuf>
+References: <20230914131145.23336-1-o.rempel@pengutronix.de>
+ <20230914131145.23336-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-38-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20230912045157.177966-38-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 15 Sep 2023 16:34:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUVfZednCjMSkJGZX7B+7G6mV33EJ=fpmuqqKuod7U55w@mail.gmail.com>
-Message-ID: <CAMuHMdUVfZednCjMSkJGZX7B+7G6mV33EJ=fpmuqqKuod7U55w@mail.gmail.com>
-Subject: Re: [PATCH 37/37] arm64: defconfig: enable RZ/G3S (R9A08G045) SoC
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914131145.23336-1-o.rempel@pengutronix.de>
+ <20230914131145.23336-1-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Enable config flag for Renesas RZ/G3S (R9A08G045) SoC.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Thu, Sep 14, 2023 at 03:11:44PM +0200, Oleksij Rempel wrote:
+> Right now, the *_port_setup code is in dsa_switch_ops::port_enable(),
+> which is not the best place for it. This patch moves it to a more
+> suitable place, dsa_switch_ops::port_setup(), to match the function's
+> purpose and name.
+> 
+> This patch is a preparation for coming ACL support patch.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
