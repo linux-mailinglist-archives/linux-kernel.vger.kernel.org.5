@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08E47A284A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112927A2854
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbjIOUlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        id S237177AbjIOUoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjIOUku (ORCPT
+        with ESMTP id S233523AbjIOUnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:40:50 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465DF18D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:40:45 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-502defbb0c3so4274728e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694810443; x=1695415243; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Alq0BDEsyekB/QXpHaK8s7l3AYbrPUHormmRBLs8sRE=;
-        b=Kzf8nQDEUCAQgzRoCyKyoHqCp6Z0m9x7JcjuBVlna4QIMRNJkdoZVW7WTdQd3CFj52
-         iahyOIlrp4UhV/dgNgb3q/98Ss/W5bIcTJ+eZKyVTGX00KgliNUhZLGI7X3BfOeWFktZ
-         sglnA1xpbSrvFYf4csZas2bzPkzIniUmxarss=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694810443; x=1695415243;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Alq0BDEsyekB/QXpHaK8s7l3AYbrPUHormmRBLs8sRE=;
-        b=usL7xZWfsaEM7mv459vfKh0/K0hwMrHDv2rJKoDt0F/cX0uXx3LNNoASL4tNahqeDw
-         THwhtP6Iym1btgRRHSILPSElkYe0GlKpO6vRxAkWX0YvF/4hCKh/V4dM05CSuLAms6hl
-         G/znmTZt0hYD7wyCgIJTWQbvnf7U0Qra9QAfpm4UrJXi7AQuQW5CIMFbuTyAOBD4pDKj
-         V3qiO4g6rK/FI36DfQb94xS2VcGXgW6P7nqgw+2h5biapaCaATY25yCAKlbmCQasjYSk
-         fXwHWH1dTsKcglHqKC/coNW71IrYmT8FqdL5TKlg/lbQ5n1gNmiw52HYGakZ7lWGC68k
-         0GHg==
-X-Gm-Message-State: AOJu0YwEVWtE2SLSazBtxwa9hJtVyC16my8qE3zxnpVnw1C4joQSHtUv
-        g0ketCky5lAEDZRf+UBIIk0SclrxB2TTRf6jmzSrUGlD
-X-Google-Smtp-Source: AGHT+IHbZEnI2l/zzpj8k7kLEPwOMjG3l99wVW6ypC0Cm1Sgu6K3Rgt5wy++e8+mwXrsFgNUAFHUeg==
-X-Received: by 2002:ac2:46c2:0:b0:500:c2d8:a2a2 with SMTP id p2-20020ac246c2000000b00500c2d8a2a2mr2382210lfo.46.1694810443288;
-        Fri, 15 Sep 2023 13:40:43 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b00500ba43a43asm745698lfm.86.2023.09.15.13.40.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 13:40:42 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso40891491fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:40:42 -0700 (PDT)
-X-Received: by 2002:a2e:9f4f:0:b0:2bc:ff44:b85e with SMTP id
- v15-20020a2e9f4f000000b002bcff44b85emr2659012ljk.30.1694810442091; Fri, 15
- Sep 2023 13:40:42 -0700 (PDT)
+        Fri, 15 Sep 2023 16:43:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F994199
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694810610; x=1726346610;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=18dz03K1cAItjEKem7F0jRTTAN1G5rxKaRlf9jhGURc=;
+  b=Sl40B523GDETfGjE6IQLj0TGVfel9iEertjMA6MWIczV5VBYoqZ/zHdb
+   p6KKjiTDCkRiSsJf70I4lxgCq8xQfbhWCyi53kRaTpEn0JFe8n8u7SPZP
+   bXv8/L6DsItRP5rx4zJi46MIPuqhk3/Xae8ai9uUiPSoB8d4X947HB4e0
+   Mq01obrBSNGKYf+dKIKqEG47fX183Zm9syLzHjzWLnNQwqPf/f+Miyb9e
+   Vt8R/mY3dZcwCTqhZkKhOTfvBgsZNWAXH0NyWXG8Cq7j8h2eOUF3r5d+z
+   pfvanxhKlBtL6DjRhELgIC+ej8yrB+z1Ts4IenkcXXZLlAPc2TpxKvBLq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359587485"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="359587485"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 13:43:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="991992077"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="991992077"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Sep 2023 13:43:28 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qhFer-0003Ps-1p;
+        Fri, 15 Sep 2023 20:43:25 +0000
+Date:   Sat, 16 Sep 2023 04:42:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: include/linux/kasan-checks.h:38:27: warning: 'space_args' may be
+ used uninitialized
+Message-ID: <202309160440.jECtzdr6-lkp@intel.com>
 MIME-Version: 1.0
-References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
- <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
- <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
- <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com> <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
-In-Reply-To: <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 13:40:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
-Message-ID: <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
-Subject: Re: Buggy __free(kfree) usage pattern already in tree
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        akpm@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,26 +63,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 13:04, Bartosz Golaszewski
-<bartosz.golaszewski@linaro.org> wrote:
->
-> One more question wrt the __free() coding style.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9fdfb15a3dbf818e06be514f4abbfc071004cbe7
+commit: 5aa4ac64e6add3e40d5049e31275b2822daf885d LoongArch: Add KASAN (Kernel Address Sanitizer) support
+date:   9 days ago
+config: loongarch-randconfig-002-20230916 (https://download.01.org/0day-ci/archive/20230916/202309160440.jECtzdr6-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309160440.jECtzdr6-lkp@intel.com/reproduce)
 
-I don't think we really have much of a coding style yet.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309160440.jECtzdr6-lkp@intel.com/
 
-We currently literally have _one_ use of that __free() thing, and it
-was problematic.
+Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
+http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
 
-Which is why I'd like to start off fairly strict, but I'm not sure we
-should make it a "coding style" yet.
+All warnings (new ones prefixed by >>):
 
-IOW, my current thinking is "let's always have the constructor and
-destructor together", and see how it ends up going.
+   In file included from include/asm-generic/rwonce.h:26,
+                    from ./arch/loongarch/include/generated/asm/rwonce.h:1,
+                    from include/linux/compiler.h:246,
+                    from include/linux/export.h:5,
+                    from include/linux/linkage.h:7,
+                    from include/linux/kernel.h:17,
+                    from fs/btrfs/ioctl.c:6:
+   In function 'instrument_copy_from_user_before',
+       inlined from '_copy_from_user' at include/linux/uaccess.h:148:3,
+       inlined from 'copy_from_user' at include/linux/uaccess.h:183:7,
+       inlined from 'btrfs_ioctl_space_info' at fs/btrfs/ioctl.c:2993:6:
+>> include/linux/kasan-checks.h:38:27: warning: 'space_args' may be used uninitialized [-Wmaybe-uninitialized]
+      38 | #define kasan_check_write __kasan_check_write
+   include/linux/instrumented.h:129:9: note: in expansion of macro 'kasan_check_write'
+     129 |         kasan_check_write(to, n);
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/kasan-checks.h: In function 'btrfs_ioctl_space_info':
+   include/linux/kasan-checks.h:20:6: note: by argument 1 of type 'const volatile void *' to '__kasan_check_write' declared here
+      20 | bool __kasan_check_write(const volatile void *p, unsigned int size);
+         |      ^~~~~~~~~~~~~~~~~~~
+   fs/btrfs/ioctl.c:2975:39: note: 'space_args' declared here
+    2975 |         struct btrfs_ioctl_space_args space_args;
+         |                                       ^~~~~~~~~~
 
-Not because I think it's necessarily any kind of final rule, but
-because I think our whole cleanup thing is new enough that I think
-we're better off being a bit inflexible, and having a syntax where a
-simple "grep" ends up showing pretty much exactly what is going on wrt
-the pairing.
 
-                  Linus
+vim +/space_args +38 include/linux/kasan-checks.h
+
+7d8ad890dad00f Marco Elver     2019-07-11  31  
+7d8ad890dad00f Marco Elver     2019-07-11  32  /*
+7d8ad890dad00f Marco Elver     2019-07-11  33   * kasan_check_*: Only available when the particular compilation unit has KASAN
+7d8ad890dad00f Marco Elver     2019-07-11  34   * instrumentation enabled. May be used in header files.
+7d8ad890dad00f Marco Elver     2019-07-11  35   */
+7d8ad890dad00f Marco Elver     2019-07-11  36  #ifdef __SANITIZE_ADDRESS__
+7d8ad890dad00f Marco Elver     2019-07-11  37  #define kasan_check_read __kasan_check_read
+7d8ad890dad00f Marco Elver     2019-07-11 @38  #define kasan_check_write __kasan_check_write
+64f8ebaf115bcd Andrey Ryabinin 2016-05-20  39  #else
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  40  static inline bool kasan_check_read(const volatile void *p, unsigned int size)
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  41  {
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  42  	return true;
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  43  }
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  44  static inline bool kasan_check_write(const volatile void *p, unsigned int size)
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  45  {
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  46  	return true;
+b5f6e0fc7d60e0 Marco Elver     2019-07-11  47  }
+64f8ebaf115bcd Andrey Ryabinin 2016-05-20  48  #endif
+64f8ebaf115bcd Andrey Ryabinin 2016-05-20  49  
+
+:::::: The code at line 38 was first introduced by commit
+:::::: 7d8ad890dad00f6cd64bfb44d9be4fceb10cf819 mm/kasan: introduce __kasan_check_{read,write}
+
+:::::: TO: Marco Elver <elver@google.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
