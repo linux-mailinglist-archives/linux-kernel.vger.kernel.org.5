@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E797A1E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303CF7A1E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjIOMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S234797AbjIOMQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234686AbjIOMQ0 (ORCPT
+        with ESMTP id S234778AbjIOMQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:16:26 -0400
+        Fri, 15 Sep 2023 08:16:39 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBA72D62;
-        Fri, 15 Sep 2023 05:16:02 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FAwQoG020152;
-        Fri, 15 Sep 2023 12:15:53 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B13F271D;
+        Fri, 15 Sep 2023 05:16:07 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F4G2Hr017789;
+        Fri, 15 Sep 2023 12:15:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=z7EdD7gnN29RfjnjGry9rnKgrLgOu5D5ie3Dn+GEn3s=;
- b=N8jwnP6CYz78lPCbI8RPELo4XIrshCTB+Hl2b8QB6k3mDrz6pMTQqVAc0XFTSr6drqZR
- w4n1bzZlhbzfyJ++RN4nk21nC0wzngJbpAM4HBlI7WUw8M7YjZu/6nsVYLY1nGEcxNFn
- y2SOnIK3gTWRJtx8NpzvRJxr/J6vMbvz3KbVwuIVs1r3vkTIyqV93Jl4mKPtH3ZxS/qc
- K1wMSpDntTBy7LMabBgOxN03ZzaPQb0YfR0s1vQ0gyY/NYXIvN0RHbcPQF7kFq7H7VtS
- KLfXcm6xV5LWBMDuthBI5XbXZDhr7PhnzJwonAyhVjy5EL7ruwdrlr5E54iE32m6qP7m nQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g07111u-1
+ bh=kXBJMB7bcEXDJM+JIcHmj9M9N9IZAo83EHKFYXq4ZfY=;
+ b=PedBfwnBwbQmaZCb0MGBlBg0nx3MAs3Vzsq+Ejv2o36dpBfrSI2OoPNWc5IpfO6uRlPx
+ ti0cDNlBwsjj/489mrCONy5aNcERz9/QtyfeOxbneczeOB5g4g4eydQhKmZmMH26pxb+
+ 0Zjbz7CCERme9xuf3dWxcZySLbnIDz52ukbIqjolEmqxbACJq8tx0+4zlZDn70BzJuuW
+ gSrc+0lWNg3fzBlVEG0U3MRUyongXawdXmsGR62pelPC2kASQAtNOIiFs4kDOWfgj76o
+ MFS2SrwUqJcIIB2nVHAE3YeslpwlwVZeM6D1SMJbRMiTAKyuWBOrdnvtED/Q5c7bUwRo Mw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g2xgyxa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 12:15:52 +0000
+        Fri, 15 Sep 2023 12:15:57 +0000
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FCFpZI010358
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FCFuKO004584
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 12:15:51 GMT
+        Fri, 15 Sep 2023 12:15:56 GMT
 Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 15 Sep 2023 05:15:46 -0700
+ 15.2.1118.30; Fri, 15 Sep 2023 05:15:51 -0700
 From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
 To:     <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -49,9 +49,9 @@ To:     <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-pm@vger.kernel.org>, <dmitry.baryshkov@linaro.org>,
         <quic_srichara@quicinc.com>
-Subject: [PATCH V2 3/4] thermal/drivers/tsens: Add support for IPQ5018 tsens
-Date:   Fri, 15 Sep 2023 17:45:03 +0530
-Message-ID: <20230915121504.806672-4-quic_srichara@quicinc.com>
+Subject: [PATCH V2 4/4] arm64: dts: qcom: ipq5018: Add tsens node
+Date:   Fri, 15 Sep 2023 17:45:04 +0530
+Message-ID: <20230915121504.806672-5-quic_srichara@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230915121504.806672-1-quic_srichara@quicinc.com>
 References: <20230915121504.806672-1-quic_srichara@quicinc.com>
@@ -63,15 +63,15 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: z7-F87IANLbT9oA9AICOUmPotA8PnUMO
-X-Proofpoint-ORIG-GUID: z7-F87IANLbT9oA9AICOUmPotA8PnUMO
+X-Proofpoint-GUID: BBPFcswH7OTAcstoA94LwHU1NzcJtGMy
+X-Proofpoint-ORIG-GUID: BBPFcswH7OTAcstoA94LwHU1NzcJtGMy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-15_08,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
- adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ phishscore=0 impostorscore=0 adultscore=0 mlxlogscore=843 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309150109
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -82,127 +82,208 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ5018 has tsens IP V1.0, 4 sensors and 1 interrupt.
-The soc does not have a RPM, hence tsens has to be reset and
-enabled in the driver init. Adding the driver support for same.
+IPQ5018 has tsens V1.0 IP with 4 sensors.
+There is no RPM, so tsens has to be manually enabled. Adding the tsens
+and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
+critical temperature being 120'C and action is to reboot. Adding all
+the 4 zones here. 
 
 Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 ---
- [v2] Used tsens_calibrate_common instead of legacy
-      and addressed comments from Dmitry.
+ [v2] Fixed node names, order and added qfprom cells for points
+      seperately to use the calibrate_common and squashed thermal_zone
+      nodes here
 
- drivers/thermal/qcom/tsens-v1.c | 58 +++++++++++++++++++++++++++++++++
- drivers/thermal/qcom/tsens.c    |  3 ++
- drivers/thermal/qcom/tsens.h    |  2 +-
- 3 files changed, 62 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
 
-diff --git a/drivers/thermal/qcom/tsens-v1.c b/drivers/thermal/qcom/tsens-v1.c
-index dc1c4ae2d8b0..ed5c017905ab 100644
---- a/drivers/thermal/qcom/tsens-v1.c
-+++ b/drivers/thermal/qcom/tsens-v1.c
-@@ -79,6 +79,18 @@ static struct tsens_features tsens_v1_feat = {
- 	.trip_max_temp	= 120000,
- };
+diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+index 9f13d2dcdfd5..d53aea5342e2 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+@@ -93,6 +93,117 @@ soc: soc@0 {
+ 		#size-cells = <1>;
+ 		ranges = <0 0 0 0xffffffff>;
  
-+static struct tsens_features tsens_v1_ipq5018_feat = {
-+	.ver_major	= VER_1_X,
-+	.crit_int	= 0,
-+	.combo_int	= 0,
-+	.adc		= 1,
-+	.srot_split	= 1,
-+	.max_sensors	= 11,
-+	.trip_min_temp	= -40000,
-+	.trip_max_temp	= 120000,
-+	.ignore_enable	= 1,
-+};
++		qfprom: qfprom@a0000 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
++			reg = <0xa0000 0x1000>;
 +
- static const struct reg_field tsens_v1_regfields[MAX_REGFIELDS] = {
- 	/* ----- SROT ------ */
- 	/* VERSION */
-@@ -150,6 +162,39 @@ static int __init init_8956(struct tsens_priv *priv) {
- 	return init_common(priv);
- }
++			tsens_base1: base1@249 {
++				reg = <0x249 2>;
++				bits = <3 8>;
++			};
++
++			tsens_base2: base2@24a {
++				reg = <0x24a 2>;
++				bits = <3 8>;
++			};
++
++			tsens_mode: mode@249 {
++				reg = <0x249 1>;
++				bits = <0 3>;
++			};
++
++			tsens_s0_p1: s0-p1@24b {
++				reg = <0x24b 0x2>;
++				bits = <2 6>;
++			};
++
++			tsens_s0_p2: s0-p2@24c {
++				reg = <0x24c 0x1>;
++				bits = <1 6>;
++			};
++
++			tsens_s1_p1: s1-p1@24c {
++				reg = <0x24c 0x2>;
++				bits = <7 6>;
++			};
++
++			tsens_s1_p2: s1-p2@24d {
++				reg = <0x24d 0x2>;
++				bits = <5 6>;
++			};
++
++			tsens_s2_p1: s2-p1@24e {
++				reg = <0x24e 0x2>;
++				bits = <3 6>;
++			};
++
++			tsens_s2_p2: s2-p2@24f {
++				reg = <0x24f 0x1>;
++				bits = <1 6>;
++			};
++
++			tsens_s3_p1: s3-p1@24f {
++				reg = <0x24f 0x2>;
++				bits = <7 6>;
++			};
++
++			tsens_s3_p2: s3-p2@250 {
++				reg = <0x250 0x2>;
++				bits = <5 6>;
++			};
++
++			tsens_s4_p1: s4-p1@251 {
++				reg = <0x251 0x2>;
++				bits = <3 6>;
++			};
++
++			tsens_s4_p2: s4-p2@254 {
++				reg = <0x254 0x1>;
++				bits = <0 6>;
++			};
++		};
++
++		tsens: thermal-sensor@4a9000 {
++			compatible = "qcom,ipq5018-tsens", "qcom,tsens-v1";
++			reg = <0x4a9000 0x1000>, /* TM */
++			      <0x4a8000 0x1000>; /* SORT */
++
++			nvmem-cells = <&tsens_mode>,
++				      <&tsens_base1>,
++				      <&tsens_base2>,
++				      <&tsens_s0_p1>,
++				      <&tsens_s0_p2>,
++				      <&tsens_s1_p1>,
++				      <&tsens_s1_p2>,
++				      <&tsens_s2_p1>,
++				      <&tsens_s2_p2>,
++				      <&tsens_s3_p1>,
++				      <&tsens_s3_p2>,
++				      <&tsens_s4_p1>,
++				      <&tsens_s4_p2>;
++
++			nvmem-cell-names = "mode",
++					   "base1",
++					   "base2",
++					   "s0_p1",
++					   "s0_p2",
++					   "s1_p1",
++					   "s1_p2",
++					   "s2_p1",
++					   "s2_p2",
++					   "s3_p1",
++					   "s3_p2",
++					   "s4_p1",
++					   "s4_p2";
++
++			interrupts = <GIC_SPI 184 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "uplow";
++			#qcom,sensors = <5>;
++			#thermal-sensor-cells = <1>;
++		};
++
+ 		tlmm: pinctrl@1000000 {
+ 			compatible = "qcom,ipq5018-tlmm";
+ 			reg = <0x01000000 0x300000>;
+@@ -240,6 +351,64 @@ frame@b128000 {
+ 		};
+ 	};
  
-+static int init_ipq5018(struct tsens_priv *priv)
-+{
-+	int ret;
-+	u32 mask;
++	thermal-zones {
++		ubi32-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens 1>;
 +
-+	init_common(priv);
-+	if (!priv->tm_map)
-+		return -ENODEV;
++			trips {
++				ubi32-critical {
++					temperature = <120000>;
++					hysteresis = <2>;
++					type = "critical";
++				};
++			};
++		};
 +
-+	ret = regmap_field_write(priv->rf[TSENS_SW_RST], 1);
-+	if (ret) {
-+		dev_err(priv->dev, "Reset failed\n");
-+		return ret;
-+	}
++		cpu-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens 2>;
 +
-+	mask = GENMASK(priv->num_sensors, 0);
-+	ret = regmap_field_update_bits(priv->rf[SENSOR_EN], mask, mask);
-+	if (ret) {
-+		dev_err(priv->dev, "Sensor Enable failed\n");
-+		return ret;
-+	}
++			trips {
++				cpu-critical {
++					temperature = <120000>;
++					hysteresis = <2>;
++					type = "critical";
++				};
++			};
++		};
 +
-+	ret = regmap_field_write(priv->rf[TSENS_EN], 1);
-+	if (ret) {
-+		dev_err(priv->dev, "Enable failed\n");
-+		return ret;
-+	}
++		top-glue-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens 3>;
 +
-+	ret = regmap_field_write(priv->rf[TSENS_SW_RST], 0);
++			trips {
++				top_glue-critical {
++					temperature = <120000>;
++					hysteresis = <2>;
++					type = "critical";
++				};
++			};
++		};
 +
-+	return ret;
-+}
++		gephy-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens 4>;
 +
- static const struct tsens_ops ops_generic_v1 = {
- 	.init		= init_common,
- 	.calibrate	= calibrate_v1,
-@@ -187,3 +232,16 @@ struct tsens_plat_data data_8976 = {
- 	.feat		= &tsens_v1_feat,
- 	.fields		= tsens_v1_regfields,
- };
++			trips {
++				gephy-critical {
++					temperature = <120000>;
++					hysteresis = <2>;
++					type = "critical";
++				};
++			};
++		};
++	};
 +
-+const struct tsens_ops ops_ipq5018 = {
-+	.init		= init_ipq5018,
-+	.calibrate	= tsens_calibrate_common,
-+	.get_temp	= get_temp_tsens_valid,
-+};
-+
-+struct tsens_plat_data data_ipq5018 = {
-+	.num_sensors	= 5,
-+	.ops		= &ops_ipq5018,
-+	.feat		= &tsens_v1_ipq5018_feat,
-+	.fields		= tsens_v1_regfields,
-+};
-diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index 0a43ccf02ec4..c792b9dc6676 100644
---- a/drivers/thermal/qcom/tsens.c
-+++ b/drivers/thermal/qcom/tsens.c
-@@ -1101,6 +1101,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
- 
- static const struct of_device_id tsens_table[] = {
- 	{
-+		.compatible = "qcom,ipq5018-tsens",
-+		.data = &data_ipq5018,
-+	}, {
- 		.compatible = "qcom,ipq8064-tsens",
- 		.data = &data_8960,
- 	}, {
-diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-index e254cd2df904..b6594b546d11 100644
---- a/drivers/thermal/qcom/tsens.h
-+++ b/drivers/thermal/qcom/tsens.h
-@@ -645,7 +645,7 @@ extern struct tsens_plat_data data_8960;
- extern struct tsens_plat_data data_8226, data_8909, data_8916, data_8939, data_8974, data_9607;
- 
- /* TSENS v1 targets */
--extern struct tsens_plat_data data_tsens_v1, data_8976, data_8956;
-+extern struct tsens_plat_data data_tsens_v1, data_8976, data_8956, data_ipq5018;
- 
- /* TSENS v2 targets */
- extern struct tsens_plat_data data_8996, data_ipq8074, data_tsens_v2;
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
 -- 
 2.34.1
 
