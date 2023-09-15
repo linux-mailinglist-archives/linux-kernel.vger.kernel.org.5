@@ -2,260 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592207A1C1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87B97A1C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbjIOKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S232972AbjIOKch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbjIOKXO (ORCPT
+        with ESMTP id S233647AbjIOKcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:23:14 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB2010DF;
-        Fri, 15 Sep 2023 03:23:04 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 0C09A24E268;
-        Fri, 15 Sep 2023 18:23:03 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Sep
- 2023 18:23:03 +0800
-Received: from ubuntu.localdomain (113.72.144.67) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Sep
- 2023 18:23:01 +0800
-From:   Minda Chen <minda.chen@starfivetech.com>
-To:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
+        Fri, 15 Sep 2023 06:32:25 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8155730EB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:21 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso243291966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694773400; x=1695378200; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZU4AuTd77SCi2z8SlZIHecF6Q/OBga20jXZU+Tyw7RM=;
+        b=T+ArXf90tZNK6WJAB/Arf6yieCKcCF0mVThlCkVvgBzgPsSl6Y/1agYxy8iGFUwPaZ
+         NeaMIero5ajJK3OD72L2C9rxVpcDMn7CVUc1y/0lb9TrQxIHE5T/Bl0nve5QTzJ2uCmh
+         DTVEZxeFsejwAMOaY2ycjJTv7OaniPmTfllcmEfwfR49pGoctK3vN8eXAyzWMw5ioyPM
+         2uEbl4iuW2GL+vwJDph5oSzEUDfghLO/XfLpea0Ybq+qYGQ6Sg5NBKasuH92WqUlYgdz
+         IQDDOi3FzdVm/HND7pnIl4MVO+NPgp1WHW6ovHZCEov+693P72TDEokX9/jOBhzgM+qW
+         55Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694773400; x=1695378200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZU4AuTd77SCi2z8SlZIHecF6Q/OBga20jXZU+Tyw7RM=;
+        b=oTwczKr2g+xu1ViavazgjSuJi6g+nXqQSLIJBvw5B90+/sLAjuf1F5yb3eIOZKJrdn
+         6N18gNMhChx7ZfFMVux6oML/ExnEr0g+jKWFflEEGNGaoI0tZnYTHxZorK8SG6Yx5x46
+         h7oCVMC/SfrIezR3lhs2kN14SshXQ2zSPNo4QedgQ5aiZ83XmltIG3zbnsr8go46eIVL
+         jA8Bo1ZmnwFg6CVZUrFUZ8XQ1ejBHeHmQRK3P9yEGY3XWppv3PvmE7DETTYCatKULj3w
+         aPP0CQ2yzYoN3Gs92H+3Bkhw6mg95W6pl66uWsF3tSMzol3LpsQmlT7RjF12FuIZ4zRz
+         X5KQ==
+X-Gm-Message-State: AOJu0YwqdoOeCT2Jq7BohNAGLbQH9WzAJSFqQcnkzJ+oLygYYjoXhM0r
+        OWHcMrqgyQZGvl8uSiuVSitVZw==
+X-Google-Smtp-Source: AGHT+IHd2NUDtrOHeXSqw9jdD6L2t5IYy7aq0QEiscLzMW/L1cneK//YI9eejtz2lfL2eEwyr27C6w==
+X-Received: by 2002:a17:906:74d5:b0:99c:5056:4e2e with SMTP id z21-20020a17090674d500b0099c50564e2emr951471ejl.31.1694773399810;
+        Fri, 15 Sep 2023 03:23:19 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170906831500b009ad87d1be17sm2211358ejx.22.2023.09.15.03.23.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:23:19 -0700 (PDT)
+Message-ID: <a711407d-4419-4b75-99db-b8461b3bbdfe@linaro.org>
+Date:   Fri, 15 Sep 2023 11:23:17 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] usb: typec: tps6598x: add reset gpio support
+Content-Language: en-US
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>,
-        Minda Chen <minda.chen@starfivetech.com>
-Subject: [PATCH v6 19/19] riscv: dts: starfive: add PCIe dts configuration for JH7110
-Date:   Fri, 15 Sep 2023 18:22:43 +0800
-Message-ID: <20230915102243.59775-20-minda.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230915102243.59775-1-minda.chen@starfivetech.com>
-References: <20230915102243.59775-1-minda.chen@starfivetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.144.67]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230912-topic-tps6598x_reset-v1-0-78dc0bf61790@wolfvision.net>
+ <20230912-topic-tps6598x_reset-v1-1-78dc0bf61790@wolfvision.net>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230912-topic-tps6598x_reset-v1-1-78dc0bf61790@wolfvision.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCIe dts configuraion for JH7110 SoC platform.
+On 15/09/2023 07:50, Javier Carrasco wrote:
+> The TPS6598x PD controller provides an active-high hardware reset input
+> that reinitializes all device settings. If it is not grounded by
+> design, the driver must be able to de-assert it in order to initialize
+> the device.
+> 
+> The PD controller is not ready for registration right after the reset
+> de-assertion and a delay must be introduced in that case. According to
+> TI, the delay can reach up to 1000 ms [1], which is in line with the
+> experimental results obtained with a TPS65987D.
+> 
+> Add a GPIO descriptor for the reset signal and basic reset management
+> for initialization and suspend/resume.
+> 
+> [1] https://e2e.ti.com/support/power-management-group/power-management/
+> f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
+> to-normal-operation/4809389#4809389
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 
-Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
----
- .../jh7110-starfive-visionfive-2.dtsi         | 63 +++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 88 +++++++++++++++++++
- 2 files changed, 151 insertions(+)
-
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index d79f94432b27..8c84852f1c06 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -402,6 +402,53 @@
- 		};
- 	};
- 
-+	pcie0_pins: pcie0-0 {
-+		wake-pins {
-+			pinmux = <GPIOMUX(32, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_NONE)>;
-+			bias-pull-up;
-+			drive-strength = <2>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+		clkreq-pins {
-+			pinmux = <GPIOMUX(27, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_NONE)>;
-+			bias-pull-down;
-+			drive-strength = <2>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+
-+	pcie1_pins: pcie1-0 {
-+		wake-pins {
-+			pinmux = <GPIOMUX(21, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_NONE)>;
-+			bias-pull-up;
-+			drive-strength = <2>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+
-+		clkreq-pins {
-+			pinmux = <GPIOMUX(29, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_NONE)>;
-+			bias-pull-down;
-+			drive-strength = <2>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+
- 	spi0_pins: spi0-0 {
- 		mosi-pins {
- 			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-@@ -499,6 +546,22 @@
- 	};
- };
- 
-+&pcie0 {
-+	pinctrl-names = "default";
-+	perst-gpios = <&sysgpio 26 GPIO_ACTIVE_LOW>;
-+	pinctrl-0 = <&pcie0_pins>;
-+	phys = <&pciephy0>;
-+	status = "okay";
-+};
-+
-+&pcie1 {
-+	pinctrl-names = "default";
-+	perst-gpios = <&sysgpio 28 GPIO_ACTIVE_LOW>;
-+	pinctrl-0 = <&pcie1_pins>;
-+	phys = <&pciephy1>;
-+	status = "okay";
-+};
-+
- &tdm {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&tdm_pins>;
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index e85464c328d0..97fe5a242d60 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -1045,5 +1045,93 @@
- 			#reset-cells = <1>;
- 			power-domains = <&pwrc JH7110_PD_VOUT>;
- 		};
-+
-+		pcie0: pcie@940000000 {
-+			compatible = "starfive,jh7110-pcie";
-+			reg = <0x9 0x40000000 0x0 0x1000000>,
-+			      <0x0 0x2b000000 0x0 0x100000>;
-+			reg-names = "cfg", "apb";
-+			linux,pci-domain = <0>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			ranges = <0x82000000  0x0 0x30000000  0x0 0x30000000 0x0 0x08000000>,
-+				 <0xc3000000  0x9 0x00000000  0x9 0x00000000 0x0 0x40000000>;
-+			interrupts = <56>;
-+			interrupt-parent = <&plic>;
-+			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
-+			interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc0 0x1>,
-+					<0x0 0x0 0x0 0x2 &pcie_intc0 0x2>,
-+					<0x0 0x0 0x0 0x3 &pcie_intc0 0x3>,
-+					<0x0 0x0 0x0 0x4 &pcie_intc0 0x4>;
-+			msi-controller;
-+			device_type = "pci";
-+			starfive,stg-syscon = <&stg_syscon>;
-+			bus-range = <0x0 0xff>;
-+			clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_STG_AXI>,
-+				 <&stgcrg JH7110_STGCLK_PCIE0_TL>,
-+				 <&stgcrg JH7110_STGCLK_PCIE0_AXI_MST0>,
-+				 <&stgcrg JH7110_STGCLK_PCIE0_APB>;
-+			clock-names = "noc", "tl", "axi_mst0", "apb";
-+			resets = <&stgcrg JH7110_STGRST_PCIE0_AXI_MST0>,
-+				 <&stgcrg JH7110_STGRST_PCIE0_AXI_SLV0>,
-+				 <&stgcrg JH7110_STGRST_PCIE0_AXI_SLV>,
-+				 <&stgcrg JH7110_STGRST_PCIE0_BRG>,
-+				 <&stgcrg JH7110_STGRST_PCIE0_CORE>,
-+				 <&stgcrg JH7110_STGRST_PCIE0_APB>;
-+			reset-names = "mst0", "slv0", "slv", "brg",
-+				      "core", "apb";
-+			status = "disabled";
-+
-+			pcie_intc0: interrupt-controller {
-+				#address-cells = <0>;
-+				#interrupt-cells = <1>;
-+				interrupt-controller;
-+			};
-+		};
-+
-+		pcie1: pcie@9c0000000 {
-+			compatible = "starfive,jh7110-pcie";
-+			reg = <0x9 0xc0000000 0x0 0x1000000>,
-+			      <0x0 0x2c000000 0x0 0x100000>;
-+			reg-names = "cfg", "apb";
-+			linux,pci-domain = <1>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			ranges = <0x82000000  0x0 0x38000000  0x0 0x38000000 0x0 0x08000000>,
-+				 <0xc3000000  0x9 0x80000000  0x9 0x80000000 0x0 0x40000000>;
-+			interrupts = <57>;
-+			interrupt-parent = <&plic>;
-+			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
-+			interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc1 0x1>,
-+					<0x0 0x0 0x0 0x2 &pcie_intc1 0x2>,
-+					<0x0 0x0 0x0 0x3 &pcie_intc1 0x3>,
-+					<0x0 0x0 0x0 0x4 &pcie_intc1 0x4>;
-+			msi-controller;
-+			device_type = "pci";
-+			starfive,stg-syscon = <&stg_syscon>;
-+			bus-range = <0x0 0xff>;
-+			clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_STG_AXI>,
-+				 <&stgcrg JH7110_STGCLK_PCIE1_TL>,
-+				 <&stgcrg JH7110_STGCLK_PCIE1_AXI_MST0>,
-+				 <&stgcrg JH7110_STGCLK_PCIE1_APB>;
-+			clock-names = "noc", "tl", "axi_mst0", "apb";
-+			resets = <&stgcrg JH7110_STGRST_PCIE1_AXI_MST0>,
-+				 <&stgcrg JH7110_STGRST_PCIE1_AXI_SLV0>,
-+				 <&stgcrg JH7110_STGRST_PCIE1_AXI_SLV>,
-+				 <&stgcrg JH7110_STGRST_PCIE1_BRG>,
-+				 <&stgcrg JH7110_STGRST_PCIE1_CORE>,
-+				 <&stgcrg JH7110_STGRST_PCIE1_APB>;
-+			reset-names = "mst0", "slv0", "slv", "brg",
-+				      "core", "apb";
-+			status = "disabled";
-+
-+			pcie_intc1: interrupt-controller {
-+				#address-cells = <0>;
-+				#interrupt-cells = <1>;
-+				interrupt-controller;
-+			};
-+		};
- 	};
- };
--- 
-2.17.1
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
