@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990FE7A1CA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382277A1CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjIOKpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
+        id S233000AbjIOKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIOKpS (ORCPT
+        with ESMTP id S229646AbjIOKpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:45:18 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA14C1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:45:12 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c3c8adb27so258325866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:45:12 -0700 (PDT)
+        Fri, 15 Sep 2023 06:45:47 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AF7FB;
+        Fri, 15 Sep 2023 03:45:39 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c4194f7635so10293495ad.0;
+        Fri, 15 Sep 2023 03:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694774711; x=1695379511; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/SID5oDKY4NJAlRPFZ69oTx9l6P/13bI038tsRW9LUo=;
-        b=OfEHIPm8BNCrS9Lm+oU7dVRjeQ+r+TRR5tSsDJJXgASjpbEvq7jAMXHNl8OkRsC4lz
-         104B8wOr5IUtH9jy+sjSnZTKUuBQKHdiDH67UrW//WAml8UqB1MCXcIrrD7pE6WBMEYS
-         JrXR/UAW54IB8LyCu8zzy4dv23NcIW9nVUAHlbyjFjkBe4JX9V2VUwAVvH3oFy4K6EKE
-         5gZrKRRq9TF3QFJotYkRP6l4bE/70tG8FgEsF9k8N0SGICE+3de7fZQ876LdizB89FmX
-         2IEPs16+UgTeRovvmkd759XFNTJdfgh0T0EsMvez8zv6t1ySgmJSMHb3bMfjO3z8drgR
-         NKaA==
+        d=gmail.com; s=20230601; t=1694774739; x=1695379539; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KASKuJDoY+n+ROnGW2/fJ2gTET1kK/7EqBy0BEtei40=;
+        b=mpafJNvIQS6rNhXGOawwDm/hSpSvo+I143u7PoTKvEg8L6dnuH8etqF/E+5y8yutlF
+         i0Eb9a6+MSr9hTy4dMwgs2JPPlpHECbpvt0OvxtwGNWfW6FIhLyxRqO6el26+Bw1D8U2
+         XkLKraOENebbJzfQYBt2hVODUPeNJet+lUzloV9jpFhTQDZqXZEtMcE8+18b+9rET8aI
+         PQ4UPbaB+MuYxlHXkP+0pLpNWi/k8vW4PtbUqEHwqBTvVwzDdaFrt+bOptAKs3XLTOQu
+         eBlZjC67MWupDYJeb/e2tNmXmQ3QPUKG96fJWiP8Xtn6HAQ1ElY9apX6MlSj1JqnHGJY
+         agWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774711; x=1695379511;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/SID5oDKY4NJAlRPFZ69oTx9l6P/13bI038tsRW9LUo=;
-        b=MSwJG/Ogf3nryPkzqUFcV0X43XLwpxI4o5zHflwTV9oZkVci9/f2/or3soWv/16pY0
-         NKzrAMhV+p7SXYkQwSFLKo0plTWPqWnJ7pf+f5SbZ1fyjlWXIvRC8TTkjRQYtniGXwyV
-         cnUA9ef9SfM4+Zn+rnKcQh335zPxFCXt1mvxJkZ7Sm7Zx/16pSHQhBuMFv1ijqMe4CeC
-         pD/+RrgzRSQ2mt7xOr+Vo7WGW10XVgVSk9H3mRwzephifY3VS6X7wzai7/pYiUEHhAO+
-         LXmjcf1Qs/a9tLZLrwd96m+Izf0SXSiLvkOGW4tiSd1LUjpJ7HAlfSZ1AFDqhrbpirdr
-         owCw==
-X-Gm-Message-State: AOJu0Yy2y5NTai4rVNbXfts0iRUDZrrauywpFBADy7Ip45Fobbr7GOi2
-        Hw2n+A9mZRMFGmhTB58sfAdJzA==
-X-Google-Smtp-Source: AGHT+IH11YBMU4QUnpcqSRlEVLJOYHut97zbieeCJa0wwpsQlPg5PGGsIsgtpUlwTjxuMdQKDv9Dag==
-X-Received: by 2002:a17:906:844a:b0:9a2:225a:8d01 with SMTP id e10-20020a170906844a00b009a2225a8d01mr1167891ejy.7.1694774711278;
-        Fri, 15 Sep 2023 03:45:11 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id vl3-20020a170907b60300b009adc77fe164sm1139726ejc.66.2023.09.15.03.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:45:10 -0700 (PDT)
-Message-ID: <68abb9ea-37cc-df7a-d557-39b4c83c2e0c@linaro.org>
-Date:   Fri, 15 Sep 2023 12:45:08 +0200
+        d=1e100.net; s=20230601; t=1694774739; x=1695379539;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KASKuJDoY+n+ROnGW2/fJ2gTET1kK/7EqBy0BEtei40=;
+        b=xTnhgRWiUGNSeHEpdAP0Lk3lu+h1wlC5glGG9LKnKYB9tdIDc9cQSVk3PgQmO7uN1x
+         lnvJV4IGTSzAYdhQgABA1nmOv0cbaoiUNNzSJkoyqZyhor3QTzaNnPdHo6RKfAHQlJf+
+         ZJQ1y86kVkKKfs2B1TcWmxnWkDJtWQ3SSAPKcEqKVXvqpYrvtEZv4ghv+HX4+QOTW5Kl
+         g3HjH3kKDvm92uEBtmoVKsyc9iatBRdyk/KCRhE78mTzoBSZrUQDVyL5+GFv7UHEDDq4
+         FKUwfETtePDu/jfFgzTP2GZeIxVMhj7QcbxCjfouib9Dg0/AtbGoZI3KgZFaHApd/siH
+         eYQA==
+X-Gm-Message-State: AOJu0Yx//FuDyfNyI3V+jUsgfcmh5f/ILVocx64EiuVBwWlm+MXVSKDu
+        wGl97/PX2Sxo40BjQWvIHS8=
+X-Google-Smtp-Source: AGHT+IFMwC7iceoHmBQe230+YM6MJUKW272TFAgwKdGFQCXM/3kUvuMw4LgdPRZ4VlCCPuC2SPZuMw==
+X-Received: by 2002:a17:902:e5c8:b0:1c3:868f:5958 with SMTP id u8-20020a170902e5c800b001c3868f5958mr6183252plf.20.1694774738621;
+        Fri, 15 Sep 2023 03:45:38 -0700 (PDT)
+Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170903244500b001ae0152d280sm3156374pls.193.2023.09.15.03.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 03:45:38 -0700 (PDT)
+Sender: Herbert Xu <herbertx@gmail.com>
+Date:   Fri, 15 Sep 2023 18:45:37 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     davem@davemloft.net, thomas.lendacky@amd.com, john.allen@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rijo-john.Thomas@amd.com
+Subject: Re: [PATCH 0/5] Add new platform support for DBC
+Message-ID: <ZQQ10QeAA6hSMBuo@gondor.apana.org.au>
+References: <20230907184846.47598-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 17/42] dt-bindings: pwm: Add Cirrus EP93xx
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-17-a1d779dcec10@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915-ep93xx-v4-17-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907184846.47598-1-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 10:10, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Thu, Sep 07, 2023 at 01:48:41PM -0500, Mario Limonciello wrote:
+> Some platforms that support dynamic boost control (DBC) support it via
+> a different mailbox than the platform access mailbox.
 > 
-> Add YAML bindings for ep93xx SoC PWM.
+> This series adds support for those platforms.
 > 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
->  .../devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml | 46 ++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
+> It is tested on top of the fixes series. The prerequisite patches refer
+> to that series.
+> Link: https://lore.kernel.org/linux-crypto/20230829150759.156126-1-mario.limonciello@amd.com/T/#m47782729377f6fe5d62130cc701dae7f15306726
 > 
-> diff --git a/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml b/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
-> new file mode 100644
-> index 000000000000..198b9a40f756
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/cirrus,ep9301-pwm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus Logick ep93xx PWM controller
-> +
-> +maintainers:
-> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> +  - Nikita Shubin <nikita.shubin@maquefel.me>
-> +
+> Mario Limonciello (4):
+>   crypto: ccp: Add support for extended PSP mailbox commands
+>   crypto: ccp: Add a communication path abstraction for DBC
+>   crypto: ccp: Add a macro to check capabilities register
+>   crypto: ccp: Add support for DBC over PSP mailbox
+> 
+> Tom Lendacky (1):
+>   crypto: ccp: Move direct access to some PSP registers out of TEE
+> 
+>  drivers/crypto/ccp/dbc.c     |  72 ++++++++++++++-------
+>  drivers/crypto/ccp/dbc.h     |  29 +++------
+>  drivers/crypto/ccp/psp-dev.c | 122 ++++++++++++++++++++++++++++-------
+>  drivers/crypto/ccp/psp-dev.h |  55 ++++++++++++++++
+>  drivers/crypto/ccp/sp-dev.h  |   4 ++
+>  drivers/crypto/ccp/sp-pci.c  |  22 ++++---
+>  drivers/crypto/ccp/tee-dev.c |  48 +++-----------
+>  drivers/crypto/ccp/tee-dev.h |  15 +----
+>  8 files changed, 241 insertions(+), 126 deletions(-)
+> 
+> 
+> base-commit: 7ba2090ca64ea1aa435744884124387db1fac70f
+> prerequisite-patch-id: 4bcf7f3ea21472e4e28c2457cc9827f6023ec6ca
+> prerequisite-patch-id: 903be53a20306f0188e52015dbfe5196738bb2eb
+> prerequisite-patch-id: af396bafb6acaa9c203c1a2c5f4665171cb45e4f
+> prerequisite-patch-id: abe450d4bf1de4a5664a41dbf84e72b1d4bfdae7
+> prerequisite-patch-id: b0b9cf55fcb73a11de6f3da73412fb090562857a
+> -- 
+> 2.34.1
 
-$ref to pwm.yaml
-
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: cirrus,ep9301-pwm
-> +      - items:
-> +          - enum:
-> +              - cirrus,ep9302-pwm
-> +              - cirrus,ep9307-pwm
-> +              - cirrus,ep9312-pwm
-> +              - cirrus,ep9315-pwm
-> +          - const: cirrus,ep9301-pwm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: SoC PWM clock
-
-No pwm-cells?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +additionalProperties: false
-
-and then unevaluatedProperties: false instead
-
-Best regards,
-Krzysztof
-
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
