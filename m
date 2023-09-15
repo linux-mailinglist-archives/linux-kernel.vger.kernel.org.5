@@ -2,181 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2017A26BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C40A7A255F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236679AbjIOS7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
+        id S236274AbjIOSL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236652AbjIOS7R (ORCPT
+        with ESMTP id S230208AbjIOSK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:59:17 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2074.outbound.protection.outlook.com [40.107.102.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89E1AF;
-        Fri, 15 Sep 2023 11:59:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpVoEKcxpwiuzKcMbtoMhAq/5sEcEBrwLLR0DkD7jGZk9KXyXMimdIbfLQ7EfznxkG0ilyUE9E/P0AjJ2xrj0kXMQOTnWa1Zjqct3S+xBq/Ajlc7ETfpwyKrf5sE2uRrYiWlEMlDRDfGw6AycXYIuxjH2IlDd3GoURV28XrF3rrWB2gJ5vkvNP5Y2fA3DvCaGnT32ypfxeo/RLNV5JGo4hX6GItzjvM+wsrDz9rEADN3RP1Cf3OUbo7V5CvrEfab08TulpVqXI4wmnlPZIGDap4yj0C/K/mydpQUOYqfO0LNXB7+svVjnvgAVAJ2nJ76QhCLZlTgU1zc5rtkY7gvSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nM6ZWZakbe+IBI1miklYz4jGu8Gbpl9xf2mO7nvcpH0=;
- b=ZDjbu/qySScK8yNrOTl14z4mCJGXNsA0lzfyihH0t159xdOXo/qWYaldzZgwPk8Kn9e+CA9ziFOwNFgC1geXI4Pf64F2aF9bjzbkUAozv5DjEka+MA/g6mbPOZg83J8uR4mLM8cU1eY6ZMkqJSXiFG+/0b2w1jx9PEAyTLY2qKi7mIEMIbd3cMDrqRjembkezxIVRaGpnxPHHpslyPXVOlyP79o0iHcOangcT5ioMtjaKjBQQs6x7VWZGTJiIoFNjSz8xA4NQSG8c9Up09fqFlHofjVKq7gMWDl0cFglBmYUKxNzclWqxjVaBTPoTECS/Y6pQDfgbm7gND4yCgRMAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nM6ZWZakbe+IBI1miklYz4jGu8Gbpl9xf2mO7nvcpH0=;
- b=nPCuxiBUdewwJAVkIR6R4+vmHvgrbZaBbjsETge6qg2vOeG1khS5MQDBUjN8fdf1w7ChFiFX9p1kf4uMVUiyVsl5MppbyMGXubYdBmvcYWDRoY/p0nCywNxl2qO+/xegjUvdEvSbsENQCkMQ2vn79bFvxrNEVrdXZYXzMRWMO6w=
-Received: from BL1PR13CA0178.namprd13.prod.outlook.com (2603:10b6:208:2bd::33)
- by BN9PR12MB5381.namprd12.prod.outlook.com (2603:10b6:408:102::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
- 2023 18:59:09 +0000
-Received: from BL02EPF0001A0F9.namprd03.prod.outlook.com
- (2603:10b6:208:2bd:cafe::ac) by BL1PR13CA0178.outlook.office365.com
- (2603:10b6:208:2bd::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
- Transport; Fri, 15 Sep 2023 18:59:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF0001A0F9.mail.protection.outlook.com (10.167.242.100) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.19 via Frontend Transport; Fri, 15 Sep 2023 18:59:09 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
- 2023 13:59:09 -0500
-Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Fri, 15 Sep 2023 13:59:08 -0500
-From:   Lizhi Hou <lizhi.hou@amd.com>
-To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <herve.codina@bootlin.com>,
-        <Jonathan.Cameron@Huawei.com>
-CC:     Lizhi Hou <lizhi.hou@amd.com>, <bhelgaas@google.com>,
-        <robh@kernel.org>
-Subject: [PATCH 2/2] PCI: of_property: Fix uninitialized variable when of_irq_parse_raw() failed
-Date:   Fri, 15 Sep 2023 11:08:07 -0700
-Message-ID: <1694801287-17217-2-git-send-email-lizhi.hou@amd.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1694801287-17217-1-git-send-email-lizhi.hou@amd.com>
-References: <1694801287-17217-1-git-send-email-lizhi.hou@amd.com>
+        Fri, 15 Sep 2023 14:10:57 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9A41FCC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:10:52 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FI7KnE014381;
+        Fri, 15 Sep 2023 18:10:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Xl6QxNxh6UG2lv6i3UYJr6tBAW4v7WrM4aye6DYatvc=;
+ b=Ncg5YQzQBmV7/kRHkrTKLV9U2foKfHNwD0D2ppfDz3HA2iMvIVK6a7Dd09J/vv/W80by
+ QQZrnnQQxUCblVKJmtWaVqmOCEn+z/8SdzAjMz2ba/WmAn5w8JeLoM435FNhjeZE5kM8
+ 9ULM4UetPj96AT9SxPF8Iq3Kos9swjrFNaj0M1+Uxyvp3FpN6EYAev8rgLql9knTyaKH
+ mpQQFtGagIB5oriuxaRqnRR5g0bW4Re+JbCTCc5n16A0/E5H/h+Wxj0qBDz94HNfEMqz
+ Uw8k2AUCtrPu9mdRDQn7TMxkEIdIVddMT/Lc6QNSn6qdqHjjQfqT5mg3vzDVYwBDsNHR cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4u5khtkf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 18:10:31 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38FI7bP2016977;
+        Fri, 15 Sep 2023 18:10:31 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4u5khtjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 18:10:31 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38FHBRQG002932;
+        Fri, 15 Sep 2023 18:10:30 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hmp1w1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 18:10:30 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38FIATbA59703658
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Sep 2023 18:10:30 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8560558067;
+        Fri, 15 Sep 2023 18:10:29 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B81F158052;
+        Fri, 15 Sep 2023 18:10:24 +0000 (GMT)
+Received: from [9.179.25.49] (unknown [9.179.25.49])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Sep 2023 18:10:24 +0000 (GMT)
+Message-ID: <bd8a3c47-80f5-61f3-b884-85a7ee92767d@linux.vnet.ibm.com>
+Date:   Fri, 15 Sep 2023 23:40:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, quentin.perret@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, pierre.gondois@arm.com, yu.c.chen@intel.com,
+        tim.c.chen@linux.intel.com, mingo@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org
+References: <20230913114807.665094-1-sshegde@linux.vnet.ibm.com>
+ <xhsmhil8cvi7s.mognet@vschneid.remote.csb>
+ <7c6dd2ec-b9a9-b364-5a29-05336127e519@linux.vnet.ibm.com>
+ <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <xhsmhfs3fve7k.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hrFofkiGLhKYZwd9-AOKkNVZF4Si72ND
+X-Proofpoint-GUID: od3rc8zXu6N_w7MXHXaMvrAhCfFx2Obd
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0F9:EE_|BN9PR12MB5381:EE_
-X-MS-Office365-Filtering-Correlation-Id: e65c5161-bd34-4747-0543-08dbb61dd812
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nNvggFL68bNTYVWHSPdxZdudNoxKDmhsjIWOkQCIGhD7ZaS3EEPO+L4A46J+e47l+jO1epGwgKwZ9qDxUG2KBJoMBTbk6VFUOxoSW955SKaeyxYuiADbXEy+d9zTdlT5MWcPsKFu27u3yZG/A4BMv4rsYOnmoTG8j4I6BtPvdX8qCZXvEyUkqxFdyPdKcGXBJnlnRxyx+IJsck3QGG1L2bF3Hi0WJiTamjBe62ONg08N+0qKbMEmmrnP5YLhhrv40jwpKxTgao3r39XIz6JFU7yYnBEbwu+jGvK+aVEfH2r2t0pQ7ZD0qLVnx3jALRiITR6nNkneX42aMKgrm1LSacOe/KiI8n5HJrJHgmszy0mgVd4wNwHZdd1j+RqwVdGbtiuyOA6dUdZFoDmtDdl1jA5cJhlSzTEPBh5STr22KmpcLxq3+IlcEhAOFAqURwqJk0WJvg66nlyazv7CZtyxafVEOVPawUrW3yGlefo1t51WZxT99sSfm9lEVd8v7Q7tegQsl23G231KQcJjkAZWBt/rPJYu1nvTN4LVJs2yay/XSV3D2IBX+M7tVNejK38OOQn6OvYidW3a5H1xy295oewCWBbd++Q7OQIBzWYeQLe81lxxPe5k26SoyvtPWGwpAmlF2ArSw540rAUmTG947xWPm1Wa0tM0QhbM16ooh4AnagboOMmMp06XIytMGlDJKtW5XsrONQtsl27nWfHJlFtLo20f+svrxJu8e7hOWgw02M/FuWTrcWdvJmRV66acySdK/DJ2+Kd6XsKLOuD5Ng==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(376002)(136003)(82310400011)(451199024)(1800799009)(186009)(36840700001)(40470700004)(46966006)(336012)(40480700001)(2906002)(426003)(83380400001)(2616005)(478600001)(966005)(26005)(86362001)(40460700003)(356005)(36860700001)(70206006)(36756003)(70586007)(82740400003)(81166007)(47076005)(5660300002)(54906003)(316002)(41300700001)(110136005)(44832011)(4326008)(8676002)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 18:59:09.8111
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e65c5161-bd34-4747-0543-08dbb61dd812
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0F9.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5381
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_14,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 impostorscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309150162
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function of_pci_prop_intr_map(), addr_sz[i] will be uninitialized if
-of_irq_parse_raw() returns failure. Add addr_sz array initialization. And
-when parsing irq failed, skip generating interrupt-map pair for the pin.
 
-Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-Reported-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Closes: https://lore.kernel.org/all/20230911154856.000076c3@Huawei.com/
-Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
----
- drivers/pci/of_property.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pci/of_property.c b/drivers/pci/of_property.c
-index 710ec35ba4a1..c2c7334152bc 100644
---- a/drivers/pci/of_property.c
-+++ b/drivers/pci/of_property.c
-@@ -186,8 +186,8 @@ static int of_pci_prop_interrupts(struct pci_dev *pdev,
- static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
- 				struct device_node *np)
- {
-+	u32 i, addr_sz[OF_PCI_MAX_INT_PIN] = { 0 }, map_sz = 0;
- 	struct of_phandle_args out_irq[OF_PCI_MAX_INT_PIN];
--	u32 i, addr_sz[OF_PCI_MAX_INT_PIN], map_sz = 0;
- 	__be32 laddr[OF_PCI_ADDRESS_CELLS] = { 0 };
- 	u32 int_map_mask[] = { 0xffff00, 0, 0, 7 };
- 	struct device_node *pnode;
-@@ -213,33 +213,44 @@ static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
- 		out_irq[i].args[0] = pin;
- 		ret = of_irq_parse_raw(laddr, &out_irq[i]);
- 		if (ret) {
--			pci_err(pdev, "parse irq %d failed, ret %d", pin, ret);
-+			out_irq[i].np = NULL;
-+			pci_dbg(pdev, "parse irq %d failed, ret %d", pin, ret);
- 			continue;
- 		}
--		ret = of_property_read_u32(out_irq[i].np, "#address-cells",
--					   &addr_sz[i]);
--		if (ret)
--			addr_sz[i] = 0;
-+		of_property_read_u32(out_irq[i].np, "#address-cells",
-+				     &addr_sz[i]);
- 	}
- 
- 	list_for_each_entry(child, &pdev->subordinate->devices, bus_list) {
- 		for (pin = 1; pin <= OF_PCI_MAX_INT_PIN; pin++) {
- 			i = pci_swizzle_interrupt_pin(child, pin) - 1;
-+			if (!out_irq[i].np)
-+				continue;
- 			map_sz += 5 + addr_sz[i] + out_irq[i].args_count;
- 		}
- 	}
- 
-+	/*
-+	 * Parsing interrupt failed for all pins. In this case, it does not
-+	 * need to generate interrupt-map property.
-+	 */
-+	if (!map_sz)
-+		return 0;
-+
- 	int_map = kcalloc(map_sz, sizeof(u32), GFP_KERNEL);
- 	mapp = int_map;
- 
- 	list_for_each_entry(child, &pdev->subordinate->devices, bus_list) {
- 		for (pin = 1; pin <= OF_PCI_MAX_INT_PIN; pin++) {
-+			i = pci_swizzle_interrupt_pin(child, pin) - 1;
-+			if (!out_irq[i].np)
-+				continue;
-+
- 			*mapp = (child->bus->number << 16) |
- 				(child->devfn << 8);
- 			mapp += OF_PCI_ADDRESS_CELLS;
- 			*mapp = pin;
- 			mapp++;
--			i = pci_swizzle_interrupt_pin(child, pin) - 1;
- 			*mapp = out_irq[i].np->phandle;
- 			mapp++;
- 			if (addr_sz[i]) {
--- 
-2.34.1
+On 9/15/23 5:30 PM, Valentin Schneider wrote:
+> On 14/09/23 23:26, Shrikanth Hegde wrote:
+>> On 9/14/23 9:51 PM, Valentin Schneider wrote:
+>>> On 13/09/23 17:18, Shrikanth Hegde wrote:
+>>>> sysctl_sched_energy_aware is available for the admin to disable/enable
+>>>> energy aware scheduling(EAS). EAS is enabled only if few conditions are
+>>>> met by the platform. They are, asymmetric CPU capacity, no SMT,
+>>>> valid cpufreq policy, frequency invariant load tracking. It is possible
+>>>> platform when booting may not have EAS capability, but can do that after.
+>>>> For example, changing/registering the cpufreq policy.
+>>>>
+>>>> At present, though platform doesn't support EAS, this sysctl is still
+>>>> present and it ends up calling rebuild of sched domain on write to 1 and
+>>>> NOP when writing to 0. That is confusing and un-necessary.
+>>>>
+>>>
+>>
+>> Hi Valentin, Thanks for taking a look at this patch.
+>>
+>>> But why would you write to it in the first place? Or do you mean to use
+>>> this as an indicator for userspace that EAS is supported?
+>>>
+>>
+>> Since this sysctl is present and its value being 1, it gives the
+>> impression to the user that EAS is supported when it is not.
+>> So its an attempt to correct that part.
+>>
+> 
+> Ah, I see. Then how about just making the sysctl return 0 when EAS isn't
+> supported? And on top of it, prevent all writes when EAS isn't supported
+> (perf domains cannot be built, so there would be no point in forcing a
+> rebuild that will do nothing).
 
+Yes. That's another way. Thats what I had as possible approach in 
+https://lore.kernel.org/lkml/d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com/
+
+
+
+> 
+> I can never remember how to properly use the sysctl API, so that's a very
+> crude implementation, but something like so?
+> 
+> ---
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 05a5bc678c089..dadfc5afc4121 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -230,9 +230,28 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>  	if (write && !capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+> 
+> +	if (!sched_energy_enabled()) {
+
+Use of sched_energy_enabled won't work as Pierre has indicated. 
+
+Instead this can be done by adding those checks in a helper function to
+do similar checks as done build_perf_domains. 
+
+I can send v4 with this approach if it makes more sense. Please let me know.
+
+> +		if (write)
+> +			return -EOPNOTSUPP;
+> +		else {
+> +			size_t len;
+> +
+> +			if (*ppos) {
+> +				*lenp = 0;
+> +				return 0;
+> +			}
+> +
+> +			len = snprintf((char *)buffer, 3, "0\n");
+> +
+> +			*lenp = len;
+> +			*ppos += len;
+> +			return 0;
+> +		}
+> +	}
+> +
+>  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>  	if (!ret && write) {
+> -		state = static_branch_unlikely(&sched_energy_present);
+> +		state = sched_energy_enabled();
+>  		if (state != sysctl_sched_energy_aware)
+>  			rebuild_sched_domains_energy();
+>  	}
+> 
