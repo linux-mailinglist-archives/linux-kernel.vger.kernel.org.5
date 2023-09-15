@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3AE7A1C68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6D97A1C62
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbjIOKhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S232842AbjIOKhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjIOKho (ORCPT
+        with ESMTP id S232296AbjIOKhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:37:44 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F478193
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:37 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-79565370aa3so74538439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:37 -0700 (PDT)
+        Fri, 15 Sep 2023 06:37:15 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B9598;
+        Fri, 15 Sep 2023 03:37:10 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68fc9e0e22eso1620273b3a.1;
+        Fri, 15 Sep 2023 03:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694774256; x=1695379056; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L1M0/0ecR5D/JjO5eCZw5wQnSPeaMytczG5hNDeARmM=;
-        b=d9xvhEOmdD+Y9pI2D1c7OQ9Djy+hdNRtfQWeihZmaJ1Z/b5aJQryJV/1ZaAcIM0Npt
-         RDO1j+U4/PcDYLRo6mymptUqJOa3r4mHGNUwR9MMTYkKcFlO/vZCwYkfu1j4M5y89bns
-         aCgmBVTC2ydEGxkdYwiyzb8SLYQVmfFUzdtBE0s/GYn6LbdsD+WyvPMXwuKxkXud30NI
-         ey11CCaDj+mgeWVv2L7d7RCGAqUwRUwqjvN3VVS7JBITZDQiJDmlfbNG/u7lymu41NRe
-         Ir26C1yeM5spj6XhVBnKDG0BmQM1gamOSLEEyarmoRbRd3e2RtBEG38TkFxUs2Qt+hny
-         xPtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774256; x=1695379056;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1694774229; x=1695379029; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L1M0/0ecR5D/JjO5eCZw5wQnSPeaMytczG5hNDeARmM=;
-        b=dwP1/Cd7PT/g2DtyoBxIznfnY2ZpviPloGI8UCxFmZDVe7jUt97CKqZjY3kIu7d0Ta
-         tQ3tNNfa6+SGbZrsf/r/Gr6TF8/YpX5L4z7BLmhfH6BHQEGlY6PsHVyOPo8AbjxbBy1T
-         wpUdL/6LjyIEt9tZ6DUrNBuHunqhRppwRUvJws5Fs/E9qM1ZkDBDxUgvfvm0jFLXIi7B
-         9Km1qx79bAy30+h+FJ4R/yUd5ZMIL6e3WnzMIWiI+jwtGtGDjgCA5g1XG8yhd3Y5xjzu
-         PP28UsZPJGsrWW7cNUi802IOp6XqxJTv0l9Vqx50NzKG5qOJtu2+Vlfnb+evqcRhsJFj
-         9V/Q==
-X-Gm-Message-State: AOJu0YwFCDSLFXH0a2gKKeeJW2f8b4X1YHuRK3rLrikpBaKMx13s66FT
-        nyfSroMxArNdxx/rMcr902GLQh0cEcw00exMawwrIQ==
-X-Google-Smtp-Source: AGHT+IFgxsuOsWk6AFDfPmDxp226TK7N3eIMtQRvYBazzJzhbW4VMOvdKOYSKlIfmLdOxrT9VEgl58EwtzjzStmLNes=
-X-Received: by 2002:a6b:d918:0:b0:795:1a7c:486f with SMTP id
- r24-20020a6bd918000000b007951a7c486fmr1140189ioc.14.1694774256505; Fri, 15
- Sep 2023 03:37:36 -0700 (PDT)
+        bh=P4ds4tKoxDi1WpvGio9GUdU3sq3b3qDljaVA0FHFc8M=;
+        b=kewJKZUwKpad8jGWOOzF/JfgAQhPaNhFPXiwnmtMNfbIrP7VDgG1fvxLlH9idVSRiC
+         Bx+UmtgzxgJPDXUuIgf4LAO59f+RilQWqqWbkLGP/pDm3OpQhALXGT5x1yu/uugfFRaY
+         ET7n1PjZOkHRuQl9xmjsmw1GSQgfyTGzHhUAoGPU+6DlSo/vQ6E69LuozfVywI5LpU1i
+         O+jT17QyC773iZRCnyi0Ig3k53uBcisrgbgePimMG9S3m461VK+3EErM1ANoWYCeiVMh
+         aEIUtH3YPVXNWlFLqa2lSxPupMPqJZoDnJFjy5eekW3PBS8pJD5Albxrzz/sjjt81Vrd
+         wBCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694774229; x=1695379029;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P4ds4tKoxDi1WpvGio9GUdU3sq3b3qDljaVA0FHFc8M=;
+        b=Nff4jUgQ7zqdAgdtTiCDqkJvVK8MAq0tFe+YHllC3Jb4FIoWYsCUAghRa8pRy/FSXI
+         OxLD7ab9L61+3fppYBrKCa5IdCurHt/1WGHG6CtYLmxmrO0xGFLv4thoZEijMoazNWPe
+         IEDih41ghuP5o4YhFDtNEJ5Zv+qdGjYwiryh6W9Cw/grx4kALMLL++kdqa49IT5AaGQw
+         vVnEo1zTIT0+cmFNhD/Ou+PLlmPV7O1/vBTVYgdCNDEFypjXXXmmSs4eAAp9/2yYqepa
+         4IY5cSZF0HbpZTiaD3OxuEwEl6RNeJyhFE3MR+z4EreHWOoB69SNJg8xDG66B+2IKKB5
+         cfAg==
+X-Gm-Message-State: AOJu0YzqWE7Ba0YRibyunC8MDj6uaXi1kqezlC1On8C9FWmPAfeJyRMj
+        nYFck1Q87U6ezI7bAuWlOvg=
+X-Google-Smtp-Source: AGHT+IG61pm+/mU18Ba0gOwzZK6k/3C3Eu2EnyFnfGOpxg+NhXyJjBWOytdYUwdFf2an/DLNG6Kkiw==
+X-Received: by 2002:a05:6a00:22c6:b0:68e:4587:3da9 with SMTP id f6-20020a056a0022c600b0068e45873da9mr1158961pfj.17.1694774229408;
+        Fri, 15 Sep 2023 03:37:09 -0700 (PDT)
+Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
+        by smtp.gmail.com with ESMTPSA id m30-20020a63711e000000b00573db18bca2sm2539650pgc.33.2023.09.15.03.37.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 03:37:08 -0700 (PDT)
+Sender: Herbert Xu <herbertx@gmail.com>
+Date:   Fri, 15 Sep 2023 18:37:07 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        alex@shruggie.ro, Jason@zx2c4.com,
+        bcm-kernel-feedback-list@broadcom.com, sbranden@broadcom.com,
+        rjui@broadcom.com, florian.fainelli@broadcom.com,
+        olivia@selenic.com
+Subject: Re: [PATCH] char: hw_random: bcm2835-rng: removed call to
+ platform_set_drvdata()
+Message-ID: <ZQQz0+KJlWvbs0jh@gondor.apana.org.au>
+References: <20230823111555.3734-1-aboutphysycs@gmail.com>
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <89c2f64120a7dd6b2255a9a281603359a50cf6f7.1693328501.git.andreyknvl@google.com>
- <CAG_fn=WsYH8iwHCGsoBRL9BRM-uzKJ3+RDgrB5DEGVJKLPagVw@mail.gmail.com> <CA+fCnZftKPJ7zDWmPRjxYXQK91DX2eEw0nDNtYW856399v__Hg@mail.gmail.com>
-In-Reply-To: <CA+fCnZftKPJ7zDWmPRjxYXQK91DX2eEw0nDNtYW856399v__Hg@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 15 Sep 2023 12:36:56 +0200
-Message-ID: <CAG_fn=USVp-HtC=K=BwaNQVCVVeHDRcGSCpF8dS6f9C1Vd8wjg@mail.gmail.com>
-Subject: Re: [PATCH 05/15] stackdepot: use fixed-sized slots for stack records
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230823111555.3734-1-aboutphysycs@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > As a side note, kmsan_internal_chain_origin()
-> > (https://elixir.bootlin.com/linux/latest/source/mm/kmsan/core.c#L214)
-> > creates small 3-frame records in the stack depot to link two stacks
-> > together, which will add unnecessary stackdepot pressure.
-> > But this can be fixed by storing both the new stack trace and the link
-> > to the old stack trace in the same record.
->
-> Do you mean this can be fixed in KMSAN? Or do you mean some kind of an
-> extension to the stack depot interface?
+On Wed, Aug 23, 2023 at 02:15:55PM +0300, Andrei Coardos wrote:
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
+> 
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> ---
+>  drivers/char/hw_random/bcm2835-rng.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-Yes, I'll just fix this on the KMSAN side.
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
