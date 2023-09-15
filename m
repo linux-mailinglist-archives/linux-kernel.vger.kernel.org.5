@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BF77A1C4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B5C7A1C51
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjIOKdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S232822AbjIOKdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjIOKdc (ORCPT
+        with ESMTP id S231367AbjIOKdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 06:33:32 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFF294;
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC6BA1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:33:27 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so258686566b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694774006; x=1695378806; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AHNXmBxDw1apCLxAkHOvDRkSwOFlN5lNz8sn0ic2gIM=;
+        b=VPsVL5xRkvbuvEgWP0ER5qiuhLMWxCjPNEeFcFdGl/JkhtMlJaYfpRkkzH6Di2OMNm
+         aByN0vvnplJuNI9Ezt322xJasx7pkndsOn1z1DaLi3XC2O38SC3CR/GS0vj2NgG5l5Vw
+         gyuVJhFFDBQbP0+COl2imyqZF1HW6D2ZCm2jx8zKl+jSLTKywCrBFC49t70UPkhVpMZI
+         AhfTbClL6fjWnptS/eDw0WD3vviUrWcg7PEdavIBlK5txrIjWL5oG2ER9AKPp0/MZA5y
+         Jvul2gadtuS+FNmfkwZsCD7oqlPoAKdJJy4gPkS6Fwy3/UTKOOJBcKrSsNhlIwHgUbQ+
+         0HPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694774006; x=1695378806;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AHNXmBxDw1apCLxAkHOvDRkSwOFlN5lNz8sn0ic2gIM=;
+        b=lQYTXtne2Dl06wO/ocbe5b9OG0pM8UmjoVgsAckl4s5XGCQ4t/RWXfRPGpN0feTYIO
+         WD4yqg9Xfof0bXIgZOKjkm8zVA8nyBTmraF8qRdycoNbhGTKjcAkuoPlXCUxNpJOSJEd
+         OLZV12CjrB4GHcgVGoEBZJ+VFs7DBVhKWxZaZw+cyijfbwW6EHRlU6XPg4/Vku1RKbBK
+         mZR1wBzOlDKC9LTWaXpsHglXsVxCBm1BFSRHoK2wYw5hahTi2K/44+TP75M2gTC7/ZTv
+         +kjkYteq/xTQW1DaWVmi81d/Gt7HIcrUAh3E/kI6exW+4THh8lfHIeMN3BaJpvPSr/Jb
+         GVmg==
+X-Gm-Message-State: AOJu0YyhjADdd6Os7Zsml3gt0GS4ESIXnt5uZhlNuywT4hgkJb6ANMjt
+        wchiHiNte2ELIFW7Ns2I2FxIxw==
+X-Google-Smtp-Source: AGHT+IHJvOEsaBTHM8g8l1b4WaIw/WLvZKGU9znyrRyylohvQ/GtYWnnh3DUhsMGba8RbxKv1HP+iw==
+X-Received: by 2002:a17:906:18aa:b0:9a5:d657:47e1 with SMTP id c10-20020a17090618aa00b009a5d65747e1mr1032731ejf.43.1694774006100;
         Fri, 15 Sep 2023 03:33:26 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 39BBE7FEF;
-        Fri, 15 Sep 2023 18:33:25 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Sep
- 2023 18:33:25 +0800
-Received: from [192.168.125.57] (113.72.144.67) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Sep
- 2023 18:33:23 +0800
-Message-ID: <88ba051e-040c-4ff0-1cb0-2b6f01cb950c@starfivetech.com>
-Date:   Fri, 15 Sep 2023 18:33:18 +0800
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id n4-20020a170906088400b009928b4e3b9fsm2232224eje.114.2023.09.15.03.33.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:33:25 -0700 (PDT)
+Message-ID: <726e7f51-ce2c-5ac1-5347-21d6cf40c8c8@linaro.org>
+Date:   Fri, 15 Sep 2023 12:33:23 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 0/19] Refactoring Microchip PCIe driver and add
- StarFive PCIe
-To:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230915102243.59775-1-minda.chen@starfivetech.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 07/10] dt-bindings: rng: add st,rng-lock-conf
 Content-Language: en-US
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230915102243.59775-1-minda.chen@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Gatien CHEVALLIER <gatien.chevallier@foss.st.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Lionel Debieve <lionel.debieve@foss.st.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230908165120.730867-1-gatien.chevallier@foss.st.com>
+ <20230908165120.730867-8-gatien.chevallier@foss.st.com>
+ <20230911150958.GA1255978-robh@kernel.org>
+ <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.144.67]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,70 +86,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/09/2023 11:28, Gatien CHEVALLIER wrote:
+> Hello Rob,
+> 
+> On 9/11/23 17:09, Rob Herring wrote:
+>> On Fri, Sep 08, 2023 at 06:51:17PM +0200, Gatien Chevallier wrote:
+>>> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
+>>> and RNG_NSCR will be locked. It is supported starting from the RNG
+>>> version present in the STM32MP13
+>>
+>> This should be squashed into the prior binding patch.
+>>
+>>>
+>>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+>>> ---
+>>>   .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
+>>>   1 file changed, 14 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>> index 59abdc85a9fb..0055f14a8e3f 100644
+>>> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>> @@ -37,6 +37,20 @@ required:
+>>>     - reg
+>>>     - clocks
+>>>   
+>>> +allOf:
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            enum:
+>>> +              - st,stm32mp13-rng
+>>> +    then:
+>>> +      properties:
+>>> +        st,rng-lock-conf:
+>>> +          type: boolean
+>>> +          description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
+>>> +                       RNG_NSCR will be locked.
+>>
+>> Define the property at the top-level and then restrict its presence in
+>> a if/then schema.
+>>
+> 
+> Can you please point me to an example of such case. I can't find a way
+> to define at the top-level the property then restrict it to specific
+> compatibles.
+
+You can check my slides from the talks about not reaching 10 iterations
+of bindings patches.
+
+Or open example-schema (this should be your starting point):
+https://elixir.bootlin.com/linux/v5.19/source/Documentation/devicetree/bindings/example-schema.yaml#L212
 
 
-On 2023/9/15 18:22, Minda Chen wrote:
-> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> same IP and have commit their codes, which are mixed with PLDA
-> controller codes and Microchip platform codes.
+Also:
+https://elixir.bootlin.com/linux/v6.4-rc7/source/Documentation/devicetree/bindings/net/qcom,ipa.yaml#L174
 > 
-> For re-use the PLDA controller codes, I request refactoring microchip
-> codes, move PLDA common codes to PLDA files.
-> Desigware and Cadence is good example for refactoring codes.
+> Else I'd change
+> additionalProperties :false to
+> unevaluatedProperties: false
 > 
-> So first step is extract the PLDA common codes from microchip, and
-> refactoring the microchip codes.(patch1 - 16)
-> Then, add Starfive codes. (patch17 - 19)
-> 
-> This patchset is base on v6.6-rc1
-> 
-> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
->        docs from microchip,pcie-host.yaml
-> patch2 is move PolarFire codes to PLDA directory.
-> patch3 is move PLDA IP register macros to plda-pcie.h
-> patch4 is rename data structure in microchip codes.
-> patch5 is rename two setup functions in microchip codes, prepare to move
-> to common file.
-> patch6 is change the arguments of plda_pcie_setup_iomems()
-> patch7 is move the two setup functions to common file pcie-plda-host.c
-> patch8 is Add PLDA event interrupt codes and IRQ domain ops.
-> patch9 is rename the IRQ related functions, prepare to move to
-> pcie-plda-host.
-> patch10 - 14 is modify the event codes, preparing for support starfive
-> and microchip two platforms.
-> patch15 is move IRQ related functions to pcie-plda-host.c
-> patch16 is set plda_event_handler to static.
-> patch17 is add StarFive JH7110 PCIe dt-binding doc.
-> patch18 is add StarFive JH7110 Soc PCIe codes.
-> patch19 is Starfive dts config
-> 
-> previous version:
-> v1:https://patchwork.kernel.org/project/linux-pci/cover/20230719102057.22329-1-minda.chen@starfivetech.com/
-> v2:https://patchwork.kernel.org/project/linux-pci/cover/20230727103949.26149-1-minda.chen@starfivetech.com/
-> v3:https://patchwork.kernel.org/project/linux-pci/cover/20230814082016.104181-1-minda.chen@starfivetech.com/
-> v4:https://patchwork.kernel.org/project/linux-pci/cover/20230825090129.65721-1-minda.chen@starfivetech.com/
-> v5:https://patchwork.kernel.org/project/linux-pci/cover/20230907091058.125630-1-minda.chen@starfivetech.com/
-> 
-> change:
->   v6:
->     v5 patch 4 split to patch 4 -6. New patches just contain one
-> function modification. It is more reguluar.
->     patch 7: Just move the two setup functions only
->     patch 8 : draw a graph of PLDA local register, make it easier to
-> review the codes.
->     v5 patch 7 split to patch 9- 14. Each patch just contain one
-> function modification. It is more regular.
->     patch 9: rename IRQ related functions.
->     patch 10 - 14 : modify the events codes, total five patch.
->     patch 15: move IRQ related functions to pcie-plda-host.c
->     patch 16: Add new patch 16.
->     patch 18- 19 using "linux,pci-domain" dts setting.
-> 
-Hi Bjorn
-I have noticed that the previous patches of refactoring codes is not so regular( the patched of modify Microchip' codes), and you
-don't give any comment to the patches. 
-Now this verison is more regular and easier to review. Could you please review the driver codes?
+> so the definition of the property is seen.
 
-Hi Conor and Daire
-Thanks for reviewing. Now I split more patches and make it easier to review. 
+No, why? Definition is there when you move it to the top as asked.
+
+Best regards,
+Krzysztof
+
