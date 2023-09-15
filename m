@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89A77A1EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3147A7A1F1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234898AbjIOM1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
+        id S235037AbjIOMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234903AbjIOM1I (ORCPT
+        with ESMTP id S234979AbjIOMqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:27:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4E52120;
-        Fri, 15 Sep 2023 05:27:01 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 12:26:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694780819;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+vWFyP7OLMXcdpfdgf7/35HLZDxH06nBm9Y+bQWqeo=;
-        b=JPvV6yCYVt/1BQ9FikRMMf+EgfMFd9p1Km6+5LTt9XmzDWzMnIoXFDI0gDod9oyAjIXLaA
-        pEosRwZovzKHMc++VsmV0M8aYneknncou1GF7eU5+eqxGrGLJYNpHTdlLNYcXHZEknWz0+
-        8vqv+ULs7CpL8uAHeTIrLx4m5KPDw3hEm1+KG5bQpJzd2SoUsnt3eEe3jVL9fCUZL0+yIS
-        jUtpDTDgiRzPBNOqC+UGwJMGhDUz6qJqrCcVHbcGqZZz8LN5/ehgJpEP5pBmaWWJCy3cil
-        rX336XHWsqL7a+G7vweY/r+qb9ppHLvSqPmn9km6s0zKxY8t4KvEU90PnOaS0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694780819;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+vWFyP7OLMXcdpfdgf7/35HLZDxH06nBm9Y+bQWqeo=;
-        b=5Bt1E/1RGu6XtvHgWS3t3VG3IB3XJIRUCCV8/pgccNdj7D/WTo4vENkOfjgiVb3R78M8TE
-        GKe2AaAjkSomomDQ==
-From:   "tip-bot2 for Chengming Zhou" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Fix cfs_rq_is_decayed() on !SMP
-Cc:     "Leo Yu-Chi Liang" <ycliang@andestech.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230913132031.2242151-1-chengming.zhou@linux.dev>
-References: <20230913132031.2242151-1-chengming.zhou@linux.dev>
+        Fri, 15 Sep 2023 08:46:38 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7D02D51;
+        Fri, 15 Sep 2023 05:46:01 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38FCjtxX024939;
+        Fri, 15 Sep 2023 07:45:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694781955;
+        bh=BRW8EyUjjI/j4vI+qIaQK8OauJ8jbUUuCaWiIex1n10=;
+        h=From:To:CC:Subject:Date;
+        b=bb2fptpeTtxGKySsY07ibStDdulLhF4a78Hc1m2NH7IR2YBxwcn0FOGzUgmyOQwdW
+         4AFHTApmAKgx+wyOfJNMEmtfqEER5ltNeGGi9GVC6ZoYdSXWbjAI+BPPa/LbP4ofVu
+         hM5CJ75xWpRHeNbzrSmQfJ6eQKo0JgXKjvWBlb/Q=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38FCjtRp100203
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Sep 2023 07:45:55 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Sep 2023 07:45:54 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Sep 2023 07:45:55 -0500
+Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38FCjqOc016962;
+        Fri, 15 Sep 2023 07:45:52 -0500
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dhruva Gole <d-gole@ti.com>, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] spi: spi-cadence-quadspi: Fix missing unwind goto warnings
+Date:   Fri, 15 Sep 2023 18:01:04 +0530
+Message-ID: <20230915123103.2493640-1-d-gole@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <169478081914.27769.11548694919151227611.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Fix the smatch warnings that were recently introduced in the runtime pm
+patch [0]:
+drivers/spi/spi-cadence-quadspi.c:1882 cqspi_probe() warn: missing
+unwind goto?
 
-Commit-ID:     c0490bc9bb62d9376f3dd4ec28e03ca0fef97152
-Gitweb:        https://git.kernel.org/tip/c0490bc9bb62d9376f3dd4ec28e03ca0fef97152
-Author:        Chengming Zhou <zhouchengming@bytedance.com>
-AuthorDate:    Wed, 13 Sep 2023 13:20:31 
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 15 Sep 2023 14:24:00 +02:00
+[0] https://lore.kernel.org/all/20230829062706.786637-1-d-gole@ti.com/
 
-sched/fair: Fix cfs_rq_is_decayed() on !SMP
-
-We don't need to maintain per-queue leaf_cfs_rq_list on !SMP, since
-it's used for cfs_rq load tracking & balancing on SMP.
-
-But sched debug interface uses it to print per-cfs_rq stats.
-
-This patch fixes the !SMP version of cfs_rq_is_decayed(), so the
-per-queue leaf_cfs_rq_list is also maintained correctly on !SMP,
-to fix the warning in assert_list_leaf_cfs_rq().
-
-Fixes: 0a00a354644e ("sched/fair: Delete useless condition in tg_unthrottle_up()")
-Reported-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Closes: https://lore.kernel.org/all/ZN87UsqkWcFLDxea@swlinux02/
-Link: https://lore.kernel.org/r/20230913132031.2242151-1-chengming.zhou@linux.dev
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202309140543.03dMbMM5-lkp@intel.com/
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
 ---
- kernel/sched/fair.c | 2 +-
+
+Link: https://lore.kernel.org/r/20230915123103.2493640-1-d-gole@ti.com
+
+Tested locally using the following cmd:
+make -j32 ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- drivers/spi/spi-cadence-quadspi.o CHECK="smatch -p=kernel" C=1 W=1
+
+ drivers/spi/spi-cadence-quadspi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 41cfd61..c893721 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4866,7 +4866,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 4828da4587c5..e04f257c1067 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1879,7 +1879,7 @@ static int cqspi_probe(struct platform_device *pdev)
  
- static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- {
--	return true;
-+	return !cfs_rq->nr_running;
- }
+ 	ret = devm_pm_runtime_enable(dev);
+ 	if (ret)
+-		return ret;
++		goto probe_setup_failed;
  
- #define UPDATE_TG	0x0
+ 	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
+ 	pm_runtime_use_autosuspend(dev);
+-- 
+2.34.1
+
