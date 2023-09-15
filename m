@@ -2,54 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FA67A1A9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED207A1A9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbjIOJde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S233620AbjIOJeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbjIOJdc (ORCPT
+        with ESMTP id S233371AbjIOJeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:33:32 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C61CED
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:33:26 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vs6ltje_1694770402;
-Received: from 30.97.48.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vs6ltje_1694770402)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Sep 2023 17:33:23 +0800
-Message-ID: <1d2e6eff-027b-bf27-924d-c232667d0845@linux.alibaba.com>
-Date:   Fri, 15 Sep 2023 17:33:28 +0800
+        Fri, 15 Sep 2023 05:34:02 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C09A1FDE
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:33:53 -0700 (PDT)
+Received: from [IPV6:2405:201:0:21ea:7672:a60c:c80:abca] (unknown [IPv6:2405:201:0:21ea:7672:a60c:c80:abca])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B603C66072F9;
+        Fri, 15 Sep 2023 10:33:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694770432;
+        bh=b4vRNHUDXfwABShZ8uXFXtw1t6P/fZTl2xv1VxRp3Sc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VLY45sPufM1XJF1mRdyJNHT2GsTPm+hVlLW/mtlyDefoEdznYinvNaKx9CnP+/8t7
+         3uqYy5kIC/ZSdnqPNt33UYjW2SzxtkJVOgTEmrdJpZdt2NdHcehD6LToobFX3XAalt
+         Za7Jr9n2RLwEzEfuitJetbstmLbgesHGHwgsIeUIeM/czYKjlFhJA1R9Jc/dWAj8Dn
+         dgkxy5Cp0TIspu9L5a4LEQrE1RLDu2c3hl06Mk1jSxmGMsDv675GYyGTPApj+9dvev
+         k07gnFUT1WMOBzFdg8Zn1SLgiAqMVzKE9Cx08lKfBALzHXulYznxC4k19vojt70bFU
+         kQva9LYlm69ew==
+Message-ID: <b31cae57-89ab-eb8b-1085-1d7476735d58@collabora.com>
+Date:   Fri, 15 Sep 2023 15:03:44 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 1/4] mm/compaction: add support for >0 order folio
- memory compaction.
-To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Mcgrof Chamberlain <mcgrof@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20230912162815.440749-1-zi.yan@sent.com>
- <20230912162815.440749-2-zi.yan@sent.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230912162815.440749-2-zi.yan@sent.com>
+Subject: Re: [PATCH v4] Makefile.compiler: replace cc-ifversion with
+ compiler-specific macros
+Content-Language: en-US
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Maksim Panchenko <maks@meta.com>,
+        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo?= <ricardo.canuelo@collabora.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
+        denys.f@collabora.com, Nick Desaulniers <ndesaulniers@google.com>,
+        kernelci@lists.linux.dev,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <CAKwvOd=4hBcU4fAkddU0b-GOZc9FzTZoj3PFW6ZZrX0jS8x+bg@mail.gmail.com>
+ <CAKwvOd=8LVU+iANkFx18Wm1jg7gYiAXovAmo9t5ZZaVdMULn-Q@mail.gmail.com>
+ <875y8ok9b5.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdmJJibt6sHSp91v2s7BxUWBC6xG7F7+3C6gUxNMzZ2xRA@mail.gmail.com>
+ <87353ok78h.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ <2023052247-bobtail-factsheet-d104@gregkh>
+ <CAKwvOd=2zAV_mizvzLFdyHE_4OzBY5OVu6KLWuQPOMZK37vsmQ@mail.gmail.com>
+ <cff33e12-3d80-7e62-1993-55411ccabc01@collabora.com>
+ <CAKwvOd=F29-UkNO7FtUWpVV=POOZLb6QgD=mhLMWtRfkRSSi2A@mail.gmail.com>
+ <a037a08c-44c4-24e8-1cba-7e4e8b21ffaa@collabora.com>
+ <CAK7LNAS8Y9syCiHMO2r75D6hgCSsDDvJ_=VMKpYqjondnbSZjw@mail.gmail.com>
+ <267b73d6-8c4b-40d9-542d-1910dffc3238@leemhuis.info>
+ <2833d0db-f122-eccd-7393-1f0169dc0741@collabora.com>
+ <26aa6f92-2376-51a4-bbdc-abbbd62c23d2@leemhuis.info>
+ <859c6dde-37ad-492e-baa0-4ea100d8381f@leemhuis.info>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+In-Reply-To: <859c6dde-37ad-492e-baa0-4ea100d8381f@leemhuis.info>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,285 +84,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/09/23 15:35, Thorsten Leemhuis wrote:
+
+Hi Thorsten,
+
+> On 29.08.23 13:28, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> On 11.07.23 13:16, Shreeya Patel wrote:
+>>> On 10/07/23 17:39, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>>> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+>>>> for once, to make this easily accessible to everyone.
+>>>>
+>>>> Shreeya Patel, Masahiro Yamada: what's the status of this? Was any
+>>>> progress made to address this? Or is this maybe (accidentally?) fixed
+>>>> with 6.5-rc1?
+>>> I still see the regression happening so it doesn't seem to be fixed.
+>>> https://linux.kernelci.org/test/case/id/64ac675a8aebf63753bb2a8c/
+>>>
+>>> Masahiro had submitted a fix for this issue here.
+>>>
+>>> https://lore.kernel.org/lkml/ZJEni98knMMkU%2Fcl@buildd.core.avm.de/T/#t
+>>>
+>>> But I don't see any movement there. Masahiro, are you planning to send a
+>>> v2 for it?
+>> That was weeks ago and we didn't get a answer. :-/ Was this fixed in
+>> between? Doesn't look like it from here, but I might be missing something.
+> Still no reply. :-/
+>
+> Shreeya Patel, does the problem still happen with 6.6-rc1 and do you
+> still want to see it fixed? In that case our only option to get things
+> rolling again might be to involve Linus, unless someone in the CC list
+> has a idea to resolve this. Might also be good to know if reverting the
+> culprit fixes the problem.
 
 
-On 9/13/2023 12:28 AM, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> Before, memory compaction only migrates order-0 folios and skips >0 order
-> folios. This commit adds support for >0 order folio compaction by keeping
-> isolated free pages at their original size without splitting them into
-> order-0 pages and using them directly during migration process.
-> 
-> What is different from the prior implementation:
-> 1. All isolated free pages are kept in a MAX_ORDER+1 array of page lists,
->     where each page list stores free pages in the same order.
-> 2. All free pages are not post_alloc_hook() processed nor buddy pages,
->     although their orders are stored in first page's private like buddy
->     pages.
-> 3. During migration, in new page allocation time (i.e., in
->     compaction_alloc()), free pages are then processed by post_alloc_hook().
->     When migration fails and a new page is returned (i.e., in
->     compaction_free()), free pages are restored by reversing the
->     post_alloc_hook() operations.
-> 
-> Step 3 is done for a latter optimization that splitting and/or merging free
-> pages during compaction becomes easier.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->   mm/compaction.c | 108 +++++++++++++++++++++++++++++++++++++++---------
->   mm/internal.h   |   7 +++-
->   2 files changed, 94 insertions(+), 21 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 01ba298739dd..868e92e55d27 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -107,6 +107,44 @@ static void split_map_pages(struct list_head *list)
->   	list_splice(&tmp_list, list);
->   }
->   
-> +static unsigned long release_free_list(struct free_list *freepages)
-> +{
-> +	int order;
-> +	unsigned long high_pfn = 0;
-> +
-> +	for (order = 0; order <= MAX_ORDER; order++) {
-> +		struct page *page, *next;
-> +
-> +		list_for_each_entry_safe(page, next, &freepages[order].pages, lru) {
-> +			unsigned long pfn = page_to_pfn(page);
-> +
-> +			list_del(&page->lru);
-> +			/*
-> +			 * Convert free pages into post allocation pages, so
-> +			 * that we can free them via __free_page.
-> +			 */
-> +			post_alloc_hook(page, order, __GFP_MOVABLE);
-> +			__free_pages(page, order);
-> +			if (pfn > high_pfn)
-> +				high_pfn = pfn;
-> +		}
-> +	}
-> +	return high_pfn;
-> +}
-> +
-> +static void sort_free_pages(struct list_head *src, struct free_list *dst)
-> +{
-> +	unsigned int order;
-> +	struct page *page, *next;
-> +
-> +	list_for_each_entry_safe(page, next, src, lru) {
-> +		order = buddy_order(page);
+I don't see this issue happening on 6.6-rc1 kernel and it was only last 
+seen in 6.5 kernel.
+But there was no fix added to Kbuild in the meantime so not sure which 
+commit really fixed this issue.
 
-These pages are already isolated from the buddy system, but continue to 
-use buddy_order() to get the page order, which can be confused. 
-Moreover, the buddy_order() should be under the zone lock protection.
+For now we can mark this as resolved and I'll keep an eye on the future 
+test results to see if this pops up again.
 
-IMO, just use 'page_private()' to get the page order like 
-split_map_pages() already did, that seems more readable.
 
-> +
-> +		list_move(&page->lru, &dst[order].pages);
-> +		dst[order].nr_free++;
-> +	}
-> +}
-> +
->   #ifdef CONFIG_COMPACTION
->   bool PageMovable(struct page *page)
->   {
-> @@ -1422,6 +1460,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->   {
->   	unsigned long start_pfn, end_pfn;
->   	struct page *page;
-> +	LIST_HEAD(freelist);
->   
->   	/* Do not search around if there are enough pages already */
->   	if (cc->nr_freepages >= cc->nr_migratepages)
-> @@ -1439,7 +1478,8 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->   	if (!page)
->   		return;
->   
-> -	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
-> +	isolate_freepages_block(cc, &start_pfn, end_pfn, &freelist, 1, false);
-> +	sort_free_pages(&freelist, cc->freepages);
->   
->   	/* Skip this pageblock in the future as it's full or nearly full */
->   	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
-> @@ -1568,7 +1608,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
->   				nr_scanned += nr_isolated - 1;
->   				total_isolated += nr_isolated;
->   				cc->nr_freepages += nr_isolated;
-> -				list_add_tail(&page->lru, &cc->freepages);
-> +				list_add_tail(&page->lru, &cc->freepages[order].pages);
+Thanks,
+Shreeya Patel
 
-Missed to update cc->freepages[order].nr_free?
-
->   				count_compact_events(COMPACTISOLATED, nr_isolated);
->   			} else {
->   				/* If isolation fails, abort the search */
-> @@ -1642,13 +1682,13 @@ static void isolate_freepages(struct compact_control *cc)
->   	unsigned long isolate_start_pfn; /* exact pfn we start at */
->   	unsigned long block_end_pfn;	/* end of current pageblock */
->   	unsigned long low_pfn;	     /* lowest pfn scanner is able to scan */
-> -	struct list_head *freelist = &cc->freepages;
->   	unsigned int stride;
-> +	LIST_HEAD(freelist);
->   
->   	/* Try a small search of the free lists for a candidate */
->   	fast_isolate_freepages(cc);
->   	if (cc->nr_freepages)
-> -		goto splitmap;
-> +		return;
->   
->   	/*
->   	 * Initialise the free scanner. The starting point is where we last
-> @@ -1708,7 +1748,8 @@ static void isolate_freepages(struct compact_control *cc)
->   
->   		/* Found a block suitable for isolating free pages from. */
->   		nr_isolated = isolate_freepages_block(cc, &isolate_start_pfn,
-> -					block_end_pfn, freelist, stride, false);
-> +					block_end_pfn, &freelist, stride, false);
-> +		sort_free_pages(&freelist, cc->freepages);
->   
->   		/* Update the skip hint if the full pageblock was scanned */
->   		if (isolate_start_pfn == block_end_pfn)
-> @@ -1749,10 +1790,6 @@ static void isolate_freepages(struct compact_control *cc)
->   	 * and the loop terminated due to isolate_start_pfn < low_pfn
->   	 */
->   	cc->free_pfn = isolate_start_pfn;
-> -
-> -splitmap:
-> -	/* __isolate_free_page() does not map the pages */
-> -	split_map_pages(freelist);
->   }
->   
->   /*
-> @@ -1763,18 +1800,21 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->   {
->   	struct compact_control *cc = (struct compact_control *)data;
->   	struct folio *dst;
-> +	int order = folio_order(src);
->   
-> -	if (list_empty(&cc->freepages)) {
-> +	if (!cc->freepages[order].nr_free) {
->   		isolate_freepages(cc);
-> -
-> -		if (list_empty(&cc->freepages))
-> +		if (!cc->freepages[order].nr_free)
->   			return NULL;
->   	}
->   
-> -	dst = list_entry(cc->freepages.next, struct folio, lru);
-> +	dst = list_first_entry(&cc->freepages[order].pages, struct folio, lru);
-> +	cc->freepages[order].nr_free--;
->   	list_del(&dst->lru);
-> -	cc->nr_freepages--;
-> -
-> +	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
-> +	if (order)
-> +		prep_compound_page(&dst->page, order);
-> +	cc->nr_freepages -= 1 << order;
->   	return dst;
->   }
->   
-> @@ -1786,9 +1826,34 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->   static void compaction_free(struct folio *dst, unsigned long data)
->   {
->   	struct compact_control *cc = (struct compact_control *)data;
-> +	int order = folio_order(dst);
-> +	struct page *page = &dst->page;
->   
-> -	list_add(&dst->lru, &cc->freepages);
-> -	cc->nr_freepages++;
-> +	if (order) {
-> +		int i;
-> +
-> +		page[1].flags &= ~PAGE_FLAGS_SECOND;
-> +		for (i = 1; i < (1 << order); i++) {
-> +			page[i].mapping = NULL;
-> +			clear_compound_head(&page[i]);
-> +			page[i].flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
-> +		}
-> +
-> +	}
-> +	/* revert post_alloc_hook() operations */
-> +	page->mapping = NULL;
-> +	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
-> +	set_page_count(page, 0);
-> +	page_mapcount_reset(page);
-> +	reset_page_owner(page, order);
-> +	page_table_check_free(page, order);
-> +	arch_free_page(page, order);
-> +	set_page_private(page, order);
-> +	INIT_LIST_HEAD(&dst->lru);
-> +
-> +	list_add(&dst->lru, &cc->freepages[order].pages);
-> +	cc->freepages[order].nr_free++;
-> +	cc->nr_freepages += 1 << order;
->   }
->   
->   /* possible outcome of isolate_migratepages */
-> @@ -2412,6 +2477,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   	const bool sync = cc->mode != MIGRATE_ASYNC;
->   	bool update_cached;
->   	unsigned int nr_succeeded = 0;
-> +	int order;
->   
->   	/*
->   	 * These counters track activities during zone compaction.  Initialize
-> @@ -2421,7 +2487,10 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   	cc->total_free_scanned = 0;
->   	cc->nr_migratepages = 0;
->   	cc->nr_freepages = 0;
-> -	INIT_LIST_HEAD(&cc->freepages);
-> +	for (order = 0; order <= MAX_ORDER; order++) {
-> +		INIT_LIST_HEAD(&cc->freepages[order].pages);
-> +		cc->freepages[order].nr_free = 0;
-> +	}
->   	INIT_LIST_HEAD(&cc->migratepages);
->   
->   	cc->migratetype = gfp_migratetype(cc->gfp_mask);
-> @@ -2607,7 +2676,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   	 * so we don't leave any returned pages behind in the next attempt.
->   	 */
->   	if (cc->nr_freepages > 0) {
-> -		unsigned long free_pfn = release_freepages(&cc->freepages);
-> +		unsigned long free_pfn = release_free_list(cc->freepages);
->   
->   		cc->nr_freepages = 0;
->   		VM_BUG_ON(free_pfn == 0);
-> @@ -2626,7 +2695,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   
->   	trace_mm_compaction_end(cc, start_pfn, end_pfn, sync, ret);
->   
-> -	VM_BUG_ON(!list_empty(&cc->freepages));
->   	VM_BUG_ON(!list_empty(&cc->migratepages));
->   
->   	return ret;
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 8c90e966e9f8..f5c691bb5c1c 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -465,6 +465,11 @@ int split_free_page(struct page *free_page,
->   /*
->    * in mm/compaction.c
->    */
-> +
-> +struct free_list {
-> +	struct list_head	pages;
-> +	unsigned long		nr_free;
-> +};
->   /*
->    * compact_control is used to track pages being migrated and the free pages
->    * they are being migrated to during memory compaction. The free_pfn starts
-> @@ -473,7 +478,7 @@ int split_free_page(struct page *free_page,
->    * completes when free_pfn <= migrate_pfn
->    */
->   struct compact_control {
-> -	struct list_head freepages;	/* List of free pages to migrate to */
-> +	struct free_list freepages[MAX_ORDER + 1];	/* List of free pages to migrate to */
->   	struct list_head migratepages;	/* List of pages being migrated */
->   	unsigned int nr_freepages;	/* Number of isolated free pages */
->   	unsigned int nr_migratepages;	/* Number of pages to migrate */
+#regzbot resolve: Fixed in 6.6-rc1 kernel, fix commit is unknown.
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+>
+> #regzbot poke
+>
+>>>> On 20.06.23 06:19, Masahiro Yamada wrote:
+>>>>> On Mon, Jun 12, 2023 at 7:10 PM Shreeya Patel
+>>>>> <shreeya.patel@collabora.com> wrote:
+>>>>>> On 24/05/23 02:57, Nick Desaulniers wrote:
+>>>>>>> On Tue, May 23, 2023 at 3:27 AM Shreeya Patel
+>>>>>>> <shreeya.patel@collabora.com> wrote:
+>>>>>>>> Hi Nick and Masahiro,
+>>>>>>>>
+>>>>>>>> On 23/05/23 01:22, Nick Desaulniers wrote:
+>>>>>>>>> On Mon, May 22, 2023 at 9:52 AM Greg KH
+>>>>>>>>> <gregkh@linuxfoundation.org> wrote:
+>>>>>>>>>> On Mon, May 22, 2023 at 12:09:34PM +0200, Ricardo Cañuelo wrote:
+>>>>>>>>>>> On vie, may 19 2023 at 08:57:24, Nick Desaulniers
+>>>>>>>>>>> <ndesaulniers@google.com> wrote:
+>>>>>>>>>>>> It could be; if the link order was changed, it's possible that
+>>>>>>>>>>>> this
+>>>>>>>>>>>> target may be hitting something along the lines of:
+>>>>>>>>>>>> https://isocpp.org/wiki/faq/ctors#static-init-order i.e. the
+>>>>>>>>>>>> "static
+>>>>>>>>>>>> initialization order fiasco"
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'm struggling to think of how this appears in C codebases, but I
+>>>>>>>>>>>> swear years ago I had a discussion with GKH (maybe?) about
+>>>>>>>>>>>> this. I
+>>>>>>>>>>>> think I was playing with converting Kbuild to use Ninja rather
+>>>>>>>>>>>> than
+>>>>>>>>>>>> Make; the resulting kernel image wouldn't boot because I had
+>>>>>>>>>>>> modified
+>>>>>>>>>>>> the order the object files were linked in.  If you were to
+>>>>>>>>>>>> randomly
+>>>>>>>>>>>> shuffle the object files in the kernel, I recall some hazard
+>>>>>>>>>>>> that may
+>>>>>>>>>>>> prevent boot.
+>>>>>>>>>>> I thought that was specifically a C++ problem? But then again, the
+>>>>>>>>>>> kernel docs explicitly say that the ordering of obj-y goals in
+>>>>>>>>>>> kbuild is
+>>>>>>>>>>> significant in some instances [1]:
+>>>>>>>>>> Yes, it matters, you can not change it.  If you do, systems will
+>>>>>>>>>> break.
+>>>>>>>>>> It is the only way we have of properly ordering our init calls
+>>>>>>>>>> within
+>>>>>>>>>> the same "level".
+>>>>>>>>> Ah, right it was the initcall ordering. Thanks for the reminder.
+>>>>>>>>>
+>>>>>>>>> (There's a joke in there similar to the use of regexes to solve a
+>>>>>>>>> problem resulting in two new problems; initcalls have levels for
+>>>>>>>>> ordering, but we still have (unexpressed) dependencies between calls
+>>>>>>>>> of the same level; brittle!).
+>>>>>>>>>
+>>>>>>>>> +Maksim, since that might be relevant info for the BOLT+Kernel work.
+>>>>>>>>>
+>>>>>>>>> Ricardo,
+>>>>>>>>> https://elinux.org/images/e/e8/2020_ELCE_initcalls_myjosserand.pdf
+>>>>>>>>> mentions that there's a kernel command line param `initcall_debug`.
+>>>>>>>>> Perhaps that can be used to see if
+>>>>>>>>> 5750121ae7382ebac8d47ce6d68012d6cd1d7926 somehow changed initcall
+>>>>>>>>> ordering, resulting in a config that cannot boot?
+>>>>>>>> Here are the links to Lava jobs ran with initcall_debug added to the
+>>>>>>>> kernel command line.
+>>>>>>>>
+>>>>>>>> 1. Where regression happens
+>>>>>>>> (5750121ae7382ebac8d47ce6d68012d6cd1d7926)
+>>>>>>>> https://lava.collabora.dev/scheduler/job/10417706
+>>>>>>>> <https://lava.collabora.dev/scheduler/job/10417706>
+>>>>>>>>
+>>>>>>>> 2. With a revert of the commit
+>>>>>>>> 5750121ae7382ebac8d47ce6d68012d6cd1d7926
+>>>>>>>> https://lava.collabora.dev/scheduler/job/10418012
+>>>>>>>> <https://lava.collabora.dev/scheduler/job/10418012>
+>>>>>>> Thanks!
+>>>>>>>
+>>>>>>> Yeah, I can see a diff in the initcall ordering as a result of
+>>>>>>> commit 5750121ae738 ("kbuild: list sub-directories in ./Kbuild")
+>>>>>>>
+>>>>>>> https://gist.github.com/nickdesaulniers/c09db256e42ad06b90842a4bb85cc0f4
+>>>>>>>
+>>>>>>> Not just different orderings, but some initcalls seem unique to the
+>>>>>>> before vs. after, which is troubling. (example init_events and
+>>>>>>> init_fs_sysctls respectively)
+>>>>>>>
+>>>>>>> That isn't conclusive evidence that changes to initcall ordering are
+>>>>>>> to blame, but I suspect confirming that precisely to be very very time
+>>>>>>> consuming.
+>>>>>>>
+>>>>>>> Masahiro, what are your thoughts on reverting 5750121ae738? There are
+>>>>>>> conflicts in Kbuild and Makefile when reverting 5750121ae738 on
+>>>>>>> mainline.
+>>>>>> I'm not sure if you followed the conversation but we are still seeing
+>>>>>> this regression with the latest kernel builds and would like to know if
+>>>>>> you plan to revert 5750121ae738?
+>>>>> Reverting 5750121ae738 does not solve the issue
+>>>>> because the issue happens even before 5750121ae738.
+>>>>> multi_v7_defconfig + debug.config + CONFIG_MODULES=n
+>>>>> fails to boot in the same way.
+>>>>>
+>>>>> The revert would hide the issue on a particular build setup.
+>>>>>
+>>>>>
+>>>>> I submitted a patch to more pin-point the issue.
+>>>>> Let's see how it goes.
+>>>>> https://lore.kernel.org/lkml/ZJEni98knMMkU%2Fcl@buildd.core.avm.de/T/#t
+>>>>>
+>>>>>
+>>>>> (BTW, the initcall order is unrelated)
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>> Thanks,
+>>>>>> Shreeya Patel
+>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>> Shreeya Patel
+>>>>>>>>
+>>>>> -- 
+>>>>> Best Regards
+>>>>> Masahiro Yamada
+>>>>>
+>>>>>
+>>>
