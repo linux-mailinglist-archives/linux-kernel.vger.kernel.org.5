@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DB57A1862
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D687A1865
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbjIOIOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S233202AbjIOIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjIOINC (ORCPT
+        with ESMTP id S233112AbjIOINC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 04:13:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DAF2D44
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9837F2D45
         for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:12:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A4BABC43140;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B242AC113C9;
         Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694765530;
-        bh=4OBBCt4I+OvckI2BXU4P/l9PgpZZNlxQSqX88I+eG3E=;
+        bh=XMe4gH+B08X5RMvEPdEtSh9tiAuQiRRQ1ocx6OSJQ90=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=G25uC/BNQBqiHbHdEeX8hjLflfzjVX72uq9q+eBp7mTGn8xQJgLneQDF7oqb00/Jx
-         r3pGglo4J0xs9Sjn7uP/d6lJJXsKoiJbyqI7ZdSlOxWSzgdiaHdXCDu86XPHldcQfc
-         MBBoAMarNKHEee/l8RtEODQ+ub9FwxekWR/0OzNkNA9ASU51tc4xEhDMo774mzA05F
-         VEjX8mXkd655PHcmHRGQiW4EOpb3BB0a8jivkIyVicJJUxBouosKgx5LHyTywnP0br
-         1wGvJ+KBIKSVmbhjrEdnXm7TJgBzhaRzB15yZcJli4HpaqV8dl10/y+pXgGjHaCWWB
-         gZoEbOQGAk16g==
+        b=dd8dFNbrY2eKv5BRVvT9o7FRHU/OSRYHdQMWdGRr2AWBOEfhPNrC55aNndGAnVLvy
+         FrBLQytKnx10TBNJqjIfDZEQmZw6vuYquqC0pa4MY4HDFampDtnptsz9kimaWeb2Gs
+         xfoVYwrMArjX1NOqqC0cw6HAEMspStNvFUXpZsJeraImtsnaoA6/uJvBSaSWt3Gxyg
+         k+/gSDp+B0M1rTgoHviUfPX7aN99M0OSsQKEPMGqktocnkzjXAvYOa4o1V118AKIey
+         +WBonlUVjrcBwapo60n6fsxSARWMWQAfNeu2hxdd7syYJdGavqpkLKlTMBPBS7yfvJ
+         fgrNojU9LJWGw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 923CEEE6440;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id A084FEE6442;
         Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Fri, 15 Sep 2023 11:11:23 +0300
-Subject: [PATCH v4 41/42] ARM: dts: ep93xx: Add EDB9302 DT
+Date:   Fri, 15 Sep 2023 11:11:24 +0300
+Subject: [PATCH v4 42/42] ASoC: cirrus: edb93xx: Delete driver
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-ep93xx-v4-41-a1d779dcec10@maquefel.me>
+Message-Id: <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
 References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
         Nikita Shubin <nikita.shubin@maquefel.me>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Romain Perier <romain.perier@gmail.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Michal Simek <michal.simek@amd.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=4526;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=5005;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=73gmNLvW0LNUJ0foVGmjVHptHZEdZdoADowgdUpteAY=; =?utf-8?q?b=3DR0uEntMs70jf?=
- =?utf-8?q?42MkEhNnoA8tocTcvC+5q9GIEMMTg3t3Rf7U1XF6Get/RIJIAABNFjpl3ak9a86e?=
- L+Uq5049CiRq8kq5ivibzgveZS1i6TkM8enUnsoJtSOvNH6iNw+J
+ bh=5H/AhoUK+yJvLHtkGvg+ugJ2oZLcgzPnv9WeEQfV0LM=; =?utf-8?q?b=3DmRW5JHllCeDr?=
+ =?utf-8?q?2+GVsnn0VnCeZcdbrCNIg/utv5YqO/00LhjkGtz4t+3jK1nbYNA+OLQtkKcu7SND?=
+ 1C2oQEn3Df1lu2o2VOW9k8BbRop4tIde8JPYWLb18AFvmhYpnzLs
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -77,212 +74,170 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-Add device tree for Cirrus EDB9302.
+Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
+to commit "ARM: dts: ep93xx: Add EDB9302 DT".
 
 Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- arch/arm/boot/dts/cirrus/Makefile           |   1 +
- arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts | 180 ++++++++++++++++++++++++++++
- 2 files changed, 181 insertions(+)
+ sound/soc/cirrus/Kconfig   |   9 ----
+ sound/soc/cirrus/Makefile  |   4 --
+ sound/soc/cirrus/edb93xx.c | 117 ---------------------------------------------
+ 3 files changed, 130 deletions(-)
 
-diff --git a/arch/arm/boot/dts/cirrus/Makefile b/arch/arm/boot/dts/cirrus/Makefile
-index 211a7e2f2115..e6015983e464 100644
---- a/arch/arm/boot/dts/cirrus/Makefile
-+++ b/arch/arm/boot/dts/cirrus/Makefile
-@@ -4,5 +4,6 @@ dtb-$(CONFIG_ARCH_CLPS711X) += \
- dtb-$(CONFIG_ARCH_CLPS711X) += \
- 	ep7211-edb7211.dtb
- dtb-$(CONFIG_ARCH_EP93XX) += \
-+	ep93xx-edb9302.dtb \
- 	ep93xx-bk3.dtb \
- 	ep93xx-ts7250.dtb
-diff --git a/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts b/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts
-new file mode 100644
-index 000000000000..9fa932972300
---- /dev/null
-+++ b/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+/*
-+ * Device Tree file for Cirrus Logic EDB9302 board based on EP9302 SoC
-+ */
-+/dts-v1/;
-+#include "ep93xx.dtsi"
-+#include <dt-bindings/dma/cirrus,ep93xx-dma.h>
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "cirrus,edb9302", "cirrus,ep9301";
-+	model = "cirrus,edb9302";
-+
-+	chosen {
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		/* should be set from ATAGS */
-+		reg = <0x0000000 0x800000>,
-+		      <0x1000000 0x800000>,
-+		      <0x4000000 0x800000>,
-+		      <0x5000000 0x800000>;
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "EDB93XX";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,convert-channels = <2>;
-+		simple-audio-card,convert-sample-format = "s32_le";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s>;
-+			system-clock-direction-out;
-+			frame-master;
-+			bitclock-master;
-+			dai-sample-format = "s32_le";
-+			dai-channels = <2>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&cs4271>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		led-0 {
-+			label = "grled";
-+			gpios = <&gpio4 0 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+			function = LED_FUNCTION_HEARTBEAT;
-+		};
-+
-+		led-1 {
-+			label = "rdled";
-+			gpios = <&gpio4 1 GPIO_ACTIVE_HIGH>;
-+			function = LED_FUNCTION_FAULT;
-+		};
-+	};
-+};
-+
-+&adc {
-+	status = "okay";
-+};
-+
-+&ebi {
-+	flash@60000000 {
-+		compatible = "cfi-flash";
-+		reg = <0x60000000 0x1000000>;
-+		bank-width = <2>;
-+	};
-+};
-+
-+&eth0 {
-+	phy-handle = <&phy0>;
-+};
-+
-+&gpio0 {
-+	gpio-ranges = <&pinctrl 0 153 1>,
-+		      <&pinctrl 1 152 1>,
-+		      <&pinctrl 2 151 1>,
-+		      <&pinctrl 3 148 1>,
-+		      <&pinctrl 4 147 1>,
-+		      <&pinctrl 5 146 1>,
-+		      <&pinctrl 6 145 1>,
-+		      <&pinctrl 7 144 1>;
-+};
-+
-+&gpio1 {
-+	gpio-ranges = <&pinctrl 0 143 1>,
-+		      <&pinctrl 1 142 1>,
-+		      <&pinctrl 2 141 1>,
-+		      <&pinctrl 3 140 1>,
-+		      <&pinctrl 4 165 1>,
-+		      <&pinctrl 5 164 1>,
-+		      <&pinctrl 6 163 1>,
-+		      <&pinctrl 7 160 1>;
-+};
-+
-+&gpio2 {
-+	gpio-ranges = <&pinctrl 0 115 1>;
-+	status = "okay";
-+};
-+
-+&gpio4 {
-+	gpio-ranges = <&pinctrl 0 97 2>;
-+	status = "okay";
-+};
-+
-+&gpio5 {
-+	gpio-ranges = <&pinctrl 1 170 1>,
-+		      <&pinctrl 2 169 1>,
-+		      <&pinctrl 3 168 1>;
-+};
-+
-+&gpio6 {
-+	gpio-ranges = <&pinctrl 0 87 2>;
-+	status = "okay";
-+};
-+
-+&gpio7 {
-+	gpio-ranges = <&pinctrl 2 199 4>;
-+	status = "okay";
-+};
-+
-+&i2s {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s_on_ac97_pins>;
-+	status = "okay";
-+};
-+
-+&mdio0 {
-+	phy0: ethernet-phy@1 {
-+		reg = <1>;
-+		device_type = "ethernet-phy";
-+	};
-+};
-+
-+&spi0 {
-+	cs-gpios = <&gpio0 6 GPIO_ACTIVE_LOW
-+		    &gpio0 7 GPIO_ACTIVE_LOW>;
-+	dmas = <&dma1 EP93XX_DMA_SSP>;
-+	status = "okay";
-+
-+	cs4271: codec@0 {
-+		compatible = "cirrus,cs4271";
-+		reg = <0>;
-+		#sound-dai-cells = <0>;
-+		spi-max-frequency = <6000000>;
-+		spi-cpol;
-+		spi-cpha;
-+		reset-gpio = <&gpio0 1 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	at25f1024: eeprom@1 {
-+		compatible = "atmel,at25";
-+		reg = <1>;
-+		address-width = <8>;
-+		size = <0x20000>;
-+		pagesize = <256>;
-+		spi-max-frequency = <20000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+};
-+
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 38a83c4dcc2d..97def4e53fbc 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -31,12 +31,3 @@ config SND_EP93XX_SOC_I2S_WATCHDOG
+ 
+ endif # if SND_EP93XX_SOC_I2S
+ 
+-config SND_EP93XX_SOC_EDB93XX
+-	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
+-	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
+-	select SND_EP93XX_SOC_I2S
+-	select SND_SOC_CS4271_I2C if I2C
+-	select SND_SOC_CS4271_SPI if SPI_MASTER
+-	help
+-	  Say Y or M here if you want to add support for I2S audio on the
+-	  Cirrus Logic EDB93xx boards.
+diff --git a/sound/soc/cirrus/Makefile b/sound/soc/cirrus/Makefile
+index 19a86daad660..5916c03888cb 100644
+--- a/sound/soc/cirrus/Makefile
++++ b/sound/soc/cirrus/Makefile
+@@ -6,7 +6,3 @@ snd-soc-ep93xx-i2s-objs	 			:= ep93xx-i2s.o
+ obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
+ obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
+ 
+-# EP93XX Machine Support
+-snd-soc-edb93xx-objs				:= edb93xx.o
+-
+-obj-$(CONFIG_SND_EP93XX_SOC_EDB93XX)		+= snd-soc-edb93xx.o
+diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
+deleted file mode 100644
+index f49caab21a25..000000000000
+--- a/sound/soc/cirrus/edb93xx.c
++++ /dev/null
+@@ -1,117 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * SoC audio for EDB93xx
+- *
+- * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
+- *
+- * This driver support CS4271 codec being master or slave, working
+- * in control port mode, connected either via SPI or I2C.
+- * The data format accepted is I2S or left-justified.
+- * DAPM support not implemented.
+- */
+-
+-#include <linux/platform_device.h>
+-#include <linux/gpio.h>
+-#include <linux/module.h>
+-#include <linux/soc/cirrus/ep93xx.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-#include <asm/mach-types.h>
+-
+-static int edb93xx_hw_params(struct snd_pcm_substream *substream,
+-			     struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	int err;
+-	unsigned int mclk_rate;
+-	unsigned int rate = params_rate(params);
+-
+-	/*
+-	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
+-	 * rates below 50kHz and 128 for higher sample rates
+-	 */
+-	if (rate < 50000)
+-		mclk_rate = rate * 64 * 4;
+-	else
+-		mclk_rate = rate * 64 * 2;
+-
+-	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate,
+-				     SND_SOC_CLOCK_IN);
+-	if (err)
+-		return err;
+-
+-	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate,
+-				      SND_SOC_CLOCK_OUT);
+-}
+-
+-static const struct snd_soc_ops edb93xx_ops = {
+-	.hw_params	= edb93xx_hw_params,
+-};
+-
+-SND_SOC_DAILINK_DEFS(hifi,
+-	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
+-
+-static struct snd_soc_dai_link edb93xx_dai = {
+-	.name		= "CS4271",
+-	.stream_name	= "CS4271 HiFi",
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-			  SND_SOC_DAIFMT_CBC_CFC,
+-	.ops		= &edb93xx_ops,
+-	SND_SOC_DAILINK_REG(hifi),
+-};
+-
+-static struct snd_soc_card snd_soc_edb93xx = {
+-	.name		= "EDB93XX",
+-	.owner		= THIS_MODULE,
+-	.dai_link	= &edb93xx_dai,
+-	.num_links	= 1,
+-};
+-
+-static int edb93xx_probe(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = &snd_soc_edb93xx;
+-	int ret;
+-
+-	ret = ep93xx_i2s_acquire();
+-	if (ret)
+-		return ret;
+-
+-	card->dev = &pdev->dev;
+-
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+-			ret);
+-		ep93xx_i2s_release();
+-	}
+-
+-	return ret;
+-}
+-
+-static void edb93xx_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-	ep93xx_i2s_release();
+-}
+-
+-static struct platform_driver edb93xx_driver = {
+-	.driver		= {
+-		.name	= "edb93xx-audio",
+-	},
+-	.probe		= edb93xx_probe,
+-	.remove_new	= edb93xx_remove,
+-};
+-
+-module_platform_driver(edb93xx_driver);
+-
+-MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
+-MODULE_DESCRIPTION("ALSA SoC EDB93xx");
+-MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:edb93xx-audio");
 
 -- 
 2.39.2
