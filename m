@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4FC7A26AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874BB7A2550
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbjIOS4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        id S236193AbjIORgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236980AbjIOSzu (ORCPT
+        with ESMTP id S236367AbjIORf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:55:50 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CB635AE
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:53:29 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bfb0a2682fso40982921fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:53:29 -0700 (PDT)
+        Fri, 15 Sep 2023 13:35:58 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC9C3AA2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:07 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76ee895a3cbso156023985a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694804008; x=1695408808; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0FAxuwdbhL1UZWKRYCu/VMuW55QBQ5O7sg1MPHSWY4E=;
-        b=jIQE6ALDQscrqMQc8P6Q7nLsCs98uFFGQU6xEY9CpZMUuA3QpXgmKcQ4M5bwisTwI6
-         y1oP6dpukR0PR+qsAm71qaXlq3HNcUFEBiotajR+27mr+hjWaCUjyKl0VBVgnQV9UfCz
-         0UvMg/3TSWW40MNxi6IBBPJxsNo8FeXD9xNk9iMJ3HN876gYg/3KHOMDCuLbhsgkPbqQ
-         ZyqNaP7RMvVHlgDgDTAgDDFLCch4kQO1GjJGEnbPdrr5TrkDspkM49uS4NKVn+DzQSGN
-         ObU4zs3ESOJujx4wiAQMftoyGYhuBwHgT1Vka7eIYzsrIbltm9OnTBMP431CfhjlpQE1
-         o3bw==
+        d=google.com; s=20230601; t=1694799246; x=1695404046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B0w0jftHrCKOLI2sub5u/VeO/32jPwYn8o9L7rrDhT8=;
+        b=C3YzfpQnPRTWEN7YloNioiOpM10fq1DthdYTNZZ0GNMh/ulir/zHT00Fg6QNfrT3sn
+         /eswteh+WFfHjQx5ww8hPcY+XbjR/2OfxI4ytHJTwllf0OwqslAPmzN/Vh3YvYDnyXNO
+         pE9bqrY3ausXGLEwyt+821845V6vigVY4JpkedDbFCNMLqxkFj2J8bKZJCPM0iUyMz88
+         2mq2cOwuSLRkxpdV4SvPKTfkiu3LLdJ27PODERWkoax51UatP+4ZwmqpoC8tTSz0KyxN
+         LgYqX8nXLJV3fMYLgcoCctPXktq3ngzuXP5RvDNvkF5R2jOWehV9ZjVvwGh/q3kIyyHb
+         a5Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694804008; x=1695408808;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0FAxuwdbhL1UZWKRYCu/VMuW55QBQ5O7sg1MPHSWY4E=;
-        b=N3HI7lJ5kibdjEoS++hX7zT9j04CAfqOeKew4msLPsH72zEZWW3w0bdbxQafCDzzAh
-         mRvomAe8KjJIRm0ZiTk7StRUJNu7new6xeBrlIvW5moo2gXo2nZRZJ2q3a6DWS1T1WQg
-         hbDKmbqN1Oau+CziEn2S4bdMAVCIVo/muTD2ey4cb41s7DWTmKjCX2l3QVbMA3+TM5sT
-         8w8wy29r2dMqUKbnfOlQbSf31PXFQmXMIeqUeAcqhYPF8lgsle959Tr30boXCXAbKrby
-         LKRjd24JDbhOBfyNlboPrxNfUs4sN80buCihWCaW6o4VETQLRrixq24hz3pxB54pMtcP
-         Ia3w==
-X-Gm-Message-State: AOJu0YzwKUTnM6edFTFv9kDnAt1eEty9UNc9+u3Jtf6fuM/ufhs0lIvi
-        ShnVRumdUF3NAjqclPU8NYzrDQ==
-X-Google-Smtp-Source: AGHT+IEP0i/tzM96cbqyLGXPCqm1aai/p4wEqDzPSxtw+6pTtUjvSOEHloAluxuoxtcLZWKmedVJMA==
-X-Received: by 2002:a2e:850b:0:b0:2bf:ac97:df26 with SMTP id j11-20020a2e850b000000b002bfac97df26mr2304956lji.25.1694804007626;
-        Fri, 15 Sep 2023 11:53:27 -0700 (PDT)
-Received: from [127.0.0.1] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id i20-20020a2e8094000000b002b9bf5b071bsm819625ljg.20.2023.09.15.11.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 11:53:27 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 05:31:45 +0300
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Can Guo <quic_cang@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>, mani@kernel.org,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        martin.petersen@oracle.com
-CC:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_2/6=5D_scsi=3A_ufs=3A_ufs-qcom=3A_Add?= =?US-ASCII?Q?_support_for_UFS_device_version_detection?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com> <1694411968-14413-3-git-send-email-quic_cang@quicinc.com> <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org> <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com> <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org> <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
-Message-ID: <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
+        d=1e100.net; s=20230601; t=1694799246; x=1695404046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B0w0jftHrCKOLI2sub5u/VeO/32jPwYn8o9L7rrDhT8=;
+        b=fYVwI92Wy1vXtZM7oahtxMuBSZE3myl/jN579lTFHkXBOw1kJgcY2UJOFNG/Rvjo+V
+         Q1grirJlQXEcxFLm2GYvirkd6kd9nz/JVYzZq1FBv47OsF6sQVdfaT6MHNhC+GQyquzW
+         5tenhLjmGo2EilI5QMopQKpapanbpZoOJiPmay9BlV04q5zvfZbQf/Fs43hCPRP0dMUk
+         GQWK94ZIw/ytT1ncmBP27zyfrihEAHL2w1l4wSAgBAh9jYHM9Xm6v9dK+VcQvRG/waoA
+         DHvaJh87zROqEsZ9vISyoXC+etrDWBIgdMQV1qjXO2hCkTgmYsBoBF0ph+7pP2dKg5iN
+         kaxQ==
+X-Gm-Message-State: AOJu0Yz9PooZh9AjDscQTkHm4ZpoWelbgSmBuZ9AyiCCo1RpHKEX8g+p
+        OzQfh1GUfpG4JrAbw4RQy+vLNIfnVYMeF2xADGWSCQ==
+X-Google-Smtp-Source: AGHT+IEZ/WDxzF/O9gB4A+40qEo3bPuHJhEt/xOjx6Re1kZpnRTINetruNrbaRwq/pC5z/EudhBlcPg80BxynPtATiE=
+X-Received: by 2002:a0c:e094:0:b0:653:5961:f005 with SMTP id
+ l20-20020a0ce094000000b006535961f005mr2596649qvk.26.1694799246336; Fri, 15
+ Sep 2023 10:34:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20230915-bpf_collision-v2-1-027670d38bdf@google.com>
+ <20230915171814.GA1721473@dev-arch.thelio-3990X> <CAADnVQJVL7yo5ZrBZ99xO-MWHHg8L-SuSJrCTf-eUd-k5UO75g@mail.gmail.com>
+ <CAKwvOdkbqHFTvRNWG==0FjOPHgnA-zqE2Gn_nB4ys6qvKR2+HA@mail.gmail.com>
+ <CAADnVQLfdMuxWVGKSF+COp8Q7DnKxYL0w5crN19vPkSd0Gh7mg@mail.gmail.com> <CAADnVQKJbTM-1n8YKvpC9XN7=tZuJi9mhnmmZSTVFOeBDv+SGA@mail.gmail.com>
+In-Reply-To: <CAADnVQKJbTM-1n8YKvpC9XN7=tZuJi9mhnmmZSTVFOeBDv+SGA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 15 Sep 2023 10:33:54 -0700
+Message-ID: <CAKwvOd=1X+2m2ZRUft9y+j8H0WBLWbM=VEiS+O0FfywnfpRYyA@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: Fix BTF_ID symbol generation collision
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, stable <stable@vger.kernel.org>,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Marcus Seyfarth <m.seyfarth@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,110 +85,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc=2Ecom> =
-wrote:
+On Fri, Sep 15, 2023 at 10:28=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
->> On 11=2E09=2E2023 11:42, Can Guo wrote:
->>> Hi Konrad,
->>>=20
->>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
->>>> On 11=2E09=2E2023 07:59, Can Guo wrote:
->>>>> From: "Bao D=2E Nguyen" <quic_nguyenb@quicinc=2Ecom>
->>>>>=20
->>>>> Retrieve UFS device version from UFS host controller's spare registe=
-r
->>>>> which is populated by bootloader, and use the UFS device version tog=
-ether
->>>>> with host controller's HW version to decide the proper power modes w=
-hich
->>>>> should be used to configure the UFS PHY=2E
->>>> That sounds a bit fishy=2E=2E is there no bootloader-independent
->>>> solution to that? Can't we bring in the code that the bootloader
->>>> uses to determine these values?
->>>>=20
->>>> Konrad
->>>=20
->>> Agree, it is=2E
->>>=20
->>>=20
->>> All these complexities come from one request from PHY design team - po=
-wer saving=2E
->>>=20
->>> And to achieve power saving, Qualcomm UFS developers are requested to =
-use the
->>>=20
->>> lowest hanging PHY settings which can sustain the Max agreed HS Gear (=
-btw host
->>>=20
->>> and UFS device) during UFS's lifecycle in High Level OS,=C2=A0 whereas=
- the power saving
->>>=20
->>> request does not apply to bootloader, which works for only a few secon=
-ds during
->>>=20
->>> bootup=2E Hence, there is no such version detect code in bootloader -=
-=C2=A0 it just uses the
->>>=20
->>> highest PHY settings to configure PHY, boot up UFS and put UFS device =
-version in this
->>>=20
->>> register=2E
->> First of all, your email client seems to be inserting 2 newlines
->> instead of 1=2E If you're using thunderbird, you may want to edit:
->>=20
->> mail=2Eidentity=2E(default or your mail identity idx)=2Edefault=2Ecompo=
-se_html
->>=20
->> to `false`
->>=20
->> and add that to your internal wiki page, as I see many @quic folks havi=
-ng
->> this issue=2E
->>=20
->>=20
->> Going back to the main topic, I don't think we understood each other=2E
->> The commit message states:
->>=20
->>=20
->> "Retrieve UFS device version from UFS host controller's spare register
->> which is populated by bootloader"
->>=20
->>=20
->> Which means the bootloader is able to somehow determine the value
->> that's in the spare register and write it there=2E
->>=20
->> I'm asking whether we can take the logic behind this value and
->> move it to Linux so that we don't depend on the bootloader to
->> guarantee it (e=2Eg=2E Chrome or some other devices with more exotic
->> fw may not work this way)=2E
->>=20
->>=20
->> Konrad
->
->
->There is no logic behind this value at all in bootloader, as I explained,=
- after bootloader
->
->initializes UFS, bootloader simply reads UFS's device version (the value =
-you are referring)
->
->and write it to the register=2E But in Linux kernel, we need (or want to =
-know) this value
->
->BEFORE we initialize UFS host controller (and UFS device)=2E
+> And please use [PATCH bpf v3] in subject, so that BPF CI can test it prop=
+erly.
 
-Depending on the bootloader behaviour is not an option=2E For example the =
-kernel might be started via kexec=2E Or via u-boot=2E Or grub=2E Or any oth=
-er bootloader=2E So please duplicate the logic to read the UFS version inst=
-ead=2E
+Testing `b4 prep --set-prefixes "PATCH bpf "`
 
-
-P=2ES=2E you have been asked to fix your email client=2E Please do so=2E O=
-r, if you are inserting these linebreaks manually, please stop=2E
-
->Thanks,
->
->Can Guo=2E
->
-
+--=20
+Thanks,
+~Nick Desaulniers
