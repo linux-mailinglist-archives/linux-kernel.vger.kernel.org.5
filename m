@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 011EA7A1D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389527A1D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbjIOL33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        id S234369AbjIOLbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbjIOL30 (ORCPT
+        with ESMTP id S234243AbjIOLbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:29:26 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6405C1BC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:29:21 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-403012f27e3so23096775e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:29:21 -0700 (PDT)
+        Fri, 15 Sep 2023 07:31:11 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F431AD;
+        Fri, 15 Sep 2023 04:31:02 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so1884400f8f.0;
+        Fri, 15 Sep 2023 04:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694777360; x=1695382160; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DOKPrQtwKxSzhyF/0RrIr5RFzt3C+vCUzllNvO9L9aU=;
-        b=j74KRIxPmlG0EEMIS6nGU8IQndATjhvnajcUwjvjSp3/u2uhRWE/Y5wsK4yuR+khyq
-         pHCVGIPtlicBnYy7/Jblgg4FC8VqrYcefRaPvcNzZGi9si/e+n/7bbF3vb4y5a4xm2Af
-         XGESiFDyRxvlCVeCHpkMN3UKZq7WvGk/8zFs2FvSix+Zj33SbWfP1YTe0UHfKJastzTm
-         R6JbDZIbu8/EfRxhsDNgzkdwQP5QkLHcDzXTOSjEVl5oUK4iap2NoUjJKbyk8u1FTa9c
-         aGN6sDWbxKeFxcN8RTcOfBNeJy+UpMyr8Eu0LGI5jfsEEPW1mHdvcC9xLlaT97dJmZTB
-         pUmQ==
+        d=gmail.com; s=20230601; t=1694777461; x=1695382261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4LR91jDbhT82zr0n9jJHX5VigPs/ZpXk32vV8Q1Vz3c=;
+        b=ZMO2EUbvcw00Il4aJiRiRfRhXfQvLre2PqjA/TM9yXGcXZgMH2S4m9xm51O0aVklPZ
+         InBTH9e1crIPMeqg6FMKzZn4mkkzs3GiULbxr8YbLIr+Yja3AdMh8tpatJqQNzaoM62V
+         2d2W/5RymeYNkvDT9+BH2NJXTdUgANdeCm36nd0AV5gAN45VgYK+YNVyfLVhs9W3aWfq
+         OpmKoVl3P06ZgCQRyT7T1BdGfTbiK27np6t4c5oDXs3AlPwXsMb48AtptRd8RKhKid8Y
+         zDPItu784Kqf3GRQaoAm7dX1LL4O7jiU8oAo5gj2WWeh8D2qvvwybWG5knyQu66+4ugx
+         kH4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694777360; x=1695382160;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DOKPrQtwKxSzhyF/0RrIr5RFzt3C+vCUzllNvO9L9aU=;
-        b=lYc9u0kolHp3I6iL/C26585NMSKOPX/qrE1vM4fC0wHuWnjYLFPJosR0lVnadrsrIK
-         f4UIXR2w83LkPgTNPWOTeRzHaIsuaC1siL3ufXSX1ActOoEFkdXyCNzL2SH6C5U5CVEW
-         tX8NOihuUpv7EXznPsnuG9JcKyYWm6AItrR1Uwi3nnEJFTEWqXaYcnBWNxNaS1NVsKtg
-         uUFWNxsHjXLYpEHs9U3M+PkIiaYt+EXx66Qbic05UDaZLrfEnpqey/rGygOYzNQgu5cL
-         g94khVbtSHeCtCbrSaJRasNFmOacav9nTPY/R8ao+p/9yKcMi8QpP/4fqUjI0beWPDPA
-         OudQ==
-X-Gm-Message-State: AOJu0Yy86GMCXty7a7e2xGwdVZXTLe/Gn3n1P9Gzj3UQsCR1Tm4dgmTT
-        lljUngkXfwItHpc8bBkHug0L6A==
-X-Google-Smtp-Source: AGHT+IEr38/mWh5mpLtWDFh75MFd/hOiBed0DnDtLaMt/qeG5SkPrc/bmhTeLtAB2RW6MNldvvzfpA==
-X-Received: by 2002:a1c:721a:0:b0:3fc:1a6:7764 with SMTP id n26-20020a1c721a000000b003fc01a67764mr1374584wmc.16.1694777359704;
-        Fri, 15 Sep 2023 04:29:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bcb8a000000b003fed7fa6c00sm7338300wmi.7.2023.09.15.04.29.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 04:29:18 -0700 (PDT)
-Message-ID: <b7398390-23bc-467c-5b83-411110d60f43@linaro.org>
-Date:   Fri, 15 Sep 2023 13:29:16 +0200
+        d=1e100.net; s=20230601; t=1694777461; x=1695382261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4LR91jDbhT82zr0n9jJHX5VigPs/ZpXk32vV8Q1Vz3c=;
+        b=gYmJlOFUQ2SvfvynmOn3z4WcpotX16oIS0Czo976PX2rKE4ZkI0EEO2ORyhjIJ1yWL
+         IyX91kMHmj/rVmtkGN5XFp0vBsHffJnDgloiDd6cXHNS09BcTKwowqySiz+hiqAAsdUR
+         znEEHcsnKVGR9Hu6VU+49UR0LguxbvWNDFzxyNt+bCyq7Kc4ghZPSBzZw+LhRwFTRUNC
+         +VsHkB5JxZNdGWVk3S3ylUUljpam995D1olFzXV8ZkjZsRpKiNGGDHoGNBcGwFYYUbd2
+         +jnpvfljNN7Z3O3/b9xCTC2LpIEGlF/I2Bb4n0+7yqZsU+X4+L0RIGpJHUlZ0P6Uf7Cy
+         wsKw==
+X-Gm-Message-State: AOJu0YwoYQjS68Lbvq2lwBCbimyMnZPz8glqfCsemOvNMnrmRUVhKYtE
+        8JQT4H9v9mUq/MSMj7D83Uo=
+X-Google-Smtp-Source: AGHT+IFXqF9kII3kAUmZb4zO/yHMODlRmBXr1aN2q4n6+SsUxwBxztG+fhH2Aad/2ESymAgGJlRvxA==
+X-Received: by 2002:adf:e40c:0:b0:31f:b36b:6d45 with SMTP id g12-20020adfe40c000000b0031fb36b6d45mr1065646wrm.52.1694777460937;
+        Fri, 15 Sep 2023 04:31:00 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id a4-20020adffb84000000b0031c5e9c2ed7sm4172487wrr.92.2023.09.15.04.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 04:31:00 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 15 Sep 2023 13:30:58 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ard Biesheuvel <ardb@google.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
+Message-ID: <ZQRAckHVxQZRNEGA@gmail.com>
+References: <20230912090051.4014114-17-ardb@google.com>
+ <ZQQiUxh5vmeZnp7s@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 8/8] arm64: defconfig: enable interconnect and pinctrl
- for SM4450
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        catalin.marinas@arm.com
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_tsoni@quicinc.com,
-        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
-        quic_aiquny@quicinc.com, kernel@quicinc.com
-References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
- <20230915021509.25773-10-quic_tengfan@quicinc.com>
- <8f2c9664-a2c8-50dc-8a1c-e50a071ebeb2@linaro.org>
- <e9ff05b3-2742-416e-b417-5e2414036008@quicinc.com>
- <0a34dd35-7aea-4655-4cdd-e7196a1ba52b@linaro.org>
- <f76e1cc8-fc48-4208-bbe4-9204d9d28363@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <f76e1cc8-fc48-4208-bbe4-9204d9d28363@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQQiUxh5vmeZnp7s@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 13:18, Tengfei Fan wrote:
+
+* Ingo Molnar <mingo@kernel.org> wrote:
+
+> > Ard Biesheuvel (15):
+> >   x86/efi: Drop EFI stub .bss from .data section
+> >   x86/efi: Disregard setup header of loaded image
+> >   x86/efi: Drop alignment flags from PE section headers
+> >   x86/boot: Remove the 'bugger off' message
+> >   x86/boot: Omit compression buffer from PE/COFF image memory footprint
+> >   x86/boot: Drop redundant code setting the root device
+> >   x86/boot: Grab kernel_info offset from zoffset header directly
+> >   x86/boot: Drop references to startup_64
 > 
+> I've applied these first 8 patches to tip:x86/boot with minor edits.
+> (Please preserve existing comment capitalization conventions ...)
 > 
-> 在 9/15/2023 5:16 PM, Krzysztof Kozlowski 写道:
->> On 15/09/2023 11:12, Tengfei Fan wrote:
->>>
->>>
->>> 在 9/15/2023 3:21 PM, Krzysztof Kozlowski 写道:
->>>> On 15/09/2023 04:15, Tengfei Fan wrote:
->>>>> Add the SM4450 interconnect and pinctrl drivers as built-in for
->>>>> support the Qualcomm SM4450 platform to boot to uart shell.
->>>>>
->>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>>> ---
->>>>>    arch/arm64/configs/defconfig | 2 ++
->>>>>    1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->>>>> index ec59174b14db..e91993de865e 100644
->>>>> --- a/arch/arm64/configs/defconfig
->>>>> +++ b/arch/arm64/configs/defconfig
->>>>> @@ -598,6 +598,7 @@ CONFIG_PINCTRL_SC8280XP=y
->>>>>    CONFIG_PINCTRL_SDM660=y
->>>>>    CONFIG_PINCTRL_SDM670=y
->>>>>    CONFIG_PINCTRL_SDM845=y
->>>>> +CONFIG_PINCTRL_SM4450=y
->>>>>    CONFIG_PINCTRL_SM6115=y
->>>>>    CONFIG_PINCTRL_SM6125=y
->>>>>    CONFIG_PINCTRL_SM6350=y
->>>>> @@ -1500,6 +1501,7 @@ CONFIG_INTERCONNECT_QCOM_SC7280=y
->>>>>    CONFIG_INTERCONNECT_QCOM_SC8180X=y
->>>>>    CONFIG_INTERCONNECT_QCOM_SC8280XP=y
->>>>>    CONFIG_INTERCONNECT_QCOM_SDM845=y
->>>>> +CONFIG_INTERCONNECT_QCOM_SM4450=y
->>>>
->>>> Why it cannot be =m?
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>>
->>>
->>> Hi Krzysztof,
->>> Because system haven't capacity of loading ko files at this time on
->>> SM4450 platform, so setting to "Y".
->>
->> Hm? System has this capability. All systems have. What is so different
->> on SM4450 comparing to everything else we have here?
->>
->> No, this should be =m and you need to fix your system.
->>
->> Best regards,
->> Krzysztof
->>
-> Hi Krzysztof,
-> Find new way which can load ko files on SM4450 platform, still need use 
-> "Y", because of some other modules have dependence to these two config, 
-> like scm, smmu module drivers, uart shell console cannot be got if set 
-> to "m".
-
-That's what I am asking, which device exactly needs it.
-
+> >   x86/boot: Set EFI handover offset directly in header asm
+> >   x86/boot: Define setup size in linker script
+> >   x86/boot: Derive file size from _edata symbol
+> >   x86/boot: Construct PE/COFF .text section from assembler
+> >   x86/boot: Drop PE/COFF .reloc section
+> >   x86/boot: Split off PE/COFF .data section
+> >   x86/boot: Increase section and file alignment to 4k/512
 > 
-> Also do test for setting these two config to "m" on SM8450 platform, get 
-> uart shell consle failed if so setting.
+> The rest conflicted with recent upstream changes, and I suppose it's
+> prudent to test these changes bit by bit anyway.
 
-Yeah, this we know, I did this. I am asking about SM4450.
+So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootup,
+due to the 8th patch:
 
-Best regards,
-Krzysztof
+  988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
+  commit 988b52b207a9fe74c3699bda8c2256714926b94b
+  Author: Ard Biesheuvel <ardb@kernel.org>
+  Date:   Tue Sep 12 09:01:01 2023 +0000
 
+      x86/boot: Define setup size in linker script
+
+I've removed it for now - but this side effect was not expected.
+
+Thanks,
+
+	Ingo
