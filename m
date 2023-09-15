@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDF37A178C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA857A1793
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbjIOHeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S232597AbjIOHfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbjIOHeI (ORCPT
+        with ESMTP id S232198AbjIOHfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:34:08 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2427E6A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:34:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403004a96a4so20417665e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694763241; x=1695368041; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gkYzzAYu6z6sZUC/njWzLy4El1Pk9IRes3LMwHpGr1Y=;
-        b=nWqP0hwdukE9JXld+4+n8qRo4E1AhXP+26lGis52fOupWJzXCsMXRRMXZMnsKY2P/7
-         k7Rl9BuubSg8aL44ttSkj2v2oNlDnohyzbRe3K0EznlUuWK6u3vEVqyLPjQBKMHCpurG
-         51kORJ3GYCBWfdG2TJepanNPKirXtuXZ1Rzo5T+3fJ2QiA0fPnGcN5O+fFZF12v6q3Ti
-         0v2DRsbOIFtpOSVc7dmj4+PgdGOaHY0gDQ6mkdiJL+FL1tiO2jSo8X4Mx9hepxVOGDOC
-         r3YRIS0Re/WRcW+hz9JaQ4OIl8o9t9tGDLtNH+ki/wkZSI24LmsrCQ2vNKTyMhkQLyGU
-         bKyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694763241; x=1695368041;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkYzzAYu6z6sZUC/njWzLy4El1Pk9IRes3LMwHpGr1Y=;
-        b=mISoiLgaNijAOabeNZCRHiJfoR5gOheBxFqQVbOPv7AQhJXNbBvPMqDpQF3LOg+DQW
-         TIeMFkfAiPUUK2qpUiK89knR4MNO7Dqq2HRsePupORzlDZMQ0TEHACRicuCaqXqsjuEU
-         mOefxAszxn+Ks5woXmNGu30d8dX0Lru/EefR47a0VEiEQ4ikuWXs+it1l6wp+YdeRbSb
-         ci34rdKDM/ibX4zVrE72EvgUkpBeeJlHkHPWutUl1rJ7TSP+VMgMRj+5i1ZNvOqsjjq1
-         WIb/cpLydbELovsaDqzD/huoe+Sw7DhrsklioUKUa6LWv8HaG2Mn1TjIZXrbnheDV0tC
-         dNRA==
-X-Gm-Message-State: AOJu0YxZIqz+83gHEtafkgOcgy04yD2pSh2rOAldSGFYPfjnDuncwYhv
-        DAJcI9klRg9/4lGDSpmoCWIQVg==
-X-Google-Smtp-Source: AGHT+IE2Obhc55XP1QiiY3UGOyxumTBVdfX/RVmrGFpCslUPIRsfXHxMYvSILZfNBxFmySF3oWKyRg==
-X-Received: by 2002:a05:600c:2194:b0:401:bf87:989c with SMTP id e20-20020a05600c219400b00401bf87989cmr775757wme.34.1694763241447;
-        Fri, 15 Sep 2023 00:34:01 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05600c294c00b003ff3b964a9asm6743292wmd.39.2023.09.15.00.33.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 00:34:01 -0700 (PDT)
-Message-ID: <c4aa8d45-1248-5656-a045-a475ec737c0f@linaro.org>
-Date:   Fri, 15 Sep 2023 09:33:59 +0200
+        Fri, 15 Sep 2023 03:35:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05323A1;
+        Fri, 15 Sep 2023 00:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694763315; x=1726299315;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=qHIrlzrycle/SJ7JMaIX9e41cVUBla4ANbL4ssaQyrs=;
+  b=WTEITUCC17gD2q5M4bdv6PHJur+JlCjRHf/nv6wiv6X4F0pmrV03yzlh
+   J60n4EhNz5Dc8Nwpatv2/AkOk1ZcsZi0Hb3d8oVrcldXKQ8qeeJsbNGiU
+   dC5TH6kMhIPpItmYjCOEGo61jhis2MZpYPC8QwxxMsq1vhF3uimUL/GGf
+   VxbIy8YQG16yTNCDfku6Hb/9GXlMXsrAeP/8E0U57Y7mmVPPG3+NNk4UJ
+   Mu9vqVqHZdjiGgvr4Kyakjq/qM4BrwPru5xlPJU1C0a0EOXHlnwKts6Ly
+   hE0e7kmVPPnrp2oTvEbxs0lLwQthwNvjODHDQ+A0w6QJyY0ExIGm3AWfc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465550485"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="465550485"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 00:35:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="888139889"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="888139889"
+Received: from azafrani-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.177])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 00:33:43 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional
+ dependencies
+In-Reply-To: <763b1599-06b7-490e-9cbf-eb07f1deedb3@app.fastmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230913113801.1901152-1-arnd@kernel.org>
+ <874jjwx44g.fsf@intel.com>
+ <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
+ <CAK7LNAR9Jt0FQNRidcxY-OxMh7N238Xs33Tyj+dpTZ5wGow0wQ@mail.gmail.com>
+ <763b1599-06b7-490e-9cbf-eb07f1deedb3@app.fastmail.com>
+Date:   Fri, 15 Sep 2023 10:34:12 +0300
+Message-ID: <87sf7fvqiz.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 09/12] dt-bindings: serial: snps-dw-apb-uart: Add Sophgo
- SG2042 uarts
-Content-Language: en-US
-To:     Wang Chen <unicornxw@gmail.com>, linux-riscv@lists.infradead.org,
-        conor@kernel.org, aou@eecs.berkeley.edu,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-References: <20230915072517.118266-1-wangchen20@iscas.ac.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915072517.118266-1-wangchen20@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 09:25, Wang Chen wrote:
-> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> 
-> Add compatible for the uarts on the Sophgo SG2042 RISC-V SoC.
-> 
-> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+On Fri, 15 Sep 2023, "Arnd Bergmann" <arnd@arndb.de> wrote:
+> On Thu, Sep 14, 2023, at 19:23, Masahiro Yamada wrote:
+>> On Thu, Sep 14, 2023 at 11:57=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> w=
+rote:
+>>> On Thu, Sep 14, 2023, at 15:42, Jani Nikula wrote:
+>>
+>> It is unclear why WIREGUARD must be entirely disabled
+>> just because of the optional feature being modular.
+>
+> I don't think anyone is asking for that, and the current
+> "depends on IPV6 || !IPV6" seems fine here, and is consistent
+> with dozens of other symbols.
+>
+>> My preference is to use IS_REACHABLE(CONFIG_IPV6)
+>> instead of IS_ENABLED(CONFIG_IPV6)
+>> under drivers/net/wireguard, then
+>> get rid of "depends on IPV6 || !IPV6)
+>
+> My feeling is that this would be significantly worse from a
+> usability point of view even if it made it a little easier
+> for maintainers:
+>
+> When a user selects both IPV6 and WIREGUARD, they expect
+> to be able to use them together, and a normal user setting
+> WIREGUARD=3Dy would have a hard time figuring out why that
+> leads it becoming IPv4-only.
 
-Missing Sob.
+I think IS_REACHABLE() is in most cases just plain wrong, and should
+only be used as the last resort.
 
-> ---
->  Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> index 17c553123f96..6c23562f1b1e 100644
-> --- a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> @@ -48,6 +48,9 @@ properties:
->                - starfive,jh7100-hsuart
->                - starfive,jh7100-uart
->            - const: snps,dw-apb-uart
-> +      - items:
-> +          - const: sophgo,sg2042-uart
+I think the kconfig should express what the dependencies are, and you
+should get kconfig or build errors if you get it wrong, and not paper
+over them with IS_REACHABLE().
 
-No, you do not get your own entry. Stuff it into previous enum.
+Configuring the kernel is hard enough, and IS_REACHABLE() silences the
+issues with no messages to the user at any point. If the user gets it
+wrong, it just doesn't work like they expect, they have no clues why,
+and they have to peruse the kernel source to figure it out. (Or, more
+likely, file a bug and waste the kernel developer/maintainer time to get
+the configuration right.)
+
+IS_REACHABLE() considered harmful.
 
 
+BR,
+Jani.
 
-Best regards,
-Krzysztof
 
+>
+>> If you want to make it clearer on the Kconfig level,
+>> perhaps the following is also possible.
+>>
+>>
+>> config WIREGUARD
+>>        tristate "WireGuard"
+>>
+>> config WIREGUARD_IPV6
+>>        def_bool y
+>>        depends on WIREGUARD
+>>        depends on IPV6 >=3D WIREGUARD
+>>
+>> config IPV6
+>>        tristate "IPV6"
+>
+> That has the same downside, with the added problem
+> of also confusing kernel developers with the '>=3D'
+> Kconfig syntax, which IMHO makes no sense unless one
+> knows way too much about Kconfig internals.
+>
+>       Arnd
+
+--=20
+Jani Nikula, Intel
