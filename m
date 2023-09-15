@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113AA7A1EA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BCE7A1EAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbjIOM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S234793AbjIOM1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234741AbjIOM0l (ORCPT
+        with ESMTP id S234842AbjIOM1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:26:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AD62701
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:26:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768C7C433C8;
-        Fri, 15 Sep 2023 12:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694780772;
-        bh=JOeaiOvA9aSzfqtb72DtC8F5kZInpmUOpbcL9asatYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lqsAO6gfiPtIyCZa6PvfTrsBBx8PbvTyahGSVVl5JCl68zD/er9oQ5a1hf9IfFfnu
-         sQtcx+14SO2pE1jJhLZmlqDM8fcWLaSaPFqbqlqBk1nkCLKU6kJePXDSRk5De4cW//
-         zEJGITFYLVuM9LLOhNUb2phka7l8RsUko8Dh2vNwb6yO0h0q96/3qMpAAamAqC7Ya6
-         V4JJhMHFT0YHF/F6g10zOyvXFZJ888T/ixbJ6r7LPwLW9aanT1CTrxSbRUC658437F
-         MNM7ND6wf/IVaidLRNfEtCs5D0mw3kFCCH198OD2YRGmRq7L3P2cGMiEnwbM03BLp+
-         8MNl5kLPYclDA==
-Date:   Fri, 15 Sep 2023 13:26:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     nikita.shubin@maquefel.me
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 42/42] ASoC: cirrus: edb93xx: Delete driver
-Message-ID: <63fd4212-6544-4fa3-b10b-f7f38137b06c@sirena.org.uk>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
+        Fri, 15 Sep 2023 08:27:00 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87989D3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:26:54 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401f68602a8so22457505e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694780813; x=1695385613; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fFkbQV8kHqHZYhFs0q2QsxQc1W5gCML7Z01N1NeyXyU=;
+        b=ZNQMfGSqnLwwjOu0ALmjqM8nkkVHBiIButjc9t9ba0XQwRAZCUubzP+5ZJgMqZ2oy6
+         3xA2G8pDdAc80H+xZsp+7RG3OvbCNvg+hiIIOhytcMQT4LTXH3ZrPLip+1k/RE1up7SB
+         S8/qMM1S55ULOBq0NgHIQlfoIfkX1ZahhVwc2iezgA54S1QD22qqfB2xkdgtYHavhrF8
+         qB+Jd8vHomsyDOMUStplQ+KUXTZ/nNlo83y8FN0I9DPyr4m0haCsHRWeWF9Qoqz+jOI1
+         opR6V3NWHtmPcCNiB1dDb/6zZt6ow96Nh9KfUoWgPn8aLEHWYUlNqqQ6DTa1pRWC/pWd
+         2yQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694780813; x=1695385613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fFkbQV8kHqHZYhFs0q2QsxQc1W5gCML7Z01N1NeyXyU=;
+        b=GVshMXNVFvEI7kUtbk7jUH76eDPpNo1jZ/bPcNfnWQ5TdTPuFb/RMJecyP4lPDqYtv
+         775bxraWLPLboGpHYVXL4gPzXMhs/ASYmC999LbEUyTMKujqmunqiCT7DC4u2/Gp6kR6
+         Hi1FOaJzQbIn+yEMQFJOyJ0BL1P/Lq8bRVVS+wa5EQMnre9bzN5r2G1GSJ3PqRDb7ocv
+         DGxZUhbkefoWV8ssHcasLbFANU9pxyCh2wzfB1MIocfzXEndPAVDpazfMj/5rMN9cixs
+         LY4Ro9EXXIkl4gVNP+XxNFnkQ31bMYMsPR8YwumvhVSTPOGrGKBG3yw9oxSmTMx1ynlv
+         a5/Q==
+X-Gm-Message-State: AOJu0YwYpKOUCPcqGHwQrZ9Pc88BtY7Wwovd69GV3FGIAf3oW7OdYeat
+        TpB+KggDRO38z4KidJCI1rQ=
+X-Google-Smtp-Source: AGHT+IGPHuiGvXxuxaazx/atfFzxcS2p5ZicTw4t0r75oFIqXjc9Xy983d1ra+YsIf77RIghUGETag==
+X-Received: by 2002:a1c:7419:0:b0:401:bf89:b013 with SMTP id p25-20020a1c7419000000b00401bf89b013mr1301911wmc.19.1694780812749;
+        Fri, 15 Sep 2023 05:26:52 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id o16-20020a05600c379000b00401e32b25adsm4562061wmr.4.2023.09.15.05.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 05:26:52 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 15 Sep 2023 14:26:50 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        dave.hansen@intel.com, peterz@infradead.org,
+        kirill.shutemov@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, jpoimboe@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com
+Subject: Re: [PATCH] x86/tdx: Fix __noreturn build warning around
+ __tdx_hypercall_failed()
+Message-ID: <ZQRNiTVQu23wFC/d@gmail.com>
+References: <20230915121208.307807-1-kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WBj+u/ilrjOP7tNM"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
-X-Cookie: Gravity brings me down.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230915121208.307807-1-kai.huang@intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,33 +78,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---WBj+u/ilrjOP7tNM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Kai Huang <kai.huang@intel.com> wrote:
 
-On Fri, Sep 15, 2023 at 11:11:24AM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
->=20
-> Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
-> to commit "ARM: dts: ep93xx: Add EDB9302 DT".
+> LKP reported below build warning:
+> 
+>   vmlinux.o: warning: objtool: __tdx_hypercall+0x128: __tdx_hypercall_failed() is missing a __noreturn annotation
+> 
+> Turns out the __noreturn must be annotated to the function declaration
+> but not the function body.
+> 
+> Quoted from PeterZ:
+> 
+> ---
+> FWIW, the reason being that...
+> 
+> The point of noreturn is that the caller should know to stop generating
+> code. For that the declaration needs the attribute, because call sites
+> typically do not have access to the function definition in C.
+> ---
+> 
+> Fix by moving __noreturn annotation from the __tdx_hypercall_failed()
+> body to its declaration, which is in <asm/shared/tdx.h>.
+> 
+> Note <asm/shared/tdx.h> is also included by TDX related assembly files.
+> Include <linux/compiler_attributes.h> only in case of !__ASSEMBLY__
+> otherwise compiling assembly file would trigger build error.
+> 
+> Also, following the objtool documentation, add __tdx_hypercall_failed()
+> to "tools/objtool/noreturns.h".
+> 
+> Fixes: c641cfb5c157 ("x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309140828.9RdmlH2Z-lkp@intel.com/
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> ---
+>  arch/x86/coco/tdx/tdx.c           | 2 +-
+>  arch/x86/include/asm/shared/tdx.h | 4 +++-
+>  tools/objtool/noreturns.h         | 1 +
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index 3e6dbd2199cf..4710d8dd700b 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -38,7 +38,7 @@
+>  #define TDREPORT_SUBTYPE_0	0
+>  
+>  /* Called from __tdx_hypercall() for unrecoverable failure */
+> -noinstr void __noreturn __tdx_hypercall_failed(void)
+> +noinstr void __tdx_hypercall_failed(void)
+>  {
 
-Please use audio-graph-card2 for new systems, it's a more flexible
-replacement.
+It's not a bad idea to document the __noreturn nature at the definition 
+site either, so I don't think we should remove it.
 
---WBj+u/ilrjOP7tNM
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUETV0ACgkQJNaLcl1U
-h9DUgwf9GWnPbx+GEF+jTZxt9NpWNVd7+WyyyAyfFMpRrGXjysCtrKkWTDFQ/uJ9
-e2UK5xCHpf0WVNmGDG0WRvlgzlI5POCCE9H+YkIPBBsGQZtnxmj57PLRQpv1DYlL
-YUuCITGE67RgEMwQHRu6XJh9gW5PY9deRRaKWW6+kWFNiED72G12gOB1/obftnUh
-A7EowQO3vQrAGDG4dic9OvUbZ66ihwd+t9BDtWa17rmo/0lZ3eahi6hu2pCegArr
-Avi5x/S2zdW2Bns7BbwxFcaYfuhX3psY9cszsw43tGWs9ZZNQIRltCi/KGONgl4H
-6lDc29Bhf+aYxXDaKsch4Bq6oAxDcA==
-=hBHf
------END PGP SIGNATURE-----
-
---WBj+u/ilrjOP7tNM--
+	Ingo
