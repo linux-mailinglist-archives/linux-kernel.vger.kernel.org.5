@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0587A234B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF9F7A234C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236174AbjIOQK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S236390AbjIOQKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbjIOQKA (ORCPT
+        with ESMTP id S235529AbjIOQKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:10:00 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FA92703
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:09:22 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-404800222d2so1274345e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:09:22 -0700 (PDT)
+        Fri, 15 Sep 2023 12:10:01 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A372701
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:09:28 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40472fef044so4424235e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694794160; x=1695398960; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694794167; x=1695398967; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ABHro1WbVSv9M1mp1iSF234oY2ZCcRBRXlCCIHJK3dU=;
-        b=XsbyEOSxEMt0yzsQZwlir5nDBPxXbA72fEmNZgwyLqplm39MLBOF9R/G6ob24ufKn0
-         NKcVwOJQMNXDxL1vaAvbmFpH67vFxk1pDlGr6AewIKSC37Vn97te6+8KIy/TTPXfXe5k
-         JwtXPyxBKB9TCdBTRKY9qVlBp0BYolj8g4Bf3922QlOOGI8Gjo4NX92cwvoa2eP5UkaB
-         0Z5uYJCZ+UMErV0oG/0TcOMP4h4ZgamN+sQ09dMgbnWSoDSsfdUkghU12FVdz9g6E/+K
-         9tCsngWaLAWzMIxUWYsVKG8Xj1aRTR8E6cm1oAczJQnJOUOl7djh3ZKfn/7eb5zYfLip
-         yxsQ==
+        bh=YYrZWmR9ibcpEx9K+dr8dK7clI/EvOdBCBQrgTnJvTM=;
+        b=A2an78DD7NRhX70jEjuxU/SRTTz3ciqO2Svan9Aa8vsoQUhJ3ZUE9z9gmOTQcsvsHq
+         +RIN65oSogkG73ODKCKP3CTMKQtGu+yub79Gs/fC4dVSCYbDFCnVr8Kl/K0X5zeLE++f
+         Da6CmvmJ+cZirLl0qPFuzo8wQEQn4rtEiWIImBeU3PGPTU9tkYFsNgeb6oXDmja5mRnG
+         +xED+QtJ+D3aHdyoIooBzUtv38gwnYwjwjgzzhlxrP4Aq5/cWg5/Umxol2Ypu9Mes2Bd
+         V4/mPCqK6g+2uK7utUFF4yNvUTqv0b4vIrWcq4KtAhyHprt1KE1KWXUCWGui9qrZzA5K
+         Nlvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694794160; x=1695398960;
+        d=1e100.net; s=20230601; t=1694794167; x=1695398967;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ABHro1WbVSv9M1mp1iSF234oY2ZCcRBRXlCCIHJK3dU=;
-        b=HnSyOZGvciUbDU9z5hFbMUjWlDDHsrZn4rJY1cgIhEvWiw2ybpcSmOHsJIwDm/8Avz
-         SkvUeN3wlddgPdluaX4eKpISpXPgOqc2dBAZzy+0TeUYU1aqUod8eMXuHep+cMZfPZ+i
-         2MCjxz5/WspAkiLGHgxyjSVlmPsp69DLMAlKUUPXbZKlpXNJtXKLOt0xFxbA5lIx89wg
-         ToVk1HVubw/k/ChO65T6ObNIjmiDi1RnERXjACq2Dy7DUoUeWye9lHV+w1o3Q27Nq2hl
-         /OZiLBtsC7GnAftXN/U8pA2zzODgcBFLTSEsN3qcszlsdGA+pXLX8t8ihtqfJI5IVrtY
-         IDpg==
-X-Gm-Message-State: AOJu0Yz9/f6UomAzA4LJL1AZz1Ra5Dqf4NZjZDa8+Y8EhA3UWIA6VAS7
-        ED9HNSx5rptnbODNT1iMt/8=
-X-Google-Smtp-Source: AGHT+IHCEiDjU07u0tGx9Pyzk8I6wtgw2o7MegPhc89b8M2XnCyb0Aa32kumf3Tk5DNm3vYcpxXEFw==
-X-Received: by 2002:a05:600c:5106:b0:3fe:d637:7b25 with SMTP id o6-20020a05600c510600b003fed6377b25mr2002791wms.0.1694794160276;
-        Fri, 15 Sep 2023 09:09:20 -0700 (PDT)
+        bh=YYrZWmR9ibcpEx9K+dr8dK7clI/EvOdBCBQrgTnJvTM=;
+        b=iC6GaN7aaZvKL5qx2oyZ3IRT8IaGsXV7B4tHo0sCT7RzeNGSrbZk0PlRg8JnvZBqZn
+         FrpfqEwkjhwF4SSlEKuCiUPDoxU8rcmQwNVzR95MrjDc10SpVGzapsv6JYq/5L1fetS9
+         4ey3t9Z1uwQ883Z886ArhMWKlOjlPq0iGlwNyXzy0nOo4xuu2QjUBrmpqvjSW5v1WDEk
+         69WCkegBXt0m2V0ABh7q6tKwgdCN/rH3cnJHWraRW/G7nC2h21uIw8Zv/jpNjTBgT4cM
+         TWYQ/6N/dO4LAyetDqUnNUNjHDMbHFwr1UsvVcV6HAA0NfgYb204f+18Ir1aEv5LwcPJ
+         h2BQ==
+X-Gm-Message-State: AOJu0YyovV8Xl8q18lNeN6cfpcW+gQoXTO2A8cdM/ObSu6AbOn0zUcK/
+        pqbrAkslV5SFpJvDtm7H3XUEatzA0PF6WA==
+X-Google-Smtp-Source: AGHT+IERri93rYEDEreWdnSc19Cfvd4qaU1YamBg/Iz5qjCc1rmMNuQgLxbzfA7Bdzt0u3+bDqzLdw==
+X-Received: by 2002:a05:600c:3ba3:b0:401:c392:d28d with SMTP id n35-20020a05600c3ba300b00401c392d28dmr1906777wms.2.1694794166885;
+        Fri, 15 Sep 2023 09:09:26 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id n7-20020a7bcbc7000000b003fef3180e7asm7827085wmi.44.2023.09.15.09.09.19
+        by smtp.gmail.com with ESMTPSA id v13-20020a05600c214d00b003fc16ee2864sm4994907wml.48.2023.09.15.09.09.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 09:09:20 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 18:09:18 +0200
+        Fri, 15 Sep 2023 09:09:26 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 18:09:25 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/16] staging: rtl8192e: Remove struct rtllib_hdr_3addrqos
-Message-ID: <f9c52f9822075476d491b2f1061af51a4b818f3a.1694792595.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 11/16] staging: rtl8192e: Remove struct rtllib_hdr_4addrqos
+Message-ID: <e146191ec1781a3989b318316fe9d8cdb330a52a.1694792595.git.philipp.g.hortmann@gmail.com>
 References: <cover.1694792595.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,173 +70,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace struct rtllib_hdr_3addrqos with struct ieee80211_qos_hdr to avoid
-proprietary code.
+Replace struct rtllib_hdr_4addrqos with struct ieee80211_qos_hdr_4addr to
+avoid proprietary code.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib.h    | 11 -----------
+ drivers/staging/rtl8192e/rtllib.h    | 12 ------------
  drivers/staging/rtl8192e/rtllib_rx.c | 18 +++++++++---------
- drivers/staging/rtl8192e/rtllib_tx.c | 22 +++++++++++-----------
- 3 files changed, 20 insertions(+), 31 deletions(-)
+ 2 files changed, 9 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index dfdc45d06365..e73292201e3a 100644
+index e73292201e3a..24060c9722e6 100644
 --- a/drivers/staging/rtl8192e/rtllib.h
 +++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -679,17 +679,6 @@ struct rtllib_pspoll_hdr {
+@@ -679,18 +679,6 @@ struct rtllib_pspoll_hdr {
  	u8 ta[ETH_ALEN];
  } __packed;
  
--struct rtllib_hdr_3addrqos {
+-struct rtllib_hdr_4addrqos {
 -	__le16 frame_ctl;
 -	__le16 duration_id;
 -	u8 addr1[ETH_ALEN];
 -	u8 addr2[ETH_ALEN];
 -	u8 addr3[ETH_ALEN];
 -	__le16 seq_ctl;
+-	u8 addr4[ETH_ALEN];
 -	__le16 qos_ctl;
 -	u8 payload[];
 -} __packed;
 -
- struct rtllib_hdr_4addrqos {
- 	__le16 frame_ctl;
- 	__le16 duration_id;
+ struct rtllib_info_element {
+ 	u8 id;
+ 	u8 len;
 diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 05d1d47bed47..265a718a20a4 100644
+index 265a718a20a4..cf98b020194b 100644
 --- a/drivers/staging/rtl8192e/rtllib_rx.c
 +++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -93,7 +93,7 @@ rtllib_frag_cache_get(struct rtllib_device *ieee,
- 	unsigned int frag = WLAN_GET_SEQ_FRAG(sc);
+@@ -94,13 +94,13 @@ rtllib_frag_cache_get(struct rtllib_device *ieee,
  	unsigned int seq = WLAN_GET_SEQ_SEQ(sc);
  	struct rtllib_frag_entry *entry;
--	struct rtllib_hdr_3addrqos *hdr_3addrqos;
-+	struct ieee80211_qos_hdr *hdr_3addrqos;
- 	struct rtllib_hdr_4addrqos *hdr_4addrqos;
+ 	struct ieee80211_qos_hdr *hdr_3addrqos;
+-	struct rtllib_hdr_4addrqos *hdr_4addrqos;
++	struct ieee80211_qos_hdr_4addr *hdr_4addrqos;
  	u8 tid;
  
-@@ -104,8 +104,8 @@ rtllib_frag_cache_get(struct rtllib_device *ieee,
+ 	if (((fc & RTLLIB_FCTL_DSTODS) == RTLLIB_FCTL_DSTODS) &&
+ 	    RTLLIB_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtllib_hdr_4addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & RTLLIB_QCTL_TID;
++		hdr_4addrqos = (struct ieee80211_qos_hdr_4addr *)hdr;
++		tid = le16_to_cpu(hdr_4addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
  		tid = UP2AC(tid);
  		tid++;
  	} else if (RTLLIB_QOS_HAS_SEQ(fc)) {
--		hdr_3addrqos = (struct rtllib_hdr_3addrqos *)hdr;
--		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & RTLLIB_QCTL_TID;
-+		hdr_3addrqos = (struct ieee80211_qos_hdr *)hdr;
-+		tid = le16_to_cpu(hdr_3addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
- 		tid = UP2AC(tid);
- 		tid++;
- 	} else {
-@@ -162,7 +162,7 @@ static int rtllib_frag_cache_invalidate(struct rtllib_device *ieee,
- 	u16 sc = le16_to_cpu(hdr->seq_ctrl);
+@@ -163,13 +163,13 @@ static int rtllib_frag_cache_invalidate(struct rtllib_device *ieee,
  	unsigned int seq = WLAN_GET_SEQ_SEQ(sc);
  	struct rtllib_frag_entry *entry;
--	struct rtllib_hdr_3addrqos *hdr_3addrqos;
-+	struct ieee80211_qos_hdr *hdr_3addrqos;
- 	struct rtllib_hdr_4addrqos *hdr_4addrqos;
+ 	struct ieee80211_qos_hdr *hdr_3addrqos;
+-	struct rtllib_hdr_4addrqos *hdr_4addrqos;
++	struct ieee80211_qos_hdr_4addr *hdr_4addrqos;
  	u8 tid;
  
-@@ -173,8 +173,8 @@ static int rtllib_frag_cache_invalidate(struct rtllib_device *ieee,
+ 	if (((fc & RTLLIB_FCTL_DSTODS) == RTLLIB_FCTL_DSTODS) &&
+ 	    RTLLIB_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtllib_hdr_4addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & RTLLIB_QCTL_TID;
++		hdr_4addrqos = (struct ieee80211_qos_hdr_4addr *)hdr;
++		tid = le16_to_cpu(hdr_4addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
  		tid = UP2AC(tid);
  		tid++;
  	} else if (RTLLIB_QOS_HAS_SEQ(fc)) {
--		hdr_3addrqos = (struct rtllib_hdr_3addrqos *)hdr;
--		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & RTLLIB_QCTL_TID;
-+		hdr_3addrqos = (struct ieee80211_qos_hdr *)hdr;
-+		tid = le16_to_cpu(hdr_3addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
- 		tid = UP2AC(tid);
- 		tid++;
- 	} else {
-@@ -355,7 +355,7 @@ static int is_duplicate_packet(struct rtllib_device *ieee,
- 	u16 frag = WLAN_GET_SEQ_FRAG(sc);
+@@ -356,13 +356,13 @@ static int is_duplicate_packet(struct rtllib_device *ieee,
  	u16 *last_seq, *last_frag;
  	unsigned long *last_time;
--	struct rtllib_hdr_3addrqos *hdr_3addrqos;
-+	struct ieee80211_qos_hdr *hdr_3addrqos;
- 	struct rtllib_hdr_4addrqos *hdr_4addrqos;
+ 	struct ieee80211_qos_hdr *hdr_3addrqos;
+-	struct rtllib_hdr_4addrqos *hdr_4addrqos;
++	struct ieee80211_qos_hdr_4addr *hdr_4addrqos;
  	u8 tid;
  
-@@ -366,8 +366,8 @@ static int is_duplicate_packet(struct rtllib_device *ieee,
+ 	if (((fc & RTLLIB_FCTL_DSTODS) == RTLLIB_FCTL_DSTODS) &&
+ 	    RTLLIB_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtllib_hdr_4addrqos *)header;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & RTLLIB_QCTL_TID;
++		hdr_4addrqos = (struct ieee80211_qos_hdr_4addr *)header;
++		tid = le16_to_cpu(hdr_4addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
  		tid = UP2AC(tid);
  		tid++;
  	} else if (RTLLIB_QOS_HAS_SEQ(fc)) {
--		hdr_3addrqos = (struct rtllib_hdr_3addrqos *)header;
--		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & RTLLIB_QCTL_TID;
-+		hdr_3addrqos = (struct ieee80211_qos_hdr *)header;
-+		tid = le16_to_cpu(hdr_3addrqos->qos_ctrl) & RTLLIB_QCTL_TID;
- 		tid = UP2AC(tid);
- 		tid++;
- 	} else {
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index a244a072e551..4b730b2c9fef 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -544,17 +544,17 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 	struct rtllib_device *ieee = (struct rtllib_device *)
- 				     netdev_priv_rsl(dev);
- 	struct rtllib_txb *txb = NULL;
--	struct rtllib_hdr_3addrqos *frag_hdr;
-+	struct ieee80211_qos_hdr *frag_hdr;
- 	int i, bytes_per_frag, nr_frags, bytes_last_frag, frag_size;
- 	unsigned long flags;
- 	struct net_device_stats *stats = &ieee->stats;
- 	int ether_type = 0, encrypt;
- 	int bytes, fc, qos_ctl = 0, hdr_len;
- 	struct sk_buff *skb_frag;
--	struct rtllib_hdr_3addrqos header = { /* Ensure zero initialized */
-+	struct ieee80211_qos_hdr header = { /* Ensure zero initialized */
- 		.duration_id = 0,
--		.seq_ctl = 0,
--		.qos_ctl = 0
-+		.seq_ctrl = 0,
-+		.qos_ctrl = 0
- 	};
- 	int qos_activated = ieee->current_network.qos_data.active;
- 	u8 dest[ETH_ALEN];
-@@ -689,7 +689,7 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 
- 		bIsMulticast = is_multicast_ether_addr(header.addr1);
- 
--		header.frame_ctl = cpu_to_le16(fc);
-+		header.frame_control = cpu_to_le16(fc);
- 
- 		/* Determine fragmentation size based on destination (multicast
- 		 * and broadcast are not fragmented)
-@@ -716,7 +716,7 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 			}
- 
- 			qos_ctl |= skb->priority;
--			header.qos_ctl = cpu_to_le16(qos_ctl & RTLLIB_QOS_TID);
-+			header.qos_ctrl = cpu_to_le16(qos_ctl & RTLLIB_QOS_TID);
- 
- 		} else {
- 			hdr_len = RTLLIB_3ADDR_LEN;
-@@ -798,7 +798,7 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 			 * MOREFRAGS bit to the frame control
- 			 */
- 			if (i != nr_frags - 1) {
--				frag_hdr->frame_ctl = cpu_to_le16(fc |
-+				frag_hdr->frame_control = cpu_to_le16(fc |
- 								  RTLLIB_FCTL_MOREFRAGS);
- 				bytes = bytes_per_frag;
- 
-@@ -807,13 +807,13 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 				bytes = bytes_last_frag;
- 			}
- 			if ((qos_activated) && (!bIsMulticast)) {
--				frag_hdr->seq_ctl =
-+				frag_hdr->seq_ctrl =
- 					 cpu_to_le16(rtllib_query_seqnum(ieee, skb_frag,
- 									 header.addr1));
--				frag_hdr->seq_ctl =
--					 cpu_to_le16(le16_to_cpu(frag_hdr->seq_ctl) << 4 | i);
-+				frag_hdr->seq_ctrl =
-+					 cpu_to_le16(le16_to_cpu(frag_hdr->seq_ctrl) << 4 | i);
- 			} else {
--				frag_hdr->seq_ctl =
-+				frag_hdr->seq_ctrl =
- 					 cpu_to_le16(ieee->seq_ctrl[0] << 4 | i);
- 			}
- 			/* Put a SNAP header on the first fragment */
 -- 
 2.42.0
 
