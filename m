@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EBD7A2026
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47D17A2027
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjIONtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S234763AbjIONtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbjIONtQ (ORCPT
+        with ESMTP id S234618AbjIONtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 09:49:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3092119;
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C9B2121;
         Fri, 15 Sep 2023 06:49:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B737C433C8;
-        Fri, 15 Sep 2023 13:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694785750;
-        bh=vh7X5SCmx9den/1/AL1Mc91AAdBpMVMeeSvHS/YS0XA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=somAZDlUnobuWTK5V4Kc2ga8ruahmFYfRnJfk1Fbsq2JiCaFqHzikGvggDLjZl2s4
-         Q5j9dhN0Uwh/bO9Ris0ZtyASMst152c0CbS/OnA32kPAI1NCZPEQprJUND+doDJ5rm
-         dr73XkzK5Rai8EVkm6TFPA5dvr5b2BovjAwL4ny58XepCeDAZ0fXzfa+QzcAWb6dTm
-         Se9fKVUrUDA5kn4nGdQ4CDI1IIeSzamiJaeFCj7pO+4AyeeC+24D8sg9A16gwKg3al
-         bXGO+EZdPaZ7AzJ6ffmevh0ksZ7tLjkHyX5S8vcMKhMLTyxsIhTtPRFBp5EvBjQZuk
-         qHxp4aDfDiK5A==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2bfb1167277so35230581fa.2;
-        Fri, 15 Sep 2023 06:49:10 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxPGTXhjpy90DPrbnzwdn0wxG3EY60uR7/riDzMYpQvIAGchWib
-        dWQJB6UPbAroPdVR5l3vkfEbQutDnKGy8Bq6RFQ=
-X-Google-Smtp-Source: AGHT+IHo4jPEqv90rSCWuufKlbh0HOiPaRMmxsCDQd1fj17Voi3NgxBVNWhvrp343xSi+Ja7hK1MfhWOqv1A2Fe0b3Q=
-X-Received: by 2002:a2e:848a:0:b0:2bc:f756:341 with SMTP id
- b10-20020a2e848a000000b002bcf7560341mr1496024ljh.35.1694785748489; Fri, 15
- Sep 2023 06:49:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694785750; x=1726321750;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=4IcYhwjz5QUsOTeYLbkK5pEmiuhen3zjH9p2Ck1k6DY=;
+  b=AOiHtp/3ToKHmTiTKajWx7K8ccLhvQCyvUOalvJ34iRx04M3K19yMEI3
+   ihhUEyCVWY/laRHPyx9ro+s4lZDuijuy6ieqf12cFvI7RCPIup0pSAnQ3
+   icf8DblxEeLDIoQtet9Jl+2Kiqc4QVjGSfxaoVShzjoG/eJfbu2bmOCCr
+   PtYWtmJU7cOe5jwcpRqZhFQuRXAvGZydGumn2KIwAndgTCv2bquqE86+h
+   ZFjw/yJs+mn9jJFPn7tC/qgE3YtrkaLsO7u16oGp4jUOXtQpEcdX90c7T
+   znqjUagROMzCSZ5mOGky53BZxkeg8+tYCJCl4V+OwZdb7fRvg20bbFJjI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="465613862"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="465613862"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 06:49:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="694726004"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="694726004"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 06:49:06 -0700
+Date:   Fri, 15 Sep 2023 16:49:04 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH v4 2/4] platform/x86: intel_scu_ipc: Check status upon
+ timeout in ipc_wait_for_interrupt()
+In-Reply-To: <20230913212723.3055315-3-swboyd@chromium.org>
+Message-ID: <2bd9b7e2-a558-305b-bfd9-e64c28b6303d@linux.intel.com>
+References: <20230913212723.3055315-1-swboyd@chromium.org> <20230913212723.3055315-3-swboyd@chromium.org>
 MIME-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com> <20230912090051.4014114-25-ardb@google.com>
- <ZQQgv7VWUa3VGqbb@gmail.com>
-In-Reply-To: <ZQQgv7VWUa3VGqbb@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 15 Sep 2023 15:48:56 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGxv_Nt4__ETG-e0vXC7z8SyirCw5NO0p6gsWRbLfbNAQ@mail.gmail.com>
-Message-ID: <CAMj1kXGxv_Nt4__ETG-e0vXC7z8SyirCw5NO0p6gsWRbLfbNAQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/15] x86/boot: Drop references to startup_64
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ard Biesheuvel <ardb@google.com>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 11:15, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ard Biesheuvel <ardb@google.com> wrote:
->
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > The x86 boot image generation tool assign a default value to startup_64
-> > and subsequently parses the actual value from zoffset.h but it never
-> > actually uses the value anywhere. So remove this code.
-> >
-> > This change has no impact on the resulting bzImage binary.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  arch/x86/boot/Makefile      | 2 +-
-> >  arch/x86/boot/tools/build.c | 3 ---
-> >  2 files changed, 1 insertion(+), 4 deletions(-)
->
-> Note that this patch conflicted with a recent upstream cleanup commit:
->
->    e78d334a5470 ("x86/boot: Mark global variables as static")
->
-> It was trivial to resolve, but please double-check the result once I push
-> out the new tip:x86/boot tree.
->
+On Wed, 13 Sep 2023, Stephen Boyd wrote:
 
-Ehm, I suspect something is going on with your workflow - did you
-apply my patches out of order perhaps? (/me notes that you seem to
-have omitted patches #7 and #9)
+> It's possible for the completion in ipc_wait_for_interrupt() to timeout,
+> simply because the interrupt was delayed in being processed. A timeout
+> in itself is not an error. This driver should check the status register
+> upon a timeout to ensure that scheduling or interrupt processing delays
+> don't affect the outcome of the IPC return value.
+> 
+>  CPU0                                                   SCU
+>  ----                                                   ---
+>  ipc_wait_for_interrupt()
+>   wait_for_completion_timeout(&scu->cmd_complete)
+>   [TIMEOUT]                                             status[IPC_STATUS_BUSY]=0
+> 
+> Fix this problem by reading the status bit in all cases, regardless of
+> the timeout. If the completion times out, we'll assume the problem was
+> that the IPC_STATUS_BUSY bit was still set, but if the status bit is
+> cleared in the meantime we know that we hit some scheduling delay and we
+> should just check the error bit.
 
-The patch you refer to is
+Hi,
 
-commit e78d334a5470ead861590ec83158f3b17bd6c807
-Author:     Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate: Mon May 11 18:58:49 2020 -0400
-Commit:     Ard Biesheuvel <ardb@kernel.org>
-CommitDate: Thu May 14 11:11:20 2020 +0200
+I don't understand the intent here. What prevents IPC_STATUS_BUSY from 
+changing right after you've read it in ipc_read_status(scu)? Doesn't that 
+end you exactly into the same situation where the returned value is stale 
+so I cannot see how this fixes anything, at best it just plays around the 
+race window that seems to still be there after this fix?
 
-    x86/boot: Mark global variables as static
+-- 
+ i.
 
-which went into v5.7 as a late fix via the EFI tree.
+
+> Cc: Prashant Malani <pmalani@chromium.org>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Fixes: ed12f295bfd5 ("ipc: Added support for IPC interrupt mode")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/platform/x86/intel_scu_ipc.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+> index 4c774ee8bb1b..299c15312acb 100644
+> --- a/drivers/platform/x86/intel_scu_ipc.c
+> +++ b/drivers/platform/x86/intel_scu_ipc.c
+> @@ -248,10 +248,12 @@ static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
+>  {
+>  	int status;
+>  
+> -	if (!wait_for_completion_timeout(&scu->cmd_complete, IPC_TIMEOUT))
+> -		return -ETIMEDOUT;
+> +	wait_for_completion_timeout(&scu->cmd_complete, IPC_TIMEOUT);
+>  
+>  	status = ipc_read_status(scu);
+> +	if (status & IPC_STATUS_BUSY)
+> +		return -ETIMEDOUT;
+> +
+>  	if (status & IPC_STATUS_ERR)
+>  		return -EIO;
+>  
+> 
