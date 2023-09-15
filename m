@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E087A17BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38A17A17C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjIOHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        id S232716AbjIOHu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbjIOHrS (ORCPT
+        with ESMTP id S232321AbjIOHuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:47:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF4A1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+VnSDWZeJ1nWnlbOizXr+arVmZib71qUYMJ8RDptxek=; b=SukXiH3/ICd0FPnMJfN2/TiSCf
-        aoeyfnh3Hgjgr4Qnu5z3cbL8q3ycbtuhwAyJiATnow4oK3panbA3qdqo1rOFhbJcAnHtZqDajfRAz
-        mCohhm1bm0+SL3Uy72k6yz9DolZMrsaI/ZnHjSCWwz9+DDsQQBrV9eaEm+dDrMiH305W5ZFOBGNKZ
-        I77NWJbwZvj2pHWCLp3/VzdZbavcSMrS3nDxHI3B8URUrHVpcbGH4oDxWebFmcI8JlJYijQ5ZmsJs
-        4JA9BBNSfVSxqBEH5qRVQ+BYLcupfSvA31iI3sI9U59FvObLLDlMAGvYuVoT/FaWAFED/aTKO7Ro4
-        s8KrH7rA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qh3XK-008ouS-2h;
-        Fri, 15 Sep 2023 07:46:49 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EAAD03003F2; Fri, 15 Sep 2023 09:46:47 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 09:46:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
-Message-ID: <20230915074647.GA6721@noisy.programming.kicks-ass.net>
-References: <20230907150632.GAZPnm+Ly+Vyt8VPYr@fat_crate.local>
- <20230907153036.GBZPnsnNreLCyGpJFn@fat_crate.local>
- <20230909075009.GAZPwjsYZ4sSALN/5+@fat_crate.local>
- <20230909092554.GC2771@noisy.programming.kicks-ass.net>
- <20230910144227.GAZP3V0/mQ73C2hx/l@fat_crate.local>
- <20230912092709.GE35261@noisy.programming.kicks-ass.net>
- <20230912094441.GA13926@noisy.programming.kicks-ass.net>
- <20230913043738.GCZQE8kuw8p3WsnCXd@fat_crate.local>
- <20230913084658.GA692@noisy.programming.kicks-ass.net>
- <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
+        Fri, 15 Sep 2023 03:50:23 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20900193;
+        Fri, 15 Sep 2023 00:50:15 -0700 (PDT)
+X-UUID: 7c784900539c11ee8051498923ad61e6-20230915
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=FwLQoAelQv12EwvGN3/4j+laqXSBsUWUFXrkTjKI7Zw=;
+        b=izgtt7Yw2r/r+LuP7rPbV1YhtbzTAURaB/i18EL3sDreGyJonXLCQGTQc0e4+xFzlaIHC2HSnSzm6cdhb8g+yhKX2Nycd0vwZ6hJYNV3dtFQ2cqh42NkkB2RnNBcaCcCxKf/68QPciekOISCPz+DD3nBiwncyeAMstikSyPRHw8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:442c84e8-7508-4064-ac8b-1257a7d20738,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:1a1310c3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 7c784900539c11ee8051498923ad61e6-20230915
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <chun-jen.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2140022181; Fri, 15 Sep 2023 15:50:06 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 15 Sep 2023 15:50:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 15 Sep 2023 15:50:04 +0800
+From:   Mark Tseng <chun-jen.tseng@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Roger Lu <roger.lu@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <chun-jen.tseng@mediatek.com>
+Subject: [PATCH v1 0/2] soc: mediatek: svs: add support for mt8188
+Date:   Fri, 15 Sep 2023 15:50:01 +0800
+Message-ID: <20230915075003.1552-1-chun-jen.tseng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:38:47PM +0200, Borislav Petkov wrote:
 
->   [ bp: Make labels unique and thus all sizing use unambiguous labels.
->     Add more info. ]
+This series supports MT8188 Smart Voltage Scaling (SVS) hardware which
+used as optimization of opp voltage table for gpu dvfs driver.
 
-> +#define __ALTERNATIVE(oldinstr, newinstr, ft_flags, n)			\
-> +	OLDINSTR(oldinstr, n)						\
-> +	ALTINSTR_ENTRY(ft_flags)					\
-> +	ALTINSTR_REPLACEMENT(newinstr)
+Mark Tseng (2):
+  dt-bindings: soc: mediatek: add mt8188 svs dt-bindings
+  soc: mediatek: svs: add support for mt8188
 
-> +#define ALTERNATIVE_2(oldinst, newinst1, flag1, newinst2, flag2)	\
-> +	__ALTERNATIVE(ALTERNATIVE(oldinst, newinst1, flag1),		\
-> +		    newinst2, flag2, 1)
+ .../bindings/soc/mediatek/mtk-svs.yaml        |   1 +
+ drivers/soc/mediatek/mtk-svs.c                | 177 +++++++++++++++++-
+ 2 files changed, 173 insertions(+), 5 deletions(-)
 
-> +#define ALTERNATIVE_3(oldinst, newinst1, flag1, newinst2, flag2,	\
-> +		      newinst3, flag3)					\
-> +	__ALTERNATIVE(ALTERNATIVE_2(oldinst, newinst1, flag1, newinst2, flag2), \
-> +		    newinst3, flag3, 2)
+-- 
+2.18.0
 
-
-So I see what you did with that @n argument, but urgh, do we really need
-this? I mean, it just makes things harder to use and it doesn't actually
-fix anything.. :/
