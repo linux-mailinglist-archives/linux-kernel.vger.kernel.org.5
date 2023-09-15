@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9F67A1B89
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CD57A1B92
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbjIOJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        id S233371AbjIOKAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbjIOJ70 (ORCPT
+        with ESMTP id S234045AbjIOKAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:59:26 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2132.outbound.protection.outlook.com [40.107.117.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1452735;
-        Fri, 15 Sep 2023 02:57:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ejscp8uoqWNOjjlDCWKO/f/vSluMyeIgagXwBl+gX216vVoaAbOq/1M6npRaoJjgxlXr98yUozlLoJ8czovD8SSM0aZgCA9B5v2MZoKHFlHhhCtZQ1KOCgKq5wnSYUO2lYYEwzJAKFvWixDZa0CAjKHM+XhJFaUvk7PQp8u7dD28wexwpxIs7vPv5ArAbAXkkxf+gWo61Ih6eNOyb/IIB+y7A5U4jMmphIRqY41GHpnpOCXtFQxcjF/2tWBmqnIu13FcY5IgGg5QVnRMPf2ey9vSkXSXtv1+BjkDqHM0d3wNFE41eb0JcDSa2qc7VC75F4Br3THKMrMbf7lk/cgUgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9NtG5w46J+qin33suvuWDWldx40kzXTtiF1HgsDTBb4=;
- b=dal4ytknSKH2hq8xzV0mUxB5uJM58lStRSOkdElz0IEQYmFZtghajl2dxmWeA2N4fnudQsdMdspUlALdrvj6nREQ9T/by6Vl22NvhGU8rMtktEwhoPPdI/VCdg8RHiOQ7/wPvfUsl3mFTjEKaNWxSfETe7pV6azGJuBfjoxnaftwgkVRIvs8NXrpJ0fChE7OzbdiHWFUXZAdSrfFIfMCDRmL8mZoeRrujR+hrBpX04WiwKC2ZTrGWZrE3RalnUJoGaXCbWil2a1CcxAAYTMheA+4lCjnNAz051Kadlr4uN+8hES31QQt9o2/O2ZT3xshIAvwcAafTjWSWNaLYeIbpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9NtG5w46J+qin33suvuWDWldx40kzXTtiF1HgsDTBb4=;
- b=ABuoqxjgfy7hh4rehTeMAbNvZm82tvnNgN+zzfBeIeELqMGbHwL0wdRKzjQq05KNektuOvw8ww9bvH+3P+MsrxlCaRDhSckZCbP1jO019lGJ+/8HMC+WOlRbDJ7+STuNZaB0j6VTX+yBcYGbtxb3SvpxBPrT2ZGYU1RBc9jyK9Q4VMynz8eXuxtINIIb/wY9f3uS+2r1diY6kyOasKM/iJMfsaxSMcalaxUQ2KWqKTfR+xGkirk6hDqmgV1gYVBs5hQrben4ooo8OXgb2UEPM6BinUxGeROqmVLWR1mvpjcrEmdxyECIpCVJA8IQTAbjYoDHzYViA/qEjtXLN2KLNA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
- by TYZPR06MB5872.apcprd06.prod.outlook.com (2603:1096:400:334::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 15 Sep
- 2023 09:57:13 +0000
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959]) by TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959%4]) with mapi id 15.20.6792.021; Fri, 15 Sep 2023
- 09:57:13 +0000
-Message-ID: <315b565c-2f1c-4c51-a645-a5c3a4e1e3cc@vivo.com>
-Date:   Fri, 15 Sep 2023 17:57:09 +0800
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIXSBmcy13cml0ZWJhY2s6IHdyaXRlYmFj?=
- =?UTF-8?Q?k=5Fsb=5Finodes=3A_Do_not_increase_=27total=5Fwrote=27_when_nothi?=
- =?UTF-8?Q?ng_is_written?=
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     "chao@kernel.org" <chao@kernel.org>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230913131501.478516-1-guochunhai@vivo.com>
- <20230913151651.gzmyjvqwan3euhwi@quack3>
- <TY2PR06MB3342ED6EB614563BCC4FD23FBEF7A@TY2PR06MB3342.apcprd06.prod.outlook.com>
- <20230914065853.qmvkymchyamx43k5@quack3>
-From:   Chunhai Guo <guochunhai@vivo.com>
-In-Reply-To: <20230914065853.qmvkymchyamx43k5@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR02CA0122.apcprd02.prod.outlook.com
- (2603:1096:4:188::10) To TY2PR06MB3342.apcprd06.prod.outlook.com
- (2603:1096:404:fb::23)
+        Fri, 15 Sep 2023 06:00:36 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E323C14;
+        Fri, 15 Sep 2023 02:57:25 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502defbb0c3so3309920e87.0;
+        Fri, 15 Sep 2023 02:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694771843; x=1695376643; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rbpN2Ho6gZz+bg7rv1Ni5awvz2WgkEY58LCWW52O/G4=;
+        b=LT87BZc9RW2Egvti9Tesi1ouNE6XecN6h/Acm8DJp8qLeZWVmjf+zoSriISz9nDmVc
+         L/aDDOZmR7IGFnqxUI+NwRyAYrDvSg6P9ByKZ8i3hd+5rkPue3g+kxIzPjjHbL3TI5BB
+         jYo+6iIAsgJubrZkINfsTWNno4y//9gHurtCe/WKzweYlDrrHMPTmzWuXjd/TByO242K
+         8JiA2RVSBn3ABcg2YbGFSUnMgd586CfSW8r+e+tTcV1ObMqI+pghgkBfeD3KxW+JTBuL
+         JzouqOgEz3BTSboP6QWN4PSXH0LZAVeGxSRRceqTLRifjAaafOOWsFnEqTHlaBhjxMfo
+         jcUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694771843; x=1695376643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rbpN2Ho6gZz+bg7rv1Ni5awvz2WgkEY58LCWW52O/G4=;
+        b=oEoaiepiqHtb9dlQZM1D1sUDoofxsT6cUefixCyMjEE/RJati+uHE/4Bq85jTZrG4X
+         wpSDRj8wyz8eSI2nRpqoW46PQVz6uBnIf1nSRjp8HfJsJ/6STnxCuxW5uD9gDulTMJB1
+         FCAwcHSDLokPbA6ClqAPf7pJ5h+m266IvN7fOLo8d8B15+UuFwKgXARUE4crWHig3CaP
+         pEijOJoXBYVMVVuqoDLhoqEiDGbVzn2hWx/H6l/W1HaI4Q8d3/nkm/j8uBOS5M2pzDA+
+         4Az/7LU0Y2FcfxwH6/la0oTLCssFm019A2DWBMD7b+NGgUbyIn/LQ3sTOyzCEKhoie7+
+         g9TA==
+X-Gm-Message-State: AOJu0YyD5vGSv4GekHTyXQg7A4eGLPTCx64U5LOkaQwVbtBpmYjyJd2Q
+        OPABVcZQZYOWB9F19ahJ2P4=
+X-Google-Smtp-Source: AGHT+IH15RoWDqQKC7/XFJYf4pZr+2QRb6MA8O/Rr033sqFSZ+UoHtgT2rNuzO5Ej35UpOpFnIVetg==
+X-Received: by 2002:a05:6512:3f11:b0:4ff:9bd9:f69a with SMTP id y17-20020a0565123f1100b004ff9bd9f69amr1214496lfa.65.1694771842514;
+        Fri, 15 Sep 2023 02:57:22 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id n3-20020ac24903000000b005008f58228bsm579174lfi.190.2023.09.15.02.57.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 02:57:22 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 12:57:20 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v5 3/3] net: stmmac: Add glue layer for Loongson-1 SoC
+Message-ID: <ub3qzam3fyxghjcyxwwlmq6lbpqkohkjd2g6vlnovrtlwjovys@2n6iwa6ck2ms>
+References: <20230914114435.481900-1-keguang.zhang@gmail.com>
+ <20230914114435.481900-4-keguang.zhang@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TY2PR06MB3342:EE_|TYZPR06MB5872:EE_
-X-MS-Office365-Filtering-Correlation-Id: f8e6bca4-cd62-437e-6b0c-08dbb5d222aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 202SROzeftiiAtOTLNXZZpmD9I4CmX4ua07WPeRGYMxJ9ehi2pkKTGmXDWMtvofBBFfcvUotM56TVv0ySe9ti/Bzfd1DpOd/3adNB7MU61NXgiKgcu0kJVey92HRoUGnEZcV2TGQU1evc0td2pbNtmWpuebiyAsPFtVqva4gOxiwF/gcxh1tN0jf4WW5Xw6xLa5DW6W1n33GCjCF8J+Jx8yezkKRNlS3lC9Oxv0ZZZYl4FV88TkAgDxdA56gBRVomGjw6yo+1BDT/wRqnwzGl7B9Q/N5KA8fI+hrh6VuCyIRcUwk1cZRaOL3P3Y4iyKE3P/RLhdOpQ5hdu2JAN9XJQLmyRz+ymDg44C4ymYMDs6IzlDbSZz4UPJrdluWiU0C5TH6TLCRUC215SkLfViLKMiiMxar8LNEypwu1CBkwDRuwRZG0Wfc08kELgUzvRhb8r3a+0pWx5i5YPJg7Au8n40Mjhhy4OrZ9SWLIUAUXnuV9XXpnxBBHSenACMzcv8lcNlJZJ2X0VALtkxWmF8omqO7tNmuCLEypDOWV1Fpmf1D4FkEcrbOaWme+wPOhsIghNjWuDDxeFCsC7ntduBhJzTgNmDXicr2p16UAsNVHWZ1EOTzLc9WyxJ4YKRDMKV+tvYJPp6h/UbDWnW6iTFqvg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3342.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39850400004)(346002)(136003)(451199024)(1800799009)(186009)(66476007)(66946007)(478600001)(6486002)(54906003)(6506007)(6916009)(6666004)(66556008)(41300700001)(6512007)(316002)(31686004)(8936002)(5660300002)(4326008)(86362001)(36756003)(31696002)(2616005)(26005)(2906002)(38100700002)(224303003)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R241Y3FLRWtFUmVYU0tHbWYzK3Avc2VzRENObEJrV0c0aHJMbHIyNXJLRkxt?=
- =?utf-8?B?allwd0xYb2ZZbkRIUDI1bkxZN1lTNnJJVTZrYkZUcmtnSjFiejlaTXNjVWFV?=
- =?utf-8?B?RStkZW9RY2s3UFR5bjhjYXA0TlRaZjRJRjY3YkxQSjk0ZTFiY1lSMlE1MzBI?=
- =?utf-8?B?bytnUFB4LytUeGVpM1BGUzJZRDl2emJHK2FoWUFZN2U0VUYxcVBMQkxFenVH?=
- =?utf-8?B?TVpVdGgrNlpXVlM5SmtBczNyeU5kcTNoMkFjYkRwOWJDZzhMRkdNZUJ5dEVt?=
- =?utf-8?B?OWlaUklkWDhoTG01VytQNk5kdXZmbHd6RmlwZUFQelBYU1liU2tKM0s1aEdp?=
- =?utf-8?B?YUNXcmhCd0s2a0RaTXM4aEliWXhBZldQOWIzcXNCZ0xGOGhZeTRkdm1kSG5o?=
- =?utf-8?B?ZlVKVmJHd2hjelExTkRIWkI0L0RFc0s1Y0hqSjdOZnBkYkhrQTVocTBNT2cv?=
- =?utf-8?B?b3dnZ0pVNnFhRWxFTFUyQXE1RHBJRkZ2RGhEdk5CR2JGMXp3SW1iVmt1bTBv?=
- =?utf-8?B?b2NZUW9sNUo3aFhuaTRKV3NSMzhUYkU2dHZMOW0zOGZzQU5UUjY4WGRBNXRw?=
- =?utf-8?B?OEc1MDllOGdLQ2ZYTDArME9KMnBqN0JhTzRFd1FxQnBjZTBOdVJuekw2UTR5?=
- =?utf-8?B?MVBNVHI0U2lCd0tHQi93TDhQRjFieFF2azdaY1lTejR3dFNibnBZOThOazhz?=
- =?utf-8?B?VERiZjVjM2J4YzV1WGExcDJwQnRaU1JzTkdNdVd2dU10RHk3WHFCNWQ0Vk1E?=
- =?utf-8?B?eFd4VmxWbkYzM3JJUGZLWjI3dnlDdWkvdkd4OWQzc0U2YUNhU2dPRUp5Yk94?=
- =?utf-8?B?MkQ2eHBobkJlKy9MYVl4UnBMVmFDOTFraFN2aFlBUTdIUnprV0YweVZxaHh4?=
- =?utf-8?B?WDZvb1Z3eDhVdktOZnJoZldPNUl6aGN4THltS1BsanR1MUJYaThvZnRQOUhE?=
- =?utf-8?B?STZ6aTFoeEFmNDVnODl2RFlzY2Zya3JtNDh4RTJVZThFSTlFSVpvNUUzTUJy?=
- =?utf-8?B?QUtpNitEbVFEWVJFbWlVRHRhQ2ZuSjNIWkhqSHIrNmtOOFZNNGlkZ05xZXZP?=
- =?utf-8?B?KzdVQ2tKbnRoVmEveUMzK1ZkK21wT0piTU9ocVQzQ1lnd2RpY3Q0c2JER3Uv?=
- =?utf-8?B?U1ByUVpqazRVcmNGZmlKQyt5cS9CK3FNWHVaVU9JSWk0QUhXdHJzb08yQ0F1?=
- =?utf-8?B?azg0VUo0a0VZdElLSythMXV5MFErME1yT3BhQ2dLek9RNjZkdEdoZFBwRWhy?=
- =?utf-8?B?L25JcHdPeFE4dCtNNFJRejRjNlJLcXcrRUFVcjh2bTVzdURCU0dmMzE5aG15?=
- =?utf-8?B?YmhueDRmWVRXZTlHVlFlZ1Z4d05yWFQzb1lWK3BIZ2RSS1RzRHJyV0IydHEy?=
- =?utf-8?B?UTJOM25rdzFlZzlEVk0yMjBQNWVnZWlMSmpzMkh3eWdFYk9STy9YZGhFY25i?=
- =?utf-8?B?N3VJZFdzVVFIdDA1OHZvMUpuakw3em5wWHdQVUJWMm9TdGlTNng4Y2ZlTnp3?=
- =?utf-8?B?NFovL041V213OGk4QzN3MUx2TzM1QkoxbDM4R3lPZjNTdndobExnSXZmY2d1?=
- =?utf-8?B?ZHRFNElqbzl4WUM0cCszM3ZadVEyU0MveWttd1ZldjVEbEd6ekkzZHNMVGV2?=
- =?utf-8?B?NVI4TkxDTFVIay9wR0FlSm54MmJ6bnZ2emJGNDB4YjNOU3J4MEVCNGt2VkFP?=
- =?utf-8?B?eWpmaXFCUFNNRzFvL0FyT1VhT05pYWZhNkJ6RUJqNHV4cGQ1SzhoTyt4L3Fm?=
- =?utf-8?B?ZDBPOHFKT00zVnFabG5MTzhKQUMyWk85aW8vdTVuMjVWVGJzMHRlVnZrY2or?=
- =?utf-8?B?WCtTNnB0ZHlyN2FyR1QxMUJ1NlM1bm4zZVNKNEc1aTVIWGJ4SWpZVTV2TlRv?=
- =?utf-8?B?UEwyRUw1VTNNWHJHYWtTbWliR1R5WnN2TDFSMEc4cXNIRmRjejJ5S3l3ZDNq?=
- =?utf-8?B?bWY2aVpEZm5qSVFiNEZWaENPdDZCejRJRkRPamN1ZUluclFkbVluVERmMU52?=
- =?utf-8?B?cjVtNVNrOFNWQkF6dXN5cndmb1V3RkZ3YUpTMi9PL2FSaHlCR3cycWZuOEdX?=
- =?utf-8?B?Z3l0akxqcStUa3IwK1lyMTBkNEZxTGFNeUZ4YjFqb25ZTEdaeUpvQ2dyU0xE?=
- =?utf-8?Q?AaRNpZ5nXKPnd6bL8rnlcucmG?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8e6bca4-cd62-437e-6b0c-08dbb5d222aa
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3342.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 09:57:13.4863
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U4OVvhqHtk4Q8q5+qaA+Y1HZtiG9VMJtfQff753QKvEBpYUT+uh0TPwr5XMbCwcYJB6lcIHyIjCDejDGzUn4yQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5872
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914114435.481900-4-keguang.zhang@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -132,71 +84,309 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 14, 2023 at 07:44:35PM +0800, Keguang Zhang wrote:
+> This glue driver is created based on the arch-code
+> implemented earlier with the platform-specific settings.
+> 
+> Use syscon for SYSCON register access.
+> 
+> And modify MAINTAINERS to add a new F: entry for this driver.
+> 
+> Partially based on the previous work by Serge Semin.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-在 2023/9/14 14:58, Jan Kara 写道:
-> On Thu 14-09-23 04:12:31, 郭纯海 wrote:
->>> On Wed 13-09-23 07:15:01, Chunhai Guo wrote:
->>>>  From the dump info, there are only two pages as shown below. One is
->>>> updated and another is under writeback. Maybe f2fs counts the
->>>> writeback page as a dirty one, so get_dirty_pages() got one. As you
->>>> said, maybe this is unreasonable.
->>>>
->>>> Jaegeuk & Chao, what do you think of this?
->>>>
->>>>
->>>> crash_32> files -p 0xE5A44678
->>>>   INODE    NRPAGES
->>>> e5a44678        2
->>>>
->>>>    PAGE    PHYSICAL   MAPPING    INDEX CNT FLAGS
->>>> e8d0e338  641de000  e5a44810         0  5 a095
->>> locked,waiters,uptodate,lru,private,writeback
->>>> e8ad59a0  54528000  e5a44810         1  2 2036
->>> referenced,uptodate,lru,active,private
->>>
->>> Indeed, incrementing pages_skipped when there's no dirty page is a bit odd.
->>> That being said we could also harden requeue_inode() - in particular we could do
->>> there:
->>>
->>>          if (wbc->pages_skipped) {
->>>                  /*
->>>                   * Writeback is not making progress due to locked buffers.
->>>                   * Skip this inode for now. Although having skipped pages
->>>                   * is odd for clean inodes, it can happen for some
->>>                   * filesystems so handle that gracefully.
->>>                   */
->>>                  if (inode->i_state & I_DIRTY_ALL)
->>>                          redirty_tail_locked(inode, wb);
->>>                  else
->>>                          inode_cgwb_move_to_attached(inode, wb);
->>>          }
->>>
->>> Does this fix your problem as well?
->>>
->>>                                                                  Honza
->>
->> Thank you for your reply. Did you forget the 'return' statement? Since I encountered this issue on the 4.19 kernel and there is not inode_cgwb_move_to_attached() yet, I replaced it with inode_io_list_del_locked(). So, below is the test patch I am applying. Please have a check. By the way, the test will take some time. I will provide feedback when it is finished. Thanks.
-> 
-> Yeah, I forgot about the return.
+-Serge(y)
 
-Hi Jan,
-The test is finished and this patch can fix this issue, too.
-Thanks,
+> ---
+> V4 -> V5: Replace stmmac_probe_config_dt() with devm_stmmac_probe_config_dt()
+>           Replace stmmac_pltfr_probe() with devm_stmmac_pltfr_probe()
+>           Add a new F: entry for this driver.
+> V3 -> V4: Drop ls1x_dwmac_syscon definition and its instances
+>           Drop three redundant fields from the ls1x_dwmac structure
+>           Drop the ls1x_dwmac_init() method.
+>           Some minor improvements
+> V2 -> V3: Determine the device ID by physical
+>           base address(suggested by Serge Semin)
+>           Use regmap instead of regmap fields
+>           Use syscon_regmap_lookup_by_phandle()
+>           Some minor fixes
+> V1 -> V2: Fix the build errors due to CONFIG_OF being unset
+>           Change struct reg_field definitions to const
+>           Rename the syscon property to "loongson,dwmac-syscon"
+>           Add MII PHY mode for LS1C
 > 
->> 	if (wbc->pages_skipped) {
->> 		/*
->> 		 * writeback is not making progress due to locked
->> 		 * buffers. Skip this inode for now.
->> 		 */
->> -		redirty_tail_locked(inode, wb);
->> +		if (inode->i_state & I_DIRTY_ALL)
->> +			redirty_tail_locked(inode, wb);
->> +		else
->> +			inode_io_list_del_locked(inode, wb);
->>   		return;
->>   	}
+>  MAINTAINERS                                   |   1 +
+>  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+>  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+>  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 209 ++++++++++++++++++
+>  4 files changed, 222 insertions(+)
+>  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
 > 
-> Looks good. Thanks for testing!
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e514b53fb225..b71aff479a8c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14383,6 +14383,7 @@ F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
+>  F:	arch/mips/include/asm/mach-loongson32/
+>  F:	arch/mips/loongson32/
+>  F:	drivers/*/*loongson1*
+> +F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+>  
+>  MIPS/LOONGSON2EF ARCHITECTURE
+>  M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> index 06c6871f8788..a2b9e289aa36 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> @@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
+>  	  the stmmac device driver. This driver is used for the Intel Keem Bay
+>  	  SoC.
+>  
+> +config DWMAC_LOONGSON1
+> +	tristate "Loongson1 GMAC support"
+> +	default MACH_LOONGSON32
+> +	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
+> +	help
+> +	  Support for ethernet controller on Loongson1 SoC.
+> +
+> +	  This selects Loongson1 SoC glue layer support for the stmmac
+> +	  device driver. This driver is used for Loongson1-based boards
+> +	  like Loongson LS1B/LS1C.
+> +
+>  config DWMAC_TEGRA
+>  	tristate "NVIDIA Tegra MGBE support"
+>  	depends on ARCH_TEGRA || COMPILE_TEST
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> index 5b57aee19267..80e598bd4255 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
+> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+> @@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
+>  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
+>  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
+>  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
+> +obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
+>  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
+>  obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
+>  obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+> new file mode 100644
+> index 000000000000..3e86810717d3
+> --- /dev/null
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+> @@ -0,0 +1,209 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Loongson-1 DWMAC glue layer
+> + *
+> + * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "stmmac.h"
+> +#include "stmmac_platform.h"
+> +
+> +#define LS1B_GMAC0_BASE		(0x1fe10000)
+> +#define LS1B_GMAC1_BASE		(0x1fe20000)
+> +
+> +/* Loongson-1 SYSCON Registers */
+> +#define LS1X_SYSCON0		(0x0)
+> +#define LS1X_SYSCON1		(0x4)
+> +
+> +/* Loongson-1B SYSCON Register Bits */
+> +#define GMAC1_USE_UART1		BIT(4)
+> +#define GMAC1_USE_UART0		BIT(3)
+> +
+> +#define GMAC1_SHUT		BIT(13)
+> +#define GMAC0_SHUT		BIT(12)
+> +
+> +#define GMAC1_USE_TXCLK		BIT(3)
+> +#define GMAC0_USE_TXCLK		BIT(2)
+> +#define GMAC1_USE_PWM23		BIT(1)
+> +#define GMAC0_USE_PWM01		BIT(0)
+> +
+> +/* Loongson-1C SYSCON Register Bits */
+> +#define GMAC_SHUT		BIT(6)
+> +
+> +#define PHY_INTF_SELI		GENMASK(30, 28)
+> +#define PHY_INTF_MII		FIELD_PREP(PHY_INTF_SELI, 0)
+> +#define PHY_INTF_RMII		FIELD_PREP(PHY_INTF_SELI, 4)
+> +
+> +struct ls1x_dwmac {
+> +	struct plat_stmmacenet_data *plat_dat;
+> +	struct regmap *regmap;
+> +};
+> +
+> +static int ls1b_dwmac_syscon_init(struct platform_device *pdev, void *priv)
+> +{
+> +	struct ls1x_dwmac *dwmac = priv;
+> +	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
+> +	struct regmap *regmap = dwmac->regmap;
+> +	struct resource *res;
+> +	unsigned long reg_base;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
+> +		return -EINVAL;
+> +	}
+> +	reg_base = (unsigned long)res->start;
+> +
+> +	if (reg_base == LS1B_GMAC0_BASE) {
+> +		switch (plat->phy_interface) {
+> +		case PHY_INTERFACE_MODE_RGMII_ID:
+> +			regmap_update_bits(regmap, LS1X_SYSCON0,
+> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
+> +					   0);
+> +			break;
+> +		case PHY_INTERFACE_MODE_MII:
+> +			regmap_update_bits(regmap, LS1X_SYSCON0,
+> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
+> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
+> +			break;
+> +		default:
+> +			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
+> +				plat->phy_interface);
+> +			return -EOPNOTSUPP;
+> +		}
+> +
+> +		regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
+> +	} else if (reg_base == LS1B_GMAC1_BASE) {
+> +		regmap_update_bits(regmap, LS1X_SYSCON0,
+> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0,
+> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0);
+> +
+> +		switch (plat->phy_interface) {
+> +		case PHY_INTERFACE_MODE_RGMII_ID:
+> +			regmap_update_bits(regmap, LS1X_SYSCON1,
+> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
+> +					   0);
+> +
+> +			break;
+> +		case PHY_INTERFACE_MODE_MII:
+> +			regmap_update_bits(regmap, LS1X_SYSCON1,
+> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
+> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
+> +			break;
+> +		default:
+> +			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
+> +				plat->phy_interface);
+> +			return -EOPNOTSUPP;
+> +		}
+> +
+> +		regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
+> +	} else {
+> +		dev_err(&pdev->dev, "Invalid Ethernet MAC base address %lx",
+> +			reg_base);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ls1c_dwmac_syscon_init(struct platform_device *pdev, void *priv)
+> +{
+> +	struct ls1x_dwmac *dwmac = priv;
+> +	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
+> +	struct regmap *regmap = dwmac->regmap;
+> +
+> +	switch (plat->phy_interface) {
+> +	case PHY_INTERFACE_MODE_MII:
+> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
+> +				   PHY_INTF_MII);
+> +		break;
+> +	case PHY_INTERFACE_MODE_RMII:
+> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
+> +				   PHY_INTF_RMII);
+> +		break;
+> +	default:
+> +		dev_err(&pdev->dev, "Unsupported PHY-mode %u\n",
+> +			plat->phy_interface);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ls1x_dwmac_probe(struct platform_device *pdev)
+> +{
+> +	struct plat_stmmacenet_data *plat_dat;
+> +	struct stmmac_resources stmmac_res;
+> +	struct regmap *regmap;
+> +	struct ls1x_dwmac *dwmac;
+> +	int (*init)(struct platform_device *pdev, void *priv);
+> +	int ret;
+> +
+> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Probe syscon */
+> +	regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+> +						 "loongson,ls1-syscon");
+> +	if (IS_ERR(regmap))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(regmap),
+> +				     "Unable to find syscon\n");
+> +
+> +	init = of_device_get_match_data(&pdev->dev);
+> +	if (!init) {
+> +		dev_err(&pdev->dev, "No of match data provided\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
+> +	if (!dwmac)
+> +		return -ENOMEM;
+> +
+> +	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
+> +	if (IS_ERR(plat_dat))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(plat_dat),
+> +				     "dt configuration failed\n");
+> +
+> +	plat_dat->bsp_priv = dwmac;
+> +	plat_dat->init = init;
+> +	dwmac->plat_dat = plat_dat;
+> +	dwmac->regmap = regmap;
+> +
+> +	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
+> +}
+> +
+> +static const struct of_device_id ls1x_dwmac_match[] = {
+> +	{
+> +		.compatible = "loongson,ls1b-gmac",
+> +		.data = &ls1b_dwmac_syscon_init,
+> +	},
+> +	{
+> +		.compatible = "loongson,ls1c-emac",
+> +		.data = &ls1c_dwmac_syscon_init,
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
+> +
+> +static struct platform_driver ls1x_dwmac_driver = {
+> +	.probe = ls1x_dwmac_probe,
+> +	.driver = {
+> +		.name = "loongson1-dwmac",
+> +		.of_match_table = ls1x_dwmac_match,
+> +	},
+> +};
+> +module_platform_driver(ls1x_dwmac_driver);
+> +
+> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
+> +MODULE_DESCRIPTION("Loongson-1 DWMAC glue layer");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.39.2
 > 
-> 								Honza
+> 
