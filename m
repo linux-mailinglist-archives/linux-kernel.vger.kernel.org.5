@@ -2,143 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3327B7A2187
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2347A2196
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235780AbjIOOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S235721AbjIOO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235733AbjIOOwH (ORCPT
+        with ESMTP id S235401AbjIOO5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:52:07 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6200B1BE6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:52:02 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5d4a8242so28190937b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694789521; x=1695394321; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxBgjf4cFGqduUhZ9Ofgvxr6N7enlbl7a5N9uijxEC4=;
-        b=lRIoQDzjFLY03ilV7tTmj67bO7QNiEYa0foiClX7X9p0ylZEMBPmxWKJBoM4nbbeaC
-         vrRDd+3t5VnSD1YTU96pFV1FH6p6HEqTMvqLLGqbvQu5BbNhXXfKbfCQ0jzsPhBuX0MA
-         aT3wrYRGS2tI2OqjFufYWBFo7P/8cNYxks4Bd9Gao2CKyDOxkx5O/89C9ZUuhn65zKDd
-         Jobj3xrGpMFT/lr7ImUjFHnIeBw/1y32IWAl2xlk2HOMcZ8ohiXzwmjZKBPWRigFQ71L
-         5CfzYqNdru/FY7KKfD8kQC7RpLw6i8627LZGjLSjabQqCxN8Cv6WfB4gDxJcINAQhBYg
-         lA8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694789521; x=1695394321;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxBgjf4cFGqduUhZ9Ofgvxr6N7enlbl7a5N9uijxEC4=;
-        b=D8q5mhUYPYtS+oP78AN1HBeJAdD1hVxF8kz9ZHwBbRbdad7vnP1VuI5FuYx5ZaTAxL
-         I0rGBGA2CezeLiTvN+oqT1hmsa1uRoUuPPUeJo1ebAYheZ4bGj8pa5N/IM5/VopcAs35
-         Y+wC/XFSA3XVimZFXV7eHwlA8jar4WngVVjSrwnOtVcpkzwFsCbDEoeffLIjpx6h2wCM
-         b61VTumUVzS6KAV3hS+JHpqEoyqSfpdvrmuLMVofAvRE5ltgwBoA2ttPk3lJw2ieiC2A
-         AlxcBBOWRTSe7rJu7O2Hhu6bmo6KtSSaAFBTxPOy8zPTY4BH976EfwLTgZkj4+NtSgDr
-         keKA==
-X-Gm-Message-State: AOJu0YwxfpkL+jc71AlPdk1BT3OWu7/yHj4lgsgl8r4p1/jPPZ3sw8Tm
-        oOX67MGaD/kcmWnWXAV3VDpzZsT4630=
-X-Google-Smtp-Source: AGHT+IF2Ec1htPRQajwMXl2rb+28B3EL6IeFXs5CguJre2yMRWQYZ8onAhbuCs/7FoHHfHQreuCyqW94Rfc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:af28:0:b0:584:3d8f:a425 with SMTP id
- n40-20020a81af28000000b005843d8fa425mr51269ywh.10.1694789521683; Fri, 15 Sep
- 2023 07:52:01 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 07:51:59 -0700
-In-Reply-To: <ZQRtpVjXTwjeJ5rI@google.com>
-Mime-Version: 1.0
-References: <cover.1694721045.git.thomas.lendacky@amd.com> <025fd734d35acbbbbca74c4b3ed671a02d4af628.1694721045.git.thomas.lendacky@amd.com>
- <ZQRtpVjXTwjeJ5rI@google.com>
-Message-ID: <ZQRvjy/NQa3HcKsY@google.com>
-Subject: Re: [PATCH 2/2] KVM: SVM: Do not use user return MSR support for
- virtualized TSC_AUX
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Babu Moger <babu.moger@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 10:57:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2CC1BE6;
+        Fri, 15 Sep 2023 07:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694789858; x=1726325858;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=rEf9Z4LNeh54fCUJ0cFYoLvWjBKytco8Ls7maBLYR6w=;
+  b=YcInYwXA7fq2V9FayK3s3ZfEueyKzhkJnDjV7dZTf2IbXRO1M5qeM8nY
+   kQqvIMwoOQ4bIQqc5BaWmBxoRDtZQmaP4fiYBGf5CKD3gl57kqggddNvf
+   W4vRLSrUBRvSeRQHZrL7kM75BTF6HvEuHwrJ6sfdZfjQf4kCaQ16VvjYa
+   306GFevNldy4oJtNkjfSgGG9Bjd2/7OfMQ8bUBjR8gSaF0oXHMatuSyTa
+   GCGN9B+h2OJ7csIpCndvCfitji/3tMk8Mi02krFjbQDVqGKtQoTa50ePa
+   +Kky1eAJlRm99lDXP3hWnVGWKyPtRwnAkN6BITybSuiKqTd6lMCBAVUj1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="410204121"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="410204121"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:57:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="1075825956"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="1075825956"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:57:23 -0700
+Date:   Fri, 15 Sep 2023 17:57:19 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Pearson <markpearson@lenovo.com>,
+        Mark Gross <markgross@kernel.org>
+Subject: Re: [PATCH v1 1/2] platform/x86: think-lmi: Replace kstrdup() +
+ strreplace() with kstrdup_and_replace()
+In-Reply-To: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
+Message-ID: <b97ac865-40a7-1278-1fa4-138fdc99f680@linux.intel.com>
+References: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-1181405544-1694789845=:2347"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023, Sean Christopherson wrote:
-> On Thu, Sep 14, 2023, Tom Lendacky wrote:
-> > When the TSC_AUX MSR is virtualized, the TSC_AUX value is swap type "B"
-> > within the VMSA. This means that the guest value is loaded on VMRUN and
-> > the host value is restored from the host save area on #VMEXIT.
-> > 
-> > Since the value is restored on #VMEXIT, the KVM user return MSR support
-> > for TSC_AUX can be replaced by populating the host save area with current
-> > host value of TSC_AUX. This replaces two WRMSR instructions with a single
-> > RDMSR instruction.
-> > 
-> > Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> > ---
-> >  arch/x86/kvm/svm/sev.c | 14 +++++++++++++-
-> >  arch/x86/kvm/svm/svm.c | 26 ++++++++++++++++----------
-> >  arch/x86/kvm/svm/svm.h |  4 +++-
-> >  3 files changed, 32 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index 565c9de87c6d..1bbaae2fed96 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -2969,6 +2969,7 @@ static void sev_es_init_vmcb_after_set_cpuid(struct vcpu_svm *svm)
-> >  	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX) &&
-> >  	    (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
-> >  	     guest_cpuid_has(vcpu, X86_FEATURE_RDPID))) {
-> > +		svm->v_tsc_aux = true;
-> >  		set_msr_interception(vcpu, svm->msrpm, MSR_TSC_AUX, 1, 1);
-> >  		if (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-> > @@ -3071,8 +3072,10 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm)
-> >  					    sev_enc_bit));
-> >  }
-> >  
-> > -void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
-> > +void sev_es_prepare_switch_to_guest(struct vcpu_svm *svm, struct sev_es_save_area *hostsa)
-> >  {
-> > +	u32 msr_hi;
-> > +
-> >  	/*
-> >  	 * All host state for SEV-ES guests is categorized into three swap types
-> >  	 * based on how it is handled by hardware during a world switch:
-> > @@ -3109,6 +3112,15 @@ void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
-> >  		hostsa->dr2_addr_mask = amd_get_dr_addr_mask(2);
-> >  		hostsa->dr3_addr_mask = amd_get_dr_addr_mask(3);
-> >  	}
-> > +
-> > +	/*
-> > +	 * If TSC_AUX virtualization is enabled, MSR_TSC_AUX is loaded but NOT
-> > +	 * saved by the CPU (Type-B). If TSC_AUX is not virtualized, the user
-> > +	 * return MSR support takes care of restoring MSR_TSC_AUX. This
-> > +	 * exchanges two WRMSRs for one RDMSR.
-> > +	 */
-> > +	if (svm->v_tsc_aux)
-> > +		rdmsr(MSR_TSC_AUX, hostsa->tsc_aux, msr_hi);
-> 
-> IIUC, when V_TSC_AUX is supported, SEV-ES guests context switch MSR_TSC_AUX
-> regardless of what has been exposed to the guest.  So rather than condition the
-> hostsa->tsc_aux update on guest CPUID, just do it if V_TSC_AUX is supported.
-> 
-> And then to avoid the RDMSR, which is presumably the motivation for checking
-> guest CPUID, grab the host value from user return framework.  The host values
-> are per-CPU, but constant after boot, so the only requirement is that KVM sets
-> up MSR_TSC_AUX in the user return framework.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Actually, duh.  The save area is also per-CPU, so just fill hostsa->tsc_aux in
-svm_hardware_setup() and then sev_es_prepare_switch_to_guest() never has to do
-anything.
+--8323329-1181405544-1694789845=:2347
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Wed, 13 Sep 2023, Andy Shevchenko wrote:
+
+> Replace open coded functionalify of kstrdup_and_replace() with a call.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/platform/x86/think-lmi.c | 43 +++++++++++---------------------
+>  1 file changed, 15 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+> index 79346881cadb..94a3c7a74bc4 100644
+> --- a/drivers/platform/x86/think-lmi.c
+> +++ b/drivers/platform/x86/think-lmi.c
+> @@ -15,7 +15,7 @@
+>  #include <linux/errno.h>
+>  #include <linux/fs.h>
+>  #include <linux/mutex.h>
+> -#include <linux/string.h>
+> +#include <linux/string_helpers.h>
+>  #include <linux/types.h>
+>  #include <linux/dmi.h>
+>  #include <linux/wmi.h>
+> @@ -432,13 +432,11 @@ static ssize_t new_password_store(struct kobject *kobj,
+>  	if (!tlmi_priv.can_set_bios_password)
+>  		return -EOPNOTSUPP;
+>  
+> -	new_pwd = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present, setting password won't work if it is present */
+> +	new_pwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_pwd)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present, setting password won't work if it is present */
+> -	strip_cr(new_pwd);
+> -
+>  	/* Use lock in case multiple WMI operations needed */
+>  	mutex_lock(&tlmi_mutex);
+>  
+> @@ -709,13 +707,11 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
+>  	if (!setting->signature || !setting->signature[0])
+>  		return -EACCES;
+>  
+> -	passwd = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	passwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!passwd)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present */
+> -	strip_cr(passwd);
+> -
+>  	/* Format: 'Password,Signature' */
+>  	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
+>  	if (!auth_str) {
+> @@ -765,11 +761,10 @@ static ssize_t certificate_store(struct kobject *kobj,
+>  		return ret ?: count;
+>  	}
+>  
+> -	new_cert = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	new_cert = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_cert)
+>  		return -ENOMEM;
+> -	/* Strip out CR if one is present */
+> -	strip_cr(new_cert);
+>  
+>  	if (setting->cert_installed) {
+>  		/* Certificate is installed so this is an update */
+> @@ -817,13 +812,11 @@ static ssize_t signature_store(struct kobject *kobj,
+>  	if (!tlmi_priv.certificate_support)
+>  		return -EOPNOTSUPP;
+>  
+> -	new_signature = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_signature)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present */
+> -	strip_cr(new_signature);
+> -
+>  	/* Free any previous signature */
+>  	kfree(setting->signature);
+>  	setting->signature = new_signature;
+> @@ -846,13 +839,11 @@ static ssize_t save_signature_store(struct kobject *kobj,
+>  	if (!tlmi_priv.certificate_support)
+>  		return -EOPNOTSUPP;
+>  
+> -	new_signature = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_signature)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present */
+> -	strip_cr(new_signature);
+> -
+>  	/* Free any previous signature */
+>  	kfree(setting->save_signature);
+>  	setting->save_signature = new_signature;
+> @@ -985,13 +976,11 @@ static ssize_t current_value_store(struct kobject *kobj,
+>  	if (!tlmi_priv.can_set_bios_settings)
+>  		return -EOPNOTSUPP;
+>  
+> -	new_setting = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_setting)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present */
+> -	strip_cr(new_setting);
+> -
+>  	/* Use lock in case multiple WMI operations needed */
+>  	mutex_lock(&tlmi_mutex);
+>  
+> @@ -1163,13 +1152,11 @@ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr
+>  	if (!tlmi_priv.can_debug_cmd)
+>  		return -EOPNOTSUPP;
+>  
+> -	new_setting = kstrdup(buf, GFP_KERNEL);
+> +	/* Strip out CR if one is present */
+> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+>  	if (!new_setting)
+>  		return -ENOMEM;
+>  
+> -	/* Strip out CR if one is present */
+> -	strip_cr(new_setting);
+> -
+>  	if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+>  		auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+>  				tlmi_priv.pwd_admin->password,
+> 
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+--8323329-1181405544-1694789845=:2347--
