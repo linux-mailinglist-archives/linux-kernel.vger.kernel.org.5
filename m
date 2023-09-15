@@ -2,83 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C50C7A15D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BCC7A15D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjIOGBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
+        id S232187AbjIOGBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbjIOGBS (ORCPT
+        with ESMTP id S230097AbjIOGBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:01:18 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9E62710
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:01:11 -0700 (PDT)
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 183153F672
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:01:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694757670;
-        bh=13SYOno9PzBAELprvqBKW3TKbtgqHXvDNkYZ3UiLqu0=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=NOlYLm+RMZB3pxLl3mWLFQfpUCNqWRUFIQLftnb9X3+SkcL5jnxfwNH6ylHlDNsLv
-         wU3QwIkQfVTMeEgmK9eAz0HZ+grnnnzn8CjE/yua3IBFQc1R8eExMaPQTe5jvNvrpl
-         AgBVD0PmtcharLqX6DT4IPA5S8QrzihDXjsHIsczc/1bGx7MOrPsYCpmPOcGTBSwte
-         baH79q35N6ZY1NEK8US+WpI/NlIIdE1XGC3RHoRI7HV+tCyqWEoZb1NkPOQ7mww8IO
-         sdwTa2nZPPl8HE5W/o+HLZqj7nyBlaSiyyx7rJCCi1ySuGEWRrGVQzslazJrHgwzoT
-         uakwKxI5OEhcw==
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2748bffe932so733771a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:01:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694757668; x=1695362468;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=13SYOno9PzBAELprvqBKW3TKbtgqHXvDNkYZ3UiLqu0=;
-        b=ktF80oGkT1BYPzGj7HhMKHJV8u/yFkp8YTDMwGvd2vNQf7aiwmzQeZHxS8pxUDkAGI
-         lZbSb4Dm4d+xB1ef5xbuq40b8Q8qJuih76oMW9ySj+9bUX9vvBsWmlNYzaI9pNRJZEA3
-         8P6Q0djIiUB7eAX5JHtaQTuMi1s8Y98rWsmFKiS1tNRANQBtNCSbJWWuWvbmWAB0117q
-         I5pMy21A5GY8tL2C+fKIWNSSjWlsxGI9h3BvLcpVJY4HBJwdvAtfXZOVsex51Lxow8TH
-         h8EwiNIQ9MR21mFfk2utEXDoobBB5wwYsLhY+QrTRxu0kqYGqO7Ty0vF9Ib0EsRbk6Pn
-         XoRg==
-X-Gm-Message-State: AOJu0YwtlLWk+UdD7T5tw35Tn1ZUL0hqA2W76jH4YwqYd4W6pcOmv5Fr
-        8JmkdsHqJTHfuOXbsEsu3e9S5LRuEgoE1ZAcBHx+FcdYuJOgQlG15C/SJRzUI96UsKqJ+PN/ply
-        GdIE9ARNR+xKrndKUsmqf8RFEGw3U2nRlxxNbXiYCn3U6iDAV2pbnjImBtA==
-X-Received: by 2002:a17:90a:e547:b0:268:1355:b03e with SMTP id ei7-20020a17090ae54700b002681355b03emr567212pjb.38.1694757668633;
-        Thu, 14 Sep 2023 23:01:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFAq+/5LEdCLWxdD1EU0j+5Av5J9yFGdkfAPOoPNnvIyzOpELjR4hcXx0l8DTydFJmnwgJchzeHUUsIJgvLWf8=
-X-Received: by 2002:a17:90a:e547:b0:268:1355:b03e with SMTP id
- ei7-20020a17090ae54700b002681355b03emr567190pjb.38.1694757668286; Thu, 14 Sep
- 2023 23:01:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230914041806.816741-1-kai.heng.feng@canonical.com>
- <7b45ac2ed091497b4e21a6a5c19956161175ba16.camel@linux.intel.com> <SN6PR11MB26245C44E84C37C1B551260EF4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
-In-Reply-To: <SN6PR11MB26245C44E84C37C1B551260EF4F6A@SN6PR11MB2624.namprd11.prod.outlook.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 15 Sep 2023 14:00:55 +0800
-Message-ID: <CAAd53p5ywMVKWzhn0nYzvBnW_Bc=sntgBttJdcVUuf_a4AnX5w@mail.gmail.com>
-Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
-To:     "Xu, Even" <even.xu@intel.com>
-Cc:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "jikos@kernel.org" <jikos@kernel.org>,
-        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "Lee, Jian Hui" <jianhui.lee@canonical.com>,
-        "Zhang, Lixu" <lixu.zhang@intel.com>,
-        "Ba, Najumon" <najumon.ba@intel.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        Fri, 15 Sep 2023 02:01:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0C41BD0;
+        Thu, 14 Sep 2023 23:01:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A575C433C7;
+        Fri, 15 Sep 2023 06:01:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694757665;
+        bh=9MYU2c3p+u08BaUZwHdx5A80Jm0GHT65ymH8UGQeY2o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t98NC91cmHcY2SIHVVWfBpFXff3XcWNRQW00nQC8kmgcs4HPMKoaaqmsM/803h9lC
+         ZY/z/TUXMzAIj9YY5CADvBElL7X4wq/HQVs2ha3mtHcTf7BXj5dY/4AT8Ptn/E4MG9
+         KC4BlOh0zegW3Vsk4ljI4HIshSYvbLwuLeRNe/ZZ5rpPLZzdBhablGaYahVZGvaMsq
+         7wVAjueW1tum0REjgugpz10dKYl57+QySnUYfC5NlbCABkWMzo+vwBLn0JI71HGVkT
+         bnyXWj8BBNICyVOjs8Wn+Yb5yqaL6x2OAvD5bo8Yd6XEhasx9pIno5suVvuOSumsSc
+         sSnyg/tL0W6Jg==
+Date:   Fri, 15 Sep 2023 15:01:01 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Tero Kristo <tero.kristo@linux.intel.com>
+Cc:     rostedt@goodmis.org, artem.bityutskiy@linux.intel.com,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] tracing/synthetic: Print out u64 values properly
+Message-Id: <20230915150101.ef50c4774ab85aa2ff7431ec@kernel.org>
+In-Reply-To: <20230911141704.3585965-1-tero.kristo@linux.intel.com>
+References: <20230911141704.3585965-1-tero.kristo@linux.intel.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,170 +51,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Even,
+Hi Tero,
 
-On Fri, Sep 15, 2023 at 1:31=E2=80=AFPM Xu, Even <even.xu@intel.com> wrote:
->
-> Hi, Srinivas,
->
-> Sure, I will test it.
-> As long term not working on EHL, I doesn't have EHL board on hand right n=
-ow, I can test this patch on other ISH related platforms.
-> From the patch, it's focus on EHL platform, I assume Kai-Heng already ver=
-ified the function on EHL board.
+On Mon, 11 Sep 2023 17:17:04 +0300
+Tero Kristo <tero.kristo@linux.intel.com> wrote:
 
-I only made sure the GPE overflow issue is fixed by the patch, but I
-didn't test the S5 wakeup.
-That's because I don't know how to test it on the EHL system I have.
-I'll test it if you can let me know how to test the S5 wakeup.
+> The synth traces incorrectly print pointer to the synthetic event values
+> instead of the actual value when using u64 type. Fix by addressing the
+> contents of the union properly.
 
-Kai-Heng
+Thanks for pointing it out.
+But I would like to see a new "case 8:" print code instead of changing
+"default". Can you keep the default as it is and add "case 8:" case there?
 
-> I don't think it will take effect on other platforms, anyway, I will test=
- it on the platforms I have to provide cross platform verification.
->
-> Thanks!
->
-> Best Regards,
-> Even Xu
->
-> -----Original Message-----
-> From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-> Sent: Friday, September 15, 2023 12:11 AM
-> To: Kai-Heng Feng <kai.heng.feng@canonical.com>; jikos@kernel.org; benjam=
-in.tissoires@redhat.com
-> Cc: linux-pm@vger.kernel.org; linux-pci@vger.kernel.org; Lee, Jian Hui <j=
-ianhui.lee@canonical.com>; Xu, Even <even.xu@intel.com>; Zhang, Lixu <lixu.=
-zhang@intel.com>; Ba, Najumon <najumon.ba@intel.com>; linux-input@vger.kern=
-el.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
->
-> Hi Even,
->
-> On Thu, 2023-09-14 at 12:18 +0800, Kai-Heng Feng wrote:
-> > System cannot suspend more than 255 times because the driver doesn't
-> > have corresponding acpi_disable_gpe() for acpi_enable_gpe(), so the
-> > GPE refcount overflows.
-> >
-> > Since PCI core and ACPI core already handles PCI PME wake and GPE wake
-> > when the device has wakeup capability, use device_init_wakeup() to let
-> > them do the wakeup setting work.
-> >
-> > Also add a shutdown callback which uses pci_prepare_to_sleep() to let
-> > PCI and ACPI set OOB wakeup for S5.
-> >
-> Please test this change.
->
-> Thanks,
-> Srinivas
->
-> > Fixes: 2e23a70edabe ("HID: intel-ish-hid: ipc: finish power flow for
-> > EHL OOB")
-> > Cc: Jian Hui Lee <jianhui.lee@canonical.com>
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> >  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 59 +++++++----------------
-> > --
-> >  1 file changed, 15 insertions(+), 44 deletions(-)
-> >
-> > diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > index 55cb25038e63..65e7eeb2fa64 100644
-> > --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-> > @@ -119,42 +119,6 @@ static inline bool ish_should_leave_d0i3(struct
-> > pci_dev *pdev)
-> >         return !pm_resume_via_firmware() || pdev->device =3D=3D
-> > CHV_DEVICE_ID;
-> >  }
-> >
-> > -static int enable_gpe(struct device *dev) -{ -#ifdef CONFIG_ACPI
-> > -       acpi_status acpi_sts;
-> > -       struct acpi_device *adev;
-> > -       struct acpi_device_wakeup *wakeup;
-> > -
-> > -       adev =3D ACPI_COMPANION(dev);
-> > -       if (!adev) {
-> > -               dev_err(dev, "get acpi handle failed\n");
-> > -               return -ENODEV;
-> > -       }
-> > -       wakeup =3D &adev->wakeup;
-> > -
-> > -       acpi_sts =3D acpi_enable_gpe(wakeup->gpe_device, wakeup-
-> > >gpe_number);
-> > -       if (ACPI_FAILURE(acpi_sts)) {
-> > -               dev_err(dev, "enable ose_gpe failed\n");
-> > -               return -EIO;
-> > -       }
-> > -
-> > -       return 0;
-> > -#else
-> > -       return -ENODEV;
-> > -#endif
-> > -}
-> > -
-> > -static void enable_pme_wake(struct pci_dev *pdev) -{
-> > -       if ((pci_pme_capable(pdev, PCI_D0) ||
-> > -            pci_pme_capable(pdev, PCI_D3hot) ||
-> > -            pci_pme_capable(pdev, PCI_D3cold)) && !enable_gpe(&pdev-
-> > >dev)) {
-> > -               pci_pme_active(pdev, true);
-> > -               dev_dbg(&pdev->dev, "ish ipc driver pme wake
-> > enabled\n");
-> > -       }
-> > -}
-> > -
-> >  /**
-> >   * ish_probe() - PCI driver probe callback
-> >   * @pdev:      pci device
-> > @@ -225,7 +189,7 @@ static int ish_probe(struct pci_dev *pdev, const
-> > struct pci_device_id *ent)
-> >
-> >         /* Enable PME for EHL */
-> >         if (pdev->device =3D=3D EHL_Ax_DEVICE_ID)
-> > -               enable_pme_wake(pdev);
-> > +               device_init_wakeup(dev, true);
-> >
-> >         ret =3D ish_init(ishtp);
-> >         if (ret)
-> > @@ -248,6 +212,19 @@ static void ish_remove(struct pci_dev *pdev)
-> >         ish_device_disable(ishtp_dev);
-> >  }
-> >
-> > +
-> > +/**
-> > + * ish_shutdown() - PCI driver shutdown callback
-> > + * @pdev:      pci device
-> > + *
-> > + * This function sets up wakeup for S5  */ static void
-> > +ish_shutdown(struct pci_dev *pdev) {
-> > +       if (pdev->device =3D=3D EHL_Ax_DEVICE_ID)
-> > +               pci_prepare_to_sleep(pdev); }
-> > +
-> >  static struct device __maybe_unused *ish_resume_device;
-> >
-> >  /* 50ms to get resume response */
-> > @@ -370,13 +347,6 @@ static int __maybe_unused ish_resume(struct
-> > device *device)
-> >         struct pci_dev *pdev =3D to_pci_dev(device);
-> >         struct ishtp_device *dev =3D pci_get_drvdata(pdev);
-> >
-> > -       /* add this to finish power flow for EHL */
-> > -       if (dev->pdev->device =3D=3D EHL_Ax_DEVICE_ID) {
-> > -               pci_set_power_state(pdev, PCI_D0);
-> > -               enable_pme_wake(pdev);
-> > -               dev_dbg(dev->devc, "set power state to D0 for ehl\n");
-> > -       }
-> > -
-> >         ish_resume_device =3D device;
-> >         dev->resume_flag =3D 1;
-> >
-> > @@ -392,6 +362,7 @@ static struct pci_driver ish_driver =3D {
-> >         .id_table =3D ish_pci_tbl,
-> >         .probe =3D ish_probe,
-> >         .remove =3D ish_remove,
-> > +       .shutdown =3D ish_shutdown,
-> >         .driver.pm =3D &ish_pm_ops,
-> >  };
-> >
->
+Thanks,
+
+> 
+> Fixes: ddeea494a16f ("tracing/synthetic: Use union instead of casts")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+> ---
+>  kernel/trace/trace_events_synth.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index 7fff8235075f..070365959c0a 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -337,7 +337,7 @@ static void print_synth_event_num_val(struct trace_seq *s,
+>  		break;
+>  
+>  	default:
+> -		trace_seq_printf(s, print_fmt, name, val, space);
+> +		trace_seq_printf(s, print_fmt, name, val->as_u64, space);
+>  		break;
+>  	}
+>  }
+> -- 
+> 2.40.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
