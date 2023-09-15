@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E766C7A2385
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147627A2390
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbjIOQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
+        id S234596AbjIOQ0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIOQWw (ORCPT
+        with ESMTP id S234904AbjIOQZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:22:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43254AF;
-        Fri, 15 Sep 2023 09:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694794967; x=1726330967;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=gZr9jiChR+PI/11CHpgMrz1spTSHcnF3wv8jDHSpulI=;
-  b=ITi63aVg4C7WDxIpV7PX7EENe6+PJyq0qRUYiw44GUXhtPA6RBibS7Fn
-   uP/eo8yFGuNcVcdJUad8m4NflTbyMLFRfbdNhUK+EJnK9GoXL2qGGEbZ5
-   Lwry5ODgHrhja2XwDMiu8/NSbH2YJSYNdq+JkWUR1WsvR8nOVJSNc95RG
-   VWi1VR+B8TGbL7+GsnfIAJtOJbPBUPVVTkTnGvlAMKsxFscjNiCToUnOf
-   xNxl8SogTQ2kPBerkZh8m54T0CVRGAiViNARPTB0D1J7c4XoiC4kLACHw
-   2bMwAZWmnYHLbDpxow3g7TdyasIDCiM/f7b6q6WRcj8KhMVruV/2ae9S1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="465647686"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="465647686"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:22:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="888277863"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="888277863"
-Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:22:07 -0700
-Date:   Fri, 15 Sep 2023 19:22:40 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Jithu Joseph <jithu.joseph@intel.com>
-cc:     hdegoede@redhat.com, markgross@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        patches@lists.linux.dev, ravi.v.shankar@intel.com,
-        pengfei.xu@intel.com
-Subject: Re: [PATCH 01/10] platform/x86/intel/ifs: Store IFS generation
- number
-In-Reply-To: <20230913183348.1349409-2-jithu.joseph@intel.com>
-Message-ID: <e7f8136d-d07a-1668-2667-d2836c7112a@linux.intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-2-jithu.joseph@intel.com>
+        Fri, 15 Sep 2023 12:25:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FC66BB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694795095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=328Jdrb2fZ5ZeD++O6N1acm+mpPXCsp0leB/sLzqYjY=;
+        b=VcBRbq9kH/6va+cf6Axea8Rt5GDnSqD5MpI1lrLS12lkk9TpukRl6J5Io3P+Wh0V6yYn5P
+        mJ1P+nTgjDzEtpAfEgRlqEeNKO/Rtzb/hGr4k6KFBB9Or0GZzyBSUErEh494F0J4dF0FBN
+        F2TkF6Hgjl37ts4D1XBd5Bto42C8Yz0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-631-c4PbsJe8Oy6116Keg8z8zg-1; Fri, 15 Sep 2023 12:24:42 -0400
+X-MC-Unique: c4PbsJe8Oy6116Keg8z8zg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 53FAF811E86;
+        Fri, 15 Sep 2023 16:24:41 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 137D840C2070;
+        Fri, 15 Sep 2023 16:24:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
+References: <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com> <0000000000001c12b30605378ce8@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3793722.1694795079.1@warthog.procyon.org.uk>
+Date:   Fri, 15 Sep 2023 17:24:39 +0100
+Message-ID: <3793723.1694795079@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023, Jithu Joseph wrote:
+I think the attached is probably an equivalent cleaned up reproducer.  Note
+that if the length given to sendfile() is less than 65536, it fails with
+EINVAL before it gets into __ip6_append_data().
 
-> IFS generation number is reported via MSR_INTEGRITY_CAPS.
+David
+---
+#define _GNU_SOURCE
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/sendfile.h>
+#include <sys/uio.h>
+#include <netinet/ip6.h>
+#include <netinet/in.h>
 
-Please use more characters per line, the limit is 72 characters.
+#define IPPROTO_L2TP 115
 
-> As IFS support gets added to newer CPUs, some differences
-> are expected during IFS image loading and test flows.
-> 
-> Define MSR bitmasks to extract and store the generation in
-> driver data, so that driver can modify its MSR interaction
-> appropriately.
-> 
-> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> ---
->  arch/x86/include/asm/msr-index.h      | 2 ++
->  drivers/platform/x86/intel/ifs/ifs.h  | 2 ++
->  drivers/platform/x86/intel/ifs/core.c | 2 ++
->  3 files changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 1d111350197f..a71a86a01488 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -222,6 +222,8 @@
->  #define MSR_INTEGRITY_CAPS_ARRAY_BIST          BIT(MSR_INTEGRITY_CAPS_ARRAY_BIST_BIT)
->  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT	4
->  #define MSR_INTEGRITY_CAPS_PERIODIC_BIST	BIT(MSR_INTEGRITY_CAPS_PERIODIC_BIST_BIT)
-> +#define MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT	9
-> +#define MSR_INTEGRITY_CAPS_SAF_GEN_REV_MASK	(0x3ull << MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT)
+#define OSERROR(R, S) \
+	do { if ((long)(R) == -1L) { perror((S)); exit(1); } } while(0)
 
-GENMASK_ULL(), don't add _SHIFT at all as FIELD_GET/PREP() will handle 
-it for you.
+static char buffer[16776960];
 
->  #define MSR_LBR_NHM_FROM		0x00000680
->  #define MSR_LBR_NHM_TO			0x000006c0
-> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-> index 93191855890f..d666aeed20fc 100644
-> --- a/drivers/platform/x86/intel/ifs/ifs.h
-> +++ b/drivers/platform/x86/intel/ifs/ifs.h
-> @@ -229,6 +229,7 @@ struct ifs_test_caps {
->   * @status: it holds simple status pass/fail/untested
->   * @scan_details: opaque scan status code from h/w
->   * @cur_batch: number indicating the currently loaded test file
-> + * @generation: IFS test generation enumerated by hardware
->   */
->  struct ifs_data {
->  	int	loaded_version;
-> @@ -238,6 +239,7 @@ struct ifs_data {
->  	int	status;
->  	u64	scan_details;
->  	u32	cur_batch;
-> +	u32	generation;
->  };
->  
->  struct ifs_work {
-> diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-> index 306f886b52d2..88d84aad9334 100644
-> --- a/drivers/platform/x86/intel/ifs/core.c
-> +++ b/drivers/platform/x86/intel/ifs/core.c
-> @@ -94,6 +94,8 @@ static int __init ifs_init(void)
->  	for (i = 0; i < IFS_NUMTESTS; i++) {
->  		if (!(msrval & BIT(ifs_devices[i].test_caps->integrity_cap_bit)))
->  			continue;
-> +		ifs_devices[i].rw_data.generation = (msrval & MSR_INTEGRITY_CAPS_SAF_GEN_REV_MASK)
-> +							>> MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT;
+int main()
+{
+	struct sockaddr_in6 sin6;
+	int ffd, dfd, sfd;
 
-FIELD_GET(), don't forget to make sure use have the include for it.
+	ffd = openat(AT_FDCWD, "cgroup.controllers",
+		     O_RDWR | O_CREAT | O_TRUNC, 0);
+	OSERROR(ffd, "cgroup.controllers/f");
 
->  		ret = misc_register(&ifs_devices[i].misc);
->  		if (ret)
->  			goto err_exit;
-> 
+	OSERROR(write(ffd, buffer, sizeof(buffer)), "write");
 
--- 
- i.
+	dfd = openat(AT_FDCWD, "cgroup.controllers",
+		     O_RDONLY | O_NONBLOCK | O_DIRECT);
+	OSERROR(dfd, "cgroup.controllers/d");
+
+	sfd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
+	OSERROR(dfd, "socket");
+
+	memset(&sin6, 0, sizeof(sin6));
+	sin6.sin6_family = AF_INET6;
+	sin6.sin6_port = htons(0);
+	sin6.sin6_addr.s6_addr32[0] = htonl(0);
+	sin6.sin6_addr.s6_addr32[1] = htonl(0);
+	sin6.sin6_addr.s6_addr32[2] = htonl(0);
+	sin6.sin6_addr.s6_addr32[3] = htonl(1);
+	OSERROR(bind(sfd, (struct sockaddr *)&sin6, 32),
+		"bind");
+
+	memset(&sin6, 0, sizeof(sin6));
+	sin6.sin6_family = AF_INET6;
+	sin6.sin6_port = htons(7);
+	sin6.sin6_addr.s6_addr32[0] = htonl(0);
+	sin6.sin6_addr.s6_addr32[1] = htonl(0);
+	sin6.sin6_addr.s6_addr32[2] = htonl(0);
+	sin6.sin6_addr.s6_addr32[3] = htonl(1);
+	OSERROR(connect(sfd, (struct sockaddr *)&sin6, 32),
+		"connect");
+
+	OSERROR(sendfile(sfd, dfd, NULL, 65536), "sendfile");
+	return 0;
+}
 
