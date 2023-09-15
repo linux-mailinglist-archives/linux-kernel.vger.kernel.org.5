@@ -2,123 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A49947A2011
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB79B7A201C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235464AbjIONph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
+        id S235453AbjIONrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbjIONpf (ORCPT
+        with ESMTP id S235407AbjIONrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:45:35 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2E02134
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:45:28 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5007616b756so3451927e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694785527; x=1695390327; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=22rc4xSXxNri3c2ld6PXHtzNFnKZHFOJ5gQvW2KAyh0=;
-        b=lvRD8N2Myg6Si1bW+89m+0oDV9INzU5Yi9Wcr3PONIoRDG3LuO86DeRnSL2IOI5AKx
-         78IEUB6avucUJAx6w3Cke0F4UeKLMRR0t3FccKMaxug3Tq8wShnY+IwyxQEG9RyylSsO
-         U8urc4uS/VKz91p7/4oIVITC2Mj/U9oKxeXsOVReAhHFbG5GeDvKAHPKw/ZzI3OzjVVC
-         qanvFLY4AWyqD3gpRtHPeQ7Jd44Qo0YKciwoeR7oeXV4W4ebb6hRIG+HawK+/n+Bq9YX
-         1qjmSLHalLKmbIymT532touLmBSBiFZfq3TRClETN1Ke9FbHdqUsBC8vZ58NeuOyO6Ws
-         Qxvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694785527; x=1695390327;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=22rc4xSXxNri3c2ld6PXHtzNFnKZHFOJ5gQvW2KAyh0=;
-        b=o2+nLCtBCBsXtUvJb5ebhlzpv3bSimTpPeC1B2duwY7yecwUwiex8neHMQG9InEd/8
-         o7PGslf1oRdPEXfZIGk1LtjOQ+3fVhMEFud/qdT2+t67T8b77ZUIuMq4eCMVbJL7IYE0
-         farUhwMfsuPRtqp7/94OU499B6Kji9aWTMiGxL63TeODFI512o2KdODT58r6xr4gTjv3
-         QSJaU1xRqpNQn82R3TjkIcKTRH0JIHQVhzhVkLWRz6MeJWKmPRYHv5D0kpyVz08RST1x
-         kgbZTfZqX9OHBg74O5mq5oIx4H3AF/VIkXk8jFIXXcvfvwSzYTAYgVNwHpcXrtl4W5ZJ
-         v6lw==
-X-Gm-Message-State: AOJu0YwjHTYl3Q0Eo8r8havzQxjDmOo9NpRdWVB/cvaj65TQSge9Vjic
-        Ajxgqo1/mY6+YrcGoxWxftLpnA==
-X-Google-Smtp-Source: AGHT+IEmjbRmRL+TdVdzYrNXX86AZ0+zOX6falRkpDGgSOmk+6WTz7/42A7LwMqlI780euSILtYMZA==
-X-Received: by 2002:a05:6512:31c7:b0:500:9d4a:89ff with SMTP id j7-20020a05651231c700b005009d4a89ffmr1790802lfe.62.1694785527190;
-        Fri, 15 Sep 2023 06:45:27 -0700 (PDT)
-Received: from [192.168.37.232] (178235177024.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.24])
-        by smtp.gmail.com with ESMTPSA id n13-20020aa7db4d000000b005232ea6a330sm2316452edt.2.2023.09.15.06.45.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 06:45:26 -0700 (PDT)
-Message-ID: <999f5e61-9e47-41f2-a5de-5a8e70095f4c@linaro.org>
-Date:   Fri, 15 Sep 2023 15:45:24 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] interconnect: qcom: Add SDX75 interconnect
- provider driver
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, djakov@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com
-References: <1694614256-24109-1-git-send-email-quic_rohiagar@quicinc.com>
- <1694614256-24109-3-git-send-email-quic_rohiagar@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1694614256-24109-3-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 15 Sep 2023 09:47:45 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2070.outbound.protection.outlook.com [40.107.105.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB591FF5;
+        Fri, 15 Sep 2023 06:47:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KxfCV08bgEC4o/5K6mp7fFiY5HQyukKJ5dwPMVvtNGZYGrzuzsDCavB60P73p1EK6vmhseRhFcTNEOnypY3pSXZm/elpAVX4u4l3RCrHSwOkdyeZsRSpgeJq6Da2ODxgY9XKI+jQvhaup/a2LTIrS8g9/OXWR5hXmP9Z+QXWa1QiAaaud2jXrIoF8z6m5i2oyx/9RidkUcSyX/xJw27jA+OMQqBbYSYz+FrrSrobz9mlLkk3VOrYqxFhvnxym6QRQIzxZ9OlZmBkiLIPdV4bCB43iKelM6KGSL6mKTlixOG2pF+l6STGSYEEv+/dy5KTHPksgA4RBO1Ot93G2MKkxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Opds6waEb8sct5lvtGQmWwRkF0ju7yJOrbohF50nuRo=;
+ b=kTffYm4S4PVg1n/3+jDCuAra4uX4TKdt8FF4YuBCBFJ41llcHwRc+CpNbPZgymFjafy1iPWIqhS+V0MbP0PpnLziEILGfkN1ZhecP6SLDlRBaZEmTIw+mzEr4hh4Rkr7oH65YWLi0Vu5NW+vgn3ymcnmnX1cJoTYBojY5JAFoDf9mZAGHNgRg8psgToM6v03UYDy4pYrNwYMNHqxIWwod1pNSRAt0Wq8ChOWJ8IiTzh4x1mLMUkZQfPXWEXepeqeIjq02CNwlnXjRGdbVx0xYnVOcrAzemeT1W+RuIviS7mXj7tjuEHACmvBzdzKzldxSclSXi8LfX5kUeWrL6yLjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Opds6waEb8sct5lvtGQmWwRkF0ju7yJOrbohF50nuRo=;
+ b=YWpZ7lpjF5p4Qwd9qGbuOF3VrMKiIwYETx07CrMAFrH5V4DXhi9v7P0Rw6ssH7wAWRQYi9Ahk8imzLkeAipm7788o08YhFBC/HLhKPH7xfG5DYb/9aG9PzRM/oAssljQi42hVDAuCgErFcg+a6lhq2uI2s+mS6rGrtufblyiUyI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PAWPR08MB9783.eurprd08.prod.outlook.com (2603:10a6:102:2ee::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Fri, 15 Sep
+ 2023 13:47:36 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::bc92:216b:11ed:db63]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::bc92:216b:11ed:db63%6]) with mapi id 15.20.6792.020; Fri, 15 Sep 2023
+ 13:47:36 +0000
+From:   Javier Carrasco <javier.carrasco@wolfvision.net>
+Subject: [PATCH v2 0/2] Input: st1232: wakeup in Suspend to idle
+Date:   Fri, 15 Sep 2023 15:47:23 +0200
+Message-Id: <20230826-feature-st1232_freeze_wakeup-v2-0-29ae9f747137@wolfvision.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGtgBGUC/yWOyw6CMBBFf4V0bUkZSEFX/ochpNSpVElLpjxUw
+ r9bYXnu4py7soBkMbBLsjLC2QbrXQQ4JUx3yj2Q23tkBgJyUYHkBtU4EfIwZpBDYwjxi82iXjg
+ NXEsBZ1kZMKVkUdGqgLwl5XQXJW7q+zgOhMa+9+atjtzZMHr67Bfm7L8etULkGRSlKNMsWivJg
+ T/VbJFSrYhU0P66+N4cn1OHI6u3bfsB8x3YbdIAAAA=
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco@wolfvision.net>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694785656; l=1537;
+ i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
+ bh=da5YvR2hX2ppM6RgVFSXd7AleMVl1rIx2CgP/coMfqU=;
+ b=9XbBU3kMH/o33kggB8kUQw/ESMBp/OvpbD0N4MJUY/2YEyTn0ST0H1NP7hIIBmTtQTdiS2tvo
+ 0ZJIV6kK2GTCfWUn0qddA747lRUBV7YGfnabcfZP06rizv1/AfN5MmH
+X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-ClientProxiedBy: VI1PR08CA0233.eurprd08.prod.outlook.com
+ (2603:10a6:802:15::42) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAWPR08MB9783:EE_
+X-MS-Office365-Filtering-Correlation-Id: c09d9e42-c150-4338-4856-08dbb5f251e4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3KjN8cK9DrUiVoOM7h43R8Vka6Y8EQRF6CjDoWdXwhsFYQWPyyqBXefkIRJQFpaocobOP+MLPOjrps9xJISBlZpSKBwqr/lldjD/53eGx1dvZxd0y5tR+MphLSOlALy49eZyMsltDk4jbPcbsydcA2jzKCBKniceJboMXkKN+8bFt34Kbhiy1q6RkO5scgywCia2t8Vqh737KIttZmRL9t+8AYA8p6bGAvVWTDx0VrouOEbk3k93yNlBEKig1QdDqETAQEFu30kWeubUxZjEiAFeRAhZP3LA0JVqfFK4ticmkYRvqvUc8ROgdu7yMeLHvZoNiMzU2UzdcbASUbD4b5Uep5Dv2zFlG74LA6bvQfiOZgFMeLZXzcgGKv4VDwJOatR9Sls9q4iIaXauQ+mTk1c35x46ViLYN5TpDFXhNtts64DqXMyghWX5amrrtoewhr+gpXQTbon0sOju14d47TWS1iOusHK/WO0GuA08KIGheUX+jtavNdEZeW/1KyA9dfyoFuEJolnX6zIQC11taZ9GqJIJMRyVGoPTNmBzaIMbUWRCgAtFBV+DWNltZF8ysSofCojF5EZnWefE5XuUcMq6/G4eqFdfAzCsHRbRi24=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(136003)(396003)(346002)(186009)(451199024)(1800799009)(41300700001)(6506007)(52116002)(6486002)(6666004)(38100700002)(26005)(36756003)(6512007)(86362001)(38350700002)(2906002)(2616005)(966005)(83380400001)(6916009)(15650500001)(8936002)(8676002)(478600001)(5660300002)(66556008)(4326008)(44832011)(107886003)(66946007)(316002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWkya0IzazRsYmpiTlgzejZRR1N0S2M1QU5aVnNaTm5sb2VnVTQ0bm40bVpY?=
+ =?utf-8?B?TVRkVnVpVzFPNUZ3ejNHSVZ5VUx5MXlVdldIK202MGJXeEdubEp6bnNpM25U?=
+ =?utf-8?B?elVLZkZoSjRZNlJKYXdUTXA4VTJSMXRteU5PbThBa3ZwcGRKdUdOMUVLbjFR?=
+ =?utf-8?B?Q1ZUdTNsUkZ2bmZoUTMvdWdVN3pFbm9lUnY0a1l4TVFBcml5NVFsSTRvZDl1?=
+ =?utf-8?B?c3BwMnRLT1huNFVWOVg1dkNqOWhtM1FUNzhxZnZOTktIaHpKbnRDWDN6cGRv?=
+ =?utf-8?B?eHlrZTNCNDBmRU0rTUM0YjlCTGNYeEd5NmdJVmNFRCthV0tGaUY5SUNGZGsw?=
+ =?utf-8?B?eFk0VGpzTitHSC94NFh3TnRWM0hlUGRyVE56eW5ZcTNBcE0rRk9XSXhuc05E?=
+ =?utf-8?B?a3RuWXFULzBuWEE2Q1V4NEZmWG1mVFRTUElLeU92bW93ZTR2ZGc1UFF2Zlc2?=
+ =?utf-8?B?TVh0ZHc5U25MUEFJOXlFZVlBbWlsR2RjR0VGODFGOWh4aWw4VjhSV3d6OW5o?=
+ =?utf-8?B?ZUt2Wm1NeTN4NHlDTFVqN0dHazhjcGlxQVRDZHFUKzMyYXI4K0pyNmtQa2E4?=
+ =?utf-8?B?ZHFLWkhmMm8zbUFvNTBrL1RrM2owWndtTlVrY3VuNnRGMTlkakJTbE1Edm9h?=
+ =?utf-8?B?amhuL3I4ckoyMC81akdPdVZHTjAxYzdkemVvdG1mY1diNldnZ3dNa2duZEla?=
+ =?utf-8?B?Ujh3VlhsRGplcGZLNjl3L04xZHB5anlvRlMrVUVVeWlORC8wYk9WZ0p1RVNN?=
+ =?utf-8?B?Q3JId1BodDNjSmkzTlgzbnV3Ky81QnVuSTg5THo1VWVXc1FCUlFkM0FJR1pt?=
+ =?utf-8?B?dEd5Mm9kb3NWRVNGcjZoa0lnUGxZbTk4c0ZoZ3FKN2owZHFzc0dOQUpwRjdQ?=
+ =?utf-8?B?dVhQS3Y1eWcwcVpIVW1JMDl3YllHVVV0MTh0SjVBRHpPQXFXMjFOUU9DTTUy?=
+ =?utf-8?B?anZ1U0E3YURUM3gxWXo0Z3cwSTRQWC9HM1lJM2RXOGJXMldVbW41RW5uVm5y?=
+ =?utf-8?B?V3BqSmFRM0NETE1ZK2g0Rk50VURQQVgzYXZzSUk0R3EwOExSZjY1bjdDSmlm?=
+ =?utf-8?B?a01CNkxOWUxybDNkOTZ0RzQrQ0ZOcVVIVUVMVzd3TkZ0UW9iTlhoVy93REpm?=
+ =?utf-8?B?UUlDWE9vTU9LUGJleExzNWtkZ1htb2JyZy9WV21vTlExeXA2UTR0b0JlYjkv?=
+ =?utf-8?B?MTNEZ0g4alM5TEwvWVpnR3RUMXFOU21DZGRHelBKemY5SkwxZXdyV3M0dm12?=
+ =?utf-8?B?ZmF5eEpaREFkRkM0Z2JMOE5ycjhyTjN6cXRzZnVxYmpzSnk1YnZRUnpQQWo4?=
+ =?utf-8?B?bVVUckhSZm5XUXIzVGdYN2dBck5yeGpCZlJzaCt3bFlHQ0lCWjlwUytsdFdq?=
+ =?utf-8?B?Mk8yaVBlRmU2RlN1UUh2ZjFGbUd1QUpoamFtbTFlc2RxWGowZGVMUXU4Y0VE?=
+ =?utf-8?B?TkJGeHpEMHZGOUtRNWZKRjgxV3ZsSWhwRTdDUjkxenIySGpsdXRWaTlKajdS?=
+ =?utf-8?B?aC9rQXRGUUpnSXVpZDN2OHpqM3Jtajk2ZkVjOUtYVVhxaDYvV3d5UW54ZmVS?=
+ =?utf-8?B?TkJSL3dKVmZwTTFaZnB5TjBBS3oyTUFLeDh3RjY0QmJBYnNsVlRJY05qNFRL?=
+ =?utf-8?B?aldFTTBNMncraUZpRWJwSzBicWVjVGpaVE9GdGppd21mbXhzbTVnR0lSNlJT?=
+ =?utf-8?B?OGVkK3AzM01EaCttYXZTbnBKdlRKTzlQNGxjRC85TXFxb3NaMHlCbzVoQXRw?=
+ =?utf-8?B?TzdEKzRtaUlGMVljY29rT0FYbm13Y2JjbUh1UUcyOExnTlU5L1IvaW9COHFj?=
+ =?utf-8?B?UitVTmNqNTBlejNuSm9hZDdHanFTdVo2aktNTE9kYS9MWEtQQU9kckZLMFZk?=
+ =?utf-8?B?aE51QzRQckJNWlBuVHlOeXpFdDMyaTQyaHRJbWRYek9ZbUhXQVhQc1gybFF0?=
+ =?utf-8?B?UGc5WVd0ZGUyeWErNTM0SUF3OU9qTU0yY1V3N21xdHVTcllwTUhBdlRHS0hQ?=
+ =?utf-8?B?T0tVeFVUSGIwV01qbk9Bc3BVc0ZFOUgxNnhBV1lqZzZ0UjI1c2pqV0llcjhW?=
+ =?utf-8?B?SkozZmd5d2xqWmZsamtWcXJtc0t4dUp2S1dlUWR4S2RRRHZRd1F2ZzRNSlFp?=
+ =?utf-8?B?SWJ5ZXhhZldzSjNoSG1WNEZDY0ZrTmVzKzl0MFNuYXp2cEdHMzlBNUlkdkpC?=
+ =?utf-8?Q?K7LovcYD8vG2/7icdx85qpU=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: c09d9e42-c150-4338-4856-08dbb5f251e4
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 13:47:36.4972
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z4pKmfnm5opnBHpwSa5eJOMsP12E3u41amij2lpv0lWxT6jWVggnntpTXFCtMt6LQlSftzXTju5q2njBTtq4nkMowWrcJSveasu020J/mxQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB9783
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.2023 16:10, Rohit Agarwal wrote:
-> Add driver for the Qualcomm interconnect buses found in SDX75.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The st1232 touchscreen provides an interrupt line that can be configured
+as a wakeup source, and currently it is possible to use this mechanism in
+"Suspend to RAM" and "Hibernate" power states. 
 
-Konrad
+Unfortunately, that does not work in "Suspend to idle" (freeze) because
+the device driver disables interrupts in its suspend callback
+unconditionally.
+Partially reverting the patch where this modification was made to
+disable interrupts only if the device is not a wakeup source has proved
+to solve the issue.
+
+Given that the st1232 device driver does not reflect its wakeup events
+in sysfs, this series also adds pm_wakeup_event to the interrupt
+handler.
+
+These changes have been successfully tested with an ST1624-N32C and a
+Rockchip-based platform.
+
+Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+---
+Changes in v2:
+- PATCH 1/2: enable/disable irq if the device is not a wakeup source.
+- PATCH 2/2: remove unnecessary mutex locking/unlocking.
+- Link to v1: https://lore.kernel.org/r/20230403124707.102986-2-javier.carrasco@wolfvision.net
+
+---
+Javier Carrasco (2):
+      Input: st1232 - remove enable/disable irq if device may wake up
+      Input: st1232 - add wake up event counting
+
+ drivers/input/touchscreen/st1232.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230826-feature-st1232_freeze_wakeup-c602968f2f76
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco@wolfvision.net>
+
