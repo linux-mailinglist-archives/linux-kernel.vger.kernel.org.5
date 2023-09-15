@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED607A1C8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F587A1C86
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbjIOKmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
+        id S233542AbjIOKl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjIOKmH (ORCPT
+        with ESMTP id S233343AbjIOKlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:42:07 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2054.outbound.protection.outlook.com [40.107.96.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5D110D;
-        Fri, 15 Sep 2023 03:41:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hvq1GxSLFI32VQRVTcIH7Kb9nk11mwQMUfB345CpaaauhANaH5KoX/gcwMweqqG0eCM0QXSmY/1RxAv2GijjfsLO+5n+MxY7QzVcNYgF0H1Toxoxk04u7xY3YkhMDAmpmaPeMbrmx0S8Ky2uHwclzp16GDsqHHoeMJxMgYcV6ATMeuXrgvqZePD+TASOqxtw9jjT6AH0tL1jmTeUGqlQmXHQVxz2ZIvXNT8WcVvGNOaIKlTbTVvFIGVog9ilDEXFpV1lTR5O1JTpYm4K+heLPYBpgkOtpuhYqUMW18qI+cxHRR0aSolXv3qeJR7XdcxeOjMlzGCgsSEn6j8MTdo1fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KhVX5ig/vQeK1u0U6/SN8nsrOZAAn2FVI/ZQr0mCMfg=;
- b=Efw6rPvGXd3ef7R/loOXk+cwpslKl2/Uu7mNzZHJeHkbP6kSsSuC+Ep66CwSFB/NkQ/5kST8dw8Tm5ieTz8LtIOexS4GsGCZbb9sZHP9nRnkeGCKQrOqbHbk3yIWFAKVHXhpmKHEMxDhGy61r5ALgFJjOAJv5qNNDpuQss6UmsY3JzGKkIsfb7Z27NtoUpEYdL0ben+zzPTL+svuV9zrtMI+K7PMNk9R8vY1PXWaw8ZZWaTjGp6EJC4hynXv3Wax9zfYvmxdrJSJdxe0WQFbHXQtp/h62A4yEW3zCK3BCZLWuI3k+RxzFWfpFjdhbuZUFj/o8e9lNUYYbhvHO9uueg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KhVX5ig/vQeK1u0U6/SN8nsrOZAAn2FVI/ZQr0mCMfg=;
- b=Qab/RReS+pDr0jpDSupnfLI3kGTrXi2s8h1hyMe/XuQNhbdgxxJRhvlA9STezawAQ5W3GDyJqrzVubYIVJ27jN3yfnTA2YxdNEzQKgWFUcd3MGte24rQQA5kGKv/3dPDvH3sRQsgtSFSBGn35snzkjkpUNMf6yTMxQgnHEuq32U=
-Received: from DM6PR11CA0046.namprd11.prod.outlook.com (2603:10b6:5:14c::23)
- by PH7PR12MB7113.namprd12.prod.outlook.com (2603:10b6:510:1ec::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Fri, 15 Sep
- 2023 10:41:49 +0000
-Received: from DS2PEPF00003446.namprd04.prod.outlook.com
- (2603:10b6:5:14c:cafe::a3) by DM6PR11CA0046.outlook.office365.com
- (2603:10b6:5:14c::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
- Transport; Fri, 15 Sep 2023 10:41:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003446.mail.protection.outlook.com (10.167.17.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.19 via Frontend Transport; Fri, 15 Sep 2023 10:41:49 +0000
-Received: from ethanolxb491host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
- 2023 05:41:47 -0500
-From:   Swapnil Sapkal <swapnil.sapkal@amd.com>
-To:     <rafael.j.wysocki@intel.com>, <Ray.Huang@amd.com>,
-        <li.meng@amd.com>, <shuah@kernel.org>
-CC:     <sukrut.bellary@gmail.com>, <gautham.shenoy@amd.com>,
-        <wyes.karny@amd.com>, <Perry.Yuan@amd.com>,
-        <Mario.Limonciello@amd.com>, <zwisler@chromium.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Swapnil Sapkal" <swapnil.sapkal@amd.com>
-Subject: [PATCH 2/2] tools/power/x86/intel_pstate_tracer: Use pygnuplot package for Gnuplot
-Date:   Fri, 15 Sep 2023 10:40:57 +0000
-Message-ID: <20230915104057.132210-3-swapnil.sapkal@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230915104057.132210-1-swapnil.sapkal@amd.com>
-References: <20230915104057.132210-1-swapnil.sapkal@amd.com>
+        Fri, 15 Sep 2023 06:41:52 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF947FB;
+        Fri, 15 Sep 2023 03:41:47 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a9b41ffe12so1229216b6e.3;
+        Fri, 15 Sep 2023 03:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694774507; x=1695379307; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1gzWd4qQtjOfUKs0FGdp1XK/HuGB/Tuv7F6Nb03IR5k=;
+        b=Od4XrG9KVAUtC6R9pFff67VSepNEnJ8SDuUZk1Vm6r6EVDzBh+Xrg2W3soXlS8XxfI
+         +so/Yc3SkApX1gStxfqg0a/lD/CK6j6rWmq10LP1oDcqqZSkvlaLRs2zwp077OtzPXyI
+         UkNSmomhWbmBhthgdnejLstIoA/ZmNFk+T6qan301wvHMVnKF/quvv5XbYpJnIq856R7
+         MmmDBDgeY9Osi2cWxfZZIAP7Te7Q15j+Q/+S8MojWlgwElobMvmRHqGKHVuA/tjzl+lz
+         543uHZeoeq/gK0ljNTqGq2DaB5gkgmrRqTAsbxUz3yW02Cg8FBZT9q2NubIAIcJMB+c9
+         Nv+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694774507; x=1695379307;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1gzWd4qQtjOfUKs0FGdp1XK/HuGB/Tuv7F6Nb03IR5k=;
+        b=R09AQbG6BZAC6Ay6KdImw40q7NhSc6AJ4q+iCg866oX5QQNIe6Iq+qFkOVb7t8/ndT
+         qM0w5ebDOFE8mH3wKxHRB5FlRmsEs5fdqleamCiGPQOwTEizj8HstBiPo1MYjQOC0E1/
+         C6WWVeulYJ1ze8DldfSF6r/leSZ2dNFWq8TmDGY1YD7zYmFHSCqObxLc+Sgosz2hkPAy
+         0RJtSswB+tbdGe8tbutVg37VO4c8Renn9zU67SVFeFxZ4VS/J3rC7JPOBNOawwMYobYz
+         D8QX0/2wA2QTIzGpLv4hC7hEexVz4/klu2FxVgGvpULtrLSG97DojUFOtPD42xKfhnNk
+         HJzQ==
+X-Gm-Message-State: AOJu0YzEX4aldzE06djUKA+NT7LAkDTnF2Bulhk3DARu523HdUyyJKkj
+        HS9R1LqucpzLbCVHV9a7Fio=
+X-Google-Smtp-Source: AGHT+IFpe8AfKuunKz52MX2dRnnLDy5CuQB9pEFA4YsZtIk2oHpgiy3Q5oOFA1QV6fA7kOMFhhXn4w==
+X-Received: by 2002:a05:6808:3bc:b0:3a9:3079:9547 with SMTP id n28-20020a05680803bc00b003a930799547mr1223527oie.30.1694774506732;
+        Fri, 15 Sep 2023 03:41:46 -0700 (PDT)
+Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
+        by smtp.gmail.com with ESMTPSA id e5-20020a62ee05000000b006889664aa6csm2734052pfi.5.2023.09.15.03.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 03:41:46 -0700 (PDT)
+Sender: Herbert Xu <herbertx@gmail.com>
+Date:   Fri, 15 Sep 2023 18:41:45 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Danny Tsen <dtsen@linux.ibm.com>
+Cc:     linux-crypto@vger.kernel.org, leitao@debian.org,
+        nayna@linux.ibm.com, appro@cryptogams.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
+Subject: Re: [PATCH v2] crypto: vmx: Improved AES/XTS performance of 6-way
+ unrolling for ppc.
+Message-ID: <ZQQ06U7LEgoZMSY6@gondor.apana.org.au>
+References: <20230830134911.179765-1-dtsen@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003446:EE_|PH7PR12MB7113:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f160a9a-0730-4029-083a-08dbb5d85daa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F2S8wg1hEiAqSlNuYCcI3mbK3TkypKOvJq7zgOUSMV/Pnsd9K4zzVWay4XxgQ6hpS3Ojp1/4Dh3cO+fOr33CMDK8WRxhq4d75f+SDjqm0v1lAmg5htB1BgXmzUn/VX56sOs6nftKYwUlNx1NK6E8cmsl0z75Zs3B5+357kzuzOobUu6yxjcXydmcfWZyXX4KaI/9IbRQFQ+/pNZ7DVa0lnzPSlyNQJOaoZ5tBfdYPPYEeEcLdtp5HWcohDrT1v8NT3f3MUwAXnfp/KsegWdAjRpe2zpgn4ZtE5+N2M4nQGb697APd2tgkGWFmD/WwFgwGIN94ortwjgwrxl5d9m17JFxkMsUcF9KoeeCHIWLR285Fv7uuA3qZosvzyq2lT6i8Zdk1NJhLN2pdFayCGoK5a//KatJXMArBvAW50NXp+864zo5hxPccMMvFstnEJWOS+dWg6IjrMTz9OMEeRc2OY1yXF/aqQZb4WEs4uXQVxUvWj36wgx8qvdTM4vxG4TZMsoSkDtx8Y9mPCMzYMw3orA9JsWduh+NCGxF3b/5uXdKvFE2gopYmsKYxafGCC488nsRuy79sDqIxyF7VKI6uwxULzU5A8p9/qDhKVOWd7HFiusH4CejfL4tayiCOqGnaJE7ukmj5SXdMvwJMbfzGDKX9pjn7FLJ/BDtU4ziRSEpTwAzfNPvVTYqo5L6vvJm7YGiWCub3IdkxwT3YiUsA9xTh6ecNaoljLqRWkHhtkjuDsIVf8QaaksFTm1vCXif3BzqbbbdtCM/m8v+kVngtxJp+YOuVBxmOJI6U1311mk=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39860400002)(376002)(82310400011)(1800799009)(186009)(451199024)(46966006)(36840700001)(40470700004)(426003)(40460700003)(54906003)(83380400001)(70586007)(70206006)(44832011)(316002)(86362001)(8936002)(41300700001)(336012)(8676002)(5660300002)(110136005)(36756003)(356005)(40480700001)(36860700001)(81166007)(82740400003)(47076005)(7696005)(6666004)(2906002)(4326008)(478600001)(1076003)(2616005)(16526019)(26005)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 10:41:49.1107
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f160a9a-0730-4029-083a-08dbb5d85daa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003446.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7113
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830134911.179765-1-dtsen@linux.ibm.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In intel_pstate_tracer.py, Gnuplot is used to generate 2D plots.
-In current implementation this tracer gives error while importing
-the module because Gnuplot is imported from package Gnuplot-py which
-does not support python 3.x. Fix this by using pygnuplot package to
-import this module.
+On Wed, Aug 30, 2023 at 09:49:11AM -0400, Danny Tsen wrote:
+> Improve AES/XTS performance of 6-way unrolling for PowerPC up
+> to 17% with tcrypt.  This is done by using one instruction,
+> vpermxor, to replace xor and vsldoi.
+> 
+> The same changes were applied to OpenSSL code and a pull request was
+> submitted.
+> 
+> This patch has been tested with the kernel crypto module tcrypt.ko and
+> has passed the selftest.  The patch is also tested with
+> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
+> 
+> Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
+> ---
+>  drivers/crypto/vmx/aesp8-ppc.pl | 141 +++++++++++++++++++++-----------
+>  1 file changed, 92 insertions(+), 49 deletions(-)
 
-Signed-off-by: Swapnil Sapkal <swapnil.sapkal@amd.com>
----
- tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py      | 1 -
- tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py | 4 ++--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py b/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
-index 2448bb07973f..14f8d81f91de 100755
---- a/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
-+++ b/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
-@@ -27,7 +27,6 @@ import re
- import signal
- import sys
- import getopt
--import Gnuplot
- from numpy import *
- from decimal import *
- sys.path.append(os.path.join(os.path.dirname(__file__), '../intel_pstate_tracer'))
-diff --git a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-index ec3323100e1a..68412abdd7d4 100755
---- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-+++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
-@@ -32,7 +32,7 @@ import re
- import signal
- import sys
- import getopt
--import Gnuplot
-+from pygnuplot import gnuplot
- from numpy import *
- from decimal import *
- 
-@@ -295,7 +295,7 @@ def common_all_gnuplot_settings(output_png):
- def common_gnuplot_settings():
-     """ common gnuplot settings. """
- 
--    g_plot = Gnuplot.Gnuplot(persist=1)
-+    g_plot = gnuplot.Gnuplot(persist=1)
- #   The following line is for rigor only. It seems to be assumed for .csv files
-     g_plot('set datafile separator \",\"')
-     g_plot('set ytics nomirror')
+Patch applied.  Thanks.
 -- 
-2.34.1
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
