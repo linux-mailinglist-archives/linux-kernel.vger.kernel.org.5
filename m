@@ -2,122 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFBA7A1FC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD37A1FCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235289AbjIONYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
+        id S235329AbjIONZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbjIONYa (ORCPT
+        with ESMTP id S234575AbjIONZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:24:30 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FFE272C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:23:48 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a64619d8fbso279546066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694784227; x=1695389027; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1U96v2df/GCS7HRvhdN4EdRezxa7IYKwHOpPeh6hRvI=;
-        b=OX5/o2SfUDZzte6E2Fms4S38dZjkUlYBOY6m5IaZGBwMYwwhMXJ9JmYQ6qTTiGAHQS
-         HxJIXd58R3JnsTtOF+HO6CcB5XZ2eeF/BbzD9TgS1UL5ZXYP+FtU5OkZHrsno96SBYjq
-         4jhbXAfltQDyQwVDMfZoQx+PfRGO+boaGYzMlIrUMNKP6S5LbPp/xo+muxhG0R8Tte9Q
-         sBBw48xHDDKkKyMr5DX/keWtZrknSdmL23SUyBnm1bs1fUo0IZgJmevyaJTiP7AX+GLO
-         y5cfAKCzEQ/Zp++//J0RYC9Dx/AzJKGQJmsj1KTDOJwUh5Cs/q6yMUtLvNkFlOKeqtRS
-         SMiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694784227; x=1695389027;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1U96v2df/GCS7HRvhdN4EdRezxa7IYKwHOpPeh6hRvI=;
-        b=GKxWF0BgPTZGIpnp4rimY4C7nvRT5uJSMScJNH6S/iiEl6IQM8TIfFWHC/CvKkpxUw
-         9SNEASDQly1277VtHdr0a2o1ZJv8ibHiauXd9J2bdaYkfFCWN3JdTtJvmKk2SGgakGq8
-         nvp0Kzly66DRElYfSRcPkcS8YDn/bvS2D/MC3X6iGUveSwed4P8qLXcJvtZ5MbglXU+X
-         zCu5wk8cGUH41NkNX+gM8zCU6DVg8R2ieykb4x0s1g0EbxtcfgUYRrGYFJFCWri9yOkQ
-         6rxHBrhQXe8TKQLW7zhCKJi8mIRstjgK6oHg3HmvP3xSeM8mfsJ1/wFox3XSNbTNvIe/
-         l2Tg==
-X-Gm-Message-State: AOJu0Yz7kWmCzrxCkNaqhbPoDOrNPmIqAaBn/w29q5IJ0PEyapmPoLVD
-        vQ9n1TOtVbw/7FeFLnvX8ZTbRA==
-X-Google-Smtp-Source: AGHT+IHJb4HtPGUePL9mUs+HJqXER2fgOPpx0hOjcuuKj93Ug0wBvTft9KXdW8nwYNIXmes1SpZBiA==
-X-Received: by 2002:a17:906:76d0:b0:9a5:9305:83ff with SMTP id q16-20020a17090676d000b009a5930583ffmr1500146ejn.18.1694784227395;
-        Fri, 15 Sep 2023 06:23:47 -0700 (PDT)
-Received: from [192.168.69.115] (6lp61-h01-176-171-209-234.dsl.sta.abo.bbox.fr. [176.171.209.234])
-        by smtp.gmail.com with ESMTPSA id fi8-20020a170906da0800b00997e00e78e6sm2419215ejb.112.2023.09.15.06.23.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 06:23:47 -0700 (PDT)
-Message-ID: <f69ac27a-943c-3966-385a-e12ecd71d33a@linaro.org>
-Date:   Fri, 15 Sep 2023 15:23:44 +0200
+        Fri, 15 Sep 2023 09:25:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2735E58
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694784297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwX0LvGe2IzI2EOEiWJxA7uUIanGLX6c6iCFRhbWEYk=;
+        b=L1nX8M9+GcmkkUwFTePrnkpgibt/jwx4lNoRQbQAV3LP9IIvUKVDXKScBYWSBqhKVHZ09O
+        +ImmX+6c0q+0R3pV0wUwOiO0xotA+hn4Xe/TQoA06wyP6yTVQr8V6becAK85pywSptjGG9
+        vdjOxiqNn8Z9C4IirBxtZ/2ZUItSH/k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-66-4Bq-zBPcP-SVdF6pYdLdww-1; Fri, 15 Sep 2023 09:24:54 -0400
+X-MC-Unique: 4Bq-zBPcP-SVdF6pYdLdww-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA13480349B;
+        Fri, 15 Sep 2023 13:24:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6689610F1BE9;
+        Fri, 15 Sep 2023 13:24:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com>
+References: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com> <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com> <20230914221526.3153402-1-dhowells@redhat.com> <20230914221526.3153402-10-dhowells@redhat.com> <3370515.1694772627@warthog.procyon.org.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, "Christoph Hellwig" <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        "David Hildenbrand" <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v5 0/3] Move Loongson1 MAC arch-code to the driver dir
-Content-Language: en-US
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-References: <20230914114435.481900-1-keguang.zhang@gmail.com>
- <ueevvju7i42wik6fevdmvbtypm4su77guyo4zizhrfreexken7@nrcovxfnyuvq>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <ueevvju7i42wik6fevdmvbtypm4su77guyo4zizhrfreexken7@nrcovxfnyuvq>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3629597.1694784290.1@warthog.procyon.org.uk>
+Date:   Fri, 15 Sep 2023 14:24:50 +0100
+Message-ID: <3629598.1694784290@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/9/23 11:55, Serge Semin wrote:
-> Hi Keguang
-> 
-> On Thu, Sep 14, 2023 at 07:44:32PM +0800, Keguang Zhang wrote:
->> In order to convert Loongson1 MAC platform devices to the devicetree
->> nodes, Loongson1 MAC arch-code should be moved to the driver dir.
->> Add dt-binding document and update MAINTAINERS file accordingly.
->>      
->> In other words, this patchset is a preparation for converting
->> Loongson1 platform devices to devicetree.
-> 
-> No more comments from my side. Thank you for the patches and
-> especially for the patience in the review process.
-> 
-> For the entire series:
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> * I'll also send individual Rb tags to each patch so b4 would be able
-> * to take it into account.
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-Maintainers using b4 should use the '-t' option, then you don't need
-to do that:
+> You could also just not do the copy!
+> Although you need (say) asm volatile("\n",:::"memory") to
+> stop it all being completely optimised away.
+> That might show up a difference in the 'out_of_line' test
+> where 15% on top on the data copies is massive - it may be
+> that the data cache behaviour is very different for the
+> two cases.
 
-  -t, --apply-cover-trailers
+I tried using the following as the load:
 
-  By default, b4 will not apply any code review trailers sent to
-  the cover letter (but will let you know when it finds those).
-  This lets you automatically apply these trailers to all commits
-  in the series. This will become the default in a future version
-  of b4.
+	volatile unsigned long foo;
 
-https://b4.docs.kernel.org/en/latest/maintainer/am-shazam.html#common-flags
+	static __always_inline
+	size_t idle_user_iter(void __user *iter_from, size_t progress,
+			      size_t len, void *to, void *priv2)
+	{
+		nop();
+		nop();
+		foo += (unsigned long)iter_from;
+		foo += (unsigned long)len;
+		foo += (unsigned long)to + progress;
+		nop();
+		nop();
+		return 0;
+	}
+
+	static __always_inline
+	size_t idle_kernel_iter(void *iter_from, size_t progress,
+				size_t len, void *to, void *priv2)
+	{
+		nop();
+		nop();
+		foo += (unsigned long)iter_from;
+		foo += (unsigned long)len;
+		foo += (unsigned long)to + progress;
+		nop();
+		nop();
+		return 0;
+	}
+
+	size_t iov_iter_idle(struct iov_iter *iter, size_t len, void *priv)
+	{
+		return iterate_and_advance(iter, len, priv,
+					   idle_user_iter, idle_kernel_iter);
+	}
+	EXPORT_SYMBOL(iov_iter_idle);
+
+adding various things into a volatile variable to prevent the optimiser from
+discarding the calculations.
+
+I get:
+
+ iov_kunit_benchmark_bvec: avg 395 uS, stddev 46 uS
+ iov_kunit_benchmark_bvec: avg 397 uS, stddev 38 uS
+ iov_kunit_benchmark_bvec: avg 411 uS, stddev 57 uS
+ iov_kunit_benchmark_bvec_outofline: avg 781 uS, stddev 5 uS
+ iov_kunit_benchmark_bvec_outofline: avg 781 uS, stddev 6 uS
+ iov_kunit_benchmark_bvec_outofline: avg 781 uS, stddev 7 uS
+ iov_kunit_benchmark_bvec_split: avg 3599 uS, stddev 737 uS
+ iov_kunit_benchmark_bvec_split: avg 3664 uS, stddev 838 uS
+ iov_kunit_benchmark_bvec_split: avg 3669 uS, stddev 875 uS
+ iov_kunit_benchmark_iovec: avg 472 uS, stddev 17 uS
+ iov_kunit_benchmark_iovec: avg 506 uS, stddev 59 uS
+ iov_kunit_benchmark_iovec: avg 525 uS, stddev 14 uS
+ iov_kunit_benchmark_kvec: avg 421 uS, stddev 73 uS
+ iov_kunit_benchmark_kvec: avg 428 uS, stddev 68 uS
+ iov_kunit_benchmark_kvec: avg 469 uS, stddev 75 uS
+ iov_kunit_benchmark_ubuf: avg 1052 uS, stddev 6 uS
+ iov_kunit_benchmark_ubuf: avg 1168 uS, stddev 8 uS
+ iov_kunit_benchmark_ubuf: avg 1168 uS, stddev 9 uS
+ iov_kunit_benchmark_xarray: avg 680 uS, stddev 11 uS
+ iov_kunit_benchmark_xarray: avg 682 uS, stddev 20 uS
+ iov_kunit_benchmark_xarray: avg 686 uS, stddev 46 uS
+ iov_kunit_benchmark_xarray_outofline: avg 1340 uS, stddev 34 uS
+ iov_kunit_benchmark_xarray_outofline: avg 1358 uS, stddev 12 uS
+ iov_kunit_benchmark_xarray_outofline: avg 1358 uS, stddev 15 uS
+
+where I made the iovec and kvec tests split their buffers into PAGE_SIZE
+segments and the ubuf test issue an iteration per PAGE_SIZE'd chunk.
+Splitting kvec into just 8 results in the iteration taking <1uS.
+
+The bvec_split test is doing a kmalloc() per 256 pages inside of the loop,
+which is why that takes quite a long time.
+
+David
+
