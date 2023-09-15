@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9037A1306
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D3A7A130C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbjIOBqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S231202AbjIOBsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjIOBqd (ORCPT
+        with ESMTP id S230193AbjIOBsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:46:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0957270A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:46:28 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-991c786369cso219788766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:46:28 -0700 (PDT)
+        Thu, 14 Sep 2023 21:48:11 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357F726B8;
+        Thu, 14 Sep 2023 18:48:07 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3aa139a0ab2so957135b6e.2;
+        Thu, 14 Sep 2023 18:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1694742387; x=1695347187; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/We05QBGf54xap/mvQHQ6SHgmclfDs/rkBUva3BMHN4=;
-        b=uwiN4geiNwYFzwfBh/SQaiP9jQoMj6hwSG4Nb6X9JGaItOa095qOmkUUDJYGY4mna0
-         lw8R8JLk/INbF58uIhSOVzL6T4IspWs2YyZpZ4t1XsOFI8cQhYLNXiXupFvQtqEkJqNS
-         ZDEp7zBNbaOagr+uWoPTkiWCVoNquq9AIAJJU=
+        d=gmail.com; s=20230601; t=1694742486; x=1695347286; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E0FFekWGyUIP+/QpzRxD5C04IppzIdAo52JFOT6ol0w=;
+        b=FE6mzKsEr7W+O8D4CeWuPo/5lhUdydC2rsnIMpgHCNtcS/bwe0XUecvOQnop8HQkR5
+         nVWGorokr11TwQchZ8cyueObhL7tl8HtHC0PBUiVjYt/oYJrV4ob980Gb5kIqts+6rUl
+         ELgKzKJHi8UnvKy7SS5gTA0POs7R9YFnmwDpp4BMuHANMAudPt4302QqjZgG/rtxzNqy
+         ExklNOaBALOGISIxSENIT2STZTaRfJJD8CA3RGBrYfhEpBEHSCRO36nVtvtv4vlCgJWV
+         5nTMB10vMAxaeZx1WcbTbgkIKsNmPQsvHXPQnDzhPsiWWfhl9f1L3dKdpcym8GmPrchH
+         X7vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694742387; x=1695347187;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/We05QBGf54xap/mvQHQ6SHgmclfDs/rkBUva3BMHN4=;
-        b=nBCzL8TQkW6kkErVWs1F+VfaQWUY8oL61lIlBfGhK/Ke+VMfqP6uj2J0/wXzk/Xi38
-         J3XIOFbc5nHSyTAmIAq9xZEEADnN1OdiICc+xZmTzWMkub/Cwdsnm0G5TFpRK3hBkqO3
-         gvzgGm8clmFsXOtcYKkLicumCC9ElfU09GJI8Z+dxwHrSVWuqEH/sZoYNgfbCYHe03cX
-         88IcXmFGuHBdvWgIkNRPaaLqNnDU7liIXpUl50agPBdCgiusSM11lEbXRnZwEqBfDh6f
-         9H8WyShexj65Jp+AyuE/430ddfobdEz6ihAHhoyfQ1u8N6DWVq2h9YOGv9sdvzIgQuW3
-         e0Kg==
-X-Gm-Message-State: AOJu0YzgUDf4UlJP8IzmCj5bZfHc2C9QbJs1VIqTkZDZwvkwg5mVOXTq
-        v+sSGrRzTv53nS6AiN34YfWU0w==
-X-Google-Smtp-Source: AGHT+IHPu+cpAJWccx/7qe6vKXqWPcxLrO1CLKCzaitC2xOztw0rjEqS/irWK79hYFHgOnKDG9NiHw==
-X-Received: by 2002:a17:906:9c9:b0:9a4:88af:b82 with SMTP id r9-20020a17090609c900b009a488af0b82mr78302eje.77.1694742387253;
-        Thu, 14 Sep 2023 18:46:27 -0700 (PDT)
-Received: from [192.168.1.10] (host-92-12-44-130.as13285.net. [92.12.44.130])
-        by smtp.gmail.com with ESMTPSA id lg13-20020a170906f88d00b009828e26e519sm1717612ejb.122.2023.09.14.18.46.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 18:46:26 -0700 (PDT)
-Message-ID: <af5990d5-58d5-9109-b37b-1f696a43fe86@citrix.com>
-Date:   Fri, 15 Sep 2023 02:46:25 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   andrew.cooper3@citrix.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-GB
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
-        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
-        ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
- <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com> <87v8cc1ehe.ffs@tglx>
- <50e96f85-66f8-2a4f-45c9-a685c757bb28@citrix.com>
- <5cf50d76-8e18-2863-4889-70e9c18298a1@zytor.com>
-In-Reply-To: <5cf50d76-8e18-2863-4889-70e9c18298a1@zytor.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1694742486; x=1695347286;
+        h=to:references:message-id:content-transfer-encoding:reply-to:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E0FFekWGyUIP+/QpzRxD5C04IppzIdAo52JFOT6ol0w=;
+        b=P0zs4AbjNfknUIl6Ad5b9TInkEz0l82rXvVZnc/2GGOniWosDYdkOtkts7f4y2fw/R
+         8yK0pkt7Hnt8r9upTzdK+rvUquWijjY7c4ATURbuKncfAY3eSiUhiQXoBvG7IdLMSNuo
+         ezGxRuC//18OB/6QdnUu3VdxwEdwi9fc6sJrAdyLXysj92NXoD33vPBoiokixUSNKXAs
+         lcCzCjdl+Nel14K7Xi4JeqahhzU7d4p+j1jIZr4DwLLowrGAX2NHnhenbeOovda6n7FF
+         8IjdeR0fHCDlHmK1FetIAuHNZEvkYsGuhWBKIPZ0pRGEFi2Tr/Q0USfyDNoKnEwAMkkJ
+         2hOg==
+X-Gm-Message-State: AOJu0YwJNf8+CuNFW5z2iqG83oXcH/8udDK3uC9xcIn2cD8eGKFPfxeh
+        4nxk0uub8zBp+9enpRJn0fM=
+X-Google-Smtp-Source: AGHT+IHMBTg3s39w5nzKGtWCSn3FgFj4ijDZgoj1j8XZ4FGFvetP6Mq79S/qKyPMIn9/Up2tlE9QEA==
+X-Received: by 2002:aca:2218:0:b0:3a8:5ff0:6b52 with SMTP id b24-20020aca2218000000b003a85ff06b52mr341083oic.15.1694742486434;
+        Thu, 14 Sep 2023 18:48:06 -0700 (PDT)
+Received: from ?IPv6:2402:7500:5ce:c546:8426:5e14:d5b7:9128? ([2402:7500:5ce:c546:8426:5e14:d5b7:9128])
+        by smtp.gmail.com with ESMTPSA id m21-20020aa79015000000b0068a6972ca0esm1905533pfo.106.2023.09.14.18.48.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Sep 2023 18:48:05 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
+From:   He-Jie Shih <bignose1007@gmail.com>
+In-Reply-To: <ZQJdnCwf99Glggin@ghost>
+Date:   Fri, 15 Sep 2023 09:48:01 +0800
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Reply-To: ZQJdnCwf99Glggin@ghost
+Content-Transfer-Encoding: 7bit
+Message-Id: <3A0F6A71-C521-44A5-A56C-076AF3E13897@gmail.com>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230914001144.GA924@sol.localdomain> <ZQJdnCwf99Glggin@ghost>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: Apple Mail (2.3445.9.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 1:38 am, H. Peter Anvin wrote:
-> On 9/14/23 17:33, andrew.cooper3@citrix.com wrote:
->>
->> It's an assumption about what "definitely won't" be paravirt in the
->> future.
->>
->> XenPV stack handling is almost-FRED-like and has been for the better
->> part of two decades.
->>
->> You frequently complain that there's too much black magic holding XenPV
->> together.  A paravirt-FRED will reduce the differences vs native
->> substantially.
->>
->
-> Call it "paravirtualized exception handling." In that sense, the
-> refactoring of the exception handling to benefit FRED is definitely
-> useful for reducing paravirtualization. The FRED-specific code is
-> largely trivial, and presumably what you would do is to replace the
-> FRED wrapper with a Xen wrapper and call the common handler routines.
+On Sep 14, 2023, at 09:10, Charlie Jenkins <charlie@rivosinc.com> wrote:
 
-Why do only half the job?
+> On Wed, Sep 13, 2023 at 05:11:44PM -0700, Eric Biggers wrote:
+>> On Tue, Jul 11, 2023 at 05:37:31PM +0200, Heiko Stuebner wrote:
+>> 
+>> Hi Heiko!  Are you still working on this patchset?  And which of its
+>> prerequisites still haven't been merged upstream?
+>> 
+>> - Eric
+> It is my understanding that Heiko is taking a break from development, I
+> don't think he will be working on this soon.
 
-There's no need for any Xen wrappers at all when XenPV can use the
-native FRED paths, as long as ERETU, ERETS and the relevant MSRs can be
-paravirt (sure - with an interface that sucks less than right now) so
-they're not taking the #GP/emulate in Xen path.
+We would like to take over these RISC-V vector crypto implementations.
+Our proposed implementations is under reviewing in OpenSSL pr.
+And I will check the gluing parts between Linux kernel and OpenSSL.
 
-And this can work on all hardware with a slightly-future version of Xen
-and Linux, because it's just a minor adjustment to how Xen writes the
-exception frame on the guests stack as part of event delivery.
-
-~Andrew
+-Jerry
