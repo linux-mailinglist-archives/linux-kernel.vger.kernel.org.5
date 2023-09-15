@@ -2,123 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 346987A1F21
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F3C7A1F25
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbjIOMqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S235046AbjIOMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235050AbjIOMqr (ORCPT
+        with ESMTP id S234995AbjIOMrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:46:47 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7382719
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:46:08 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401187f8071so14297505e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694781966; x=1695386766; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nLYJMC+6NP26nnWPC1ohFPbvAKuqIM7PzgDWSXVur78=;
-        b=nHYg+WgDiLGz9pMXUYiXF6r7W3OIUiAYf6xq6HwADYsk+tW7OwrrPJst6zKs6+WqlD
-         7Y07nn7i+QhZutpVdohUEZ0Hz61JscML9MyS9FYqZWg4hCo7e4vlro3U77lLyA6RBSY8
-         Poy9ne6xIzmPRNcqIICs/fB/QNXYYdlFJLgx6HQCFgjpNotFwMI62Ro7WR2Wjw8+yW4w
-         x7QHdJ7gR9cYeszAMw6zBSuVR0nm9NaaVnnu9w3bNQ4MjdnGkvdIyi//sPVj/t47bNR9
-         VHW4LaCm3G6uAGDXtsnEOSlZjH6llsShQQONA4RQc8iWT/xAzEhOlZk/UNRPcazd5AZC
-         LRmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694781966; x=1695386766;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nLYJMC+6NP26nnWPC1ohFPbvAKuqIM7PzgDWSXVur78=;
-        b=vvEzSZqJ64CVPrCjAlTahmdWau3fu1mLPn5IImOnCN+KzUYMU30iDIDbaTu1EAOGzv
-         B7cqmVcacuyzGdd9ETFJD+sJBlw9RtBXDmJv5OEuFr5wWEoNlFGCKVPpMEtDZSihB5Dt
-         ei57kgYCx/+PcoFoDAZ08uLbekVIrNblDmwJAn09tEho6S1YEp2RjScVCsFiYZccihAu
-         U6vJjhg/z6nuzNaxXKQEeJqKulDpY7SIkRkA4Djqfwp+NgnBtCL+ZxX7RgGWlNPyoePE
-         FF0wQ0iXWuNNMQxkJSSPnIVrm+AxIwXHGL5FwkQs3lAhbq/ea3lwB+SYp19sfJ00CEUz
-         DvCw==
-X-Gm-Message-State: AOJu0YxJqkzMTvrwtSWz0JfQRNZRDDOVAlswkZSPMMIoc8SpGZDR3PzI
-        OAljQ/bHg6XD4m6jdAArO8S3MQ==
-X-Google-Smtp-Source: AGHT+IFrtQWRed5woEiP7OHw9z2/OjVdZwkPgM3Bm79oOPXqJYAs50d5rSrShOp61RLzy6A4eE0qdQ==
-X-Received: by 2002:a05:600c:248b:b0:401:b0f2:88d3 with SMTP id 11-20020a05600c248b00b00401b0f288d3mr1255513wms.19.1694781966308;
-        Fri, 15 Sep 2023 05:46:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id x12-20020adfdd8c000000b0031912c0ffebsm4366463wrl.23.2023.09.15.05.46.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 05:46:05 -0700 (PDT)
-Message-ID: <b0fe17e4-e4d8-02af-4e09-06b3930b38fe@linaro.org>
-Date:   Fri, 15 Sep 2023 14:46:03 +0200
+        Fri, 15 Sep 2023 08:47:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7386A2119
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694782021; x=1726318021;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=wHZ3woAVFlO+NxRfXCQyYaAmJTGUIKKKeVT1MDHiofI=;
+  b=VYW7hxlVLnAVPdSExTFLJ27thhpW6pqFsAWZ8l4fyahfcTfRSP6VDe/4
+   H4g1hKZzOG5Fk7meYfyGxGIjFLqvTqXRKlQwc/VDINBj7iipoJy+Ks2Zd
+   Ej2WH2RDxUOSRGvBfbKqxd6BlCfcIa0U39hBlS79nihxpcdD4bqjzwcXK
+   ujUXPqFMw4ZmJtEEbhyagpyoN/WMt3ISKZSL1VH6Yeki/vSxTQGDRkxq+
+   xtWeWVTtqKnKCSSnMkzZMHxdZibbFkBCrSvNBbtCmSqcX593zik0tpVb9
+   tP5uInQr/SrKDfaEbytEtdsAdoP4tJVnHqWFtcMi+dbmrjdcjGtog2HEl
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="369556557"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="369556557"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:47:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="748194672"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="748194672"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Sep 2023 05:46:59 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qh8Dn-0002yj-2j;
+        Fri, 15 Sep 2023 12:46:56 +0000
+Date:   Fri, 15 Sep 2023 20:46:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: drivers/ata/pata_parport/comm.c:64 comm_read_regr() warn:
+ inconsistent indenting
+Message-ID: <202309152004.tWYhXtdI-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 4/4] arm64: dts: qcom: ipq5018: Add tsens node
-Content-Language: en-US
-To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        thara.gopinath@gmail.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dmitry.baryshkov@linaro.org
-References: <20230915121504.806672-1-quic_srichara@quicinc.com>
- <20230915121504.806672-5-quic_srichara@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915121504.806672-5-quic_srichara@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 14:15, Sricharan Ramabadhran wrote:
-> IPQ5018 has tsens V1.0 IP with 4 sensors.
-> There is no RPM, so tsens has to be manually enabled. Adding the tsens
-> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
-> critical temperature being 120'C and action is to reboot. Adding all
-> the 4 zones here. 
-> 
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> ---
->  [v2] Fixed node names, order and added qfprom cells for points
->       seperately to use the calibrate_common and squashed thermal_zone
->       nodes here
-> 
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
->  1 file changed, 169 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> index 9f13d2dcdfd5..d53aea5342e2 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> @@ -93,6 +93,117 @@ soc: soc@0 {
->  		#size-cells = <1>;
->  		ranges = <0 0 0 0xffffffff>;
->  
-> +		qfprom: qfprom@a0000 {
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9fdfb15a3dbf818e06be514f4abbfc071004cbe7
+commit: 72f2b0b2185099dce354c805009f591dda3ab73d drivers/block: Move PARIDE protocol modules to drivers/ata/pata_parport
+date:   8 months ago
+config: x86_64-randconfig-161-20230915 (https://download.01.org/0day-ci/archive/20230915/202309152004.tWYhXtdI-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230915/202309152004.tWYhXtdI-lkp@intel.com/reproduce)
 
-This is a friendly reminder during the review process.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309152004.tWYhXtdI-lkp@intel.com/
 
-It seems my previous comments were not fully addressed. Maybe my
-feedback got lost between the quotes, maybe you just forgot to apply it.
-Please go back to the previous discussion and either implement all
-requested changes or keep discussing them.
+New smatch warnings:
+drivers/ata/pata_parport/comm.c:64 comm_read_regr() warn: inconsistent indenting
+drivers/ata/pata_parport/comm.c:164 comm_write_block() warn: inconsistent indenting
 
-Thank you.
+Old smatch warnings:
+drivers/ata/pata_parport/comm.c:168 comm_write_block() warn: inconsistent indenting
+drivers/ata/pata_parport/comm.c:172 comm_write_block() warn: inconsistent indenting
 
-Best regards,
-Krzysztof
+vim +64 drivers/ata/pata_parport/comm.c
 
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   48  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   49          r = regr + cont_map[cont];
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   50  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   51          switch (pi->mode)  {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   52  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   53          case 0: w0(r); P1; w0(0);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   54          	w2(6); l = r1(); w0(0x80); h = r1(); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   55                  return j44(l,h);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   56  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   57          case 1: w0(r+0x20); P1; 
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   58          	w0(0); w2(0x26); h = r0(); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   59                  return h;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   60  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   61  	case 2:
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   62  	case 3:
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24   63          case 4: w3(r+0x20); (void)r1();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  @64          	w2(0x24); h = r4(); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   65                  return h;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   66  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   67          }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   68          return -1;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   69  }       
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   70  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   71  static void comm_write_regr( PIA *pi, int cont, int regr, int val )
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   72  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   73  {       int  r;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   74  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   75          r = regr + cont_map[cont];
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   76  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   77          switch (pi->mode)  {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   78  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   79          case 0:
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   80          case 1: w0(r); P1; w0(val); P2;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   81  		break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   82  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   83  	case 2:
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   84  	case 3:
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24   85          case 4: w3(r); (void)r1(); w4(val);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   86                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   87          }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   88  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   89  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   90  static void comm_connect ( PIA *pi  )
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   91  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   92  {       pi->saved_r0 = r0();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   93          pi->saved_r2 = r2();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   94          w2(4); w0(0xff); w2(6);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   95          w2(4); w0(0xaa); w2(6);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   96          w2(4); w0(0x00); w2(6);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   97          w2(4); w0(0x87); w2(6);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   98          w2(4); w0(0xe0); w2(0xc); w2(0xc); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16   99  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  100  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  101  static void comm_disconnect ( PIA *pi )
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  102  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  103  {       w2(0); w2(0); w2(0); w2(4); 
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  104  	w0(pi->saved_r0);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  105          w2(pi->saved_r2);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  106  } 
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  107  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  108  static void comm_read_block( PIA *pi, char * buf, int count )
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  109  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  110  {       int     i, l, h;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  111  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  112          switch (pi->mode) {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  113          
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  114          case 0: w0(0x48); P1;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  115                  for(i=0;i<count;i++) {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  116                          w0(0); w2(6); l = r1();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  117                          w0(0x80); h = r1(); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  118                          buf[i] = j44(l,h);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  119                  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  120                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  121  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  122          case 1: w0(0x68); P1; w0(0);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  123                  for(i=0;i<count;i++) {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  124                          w2(0x26); buf[i] = r0(); w2(0x24);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  125                  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  126  		w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  127  		break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  128  		
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  129  	case 2: w3(0x68); (void)r1(); w2(0x24);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  130  		for (i=0;i<count;i++) buf[i] = r4();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  131  		w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  132  		break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  133  
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  134          case 3: w3(0x68); (void)r1(); w2(0x24);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  135                  for (i=0;i<count/2;i++) ((u16 *)buf)[i] = r4w();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  136                  w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  137                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  138  
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  139          case 4: w3(0x68); (void)r1(); w2(0x24);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  140                  for (i=0;i<count/4;i++) ((u32 *)buf)[i] = r4l();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  141                  w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  142                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  143  		
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  144  	}
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  145  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  146  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  147  /* NB: Watch out for the byte swapped writes ! */
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  148  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  149  static void comm_write_block( PIA *pi, char * buf, int count )
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  150  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  151  {       int	k;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  152  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  153          switch (pi->mode) {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  154  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  155          case 0:
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  156          case 1: w0(0x68); P1;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  157          	for (k=0;k<count;k++) {
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  158                          w2(5); w0(buf[k^1]); w2(7);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  159                  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  160                  w2(5); w2(4);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  161                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  162  
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  163          case 2: w3(0x48); (void)r1();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16 @164                  for (k=0;k<count;k++) w4(buf[k^1]);
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  165                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  166  
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  167          case 3: w3(0x48); (void)r1();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  168                  for (k=0;k<count/2;k++) w4w(pi_swab16(buf,k));
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  169                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  170  
+10e705f83c3e79 drivers/block/paride/comm.c Takashi Iwai   2006-03-24  171          case 4: w3(0x48); (void)r1();
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  172                  for (k=0;k<count/4;k++) w4l(pi_swab32(buf,k));
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  173                  break;
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  174  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  175  
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  176          }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  177  }
+^1da177e4c3f41 drivers/block/paride/comm.c Linus Torvalds 2005-04-16  178  
+
+:::::: The code at line 64 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
