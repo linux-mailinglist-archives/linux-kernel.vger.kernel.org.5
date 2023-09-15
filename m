@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F1B7A1B98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B947A1B86
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbjIOKAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        id S234115AbjIOJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjIOKAx (ORCPT
+        with ESMTP id S234045AbjIOJ7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:00:53 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7917444A7;
-        Fri, 15 Sep 2023 02:57:47 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rn8fY0k8lzLp4h;
-        Fri, 15 Sep 2023 17:54:13 +0800 (CST)
+        Fri, 15 Sep 2023 05:59:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B460268A;
+        Fri, 15 Sep 2023 02:57:49 -0700 (PDT)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rn8hH2TghzrSqK;
+        Fri, 15 Sep 2023 17:55:43 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 2/5] net: hns3: fix GRE checksum offload issue
-Date:   Fri, 15 Sep 2023 17:53:02 +0800
-Message-ID: <20230915095305.422328-3-shaojijie@huawei.com>
+Subject: [PATCH net 3/5] net: hns3: only enable unicast promisc when mac table full
+Date:   Fri, 15 Sep 2023 17:53:03 +0800
+Message-ID: <20230915095305.422328-4-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230915095305.422328-1-shaojijie@huawei.com>
 References: <20230915095305.422328-1-shaojijie@huawei.com>
@@ -51,40 +51,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jie Wang <wangjie125@huawei.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-The device_version V3 hardware can't offload the checksum for IP in GRE
-packets, but can do it for NvGRE. So default to disable the checksum and
-GSO offload for GRE, but keep the ability to enable it when only using
-NvGRE.
+Currently, the driver will enable unicast promisc for the function
+once configure mac address fail. It's unreasonable when the failure
+is caused by using same mac address with other functions. So only
+enable unicast promisc when mac table full.
 
-Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
+Fixes: c631c696823c ("net: hns3: refactor the promisc mode setting")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index b4895c7b3efd..cf50368441b7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3353,6 +3353,15 @@ static void hns3_set_default_feature(struct net_device *netdev)
- 		  NETIF_F_HW_TC);
- 
- 	netdev->hw_enc_features |= netdev->vlan_features | NETIF_F_TSO_MANGLEID;
-+
-+	/* The device_version V3 hardware can't offload the checksum for IP in
-+	 * GRE packets, but can do it for NvGRE. So default to disable the
-+	 * checksum and GSO offload for GRE.
-+	 */
-+	if (ae_dev->dev_version > HNAE3_DEVICE_VERSION_V2) {
-+		netdev->features &= ~NETIF_F_GSO_GRE;
-+		netdev->features &= ~NETIF_F_GSO_GRE_CSUM;
-+	}
- }
- 
- static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 8ca368424436..c0d03283775f 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -8824,7 +8824,7 @@ static void hclge_update_overflow_flags(struct hclge_vport *vport,
+ 	if (mac_type == HCLGE_MAC_ADDR_UC) {
+ 		if (is_all_added)
+ 			vport->overflow_promisc_flags &= ~HNAE3_OVERFLOW_UPE;
+-		else
++		else if (hclge_is_umv_space_full(vport, true))
+ 			vport->overflow_promisc_flags |= HNAE3_OVERFLOW_UPE;
+ 	} else {
+ 		if (is_all_added)
 -- 
 2.30.0
 
