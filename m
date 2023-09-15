@@ -2,148 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECB57A1D56
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE41A7A1D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbjIOLXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        id S234270AbjIOLYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjIOLXB (ORCPT
+        with ESMTP id S233726AbjIOLYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:23:01 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE64C1AB
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:22:56 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401ec23be82so20991825e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694776975; x=1695381775; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fCZPvKJZFLYsRKxBEXIvSXuAd3mfyz+vRzHl+fPG8MY=;
-        b=Ho4Os4fue8m/1Fx9QHfplA7j4Xy9Dq9BnSmeONCy/Hhd16kO9zGh8HYud+q5ZhO6yL
-         6VPC3CQiBCvzbWj987MYIZUIcdtE525JY3OVuDI9Rk2culNVEm27UeMaOQUqPVwOP1Fo
-         Y8/4dtsoSJoT2sHlfHPzSNk0Wb8sMmRDOIMcYhVCqJFGbGwI0PXeDx8NkKmYS+B1vsfw
-         sssDTLZpk4SQWyShDmmpw//I+rZu8moLr7MgsRRFuSBG6NLc3DZj/qsiNd7W2roQCU+j
-         VxDC9SEaNjMVhiaE6Ev/+z8bYWg81c7CBysfIFZH4vM+rs3d60LnQJhOjWBFKKB3jt4K
-         7CWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694776975; x=1695381775;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fCZPvKJZFLYsRKxBEXIvSXuAd3mfyz+vRzHl+fPG8MY=;
-        b=uCCA69bCuXxKhwxZs/AmvsRg54ARWYuNVZRJUAFMPhHoJ+mIcAiteoIjP6uIXC3AmD
-         QY1AKUmKAvHREhQiQifYPRkwCEvBnXWXFA++0t5Nbmw/jQmktThSDsR0hTLlmE4/iiak
-         tbT/isYHj6qJtItqcu5UdSTdEGTYWfVLitiSnGqhgiqJivx0FUP3hgmc0MHPMrpCOXY0
-         86QhsLjTHCEHQafWcAKcSXspxtK59blLPWI1meiNcQwUGQ2kXTIUGk5HwvRPWZ2BmS46
-         kfNj2MjYX6D9ScXjFkKFi2Uqg7WVxzCC1M6ujcV0y5HGXt8MPpD10FaK6Bv3/++AWhtR
-         jNFw==
-X-Gm-Message-State: AOJu0Yw49px6u9GlwSxarYTpZVOUU3/stoz5DWD3lqH9X/ATWuoNVgsX
-        NCXBd4cIQmx8halepBbf4Mk=
-X-Google-Smtp-Source: AGHT+IFnGW5dp3zhCTdpYIaDBV1kseyK2epSygpwjQ86f1UcDudDJA8hF4uDKAM4II2OiMFAHJ/iag==
-X-Received: by 2002:a7b:ce07:0:b0:401:bdd7:499d with SMTP id m7-20020a7bce07000000b00401bdd7499dmr1290628wmc.25.1694776975183;
-        Fri, 15 Sep 2023 04:22:55 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b003fee53feab5sm4394256wmc.10.2023.09.15.04.22.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 04:22:54 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 13:22:52 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/2] x86/percpu: Use raw_cpu_try_cmpxchg in
- preempt_count_set
-Message-ID: <ZQQ+jKenSo6cgMeN@gmail.com>
-References: <20230830151623.3900-1-ubizjak@gmail.com>
- <20230830151623.3900-2-ubizjak@gmail.com>
- <ZQQoHWkJ5or/K7UH@gmail.com>
- <ZQQ817oApcALz9jy@gmail.com>
+        Fri, 15 Sep 2023 07:24:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 829581B9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:23:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694776989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0FgfSRx3oRdPWwtJgpHE291K7gqnxGDzcnbdYAGADtA=;
+        b=hRM6iqX7rr2G/K/W7PxQLJV7vUxMzaeBXjsBssgP7F0NJCXxLijVkYDoGf4G8ir82AFBLJ
+        RxJu4ZQ11+8Tn3Iea5NL/rWRjoiYO1lhKfiQ/t5kzbgRNvYwd+OAT44TXGCewUzk8t/KXk
+        l0FuMd3tcFvb2M70JSQyJRGekYriRy8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-235-wzrmM9JrM0iDuLsov5_gxg-1; Fri, 15 Sep 2023 07:23:04 -0400
+X-MC-Unique: wzrmM9JrM0iDuLsov5_gxg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5BFD9803470;
+        Fri, 15 Sep 2023 11:23:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F20CB40C6EA8;
+        Fri, 15 Sep 2023 11:23:00 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com>
+References: <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com> <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com> <20230914221526.3153402-1-dhowells@redhat.com> <20230914221526.3153402-10-dhowells@redhat.com> <3370515.1694772627@warthog.procyon.org.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, "Christoph Hellwig" <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        "David Hildenbrand" <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQQ817oApcALz9jy@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3449351.1694776980.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 15 Sep 2023 12:23:00 +0100
+Message-ID: <3449352.1694776980@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-* Ingo Molnar <mingo@kernel.org> wrote:
+> > > Some measurements can be made using readv() and writev()
+> > > on /dev/zero and /dev/null.
+> > =
 
-> 
-> * Ingo Molnar <mingo@kernel.org> wrote:
-> 
-> > 
-> > * Uros Bizjak <ubizjak@gmail.com> wrote:
-> > 
-> > > Use raw_cpu_try_cmpxchg instead of raw_cpu_cmpxchg (*ptr, old, new) == old.
-> > > x86 CMPXCHG instruction returns success in ZF flag, so this change saves a
-> > > compare after cmpxchg (and related move instruction in front of cmpxchg).
-> > > 
-> > > Also, raw_cpu_try_cmpxchg implicitly assigns old *ptr value to "old" when
-> > > cmpxchg fails. There is no need to re-read the value in the loop.
-> > > 
-> > > No functional change intended.
-> > > 
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Borislav Petkov <bp@alien8.de>
-> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > > ---
-> > >  arch/x86/include/asm/preempt.h | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-> > > index 2d13f25b1bd8..4527e1430c6d 100644
-> > > --- a/arch/x86/include/asm/preempt.h
-> > > +++ b/arch/x86/include/asm/preempt.h
-> > > @@ -31,11 +31,11 @@ static __always_inline void preempt_count_set(int pc)
-> > >  {
-> > >  	int old, new;
-> > >  
-> > > +	old = raw_cpu_read_4(pcpu_hot.preempt_count);
-> > >  	do {
-> > > -		old = raw_cpu_read_4(pcpu_hot.preempt_count);
-> > >  		new = (old & PREEMPT_NEED_RESCHED) |
-> > >  			(pc & ~PREEMPT_NEED_RESCHED);
-> > > -	} while (raw_cpu_cmpxchg_4(pcpu_hot.preempt_count, old, new) != old);
-> > > +	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.preempt_count, &old, new));
-> > 
-> > It would be really nice to have a before/after comparison of generated 
-> > assembly code in the changelog, to demonstrate the effectiveness of this 
-> > optimization.
-> 
-> Never mind, you did exactly that in the September 6 variation of these 
-> changes. I'll apply those.
+> > Forget /dev/null; that doesn't actually engage any iteration code.  Th=
+e same
+> > for writing to /dev/zero.  Reading from /dev/zero does its own iterati=
+on thing
+> > rather than using iterate_and_advance(), presumably because it checks =
+for
+> > signals and resched.
+> =
 
-I mean, this third patch of yours:
+> Using /dev/null does exercise the 'copy iov from user' code.
 
-   [PATCH] x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
+Ummm....  Not really:
 
-Had a proper disassembly comparison - so I've applied all 3 optimization 
-patches to tip:x86/asm as:
+static ssize_t read_null(struct file *file, char __user *buf,
+			 size_t count, loff_t *ppos)
+{
+	return 0;
+}
 
-  b8e3dfa16ec5 ("x86/percpu: Use raw_cpu_try_cmpxchg() in preempt_count_set()")
-  5f863897d964 ("x86/percpu: Define raw_cpu_try_cmpxchg and this_cpu_try_cmpxchg()")
-  54cd971c6f44 ("x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}")
+static ssize_t write_null(struct file *file, const char __user *buf,
+			  size_t count, loff_t *ppos)
+{
+	return count;
+}
 
-Thanks,
+static ssize_t read_iter_null(struct kiocb *iocb, struct iov_iter *to)
+{
+	return 0;
+}
 
-	Ingo
+static ssize_t write_iter_null(struct kiocb *iocb, struct iov_iter *from)
+{
+	size_t count =3D iov_iter_count(from);
+	iov_iter_advance(from, count);
+	return count;
+}
+
+David
+
