@@ -2,516 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 351537A1510
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D7B7A14FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjIOFCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S231982AbjIOFBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbjIOFCD (ORCPT
+        with ESMTP id S231946AbjIOFBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:02:03 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DF02720;
-        Thu, 14 Sep 2023 22:01:55 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 8C56A424B0;
-        Fri, 15 Sep 2023 10:01:51 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1694754112; bh=49MaGxNQqyAPhOgveIuAGVdV6GmbhsB4KycALCG40Ns=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=iDiDsx1m068luOVjQClVdWY2bJdlgk4nUzBHYhT71OHfXnef7REhdtdLRm0G90THh
-         QdfLb8AVZLxT6k+tdkTRHQzp6FcJU5Q6oE51nGKLyjtVdU/Jt45PqdWjOzEkFHSbip
-         mudzeH4zUGo/e334iXB3lOWryIvfPnerIwaUfAqVOVTxLiDMEawk2e63kTb1aHwW7x
-         6h9Yrs6ItEP3gmxXVN3xnIsxirKDbCrhvTGOdsH1AZZTA19twVpMX9b/mdvgeQlprx
-         eHtSOtFYBfTEjy8TTc7hPuVPS6/DtkR/NGgAESYcbADkEoisOGPqfrkVouzbZgC7Np
-         sfiaDA5fFo7tg==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Fri, 15 Sep 2023 10:01:21 +0500
-Subject: [PATCH v3 4/4] power: supply: Add driver for pm8916 lbc
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-pm8916-bms-lbc-v3-4-f30881e951a0@trvn.ru>
-References: <20230915-pm8916-bms-lbc-v3-0-f30881e951a0@trvn.ru>
-In-Reply-To: <20230915-pm8916-bms-lbc-v3-0-f30881e951a0@trvn.ru>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13852; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=49MaGxNQqyAPhOgveIuAGVdV6GmbhsB4KycALCG40Ns=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlA+U7xqFwtrvgnaPf9znUOoIED+nLJnMDFVlni
- wrnoh/H61uJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZQPlOwAKCRBDHOzuKBm/
- dVKmEACStgqDq6p2UvOMcGb5V8AhZUAsrUqApHzvDgIqZaxXvkv7Z0MMMFuR1wfC6mOHmCSJz9L
- no9VR8fZaZ3VH0jUu5TYvxV/GHuTqyfI0pgFiAaVEQedNjTWG+FB1sWg9QOo0UdxoMdsrqlOCI/
- JsH792mxSpF6FjDjAD0GuVBLI8zDOn+Zad8VDoTQ1B01/Hsn1aH7P1IEFLHcEwmhKH7TMcDOPvM
- 1GNOWcLbs29gzeJeuMoNrnO65t87Yee/ImroFoKwepnhr5xZQ5TxN6sUEYhBmhqCx99gNOLMook
- 3LvR1OWYf1VQ7wMOnIlWRCp/lEo8/aXAXURhOgPC/V6Tqx5Ln7R5q+zK14PG9czMI3yRMtcc1Yx
- L8e+iu9whjKs8gI6eWLFGEge38xkDtaxwOSBr5GJUi4uhBLLKICZcZ8E6ObtD8RKjus+p1jEDl7
- pMVmkcZUL15l+tPbj9V8CI2KNbg3hxbVphVzfcDXKN5YO7k1++mp5lsfPN26cQhSv2S0/CXT0BC
- SU+EOb1rAhBSGTQDud/f8bjO2l+OziJfC5xkP6xw3QqejVLJP/MGhXroaAAlHnoARxjGs1bPwV6
- Sf8XlM+hYCHiuuHPbupeWuGRdZ/54cZkLlZXcSmMV7xOPzc3ip9iScWFuKlnhGpz/IJ7C6cJhys
- s589nn4l1J5auvg==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 01:01:51 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1F82710
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:01:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d802ecb5883so2067541276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694754103; x=1695358903; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9rCph9Ke3trsfRl0d5Mycw1TxfealFq99Kh2f8hpgHs=;
+        b=3qOjYjACdSIb1+QDn3UmOeWXOfpfh8/kLKA+KVgTVFDaGhKa0UGeAIIjrUoqv5GnFQ
+         gwEghF6e525pKbq/Aio0EUh3bMb/8rVbAz2YXuoJU2NqpJnmX6FzDy3pwbeYAeezHDf3
+         hsLWpUKazeYjOYzOukdW1Zk07rrwMdN1laEYhpsEask3kpPJcVCm9qu8Q9PUruM+HjtN
+         H3Rl1Weufigo5wXrTd9uvuYFRoj8Z2VXXkSj1hvcYxYK4VPjTFZ5foOfaLQFWLmvclMQ
+         +eQSRdZWvQZlQxhQml14GS0JKKnIb3NNHRZMcGFLllPcEKiYTjP82vy7sOoaLkX3j9vM
+         9S3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694754103; x=1695358903;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9rCph9Ke3trsfRl0d5Mycw1TxfealFq99Kh2f8hpgHs=;
+        b=HDy5hvXhj89UJyNQ7AquSzvrOJT1PA0EwjOjtBsdOiHA173ChE1N0mGusFVCQ/yqz/
+         uJJDhzlBZfNe6QzsN+1X/AayA7Z6cKw/hY6lgk/vccSleEiekhQK9qgUENbWW3n0IX7N
+         ykPpoXzY/nQS2vmPMTIdxsx0mrxiLYBCM5m7utp5bXOJ3Tf0WB+96EBvIe8THs0F/uIS
+         510PMPhCUrhGwVjHgdn/QEfS4N443w1F8uAqaix9gL8cYIpbY4xadEESPFJZ192YFkLy
+         Sgq6PE2MZWQkcIFMPV9O3sdhlF9A8BJNOkuxrw2c0x3MtokdnsIWo+twjwa8VNegxaX4
+         2QcA==
+X-Gm-Message-State: AOJu0YypeMlNwLXeAwE0QBOjhk6dtUfImWRrvJHRGeQ+SKZ4zPkskvO+
+        RrIbM6XP3/AMl7c6F2vftiyl0CGhhokK0g==
+X-Google-Smtp-Source: AGHT+IH5zlAB2HKrUfKZ3gto/cPG2gsfk0RtuOfBjG670gz/zKlu5ZCu6/j8d0kg3b2lpF9qSe5ELncZZj3OVA==
+X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
+ (user=davidgow job=sendgmr) by 2002:a25:b312:0:b0:d0b:c67:de3b with SMTP id
+ l18-20020a25b312000000b00d0b0c67de3bmr7744ybj.13.1694754103676; Thu, 14 Sep
+ 2023 22:01:43 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 13:01:23 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230915050125.3609689-1-davidgow@google.com>
+Subject: [RFC PATCH] kunit: Add a macro to wrap a deferred action function
+From:   David Gow <davidgow@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Rae Moar <rmoar@google.com>, dlatypov@google.com
+Cc:     David Gow <davidgow@google.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm8916 LBC is a Linear Battery Charger hardware block in pm8916 PMIC.
+KUnit's deferred action API accepts a void(*)(void *) function pointer
+which is called when the test is exited. However, we very frequently
+want to use existing functions which accept a single pointer, but which
+may not be of type void*. While this is probably dodgy enough to be on
+the wrong side of the C standard, it's been often used for similar
+callbacks, and gcc's -Wcast-function-type seems to ignore cases where
+the only difference is the type of the argument, assuming it's
+compatible (i.e., they're both pointers to data).
 
-This block implements simple CC/CV charging for Li-Po batteries.
-The hardware has internal state machine to switch between modes and
-works mostly autonomously, only needing the limits and targets to be
-set to operate.
+However, clang 16 has introduced -Wcast-function-type-strict, which no
+longer permits any deviation in function pointer type. This seems to be
+because it'd break CFI, which validates the type of function calls.
 
-This driver allows setting limits and enabling the LBC block, monitoring
-it's state.
+This rather ruins our attempts to cast functions to defer them, and
+leaves us with a few options:
+1. Stick our fingers in our ears an ignore the warning. (It's worked so
+   far, but probably isn't the right thing to do.)
+2. Find some horrible way of casting which fools the compiler into
+   letting us do the cast. (It'd still break CFI, though.)
+3. Disable the warning, and CFI for this function. This isn't optimal,
+   but may make sense for test-only code. However, I think we'd have to
+   do this for every function called, not just the caller, so maybe it's
+   not practical.
+4. Manually write wrappers around any such functions. This is ugly (do
+   we really want two copies of each function, one of which has no type
+   info and just forwards to the other). It could get repetitive.
+5. Generate these wrappers with a macro. That's what this patch does.
 
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+I'm broadly okay with any of the options above, though whatever we go
+with will no doubt require some bikeshedding of details (should these
+wrappers be public, do we dedupe them, etc).
+
+Thoughts?
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1750
+Signed-off-by: David Gow <davidgow@google.com>
 ---
-v2: Fix missed warnings, get irq by name
-v3: INPUT_CURRENT_LIMIT -> CONSTANT_CHARGE_CURRENT, use device_property_*
----
- drivers/power/supply/Kconfig      |  11 ++
- drivers/power/supply/Makefile     |   1 +
- drivers/power/supply/pm8916_lbc.c | 381 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 393 insertions(+)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index c6375c03e5ce..95e296b80550 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -640,6 +640,17 @@ config BATTERY_PM8916_BMS_VM
- 	  To compile this driver as module, choose M here: the
- 	  module will be called pm8916_bms_vm.
+I finally got around to setting up clang 16 to look into these warnings:
+
+   lib/kunit/test.c:764:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+           if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
+                                               ^~~~~~~~~~~~~~~~~~~~~~~
+   lib/kunit/test.c:776:29: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+           kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
+                                      ^~~~~~~~~~~~~~~~~~~~~~~
+   2 warnings generated.
+
+It's probably something which needs fixing with wrappers, not with the
+"just keep casting things until the compiler forgets" strategy.
+
+There are few enough uses of kunit_add_action() that now's the time to
+change things if we want to fix these warnings (and, I guess, work with
+CFI). This patch uses an ugly macro, but we're definitely still at the
+point where doing this by hand might make more sense.
+
+Don't take this exact patch too seriously: it's mostly a discussion
+starter so we can decide on a plan.
+
+Cheers,
+-- David
+
+---
+ include/kunit/resource.h  | 9 +++++++++
+ lib/kunit/executor_test.c | 7 +++----
+ lib/kunit/test.c          | 6 ++++--
+ 3 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/include/kunit/resource.h b/include/kunit/resource.h
+index c7383e90f5c9..4110e13970dc 100644
+--- a/include/kunit/resource.h
++++ b/include/kunit/resource.h
+@@ -390,6 +390,15 @@ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
+ /* A 'deferred action' function to be used with kunit_add_action. */
+ typedef void (kunit_action_t)(void *);
  
-+config CHARGER_PM8916_LBC
-+	tristate "Qualcomm PM8916 Linear Battery Charger support"
-+	depends on MFD_SPMI_PMIC || COMPILE_TEST
-+	help
-+	  Say Y here to add support for Linear Battery Charger block
-+	  found in some Qualcomm PMICs such as PM8916. This hardware
-+	  blokc provides simple CC/CV battery charger.
-+
-+	  To compile this driver as module, choose M here: the
-+	  module will be called pm8916_lbc.
-+
- config CHARGER_BQ2415X
- 	tristate "TI BQ2415x battery charger driver"
- 	depends on I2C
-diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index fdf7916f80ed..e4bd9eb1261b 100644
---- a/drivers/power/supply/Makefile
-+++ b/drivers/power/supply/Makefile
-@@ -85,6 +85,7 @@ obj-$(CONFIG_CHARGER_MT6360)	+= mt6360_charger.o
- obj-$(CONFIG_CHARGER_MT6370)	+= mt6370-charger.o
- obj-$(CONFIG_CHARGER_QCOM_SMBB)	+= qcom_smbb.o
- obj-$(CONFIG_BATTERY_PM8916_BMS_VM)	+= pm8916_bms_vm.o
-+obj-$(CONFIG_CHARGER_PM8916_LBC)	+= pm8916_lbc.o
- obj-$(CONFIG_CHARGER_BQ2415X)	+= bq2415x_charger.o
- obj-$(CONFIG_CHARGER_BQ24190)	+= bq24190_charger.o
- obj-$(CONFIG_CHARGER_BQ24257)	+= bq24257_charger.o
-diff --git a/drivers/power/supply/pm8916_lbc.c b/drivers/power/supply/pm8916_lbc.c
-new file mode 100644
-index 000000000000..6d92e98cbecc
---- /dev/null
-+++ b/drivers/power/supply/pm8916_lbc.c
-@@ -0,0 +1,381 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Nikita Travkin <nikita@trvn.ru>
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/power_supply.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/extcon-provider.h>
-+#include <linux/mod_devicetable.h>
-+
-+/* Two bytes: type + subtype */
-+#define PM8916_PERPH_TYPE 0x04
-+#define PM8916_LBC_CHGR_TYPE 0x1502
-+#define PM8916_LBC_BAT_IF_TYPE 0x1602
-+#define PM8916_LBC_USB_TYPE 0x1702
-+#define PM8916_LBC_MISC_TYPE 0x1802
-+
-+#define PM8916_LBC_CHGR_CHG_OPTION 0x08
-+#define PM8916_LBC_CHGR_PMIC_CHARGER BIT(7)
-+
-+#define PM8916_LBC_CHGR_CHG_STATUS 0x09
-+
-+#define PM8916_INT_RT_STS 0x10
-+
-+#define PM8916_LBC_USB_USBIN_VALID BIT(1)
-+
-+#define PM8916_LBC_CHGR_VDD_MAX 0x40
-+#define PM8916_LBC_CHGR_VDD_SAFE 0x41
-+#define PM8916_LBC_CHGR_IBAT_MAX 0x44
-+#define PM8916_LBC_CHGR_IBAT_SAFE 0x45
-+
-+#define PM8916_LBC_CHGR_TCHG_MAX_EN 0x60
-+#define PM8916_LBC_CHGR_TCHG_MAX_ENABLED BIT(7)
-+#define PM8916_LBC_CHGR_TCHG_MAX 0x61
-+
-+#define PM8916_LBC_CHGR_CHG_CTRL 0x49
-+#define PM8916_LBC_CHGR_CHG_EN BIT(7)
-+#define PM8916_LBC_CHGR_PSTG_EN BIT(5)
-+
-+#define PM8916_LBC_CHGR_MIN_CURRENT 90000
-+#define PM8916_LBC_CHGR_MAX_CURRENT 1440000
-+
-+#define PM8916_LBC_CHGR_MIN_VOLTAGE 4000000
-+#define PM8916_LBC_CHGR_MAX_VOLTAGE 4775000
-+#define PM8916_LBC_CHGR_VOLTAGE_STEP 25000
-+
-+#define PM8916_LBC_CHGR_MIN_TIME 4
-+#define PM8916_LBC_CHGR_MAX_TIME 256
-+
-+struct pm8916_lbc_charger {
-+	struct device *dev;
-+	struct extcon_dev *edev;
-+	struct power_supply *charger;
-+	struct power_supply_battery_info *info;
-+	struct regmap *regmap;
-+	unsigned int reg[4];
-+	bool online;
-+	unsigned int charge_voltage_max;
-+	unsigned int charge_voltage_safe;
-+	unsigned int charge_current_max;
-+	unsigned int charge_current_safe;
-+};
-+
-+static const unsigned int pm8916_lbc_charger_cable[] = {
-+	EXTCON_USB,
-+	EXTCON_NONE,
-+};
-+
-+enum {
-+	LBC_CHGR = 0,
-+	LBC_BAT_IF,
-+	LBC_USB,
-+	LBC_MISC,
-+};
-+
-+static int pm8916_lbc_charger_configure(struct pm8916_lbc_charger *chg)
-+{
-+	int ret = 0;
-+	unsigned int tmp;
-+
-+	chg->charge_voltage_max = clamp_t(u32, chg->charge_voltage_max,
-+					  PM8916_LBC_CHGR_MIN_VOLTAGE, chg->charge_voltage_safe);
-+
-+	tmp = chg->charge_voltage_max - PM8916_LBC_CHGR_MIN_VOLTAGE;
-+	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
-+	chg->charge_voltage_max = PM8916_LBC_CHGR_MIN_VOLTAGE + tmp * PM8916_LBC_CHGR_VOLTAGE_STEP;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_MAX, tmp);
-+	if (ret)
-+		goto error;
-+
-+	chg->charge_current_max = min(chg->charge_current_max, chg->charge_current_safe);
-+
-+	tmp = clamp_t(u32, chg->charge_current_max,
-+		      PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
-+
-+	tmp = chg->charge_current_max / PM8916_LBC_CHGR_MIN_CURRENT - 1;
-+	chg->charge_current_max = (tmp + 1) * PM8916_LBC_CHGR_MIN_CURRENT;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_MAX, tmp);
-+	if (ret)
-+		goto error;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_CTRL,
-+			   PM8916_LBC_CHGR_CHG_EN | PM8916_LBC_CHGR_PSTG_EN);
-+	if (ret)
-+		goto error;
-+
-+	return ret;
-+
-+error:
-+	dev_err(chg->dev, "Failed to configure charging: %pe\n", ERR_PTR(ret));
-+	return ret;
-+}
-+
-+static int pm8916_lbc_charger_get_property(struct power_supply *psy,
-+					   enum power_supply_property psp,
-+					   union power_supply_propval *val)
-+{
-+	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		val->intval = chg->online;
-+		return 0;
-+
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-+		val->intval = chg->charge_voltage_max;
-+		return 0;
-+
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		val->intval = chg->charge_current_max;
-+		return 0;
-+
-+	default:
-+		return -EINVAL;
-+	};
-+}
-+
-+static int pm8916_lbc_charger_set_property(struct power_supply *psy,
-+					   enum power_supply_property prop,
-+					   const union power_supply_propval *val)
-+{
-+	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
-+
-+	switch (prop) {
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		chg->charge_current_max = val->intval;
-+		return pm8916_lbc_charger_configure(chg);
-+	default:
-+		return -EINVAL;
++/* We can't cast function pointers to kunit_action_t if CFI is enabled. */
++#define KUNIT_DEFINE_ACTION_WRAPPER(wrapper, orig, arg_type) \
++	static void wrapper(void *in) \
++	{ \
++		arg_type arg = (arg_type)in; \
++		orig(arg); \
 +	}
-+}
 +
-+static int pm8916_lbc_charger_property_is_writeable(struct power_supply *psy,
-+						    enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
 +
-+static enum power_supply_property pm8916_lbc_charger_properties[] = {
-+	POWER_SUPPLY_PROP_ONLINE,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT,
-+};
+ /**
+  * kunit_add_action() - Call a function when the test ends.
+  * @test: Test case to associate the action with.
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+index b4f6f96b2844..14ac64f4f71b 100644
+--- a/lib/kunit/executor_test.c
++++ b/lib/kunit/executor_test.c
+@@ -256,9 +256,8 @@ kunit_test_suites(&executor_test_suite);
+ 
+ /* Test helpers */
+ 
+-/* Use the resource API to register a call to kfree(to_free).
+- * Since we never actually use the resource, it's safe to use on const data.
+- */
++KUNIT_DEFINE_ACTION_WRAPPER(kfree_action_wrapper, kfree, const void *)
++/* Use the resource API to register a call to kfree(to_free). */
+ static void kfree_at_end(struct kunit *test, const void *to_free)
+ {
+ 	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
+@@ -266,7 +265,7 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
+ 		return;
+ 
+ 	kunit_add_action(test,
+-			(kunit_action_t *)kfree,
++			kfree_action_wrapper,
+ 			(void *)to_free);
+ }
+ 
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 421f13981412..41b7d9a090fb 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -804,6 +804,8 @@ static struct notifier_block kunit_mod_nb = {
+ };
+ #endif
+ 
++KUNIT_DEFINE_ACTION_WRAPPER(kfree_action_wrapper, kfree, const void *)
 +
-+static irqreturn_t pm8916_lbc_charger_state_changed_irq(int irq, void *data)
-+{
-+	struct pm8916_lbc_charger *chg = data;
-+	unsigned int tmp;
-+	int ret;
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
-+	if (ret)
-+		return IRQ_HANDLED;
-+
-+	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
-+	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
-+
-+	power_supply_changed(chg->charger);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int pm8916_lbc_charger_probe_dt(struct pm8916_lbc_charger *chg)
-+{
-+	struct device *dev = chg->dev;
-+	int ret = 0;
-+	unsigned int tmp;
-+
-+	ret = device_property_read_u32(dev, "qcom,fast-charge-safe-voltage", &chg->charge_voltage_safe);
-+	if (ret)
-+		return ret;
-+	if (chg->charge_voltage_safe < PM8916_LBC_CHGR_MIN_VOLTAGE)
-+		return -EINVAL;
-+
-+	chg->charge_voltage_safe = clamp_t(u32, chg->charge_voltage_safe,
-+					PM8916_LBC_CHGR_MIN_VOLTAGE, PM8916_LBC_CHGR_MAX_VOLTAGE);
-+
-+	tmp = chg->charge_voltage_safe - PM8916_LBC_CHGR_MIN_VOLTAGE;
-+	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_SAFE, tmp);
-+	if (ret)
-+		return ret;
-+
-+	ret = device_property_read_u32(dev, "qcom,fast-charge-safe-current", &chg->charge_current_safe);
-+	if (ret)
-+		return ret;
-+	if (chg->charge_current_safe < PM8916_LBC_CHGR_MIN_CURRENT)
-+		return -EINVAL;
-+
-+	chg->charge_current_safe = clamp_t(u32, chg->charge_current_safe,
-+					PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
-+
-+	chg->charge_current_max = chg->charge_current_safe;
-+
-+	tmp = chg->charge_current_safe / PM8916_LBC_CHGR_MIN_CURRENT - 1;
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_SAFE, tmp);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable charger timeout. */
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_TCHG_MAX_EN, 0x00);
-+	if (ret)
-+		return ret;
-+
-+	return ret;
-+}
-+
-+static const struct power_supply_desc pm8916_lbc_charger_psy_desc = {
-+	.name = "pm8916-lbc-chgr",
-+	.type = POWER_SUPPLY_TYPE_USB,
-+	.properties = pm8916_lbc_charger_properties,
-+	.num_properties = ARRAY_SIZE(pm8916_lbc_charger_properties),
-+	.get_property = pm8916_lbc_charger_get_property,
-+	.set_property = pm8916_lbc_charger_set_property,
-+	.property_is_writeable = pm8916_lbc_charger_property_is_writeable,
-+};
-+
-+static int pm8916_lbc_charger_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pm8916_lbc_charger *chg;
-+	struct power_supply_config psy_cfg = {};
-+	int ret, len, irq;
-+	unsigned int tmp;
-+
-+	chg = devm_kzalloc(dev, sizeof(*chg), GFP_KERNEL);
-+	if (!chg)
-+		return -ENOMEM;
-+
-+	chg->dev = dev;
-+
-+	chg->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!chg->regmap)
-+		return -ENODEV;
-+
-+	len = device_property_count_u32(dev, "reg");
-+	if (len < 0)
-+		return len;
-+	if (len != 4)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "Wrong amount of reg values: %d (4 expected)\n", len);
-+
-+	irq = platform_get_irq_byname(pdev, "usb_vbus");
-+	if (irq < 0)
-+		return irq;
-+
-+	ret = devm_request_threaded_irq(dev, irq, NULL, pm8916_lbc_charger_state_changed_irq,
-+					IRQF_ONESHOT, "pm8916_lbc", chg);
-+	if (ret)
-+		return ret;
-+
-+	ret = device_property_read_u32_array(dev, "reg", chg->reg, len);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_CHGR_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_BAT_IF] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_BAT_IF_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_USB] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_USB_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_MISC] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_MISC_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_OPTION, &tmp);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_CHGR_PMIC_CHARGER)
-+		dev_err_probe(dev, -ENODEV, "The system is using an external charger\n");
-+
-+	ret = pm8916_lbc_charger_probe_dt(chg);
-+	if (ret)
-+		dev_err_probe(dev, ret, "Error while parsing device tree\n");
-+
-+	psy_cfg.drv_data = chg;
-+	psy_cfg.of_node = dev->of_node;
-+
-+	chg->charger = devm_power_supply_register(dev, &pm8916_lbc_charger_psy_desc, &psy_cfg);
-+	if (IS_ERR(chg->charger))
-+		return dev_err_probe(dev, PTR_ERR(chg->charger), "Unable to register charger\n");
-+
-+	ret = power_supply_get_battery_info(chg->charger, &chg->info);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Unable to get battery info\n");
-+
-+	chg->edev = devm_extcon_dev_allocate(dev, pm8916_lbc_charger_cable);
-+	if (IS_ERR(chg->edev))
-+		return PTR_ERR(chg->edev);
-+
-+	ret = devm_extcon_dev_register(dev, chg->edev);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "failed to register extcon device\n");
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
-+	if (ret)
-+		goto comm_error;
-+
-+	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
-+	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
-+
-+	chg->charge_voltage_max = chg->info->voltage_max_design_uv;
-+	ret = pm8916_lbc_charger_configure(chg);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+
-+comm_error:
-+	return dev_err_probe(dev, ret, "Unable to communicate with device\n");
-+
-+type_error:
-+	return dev_err_probe(dev, -ENODEV, "Device reported wrong type: 0x%X\n", tmp);
-+}
-+
-+static const struct of_device_id pm8916_lbc_charger_of_match[] = {
-+	{ .compatible = "qcom,pm8916-lbc", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, pm8916_lbc_charger_of_match);
-+
-+static struct platform_driver pm8916_lbc_charger_driver = {
-+	.driver = {
-+		.name = "pm8916-lbc",
-+		.of_match_table = pm8916_lbc_charger_of_match,
-+	},
-+	.probe = pm8916_lbc_charger_probe,
-+};
-+module_platform_driver(pm8916_lbc_charger_driver);
-+
-+MODULE_DESCRIPTION("pm8916 LBC driver");
-+MODULE_AUTHOR("Nikita Travkin <nikita@trvn.ru>");
-+MODULE_LICENSE("GPL");
-
+ void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
+ {
+ 	void *data;
+@@ -813,7 +815,7 @@ void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
+ 	if (!data)
+ 		return NULL;
+ 
+-	if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
++	if (kunit_add_action_or_reset(test, kfree_action_wrapper, data) != 0)
+ 		return NULL;
+ 
+ 	return data;
+@@ -825,7 +827,7 @@ void kunit_kfree(struct kunit *test, const void *ptr)
+ 	if (!ptr)
+ 		return;
+ 
+-	kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
++	kunit_release_action(test, kfree_action_wrapper, (void *)ptr);
+ }
+ EXPORT_SYMBOL_GPL(kunit_kfree);
+ 
 -- 
-2.41.0
+2.42.0.459.ge4e396fd5e-goog
 
