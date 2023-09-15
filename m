@@ -2,180 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E7E7A280E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEA37A280D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237133AbjIOUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S236518AbjIOUZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237390AbjIOUZe (ORCPT
+        with ESMTP id S237481AbjIOUZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:25:34 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EFDE58;
-        Fri, 15 Sep 2023 13:25:24 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FK0VNh031699;
-        Fri, 15 Sep 2023 20:25:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=qcppdkim1;
- bh=YFfmbZH6gaxbGnFwOI4MZHQoLb9HlwagtxNd2wzZ+PM=;
- b=c1bwHGuiSIwNCGEBkwNDDeR7k5ENY3TKDrtWFNLl1biDYSeeB8+FCZEQy+4Hh2A3XrrC
- tLehgLk9Lhbh7apzlwPx+6ZHRSpKQQAhhcBCV7Rr3MN0/FL5X7JyzTWvQ8J2WUcIjpwr
- zX3sFzZdneOoCkVD/5dRdF466VjAh8pL9DHglrZ1n/GDR5OOe6htfQAmJZOm5GIh1ini
- 0sb5A3k8oFCYUV/j7aZRS4ca2YluozymYiBCl/zmOH7PWZ8Zb0wLSmrvjLrP2U2DsbDq
- pL8BGSBUl029z2OD4jOF/WVej4BjIuOY2r8A6Yvch//7ksc/XpCnABcxywemzh3OgqST Tg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4fsfa94a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:25:15 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKPESH025139
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 20:25:15 GMT
-Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 13:25:14 -0700
-From:   Oza Pawandeep <quic_poza@quicinc.com>
-To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     Oza Pawandeep <quic_poza@quicinc.com>
-Subject: [PATCH v7] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-Date:   Fri, 15 Sep 2023 13:25:11 -0700
-Message-ID: <20230915202511.1452091-1-quic_poza@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 15 Sep 2023 16:25:40 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3F32703;
+        Fri, 15 Sep 2023 13:25:31 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403012f27e1so26789435e9.1;
+        Fri, 15 Sep 2023 13:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694809530; x=1695414330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cIpYKgze7l+4kxt1H4ShRKX1dLLu6xyjGygZfgTzVnI=;
+        b=icqbDhBrxpoXaDTB9GXlyDfU7To5JzmT/Ju285ozn1a7hb8zvUXbfaWaUYaXsZTgGU
+         ys9xSEU8uDGvej9UXTbhlU6jVuIpk72zKT9k28vRpG4f7CBuqlDAVSLl5qbA0hOxv9PQ
+         z6oYAjAuyfHVH1wJo5mTr9rBPH3Y0Lbol3c4C3AdCO8BGslmK45ATfnHsC8we+nOSg7c
+         LPMCs5e7DAmrEG9CrsbNtJvFDP8UFsN5xRacVyYZFkEZp6q5RgUXv6mtyHZXXVxBn0TT
+         c+Bi7Wx99JUH/HNSLm0SL9W/L6PM7yGIePjQD0w5FC4wC42JtZffHTMCFjjwv3p4WRhU
+         mX3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694809530; x=1695414330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cIpYKgze7l+4kxt1H4ShRKX1dLLu6xyjGygZfgTzVnI=;
+        b=jk6O0RydNyeYGKWKDs2prkoi3W0TsPrNfLni9i+t8dVTXW/Vselq89bLpAzpSrZelh
+         4yTc/KjcohlFV15/k240rz4j4GJyahborUrybeCoJsRX5+B4lCPN91pgtDzq4lFqvLap
+         eP9pNFY6CALhWFfBH8M4HJrKZaxwJp7B4Cl1Apgqc2YX+GSFKRqm1L/YH204UGAHQvKO
+         /ptrSSy2qJpAI63XWVPLHrE3uTbEmMEB55+jS1CEzvaSLZKIBokdBRGxB9XSbO6bKuSX
+         2FHnkS65eyGFhf2g4D+9Gde9yLIk5bMl/lrdmZgkl5g5n0UggnwRCSNSx0AaLxznatOF
+         5w/Q==
+X-Gm-Message-State: AOJu0Yy7tidOKhfVcnF1+5dtweR9jfqPE3wkuiGmhMq6HKE7ZCrtK89k
+        Uk4Q/ScSYsjl/+UOfuUSS2DEBuwg26BYjiPl3ely+QYJmdQ=
+X-Google-Smtp-Source: AGHT+IG9s5SGn1Iitdi65l5D5QpKcBg4gsnqw516p5ES4HtgkralaS7E1nXYs0UJnfktXmPsryviKO4Z2Xlz+dflCpI=
+X-Received: by 2002:adf:fb08:0:b0:31f:e534:2d6f with SMTP id
+ c8-20020adffb08000000b0031fe5342d6fmr1961692wrr.11.1694809529639; Fri, 15 Sep
+ 2023 13:25:29 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
+ <20230912070149.969939-5-zhouchuyi@bytedance.com> <CAEf4BzY4qabpk3SD-GA5n5++REcXCxTtA4ythsR9HKHtGi33xA@mail.gmail.com>
+ <8f27e07e-e23c-af80-90eb-b1123e1f68cd@bytedance.com>
+In-Reply-To: <8f27e07e-e23c-af80-90eb-b1123e1f68cd@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 15 Sep 2023 13:25:18 -0700
+Message-ID: <CAEf4BzaFaf4K7T5QxXrSYQjWSg+2fqNP8bTud7TJcg3etGrR=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
+ iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: M7-COwnCTjttp9yOVaseilNUiCTGJAlc
-X-Proofpoint-GUID: M7-COwnCTjttp9yOVaseilNUiCTGJAlc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=26 clxscore=1015
- lowpriorityscore=0 impostorscore=0 mlxlogscore=45 mlxscore=26
- malwarescore=0 priorityscore=1501 suspectscore=0 adultscore=0 bulkscore=0
- spamscore=26 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150183
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm® Functional Fixed Hardware Specification defines LPI states,
-which provide an architectural context loss flags field that can
-be used to describe the context that might be lost when an LPI
-state is entered.
+On Fri, Sep 15, 2023 at 4:57=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
+>
+> Hello.
+>
+> =E5=9C=A8 2023/9/15 07:26, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Tue, Sep 12, 2023 at 12:02=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
+e.com> wrote:
+> >>
+> >> This Patch adds kfuncs bpf_iter_css_{pre,post}_{new,next,destroy} whic=
+h
+> >> allow creation and manipulation of struct bpf_iter_css in open-coded
+> >> iterator style. These kfuncs actually wrapps css_next_descendant_{pre,
+> >> post}. BPF programs can use these kfuncs through bpf_for_each macro fo=
+r
+> >> iteration of all descendant css under a root css.
+> >>
+> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> >> ---
+> >>   include/uapi/linux/bpf.h       |  8 +++++
+> >>   kernel/bpf/helpers.c           |  6 ++++
+> >>   kernel/bpf/task_iter.c         | 53 ++++++++++++++++++++++++++++++++=
+++
+> >>   tools/include/uapi/linux/bpf.h |  8 +++++
+> >>   tools/lib/bpf/bpf_helpers.h    | 12 ++++++++
+> >>   5 files changed, 87 insertions(+)
+> >>
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index befa55b52e29..57760afc13d0 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -7326,4 +7326,12 @@ struct bpf_iter_process {
+> >>          __u64 __opaque[1];
+> >>   } __attribute__((aligned(8)));
+> >>
+> >> +struct bpf_iter_css_pre {
+> >> +       __u64 __opaque[2];
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >> +struct bpf_iter_css_post {
+> >> +       __u64 __opaque[2];
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >>   #endif /* _UAPI__LINUX_BPF_H__ */
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index 9b7d2c6f99d1..ca1f6404af9e 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -2510,6 +2510,12 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, K=
+F_ITER_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
+> >>   BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL=
+)
+> >>   BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_new, KF_ITER_NEW)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_next, KF_ITER_NEXT | KF_RET_NULL)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_pre_destroy, KF_ITER_DESTROY)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_new, KF_ITER_NEW)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_next, KF_ITER_NEXT | KF_RET_NULL=
+)
+> >> +BTF_ID_FLAGS(func, bpf_iter_css_post_destroy, KF_ITER_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> >> index 9d1927dc3a06..8963fc779b87 100644
+> >> --- a/kernel/bpf/task_iter.c
+> >> +++ b/kernel/bpf/task_iter.c
+> >> @@ -880,6 +880,59 @@ __bpf_kfunc void bpf_iter_process_destroy(struct =
+bpf_iter_process *it)
+> >>   {
+> >>   }
+> >>
+> >> +struct bpf_iter_css_kern {
+> >> +       struct cgroup_subsys_state *root;
+> >> +       struct cgroup_subsys_state *pos;
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >> +__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+> >> +               struct cgroup_subsys_state *root)
+> >
+> > similar to my comment on previous patches, please see
+> > kernel/bpf/cgroup_iter.c for iter/cgroup iterator program. Let's stay
+> > consistent. We have one iterator that accepts parameters defining
+> > iteration order and starting cgroup. Unless there are some technical
+> > reasons we can't follow similar approach with this open-coded iter,
+> > let's use the same approach. We can even reuse
+> > BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
+> > BPF_CGROUP_ITER_ANCESTORS_UP enums.
+> >
+>
+> I know your concern. It would be nice if we keep consistent with
+> kernel/bpf/cgroup_iter.c
+>
+> But this patch actually want to support iterating css
+> (cgroup_subsys_state) not cgroup (css is more low lever).
+> With css_iter we can do something like
+> "for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre"
+> in BPF Progs which is hard for cgroup_iter. In the future we can use
+> this iterator to plug some customizable policy in other resource control
+> system.
 
-- Core context Lost
-        - General purpose registers.
-        - Floating point and SIMD registers.
-        - System registers, include the System register based
-        - generic timer for the core.
-        - Debug register in the core power domain.
-        - PMU registers in the core power domain.
-        - Trace register in the core power domain.
-- Trace context loss
-- GICR
-- GICD
+That's fine if it's not exactly cgroup iter and returns a different
+kernel object. But let's at least consistently use
+BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST/BPF_CGROUP=
+_ITER_ANCESTORS_UP
+approach as a way to specify iteration order?
 
-Qualcomm's custom CPUs preserves the architectural state,
-including keeping the power domain for local timers active.
-when core is power gated, the local timers are sufficient to
-wake the core up without needing broadcast timer.
-
-The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-broadcast timer if core context lost is defined in ACPI LPI.
-
-Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
----
-
-Notes:
-    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 4d537d56eb84..269d21209723 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -9,6 +9,7 @@
- #ifndef _ASM_ACPI_H
- #define _ASM_ACPI_H
- 
-+#include <linux/cpuidle.h>
- #include <linux/efi.h>
- #include <linux/memblock.h>
- #include <linux/psci.h>
-@@ -44,6 +45,23 @@
- 
- #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	trbe_interrupt) + sizeof(u16))
-+/*
-+ * Arm® Functional Fixed Hardware Specification Version 1.2.
-+ * Table 2: Arm Architecture context loss flags
-+ */
-+#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
-+
-+static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
-+							unsigned int *sflags)
-+{
-+	if (arch_flags & CPUIDLE_CORE_CTXT)
-+		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
-+}
-+#define arch_update_idle_state_flags _arch_update_idle_state_flags
-+
-+#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-+#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-+#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
- 
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index dc615ef6550a..5c1d13eecdd1 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
- 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
- 		state->exit_latency = lpi->wake_latency;
- 		state->target_residency = lpi->min_residency;
--		if (lpi->arch_flags)
--			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-+		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
- 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
- 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
- 		state->enter = acpi_idle_lpi_enter;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index a73246c3c35e..07a825c76bab 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1480,6 +1480,12 @@ static inline int lpit_read_residency_count_address(u64 *address)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_PROCESSOR_IDLE
-+#ifndef arch_update_idle_state_flags
-+#define arch_update_idle_state_flags(af, sf)	do {} while (0)
-+#endif
-+#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
-+
- #ifdef CONFIG_ACPI_PPTT
- int acpi_pptt_cpu_is_thread(unsigned int cpu);
- int find_acpi_cpu_topology(unsigned int cpu, int level);
--- 
-2.25.1
-
+>
+> BTW, what I did in RFC actually very similar with the approach of
+> cgroup_iter.
+> (https://lore.kernel.org/all/20230827072057.1591929-4-zhouchuyi@bytedance=
+.com/).
+>
+> Thanks.
