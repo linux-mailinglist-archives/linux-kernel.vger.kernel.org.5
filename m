@@ -2,201 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901417A16C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB867A16CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbjIOHBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S232540AbjIOHCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232562AbjIOHBX (ORCPT
+        with ESMTP id S232242AbjIOHCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:01:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BD81BCF;
-        Fri, 15 Sep 2023 00:00:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1203C433C7;
-        Fri, 15 Sep 2023 07:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694761255;
-        bh=zk/u7pwKKCmAwgpZiiGCO+Nap+PLbat+f4RroAbfWVk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Frn/IgXeecdf/Md4ljAbOZA1STCAcCgVOLbScVfZWcoXNzAXfEx4MxH5EXVsKOqxO
-         h8nKRs1Qgy/T/qPzdelivJj1tCaUKClkqrAttOFU2RGUtxIM3gm5US0WgBkRBdDwPU
-         u1eJU//v7hXLdyqNCOwobvZPROGtuwRQFIZ8Ap7SEqpWkJrb4y/07vZtn8gCvnOdfF
-         8YkzHK8hLxDyV1kh9vP87E4i5JdR/HLD+ailPIhF6eeTLiwwfAxbUhiApfkKpbbxwg
-         npBC01QbNIZgzgS6DuS5YAQJZadVvfZxgYKXu1sneVZH/WHP848vYE+F5Y3LvRyghI
-         zZZNv4NFsO5YA==
-Message-ID: <3436e410-5396-e40e-ab55-3e5a9b1f090a@kernel.org>
-Date:   Fri, 15 Sep 2023 16:00:52 +0900
+        Fri, 15 Sep 2023 03:02:30 -0400
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CEBA1;
+        Fri, 15 Sep 2023 00:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1694761345;
+  x=1726297345;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=0sW0iqIhT6PSVFY4FBnRMJl8mvoqoSyQoxUjCR+YF+k=;
+  b=KunYl9tdPHrI3nHqyzLvWb9MKFwOyidQpWBP0KUj3K/CAoodOxjtWBn5
+   MLUjMo/nK21n0Cgy4gSwPj/DXGtabU/q8n/zzEN8hcNZcafl0bVl7GwvK
+   gb3KrwK/DuKG9B8grYV9eMwyc7BjXM7AYJP3sc4KYy7WdxqPRVYNNcqbe
+   bfrJGvNVTSsw9gvtwYmwaMZokvNd7/7hXfbslnkLetreDjU9Fk4FgYV0M
+   JUNT0AyQAEBhBMp67r3G/aLV5qyVsbdz7rpdkonNw6EacFdWEa6b326oo
+   cJvvReNgM2H51RlT4itA9gOaGb5CkbWxi+JxahTQZJThNrofOeQOCWs4X
+   Q==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date:   Fri, 15 Sep 2023 09:02:14 +0200
+Subject: [PATCH v2] power: supply: Propagate of_node to child device
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe
- SATA to Constantly Reset
-Content-Language: en-US
-To:     David Gow <david@davidgow.net>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        patenteng <dimitar@daskalov.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-References: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
- <ZQHRQHAPQdG+Nu1o@x1-carbon>
- <59f6ff78-6b45-465a-bd41-28c7a5d10931@davidgow.net>
- <10f65dfe-5e8a-10ab-4d89-efe693c07caa@kernel.org>
- <658b9285-e030-4987-86a7-57cdb6c7f161@davidgow.net>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <658b9285-e030-4987-86a7-57cdb6c7f161@davidgow.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20230915-power-of-v2-1-ca54c441867e@axis.com>
+X-B4-Tracking: v=1; b=H4sIAHUBBGUC/22Nyw6CMBBFf4XM2jGlViWu/A/Doo9BZiFDWlMxp
+ P9uYe3ynNzHCokiU4Jbs0KkzIllqqAPDfjRTk9CDpVBK31SV2Vwlg9FlAENaeuUc2S6ADXubCJ
+ 00U5+3AqDiNn0HGngZX949JVHTm+J3/0wt5v9s51bbNH7TgdNwV7O7m4XTkcvL+hLKT+mzNmtt
+ gAAAA==
+To:     Sebastian Reichel <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 15:54, David Gow wrote:
-> Le 2023/09/15 à 13:41, Damien Le Moal a écrit :
->> On 9/15/23 12:22, David Gow wrote:
->>> Le 2023/09/13 à 23:12, Niklas Cassel a écrit :
->>>> On Wed, Sep 13, 2023 at 06:25:31PM +0700, Bagas Sanjaya wrote:
->>>>> Hi,
->>>>>
->>>>> I notice a regression report on Bugzilla [1]. Quoting from it:
->>>>>
->>>>>> After upgrading to 6.5.2 from 6.4.12 I keep getting the following kernel messages around three times per second:
->>>>>>
->>>>>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>>>>> [ 9683.270399] ata16.00: configured for UDMA/66
->>>>>>
->>>>>> So I've tracked the offending device:
->>>>>>
->>>>>> ll /sys/class/ata_port/ata16
->>>>>> lrwxrwxrwx 1 root root 0 Sep 10 21:51 /sys/class/ata_port/ata16 -> ../../devices/pci0000:00/0000:00:1c.7/0000:0a:00.0/ata16/ata_port/ata16
->>>>>>
->>>>>> cat /sys/bus/pci/devices/0000:0a:00.0/uevent
->>>>>> DRIVER=ahci
->>>>>> PCI_CLASS=10601
->>>>>> PCI_ID=1B4B:9130
->>>>>> PCI_SUBSYS_ID=1043:8438
->>>>>> PCI_SLOT_NAME=0000:0a:00.0
->>>>>> MODALIAS=pci:v00001B4Bd00009130sv00001043sd00008438bc01sc06i01
->>>>>>
->>>>>> lspci | grep 0a:00.0
->>>>>> 0a:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9128 PCIe SATA 6 Gb/s RAID controller with HyperDuo (rev 11)
->>>>>>
->>>>>> I am not using the 88SE9128, so I have no way of knowing whether it works or not. It may simply be getting reset a couple of times per second or it may not function at all.
->>>>>
->>>>> See Bugzilla for the full thread.
->>>>>
->>>>> patenteng: I have asked you to bisect this regression. Any conclusion?
->>>>>
->>>>> Anyway, I'm adding this regression to regzbot:
->>>>>
->>>>> #regzbot: introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217902
->>>>
->>>> Hello Bagas, patenteng,
->>>>
->>>>
->>>> FYI, the prints:
->>>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>>> [ 9683.270399] ata16.00: configured for UDMA/66
->>>>
->>>> Just show that ATA error handler has been invoked.
->>>> There was no reset performed.
->>>>
->>>> If there was a reset, you would have seen something like:
->>>> [    1.441326] ata8: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
->>>> [    1.541250] ata8.00: configured for UDMA/133
->>>> [    1.541411] ata8: hard resetting link
->>>>
->>>>
->>>> Could you please try this patch and see if it improves things for you:
->>>> https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
->>>>
->>>
->>> FWIW, I'm seeing a very similar issue both in 6.5.2 and in git master
->>> [aed8aee11130 ("Merge tag 'pmdomain-v6.6-rc1' of
->>> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm") with that
->>> patch applied.
->>>
->>>
->>> The log is similar (the last two lines repeat several times a second):
->>> [    0.369632] ata14: SATA max UDMA/133 abar m2048@0xf7c10000 port
->>> 0xf7c10480 irq 33
->>> [    0.683693] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>> [    1.031662] ata14.00: ATAPI: MARVELL VIRTUALL, 1.09, max UDMA/66
->>> [    1.031852] ata14.00: configured for UDMA/66
->>> [    1.414145] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>> [    1.414505] ata14.00: configured for UDMA/66
->>> [    1.744094] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>> [    1.744368] ata14.00: configured for UDMA/66
->>> [    2.073916] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
->>> [    2.074276] ata14.00: configured for UDMA/66
->>>
->>>
->>> lspci shows:
->>> 09:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9230 PCIe 2.0
->>> x2 4-port SATA 6 Gb/s RAID Controller (rev 10) (prog-if 01 [AHCI 1.0])
->>>           Subsystem: Gigabyte Technology Co., Ltd Device b000
->>>           Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
->>> ParErr- Stepping- SERR- FastB2B- DisINTx+
->>>           Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
->>> <TAbort- <MAbort- >SERR- <PERR- INTx-
->>>           Latency: 0, Cache Line Size: 64 bytes
->>>           Interrupt: pin A routed to IRQ 33
->>>           Region 0: I/O ports at b050 [size=8]
->>>           Region 1: I/O ports at b040 [size=4]
->>>           Region 2: I/O ports at b030 [size=8]
->>>           Region 3: I/O ports at b020 [size=4]
->>>           Region 4: I/O ports at b000 [size=32]
->>>           Region 5: Memory at f7c10000 (32-bit, non-prefetchable) [size=2K]
->>>           Expansion ROM at f7c00000 [disabled] [size=64K]
->>>           Capabilities: <access denied>
->>>           Kernel driver in use: ahci
->>>
->>> The controller in question lives on a Gigabyte Z87X-UD5H-CF motherboard.
->>> I'm using the controller for several drives, and it's working, it's just
->>> spammy. (At worst, there's some performance hitching, but that might
->>> just be journald rotating logs as they fill up with the message).
->>>
->>> I haven't had a chance to bisect yet (this is a slightly awkward machine
->>> for me to install test kernels on), but can also confirm it worked with
->>> 6.4.12.
->>>
->>> Hopefully that's useful. I'll get back to you if I manage to bisect it.
->>
->> Bisect will definitely be welcome. But first, please try adding the patch that
->> Niklas mentioned above:
->>
->> https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
->>
->> If that fixes the issue, we know the culprit :)
->>
-> 
-> 
-> Sorry: I wasn't clear. I did try with that patch (applied on top of 
-> torvalds/master), and the issue remained.
-> 
-> I've started bisecting, but fear it'll take a while.
+Ensure that the dynamically created power supply device sets its
+->of_node if the driver supplies one.  This brings it in line with
+several other subsystems (see git grep 'of_node =.*parent.*of_node') and
+allows easier identification of the device from udev rules and similar.
 
-OK. Thanks.
+Before this patch:
 
-> 
-> Thanks,
-> -- David
-> 
+ /sys/class/power_supply# ls -l bq256xx-battery/of_node
+ ls: cannot access 'bq256xx-battery/of_node': No such file or directory
+ # ls -l bq256xx-battery/hwmon1/of_node
+ ls: cannot access 'bq256xx-battery/hwmon1/of_node': No such file or directory
 
+After:
+
+ /sys/class/power_supply# ls -l bq256xx-battery/of_node
+ lrwxrwxrwx 1 root root 0 May 17 09:14 bq256xx-battery/of_node ->
+ ../../../../../../../../firmware/devicetree/base/virtio@1/i2c/bq25619@09
+ # ls -l bq256xx-battery/hwmon1/of_node
+ lrwxrwxrwx 1 root root 0 May 17 09:14 bq256xx-battery/hwmon1/of_node ->
+ ../../../../../../../../../firmware/devicetree/base/virtio@1/i2c/bq25619@09
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+Changes in v2:
+- Use psy->of_node instead of parent node.
+- Link to v1: https://lore.kernel.org/r/20230704-power-of-v1-1-cc82d2eda65b@axis.com
+---
+ drivers/power/supply/power_supply_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
+index 0b69fb7bafd8..ab20bc660f00 100644
+--- a/drivers/power/supply/power_supply_core.c
++++ b/drivers/power/supply/power_supply_core.c
+@@ -1380,6 +1380,7 @@ __power_supply_register(struct device *parent,
+ 		psy->drv_data = cfg->drv_data;
+ 		psy->of_node =
+ 			cfg->fwnode ? to_of_node(cfg->fwnode) : cfg->of_node;
++		dev->of_node = psy->of_node;
+ 		psy->supplied_to = cfg->supplied_to;
+ 		psy->num_supplicants = cfg->num_supplicants;
+ 	}
+
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230704-power-of-4e2ab0bbe48d
+
+Best regards,
 -- 
-Damien Le Moal
-Western Digital Research
+Vincent Whitchurch <vincent.whitchurch@axis.com>
 
