@@ -2,139 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 360597A293A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584897A293D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237549AbjIOVTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S237508AbjIOVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237452AbjIOVSs (ORCPT
+        with ESMTP id S237845AbjIOVUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:18:48 -0400
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F08DA0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:18:43 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id hALbqbk8wez0ChGCfqC8v0; Fri, 15 Sep 2023 21:18:17 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hGD1qDfn21SF3hGD1qdEEq; Fri, 15 Sep 2023 21:18:39 +0000
-X-Authority-Analysis: v=2.4 cv=Avr9YcxP c=1 sm=1 tr=0 ts=6504ca2f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=VwQbUJbxAAAA:8 a=COk6AnOGAAAA:8 a=JfrnYn6hAAAA:8 a=cm27Pg_UAAAA:8
- a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=TjNXssC_j7lpFel5tvFf:22 a=1CNFftbPRP8L7MoqJWF3:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CXlqlVJ2RnzYBwdo5oCwVhnF8JLWfHkjHPjJ0VvcV1w=; b=aLBYatBt5iYb4xj6Pn/c9wMvEZ
-        /HxBtzx6jwiRBqbGYYsX564tIlBz3kFBagXbWnwtSt0IMy0XyKmg6JCK7yy5JFg95QXK8lpYxN9kE
-        kKt7WNA7o017D0OxRYiHftQI4wuvKmZwiM1xAAu5RyA0Wn4S+Ylfe+PKdV8c4HCU8QOT9FfA03z5z
-        JloX3i4mtdWE9Uo6cS6ltEWPptP2YxEIn3eaizObNk8UhsXJGAVbXUfOF6xae85EQSf6tmByY8the
-        TO9ac7JDzVtioDfII4XGBo1vFx7oq+Xf3M0ztckuLxEsBEk0XijlzQO6D08Am8FXQeoG3MKboqV5t
-        Yg7IrYbg==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:55304 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhGD0-0036gT-12;
-        Fri, 15 Sep 2023 16:18:38 -0500
-Message-ID: <8d28f285-1a92-2635-f0f3-8a46b8f0c8d0@embeddedor.com>
-Date:   Fri, 15 Sep 2023 15:19:34 -0600
+        Fri, 15 Sep 2023 17:20:03 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6130186;
+        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso21909105ad.3;
+        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694812795; x=1695417595; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iw52vl+Z+yGr72ggsy+mqPbqGnewTwN16MWm8ruh5F0=;
+        b=jkeTzA8dFgV5aBQIFDSnd1B/G8ZaoBz3z8S6nqhosfzWZsy00eOuNnn+DVR0BytN4O
+         3MoIKGW5Vc7bZ3TmFEJbJ4FuaEfHV8nQa1m1g2K44Qmvpbb3kwX/JHv2vRHotaoMmkuj
+         6E6bcmOIdzJ/VkaCdQM3fih+vNAglNWAlPoYWYMmPsJbrWipswtB6F4EdsHnJYF6Hf71
+         CWr896VIUsrzhCWl3MedHN5wjzJLcjF0nzJOZK6tOq5mEc9+lWSoUXDubhFy04FXYJSp
+         rbM+aP9Llj/K/ftx9cX24QvD0WdgvQTr3dZqPiT3trltSNzje4fQklqgTD9om177JYDE
+         JfYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694812795; x=1695417595;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Iw52vl+Z+yGr72ggsy+mqPbqGnewTwN16MWm8ruh5F0=;
+        b=HdcSXb+kC2diM++ViQ0gp/+kH6QSzHpKxx23DRFTPrAIhogaLV7Q9WFxdS2Y6Mq3Cf
+         CEAa88B0MtNc6A4fMOIh+yn/UJjtWMlFI4DcS2DnuD3WEmBpEDHA1KCqhvG8Zlk8g2uA
+         bcJDnhDmUQVDnY7ntLU609jS0kZ4INdRpV5p3wtnL49+mtm6FVEkpAmCeHz3RJG5isKn
+         SYh3smOMp5xR6i8W0KF+CHI1L1XNsR/sXTTonZRCyoPPAfmMo8s0eOepSfI1IjWyc2h+
+         SNZKdnllgnEDoibu/htKZc5MjqJvSrnqY6v+rL933cv442fRT6LM71gVitSaYqBo0oIP
+         DHsA==
+X-Gm-Message-State: AOJu0YwbKdhbK2K7EqxhuLo3NtSMYDb/I5uYqgTaH79rzsg/RZovthgv
+        ugZBvvr2qrgmqPFZTWF6pGw=
+X-Google-Smtp-Source: AGHT+IGJEvixLhBQnqBK5nGDCqIx0gyypqZITE/hp4lvlRPtD6bVQk4UKPJ6k/vTcWGQ4lNzcV9GhA==
+X-Received: by 2002:a17:903:120f:b0:1bc:e6a:205f with SMTP id l15-20020a170903120f00b001bc0e6a205fmr3131079plh.20.1694812795125;
+        Fri, 15 Sep 2023 14:19:55 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f4-20020a170902ab8400b001c0af36dd64sm3918112plr.162.2023.09.15.14.19.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 14:19:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 15 Sep 2023 14:19:52 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     David Ober <dober6023@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net,
+        dober@lenovo.com, mpearson@lenovo.com
+Subject: Re: [PATCH] hwmon:Add MEC172x Micro Chip driver for Lenovo
+ motherboards
+Message-ID: <8a566102-5ea6-4449-9083-8feebe711065@roeck-us.net>
+References: <20230915150340.301067-1-dober6023@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] wifi: ath10k: Annotate struct ath10k_ce_ring with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Kalle Valo <kvalo@kernel.org>
-Cc:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915200636.never.762-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915200636.never.762-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhGD0-0036gT-12
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:55304
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMl6l2+D4d60V8ODDkFL8fL2V+EkMPTa6M/PTjvxTxEVULhsJhlnHHGBmuCQ7y/tD3tp8pyGVD7a/CZ6U+9e9fjBZtFQprs65yFHu0N+vi5+r7wlEl8e
- +oElgWo0KIK7XAYUKVJgZVfIjBB5l8jzlQquk/YARWZ0zGVLIZu5zotwl7wF7lf+aLT+CjOVEHsnweMBuTuOd1YJ1I4OfyIpfoSEfrtpzl6T5e8KIIKqkifA
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915150340.301067-1-dober6023@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/15/23 14:06, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Fri, Sep 15, 2023 at 11:03:40AM -0400, David Ober wrote:
+> This addition adds in the ability for the system to scan the
+> MEC172x EC chip in Lenovo ThinkStation systems to get the
+> current fan RPM speeds and the Maximum speed value for each
+> fan also provides the current CPU and DIMM thermal status
 > 
-> As found with Coccinelle[1], add __counted_by for struct ath10k_ce_ring.
+> Signed-off-by: David Ober <dober6023@gmail.com>
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Cc: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Written by David Ober from Lenovo using this gmail address since
+> my corporate email address does not comply with git email
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+FWIW, this needs to be after '---'
 
-Thanks
--- 
-Gustavo
+Anyway, thinking about this submission makes me even more concerned.
+
+This isn't really a driver for MEC172x; it is simply a driver
+accessing an EC on a set of PCs and/or laptops from Lenovo
+which uses a vertain API for communication between EC and main
+CPU.
+
+Such ECs are typically accessed through ACPI. Yet, in this driver
+there is no mention of ACPI, much less any protection against
+parallel use by ACPI code (that access lock in get_ec_reg() doesn't
+even protect against parallel access from userspace, much less
+against parallel access from other drivers or ACPI, for example
+by using request_region() to reserve the used memory ranges).
+
+There needs to be explanations and clarifications 
+- Why this driver will only be used for communication with MEC172X
+  based chips, and why the exact EC chip is relevant in the first place
+  to be mentioned as much as it is.
+- How it is guaranteed that the EC is not and will never be accessed
+  through ACPI.
+- How it is guaranteed that there will never be any other kernel drivers
+  accessing the chip.
 
 > ---
->   drivers/net/wireless/ath/ath10k/ce.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-> index 666ce384a1d8..27367bd64e95 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.h
-> +++ b/drivers/net/wireless/ath/ath10k/ce.h
-> @@ -110,7 +110,7 @@ struct ath10k_ce_ring {
->   	struct ce_desc_64 *shadow_base;
->   
->   	/* keep last */
-> -	void *per_transfer_context[];
-> +	void *per_transfer_context[] __counted_by(nentries);
->   };
->   
->   struct ath10k_ce_pipe {
+>  drivers/hwmon/Kconfig             |  10 +
+>  drivers/hwmon/Makefile            |   1 +
+>  drivers/hwmon/lenovo-ec-sensors.c | 471 ++++++++++++++++++++++++++++++
+
+Documentation missing.
+
+Guenter
