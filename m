@@ -2,271 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24DA7A21F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824FD7A2207
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236003AbjIOPJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
+        id S235900AbjIOPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbjIOPJw (ORCPT
+        with ESMTP id S235898AbjIOPMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:09:52 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828EC358D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:08:56 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9adb9fa7200so418983166b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:08:56 -0700 (PDT)
+        Fri, 15 Sep 2023 11:12:31 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D1D10D
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:12:26 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c35ee3b0d2so17919135ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:12:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1694790535; x=1695395335; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VYR6ep7rDCBduLCC6ALZ438i46Wvlrmilzt/WzHCta4=;
-        b=McS20yfVDz1gxpj8R7DrqOTYRyBS8x5oxHXNGHT4U8OgCy6Mco617iiPb/Ovpb+cTv
-         pEGBcXZn1FFV6s0/KYwIUDCPHPgUCY8B7+T90zIsr0D6OTLK/6yNKCPKSEKgxZaqT+K9
-         FAtpJG6CXM3L/UdXztBbXjx+yTg2M9PCbfnaMcIAIFwpD636AZ7nkCRSvtGpiXqio/BM
-         zgFkwvG82fI/9pUExiN6RxFSWz8TkUa9yI4vl5QPvpjKNJblk8w6pL4ZbV7pLog9v0pX
-         yR6zI4Rc1T0vbVEYPATHnazNLP7mlr2HUqbYCp50TReQg/REtCBlOKuKPHgLspl1PfiS
-         nm0A==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694790746; x=1695395546; darn=vger.kernel.org;
+        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TvdZikewOGbtBJy4jV7eLfxgLdyicvd893nAAhG6Kr4=;
+        b=knUamhVjE7b0RJQe4eonkmxGe01QHEGforGkH9r6xQIsc5Od/eDRh1IswBzXkRqcDj
+         oG+lxIKO25rG7uS+zceIWrzNxElVn+E4zIGZI0nR2MJXq0JX8Ldc0biZOjvOQmjxKVHL
+         EXStm4Wwm2uLzxGZ6QQ7kNdeKPdD3rn20DIzCcdlrKnHjv9RdP1pAzPsGrocNUumemRh
+         ZpHDwSvP5ximQ1BZdRmSB/M/bU18LEmXqHyHkN6+tTGSqMUOPewNEmIdA/napexymMVa
+         xvQceDLlQnbrl19GSBzH0Tit/JBM4LfnjCzlEADgt8ljcFwoFuttkKNt1pyk4AZiKnY9
+         ZHQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694790535; x=1695395335;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VYR6ep7rDCBduLCC6ALZ438i46Wvlrmilzt/WzHCta4=;
-        b=wUiiSQCgEIa97RDNjPVHMFpP/tBZ+WCbPMNkj5DI2VdE0Z7NbOjbuH6wOBp/TqyAEU
-         WVE85H453d/J69NrmFVLzhfAJcujh0DjoajSKZpZvFsfc+0h1SQCwEnFHnP0sMPSWpJc
-         N6DblrB7ERJlo2GO3XLWBDQ3YRj6u7IoCXFthbqiCMfpWwNU2/lt9raUUeOaVRbMa4j6
-         BGog8t81WCIDtxvuQYGlFqpeXsnPgBHMYxbSkz6o+AvbV4801OPud1SVamss+wvUmFwb
-         zYmBAFbXSzosxUG36iyuaLnE5AadZsQ7ymJ6/WD/nU1GQBnz1itOLdNv3lVaeRsJ6xbk
-         xQ1w==
-X-Gm-Message-State: AOJu0YxiqIhNTrDtoX2CVnICZ98FNJbjcGXZA+Dxi5lskTYBVhyCOfgJ
-        E+JbwYxyk/o0s+AdBbGWokBk0XRa7PfLFZrQ1dLFLw==
-X-Google-Smtp-Source: AGHT+IEEHNihECXlS9m2KxMTthStG6cUD6LJ/Hd8lIz/DRYEz/AvRC/0+Anai8PcEGa/vlcPrsf7QjRzAeDT/NZHgLw=
-X-Received: by 2002:a17:907:1c8b:b0:9a9:f6e7:43fe with SMTP id
- nb11-20020a1709071c8b00b009a9f6e743femr7782839ejc.24.1694790534612; Fri, 15
- Sep 2023 08:08:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
- <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com> <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
- <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com> <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
- <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org> <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
- <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org> <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
- <CAPj87rP1sw49Z0HdPhUa-=kDp166RqiuhC9rL+Ef9hpwPD5+JA@mail.gmail.com> <krhnfc4os5nqwi3iixgxwads3jbcgtdcvn7ygxpvd62uaejvsk@mx6tmser7jti>
-In-Reply-To: <krhnfc4os5nqwi3iixgxwads3jbcgtdcvn7ygxpvd62uaejvsk@mx6tmser7jti>
-From:   Daniel Stone <daniel@fooishbar.org>
-Date:   Fri, 15 Sep 2023 16:08:42 +0100
-Message-ID: <CAPj87rPbJ1V1-R7WMTHkDat2A4nwSd61Df9mdGH2PR=ZzxaU=Q@mail.gmail.com>
-Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        emma@anholt.net, linux-doc@vger.kernel.org,
-        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
-        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
-        corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        linux-rockchip@lists.infradead.org,
-        Daniel Stone <daniels@collabora.com>,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1694790746; x=1695395546;
+        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TvdZikewOGbtBJy4jV7eLfxgLdyicvd893nAAhG6Kr4=;
+        b=wKS+OZwj/iqEi5Rvqld5IG2TUQ1nRp79dKuhqXHmkdirY0lW+LdVoPjqPD318fXT9+
+         wFDVixL/5rupQQnpvzDZT3O9MnNvltADuXmYU4hqbwbmcvBSkVg0kKdHwQnCkAba41yE
+         6R0WgIQ0atRwyjJt9x1TjjXqJlcSqMBNReHIEQQDstWjsK9XKm7BVLRqDsMHtZyRVTyD
+         DNYEdePHjW/KduzABBSl350elJQNjuJ0II7rY6ajpElTE4CCXP5ms5UrhNNS/bWkKYA7
+         xT6iWwD6GVBBblGdBARQ9R+1PWCY6KdYy8dBqYNj7zJKQQaqtANAOafTaV8+fj0JvRIM
+         946Q==
+X-Gm-Message-State: AOJu0YzcGMkeGhh/IKJFAJWtTy2Xy29FFFiwFZPGRelpKkzpZhiNkxTI
+        E43hWC2SRM1ic/8CtdJvHOn9AmM9OCw6yAv3MqU=
+X-Google-Smtp-Source: AGHT+IEgHQ3UNAjBW7KxV/WQLG8LILuRF6I7lSNAITcN9JQHLMiivMx8BGW0JezRPOZ6qFEwYnU70A==
+X-Received: by 2002:a17:902:6806:b0:1c3:7628:fcb5 with SMTP id h6-20020a170902680600b001c37628fcb5mr1873527plk.62.1694790745936;
+        Fri, 15 Sep 2023 08:12:25 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id a5-20020a1709027d8500b001b896686c78sm3595063plm.66.2023.09.15.08.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 08:12:25 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 08:12:25 -0700 (PDT)
+X-Google-Original-Date: Fri, 15 Sep 2023 08:12:22 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 6.6-rc2
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-28c66ddb-6068-4bcc-a1be-28c830775838@palmer-ri-x1c9>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-On Thu, 14 Sept 2023 at 10:54, Maxime Ripard <mripard@kernel.org> wrote:
-> On Tue, Sep 12, 2023 at 02:16:41PM +0100, Daniel Stone wrote:
-> > Hopefully less mangled formatting this time: turns out Thunderbird +
-> > plain text is utterly unreadable, so that's one less MUA that is
-> > actually usable to send email to kernel lists without getting shouted
-> > at.
->
-> Sorry if it felt that way, it definitely wasn't my intention to shout at
-> you. Email is indeed kind of a pain to deal with, and I wanted to keep
-> the discussion going.
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-My bad - I didn't mean you _at all_. I was thinking of other, much
-less pleasant, kernel maintainers, and the ongoing struggle of
-attempting to actually send well-formatted email to kernel lists in
-2023.
+are available in the Git repository at:
 
-> > I don't quite see the same picture from your side though. For example,
-> > my reading of what you've said is that flaky tests are utterly
-> > unacceptable, as are partial runs, and we shouldn't pretend otherwise.
-> > With your concrete example (which is really helpful, so thanks), what
-> > happens to the MT8173 hdmi-inject test? Do we skip all MT8173 testing
-> > until it's perfect, or does MT8173 testing always fail because that
-> > test does?
->
-> It's not clear to me why that test is even running in the first place?
-> There's been some confusion on my side here about what we're going to
-> test with this. You've mentioned Mesa and GPUs before, but that's a KMS
-> test so there must be more to it.
->
-> Either way, it's a relevant test so I guess why not. It turns out that
-> the test is indeed flaky, I guess we could add it to the flaky tests
-> list.
->
-> BUT
->
-> I want to have every opportunity to fix whatever that failure is.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-rc2
 
-Agreed so far!
+for you to fetch changes up to 8eb8fe67e2c84324398f5983c41b4f831d0705b3:
 
-> So:
->
->   - Is the test broken? If so, we should report it to IGT dev and remove
->     it from the test suite.
->   - If not, is that test failure have been reported to the driver author?
->   - If no answer/fix, we can add it to the flaky tests list, but do we
->     have some way to reproduce the test failure?
->
-> The last part is especially critical. Looking at the list itself, I have
-> no idea what board, kernel version, configuration, or what the failure
-> rate was. Assuming I spend some time looking at the infra to find the
-> board and configuration, how many times do I have to run the tests to
-> expect to reproduce the failure (and thus consider it fixed if it
-> doesn't occur anymore).
->
-> Like, with that board and test, if my first 100 runs of the test work
-> fine, is it reasonable for me to consider it fixed, or is it only
-> supposed to happen once every 1000 runs?
->
-> So, ideally, having some (mandatory) metadata in the test lists with a
-> link to the bug report, the board (DT name?) it happened with, the
-> version and configuration it was first seen with, and an approximation
-> of the failure rate for every flaky test list.
->
-> I understand that it's probably difficult to get that after the fact on
-> the tests that were already merged, but I'd really like to get that
-> enforced for every new test going forward.
->
-> That should hopefully get us in a much better position to fix some of
-> those tests issues. And failing that, I can't see how that's
-> sustainable.
+  riscv: errata: fix T-Head dcache.cva encoding (2023-09-12 13:58:40 -0700)
 
-OK yeah, and we're still agreed here. That is definitely the standard
-we should be aiming for.  It is there for some - see
-drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt, but should be
-there for the rest, it's true. (The specific board/DT it was observed
-on can be easily retconned because we only run on one specific board
-type per driver, again to make things more predictable; we could go
-back and retrospectively add those in a header comment?)
+----------------------------------------------------------------
+RISC-V Fixes for 6.6-rc2
 
-For flakes, it can be hard to pin them down, because, well, they're
-flaky. Usually when we add things in Mesa (sorry to keep coming back
-to Mesa - it's not to say that it's the objective best thing that
-everything should follow, only that it's the thing we have the most
-experience with that we know works well), we do a manual bisect and
-try to pin the blame on a specific merge request which looks like the
-most likely culprit. If nothing obvious jumps out, we just note when
-it was first observed and provide some sample job logs. But yeah, it
-should be more verbose.
+* A fix to align kexec'd kernels to PMD boundries.
+* The T-Head dcache.cva encoding was incorrect, it has been fixed to
+  invalidate all caches (as opposed to just the L1).
 
-FWIW, the reason it wasn't done here - not to say that it shouldn't
-have been done better, but here we are - is that we just hammered a
-load of test runs, vacuumed up the results with a script, and that's
-what generated those files. Given the number of tests and devices, it
-was hard to narrow each down individually, but yeah, it is something
-which really wants further analysis and drilling into. It's a good
-to-do, and I agree it should be the standard going forward.
+----------------------------------------------------------------
+Icenowy Zheng (1):
+      riscv: errata: fix T-Head dcache.cva encoding
 
-> And Mesa does show what I'm talking about:
->
-> $ find -name *-flakes.txt | xargs git diff --stat  e58a10af640ba58b6001f5c5ad750b782547da76
-> [...]
->
-> In the history of Mesa, there's never been a single test removed from a
-> flaky test list.
+Song Shuai (1):
+      riscv: kexec: Align the kexeced kernel entry
 
-As Rob says, that's definitely wrong. But there is a good point in
-there: how do you know a test isn't flaky anymore? 100 runs is a
-reasonable benchmark, but 1000 is ideal. At a 1% failure rate, with 20
-devices, that's just too many spurious false-fails to have a usable
-workflow.
-
-We do have some tools to make stress testing easier, but those need to
-be better documented. We'll fix that. The tools we have which also
-pull out the metadata etc also need documenting - right now they
-aren't because they're under _extremely_ heavy development, but they
-can be further enhanced to e.g. pull out the igt results automatically
-and point very clearly to the cause. Also on the to-do.
-
-> > Only maintainers can actually fix the drivers (or the tests tbf). But
-> > doing the testing does let us be really clear to everyone what the
-> > actual state is, and that way people can make informed decisions too.
-> > And the only way we're going to drive the test rate down is by the
-> > subsystem maintainers enforcing it.
->
-> Just FYI, I'm not on the other side of the fence there, I'd really like
-> to have some kind of validation. I talked about it at XDC some years
-> ago, and discussed it several people at length over the years. So I'm
-> definitely not in the CI-is-bad camp.
->
-> > Does that make sense on where I'm (and I think a lot of others are)
-> > coming from?
->
-> That makes sense from your perspective, but it's not clear to me how you
-> can expect maintainers to own the tests if they were never involved in
-> the process.
->
-> They are not in Cc of the flaky tests patches, they are not reported
-> that the bug is failing, how can they own that process if we never
-> reached out and involved them?
->
-> We're all overworked, you can't expect them to just look at the flaky
-> test list every now and then and figure it out.
-
-Absolutely. We got acks (or at least not-nacks) from the driver
-developers, but yeah, they should absolutely be part of the loop for
-those updates. I don't think we can necessarily block on them though.
-Say we add vc4 KMS tests, then after a backmerge we start to see a
-bunch of flakes on it, but you're sitting on a beach for a couple of
-weeks. If we wait for you to get back, see it, and merge it, then
-that's two weeks of people submitting Rockchip driver changes and
-getting told that their changes failed CI. That's exactly what we want
-to avoid, because it erodes confidence and usefulness of CI when
-people expect failures and ignore them by default.
-
-So I would say that it's reasonable for expectations to be updated
-according to what actually happens in practice, but also to make sure
-that the maintainers are explicitly informed and kept in the loop, and
-not just surprised when they look at the lists and see a bunch of
-stuff happened without their knowledge.
-
-Again there's much more to be done on the tooling here. Part of it is
-CLI tools and automation, part of it is dashboards and
-easily-digestible reporting, and then there's integration with things
-like KernelCI. KCI(DB) is actually quite high up on the list, but
-we're mostly waiting until a lot of the KCI rework happens so we can
-actually properly integrate with the new system.
-
-Right now a lot of the tooling we have is pretty involved - for
-example, we do have ci-collate as a Python library which can inspect a
-number of pipelines, pull out detailed status and logs, etc, but it
-mostly needs to be used as a library with bespoke scripts, rather than
-a ready-made tool. Work on that is ongoing to make it way more clear
-and accessible though.
-
-So I think it sounds like we're on the same page and going exactly in
-the same direction, just that this is a starting point rather than the
-desired end state. And the main point is that having a set of
-xfails/flakes parachuted in with little to no context is trying to get
-an MVP bootstrapped, rather than how we expect things to go in future.
-Does that sound about right?
-
-Cheers,
-Daniel
+ arch/riscv/include/asm/errata_list.h | 4 ++--
+ arch/riscv/kernel/elf_kexec.c        | 8 +++++++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
