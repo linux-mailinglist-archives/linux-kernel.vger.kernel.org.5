@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518DD7A292B
+	by mail.lfdr.de (Postfix) with ESMTP id A56867A292C
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237507AbjIOVOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
+        id S237684AbjIOVOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238081AbjIOVNg (ORCPT
+        with ESMTP id S238128AbjIOVNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:13:36 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F844CD0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:13:05 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2745cd2ba68so2110767a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694812385; x=1695417185; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZHk7vThpLpskZtqajJEmCcHKvsPyXWDUd5X6GjbEhM=;
-        b=oc7I+p+6FvfuU9el2G07pmZZeSF2QT32N24IMQTgseIYtZ+zm+hxwT+p5D7B239YdE
-         JgNQ6SKWIt1wCWtz2CjTxBLR7cOFgHfhDt97dVKoIwWoohYv6zLWXU0Jb1UZV8uCrnMb
-         qMRhQEU3J+aoYsqOLIesAlKpcVBPW9rqGgMRo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694812385; x=1695417185;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZHk7vThpLpskZtqajJEmCcHKvsPyXWDUd5X6GjbEhM=;
-        b=WROreyZFP1Ny4XVY3li6kdSBoc17xU0HEcUqyRyyKlIeRGVxsAx1LULOfUtIlMLhHo
-         gbJ6iGR9AGvig0sfZa3jnLwiGs+tfHDH9nLXGesnrFpler1UrgWx2di1+h+RksmUEhYZ
-         dQKKkvIZ+327zCBdbuq/SafsQ3P+bTf4D5Tag4MWNpd9SPLEVSKhTC/1odAo5lau1FL+
-         XoFkKA62AS9xminDQQv/kNtNahmbAUT2kKhqvpDdR6c2pL3hK3eEFuEVDD9663JTcmeT
-         oVNuGvpEkk6kxBKz+UqT6SlAwIckNWaIXmz6SspsQ+M9hObVGwLHtKfRwPcSqmVhfP2d
-         Rq/g==
-X-Gm-Message-State: AOJu0YzMgcgM3Gl24kRUmgaG8JtEqcrw41CGekDWCUKcH7xx1fE3i/ow
-        wSHmQh2VjJhCAngfj1agsJ3f+w==
-X-Google-Smtp-Source: AGHT+IHm6HySe6IHe1hP6qL3CE05/JQnD5U2WP+Yncfwbd9pJNQNoXCcc43i0dypm9WA1Axo89FeCA==
-X-Received: by 2002:a17:90b:1952:b0:268:14a0:f8a with SMTP id nk18-20020a17090b195200b0026814a00f8amr2739464pjb.39.1694812384792;
-        Fri, 15 Sep 2023 14:13:04 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ie18-20020a17090b401200b0026971450601sm3428843pjb.7.2023.09.15.14.13.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 14:13:04 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 14:13:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Matteo Rizzo <matteorizzo@google.com>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
-        jannh@google.com, evn@google.com, poprdi@google.com,
-        jordyzomer@google.com, ardb@google.com
-Subject: Re: [RFC PATCH 10/14] x86: Create virtual memory region for SLUB
-Message-ID: <202309151410.E65B8300F@keescook>
-References: <20230915105933.495735-1-matteorizzo@google.com>
- <20230915105933.495735-11-matteorizzo@google.com>
+        Fri, 15 Sep 2023 17:13:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8DF1727
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:13:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B3FC433C9;
+        Fri, 15 Sep 2023 21:13:09 +0000 (UTC)
+Date:   Fri, 15 Sep 2023 17:13:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>
+Subject: Re: [GIT PULL] tracing: Add eventfs file to help with debugging any
+ more issues
+Message-ID: <20230915171334.5c231ca7@gandalf.local.home>
+In-Reply-To: <CAHk-=whNU3JaPMq_E7mwVGpTKxxeQxV=13o84u-tTeqfB_t05g@mail.gmail.com>
+References: <20230913192905.0a92bcab@gandalf.local.home>
+        <CAHk-=whAkgy10YVwjQGn1AO=1ZFc193ujvMXwmDOJAc=Jaeg5A@mail.gmail.com>
+        <20230915163637.77c673a6@gandalf.local.home>
+        <CAHk-=whNU3JaPMq_E7mwVGpTKxxeQxV=13o84u-tTeqfB_t05g@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915105933.495735-11-matteorizzo@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 10:59:29AM +0000, Matteo Rizzo wrote:
-> From: Jann Horn <jannh@google.com>
+On Fri, 15 Sep 2023 13:50:17 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Fri, 15 Sept 2023 at 13:36, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > I'm OK with it not going in now, but instead I'll wrap an ifdef around it
+> > and move it to my queue for the next merge window. I still would like to
+> > keep these "what's going on internally" available, as I'll ask people to
+> > enable them when they report an issue.  
 > 
-> SLAB_VIRTUAL reserves 512 GiB of virtual memory and uses them for both
-> struct slab and the actual slab memory. The pointers returned by
-> kmem_cache_alloc will point to this range of memory.
+> Honestly, you copied the pattern from the /proc filesystem.
 
-I think the 512 GiB limit may be worth mentioning in the Kconfig help
-text.
+I didn't actually copy it, even though the /proc filesystem does something
+similar (I didn't even know that it did until I presented this idea for
+eventfs in LSFMM, and someone told me that /proc did so too).
 
-And in the "640K is enough for everything" devil's advocacy, why is 512
-GiB enough here? Is there any greater risk of a pathological allocation
-pattern breaking a system any more (or less) than is currently possible?
+I tried to look at how /proc does things and I couldn't really use it as
+easily, because proc uses its own set of "proc_ops", and I had some
+different requirements.
+
 > 
-> Signed-off-by: Jann Horn <jannh@google.com>
+> The /proc filesyustem is widely used and has never had this kind of
+> random debugging code in mainline.
 
-But, yes, I'm still a fan, and I think it interacts well here with the
-rest of the KASLR initialization:
+Again, it is implemented differently.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> Seriously, that eventfs_file thing is not worthy of this kind of
+> special debug code.
+> 
+> That debug code seems to be approaching the same order of size as all
+> the code evetfs_file code itself is.
 
-Have you tried to make this work on arm64? I imagine it should be
-roughly as easy?
+You mean the event_show.c code?
 
--- 
-Kees Cook
+> 
+> There's a point where this kind of stuff just becomes ridiculous. At
+> least wait until there's a *reason* to debug a simple linked list of
+> objects.
+> 
+> If you have a hard time figuring out what the eventfs entries are,
+> maybe you should just have made "iterate_shared" show them, and then
+> you could use fancy tools like "ls" to see what the heck is up in that
+> directory?
+> 
+
+I was more interested in what did not exist than what existed. I wanted to
+make sure that things were cleaned up properly. One of my tests that I used
+was to do a: find /sys/kernel/tracing/events, and then run my ring_buffer
+memory size stress test (that keeps increasing the size of the ring buffer
+to make sure it fails safely when it runs out of memory). Then I check to make
+sure all the unused dentries and inodes were reclaimed nicely, as they hang
+around until a reclaim is made.
+
+It did prove useful for the initial debugging, but it also helped a lot for
+the new code I have saved for the next merge window. That code changes the
+internal interface quite drastically.
+
+The current code has meta data for every file in the eventfs (defined by the
+eventfs_file structure). The new code has meta data only for the events
+themselves (which map to the directories) and I remove the eventfs_file
+entirely. It uses a callback from the eventfs code to create the dentries
+and inodes of the files on the fly (there's no meta data representing the
+individual files).
+
+  https://lore.kernel.org/linux-trace-kernel/20230914163535.269645249@goodmis.org/
+
+Now I use this debug file to know what files are added, and more
+importantly, not added.
+
+Are you entirely against this file, or is it fine if it's just wrapped
+around an CONFIG_EVENTFS_DEBUG?
+
+-- Steve
