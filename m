@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6517A1A71
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39787A1A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbjIOJWu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 05:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S233467AbjIOJXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233664AbjIOJW3 (ORCPT
+        with ESMTP id S233529AbjIOJXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:22:29 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1206730C3;
-        Fri, 15 Sep 2023 02:21:45 -0700 (PDT)
-Received: from lhrpeml100002.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rn7wH5Jlrz6K6nl;
-        Fri, 15 Sep 2023 17:21:03 +0800 (CST)
-Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
- lhrpeml100002.china.huawei.com (7.191.160.241) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 10:21:42 +0100
-Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
- lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
- Fri, 15 Sep 2023 10:21:42 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Russell King <linux@armlinux.org.uk>
-CC:     Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        James Morse <james.morse@arm.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
-        "justin.he@arm.com" <justin.he@arm.com>
-Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
- first?]
-Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
- [code first?]
-Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAAC7oAA==
-Date:   Fri, 15 Sep 2023 09:21:42 +0000
-Message-ID: <e91f1c42c6b643a4a8227d1bac895747@huawei.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-28-james.morse@arm.com>
-        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
-        <20230914155459.00002dba@Huawei.com>
-        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
-        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
- <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-In-Reply-To: <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.174.239]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 15 Sep 2023 05:23:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168D12D46;
+        Fri, 15 Sep 2023 02:22:27 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C2A8066072F9;
+        Fri, 15 Sep 2023 10:22:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694769746;
+        bh=fzWaPZEsAH1sXxqOkzkVtQ4njuoVic2dFspzQhvmEhQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hLKOt4CQSs1fT5XRZVgDtipG8WoOmZASj/JOMREm3A29RtJ9QGt0Z3jPdU05Y2DdE
+         aG+x2vOsMsD48u2FVmgr5jcD2tpjZKXKzekCQTY01kFRr8LDL5xCcASGcaLGxnN/8v
+         cxOzBNZHO32+VfRniTSz6FZumw6pWdCOlkqsa8MRG/03MP/lFx6ten0E8QgULgQT72
+         N2hiCs18TNhtWQ2fXCiQVfQIyXdraOMzxqeXmOXa5obPEtqiks4vWHR7leejQyV3/A
+         Il262QCiRBVDL2ZVbBe0qxn53LeZcZyb0/LZBua7CZ/IMiXG025Up3V2rN6SAPnOkM
+         fzqHsE/0J+nCA==
+Message-ID: <bf87aa29-ea42-f811-7ae9-3888336989fb@collabora.com>
+Date:   Fri, 15 Sep 2023 11:22:23 +0200
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1 1/2] dt-bindings: soc: mediatek: add mt8188 svs
+ dt-bindings
+Content-Language: en-US
+To:     Mark Tseng <chun-jen.tseng@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Lu <roger.lu@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230915075003.1552-1-chun-jen.tseng@mediatek.com>
+ <20230915075003.1552-2-chun-jen.tseng@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230915075003.1552-2-chun-jen.tseng@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russel,
-
-> From: Russell King <linux@armlinux.org.uk>
-> Sent: Friday, September 15, 2023 8:09 AM
-> To: Salil Mehta <salil.mehta@huawei.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>; James Morse <james.morse@arm.com>; linux-
-> pm@vger.kernel.org; loongarch@lists.linux.dev; linux-acpi@vger.kernel.org;
-> linux-arch@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-riscv@lists.infradead.org;
-> kvmarm@lists.linux.dev; x86@kernel.org; Jean-Philippe Brucker <jean-
-> philippe@linaro.org>; jianyong.wu@arm.com; justin.he@arm.com
-> Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
-> [code first?]
+Il 15/09/23 09:50, Mark Tseng ha scritto:
+> Add mt8188 svs compatible in dt-bindings.
 > 
-> On Fri, Sep 15, 2023 at 02:29:13AM +0000, Salil Mehta wrote:
-> > On x86, during init, if the MADT entry for LAPIC is found to be
-> > online-capable and is enabled as well then possible and present
+> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+
+This commit does not apply. Please always develop and test on upstream.
+
+> ---
+>   Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> Note that the ACPI spec says enabled + online-capable isn't defined.
-> 
-> "The information conveyed by this bit depends on the value of the
-> Enabled bit. If the Enabled bit is set, this bit is reserved and
-> must be zero."
-> 
-> So, if x86 is doing something with the enabled && online-capable
-> state (other than ignoring the online-capable) then technically it
-> is doing something that the spec doesn't define - and it's
-> completely fine if aarch64 does something else (maybe treating it
-> strictly as per the spec and ignoring online-capable.)
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> index f21eb907ee90..7eda63d5682f 100644
+> --- a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> @@ -22,6 +22,7 @@ properties:
+>     compatible:
+>       enum:
+>         - mediatek,mt8183-svs
+> +      - mediatek,mt8188-svs
+>         - mediatek,mt8192-svs
+>   
+>     reg:
 
-
-I would suggest that we should concentrate on what is actually
-required. The fact of the matter is there is no need to keep
-ACPI MADT.GICC.Enabled and ACPI MADT.GICC.online-capable bits
-mutually exclusive. (please correct my understanding here
-if I am wrong here)
-
-It is a different matter that x86 has implemented above
-requirement first for their x2APIC and spec are still not
-reflecting what has been implemented as part of the code.
-(I would add, for whatever reasons)
-
-On ARM we have copied something from x86 ACPI Specification
-which has not been updated yet. (why it is not updated? Maybe
-x86 folks can clarify more on this?). Even on ARM, mutual
-exclusiveness of the bits is not required. But does it breaks
-anything on ARM to *not* have mutual exclusiveness. 
-AFAICS, no, but ARM Arch guys can confirm this?)
-
-If bits are *not* required to be mutually exclusive on either
-platforms x86/ARM then, I think, it makes sense to update
-ACPI specification for both of the platforms.
-
-
-Thanks
-Salil.
 
