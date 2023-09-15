@@ -2,224 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D7B7A14FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F217A1514
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjIOFBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
+        id S232056AbjIOFCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbjIOFBv (ORCPT
+        with ESMTP id S232002AbjIOFCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:01:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1F82710
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:01:44 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d802ecb5883so2067541276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:01:44 -0700 (PDT)
+        Fri, 15 Sep 2023 01:02:47 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC18230D6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:02:14 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68fc081cd46so1673813b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694754103; x=1695358903; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9rCph9Ke3trsfRl0d5Mycw1TxfealFq99Kh2f8hpgHs=;
-        b=3qOjYjACdSIb1+QDn3UmOeWXOfpfh8/kLKA+KVgTVFDaGhKa0UGeAIIjrUoqv5GnFQ
-         gwEghF6e525pKbq/Aio0EUh3bMb/8rVbAz2YXuoJU2NqpJnmX6FzDy3pwbeYAeezHDf3
-         hsLWpUKazeYjOYzOukdW1Zk07rrwMdN1laEYhpsEask3kpPJcVCm9qu8Q9PUruM+HjtN
-         H3Rl1Weufigo5wXrTd9uvuYFRoj8Z2VXXkSj1hvcYxYK4VPjTFZ5foOfaLQFWLmvclMQ
-         +eQSRdZWvQZlQxhQml14GS0JKKnIb3NNHRZMcGFLllPcEKiYTjP82vy7sOoaLkX3j9vM
-         9S3Q==
+        d=chromium.org; s=google; t=1694754134; x=1695358934; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZUHT7ZncwMciXGAdkByCDy2UYR6xxoRGWT81VKP1ig=;
+        b=hcH1OKLgP6A0GTmVl7Ud8QGw5hyZIVAleNVGgzN/n7nUVBRUScG7cJ2+epBOv7FfLf
+         gmMnkoQEZoc4D3/Qhj3KPSCNve3tc2OUQK9VBq5qoUkQZ4dYePsCNK0lwKC+8SHcfhDh
+         xNoDCGeiCgwsAgQABCoHX20aZjZWDL+Nx8j98=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694754103; x=1695358903;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9rCph9Ke3trsfRl0d5Mycw1TxfealFq99Kh2f8hpgHs=;
-        b=HDy5hvXhj89UJyNQ7AquSzvrOJT1PA0EwjOjtBsdOiHA173ChE1N0mGusFVCQ/yqz/
-         uJJDhzlBZfNe6QzsN+1X/AayA7Z6cKw/hY6lgk/vccSleEiekhQK9qgUENbWW3n0IX7N
-         ykPpoXzY/nQS2vmPMTIdxsx0mrxiLYBCM5m7utp5bXOJ3Tf0WB+96EBvIe8THs0F/uIS
-         510PMPhCUrhGwVjHgdn/QEfS4N443w1F8uAqaix9gL8cYIpbY4xadEESPFJZ192YFkLy
-         Sgq6PE2MZWQkcIFMPV9O3sdhlF9A8BJNOkuxrw2c0x3MtokdnsIWo+twjwa8VNegxaX4
-         2QcA==
-X-Gm-Message-State: AOJu0YypeMlNwLXeAwE0QBOjhk6dtUfImWRrvJHRGeQ+SKZ4zPkskvO+
-        RrIbM6XP3/AMl7c6F2vftiyl0CGhhokK0g==
-X-Google-Smtp-Source: AGHT+IH5zlAB2HKrUfKZ3gto/cPG2gsfk0RtuOfBjG670gz/zKlu5ZCu6/j8d0kg3b2lpF9qSe5ELncZZj3OVA==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a25:b312:0:b0:d0b:c67:de3b with SMTP id
- l18-20020a25b312000000b00d0b0c67de3bmr7744ybj.13.1694754103676; Thu, 14 Sep
- 2023 22:01:43 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 13:01:23 +0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230915050125.3609689-1-davidgow@google.com>
-Subject: [RFC PATCH] kunit: Add a macro to wrap a deferred action function
-From:   David Gow <davidgow@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Rae Moar <rmoar@google.com>, dlatypov@google.com
-Cc:     David Gow <davidgow@google.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1694754134; x=1695358934;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WZUHT7ZncwMciXGAdkByCDy2UYR6xxoRGWT81VKP1ig=;
+        b=c+QWBxyB2sMjnTTFKyBbsltHOzUuoBvvPS/AP0W7Yj4mWTOsQHj3TWKdDdcoMWDfea
+         YIlDSykhDWXemOsgWT5OPSG5dXkQhcZkSTEB8uj6LAwypDxIwSkS49o+1gXC38H58wS5
+         pc/wHK/9p9f6zvCXwR7ZsAYeKQvpXUEREC0GYv2FFQO+/M2N75DSkwUoCfI1wr7krkQS
+         RfNlhrfU8eyyyDF4L5imdu077bhK1giAnsw8pg6SmEFvvLhqOO1CrwoI1uZpDUPn66VT
+         Smv5Imib5R3eJ60Dw0S3vfc+b2WG4EiqFnnJAi19xOEQBlAKXgg4s0uIfgNXbSt4YU7A
+         Zj6Q==
+X-Gm-Message-State: AOJu0YwWzma3NeLTzP6I5H44ICtYoo1RAYnlH2zBJOJjEEpV0XTzqNrg
+        D/f+77vwx/GFTwj04TECl8CkfXF98hsN4aDXv3U=
+X-Google-Smtp-Source: AGHT+IGyTtLCa2sSYfpYJAobIKiqp/hb3pnaq2A04V7budd45O+mGDgvJK8UC6are2k2azYMIuIS/Q==
+X-Received: by 2002:a05:6a20:54a9:b0:157:229a:db21 with SMTP id i41-20020a056a2054a900b00157229adb21mr807822pzk.56.1694754134190;
+        Thu, 14 Sep 2023 22:02:14 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 18-20020a056a00073200b0067ab572c72fsm2131987pfm.84.2023.09.14.22.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 22:02:13 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 22:02:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] HID: prodikeys: refactor deprecated strncpy
+Message-ID: <202309142201.683ED5A7FD@keescook>
+References: <20230914-strncpy-drivers-hid-hid-prodikeys-c-v1-1-10c00550f2c2@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914-strncpy-drivers-hid-hid-prodikeys-c-v1-1-10c00550f2c2@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KUnit's deferred action API accepts a void(*)(void *) function pointer
-which is called when the test is exited. However, we very frequently
-want to use existing functions which accept a single pointer, but which
-may not be of type void*. While this is probably dodgy enough to be on
-the wrong side of the C standard, it's been often used for similar
-callbacks, and gcc's -Wcast-function-type seems to ignore cases where
-the only difference is the type of the argument, assuming it's
-compatible (i.e., they're both pointers to data).
+On Thu, Sep 14, 2023 at 10:20:55PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We should prefer more robust and less ambiguous string interfaces.
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+> NUL-termination on the destination buffer without unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: for some reason if NUL-padding is needed let's opt for `strscpy_pad()`
+> ---
+>  drivers/hid/hid-prodikeys.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-prodikeys.c b/drivers/hid/hid-prodikeys.c
+> index e4e9471d0f1e..c16d2ba6ea16 100644
+> --- a/drivers/hid/hid-prodikeys.c
+> +++ b/drivers/hid/hid-prodikeys.c
+> @@ -639,9 +639,9 @@ static int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+>  		goto fail;
+>  	}
+>  
+> -	strncpy(card->driver, shortname, sizeof(card->driver));
+> -	strncpy(card->shortname, shortname, sizeof(card->shortname));
+> -	strncpy(card->longname, longname, sizeof(card->longname));
+> +	strscpy(card->driver, shortname, sizeof(card->driver));
+> +	strscpy(card->shortname, shortname, sizeof(card->shortname));
+> +	strscpy(card->longname, longname, sizeof(card->longname));
 
-However, clang 16 has introduced -Wcast-function-type-strict, which no
-longer permits any deviation in function pointer type. This seems to be
-because it'd break CFI, which validates the type of function calls.
+"card" is already kzalloc()ed so no _pad() is needed, good.
 
-This rather ruins our attempts to cast functions to defer them, and
-leaves us with a few options:
-1. Stick our fingers in our ears an ignore the warning. (It's worked so
-   far, but probably isn't the right thing to do.)
-2. Find some horrible way of casting which fools the compiler into
-   letting us do the cast. (It'd still break CFI, though.)
-3. Disable the warning, and CFI for this function. This isn't optimal,
-   but may make sense for test-only code. However, I think we'd have to
-   do this for every function called, not just the caller, so maybe it's
-   not practical.
-4. Manually write wrappers around any such functions. This is ugly (do
-   we really want two copies of each function, one of which has no type
-   info and just forwards to the other). It could get repetitive.
-5. Generate these wrappers with a macro. That's what this patch does.
+>  
+>  	/* Set up rawmidi */
+>  	err = snd_rawmidi_new(card, card->shortname, 0,
+> @@ -652,7 +652,7 @@ static int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+>  		goto fail;
+>  	}
+>  	pm->rwmidi = rwmidi;
+> -	strncpy(rwmidi->name, card->shortname, sizeof(rwmidi->name));
+> +	strscpy(rwmidi->name, card->shortname, sizeof(rwmidi->name));
+>  	rwmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT;
+>  	rwmidi->private_data = pm;
 
-I'm broadly okay with any of the options above, though whatever we go
-with will no doubt require some bikeshedding of details (should these
-wrappers be public, do we dedupe them, etc).
+Same here.
 
-Thoughts?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1750
-Signed-off-by: David Gow <davidgow@google.com>
----
+-Kees
 
-I finally got around to setting up clang 16 to look into these warnings:
+>  
+> 
+> ---
+> base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+> change-id: 20230914-strncpy-drivers-hid-hid-prodikeys-c-cf42614a21d4
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
-   lib/kunit/test.c:764:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-           if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
-                                               ^~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/test.c:776:29: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-           kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
-                                      ^~~~~~~~~~~~~~~~~~~~~~~
-   2 warnings generated.
-
-It's probably something which needs fixing with wrappers, not with the
-"just keep casting things until the compiler forgets" strategy.
-
-There are few enough uses of kunit_add_action() that now's the time to
-change things if we want to fix these warnings (and, I guess, work with
-CFI). This patch uses an ugly macro, but we're definitely still at the
-point where doing this by hand might make more sense.
-
-Don't take this exact patch too seriously: it's mostly a discussion
-starter so we can decide on a plan.
-
-Cheers,
--- David
-
----
- include/kunit/resource.h  | 9 +++++++++
- lib/kunit/executor_test.c | 7 +++----
- lib/kunit/test.c          | 6 ++++--
- 3 files changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/include/kunit/resource.h b/include/kunit/resource.h
-index c7383e90f5c9..4110e13970dc 100644
---- a/include/kunit/resource.h
-+++ b/include/kunit/resource.h
-@@ -390,6 +390,15 @@ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
- /* A 'deferred action' function to be used with kunit_add_action. */
- typedef void (kunit_action_t)(void *);
- 
-+/* We can't cast function pointers to kunit_action_t if CFI is enabled. */
-+#define KUNIT_DEFINE_ACTION_WRAPPER(wrapper, orig, arg_type) \
-+	static void wrapper(void *in) \
-+	{ \
-+		arg_type arg = (arg_type)in; \
-+		orig(arg); \
-+	}
-+
-+
- /**
-  * kunit_add_action() - Call a function when the test ends.
-  * @test: Test case to associate the action with.
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-index b4f6f96b2844..14ac64f4f71b 100644
---- a/lib/kunit/executor_test.c
-+++ b/lib/kunit/executor_test.c
-@@ -256,9 +256,8 @@ kunit_test_suites(&executor_test_suite);
- 
- /* Test helpers */
- 
--/* Use the resource API to register a call to kfree(to_free).
-- * Since we never actually use the resource, it's safe to use on const data.
-- */
-+KUNIT_DEFINE_ACTION_WRAPPER(kfree_action_wrapper, kfree, const void *)
-+/* Use the resource API to register a call to kfree(to_free). */
- static void kfree_at_end(struct kunit *test, const void *to_free)
- {
- 	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
-@@ -266,7 +265,7 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
- 		return;
- 
- 	kunit_add_action(test,
--			(kunit_action_t *)kfree,
-+			kfree_action_wrapper,
- 			(void *)to_free);
- }
- 
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 421f13981412..41b7d9a090fb 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -804,6 +804,8 @@ static struct notifier_block kunit_mod_nb = {
- };
- #endif
- 
-+KUNIT_DEFINE_ACTION_WRAPPER(kfree_action_wrapper, kfree, const void *)
-+
- void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
- {
- 	void *data;
-@@ -813,7 +815,7 @@ void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
- 	if (!data)
- 		return NULL;
- 
--	if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
-+	if (kunit_add_action_or_reset(test, kfree_action_wrapper, data) != 0)
- 		return NULL;
- 
- 	return data;
-@@ -825,7 +827,7 @@ void kunit_kfree(struct kunit *test, const void *ptr)
- 	if (!ptr)
- 		return;
- 
--	kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
-+	kunit_release_action(test, kfree_action_wrapper, (void *)ptr);
- }
- EXPORT_SYMBOL_GPL(kunit_kfree);
- 
 -- 
-2.42.0.459.ge4e396fd5e-goog
-
+Kees Cook
