@@ -2,194 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B77D47A1FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFBA7A1FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbjIONZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
+        id S235289AbjIONYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235250AbjIONZB (ORCPT
+        with ESMTP id S234575AbjIONYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:25:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BA41FF1;
-        Fri, 15 Sep 2023 06:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694784295; x=1726320295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xhawzRG3TJlJdNBVQGus4/qbVTl5JLFakyWXXMvo36U=;
-  b=Cd9C3N27LDJ5yjcAGo/07VP1pGuLUWZLNm9liTtx0CX3Z4kKWGJI5JIZ
-   R8icJhzDPtQP6WTUcZV/ErXyFC6EyX1YmEDTcfewXGwMAjfJZPgDElDNr
-   jwhDmPmbhz75IYWvWuNhQLrygt/iJ0Obval+YauMmsBfhcHnkmwG9PKhu
-   7Q3RwHgtvoLpLzxwwrGXvq3FEBAMwZ6wC9zbLvmwzNxwY4Osr1/0bIev9
-   W682JVIgv+qn0gUnqujtpD1LvQW9DcPdtrpWl0eaJhGencfh0kNph5Lpi
-   jARH2pUxtJP9an77tdqv3tvW8LhFyrmX8lLdV7c6ho/2cENrh82J6j63Q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="443307482"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="443307482"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 06:23:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="780091501"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="780091501"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga001.jf.intel.com with SMTP; 15 Sep 2023 06:23:22 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 15 Sep 2023 16:23:21 +0300
-Date:   Fri, 15 Sep 2023 16:23:21 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Fri, 15 Sep 2023 09:24:30 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FFE272C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:23:48 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a64619d8fbso279546066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694784227; x=1695389027; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1U96v2df/GCS7HRvhdN4EdRezxa7IYKwHOpPeh6hRvI=;
+        b=OX5/o2SfUDZzte6E2Fms4S38dZjkUlYBOY6m5IaZGBwMYwwhMXJ9JmYQ6qTTiGAHQS
+         HxJIXd58R3JnsTtOF+HO6CcB5XZ2eeF/BbzD9TgS1UL5ZXYP+FtU5OkZHrsno96SBYjq
+         4jhbXAfltQDyQwVDMfZoQx+PfRGO+boaGYzMlIrUMNKP6S5LbPp/xo+muxhG0R8Tte9Q
+         sBBw48xHDDKkKyMr5DX/keWtZrknSdmL23SUyBnm1bs1fUo0IZgJmevyaJTiP7AX+GLO
+         y5cfAKCzEQ/Zp++//J0RYC9Dx/AzJKGQJmsj1KTDOJwUh5Cs/q6yMUtLvNkFlOKeqtRS
+         SMiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694784227; x=1695389027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1U96v2df/GCS7HRvhdN4EdRezxa7IYKwHOpPeh6hRvI=;
+        b=GKxWF0BgPTZGIpnp4rimY4C7nvRT5uJSMScJNH6S/iiEl6IQM8TIfFWHC/CvKkpxUw
+         9SNEASDQly1277VtHdr0a2o1ZJv8ibHiauXd9J2bdaYkfFCWN3JdTtJvmKk2SGgakGq8
+         nvp0Kzly66DRElYfSRcPkcS8YDn/bvS2D/MC3X6iGUveSwed4P8qLXcJvtZ5MbglXU+X
+         zCu5wk8cGUH41NkNX+gM8zCU6DVg8R2ieykb4x0s1g0EbxtcfgUYRrGYFJFCWri9yOkQ
+         6rxHBrhQXe8TKQLW7zhCKJi8mIRstjgK6oHg3HmvP3xSeM8mfsJ1/wFox3XSNbTNvIe/
+         l2Tg==
+X-Gm-Message-State: AOJu0Yz7kWmCzrxCkNaqhbPoDOrNPmIqAaBn/w29q5IJ0PEyapmPoLVD
+        vQ9n1TOtVbw/7FeFLnvX8ZTbRA==
+X-Google-Smtp-Source: AGHT+IHJb4HtPGUePL9mUs+HJqXER2fgOPpx0hOjcuuKj93Ug0wBvTft9KXdW8nwYNIXmes1SpZBiA==
+X-Received: by 2002:a17:906:76d0:b0:9a5:9305:83ff with SMTP id q16-20020a17090676d000b009a5930583ffmr1500146ejn.18.1694784227395;
+        Fri, 15 Sep 2023 06:23:47 -0700 (PDT)
+Received: from [192.168.69.115] (6lp61-h01-176-171-209-234.dsl.sta.abo.bbox.fr. [176.171.209.234])
+        by smtp.gmail.com with ESMTPSA id fi8-20020a170906da0800b00997e00e78e6sm2419215ejb.112.2023.09.15.06.23.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 06:23:47 -0700 (PDT)
+Message-ID: <f69ac27a-943c-3966-385a-e12ecd71d33a@linaro.org>
+Date:   Fri, 15 Sep 2023 15:23:44 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v5 0/3] Move Loongson1 MAC arch-code to the driver dir
+Content-Language: en-US
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] usb: typec: tps6598x: add reset gpio support
-Message-ID: <ZQRayaqdtrqYl4AT@kuha.fi.intel.com>
-References: <20230912-topic-tps6598x_reset-v2-0-02a12e2ec50a@wolfvision.net>
- <20230912-topic-tps6598x_reset-v2-1-02a12e2ec50a@wolfvision.net>
- <ZQRUsD1QLke70VG2@kuha.fi.intel.com>
- <8937c928-1938-4864-08e1-25f88caadb9a@wolfvision.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8937c928-1938-4864-08e1-25f88caadb9a@wolfvision.net>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230914114435.481900-1-keguang.zhang@gmail.com>
+ <ueevvju7i42wik6fevdmvbtypm4su77guyo4zizhrfreexken7@nrcovxfnyuvq>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <ueevvju7i42wik6fevdmvbtypm4su77guyo4zizhrfreexken7@nrcovxfnyuvq>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 15/9/23 11:55, Serge Semin wrote:
+> Hi Keguang
+> 
+> On Thu, Sep 14, 2023 at 07:44:32PM +0800, Keguang Zhang wrote:
+>> In order to convert Loongson1 MAC platform devices to the devicetree
+>> nodes, Loongson1 MAC arch-code should be moved to the driver dir.
+>> Add dt-binding document and update MAINTAINERS file accordingly.
+>>      
+>> In other words, this patchset is a preparation for converting
+>> Loongson1 platform devices to devicetree.
+> 
+> No more comments from my side. Thank you for the patches and
+> especially for the patience in the review process.
+> 
+> For the entire series:
+> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> 
+> * I'll also send individual Rb tags to each patch so b4 would be able
+> * to take it into account.
 
-On Fri, Sep 15, 2023 at 03:17:28PM +0200, Javier Carrasco wrote:
-> On 15.09.23 14:57, Heikki Krogerus wrote:
-> > On Fri, Sep 15, 2023 at 02:23:48PM +0200, Javier Carrasco wrote:
-> >> The TPS6598x PD controller provides an active-high hardware reset input
-> >> that reinitializes all device settings. If it is not grounded by
-> >> design, the driver must be able to de-assert it in order to initialize
-> >> the device.
-> >>
-> >> The PD controller is not ready for registration right after the reset
-> >> de-assertion and a delay must be introduced in that case. According to
-> >> TI, the delay can reach up to 1000 ms [1], which is in line with the
-> >> experimental results obtained with a TPS65987D.
-> >>
-> >> Add a GPIO descriptor for the reset signal and basic reset management
-> >> for initialization and suspend/resume.
-> >>
-> >> [1] https://e2e.ti.com/support/power-management-group/power-management/
-> >> f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
-> >> to-normal-operation/4809389#4809389
-> >>
-> >> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-> >> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Maintainers using b4 should use the '-t' option, then you don't need
+to do that:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+  -t, --apply-cover-trailers
 
-> >> ---
-> >>  drivers/usb/typec/tipd/core.c | 20 ++++++++++++++++++++
-> >>  1 file changed, 20 insertions(+)
-> >>
-> >> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> >> index 37b56ce75f39..3068ef300073 100644
-> >> --- a/drivers/usb/typec/tipd/core.c
-> >> +++ b/drivers/usb/typec/tipd/core.c
-> >> @@ -8,6 +8,7 @@
-> >>  
-> >>  #include <linux/i2c.h>
-> >>  #include <linux/acpi.h>
-> >> +#include <linux/gpio/consumer.h>
-> >>  #include <linux/module.h>
-> >>  #include <linux/of.h>
-> >>  #include <linux/power_supply.h>
-> >> @@ -43,6 +44,9 @@
-> >>  /* TPS_REG_SYSTEM_CONF bits */
-> >>  #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
-> >>  
-> >> +/* reset de-assertion to ready for operation */
-> >> +#define SETUP_MS			1000
-> >> +
-> >>  enum {
-> >>  	TPS_PORTINFO_SINK,
-> >>  	TPS_PORTINFO_SINK_ACCESSORY,
-> >> @@ -86,6 +90,7 @@ struct tps6598x {
-> >>  	struct mutex lock; /* device lock */
-> >>  	u8 i2c_protocol:1;
-> >>  
-> >> +	struct gpio_desc *reset;
-> >>  	struct typec_port *port;
-> >>  	struct typec_partner *partner;
-> >>  	struct usb_pd_identity partner_identity;
-> >> @@ -717,6 +722,13 @@ static int tps6598x_probe(struct i2c_client *client)
-> >>  	mutex_init(&tps->lock);
-> >>  	tps->dev = &client->dev;
-> >>  
-> >> +	tps->reset = devm_gpiod_get_optional(tps->dev, "reset", GPIOD_OUT_LOW);
-> >> +	if (IS_ERR(tps->reset))
-> >> +		return dev_err_probe(tps->dev, PTR_ERR(tps->reset),
-> >> +				     "failed to get reset GPIO\n");
-> >> +	if (tps->reset)
-> >> +		msleep(SETUP_MS);
-> >> +
-> >>  	tps->regmap = devm_regmap_init_i2c(client, &tps6598x_regmap_config);
-> >>  	if (IS_ERR(tps->regmap))
-> >>  		return PTR_ERR(tps->regmap);
-> >> @@ -892,6 +904,9 @@ static void tps6598x_remove(struct i2c_client *client)
-> >>  	tps6598x_disconnect(tps, 0);
-> >>  	typec_unregister_port(tps->port);
-> >>  	usb_role_switch_put(tps->role_sw);
-> >> +
-> >> +	if (tps->reset)
-> >> +		gpiod_set_value_cansleep(tps->reset, 1);
-> > 
-> > Do you need that "if (tps->reset)" in this case? That function is NULL safe,
-> > right?
-> > 
-> The function makes use of the VALIDATE_DESC_VOID macro to make it NULL
-> safe, but this macro also calls pr_warn if the descriptor is NULL and I
-> do not want to add warnings for an optional property that did not exist
-> before because it could be confusing. But if that is the desired
-> behavior, I will remove the checks.
+  By default, b4 will not apply any code review trailers sent to
+  the cover letter (but will let you know when it finds those).
+  This lets you automatically apply these trailers to all commits
+  in the series. This will become the default in a future version
+  of b4.
 
-No, I don't want noise either.
-
-> >>  }
-> >>  
-> >>  static int __maybe_unused tps6598x_suspend(struct device *dev)
-> >> @@ -902,6 +917,8 @@ static int __maybe_unused tps6598x_suspend(struct device *dev)
-> >>  	if (tps->wakeup) {
-> >>  		disable_irq(client->irq);
-> >>  		enable_irq_wake(client->irq);
-> >> +	} else if (tps->reset) {
-> >> +		gpiod_set_value_cansleep(tps->reset, 1);
-> >>  	}
-> >>  
-> >>  	if (!client->irq)
-> >> @@ -918,6 +935,9 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
-> >>  	if (tps->wakeup) {
-> >>  		disable_irq_wake(client->irq);
-> >>  		enable_irq(client->irq);
-> >> +	} else if (tps->reset) {
-> >> +		gpiod_set_value_cansleep(tps->reset, 0);
-> >> +		msleep(SETUP_MS);
-> >>  	}
-> >>  
-> >>  	if (!client->irq)
-> >>
-> >> -- 
-> >> 2.39.2
-
-thanks,
-
--- 
-heikki
+https://b4.docs.kernel.org/en/latest/maintainer/am-shazam.html#common-flags
