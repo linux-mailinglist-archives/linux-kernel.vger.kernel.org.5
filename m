@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DD67A25D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EEB7A25DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbjIOSed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        id S236483AbjIOSgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236554AbjIOSeM (ORCPT
+        with ESMTP id S236447AbjIOSfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:34:12 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBA02710
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:34:05 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d8181087dc9so2264964276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:34:05 -0700 (PDT)
+        Fri, 15 Sep 2023 14:35:42 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B752105;
+        Fri, 15 Sep 2023 11:35:35 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34fcbb4a097so1568185ab.1;
+        Fri, 15 Sep 2023 11:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694802845; x=1695407645; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XAp4QGQYuiB0aBhykrwn9fuo1kSVZeoCYVkl9zEjWE8=;
-        b=ZRn2r1NhTF7RYpU9wxUTTfDNoPsm2sCTFXU1/SwBNv25DiPf06YThxVCMV4zUBKCO3
-         cRyQwzUXYv4n6sQXFoqqhqUpCcxXv8Nn7Uf9WvoZEiwCAAZ8FIUnap3XKbucbT57CAJF
-         rIXOxDqv6tUYiUr4p8YFl5KjPOuZ/rkmVNpWnAlE0w2Eo8bmA345EyQuL9VLWpO1VMVT
-         hXIBl0MdO6N1c144hAhtpiGJi5jXaaPE2g1MVc/DILwfFJLW+5h7tvFpOu9cLrpopNVd
-         BeMBNPf/5h5KjAjAo4JSTKrLSLN/HazLaTHgY6jyEpjZa2V2wU18gx7tDmfMmZilxyqE
-         ihbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694802845; x=1695407645;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1694802935; x=1695407735; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XAp4QGQYuiB0aBhykrwn9fuo1kSVZeoCYVkl9zEjWE8=;
-        b=CxCDp7fnHtPip/MAzi3A4tNsJbLvsjCe2Bc0i2UqimzuOnormqyCFqa5a64eE4XnM9
-         4yMKe+5bhUSIpjo4ZLTMz1ppzKYnvIfK6Hp5l7ot472HVAG0r8DxspmpzOYp4pFDhnaG
-         AZPVKUQuFIQZjgmEk2UuLPgYUdknzUa8z8WToNeqy773dS+2ZdPsQi9ZTXOnFThBVzVl
-         rLTL9ihcs1kBJphjYPVhvCkO/8aa82EJPfrJ7g5X5jL/NK4BdEmNoeg5h6iAL1/tUIDQ
-         iqaM4eZq6Z/ei4jLWjqcYRvWM1d+I1l5OXr3eF2wet2fnCiKYyAKIhKj99wcyUUcQzfW
-         KTaw==
-X-Gm-Message-State: AOJu0YyvdGaLYIxW5eNHd5B/pHL4mE6H4w4fVul6XTEpbRPSaMfbLcJB
-        OAS2UdKMA0/ll+sCLyzmpbV3U9ru3V+yRBoaEOob5Q==
-X-Google-Smtp-Source: AGHT+IGz/X+sLYorNmDn+iedwieWtRZ/y9HzEpRRT43OwE+qJPUPdVSjf4sOic9847CsYuYN7WCPMNDqcCWsxExcJ04=
-X-Received: by 2002:a25:820e:0:b0:d7b:9a4b:5a72 with SMTP id
- q14-20020a25820e000000b00d7b9a4b5a72mr2312461ybk.31.1694802844944; Fri, 15
- Sep 2023 11:34:04 -0700 (PDT)
+        bh=rhh/wBpFLk2YxTCyHBvIz67adRAxBtDWaMESKiiC4/U=;
+        b=UIlTjq+Sz8pRYbeKRw0Y2zmhMjlIavv5FOl2IK22e7bfA4m8cVrZb1WfhH/jmFiI06
+         U9O8zR7PY0cCvavCbBx90MeAHu+YTb/tR5Bx+GHKr9IK377mSMbmkcr/FWl10bAo2VG7
+         bV2Vt/X6z4B8YQr+J6/FIt+TREZzum/Q41Xi0clUzI2+tklFJwJuxvmz3CP7hvyCDmWk
+         2yhnYaj4NYm9JDUsJeMwkyMSmr0mThI152W77Ptk7Vas5JB0+VIT+bUWMZdIg8NmCV1r
+         n01XO1quE5OlE7dmic56cl4W/vvA0nqo5NTvtwViQJXe69Crskom9Lv7yN04XqSEo/7L
+         c75g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694802935; x=1695407735;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rhh/wBpFLk2YxTCyHBvIz67adRAxBtDWaMESKiiC4/U=;
+        b=dBHlhiGEICAmJLKGXRXap2bGMnL6QXZD6+zyJIcvSoT47aDkEPBjoWRmCVz/+r/unQ
+         VESbmHoPZRLayCz1zqIOjvIxWnUZ0s5TGprd76ivCYdnl8Tp0wGhLfEpVxjmhdyvH9aS
+         iK5KfJSVSFmsOyZ+ww10DcTe7SATdozlLsJPHuhJISF7qLS7BfIirUuviA/DVTgY6Ksv
+         nRf5tUZFxiqHoKRzh0dN2ddmXdzpZ5CU8Fhmf5SR+v+M99AIHY+avk+K6jId0Q6e5FFh
+         Ablg6lOq534GmS0jfi+D/ERE2l0lonH6SBylr+lDGcJ6p5372sOLHvUVQHyObMoswGO7
+         QXXQ==
+X-Gm-Message-State: AOJu0YxZ4HhwkJs46Z5SnLj+io2Z0c46VdVGkv+aegBf3R236OaHbpJI
+        akj2PmcMWVCa/3sHghRk/vQ=
+X-Google-Smtp-Source: AGHT+IFdWJGEojY/3icYzoleS4JW9eTiHbqoewNZRCdZVj1F67Fil/HcDOWYBfT/p+U99GmpGJEf1w==
+X-Received: by 2002:a05:6e02:13d3:b0:34f:8039:a3b5 with SMTP id v19-20020a056e0213d300b0034f8039a3b5mr3136303ilj.26.1694802935093;
+        Fri, 15 Sep 2023 11:35:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e24-20020a02a518000000b0042bae96eba7sm1199696jam.7.2023.09.15.11.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 11:35:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 15 Sep 2023 11:35:32 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] hwmon: pmbus: refactor deprecated strncpy
+Message-ID: <0b5ddd1e-2f78-4ef6-aadd-88ea53bbb9b2@roeck-us.net>
+References: <20230915-strncpy-drivers-hwmon-pmbus-pmbus_core-c-v1-1-fca2cbca41ea@google.com>
 MIME-Version: 1.0
-References: <20230823091757.31311-1-quic_nitirawa@quicinc.com>
- <20230823091757.31311-3-quic_nitirawa@quicinc.com> <24cff590-c71f-4a30-9b80-fa9a0bd27957@linaro.org>
- <c9719d64-33c1-d13e-0ab6-289011282044@quicinc.com>
-In-Reply-To: <c9719d64-33c1-d13e-0ab6-289011282044@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 15 Sep 2023 21:33:53 +0300
-Message-ID: <CAA8EJppYD8Oq_fkOOKf8_x7RdbjBx7XzV_5y4sKE3ZDv_WV9_Q@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] phy: qcom-qmp-ufs: Add Phy Configuration support
- for SC7280
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Manish Pandey <quic_mapa@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915-strncpy-drivers-hwmon-pmbus-pmbus_core-c-v1-1-fca2cbca41ea@google.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 19:14, Nitin Rawat <quic_nitirawa@quicinc.com> wrote:
->
->
->
-> On 9/6/2023 1:34 AM, Dmitry Baryshkov wrote:
-> > On 23/08/2023 12:17, Nitin Rawat wrote:
-> >> Add SC7280 specific register layout and table configs.
-> >>
-> >> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
-> >> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
-> >> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> >> ---
-> >>   drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 142 ++++++++++++++++++++++++
-> >>   1 file changed, 142 insertions(+)
-> >>
-> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >> b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >> index 3927eba8e468..514fa14df634 100644
-> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> >
-> > [skipped tables programming]
-> >
-> > 4),
-> Sorry I quite didn't get this comment. what exactly is skipped ?Please
-> can you help explain?
+On Fri, Sep 15, 2023 at 06:28:41PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We should prefer more robust and less ambiguous string interfaces.
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+> NUL-termination on the destination buffer without unnecessarily NUL-padding.
+> 
+> `label` is zero-allocated and as such the NUL-padding behavior of
+> strncpy is not required here.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/hwmon/pmbus/pmbus_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index 1363d9f89181..dcc8b12387cc 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -1394,7 +1394,7 @@ static int pmbus_add_label(struct pmbus_data *data,
+>  	snprintf(label->name, sizeof(label->name), "%s%d_label", name, seq);
+>  	if (!index) {
+>  		if (phase == 0xff)
+> -			strncpy(label->label, lstring,
+> +			strscpy(label->label, lstring,
+>  				sizeof(label->label) - 1);
 
-I skipped them, as I didn't have comments for them.
+'label' is allocated with kzalloc(), and, by copying one byte less
+than the size of the field into label->label, it is guaranteed to be
+terminated. Using strscpy() instead of strncpy() results in dropping
+the last character of lstring if its length is sizeof(label->label) - 1.
 
->
->
-> >> @@ -888,6 +993,40 @@ static const struct qmp_phy_cfg
-> >> sa8775p_ufsphy_cfg = {
-> >>       .regs            = ufsphy_v5_regs_layout,
-> >>   };
-> >>
-> >> +static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
-> >> +    .lanes                  = 2,
-> >> +
-> >> +    .offsets                = &qmp_ufs_offsets,
-> >> +
-> >> +    .tbls = {
-> >> +        .serdes         = sm8150_ufsphy_serdes,
-> >> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_serdes),
-> >> +        .tx             = sc7280_ufsphy_tx,
-> >> +        .tx_num         = ARRAY_SIZE(sc7280_ufsphy_tx),
-> >> +        .rx             = sc7280_ufsphy_rx,
-> >> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_rx),
-> >> +        .pcs            = sc7280_ufsphy_pcs,
-> >> +        .pcs_num        = ARRAY_SIZE(sc7280_ufsphy_pcs),
-> >> +    },
-> >> +    .tbls_hs_b = {
-> >> +        .serdes         = sm8150_ufsphy_hs_b_serdes,
-> >> +        .serdes_num     = ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
-> >> +    },
-> >> +    .tbls_hs_g4 = {
-> >> +        .tx             = sm8250_ufsphy_hs_g4_tx,
-> >> +        .tx_num         = ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
-> >> +        .rx             = sc7280_ufsphy_hs_g4_rx,
-> >> +        .rx_num         = ARRAY_SIZE(sc7280_ufsphy_hs_g4_rx),
-> >> +        .pcs            = sm8150_ufsphy_hs_g4_pcs,
-> >> +        .pcs_num        = ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
-> >> +    },
-> >> +    .clk_list               = sm8450_ufs_phy_clk_l,
-> >> +    .num_clks               = ARRAY_SIZE(sm8450_ufs_phy_clk_l),
-> >
-> > This doesn't correspond to the bindings. This array has 3 enries, while
-> > in the bindings you have opted for two clocks for this PHY.
-> Sure. I'll update the bindings.
+Really, I am not going to accept any of your patches, sorry.
 
-Are you sure about the third clock? Neither sm8150 nor sm8250 used the
-qref clock. Or is that an omission on our side?
-
->
-> >
-> >> +    .vreg_list              = qmp_phy_vreg_l,
-> >> +    .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
-> >> +    .regs                   = ufsphy_v4_regs_layout,
-> >> +};
-> >> +
-> >>   static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
-> >>       .lanes            = 2,
-> >>
-> >> @@ -1648,6 +1787,9 @@ static const struct of_device_id
-> >> qmp_ufs_of_match_table[] = {
-> >>       }, {
-> >>           .compatible = "qcom,sa8775p-qmp-ufs-phy",
-> >>           .data = &sa8775p_ufsphy_cfg,
-> >> +    }, {
-> >> +        .compatible = "qcom,sc7280-qmp-ufs-phy",
-> >> +        .data = &sc7280_ufsphy_cfg,
-> >>       }, {
-> >>           .compatible = "qcom,sc8180x-qmp-ufs-phy",
-> >>           .data = &sm8150_ufsphy_cfg,
-> >> --
-> >> 2.17.1
-> >>
-> >
-> Thanks,
-> Nitin
-
-
-
--- 
-With best wishes
-Dmitry
+Guenter
