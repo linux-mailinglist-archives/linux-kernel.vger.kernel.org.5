@@ -2,194 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849897A2AED
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CF27A2AFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237976AbjIOXQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 19:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
+        id S236430AbjIOX0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 19:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238008AbjIOXQk (ORCPT
+        with ESMTP id S230318AbjIOX0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 19:16:40 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B648E50
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:16:35 -0700 (PDT)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qhI35-0007jC-QB; Sat, 16 Sep 2023 01:16:32 +0200
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1qhI35-003sY4-DK; Sat, 16 Sep 2023 01:16:31 +0200
-Date:   Sat, 16 Sep 2023 01:16:31 +0200
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Avichal Rakesh <arakesh@google.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <ZQTlz9Koe2CQIsrC@pengutronix.de>
-References: <20230912041910.726442-1-arakesh@google.com>
- <CAMHf4WLeSC9m05XOU54yL=2xUcSqbWP0f7evM0rZRsJ=J-btWw@mail.gmail.com>
+        Fri, 15 Sep 2023 19:26:13 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B490F1FE0;
+        Fri, 15 Sep 2023 16:26:07 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79536bc6697so93107839f.1;
+        Fri, 15 Sep 2023 16:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694820367; x=1695425167; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=VveHYG4t+Sx71RsJ49uoEqzBEzyROBRkGjZT0OajziQ=;
+        b=REhjnIxBkYrZH9BK/pNDgzZvKYwEZJMN9EbFj2kaq9b7rwO6Ut9AVlBZQ82jjfgG6S
+         iz8JWY9MjH46i1exAh8KG3QDadORWviEnzxwZiqecOsnSAPnC/xo+CwD9WwZlpx0KAn3
+         EJp2vXlbv9sY8plo07oH6H/MYgSF3piyct+6yMmfwkxnJ3yM3TrqIie8/Vji5jqBa8Fp
+         i0EJ/vBntlxwq+gINoiTAzRQSSqhSVeSu856TsLfm0jHTdCLM2uf9NYJILL58IZ6TRz7
+         ZRL/R4ORUTwFzizl69kgzodVXpvyvJnzv8UIi2rftRsJc8LvqOzL5Lg7viBsFlHEEGkS
+         wSzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694820367; x=1695425167;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VveHYG4t+Sx71RsJ49uoEqzBEzyROBRkGjZT0OajziQ=;
+        b=b2ch7A39HRYtV2bgRi+wux3EdyBXGjffaKPiKf/8wt9JyvsjHRl5Y5qqwkMCpvn0j1
+         qj92ysvw5kVl1WdQ/Dgxpj0sTsUUCm5pwcAPdE+OepOSKVMMaMJyUE4gRlYQIzehW2YS
+         tAxqUiBSZuNH0bIAPYlKB0xhfKY7luqf2mubp+xiCanAzRPF0iM1qsCXzAgIgQAcvB4L
+         HE3uNx11ahsbtfX6UhHQDrbI5gCjZg597ql58E7TBnWzIXIDKW4KdvHUY+gTd427ZRze
+         LNZLUOCFMlyQXjPUd/8B4gUXIlMXXyITuY0Gq+IVxgzTXVGBX/RPv8gOnl8eCTxtoAtP
+         XioQ==
+X-Gm-Message-State: AOJu0YyqTcx8ulxF+cRDtVW3UeisuMTWiWClIL8W+3fVelUh/JkpALj+
+        3C11qSh1zZ+Kb2DjpHz4m4Q=
+X-Google-Smtp-Source: AGHT+IH7cvbGJLUli9sUi4RsxsbXBXezLfY6sKB0FuM1UIIbvYyqaLF/F4P3ivWVXeOm6baUGDlU1g==
+X-Received: by 2002:a5d:9c46:0:b0:794:e11c:d8c3 with SMTP id 6-20020a5d9c46000000b00794e11cd8c3mr3548695iof.16.1694820366928;
+        Fri, 15 Sep 2023 16:26:06 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t24-20020a02ab98000000b004312e5c9b0dsm1286277jan.139.2023.09.15.16.26.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 16:26:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <44e84cb8-b573-0e1a-91e5-cdee0441d0f9@roeck-us.net>
+Date:   Fri, 15 Sep 2023 16:26:04 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="q9JWgXnV+XEfBRBA"
-Content-Disposition: inline
-In-Reply-To: <CAMHf4WLeSC9m05XOU54yL=2xUcSqbWP0f7evM0rZRsJ=J-btWw@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:2:b01:1d::c5
-X-SA-Exim-Mail-From: mgr@pengutronix.de
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 1/5] hwmon: max31827: Make code cleaner
+Content-Language: en-US
+To:     Daniel Matyas <daniel.matyas@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20230914075948.208046-1-daniel.matyas@analog.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230914075948.208046-1-daniel.matyas@analog.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v1 0/2] usb: gadget: uvc: stability fixes when stopping
- streams
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.whiteo.stw.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/14/23 00:59, Daniel Matyas wrote:
+> Now the wait time for one-shot is 140ms, instead of the old 141
+> (removed the 1ms error).
+> 
 
---q9JWgXnV+XEfBRBA
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It was explicitly documented that the wait time was 140 + 1 milli-seconds,
+presumably to be sure that the conversion is really complete.
 
-Hi Avichal
+Why was this an error ? It was _documented_ that way.
 
-On Thu, Sep 14, 2023 at 04:05:36PM -0700, Avichal Rakesh wrote:
->On Mon, Sep 11, 2023 at 9:19=E2=80=AFPM Avichal Rakesh <arakesh@google.com=
-> wrote:
->>
->> We have been seeing two main bugs when stopping stream:
->> 1. attempting to queue usb_requests on a disabled usb endpoint, and
->> 2. use-after-free problems for inflight requests
->>
->> Avichal Rakesh (2):
->>   usb: gadget: uvc: prevent use of disabled endpoint
->>   usb: gadget: uvc: prevent de-allocating inflight usb_requests
->>
->>  drivers/usb/gadget/function/f_uvc.c     | 11 ++++----
->>  drivers/usb/gadget/function/f_uvc.h     |  2 +-
->>  drivers/usb/gadget/function/uvc.h       |  5 +++-
->>  drivers/usb/gadget/function/uvc_v4l2.c  | 21 ++++++++++++---
->>  drivers/usb/gadget/function/uvc_video.c | 34 +++++++++++++++++++++++--
->>  5 files changed, 60 insertions(+), 13 deletions(-)
->>
->
->Bumping this thread up. Laurent, Dan, and Michael could you take a look?
+Guenter
 
-I tested the patches against my setup and it did not help.
+> Used enums and while loops to replace switch for selecting and getting
+> update interval from conversion rate bits.
+> 
+> Divided the write_alarm_val function into 2 functions. The new function
+> is more generic: it can be used not only for alarm writes, but for any
+> kind of writes which require the device to be in shutdown mode.
+> 
+> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+> ---
+> 
+> v2 -> v3: No change.
+> 
+> v2: Added patch.
+> 
+>   Documentation/hwmon/max31827.rst |   4 +-
+>   drivers/hwmon/max31827.c         | 127 ++++++++++++++-----------------
+>   2 files changed, 58 insertions(+), 73 deletions(-)
+> 
+> diff --git a/Documentation/hwmon/max31827.rst b/Documentation/hwmon/max31827.rst
+> index b0971d05b8a4..9a1055a007cf 100644
+> --- a/Documentation/hwmon/max31827.rst
+> +++ b/Documentation/hwmon/max31827.rst
+> @@ -73,8 +73,8 @@ the conversion frequency to 1 conv/s. The conversion time varies depending on
+>   the resolution. The conversion time doubles with every bit of increased
+>   resolution. For 10 bit resolution 35ms are needed, while for 12 bit resolution
+>   (default) 140ms. When chip is in shutdown mode and a read operation is
+> -requested, one-shot is triggered, the device waits for 140 (conversion time) + 1
+> -(error) ms, and only after that is the temperature value register read.
+> +requested, one-shot is triggered, the device waits for 140 (conversion time) ms,
+> +and only after that is the temperature value register read.
+>   
+>   The LSB of the temperature values is 0.0625 degrees Celsius, but the values of
+>   the temperatures are displayed in milli-degrees. This means, that some data is
+> diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
+> index 602f4e4f81ff..f05762219995 100644
+> --- a/drivers/hwmon/max31827.c
+> +++ b/drivers/hwmon/max31827.c
+> @@ -25,20 +25,32 @@
+>   #define MAX31827_CONFIGURATION_U_TEMP_STAT_MASK	BIT(14)
+>   #define MAX31827_CONFIGURATION_O_TEMP_STAT_MASK	BIT(15)
+>   
+> -#define MAX31827_12_BIT_CNV_TIME	141
+> -
+> -#define MAX31827_CNV_1_DIV_64_HZ	0x1
+> -#define MAX31827_CNV_1_DIV_32_HZ	0x2
+> -#define MAX31827_CNV_1_DIV_16_HZ	0x3
+> -#define MAX31827_CNV_1_DIV_4_HZ		0x4
+> -#define MAX31827_CNV_1_HZ		0x5
+> -#define MAX31827_CNV_4_HZ		0x6
+> -#define MAX31827_CNV_8_HZ		0x7
+> +#define MAX31827_12_BIT_CNV_TIME	140
+>   
+>   #define MAX31827_16_BIT_TO_M_DGR(x)	(sign_extend32(x, 15) * 1000 / 16)
+>   #define MAX31827_M_DGR_TO_16_BIT(x)	(((x) << 4) / 1000)
+>   #define MAX31827_DEVICE_ENABLE(x)	((x) ? 0xA : 0x0)
+>   
+> +enum max31827_cnv {
+> +	MAX31827_CNV_1_DIV_64_HZ = 1,
+> +	MAX31827_CNV_1_DIV_32_HZ,
+> +	MAX31827_CNV_1_DIV_16_HZ,
+> +	MAX31827_CNV_1_DIV_4_HZ,
+> +	MAX31827_CNV_1_HZ,
+> +	MAX31827_CNV_4_HZ,
+> +	MAX31827_CNV_8_HZ,
+> +};
+> +
+> +static const u16 max31827_conversions[] = {
+> +	[MAX31827_CNV_1_DIV_64_HZ] = 64000,
+> +	[MAX31827_CNV_1_DIV_32_HZ] = 32000,
+> +	[MAX31827_CNV_1_DIV_16_HZ] = 16000,
+> +	[MAX31827_CNV_1_DIV_4_HZ] = 4000,
+> +	[MAX31827_CNV_1_HZ] = 1000,
+> +	[MAX31827_CNV_4_HZ] = 250,
+> +	[MAX31827_CNV_8_HZ] = 125,
+> +};
+> +
+>   struct max31827_state {
+>   	/*
+>   	 * Prevent simultaneous access to the i2c client.
+> @@ -54,15 +66,13 @@ static const struct regmap_config max31827_regmap = {
+>   	.max_register = 0xA,
+>   };
+>   
+> -static int write_alarm_val(struct max31827_state *st, unsigned int reg,
+> -			   long val)
+> +static int shutdown_write(struct max31827_state *st, unsigned int reg,
+> +			  unsigned int val)
+>   {
+>   	unsigned int cfg;
+> -	unsigned int tmp;
+> +	unsigned int cnv_rate;
+>   	int ret;
+>   
+> -	val = MAX31827_M_DGR_TO_16_BIT(val);
+> -
+>   	/*
+>   	 * Before the Temperature Threshold Alarm and Alarm Hysteresis Threshold
+>   	 * register values are changed over I2C, the part must be in shutdown
+> @@ -82,9 +92,10 @@ static int write_alarm_val(struct max31827_state *st, unsigned int reg,
+>   	if (ret)
+>   		goto unlock;
+>   
+> -	tmp = cfg & ~(MAX31827_CONFIGURATION_1SHOT_MASK |
+> +	cnv_rate = MAX31827_CONFIGURATION_CNV_RATE_MASK & cfg;
+> +	cfg = cfg & ~(MAX31827_CONFIGURATION_1SHOT_MASK |
+>   		      MAX31827_CONFIGURATION_CNV_RATE_MASK);
+> -	ret = regmap_write(st->regmap, MAX31827_CONFIGURATION_REG, tmp);
+> +	ret = regmap_write(st->regmap, MAX31827_CONFIGURATION_REG, cfg);
+>   	if (ret)
+>   		goto unlock;
+>   
+> @@ -92,13 +103,23 @@ static int write_alarm_val(struct max31827_state *st, unsigned int reg,
+>   	if (ret)
+>   		goto unlock;
+>   
+> -	ret = regmap_write(st->regmap, MAX31827_CONFIGURATION_REG, cfg);
+> +	ret = regmap_update_bits(st->regmap, MAX31827_CONFIGURATION_REG,
+> +				 MAX31827_CONFIGURATION_CNV_RATE_MASK,
+> +				 cnv_rate);
+>   
+>   unlock:
+>   	mutex_unlock(&st->lock);
+>   	return ret;
+>   }
+>   
+> +static int write_alarm_val(struct max31827_state *st, unsigned int reg,
+> +			   long val)
+> +{
+> +	val = MAX31827_M_DGR_TO_16_BIT(val);
+> +
+> +	return shutdown_write(st, reg, val);
+> +}
+> +
+>   static umode_t max31827_is_visible(const void *state,
+>   				   enum hwmon_sensor_types type, u32 attr,
+>   				   int channel)
+> @@ -243,32 +264,7 @@ static int max31827_read(struct device *dev, enum hwmon_sensor_types type,
+>   
+>   			uval = FIELD_GET(MAX31827_CONFIGURATION_CNV_RATE_MASK,
+>   					 uval);
+> -			switch (uval) {
+> -			case MAX31827_CNV_1_DIV_64_HZ:
+> -				*val = 64000;
+> -				break;
+> -			case MAX31827_CNV_1_DIV_32_HZ:
+> -				*val = 32000;
+> -				break;
+> -			case MAX31827_CNV_1_DIV_16_HZ:
+> -				*val = 16000;
+> -				break;
+> -			case MAX31827_CNV_1_DIV_4_HZ:
+> -				*val = 4000;
+> -				break;
+> -			case MAX31827_CNV_1_HZ:
+> -				*val = 1000;
+> -				break;
+> -			case MAX31827_CNV_4_HZ:
+> -				*val = 250;
+> -				break;
+> -			case MAX31827_CNV_8_HZ:
+> -				*val = 125;
+> -				break;
+> -			default:
+> -				*val = 0;
+> -				break;
+> -			}
+> +			*val = max31827_conversions[uval];
+>   		}
+>   		break;
+>   
+> @@ -284,6 +280,7 @@ static int max31827_write(struct device *dev, enum hwmon_sensor_types type,
+>   			  u32 attr, int channel, long val)
+>   {
+>   	struct max31827_state *st = dev_get_drvdata(dev);
+> +	int res = 1;
+>   	int ret;
+>   
+>   	switch (type) {
+> @@ -333,39 +330,27 @@ static int max31827_write(struct device *dev, enum hwmon_sensor_types type,
+>   			if (!st->enable)
+>   				return -EINVAL;
+>   
+> -			switch (val) {
+> -			case 125:
+> -				val = MAX31827_CNV_8_HZ;
+> -				break;
+> -			case 250:
+> -				val = MAX31827_CNV_4_HZ;
+> -				break;
+> -			case 1000:
+> -				val = MAX31827_CNV_1_HZ;
+> -				break;
+> -			case 4000:
+> -				val = MAX31827_CNV_1_DIV_4_HZ;
+> -				break;
+> -			case 16000:
+> -				val = MAX31827_CNV_1_DIV_16_HZ;
+> -				break;
+> -			case 32000:
+> -				val = MAX31827_CNV_1_DIV_32_HZ;
+> -				break;
+> -			case 64000:
+> -				val = MAX31827_CNV_1_DIV_64_HZ;
+> -				break;
+> -			default:
+> -				return -EINVAL;
+> -			}
+> +			/*
+> +			 * Convert the desired conversion rate into register
+> +			 * bits. res is already initialized with 1.
+> +			 *
+> +			 * This was inspired by lm73 driver.
+> +			 */
+> +			while (res < ARRAY_SIZE(max31827_conversions) &&
+> +			       val < max31827_conversions[res])
+> +				res++;
+> +
+> +			if (res == ARRAY_SIZE(max31827_conversions) ||
+> +			    val != max31827_conversions[res])
+> +				return -EOPNOTSUPP;
+>   
+> -			val = FIELD_PREP(MAX31827_CONFIGURATION_CNV_RATE_MASK,
+> -					 val);
+> +			res = FIELD_PREP(MAX31827_CONFIGURATION_CNV_RATE_MASK,
+> +					 res);
+>   
+>   			return regmap_update_bits(st->regmap,
+>   						  MAX31827_CONFIGURATION_REG,
+>   						  MAX31827_CONFIGURATION_CNV_RATE_MASK,
+> -						  val);
+> +						  res);
+>   		}
+>   		break;
+>   
 
-In fact I saw two different issues when calling the streamoff event.
-
-One issue was a stalled pipeline after the streamoff from the host came in.
-The streaming application did not handle any events anymore.
-
-The second issue was when the streamoff event is triggered sometimes the
-following trace is shown, even with your patches applied.
-
-
-[  104.202689] Unable to handle kernel paging request at virtual address 00=
-5bf43a692a5fd5
-[  104.235122] Mem abort info:
-[  104.238257]   ESR =3D 0x0000000096000004
-[  104.242449]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[  104.248391]   SET =3D 0, FnV =3D 0
-[  104.251803]   EA =3D 0, S1PTW =3D 0
-[  104.255313]   FSC =3D 0x04: level 0 translation fault
-[  104.260765] Data abort info:
-[  104.263982]   ISV =3D 0, ISS =3D 0x00000004, ISS2 =3D 0x00000000
-[  104.270114]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
-[  104.275760]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-[  104.281698] [005bf43a692a5fd5] address between user and kernel address r=
-anges
-[  104.290042] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[  104.297060] Dumping ftrace buffer:
-[  104.300869]    (ftrace buffer empty)
-[  104.304862] Modules linked in: st1232 hantro_vpu v4l2_vp9 v4l2_h264 uio_=
-pdrv_genirq fuse [last unloaded: rockchip_vpu(C)]
-[  104.312080] panfrost fde60000.gpu: Panfrost Dump: BO has no sgt, cannot =
-dump
-[  104.317137] CPU: 0 PID: 465 Comm: irq/46-dwc3 Tainted: G         C      =
-   6.5.0-20230831-2+ #5
-[  104.317144] Hardware name: WolfVision PF5 (DT)
-[  104.317148] pstate: 604000c9 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=
-=3D--)
-[  104.317154] pc : __list_del_entry_valid+0x48/0xe8
-[  104.352728] lr : dwc3_gadget_giveback+0x3c/0x1b0
-[  104.357893] sp : ffffffc08381bc60
-[  104.361593] x29: ffffffc08381bc60 x28: ffffff80047d4000 x27: ffffff80047=
-de440
-[  104.369576] x26: 0000000000000000 x25: ffffffc08135b2d0 x24: ffffffc0838=
-1bd00
-[  104.377559] x23: 00000000ffffff98 x22: ffffff8004204880 x21: ffffff80047=
-d4000
-[  104.385541] x20: ffffff800718dea0 x19: ffffff800718dea0 x18: 00000000000=
-00000
-[  104.393523] x17: 7461747320687469 x16: 7720646574656c70 x15: 6d6f6320747=
-36575
-[  104.401504] x14: 716572205356203a x13: 2e3430312d207375 x12: 74617473206=
-87469
-[  104.409486] x11: ffffffc0815c98f0 x10: 0000000000000000 x9 : ffffffc0808=
-f4fa0
-[  104.417468] x8 : ffffffc082415000 x7 : ffffffc0808f4e2c x6 : ffffffc0823=
-d0928
-[  104.425450] x5 : 0000000000000282 x4 : 0000000000000201 x3 : d85bf43a692=
-a5fcd
-[  104.433431] x2 : ffffff80047d4048 x1 : ffffff800718dea0 x0 : dead0000000=
-00122
-[  104.441413] Call trace:
-[  104.444142]  __list_del_entry_valid+0x48/0xe8
-[  104.449013]  dwc3_gadget_giveback+0x3c/0x1b0
-[  104.453786]  dwc3_gadget_ep_cleanup_cancelled_requests+0xe0/0x170
-[  104.460599]  dwc3_process_event_buf+0x2a8/0xbb0
-[  104.465662]  dwc3_thread_interrupt+0x4c/0x90
-[  104.470435]  irq_thread_fn+0x34/0xb8
-[  104.474431]  irq_thread+0x1a0/0x290
-[  104.478327]  kthread+0x10c/0x120
-[  104.481933]  ret_from_fork+0x10/0x20
-
-The error path triggering these list errors are usually in the
-dwc3 driver handling the cancelled or completed list.
-
-Regards,
-Michael
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---q9JWgXnV+XEfBRBA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmUE5c8ACgkQC+njFXoe
-LGRdJRAAj580qBvWF1tftaNM/7YxxbvMYTSKQt4a5/wXyxS5QUrggJ87woQ73E8z
-kkPXezZBkibQZo/1CMjxwAib4F0lMS2/Srkvm3ctjoCcWWrhGUkBmMz4SCXVfI2j
-Tv5ZiVaYqaasM8zQNU5aaixxNUJd+un8EddwIHznQF1z+hgRIqwnfjNIW3Hck2i9
-5errJffT00gG8riFJ0i47Dzdltd+V69paHyDfCoeazFC3TMKDp3BZJ/iRU1TGFj7
-Lv8RZ5qdyLJh4LDoH23VANdGvUMtz019adqarXLkeA4Sof9n5KsaZNm2mWxpw0of
-j1imGD57qTa0KUk0gZAAplc2j80ZY9Ypd9bFeyF7xqc3z7vvJEyKVw+ImBy4bEJJ
-JXm9PHvP6bRv/aEqAre9oKwTWd2HgB+W4BjLfOQ/VQlJx64rq+My4sUachBYjQmN
-nv/RjU2T47WaEjhUr6hk9ZXesqg4kjYTsu61rm7gYVgZlNFEQCSDEnhxJSZ0EUNf
-fKxxnObuDwjxjjWfrz2CQwwB0i8760Y6EyT41Y0rTyGzJoj28lDkRgXwWodfqqbX
-fgAw99reXHxrmttO75DZ3L7ki4d0uDpYSqq0vNflxNbRZATC1xZ8cKyhWAa76Rkl
-v/iw5q2JWRKW+//CRBGfIUYOu1y8ErWrRq/V2xZ4w7gfaFyRkjY=
-=6z+2
------END PGP SIGNATURE-----
-
---q9JWgXnV+XEfBRBA--
