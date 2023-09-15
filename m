@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA0D7A22EB
+	by mail.lfdr.de (Postfix) with ESMTP id 7679A7A22EC
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbjIOPtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        id S236292AbjIOPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbjIOPsz (ORCPT
+        with ESMTP id S236457AbjIOPs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:48:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D7110F7;
-        Fri, 15 Sep 2023 08:48:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F8FC433D9;
-        Fri, 15 Sep 2023 15:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694792898;
-        bh=Z61xtoWqmH9MMOZnqhompMyXKPGpcuIfhAUGhJsHcN8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Bptqq1Y8BsLoJbmlgR+oaSZaEDrHkM+uzv9aMlU2pUOufR92+HifwY56Mj+/h5NlX
-         zlQBnytcPiO8VvtC/LAoW1XOVGhaTNCPu6rmb3O6EGdyAB4fzGkdJuJ97l1Uq/BHZg
-         z5xI7JoKkiYwkNwUqwgstCG+I/sYfFHRgeOc6XKYFRO2vwF0f3JvhqUT8v8lCE1ra7
-         0RWTaDqkf4mcTL1bNSBLUztYIrwsMO3j4wWsTsN5kvqAUuLyvRPXt//7CXmrZ/h6ZM
-         1zJ4VMf4YwLfALoCvI9MsleraWREFsvfy6Ww3tAK8bLPV+QH/ZlH8Uba78j+QAreet
-         SrUBPW7wMYHnw==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50091b91a83so3783226e87.3;
-        Fri, 15 Sep 2023 08:48:18 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxob4n7kKHrSiBIseoyDYCGnvH1U9Px65+Zvyb/Dpb9BaukfrHC
-        P3+vXFnbh6jc8J3FKUryAQnZE2ZjrwJYA0/u0Pc=
-X-Google-Smtp-Source: AGHT+IEtikRXVmtm422PGOEGHecyMJit8Pyo+R/HlKrmRS+reE3aE+y2M0KUOmPY40ZP4W7L7tZE7Sn9tvkYReXD/Ec=
-X-Received: by 2002:ac2:4183:0:b0:500:9214:b308 with SMTP id
- z3-20020ac24183000000b005009214b308mr1921878lfh.65.1694792896665; Fri, 15 Sep
- 2023 08:48:16 -0700 (PDT)
+        Fri, 15 Sep 2023 11:48:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDDC2710;
+        Fri, 15 Sep 2023 08:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=leftU7vnx6ubtSCIPio+hyF+23cQ6uL5tDPuDZIs4dk=; b=YYqjIA6Phg4gWr7cpr90C7AQMG
+        JPBckC5Gp1gat/6r+oY6tjpgDW2+MFCpZSMEDW3nt665gO51B+Du/Mg+YnEcWoAb7R3hkyhcBF0cT
+        PiGlO3s6ZnHcXbXKr9QsStIrRq0KhTZYMPGQ7jfzMdzS2VGcoau6RYdsgxnbVP072afdAkyhPatLG
+        T7R4OmlL1OWfWdfFPXGK0eifZ+B1dEwoWLHTAJiq6rYRw+hlrr5G9jZkOw2q3TFKN0+WiYKPfUx5q
+        n1WOC1qIBz9/wzIHSnpi6BegyzrRyOFcNMFftrs34uJ4iHR5x9pAKQsQnbWWnlbkq1dVk4OtR1B/P
+        BhPoA3uQ==;
+Received: from [2601:1c2:980:9ec0:e65e:37ff:febd:ee53]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qhB3C-00B13L-1W;
+        Fri, 15 Sep 2023 15:48:10 +0000
+Message-ID: <6b507126-c4e6-40f2-9574-fe1abb0463ee@infradead.org>
+Date:   Fri, 15 Sep 2023 08:48:08 -0700
 MIME-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com> <20230912090051.4014114-25-ardb@google.com>
- <ZQQgv7VWUa3VGqbb@gmail.com> <CAMj1kXGxv_Nt4__ETG-e0vXC7z8SyirCw5NO0p6gsWRbLfbNAQ@mail.gmail.com>
- <ZQR66uQOGCaVQlNu@gmail.com> <ZQR8FptFJ+8Ht7Y3@gmail.com>
-In-Reply-To: <ZQR8FptFJ+8Ht7Y3@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 15 Sep 2023 17:48:05 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEmEfngtuyEkYuzgif14E-338z1XNdRpGizK8TvywGX6g@mail.gmail.com>
-Message-ID: <CAMj1kXEmEfngtuyEkYuzgif14E-338z1XNdRpGizK8TvywGX6g@mail.gmail.com>
-Subject: Re: [PATCH v2 08/15] x86/boot: Drop references to startup_64
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ard Biesheuvel <ardb@google.com>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional
+ dependencies
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230913113801.1901152-1-arnd@kernel.org>
+ <874jjwx44g.fsf@intel.com>
+ <b2723c56-e2b0-4871-afbc-73cf6335ddca@app.fastmail.com>
+ <CAK7LNAR9Jt0FQNRidcxY-OxMh7N238Xs33Tyj+dpTZ5wGow0wQ@mail.gmail.com>
+ <763b1599-06b7-490e-9cbf-eb07f1deedb3@app.fastmail.com>
+ <87sf7fvqiz.fsf@intel.com>
+ <bc27450a-74cd-49f5-bc88-f102b0edb345@app.fastmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <bc27450a-74cd-49f5-bc88-f102b0edb345@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 17:45, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ingo Molnar <mingo@kernel.org> wrote:
->
-> > Very weird - could it have gotten lost in the sending process, on your
-> > side?
->
 
 
-Lore does have them but I have no idea whose end caused this - I
-recently switched to Google's internal infrastructure for outgoing GIT
-email as our network does not permit outgoing SMTP to kernel.org but
-this is the first time I heard of a potential issue of this nature.
+On 9/15/23 00:44, Arnd Bergmann wrote:
+> On Fri, Sep 15, 2023, at 09:34, Jani Nikula wrote:
+>>
+>> IS_REACHABLE() considered harmful.
+> 
 
-https://lore.kernel.org/linux-efi/20230912090051.4014114-24-ardb@google.com/T/#u
-https://lore.kernel.org/linux-efi/20230912090051.4014114-26-ardb@google.com/T/#u
++1 absolutely.
 
+> Absolutely agreed, and I'm sorry I introduced it in the
+> first place in commit 9b174527e7b75 ("[media] Add and use
+> IS_REACHABLE macro").
+> 
+> At the time, it was only used by drivers/media, which used
+> to have a lot of open-coded instances of it and a lot of
+> wrong checks.
+> 
+> Having a formal syntax for it was an improvement for
+> drivers/media since it was more broken before, but it's
+> usually a mistake to use it when there is another solution,
+> and we probably should have tried harder to fix the
+> dependencies in drivers/media at the time.
+> 
+>       Arnd
 
-> In any case I've dropped patch #8 from tip:x86/boot as well - the first 6
-> patches arrived fine and are in the intended order.
->
-> Once the boot problem has been resolved, mind resending the rest?
->
-> There are no changes in -tip that should be interfering: tip:x86/boot has
-> an upstream base.
->
-
-Yeah I'll respin and resend. Thanks.
+-- 
+~Randy
