@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A977A1A81
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117AA7A1A7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbjIOJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        id S233602AbjIOJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233529AbjIOJ0o (ORCPT
+        with ESMTP id S233533AbjIOJ0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:26:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F9A4237
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:23:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 803E7C433CD
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694769810;
-        bh=LWjbHHD1AKzOXNTWg1RLXHiP86HEf3dv2TI9RydxFBM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j6vKH5sEITz8dU/Xz6I4urspsE8PFEvVLHpF3344usS+0ulGoIwkeYGIzKC1E/Lhy
-         C7+F/lbrGxs+OeCYM6AVd3kyhOBRfwQhmifbMOE8wBy/sOm6vat88QTxd6LBHmeK9X
-         q7bhFVKmD6yvlQWTuXGMlI3gy/9flRFo9XK4WYFRlRW5ls5M/a1LTVHzuN+OkbiE87
-         5o4SdCb3qrUVPtDDQzVaezzTyZvVZ6Pfd16zvUxokqGhkGqFsBmkGwzVvZAcBbaEVX
-         i8RQBeDwa9xkX9NylLYzpbVLZcRAUMZZtZFJpkix2CyWSlDhmJyWEVDc3k2RVyT0G1
-         sxF1UFr5nUK+g==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2bfb0a2682fso31477421fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:23:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwmfAYeiUcZZ4AeVPjQ1ZRXfoty7DeSKDit6E2O+wq4kYeGpv+X
-        2sbIJkrLrSShaT5iPbRF8Xek9SUqEtFBZ70ayxE=
-X-Google-Smtp-Source: AGHT+IH3XG6mXlyJ/to9M/kFOv4K0YybmiN0nSgX2SmurjB1i5HaZAFfOqbg8TxLHmLLTrFj0zrEvqnxXcuJWgtj2gI=
-X-Received: by 2002:a2e:7e12:0:b0:2bc:d6d8:8ab5 with SMTP id
- z18-20020a2e7e12000000b002bcd6d88ab5mr984500ljc.24.1694769808663; Fri, 15 Sep
- 2023 02:23:28 -0700 (PDT)
+        Fri, 15 Sep 2023 05:26:20 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4581FD4;
+        Fri, 15 Sep 2023 02:24:47 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38F9Nt6B079447;
+        Fri, 15 Sep 2023 04:23:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694769835;
+        bh=4VeziTl+d8+AbgxzpJag5vUqbkWM3E4fMIuyXtnWn1U=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=F3kyzuFFrqo13xYV4oBqzGrPfPlQHB81syKDNevbRnSkMHhRgtrbCfu2fYN/EByUN
+         LhLVg872+ZhwGYqeP3Tjks+JHEcQ/z9RNUnhK3mMj0DpTbOD7T+7Fm9a7nHw8R8xAi
+         g6zmhI/q4Q4oxy9XQifNqsKN7nsb0XDY5l+dVTB4=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38F9NtFX120940
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Sep 2023 04:23:55 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Sep 2023 04:23:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Sep 2023 04:23:55 -0500
+Received: from [10.24.69.29] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38F9Npqr039108;
+        Fri, 15 Sep 2023 04:23:51 -0500
+Message-ID: <bc3e9526-f497-616d-e720-69081e266983@ti.com>
+Date:   Fri, 15 Sep 2023 14:53:50 +0530
 MIME-Version: 1.0
-References: <ZQC5jS/Kc/JiBEOa@p100> <CAAhV-H56oqmQhA1PKh3E6z0A04qfRPehQ8ATOiirAU2O+z=fgw@mail.gmail.com>
- <b1c729bf-86b9-8a1f-c6af-a69be2b4a44c@gmx.de>
-In-Reply-To: <b1c729bf-86b9-8a1f-c6af-a69be2b4a44c@gmx.de>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 15 Sep 2023 17:23:16 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H44mDiP2DWATVyvKq6n8qj=sLhjHxzMo_+_zyggoGR1pw@mail.gmail.com>
-Message-ID: <CAAhV-H44mDiP2DWATVyvKq6n8qj=sLhjHxzMo_+_zyggoGR1pw@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fix lockdep static memory detection
-To:     Helge Deller <deller@gmx.de>
-Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <vigneshr@ti.com>, <rogerq@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230913114711.2937844-1-n-yadav@ti.com>
+ <20230913114711.2937844-2-n-yadav@ti.com>
+ <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
+ <f7bebc22-d494-f54d-5543-db75f5714a52@ti.com>
+ <20230914160450.knooq6q3dflostv4@playtime>
+From:   Nitin Yadav <n-yadav@ti.com>
+In-Reply-To: <20230914160450.knooq6q3dflostv4@playtime>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,143 +74,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 4:16=E2=80=AFPM Helge Deller <deller@gmx.de> wrote:
->
-> On 9/15/23 05:22, Huacai Chen wrote:
-> > Hi Helge,
-> >
-> > On Wed, Sep 13, 2023 at 3:18=E2=80=AFAM Helge Deller <deller@gmx.de> wr=
-ote:
-> >>
-> >> Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection even
-> >> more") the lockdep code uses is_kernel_core_data(), is_kernel_rodata()
-> >> and init_section_contains() to verify if a lock is located inside a
-> >> kernel static data section.
-> >>
-> >> This change triggers a failure on LoongArch, for which the vmlinux.lds=
-.S
-> >> script misses to put the locks (as part of in the .data.rel symbols)
-> >> into the Linux data section.
-> >> This patch fixes the lockdep problem by moving *(.data.rel*) symbols
-> >> into the kernel data section (from _sdata to _edata).
-> >>
-> >> Additionally, move other wrongly assigned symbols too:
-> >> - altinstructions into the _initdata section,
->
-> > I think altinstructions cannot  be put into _initdata because it will
-> > be used by modules.
->
-> No.
-> arch/loongarch/kernel/vmlinux.lds.S is used for the static parts of the k=
-ernel
-> and altinstructions are replaced before modules are loaded.
-> For altinstructions in modules the linker script scripts/module.lds.S is =
-used.
-OK, then what about .got/.plt? It seems arm64 also doesn't put them in
-the data section.
 
-Huacai
 
->
-> Helge
->
->
-> >> - PLT symbols behind the read-only section, and
-> >> - *(.la_abs) into the data section.
-> >>
-> >> Signed-off-by: Helge Deller <deller@gmx.de>
-> >> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> >> Fixes: 0a6b58c5cd0d ("lockdep: fix static memory detection even more")
-> >> Cc: stable <stable@kernel.org> # v6.4+
-> >>
-> >> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kern=
-el/vmlinux.lds.S
-> >> index b1686afcf876..bb2ec86f37a8 100644
-> >> --- a/arch/loongarch/kernel/vmlinux.lds.S
-> >> +++ b/arch/loongarch/kernel/vmlinux.lds.S
-> >> @@ -53,33 +53,6 @@ SECTIONS
-> >>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
-> >>          _etext =3D .;
-> >>
-> >> -       /*
-> >> -        * struct alt_inst entries. From the header (alternative.h):
-> >> -        * "Alternative instructions for different CPU types or capabi=
-lities"
-> >> -        * Think locking instructions on spinlocks.
-> >> -        */
-> >> -       . =3D ALIGN(4);
-> >> -       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
-> >> -               __alt_instructions =3D .;
-> >> -               *(.altinstructions)
-> >> -               __alt_instructions_end =3D .;
-> >> -       }
-> >> -
-> >> -#ifdef CONFIG_RELOCATABLE
-> >> -       . =3D ALIGN(8);
-> >> -       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
-> >> -               __la_abs_begin =3D .;
-> >> -               *(.la_abs)
-> >> -               __la_abs_end =3D .;
-> >> -       }
-> >> -#endif
-> >> -
-> >> -       .got : ALIGN(16) { *(.got) }
-> >> -       .plt : ALIGN(16) { *(.plt) }
-> >> -       .got.plt : ALIGN(16) { *(.got.plt) }
-> >> -
-> >> -       .data.rel : { *(.data.rel*) }
-> >> -
-> >>          . =3D ALIGN(PECOFF_SEGMENT_ALIGN);
-> >>          __init_begin =3D .;
-> >>          __inittext_begin =3D .;
-> >> @@ -94,6 +67,18 @@ SECTIONS
-> >>
-> >>          __initdata_begin =3D .;
-> >>
-> >> +       /*
-> >> +        * struct alt_inst entries. From the header (alternative.h):
-> >> +        * "Alternative instructions for different CPU types or capabi=
-lities"
-> >> +        * Think locking instructions on spinlocks.
-> >> +        */
-> >> +       . =3D ALIGN(4);
-> >> +       .altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
-> >> +               __alt_instructions =3D .;
-> >> +               *(.altinstructions)
-> >> +               __alt_instructions_end =3D .;
-> >> +       }
-> >> +
-> >>          INIT_DATA_SECTION(16)
-> >>          .exit.data : {
-> >>                  EXIT_DATA
-> >> @@ -113,6 +98,11 @@ SECTIONS
-> >>
-> >>          _sdata =3D .;
-> >>          RO_DATA(4096)
-> >> +
-> >> +       .got : ALIGN(16) { *(.got) }
-> >> +       .plt : ALIGN(16) { *(.plt) }
-> >> +       .got.plt : ALIGN(16) { *(.got.plt) }
-> >> +
-> >>          RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
-> >>
-> >>          .rela.dyn : ALIGN(8) {
-> >> @@ -121,6 +111,17 @@ SECTIONS
-> >>                  __rela_dyn_end =3D .;
-> >>          }
-> >>
-> >> +       .data.rel : { *(.data.rel*) }
-> >> +
-> >> +#ifdef CONFIG_RELOCATABLE
-> >> +       . =3D ALIGN(8);
-> >> +       .la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
-> >> +               __la_abs_begin =3D .;
-> >> +               *(.la_abs)
-> >> +               __la_abs_end =3D .;
-> >> +       }
-> >> +#endif
-> >> +
-> >>          .sdata : {
-> >>                  *(.sdata)
-> >>          }
->
+On 14/09/23 21:34, Nishanth Menon wrote:
+> On 14:56-20230914, Nitin Yadav wrote:
+>> Hi Krzysztof,
+>>
+>> On 14/09/23 11:57, Krzysztof Kozlowski wrote:
+>>> On 13/09/2023 13:47, Nitin Yadav wrote:
+>>>> Add support for AM62Q NAND card: X8 NAND EXPANSION
+>>>> BOARD card (PROC143E1) for AM62x LP SK board.
+> 
+> Commit message is all too wrong as well. Sigh.
+> 
+>>>>
+>>>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+>>>> ---
+>>>>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
+>>>>  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
+>>>>  2 files changed, 31 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+>>>> index 284b90c94da8..e93e79d8083f 100644
+>>>> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+>>>> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+>>>> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
+>>>>  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
+>>>>  		status = "disabled";
+>>>>  	};
+>>>> +	gpmc0: memory-controller@3b000000 {
+>>>> +		status = "disabled";
+>>>
+>>> status is never first in DTSI. Really, where did you see such code?
+>> Thank for pointing out, Will send a revised version.
+> 
+> GPMC is not functional without board specific interface configuration
+> such as pinmux. this approach, in fact is all over the place now and
+> discussed in the mailing list multiple times now.
+> 
+> What is missing here is the documentation of the constraints as to why
+> it is set as disabled by default.
+gpmc nand is only am62x lp sk in am62x series. it has pinmux conflict
+with macsp1, so disabling gpmc & elm by default for other am62 series.
+For am62x lpsk in overlay macsp1 is disabled.
+> 
+> 
+>>>
+>>>> +		compatible = "ti,am64-gpmc";
+>>>> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+>>>
+>>> First is compatible, second is reg/reg-names/ranges.
+>>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> -- 
+>> Regards,
+>> Nitin
+> 
+
+-- 
+Regards,
+Nitin
