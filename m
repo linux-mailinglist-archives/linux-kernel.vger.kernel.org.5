@@ -2,54 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5427A28B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3847A28A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237591AbjIOUxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S237681AbjIOUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237879AbjIOUxG (ORCPT
+        with ESMTP id S237768AbjIOUtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:53:06 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459F13C3C;
-        Fri, 15 Sep 2023 13:50:12 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F127A66072C1;
-        Fri, 15 Sep 2023 21:50:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694811010;
-        bh=6Cq6hsHz65kS4fD3JlUoqRaENKrLBjOqqyzKhbwFg5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R3sMhjoUtawBOczS7RuIGZhWMzLOm6MQdcxVOn3HG31vMIIFwDBsTZ9pb6p/V5Nql
-         10rWZlgo6iV0j1KjLMaoqwi+eYd7EZHk+8CnmHZtEgFWbZltoK1rDLaZ0L6s8Tg38v
-         3fukfXgh+Avi2U8vlKf7Zx6ZkpVRRgDCktzGvUsgxDvUFtRxwkqzMb9C5eTC8UAJCx
-         DbzNZ+OpCBRFePbWuaGibewokvjGFjNoZNNjeKJATx4XBdv1FvNOMdTw2wWh5SCS5h
-         zRBcA3A2l22jBYHqwJc8Rhyqe8h+yxphvfHEKC05HIhI+1QzvLTUJXZzv0JvrxqMYt
-         JpsqzH3FhWNLg==
-Received: by mercury (Postfix, from userid 1000)
-        id 4C21C106044B; Fri, 15 Sep 2023 22:50:07 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 22:50:07 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 44/50] power: reset: at91-reset: add reset support for
- sam9x7 SoC
-Message-ID: <20230915205007.2r46ottu6vktkkr6@mercury.elektranox.org>
-References: <20230728103023.267539-1-varshini.rajendran@microchip.com>
+        Fri, 15 Sep 2023 16:49:47 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5AE2723
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:49:20 -0700 (PDT)
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+        by cmsmtp with ESMTP
+        id hFjtqMNnbEoVshFkeqHyXd; Fri, 15 Sep 2023 20:49:20 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id hFkdqJbjwXyW8hFkeq9MLo; Fri, 15 Sep 2023 20:49:20 +0000
+X-Authority-Analysis: v=2.4 cv=IfeU5Ema c=1 sm=1 tr=0 ts=6504c350
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=iox4zFpeAAAA:8 a=cm27Pg_UAAAA:8 a=VwQbUJbxAAAA:8 a=PN5XkUvCLqoqEaR2be0A:9
+ a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=xmb-EsYY8bH0VWELuYED:22
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hYpEA/a0nYCN+dxDO1fQXq4rAKGRzZrtl0k6uVZ1AeE=; b=UJ7yPfFOpUGx5kNv0igW/tIhQw
+        kvDXUQFzpxc08aTS6P2Nno6ei1reKQtKw6uwz1egbDBXKKN10ljPPUwKNvzARMtqJoPvH3hDuIRVn
+        upa0AueL7k3DOOtzQp484XDfw9AcwQ8H4T0ZehYEka92VzQZ8LuVVLBI6wYtbk0+XVcbk1pYpmaa0
+        6ZWXNxyUCluOi/nrBmXJ2ThheKh+2cnsclffbKB+qbxKViQH+8iSk4zXQPPb0px7WWtZQxE4YJpGG
+        lftn0SvUU+2H0Fm2ue+vjbs16sYJcOSBwoRztW26UBuN5sm0pBVhDdAnE3AUO+aF7WjqGCXMZnha5
+        EebIj/7g==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:46604 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qhFkc-002ebv-0A;
+        Fri, 15 Sep 2023 15:49:18 -0500
+Message-ID: <118576aa-a667-8c91-821a-351562dc4c61@embeddedor.com>
+Date:   Fri, 15 Sep 2023 14:50:14 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="olvrigr3nrcgrydu"
-Content-Disposition: inline
-In-Reply-To: <20230728103023.267539-1-varshini.rajendran@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] udf: Annotate struct udf_bitmap with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Jan Kara <jack@suse.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230915201404.never.574-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230915201404.never.574-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qhFkc-002ebv-0A
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:46604
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 416
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfD/fXFR520Pm9+RH43fXbyLU4VOFWYDJu0+IyfMApIz2FGE2wYPySOL6yAEKbtCRbaZ/jp9A2Zz/IxsuZSsIJsHaCao23tHHYDefE2cgMWVCfnFohilN
+ //249q/UpyzYSybMSEhNkvPARbEhppLB0SH9uGolH7HKqtiTLlF6lcBV3AogkHqeJT+8AFp/bHHHaIc61yEmi5JS91LxP2VB+pAIKwXEAZUWuHBgEaz5tL5F
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,61 +94,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---olvrigr3nrcgrydu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 9/15/23 14:14, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct udf_bitmap.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Jan Kara <jack@suse.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On Fri, Jul 28, 2023 at 04:00:23PM +0530, Varshini Rajendran wrote:
-> Add power reset support for SAM9X7 SoC.
->=20
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
 > ---
-
-Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->  drivers/power/reset/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-> index fff07b2bd77b..518b232bfd3d 100644
-> --- a/drivers/power/reset/Kconfig
-> +++ b/drivers/power/reset/Kconfig
-> @@ -26,7 +26,7 @@ config POWER_RESET_AT91_POWEROFF
->  config POWER_RESET_AT91_RESET
->  	tristate "Atmel AT91 reset driver"
->  	depends on ARCH_AT91
-> -	default SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAMA5
-> +	default SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAM9X7 || SOC_SAMA5
->  	help
->  	  This driver supports restart for Atmel AT91SAM9 and SAMA5
->  	  SoCs
-> --=20
-> 2.25.1
->=20
-
---olvrigr3nrcgrydu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUEw34ACgkQ2O7X88g7
-+pqpdg//dzJbxOQxU+ylvkKKdu9WalM13M7YiaS8Mb400gt6e3O5L+1iiD7Fce7W
-L02yhMYQ0betbbCUeeoqN7TlMLEYFRaq7Lf/0tGERtVelRlkn/xdM0/+3VyI1gkW
-5E8pjKW6d05nCE8u4OcgaLOIGUaXX4gDA8OCC9VwjfTC+sYMja//B2KFGiAjyEh8
-fSFAVWXGnIDAP/ukLJUP6V2xasW3cjfhcSRAzzEST/Evfl5isb9uvhqbrQURd37l
-3BcYeb8eXJ0jqj0yw2lIr9knVlMZDrz9ZVKYzHT7UsM+7F6DYg/hCoA2mz8Ijn3v
-2x63dLVLCHnAiAtvJBAjKH9sSM5hvW7FvUqM6dhDxx3auani+8OAstcWMev7mWGC
-XGblyYKNr7+lneASZQoaa3VhXCZb8B8D7W0jL++7eRbdgYCO3b3ySC95HxbTNjya
-SDayE23GZ6dIaAn5a02Xr65zf619nvQmU3gLOiFPV59sV3zbbVDqfkJFPGsnhAFI
-eM1sS8Ac+oGOk2iQLkQauf6YTrBwBVNMxrtz5NDuJGYIARXaX4Fo3sLtEixyynZ6
-K9ry8PoXz0+69FcWeHpE77szwg+JJqs3BrMAxLVUt1QgWs59HWJhlC7ywVjekAKb
-+Hhduu3edpFZUfrAxKHOy43FatQPbl6CRVr8pHVzafKAHVHno5Q=
-=5SLE
------END PGP SIGNATURE-----
-
---olvrigr3nrcgrydu--
+>   fs/udf/udf_sb.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
+> index 9af6ff7f9747..f9a60bc1abcf 100644
+> --- a/fs/udf/udf_sb.h
+> +++ b/fs/udf/udf_sb.h
+> @@ -86,7 +86,7 @@ struct udf_virtual_data {
+>   struct udf_bitmap {
+>   	__u32			s_extPosition;
+>   	int			s_nr_groups;
+> -	struct buffer_head	*s_block_bitmap[];
+> +	struct buffer_head	*s_block_bitmap[] __counted_by(s_nr_groups);
+>   };
+>   
+>   struct udf_part_map {
