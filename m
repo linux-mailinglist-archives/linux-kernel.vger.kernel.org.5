@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4F67A2036
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9958E7A203D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbjIONvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
+        id S234784AbjIONwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjIONvM (ORCPT
+        with ESMTP id S234806AbjIONwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:51:12 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F2F2134
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:07 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c93638322so469343966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:07 -0700 (PDT)
+        Fri, 15 Sep 2023 09:52:06 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54334268F
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:55 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad8bba8125so288491266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694785865; x=1695390665; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694785913; x=1695390713; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ua/ea1KKbkYSyxqhtoNJDiME1vLwKiKvnqeStTpydJk=;
-        b=nBeJTIvOONod5L5YSymR17yS7gIheplwxQLsi+MtNq0/6SaqBx/5EdyA06LKxNRuvV
-         anN7bNr0dZHeuXG8CMS1ak20U8OfFKS2dqByPdRnQ2XdA7ZpOwI3aLcdh9VLP0LxtUle
-         yAbXG0WEfB26ILlckzmalNyewAhZ3Z1RuQ4f9xmyhLg6BowHRaZkzmGmnGQyPG+no4mT
-         gCMzM3X5sSVeO+P7bChIp0Hw+SXDeBBSxPN6UCoEVgx0TCH9xGr2/pPr12EbY9x9XHC4
-         +iw4hUFLKLpVVVn5m4MnNmB8cDpAw0V23DKHA3cVmcPkkSTKHzu/seydNWh83yIAxq6C
-         Y0ng==
+        bh=YKeNS2i0N5nQ1uQ2kxRp2a99pDuiA0Cjg/sUKEabIGg=;
+        b=wqbbSVqAMpncKPXEdBVGP3jfhHjwnLL+hEYYOuFN1rjF/OKiPB6xr8FrW3PNgcJH0d
+         gKZrg3BxmEC+TG81mCd0RZ/WrV35GsTGWzBDvWEr1gi1iZTI6OUJJtSA1VWYzOjCfVr2
+         rXcTh0DekLxSGyLbIMmihMTuLuwc1TJvYdWNRf4gkvLX4gtocsNGlSkhO6tK6JDcTQab
+         zTKgiPvCZfkaY7qhDW2ol2CQ3Mq0BMhT6ifsTDVjSihe1cK4itQ4CU4guuWnO63agD1C
+         IONphnAHAb5IVwWAe3wDpkFoAPrWdOzkrRqJBoGQ/wGifIQ3LAc/ev5rtPtfxKmB/Quu
+         +w9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694785865; x=1695390665;
+        d=1e100.net; s=20230601; t=1694785913; x=1695390713;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ua/ea1KKbkYSyxqhtoNJDiME1vLwKiKvnqeStTpydJk=;
-        b=eSxMGvXhHAfspzGbZmlwa5NpMk9q0cJomaEqC/qFzQOapEvTiD+UNx7qmQI/mkaOQ3
-         2KUm3fGTqecNMT+nssaTmnf7j0d/4HQv2myXtJIat2rhJXJwcjzKKfo2wgaJns1lyg0h
-         IlNJNKPynd1l6gwBGYKk1LT7UuewbyhVEaeXwm46TcOewX3K2QuzRLGB95RrXlufITg4
-         oJyTvsN/igndXTDeWiWNbnpwNUNRuasimZXvkovfRJJ3etlcYgIwRii3sjV3Y7vi06j7
-         6ONUgzkZPxJUNJUdqMcyO4M1ubmQUOuVG0SMXvewPT5z9rZSOMrpdMUMwQ0/LxF6vwR3
-         MxpQ==
-X-Gm-Message-State: AOJu0YxSZdW2sfCEigczsPNKGIns4VtT63KZQyronaXFjeqSl7JHTucc
-        D6JQ69gjT7bZ3dXFxKqy5LCu7A==
-X-Google-Smtp-Source: AGHT+IF6f030y810gqqF95mdJJwq3sdnNwumzYgRaKlafP4UM/icwJHEd3dypD+OnJQHi/0J5ysZAg==
-X-Received: by 2002:a17:907:ea7:b0:9ad:93c8:c483 with SMTP id ho39-20020a1709070ea700b009ad93c8c483mr6814446ejc.2.1694785865257;
-        Fri, 15 Sep 2023 06:51:05 -0700 (PDT)
+        bh=YKeNS2i0N5nQ1uQ2kxRp2a99pDuiA0Cjg/sUKEabIGg=;
+        b=qBn3wTTBHGqe/NFCXtABfeU+P6rH5jStPfWO17fk0vDGY76egiknY9I+/dXVO1QZZi
+         N+VBv9Z3w94jcPntdPvmvxThi1Pt7BQc7CQGlWc1XbuE27h/Tjx95jYQwXmsDNx2yeqO
+         qWL/Fba2fNQT9Rr+/LB0CWY14yZEgCX5vUuhsc9+wnG0eGwttD3EXu3J0BeKfGtnholH
+         /15MK9Aq20q0dHzSPmvD7thT5AzpdcS7HuY3d6ZZAKDdgfcRAJrVlDuQpA7LJQLwieXB
+         3US7nenJF1qgSWZszUcU3xlTARfId8Kj2fL8psId6IoZv/9gTyvaMnkpeQhDDrsoUZY5
+         eZHg==
+X-Gm-Message-State: AOJu0YwaOjmdb+a1Z5H1+hqZCJ08dKz04dhjo6p5lSopGpe6s031O+yw
+        ZxIx5RT/Q4c8yN6XMGSe+LhoAg==
+X-Google-Smtp-Source: AGHT+IEXQIFMHadyDRChtGWsNdu4tIcR8I5uss+Itz+qjtQCYQjp7KZD7tJPpRt1hh9fB5z8JoAqkA==
+X-Received: by 2002:a17:906:cc9:b0:977:ecff:3367 with SMTP id l9-20020a1709060cc900b00977ecff3367mr1598339ejh.40.1694785913646;
+        Fri, 15 Sep 2023 06:51:53 -0700 (PDT)
 Received: from [192.168.37.232] (178235177024.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.24])
-        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm2467926ejf.90.2023.09.15.06.51.03
+        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm2467926ejf.90.2023.09.15.06.51.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 06:51:04 -0700 (PDT)
-Message-ID: <70b10fcc-6851-4d48-b27d-3e701ba95ae0@linaro.org>
-Date:   Fri, 15 Sep 2023 15:51:03 +0200
+        Fri, 15 Sep 2023 06:51:53 -0700 (PDT)
+Message-ID: <b66a72ef-653b-47cb-8c0a-df8418c3619c@linaro.org>
+Date:   Fri, 15 Sep 2023 15:51:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/9] arm64: dts: qcom: msm8916/39: Disable unneeded
- firmware reservations
+Subject: Re: [PATCH 8/9] arm64: dts: qcom: msm8916/39: Move mpss_mem size to
+ boards
 Content-Language: en-US
 To:     Stephan Gerhold <stephan@gerhold.net>,
         Bjorn Andersson <andersson@kernel.org>
@@ -63,7 +63,7 @@ Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
- <20230911-msm8916-rmem-v1-7-b7089ec3e3a1@gerhold.net>
+ <20230911-msm8916-rmem-v1-8-b7089ec3e3a1@gerhold.net>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -100,7 +100,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230911-msm8916-rmem-v1-7-b7089ec3e3a1@gerhold.net>
+In-Reply-To: <20230911-msm8916-rmem-v1-8-b7089ec3e3a1@gerhold.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -114,17 +114,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11.09.2023 19:41, Stephan Gerhold wrote:
-> Now that we no longer have fixed addresses for the firmware memory
-> regions, disable them by default and only enable them together with
-> the actual user in the board DT.
+> The modem firmware size is typically highly device-specific.
+> The current size of the mpss_mem region in msm8916.dtsi (0x2b00000)
+> only works for some APQ8016 devices without full-featured modem,
+> such as the DragonBoard 410c.
 > 
-> This frees up unnecessary reserved memory for boards that do not use
-> some of the remoteprocs and allows moving selected device-specific
-> properties (such as firmware size) to the board-specific DT part in
-> the next step.
+> The full modem firmware is typically about twice as large (~45 MiB
+> -> ~90 MiB) but also varies by a few MiB from device to device. Since
+> these devices are quite memory-constrained nowadays it's important to
+> minimize the unnecessary memory reservations.
+> 
+> Make it clear that each board needs to specify the necessary mpss_mem
+> size by replacing the DB410c-specific size in msm8916.dtsi with a
+> simple comment. &mpss_mem is disabled by default so it's fine to leave
+> some properties up to the boards if they want to enable it.
 > 
 > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
-Wouldn't delete-node on the outliers be more concise?
+Any reason not to squash it with one of the earlier patches then?
 
 Konrad
