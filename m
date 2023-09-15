@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FAA7A1B35
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79AD7A1B49
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjIOJui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        id S233978AbjIOJyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjIOJue (ORCPT
+        with ESMTP id S233894AbjIOJyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:50:34 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5B03AB7;
-        Fri, 15 Sep 2023 02:49:05 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3d6d88231so16519175ad.0;
-        Fri, 15 Sep 2023 02:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694771343; x=1695376143; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/TVQJoENhu00vx5rI/GikJKd4kuvFkeP8vi3vVfEcfo=;
-        b=aym6NrPvVQ8Sm+0tt8v2wWjHOuxq34mWO/MH9zvIWrBmb43xTjfjMe+DriZsj2t1Eo
-         5e93AmlnOQu5OAWuWDAYS/TQvKJmMp6U5+fc57LUgWk+uV8xILolSnPg6Zkt0CFfGFCa
-         VnIRe1G3xEiniJueRFvXZq4XZ90dWbQNjeGfRLEt13EPTtzaVEmnr41gzj3sIyIDiQgU
-         mfLDJzFUMvKOjzaHzdQMQhItpRo4w035ajIE0Rn5UCrVZfB+8LcnXbgfDBBVJOYFyeZt
-         3XFcDZNKTCC4H5fFR3O/szUhBeiGWY/zBcqvd3PeTVgQ6Ks64+XpFWNfkbK/N7FSMZag
-         ObCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694771343; x=1695376143;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/TVQJoENhu00vx5rI/GikJKd4kuvFkeP8vi3vVfEcfo=;
-        b=C8R1VSEJVAzKEWwk50aw8F0gGxmGkpg94JEgYK24GEOFrOriRnTXBHtEQVvqmZ3Nox
-         pb5eCWj8fTL3Ek595KlPzxGx5hAzxowtf3tWtMQjgG0VhpVPBVPOmtRfWBy9QRw8J7DI
-         d4Jq+nRvoF8o8nNOQK/W5909w2Lp1Tzc4D6TsGQghFY/U7bFvq0OASCkwAyGxMSZYGFr
-         ULSlPc+qwtUa610A58R0SL87UPAtH0unkm3EkBakl/GcHOojxqf4EAm4qWeFFZkwSRuY
-         RDM+uKBGkY3Ae5jbZpnkCkJQsLFxXlMp3XcWsrF5mVXWvoxRgY6H/Gzh1XqBNG9XqtUf
-         tlAw==
-X-Gm-Message-State: AOJu0Yyw8oYmSjjY4FjBe4kCnXDyUvWPtXis66ep6I7lA0BYE+e5RAGt
-        JjBlhV3f+ckMqnW7rWRkddE=
-X-Google-Smtp-Source: AGHT+IFKZZ7G1kbjDLssD1PYTqUJNDMyGB0g5aLVlwvvAL1wsMt77xEH5dArwfKSWKapUwbINpHEvg==
-X-Received: by 2002:a17:902:e9d5:b0:1c1:f1db:e86d with SMTP id 21-20020a170902e9d500b001c1f1dbe86dmr880494plk.7.1694771343330;
-        Fri, 15 Sep 2023 02:49:03 -0700 (PDT)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c20c00b001b8c6662094sm3062686pll.188.2023.09.15.02.49.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 02:49:02 -0700 (PDT)
-Message-ID: <d4e74e31-246c-1f8c-1465-b0bb6ce8454c@gmail.com>
-Date:   Fri, 15 Sep 2023 17:49:00 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] tty: serial: ma35d1_serial: Add missing check for ioremap
-To:     Chen Ni <nichen@iscas.ac.cn>, ychuang3@nuvoton.com,
-        schung@nuvoton.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20230915071106.3347-1-nichen@iscas.ac.cn>
-Content-Language: en-US
-From:   Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <20230915071106.3347-1-nichen@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 05:54:03 -0400
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3264E3C05;
+        Fri, 15 Sep 2023 02:51:37 -0700 (PDT)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4Rn8bH0Gh7z4xPYf;
+        Fri, 15 Sep 2023 17:51:23 +0800 (CST)
+Received: from szxlzmapp01.zte.com.cn ([10.5.231.85])
+        by mse-fl1.zte.com.cn with SMTP id 38F9or5h006739;
+        Fri, 15 Sep 2023 17:50:53 +0800 (+08)
+        (envelope-from cheng.lin130@zte.com.cn)
+Received: from mapi (szxlzmapp01[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Fri, 15 Sep 2023 17:50:56 +0800 (CST)
+Date:   Fri, 15 Sep 2023 17:50:56 +0800 (CST)
+X-Zmail-TransId: 2b0365042900227-d4888
+X-Mailer: Zmail v1.0
+Message-ID: <202309151750563356840@zte.com.cn>
+In-Reply-To: <ZQJIyx419cw24ppF@dread.disaster.area>
+References: 202309131744458239465@zte.com.cn,ZQJIyx419cw24ppF@dread.disaster.area
+Mime-Version: 1.0
+From:   <cheng.lin130@zte.com.cn>
+To:     <david@fromorbit.com>
+Cc:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jiang.yong5@zte.com.cn>,
+        <wang.liang82@zte.com.cn>, <liu.dong3@zte.com.cn>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2M10geGZzOiBpbnRyb2R1Y2UgcHJvdGVjdGlvbiBmb3IgZHJvcCBubGluaw==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 38F9or5h006739
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6504291B.000/4Rn8bH0Gh7z4xPYf
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/15 下午 03:11, Chen Ni wrote:
-> CAUTION - External Email: Do not click links or open attachments unless you acknowledge the sender and content.
->
->
-> Add check for ioremap() and return the error if it fails in order to
-> guarantee the success of ioremap().
->
-> Fixes: 930cbf92db01 ("tty: serial: Add Nuvoton ma35d1 serial driver support")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
->   drivers/tty/serial/ma35d1_serial.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/tty/serial/ma35d1_serial.c b/drivers/tty/serial/ma35d1_serial.c
-> index 465b1def9e11..4a9d1252de35 100644
-> --- a/drivers/tty/serial/ma35d1_serial.c
-> +++ b/drivers/tty/serial/ma35d1_serial.c
-> @@ -695,6 +695,9 @@ static int ma35d1serial_probe(struct platform_device *pdev)
->
->          up->port.iobase = res_mem->start;
->          up->port.membase = ioremap(up->port.iobase, MA35_UART_REG_SIZE);
-> +       if (!up->port.membase)
-> +               return -ENOMEM;
-> +
->          up->port.ops = &ma35d1serial_ops;
->
->          spin_lock_init(&up->port.lock);
+> On Wed, Sep 13, 2023 at 05:44:45PM +0800, cheng.lin130@zte.com.cn wrote:
+> > From: Cheng Lin <cheng.lin130@zte.com.cn>
+> >
+> > When abnormal drop_nlink are detected on the inode,
+> > shutdown filesystem, to avoid corruption propagation.
+> >
+> > Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
+> > ---
+> >  fs/xfs/xfs_inode.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> > index 9e62cc500..40cc106ae 100644
+> > --- a/fs/xfs/xfs_inode.c
+> > +++ b/fs/xfs/xfs_inode.c
+> > @@ -919,6 +919,15 @@ xfs_droplink(
+> >      xfs_trans_t *tp,
+> >      xfs_inode_t *ip)
+> >  {
+> > +
+> > +    if (VFS_I(ip)->i_nlink == 0) {
+> > +        xfs_alert(ip->i_mount,
+> > +              "%s: Deleting inode %llu with no links.",
+> > +              __func__, ip->i_ino);
+> > +        tp->t_flags |= XFS_TRANS_DIRTY;
+> Marking the transaction dirty is not necessary.
+> Otherwise this seems fine.
+Another strategy: 
+Set nlink to an invalid value(like XFS_NLINK_PINNED), and
+Complete this transaction before shutdown fs. To make sure
+nlink not be zero. If the nlink of a directory are zero, it may
+be cleaned up.
+Is that appropriate?
+> -Dave.
 > --
-> 2.25.1
->
-
-Thank you for this update.
-
-Acked-by: Jacky Huang <ychuang3@nuvoton.com>
-
-
-Best Regards,
-Jacky
-
+> Dave Chinner
+> david@fromorbit.com
