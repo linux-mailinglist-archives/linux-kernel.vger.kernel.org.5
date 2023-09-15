@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B277A183F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5127A1841
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjIOIMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S232926AbjIOIMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbjIOIMc (ORCPT
+        with ESMTP id S232954AbjIOIMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 04:12:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4132724;
-        Fri, 15 Sep 2023 01:12:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 05B66C4AF5E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153B12726;
+        Fri, 15 Sep 2023 01:12:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0E054C116A7;
         Fri, 15 Sep 2023 08:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694765529;
-        bh=T3+4BiYZEsY7XeCNbNP3L2Ezud6Km0Ar1pXXOF/3Jz8=;
+        bh=VdUAHU9tFQOmwqM3kgp5k4XWoMeX6TyGYVyOQqw5ado=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=EJz+tZUGlQqeXv9xks2y7mAsYdu4qZFb/mc3faPPFsHY7Tj7Ks0sdxXMr8VQA9T42
-         4Fd23A2XHPRT0s6kKmOEVuK2K0ktqlosvXVSWlrekM6NpAyQThKpe3i2ymFodx04bi
-         /Um2gl7o1PBxwO9Eg71WA/GOhTdzWHFVqAHpchqIQDX0hLxQyqYsmxsMm0ofHWoVzO
-         yg38lNvg8ePW4PHdSPvrhZJXlp/hinqNuZbgQt9TKf9QuTZOfOevxHDVIHnuwfpY77
-         bnYs5lfQZrJlucRi3dmfZqyfukhK9RyR+dbAYKFapHeD4nLihm38gx36WRVmRi66aC
-         9a5tMwoFFlZ0w==
+        b=pYLLG/rUEUTv/i5J8Sz4FDdJsuyNmMF5SIqzioZF2XxuC2rpO3EGQ3rgMlp1sc56x
+         Y6YrviClbNb6XGTGLylhrg+/a2dOwPNSJan2zbXEQSJ6XawniT+VWDKF8XxaShO7Bd
+         SOKHVtst9b86H7ItI7v1DtxWGakiOVtB/iYuYNjmzTC817iicthTmy+wmyWHROV5TP
+         vO9c+AR12fntY55hnFNYPUmejUOUlEhe/MTmxPSItEvspBkDiBqmNTmjywMOg5pQtc
+         q1hvaQeot0KsgY38GTNOQemKVDO2S3nXy10vclgd9Nc96aTXKX2ke3hRpr6vR6Up9o
+         rytr4OUkGav+g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id E80FDEE643D;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id F2A05EE643C;
         Fri, 15 Sep 2023 08:12:08 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Fri, 15 Sep 2023 11:10:57 +0300
-Subject: [PATCH v4 15/42] dt-bindings: watchdog: Add Cirrus EP93x
+Date:   Fri, 15 Sep 2023 11:10:58 +0300
+Subject: [PATCH v4 16/42] watchdog: ep93xx: add DT support for Cirrus
+ EP93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-ep93xx-v4-15-a1d779dcec10@maquefel.me>
+Message-Id: <20230915-ep93xx-v4-16-a1d779dcec10@maquefel.me>
 References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=1555;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=1127;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=W8r4M8jd0MGHVjVaNDLvixDKgLlwfIEtyOw4eJOp0rM=; =?utf-8?q?b=3DJP0KALtrdfJV?=
- =?utf-8?q?dqphg+Fo2enn+pORMskNrBekznScO5tskyocQX1T/rb3cLEBWsJQIF/51ZWmGw1L?=
- EYvx/OvuAUkBhHZ7rzdFJYjWnFvZkFfOjlXROYFfY8itqyQU8Syv
+ bh=CPD83DmlHSPxMgJXS1dukm1IsOMF9b07nZLLBHA0btc=; =?utf-8?q?b=3DhIr1gCCBk1oD?=
+ =?utf-8?q?ovw4QtDhubQdcJWz55wRaqbjjs7mL+r9yzZBloPy9jseFk6npwPRafUxbZZnBI4P?=
+ GoNQf9UECJqqdOjoG97VJGAy+9JD56EnOaS5fvgh8ukZ6ejJ0tc6
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -73,62 +69,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add device tree bindings for the Cirrus Logic EP93xx watchdog block
-used in these SoCs.
+Add OF ID match table.
 
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/watchdog/cirrus,ep9301-wdt.yaml       | 42 ++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/watchdog/ep93xx_wdt.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
-new file mode 100644
-index 000000000000..5dbe891c70c6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/cirrus,ep9301-wdt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/watchdog/ep93xx_wdt.c b/drivers/watchdog/ep93xx_wdt.c
+index 59dfd7f6bf0b..af89b7bb8f66 100644
+--- a/drivers/watchdog/ep93xx_wdt.c
++++ b/drivers/watchdog/ep93xx_wdt.c
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <linux/platform_device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/watchdog.h>
+ #include <linux/io.h>
+@@ -127,9 +128,16 @@ static int ep93xx_wdt_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id ep93xx_wdt_of_ids[] = {
++	{ .compatible = "cirrus,ep9301-wdt" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ep93xx_wdt_of_ids);
 +
-+title: Cirrus Logic EP93xx Watchdog Timer
-+
-+maintainers:
-+  - Nikita Shubin <nikita.shubin@maquefel.me>
-+  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: cirrus,ep9301-wdt
-+      - items:
-+          - enum:
-+              - cirrus,ep9302-wdt
-+              - cirrus,ep9307-wdt
-+              - cirrus,ep9312-wdt
-+              - cirrus,ep9315-wdt
-+          - const: cirrus,ep9301-wdt
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    watchdog@80940000 {
-+        compatible = "cirrus,ep9301-wdt";
-+        reg = <0x80940000 0x08>;
-+    };
+ static struct platform_driver ep93xx_wdt_driver = {
+ 	.driver		= {
+ 		.name	= "ep93xx-wdt",
++		.of_match_table = ep93xx_wdt_of_ids,
+ 	},
+ 	.probe		= ep93xx_wdt_probe,
+ };
 
 -- 
 2.39.2
