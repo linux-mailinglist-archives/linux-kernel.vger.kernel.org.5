@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0477A27DE
+	by mail.lfdr.de (Postfix) with ESMTP id 58C317A27DF
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbjIOUPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S237288AbjIOUPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbjIOUOr (ORCPT
+        with ESMTP id S237347AbjIOUO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:14:47 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D4E272E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:16 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bdf4752c3cso21264095ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694808856; x=1695413656; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9t4c7iG7BwJixU6psOPlOQYO3J4oZ/NM5PDqz6Jeo04=;
-        b=go7uig024KFWi6oiPZQJhAtrmKWw+a40kyRgE6l+AYy1c6LPcwO5JnM3tLeNxyeJ+8
-         cLLwmBYPVYf+t8uGQvT1sR1XwJOjD4Xlb8+DWaGn1hvnJ234lZoD+LqCu1/x3lVjz58J
-         GBOP5YnicX8rgr+H8p9LvVMi5okOdkthYVq5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694808856; x=1695413656;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9t4c7iG7BwJixU6psOPlOQYO3J4oZ/NM5PDqz6Jeo04=;
-        b=BhZXmqoi1vIt8pi535DZLKMEJInk1EMyvqY09XjtDHAL0yAnDP3vR/w4nOn1a1X6mv
-         HMPpNfPAoguhXeXYCniSWJ+ZGp8ZNvSNGoUxrLHoJitp1QMUjv8GFuWnyoLe4m7UuXHT
-         ho4Hc2omucNXMfxsXxMAhGzltKJYgL0xRkNfGP+iz16g2X6HGPn0oYboEXMdihr+A9jV
-         PtEk9OU3mydz/TTPYsGHSA0vs5qtZJtC0rjxT6g7J96VwzcSP2UA8v6/XZWtOVzRNdjK
-         dWn7eliwESnCi7cjdESDszFK+CVmiJfanzyyi19kNyD+F3zmHVrlphFZeDO7KTMJuPrF
-         fDMA==
-X-Gm-Message-State: AOJu0YxdBXqnwX4/XB7OlTyB+zImeJ9tf+x/WjPnr0bemBi4ka46OZyK
-        aVVQ98EstuVmeKs5cI1xAj1e/g==
-X-Google-Smtp-Source: AGHT+IGgXyGAghZv7pszt8rqPpCweXXdiMo6SZzmmUtM+9AUGmv0Zkuf+i1pa/kjEbWVyhBGaegRbw==
-X-Received: by 2002:a17:902:8691:b0:1c4:a16:f88f with SMTP id g17-20020a170902869100b001c40a16f88fmr2591006plo.36.1694808855939;
-        Fri, 15 Sep 2023 13:14:15 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kg14-20020a170903060e00b001c41e1e9ca7sm3059479plb.215.2023.09.15.13.14.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 13:14:15 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Benjamin LaHaise <bcrl@kvack.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] aio: Annotate struct kioctx_table with __counted_by
-Date:   Fri, 15 Sep 2023 13:14:14 -0700
-Message-Id: <20230915201413.never.881-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 15 Sep 2023 16:14:56 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050E22D54
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:14:20 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id hFCkqXJoa7mcChFCkqXu8c; Fri, 15 Sep 2023 22:14:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694808859;
+        bh=PoS7/ryl/5McXZDkIPKpx2zauZQLIVxE9S5FLgRsCK8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=GRFNTkx7ZqEUl44R3xrKxuYLDEVqxSd99/ZnnoxEpEmIWFIx9RToclTFKeBC602iu
+         t45ZYCPtawIcr8nDLaBTbYSHCu+mKreiK+DUpBCas53OjgBtbZFGDgG6AjiFxwbYFn
+         TKhML+HS4Ox4qCtWZxzwyggDZUQ8vFrPx0IJS7UE0MALCgs4tPjAa70d2bSXAK9x3R
+         BgZERq1P8liXzPP5s+TaA/qiYZwK2eww0U+wcpvgx31anQcq+RB27ULs2igXZ1D+Wt
+         puMoy+ES42lN+Ne+2VbCp9oJBtBhoQKFXVTFvzhaAd/eu360hLvFbtggw0zolCEFAZ
+         Q9PWH2Kj6OK2Q==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 15 Sep 2023 22:14:19 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <d083215e-e9bf-860d-6d04-d919a9b90752@wanadoo.fr>
+Date:   Fri, 15 Sep 2023 22:14:18 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1127; i=keescook@chromium.org;
- h=from:subject:message-id; bh=1qAoiZuMRAuvDZRUcSDPW5lLo0Ae9xZ4UiTXDEh1mTE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLsWaTUS2aPe9DYGUrDZPo05lmzAICnFfTNt4
- TuHABaIVB+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS7FgAKCRCJcvTf3G3A
- JoNvD/wI9Ez/xecwMst1xwqWO5PzTIz1ZADRxzr2MoMrg+bF+zVBEO3uiWXoI4pY9farlKnMZOW
- F5S+SAgyURn2G3c6PN1WVEuc3Y9424hN2if8MTSVs0Nbk2EYZYm06r4Douy2vRy0YkSAWpssZ4v
- kymW916TdLMSRQ/VlhTwIqb/EogyHshGE7Zu0yDtUhDbfNo/bgJHm1Eb6BVnfWOYPkexC2wepRA
- /2J8yT+u4nZPjAW/UCwuRiP1zLd+xRXCtOQ9gm8mzijyKmqsRVlbzYa5UgI1Qr2byEv0P+KjR+K
- y6G/DhhriaqRy0FKJe0VObtQR56fWtLn/iUbIXW1qHAqKOVt3+/Xx/Qy+k6d9q+FucGZchog81Y
- 2br884EAL0MMUhCaLcwaFg4xWRh29AeG8bLDSSNwC9EIOIo6FlJdiPX8HsYfDRb2OkHYBrsCpUi
- suZXovmTwkZpy/XU8KHgnb7LmtJc2yZDea0oHJJbmJudfvmiUROsu2gT6uXwwCfFTZxacyfSznc
- ASqN8epE+clvMgEB/6HAUJXqXXb33j045MB2iUYymLfTnXHdblZnb/8GXLjn8Vs2KlOKemgOj3C
- lfmwn7j/b71qoQYPbLyXrt6loyYO6Zx7zzMnblLcq56S/LCrSIUYj5v7p70QXU/45+14jBKbzhy
- hj/G1EM dIHavvSg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/3] HID: nvidia-shield: Fix the error handling path of
+ shield_probe()
+To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
+ <87msxns3nv.fsf@nvidia.com>
+Content-Language: fr, en-GB
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <87msxns3nv.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+Le 15/09/2023 à 20:16, Rahul Rameshbabu a écrit :
+> Hi Christophe,
+> 
+> On Sat, 26 Aug, 2023 19:42:16 +0200 Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+>> This serie fixes some missing clean-up function calls in the error handling of
+>> the probe.
+>>
+>> Patch 1 and 2 fix some similar issues introduced in 2 different commits (hence 2
+>> patches)
+>>
+>> Patch 3 is a proposal to be more future proof.
+>>
+>>
+>> *Note*: I'm not 100% sure that the order of the functions is the best one in
+>> thunderstrike_destroy(), but it is the way it was.
+>>
+>> My personal preference would be to undo things in reverse order they are
+>> allocated, such as:
+>> 	led_classdev_unregister(&ts->led_dev);
+>> 	power_supply_unregister(ts->base.battery_dev.psy);
+>> 	if (ts->haptics_dev)
+>> 		input_unregister_device(ts->haptics_dev);
+>> 	ida_free(&thunderstrike_ida, ts->id);
+>> This order was explicitly chnaged by 3ab196f88237, so, as I can't test the
+>> changes on a real harware, I've left it as-is.
+>>
+>> Christophe JAILLET (3):
+>>    HID: nvidia-shield: Fix a missing led_classdev_unregister() in the
+>>      probe error handling path
+>>    HID: nvidia-shield: Fix some missing function calls() in the probe
+>>      error handling path
+>>    HID: nvidia-shield: Introduce thunderstrike_destroy()
+>>
+>>   drivers/hid/hid-nvidia-shield.c | 23 ++++++++++++++++-------
+>>   1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> I was wondering if you have time to address the comments in this
+> submission. If not, I can re-spin the patches with the needed changes in
+> upcoming days.
 
-As found with Coccinelle[1], add __counted_by for struct kioctx_table.
+I can send an update tomorrow, but I'm only working with -next, so 
+should using for-6.6/nvidia (as said in your comment in #1/3) be a must 
+have, then it would be more convenient for me if you make the changes by 
+yourself.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+CJ
 
-Cc: Benjamin LaHaise <bcrl@kvack.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-aio@kvack.org
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/aio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/aio.c b/fs/aio.c
-index a4c2a6bac72c..f8589caef9c1 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -80,7 +80,7 @@ struct aio_ring {
- struct kioctx_table {
- 	struct rcu_head		rcu;
- 	unsigned		nr;
--	struct kioctx __rcu	*table[];
-+	struct kioctx __rcu	*table[] __counted_by(nr);
- };
- 
- struct kioctx_cpu {
--- 
-2.34.1
+> 
+> --
+> Thanks,
+> 
+> Rahul Rameshbabu
+> 
 
