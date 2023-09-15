@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5ED7A2256
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A9F7A2259
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbjIOP1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        id S236073AbjIOP1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236107AbjIOP0k (ORCPT
+        with ESMTP id S235233AbjIOP1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:26:40 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C0C10CC;
-        Fri, 15 Sep 2023 08:26:34 -0700 (PDT)
-X-UUID: 3d60e07a53dc11ee8051498923ad61e6-20230915
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=gEKcGfOdbb/ypCFeWjMTerPJybqZBvAl/dHd3Jy2NTQ=;
-        b=IKacZjHqLF2RYa5DVWiUprUMOkA2SPjskE5sRpKzbYoVOOuOHFmJOkmjMO5GBjGAXIiW2PAILqpm5H2s1RaGjYtUQquXsET5MyhRYYopNT+6tYATLTlERzZa5pU4pukD5+OQeHF+U+XjSFowxfeuJlYIthst77CMWew5DRNnk5U=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:4d170fa3-a3a7-401a-8843-e07ab91ff1ca,IP:0,U
-        RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:7ee313c3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 3d60e07a53dc11ee8051498923ad61e6-20230915
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-        (envelope-from <william-tw.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 268018361; Fri, 15 Sep 2023 23:26:28 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 15 Sep 2023 23:26:26 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 15 Sep 2023 23:26:26 +0800
-From:   William-tw Lin <william-tw.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Kevin Hilman <khilman@kernel.org>
-CC:     <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        William-tw Lin <william-tw.lin@mediatek.com>
-Subject: [PATCH v2 3/3] dt-bindings: hwinfo: Add mtk-socinfo driver
-Date:   Fri, 15 Sep 2023 23:26:07 +0800
-Message-ID: <20230915152607.18116-4-william-tw.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230915152607.18116-1-william-tw.lin@mediatek.com>
-References: <20230915152607.18116-1-william-tw.lin@mediatek.com>
+        Fri, 15 Sep 2023 11:27:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7816DE71
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694791610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cXJCz6BbI6aPCSAZn+qO6JUf8WIvxxBmFHYvub3SbQw=;
+        b=W7K9sdwpt5PNhoX4dWIHdWIP3c+o+gYQdCMpJWJjGLgml5QEd28vVXF2bbQa9i6ttGdp5Z
+        rMN6MXMXVvzOWYcIOddX6nuhOapUhoaQw9kEWhvTLGKdy+nN9pWbJNmgtYyo1uD4TdRyCG
+        3cB66hhZvq+H055LGCXfwRqNiKseYss=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-266-aoU2dkBWOvmTPY5J-I6H6A-1; Fri, 15 Sep 2023 11:26:46 -0400
+X-MC-Unique: aoU2dkBWOvmTPY5J-I6H6A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31fed999e27so740619f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:26:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694791605; x=1695396405;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cXJCz6BbI6aPCSAZn+qO6JUf8WIvxxBmFHYvub3SbQw=;
+        b=rmdTjAvgNe4i54oe5oZFNaVtZOPDGOPkOtYOi/nom7eu0RHH5Ch9tspzM6wgMcrpOH
+         ux1C1q460IdMVMNlhsxsS2jSfhpMsWDOclAJ66oIguYNH1sv1w4jBe38gf2NQKW5R9dA
+         eCAnvEQxClvLSJDaAFr5QnkuzQ416eyIC+osfSQt8+oCNqnFwQm1IhOyJ0t9q38U5bxj
+         du1ukjuXGaCrejQQCfLKJuqMlSnBcb7KdYrn3gPlgw+vHy2Gb2bmpFjhDrP07RqzFa3A
+         ttlzZP509AiIpoGhbEVQ2a3Fl66VCymlFx3j04qVAvoI3b5c3c9nGgnBKFOVdq/Ycrnu
+         umeQ==
+X-Gm-Message-State: AOJu0Yx2oRORODtriQTgcwYn9qcpMSKtaZFBikFrq4QGpTNjjo5UlaGc
+        lSJbIzN7klqeR6MVhEO03z+9uJ/s0LhmMs5ryIAJbBsF90LE/CikRte8CzRUCsYJPS4pXEuwC07
+        aoxHCWVFyugDqgV5FUnVmBuIDBdSXPUrJ
+X-Received: by 2002:a5d:4705:0:b0:314:12c:4322 with SMTP id y5-20020a5d4705000000b00314012c4322mr1846934wrq.4.1694791605413;
+        Fri, 15 Sep 2023 08:26:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFcciUEO3Yzg/B/EH3LHnJHXESKC04F9L6yYC6mauISILfyLrs3Bv2tOaf8tetTfv85dpKLcA==
+X-Received: by 2002:a5d:4705:0:b0:314:12c:4322 with SMTP id y5-20020a5d4705000000b00314012c4322mr1846917wrq.4.1694791605012;
+        Fri, 15 Sep 2023 08:26:45 -0700 (PDT)
+Received: from [192.168.3.108] (p5b0c6d49.dip0.t-ipconnect.de. [91.12.109.73])
+        by smtp.gmail.com with ESMTPSA id z9-20020adff1c9000000b0031f07d1edbcsm4729335wro.77.2023.09.15.08.26.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 08:26:44 -0700 (PDT)
+Message-ID: <b3d9f64a-1661-10c0-0e20-06d91b54bb80@redhat.com>
+Date:   Fri, 15 Sep 2023 17:26:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--1.957100-8.000000
-X-TMASE-MatchedRID: v6XyZOeCJ6AQKuI1NEGZQXew7fOv9rv4/oVxXwNIskffUZT83lbkEEd0
-        Rzx07LDVnD3AxwqeC/rkllaluas5jhhzK7qAlTSLGVyS87Wb4lxh59nsX2QuC9zOQo7mTgA+B/o
-        dLTuYYLIlCUygZetDZEw3m0nPdhDkQF24kZp9Ww+eAiCmPx4NwJuJ+Pb8n/VxLzP5snaeb1Qqtq
-        5d3cxkNRqXnrxrKCOXNyXiktngl2+lBw28bqWvBSjlogU60mUGrOK2X7HwMosh2LyHk3j0fbb1y
-        JyFMGW7fTAUk3BtRD0d/NlE8oyWLLgVDf+0/00JF0aD5ljt43pMcHZD6gqu7wxMjfifIXfowkvV
-        oA11Twp+3BndfXUhXQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.957100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 4F5FBE3B3D86B8BE0E3CEF07A5A469906665476C1D1E64B6B9808915176020262000:8
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm/rmap: convert __page_check_anon_rmap() to folio
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>,
+        Yajun Deng <yajun.deng@linux.dev>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230915101731.1725986-1-yajun.deng@linux.dev>
+ <ZQRg89X67vKL8Q4d@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZQRg89X67vKL8Q4d@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dt-binding documentation for mtk-socinfo driver.
-mtk-socinfo driver provides SoC-related information.
-Such information includes manufacturer information, SoC name,
-SoC segment name, and SoC marketing name.
+On 15.09.23 15:49, Matthew Wilcox wrote:
+> On Fri, Sep 15, 2023 at 06:17:31PM +0800, Yajun Deng wrote:
+>> @@ -1176,8 +1175,8 @@ static void __page_check_anon_rmap(struct folio *folio, struct page *page,
+>>   	 */
+>>   	VM_BUG_ON_FOLIO(folio_anon_vma(folio)->root != vma->anon_vma->root,
+>>   			folio);
+>> -	VM_BUG_ON_PAGE(page_to_pgoff(page) != linear_page_index(vma, address),
+>> -		       page);
+>> +	VM_BUG_ON_FOLIO(folio_pgoff(folio) != linear_page_index(vma, address),
+>> +		       folio);
+> 
+> No, this is not equivalent.  You haven't hit any problems testing it
+> because you don't have large anonymous folios.
 
-Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
----
- .../bindings/hwinfo/mtk-socinfo.yaml          | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
+Right, the address would have to be adjusted as well by the caller.
 
-diff --git a/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
-new file mode 100644
-index 000000000000..74f03f1dc404
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwinfo/mtk-socinfo.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwinfo/mtk-socinfo.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek SoC ChipID
-+
-+maintainers:
-+  - William Lin <william-tw.lin@mediatek.com>
-+  - Matthias Brugger <matthias.bgg@gmail.com>
-+  - Kevin Hilman <khilman@kernel.org>
-+  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-+
-+description:
-+  MediaTek SoCs store various product information in eFuses, including
-+  Chip ID and Revision fields, usable to identify the manufacturer,
-+  SoC version, plus segment and marketing names.
-+
-+properties:
-+  compatible:
-+    const: mediatek,socinfo
-+
-+  nvmem-cells:
-+    maxItems: 2
-+    description: Phandle to nvmem cells containing SoC identification data
-+
-+  nvmem-cell-names:
-+    minItems: 1
-+    items:
-+      - const: socinfo-data1
-+      - const: socinfo-data2
-+
-+required:
-+  - compatible
-+  - nvmem-cells
-+  - nvmem-cell-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+        socinfo {
-+            compatible = "mediatek,socinfo";
-+            nvmem-cells = <&socinfo_data1>, <&socinfo_data2>;
-+            nvmem-cell-names = "socinfo-data1", "socinfo-data2";
-+        };
-+
 -- 
-2.18.0
+Cheers,
+
+David / dhildenb
 
