@@ -2,175 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0277A1DBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392CA7A1DC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjIOL6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S234449AbjIOL6k convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 07:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjIOL6V (ORCPT
+        with ESMTP id S232836AbjIOL6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:58:21 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A066CD8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:57:54 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fc9a4ebe9so1841422b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694779074; x=1695383874; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g+9LelNNuQQBY0BeTA1DgI1taOTB4NaXhHyNv+e8K0s=;
-        b=UdQheZSZV9QfcEhsP8HuGQM/lnr/qgd9hFQM7J29BQg5IckDP02IrsCpp98t6heXXr
-         Btq11mEajyqJt5JUjZSWxCeOlsldWvboxvyzdKL8vXw1cDQUTd/IrkkPLxQCgGNr+6E6
-         2yaK63Iq+h4nwYaTVgwoIzBFeByy6Udm+X0AVqFSIKRFxj9GqYAMvZcqBdSvxelzn9P0
-         aNHhS74NGuzjVZE/QxD1OktTuuemNSzY7GnA6hewTBpfe7hy26faaguZhizfI1nEVLT4
-         yOB4Y/L9ZmGREUt7A1Wec4w0qT7JRBvjvH7B2Ft0BxFT9A/OQzEBDpVp59T2flFDYzCC
-         R7VA==
+        Fri, 15 Sep 2023 07:58:38 -0400
+Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB671FE5;
+        Fri, 15 Sep 2023 04:58:31 -0700 (PDT)
+Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-58dce1f42d6so43345167b3.0;
+        Fri, 15 Sep 2023 04:58:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694779074; x=1695383874;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=g+9LelNNuQQBY0BeTA1DgI1taOTB4NaXhHyNv+e8K0s=;
-        b=TCzFSCxTZJnsZXsNw9G5k+SVKO0CpXkOzFCH4J2oxx8lg9K3dEc4KJMQ6sL3Wezmrl
-         kR55XXk7WMmM5tVxjQ1fmEmqcOEXNI5xQoDVCC7qUZMKVbsQLBUm9yaegeP4ukYtRD6q
-         KHKk2rr+Z8BrEjypVtiON256jxFp4e9Y3VE3FI/eV73rR0x5+vbMuQ75Kii2cdr8GHb8
-         wToi8NeIkC9yj5yh9XTVCKT/SBZHzyifCSY8bCjGjCqOE6Sm3OXz05iasw/aXzS0JPpD
-         RB6biZ/8JJyxTvvMlJ5VmtA9mjihRUoqlN+nokZJpgFk13yqb5AucK6zASdytm2dhyQS
-         17iQ==
-X-Gm-Message-State: AOJu0YwWBY5sZn2WonW4o79Kw9KJkqVUgu3ToB4P9A1UGQ61gohySite
-        JqqEh5feuepYltvl7baloObRPDR95sdSwf13IBA=
-X-Google-Smtp-Source: AGHT+IHpk8bWpQprhMyTPYT2SM6uicyhDAOm12s2a+arWfDsnfqzDdu7cCkXBrt62xQ1Oc2vLDFcbw==
-X-Received: by 2002:a05:6a00:c96:b0:690:28d0:b7b3 with SMTP id a22-20020a056a000c9600b0069028d0b7b3mr1607774pfv.13.1694779074048;
-        Fri, 15 Sep 2023 04:57:54 -0700 (PDT)
-Received: from [10.255.88.66] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id e7-20020aa78247000000b0063f0068cf6csm2834552pfn.198.2023.09.15.04.57.48
+        d=1e100.net; s=20230601; t=1694779111; x=1695383911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IhoLa0IXdX3TaWf8YmV+AYUsXgMaohKowkvp3aA0P+I=;
+        b=nlw9XbPDsFV/RqCjMx20OpBo9VNByN/YeoLg0bO0HA4HZCg0pnxrhrnC3k3R8ek3o3
+         fAg8pk0KMQIyfi3f1bJuJ5CKd1+Y00aZP4vyozUvuSwQ6t/EyE8h1oHd1tRtHTSAzXTS
+         DUcCajOBUijf1RyE1tkCxScQ/5QUYJZaJtOF/Wx+ir9DD5Jy7in03p+NhCfHYkwJ8QRa
+         2ojlFYBm6xDg2/DT/cwdr0HYb469NgShFuNscklpyoUpdAbzkZ+oS1SpsvQv0GyoLiUT
+         GQsGqhi8dd57L1rPPrMPSUFN4k16zRAt07rz8rRG5n+6je9i/nDRwTJwkCq3S0/XjgQo
+         syIw==
+X-Gm-Message-State: AOJu0Yw0M1GKB7wZcMi8hmdnFxv2PkeYaY105aiInVRJEV3exG8rahE5
+        E6XKCa1vUYImHO8eBTML6kadyycFYF6BLL/O
+X-Google-Smtp-Source: AGHT+IH49B71wpV06DDzaQrTvbIXqVRze07xbxbfDuEd47ROOpIoLqNZyXllMtZVtNOsiiBkWAxxUw==
+X-Received: by 2002:a81:a04b:0:b0:56f:fd0a:588d with SMTP id x72-20020a81a04b000000b0056ffd0a588dmr4525175ywg.8.1694779111162;
+        Fri, 15 Sep 2023 04:58:31 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id m128-20020a0de386000000b00595394ba941sm828551ywe.81.2023.09.15.04.58.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 04:57:53 -0700 (PDT)
-Message-ID: <8f27e07e-e23c-af80-90eb-b1123e1f68cd@bytedance.com>
-Date:   Fri, 15 Sep 2023 19:57:46 +0800
+        Fri, 15 Sep 2023 04:58:31 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d819b185e74so2150221276.0;
+        Fri, 15 Sep 2023 04:58:31 -0700 (PDT)
+X-Received: by 2002:a25:d252:0:b0:d81:987f:989c with SMTP id
+ j79-20020a25d252000000b00d81987f989cmr1869824ybg.3.1694779110814; Fri, 15 Sep
+ 2023 04:58:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-5-zhouchuyi@bytedance.com>
- <CAEf4BzY4qabpk3SD-GA5n5++REcXCxTtA4ythsR9HKHtGi33xA@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAEf4BzY4qabpk3SD-GA5n5++REcXCxTtA4ythsR9HKHtGi33xA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-21-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20230912045157.177966-21-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Sep 2023 13:58:18 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVzX6fM5OSEONngii13uzbG0tUgM-ZVYstKw6JoV=g1OQ@mail.gmail.com>
+Message-ID: <CAMuHMdVzX6fM5OSEONngii13uzbG0tUgM-ZVYstKw6JoV=g1OQ@mail.gmail.com>
+Subject: Re: [PATCH 20/37] dt-bindings: clock: renesas,rzg2l-cpg: document
+ RZ/G3S SoC
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add documentation for RZ/G3S CPG. RZ/G3S CPG module is almost identical
+> with the one available in RZ/G2{L, UL} the exception being some core
+> clocks as follows:
+> - SD clock is composed by a mux and a divider and the divider
+>   has some limitation (div = 1 cannot be set if mux rate is 800MHz).
+> - there are 3 SD clocks
+> - OCTA and TSU clocks are specific to RZ/G3S
+> - PLL1/4/6 are specific to RZ/G3S with its own computation formula
+> Even with this RZ/G3S could use the same bindings as RZ/G2L.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-在 2023/9/15 07:26, Andrii Nakryiko 写道:
-> On Tue, Sep 12, 2023 at 12:02 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->> This Patch adds kfuncs bpf_iter_css_{pre,post}_{new,next,destroy} which
->> allow creation and manipulation of struct bpf_iter_css in open-coded
->> iterator style. These kfuncs actually wrapps css_next_descendant_{pre,
->> post}. BPF programs can use these kfuncs through bpf_for_each macro for
->> iteration of all descendant css under a root css.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   include/uapi/linux/bpf.h       |  8 +++++
->>   kernel/bpf/helpers.c           |  6 ++++
->>   kernel/bpf/task_iter.c         | 53 ++++++++++++++++++++++++++++++++++
->>   tools/include/uapi/linux/bpf.h |  8 +++++
->>   tools/lib/bpf/bpf_helpers.h    | 12 ++++++++
->>   5 files changed, 87 insertions(+)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index befa55b52e29..57760afc13d0 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -7326,4 +7326,12 @@ struct bpf_iter_process {
->>          __u64 __opaque[1];
->>   } __attribute__((aligned(8)));
->>
->> +struct bpf_iter_css_pre {
->> +       __u64 __opaque[2];
->> +} __attribute__((aligned(8)));
->> +
->> +struct bpf_iter_css_post {
->> +       __u64 __opaque[2];
->> +} __attribute__((aligned(8)));
->> +
->>   #endif /* _UAPI__LINUX_BPF_H__ */
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 9b7d2c6f99d1..ca1f6404af9e 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2510,6 +2510,12 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
->>   BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_css_pre_new, KF_ITER_NEW)
->> +BTF_ID_FLAGS(func, bpf_iter_css_pre_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_css_pre_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_css_post_new, KF_ITER_NEW)
->> +BTF_ID_FLAGS(func, bpf_iter_css_post_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_css_post_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> index 9d1927dc3a06..8963fc779b87 100644
->> --- a/kernel/bpf/task_iter.c
->> +++ b/kernel/bpf/task_iter.c
->> @@ -880,6 +880,59 @@ __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
->>   {
->>   }
->>
->> +struct bpf_iter_css_kern {
->> +       struct cgroup_subsys_state *root;
->> +       struct cgroup_subsys_state *pos;
->> +} __attribute__((aligned(8)));
->> +
->> +__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
->> +               struct cgroup_subsys_state *root)
-> 
-> similar to my comment on previous patches, please see
-> kernel/bpf/cgroup_iter.c for iter/cgroup iterator program. Let's stay
-> consistent. We have one iterator that accepts parameters defining
-> iteration order and starting cgroup. Unless there are some technical
-> reasons we can't follow similar approach with this open-coded iter,
-> let's use the same approach. We can even reuse
-> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> BPF_CGROUP_ITER_ANCESTORS_UP enums.
-> 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-I know your concern. It would be nice if we keep consistent with 
-kernel/bpf/cgroup_iter.c
+Gr{oetje,eeting}s,
 
-But this patch actually want to support iterating css 
-(cgroup_subsys_state) not cgroup (css is more low lever).
-With css_iter we can do something like 
-"for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre"
-in BPF Progs which is hard for cgroup_iter. In the future we can use 
-this iterator to plug some customizable policy in other resource control 
-system.
+                        Geert
 
-BTW, what I did in RFC actually very similar with the approach of 
-cgroup_iter. 
-(https://lore.kernel.org/all/20230827072057.1591929-4-zhouchuyi@bytedance.com/).
 
-Thanks.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
