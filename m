@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0A87A1F98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BDB7A1F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbjIONPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        id S235251AbjIONPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234472AbjIONPc (ORCPT
+        with ESMTP id S233006AbjIONPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:15:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235CD211E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:15:18 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 15:15:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694783716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ws037AXqflD0ML393QGbwfyMtfZkuly5mYeYMdFEVF0=;
-        b=NRUuLfHwu/D/tBLkHJI++tgzjLUVOOM/qAkY0pwYxvkBrfHPUmVBptU5W0wn/UmAFc9bEf
-        EN0jofwJgfZedqVQhRIbAXX17Iqqtl+fK+YDvGCA5tMaNIhnXfrhhrfuxfZCGpCU2hPIV1
-        rrCi7sB3Id8tRi5odvTqaeIkGKZdxDRfgZcxRCMA18RGfEin+GC8w3SQPeqF2EW+rUmrG2
-        aeVtS3PT6qN59dfX/Z68zeMOZ57D9nGcYa1zd+VXrUCbJea+XzKBsjF/tbajhasWvwpDQI
-        TK7+FUbNgcX58co/NRcck3Zx4x8YsQeRjs9D3Lg/Y6hw/67Ww36OMIkXIr6tsA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694783716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ws037AXqflD0ML393QGbwfyMtfZkuly5mYeYMdFEVF0=;
-        b=47d1MMpri+DnXt2pawAZ4ltkpoyWUwmCanL5D5/hb4FLf9E2srVKT15aTHC1Tq2XhYY8dT
-        nh4iRKg7E9TgwlAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
-        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        jstultz@google.com, juri.lelli@redhat.com, longman@redhat.com,
-        mgorman@suse.de, mingo@redhat.com, rostedt@goodmis.org,
-        swood@redhat.com, vincent.guittot@linaro.org, vschneid@redhat.com,
-        will@kernel.org
-Subject: Re: [PATCH v3 7/7] locking/rtmutex: Acquire the hb lock via trylock
- after wait-proxylock.
-Message-ID: <20230915131511.mLtx-ZMT@linutronix.de>
-References: <20230908162254.999499-1-bigeasy@linutronix.de>
- <20230908162254.999499-8-bigeasy@linutronix.de>
- <20230911141135.GB9098@noisy.programming.kicks-ass.net>
- <87fs3f1tl0.ffs@tglx>
+        Fri, 15 Sep 2023 09:15:39 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DAC1FE0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:15:34 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso33549711fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694783732; x=1695388532; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2YTcLJQwSswCsEHlsNnjpEpmfVQ1cqhA1Es4JBakSFY=;
+        b=Y+RW2L6LaQ/oMzReRpbt51RwdVDhxgNJTAPKwx87sJVW3wrT7bT05ucCiLXnY3z7RX
+         KkzQtIbVmers550bECCbyQfz7fUIkWGv0RCNS0kWt1k26pqYWyfwEyiE1a4oxr+MMOrR
+         LqQNALgpWCcqiR5FmgeePerrbIWawlQcdHmzqMRGvCdVtts7Y78eVYq2pIN4xKlT5o8J
+         dVB7cnmv2rhDxzi+ZJuoj+vKwzSeok5zpL19uqR9FC+Yr5mUP8eFULev/dTezT42Svr8
+         1tJuhs38cBZpwKsGffA/vI/VUPc3KMsNNowJf9e6OdcMbagQpwxgd7sbAKc3e6X09ldl
+         jZng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694783732; x=1695388532;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2YTcLJQwSswCsEHlsNnjpEpmfVQ1cqhA1Es4JBakSFY=;
+        b=BmKfz7mEzdcKP82yt5JRtlbMZ7Ib9jfOwOnHwzgIaUYprql6JxEgdE6Jq8qgnI0jaI
+         qx1fk6y+2b7rR5fl9wPm5dxoJo0vDBT2aNeWmZ+kR/d0v6hJg7MRjsg/ysMzG+/IFY/i
+         cqlvXMKYE8Frw06ZDVa9Ee5JcmYKi+OE5Jhq8TsSPuQZ6Ou48iBLr7NiikHldTLzBqY7
+         KUDQLrIfudTmhk1Gur8KgmmRX24Yk3SyNDAMpzKVpDO01xHOZLyIPRtIuSuFaFSJVmRE
+         XVaG6v6atpe+VigzYA2O6ZpJ2DEbsS66a1lP+uIZM9EHEyUSbFgfCiVi2JdfAK7+sscs
+         2UyQ==
+X-Gm-Message-State: AOJu0YzvvP3OjSw4yDC34iNlzJveU8Uh18U1I9CU4Yl2ujiLJ/NRG/3B
+        8vj9RYwiKrl/IIk9BCQxkLKTww==
+X-Google-Smtp-Source: AGHT+IH9HHhAAiakkwGcb0nc6A/BR1ro4tRIpIJUd3BkPy0wX1M6KcFTvJlfvmgHfIQfhqyIgcdVgA==
+X-Received: by 2002:a2e:9246:0:b0:2bc:c51d:daa1 with SMTP id v6-20020a2e9246000000b002bcc51ddaa1mr1661473ljg.39.1694783732549;
+        Fri, 15 Sep 2023 06:15:32 -0700 (PDT)
+Received: from [192.168.69.115] (6lp61-h01-176-171-209-234.dsl.sta.abo.bbox.fr. [176.171.209.234])
+        by smtp.gmail.com with ESMTPSA id wj18-20020a170907051200b009adc5802d30sm1507895ejb.21.2023.09.15.06.15.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 06:15:32 -0700 (PDT)
+Message-ID: <759af455-312c-745f-8532-bae30b64df02@linaro.org>
+Date:   Fri, 15 Sep 2023 15:15:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87fs3f1tl0.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 05/17] pmdomain: bcm: Move Kconfig options to the
+ pmdomain subsystem
+Content-Language: en-US
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-mips@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+References: <20230915092003.658361-1-ulf.hansson@linaro.org>
+ <20230915092003.658361-6-ulf.hansson@linaro.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230915092003.658361-6-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,49 +81,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-15 14:58:35 [+0200], Thomas Gleixner wrote:
-> > +		 * is leaving and the uncontended path is safe to take.
-> > +		 */
-> > +		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
-> > +		if (!rt_waiter)
-> > +			goto do_uncontended;
+On 15/9/23 11:19, Ulf Hansson wrote:
+> The Kconfig options belongs closer to the corresponding implementations,
+> hence let's move them from the soc subsystem to the pmdomain subsystem.
 > 
-> Leaks pi_mutex.wait_lock
+> Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> Cc: <linux-mips@vger.kernel.org>
+> Cc: <linux-rpi-kernel@lists.infradead.org>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>   drivers/pmdomain/Kconfig     |  1 +
+>   drivers/pmdomain/bcm/Kconfig | 46 ++++++++++++++++++++++++++++++++++++
+>   drivers/soc/bcm/Kconfig      | 42 --------------------------------
+>   3 files changed, 47 insertions(+), 42 deletions(-)
+>   create mode 100644 drivers/pmdomain/bcm/Kconfig
 
-and pi_state. 
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-> Plus you need:
-> 
-> diff --git a/kernel/futex/requeue.c b/kernel/futex/requeue.c
-> index cba8b1a6a4cc..af1427689414 100644
-> --- a/kernel/futex/requeue.c
-> +++ b/kernel/futex/requeue.c
-> @@ -850,11 +850,11 @@ int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
->  		pi_mutex = &q.pi_state->pi_mutex;
->  		ret = rt_mutex_wait_proxy_lock(pi_mutex, to, &rt_waiter);
->  
-> -		/* Current is not longer pi_blocked_on */
-> -		spin_lock(q.lock_ptr);
-> +		/* Add a proper comment */
->  		if (ret && !rt_mutex_cleanup_proxy_lock(pi_mutex, &rt_waiter))
->  			ret = 0;
->  
-> +		spin_lock(q.lock_ptr);
->  		debug_rt_mutex_free_waiter(&rt_waiter);
->  		/*
->  		 * Fixup the pi_state owner and possibly acquire the lock if we
-
-Yes, if we do this.
-
-> 
-> I spent quite some time to convince myself that this is correct. I was
-> not able to poke a hole into it. So that really should be safe to
-> do. Famous last words ...
-
-Okay. Then let me collect the pieces and post a new round then.
-
-> Thanks,
-> 
->         tglx
-
-Sebastian
