@@ -2,198 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52DA7A2A37
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA1E7A2A3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237271AbjIOWC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S237092AbjIOWJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236460AbjIOWC1 (ORCPT
+        with ESMTP id S237097AbjIOWJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:02:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A56118;
-        Fri, 15 Sep 2023 15:02:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED561C433C8;
-        Fri, 15 Sep 2023 22:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694815342;
-        bh=hnr7jOJNSd4jP4Dwlhn5LlxOB2Ww61bmcIRqe/eNCus=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HJutvzueYWGD37DFvOJfA/2TerYyVZLXlZV+0PPhys8XlZv0a6EXFGqUQFpOPPhJf
-         Ik2PZ83KSHOaHS2T+Eu2vwLk5zBQz/oeWA91cm+7gtVpbkkqPwcb5y0OZrZQlX31oF
-         QcCeNBjn1N+WyrUqdsDZ3TlXD+4tXxc8X7EAgdN+pIA30eNVMnuYWAJh1ExxC+DiuD
-         n47IhNpiaE5HkHQVMd8pY5PgYmQ0ohn5APqVg13zRluWtUeBOAHD/Nt3JvaOqCfR1d
-         vJwNSZTuFH61odrY1Uof5XY/7duqEoO0scXpA8KF/qypd4MOnqNJUwvjFehAdaDYkJ
-         dz8ocrwz6wruQ==
-Date:   Fri, 15 Sep 2023 17:02:19 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     shiju.jose@huawei.com
-Cc:     rafael@kernel.org, lenb@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, bp@alien8.de, ying.huang@intel.com,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, tanxiaofei@huawei.com,
-        prime.zeng@hisilicon.com, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [RFC PATCH 1/1] ACPI / APEI: Fix for overwriting aer info when
- error status data have multiple sections
-Message-ID: <20230915220219.GA122811@bhelgaas>
+        Fri, 15 Sep 2023 18:09:05 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5161FDE
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694815735;
+        bh=jCDRcudEV2z0xDygC01UEyiZ7ZUyQQRl+C43Vbs1reA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=NBE+2GQvW+3ZM96PIB3FTFCsDWsGtRXsgh4WE06R/zbUaUNhgSwfG9TxDSeWzm+v0
+         ds7lxizlKv/6ZLzUGg9JdCAq4ggaQwza9pjv5vhQrG+fYqbmvHi5zt6vab4zVWXlvK
+         V6j7K9G76Fyz0zbK8eniBbnk3dhINtdBWIZb+hq8=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Sat, 16 Sep 2023 00:08:54 +0200
+Subject: [PATCH] MAINTAINERS: nolibc: update tree location
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915174435.779-1-shiju.jose@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230916-nolibc-tree-v1-1-06c9b59a5035@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAPXVBGUC/x3MQQqAIBBA0avIrBPUQqirRAtHpxoIDY0IpLsnL
+ d/i/wqFMlOBSVTIdHPhFBt0J8DvLm4kOTSDUaZXo7YypoPRyysTyWA1OhwcoUdoxZlp5ee/zcv
+ 7futbGbBdAAAA
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694815735; l=849;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=jCDRcudEV2z0xDygC01UEyiZ7ZUyQQRl+C43Vbs1reA=;
+ b=p3MGH3rGLs9mlIl4dhvLUiWlSsgCRrJlTFkDU3aLK7DWk8gS4M/wzt3GqG5zde0qxFaMDnttk
+ ILg2/13cXCuDxchHp/8MO/2fy9xntMBnGdyUXtBK/zmDIwTBaXFWu5P
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Dave, since CXL is also fiddling with aer.c]
+The nolibc tree moved out of Willys user namespace into its own.
 
-On Sat, Sep 16, 2023 at 01:44:35AM +0800, shiju.jose@huawei.com wrote:
-> From: Shiju Jose <shiju.jose@huawei.com>
-> 
-> ghes_handle_aer() lacks synchronization with aer_recover_work_func(),
-> so when error status data have multiple sections, aer_recover_work_func()
-> may use estatus data for aer_capability_regs after it has been overwritten.
-> 
-> The problem statement is here,
-> https://lore.kernel.org/all/20230901225755.GA90053@bhelgaas/
-> 
-> In ghes_handle_aer() allocates memory for aer_capability_regs from the
-> ghes_estatus_pool and copy data for aer_capability_regs from the estatus
-> buffer. Free the memory in aer_recover_work_func() after processing the
-> data using the ghes_estatus_pool_region_free() added.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for working this up!  I had it on my to-do list, but obviously
-had not gotten to it yet.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 90f13281d297..6c83087ea396 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15131,7 +15131,7 @@ NOLIBC HEADER FILE
+ M:	Willy Tarreau <w@1wt.eu>
+ M:	Thomas Weißschuh <linux@weissschuh.net>
+ S:	Maintained
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git
+ F:	tools/include/nolibc/
+ F:	tools/testing/selftests/nolibc/
+ 
 
-> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-> ---
->  drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
->  drivers/pci/pcie/aer.c   | 10 ++++++++++
->  include/acpi/ghes.h      |  1 +
->  3 files changed, 33 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index ef59d6ea16da..63ad0541db38 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
->  	return -ENOMEM;
->  }
->  
-> +/**
-> + * ghes_estatus_pool_region_free - free previously allocated memory
-> + *				   from the ghes_estatus_pool.
-> + * @addr: address of memory to free.
-> + * @size: size of memory to free.
-> + *
-> + * Returns none.
-> + */
-> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size)
-> +{
-> +	gen_pool_free(ghes_estatus_pool, addr, size);
-> +}
-> +EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
-> +
->  static int map_gen_v2(struct ghes *ghes)
->  {
->  	return apei_map_generic_address(&ghes->generic_v2->read_ack_register);
-> @@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
->  	    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
->  		unsigned int devfn;
->  		int aer_severity;
-> +		u8 *aer_info;
->  
->  		devfn = PCI_DEVFN(pcie_err->device_id.device,
->  				  pcie_err->device_id.function);
-> @@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
->  		if (gdata->flags & CPER_SEC_RESET)
->  			aer_severity = AER_FATAL;
->  
-> +		aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
-> +						  sizeof(struct aer_capability_regs));
-> +		if (!aer_info)
-> +			return;
-> +		memcpy(aer_info, pcie_err->aer_info, sizeof(struct aer_capability_regs));
+---
+base-commit: 3f79a57865b33f49fdae6655510bd27c8e6610e0
+change-id: 20230916-nolibc-tree-d61bab4aebcb
 
-This is a very straightforward approach to fixing this, and it looks
-pretty reasonable, although I'd rather not have to pull more GHES
-stuff into aer.c (ghes.h and ghes_estatus_pool_region_free()).
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-What I had in mind was to put a queue of aer_capability_regs on the
-PCI side that could be used by both the APEI path and the native path.
-
-In the APEI path, platform firmware reads the error information from
-the hardware, and it feeds into PCI AER via aer_recover_queue().
-
-In the native path, Linux should be reading reads the same error
-information from the hardware, but it feeds into PCI AER quite
-differently, via aer_process_err_devices() and handle_error_source().
-
-These paths are fundamentally doing the exact same thing, but the data
-handling and dmesg logging are needlessly different.  I'd like to see
-them get a little more unified, so the native path could someday also
-feed into aer_recover_queue().
-
-Does that make any sense?
-
->  		aer_recover_queue(pcie_err->device_id.segment,
->  				  pcie_err->device_id.bus,
->  				  devfn, aer_severity,
->  				  (struct aer_capability_regs *)
-> -				  pcie_err->aer_info);
-> +				  aer_info);
->  	}
->  #endif
->  }
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index e85ff946e8c8..388b614c11fd 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -29,6 +29,7 @@
->  #include <linux/kfifo.h>
->  #include <linux/slab.h>
->  #include <acpi/apei.h>
-> +#include <acpi/ghes.h>
->  #include <ras/ras_event.h>
->  
->  #include "../pci.h"
-> @@ -996,6 +997,15 @@ static void aer_recover_work_func(struct work_struct *work)
->  			continue;
->  		}
->  		cper_print_aer(pdev, entry.severity, entry.regs);
-> +		/*
-> +		 * Memory for aer_capability_regs(entry.regs) is being allocated from the
-> +		 * ghes_estatus_pool to protect it from overwriting when multiple sections
-> +		 * are present in the error status. Thus free the same after processing
-> +		 * the data.
-> +		 */
-> +		ghes_estatus_pool_region_free((unsigned long)entry.regs,
-> +					      sizeof(struct aer_capability_regs));
-> +
->  		if (entry.severity == AER_NONFATAL)
->  			pcie_do_recovery(pdev, pci_channel_io_normal,
->  					 aer_root_reset);
-> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-> index 3c8bba9f1114..40d89e161076 100644
-> --- a/include/acpi/ghes.h
-> +++ b/include/acpi/ghes.h
-> @@ -78,6 +78,7 @@ static inline struct list_head *ghes_get_devices(void) { return NULL; }
->  #endif
->  
->  int ghes_estatus_pool_init(unsigned int num_ghes);
-> +void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
->  
->  static inline int acpi_hest_get_version(struct acpi_hest_generic_data *gdata)
->  {
-> -- 
-> 2.34.1
-> 
