@@ -2,385 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 536A27A2B04
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58F87A2B06
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 01:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbjIOXei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 19:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        id S237312AbjIOXhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 19:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbjIOXeQ (ORCPT
+        with ESMTP id S230318AbjIOXgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 19:34:16 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A41FDE
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:34:10 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso13125e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694820849; x=1695425649; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nHaVyOZGusvVmk37EQ+8MbC3XUzWT96lfRECaopM4TU=;
-        b=MOfrsHwHP83vXAGfCkklO7XVAFKjeoUMWL/beCAga61ZRpnA++iU7o8hvC23ciArNo
-         923JKF9uv0mQ8+isW5pxHlgJ1MPv/VeBkLy+rlTAHUVPUHmYIG0wkFMY1g7Iz/ClV6EK
-         NtFmm9yoJljcu5caVlhFz75UBSi403YtLZa1J2ip0LBdQoAXtfj3ToGPdf6PcZbG0T7Q
-         9qSLSS0bnY+apySzImuucGbUmkHILkVThKpFPPbyJL36OByfkwLpFI9qgVNCSW13vLia
-         gdAjILvZoFV8IaiUD0v1LqQBMe1KIVkSpHV2Wc8SV0H+SRsFPdOZERudUGxGCLeDrasT
-         pykA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694820849; x=1695425649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nHaVyOZGusvVmk37EQ+8MbC3XUzWT96lfRECaopM4TU=;
-        b=QmOOdpMzWnbWMz5vhegAJL8txklFjQNcOjXbgPJ1nXT2St6oDRNYF9BlSCXTMs3NgR
-         eWzpuNXFc73LVPLCdX/80J3Hozsg0qSC08EQZq33rQWTexgWTKv9XaMa56+Je7XLFURA
-         4HSLHSKhYgV4LTZAcqNrEQZhWVUwrOB0eeSwxMdJktntwlW4H3ch+2zdVO4KjDU48uEu
-         JbVWpT/S/Ou/TRRrD/G2GMGcH6+ZvoFEiQSCEXysz4hzvrrOd1D+ilGB9eus0DedVo02
-         dskfZBm3HWeDdFx9miUy89vC2uJMLodVREWazxRddioOnuzIBvteeq4KX7VESPcXosQQ
-         FLLA==
-X-Gm-Message-State: AOJu0YxNSDDWrv4G5CPBpdEuw7eh8xiPHJi+RBqpiWuGIX43HrKWqYl0
-        vlUSnqJd1eXn0IbsmhJfzHGivwd62MLoPflfZU7HBQ==
-X-Google-Smtp-Source: AGHT+IGL2LH22GPgM/TSvARZol/MSfEHdefO1N8VSbuJFw1LRaOFenZJgOE8If3z0weLq5hWewOSVwfFd2dJwRe2N38=
-X-Received: by 2002:a05:600c:1f18:b0:3f4:fb7:48d4 with SMTP id
- bd24-20020a05600c1f1800b003f40fb748d4mr31754wmb.3.1694820848966; Fri, 15 Sep
- 2023 16:34:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-3-surenb@google.com>
-In-Reply-To: <20230914152620.2743033-3-surenb@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 16 Sep 2023 01:33:32 +0200
-Message-ID: <CAG48ez3E1t=equPeL5doT+RPaPZ1BmkFi8zkZRKqhOZHbXVkzg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 19:36:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177891FE5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 16:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694821008; x=1726357008;
+  h=date:from:to:cc:subject:message-id;
+  bh=ECvyni/bwnyBlPRcet9iw+ukjMTlDDmUQTMDSCYeWog=;
+  b=aFei2J+sArozJBqHOfSeWlAdzBvjDuVj/01OwYqK8XR1K1TMrRDU6+FN
+   Grik0wEvKmz/SHVcW85NVePLc2caAAKuAJulryKYVXOXr9cCu1eSKkjYC
+   QJiiBV6Z2zFYwL2yDnohAbSmkNZyWAdq3V/dinBiiqpZhswkn8q48TAEj
+   q/D0ytQAPiQ1uUOXXH9xbkr6mOFg0KKkxJax4mGKXMKpoe11VEHkrazcl
+   p8W/+gGEnTZzBtjibsfo+bCjnrK9NZSwahVk/FdIVAzaLSDBANqGlt5ib
+   QhGPykDuPdZmHx8Qky16Jp0RFijZpSid7zjk339+G2H38GRVHx+ALULHY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="369684231"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="369684231"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 16:36:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="780270293"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="780270293"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 15 Sep 2023 16:36:46 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qhIMd-0003bo-1w;
+        Fri, 15 Sep 2023 23:36:43 +0000
+Date:   Sat, 16 Sep 2023 07:36:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/asm] BUILD SUCCESS
+ b8e3dfa16ec55f310dd95831614af3d24abf5ed5
+Message-ID: <202309160759.rYQmjHrC-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 5:26=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
-> +/*
-> + * The mmap_lock for reading is held by the caller. Just move the page
-> + * from src_pmd to dst_pmd if possible, and return true if succeeded
-> + * in moving the page.
-> + */
-> +static int remap_pages_pte(struct mm_struct *dst_mm,
-> +                          struct mm_struct *src_mm,
-> +                          pmd_t *dst_pmd,
-> +                          pmd_t *src_pmd,
-> +                          struct vm_area_struct *dst_vma,
-> +                          struct vm_area_struct *src_vma,
-> +                          unsigned long dst_addr,
-> +                          unsigned long src_addr,
-> +                          __u64 mode)
-> +{
-> +       swp_entry_t entry;
-> +       pte_t orig_src_pte, orig_dst_pte;
-> +       spinlock_t *src_ptl, *dst_ptl;
-> +       pte_t *src_pte =3D NULL;
-> +       pte_t *dst_pte =3D NULL;
-> +
-> +       struct folio *src_folio =3D NULL;
-> +       struct anon_vma *src_anon_vma =3D NULL;
-> +       struct anon_vma *dst_anon_vma;
-> +       struct mmu_notifier_range range;
-> +       int err =3D 0;
-> +
-> +retry:
-> +       dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, &dst=
-_ptl);
-> +
-> +       /* If an huge pmd materialized from under us fail */
-> +       if (unlikely(!dst_pte)) {
-> +               err =3D -EFAULT;
-> +               goto out;
-> +       }
-> +
-> +       src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, src_addr, &src=
-_ptl);
-> +
-> +       /*
-> +        * We held the mmap_lock for reading so MADV_DONTNEED
-> +        * can zap transparent huge pages under us, or the
-> +        * transparent huge page fault can establish new
-> +        * transparent huge pages under us.
-> +        */
-> +       if (unlikely(!src_pte)) {
-> +               err =3D -EFAULT;
-> +               goto out;
-> +       }
-> +
-> +       BUG_ON(pmd_none(*dst_pmd));
-> +       BUG_ON(pmd_none(*src_pmd));
-> +       BUG_ON(pmd_trans_huge(*dst_pmd));
-> +       BUG_ON(pmd_trans_huge(*src_pmd));
-> +
-> +       spin_lock(dst_ptl);
-> +       orig_dst_pte =3D *dst_pte;
-> +       spin_unlock(dst_ptl);
-> +       if (!pte_none(orig_dst_pte)) {
-> +               err =3D -EEXIST;
-> +               goto out;
-> +       }
-> +
-> +       spin_lock(src_ptl);
-> +       orig_src_pte =3D *src_pte;
-> +       spin_unlock(src_ptl);
-> +       if (pte_none(orig_src_pte)) {
-> +               if (!(mode & UFFDIO_REMAP_MODE_ALLOW_SRC_HOLES))
-> +                       err =3D -ENOENT;
-> +               else /* nothing to do to remap a hole */
-> +                       err =3D 0;
-> +               goto out;
-> +       }
-> +
-> +       if (pte_present(orig_src_pte)) {
-> +               if (!src_folio) {
-> +                       struct folio *folio;
-> +
-> +                       /*
-> +                        * Pin the page while holding the lock to be sure=
- the
-> +                        * page isn't freed under us
-> +                        */
-> +                       spin_lock(src_ptl);
-> +                       if (!pte_same(orig_src_pte, *src_pte)) {
-> +                               spin_unlock(src_ptl);
-> +                               err =3D -EAGAIN;
-> +                               goto out;
-> +                       }
-> +
-> +                       folio =3D vm_normal_folio(src_vma, src_addr, orig=
-_src_pte);
-> +                       if (!folio || !folio_test_anon(folio) ||
-> +                           folio_estimated_sharers(folio) !=3D 1) {
-> +                               spin_unlock(src_ptl);
-> +                               err =3D -EBUSY;
-> +                               goto out;
-> +                       }
-> +
-> +                       src_folio =3D folio;
-> +                       folio_get(src_folio);
-> +                       spin_unlock(src_ptl);
-> +
-> +                       /* try to block all concurrent rmap walks */
-> +                       if (!folio_trylock(src_folio)) {
-> +                               pte_unmap(&orig_src_pte);
-> +                               pte_unmap(&orig_dst_pte);
-> +                               src_pte =3D dst_pte =3D NULL;
-> +                               folio_lock(src_folio);
-> +                               goto retry;
-> +                       }
-> +               }
-> +
-> +               if (!src_anon_vma) {
-> +                       /*
-> +                        * folio_referenced walks the anon_vma chain
-> +                        * without the folio lock. Serialize against it w=
-ith
-> +                        * the anon_vma lock, the folio lock is not enoug=
-h.
-> +                        */
-> +                       src_anon_vma =3D folio_get_anon_vma(src_folio);
-> +                       if (!src_anon_vma) {
-> +                               /* page was unmapped from under us */
-> +                               err =3D -EAGAIN;
-> +                               goto out;
-> +                       }
-> +                       if (!anon_vma_trylock_write(src_anon_vma)) {
-> +                               pte_unmap(&orig_src_pte);
-> +                               pte_unmap(&orig_dst_pte);
-> +                               src_pte =3D dst_pte =3D NULL;
-> +                               anon_vma_lock_write(src_anon_vma);
-> +                               goto retry;
-> +                       }
-> +               }
-> +
-> +               mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, src_=
-mm,
-> +                                       src_addr, src_addr + PAGE_SIZE);
-> +               mmu_notifier_invalidate_range_start_nonblock(&range);
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/asm
+branch HEAD: b8e3dfa16ec55f310dd95831614af3d24abf5ed5  x86/percpu: Use raw_cpu_try_cmpxchg() in preempt_count_set()
 
-I'm pretty sure you're not allowed to use
-mmu_notifier_invalidate_range_start_nonblock(). Use
-mmu_notifier_invalidate_range_start() at a point where it's fine to
-block; perhaps all the way up in remap_pages() around the whole loop
-or something like that. mmu_notifier_invalidate_range_start_nonblock()
-is special magic sauce for OOM reaping (with deceptively inviting
-naming and no documentation that explains that this is evil hazmat
-code), and if you chase down what various users of MMU notifiers do
-when you just hand them a random notification where
-mmu_notifier_range_blockable() is false, you end up in fun paths like
-in KVM's kvm_mmu_notifier_invalidate_range_start(), which calls
-gfn_to_pfn_cache_invalidate_start(), which does this:
+elapsed time: 728m
 
-    /*
-     * If the OOM reaper is active, then all vCPUs should have
-     * been stopped already, so perform the request without
-     * KVM_REQUEST_WAIT and be sad if any needed to be IPI'd.
-     */
-    if (!may_block)
-       req &=3D ~KVM_REQUEST_WAIT;
+configs tested: 108
+configs skipped: 111
 
-    called =3D kvm_make_vcpus_request_mask(kvm, req, vcpu_bitmap);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-    WARN_ON_ONCE(called && !may_block);
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                       imx_v4_v5_defconfig   clang
+arm                   randconfig-001-20230916   gcc  
+arm                        vexpress_defconfig   clang
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230915   gcc  
+i386         buildonly-randconfig-002-20230915   gcc  
+i386         buildonly-randconfig-003-20230915   gcc  
+i386         buildonly-randconfig-004-20230915   gcc  
+i386         buildonly-randconfig-005-20230915   gcc  
+i386         buildonly-randconfig-006-20230915   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230916   gcc  
+i386                  randconfig-002-20230916   gcc  
+i386                  randconfig-003-20230916   gcc  
+i386                  randconfig-004-20230916   gcc  
+i386                  randconfig-005-20230916   gcc  
+i386                  randconfig-006-20230916   gcc  
+i386                  randconfig-011-20230915   gcc  
+i386                  randconfig-012-20230915   gcc  
+i386                  randconfig-013-20230915   gcc  
+i386                  randconfig-014-20230915   gcc  
+i386                  randconfig-015-20230915   gcc  
+i386                  randconfig-016-20230915   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                        bcm63xx_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                 randconfig-001-20230916   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230916   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230915   gcc  
+x86_64       buildonly-randconfig-002-20230915   gcc  
+x86_64       buildonly-randconfig-003-20230915   gcc  
+x86_64       buildonly-randconfig-004-20230915   gcc  
+x86_64       buildonly-randconfig-005-20230915   gcc  
+x86_64       buildonly-randconfig-006-20230915   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20230916   gcc  
+x86_64                randconfig-012-20230916   gcc  
+x86_64                randconfig-013-20230916   gcc  
+x86_64                randconfig-014-20230916   gcc  
+x86_64                randconfig-015-20230916   gcc  
+x86_64                randconfig-016-20230916   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
-Which means if you hit this codepath from a place like userfaultfd
-where the process is probably still running (and not being OOM reaped
-in a context where it's guaranteed to have been killed and stopped),
-you could probably get KVM into a situation where it needs to wait for
-vCPUs to acknowledge that they've processed a message before it's safe
-to continue, but it can't wait because we're in nonsleepable context,
-and then it just continues without waiting and presumably the KVM TLB
-gets out of sync or something?
-
-
-
-> +
-> +               double_pt_lock(dst_ptl, src_ptl);
-> +
-> +               if (!pte_same(*src_pte, orig_src_pte) ||
-> +                   !pte_same(*dst_pte, orig_dst_pte) ||
-> +                   folio_estimated_sharers(src_folio) !=3D 1) {
-> +                       double_pt_unlock(dst_ptl, src_ptl);
-> +                       err =3D -EAGAIN;
-> +                       goto out;
-> +               }
-> +
-> +               BUG_ON(!folio_test_anon(src_folio));
-> +               /* the PT lock is enough to keep the page pinned now */
-> +               folio_put(src_folio);
-> +
-> +               dst_anon_vma =3D (void *) dst_vma->anon_vma + PAGE_MAPPIN=
-G_ANON;
-> +               WRITE_ONCE(src_folio->mapping,
-> +                          (struct address_space *) dst_anon_vma);
-> +               WRITE_ONCE(src_folio->index, linear_page_index(dst_vma,
-> +                                                             dst_addr));
-> +
-> +               if (!pte_same(ptep_clear_flush(src_vma, src_addr, src_pte=
-),
-> +                             orig_src_pte))
-> +                       BUG_ON(1);
-> +
-> +               orig_dst_pte =3D mk_pte(&src_folio->page, dst_vma->vm_pag=
-e_prot);
-> +               orig_dst_pte =3D maybe_mkwrite(pte_mkdirty(orig_dst_pte),
-> +                                            dst_vma);
-> +
-> +               set_pte_at(dst_mm, dst_addr, dst_pte, orig_dst_pte);
-> +
-> +               if (dst_mm !=3D src_mm) {
-> +                       inc_mm_counter(dst_mm, MM_ANONPAGES);
-> +                       dec_mm_counter(src_mm, MM_ANONPAGES);
-> +               }
-> +
-> +               double_pt_unlock(dst_ptl, src_ptl);
-> +
-> +               anon_vma_unlock_write(src_anon_vma);
-> +               mmu_notifier_invalidate_range_end(&range);
-> +               put_anon_vma(src_anon_vma);
-> +               src_anon_vma =3D NULL;
-> +
-> +               /* unblock rmap walks */
-> +               folio_unlock(src_folio);
-> +               src_folio =3D NULL;
-> +
-> +       } else {
-> +               struct swap_info_struct *si;
-> +               int swap_count;
-> +
-> +               entry =3D pte_to_swp_entry(orig_src_pte);
-> +               if (non_swap_entry(entry)) {
-> +                       if (is_migration_entry(entry)) {
-> +                               pte_unmap(&orig_src_pte);
-> +                               pte_unmap(&orig_dst_pte);
-> +                               src_pte =3D dst_pte =3D NULL;
-> +                               migration_entry_wait(src_mm, src_pmd,
-> +                                                    src_addr);
-> +                               err =3D -EAGAIN;
-> +                       } else
-> +                               err =3D -EFAULT;
-> +                       goto out;
-> +               }
-> +
-> +               /*
-> +                * COUNT_CONTINUE to be returned is fine here, no need
-> +                * of follow all swap continuation to check against
-> +                * number 1.
-> +                */
-> +               si =3D get_swap_device(entry);
-> +               if (!si) {
-> +                       err =3D -EBUSY;
-> +                       goto out;
-> +               }
-> +
-> +               swap_count =3D swap_swapcount(si, entry);
-> +               put_swap_device(si);
-> +               if (swap_count !=3D 1) {
-> +                       err =3D -EBUSY;
-> +                       goto out;
-> +               }
-> +
-> +               double_pt_lock(dst_ptl, src_ptl);
-> +
-> +               if (!pte_same(*src_pte, orig_src_pte) ||
-> +                   !pte_same(*dst_pte, orig_dst_pte) ||
-> +                   swp_swapcount(entry) !=3D 1) {
-> +                       double_pt_unlock(dst_ptl, src_ptl);
-> +                       err =3D -EAGAIN;
-> +                       goto out;
-> +               }
-> +
-> +               if (pte_val(ptep_get_and_clear(src_mm, src_addr, src_pte)=
-) !=3D
-> +                   pte_val(orig_src_pte))
-> +                       BUG_ON(1);
-> +               set_pte_at(dst_mm, dst_addr, dst_pte, orig_src_pte);
-> +
-> +               if (dst_mm !=3D src_mm) {
-> +                       inc_mm_counter(dst_mm, MM_ANONPAGES);
-> +                       dec_mm_counter(src_mm, MM_ANONPAGES);
-> +               }
-> +
-> +               double_pt_unlock(dst_ptl, src_ptl);
-> +       }
-> +
-> +out:
-> +       if (src_anon_vma) {
-> +               anon_vma_unlock_write(src_anon_vma);
-> +               put_anon_vma(src_anon_vma);
-> +       }
-> +       if (src_folio) {
-> +               folio_unlock(src_folio);
-> +               folio_put(src_folio);
-> +       }
-> +       if (dst_pte)
-> +               pte_unmap(dst_pte);
-> +       if (src_pte)
-> +               pte_unmap(src_pte);
-> +
-> +       return err;
-> +}
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
