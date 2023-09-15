@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5567A24C4
+	by mail.lfdr.de (Postfix) with ESMTP id D33787A24C6
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236211AbjIOR3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
+        id S236256AbjIOR3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235957AbjIOR3L (ORCPT
+        with ESMTP id S235952AbjIOR3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 13:29:11 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750162120;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAC42105;
         Fri, 15 Sep 2023 10:29:06 -0700 (PDT)
 Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLkc2nYbz6K6LG;
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLkc52pkz6K6LZ;
         Sat, 16 Sep 2023 01:28:24 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
@@ -35,9 +35,9 @@ CC:     <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
         <gthelen@google.com>, <linuxarm@huawei.com>,
         <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
         <prime.zeng@hisilicon.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries for set of scrub attributes
-Date:   Sat, 16 Sep 2023 01:28:11 +0800
-Message-ID: <20230915172818.761-3-shiju.jose@huawei.com>
+Subject: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add documentation for scrub driver
+Date:   Sat, 16 Sep 2023 01:28:12 +0800
+Message-ID: <20230915172818.761-4-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20230915172818.761-1-shiju.jose@huawei.com>
 References: <20230915172818.761-1-shiju.jose@huawei.com>
@@ -59,104 +59,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shiju Jose <shiju.jose@huawei.com>
 
-Add sysfs documentation entries for the set of attributes those are
-exposed in /sys/class/scrub/ by the scrub driver. These attributes
-support configuring parameters of a scrub device.
+Add documentation for scrub driver, supports configure scrub parameters,
+in Documentation/scrub-configure.rst
 
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- .../ABI/testing/sysfs-class-scrub-configure   | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
+ Documentation/scrub-configure.rst | 55 +++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/scrub-configure.rst
 
-diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/Documentation/ABI/testing/sysfs-class-scrub-configure
+diff --git a/Documentation/scrub-configure.rst b/Documentation/scrub-configure.rst
 new file mode 100644
-index 000000000000..347e2167dc62
+index 000000000000..9f8581b88788
 --- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
-@@ -0,0 +1,82 @@
-+What:		/sys/class/scrub/
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The scrub/ class subdirectory belongs to the
-+		scrubber subsystem.
++++ b/Documentation/scrub-configure.rst
+@@ -0,0 +1,55 @@
++==========================
++Scrub subsystem driver
++==========================
 +
-+What:		/sys/class/scrub/scrubX/
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrub{0,1,2,3,...} directories
-+		correspond to each scrub device.
++Copyright (c) 2023 HiSilicon Limited.
 +
-+What:		/sys/class/scrub/scrubX/name
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) name of the memory scrub device
++:Author:   Shiju Jose <shiju.jose@huawei.com>
++:License:  The GNU Free Documentation License, Version 1.2
++          (dual licensed under the GPL v2)
++:Original Reviewers:
 +
-+What:		/sys/class/scrub/scrubX/regionY/
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrubX/region{0,1,2,3,...}
-+		directories correspond to each scrub region under a scrub device.
-+		Scrub region is a physical address range for which scrub may be
-+		separately controlled. Regions may overlap in which case the
-+		scrubbing rate of the overlapped memory will be at least that
-+		expected due to each overlapping region.
++- Written for: 6.7
++- Updated for:
 +
-+What:		/sys/class/scrub/scrubX/regionY/addr_base
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The base of the address range of the memory region
-+		to be patrol scrubbed.
-+		On reading, returns the base of the memory region for
-+		the actual address range(The platform calculates
-+		the nearest patrol scrub boundary address from where
-+		it can start scrubbing).
++Introduction
++------------
++The scrub subsystem driver provides the interface for configure the
++parameters of memory scrubbers in the system. The scrub device drivers
++in the system register with the scrub configure subsystem.
 +
-+What:		/sys/class/scrub/scrubX/regionY/addr_size
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The size of the address range to be patrol scrubbed.
-+		On reading, returns the size of the memory region for
-+		the actual address range.
++The scrub configure driver exposes the scrub controls to the user
++via sysfs.
 +
-+What:		/sys/class/scrub/scrubX/regionY/enable
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) Start/Stop scrubbing the memory region.
-+		1 - enable the memory scrubbing.
-+		0 - disable the memory scrubbing..
++The File System
++---------------
 +
-+What:		/sys/class/scrub/scrubX/regionY/speed_available
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported range for the partol speed(scrub rate)
-+		by the scrubber for a memory region.
-+		The unit of the scrub rate vary depends on the scrubber.
++The configuration parameters of the registered scrubbers could be
++accessed via the /sys/class/scrub/scrubX/regionN/
 +
-+What:		/sys/class/scrub/scrubX/regionY/speed
-+Date:		September 2023
-+KernelVersion:	6.7
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The partol speed(scrub rate) on the memory region specified and
-+		it must be with in the supported range by the scrubber.
-+		The unit of the scrub rate vary depends on the scrubber.
++sysfs
++-----
++
++Sysfs files are documented in
++`Documentation/ABI/testing/sysfs-class-scrub-configure`.
++
++Example
++-------
++
++  The usage takes the form shown in this example::
++
++    # echo 0x300000 > /sys/class/scrub/scrub0/region0/addr_base
++    # echo 0x100000 > /sys/class/scrub/scrub0/region0/addr_size
++    # cat /sys/class/scrub/scrub0/region0/speed_available
++    # 1-60
++    # echo 25 > /sys/class/scrub/scrub0/region0/speed
++    # echo 1 > /sys/class/scrub/scrub0/region0/enable
++
++    # cat /sys/class/scrub/scrub0/region0/speed
++    # 0x19
++    # cat /sys/class/scrub/scrub0/region0/addr_base
++    # 0x100000
++    # cat /sys/class/scrub/scrub0/region0/addr_size
++    # 0x200000
++
++    # echo 0 > /sys/class/scrub/scrub0/region0/enable
 -- 
 2.34.1
 
