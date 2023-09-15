@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1CF7A26C1
+	by mail.lfdr.de (Postfix) with ESMTP id E78B87A26C2
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236815AbjIOTAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        id S236919AbjIOTAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbjIOS7w (ORCPT
+        with ESMTP id S236641AbjIOS7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:59:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7F5D106
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694804341;
+        Fri, 15 Sep 2023 14:59:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80AD98
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:59:46 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694804385;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ghzt0gMUW66V7NRyUGXJr6A3y8erfYE/z3VgzfOC+I0=;
-        b=C7+hsTRCKZKzJFP7og6zFqkkCxVUrxi1zvFE/odTGGpnOSXDNcw2o1T0xabConRxmxZQCJ
-        ejzVJ3u1+6AjWacjS24FfyyAUF+IJRuOgdkqn3E6nIt62Vc1TbBB3K2KqFlFZcnakJ2YJ8
-        Rab6xI2qh3SZcjaAzwN2I3rYveNg+h0=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-7PqY9IbOP9mVttjBgF8OOA-1; Fri, 15 Sep 2023 14:59:00 -0400
-X-MC-Unique: 7PqY9IbOP9mVttjBgF8OOA-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7983537d6c1so216450239f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:59:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694804339; x=1695409139;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ghzt0gMUW66V7NRyUGXJr6A3y8erfYE/z3VgzfOC+I0=;
-        b=uUJOzfIMv3uT9AK+cDB3lH1zAQLophn3n6Lv2cIFdRVvsFWviaEhUlfFMkFgicRUAc
-         IA9Gz1gfxF/9n1NMlhEbXL2sfparHaDRqn8wEMWsf7RsBVGoh5RnBtDJPB6oDYWdB68r
-         O3WjMKYbDzkSsbarnAPBozSV+OH39L6Fw+NnQv2h2MlXdqLtaqBDSe7qRynw/3NJEE2w
-         zN6SL0JbH13/pEgUJJa5PmyI/9ohqCorEPuZyXWLtvK4orcL8ElcaFjDWZtV+BLprh3i
-         1EuJkrc82GGTj9FVYArbFiURQ5y35uE6NBeW/ZjNeIYa7az5fjOElqrUg3+w0liV1KIA
-         s2Tg==
-X-Gm-Message-State: AOJu0Yzm79WnIgWdZqW62ynVstj78UL+vDKgJG3PAfbJhOKl+47/ToNN
-        hlbb4QVMI44vFTpwa41aWnxazBLYwqlOQ6wEKIdePoOVag1T7kMetyLnT9BVF5WdG76ZCwkxCW7
-        UOBdClpK03h7iO6ZR2IFFs1kP
-X-Received: by 2002:a92:6e11:0:b0:348:f4c1:4817 with SMTP id j17-20020a926e11000000b00348f4c14817mr2860638ilc.6.1694804339642;
-        Fri, 15 Sep 2023 11:58:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/9dB1xKUUwpY6U9DzMEfcWwczlL+tvIN6z3KHXC0qPn5dpdT5/w5R10+8v2kZCO5wv48MFw==
-X-Received: by 2002:a92:6e11:0:b0:348:f4c1:4817 with SMTP id j17-20020a926e11000000b00348f4c14817mr2860624ilc.6.1694804339412;
-        Fri, 15 Sep 2023 11:58:59 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id l12-20020a056e020dcc00b0034f3220c086sm500944ilj.12.2023.09.15.11.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 11:58:58 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 12:58:58 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     oushixiong <oushixiong@kylinos.cn>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pds: Use proper PF device access helper
-Message-ID: <20230915125858.72b75a16.alex.williamson@redhat.com>
-In-Reply-To: <20230914021332.1929155-1-oushixiong@kylinos.cn>
-References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        bh=EepSFHCMYZW3HHl5l7+iK7+nAfFDmswP137z9WEz90s=;
+        b=S9/HzAQOidxN9pRaf1uOk5lpHKA57YPJxEk2hnHGPah/eiRocG6JLckSuzD8XliL6zEoEU
+        MvJ0AvUe+uZfBX3LBhq7WXy+KXUTH77Bmn28AWj8cviMstEJJFIM2mRf8uy+sC9+5VJMrm
+        fKYPNCCYfmZewuz41h6qk0H5OfrWz7zXwUocuV2hweG/TQacspWMJw6SEJs64yj52kEA+8
+        LJByV20lRCPgc+IY/2yugCDYS1sZOqwT0UVyFBsSlqoL4tdJgkJ2I5iSdksVkmegXjj3GT
+        xWVifckA/oGn7mb0NnBNuDp9DEJKDGU+R2Ua+8bx8cmIhaYBRMLFLNGq7/tmvQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694804385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EepSFHCMYZW3HHl5l7+iK7+nAfFDmswP137z9WEz90s=;
+        b=JHNRSkDmPjMUVSBdvACZnUJYDTMoCwqcNb+u6exVB1QeiNywewrKaoS0AEeNUiQMt872gI
+        v1/NrhgIheFMGXBw==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
+        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        jstultz@google.com, juri.lelli@redhat.com, longman@redhat.com,
+        mgorman@suse.de, mingo@redhat.com, rostedt@goodmis.org,
+        swood@redhat.com, vincent.guittot@linaro.org, vschneid@redhat.com,
+        will@kernel.org
+Subject: Re: [PATCH v3 7/7] locking/rtmutex: Acquire the hb lock via trylock
+ after wait-proxylock.
+In-Reply-To: <20230915151943.GD6743@noisy.programming.kicks-ass.net>
+References: <20230908162254.999499-1-bigeasy@linutronix.de>
+ <20230908162254.999499-8-bigeasy@linutronix.de>
+ <20230911141135.GB9098@noisy.programming.kicks-ass.net>
+ <87fs3f1tl0.ffs@tglx>
+ <20230915151943.GD6743@noisy.programming.kicks-ass.net>
+Date:   Fri, 15 Sep 2023 20:59:44 +0200
+Message-ID: <877cor1cv3.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 10:13:32 +0800
-oushixiong <oushixiong@kylinos.cn> wrote:
+On Fri, Sep 15 2023 at 17:19, Peter Zijlstra wrote:
+> On Fri, Sep 15, 2023 at 02:58:35PM +0200, Thomas Gleixner wrote:
+> *However* the case at hand is where a waiter is leaving, in this case the race
+> means a waiter that is going away is not observed -- which is harmless,
+> provided this race is explicitly handled.
+>
+> This is a somewhat dangerous proposition because the converse race is not
+> observing a new waiter, which must absolutely not happen. But since the race is
+> valid this cannot be asserted.
 
-> From: Shixiong Ou <oushixiong@kylinos.cn>
-> 
-> The pci_physfn() helper exists to support cases where the physfn
-> field may not be compiled into the pci_dev structure. We've
-> declared this driver dependent on PCI_IOV to avoid this problem,
-> but regardless we should follow the precedent not to access this
-> field directly.
-> 
-> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> ---
-> 
-> This patch changes the subject line and commit log, and the previous 
-> patch's links is:
-> 	https://patchwork.kernel.org/project/kvm/patch/20230911080828.635184-1-oushixiong@kylinos.cn/
+Correct. But adding a new waiter requires to hold hb::lock which _IS_
+held by the unlocking code when it deals with the outgoing race.
 
-Kevin & Jason,
+So I'm not too worried about it. 
 
-I assume your R-b's apply to this version as well.  Thanks,
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>  	/*
+>  	 * If we failed to acquire the lock (deadlock/signal/timeout), we must
+> -	 * first acquire the hb->lock before removing the lock from the
+> -	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex wait
+> -	 * lists consistent.
+> +	 * must unwind the above, however we canont lock hb->lock because
+> +	 * rt_mutex already has a waiter enqueued and hb->lock can itself try
+> +	 * and enqueue an rt_waiter through rtlock.
+> +	 *
+> +	 * Doing the cleanup without holding hb->lock can cause inconsistent
+> +	 * state between hb and pi_state, but only in the direction of not
+> +	 * seeing a waiter that is leaving.
+> +	 *
+> +	 * See futex_unlock_pi(), it deals with this inconsistency.
+> +	 *
+> +	 * There be dragons here, since we must deal with the inconsistency on
+> +	 * the way out (here), it is impossible to detect/warn about the race
+> +	 * the other way around (missing an incoming waiter).
+>  	 *
+> -	 * In particular; it is important that futex_unlock_pi() can not
+> -	 * observe this inconsistency.
+> +	 * What could possibly go wrong...
 
-Alex
+If some code in the future tries to enqueue a waiter w/o holding
+hb::lock then this corner case will be the least of our worries. There
+are tons of other things which will insta go south.
 
-> 
->  drivers/vfio/pci/pds/vfio_dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-> index b46174f5eb09..649b18ee394b 100644
-> --- a/drivers/vfio/pci/pds/vfio_dev.c
-> +++ b/drivers/vfio/pci/pds/vfio_dev.c
-> @@ -162,7 +162,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
->  	pci_id = PCI_DEVID(pdev->bus->number, pdev->devfn);
->  	dev_dbg(&pdev->dev,
->  		"%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
-> -		__func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
-> +		__func__, pci_dev_id(pci_physfn(pdev)), pci_id, vf_id,
->  		pci_domain_nr(pdev->bus), pds_vfio);
->  
->  	return 0;
-
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
