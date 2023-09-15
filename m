@@ -2,127 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DB37A1BC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38587A1BC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbjIOKKF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 06:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
+        id S234111AbjIOKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbjIOKKA (ORCPT
+        with ESMTP id S234160AbjIOKKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 06:10:00 -0400
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4773C00;
-        Fri, 15 Sep 2023 03:07:42 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d81a4b96a86so1199536276.1;
-        Fri, 15 Sep 2023 03:07:41 -0700 (PDT)
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F6A3591
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:45 -0700 (PDT)
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D04503F67C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:07:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694772463;
+        bh=CePvDk/TxgBw6w90UlCCAlVR7GMFDlWsOITzDbSZkZE=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=KSqcbl2GquNamS8ZyHjLk+kK0OmTqqRvi0VeHrfPBosU8wrYYdR3rEhaAy/sI1tST
+         q49Drx9jb1aZo04a+FvlCj5/+ZWcBLFwVQ7sgk0QxE+RzJqPol3IUCMJY56swmuEHz
+         lnBMCTTjYuwqCnusdQAGJMsWmHmiKg18A9VIUxtTKaeGwnHmQqFz8eO0cDSJ9l0EB/
+         a39NJJBX8N5W5leKm4thzEIjiYZLwUoHYuaqm4jtdz8io+dlcY1wfoa7A0mEMrvkks
+         x7a0gmWcAz0I0NccjnSZaX+g7HeyYCY3i6fKicHk48p+qFqdcSJ7p9seUB4NExRHeK
+         hjF66zkT/eOZA==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-412136f4706so20117881cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694772461; x=1695377261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kCP/bqHWsbn9rerqUX6579e9W6CEA2JjevHJAYB2WlM=;
-        b=d65mVpClZuyfNtBBTQH/yzhzukFOun4S7STjxpUK69MmRBDD77no2UfgOF5mWBSQcW
-         CevdvQZyx9uFprMHrfCTR3/VV8+m6rKO4QDg0VzV4v/QAZ3FW0GCZ8ZACX8gAc4wtXwc
-         X8rD0EPccISfO27/hdh8z2aRstnQgmTZL9iqFcvlU1KMTL0d1ICJYq3uszHzWJqne+wZ
-         8+HC9jlm5lOk+MPuPaLJyeiZ8IFIyJ2UnHLqtunZ7v60B+rkESG5F5hAZEepIywcJQ0B
-         On+A8BUGviIErHH0csSzkOOjPTLyLkw1fwGk2sDJBO36B9WzwMF4dF4yCckXTBNyxMmR
-         p2RA==
-X-Gm-Message-State: AOJu0YyKQlnh0Roo4+TxL28wm+nwn87xYiWAejTDmUayYPK3NNdHU/x2
-        7g7+sta3Wy9sXbRmYNodrRqRKZE/jq3rnA==
-X-Google-Smtp-Source: AGHT+IEMINmp4SZbisd5naO2sFqvzSF7Oxj7vfW266wLQGHh+XfpsgEjubz+5M5MdFPaWU+71BhrdA==
-X-Received: by 2002:a25:1343:0:b0:d05:1e5c:1127 with SMTP id 64-20020a251343000000b00d051e5c1127mr899696ybt.49.1694772461224;
-        Fri, 15 Sep 2023 03:07:41 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id l198-20020a2525cf000000b00d801440ed1dsm759766ybl.23.2023.09.15.03.07.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:07:41 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d81a4b96a86so1199530276.1;
-        Fri, 15 Sep 2023 03:07:41 -0700 (PDT)
-X-Received: by 2002:a25:dcc3:0:b0:d62:6514:45b7 with SMTP id
- y186-20020a25dcc3000000b00d62651445b7mr688004ybe.37.1694772460915; Fri, 15
- Sep 2023 03:07:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230915092003.658361-1-ulf.hansson@linaro.org> <20230915092003.658361-2-ulf.hansson@linaro.org>
-In-Reply-To: <20230915092003.658361-2-ulf.hansson@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 15 Sep 2023 12:07:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX-JrRn51dBk=K=JDtBP7HAp+GGTx_EqP7bZvQxHY0J2w@mail.gmail.com>
-Message-ID: <CAMuHMdX-JrRn51dBk=K=JDtBP7HAp+GGTx_EqP7bZvQxHY0J2w@mail.gmail.com>
-Subject: Re: [PATCH v2 01/17] pmdomain: Prepare to move Kconfig files into the
- pmdomain subsystem
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Nishanth Menon <nm@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
+        d=1e100.net; s=20230601; t=1694772460; x=1695377260;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CePvDk/TxgBw6w90UlCCAlVR7GMFDlWsOITzDbSZkZE=;
+        b=qNt+U9aWvC0PYKpoXJZ6tCdVTNrsuIZz27lXbwPNWtWU6tKnHwKZrQz3gSqL4R0CB4
+         szwiqjB/M+ZrN1w4OMUNWAX0XY2G4sOwnqzW8RtXTTK6A6lHaB0JCQtHV+RHGtG1xJLo
+         UrRhDUUEvx/7Deb1VZD6uK3JcDCQ+CCG3lsfjNhI5cqaPP9eTjClBCf5DaS3ddPJa3oM
+         YSJkdgd2hPdFqp6glXLha6c4gB7lZPjdgHT3NFMMQwYJ/IWfhpOhWKAUcLr4StcVjWdX
+         Sd3PGUzqbasVqjssgIdkrafes2OsaUbcF9PsLOCVJIQMv1hchU8uZ4qjFEC8zU/5FxcF
+         k+JQ==
+X-Gm-Message-State: AOJu0YzuBD+i+MIqoNsN6OZxQGGQtxAV9Dz3YLT0QXqZkg7j74dV8IqZ
+        MRnuV+l8MRi7m6Afqev2/EQpAHYJscNdqbjfILbFedzdIFdimSig/WJgeL0k0G9R6y2ka+TpGTV
+        SIN5pB//57j4+nAt4DZdMmIgmSOQvvdwcgZiAF/kgT4L1+NiPzHNe7j89Pw==
+X-Received: by 2002:ac8:59ca:0:b0:412:1ba6:32af with SMTP id f10-20020ac859ca000000b004121ba632afmr1121511qtf.19.1694772460112;
+        Fri, 15 Sep 2023 03:07:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+ttv6EU1BRZWt+DGbR4+QlOm43LirF30qz5OYUZ4PVhJmX/0LnnR85y4NNlsb75YxMffLnjCJzd0uf44Zpgw=
+X-Received: by 2002:ac8:59ca:0:b0:412:1ba6:32af with SMTP id
+ f10-20020ac859ca000000b004121ba632afmr1121495qtf.19.1694772459877; Fri, 15
+ Sep 2023 03:07:39 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 15 Sep 2023 03:07:39 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20230914-optimize_checksum-v5-2-c95b82a2757e@rivosinc.com>
+References: <20230914-optimize_checksum-v5-0-c95b82a2757e@rivosinc.com> <20230914-optimize_checksum-v5-2-c95b82a2757e@rivosinc.com>
+Mime-Version: 1.0
+Date:   Fri, 15 Sep 2023 03:07:39 -0700
+Message-ID: <CAJM55Z8Pjbu8uCqh9Heaj=ScuAoYgqsEzFuxwBUCfiZmMmk+KQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] riscv: Checksum header
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
         Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andreas Farber <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> Rather than having the various Kconfig files for the genpd providers
-> sprinkled across subsystems, let's prepare to move them into the pmdomain
-> subsystem along with the implementations.
+Charlie Jenkins wrote:
+> Provide checksum algorithms that have been designed to leverage riscv
+> instructions such as rotate. In 64-bit, can take advantage of the larger
+> register to avoid some overflow checking.
 >
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/checksum.h | 79 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
+> new file mode 100644
+> index 000000000000..2f0f224682bd
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/checksum.h
+> @@ -0,0 +1,79 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * IP checksum routines
+> + *
+> + * Copyright (C) 2023 Rivos Inc.
+> + */
+> +#ifndef __ASM_RISCV_CHECKSUM_H
+> +#define __ASM_RISCV_CHECKSUM_H
+> +
+> +#include <linux/in6.h>
+> +#include <linux/uaccess.h>
+> +
+> +#define ip_fast_csum ip_fast_csum
+> +
+> +#include <asm-generic/checksum.h>
+> +
+> +/*
+> + * Quickly compute an IP checksum with the assumption that IPv4 headers will
+> + * always be in multiples of 32-bits, and have an ihl of at least 5.
+> + * @ihl is the number of 32 bit segments and must be greater than or equal to 5.
+> + * @iph is assumed to be word aligned.
+> + */
+> +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+> +{
+> +	unsigned long csum = 0;
+> +	int pos = 0;
+> +
+> +	do {
+> +		csum += ((const unsigned int *)iph)[pos];
+> +		if (IS_ENABLED(CONFIG_32BIT))
+> +			csum += csum < ((const unsigned int *)iph)[pos];
+> +	} while (++pos < ihl);
+> +
+> +	/*
+> +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
+> +	 * worth checking if supported without Alternatives.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
+> +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+> +		unsigned long fold_temp;
+> +
+> +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
+> +					      RISCV_ISA_EXT_ZBB, 1)
+> +		    :
+> +		    :
+> +		    :
+> +		    : no_zbb);
+> +
+> +		if (IS_ENABLED(CONFIG_32BIT)) {
+> +			asm(".option push				\n\
+> +			.option arch,+zbb				\n\
+> +				not	%[fold_temp], %[csum]		\n\
+> +				rori	%[csum], %[csum], 16		\n\
+> +				sub	%[csum], %[fold_temp], %[csum]	\n\
+> +			.option pop"
+> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> +		} else {
+> +			asm(".option push				\n\
+> +			.option arch,+zbb				\n\
+> +				rori	%[fold_temp], %[csum], 32	\n\
+> +				add	%[csum], %[fold_temp], %[csum]	\n\
+> +				srli	%[csum], %[csum], 32		\n\
+> +				not	%[fold_temp], %[csum]		\n\
+> +				roriw	%[csum], %[csum], 16		\n\
+> +				subw	%[csum], %[fold_temp], %[csum]	\n\
+> +			.option pop"
+> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> +		}
+> +		return csum >> 16;
+> +	}
+> +no_zbb:
+> +#ifndef CONFIG_32BIT
+> +		csum += (csum >> 32) | (csum << 32);
+> +		csum >>= 32;
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+This indentation is still weird.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> +#endif
+> +	return csum_fold((__force __wsum)csum);
+> +}
+> +
+> +#endif // __ASM_RISCV_CHECKSUM_H
+>
+> --
+> 2.42.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
