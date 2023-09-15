@@ -2,293 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA52A7A16BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419587A16B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjIOHAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43406 "EHLO
+        id S232557AbjIOHAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbjIOHAY (ORCPT
+        with ESMTP id S232454AbjIOHAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:00:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B08271B;
-        Fri, 15 Sep 2023 00:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694761218; x=1726297218;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dPtcah0OyDGwjZpZkbV34b0j98rPVMmEo0QNnYG6xIQ=;
-  b=PuJ7cBvXXPjuDa54moc+H5hKIdMiWWPRrX0OjqBD5UsfD7gdf6D4N3Vj
-   PL/uPJ68DEbbbgzHurTH84eAYZ1ePS6g6Ic7B/iavdTQKMJ2iafg68UXv
-   k+dJfL5Ac6pTePVxgP8HpO284trw+VZD/9sqcPIUQJ8i8zzYoW3lZU+Mr
-   YgsZjOtoEsCuH4aAtN1HfeRs2wr/AYogbRD9+JtO7ri9ekF6pDcMgKw4y
-   60N+w3Sh7IESVU1qFIKKQ9zm+CUnZoArPGNddg16+FU22RAlbEZQqEDnB
-   MH7GXXY335+b74zcu7UKbcEyyMXXz+aFFz2dMb4zms46+35XMTonmqLKc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="358591061"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="358591061"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 23:59:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="888124710"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="888124710"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.29.154]) ([10.93.29.154])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 23:58:52 -0700
-Message-ID: <17947d72-22fb-b600-aada-c5a4008e3995@intel.com>
-Date:   Fri, 15 Sep 2023 14:59:23 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v12 06/33] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+        Fri, 15 Sep 2023 03:00:21 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2080.outbound.protection.outlook.com [40.107.7.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E142724;
+        Fri, 15 Sep 2023 00:00:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TdibCwHcxDCNiYqGW6JMTNWi3UMX7FgbQoY0F7PfaY6ECn4jLdQ1eMuKX3wQXCD74hzeEQ7+j5sQNgdxsJjBx9/x7seFlrprNSlljOjtQoeuPCXrqnPFjwCaJudxisih3ksARrBm6NXy/sU6QwLrHlLicAAXuRcwz5ygr8b++mgQQSQJwgVnWt4G40WdKFb72vN4KvFmT7HPuuflsNGMS/+jujdt/3FWXQHXfPF/VF60n7pfyeOwxE65kkjg4e0wKuvd1QMZ/hxoHe4j/8VPvTvu4NW+e7o29xyNdPLgRVxlXt8geqB6ArZHA4/pfLJGT7+/bAEE+JjGmDkjpRE6Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N2bGK+GpyK23ZVfQty9JBxtY83oNsyypQWT6MzpSz1Y=;
+ b=BBowJvrHlrFBP5BD+z4L5q0/e/tBEiTwD21zxVVsf8LEST4CyCQsfxPAD03nvbG9Poie9SJOaKVnvC5DUW+t6vaoLc4RSQJd9ebvNEpyPfD46+7IoWEUOu4jJjR9LYcgZvPY+cBKWzjkHvvNx4sqvo7a/ELYqg3h8Ewj1vXJXVKclL9wM5i/esAA5I6KrKqLJXXL/KhhrBF9FdnPOLoAJN7O6HasJXumlW1cxgBmrFdRkJPCuW1W+tlH0RthItU4KA0ylQMGE5zilQo91Ft2I6LIlLM2o2BeViO0H9ADuqESKSVMoHDzBxfVUxriqLimT86ANe9Fjfz86z8nHUKOXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N2bGK+GpyK23ZVfQty9JBxtY83oNsyypQWT6MzpSz1Y=;
+ b=dKlR1NEUe/lNEMjPPc2zsFsO01VTZFKXDtnSst03q2k+Qqg4K+zK66gpEAMvfq9tbJE4nXNEemf0IwJ3PIuT4REtS3PdqHBWI7jX5O56ReNbZ4I12dOlPRKWVAy7zSJzn+7Nt7Tp2IkL5gkWoj8TGdLhIGxESQJbVTD7NGv24ZQ=
+Received: from PA4PR04MB9248.eurprd04.prod.outlook.com (2603:10a6:102:2a3::14)
+ by AS5PR04MB9941.eurprd04.prod.outlook.com (2603:10a6:20b:67c::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
+ 2023 07:00:04 +0000
+Received: from PA4PR04MB9248.eurprd04.prod.outlook.com
+ ([fe80::a2fa:4a75:c0de:1b30]) by PA4PR04MB9248.eurprd04.prod.outlook.com
+ ([fe80::a2fa:4a75:c0de:1b30%4]) with mapi id 15.20.6792.020; Fri, 15 Sep 2023
+ 07:00:04 +0000
+From:   "S.J. Wang" <shengjiu.wang@nxp.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "abelvesa@kernel.org" <abelvesa@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>
+CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH v2 0/5] clk: imx: imx8: Fix some error handling paths
+Thread-Topic: [PATCH v2 0/5] clk: imx: imx8: Fix some error handling paths
+Thread-Index: AQHZ56JABBqNp29H4E67KfuIoELhrQ==
+Date:   Fri, 15 Sep 2023 07:00:04 +0000
+Message-ID: <PA4PR04MB92486B510B8E8F8309F484EDE3F6A@PA4PR04MB9248.eurprd04.prod.outlook.com>
+References: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <cover.1694722339.git.christophe.jaillet@wanadoo.fr>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-7-seanjc@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20230914015531.1419405-7-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9248:EE_|AS5PR04MB9941:EE_
+x-ms-office365-filtering-correlation-id: 2669547a-d17b-4d7c-8e5d-08dbb5b96369
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AVdaA3Qu8Jy5lXAuW2XyVXSlhdKHvHWOxu79FFRASD5AdBBK3S38JVqabDKKXkTkN6pbQ27UdmmHAOcBdIupzBlQjurmUXuFFrDj0XnAlKHYoQrtPGaNFKyopBwHvRHnvnd1cp/qkK2PBEycTyd/VaFptp6ON8vItSVUcQleAbQhQ4Wtv2n8Bd5MAnUCm8wQtqI9kWyefW9wtSM/r2NlhOtCQuCadLIusDqPJbxNQmFntHBwj0u8n+RN+jEz0NZY1uHNU/nS2lwpw0ifuQURhSfSZaT88GCrmB6PHzPa0lXgX75Z4yF4B0PZoHgmyJpgcv3Kg7zkDLVA3CcMM+D2YXOlOZT+gyNdzMM5Xb2Khf+VCTffasJ9a3m1c2MpLL9AgGNcEi77mU0mG5V+nKGeKEYu0fWMN4X62du0x5nT4tu/spndlIfy5zv+Tg74tE+110VDNZRX2mUG2vRbbYOF2FZnb/+W7ZLqNUJGVNmViOQUNno3uLL8ZjmILQqI9e+rJg/UK/RBPVic9SvDkqglN1Ewu3vM9xB7tmCgrtyzQ7NPLFnY8B+rWn3yNFlMVG80EyAd/gSJUGhaJgm4DKQnWti17jE4sUOufPyqytmC1sgdN9oxU3gVOahRO9X76yTE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9248.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39860400002)(346002)(1800799009)(186009)(451199024)(83380400001)(122000001)(921005)(966005)(478600001)(38070700005)(38100700002)(45080400002)(6506007)(86362001)(26005)(9686003)(55016003)(7696005)(71200400001)(2906002)(52536014)(4326008)(8936002)(5660300002)(8676002)(7416002)(33656002)(66946007)(66556008)(66446008)(64756008)(54906003)(66476007)(110136005)(76116006)(41300700001)(316002)(6636002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?D/NdsVlrNZleem6i0bxllKWJqIYazMyO1sZlkG1HTfRbIJtiJcOF6T9unlPR?=
+ =?us-ascii?Q?2AeiH/gPvCWzmkHv7Ksn3a5QgsGPERtAc9nuMkDvVD3ilAvN8aYAalVCGau5?=
+ =?us-ascii?Q?VwZ0/Q73MJYEvAerPOjZvR2JK1tJBM5wjxTTX5/GV1ZJddwug3+X8i3F4dlw?=
+ =?us-ascii?Q?D1b3pGJuMyZyjwLHWHIif4KFNQmY/ks9ftlH0ALt3NRTmVXwGA1ALhp/Xsug?=
+ =?us-ascii?Q?rfYE6fTxIIF+KSRkueTXBfuhTpU97l/Rd2+XqnHATDOCs4Ms6TCvqUJ/B/Pz?=
+ =?us-ascii?Q?tLt+27uhLST3mlreX2znxXqBNNcfLGa6lAp9DjAJZWNUJUJFXc9q1mHvbYL/?=
+ =?us-ascii?Q?RCrhoWDFEqGR+9LFBTyi7TkzSIeI80HZ4OCQjy2YRUuffhVuei7xmSSPKZXQ?=
+ =?us-ascii?Q?S6W8EWAjKSodbyMZR0+2Mo4xab+IJ7b/pZey8a2UdEKZs+e8CP6M0EDRj5FJ?=
+ =?us-ascii?Q?r0jhPH0EfSkWk5KJdunBJdUCL4ajKQwK5OGNTsQghbGE5WNZ5i8cIuafnSfb?=
+ =?us-ascii?Q?mSax9B5x1CTAYp1BQAua5rLBHkGggv1qMp0bRgUUufWEE3kZC1jfe4vlSD5e?=
+ =?us-ascii?Q?R2Vf450r+NsmX4dzdBn8qITJXwJ9HbnAgJR1zLsDdgeHgLMTjTcpEtqakgDM?=
+ =?us-ascii?Q?GJWsxelm/zUZUt2o40l0smASGFGjD7imNNv/h4VbyYkZ4KmRCGno6f/84lr9?=
+ =?us-ascii?Q?Ju4sfUFC7ua1afy3MpcNciYwcylBpGtb7U7UTFR1jHUEKEPHeil3UP7v4ovc?=
+ =?us-ascii?Q?oQ0GCRamTr676OJb4ePc9JMQcfyxnGQg15GX+31eyQGZFYSon5ZZZO7u+2RD?=
+ =?us-ascii?Q?k+KlVZ8gyNuVCNJ5fvUWRtNlWJixV6JplPskZoIkdBQCzPbUGnQ/iK7ZswBn?=
+ =?us-ascii?Q?/wi0HERM9eLL0Vt94rvpy/iERf5a9EvIHEwz3O0WIj1l2wIOGNv71COsZBcT?=
+ =?us-ascii?Q?bPtfmDPSuaqdDDfyATadybECCk1uNQLILlmM9ZQjOtxVE4EAkpmCQ3jZbVuz?=
+ =?us-ascii?Q?2QjnBlMAfZrpXqgOf4Cr1DiFb9WLXaxfWUTiEwD7bwjvNpxxQE+30UQUK0gu?=
+ =?us-ascii?Q?QVRYtxKkcafwXfpn97tUdBLn+tHk3yuH1F9a7eQI7rCx6RlxnjKddgJI2zyo?=
+ =?us-ascii?Q?uM7mCBnWuM+S9F8BWeTnE+8DTIO/KIkuECxDdipIcsppR90Axua+94XaSfWi?=
+ =?us-ascii?Q?fW/E1CvszeluuKUUojAfurvBWxd6HpDsG9i9XgkkXltFkb2OwqINTHWm5tB2?=
+ =?us-ascii?Q?+PPVq/JEOkj0nX8ZE3SOIOboK5ZJpdXH5yldMzQKBdxjM0P//GOnP4RTP5ZM?=
+ =?us-ascii?Q?MpS0z5SwcH6MzrvUWG7fAqUwDoBEgek3zK/ZkIdg+EFNAfJcgzxvnHAxQ5kq?=
+ =?us-ascii?Q?4cnSWz5RfwzGLt6J0+fCuNgDT8QVBzw+8q6ZDIocZUNJdaRegIJsqAeOMZ3W?=
+ =?us-ascii?Q?P2q3KYItj/gl+w0KjgvDWueBW7fWtwY9fMiJ290HcIByX3veROkvElBiYjqo?=
+ =?us-ascii?Q?aOow7+sEqvo7DyTEK61H4+/5RgYRVTedaiWhcJ0NdGpMsxgN9Td4UuHRHf1c?=
+ =?us-ascii?Q?Jh2v/9zmzj14VZN/ssQnwOA5gyfy9MdejZ6q0za2?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9248.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2669547a-d17b-4d7c-8e5d-08dbb5b96369
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2023 07:00:04.4410
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gNkZis3bwKj7xCsBgRvYeJbsJ84Lcai5GnigLXVbVGjIqEPM7AYCup3yJ4fi4mF+slw+pD/7pI5sHNK18AAp8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9941
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/2023 9:55 AM, Sean Christopherson wrote:
-> Introduce a "version 2" of KVM_SET_USER_MEMORY_REGION so that additional
-> information can be supplied without setting userspace up to fail.  The
-> padding in the new kvm_userspace_memory_region2 structure will be used to
-> pass a file descriptor in addition to the userspace_addr, i.e. allow
-> userspace to point at a file descriptor and map memory into a guest that
-> is NOT mapped into host userspace.
-> 
-> Alternatively, KVM could simply add "struct kvm_userspace_memory_region2"
-> without a new ioctl(), but as Paolo pointed out, adding a new ioctl()
-> makes detection of bad flags a bit more robust, e.g. if the new fd field
-> is guarded only by a flag and not a new ioctl(), then a userspace bug
-> (setting a "bad" flag) would generate out-of-bounds access instead of an
-> -EINVAL error.
-> 
-> Cc: Jarkko Sakkinen <jarkko@kernel.org> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>
+> This serie fix some error handling paths. It is split in different patche=
+s to ease
+> review because the issues are unrelated and the proposed fixes are maybe
+> wrong (I don't have the hardware to test anything)
+>
+> Some of v1 patches had been incorrectly hand modified. There was a extra =
+')'
+> in patch 3 and 4 that prevented the merge.
+>
+> This v2 is a cleanly regenarated serie, compile tested at each step. This=
+ time,
+> git format-patch did all the work and the patches have NOT been hand
+> modified afterwards.
+>
+>
+> Some log messages have also been slightly tweaked.
+> R-b tags have been added.
 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/x86.c       |  2 +-
->   include/linux/kvm_host.h |  4 ++--
->   include/uapi/linux/kvm.h | 13 +++++++++++++
->   virt/kvm/kvm_main.c      | 38 ++++++++++++++++++++++++++++++--------
->   4 files changed, 46 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6c9c81e82e65..8356907079e1 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12447,7 +12447,7 @@ void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
->   	}
->   
->   	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> -		struct kvm_userspace_memory_region m;
-> +		struct kvm_userspace_memory_region2 m;
->   
->   		m.slot = id | (i << 16);
->   		m.flags = 0;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 5faba69403ac..4e741ff27af3 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1146,9 +1146,9 @@ enum kvm_mr_change {
->   };
->   
->   int kvm_set_memory_region(struct kvm *kvm,
-> -			  const struct kvm_userspace_memory_region *mem);
-> +			  const struct kvm_userspace_memory_region2 *mem);
->   int __kvm_set_memory_region(struct kvm *kvm,
-> -			    const struct kvm_userspace_memory_region *mem);
-> +			    const struct kvm_userspace_memory_region2 *mem);
->   void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot);
->   void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen);
->   int kvm_arch_prepare_memory_region(struct kvm *kvm,
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 13065dd96132..bd1abe067f28 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -95,6 +95,16 @@ struct kvm_userspace_memory_region {
->   	__u64 userspace_addr; /* start of the userspace allocated memory */
->   };
->   
-> +/* for KVM_SET_USER_MEMORY_REGION2 */
-> +struct kvm_userspace_memory_region2 {
-> +	__u32 slot;
-> +	__u32 flags;
-> +	__u64 guest_phys_addr;
-> +	__u64 memory_size;
-> +	__u64 userspace_addr;
-> +	__u64 pad[16];
-> +};
-> +
->   /*
->    * The bit 0 ~ bit 15 of kvm_userspace_memory_region::flags are visible for
->    * userspace, other bits are reserved for kvm internal use which are defined
-> @@ -1192,6 +1202,7 @@ struct kvm_ppc_resize_hpt {
->   #define KVM_CAP_COUNTER_OFFSET 227
->   #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
->   #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
-> +#define KVM_CAP_USER_MEMORY2 230
->   
->   #ifdef KVM_CAP_IRQ_ROUTING
->   
-> @@ -1473,6 +1484,8 @@ struct kvm_vfio_spapr_tce {
->   					struct kvm_userspace_memory_region)
->   #define KVM_SET_TSS_ADDR          _IO(KVMIO,   0x47)
->   #define KVM_SET_IDENTITY_MAP_ADDR _IOW(KVMIO,  0x48, __u64)
-> +#define KVM_SET_USER_MEMORY_REGION2 _IOW(KVMIO, 0x49, \
-> +					 struct kvm_userspace_memory_region2)
->   
->   /* enable ucontrol for s390 */
->   struct kvm_s390_ucas_mapping {
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 8d21757cd5e9..7c0e38752526 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1571,7 +1571,7 @@ static void kvm_replace_memslot(struct kvm *kvm,
->   	}
->   }
->   
-> -static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
-> +static int check_memory_region_flags(const struct kvm_userspace_memory_region2 *mem)
->   {
->   	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
->   
-> @@ -1973,7 +1973,7 @@ static bool kvm_check_memslot_overlap(struct kvm_memslots *slots, int id,
->    * Must be called holding kvm->slots_lock for write.
->    */
->   int __kvm_set_memory_region(struct kvm *kvm,
-> -			    const struct kvm_userspace_memory_region *mem)
-> +			    const struct kvm_userspace_memory_region2 *mem)
->   {
->   	struct kvm_memory_slot *old, *new;
->   	struct kvm_memslots *slots;
-> @@ -2077,7 +2077,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
->   EXPORT_SYMBOL_GPL(__kvm_set_memory_region);
->   
->   int kvm_set_memory_region(struct kvm *kvm,
-> -			  const struct kvm_userspace_memory_region *mem)
-> +			  const struct kvm_userspace_memory_region2 *mem)
->   {
->   	int r;
->   
-> @@ -2089,7 +2089,7 @@ int kvm_set_memory_region(struct kvm *kvm,
->   EXPORT_SYMBOL_GPL(kvm_set_memory_region);
->   
->   static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm,
-> -					  struct kvm_userspace_memory_region *mem)
-> +					  struct kvm_userspace_memory_region2 *mem)
->   {
->   	if ((u16)mem->slot >= KVM_USER_MEM_SLOTS)
->   		return -EINVAL;
-> @@ -4559,6 +4559,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
->   {
->   	switch (arg) {
->   	case KVM_CAP_USER_MEMORY:
-> +	case KVM_CAP_USER_MEMORY2:
->   	case KVM_CAP_DESTROY_MEMORY_REGION_WORKS:
->   	case KVM_CAP_JOIN_MEMORY_REGIONS_WORKS:
->   	case KVM_CAP_INTERNAL_ERROR_DATA:
-> @@ -4814,6 +4815,14 @@ static int kvm_vm_ioctl_get_stats_fd(struct kvm *kvm)
->   	return fd;
->   }
->   
-> +#define SANITY_CHECK_MEM_REGION_FIELD(field)					\
-> +do {										\
-> +	BUILD_BUG_ON(offsetof(struct kvm_userspace_memory_region, field) !=		\
-> +		     offsetof(struct kvm_userspace_memory_region2, field));	\
-> +	BUILD_BUG_ON(sizeof_field(struct kvm_userspace_memory_region, field) !=		\
-> +		     sizeof_field(struct kvm_userspace_memory_region2, field));	\
-> +} while (0)
-> +
->   static long kvm_vm_ioctl(struct file *filp,
->   			   unsigned int ioctl, unsigned long arg)
->   {
-> @@ -4836,15 +4845,28 @@ static long kvm_vm_ioctl(struct file *filp,
->   		r = kvm_vm_ioctl_enable_cap_generic(kvm, &cap);
->   		break;
->   	}
-> +	case KVM_SET_USER_MEMORY_REGION2:
->   	case KVM_SET_USER_MEMORY_REGION: {
-> -		struct kvm_userspace_memory_region kvm_userspace_mem;
-> +		struct kvm_userspace_memory_region2 mem;
-> +		unsigned long size;
-> +
-> +		if (ioctl == KVM_SET_USER_MEMORY_REGION)
-> +			size = sizeof(struct kvm_userspace_memory_region);
-> +		else
-> +			size = sizeof(struct kvm_userspace_memory_region2);
-> +
-> +		/* Ensure the common parts of the two structs are identical. */
-> +		SANITY_CHECK_MEM_REGION_FIELD(slot);
-> +		SANITY_CHECK_MEM_REGION_FIELD(flags);
-> +		SANITY_CHECK_MEM_REGION_FIELD(guest_phys_addr);
-> +		SANITY_CHECK_MEM_REGION_FIELD(memory_size);
-> +		SANITY_CHECK_MEM_REGION_FIELD(userspace_addr);
->   
->   		r = -EFAULT;
-> -		if (copy_from_user(&kvm_userspace_mem, argp,
-> -						sizeof(kvm_userspace_mem)))
-> +		if (copy_from_user(&mem, argp, size))
->   			goto out;
->   
-> -		r = kvm_vm_ioctl_set_memory_region(kvm, &kvm_userspace_mem);
-> +		r = kvm_vm_ioctl_set_memory_region(kvm, &mem);
->   		break;
->   	}
->   	case KVM_GET_DIRTY_LOG: {
+
+Reviewed-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Tested-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+
+Best regards
+Wang Shengjiu
+>
+> v1:
+> https://lore.k/
+> ernel.org%2Fall%2Fcover.1693126687.git.christophe.jaillet%40wanadoo.fr%2
+> F&data=3D05%7C01%7Cshengjiu.wang%40nxp.com%7C5134bf2d7d924e4ca9ae
+> 08dbb561881c%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6383
+> 03202724496811%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
+> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&s
+> data=3Df0SvmM0H1Ki%2Bp3Qqsya8u87CbVowC4bXym2i%2FSBCgJc%3D&reser
+> ved=3D0
+>
+> Christophe JAILLET (5):
+>   clk: imx: imx8: Fix an error handling path in
+>     clk_imx_acm_attach_pm_domains()
+>   clk: imx: imx8: Fix an error handling path if
+>     devm_clk_hw_register_mux_parent_data_table() fails
+>   clk: imx: imx8: Fix an error handling path in imx8_acm_clk_probe()
+>   clk: imx: imx8: Add a message in case of
+>     devm_clk_hw_register_mux_parent_data_table() error
+>   clk: imx: imx8: Simplify clk_imx_acm_detach_pm_domains()
+>
+>  drivers/clk/imx/clk-imx8-acm.c | 27 +++++++++++++++------------
+>  1 file changed, 15 insertions(+), 12 deletions(-)
+>
+> --
+> 2.34.1
 
