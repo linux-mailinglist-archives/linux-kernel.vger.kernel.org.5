@@ -2,233 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C583C7A1BC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93047A1BC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbjIOKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        id S233854AbjIOKJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbjIOKIk (ORCPT
+        with ESMTP id S234160AbjIOKJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:08:40 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2042.outbound.protection.outlook.com [40.107.22.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF232270A;
-        Fri, 15 Sep 2023 03:07:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aqVa4bLxXyLv3icjCnNw9Omru9vg34IZpci2f4MSFzydUaGiHzB+Rm+rH3UVMxbTMP7npmasfvVAPOY+J5iCHxRu02QU6mLkkgg0Rz6natGf4f731KlyIR+vyDUXFZmWCAWJeye5kUCynsMJQeqOUXozGB+cl+0ZZ+NBXI9rKhBeRgGwVy77jgdvSo+Vsn+Rt0tV+eNaWl5UmrRtmiqp+7sweGt55bgMBn1Tk9LpJgO5QmjCF830vKumNW28v30wplZvdv1WgoWEGobEOu3pM0ssAZkGWh+sN89jvpVc1OjXUY72v5A0e69IwKvtkXwXJx6gkspwnLA2XdE0+D404w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qE79vswRL1hg9ZdUEe31k3NBndjXKQo2itn/pZQYKJE=;
- b=bB2AamJjrRqtK0AjOX6ONywozmegvrEpxI9K6jiAuvIvdPsIDPiHDL+OWKlMcYTGiQaf8v1BkJ6teY1zrjIPb+HHg2GlIPEhooIXusYWf9Jmi9Dvgm7X3yyxbNRWBs8l/QzY16CkpMJoSHhHCcf+dX/6vJjzg3ZaC2NjA0cQkg/qg4UHycTLiBjaDgkp9SixWhCgRflacRVHP3xXVIRNvYAKuQNDOmHeDj4Q97+ksdwN8jRuyoXz3w4qzg6Xs5utA9lw5LGAJmiczrae8U9zqLUgeLKSVaVrE5G7GE6UrVAWm+DGZjeqcSAT5ianoNyMkG4zVsJjYpAF+JM39k+Jnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qE79vswRL1hg9ZdUEe31k3NBndjXKQo2itn/pZQYKJE=;
- b=HkltraDiAQ5qFvOPq6p9aCm+jpE3Kccnh6hPnTAahqgt4tb9Ysho3A+NCL73HtTMW7GlFDdKgZPDqOVUq+TMWpUshmkaG6mz3Z21SkUM/5bhGQBtqFim0QF2byh+irRRxWxCigvqhBDyBcOAEDyvNK/fkcnY71Dw2BvRsLKhPoU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by AM0PR08MB5412.eurprd08.prod.outlook.com (2603:10a6:208:186::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
- 2023 10:07:10 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::bc92:216b:11ed:db63]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::bc92:216b:11ed:db63%6]) with mapi id 15.20.6792.020; Fri, 15 Sep 2023
- 10:07:10 +0000
-Message-ID: <f3184a12-fd2d-1812-e196-c3e59e841632@wolfvision.net>
-Date:   Fri, 15 Sep 2023 12:07:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] usb: typec: tps6598x: add reset gpio support
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230912-topic-tps6598x_reset-v1-0-78dc0bf61790@wolfvision.net>
- <20230912-topic-tps6598x_reset-v1-1-78dc0bf61790@wolfvision.net>
- <ca9075db-de92-4545-8c47-d6c292d57ad9@linaro.org>
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <ca9075db-de92-4545-8c47-d6c292d57ad9@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1P194CA0054.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:803:3c::43) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+        Fri, 15 Sep 2023 06:09:22 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0AB359E
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:18 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a6190af24aso259129166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694772436; x=1695377236; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tIOsoLWZh5rJG/1YfIOAx2GIO6JUFBkc7NqnYEd6i84=;
+        b=GoX7555YFEk+k3lGjsD4PFykqWC8MhjqbLtrmX8p+6zQQXOlDJNfYBY0Szu2J/pfs4
+         1uxBvjGnIlY4jEs6S6OtTFKxojcG1zRfOJQZT6mrxaglp7GtQLCOxXfivN/fKX4QPML8
+         pbCJwRwdHfhA5YMdm65Zaype/frdkoh15nrUDkZ6+/gxMnjtUGwqxa/yaS4ir0P0vr5F
+         qfrZ+idSVo8t5sfK6YV05a/q5i2nbmAVnhTTrr5ABEMgtzR0Dinwa9b+CeVE1l5bX3ZK
+         JagcDJw16vCFOaMte32wneHCLXh3I8iBX0yJYevEQZJgOPg7deDwUgNLs0ssbCPNGtQR
+         H7VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694772436; x=1695377236;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tIOsoLWZh5rJG/1YfIOAx2GIO6JUFBkc7NqnYEd6i84=;
+        b=VAJfjnL53m5qrgd2t32PnRNkBdnvcHnsT3/mhR1houQ7fF8XHJtXMiwtvVVsrQUzBa
+         F3TkrpldQkKZ1Xw6vxpF9+P50vZ+3n82SZqPLAo5zwh4RYZEdAXDMmcTBRTpA9JUW59M
+         zbAl9K8nCjOTVzRj3RFenJ5EgM7X6XKT+hffyIFeQLNCxt2BWVgvdnhP2BBfGlrXr8yC
+         LMUB23/wOVd56F120995Whu9AxtplLkzm+IurSVSEpQxszoAhwE319Xp27YZRD2ikbXr
+         J8AR8NWLzcnr89YtBIPnYSIDDjR1KS9ax4jJ+7huVrf5i+tVjJ8OuSDWpbR4SzzUJ7gR
+         akSQ==
+X-Gm-Message-State: AOJu0YxxB79naLKrIWfq0h27nW7S4dLULA0NGhSV+IYZD6q5VrjmbPAC
+        ud2+YTjUHOXMOQ9aSk5mPiA5WA==
+X-Google-Smtp-Source: AGHT+IHVDXtlJMX8pYFZuW54VGTOuf0bTZVgZR6yMV40BZzJvKHWbNORMLTbJ3Zb0tHHlGkaQajY2A==
+X-Received: by 2002:a17:907:2cc9:b0:9aa:1e43:d0b9 with SMTP id hg9-20020a1709072cc900b009aa1e43d0b9mr886782ejc.5.1694772436590;
+        Fri, 15 Sep 2023 03:07:16 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id ay21-20020a170906d29500b00992e14af9b9sm2192760ejb.134.2023.09.15.03.07.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:07:16 -0700 (PDT)
+Message-ID: <862905cc-48c3-2dc9-6032-6ee189a629e6@linaro.org>
+Date:   Fri, 15 Sep 2023 12:07:14 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AM0PR08MB5412:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02f59c40-5ea9-4bdc-3513-08dbb5d38677
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vsulht1qRpaFJvNnd7IpDeQeZ6n21GW2K1osHGQTzz4/FTTc/PoTIJ/E7LA/Y9UL4NXw+5GiaOb/uw0AEOgzzxhSYzEb33jiOg2a7rBvMancZf2WiYMjxB5hcsaaaw4swiloWauWcA86aqDPFxaAzvAue5M9uAlFV8VKvjCAjYGQj5hmcZ4P85FhIHsPSXGugTJFGPT9v5msU26I2vhxm9qGdcYDCdlMmsJrIAkgcaLA86RM2JCJCbjgiwnmcq1TQ6Pbqlk3lzX5rcoH/O4VHwMDlOz1lh4zkRzZ/L8P4tbZBEPzqMWsv+fyQPjjB+XPjznwfOF5yrmC8nJRZdpf0Zx83orT/4khZVcHPned64EH6HW/TeP20y/0u9Esbb6GRUVAgHHbw7OFmcyDotLbjZLRuLybVXI/MgG/xXjZ7gLWOHz0Dd9/fLHBkRu76dne7iQHCitV0c52kvcAo/gQbJ9BWGx77FAG2xQi2l+809g9yvBXZb84fzMxRM6GysZMjon99wpm9DIhs0170GUFyniaz332IJ5a/S1IHe7P8OrHoyncJaUXOtppUsZp9D7kmMcA/Lwey2oy04on+BfQ9Xc+ExItAaoeFjL3FBeklySgbXvmp36YGeIqNOs6EXJoyzhuyn69dRKn7kgJnXWa2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(39850400004)(376002)(186009)(451199024)(1800799009)(5660300002)(316002)(41300700001)(8936002)(4326008)(8676002)(38100700002)(2616005)(26005)(2906002)(53546011)(6486002)(6506007)(6512007)(83380400001)(966005)(478600001)(45080400002)(110136005)(44832011)(66476007)(66556008)(66946007)(36756003)(86362001)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eUdXZjRQUWFxdTU1ckY2enhrVCtUZ0gzM1NzaVBidWV2S2R4UmhzWUdKb1I5?=
- =?utf-8?B?ZGNmU2x0TmwyM092a04xM1dwaE5SRGlJclVYZk80SkFZQUs0NlVkUDNDaG5R?=
- =?utf-8?B?Vm1WbzNpMk1yNjlkT3B2U2VieEtrMTZRU1F1Z0UrYW04L0xkZ2ZtRDY2TG5H?=
- =?utf-8?B?WlA4MFYxUGN0Yndvd2ZMVit5QitybVMwSGphcmtSa280ZXZmeWFleTF4Y3FH?=
- =?utf-8?B?cGpUWU9oZzNiczJpcXFUUVhZclVLa3V3ZldXUFJZWko3TnlueXJMcDAvYkJW?=
- =?utf-8?B?djRMSmpMRmRoMlZmbWxhajVXcFFTMldhYTBsQkFDUk0yWkptQjJoQzZOanZ1?=
- =?utf-8?B?bzcxanFwTXFwUlVMblk0NXEwQ1RIWm9zR2RLeVhUcjB3TkZTUVR3bFRMcnlq?=
- =?utf-8?B?OVZ1Vy94SU5GUFgycGpmcVpLWkJlMm11U1E0ZllNNmFRYTVsdHI5SXY5Z0lt?=
- =?utf-8?B?WTJGSVcyUWFvRHpvT0svRXZiLzRhWG54MVN4MUF2MUMxRktyOGJXTWNYbkEx?=
- =?utf-8?B?SmxYRHN6Mkk3dGN6THVILy93VjBndHhxOVNrM0t6Mkl4d2xXZGtVSXJFa1I3?=
- =?utf-8?B?VGVWR3daRGE4WXBrUEo1NHRTdUNCNU9LcGZvU1ZCQTJKZm12VWtPS0FubDJ2?=
- =?utf-8?B?N2Vnc2FHaGFEMldBL0ZwcC9XRzJmRjVnMzFla0MvYkd5VDFmTGovVzFjbmQ3?=
- =?utf-8?B?R1piRmV0ODlUYmVhamFhQmNINjVOeDhzVmdtL1VPUGJRdVVyMEo5WkM5Qmds?=
- =?utf-8?B?SFdxelZ1QldtN2U1MldiKzFkMWVvU2hBWVR6bkkwblFZRUsyc1dmejVCNzhh?=
- =?utf-8?B?QXEvdEsxNFdkZTFlN2FIdkhUVmtqVGxnQkYyVWlyMmVobnV3Qjl6Rk5QampP?=
- =?utf-8?B?TzdxbDdBelVORCtBTnhVdmZDZUVlQlEvcEV0OXJWT3lqSDRHVkRsR3lBNU5R?=
- =?utf-8?B?UVBzVkEvZEgydStYVDFBYldQTmJmbGc3bHJaNERUT0VkS2l4TmkxS0M5ei9R?=
- =?utf-8?B?eXFBTmFWV0FmRWEwWnNhckc1THV6YWkzU0xtV284czF0TU5qQ2dwQlJuSURI?=
- =?utf-8?B?WWpBUWw1S0V1VnNWSkExNSsxNlBPMFNXK0syRDBXdDlodkFjRTVUdk5lcXRh?=
- =?utf-8?B?Q1hmMFRXdzR5cmRVQ2cwdmJUc0g1bzBJY3JpU0V6TkdlZHIrY2F5ZW53d2Ur?=
- =?utf-8?B?UXlUVlFCREtZTXUwMmdHV0o1MUIrRzBFc24wQWdHM3lGbUh3dlM5aXZrMVlx?=
- =?utf-8?B?ejB3WDhoSHhWUEEyOUYwQUlSYVQ5Y2NQT1pYK2lBZGlVSXJWWjZxdVFkTUN3?=
- =?utf-8?B?NEo4T0lzWTlnZVJtT1RsZ2R0VWFpV2JpQzUvWlNESm9UelQzUXVuVlNaT1Ru?=
- =?utf-8?B?OFptZU5tNDQ3NWR0Q0s0d25oRzZDVXZHTitOdzc3ZUZxQ3p2WGZycmMvUGlO?=
- =?utf-8?B?c0lwcWhxSmNhTEV1bzhybG5XTjlreDNHTkNqY1RDaXZqUkZ5cEFaVDcydHRV?=
- =?utf-8?B?RUx4NUlWWmlzM1o5VkZZT1phcmoyVURZbFpIdDVqNmV6WW12MFl6WHZyNlhT?=
- =?utf-8?B?NE5Oek9xZld6K3lXUytHUTBGSGM4WmQ4ZFVEVjdpRENtN3NRcUEzZFVuOWx6?=
- =?utf-8?B?UTE3azF2WjZaSWptS2h6QUNBMlhqZDBwbE5OQ2xLeXdZNjJ4NXkxNFBmaE5V?=
- =?utf-8?B?NnU3Q2ZmZVBjTDVidmZSbjMzVkVOZEdLTVZ3dDdXWFFrS2tHRldLV3JOeUJm?=
- =?utf-8?B?a3hZSzBjd0hsK1kyL3htQmtCNnhNeWZndW9RTDl1NDdUSUFEeXB1VUVNQXR5?=
- =?utf-8?B?RWxYUjZteHVCV2lyUjVnUXN6aVJrZGtGdkZUTHAyZlJBZXlxNnMvbXVyNXBZ?=
- =?utf-8?B?dU1SQktnYk5yam5TekhJdi9Ndjd5S3hZY25RSG5LZkZzc1o1aUY0WG9hMWVw?=
- =?utf-8?B?U1g3bnZ0ZjA5WGpXVU8wRnBzV1liUmdoSVRMM3lMczYza1JUN1dubk0vNDRF?=
- =?utf-8?B?dlR0R2pwYi9uKzlBdUd4emhEd2dsVzVvY29SWElMc29Vdk51OXJ5cG9HTllr?=
- =?utf-8?B?NitSS0RqcWpIOENJK1FkdnhxUFRRTk5XLzhNTlV0d3F3RHprN2hhRTdMWnBU?=
- =?utf-8?B?ZlRmdEpUNG0weUFkVGsyZFRuSVJwMmRxVXZJcGM5alp0ZU91dUQ3MEg3bWov?=
- =?utf-8?Q?viMvTUlnJ3kqMMd2R96kcfk=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02f59c40-5ea9-4bdc-3513-08dbb5d38677
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 10:07:10.3121
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 66EX5y45VHNoS+pHki1Ouo5vymmJaUL2rXFZmc/eNVUlglbbt73KmPmTqe7vEBDLJFK9s/RKlX0zHRo2OUT+5UaD5eHKZ6176jo/vEEwBRw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB5412
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 10/12] serial: 8250_dw: Add Sophgo SG2042 support
+Content-Language: en-US
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Wang Chen <unicornxw@gmail.com>,
+        linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+References: <20230915072558.118325-1-wangchen20@iscas.ac.cn>
+ <803daa8f-f4bd-34b7-f826-89e1db5f24f6@linaro.org>
+ <CAJM55Z-GMm5Hmk7-QWt8Prvp7qyFzOrQVjOjB7jfoX-oiT_C1A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAJM55Z-GMm5Hmk7-QWt8Prvp7qyFzOrQVjOjB7jfoX-oiT_C1A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bryan,
+On 15/09/2023 12:02, Emil Renner Berthing wrote:
+> Krzysztof Kozlowski wrote:
+>> On 15/09/2023 09:25, Wang Chen wrote:
+>>> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+>>>
+>>> Add quirk to skip setting the input clock rate for the uarts on the
+>>> Sophgo SG2042 SoC similar to the StarFive JH7100.
+>>>
+>>> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+>>
+>> Missing SoB.
+>>
+>>> ---
+>>>  drivers/tty/serial/8250/8250_dw.c | 5 +++--
+>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+>>> index f4cafca1a7da..6c344877a07f 100644
+>>> --- a/drivers/tty/serial/8250/8250_dw.c
+>>> +++ b/drivers/tty/serial/8250/8250_dw.c
+>>> @@ -770,7 +770,7 @@ static const struct dw8250_platform_data dw8250_renesas_rzn1_data = {
+>>>  	.quirks = DW_UART_QUIRK_IS_DMA_FC,
+>>>  };
+>>>
+>>> -static const struct dw8250_platform_data dw8250_starfive_jh7100_data = {
+>>> +static const struct dw8250_platform_data dw8250_skip_set_rate_data = {
+>>
+>> Why? What is wrong with old name?
+>>
+>>>  	.usr_reg = DW_UART_USR,
+>>>  	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
+>>>  };
+>>> @@ -780,7 +780,8 @@ static const struct of_device_id dw8250_of_match[] = {
+>>>  	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
+>>>  	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },
+>>>  	{ .compatible = "renesas,rzn1-uart", .data = &dw8250_renesas_rzn1_data },
+>>> -	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_starfive_jh7100_data },
+>>> +	{ .compatible = "sophgo,sg2042-uart", .data = &dw8250_skip_set_rate_data },
+>>> +	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_skip_set_rate_data },
+>>
+>> So devices are fully compatible? Then use compatibility and drop this
+>> patch entirely.
+> 
+> I'm fine with this, but these are two different companies and SoCs that just
+> happens to have both implemented the Designware UART with an inflexible input
+> clock. So if fx. a real quirk is found on the JH7110 then we'd need to either
+> change the compatible on an unrelated SoC or change compatible on the JH7110 to
 
-On 15.09.23 11:52, Bryan O'Donoghue wrote:
-> On 15/09/2023 07:50, Javier Carrasco wrote:
->> The TPS6598x PD controller provides an active-high hardware reset input
->> that reinitializes all device settings. If it is not grounded by
->> design, the driver must be able to de-assert it in order to initialize
->> the device.
->>
->> The PD controller is not ready for registration right after the reset
->> de-assertion and a delay must be introduced in that case. According to
->> TI, the delay can reach up to 1000 ms [1], which is in line with the
->> experimental results obtained with a TPS65987D.
->>
->> Add a GPIO descriptor for the reset signal and basic reset management
->> for initialization and suspend/resume.
->>
->> [1]
->> https://e2e.ti.com/support/power-management-group/power-management/
->> f/power-management-forum/1269856/tps65987d-tps65987d-reset-de-assert-
->> to-normal-operation/4809389#4809389
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
->> ---
->>   drivers/usb/typec/tipd/core.c | 21 ++++++++++++++++++++-
->>   1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/typec/tipd/core.c
->> b/drivers/usb/typec/tipd/core.c
->> index 37b56ce75f39..550f5913e985 100644
->> --- a/drivers/usb/typec/tipd/core.c
->> +++ b/drivers/usb/typec/tipd/core.c
->> @@ -8,6 +8,7 @@
->>     #include <linux/i2c.h>
->>   #include <linux/acpi.h>
->> +#include <linux/gpio/consumer.h>
->>   #include <linux/module.h>
->>   #include <linux/of.h>
->>   #include <linux/power_supply.h>
->> @@ -43,6 +44,9 @@
->>   /* TPS_REG_SYSTEM_CONF bits */
->>   #define TPS_SYSCONF_PORTINFO(c)        ((c) & 7)
->>   +/* reset de-assertion to ready for operation */
->> +#define SETUP_MS            1000
->> +
->>   enum {
->>       TPS_PORTINFO_SINK,
->>       TPS_PORTINFO_SINK_ACCESSORY,
->> @@ -86,6 +90,7 @@ struct tps6598x {
->>       struct mutex lock; /* device lock */
->>       u8 i2c_protocol:1;
->>   +    struct gpio_desc *reset;
->>       struct typec_port *port;
->>       struct typec_partner *partner;
->>       struct usb_pd_identity partner_identity;
->> @@ -717,6 +722,13 @@ static int tps6598x_probe(struct i2c_client *client)
->>       mutex_init(&tps->lock);
->>       tps->dev = &client->dev;
->>   +    tps->reset = devm_gpiod_get_optional(tps->dev, "reset",
->> GPIOD_OUT_LOW);
->> +    if (IS_ERR(tps->reset))
->> +        return dev_err_probe(tps->dev, PTR_ERR(tps->reset),
->> +                     "failed to get reset GPIO\n");
->> +    if (tps->reset)
->> +        msleep(SETUP_MS);
->> +
-> 
-> This looks a bit odd to me, shouldn't you drive reset to zero ?
-> 
-> if (tps->reset) {
->     gpiod_set_value_cansleep(tps->reset, 0);
->     msleep(SETUP_MS);
-> }
-> 
-The reset line is driven to zero by means fo the GPIOD_OUT_LOW flag, so
-there is no need to set it explicitly again.
+Wait, why? The compatible is still there, so you just add here proper
+entry, if ever needed.
 
-> also wouldn't it make sense to functionally decompose that and reuse in
-> probe() and tps6598x_resume() ?
-> 
-> tps6598x_reset() {
->     if (tps->reset) {
->         gpiod_set_value_cansleep(tps->reset, 0);
->         msleep(SETUP_MS);
->     }
-> }
-> 
-I can move the reset action to a separate function as you proposed, but
-then I suppose it would make sense to use the same function for both
-reset levels. Maybe something like:
+> something like "starfive,jh7100-uart-with-quirk" and "starfive,jh7100-uart" will
+> forever be a quirky way to spell "dw8250 with inflexible input clock".
+> Is that how device trees are supposed to work?
 
-tps6598x_reset(bool level) {
-    if (tps->reset) {
-        gpiod_set_value_cansleep(tps->reset, level);
-	if (!level)
-            msleep(SETUP_MS);
-    }
-}
+I don't get this part. But anyway if the blocks are really designed or
+done independently and there is no shared part, except the DWC block,
+then indeed the compatibility might be just a coincidence...
 
-> ---
-> bod
-Thanks for your feedback.
+
 
 Best regards,
-Javier Carrasco
+Krzysztof
+
