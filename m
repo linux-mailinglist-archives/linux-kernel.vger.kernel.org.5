@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0E07A26E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499367A26F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237057AbjIOTHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
+        id S236905AbjIOTJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbjIOTGx (ORCPT
+        with ESMTP id S236148AbjIOTJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:06:53 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C20FB2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:06:47 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id 38308e7fff4ca-2bfb1167277so40712831fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694804805; x=1695409605; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zXGgjYhJRVNXafG9EaDgNWKV0uGtY61wiPn89e1hCdo=;
-        b=HgZTrzJAorYzXFJCksJ2czE4QYLWVP5Ila+LkOps10hKmM0GzRbpdzs6UcYiek0ibn
-         couJWkI9yXTr/igqyH7MclCGq9KPO77unYKKuxrDWe/YcqcIwLfb6TKPLnQBvBM9nrTf
-         styPgbvNImI8/lW0+jpyJz65GEIGcohmWFuFk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694804805; x=1695409605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zXGgjYhJRVNXafG9EaDgNWKV0uGtY61wiPn89e1hCdo=;
-        b=QONYz+4tj2xScOlVDbRGD1oFGjla26JoCRupEMlKci3Fx92ridtY+HFqsrxdPf1AV8
-         bavNq6gTYf1DGNqbb1VqwOsNBOrvAEx+h1ca8IkfTNLGNl9S3jNqQxbXh+DmTW8Qns+J
-         z7buPj/L4oQIvfdVGYQKlTc+tZd7NsthETF1tlVyLk88q1oF9r/PStdn3vo3A+rfxaIe
-         f2OO0uyiJMZ4TAWDApzTuYGpzsRo7lsdrzOuSlOJqnryHc9riw4vdCdxabyOcDNYyaw1
-         p3v9Y91a9Euq19LHdS95WGQHw4t1G+rFD+3BNweANFUtNOcaOQ7I49PgIEaDUEL3WmL/
-         x/2A==
-X-Gm-Message-State: AOJu0Yw5k/E1hYenZ8Rus0ICc13zXbMmeU6bDh4FD3hfpzx76S/MTKEh
-        KOgCcekyz9sOXu+/77BLX8FIJktKVMMtEGeALZ+asWfu1No=
-X-Google-Smtp-Source: AGHT+IEc27C79nTkt1QDOF4UwzQFb0mPCKf5wV3frDXV+ya2iUm77HqO1kszXAzKq2rjgaSc1ruFNA==
-X-Received: by 2002:a2e:a178:0:b0:2ba:6519:c50f with SMTP id u24-20020a2ea178000000b002ba6519c50fmr2287050ljl.52.1694804805225;
-        Fri, 15 Sep 2023 12:06:45 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id n14-20020a2eb78e000000b002bbacc6c523sm829008ljo.49.2023.09.15.12.06.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 12:06:44 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-502f302b68dso1807020e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:06:43 -0700 (PDT)
-X-Received: by 2002:ac2:4eca:0:b0:500:761b:72ff with SMTP id
- p10-20020ac24eca000000b00500761b72ffmr2487633lfr.55.1694804803468; Fri, 15
- Sep 2023 12:06:43 -0700 (PDT)
+        Fri, 15 Sep 2023 15:09:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D2498
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694804936; x=1726340936;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=rgBrumOV2mAn5UshKD0Yo3PtckwP8FoTVd5SuXQWTI4=;
+  b=gb8f+5ghBhLw55pOmFgBtF9wgAIBexX7L2TLFz14CMJEl5R0YbypsTSX
+   QHPhIi0CR1vi2OK6sH950iK+6GlQde9jQ2simtnVyh/XB/OQWF1avamK6
+   rF6kAiUoDSKFxc6txuV5ab0Ms2PMBYy9eZHEQovcSTMLV/xi0jbn4Dohv
+   5b8S5AQT2OYBtkXMjgnhPI0otirKAPFFbJ7FOmOcOHKbDFNum3jla3WRN
+   bS5OYDfQXkTsQ8S/AokdVOjNb3SkiA86aAAG8xDiu8CmpyxMi4XKBq7Mi
+   G3xY+/W27u5p9jtDR/2Kaf77h5IRhfyLEiX7DKoLIA6RYzGEnk6LVRcud
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="378235262"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="378235262"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 12:08:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="721794421"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="721794421"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 15 Sep 2023 12:08:54 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qhEB4-0003Jv-08;
+        Fri, 15 Sep 2023 19:08:34 +0000
+Date:   Sat, 16 Sep 2023 03:07:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Vernet <void@manifault.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: kernel/bpf/cpumask.c:41:21: warning: no previous declaration for
+ 'bpf_cpumask_create'
+Message-ID: <202309160350.D3bbZlsa-lkp@intel.com>
 MIME-Version: 1.0
-References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
- <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
-In-Reply-To: <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 12:06:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
-Message-ID: <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
-Subject: Re: Buggy __free(kfree) usage pattern already in tree
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        akpm@linux-foundation.org
-Content-Type: multipart/mixed; boundary="00000000000047205b06056a7e38"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,243 +63,268 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000047205b06056a7e38
-Content-Type: text/plain; charset="UTF-8"
+Hi David,
 
-On Fri, 15 Sept 2023 at 10:22, Bartosz Golaszewski
-<bartosz.golaszewski@linaro.org> wrote:
->
-> IMO this feature has much more potential at fixing existing memory
-> leaks than introducing new ones. I agree, I should have been more
-> careful, but I wouldn't exaggerate the issue. It's a bug, I sent a
-> fix, it'll be fine in a few days. I hope it won't be seen as an
-> argument against __free(). It just needs some time to mature.
+FYI, the error/warning still remains.
 
-Honestly, I think your "fix" is still wrong.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9fdfb15a3dbf818e06be514f4abbfc071004cbe7
+commit: 516f4d3397c9e90f4da04f59986c856016269aa1 bpf: Enable cpumasks to be queried and used as kptrs
+date:   8 months ago
+config: x86_64-randconfig-003-20230916 (https://download.01.org/0day-ci/archive/20230916/202309160350.D3bbZlsa-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309160350.D3bbZlsa-lkp@intel.com/reproduce)
 
-It may *work*, but it's against the whole spirit of having an
-allocation paired with the "this is how you free it".
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309160350.D3bbZlsa-lkp@intel.com/
 
-Your model of is fundamentally fragile, and honestly, it's disgusting.
+All warnings (new ones prefixed by >>):
 
-The fact that you literally have
+>> kernel/bpf/cpumask.c:41:21: warning: no previous declaration for 'bpf_cpumask_create' [-Wmissing-declarations]
+    struct bpf_cpumask *bpf_cpumask_create(void)
+                        ^~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:55:21: warning: no previous declaration for 'bpf_cpumask_acquire' [-Wmissing-declarations]
+    struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
+                        ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/cpumask.c:61:21: warning: no previous declaration for 'bpf_cpumask_kptr_get' [-Wmissing-declarations]
+    struct bpf_cpumask *bpf_cpumask_kptr_get(struct bpf_cpumask **cpumaskp)
+                        ^~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:79:6: warning: no previous declaration for 'bpf_cpumask_release' [-Wmissing-declarations]
+    void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:91:5: warning: no previous declaration for 'bpf_cpumask_first' [-Wmissing-declarations]
+    u32 bpf_cpumask_first(const struct cpumask *cpumask)
+        ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:96:5: warning: no previous declaration for 'bpf_cpumask_first_zero' [-Wmissing-declarations]
+    u32 bpf_cpumask_first_zero(const struct cpumask *cpumask)
+        ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:101:6: warning: no previous declaration for 'bpf_cpumask_set_cpu' [-Wmissing-declarations]
+    void bpf_cpumask_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:109:6: warning: no previous declaration for 'bpf_cpumask_clear_cpu' [-Wmissing-declarations]
+    void bpf_cpumask_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:117:6: warning: no previous declaration for 'bpf_cpumask_test_cpu' [-Wmissing-declarations]
+    bool bpf_cpumask_test_cpu(u32 cpu, const struct cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:125:6: warning: no previous declaration for 'bpf_cpumask_test_and_set_cpu' [-Wmissing-declarations]
+    bool bpf_cpumask_test_and_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:133:6: warning: no previous declaration for 'bpf_cpumask_test_and_clear_cpu' [-Wmissing-declarations]
+    bool bpf_cpumask_test_and_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:141:6: warning: no previous declaration for 'bpf_cpumask_setall' [-Wmissing-declarations]
+    void bpf_cpumask_setall(struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:146:6: warning: no previous declaration for 'bpf_cpumask_clear' [-Wmissing-declarations]
+    void bpf_cpumask_clear(struct bpf_cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:151:6: warning: no previous declaration for 'bpf_cpumask_and' [-Wmissing-declarations]
+    bool bpf_cpumask_and(struct bpf_cpumask *dst,
+         ^~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:158:6: warning: no previous declaration for 'bpf_cpumask_or' [-Wmissing-declarations]
+    void bpf_cpumask_or(struct bpf_cpumask *dst,
+         ^~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:165:6: warning: no previous declaration for 'bpf_cpumask_xor' [-Wmissing-declarations]
+    void bpf_cpumask_xor(struct bpf_cpumask *dst,
+         ^~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:172:6: warning: no previous declaration for 'bpf_cpumask_equal' [-Wmissing-declarations]
+    bool bpf_cpumask_equal(const struct cpumask *src1, const struct cpumask *src2)
+         ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:177:6: warning: no previous declaration for 'bpf_cpumask_intersects' [-Wmissing-declarations]
+    bool bpf_cpumask_intersects(const struct cpumask *src1, const struct cpumask *src2)
+         ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:182:6: warning: no previous declaration for 'bpf_cpumask_subset' [-Wmissing-declarations]
+    bool bpf_cpumask_subset(const struct cpumask *src1, const struct cpumask *src2)
+         ^~~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:187:6: warning: no previous declaration for 'bpf_cpumask_empty' [-Wmissing-declarations]
+    bool bpf_cpumask_empty(const struct cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cpumask.c:192:6: warning: no previous declaration for 'bpf_cpumask_full' [-Wmissing-declarations]
+    bool bpf_cpumask_full(const struct cpumask *cpumask)
+         ^~~~~~~~~~~~~~~~
+   kernel/bpf/cpumask.c:197:6: warning: no previous declaration for 'bpf_cpumask_copy' [-Wmissing-declarations]
+    void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src)
+         ^~~~~~~~~~~~~~~~
+   kernel/bpf/cpumask.c:202:5: warning: no previous declaration for 'bpf_cpumask_any' [-Wmissing-declarations]
+    u32 bpf_cpumask_any(const struct cpumask *cpumask)
+        ^~~~~~~~~~~~~~~
+   kernel/bpf/cpumask.c:207:5: warning: no previous declaration for 'bpf_cpumask_any_and' [-Wmissing-declarations]
+    u32 bpf_cpumask_any_and(const struct cpumask *src1, const struct cpumask *src2)
+        ^~~~~~~~~~~~~~~~~~~
 
-        char ***line_names
 
-as an argument should have made you wonder. Yes, we have triple
-indirect pointers in some other parts of the tree, but it sure isn't a
-"feature".
+vim +/bpf_cpumask_create +41 kernel/bpf/cpumask.c
 
-The thing is, your cleanup function should mirror your allocation
-function. It didn't, and it caused a bug.
+    36	
+    37	__diag_push();
+    38	__diag_ignore_all("-Wmissing-prototypes",
+    39			  "Global kfuncs as their definitions will be in BTF");
+    40	
+  > 41	struct bpf_cpumask *bpf_cpumask_create(void)
+    42	{
+    43		struct bpf_cpumask *cpumask;
+    44	
+    45		cpumask = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*cpumask));
+    46		if (!cpumask)
+    47			return NULL;
+    48	
+    49		memset(cpumask, 0, sizeof(*cpumask));
+    50		refcount_set(&cpumask->usage, 1);
+    51	
+    52		return cpumask;
+    53	}
+    54	
+  > 55	struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
+    56	{
+    57		refcount_inc(&cpumask->usage);
+    58		return cpumask;
+    59	}
+    60	
+    61	struct bpf_cpumask *bpf_cpumask_kptr_get(struct bpf_cpumask **cpumaskp)
+    62	{
+    63		struct bpf_cpumask *cpumask;
+    64	
+    65		/* The BPF memory allocator frees memory backing its caches in an RCU
+    66		 * callback. Thus, we can safely use RCU to ensure that the cpumask is
+    67		 * safe to read.
+    68		 */
+    69		rcu_read_lock();
+    70	
+    71		cpumask = READ_ONCE(*cpumaskp);
+    72		if (cpumask && !refcount_inc_not_zero(&cpumask->usage))
+    73			cpumask = NULL;
+    74	
+    75		rcu_read_unlock();
+    76		return cpumask;
+    77	}
+    78	
+  > 79	void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+    80	{
+    81		if (!cpumask)
+    82			return;
+    83	
+    84		if (refcount_dec_and_test(&cpumask->usage)) {
+    85			migrate_disable();
+    86			bpf_mem_free(&bpf_cpumask_ma, cpumask);
+    87			migrate_enable();
+    88		}
+    89	}
+    90	
+  > 91	u32 bpf_cpumask_first(const struct cpumask *cpumask)
+    92	{
+    93		return cpumask_first(cpumask);
+    94	}
+    95	
+  > 96	u32 bpf_cpumask_first_zero(const struct cpumask *cpumask)
+    97	{
+    98		return cpumask_first_zero(cpumask);
+    99	}
+   100	
+ > 101	void bpf_cpumask_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+   102	{
+   103		if (!cpu_valid(cpu))
+   104			return;
+   105	
+   106		cpumask_set_cpu(cpu, (struct cpumask *)cpumask);
+   107	}
+   108	
+ > 109	void bpf_cpumask_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+   110	{
+   111		if (!cpu_valid(cpu))
+   112			return;
+   113	
+   114		cpumask_clear_cpu(cpu, (struct cpumask *)cpumask);
+   115	}
+   116	
+ > 117	bool bpf_cpumask_test_cpu(u32 cpu, const struct cpumask *cpumask)
+   118	{
+   119		if (!cpu_valid(cpu))
+   120			return false;
+   121	
+   122		return cpumask_test_cpu(cpu, (struct cpumask *)cpumask);
+   123	}
+   124	
+ > 125	bool bpf_cpumask_test_and_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+   126	{
+   127		if (!cpu_valid(cpu))
+   128			return false;
+   129	
+   130		return cpumask_test_and_set_cpu(cpu, (struct cpumask *)cpumask);
+   131	}
+   132	
+ > 133	bool bpf_cpumask_test_and_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+   134	{
+   135		if (!cpu_valid(cpu))
+   136			return false;
+   137	
+   138		return cpumask_test_and_clear_cpu(cpu, (struct cpumask *)cpumask);
+   139	}
+   140	
+ > 141	void bpf_cpumask_setall(struct bpf_cpumask *cpumask)
+   142	{
+   143		cpumask_setall((struct cpumask *)cpumask);
+   144	}
+   145	
+ > 146	void bpf_cpumask_clear(struct bpf_cpumask *cpumask)
+   147	{
+   148		cpumask_clear((struct cpumask *)cpumask);
+   149	}
+   150	
+ > 151	bool bpf_cpumask_and(struct bpf_cpumask *dst,
+   152			     const struct cpumask *src1,
+   153			     const struct cpumask *src2)
+   154	{
+   155		return cpumask_and((struct cpumask *)dst, src1, src2);
+   156	}
+   157	
+ > 158	void bpf_cpumask_or(struct bpf_cpumask *dst,
+   159			    const struct cpumask *src1,
+   160			    const struct cpumask *src2)
+   161	{
+   162		cpumask_or((struct cpumask *)dst, src1, src2);
+   163	}
+   164	
+ > 165	void bpf_cpumask_xor(struct bpf_cpumask *dst,
+   166			     const struct cpumask *src1,
+   167			     const struct cpumask *src2)
+   168	{
+   169		cpumask_xor((struct cpumask *)dst, src1, src2);
+   170	}
+   171	
+ > 172	bool bpf_cpumask_equal(const struct cpumask *src1, const struct cpumask *src2)
+   173	{
+   174		return cpumask_equal(src1, src2);
+   175	}
+   176	
+ > 177	bool bpf_cpumask_intersects(const struct cpumask *src1, const struct cpumask *src2)
+   178	{
+   179		return cpumask_intersects(src1, src2);
+   180	}
+   181	
+ > 182	bool bpf_cpumask_subset(const struct cpumask *src1, const struct cpumask *src2)
+   183	{
+   184		return cpumask_subset(src1, src2);
+   185	}
+   186	
+ > 187	bool bpf_cpumask_empty(const struct cpumask *cpumask)
+   188	{
+   189		return cpumask_empty(cpumask);
+   190	}
+   191	
+ > 192	bool bpf_cpumask_full(const struct cpumask *cpumask)
+   193	{
+   194		return cpumask_full(cpumask);
+   195	}
+   196	
+ > 197	void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src)
+   198	{
+   199		cpumask_copy((struct cpumask *)dst, src);
+   200	}
+   201	
 
-And it STILL DOES NOT, even with your change.
-
-So I claim you are completely mis-using the whole __free thing. What
-you are doing is simply WRONG.
-
-And unless you can do it right, I will revert that change of yours to
-mis-use the cleanup functions, because I do not want anybody else to
-look at your code and get all the wrong ideas.
-
-Seriously.
-
-So look at your code, and DO IT RIGHT. Don't try to claim that
-"kfree()" is the cleanup function for gpio_sim_make_line_names().
-Because it really isn't. One free's a random pointer. Another returns
-a complex data structure *and* a count. They aren't inverses.
-
-I don't care ONE WHIT if you have learnt to use these kinds of things
-from GLib/GObject, and if that kind of disgusting behavior is ok
-there.
-
-It's not going to fly in the kernel.
-
-So your pattern needs to be something like this:
-
-        struct X *p __free(freeXYZ) = allocXYZ();
-
-and ABSOLUTELY NOTHING ELSE.  So if you use __free(kfree), it looks like
-
-        struct obj *p __free(kfree) = kmalloc(...);
-
-and not some different variation of it.
-
-And if you want to do something more complex, we literally have that
-"CLASS()" abstraction to make the above pattern particularly easy to
-use. Use it.
-
-But don't abuse the very special 'kmalloc/kfree' class that we have as
-an example. That's for kmalloc/kfree pairs, not for your "char
-***line_names" thing.
-
-Now, Just to give you a very concrete example, here are two TOTALLY
-UNTESTED patches.
-
-I wrote two, because there's two ways to fix this properly as per
-above, and use those functions properly.
-
-The *SANE* way is to just re-organize the code to count things
-separately, and then you can allocate it properly with a sane
-
-    char **line_names __free(kfree) = kcalloc(lines,
-sizeof(*line_names), GFP_KERNEL);
-
-and not have that crazy "count and fill and return both the count and
-the lines" model at all. The above pairs the constructor and
-destructor correctly and clearly.
-
-So that's the first "maybe-sane.diff" version. It may be untested,
-it's probably still buggy due to that, but it is what I *think* you
-should model the real fix around.
-
-The second patch is WAY overkill, and actually creates a "class" for
-this all, and keeps the old broken "count and fill in one go", and
-returns that *one* value that is just the class, and has a destructor
-for that class etc etc.
-
-It's completely broken and ridiculously over-complicated for something
-like this, but it's trying to document that way of doing things. For
-other things that aren't just one-offs, that whole CLASS() model may
-be the right one.
-
-Either of these patches *might* work, but honestly, both of them are
-likely broken. The second one in particular is almost certainly buggy
-just because it's such a crazy overkill solution, but partly *because*
-of how crazy overkill it is, I think it might be a useful example of
-what *can* be done.
-
-Again: UNTESTED. They both build for me, but that doesn't say much.
-
-                Linus
-
---00000000000047205b06056a7e38
-Content-Type: text/x-patch; charset="US-ASCII"; name="maybe-sane.diff"
-Content-Disposition: attachment; filename="maybe-sane.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lmkytv5x0>
-X-Attachment-Id: f_lmkytv5x0
-
-IGRyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jIHwgNjIgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDI0IGluc2VydGlvbnMoKyks
-IDM4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jIGIv
-ZHJpdmVycy9ncGlvL2dwaW8tc2ltLmMKaW5kZXggMjcxZGIzNjM5YTc4Li5kNTA2ZDVkMzRjMDkg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jCisrKyBiL2RyaXZlcnMvZ3Bpby9n
-cGlvLXNpbS5jCkBAIC02ODUsNTIgKzY4NSwzNSBAQCBncGlvX3NpbV9kZXZpY2VfY29uZmlnX2xp
-dmVfc2hvdyhzdHJ1Y3QgY29uZmlnX2l0ZW0gKml0ZW0sIGNoYXIgKnBhZ2UpCiAJcmV0dXJuIHNw
-cmludGYocGFnZSwgIiVjXG4iLCBsaXZlID8gJzEnIDogJzAnKTsKIH0KIAotc3RhdGljIGNoYXIg
-KipncGlvX3NpbV9tYWtlX2xpbmVfbmFtZXMoc3RydWN0IGdwaW9fc2ltX2JhbmsgKmJhbmssCi0J
-CQkJICAgICAgIHVuc2lnbmVkIGludCAqbGluZV9uYW1lc19zaXplKQorc3RhdGljIHVuc2lnbmVk
-IGludCBncGlvX3NpbV9jb3VudF9saW5lcyhzdHJ1Y3QgZ3Bpb19zaW1fYmFuayAqYmFuaykKIHsK
-IAl1bnNpZ25lZCBpbnQgbWF4X29mZnNldCA9IDA7Ci0JYm9vbCBoYXNfbGluZV9uYW1lcyA9IGZh
-bHNlOwogCXN0cnVjdCBncGlvX3NpbV9saW5lICpsaW5lOwotCWNoYXIgKipsaW5lX25hbWVzOwog
-CiAJbGlzdF9mb3JfZWFjaF9lbnRyeShsaW5lLCAmYmFuay0+bGluZV9saXN0LCBzaWJsaW5ncykg
-ewogCQlpZiAobGluZS0+b2Zmc2V0ID49IGJhbmstPm51bV9saW5lcykKIAkJCWNvbnRpbnVlOwot
-Ci0JCWlmIChsaW5lLT5uYW1lKSB7Ci0JCQlpZiAobGluZS0+b2Zmc2V0ID4gbWF4X29mZnNldCkK
-LQkJCQltYXhfb2Zmc2V0ID0gbGluZS0+b2Zmc2V0OwotCi0JCQkvKgotCQkJICogbWF4X29mZnNl
-dCBjYW4gc3RheSBhdCAwIHNvIGl0J3Mgbm90IGFuIGluZGljYXRvcgotCQkJICogb2Ygd2hldGhl
-ciBsaW5lIG5hbWVzIHdlcmUgY29uZmlndXJlZCBhdCBhbGwuCi0JCQkgKi8KLQkJCWhhc19saW5l
-X25hbWVzID0gdHJ1ZTsKLQkJfQorCQlpZiAoIWxpbmUtPm5hbWUpCisJCQljb250aW51ZTsKKwkJ
-aWYgKGxpbmUtPm9mZnNldCA8IG1heF9vZmZzZXQpCisJCQljb250aW51ZTsKKwkJbWF4X29mZnNl
-dCA9IGxpbmUtPm9mZnNldCArIDE7CiAJfQogCi0JaWYgKCFoYXNfbGluZV9uYW1lcykKLQkJLyoK
-LQkJICogVGhpcyBpcyBub3QgYW4gZXJyb3IgLSBOVUxMIG1lYW5zLCB0aGVyZSBhcmUgbm8gbGlu
-ZQotCQkgKiBuYW1lcyBjb25maWd1cmVkLgotCQkgKi8KLQkJcmV0dXJuIE5VTEw7CisJcmV0dXJu
-IG1heF9vZmZzZXQ7Cit9CiAKLQkqbGluZV9uYW1lc19zaXplID0gbWF4X29mZnNldCArIDE7Ci0K
-LQlsaW5lX25hbWVzID0ga2NhbGxvYygqbGluZV9uYW1lc19zaXplLCBzaXplb2YoKmxpbmVfbmFt
-ZXMpLCBHRlBfS0VSTkVMKTsKLQlpZiAoIWxpbmVfbmFtZXMpCi0JCXJldHVybiBFUlJfUFRSKC1F
-Tk9NRU0pOworc3RhdGljIHZvaWQgZ3Bpb19zaW1fZmlsbF9saW5lX25hbWVzKHN0cnVjdCBncGlv
-X3NpbV9iYW5rICpiYW5rLCBjaGFyICoqbGluZV9uYW1lcykKK3sKKwlzdHJ1Y3QgZ3Bpb19zaW1f
-bGluZSAqbGluZTsKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkobGluZSwgJmJhbmstPmxpbmVfbGlz
-dCwgc2libGluZ3MpIHsKIAkJaWYgKGxpbmUtPm9mZnNldCA+PSBiYW5rLT5udW1fbGluZXMpCiAJ
-CQljb250aW51ZTsKLQotCQlpZiAobGluZS0+bmFtZSAmJiAobGluZS0+b2Zmc2V0IDw9IG1heF9v
-ZmZzZXQpKQotCQkJbGluZV9uYW1lc1tsaW5lLT5vZmZzZXRdID0gbGluZS0+bmFtZTsKKwkJaWYg
-KCFsaW5lLT5uYW1lKQorCQkJY29udGludWU7CisJCWxpbmVfbmFtZXNbbGluZS0+b2Zmc2V0XSA9
-IGxpbmUtPm5hbWU7CiAJfQotCi0JcmV0dXJuIGxpbmVfbmFtZXM7CiB9CiAKIHN0YXRpYyB2b2lk
-IGdwaW9fc2ltX3JlbW92ZV9ob2dzKHN0cnVjdCBncGlvX3NpbV9kZXZpY2UgKmRldikKQEAgLTgz
-NCw4ICs4MTcsNyBAQCBncGlvX3NpbV9tYWtlX2Jhbmtfc3dub2RlKHN0cnVjdCBncGlvX3NpbV9i
-YW5rICpiYW5rLAogCQkJICBzdHJ1Y3QgZndub2RlX2hhbmRsZSAqcGFyZW50KQogewogCXN0cnVj
-dCBwcm9wZXJ0eV9lbnRyeSBwcm9wZXJ0aWVzW0dQSU9fU0lNX1BST1BfTUFYXTsKLQl1bnNpZ25l
-ZCBpbnQgcHJvcF9pZHggPSAwLCBsaW5lX25hbWVzX3NpemUgPSAwOwotCWNoYXIgKipsaW5lX25h
-bWVzIF9fZnJlZShrZnJlZSkgPSBOVUxMOworCXVuc2lnbmVkIGludCBwcm9wX2lkeCA9IDAsIGxp
-bmVzOwogCiAJbWVtc2V0KHByb3BlcnRpZXMsIDAsIHNpemVvZihwcm9wZXJ0aWVzKSk7CiAKQEAg
-LTg0NSwxNCArODI3LDE4IEBAIGdwaW9fc2ltX21ha2VfYmFua19zd25vZGUoc3RydWN0IGdwaW9f
-c2ltX2JhbmsgKmJhbmssCiAJCXByb3BlcnRpZXNbcHJvcF9pZHgrK10gPSBQUk9QRVJUWV9FTlRS
-WV9TVFJJTkcoImdwaW8tc2ltLGxhYmVsIiwKIAkJCQkJCQkgICAgICAgYmFuay0+bGFiZWwpOwog
-Ci0JbGluZV9uYW1lcyA9IGdwaW9fc2ltX21ha2VfbGluZV9uYW1lcyhiYW5rLCAmbGluZV9uYW1l
-c19zaXplKTsKLQlpZiAoSVNfRVJSKGxpbmVfbmFtZXMpKQotCQlyZXR1cm4gRVJSX0NBU1QobGlu
-ZV9uYW1lcyk7CisJbGluZXMgPSBncGlvX3NpbV9jb3VudF9saW5lcyhiYW5rKTsKKwljaGFyICoq
-bGluZV9uYW1lcyBfX2ZyZWUoa2ZyZWUpID0ga2NhbGxvYyhsaW5lcywgc2l6ZW9mKCpsaW5lX25h
-bWVzKSwgR0ZQX0tFUk5FTCk7CiAKLQlpZiAobGluZV9uYW1lcykKKwlpZiAoIWxpbmVfbmFtZXMp
-CisJCXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOworCisJZ3Bpb19zaW1fZmlsbF9saW5lX25hbWVz
-KGJhbmssIGxpbmVfbmFtZXMpOworCisJaWYgKGxpbmVzKQogCQlwcm9wZXJ0aWVzW3Byb3BfaWR4
-KytdID0gUFJPUEVSVFlfRU5UUllfU1RSSU5HX0FSUkFZX0xFTigKIAkJCQkJCSJncGlvLWxpbmUt
-bmFtZXMiLAotCQkJCQkJbGluZV9uYW1lcywgbGluZV9uYW1lc19zaXplKTsKKwkJCQkJCWxpbmVf
-bmFtZXMsIGxpbmVzKTsKIAogCXJldHVybiBmd25vZGVfY3JlYXRlX3NvZnR3YXJlX25vZGUocHJv
-cGVydGllcywgcGFyZW50KTsKIH0K
---00000000000047205b06056a7e38
-Content-Type: text/x-patch; charset="US-ASCII"; name="silly.diff"
-Content-Disposition: attachment; filename="silly.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lmkyu11w1>
-X-Attachment-Id: f_lmkyu11w1
-
-IGRyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jIHwgNTYgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKyks
-IDE4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jIGIv
-ZHJpdmVycy9ncGlvL2dwaW8tc2ltLmMKaW5kZXggMjcxZGIzNjM5YTc4Li5hYzg0MTZjZDk2YzMg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3Bpby9ncGlvLXNpbS5jCisrKyBiL2RyaXZlcnMvZ3Bpby9n
-cGlvLXNpbS5jCkBAIC02ODUsMTMgKzY4NSwzNiBAQCBncGlvX3NpbV9kZXZpY2VfY29uZmlnX2xp
-dmVfc2hvdyhzdHJ1Y3QgY29uZmlnX2l0ZW0gKml0ZW0sIGNoYXIgKnBhZ2UpCiAJcmV0dXJuIHNw
-cmludGYocGFnZSwgIiVjXG4iLCBsaXZlID8gJzEnIDogJzAnKTsKIH0KIAotc3RhdGljIGNoYXIg
-KipncGlvX3NpbV9tYWtlX2xpbmVfbmFtZXMoc3RydWN0IGdwaW9fc2ltX2JhbmsgKmJhbmssCi0J
-CQkJICAgICAgIHVuc2lnbmVkIGludCAqbGluZV9uYW1lc19zaXplKQorc3RydWN0IGxpbmVfbmFt
-ZXMgeworCXVuc2lnbmVkIGludCBzaXplOworCWNoYXIgKipsaW5lczsKK307CisKK3N0YXRpYyBz
-dHJ1Y3QgbGluZV9uYW1lcyBtYWtlX2xpbmVfbmFtZXModW5zaWduZWQgaW50IHNpemUpCit7CisJ
-Y2hhciAqKmxpbmVzID0ga2NhbGxvYyhzaXplLCBzaXplb2YoKmxpbmVzKSwgR0ZQX0tFUk5FTCk7
-CisJaWYgKCFsaW5lcykKKwkJcmV0dXJuIChzdHJ1Y3QgbGluZV9uYW1lcykgeyAwLCBFUlJfUFRS
-KC1FTk9NRU0pIH07CisKKwlyZXR1cm4gKHN0cnVjdCBsaW5lX25hbWVzKSB7IHNpemUsIGxpbmVz
-IH07Cit9CisKK3N0YXRpYyB2b2lkIGZyZWVfbGluZV9uYW1lcyhzdHJ1Y3QgbGluZV9uYW1lcyBu
-YW1lcykKK3sKKwlpZiAoIUlTX0VSUl9PUl9OVUxMKG5hbWVzLmxpbmVzKSkKKwkJa2ZyZWUobmFt
-ZXMubGluZXMpOworfQorCitERUZJTkVfQ0xBU1MobGluZV9uYW1lcywKKwlzdHJ1Y3QgbGluZV9u
-YW1lcywKKwlmcmVlX2xpbmVfbmFtZXMoX1QpLAorCW1ha2VfbGluZV9uYW1lcyhzaXplKSwgdW5z
-aWduZWQgaW50IHNpemUpCisKK3N0YXRpYyBzdHJ1Y3QgbGluZV9uYW1lcyBncGlvX3NpbV9tYWtl
-X2xpbmVfbmFtZXMoc3RydWN0IGdwaW9fc2ltX2JhbmsgKmJhbmspCiB7CiAJdW5zaWduZWQgaW50
-IG1heF9vZmZzZXQgPSAwOwogCWJvb2wgaGFzX2xpbmVfbmFtZXMgPSBmYWxzZTsKIAlzdHJ1Y3Qg
-Z3Bpb19zaW1fbGluZSAqbGluZTsKLQljaGFyICoqbGluZV9uYW1lczsKIAogCWxpc3RfZm9yX2Vh
-Y2hfZW50cnkobGluZSwgJmJhbmstPmxpbmVfbGlzdCwgc2libGluZ3MpIHsKIAkJaWYgKGxpbmUt
-Pm9mZnNldCA+PSBiYW5rLT5udW1fbGluZXMpCkBAIC03MTQsMjMgKzczNywyMSBAQCBzdGF0aWMg
-Y2hhciAqKmdwaW9fc2ltX21ha2VfbGluZV9uYW1lcyhzdHJ1Y3QgZ3Bpb19zaW1fYmFuayAqYmFu
-aywKIAkJICogVGhpcyBpcyBub3QgYW4gZXJyb3IgLSBOVUxMIG1lYW5zLCB0aGVyZSBhcmUgbm8g
-bGluZQogCQkgKiBuYW1lcyBjb25maWd1cmVkLgogCQkgKi8KLQkJcmV0dXJuIE5VTEw7CisJCXJl
-dHVybiAoc3RydWN0IGxpbmVfbmFtZXMpIHsgMCwgTlVMTCB9OwogCi0JKmxpbmVfbmFtZXNfc2l6
-ZSA9IG1heF9vZmZzZXQgKyAxOwotCi0JbGluZV9uYW1lcyA9IGtjYWxsb2MoKmxpbmVfbmFtZXNf
-c2l6ZSwgc2l6ZW9mKCpsaW5lX25hbWVzKSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKCFsaW5lX25hbWVz
-KQotCQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsKKwlDTEFTUyhsaW5lX25hbWVzLCBuYW1lcyko
-bWF4X29mZnNldCArIDEpOworCWlmIChJU19FUlIobmFtZXMubGluZXMpKQorCQlyZXR1cm4gbmFt
-ZXM7CiAKIAlsaXN0X2Zvcl9lYWNoX2VudHJ5KGxpbmUsICZiYW5rLT5saW5lX2xpc3QsIHNpYmxp
-bmdzKSB7CiAJCWlmIChsaW5lLT5vZmZzZXQgPj0gYmFuay0+bnVtX2xpbmVzKQogCQkJY29udGlu
-dWU7CiAKIAkJaWYgKGxpbmUtPm5hbWUgJiYgKGxpbmUtPm9mZnNldCA8PSBtYXhfb2Zmc2V0KSkK
-LQkJCWxpbmVfbmFtZXNbbGluZS0+b2Zmc2V0XSA9IGxpbmUtPm5hbWU7CisJCQluYW1lcy5saW5l
-c1tsaW5lLT5vZmZzZXRdID0gbGluZS0+bmFtZTsKIAl9CiAKLQlyZXR1cm4gbGluZV9uYW1lczsK
-KwlyZXR1cm4gKHN0cnVjdCBsaW5lX25hbWVzKSB7IG5hbWVzLnNpemUsIG5vX2ZyZWVfcHRyKG5h
-bWVzLmxpbmVzKSB9OwogfQogCiBzdGF0aWMgdm9pZCBncGlvX3NpbV9yZW1vdmVfaG9ncyhzdHJ1
-Y3QgZ3Bpb19zaW1fZGV2aWNlICpkZXYpCkBAIC04MzQsOCArODU1LDcgQEAgZ3Bpb19zaW1fbWFr
-ZV9iYW5rX3N3bm9kZShzdHJ1Y3QgZ3Bpb19zaW1fYmFuayAqYmFuaywKIAkJCSAgc3RydWN0IGZ3
-bm9kZV9oYW5kbGUgKnBhcmVudCkKIHsKIAlzdHJ1Y3QgcHJvcGVydHlfZW50cnkgcHJvcGVydGll
-c1tHUElPX1NJTV9QUk9QX01BWF07Ci0JdW5zaWduZWQgaW50IHByb3BfaWR4ID0gMCwgbGluZV9u
-YW1lc19zaXplID0gMDsKLQljaGFyICoqbGluZV9uYW1lcyBfX2ZyZWUoa2ZyZWUpID0gTlVMTDsK
-Kwl1bnNpZ25lZCBpbnQgcHJvcF9pZHggPSAwOwogCiAJbWVtc2V0KHByb3BlcnRpZXMsIDAsIHNp
-emVvZihwcm9wZXJ0aWVzKSk7CiAKQEAgLTg0NSwxNCArODY1LDE0IEBAIGdwaW9fc2ltX21ha2Vf
-YmFua19zd25vZGUoc3RydWN0IGdwaW9fc2ltX2JhbmsgKmJhbmssCiAJCXByb3BlcnRpZXNbcHJv
-cF9pZHgrK10gPSBQUk9QRVJUWV9FTlRSWV9TVFJJTkcoImdwaW8tc2ltLGxhYmVsIiwKIAkJCQkJ
-CQkgICAgICAgYmFuay0+bGFiZWwpOwogCi0JbGluZV9uYW1lcyA9IGdwaW9fc2ltX21ha2VfbGlu
-ZV9uYW1lcyhiYW5rLCAmbGluZV9uYW1lc19zaXplKTsKLQlpZiAoSVNfRVJSKGxpbmVfbmFtZXMp
-KQotCQlyZXR1cm4gRVJSX0NBU1QobGluZV9uYW1lcyk7CisJY2xhc3NfbGluZV9uYW1lc190IG5h
-bWVzIF9fY2xlYW51cChjbGFzc19saW5lX25hbWVzX2Rlc3RydWN0b3IpID0gZ3Bpb19zaW1fbWFr
-ZV9saW5lX25hbWVzKGJhbmspOworCWlmIChJU19FUlIobmFtZXMubGluZXMpKQorCQlyZXR1cm4g
-RVJSX0NBU1QobmFtZXMubGluZXMpOwogCi0JaWYgKGxpbmVfbmFtZXMpCisJaWYgKG5hbWVzLnNp
-emUpCiAJCXByb3BlcnRpZXNbcHJvcF9pZHgrK10gPSBQUk9QRVJUWV9FTlRSWV9TVFJJTkdfQVJS
-QVlfTEVOKAogCQkJCQkJImdwaW8tbGluZS1uYW1lcyIsCi0JCQkJCQlsaW5lX25hbWVzLCBsaW5l
-X25hbWVzX3NpemUpOworCQkJCQkJbmFtZXMubGluZXMsIG5hbWVzLnNpemUpOwogCiAJcmV0dXJu
-IGZ3bm9kZV9jcmVhdGVfc29mdHdhcmVfbm9kZShwcm9wZXJ0aWVzLCBwYXJlbnQpOwogfQo=
---00000000000047205b06056a7e38--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
