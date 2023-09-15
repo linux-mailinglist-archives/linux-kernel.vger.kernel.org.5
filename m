@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D73D7A1C99
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9A87A1C9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjIOKoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S233615AbjIOKoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbjIOKoK (ORCPT
+        with ESMTP id S233498AbjIOKoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:44:10 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5F71AB;
-        Fri, 15 Sep 2023 03:43:58 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-69002ef0104so1630512b3a.1;
-        Fri, 15 Sep 2023 03:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694774638; x=1695379438; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UqP1psGcZRdVmUUjw/rzqv6oDKC5zTrt48sqFT23qfI=;
-        b=FKeXWFVLR9byiKTQy/cQ/uT8mca9CeFgwj7tL3pyiRqras7yF5c8oEoobg5GAvIT6E
-         z1JSAGBEi2QSLM1xcoRvZO7tbBaZ/EP2+VT/+yP64mrW+7trOB3axUCLBuM5iboxFCms
-         tv9/LIUYJO3hb+jz6hg6iRKupk2jZg3PySLO8rhqsY/jMCCgtMWW/1//zTc66KPv8ImG
-         ZwFSRZUkvDlQdcIlu2jxW0TRC/sU+9C8nLkrh6Ki9KMGeLSahttdgbGN4W3c6pe/4+Tl
-         ZvYSzQ0+tFcx97mjNaOpbcJPZ/q4+gvp7mT9s9fScmTRekqEBFXyd7KOMwCZkULgb+Pv
-         5Diw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774638; x=1695379438;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UqP1psGcZRdVmUUjw/rzqv6oDKC5zTrt48sqFT23qfI=;
-        b=bGFaPbP/y/Sa2GIUSbRtXS7zzB3Jc/1ngo8kbPgBNUJbLMLbZuqDGplDjxbb5h19Z2
-         2eToYFrPtsguj5ZhWSt6Tlop4qnk7fgHftAlwTQfXsZNkaJGwFDqVmjDMYQckvZkk0FJ
-         aisuV6uCIVkZ0Ix524GmSP4zsRgfghHeCCMn9+MknpZxFETmU/HYw/VsDgy/deswYBzr
-         BaBg7nJ86xhu6gdJixClMqPHvwDZGTSnF9P9pVhgREBXywnYXfY2y0uOtmqgEiFa5kWD
-         fvp7Qp+WJ94TRpFVs3UlP8mOip4N0MkXi0psAhkGiNgRflDD12qkmoqwgou1EzJapL0O
-         RYgA==
-X-Gm-Message-State: AOJu0Yz0nK+mDrp893g0aJ4PaeZI0C+z0ancuFD4yKjIcoEJAzANxqGa
-        z4fMNSXfm4yYx1EifE7KsFw=
-X-Google-Smtp-Source: AGHT+IHOCHNovDJgIlga+tOpezqhjzKI6jH+k8BgVMhIvCp0Q/15ToEK4jPuxCUH0jpQL3zgGu2BNw==
-X-Received: by 2002:a05:6a21:66c6:b0:14c:4deb:7120 with SMTP id ze6-20020a056a2166c600b0014c4deb7120mr1169542pzb.62.1694774638216;
-        Fri, 15 Sep 2023 03:43:58 -0700 (PDT)
-Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
-        by smtp.gmail.com with ESMTPSA id go20-20020a17090b03d400b002612150d958sm4604923pjb.16.2023.09.15.03.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:43:57 -0700 (PDT)
-Sender: Herbert Xu <herbertx@gmail.com>
-Date:   Fri, 15 Sep 2023 18:43:57 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Message-ID: <ZQQ1bR16UR0CTFoX@gondor.apana.org.au>
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
+        Fri, 15 Sep 2023 06:44:13 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31FCFB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:44:03 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qh6Iq-0001zO-G5; Fri, 15 Sep 2023 12:44:00 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qh6Ip-006Vvp-Sx; Fri, 15 Sep 2023 12:43:59 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qh6Ip-001pNJ-JB; Fri, 15 Sep 2023 12:43:59 +0200
+Date:   Fri, 15 Sep 2023 12:43:59 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     nikita.shubin@maquefel.me
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: Re: [PATCH v4 18/42] pwm: ep93xx: add DT support for Cirrus EP93xx
+Message-ID: <20230915104359.casgjp2bdeys4lbl@pengutronix.de>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+ <20230915-ep93xx-v4-18-a1d779dcec10@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rws2zmjkqx5zytr4"
 Content-Disposition: inline
-In-Reply-To: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230915-ep93xx-v4-18-a1d779dcec10@maquefel.me>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:17:29PM +0200, Christophe JAILLET wrote:
-> This error handling looks really strange.
-> Check if the string has been truncated instead.
-> 
-> Fixes: 02ab994635eb ("crypto: hisilicon - Fixed some tiny bugs of HPRE")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+--rws2zmjkqx5zytr4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 15, 2023 at 11:11:00AM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+>=20
+> Add OF ID match table.
+>=20
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rws2zmjkqx5zytr4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUENW4ACgkQj4D7WH0S
+/k60kQf/WnpMGx2B6UIPoxvrAgO2juM9qlBEoKxiIhGufNDeNtw2PlONkCQWbdcO
+RBwz8expQwSHYYPQ26p+HukubXoJt8fRPeTNzO614WySE2IRye8OFjl4kCgRtr4i
+ZuYRJTuv91ocvDtHaWzWiq94NePuj2qWQqTDLCFSpwObkdmWnm7bVmPdI9Y/uc3X
+XHjhPchiOpo5mqkPDB864572y4HN6TLEfPsoXfeOrbYFVcEPA+BoCC8ddS3uxbjV
+HqwSBhqlG8PbtAgkxkoL4eZtBQp0TD1mf4UHv9liGzW93dpz7CNO9lwTsIIzsXAB
+DUszSK5RoX00ck3s8Xxo8mo/xkxs8g==
+=JMjn
+-----END PGP SIGNATURE-----
+
+--rws2zmjkqx5zytr4--
