@@ -2,175 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1ABD7A277F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DDE7A2783
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236369AbjIOT45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S236592AbjIOT6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237061AbjIOT4v (ORCPT
+        with ESMTP id S236771AbjIOT6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:56:51 -0400
-Received: from out-225.mta1.migadu.com (out-225.mta1.migadu.com [IPv6:2001:41d0:203:375::e1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE402111
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:56:46 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 19:56:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694807802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4cyq9z+NVEYHsFKyg9M91niGEqUL3RvbRSHxuDLlxgo=;
-        b=m7q/WsJOgBJ088EOEuNGXvrtrOAv+gwEDmR6XuV5PP4DpFtADobiAF1Ea4I5SKSfR7iUK0
-        DS439BsGIu+oz/tbl/Fr4bppRzYlJpstVhoQViRfl89H6wBNcYcgGv/bzpURWZtF6I+eaz
-        IzJLHjnyzf2FMUppVEQlwD2854eDGQ4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 05/12] KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
-Message-ID: <ZQS28e8b4YduMkdE@linux.dev>
-References: <20230817003029.3073210-1-rananta@google.com>
- <20230817003029.3073210-6-rananta@google.com>
+        Fri, 15 Sep 2023 15:58:24 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1539210A
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:58:19 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68fb5bd8f02so2471748b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694807899; x=1695412699; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zmHM4psXavgvDfuezLrO35so+CBMe74SVmqgDqqj+X4=;
+        b=XeTzfUDcCXCFkZBfDf1AQF1x3mA8sIj7CHRxo04V9HYErUCdABgWjOXgMTIJq8NWoY
+         7wFuMr9NS1ajAdoiegiAhtKqDxNzhZuOk+Gzbhm6eNS6sVhiQ0NVGQSAMQtOaxDyseNS
+         C0t2IrM0pFi6lb3yQ8JB4dE73FqdW8j7RUNkU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694807899; x=1695412699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zmHM4psXavgvDfuezLrO35so+CBMe74SVmqgDqqj+X4=;
+        b=o4wCmupU3M+p9ssFFWGvZXL4VZzlAGmdwSyxqQ2aBxK478uiZASoo7KgQA4vEQO35C
+         mZZbeRx10lqTZ6tmQgsKzc3KYJjjqmM7s/T6+9CxwAgETBgixwa627iuQkpNmM5+jt7I
+         RxvJQ4b7YW540luuCAMx3SPM0YJU/x/WJWbeJRl3u4AsYc7Y+JR8tzziecNSFZ0LLDJ+
+         FiqMSI2zRVjCqZ3b/BOGEBViMcvLSKMraqnD9xgwEVjxgB2Cjr+mZ6XJN4iV4JMigg08
+         e3LRAkXVr6Kp3k+UPZwOv8gAVo2BHdIcnBIno6w553fZ2oKBWOCt96dCI8M7O3wJzvq0
+         tULQ==
+X-Gm-Message-State: AOJu0YyMgXE/Uu1xFpO9vuC41it1cmoiINjTq0NM2J+hvhKEjEhXbhMW
+        idTyG/u1PxL/zsfH+Rrmb8OXjQ==
+X-Google-Smtp-Source: AGHT+IHxg8lMUhQbD1ACheTV/Mn8ZmyK6E+Zn7O25oxU88CnFr5Q2FqS0QAIFWE5fO7vBsi6A8ggvA==
+X-Received: by 2002:a05:6a21:819e:b0:156:dc22:96a6 with SMTP id pd30-20020a056a21819e00b00156dc2296a6mr2747617pzb.55.1694807899302;
+        Fri, 15 Sep 2023 12:58:19 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s12-20020a62e70c000000b0068e4c5a4f3esm3314766pfh.71.2023.09.15.12.58.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 12:58:18 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: [PATCH] usb: Annotate struct urb_priv with __counted_by
+Date:   Fri, 15 Sep 2023 12:58:16 -0700
+Message-Id: <20230915195812.never.371-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817003029.3073210-6-rananta@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1658; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=/nlnwk1swWCmCy2+Sv6muF6tU55a2t3bsLZzpmMZ7jA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBLdYB58rdkB52xPa44fGOBHqVRz7lxkY6R3VI
+ m+mHExbT+qJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQS3WAAKCRCJcvTf3G3A
+ JmBcEACKNUOge0/I+8iiOTctI4cFdZB/+rB9Ls9SMAQ3HTYKIXbFV6eJFbPrC5AAdAGdsGyVCJH
+ 8DDCbKRazcLtk/2vGPm6G5nR2FlXm/Rc/JndCygWsLpIsgWs9NMtm1QZlN2rag2TywAY5O66Pdn
+ e6RWMDqHtBpjC8irzQ0bHTjkCF4IFlDefPhNEJFeuB9xZVfCsjs45uuDLMM2DL9DmxDIR9TztgP
+ aEEPH9ULbxtxiUGrldBOLZpYAS6RnlApwMLXomqII99vwWZEXdECUAWH/AMjYlGDmeuuZdeCGM2
+ zfYbE44jcYqSKf2LHciFpDQOTXbr9CLIIUlc7UbO+S45hQONplJEJIPy8E/l2vq+7tCcVJTcslf
+ vI7T7sGBuhZljTfaxI4E5EuKBMRLeO9Rna/e/MMp7lHnVerLm8cGrFa5+l+bcvTBsjFSozCuqsU
+ Xqan6V+WOLZxOz96eqfXe/e7Il1H1AgAhJy+btd3mtJMRKNEm1TzihpBWwcJ7SESPCQYwGFkeIg
+ iAws1DwbSOAIMRq0+yQ3wKSzcD+s2STzCWxnT71yFB1hSthlwFilQIvNlAkhUoEU5HNoO7arF5q
+ mB6ZLScLXIEtDto8BDzvd/u7lfKIBnlFXEvMEkB46kXMRcjHBaNclSDin1SO3xY9Mo0CchESmZP
+ 15qunaB jCdEo3fQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+cc will, rutland
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-Hi Raghu,
+As found with Coccinelle[1], add __counted_by for struct urb_priv.
 
-Please make sure you cc the right folks for changes that poke multiple
-subsystems.
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-The diff looks OK, but I'm somewhat dubious of the need for this change
-in the context of what you're trying to accomplish for KVM. I'd prefer
-we either leave the existing definition/usage intact or rework *all* of
-the PMUv3 masks to be of the shifted variety.
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Mathias Nyman <mathias.nyman@intel.com>
+Cc: linux-usb@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/usb/host/ohci.h | 2 +-
+ drivers/usb/host/xhci.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Thu, Aug 17, 2023 at 12:30:22AM +0000, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
-> 
-> Some code extracts PMCR_EL0.N using ARMV8_PMU_PMCR_N_SHIFT and
-> ARMV8_PMU_PMCR_N_MASK. Define ARMV8_PMU_PMCR_N (0x1f << 11),
-> and simplify those codes using FIELD_GET() and/or ARMV8_PMU_PMCR_N.
-> The following patches will also use these macros to extract PMCR_EL0.N.
-
-Changelog is a bit wordy:
-
-  Define a shifted mask for accessing PMCR_EL0.N amenable to the use of
-  bitfield accessors and convert the existing, open-coded mask shifts to
-  the new definition.
-
-> No functional change intended.
-> 
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  arch/arm64/kvm/pmu-emul.c      | 3 +--
->  arch/arm64/kvm/sys_regs.c      | 7 +++----
->  drivers/perf/arm_pmuv3.c       | 3 +--
->  include/linux/perf/arm_pmuv3.h | 2 +-
->  4 files changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index b87822024828a..f7b5fa16341ad 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -245,9 +245,8 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
->  
->  u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
->  {
-> -	u64 val = __vcpu_sys_reg(vcpu, PMCR_EL0) >> ARMV8_PMU_PMCR_N_SHIFT;
-> +	u64 val = FIELD_GET(ARMV8_PMU_PMCR_N, __vcpu_sys_reg(vcpu, PMCR_EL0));
->  
-> -	val &= ARMV8_PMU_PMCR_N_MASK;
->  	if (val == 0)
->  		return BIT(ARMV8_PMU_CYCLE_IDX);
->  	else
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 39e9248c935e7..30108f09e088b 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -750,7 +750,7 @@ static u64 reset_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
->  		return 0;
->  
->  	/* Only preserve PMCR_EL0.N, and reset the rest to 0 */
-> -	pmcr = read_sysreg(pmcr_el0) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
-> +	pmcr = read_sysreg(pmcr_el0) & ARMV8_PMU_PMCR_N;
->  	if (!kvm_supports_32bit_el0())
->  		pmcr |= ARMV8_PMU_PMCR_LC;
->  
-> @@ -858,10 +858,9 @@ static bool access_pmceid(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  
->  static bool pmu_counter_idx_valid(struct kvm_vcpu *vcpu, u64 idx)
->  {
-> -	u64 pmcr, val;
-> +	u64 val;
->  
-> -	pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0);
-> -	val = (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
-> +	val = FIELD_GET(ARMV8_PMU_PMCR_N, __vcpu_sys_reg(vcpu, PMCR_EL0));
->  	if (idx >= val && idx != ARMV8_PMU_CYCLE_IDX) {
->  		kvm_inject_undefined(vcpu);
->  		return false;
-> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-> index 08b3a1bf0ef62..7618b0adc0b8c 100644
-> --- a/drivers/perf/arm_pmuv3.c
-> +++ b/drivers/perf/arm_pmuv3.c
-> @@ -1128,8 +1128,7 @@ static void __armv8pmu_probe_pmu(void *info)
->  	probe->present = true;
->  
->  	/* Read the nb of CNTx counters supported from PMNC */
-> -	cpu_pmu->num_events = (armv8pmu_pmcr_read() >> ARMV8_PMU_PMCR_N_SHIFT)
-> -		& ARMV8_PMU_PMCR_N_MASK;
-> +	cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
->  
->  	/* Add the CPU cycles counter */
->  	cpu_pmu->num_events += 1;
-> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
-> index e3899bd77f5cc..ecbcf3f93560c 100644
-> --- a/include/linux/perf/arm_pmuv3.h
-> +++ b/include/linux/perf/arm_pmuv3.h
-> @@ -216,7 +216,7 @@
->  #define ARMV8_PMU_PMCR_LC	(1 << 6) /* Overflow on 64 bit cycle counter */
->  #define ARMV8_PMU_PMCR_LP	(1 << 7) /* Long event counter enable */
->  #define ARMV8_PMU_PMCR_N_SHIFT	11  /* Number of counters supported */
-> -#define ARMV8_PMU_PMCR_N_MASK	0x1f
-> +#define	ARMV8_PMU_PMCR_N	(0x1f << ARMV8_PMU_PMCR_N_SHIFT)
->  #define ARMV8_PMU_PMCR_MASK	0xff    /* Mask for writable bits */
->  
->  /*
-> -- 
-> 2.41.0.694.ge786442a9b-goog
-> 
-> 
-
+diff --git a/drivers/usb/host/ohci.h b/drivers/usb/host/ohci.h
+index aac6285b37f8..1aba22784e05 100644
+--- a/drivers/usb/host/ohci.h
++++ b/drivers/usb/host/ohci.h
+@@ -337,7 +337,7 @@ typedef struct urb_priv {
+ 	u16			length;		// # tds in this request
+ 	u16			td_cnt;		// tds already serviced
+ 	struct list_head	pending;
+-	struct td		*td[];		// all TDs in this request
++	struct td		*td[] __counted_by(length); // all TDs in this request
+ 
+ } urb_priv_t;
+ 
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 7e282b4522c0..2f21c3a8565c 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1666,7 +1666,7 @@ struct xhci_scratchpad {
+ struct urb_priv {
+ 	int	num_tds;
+ 	int	num_tds_done;
+-	struct	xhci_td	td[];
++	struct	xhci_td	td[] __counted_by(num_tds);
+ };
+ 
+ /*
 -- 
-Thanks,
-Oliver
+2.34.1
+
