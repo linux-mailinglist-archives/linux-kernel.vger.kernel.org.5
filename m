@@ -2,180 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03B57A1C35
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BE87A1C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbjIOK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
+        id S234168AbjIOKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234336AbjIOK0F (ORCPT
+        with ESMTP id S234325AbjIOKYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:26:05 -0400
+        Fri, 15 Sep 2023 06:24:44 -0400
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39C13A93
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:31 -0700 (PDT)
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC4C3C39
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:40 -0700 (PDT)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 386FC3F67B
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:23:27 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 91D9D3F683
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694773407;
-        bh=z7JHAgWlYbo6190D8eD4+RynEQye8I21JfDjXnFF0Ck=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=pAWESwKbofXfirKQ+cu2GippwrcotREwgJ54a47CcWzLElpmUEpadEShek2P8Ob+g
-         TQ0mG/8px4AIq/RjsyDUITFlluo2Aed8XeaM8zSZK0IlSSLDtgglyRp9I/gfmjto6t
-         bMVv6SzWDLqe1bjsnTOMw/0SULcybFd6vgEoHboleE/dlj+LG/5tuf7NEgT1sTZ4TY
-         DWHyO+xoHHGgzLqahCt2BH/KCXiv7YhPOXMUc5j6OWjIEw+jiOEXz+f8+6BCx8qTh8
-         IBs89jqDa7XQw297bvsgrwUsH1TYmz2G8f31rmxQEo2BJ2MYg2Es9QdvI0/+VisMjt
-         l+iDkDjGMLrww==
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9aa20a75780so141641966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:27 -0700 (PDT)
+        s=20210705; t=1694773418;
+        bh=DVQzFwUpbsXuIGkXzoIV2yaJxsbZHyDDscyAWq7j40I=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=VLgLHZCIvZXavGmzi/VrC/fTASD5+EiT9GdMyP7mVN56CdeiRSdTCXcLgRkhUpmzJ
+         FDt6MxjrACIt3BUN7g8SygpgHRa43QLRR47w54q5510QpyiN8a5qEewynhSwdPtyY2
+         +5IOkA0R+S4mbS782cwQe/nr1NHBgmD8RD8hRGqMbAL1ojctl+ZBzRlrf91A9DwiF7
+         +pzAOwwHRmxbe8i8TdMK02RyImOxlWmQGY0nJ2k2DehkxAJOw+toWCeD9jGIOZ17RV
+         cbC3CN/xM5+a877Jp+O+w/6Z1+hHXmttX80fR9MJlDilrzNcy3xFpjZm9Fn328LZMg
+         31WnMvhILcSTA==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-414bd030211so20701941cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:23:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694773406; x=1695378206;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z7JHAgWlYbo6190D8eD4+RynEQye8I21JfDjXnFF0Ck=;
-        b=B5qsGL9IH1C61QKU/o+RwSbR0H9/gqZQL0DfK9hxuNqRpckOWv47LSauAducajf1Fv
-         LZJy1ZQG5Jddfqn5DQT8I4BUcQEPFKeUhcL9vkydieOR98qfw5VpPZd7DirHueTKs+Uj
-         T2vEBnc7+wXv7wTvvpUbeKTxct4B5w+p4+rQPaRxw5gTTFUT52Y6T3ubgMWjBo+4+nGJ
-         chDYRCRDT7Op/MqEAYS/IvdJVG4RA/XrLRkvkI/0fcGC460XRKPOJqoJS4nxg64QEyvC
-         jHUOcSJGiz+VwjygRxd53BErsT+TtWH11KFoNh7pdYSIy+MOttbmJ33BxfY6Bayinch0
-         GarQ==
-X-Gm-Message-State: AOJu0YznPPR4F8uEEWN8LIjL8KFT2snh72fDsFYFKPW0BxNiwppGUrh2
-        BvMPLrS04Ibxr8P7mkJrPzHEUnrJXNCnNWWgFztTtjVpQjCIHWqJMDkr3C4sbHy7efDS798Stcw
-        b4KJhj9sIGok6yRwqs5f94NNSBp+JNd5lZUEGDlacqQ==
-X-Received: by 2002:a17:907:784f:b0:9a2:2635:daa8 with SMTP id lb15-20020a170907784f00b009a22635daa8mr941252ejc.56.1694773406593;
-        Fri, 15 Sep 2023 03:23:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG+FiyghSmdvhT78+MTXJZGFKg/xOgd32F1+tb9mlsD409KTBDcb1ilWTv89DV9DYE//HViLA==
-X-Received: by 2002:a17:907:784f:b0:9a2:2635:daa8 with SMTP id lb15-20020a170907784f00b009a22635daa8mr941235ejc.56.1694773406299;
-        Fri, 15 Sep 2023 03:23:26 -0700 (PDT)
-Received: from work.lan (77-169-125-32.fixed.kpn.net. [77.169.125.32])
-        by smtp.gmail.com with ESMTPSA id o9-20020a170906600900b0099bcd1fa5b0sm2189818ejj.192.2023.09.15.03.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:23:25 -0700 (PDT)
-From:   Roxana Nicolescu <roxana.nicolescu@canonical.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com
-Cc:     x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: x86 - load optimized sha1/sha256 modules based on CPU features
-Date:   Fri, 15 Sep 2023 12:23:25 +0200
-Message-Id: <20230915102325.35189-1-roxana.nicolescu@canonical.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1694773416; x=1695378216;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DVQzFwUpbsXuIGkXzoIV2yaJxsbZHyDDscyAWq7j40I=;
+        b=P0en98f9hpuIiiAZ6YjuknhpSlv6OCo2+Sk9N4Sh0MPKncxjnEczE76wWB/pZ97GHP
+         drPBRmnxr8xqOPCfMiL0U5jAYbc2ZAXRHBlVG1Ks2nipaPBk4e8CLUxkLZ0dmiFbl9Xy
+         GF4Ew9OoE18YsgMC9Q7sC5GJj4xdafFL9KSK9LvAFhZnRbQuo1VHuIgHfU7Q5vVy1kIp
+         hQ62uS47XYsRLhXgBrtYS3V6GMrlaedNBmwlTd/g13fFUsEuKX7/sJvF9S+vw7zuicNW
+         pKRX3nUd17gJNUMloL55RZI6qEKiY7A3Nxd/CqZXum/UfaAxO3Txk52kFY5+NNnMumqi
+         HpaA==
+X-Gm-Message-State: AOJu0YwiMFbn3c8zh9OPv9OPI0j3cxUGy1dfEPOuAIh0dCWpabTPNrdr
+        kfA62obvoT0ULYtNASNK//KCPf6KlGKx5lzpSmJ9NvDoFsaat5CQ7rnr5NamPGOmZEEuJwC5Y22
+        8pJgJgOdH0wcSo8IJ1O7CqfbqgXWddLCIivU7O/j9xcNv7m8givJb6GTzC/wFKSuOZg==
+X-Received: by 2002:a05:622a:1492:b0:403:e1d1:8b91 with SMTP id t18-20020a05622a149200b00403e1d18b91mr1304337qtx.60.1694773416768;
+        Fri, 15 Sep 2023 03:23:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEz6XoHpeoa1FTEaRyEIa8VosrmBlxM/6MYyeWBvLfPWnf7jhkHcp8hPE2RmqA1ElsiydQSlVI4+mzX7w4v7/U=
+X-Received: by 2002:a05:622a:1492:b0:403:e1d1:8b91 with SMTP id
+ t18-20020a05622a149200b00403e1d18b91mr1304322qtx.60.1694773416535; Fri, 15
+ Sep 2023 03:23:36 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 15 Sep 2023 03:23:36 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <862905cc-48c3-2dc9-6032-6ee189a629e6@linaro.org>
+References: <20230915072558.118325-1-wangchen20@iscas.ac.cn>
+ <803daa8f-f4bd-34b7-f826-89e1db5f24f6@linaro.org> <CAJM55Z-GMm5Hmk7-QWt8Prvp7qyFzOrQVjOjB7jfoX-oiT_C1A@mail.gmail.com>
+ <862905cc-48c3-2dc9-6032-6ee189a629e6@linaro.org>
+Mime-Version: 1.0
+Date:   Fri, 15 Sep 2023 03:23:36 -0700
+Message-ID: <CAJM55Z8WDcjRER3ffnj+6V=QWEmudZyaO9z2iPUvreU1okq27A@mail.gmail.com>
+Subject: Re: [PATCH 10/12] serial: 8250_dw: Add Sophgo SG2042 support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Wang Chen <unicornxw@gmail.com>,
+        linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x86 optimized crypto modules are built as modules rather than build-in and
-they are not loaded when the crypto API is initialized, resulting in the
-generic builtin module (sha1-generic) being used instead.
+Krzysztof Kozlowski wrote:
+> On 15/09/2023 12:02, Emil Renner Berthing wrote:
+> > Krzysztof Kozlowski wrote:
+> >> On 15/09/2023 09:25, Wang Chen wrote:
+> >>> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> >>>
+> >>> Add quirk to skip setting the input clock rate for the uarts on the
+> >>> Sophgo SG2042 SoC similar to the StarFive JH7100.
+> >>>
+> >>> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> >>
+> >> Missing SoB.
+> >>
+> >>> ---
+> >>>  drivers/tty/serial/8250/8250_dw.c | 5 +++--
+> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+> >>> index f4cafca1a7da..6c344877a07f 100644
+> >>> --- a/drivers/tty/serial/8250/8250_dw.c
+> >>> +++ b/drivers/tty/serial/8250/8250_dw.c
+> >>> @@ -770,7 +770,7 @@ static const struct dw8250_platform_data dw8250_renesas_rzn1_data = {
+> >>>  	.quirks = DW_UART_QUIRK_IS_DMA_FC,
+> >>>  };
+> >>>
+> >>> -static const struct dw8250_platform_data dw8250_starfive_jh7100_data = {
+> >>> +static const struct dw8250_platform_data dw8250_skip_set_rate_data = {
+> >>
+> >> Why? What is wrong with old name?
+> >>
+> >>>  	.usr_reg = DW_UART_USR,
+> >>>  	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
+> >>>  };
+> >>> @@ -780,7 +780,8 @@ static const struct of_device_id dw8250_of_match[] = {
+> >>>  	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
+> >>>  	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },
+> >>>  	{ .compatible = "renesas,rzn1-uart", .data = &dw8250_renesas_rzn1_data },
+> >>> -	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_starfive_jh7100_data },
+> >>> +	{ .compatible = "sophgo,sg2042-uart", .data = &dw8250_skip_set_rate_data },
+> >>> +	{ .compatible = "starfive,jh7100-uart", .data = &dw8250_skip_set_rate_data },
+> >>
+> >> So devices are fully compatible? Then use compatibility and drop this
+> >> patch entirely.
+> >
+> > I'm fine with this, but these are two different companies and SoCs that just
+> > happens to have both implemented the Designware UART with an inflexible input
+> > clock. So if fx. a real quirk is found on the JH7110 then we'd need to either
+> > change the compatible on an unrelated SoC or change compatible on the JH7110 to
+>
+> Wait, why? The compatible is still there, so you just add here proper
+> entry, if ever needed.
 
-It was discovered when creating a sha1/sha256 checksum of a 2Gb file by
-using kcapi-tools because it would take significantly longer than creating
-a sha512 checksum of the same file. trace-cmd showed that for sha1/256 the
-generic module was used, whereas for sha512 the optimized module was used
-instead.
+Sorry, I messed up my example by writing JH7110 where I meant JH7100
 
-Add module aliases() for these x86 optimized crypto modules based on CPU
-feature bits so udev gets a chance to load them later in the boot
-process. This resulted in ~3x decrease in the real-time execution of
-kcapi-dsg.
+> > something like "starfive,jh7100-uart-with-quirk" and "starfive,jh7100-uart" will
+> > forever be a quirky way to spell "dw8250 with inflexible input clock".
+> > Is that how device trees are supposed to work?
+>
+> I don't get this part. But anyway if the blocks are really designed or
+> done independently and there is no shared part, except the DWC block,
+> then indeed the compatibility might be just a coincidence...
+>
 
-Fix is inspired from commit
-aa031b8f702e ("crypto: x86/sha512 - load based on CPU features")
-where a similar fix was done for sha512.
+It is. Sophgo and StarFive are not the same company. Sophgo are using RISC-V
+cores from T-Head and StarFive are using cores from SiFive. They just happen to
+both use the Designware UART in the same way.
 
-Cc: stable@vger.kernel.org # 5.15+
-Suggested-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Suggested-by: Julian Andres Klode <julian.klode@canonical.com>
-Signed-off-by: Roxana Nicolescu <roxana.nicolescu@canonical.com>
----
- arch/x86/crypto/sha1_ssse3_glue.c   | 12 ++++++++++++
- arch/x86/crypto/sha256_ssse3_glue.c | 12 ++++++++++++
- 2 files changed, 24 insertions(+)
-
-diff --git a/arch/x86/crypto/sha1_ssse3_glue.c b/arch/x86/crypto/sha1_ssse3_glue.c
-index 44340a1139e0..959afa705e95 100644
---- a/arch/x86/crypto/sha1_ssse3_glue.c
-+++ b/arch/x86/crypto/sha1_ssse3_glue.c
-@@ -24,8 +24,17 @@
- #include <linux/types.h>
- #include <crypto/sha1.h>
- #include <crypto/sha1_base.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
-+static const struct x86_cpu_id module_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_SSSE3, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
-+
- static int sha1_update(struct shash_desc *desc, const u8 *data,
- 			     unsigned int len, sha1_block_fn *sha1_xform)
- {
-@@ -301,6 +310,9 @@ static inline void unregister_sha1_ni(void) { }
- 
- static int __init sha1_ssse3_mod_init(void)
- {
-+	if (!x86_match_cpu(module_cpu_ids))
-+		return -ENODEV;
-+
- 	if (register_sha1_ssse3())
- 		goto fail;
- 
-diff --git a/arch/x86/crypto/sha256_ssse3_glue.c b/arch/x86/crypto/sha256_ssse3_glue.c
-index 3a5f6be7dbba..d25235f0ccaf 100644
---- a/arch/x86/crypto/sha256_ssse3_glue.c
-+++ b/arch/x86/crypto/sha256_ssse3_glue.c
-@@ -38,11 +38,20 @@
- #include <crypto/sha2.h>
- #include <crypto/sha256_base.h>
- #include <linux/string.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/simd.h>
- 
- asmlinkage void sha256_transform_ssse3(struct sha256_state *state,
- 				       const u8 *data, int blocks);
- 
-+static const struct x86_cpu_id module_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX2, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_AVX, NULL),
-+	X86_MATCH_FEATURE(X86_FEATURE_SSSE3, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, module_cpu_ids);
-+
- static int _sha256_update(struct shash_desc *desc, const u8 *data,
- 			  unsigned int len, sha256_block_fn *sha256_xform)
- {
-@@ -366,6 +375,9 @@ static inline void unregister_sha256_ni(void) { }
- 
- static int __init sha256_ssse3_mod_init(void)
- {
-+	if (!x86_match_cpu(module_cpu_ids))
-+		return -ENODEV;
-+
- 	if (register_sha256_ssse3())
- 		goto fail;
- 
-
-base-commit: aed8aee11130a954356200afa3f1b8753e8a9482
--- 
-2.34.1
-
+/Emil
