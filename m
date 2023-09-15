@@ -2,74 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E667A13FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA317A1400
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjIOCvM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Sep 2023 22:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
+        id S231549AbjIOCxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 22:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjIOCvL (ORCPT
+        with ESMTP id S229548AbjIOCxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 22:51:11 -0400
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F3A269D;
-        Thu, 14 Sep 2023 19:51:06 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7926b7f8636so44483439f.1;
-        Thu, 14 Sep 2023 19:51:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694746266; x=1695351066;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SerwLE5OVRCSsMUALrCrul+Mnyrmcl1kTZ8zMma6b1o=;
-        b=FAKpv2G6HUccpr01sjH4+2qlUxPDER3poXLyVZHpo8Cwmxwm8wF98Rb/BxbM9yBHac
-         OVNezVj9W4A/w3/vCXEyrD2T3FJLELgkpvGV6MMt9F8TPPdTZ/fR1xoJQvCYmqZBMTkw
-         BHES2yVljBmzTms92gPaN4vnQCvrf5cn1aKpyJTf/ZklAvfbqWcehBR0VACAlM8o950I
-         JG7qV/NPItGu88iz8moqLZ2LW9Y1xRmstoCUEcqdZYytYXVlhNRdwnqjsqtZNyO1VRHH
-         mNr6aizBw2bx+oJHGxt4XHfE4nTRPbr2xcqyGS4uOMrczg2/iCe4Wa72QuEEw9Pf6Bqz
-         Te8w==
-X-Gm-Message-State: AOJu0YzdJTNzZvVcj/1TySkGavpH3tJ+vuHfjo3KJdHv7pP6uAiw1tYH
-        xO+BXU0m+6UuNPQ7oYPs+3+G3ZB4QxkAHMPkmQo=
-X-Google-Smtp-Source: AGHT+IEUe8v4V3sEbZQZK3qoizJ7mO2YNsUs9lirdL0XqpRAFuTBJPPN5owc9FGVgcGfqB3vgcnQBzk6VHKxqA8rkVI=
-X-Received: by 2002:a5d:9ac2:0:b0:785:d5d4:9f26 with SMTP id
- x2-20020a5d9ac2000000b00785d5d49f26mr468980ion.9.1694746265984; Thu, 14 Sep
- 2023 19:51:05 -0700 (PDT)
+        Thu, 14 Sep 2023 22:53:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1B726AB;
+        Thu, 14 Sep 2023 19:53:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 095D2C433C8;
+        Fri, 15 Sep 2023 02:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694746379;
+        bh=BMoIA/XytQAickyMtxvDt0cV0B7GH433aHBEMFeeRZA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cI0cRs6qX5hHpd59KhlA3hhK/Qql5/OjdtMEa3olBNhsnYd/e3op+jcl3KLu0BV8w
+         RiEYfVAoYEvsFOzZvj27inW/LGydZnbhhHXGcPjfnz25pHn0jwDd1ILy8UKvbN9zB3
+         OK2C7gXEQnKz3Vr60XXbCjyF8tPWZE+++a5tVe21EWqxU++Ci5bCOlRqQBxQ4vju+w
+         gJq25kZYHVM3a46zVBvfPUAT8vRgQy5n9GUlelf6ALlF6imhHL/rAQnc/UTJ3iv4tG
+         +16xC6MX6g3x/v2SqaDqjBK3e9BuOsJedv6ba6keD2wIfOpwEeZAjRZzjMnjab2s+h
+         5uTX7Yzl3Svog==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] mm/damon: provide pseudo-moving sum based access rate
+Date:   Fri, 15 Sep 2023 02:52:43 +0000
+Message-Id: <20230915025251.72816-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230915072642.74e3c00f@canb.auug.org.au>
-In-Reply-To: <20230915072642.74e3c00f@canb.auug.org.au>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 14 Sep 2023 19:50:54 -0700
-Message-ID: <CAM9d7chQmD2RRazcC+R6SgJtx8OoEEuSS6CkzCuTJAFKy0-TtA@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the perf tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Veronika Molnarova <vmolnaro@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen,
+Changes from RFC
+(https://lore.kernel.org/damon/20230909033711.55794-1-sj@kernel.org/)
+- Rebase on latest mm-unstable
+- Minor wordsmithing of coverletter
 
-On Thu, Sep 14, 2023 at 2:26 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commits
->
->   19d8ab40f89b ("perf test stat+shadow_stat.sh: Add threshold for rounding errors")
->   0c4ded92280b ("perf test lock_contention.sh: Skip test if the number of CPUs is low")
->
-> are missing a Signed-off-by from their author.
+DAMON checks the access to each region for every sampling interval, increase
+the access rate counter of the region, namely nr_accesses, if the access was
+made.  For every aggregation interval, the counter is reset.  The counter is
+exposed to users to be used as a metric showing the relative access rate
+(frequency) of each region.  In other words, DAMON provides access rate of each
+region in every aggregation interval.  The aggregation avoids temporal access
+pattern changes making things confusing.  However, this also makes a few
+DAMON-related operations to unnecessarily need to be aligned to the aggregation
+interval.  This can restrict the flexibility of DAMON applications, especially
+when the aggregation interval is huge.
 
-Thanks for the notice.  As they're recently added, I think I can replace them
-with new commits with s-o-b from the author and force-push.
+To provide the monitoring results in finer-grained timing while keeping
+handling of temporal access pattern change, this patchset implements a
+pseudo-moving sum based access rate metric.  It is pseudo-moving sum because
+strict moving sum implementation would need to keep all values for last time
+window, and that could incur high overhead of there could be arbitrary number
+of values in a time window.  Especially in case of the nr_accesses, since the
+sampling interval and aggregation interval can arbitrarily set and the past
+values should be maintained for every region, it could be risky.  The
+pseudo-moving sum assumes there were no temporal access pattern change in last
+discrete time window to remove the needs for keeping the list of the last time
+window values.  As a result, it beocmes not strict moving sum implementation,
+but provides a reasonable accuracy.
 
-Veronika, can you resend those two commits with your Sign-off?
+Also, it keeps an important property of the moving sum.  That is, the moving
+sum becomes same to discrete-window based sum at the time that aligns to the
+time window.  This means using the pseudo moving sum based nr_accesses makes no
+change to users who shows the value for every aggregation interval.
 
-Thanks,
-Namhyung
+Patches Sequence
+----------------
+
+The sequence of the patches is as follows.  The first four patches are
+for preparation of the change.  The first two (patches 1 and 2)
+implements a helper function for nr_accesses update and eliminate corner
+case that skips use of the function, respectively.  Following two
+(patches 3 and 4) respectively implement the pseudo-moving sum function
+and its simple unit test case.
+
+Two patches for making DAMON to use the pseudo-moving sum follow.  The
+fifthe one (patch 5) introduces a new field for representing the
+pseudo-moving sum-based access rate of each region, and the sixth one
+makes the new representation to actually updated with the pseudo-moving
+sum function.
+
+Last two patches (patches 7 and 8) makes followup fixes for skipping
+unnecessary updates and marking the moving sum function as static,
+respectively.
+
+SeongJae Park (8):
+  mm/damon/core: define and use a dedicated function for region access
+    rate update
+  mm/damon/vaddr: call damon_update_region_access_rate() always
+  mm/damon/core: implement a pseudo-moving sum function
+  mm/damon/core-test: add a unit test for damon_moving_sum()
+  mm/damon/core: introduce nr_accesses_bp
+  mm/damon/core: use pseudo-moving sum for nr_accesses_bp
+  mm/damon/core: skip updating nr_accesses_bp for each aggregation
+    interval
+  mm/damon/core: mark damon_moving_sum() as a static function
+
+ include/linux/damon.h | 16 +++++++++-
+ mm/damon/core-test.h  | 21 ++++++++++++
+ mm/damon/core.c       | 74 +++++++++++++++++++++++++++++++++++++++++++
+ mm/damon/paddr.c      | 11 +++----
+ mm/damon/vaddr.c      | 22 +++++++------
+ 5 files changed, 128 insertions(+), 16 deletions(-)
+
+
+base-commit: a5b7405a0eaa74d23547ede9c3820f01ee0a2c13
+-- 
+2.25.1
+
