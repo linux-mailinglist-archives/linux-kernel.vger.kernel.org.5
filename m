@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1213F7A1D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E3C7A1D7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbjIOLdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        id S234291AbjIOLdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233695AbjIOLdP (ORCPT
+        with ESMTP id S233213AbjIOLdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:33:15 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44574CC6;
-        Fri, 15 Sep 2023 04:33:10 -0700 (PDT)
-Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38FBWXI2019756;
-        Fri, 15 Sep 2023 20:32:33 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
- Fri, 15 Sep 2023 20:32:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38FBWW8A019752
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 15 Sep 2023 20:32:32 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
-Date:   Fri, 15 Sep 2023 20:32:32 +0900
+        Fri, 15 Sep 2023 07:33:04 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F81D1AB;
+        Fri, 15 Sep 2023 04:32:59 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+        id B273B212BE71; Fri, 15 Sep 2023 04:32:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B273B212BE71
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1694777578;
+        bh=Dtj/ryT9PtzyNAYJFW0neqg88SKiucgUubfUdZkU8WU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tl/KAqnpHbzC445uggyxkJDlewAN0SZy8jILuUKI9Tfcb+iGNUUMqGrZyVwD3w56K
+         Q7XCtUBZmJ/KZaY0vpk7ZaTlHBRi0jMqf/0mRUWM9WeAxCmsYu/SgllWs1O7ZNOkMd
+         SHipndaxshC+g22TcXN4EYCPMwSesCsUvtZBDoBQ=
+Date:   Fri, 15 Sep 2023 04:32:58 -0700
+From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To:     Mathias Krause <minipli@grsecurity.net>
+Cc:     linux-hyperv@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] x86/hyperv/vtl: Replace real_mode_header only under
+ Hyper-V
+Message-ID: <20230915113258.GA24381@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20230908102610.1039767-1-minipli@grsecurity.net>
+ <20230908150224.GA3196@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ca1a5950-9092-6caf-471c-ebda623173e5@grsecurity.net>
+ <20230913052714.GA29112@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <92c52af3-085e-8467-88bf-da4fbc56eeaa@grsecurity.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
-Content-Language: en-US
-To:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
-        linux-security-module@vger.kernel.org
-Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, stephen.smalley.work@gmail.com,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        mic@digikod.net
-References: <20230912205658.3432-1-casey@schaufler-ca.com>
- <20230912205658.3432-2-casey@schaufler-ca.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20230912205658.3432-2-casey@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92c52af3-085e-8467-88bf-da4fbc56eeaa@grsecurity.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/09/13 5:56, Casey Schaufler wrote:
-> Create a struct lsm_id to contain identifying information about Linux
-> Security Modules (LSMs). At inception this contains the name of the
-> module and an identifier associated with the security module.  Change
-> the security_add_hooks() interface to use this structure.  Change the
-> individual modules to maintain their own struct lsm_id and pass it to
-> security_add_hooks().
-> 
-> The values are for LSM identifiers are defined in a new UAPI
-> header file linux/lsm.h. Each existing LSM has been updated to
-> include it's LSMID in the lsm_id.
-> 
-> The LSM ID values are sequential, with the oldest module
-> LSM_ID_CAPABILITY being the lowest value and the existing modules
-> numbered in the order they were included in the main line kernel.
-> This is an arbitrary convention for assigning the values, but
-> none better presents itself. The value 0 is defined as being invalid.
-> The values 1-99 are reserved for any special case uses which may
-> arise in the future. This may include attributes of the LSM
-> infrastructure itself, possibly related to namespacing or network
-> attribute management. A special range is identified for such attributes
-> to help reduce confusion for developers unfamiliar with LSMs.
-> 
-> LSM attribute values are defined for the attributes presented by
-> modules that are available today. As with the LSM IDs, The value 0
-> is defined as being invalid. The values 1-99 are reserved for any
-> special case uses which may arise in the future.
-> 
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: linux-security-module <linux-security-module@vger.kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Serge Hallyn <serge@hallyn.com>
-> Reviewed-by: Mickael Salaun <mic@digikod.net>
-> Reviewed-by: John Johansen <john.johansen@canonical.com>
+On Fri, Sep 15, 2023 at 09:06:15AM +0200, Mathias Krause wrote:
+> On 13.09.23 07:27, Saurabh Singh Sengar wrote:
+> > On Mon, Sep 11, 2023 at 10:00:59AM +0200, Mathias Krause wrote:
+> >> On 08.09.23 17:02, Saurabh Singh Sengar wrote:
+> >>> On Fri, Sep 08, 2023 at 12:26:10PM +0200, Mathias Krause wrote:
+> >>>> Booting a CONFIG_HYPERV_VTL_MODE=y enabled kernel on bare metal or a
+> >>>> non-Hyper-V hypervisor leads to serve memory corruption as
+> >>>
+> >>> FWIW, CONFIG_HYPERV_VTL_MODE is not expected to be enabled for non VTL
+> >>> platforms.
 
-Nacked-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+<snip>
 
-https://lkml.kernel.org/r/4a6b6e2c-9872-4d4c-e42e-4ff0fb79f3ae@I-love.SAKURA.ne.jp
+> 
+> Well, if you want to prevent people from using it, make it depend on
+> BROKEN, because that's what it is. All the other hypervisor support in
+> the kernel (Xen, VMware, KVM, ACRN, Jailhouse, even plain Hyper-V) can
+> perfectly cope with getting booted on a different hypervisor or bare
+> metal. Why is Hyper-V's VTL mode such a special snow flake that it has
+> to cause random memory corruption and, in turn, crash the kernel with
+> spectacular (and undebugable) fireworks if it's not booted under Hyper-V?
 
+'BROKEN' is certainly not the right choice here. If it is used on the
+correct platform as it is designed to be nothing is broken.
+
+The default option for CONFIG_HYPERV_VTL_MODE is set to 'N', there is
+sufficient documentation for it as well. I agree there can be cases where
+people can still end up enabling it, for that EXPERT is a reasonable
+solution.
+
+- Saurabh
+
+
+
+> 
+> Thanks,
+> Mathias
