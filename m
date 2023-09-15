@@ -2,97 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A4D7A175D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0167A1760
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjIOH1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        id S230506AbjIOH20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjIOH1o (ORCPT
+        with ESMTP id S232251AbjIOH2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:27:44 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3DF30F2;
-        Fri, 15 Sep 2023 00:27:05 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso14319265ad.1;
-        Fri, 15 Sep 2023 00:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694762824; x=1695367624; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JjZ5p6sECHH5hqVMsjk72FLLIZN3XyOMXABaFLbFiJ8=;
-        b=KlA2Wq1cQiPQK/VawbjFWMVbeztX019C3U8/29+wnlBvtYHM/Xspours/cRhkSI9Vg
-         Sh1p/NH3G9+AULYm/QP1U9riU9WvldxY7IXpJ2vSVcudTzZd2RG6mmKb1WLOHIS7GRGU
-         FtT1c5E3O0ltuQTvxX7xCw4MVfkDZBn0qTdTrt3tIN5QGAsB0mFPOdBhu+pfl/0CCFRk
-         PN7kMFXy4BTAN1FwiPs8aXkzPd8AEGpvvrb452QnnS6qXXYQ5K6q0hTRPTL4+X8Qg4Kx
-         ncelM205Y/Pl4cpDwhxVhyYMpAD2tEZjQ5HZ1F8NOsL82R23S2rG3Xb+a6PQyd7NzV+p
-         YZAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694762824; x=1695367624;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JjZ5p6sECHH5hqVMsjk72FLLIZN3XyOMXABaFLbFiJ8=;
-        b=g5bO0m7NVH6+6OEvJJoTTMbWrWSsxOhhN/XgGEZCkWn9zBX8n38uc0B2G07YmJjURr
-         05SJ6gecWuyXyvkTJnCHhpI3M2AgPObU2EZ4Dls5YJTcjS9TdREIlnB2fDovyzZDfSIu
-         M6t4HcyADu463c4fYvBBpGtTbBqgjFjW9y0XwzG8MLELk6qW9EvQKvGmBpJPGgCe7UcA
-         krdqhZ2Tre2bJRZtLP8UmxkRgHhrk2387AX0fzhxtYse0nSDMiqJAmSJ+I16+OwV6sZM
-         cKCr1WX0C0p6FKeaShSlaKY5ARkroXjqyTeFWmqrZXY9gXQVT7pJQ/vWfw+qEH4PguMq
-         LzHA==
-X-Gm-Message-State: AOJu0YxaQ+EainCI3czUveBmG1BVMf83VDCXrD1ZmDYDitkBRSS5Y7Ko
-        plS1Tr7i73Rjd91JCDwnJ1I=
-X-Google-Smtp-Source: AGHT+IECzMqNl3d2ZZIy7/6r98qWTBpjr7wsj1gzpMfTrN07Rf3lIiwbg+FaRYaoR2DjxlC43Ef4zQ==
-X-Received: by 2002:a17:903:22cd:b0:1c3:7628:fcb3 with SMTP id y13-20020a17090322cd00b001c37628fcb3mr873796plg.47.1694762824624;
-        Fri, 15 Sep 2023 00:27:04 -0700 (PDT)
-Received: from localhost.localdomain ([222.95.63.58])
-        by smtp.gmail.com with ESMTPSA id k6-20020a170902694600b001b801044466sm2761928plt.114.2023.09.15.00.26.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 00:27:04 -0700 (PDT)
-From:   Wang Chen <unicornxw@gmail.com>
-X-Google-Original-From: Wang Chen <wangchen20@iscas.ac.cn>
-To:     linux-riscv@lists.infradead.org, conor@kernel.org,
-        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>
-Subject: [PATCH 12/12] riscv: defconfig: enable SOPHGO SoC
-Date:   Fri, 15 Sep 2023 15:26:53 +0800
-Message-Id: <20230915072653.118448-1-wangchen20@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 15 Sep 2023 03:28:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC861FD2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:27:55 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1721B6607326;
+        Fri, 15 Sep 2023 08:27:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694762873;
+        bh=YMYjtrrkf8T9IjXqAxdfDX4QRVZqiwOsrCaZpTx70xg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ToXMSRFiOqX74YLFMRGj6dsDbWl7RvH/a5lC+ySzYZPEgPmEAxRjkn5nafDVeyFoS
+         /tmOKxFF3h/4iHcLnytcSrh9Yk+nXka8vSaM7fjv+x5q9ZE7F15Rgt5XJioNHjIUc1
+         gC3vrHXNDfoqRJ3h5XHw9cS+GnHCn9IyzPzSGTAUINgmJNrZx7xf0e8VxbrApbP1xy
+         SO8GkscB8VV79QVdopjmWE0Ney+pUN97ptNBp8m5acEG5UateTRpHOhRuqtNKeOYFU
+         +OKmaQr/Yfs80o9d9R3zWa+Cv63jc4oHlBTaN51v3B1RaPAsPUX50LjfIExOCt8OtM
+         5XI/RVmAnwwZA==
+Date:   Fri, 15 Sep 2023 09:27:50 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v17 12/18] drm/shmem-helper: Prepare
+ drm_gem_shmem_free() to shrinker addition
+Message-ID: <20230915092750.17e88b23@collabora.com>
+In-Reply-To: <20230914232721.408581-13-dmitry.osipenko@collabora.com>
+References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
+        <20230914232721.408581-13-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable SOPHGO SoC config in defconfig to allow the default
-upstream kernel to boot on Milk-V Pioneer board.
+On Fri, 15 Sep 2023 02:27:15 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
----
- arch/riscv/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> Prepare drm_gem_shmem_free() to addition of memory shrinker support
+> to drm-shmem by adding and using variant of put_pages() that doesn't
+> touch reservation lock. Reservation shouldn't be touched because lockdep
+> will trigger a bogus warning about locking contention with fs_reclaim
+> code paths that can't happen during the time when GEM is freed and
+> lockdep doesn't know about that.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 55 +++++++++++++++++---------
+>  1 file changed, 37 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 8a8eab4d0332..4959f51b647a 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -128,6 +128,41 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
+>  
+> +static void
+> +__drm_gem_shmem_release_pages(struct drm_gem_shmem_object *shmem)
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index ab86ec3b9eab..bf737cfa1d2c 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -32,6 +32,7 @@ CONFIG_SOC_SIFIVE=y
- CONFIG_SOC_STARFIVE=y
- CONFIG_ARCH_SUNXI=y
- CONFIG_SOC_VIRT=y
-+CONFIG_ARCH_SOPHGO=y
- CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PM=y
--- 
-2.25.1
+Could we find more descriptive names to replace those __ prefixes?
+drm_gem_shmem_free_pages(), drm_gem_shmem_drop_pages()?
+
+> +{
+> +	struct drm_gem_object *obj = &shmem->base;
+> +
+> +#ifdef CONFIG_X86
+> +	if (shmem->map_wc)
+> +		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> +#endif
+> +
+> +	drm_gem_put_pages(obj, shmem->pages,
+> +			  shmem->pages_mark_dirty_on_put,
+> +			  shmem->pages_mark_accessed_on_put);
+> +	shmem->pages = NULL;
+> +}
+> +
+> +static void
+> +__drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem)
+
+Maybe drm_gem_shmem_put_pages_no_lock_check()? But honestly, I'm not
+sure we want to make it a function since it's only going to be needed in
+drm_gem_shmem_free(). I think we can just inline
+
+	if (refcount_dec_and_test(&shmem->pages_use_count))
+		__drm_gem_shmem_release_pages(shmem);
+
+there.
+
+> +{
+> +	/*
+> +	 * Destroying the object is a special case.  Acquiring the obj
+> +	 * lock in drm_gem_shmem_put_pages_locked() can cause a locking
+> +	 * order inversion between reservation_ww_class_mutex and fs_reclaim
+> +	 * when called from drm_gem_shmem_free().
+> +	 *
+> +	 * This deadlock is not actually possible, because no one should
+> +	 * be already holding the lock when drm_gem_shmem_free() is called.
+> +	 * Unfortunately lockdep is not aware of this detail.  So when the
+> +	 * refcount drops to zero, make sure that the reservation lock
+> +	 * isn't touched here.
+> +	 */
+> +	if (refcount_dec_and_test(&shmem->pages_use_count))
+> +		__drm_gem_shmem_release_pages(shmem);
+> +}
+> +
+>  /**
+>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
+>   * @shmem: shmem GEM object to free
+> @@ -142,8 +177,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  	if (obj->import_attach) {
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>  	} else {
+> -		dma_resv_lock(shmem->base.resv, NULL);
+> -
+>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+>  
+>  		if (shmem->sgt) {
+> @@ -153,11 +186,9 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  			kfree(shmem->sgt);
+>  		}
+>  		if (shmem->pages)
+> -			drm_gem_shmem_put_pages_locked(shmem);
+> +			__drm_gem_shmem_put_pages(shmem);
+>  
+>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+> -
+> -		dma_resv_unlock(shmem->base.resv);
+>  	}
+>  
+>  	drm_gem_object_release(obj);
+> @@ -207,21 +238,9 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
+>   */
+>  void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+>  {
+> -	struct drm_gem_object *obj = &shmem->base;
+> -
+>  	dma_resv_assert_held(shmem->base.resv);
+>  
+> -	if (refcount_dec_and_test(&shmem->pages_use_count)) {
+> -#ifdef CONFIG_X86
+> -		if (shmem->map_wc)
+> -			set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> -#endif
+> -
+> -		drm_gem_put_pages(obj, shmem->pages,
+> -				  shmem->pages_mark_dirty_on_put,
+> -				  shmem->pages_mark_accessed_on_put);
+> -		shmem->pages = NULL;
+> -	}
+> +	__drm_gem_shmem_put_pages(shmem);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
+>  
 
