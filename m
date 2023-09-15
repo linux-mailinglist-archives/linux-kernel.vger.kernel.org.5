@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A827A272F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515497A2744
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236870AbjIOT3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
+        id S236826AbjIOTgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236954AbjIOT3X (ORCPT
+        with ESMTP id S237025AbjIOTf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:29:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A89A18D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:29:18 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52a39a1c4d5so2981058a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694806155; x=1695410955; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o5LEUqCHPCnrv8BOdK+xwDxdUDvpSxeP2kE2OxD9W0E=;
-        b=a+5BIW5sHZewITQvD/isc5fdLk2eoN496uxsmlcWxYI3vL+iA7nfcxhz4Ys+U9aUZI
-         fZ23qHybxz0Iah3QNX7AlBxhEgNis8LW2zFvIMrnGtRNCtnfuwNyLpIzKH5jCC3b9PHS
-         4I1/DWJz/urGtyhnnvVRXEjcIdpoYRcch3lx0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694806155; x=1695410955;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o5LEUqCHPCnrv8BOdK+xwDxdUDvpSxeP2kE2OxD9W0E=;
-        b=KhUsviIjyV1IzrfSqVDbPgzjnEYVR3ntJqWSbizDgoKp/jQmdCJEfQrzSWH5vGh92e
-         XfFUH4mnEqIDFAus3YK8d6b1iIooT1xd77bKVeWcibwi10WET+jehLwHgp6KGI0tf+IC
-         jOYWgPcX/dmRTciF8WF2O1Z/4a+XMt4Ef9BD8roO/OBumkHh0lGrFzwoQBiv3Jg6wi83
-         Zwpmh/Ig3mo0mZCp696goFYO+IcxZtkX74UXI8CiyEgs+LGLTxnvR8p81PIfO+9SK9+d
-         2x/LgZThYU+ONuHzoStrTp/U0DTyymRfc7ykN4wHn7qsPkSFbzuphsQJchJdQV9WU7Hz
-         Q+bg==
-X-Gm-Message-State: AOJu0Yzy02K6gtLSOM2S94GqPzcbn8VlY+pJsLCrfe9bgoASVTArp9s7
-        c8Pru9ku6WQkfiqugd/TaDSZ46oOIZyYlbFL4FYqGQLH
-X-Google-Smtp-Source: AGHT+IEq6+NcqKHpaYxhjiTQfgAuRpHn1PeosS5vUFMLT93sCjO0Guw989s2lfXP8ScWP6xJoFIKdA==
-X-Received: by 2002:aa7:ca47:0:b0:51d:95f2:ee76 with SMTP id j7-20020aa7ca47000000b0051d95f2ee76mr2158358edt.27.1694806155531;
-        Fri, 15 Sep 2023 12:29:15 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id fg5-20020a056402548500b00530aae2d5bfsm471523edb.9.2023.09.15.12.29.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 12:29:14 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so2978874a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:29:14 -0700 (PDT)
-X-Received: by 2002:aa7:c6d9:0:b0:52b:d169:b377 with SMTP id
- b25-20020aa7c6d9000000b0052bd169b377mr2037149eds.6.1694806154510; Fri, 15 Sep
- 2023 12:29:14 -0700 (PDT)
+        Fri, 15 Sep 2023 15:35:56 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C811BD3;
+        Fri, 15 Sep 2023 12:35:50 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 6BC05120006;
+        Fri, 15 Sep 2023 22:35:49 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6BC05120006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694806549;
+        bh=EoVRfIycVq5CUGfnsCjJEvjbWmLF3KZCRHTlIU2ad1c=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=sKafJcg33wiPmnYgdgs/37KbtxssDPZT8snLLUyGWV6qQlRjtm26Jq7J72Dl5S5Es
+         VM/Kd5ZF3zZe2YQuqv9wfBLduqClKz5Q5fB0HqHdPwXWbWDq1RKiUlPWq1OnHZR/6b
+         Ny2CsL/cFGUkyHcXjovgZloL7udrHky5zOWV+bm8oSLsAvM6UFWc0akTK47JsO24Ls
+         a7wH8s6rQzkdw+7K2D4yiDcPPE8Y8kkvlzJX8EYMbSJaIShukRymCFs1sIVFt/uWk8
+         Ga5ts0oR5QPLWYP9PfMGNuoBUNZQCw88OBMzEFPha+/NWANPMjLlRMx/S4L7x0c5l+
+         0v3t4anhgYrdw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 15 Sep 2023 22:35:49 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 15 Sep 2023 22:35:49 +0300
+Message-ID: <97ea5def-d82f-9f8b-fb45-8b37c3d96cb9@salutedevices.com>
+Date:   Fri, 15 Sep 2023 22:29:06 +0300
 MIME-Version: 1.0
-References: <20230913192905.0a92bcab@gandalf.local.home>
-In-Reply-To: <20230913192905.0a92bcab@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 12:28:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whAkgy10YVwjQGn1AO=1ZFc193ujvMXwmDOJAc=Jaeg5A@mail.gmail.com>
-Message-ID: <CAHk-=whAkgy10YVwjQGn1AO=1ZFc193ujvMXwmDOJAc=Jaeg5A@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Add eventfs file to help with debugging any
- more issues
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next 5/5] vsock/test: track bytes in MSG_PEEK test for
+ SOCK_SEQPACKET
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>, <netdev@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>, <oxffffaa@gmail.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+References: <20230915121452.87192-1-sgarzare@redhat.com>
+ <20230915121452.87192-6-sgarzare@redhat.com>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20230915121452.87192-6-sgarzare@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179903 [Sep 15 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/15 17:43:00 #21898246
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,17 +85,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sept 2023 at 16:28, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> tracing: Add eventfs file to help with debugging any more issues
->
-> While debugging the eventfs dynamic file creation issues, creating a file
-> in tracefs that exposed what dentries that were created along with their ref
-> counts proved invaluable.
+Small remark on 'Subject' - this is not MSG_PEEK test, it is test for sk_buff merging.
 
-Honestly, this is neither a bug-fix, nor does it seem to make any
-sense at all in the main tree.
+Considering that:
 
-This really feels like a "temporary debug patch for tracing developers".
+Reviewed-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
 
-              Linus
+Thanks, Arseniy
+
+On 15.09.2023 15:14, Stefano Garzarella wrote:
+> The test was a bit complicated to read.
+> Added variables to keep track of the bytes read and to be read
+> in each step. Also some comments.
+> 
+> The test is unchanged.
+> 
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>  tools/testing/vsock/vsock_test.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+> index b18acbaf92e2..5743dcae2350 100644
+> --- a/tools/testing/vsock/vsock_test.c
+> +++ b/tools/testing/vsock/vsock_test.c
+> @@ -1002,6 +1002,7 @@ static void test_stream_virtio_skb_merge_client(const struct test_opts *opts)
+>  
+>  static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+>  {
+> +	size_t read = 0, to_read;
+>  	unsigned char buf[64];
+>  	int fd;
+>  
+> @@ -1014,14 +1015,21 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
+>  	control_expectln("SEND0");
+>  
+>  	/* Read skbuff partially. */
+> -	recv_buf(fd, buf, 2, 0, 2);
+> +	to_read = 2;
+> +	recv_buf(fd, buf + read, to_read, 0, to_read);
+> +	read += to_read;
+>  
+>  	control_writeln("REPLY0");
+>  	control_expectln("SEND1");
+>  
+> -	recv_buf(fd, buf + 2, 8, 0, 8);
+> +	/* Read the rest of both buffers */
+> +	to_read = strlen(HELLO_STR WORLD_STR) - read;
+> +	recv_buf(fd, buf + read, to_read, 0, to_read);
+> +	read += to_read;
+>  
+> -	recv_buf(fd, buf, sizeof(buf) - 8 - 2, MSG_DONTWAIT, -EAGAIN);
+> +	/* No more bytes should be there */
+> +	to_read = sizeof(buf) - read;
+> +	recv_buf(fd, buf + read, to_read, MSG_DONTWAIT, -EAGAIN);
+>  
+>  	if (memcmp(buf, HELLO_STR WORLD_STR, strlen(HELLO_STR WORLD_STR))) {
+>  		fprintf(stderr, "pattern mismatch\n");
