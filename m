@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B0B7A1CAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A73F7A1CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbjIOKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S232404AbjIOKtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbjIOKrN (ORCPT
+        with ESMTP id S229646AbjIOKs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:47:13 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68BD118
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:47:07 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so260140166b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694774826; x=1695379626; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K/o4N+rJdDvPOkHZP4rGeji09Be+GMTp3ncXx+q6uC0=;
-        b=icG5iIDZbs+c41vEqRqwJCd2yZhBnHjuWRpAGvFzCVGt1LybTXZIJnG5IyVWedUCsu
-         A3l1kbET70LN0DcPv7u97MkPJ0KjmsN1D92X47rb49tnmWT37ByXSlP1BbtSM11JInTX
-         MF1K6rnHPcFuaOHkHVxUNQBe8PhUFCL6L/HL0cCcJGshExeIFsP95CeWS/Fqv5FClh2S
-         fIW3/iGywh+JEf9gZ/Z82dEjqNHyuDq4MFTUOssybK8sgixh/1G1b0wbGL82rK5rwDcg
-         NqVmKnqSct8EXVgxB7XGHWt4/5EFN3boSG/cVCx8mDnWQUQi8w4gElQCiT7E8HrqZL0k
-         vUdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774826; x=1695379626;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K/o4N+rJdDvPOkHZP4rGeji09Be+GMTp3ncXx+q6uC0=;
-        b=LMFjoEzyWV4StELaQlUa0EYjdrwdrM4M4wimBkIQYf/rHKH8m3j6EvfAW6PsvpGCOx
-         2bd1BHS+caV4CiSWQPTFCY8VCC8cam9DyoWrdGFtSXWVLmNQmTzIp4A+WAyDPFP5WZeo
-         LCy6Kx8mTP18m3LPmlCi/3tnpIgvehqT1T/gqv+ljWU6p+pBPrddL/mH1eQO2ugdYKrY
-         SBWH8rDQVst7ng0k2dwbqczwNwXT1t+2l7o5Ves25vWrq/X904UvtbQQ4yjx0DL++5qa
-         zNFAmeqkz3Dz4HOCdnMf4WOGWwjLV2i3ziFAfLHP14u6os2U6OEhHCfWTAwKRiCthqtE
-         zeGA==
-X-Gm-Message-State: AOJu0Ywl6of58Ig2PlbFrUmS5u0Ou1O4kQP6U7pv8wmZBxEVj1Xjpg+a
-        gALD+dAEbcNztC2xQJ/sRfbXqw==
-X-Google-Smtp-Source: AGHT+IHVOd/ddryjn2v0lhERAAcKk6mQCZCf4sdk9KrpW6+CUqWi6F4ZfilyAWQn9jSB9zOV0NnX8g==
-X-Received: by 2002:a17:906:311b:b0:9a1:c352:b6a5 with SMTP id 27-20020a170906311b00b009a1c352b6a5mr1069106ejx.69.1694774826009;
-        Fri, 15 Sep 2023 03:47:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id a18-20020a170906191200b0098e42bef736sm2224043eje.176.2023.09.15.03.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:47:05 -0700 (PDT)
-Message-ID: <d334267f-38dd-bf70-4246-263de1a4747f@linaro.org>
-Date:   Fri, 15 Sep 2023 12:47:03 +0200
+        Fri, 15 Sep 2023 06:48:59 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845ABC1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694774933; x=1726310933;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kOVTLNWDqfOVwrIwey7uiqf1pGWo1Bl1GlH5YpX1HbE=;
+  b=UbXiAMJ05YkaFuo2KmAeR4vBljvuoW17qjYGmBmLWyPKBwMaYYiI83r2
+   iwsMxpxF3aJztaevlTtzm9P5ShTzutfWmsDo+4mFbP0uw1/hK9rHPCfVF
+   NPFIBFCRnSO8Z+Cpt9cABquQMVt8EY8egQZ+KkXlR+an+zTj8bbEkAKlp
+   IWcOVuWfrFBg4QYYe/AELzxrHQv3JmfAaJdIFgq4Wvk9eTAF8FEf9yK/w
+   W8sG5/fM6h9S556yhu5WNUFRxw/58CtfgjKiv1ccHnoZUiwIEqZQ+s4y+
+   4QsMfpsz7iaZ6S9HtG9UDx2dtvzdUGnssbXui6L+tofg8RyZXk1Z4QIc8
+   g==;
+X-CSE-ConnectionGUID: U0ykML+bTMil71KHYckU0A==
+X-CSE-MsgGUID: v+Z4ELqZQaGG6Gasb00Nng==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="scan'208";a="4711949"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Sep 2023 03:48:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 15 Sep 2023 03:48:52 -0700
+Received: from che-lt-i67131.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 15 Sep 2023 03:48:45 -0700
+From:   Manikandan Muralidharan <manikandan.m@microchip.com>
+To:     <sam@ravnborg.org>, <bbrezillon@kernel.org>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <lee@kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <Hari.PrasathGE@microchip.com>,
+        <Balamanikandan.Gunasundar@microchip.com>,
+        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
+        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
+        <Balakrishnan.S@microchip.com>,
+        Manikandan Muralidharan <manikandan.m@microchip.com>
+Subject: [PATCH v5 0/8] Add support for XLCDC to sam9x7 SoC family.
+Date:   Fri, 15 Sep 2023 16:18:41 +0530
+Message-ID: <20230915104849.187146-1-manikandan.m@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 19/42] dt-bindings: spi: Add Cirrus EP93xx
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-19-a1d779dcec10@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915-ep93xx-v4-19-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 10:11, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Add YAML bindings for ep93xx SoC SPI.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
+This patch series aims to add support for XLCDC IP of sam9x7 SoC family
+to the DRM subsystem.XLCDC IP has additional registers and new
+configuration bits compared to the existing register set of HLCDC IP.
+The new compatible string "microchip,sam9x75-xlcdc" is defined for sam9x75
+variant of the sam9x7 SoC family.The is_xlcdc flag under driver data and
+IP specific driver ops helps to differentiate the XLCDC and existing HLCDC
+code within the same driver.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+changes in v5:
+* return value of regmap_read_poll_timeout is checked in failure
+case.
+* HLCDC and XLCDC specific driver functions are now invoked
+using its IP specific driver ops w/o the need of checking is_xlcdc flag.
+* Removed empty spaces and blank lines.
 
-Best regards,
-Krzysztof
+changes in v4:
+* fixed kernel warnings reported by kernel test robot.
+
+changes in v3:
+* Removed de-referencing the value of is_xlcdc flag multiple times in
+a single function.
+* Removed cpu_relax() call when using regmap_read_poll_timeout.
+* Updated xfactor and yfactor equations using shift operators
+* Defined CSC co-efficients in an array for code readability.
+
+changes in v2:
+* Change the driver compatible name from "microchip,sam9x7-xlcdc" to
+"microchip,sam9x75-xlcdc".
+* Move is_xlcdc flag to driver data.
+* Remove unsed Macro definitions.
+* Add co-developed-bys tags
+* Replace regmap_read() with regmap_read_poll_timeout() call
+* Split code into two helpers for code readablitity.
+
+Durai Manickam KR (1):
+  drm: atmel-hlcdc: Define SAM9X7 SoC XLCDC specific registers
+
+Manikandan Muralidharan (7):
+  mfd: atmel-hlcdc: Add compatible for sam9x75 XLCD controller
+  drm: atmel-hlcdc: add flag and driver ops to differentiate XLCDC and
+    HLCDC IP
+  drm: atmel-hlcdc: add LCD controller layer definition for sam9x75
+  drm: atmel_hlcdc: Add support for XLCDC in atmel LCD driver
+  drm: atmel-hlcdc: add DPI mode support for XLCDC
+  drm: atmel-hlcdc: add vertical and horizontal scaling support for
+    XLCDC
+  drm: atmel-hlcdc: add support for DSI output formats
+
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 176 +++++++--
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  | 125 +++++++
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h  | 114 ++++++
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 337 +++++++++++++++---
+ drivers/mfd/atmel-hlcdc.c                     |   1 +
+ include/linux/mfd/atmel-hlcdc.h               |  10 +
+ 6 files changed, 665 insertions(+), 98 deletions(-)
+
+-- 
+2.25.1
 
