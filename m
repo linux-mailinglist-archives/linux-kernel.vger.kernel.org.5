@@ -2,188 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C2E7A216F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3327B7A2187
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbjIOOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        id S235780AbjIOOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbjIOOuh (ORCPT
+        with ESMTP id S235733AbjIOOwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:50:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB65B1FD2;
-        Fri, 15 Sep 2023 07:50:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F84DC433C8;
-        Fri, 15 Sep 2023 14:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694789431;
-        bh=+7a/yilTLV3BMiTCUiFOpBcqKwXaHi/uJzXAg9+YPtQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NwpEnu7H/3Yo77ctlj+KSVShzHRotD5z4emCwm2QBSN0l8eFaqEk5iFeAE/Q7kNwG
-         7QY7O7QpiyMGsgi/21vOWy8FLlOrvw1XbCO5kWdp8sk48gXvhME8PIOhiwahTs4LDg
-         o3PBuISTzKbilibvTjOtXzUfiSkGSkZqHs+dSlQMqbzbpUEOcvzmmMNj1O6DuvLzB/
-         KA3p0HRCYWvMoJHBNYWWh2oGyct8Ygv/p+vhER6EZlg7b1mqUasuBxlW7hixy9Lypv
-         cbjVEqtXAQ/nX+il78lIg2QeF4Hz2M/2XRU+fCmFVlW9FMFkABmw46/VCxZHD+gGC+
-         ZoqKPqnOP27xg==
-Date:   Fri, 15 Sep 2023 15:50:27 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: add MAX31790
-Message-ID: <20230915-quench-left-8fbc1ca3b1da@spud>
-References: <20230915062926.2460502-1-Delphine_CC_Chiu@wiwynn.com>
- <20230915062926.2460502-3-Delphine_CC_Chiu@wiwynn.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j20GgGeCJk1fE9k9"
-Content-Disposition: inline
-In-Reply-To: <20230915062926.2460502-3-Delphine_CC_Chiu@wiwynn.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 10:52:07 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6200B1BE6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:52:02 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5d4a8242so28190937b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694789521; x=1695394321; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxBgjf4cFGqduUhZ9Ofgvxr6N7enlbl7a5N9uijxEC4=;
+        b=lRIoQDzjFLY03ilV7tTmj67bO7QNiEYa0foiClX7X9p0ylZEMBPmxWKJBoM4nbbeaC
+         vrRDd+3t5VnSD1YTU96pFV1FH6p6HEqTMvqLLGqbvQu5BbNhXXfKbfCQ0jzsPhBuX0MA
+         aT3wrYRGS2tI2OqjFufYWBFo7P/8cNYxks4Bd9Gao2CKyDOxkx5O/89C9ZUuhn65zKDd
+         Jobj3xrGpMFT/lr7ImUjFHnIeBw/1y32IWAl2xlk2HOMcZ8ohiXzwmjZKBPWRigFQ71L
+         5CfzYqNdru/FY7KKfD8kQC7RpLw6i8627LZGjLSjabQqCxN8Cv6WfB4gDxJcINAQhBYg
+         lA8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694789521; x=1695394321;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxBgjf4cFGqduUhZ9Ofgvxr6N7enlbl7a5N9uijxEC4=;
+        b=D8q5mhUYPYtS+oP78AN1HBeJAdD1hVxF8kz9ZHwBbRbdad7vnP1VuI5FuYx5ZaTAxL
+         I0rGBGA2CezeLiTvN+oqT1hmsa1uRoUuPPUeJo1ebAYheZ4bGj8pa5N/IM5/VopcAs35
+         Y+wC/XFSA3XVimZFXV7eHwlA8jar4WngVVjSrwnOtVcpkzwFsCbDEoeffLIjpx6h2wCM
+         b61VTumUVzS6KAV3hS+JHpqEoyqSfpdvrmuLMVofAvRE5ltgwBoA2ttPk3lJw2ieiC2A
+         AlxcBBOWRTSe7rJu7O2Hhu6bmo6KtSSaAFBTxPOy8zPTY4BH976EfwLTgZkj4+NtSgDr
+         keKA==
+X-Gm-Message-State: AOJu0YwxfpkL+jc71AlPdk1BT3OWu7/yHj4lgsgl8r4p1/jPPZ3sw8Tm
+        oOX67MGaD/kcmWnWXAV3VDpzZsT4630=
+X-Google-Smtp-Source: AGHT+IF2Ec1htPRQajwMXl2rb+28B3EL6IeFXs5CguJre2yMRWQYZ8onAhbuCs/7FoHHfHQreuCyqW94Rfc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:af28:0:b0:584:3d8f:a425 with SMTP id
+ n40-20020a81af28000000b005843d8fa425mr51269ywh.10.1694789521683; Fri, 15 Sep
+ 2023 07:52:01 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 07:51:59 -0700
+In-Reply-To: <ZQRtpVjXTwjeJ5rI@google.com>
+Mime-Version: 1.0
+References: <cover.1694721045.git.thomas.lendacky@amd.com> <025fd734d35acbbbbca74c4b3ed671a02d4af628.1694721045.git.thomas.lendacky@amd.com>
+ <ZQRtpVjXTwjeJ5rI@google.com>
+Message-ID: <ZQRvjy/NQa3HcKsY@google.com>
+Subject: Re: [PATCH 2/2] KVM: SVM: Do not use user return MSR support for
+ virtualized TSC_AUX
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Babu Moger <babu.moger@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 15, 2023, Sean Christopherson wrote:
+> On Thu, Sep 14, 2023, Tom Lendacky wrote:
+> > When the TSC_AUX MSR is virtualized, the TSC_AUX value is swap type "B"
+> > within the VMSA. This means that the guest value is loaded on VMRUN and
+> > the host value is restored from the host save area on #VMEXIT.
+> > 
+> > Since the value is restored on #VMEXIT, the KVM user return MSR support
+> > for TSC_AUX can be replaced by populating the host save area with current
+> > host value of TSC_AUX. This replaces two WRMSR instructions with a single
+> > RDMSR instruction.
+> > 
+> > Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> > ---
+> >  arch/x86/kvm/svm/sev.c | 14 +++++++++++++-
+> >  arch/x86/kvm/svm/svm.c | 26 ++++++++++++++++----------
+> >  arch/x86/kvm/svm/svm.h |  4 +++-
+> >  3 files changed, 32 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index 565c9de87c6d..1bbaae2fed96 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -2969,6 +2969,7 @@ static void sev_es_init_vmcb_after_set_cpuid(struct vcpu_svm *svm)
+> >  	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX) &&
+> >  	    (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
+> >  	     guest_cpuid_has(vcpu, X86_FEATURE_RDPID))) {
+> > +		svm->v_tsc_aux = true;
+> >  		set_msr_interception(vcpu, svm->msrpm, MSR_TSC_AUX, 1, 1);
+> >  		if (guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
+> > @@ -3071,8 +3072,10 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm)
+> >  					    sev_enc_bit));
+> >  }
+> >  
+> > -void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
+> > +void sev_es_prepare_switch_to_guest(struct vcpu_svm *svm, struct sev_es_save_area *hostsa)
+> >  {
+> > +	u32 msr_hi;
+> > +
+> >  	/*
+> >  	 * All host state for SEV-ES guests is categorized into three swap types
+> >  	 * based on how it is handled by hardware during a world switch:
+> > @@ -3109,6 +3112,15 @@ void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa)
+> >  		hostsa->dr2_addr_mask = amd_get_dr_addr_mask(2);
+> >  		hostsa->dr3_addr_mask = amd_get_dr_addr_mask(3);
+> >  	}
+> > +
+> > +	/*
+> > +	 * If TSC_AUX virtualization is enabled, MSR_TSC_AUX is loaded but NOT
+> > +	 * saved by the CPU (Type-B). If TSC_AUX is not virtualized, the user
+> > +	 * return MSR support takes care of restoring MSR_TSC_AUX. This
+> > +	 * exchanges two WRMSRs for one RDMSR.
+> > +	 */
+> > +	if (svm->v_tsc_aux)
+> > +		rdmsr(MSR_TSC_AUX, hostsa->tsc_aux, msr_hi);
+> 
+> IIUC, when V_TSC_AUX is supported, SEV-ES guests context switch MSR_TSC_AUX
+> regardless of what has been exposed to the guest.  So rather than condition the
+> hostsa->tsc_aux update on guest CPUID, just do it if V_TSC_AUX is supported.
+> 
+> And then to avoid the RDMSR, which is presumably the motivation for checking
+> guest CPUID, grab the host value from user return framework.  The host values
+> are per-CPU, but constant after boot, so the only requirement is that KVM sets
+> up MSR_TSC_AUX in the user return framework.
 
---j20GgGeCJk1fE9k9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Yo,
-
-On Fri, Sep 15, 2023 at 02:29:24PM +0800, Delphine CC Chiu wrote:
-> Add dt-bindings for the MAXIM MAX31790.
->=20
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
-> Changelog:
-> v2 - Add dt-bindings for the MAXIM MAX31790.
-> ---
->  .../bindings/hwmon/maxim,max31790.yaml        | 59 +++++++++++++++++++
->  MAINTAINERS                                   |  6 ++
->  2 files changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max3179=
-0.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml =
-b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
-> new file mode 100644
-> index 000000000000..2bd455b36b3f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/maxim,max31790.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Maxim max31790
-> +
-> +maintainers:
-> +  - Delphine CC Chiu  <Delphine_CC_Chiu@wiwynn.com>
-> +
-> +description: |
-> +  The MAX31790 controls the speeds of up to six fans using
-> +  six independent PWM outputs. The desired fan speeds (or PWM duty cycle=
-s)
-> +  are written through the I2C	interface.
-> +  The outputs drive =E2=80=9C4-wire=E2=80=9D fans directly, or can be us=
-ed to modulate
-> +  the fan=E2=80=99s power terminals using an external pass transistor.
-> +
-> +  Datasheets:
-> +    https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - maxim,max31790
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  pwm-as-tach:
-
-I don't see any other users of this in-tree, so you'd need a vendor
-prefix. That said, I'm once bitten, twice shy about fan related
-properties in hwmon, so I would definitely like Rob to comment on this
-whole binding.
-
-> +    description: |
-> +      There are 6 PWM output channel in MAX31790 that allows to be confi=
-gured
-> +      as a TACH input by setting the Fan Configuration register.
-> +      Config PWM output channels in the array as tachometer inputs.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 6
-> +    items:
-> +      enum: [1, 2, 3, 4, 5, 6]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      pwm@20 {
-> +        compatible =3D "maxim,max31790";
-> +        reg =3D <0x20>;
-> +        pwm-as-tach =3D <2 5>;
-
-This would be <2>, <5>; no?
-
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c8fdd0d03907..97e13b6bf51d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1371,6 +1371,12 @@ F:	Documentation/devicetree/bindings/hwmon/adi,max=
-31760.yaml
->  F:	Documentation/hwmon/max31760.rst
->  F:	drivers/hwmon/max31760.c
-> =20
-> +ANALOG DEVICES INC MAX31790 DRIVER
-> +M:	Delphine CC Chiu  <Delphine_CC_Chiu@wiwynn.com>
-> +S:	Odd Fixes
-
-This is a pretty odd status for something you're newly adding.
-How come it's not going to be maintained?
-
-Thanks,
-Conor.
-
-
---j20GgGeCJk1fE9k9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQRvMwAKCRB4tDGHoIJi
-0i3ZAP98nZfLp3xX8XszvOrnl9Qt3XVP8P1i2pSLZPHZs0B3TAD/XGC0hnOt22Oj
-sm+07JZPIK/YS2QOTChE8LW5bR5NlAM=
-=iyxw
------END PGP SIGNATURE-----
-
---j20GgGeCJk1fE9k9--
+Actually, duh.  The save area is also per-CPU, so just fill hostsa->tsc_aux in
+svm_hardware_setup() and then sev_es_prepare_switch_to_guest() never has to do
+anything.
