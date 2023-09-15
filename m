@@ -2,157 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CDD7A23E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D617A23E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbjIOQs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S234686AbjIOQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbjIOQsG (ORCPT
+        with ESMTP id S235278AbjIOQsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:48:06 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2103.outbound.protection.outlook.com [40.92.22.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE28269D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:47:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BzHJucy/ph+k3Y3zqPE5HdyylF4qLEgf2HxFOG0cNDfwCJ2YoPBEW/hkiOFsXMwYWtC3obd4I46MheoHW8xu+srF2+F9YOyJhFuBHaKrbZvdEWmC48g6+lTQuzEnhgJaHJqC7gcbdbA4ELAe90Fo/sRO6PKrRQ4y1K1QeazQcYKLUJcWrPRgEkpOzq2S/fo8A6vSngn2FXuo48pkizgIWDK/0T6M4NC9IZ0ZrUOgXjlmuweNKD1qmzVOWhqwONDrraCQp1xrKsmOVuVLZlF/rqCEcqtWAi354yHuFc+AO34nPtmEQ4UXGMKOQgz0G3RqTr8D2jrunX9S2AZTFVsggA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CoLp3J16ZXxD3xHs+u2pileZQ3QKrHqSTI27ku9TpcY=;
- b=WcknE7h4mYG+aaAeoJcYSlbzE9Nc1YMfCJFO3oTz1DcITKqZ7Nki6yCcDsZg4xrCNr5774r2lD9/xOw/3KAhpBkJSltYVy4jvbASuJssRcuLwnolnGRB9g3/xGAIF0uWKOTf3nOovspm2foasAXpApkmmLM8DIca0KNgClrerN+S3kgpUylZLWP3Rplu/EO6j3ExJBumQenRb8b7Y6LA069/77LG5kDs5PANawGDw7u0MVpXo+kIx74ojGH70IJMbJ1pOndmqmXhtyc9mbn4MMsDtfi72JpTImaGx9gJ437Tqx0M9T7q9aezuTz1BJPtSHGH5x8XcPQNev0fWb8Jsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CoLp3J16ZXxD3xHs+u2pileZQ3QKrHqSTI27ku9TpcY=;
- b=lLnhb7bafgCpOSs7P6c1vU4B5dq2WVYV4XSAWkFHbmLocnn50gf7Uurs6T06G5Qr/ppj41Gx6vt8P4MUeOgVNTGCWef1mF//XDugrSIeL6yNYmTl4oTad3EnLdkLtcKBiFaWemAghK1hHMB9vwO1tCA781bFcs8KeFePfAzjsAL9eQzrPh0RWoIiuGfmKpNHrI36wQkWLZ1YVG/NpKomIqgwfDDYuI5q8/B/5jvW6/SlZ/vd5jvhLBfVfXmDuelbM/mTO8K3KnIqIKRGJQFXSGklsONleoNGy1tKk+d3LbGODChKrLMF2zUJKfTfbjAvKNMMOI0F3yDevzHIhDZ8Yg==
-Received: from SN6PR06MB5342.namprd06.prod.outlook.com (2603:10b6:805:f9::31)
- by MW5PR06MB9029.namprd06.prod.outlook.com (2603:10b6:303:1ca::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.40; Fri, 15 Sep
- 2023 16:47:51 +0000
-Received: from SN6PR06MB5342.namprd06.prod.outlook.com
- ([fe80::c40c:bbc8:b103:459c]) by SN6PR06MB5342.namprd06.prod.outlook.com
- ([fe80::c40c:bbc8:b103:459c%2]) with mapi id 15.20.6792.021; Fri, 15 Sep 2023
- 16:47:50 +0000
-Date:   Fri, 15 Sep 2023 11:47:46 -0500
-From:   Chris Morgan <macromorgan@hotmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: include/asm-generic/unaligned.h:119:16: sparse: sparse: cast
- truncates bits from constant value (aa01a0 becomes a0)
-Message-ID: <SN6PR06MB5342BF4352A5FF56C119D8FFA5F6A@SN6PR06MB5342.namprd06.prod.outlook.com>
-References: <202309120820.bRjnU9fZ-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309120820.bRjnU9fZ-lkp@intel.com>
-X-TMN:  [BALaEFiZhshs7qahAQbFN8KN0ukGIrJD]
-X-ClientProxiedBy: DS7PR03CA0145.namprd03.prod.outlook.com
- (2603:10b6:5:3b4::30) To SN6PR06MB5342.namprd06.prod.outlook.com
- (2603:10b6:805:f9::31)
-X-Microsoft-Original-Message-ID: <ZQSKsjLNzT2s3gav@wintermute.localhost.fail>
+        Fri, 15 Sep 2023 12:48:45 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE222271C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:48:28 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso39347611fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694796507; x=1695401307; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f48oEfgEOe9ogBfu1uEucT841SwYN2NFGrQaThSx3KU=;
+        b=2cQE2YjAEOZC3zlxhZEtqig0zLQ6M/KpXeJYz3Gq/El+6mTuWGutpCGlU68whKelL3
+         4dn2qXOtD17CgJ1TUeg/W1onVvzm5a7isLkQ8CZ/E0l+C1H8H8A6e1rhPb9Jy/5VoBlu
+         f6+89BSI/MxmqtUAIL8kwlZWZae9LoJQ+OB9f78+M4X2D2M9gh68P0APrsZpAwZHXkPK
+         5hw7CXTAzchSnsmfvaYhQPhPLvsd7BkYOQaIZqtIJ7VN4xypRDhl5wLopX+NrQIFwF14
+         hKaen+dEr5AMAKdnY01RPG6bw9FCMFJfN+yjGKJyO+XBcVmkLNFKkpd0MgWUFmu2yuDm
+         Ufmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694796507; x=1695401307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f48oEfgEOe9ogBfu1uEucT841SwYN2NFGrQaThSx3KU=;
+        b=uJDAiQnUu19C74LV7DvjI1mmRttkIVmWTT4EPlL8LRp77Q3Vu8gTR6xTgscbl8vmys
+         gVon3NHjVaxIu+zvq1db2ynV3nyCKmXlwoBZWgltxjn9bEBg5eUAjynCjJQNWlFRokJm
+         oaV4h+yDsQrKg8xMvUMDFcsPmx4TgixgcsOhvxe303dnigb6NiB4BBapyqquDjTarDiF
+         bVW7atRDx4tj8PT12EvQK/A6TB3bZmIpScuJAFxkQIyoYGrEJYcH+Qnu9ZH/GaDJErG6
+         lpcGh0VJnbH8oUHLzARlX9jxQP0ehYWalPi5ewWdCvRfkmHw6quPIrChUBNewkdow+fH
+         PDjg==
+X-Gm-Message-State: AOJu0YxQBl9WUWLuzP+fwY8fRymZdZUEhzvaSnyLdbAWqwAchnsnQBzA
+        UICi/9wxOlVnnkINKV01rzML/rMh6gU3Gs6J+muzeA==
+X-Google-Smtp-Source: AGHT+IFyBsKuU+fIikkzmfTWGb2MylxPkm9jEpWf6DwpqcUh3gp60JfTnhUQk8RrjTtyx+LcVvhzhU7p33OTxZwfnXA=
+X-Received: by 2002:a05:651c:116:b0:2bd:102c:4161 with SMTP id
+ a22-20020a05651c011600b002bd102c4161mr1948688ljb.43.1694796507080; Fri, 15
+ Sep 2023 09:48:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR06MB5342:EE_|MW5PR06MB9029:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c13a667-fa5d-467d-ccbf-08dbb60b7f25
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m0HsxDd9aXrSTrIDFV3w/ieIWoBgN36kQ7VpzWZkuY88Em+aCX7BffAZ1aO9Ji+xT5wOd6cJgw5vsVm+oZ9NDd0AU+GMKUM20aipwpgeYMczdZW9OLjU8o4V3i+ThzZ4g+8Vo8zzF/rYChKbT6s4iLkKg+Tw1uP6N0AfVmZ0YeEY97snmO0HbqsOU1fQItsFdsDv6tYVjmUndjTvGQ3zujmQ8FymkT51QxKy7st7U6SuvyuqUSrIdEQe9gqUbWdoCkz6WOu7sKKWuOuyrhg6VRoSEMn2U0fqq7WsU8FEOjHa6MJpC1d8I0DtXasFjcNLNsMBO1S4+3AikoV2vK38+xFtmYLRHS65fTMXkyLC0wtnCS20+3O0JwgGcZ1HLOT4RDdC94LfxC4XM9mgqnobczgDfdG8OiQDibvNhHUMMg1FP7hxczS3elaKDby3MvFFyspHSo327i6V2f7xWUqBxZdaks/eBHTApH5ssHS2taMp2Kfts16GzJ6EcRJZRG9XKWbkfTKXA4rMfbkho0Pd8B7FAISKab82GykiWrrufnKPUaZfMMLRR52j+FHSc6kbLpjs4WVhRxAG+44/3Z79N8Me+GR/AF893zp1Y7fvvMs=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Pj10pnmZSGuIfzzyPRAu3sR9FWeFz8BJTeh/QSRg6Mj8fCOYoANy4ypxBEBO?=
- =?us-ascii?Q?eb2wWF1orvDJIey+M/vs5Ger1h+420RUYLGhPaYvwWU5A0QXuKuiVb5P7Wap?=
- =?us-ascii?Q?0GQiD+ZOPR7nd0RFvLRKV2Tjp/4UGbXRKKeLM16sFqwv+apZxoRimMfBosBj?=
- =?us-ascii?Q?8pZYGi4il+79MzVbzCBqP9op77NiLfLdhUkOGk+1DH9/x0km4T5V0StpmgB2?=
- =?us-ascii?Q?UEflq8GnkTipaLJ69CI/MItoEovyo961lcQEx5bqRvUo/3BE9fhvMH53JofN?=
- =?us-ascii?Q?GjAXeCib6Og74xshhQYDP5kSm6PbBkeriZ+IZXgFPNmazKwJpb3idyRp7Ki9?=
- =?us-ascii?Q?P4uarfzEqj9r8PUpbaqBWNVYwJmdnYxzcPH7Mf1Ujv6E4X3oZVjf+UTMsPM7?=
- =?us-ascii?Q?W6nmYEQvTy8Y8xLCPt1gAfu3gSg5b9pAkYweioZKG2oe8VlOmCKYca8hceRf?=
- =?us-ascii?Q?OgH0v32Nb1WBH/w5o4+4nmUAZndHMlovMJvrIqj1ExVN42yEwBcHPJg50DP+?=
- =?us-ascii?Q?r+jrHegChHsJ6s1ZBs5UjFoRgQjU5snCGaZQYD/YNqveR9aG1LONV+K2TjMa?=
- =?us-ascii?Q?V4npPGNPsxwRP6lfrDCyP6uodeSO9QR1n3HRZt2zZ5F/XsOpqSJEW5Zxg/2y?=
- =?us-ascii?Q?MdUo/DICrWH8zhze8X3Fyr+yyWZKjWZOS9JO2frOaXjxjkQnfKWZRaGW2L4z?=
- =?us-ascii?Q?XVPnr4TaqnhhMdTBiJrwYV8q2ZsOwrYXi99o43QldqFXKnyK42jkAUDfjrO3?=
- =?us-ascii?Q?F+e4mhq64XPezlX1RxQ0dxVsmlxh1Y+1aipRKd06nRFbrCj3M47TidRTi9S6?=
- =?us-ascii?Q?VKHrntg539gH5t6QWAxadbWJX/OEJIVYtPke/Ra/YPmUiNoT2ObuBk35DZqN?=
- =?us-ascii?Q?E5CMW3ScK6HVdk6g0/avCpTAtrVWaI23YyFhz9ddwBGQQ2cwjykNKBAd4XIr?=
- =?us-ascii?Q?YijkQWnzuIAkud9guJfmTzquXlYZiFw4niIvpPn6FxKx6Vq4QNh1rNGXlbNO?=
- =?us-ascii?Q?uSLFxHq9i/AFVwLcD6/NxmxuGX9TB2FrGD21ogeAff3fI+2aVGZjsjpBLYVu?=
- =?us-ascii?Q?NIAql3tDX2pEOwVq3qQHqb93vjU/uvgQWykNnDJopzH4ameJY2MDYpwmTdiq?=
- =?us-ascii?Q?aJNAQOrJ8Srfmhn9Mjqd/Wa0y0YyfbP5kSVT56QpFx3Crk4kVa7hysuZEiyA?=
- =?us-ascii?Q?rvWODyK6CuvGWC6KofhizqFy1lFyMNygZkB4Q9lHLTWb06QWhcMnZORVcdM?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-89723.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c13a667-fa5d-467d-ccbf-08dbb60b7f25
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR06MB5342.namprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 16:47:50.3616
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR06MB9029
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818194136.4084400-1-evan@rivosinc.com> <20230818194136.4084400-2-evan@rivosinc.com>
+ <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
+ <CALs-Hsvu7BsK8P0+xeuLmKEqg-q=kQANbf8FkiPGPhwhnSXpmA@mail.gmail.com>
+ <CAMuHMdV594xA1UoTeVixpXm3i5LDFO5cT=dd_iRwWLwvxQctZg@mail.gmail.com>
+ <de95229a14614198894a8ce421c30d94@AcuMS.aculab.com> <CALs-Hstcz3OAxUi80nm+U0R56VBUUPQT=+XMOLpVJsn2ZOcM1A@mail.gmail.com>
+ <172bc43cc2ac45239ec40477d53d263a@AcuMS.aculab.com> <CALs-HsvMfrsPsG2b9imLNOJFH6Xk45G0=UPWGtExePiMKV6+1Q@mail.gmail.com>
+ <abdde70ac5b947508c8c71d72ec4f294@AcuMS.aculab.com>
+In-Reply-To: <abdde70ac5b947508c8c71d72ec4f294@AcuMS.aculab.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Fri, 15 Sep 2023 09:47:51 -0700
+Message-ID: <CALs-HssjGFjRsQTx5TrjS5TXDY+qFcGuctoP6xM-__P98hB9Bg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Simon Hosie <shosie@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andy Chiu <andy.chiu@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 08:46:48AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> commit: 66603243f5283f7f28c795f09e7c2167233df0bd Input: add driver for Hynitron cstxxx touchscreens
-> date:   11 months ago
-> config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230912/202309120820.bRjnU9fZ-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120820.bRjnU9fZ-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309120820.bRjnU9fZ-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
->    drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through arch/x86/include/generated/asm/unaligned.h):
-> >> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (aa01a0 becomes a0)
-> >> include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (aa01 becomes 1)
-> >> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (ab00d0 becomes d0)
-> >> include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (ab00 becomes 0)
-> 
-> vim +119 include/asm-generic/unaligned.h
-> 
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  116  
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  117  static inline void __put_unaligned_le24(const u32 val, u8 *p)
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  118  {
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08 @119  	*p++ = val;
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08 @120  	*p++ = val >> 8;
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  121  	*p++ = val >> 16;
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  122  }
-> 803f4e1eab7a89 Arnd Bergmann 2021-05-08  123  
-> 
-> :::::: The code at line 119 was first introduced by commit
-> :::::: 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63 asm-generic: simplify asm/unaligned.h
-> 
-> :::::: TO: Arnd Bergmann <arnd@arndb.de>
-> :::::: CC: Arnd Bergmann <arnd@arndb.de>
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+On Fri, Sep 15, 2023 at 12:57=E2=80=AFAM David Laight <David.Laight@aculab.=
+com> wrote:
+>
+> From: Evan Green
+> > Sent: 14 September 2023 17:37
+> >
+> > On Thu, Sep 14, 2023 at 8:55=E2=80=AFAM David Laight <David.Laight@acul=
+ab.com> wrote:
+> > >
+> > > From: Evan Green
+> > > > Sent: 14 September 2023 16:01
+> > > >
+> > > > On Thu, Sep 14, 2023 at 1:47=E2=80=AFAM David Laight <David.Laight@=
+aculab.com> wrote:
+> > > > >
+> > > > > From: Geert Uytterhoeven
+> > > > > > Sent: 14 September 2023 08:33
+> > > > > ...
+> > > > > > > >     rzfive:
+> > > > > > > >         cpu0: Ratio of byte access time to unaligned word a=
+ccess is
+> > > > > > > > 1.05, unaligned accesses are fast
+> > > > > > >
+> > > > > > > Hrm, I'm a little surprised to be seeing this number come out=
+ so close
+> > > > > > > to 1. If you reboot a few times, what kind of variance do you=
+ get on
+> > > > > > > this?
+> > > > > >
+> > > > > > Rock-solid at 1.05 (even with increased resolution: 1.05853 on =
+3 tries)
+> > > > >
+> > > > > Would that match zero overhead unless the access crosses a
+> > > > > cache line boundary?
+> > > > > (I can't remember whether the test is using increasing addresses.=
+)
+> > > >
+> > > > Yes, the test does use increasing addresses, it copies across 4 pag=
+es.
+> > > > We start with a warmup, so caching effects beyond L1 are largely no=
+t
+> > > > taken into account.
+> > >
+> > > That seems entirely excessive.
+> > > If you want to avoid data cache issues (which probably do)
+> > > then just repeating a single access would almost certainly
+> > > suffice.
+> > > Repeatedly using a short buffer (say 256 bytes) won't add
+> > > much loop overhead.
+> > > Although you may want to do a test that avoids transfers
+> > > that cross cache line and especially page boundaries.
+> > > Either of those could easily be much slower than a read
+> > > that is entirely within a cache line.
+> >
+> > We won't be faulting on any of these pages, and they should remain in
+> > the TLB, so I don't expect many page boundary specific effects. If
+> > there is a steep penalty for misaligned loads across a cache line,
+> > such that it's worse than doing byte accesses, I want the test results
+> > to be dinged for that.
+>
+> That is an entirely different issue.
+>
+> Are you absolutely certain that the reason 8 byte loads take
+> as long as a 64-bit mis-aligned load isn't because the entire
+> test is limited by L1 cache fills?
 
-I'm afraid I don't understand the error in question. When I call the
-function put_unaligned_le24() I do see that this function then calls
-__put_unaligned_le24() which takes part of the value and does cast
-it as a u8. Is that what this error is about? Just trying to figure
-out the best way to resolve it, sadly I'm not clearly seeing the issue
-so I thought I'd ask.
+Fair question. I hacked up a little code [1] to retry the test at
+several different sizes, as well as printing out the best and worst
+times. I only have one piece of real hardware, the THead C906, which
+has a 32KB L1 D-cache.
 
-Thank you.
-Chris Morgan
+Here are the results at various sizes, starting with the original:
+[    0.047556] cpu0: Ratio of byte access time to unaligned word
+access is 4.35, unaligned accesses are fast
+[    0.047578] EVAN size 0x1f80 word cycles best 69 worst 29e, byte
+cycles best 1c9 worst 3b7
+[    0.071549] cpu0: Ratio of byte access time to unaligned word
+access is 4.29, unaligned accesses are fast
+[    0.071566] EVAN size 0x1000 word cycles best 36 worst 210, byte
+cycles best e8 worst 2b2
+[    0.095540] cpu0: Ratio of byte access time to unaligned word
+access is 4.14, unaligned accesses are fast
+[    0.095556] EVAN size 0x200 word cycles best 7 worst 1d9, byte
+cycles best 1d worst 1d5
+[    0.119539] cpu0: Ratio of byte access time to unaligned word
+access is 5.00, unaligned accesses are fast
+[    0.119555] EVAN size 0x100 word cycles best 3 worst 1a8, byte
+cycles best f worst 1b5
+[    0.143538] cpu0: Ratio of byte access time to unaligned word
+access is 3.50, unaligned accesses are fast
+[    0.143556] EVAN size 0x80 word cycles best 2 worst 1a5, byte
+cycles best 7 worst 1aa
+
+[1] https://pastebin.com/uwwU2CVn
+
+I don't see any cliffs as the numbers get smaller, so it seems to me
+there are no working set issues. Geert, it might be interesting to see
+these same results on the rzfive. The thing that made me uncomfortable
+with the smaller buffer sizes is it starts to bump up against the
+resolution of the timer. Another option would have been to time
+several iterations, but I went with the larger buffer instead as I'd
+hoped it would minimize other overhead like the function calls, branch
+prediction, C loop management, etc.
+
+-Evan
