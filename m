@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B8B7A2147
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC2E7A2146
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbjIOOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235789AbjIOOox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235826AbjIOOox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 15 Sep 2023 10:44:53 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6141BC7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=H8PZLMZCU0PDXbXjCCzMXnQDN3Es4h4xOXOxp4F6e+E=;
-        t=1694789088; x=1695998688; b=ZtV/87QKtQxLhG4H9Mz0AgxT7PP2R4NplvZrYu+YC2zEsRz
-        +Jhfc6OgKf8okjhwk97T5PVoncGOZok/Kf00ioBv7E+os2y11To0j44MQmLDi6SRqjo9fH/AjIuHc
-        M8lFTHrKZHTzO6ouxUv//GBp390qc6l0tcs2oEFyr5QREp9Pbg6mG/MKgWkdksP1tx5gAVdjEohSM
-        YY5cj4zWJvHZEFzvLFw6+ygpxzSvwR8CFwJ1Q9gV5xkop9fwRlYYnzFV6YpiSJjNH5BQa5xGvdYy6
-        T00XqTqUFNjQ2a+IlD8gtbkhTA3Au34TCooRbqm80pLG3QbY60LghLNYzw0swgBg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qhA39-001WIR-0N;
-        Fri, 15 Sep 2023 16:44:03 +0200
-Message-ID: <115822422e97aac5ccd651681d74a2a4ae3cff89.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] x86: Fix build of UML with KASAN
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Date:   Fri, 15 Sep 2023 16:44:01 +0200
-In-Reply-To: <ZQQkthfNuV3dOhZe@gmail.com>
-References: <20230915-uml-kasan-v2-1-ef3f3ff4f144@axis.com>
-         <ZQQkthfNuV3dOhZe@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235789AbjIOOow (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Sep 2023 10:44:52 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 295161BC7;
+        Fri, 15 Sep 2023 07:44:47 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B96E1FB;
+        Fri, 15 Sep 2023 07:45:24 -0700 (PDT)
+Received: from [10.57.94.184] (unknown [10.57.94.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F4253F738;
+        Fri, 15 Sep 2023 07:44:45 -0700 (PDT)
+Message-ID: <03da788f-584b-1be5-2cc3-70a9e57c11ba@arm.com>
+Date:   Fri, 15 Sep 2023 15:44:43 +0100
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v2 3/5] hwtracing: hisi_ptt: Optimize the trace data
+ committing
+To:     Yicong Yang <yangyicong@huawei.com>, mathieu.poirier@linaro.org,
+        jonathan.cameron@huawei.com, linux-kernel@vger.kernel.org
+Cc:     alexander.shishkin@linux.intel.com, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, prime.zeng@hisilicon.com,
+        linuxarm@huawei.com, yangyicong@hisilicon.com, hejunhao3@huawei.com
+References: <20230914112223.27165-1-yangyicong@huawei.com>
+ <20230914112223.27165-4-yangyicong@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230914112223.27165-4-yangyicong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-15 at 11:32 +0200, Ingo Molnar wrote:
->=20
-> >  ld: mm/kasan/shadow.o: in function `memset':
-> >  shadow.c:(.text+0x40): multiple definition of `memset';
-> >  arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
-> >  ld: mm/kasan/shadow.o: in function `memmove':
-> >  shadow.c:(.text+0x90): multiple definition of `memmove';
-> >  arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
-> >  ld: mm/kasan/shadow.o: in function `memcpy':
-> >  shadow.c:(.text+0x110): multiple definition of `memcpy';
-> >  arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
->=20
-> So the breakage was ~9 months ago, and apparently nobody build-tested UML=
-?
+On 14/09/2023 12:22, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> Currently during the PTT trace, we'll only commit the data
+> to the perf core when its full, which means after 4 interrupts
+> and totally 16MiB data while the AUX buffer is 16MiB length.
+> Then the userspace gets notified and handle the data. The driver
+> cannot apply a new AUX buffer immediately until the committed data
+> are handled and there's enough room in the buffer again.
+> 
+> This patch tries to optimize this by commit the data in every
+> interrupts in a 4MiB granularity. Then the userspace can have
+> enough time to consume the data and there's always enough room
+> in the AUX buffer.
 
-Well, first of all, it's only with KASAN, and then I think we probably
-all did and applied a similar fix or this one ... I have a in my tree
-that simplies marks the three symbols as weak again, for instance,
-dating back to March 27th. Didn't publish it at the time, it probably
-got lost in the shuffle, don't remember.
+Instead of always committing at 4M, could we not use the existing
+markers used by the handle->wakeup to decide if we should commit it ?
 
 
-Also, a variant of this patch has been around for three months too.
+Suzuki
 
-> Does UML boot with the fix?
+> 
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+>   drivers/hwtracing/ptt/hisi_ptt.c | 15 +++++++--------
+>   1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
+> index 3041238a6e54..4f355df8da23 100644
+> --- a/drivers/hwtracing/ptt/hisi_ptt.c
+> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
+> @@ -274,15 +274,14 @@ static int hisi_ptt_update_aux(struct hisi_ptt *hisi_ptt, int index, bool stop)
+>   	buf->pos += size;
+>   
+>   	/*
+> -	 * Just commit the traced data if we're going to stop. Otherwise if the
+> -	 * resident AUX buffer cannot contain the data of next trace buffer,
+> -	 * apply a new one.
+> +	 * Always commit the data to the AUX buffer in time to make sure
+> +	 * userspace got enough time to consume the data.
+> +	 *
+> +	 * If we're not going to stop, apply a new one and check whether
+> +	 * there's enough room for the next trace.
+>   	 */
+> -	if (stop) {
+> -		perf_aux_output_end(handle, buf->pos);
+> -	} else if (buf->length - buf->pos < HISI_PTT_TRACE_BUF_SIZE) {
+> -		perf_aux_output_end(handle, buf->pos);
+> -
+> +	perf_aux_output_end(handle, size);
+> +	if (!stop) {
+>   		buf = perf_aux_output_begin(handle, event);
+>   		if (!buf)
+>   			return -EINVAL;
 
-Sure, works fine as long as the symbols are marked weak _somehow_.
-
-johannes
