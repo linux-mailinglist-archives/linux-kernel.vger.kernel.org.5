@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5877A1A0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB1D7A1A10
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbjIOJLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S232823AbjIOJMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbjIOJLh (ORCPT
+        with ESMTP id S233179AbjIOJMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:11:37 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043B730C4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:11:04 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bf78950354so30836081fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694769062; x=1695373862; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fqTeh00riXaBjNescHiFGhXjL1S5jjpClV66tpjmVfI=;
-        b=nTkLXp/iw5Jy5fMjZkKVR6u37u+mb7TFRgJFat0bWpDakMZ5uxj2CMA57CyRU8W715
-         0QIZ7op9VNMaleh+msQrvCf2iS4UgPOXfG8vJtDNMyaNbUv1FZ84ZkCM/TsE/bdtksRj
-         vc9gJN80R1kub4L72NDUdl4lMSmpyJw50Fi5cFfPfEZ+9EotYy6CRPAAh6R1Om+QAsy+
-         vUMSdIFb10Mb7qzFEOloLrpQNrzV1VCy9kF4EKAb/fCVNRi4JhczR2unqYqg3jiC2dhM
-         BkH/aKo5xesgusbDsIl/OfWS67E+CRPNHWhjmA7I0QHDAYI4jT+7DTjBaPVhiZHQvzxw
-         edhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694769062; x=1695373862;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fqTeh00riXaBjNescHiFGhXjL1S5jjpClV66tpjmVfI=;
-        b=bcpsiF+Ke48zGyV9G75K3nCUaiJyhZLtmGmXo1lPzZtjL7x1c6HL+DzwvdIiFebT2N
-         faxHgrRbi3GTIajaz7kzw/Xw4VG+rM5A02G8tUpwRRGZp7Yk3oNGhFa4+E69R5T/4AQ6
-         iTOPfe+ILrI9B07yvL87o0yyZBpS2FwMzY7MI/0Qb4SZdzYkqsjEjZKX5e/zsl5Nn+CT
-         c4z9Y0Sg2nvLMqkWMFDMpuO1lXn/zWuqd6ZAV0Wit9AFWF20BqzIWW0i3uuCf5kgRBaL
-         C0Y43Dl5E/ahEV76Xvl8WEnkHsX40PGh286+G+UYmaT/yRzxRoM0sbR2RHKDib/l0yEa
-         NjwQ==
-X-Gm-Message-State: AOJu0Yxu9Zbyvj6IrlqVm/LCf8jGhWZkctThf5Zyh1YcOAWj/NV7bbHs
-        krT3E8yKRTksGv/La2MfdSOGxw==
-X-Google-Smtp-Source: AGHT+IHo7+SxnYzd0/bI0C3S/ETu/ji64wJvleV9efcp2lx53ggD6d7oaLyfrVGa7I3B7WTP908rSQ==
-X-Received: by 2002:a2e:8ec1:0:b0:2bf:cbff:7017 with SMTP id e1-20020a2e8ec1000000b002bfcbff7017mr1089791ljl.11.1694769062001;
-        Fri, 15 Sep 2023 02:11:02 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id oq14-20020a170906cc8e00b0099e12a49c8fsm2142599ejb.173.2023.09.15.02.10.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 02:11:01 -0700 (PDT)
-Message-ID: <e026878f-9303-4cae-bcab-7ee69e32db2d@linaro.org>
-Date:   Fri, 15 Sep 2023 11:10:57 +0200
+        Fri, 15 Sep 2023 05:12:06 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 857612D67;
+        Fri, 15 Sep 2023 02:11:28 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxY_C+HwRlnkkoAA--.12083S3;
+        Fri, 15 Sep 2023 17:11:26 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxS9yvHwRlTucGAA--.13502S3;
+        Fri, 15 Sep 2023 17:11:24 +0800 (CST)
+Message-ID: <e7d855b6-327e-8c0c-5913-75bba9b6cfcd@loongson.cn>
+Date:   Fri, 15 Sep 2023 17:11:11 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 4/8] dt-bindings: arm-smmu: Add compatible for SM4450
- SoC
+ Thunderbird/102.15.1
+Subject: Re: [RFT PATCH 2/6] drm: Call drm_atomic_helper_shutdown() at
+ shutdown time for misc drivers
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+Cc:     airlied@gmail.com, airlied@redhat.com, alain.volmat@foss.st.com,
+        alexander.deucher@amd.com, alexandre.belloni@bootlin.com,
+        alison.wang@nxp.com, bbrezillon@kernel.org,
+        christian.koenig@amd.com, claudiu.beznea@microchip.com,
+        daniel@ffwll.ch, drawat.floss@gmail.com, javierm@redhat.com,
+        jernej.skrabec@gmail.com, jfalempe@redhat.com, jstultz@google.com,
+        kong.kongxinwei@hisilicon.com, kraxel@redhat.com,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, liviu.dudau@arm.com,
+        nicolas.ferre@microchip.com, paul.kocialkowski@bootlin.com,
+        sam@ravnborg.org, samuel@sholland.org,
+        spice-devel@lists.freedesktop.org, stefan@agner.ch,
+        sumit.semwal@linaro.org, tiantao6@hisilicon.com,
+        tomi.valkeinen@ideasonboard.com, tzimmermann@suse.de,
+        virtualization@lists.linux-foundation.org, wens@csie.org,
+        xinliang.liu@linaro.org, yongqin.liu@linaro.org, zackr@vmware.com
+References: <20230901234015.566018-1-dianders@chromium.org>
+ <20230901163944.RFT.2.I9115e5d094a43e687978b0699cc1fe9f2a3452ea@changeid>
 Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        catalin.marinas@arm.com
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_tsoni@quicinc.com,
-        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
-        quic_aiquny@quicinc.com, kernel@quicinc.com
-References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
- <20230915021509.25773-3-quic_tengfan@quicinc.com>
- <5a386be4-facc-8aef-aad7-da6508aa0505@linaro.org>
- <2c42d2b6-a838-4d8e-99f1-c08b0c8e4457@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <2c42d2b6-a838-4d8e-99f1-c08b0c8e4457@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230901163944.RFT.2.I9115e5d094a43e687978b0699cc1fe9f2a3452ea@changeid>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-CM-TRANSID: AQAAf8DxS9yvHwRlTucGAA--.13502S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Ar1kJFWfKr4kCrWDAFy3WrX_yoW5JF45pr
+        WfZ3s0yrs0qrsrtwn3Jw17Wa4fta1fA34aqrsrKw4ruws8GFWIqF4Fqr1Ygw4UW3yvgr47
+        tw4avw15C3W5A3XCm3ZEXasCq-sJn29KB7ZKAUJUUUjf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVW8ZVWrXwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Wrv_ZF1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wrylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
+        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5-18P
+        UUUUU==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,49 +83,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 09:15, Tengfei Fan wrote:
-> 
-> 
-> 在 9/15/2023 3:11 PM, Krzysztof Kozlowski 写道:
->> On 15/09/2023 04:15, Tengfei Fan wrote:
->>> Add the SoC specific compatible for SM4450 implementing arm,mmu-500.
->>>
->>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>> ---
->>>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 3 +++
->>>   1 file changed, 3 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->>> index cf29ab10501c..b57751c8ad90 100644
->>> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->>> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->>> @@ -47,6 +47,7 @@ properties:
->>>                 - qcom,sdx55-smmu-500
->>>                 - qcom,sdx65-smmu-500
->>>                 - qcom,sdx75-smmu-500
->>> +              - qcom,sm4450-smmu-500
->>>                 - qcom,sm6115-smmu-500
->>>                 - qcom,sm6125-smmu-500
->>>                 - qcom,sm6350-smmu-500
->>> @@ -70,6 +71,7 @@ properties:
->>>                 - qcom,sc8180x-smmu-500
->>>                 - qcom,sc8280xp-smmu-500
->>>                 - qcom,sdm845-smmu-500
->>> +              - qcom,sm4450-smmu-500
->>
->> Isn't there comment just few lines above your edit? Comment saying DON'T?
-> yes, I saw this "DON'T" comment, but if I remove "qcom,sm4450-smmu-500" 
-> from sm4450.dtsi and this arm,smmu.yaml, will get DT check warning about 
-
-Why would you remove it?
-
-> this, this warning cannot be find after add "qcom,sm4450-smmu-500" from 
-> sm4450.dtsi and this arm,smmu.yaml, so update this patch again.
-
-What does the comment say? Why are you adding it to the enum which asks
-- do not add to this enum, but add to other above and below?
+Hi,
 
 
-Best regards,
-Krzysztof
+On 2023/9/2 07:39, Douglas Anderson wrote:
+> Based on grepping through the source code these drivers appear to be
+> missing a call to drm_atomic_helper_shutdown() at system shutdown
+> time. Among other things, this means that if a panel is in use that it
+> won't be cleanly powered off at system shutdown time.
+>
+> The fact that we should call drm_atomic_helper_shutdown() in the case
+> of OS shutdown/restart comes straight out of the kernel doc "driver
+> instance overview" in drm_drv.c.
+>
+> All of the drivers in this patch were fairly straightforward to fix
+> since they already had a call to drm_atomic_helper_shutdown() at
+> remove/unbind time but were just lacking one at system shutdown. The
+> only hitch is that some of these drivers use the component model to
+> register/unregister their DRM devices. The shutdown callback is part
+> of the original device. The typical solution here, based on how other
+> DRM drivers do this, is to keep track of whether the device is bound
+> based on drvdata. In most cases the drvdata is the drm_device, so we
+> can just make sure it is NULL when the device is not bound. In some
+> drivers, this required minor code changes. To make things simpler,
+> drm_atomic_helper_shutdown() has been modified to consider a NULL
+> drm_device as a noop in the patch ("drm/atomic-helper:
+> drm_atomic_helper_shutdown(NULL) should be a noop").
+>
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+
+
+I have just tested the whole series, thanks for the patch. For drm/loongson only:
+
+
+Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
+Tested-by: Sui Jingfeng <suijingfeng@loongson.cn>
+
+
+
+By the way, I add 'pr_info("lsdc_pci_shutdown\n");' into the lsdc_pci_shutdown() function,
+And seeing that lsdc_pci_shutdown() will be called when reboot and shutdown the machine.
+I did not witness something weird happen at present. As you have said, this is useful for
+drm panels drivers. But for the rest(drm/hibmc, drm/ast, drm/mgag200 and drm/loongson etc)
+drivers, you didn't mention what's the benefit for those drivers. Probably, you can
+mention it with at least one sentence at the next version. I also prefer to alter the
+lsdc_pci_shutdown() function as the following pattern:
+
+
+static void lsdc_pci_shutdown(struct pci_dev *pdev)
+{
+
+     struct drm_device *ddev = pci_get_drvdata(pdev);
+
+     drm_atomic_helper_shutdown(ddev);
+}
+
 
