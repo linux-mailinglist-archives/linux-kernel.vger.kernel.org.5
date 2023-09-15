@@ -2,152 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91247A24DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE377A24E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236302AbjIORdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S234877AbjIORfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbjIORdT (ORCPT
+        with ESMTP id S235386AbjIORfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:33:19 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E4A30D1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:32:08 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8141d6fbe3so2851264276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:32:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694799127; x=1695403927; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=37qmqTOGLaH/3KlDOB0LJ2tfWBbha6KOXpw2IUHv5RY=;
-        b=rYAOZzIofa4a7zcSYcDzqyu425BdZq8GVwoSV85pRecseyBkGgTi6aC/s702w+KmF1
-         Swiwx9uiZ2Jx0D+b7h0ChOUxrPfEQwKLHvcVhr2KwI+T61LN9EiEp8/nnFCM/7k24rZ9
-         03A8+aZVvpiGsxwKIZ7j/ahsQZmy7i1WljjAtPcALKshzT8Uo75Idv57pqAjPCUZE3A3
-         KEnQJS0FQBZDQP1yK+jJkL7T0tkzqbQRZODZANX/RgAWUdj69H4dD7Llsa5Sd3UMUdCr
-         4QubVjfusqgnP9P9Xzx2vH3SSHfie1AfbGleO2vFVVNxN69gDHl8IbkK5Ajg91ASr86X
-         YDsw==
+        Fri, 15 Sep 2023 13:35:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95D293598
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694799174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3iRbWt1YTt0h4sdUmK03Vi+q52/EZN5SzHkBsDxopwQ=;
+        b=biVaaXNg3dY2s0Fcp5PeLWFiePscsdY4wZvaY8ZdVbFCiAVGMGLJD6DahQWdVZPrO4hdGx
+        qTrT/Ob4KujIjGtYVijVWmctXzux/E94bVN2f5D45+LTFT+AvSPf0It8KDlp25YW9Dc6Zd
+        bYBZJgC4dJi4R76+8mctdM3AzZUw30c=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-214-mHrvW0HoPWCC-7YGg1CGoQ-1; Fri, 15 Sep 2023 13:32:52 -0400
+X-MC-Unique: mHrvW0HoPWCC-7YGg1CGoQ-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76de9c09746so323402885a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:32:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694799127; x=1695403927;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=37qmqTOGLaH/3KlDOB0LJ2tfWBbha6KOXpw2IUHv5RY=;
-        b=b5F/Khk+srThxGY9slg7XnyrUWKQ4piF+P3efbSC5rZshCGJciYEbKCWxXDOPhGARe
-         11Xc93ChtBrcTAFHosrdnmcXNqkYBKufq7MqRY6jlRDwT4t/C8R/TRCrv/JGXzZOcy2q
-         HxPAQ1vrUbi+FKAUy7e2NacYdcPFHkQ/yqdWvlyu5j+NELnuKIVgFydGOnqO9GnEv/HM
-         Y8NQnicyM0VMftDvn5SvN4rLX2VTSui/+shA/XG7BIe7RPl0US2GdrP2ztgNxH2N/KL2
-         1s9nSlcBzJk4A3DSPOpKaB/JFGYD4YVUaewvdd5yTfAq+ERnar1oqCvTaa9TcpaN4FE0
-         lReQ==
-X-Gm-Message-State: AOJu0YzMfXgbFFeQqoSecRQNZ1t3uhf1HftjWME8gVurVRaOghLSLWZs
-        vppjO++bLHKJx+caLjRK4WB0/kN/ARs=
-X-Google-Smtp-Source: AGHT+IF+XsJ5L+HiDa2KDx/axVT8363f4tYUfPM+rodc1U187Wy1yA18WxaQb4Vi6kJSAHje7GfPSJyRafU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:138e:b0:d78:245a:aac4 with SMTP id
- x14-20020a056902138e00b00d78245aaac4mr57246ybu.1.1694799127413; Fri, 15 Sep
- 2023 10:32:07 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 10:32:05 -0700
-In-Reply-To: <8b047dad-84ac-69f9-3875-38bca92d7534@amd.com>
-Mime-Version: 1.0
-References: <cover.1694721045.git.thomas.lendacky@amd.com> <8a5c1d2637475c7fb9657cdd6cb0e86f2bb3bab6.1694721045.git.thomas.lendacky@amd.com>
- <ZQNs7uo8F62XQawJ@google.com> <f2c0907c-9e30-e01b-7d65-a20e6be4bf49@amd.com> <8b047dad-84ac-69f9-3875-38bca92d7534@amd.com>
-Message-ID: <ZQSVFQ78M/OUtWaj@google.com>
-Subject: Re: [PATCH 1/2] KVM: SVM: Fix TSC_AUX virtualization setup
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Babu Moger <babu.moger@amd.com>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1694799172; x=1695403972;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3iRbWt1YTt0h4sdUmK03Vi+q52/EZN5SzHkBsDxopwQ=;
+        b=lSviokKHEJWgUzux3u0q7D3QsVqW2h/v6NC4XUT4dmb017OJkMbuQiN2aohpsEDjLd
+         XYG42QgLzcpvS/oU3mPH/dwHHK1fqrGGc+aiDuz2enKF1Q5r3NPJZregso2QlQxMSHlL
+         uVr1VmPyUoKKrFdWTsMfx7yJw9iO3pnVd6uzkQxXEfnnB32iWMhbQDd3Fw6yq7ReDN+T
+         1P7eNaNTBmHto/iemWkrVALL6CCVWOBVyNLWMsqKJ6yxRcuX0B0VRbz9/Hw+Px5ZTMxO
+         rUYID/4p+z1SjrNcyGEZRYJc3EU4q7694kf0oFR7yohq2pRercO3IQaaS5brbPe2CYgQ
+         o0tg==
+X-Gm-Message-State: AOJu0YwriRf2KTCUq7MpSIFufi9+e6fdkH9h1qvSmYJz+E0oXxVBm0G8
+        d47nk7GqgyWTtbYxuG+qmj69QGe5dbiIyTJF9ocJgMK5w1KjsMAk1m5khiIj+3BvCF4jpCebaV9
+        oAinRZaVQpiFsmL/01fD6VHJ1
+X-Received: by 2002:a05:620a:450b:b0:76c:a9fb:6d07 with SMTP id t11-20020a05620a450b00b0076ca9fb6d07mr2820431qkp.2.1694799171852;
+        Fri, 15 Sep 2023 10:32:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETBX46w8bl1e85ceIF07jVSYpOO67r7UYVTVMH7Dqpa2+cz1AIiLu9iLVGSZRmJCWMnZIaqw==
+X-Received: by 2002:a05:620a:450b:b0:76c:a9fb:6d07 with SMTP id t11-20020a05620a450b00b0076ca9fb6d07mr2820408qkp.2.1694799171623;
+        Fri, 15 Sep 2023 10:32:51 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id pa9-20020a05620a830900b00767d572d651sm1364433qkn.87.2023.09.15.10.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 10:32:51 -0700 (PDT)
+Message-ID: <43da274f22acaae8b917f51f6e62376928163e8f.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/pm: refactor deprecated strncpy
+From:   Lyude Paul <lyude@redhat.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date:   Fri, 15 Sep 2023 13:32:50 -0400
+In-Reply-To: <202309142158.59A6C62F@keescook>
+References: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-v1-1-4b09ed453f84@google.com>
+         <202309142158.59A6C62F@keescook>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023, Tom Lendacky wrote:
-> On 9/14/23 15:48, Tom Lendacky wrote:
-> > On 9/14/23 15:28, Sean Christopherson wrote:
-> > > On Thu, Sep 14, 2023, Tom Lendacky wrote:
->=20
+Nice catch!
+
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+
+Will push in just a moment
+
+On Thu, 2023-09-14 at 21:59 -0700, Kees Cook wrote:
+> On Thu, Sep 14, 2023 at 10:17:08PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [=
+1].
 > >=20
-> > >=20
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (guest_cpuid_has(vcp=
-u, X86_FEATURE_RDTSCP))
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-> > >=20
-> > > Same thing here.
+> > We should prefer more robust and less ambiguous string interfaces.
 > >=20
-> > Will do.
+> > A suitable replacement is `strscpy` [2] due to the fact that it guarant=
+ees
+> > NUL-termination on the destination buffer without unnecessarily NUL-pad=
+ding.
+> >=20
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
 >=20
-> For RDTSCP, svm_recalc_instruction_intercepts() will set/clear the RDTSCP
-> intercept as part of the svm_vcpu_set_after_cpuid() path, but it will onl=
-y
-> do it based on kvm_cpu_cap_has(X86_FEATURE_RDTSCP) being true, which is v=
-ery
-> likely.
+> The "- 1" use in the original code is strong evidence for this being a
+> sane conversion. :)
 >=20
-> Do you think that is good enough and we can drop the setting and clearing=
- of
-> the RDTSCP intercept in the sev_es_vcpu_set_after_cpuid() function and on=
-ly
-> deal with the TSC_AUX MSR intercept?
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>=20
 
-The common handling should be good enough.
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
-> On a side note, it looks like RDTSCP would not be intercepted if the KVM =
-cap
-> X86_FEATURE_RDTSCP feature is cleared, however unlikely, in
-> kvm_set_cpu_caps() and RDTSCP is not advertised to the guest (assuming th=
-e
-> guest is ignoring the RDTSCP CPUID bit).
-
-Hmm, yes, though the only scenario in which KVM clears RDTSCP on AMD comes =
-with
-a WARN (it's a guard against KVM bugs).  If the guest ignores CPUID and use=
-s
-RDTSCP anyways, the guest deserves its death, and leaking the host pCPU doe=
-sn't
-seem like a major issue.
-
-That said, if hardware behavior is to ignore unknown intercepts, e.g. if KV=
-M can
-safely set INTERCEPT_RDTSCP even when hardware doesn't support said interce=
-pt,
-then I wouldn't be opposed to doing:
-
-	/*
-	 * Intercept INVPCID if shadow paging is enabled to sync/free shadow
-	 * roots, or if INVPCID is disabled in the guest to inject #UD.
-	 */
-	if (!kvm_cpu_cap_has(X86_FEATURE_INVPCID) ||
-	    !npt_enabled || !guest_cpuid_has(&svm->vcpu, X86_FEATURE_INVPCID))
-		svm_set_intercept(svm, INTERCEPT_INVPCID);
-	else
-		svm_clr_intercept(svm, INTERCEPT_INVPCID);
-
-	if (kvm_cpu_cap_has(X86_FEATURE_RDTSCP) &&
-	    guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-		svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-	else
-		svm_set_intercept(svm, INTERCEPT_RDTSCP);
-
-Alternatively, KVM could check boot_cpu_has() instead or kvm_cpu_cap_has(),=
- but
-that's not foolproof either, e.g. see Intel's of hiding PCID to workaround =
-the
-TLB flushing bug on Alderlake.  So my vote would either be to keep things a=
-s-is,
-or do the above (if that's safe).
