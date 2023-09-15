@@ -2,291 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D74B7A1915
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1457A191A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjIOIoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
+        id S233007AbjIOIp0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 04:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjIOIoV (ORCPT
+        with ESMTP id S232242AbjIOIpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:44:21 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F3510DF;
-        Fri, 15 Sep 2023 01:44:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C4BCF660733F;
-        Fri, 15 Sep 2023 09:44:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694767454;
-        bh=XDj+nUBJW9U4x0BdkKfrpre7eDuSxWV1SWEtCizfusA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZWoEbW7wgTrJDxlWyTorpoCq2hxAbfEQeGGMlbH1yIcAUs13kVcQUl7KDX7aYpMPM
-         vHNcqurJr1ov2qp3xicAdMgV/m8H4CdW3ADhKS5NT4Wq3BT2Xi3Wv+LBtTXxUWyHp3
-         n9qKiAlq/E/J0+YmgZAr7qEyFBAQyNYTMZKdPTqC7GrDUp6jDmoEf+rUrMz1kRMNcG
-         KdQSxp8LrlbfHJCsNXfoukF1+j3iShQ27T6Qriyv8ZvE1T84Kmm35QLJEmL04h1TlH
-         VDNGm9ci7byFmMQIZZ8glMkqi8h3mOALW4IwbplRQslo9sW8U42Bmru3kU15lhe8yV
-         ZXhxEvYJpF59g==
-Message-ID: <72f73a46-2598-7698-a1a9-5f61bfa4f121@collabora.com>
-Date:   Fri, 15 Sep 2023 10:44:11 +0200
+        Fri, 15 Sep 2023 04:45:24 -0400
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E42919A0;
+        Fri, 15 Sep 2023 01:45:19 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1d542f05b9aso139488fac.1;
+        Fri, 15 Sep 2023 01:45:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694767519; x=1695372319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bL0AhYUxrdUzQj4Hs45z84nA3TJ4ToZSnUkbGf3bwUM=;
+        b=vNcy9zJuxNcn8O8AkCBd/lX9x/tGf7b01oo8U3r1CbAhtvYE8HmX/y6lvZ6cHFpdAx
+         +Ml+zF/jlFIFT29h3Sg/G2kdJNsYJrZXVPZywAy/crwGxfvZCzJeeSTCtymEaQmWCwC+
+         Szj0T68CMaaV+BAa5eFuR5OwJSBfHLeEuGnyC4VMWBE3FcG48skc56r5Vf5fMa92JRzF
+         RQss0Waj7e2isN6/gdYiLoyRPBhobUt3YgA/tliq9zrO6q0wMhNVhM2JLA6MfLD1I/Kw
+         CDGTqqjdEz7lEq9jhCnb5D7DbavkxXLZYICnZsroEl4Gwe8qXPRoImWTKzbhMaEzZhg2
+         Ht5w==
+X-Gm-Message-State: AOJu0YzZSQpSbMqrXs1Pnk36i4SK969dxsTBU+OTDPQfQ4VabXvNFuEV
+        oe8WLUY041RzNkKG3z75Ch3Y8IJP6UpC7rbMYsw=
+X-Google-Smtp-Source: AGHT+IHl9PRzfbA8hGPGrt3+1ROWaBoHTLPlXkbCHBgq/t81poRMRxjJx/fiwhN8rIFqovs63lEpZzfcdrUxgqBUZyU=
+X-Received: by 2002:a05:6870:4250:b0:1d5:8faf:2935 with SMTP id
+ v16-20020a056870425000b001d58faf2935mr1048882oac.4.1694767518748; Fri, 15 Sep
+ 2023 01:45:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 05/11] regulator: dt-bindings: mediatek: Add MT6366
- PMIC
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230822084520.564937-1-wenst@chromium.org>
- <20230822084520.564937-6-wenst@chromium.org>
- <337f20d5-4dfe-90ef-16b9-c10b14060b97@linaro.org>
- <60221aab-d8da-9f0b-057b-e8a28840849f@linaro.org>
- <CAGXv+5EiiDT_TWdyhrdq7HrBuMxpzZeKWNuhiVqJpmzcHEhaMA@mail.gmail.com>
- <c0289603-f498-2b6b-c45a-82ba400f2f58@linaro.org>
- <CAGXv+5H60PQpVQ6A06ZuY5V1n5OxEYcH097UiaoQumVRjTc+JA@mail.gmail.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAGXv+5H60PQpVQ6A06ZuY5V1n5OxEYcH097UiaoQumVRjTc+JA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230913163823.7880-1-james.morse@arm.com> <20230913163823.7880-28-james.morse@arm.com>
+ <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+ <20230914155459.00002dba@Huawei.com> <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
+ <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com> <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
+In-Reply-To: <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 15 Sep 2023 10:45:07 +0200
+Message-ID: <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code first?]
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/08/23 10:07, Chen-Yu Tsai ha scritto:
-> On Wed, Aug 23, 2023 at 1:45 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 23/08/2023 06:20, Chen-Yu Tsai wrote:
->>> On Wed, Aug 23, 2023 at 3:40 AM Krzysztof Kozlowski
->>> <krzysztof.kozlowski@linaro.org> wrote:
->>>>
->>>> On 22/08/2023 21:39, Krzysztof Kozlowski wrote:
->>>>> On 22/08/2023 10:45, Chen-Yu Tsai wrote:
->>>>>> From: Zhiyong Tao <zhiyong.tao@mediatek.com>
->>>>>>
->>>>>> The MediaTek MT6366 PMIC is similar to the MT6358 PMIC. It is designed
->>>>>> to be paired with the MediaTek MT8186 SoC. It has 9 buck regulators and
->>>>>> 29 LDO regulators, not counting ones that feed internally and basically
->>>>>> have no controls. The regulators are named after their intended usage
->>>>>> for the SoC and system design, thus not named generically as ldoX or
->>>>>> dcdcX, but as vcn33 or vgpu.
->>>>>>
->>>>>> Add a binding document describing all the regulators and their supplies.
->>>>>>
->>>>>> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
->>>>>> [wens@chromium.org: major rework and added commit message]
->>>>>> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->>>>>> ---
->>>>>> Changes since v1:
->>>>>> - Replaced underscores in supply names to hyphens
->>>>>> - Merged with MT6358 regulator binding
->>>>>> - Added MT6358 fallback compatible to MT6366 regulator
->>>>>>
->>>>>> Changes since Zhiyong's last version (v4) [1]:
->>>>>> - simplified regulator names
->>>>>> - added descriptions to regulators
->>>>>> - removed bogus regulators (*_sshub)
->>>>>> - merged vcn33-wifi and vcn33-bt as vcn33
->>>>>> - added missing regulators (vm18, vmddr, vsram-core)
->>>>>> - cut down examples to a handful of cases and made them complete
->>>>>> - expanded commit message a lot
->>>>>>
->>>>>> [1] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhiyong.tao@mediatek.com/
->>>>>>   .../regulator/mediatek,mt6358-regulator.yaml  | 227 +++++++++++++-----
->>>>>>   1 file changed, 168 insertions(+), 59 deletions(-)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->>>>>> index 82328fe17680..b350181f33ff 100644
->>>>>> --- a/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6358-regulator.yaml
->>>>>> @@ -16,14 +16,18 @@ description: |
->>>>>>
->>>>>>   properties:
->>>>>>     compatible:
->>>>>> -    const: mediatek,mt6358-regulator
->>>>>> +    oneOf:
->>>>>> +      - const: mediatek,mt6358-regulator
->>>>>> +      - items:
->>>>>> +          - const: mediatek,mt6366-regulator
->>>>>> +          - const: mediatek,mt6358-regulator
->>>>>>
->>>>>>     vsys-ldo1-supply:
->>>>>>       description: Supply for LDOs vfe28, vxo22, vcn28, vaux18, vaud28, vsim1, vusb, vbif28
->>>>>>     vsys-ldo2-supply:
->>>>>> -    description: Supply for LDOs vldo28, vio28, vmc, vmch, vsim2
->>>>>> +    description: Supply for LDOs vldo28 (MT6358 only), vio28, vmc, vmch, vsim2
->>>>>>     vsys-ldo3-supply:
->>>>>> -    description: Supply for LDOs vcn33, vcama1, vcama2, vemc, vibr
->>>>>> +    description: Supply for LDOs vcn33, vcama[12] (MT6358 only), vemc, vibr
->>>>>>     vsys-vcore-supply:
->>>>>>       description: Supply for buck regulator vcore
->>>>>>     vsys-vdram1-supply:
->>>>>> @@ -43,75 +47,138 @@ properties:
->>>>>>     vsys-vs2-supply:
->>>>>>       description: Supply for buck regulator vs2
->>>>>>     vs1-ldo1-supply:
->>>>>> -    description: Supply for LDOs vrf18, vefuse, vcn18, vcamio, vio18
->>>>>> +    description: Supply for LDOs vrf18, vefuse, vcn18, vcamio (MT6358 only), vio18
->>>>>>     vs2-ldo1-supply:
->>>>>> -    description: Supply for LDOs vdram2
->>>>>> +    description: Supply for LDOs vdram2, vmddr (MT6366 only)
->>>>>>     vs2-ldo2-supply:
->>>>>>       description: Supply for LDOs vrf12, va12
->>>>>>     vs2-ldo3-supply:
->>>>>> -    description: Supply for LDOs vsram-gpu, vsram-others, vsram-proc11, vsram-proc12
->>>>>> -  vs2-ldo4-supply:
->>>>>> -    description: Supply for LDO vcamd
->>>>>> -
->>>>>> -patternProperties:
->>>>>> -  "^buck_v(core|dram1|gpu|modem|pa|proc1[12]|s[12])$":
->>>>>> -    description: Buck regulators
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_v(a|rf)12":
->>>>>> -    description: LDOs with fixed 1.2V output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_v((aux|cn|io|rf)18|camio)":
->>>>>> -    description: LDOs with fixed 1.8V output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_vxo22":
->>>>>> -    description: LDOs with fixed 2.2V output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_v(aud|bif|cn|fe|io)28":
->>>>>> -    description: LDOs with fixed 2.8V output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_vusb":
->>>>>> -    description: LDOs with fixed 3.0V output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_vsram_(gpu|others|proc1[12])$":
->>>>>> -    description: LDOs with variable output
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>> -
->>>>>> -  "^ldo_v(cama[12]|camd|cn33|dram2|efuse|emc|ibr|ldo28|mc|mch|sim[12])$":
->>>>>> -    description: LDOs with variable output and 0~100/10mV tuning
->>>>>> -    type: object
->>>>>> -    $ref: regulator.yaml#
->>>>>> -    unevaluatedProperties: false
->>>>>
->>>>> I don't understand. You just added it and it is already wrong? Please,
->>>>> do not add code which is clearly incorrect.
->>>>
->>>> Sent too early - anyway properties cannot be defined in allOf:. That's
->>>> not the place for them and there is no single reason for it. From which
->>>> regulator binding you got this example?
->>>
->>> None. It was simply a way I figured out when I was reading up on JSON
->>> schema syntax. I wanted to split the definitions cleanly, since they
->>> are very different. And with "unevaluatedProperties: false" in the base
->>> schema it did seem to work, successfully evaluating existing device trees
->>> and producing errors when extra properties were added, or if types didn't
->>> match up.
->>
->> If they are very different, this should not have been one binding. There
->> is little benefit of that.
-> 
-> But how would one handle sharing a common fallback compatible if it were
-> split? In v1 they were separate bindings, but then Angelo argued that they
-> were in fact very similar and the variants can be detected through hardware
-> registers.
-> 
-> Note that the vastly different regulator names here are done for aesthetic
-> reasons. The MT6358 had names with underscores and IMHO unneeded prefixes.
-> These can't be changed due to existing device trees using them. (Or we
-> could break the ABI.) With the MT6366 I chose to simplify them to match
-> the exact names from the datasheet, except for the underscores.
-> 
-> ChenYu
-> 
->>> Now that you mention it, I suppose the preferred way to write it is to
->>> have all the properties in the base schema, then negate the ones that
->>> don't belong in the allOf: section? It just seems really repetitive given
->>> the child node names for the chip variants are completely different. OOTH
->>> I guess it would produce better error messages.
->>
->>
->> For regular cases yes, but not if devices differ so much.
->>
+On Fri, Sep 15, 2023 at 9:09 AM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> On Fri, Sep 15, 2023 at 02:29:13AM +0000, Salil Mehta wrote:
+> > On x86, during init, if the MADT entry for LAPIC is found to be
+> > online-capable and is enabled as well then possible and present
+>
+> Note that the ACPI spec says enabled + online-capable isn't defined.
+>
+> "The information conveyed by this bit depends on the value of the
+> Enabled bit. If the Enabled bit is set, this bit is reserved and
+> must be zero."
+>
+> So, if x86 is doing something with the enabled && online-capable
+> state (other than ignoring the online-capable) then technically it
+> is doing something that the spec doesn't define
 
-Summarizing the important info:
-- Chips are not "very different"
-- Main changes in schema are just cosmetic
+And so it is wrong.
 
-Blurb below... :-)
+> - and it's
+> completely fine if aarch64 does something else (maybe treating it
+> strictly as per the spec and ignoring online-capable.)
 
-MT6358 and MT6366 have minimal differences from a driver perspective but then
-bindings describe hardware, not drivers, that's a fact and there's nothing to
-argue about that (and infact I won't argue about that).
+That actually is the only compliant thing that can be done.
 
-I've been arguing about using the same driver and about that one not needing
-any special compatible for MT6366 because (as ChenYu said) the only difference
-- again, from a software perspective - is that the big list of regulators "swaps"
-(permit me the term...) 3 regulators and drops one: everything is handled the
-very same way anyway.
+As per the spec (quoted above), a platform firmware setting
+online-capable to 1 when Enabled is set is not compliant and it is
+invalid to treat this as meaningful data.
 
-This brings us to this point, where ChenYu *rightfully* wants to rename the actual
-regulator names, because we shouldn't see underscores in devicetrees for multiple
-reasons (which I surely don't have to explain of course) - even though the "right"
-name as stated in datasheets contain underscores instead of dashes.
+As currently defined, online-capable is only applicable to CPUs that
+are not enabled to start with and its role is to make it clear whether
+or not they can be enabled later AFAICS.
 
-And there we go: all those changes in bindings are just because cosmetic stuff.
-
-That said.....
-I think that the real issue here can be solved with one easy question to Krzysztof:
-
-in this case, where we want to use a different name (s/_/-/g) for regulators,
-should we create a new yaml file, or should we update mt6358-regulator.yaml (but
-obviously keeping the old cosmetics for the existing devicetrees and new for new)?
-
-And - In case the best option would be to create a new mt6366-regulator.yaml,
-would it be advisable to use a new compatible, or can we reuse the
-"mediatek,mt6358-regulator" compatible?
-
-Clearly, in the latter case, our target would be to have a devicetree declaring
-
-regulator {
-	compatible = "mediatek,mt6366-regulator", "mediatek,mt6358-regulator";
-	... everything else ...
-}
-
-Cheers,
-Angelo
+If there is a need to represent the case in which a CPI that is
+enabled to start with can be disabled, but cannot be enabled again,
+the spec needs to be updated.
