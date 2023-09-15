@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BB07A158A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7237A1590
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjIOFkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
+        id S232112AbjIOFmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjIOFkq (ORCPT
+        with ESMTP id S231997AbjIOFmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:40:46 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12AF1BF8;
-        Thu, 14 Sep 2023 22:40:40 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57128297bd7so1084168eaf.0;
-        Thu, 14 Sep 2023 22:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694756440; x=1695361240; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m4W9/G5aL/Wgi4GOf9IacY40VhRxR066lrHQZEMg5zA=;
-        b=SdLmrb1cn3tvsELHg5Fs5whNsKnGDc6yV9YqAEqf3D+pbaxDyVL6H7eVjZYaHpMBuR
-         2zjEtqEtJ6Efu0FrRqv4tgU/9RZi34G4xh6PKTqCZgLvkaH5sj+QsTVVDi38uq+ixQtU
-         0v3qTZn8q1Y95KWvEhvd3EsXgM2juDy78f1a89OAijS13dAJYUAvIrxjKJeBzauHRKVV
-         iAm9wP18C1wEBmHTqQR3iifEgGBO9aywg26MJZqGyXqiPJsdqZIJ6AH08+Uz6Y6rhCtH
-         zleCcid+j1zpbodlNpub/8CN05cnYMWWYd1yyjtP75lF8nzTVVsqPyHosKd647XXWSEa
-         1aIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694756440; x=1695361240;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m4W9/G5aL/Wgi4GOf9IacY40VhRxR066lrHQZEMg5zA=;
-        b=g1uFqvG8vvdNXk7YDmGS0lSC/wofqTSeQJg60pJNqzb0HtHbDTF4K8zuGAGJyBJKGE
-         3Zny8KScjSIe7FFiAwrfnwxzYw9BXhm0QX6Qefij7jPds4roHv8x28isHOnLeG9Svdc3
-         LklxkXsgJdmvEx6uL87pmRwSJxh1lQv8B6rKZtvHb5A6Pco5YUvbW0RxAdJjGfMrdLTK
-         NQRViZ5fC7INHZpZI9aNi2hKuuBLhZ41tNDheiKHkckB79krtmHb6MS2HBzSk2FoSRS4
-         aWWK7ftErQZCx7cMjHMM1aLriJfwesoMjhOnxA6bI68Mla7xSH7TcOt2STFgyog+Rnjg
-         4j6Q==
-X-Gm-Message-State: AOJu0YyfPsddL34pyxActdOjDft302XfVo9jt80zltLLNBabQ9OD/7ql
-        L9lv6ffqI8/aHqXCWtmW5BI=
-X-Google-Smtp-Source: AGHT+IEG8UEvEp28b8+DTHwOJTny12gqBiHiLY4gWmnUqfwyXprN3AV2QabKyhkUgir7z6HVC8JKfA==
-X-Received: by 2002:a05:6870:c214:b0:1b7:4655:2ac9 with SMTP id z20-20020a056870c21400b001b746552ac9mr923260oae.6.1694756440061;
-        Thu, 14 Sep 2023 22:40:40 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x10-20020a63b34a000000b00553dcfc2179sm1762184pgt.52.2023.09.14.22.40.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 22:40:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4b490305-0ab7-403f-7bec-a08fb8f20b56@roeck-us.net>
-Date:   Thu, 14 Sep 2023 22:40:37 -0700
+        Fri, 15 Sep 2023 01:42:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0961C1FC8;
+        Thu, 14 Sep 2023 22:42:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B76C433C8;
+        Fri, 15 Sep 2023 05:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694756521;
+        bh=qgukgSQliG5UKLUjUQfOpI4jxUuXNFnLMEkfK97Qfo4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gZUjdtteoNW6CcWoDJntN+p7gfh0GNXx985j6AdwtgeZBRxu2QE841FlY+FMMwhxU
+         a8PBs0RrljCbKmh2M2WCmamq6BcW9zqJ+33K4sSDwBVgc8R+IZ3COUOrfOHFzBu+ef
+         s+k+Nc+sny+Bd+bQFY6U4USE+RSmAzHqLZcpCH/jrY9mRsTUvDQ18DmP8Nk2H36jFc
+         NgLYjkPdt7TqH8FaD6QPxmkASuwvWx8WKe/TimRdhCYjDYf9fc70iAsW7ITvGEciAv
+         aaskqs/oSZnb4WUzbdXAFwbrHUT3uI/TBjVIb8Jn/jYPkxVnv4imOAp8KFzriy8aDQ
+         itkGGdEMzw5jw==
+Message-ID: <10f65dfe-5e8a-10ab-4d89-efe693c07caa@kernel.org>
+Date:   Fri, 15 Sep 2023 14:41:58 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
+ Thunderbird/102.13.0
+Subject: Re: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe
+ SATA to Constantly Reset
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-hwmon@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20230914-strncpy-drivers-hwmon-ibmpowernv-c-v1-1-ba6b7f42c98c@google.com>
- <202309142223.D16446A30D@keescook>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: (ibmpowernv) refactor deprecated strncpy
-In-Reply-To: <202309142223.D16446A30D@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     David Gow <david@davidgow.net>,
+        Niklas Cassel <Niklas.Cassel@wdc.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        patenteng <dimitar@daskalov.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux IDE and libata <linux-ide@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+References: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
+ <ZQHRQHAPQdG+Nu1o@x1-carbon>
+ <59f6ff78-6b45-465a-bd41-28c7a5d10931@davidgow.net>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <59f6ff78-6b45-465a-bd41-28c7a5d10931@davidgow.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 22:24, Kees Cook wrote:
-> On Thu, Sep 14, 2023 at 11:21:06PM +0000, Justin Stitt wrote:
->> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On 9/15/23 12:22, David Gow wrote:
+> Le 2023/09/13 à 23:12, Niklas Cassel a écrit :
+>> On Wed, Sep 13, 2023 at 06:25:31PM +0700, Bagas Sanjaya wrote:
+>>> Hi,
+>>>
+>>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>>
+>>>> After upgrading to 6.5.2 from 6.4.12 I keep getting the following kernel messages around three times per second:
+>>>>
+>>>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+>>>> [ 9683.270399] ata16.00: configured for UDMA/66
+>>>>
+>>>> So I've tracked the offending device:
+>>>>
+>>>> ll /sys/class/ata_port/ata16
+>>>> lrwxrwxrwx 1 root root 0 Sep 10 21:51 /sys/class/ata_port/ata16 -> ../../devices/pci0000:00/0000:00:1c.7/0000:0a:00.0/ata16/ata_port/ata16
+>>>>
+>>>> cat /sys/bus/pci/devices/0000:0a:00.0/uevent
+>>>> DRIVER=ahci
+>>>> PCI_CLASS=10601
+>>>> PCI_ID=1B4B:9130
+>>>> PCI_SUBSYS_ID=1043:8438
+>>>> PCI_SLOT_NAME=0000:0a:00.0
+>>>> MODALIAS=pci:v00001B4Bd00009130sv00001043sd00008438bc01sc06i01
+>>>>
+>>>> lspci | grep 0a:00.0
+>>>> 0a:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9128 PCIe SATA 6 Gb/s RAID controller with HyperDuo (rev 11)
+>>>>
+>>>> I am not using the 88SE9128, so I have no way of knowing whether it works or not. It may simply be getting reset a couple of times per second or it may not function at all.
+>>>
+>>> See Bugzilla for the full thread.
+>>>
+>>> patenteng: I have asked you to bisect this regression. Any conclusion?
+>>>
+>>> Anyway, I'm adding this regression to regzbot:
+>>>
+>>> #regzbot: introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217902
 >>
->> We should prefer more robust and less ambiguous string interfaces.
+>> Hello Bagas, patenteng,
 >>
->> A suitable replacement is `strscpy` [2] due to the fact that it
->> guarantees NUL-termination on the destination buffer without
->> unnecessarily NUL-padding since `buf` is already zero-initialized.
 >>
->> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
->> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
->> Link: https://github.com/KSPP/linux/issues/90
->> Cc: linux-hardening@vger.kernel.org
->> Signed-off-by: Justin Stitt <justinstitt@google.com>
->> ---
->>   drivers/hwmon/ibmpowernv.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> FYI, the prints:
+>> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+>> [ 9683.270399] ata16.00: configured for UDMA/66
 >>
->> diff --git a/drivers/hwmon/ibmpowernv.c b/drivers/hwmon/ibmpowernv.c
->> index 594254d6a72d..57d829dbcda6 100644
->> --- a/drivers/hwmon/ibmpowernv.c
->> +++ b/drivers/hwmon/ibmpowernv.c
->> @@ -234,7 +234,7 @@ static int get_sensor_index_attr(const char *name, u32 *index, char *attr)
->>   	if (copy_len >= sizeof(buf))
->>   		return -EINVAL;
->>   
->> -	strncpy(buf, hash_pos + 1, copy_len);
->> +	strscpy(buf, hash_pos + 1, copy_len);
+>> Just show that ATA error handler has been invoked.
+>> There was no reset performed.
+>>
+>> If there was a reset, you would have seen something like:
+>> [    1.441326] ata8: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+>> [    1.541250] ata8.00: configured for UDMA/133
+>> [    1.541411] ata8: hard resetting link
+>>
+>>
+>> Could you please try this patch and see if it improves things for you:
+>> https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
+>>
 > 
-> This is another case of precise byte copying -- this just needs to be
-> memcpy. Otherwise this truncates the trailing character. Imagine a name
-> input of "fan#2-data". "buf" wants to get "2". copy_len is 1, and
-> strscpy would eat it. :)
+> FWIW, I'm seeing a very similar issue both in 6.5.2 and in git master 
+> [aed8aee11130 ("Merge tag 'pmdomain-v6.6-rc1' of 
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm") with that 
+> patch applied.
 > 
+> 
+> The log is similar (the last two lines repeat several times a second):
+> [    0.369632] ata14: SATA max UDMA/133 abar m2048@0xf7c10000 port 
+> 0xf7c10480 irq 33
+> [    0.683693] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> [    1.031662] ata14.00: ATAPI: MARVELL VIRTUALL, 1.09, max UDMA/66
+> [    1.031852] ata14.00: configured for UDMA/66
+> [    1.414145] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> [    1.414505] ata14.00: configured for UDMA/66
+> [    1.744094] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> [    1.744368] ata14.00: configured for UDMA/66
+> [    2.073916] ata14: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> [    2.074276] ata14.00: configured for UDMA/66
+> 
+> 
+> lspci shows:
+> 09:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9230 PCIe 2.0 
+> x2 4-port SATA 6 Gb/s RAID Controller (rev 10) (prog-if 01 [AHCI 1.0])
+>          Subsystem: Gigabyte Technology Co., Ltd Device b000
+>          Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- 
+> ParErr- Stepping- SERR- FastB2B- DisINTx+
+>          Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- 
+> <TAbort- <MAbort- >SERR- <PERR- INTx-
+>          Latency: 0, Cache Line Size: 64 bytes
+>          Interrupt: pin A routed to IRQ 33
+>          Region 0: I/O ports at b050 [size=8]
+>          Region 1: I/O ports at b040 [size=4]
+>          Region 2: I/O ports at b030 [size=8]
+>          Region 3: I/O ports at b020 [size=4]
+>          Region 4: I/O ports at b000 [size=32]
+>          Region 5: Memory at f7c10000 (32-bit, non-prefetchable) [size=2K]
+>          Expansion ROM at f7c00000 [disabled] [size=64K]
+>          Capabilities: <access denied>
+>          Kernel driver in use: ahci
+> 
+> The controller in question lives on a Gigabyte Z87X-UD5H-CF motherboard. 
+> I'm using the controller for several drives, and it's working, it's just 
+> spammy. (At worst, there's some performance hitching, but that might 
+> just be journald rotating logs as they fill up with the message).
+> 
+> I haven't had a chance to bisect yet (this is a slightly awkward machine 
+> for me to install test kernels on), but can also confirm it worked with 
+> 6.4.12.
+> 
+> Hopefully that's useful. I'll get back to you if I manage to bisect it.
 
-It is really sad that the submitters of such "cleanup" patches can't be bothered
-to check what they are doing. They can't even be bothered to write a coccinelle
-script that would avoid pitfalls like this one, and they expect others to do their
-homework for them.
+Bisect will definitely be welcome. But first, please try adding the patch that
+Niklas mentioned above:
 
-And then people wonder why there is maintainer burnout. I am so tired of that.
+https://lore.kernel.org/linux-ide/20230913150443.1200790-1-nks@flawful.org/T/#u
 
-Guenter
+If that fixes the issue, we know the culprit :)
+
+> 
+> Cheers,
+> -- David
+
+-- 
+Damien Le Moal
+Western Digital Research
 
