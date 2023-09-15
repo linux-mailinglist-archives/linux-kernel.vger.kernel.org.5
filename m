@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3DB7A138C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C757A138F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjIOCHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 22:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        id S231529AbjIOCHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 22:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbjIOCHJ (ORCPT
+        with ESMTP id S231322AbjIOCHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 22:07:09 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDA7C1BF8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 19:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=LPl89
-        OsVrh2SZYS0Frs0wE85+Tb6JSlWesds6qesK4s=; b=PNti90myWAz4tWLuQgHvq
-        UrZJYrZB4hDllz+nIfya8kiGwZE5SDLPjSJnmrZ/PTV6dEJZ3/jUP9E34c2567/g
-        xZRvJBKa5qX/xmhS3Dmm420wMzfrrC4U+1gy/jAJysX/V+L0D6kfqtvqenbvmD8H
-        oVOj3Q8Rll7D140QXS7gzw=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g5-3 (Coremail) with SMTP id _____wCXRe4IvANlz2dsCA--.39336S4;
-        Fri, 15 Sep 2023 10:06:10 +0800 (CST)
-From:   Yuanjun Gong <ruc_gongyuanjun@163.com>
-To:     tyreld@linux.ibm.com
-Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        npiggin@gmail.com, Yuanjun Gong <ruc_gongyuanjun@163.com>
-Subject: [PATCH v2 1/1] powerpc: fix a memory leak
-Date:   Fri, 15 Sep 2023 10:05:59 +0800
-Message-Id: <20230915020559.3396566-1-ruc_gongyuanjun@163.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <54bf92e8-f884-1567-2149-caf638ff8f68@linux.ibm.com>
-References: <54bf92e8-f884-1567-2149-caf638ff8f68@linux.ibm.com>
+        Thu, 14 Sep 2023 22:07:10 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4A31BF8;
+        Thu, 14 Sep 2023 19:07:05 -0700 (PDT)
+Received: from [172.27.2.41] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38F265Wd3668683
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 14 Sep 2023 19:06:06 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38F265Wd3668683
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1694743567;
+        bh=pS+FaX3FGPx0JfqHE/l2ITnl7xmsLE2z552abw2UC+0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L9Tn4bNWud/CxiGNp8dzV9DjK/XgpKI9glMVqLtI284PNIM+SU+lt6/HVStRqyVH+
+         Wa217xj/vgHHveKFL3+RFza4ZxqOYDCyK118q8ZMfUs6FM1DJ3XmbNm8j7tboNUv35
+         CaKawJfEqcY1xG1CRP25CZItxE2Tt6Syd+xn3AuaPTvjnDrojd6kvP5LvdtaWjPr9z
+         z+1v6TEBpYVeuLyH+uat0FpanQYtkD2FVdr8ypVLKEBPypEZsGMwF5hBYQjJB99Bht
+         toS9X9qEIa/l11zjrnNpZhnSWZKp+DJQXz/2flAJ8ojaF0zHwqIVFcnJwYgDHpAcjg
+         dyKUsdqLoIv4w==
+Message-ID: <b05e3092-8ba3-f4e1-b5a3-2125944936fd@zytor.com>
+Date:   Thu, 14 Sep 2023 19:06:04 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
+Content-Language: en-US
+To:     andrew.cooper3@citrix.com, Thomas Gleixner <tglx@linutronix.de>,
+        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
+        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
+        ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        jiangshanlai@gmail.com
+References: <20230914044805.301390-1-xin3.li@intel.com>
+ <20230914044805.301390-4-xin3.li@intel.com>
+ <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
+ <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com> <87v8cc1ehe.ffs@tglx>
+ <50e96f85-66f8-2a4f-45c9-a685c757bb28@citrix.com>
+ <5cf50d76-8e18-2863-4889-70e9c18298a1@zytor.com>
+ <af5990d5-58d5-9109-b37b-1f696a43fe86@citrix.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <af5990d5-58d5-9109-b37b-1f696a43fe86@citrix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXRe4IvANlz2dsCA--.39336S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF4UGrW8Jr1xJF47Cr1fCrg_yoW8AFykpF
-        WkGrn3Kr48Wr48tas0gFs5uF1Utr40q347KrZrW39rZ34Yvr98tF1rAF1v9FWxZrZ5A3W8
-        KrsrtFyrZanxG3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziJ73PUUUUU=
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5uxfsw5rqj53pdqm30i6rwjhhfrp/xtbB0Bfr5WEssXp5PAAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When one of the methods xive_native_alloc_irq_on_chip, irq_create_mapping
-or irq_get_handler_data fails, the function will directly return without
-disposing vinst->name and vinst. Fix it.
+On 9/14/23 18:46, andrew.cooper3@citrix.com wrote:
+> On 15/09/2023 1:38 am, H. Peter Anvin wrote:
+>> On 9/14/23 17:33, andrew.cooper3@citrix.com wrote:
+>>>
+>>> It's an assumption about what "definitely won't" be paravirt in the
+>>> future.
+>>>
+>>> XenPV stack handling is almost-FRED-like and has been for the better
+>>> part of two decades.
+>>>
+>>> You frequently complain that there's too much black magic holding XenPV
+>>> together.  A paravirt-FRED will reduce the differences vs native
+>>> substantially.
+>>>
+>>
+>> Call it "paravirtualized exception handling." In that sense, the
+>> refactoring of the exception handling to benefit FRED is definitely
+>> useful for reducing paravirtualization. The FRED-specific code is
+>> largely trivial, and presumably what you would do is to replace the
+>> FRED wrapper with a Xen wrapper and call the common handler routines.
+> 
+> Why do only half the job?
+> 
+> There's no need for any Xen wrappers at all when XenPV can use the
+> native FRED paths, as long as ERETU, ERETS and the relevant MSRs can be
+> paravirt (sure - with an interface that sucks less than right now) so
+> they're not taking the #GP/emulate in Xen path.
+> 
+> And this can work on all hardware with a slightly-future version of Xen
+> and Linux, because it's just a minor adjustment to how Xen writes the
+> exception frame on the guests stack as part of event delivery.
+> 
 
-Fixes: c20e1e299d93 ("powerpc/vas: Alloc and setup IRQ and trigger port address")
-Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
----
- arch/powerpc/platforms/powernv/vas.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+It's not about doing "half the job", it's about using the proper 
+abstraction mechanism. By all means, if you can join the common code 
+flow earlier, do so, but paravirtualizing the entry/exit stubs which is 
+the *only* place ERETU and ERETS show up is just crazy.
 
-diff --git a/arch/powerpc/platforms/powernv/vas.c b/arch/powerpc/platforms/powernv/vas.c
-index b65256a63e87..40cb7a03d180 100644
---- a/arch/powerpc/platforms/powernv/vas.c
-+++ b/arch/powerpc/platforms/powernv/vas.c
-@@ -102,6 +102,7 @@ static int init_vas_instance(struct platform_device *pdev)
- 	res = &pdev->resource[3];
- 	if (res->end > 62) {
- 		pr_err("Bad 'paste_win_id_shift' in DT, %llx\n", res->end);
-+		rc = -ENODEV
- 		goto free_vinst;
- 	}
- 
-@@ -111,21 +112,24 @@ static int init_vas_instance(struct platform_device *pdev)
- 	if (!hwirq) {
- 		pr_err("Inst%d: Unable to allocate global irq for chip %d\n",
- 				vinst->vas_id, chipid);
--		return -ENOENT;
-+		rc = -ENOENT;
-+		goto free_vinst;
- 	}
- 
- 	vinst->virq = irq_create_mapping(NULL, hwirq);
- 	if (!vinst->virq) {
- 		pr_err("Inst%d: Unable to map global irq %d\n",
- 				vinst->vas_id, hwirq);
--		return -EINVAL;
-+		rc = -EINVAL;
-+		goto free_vinst;
- 	}
- 
- 	xd = irq_get_handler_data(vinst->virq);
- 	if (!xd) {
- 		pr_err("Inst%d: Invalid virq %d\n",
- 				vinst->vas_id, vinst->virq);
--		return -EINVAL;
-+		rc = -EINVAL;
-+		goto free_vinst;
- 	}
- 
- 	vinst->irq_port = xd->trig_page;
-@@ -168,7 +172,7 @@ static int init_vas_instance(struct platform_device *pdev)
- free_vinst:
- 	kfree(vinst->name);
- 	kfree(vinst);
--	return -ENODEV;
-+	return rc;
- 
- }
- 
--- 
-2.37.2
+Similarly, nearly all the MSRs are just configuration setup. The only 
+ones which have any kind of performance relevance is the stack setup (RSP0).
+
+	-hpa
 
