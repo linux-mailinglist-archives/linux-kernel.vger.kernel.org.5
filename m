@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFA67A2402
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0697A7A2409
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbjIOQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
+        id S232007AbjIOQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234662AbjIOQza (ORCPT
+        with ESMTP id S234636AbjIOQ6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:55:30 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909EE19BC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:55:25 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so37426831fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694796923; x=1695401723; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TLxmdVTS/wciVdI7TLv83h6lFbbkbtSW/rwiXOLux+Q=;
-        b=VuR8N2c6renj8KJytud6/FH9AEM40UsbVXaRSK+rxNoZWI9CWbJgkukAeWtVH0JxQt
-         iEAKNGJ5Axwx2X3ZcOd4iKChu12QeRSRMoX1M69Q1llA7AHArMq/EaPfaaMgK7vlCsxR
-         8z7q83OAM2SH1H4+iAfvEUuVcoqory20HPolc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694796923; x=1695401723;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLxmdVTS/wciVdI7TLv83h6lFbbkbtSW/rwiXOLux+Q=;
-        b=MQV2YdRMFK7pelRCafA9JT3XV4PLLyIn/1pgDGqtI50eca5tmqsJVY58CczbljHnZe
-         ITCi97ozZddOgEWqInAhW7v1ydiWElmM4Hu/RRiglQJN81+uaO1vT99ca6E1mceA1sp4
-         D7LbN/mVuAV/i8dA6svkYjx/wLhtpxNTuIvUDlFwbtQ/3MvntjOHzGH+pnNsHgTZbeDM
-         6BXq2HjHJ82vDCybb1ERWONklBYw2WDflSQA4Jv+0LIzKjpfjLmDuD0LdNFyitL5gP8g
-         0ZM5AlR2yByz1f+f+5VJj0zZiNSWXVij73MJ1oVVAfXst+yZM/5N76WUHlOwYykeNKIa
-         6vuw==
-X-Gm-Message-State: AOJu0Yxm92vC5OqTKXtF7IAHAeRTQFhi/3e0lnmGKlnISvLmRl+OTlrh
-        +zW+ii7gNg2/keRV0R4K++LEsz93UbPe33gZqgY=
-X-Google-Smtp-Source: AGHT+IF02dbUHy73K2uLNicOLkn7jQIv1JouEf5WpR5C7QA8PfLFMwbCw0+ipjHbbWxxW/LScKbreA==
-X-Received: by 2002:a2e:950c:0:b0:2bf:ab17:d48b with SMTP id f12-20020a2e950c000000b002bfab17d48bmr2041993ljh.34.1694796922724;
-        Fri, 15 Sep 2023 09:55:22 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id r16-20020a2eb610000000b002b6ad323248sm792123ljn.10.2023.09.15.09.55.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 09:55:21 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-502defbb0c3so3970564e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:55:21 -0700 (PDT)
-X-Received: by 2002:a05:6512:234d:b0:4f9:5519:78b8 with SMTP id
- p13-20020a056512234d00b004f9551978b8mr2526640lfu.63.1694796920796; Fri, 15
- Sep 2023 09:55:20 -0700 (PDT)
+        Fri, 15 Sep 2023 12:58:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53238211E;
+        Fri, 15 Sep 2023 09:58:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694797080; x=1726333080;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=GJvSC4wZ70sklL2nyd+0IoJ0iYnegdWVS9yxn2Uh8vc=;
+  b=QGna7J/b1S4ucoqkX3vogbnJNpEBVWztnFK9rSCWP50OMVoebPIvvlM3
+   OAcMDaenDFTCzJrSw42phVFBLVtT9W4uA+0zfMsyx5gRYjv2odcssqSq/
+   ASl+aeZJDFf89bu+rdUr52O8mJOyrBkDo++tdkXZnngR2Pt/bq1owGfh/
+   srMWXChLFK0tpP/EIb2vWgDI54EUQtcLJigMJ1QpdXfgkgSaeQxcXF2/Q
+   AtwxndJ7Kh4uDOcWR+znLXr9xQHCLQjbqfVycL1f59380kgHLOdKxHdhK
+   x46zPaLnhFt/uHMw77abZCUQURvkkfMpc/KYVk8da7XBw2TsmDafyogDm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="445756597"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="445756597"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:57:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="694783038"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="694783038"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:57:55 -0700
+Date:   Fri, 15 Sep 2023 19:57:53 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     hdegoede@redhat.com, markgross@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        patches@lists.linux.dev, ravi.v.shankar@intel.com,
+        pengfei.xu@intel.com
+Subject: Re: [PATCH 06/10] platform/x86/intel/ifs: Validate image size
+In-Reply-To: <20230913183348.1349409-7-jithu.joseph@intel.com>
+Message-ID: <b189850-ce7c-d8fc-ecd-1a843f52b916@linux.intel.com>
+References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230913183348.1349409-7-jithu.joseph@intel.com>
 MIME-Version: 1.0
-References: <PA4PR04MB9638B8753EFD81E174E55BC3D114A@PA4PR04MB9638.eurprd04.prod.outlook.com>
- <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
- <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com> <PA4PR04MB96385D1A60A99C17E6140C67D1F6A@PA4PR04MB9638.eurprd04.prod.outlook.com>
-In-Reply-To: <PA4PR04MB96385D1A60A99C17E6140C67D1F6A@PA4PR04MB9638.eurprd04.prod.outlook.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Fri, 15 Sep 2023 09:55:06 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXO0aQz0Y+Z2=zMcgC2=xGBXB_BoKFYiT4mP9pcDS-YBxg@mail.gmail.com>
-Message-ID: <CA+ASDXO0aQz0Y+Z2=zMcgC2=xGBXB_BoKFYiT4mP9pcDS-YBxg@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH v4 0/1] Patch History
-To:     David Lin <yu-hao.lin@nxp.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        "amitkarwar@gmail.com" <amitkarwar@gmail.com>,
-        "ganapathi017@gmail.com" <ganapathi017@gmail.com>,
-        "huxinming820@gmail.com" <huxinming820@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Francesco Dolcini <francesco@dolcini.it>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 7:19=E2=80=AFAM David Lin <yu-hao.lin@nxp.com> wrot=
-e:
-> Following is the mailing list I collected until now. If I still miss some=
-one, please let me know.
->
-> <<mwifiex mailing list>>
-> linux-wireless@vger.kernel.org
-> linux-kernel@vger.kernel.org;sharvari.harisangam@nxp.com;yu-hao.lin@nxp.c=
-om;tsung-hsien.hsieh@nxp.com;kvalo@kernel.org;amitkarwar@gmail.com;ganapath=
-i017@gmail.com;huxinming820@gmail.com;davem@davemloft.net;edumazet@google.c=
-om;kuba@kernel.org;pabeni@redhat.com;francesco@dolcini.it;briannorris@chrom=
-ium.org
+On Wed, 13 Sep 2023, Jithu Joseph wrote:
 
-AFAICT, you didn't actually fix anything. That's a months-old list
-(plus manually adding me). Did you run scripts/get_maintainer.pl on a
-recent wireless-next tree? Mine looks like this:
+> Perform additional validation prior to loading IFS image.
+> 
+> Error out if the size of the file being loaded doesn't
+> match the size specified in the header.
 
-$ scripts/get_maintainer.pl -f drivers/net/wireless/marvell/mwifiex/main.c
-Brian Norris <briannorris@chromium.org> (odd fixer:MARVELL MWIFIEX
-WIRELESS DRIVER)
-Kalle Valo <kvalo@kernel.org> (maintainer:NETWORKING DRIVERS (WIRELESS))
-linux-wireless@vger.kernel.org (open list:MARVELL MWIFIEX WIRELESS DRIVER)
-linux-kernel@vger.kernel.org (open list)
+Please fix these short lines in all your patches.
+ 
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>  drivers/platform/x86/intel/ifs/load.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
+> index e8fb03dd8bcf..778a3b89a24d 100644
+> --- a/drivers/platform/x86/intel/ifs/load.c
+> +++ b/drivers/platform/x86/intel/ifs/load.c
+> @@ -376,6 +376,7 @@ int ifs_load_firmware(struct device *dev)
+>  {
+>  	const struct ifs_test_caps *test = ifs_get_test_caps(dev);
+>  	struct ifs_data *ifsd = ifs_get_data(dev);
+> +	unsigned int expected_size;
+>  	const struct firmware *fw;
+>  	char scan_path[64];
+>  	int ret = -EINVAL;
+> @@ -390,6 +391,13 @@ int ifs_load_firmware(struct device *dev)
+>  		goto done;
+>  	}
+>  
+> +	expected_size = ((struct microcode_header_intel *)fw->data)->totalsize;
+> +	if (fw->size != expected_size) {
+> +		dev_err(dev, "File size mismatch (expected %d, actual %ld). Corrupted IFS image.\n",
+> +			expected_size, fw->size);
+> +		return -EBADFD;
+> +	}
+> +
+>  	ret = image_sanity_check(dev, (struct microcode_header_intel *)fw->data);
+
+It looks than a bit odd to add the check here and not into a function 
+called image_sanity_check()?!?
+
+>  	if (ret)
+>  		goto release;
+> 
+
+-- 
+ i.
+
