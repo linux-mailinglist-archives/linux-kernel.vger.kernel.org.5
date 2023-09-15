@@ -2,212 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D4B7A1D68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DBB7A1D69
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbjIOLZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S234283AbjIOL0d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 07:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234349AbjIOLZL (ORCPT
+        with ESMTP id S230153AbjIOL0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:25:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FDDCC8;
-        Fri, 15 Sep 2023 04:25:04 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 11:25:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694777103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9J21HuhWXljN+jXTdAk29WG1MDKeiqVwqZ9TxVbomng=;
-        b=LMlX6Toxx7Q1vxs3t5ydLNVNMin45taaBUfxXOvsKMtAZO9uh6nFhWqmJHfNF1oVfY22O8
-        dXr3iUCAaFSertTJbfxwMjRRGEnh0nh6w9BVzYzDg9yKY/nAsbSS9S6EsnrZUIe0hzwmHG
-        en8+d51zW12pNormq5jvFI6vRDhrj51jkREY5ZuZ2PNtGjcx14sBusxNFWbyK8rWzuzsOU
-        SRosXR5UWp/wtr9FO5MvElFxyX7mmS6wfIT+9yAkqQQbjJ8jzTMy2fqWiKIbLwVraAgZzm
-        9rF7+WTdXM807R0Wgch53PFsZbqYGzfVm6JJj2TsMEpr5JP+10Dr24c5rGXn3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694777103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9J21HuhWXljN+jXTdAk29WG1MDKeiqVwqZ9TxVbomng=;
-        b=EeooppuNQPAxP/cVjKRXBsjgytBF6dvzFT0DezyrOfGumL/LBTTNwAn5pqqZ7ccHpu5NoH
-        +F/j9dtnQkQ/oaBQ==
-From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230906185941.53527-1-ubizjak@gmail.com>
-References: <20230906185941.53527-1-ubizjak@gmail.com>
+        Fri, 15 Sep 2023 07:26:32 -0400
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA2189
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:26:27 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59c0a7d54bdso7286117b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:26:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694777187; x=1695381987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oHXoo1uHNyxMm9bc7Yn/sSt49d2FNL34IW6B9JlvsPc=;
+        b=uAMwewcl/phOx5iIAsJD8E4wGI0Zzx4X/vCF/cOtIIOXCgAylpWKXthDesHivFfFP0
+         1QzOeXa3oir/Pb0+dViIqvStReu8zpAXzEjYUtMn8/tYghHpwTTIsrltR1z5DXUbioFd
+         IpYL18exZrp1D6mpuAJkOHbmfJe06I+PqgWQ+U75Dcipd/ND4Ude19IMfEef6WD9hYDu
+         Qd7f8uGzI28/P7E343bmK/qMHTEZqgv3diFZ6EStnbhHNqcONWvkja2amzOF+t+G+z0Z
+         eBLUtJgJJ9AOGwRJb9xZc+T6T3zPbW139ESX8M9iMoaLIO6wvefedZD1O3mxOUOJIsCj
+         VycQ==
+X-Gm-Message-State: AOJu0YxyoLJjDKAaSTAAYgYmCE84A/rmuOszbUSR5NVqoOmlHTJi+Z8O
+        iHSc90jzfo6eIL1bjrE0vIie68Ten4Z2bw==
+X-Google-Smtp-Source: AGHT+IGNVGL1fSqkquZFcFag808EslAoFuUNZW9Uk47bk7CrhqIs4DsUfTg4Vl89Mcdo1b2OivpSiw==
+X-Received: by 2002:a0d:cb0f:0:b0:599:da80:e1e6 with SMTP id n15-20020a0dcb0f000000b00599da80e1e6mr1501308ywd.34.1694777186842;
+        Fri, 15 Sep 2023 04:26:26 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id b188-20020a0dc0c5000000b0055a07e36659sm800181ywd.145.2023.09.15.04.26.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 04:26:26 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d81d09d883dso443532276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:26:26 -0700 (PDT)
+X-Received: by 2002:a25:adc2:0:b0:d7a:ba02:eaa1 with SMTP id
+ d2-20020a25adc2000000b00d7aba02eaa1mr1222546ybe.64.1694777186242; Fri, 15 Sep
+ 2023 04:26:26 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169477710252.27769.14094735545135203449.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230905174935.2d75feab@gandalf.local.home>
+In-Reply-To: <20230905174935.2d75feab@gandalf.local.home>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Sep 2023 13:26:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUptOPp-Ypa5r0Jqn+YVkhS2SXYNMKnPqccsSYQYG_xjA@mail.gmail.com>
+Message-ID: <CAMuHMdUptOPp-Ypa5r0Jqn+YVkhS2SXYNMKnPqccsSYQYG_xjA@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: Removed double allocation of wq_update_pod_attrs_buf
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+On Thu, Sep 7, 2023 at 8:46 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> First commit 2930155b2e272 ("workqueue: Initialize unbound CPU pods later in
+> the boot") added the initialization of wq_update_pod_attrs_buf to
+> workqueue_init_early(), and then latter on, commit 84193c07105c6
+> ("workqueue: Generalize unbound CPU pods") added it as well. This appeared
+> in a kmemleak run where the second allocation made the first allocation
+> leak.
+>
+> Fixes: 84193c07105c6 ("workqueue: Generalize unbound CPU pods")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Commit-ID:     54cd971c6f4461fb6b178579751788bf4f64dfca
-Gitweb:        https://git.kernel.org/tip/54cd971c6f4461fb6b178579751788bf4f64dfca
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Wed, 06 Sep 2023 20:58:44 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 15 Sep 2023 13:16:35 +02:00
+Just noticed this, too.
+John posted a similar patch after you:
+https://lore.kernel.org/all/20230913101634.553699-1-john.ogness@linutronix.de/
 
-x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Define target-specific {raw,this}_cpu_try_cmpxchg64() and
-{raw,this}_cpu_try_cmpxchg128() macros. These definitions override
-the generic fallback definitions and enable target-specific
-optimized implementations.
+Gr{oetje,eeting}s,
 
-Several places in mm/slub.o improve from e.g.:
+                        Geert
 
-    53bc:	48 8d 4f 40          	lea    0x40(%rdi),%rcx
-    53c0:	48 89 fa             	mov    %rdi,%rdx
-    53c3:	49 8b 5c 05 00       	mov    0x0(%r13,%rax,1),%rbx
-    53c8:	4c 89 e8             	mov    %r13,%rax
-    53cb:	49 8d 30             	lea    (%r8),%rsi
-    53ce:	e8 00 00 00 00       	call   53d3 <...>
-			53cf: R_X86_64_PLT32	this_cpu_cmpxchg16b_emu-0x4
-    53d3:	48 31 d7             	xor    %rdx,%rdi
-    53d6:	4c 31 e8             	xor    %r13,%rax
-    53d9:	48 09 c7             	or     %rax,%rdi
-    53dc:	75 ae                	jne    538c <...>
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-to:
-
-    53bc:	48 8d 4a 40          	lea    0x40(%rdx),%rcx
-    53c0:	49 8b 1c 07          	mov    (%r15,%rax,1),%rbx
-    53c4:	4c 89 f8             	mov    %r15,%rax
-    53c7:	48 8d 37             	lea    (%rdi),%rsi
-    53ca:	e8 00 00 00 00       	call   53cf <...>
-			53cb: R_X86_64_PLT32	this_cpu_cmpxchg16b_emu-0x4
-    53cf:	75 bb                	jne    538c <...>
-
-reducing the size of mm/slub.o by 80 bytes:
-
-   text    data     bss     dec     hex filename
-  39758    5337    4208   49303    c097 slub-new.o
-  39838    5337    4208   49383    c0e7 slub-old.o
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230906185941.53527-1-ubizjak@gmail.com
----
- arch/x86/include/asm/percpu.h | 67 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 67 insertions(+)
-
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 34734d7..4c36419 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -237,12 +237,47 @@ do {									\
- 
- #define raw_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg64_op(8,         , pcp, oval, nval)
- #define this_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg64_op(8, volatile, pcp, oval, nval)
-+
-+#define percpu_try_cmpxchg64_op(size, qual, _var, _ovalp, _nval)	\
-+({									\
-+	bool success;							\
-+	u64 *_oval = (u64 *)(_ovalp);					\
-+	union {								\
-+		u64 var;						\
-+		struct {						\
-+			u32 low, high;					\
-+		};							\
-+	} old__, new__;							\
-+									\
-+	old__.var = *_oval;						\
-+	new__.var = _nval;						\
-+									\
-+	asm qual (ALTERNATIVE("leal %P[var], %%esi; call this_cpu_cmpxchg8b_emu", \
-+			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
-+		  CC_SET(z)						\
-+		  : CC_OUT(z) (success),				\
-+		    [var] "+m" (_var),					\
-+		    "+a" (old__.low),					\
-+		    "+d" (old__.high)					\
-+		  : "b" (new__.low),					\
-+		    "c" (new__.high)					\
-+		  : "memory", "esi");					\
-+	if (unlikely(!success))						\
-+		*_oval = old__.var;					\
-+	likely(success);						\
-+})
-+
-+#define raw_cpu_try_cmpxchg64(pcp, ovalp, nval)		percpu_try_cmpxchg64_op(8,         , pcp, ovalp, nval)
-+#define this_cpu_try_cmpxchg64(pcp, ovalp, nval)	percpu_try_cmpxchg64_op(8, volatile, pcp, ovalp, nval)
- #endif
- 
- #ifdef CONFIG_X86_64
- #define raw_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg_op(8,         , pcp, oval, nval);
- #define this_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg_op(8, volatile, pcp, oval, nval);
- 
-+#define raw_cpu_try_cmpxchg64(pcp, ovalp, nval)		percpu_try_cmpxchg_op(8,         , pcp, ovalp, nval);
-+#define this_cpu_try_cmpxchg64(pcp, ovalp, nval)	percpu_try_cmpxchg_op(8, volatile, pcp, ovalp, nval);
-+
- #define percpu_cmpxchg128_op(size, qual, _var, _oval, _nval)		\
- ({									\
- 	union {								\
-@@ -269,6 +304,38 @@ do {									\
- 
- #define raw_cpu_cmpxchg128(pcp, oval, nval)	percpu_cmpxchg128_op(16,         , pcp, oval, nval)
- #define this_cpu_cmpxchg128(pcp, oval, nval)	percpu_cmpxchg128_op(16, volatile, pcp, oval, nval)
-+
-+#define percpu_try_cmpxchg128_op(size, qual, _var, _ovalp, _nval)	\
-+({									\
-+	bool success;							\
-+	u128 *_oval = (u128 *)(_ovalp);					\
-+	union {								\
-+		u128 var;						\
-+		struct {						\
-+			u64 low, high;					\
-+		};							\
-+	} old__, new__;							\
-+									\
-+	old__.var = *_oval;						\
-+	new__.var = _nval;						\
-+									\
-+	asm qual (ALTERNATIVE("leaq %P[var], %%rsi; call this_cpu_cmpxchg16b_emu", \
-+			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
-+		  CC_SET(z)						\
-+		  : CC_OUT(z) (success),				\
-+		    [var] "+m" (_var),					\
-+		    "+a" (old__.low),					\
-+		    "+d" (old__.high)					\
-+		  : "b" (new__.low),					\
-+		    "c" (new__.high)					\
-+		  : "memory", "rsi");					\
-+	if (unlikely(!success))						\
-+		*_oval = old__.var;					\
-+	likely(success);						\
-+})
-+
-+#define raw_cpu_try_cmpxchg128(pcp, ovalp, nval)	percpu_try_cmpxchg128_op(16,         , pcp, ovalp, nval)
-+#define this_cpu_try_cmpxchg128(pcp, ovalp, nval)	percpu_try_cmpxchg128_op(16, volatile, pcp, ovalp, nval)
- #endif
- 
- /*
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
