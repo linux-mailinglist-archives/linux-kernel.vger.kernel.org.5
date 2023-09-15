@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117AA7A1A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D7D7A1A78
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbjIOJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
+        id S233268AbjIOJYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233533AbjIOJ0U (ORCPT
+        with ESMTP id S233470AbjIOJYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:26:20 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4581FD4;
-        Fri, 15 Sep 2023 02:24:47 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38F9Nt6B079447;
-        Fri, 15 Sep 2023 04:23:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694769835;
-        bh=4VeziTl+d8+AbgxzpJag5vUqbkWM3E4fMIuyXtnWn1U=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=F3kyzuFFrqo13xYV4oBqzGrPfPlQHB81syKDNevbRnSkMHhRgtrbCfu2fYN/EByUN
-         LhLVg872+ZhwGYqeP3Tjks+JHEcQ/z9RNUnhK3mMj0DpTbOD7T+7Fm9a7nHw8R8xAi
-         g6zmhI/q4Q4oxy9XQifNqsKN7nsb0XDY5l+dVTB4=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38F9NtFX120940
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Sep 2023 04:23:55 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
- Sep 2023 04:23:55 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 15 Sep 2023 04:23:55 -0500
-Received: from [10.24.69.29] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38F9Npqr039108;
-        Fri, 15 Sep 2023 04:23:51 -0500
-Message-ID: <bc3e9526-f497-616d-e720-69081e266983@ti.com>
-Date:   Fri, 15 Sep 2023 14:53:50 +0530
+        Fri, 15 Sep 2023 05:24:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAFC2D5F;
+        Fri, 15 Sep 2023 02:24:05 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8E05366072F9;
+        Fri, 15 Sep 2023 10:24:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694769844;
+        bh=mhYU2dTqP/Di35yOWqzCvi5rnNihke8nVgNOY3LOpdU=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=ggH9xcwdfV/qtrkUdkW/3y6ZC05u7ljr5RP4vNL0yu8hViqfNTy7Uf39cXdk2j0MH
+         6fuLSe671hDpmswDpUiGM6ANdCBWskvlj2nXVMLZGm+YiY3tqg3U2xZ4DB9cqgsQRQ
+         Bg0FSX9hgbX5d9Uo0Eb+gKyYdpu2k4TdEkLFP35tWwtPLcWIDvtAWEhmSpeRrJONTy
+         Rmt9cF+eF19+0xzkBmXeKpHDpCwm5ZHs2kJyYGt8RuaeurBwRBD1Bly5lh50D1/Vm/
+         6n2Ld1u0Z9XGirJ3lEbguc3UL007MRXlw6bxfFP4wdNj512AOqpgHu3PRYunEe8O4G
+         8fl+S1f6pgwhw==
+Message-ID: <33c8f603-fc73-7067-ed3d-6bb973d9655c@collabora.com>
+Date:   Fri, 15 Sep 2023 11:24:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1 1/2] dt-bindings: soc: mediatek: add mt8188 svs
+ dt-bindings
 Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <vigneshr@ti.com>, <rogerq@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230913114711.2937844-1-n-yadav@ti.com>
- <20230913114711.2937844-2-n-yadav@ti.com>
- <32c82fa2-f8b9-d22d-f0ac-f8d6e48df39d@linaro.org>
- <f7bebc22-d494-f54d-5543-db75f5714a52@ti.com>
- <20230914160450.knooq6q3dflostv4@playtime>
-From:   Nitin Yadav <n-yadav@ti.com>
-In-Reply-To: <20230914160450.knooq6q3dflostv4@playtime>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     Mark Tseng <chun-jen.tseng@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Lu <roger.lu@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230915075003.1552-1-chun-jen.tseng@mediatek.com>
+ <20230915075003.1552-2-chun-jen.tseng@mediatek.com>
+ <bf87aa29-ea42-f811-7ae9-3888336989fb@collabora.com>
+In-Reply-To: <bf87aa29-ea42-f811-7ae9-3888336989fb@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,67 +69,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/09/23 21:34, Nishanth Menon wrote:
-> On 14:56-20230914, Nitin Yadav wrote:
->> Hi Krzysztof,
+Il 15/09/23 11:22, AngeloGioacchino Del Regno ha scritto:
+> Il 15/09/23 09:50, Mark Tseng ha scritto:
+>> Add mt8188 svs compatible in dt-bindings.
 >>
->> On 14/09/23 11:57, Krzysztof Kozlowski wrote:
->>> On 13/09/2023 13:47, Nitin Yadav wrote:
->>>> Add support for AM62Q NAND card: X8 NAND EXPANSION
->>>> BOARD card (PROC143E1) for AM62x LP SK board.
+>> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
 > 
-> Commit message is all too wrong as well. Sigh.
-> 
->>>>
->>>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
->>>> ---
->>>>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
->>>>  arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
->>>>  2 files changed, 31 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->>>> index 284b90c94da8..e93e79d8083f 100644
->>>> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->>>> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->>>> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
->>>>  		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->>>>  		status = "disabled";
->>>>  	};
->>>> +	gpmc0: memory-controller@3b000000 {
->>>> +		status = "disabled";
->>>
->>> status is never first in DTSI. Really, where did you see such code?
->> Thank for pointing out, Will send a revised version.
-> 
-> GPMC is not functional without board specific interface configuration
-> such as pinmux. this approach, in fact is all over the place now and
-> discussed in the mailing list multiple times now.
-> 
-> What is missing here is the documentation of the constraints as to why
-> it is set as disabled by default.
-gpmc nand is only am62x lp sk in am62x series. it has pinmux conflict
-with macsp1, so disabling gpmc & elm by default for other am62 series.
-For am62x lpsk in overlay macsp1 is disabled.
-> 
-> 
->>>
->>>> +		compatible = "ti,am64-gpmc";
->>>> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
->>>
->>> First is compatible, second is reg/reg-names/ranges.
->>>
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> -- 
->> Regards,
->> Nitin
+> This commit does not apply. Please always develop and test on upstream.
 > 
 
--- 
-Regards,
-Nitin
+Actually, I'm sorry, it's *me* checking the wrong kernel tree here.
+This commit is fine.
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Sorry again,
+Angelo
+
+>> ---
+>>   Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml 
+>> b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+>> index f21eb907ee90..7eda63d5682f 100644
+>> --- a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+>> +++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+>> @@ -22,6 +22,7 @@ properties:
+>>     compatible:
+>>       enum:
+>>         - mediatek,mt8183-svs
+>> +      - mediatek,mt8188-svs
+>>         - mediatek,mt8192-svs
+>>     reg:
+> 
+> 
+
+
