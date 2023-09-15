@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4490D7A24BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DE27A24D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbjIOR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
+        id S235995AbjIORbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235908AbjIOR3K (ORCPT
+        with ESMTP id S236470AbjIORa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:29:10 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1E32111
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:29:05 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bee08c13aso26010727b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694798944; x=1695403744; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ugRbSrKZTgJSxFp7tilsZX/7onhJCvgcZOqxi5h8ayg=;
-        b=CCEyGmuhfPYEztnD5W2Nu2CDNu97X+FKzI8WTKQFUhrwtK8CfaGC5kgapgQpJNOSpa
-         mR5p9TLH+ZXpJT9LSNhYQH88anpMZNSmxZisvSX7Hee8bJuwyo5gCZ6THUg+T1tyaq7W
-         e/ll9z1VM5VlLBgb40xi7fAHfsPCIOzF2YX6K9S/7dbDU5w+boDeClGXq4noOa6NzdWN
-         yoVHKPxAURerr/j8P+0XrEe+DwaOgcJzbkVRHz4wzN4NqyxgxqMqN1cM0Tt4kAGGzmId
-         SoTsulKiEiSQ+3lt7uljupkkyeE/mnRhpNqu6NevQGpkrCNDnpQYEic8LJ012guITvuy
-         JAng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694798944; x=1695403744;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ugRbSrKZTgJSxFp7tilsZX/7onhJCvgcZOqxi5h8ayg=;
-        b=Xc8Ryeh2SsqJXnBPg9MCxVcVibHOTyGR8TRYbrfslpF3Qip7BVzic0ujfx0ldO1c4j
-         yBQDRJu6h/HA2aCuwntt0KbV9Qe9brxOav67WSsKvjIEhdR5c5eusjS87Po8hANATOnO
-         gCd7HJJRIfSoDeoMqFMXH0udXPnWOtkyaHe2gxt8hNcBQEDb8WyXU42LU3yeAy5WtPrB
-         hmTRl47aiAAwjh3lYkENMdyZpWf+C/3cazE60py8uTy3/wSCsOUSqnrOOXyk+LDfYBfi
-         fVkKKkRphwsI+lACoFsdnF18JOpFeoiwUrOpoxynqYxiP5QL2/xMav11KwZLWFm0AY1J
-         w4zw==
-X-Gm-Message-State: AOJu0YwE23en2d9lojEtayar98qIyt5sdV5xXynvA0kZWCzOKB+E6ezV
-        ZzNHS+s7xIujIYkLKMn998F3/7CHe4L4
-X-Google-Smtp-Source: AGHT+IF/ismO4z/8vBmeX9a5PQcfgQTGIyLLkxJs4DngaZx/W2K0t+TvRATwzNEsoN8WtCTXhMPHHrLFM79O
-X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
- (user=mmaurer job=sendgmr) by 2002:a81:a78a:0:b0:583:4f82:b9d9 with SMTP id
- e132-20020a81a78a000000b005834f82b9d9mr73272ywh.5.1694798944470; Fri, 15 Sep
- 2023 10:29:04 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 17:28:59 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230915172900.3784163-1-mmaurer@google.com>
-Subject: [PATCH] rust: Respect HOSTCC when linking for host
-From:   Matthew Maurer <mmaurer@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 13:30:59 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0058A2D5A;
+        Fri, 15 Sep 2023 10:30:11 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 701BC60007;
+        Fri, 15 Sep 2023 17:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694799010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/JtjgsgOyPbwm6BWL60L1iUo+eWhjWgnDribpTAUHbw=;
+        b=GCM8fr7nhBiojP+OOcmNg4lRKP/Bc6b9HshzoiPy41bAJdfe58QnbVWRol0erQlfEeYyrN
+        MEPHy0Z9KRr6MlHTIFTzO04Lw3MR1kgdmXlHhAPGkzhHWh7fGvstnv8vN+0sIbb7Yr8klM
+        LgdH4FaFskd8ZT66hYqhhCCKU4ZsIUFZNHxTuaXDSOwXpSNXXXXL8lnTzZsuyia1ote48D
+        WV4rUKKg0gKZ4oqQXjeMVQpg8lyGX5d4SzfWm5NHuZ2v9/RGvcZsVCTwC/6EjhC2w6k091
+        nVLDn4OxQI6u4oztghtrG23WeBsq+Wc8F1KG1/ECv6XONwRcq5bekBG6NTKKVA==
+Date:   Fri, 15 Sep 2023 19:30:08 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Rob Herring <robh@kernel.org>, Lizhi Hou <lizhi.hou@amd.com>,
+        Andrew Lunn <andrew@lunn.ch>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        max.zhen@amd.com, sonal.santan@amd.com,
+        stefano.stabellini@xilinx.com
+Subject: Re: [PATCH V13 0/5] Generate device tree node for pci devices
+Message-ID: <20230915193008.6d87b8a0@bootlin.com>
+In-Reply-To: <ZQGaSr+G5qu/8nJZ@smile.fi.intel.com>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+        <ZP96feVs2ev7098Y@smile.fi.intel.com>
+        <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
+        <ZQGaSr+G5qu/8nJZ@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-resulting in build failures in hermetic environments where `cc` does not
-exist. This includes both hostprogs and proc-macros.
+Hi Andy,
 
-Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-`gcc` explicitly.
+On Wed, 13 Sep 2023 14:17:30 +0300
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-Signed-off-by: Matthew Maurer <mmaurer@google.com>
----
- rust/Makefile         | 1 +
- scripts/Makefile.host | 1 +
- 2 files changed, 2 insertions(+)
+> On Tue, Sep 12, 2023 at 02:12:04PM -0500, Rob Herring wrote:
+> > On Mon, Sep 11, 2023 at 3:37 PM Andy Shevchenko
+> > <andriy.shevchenko@intel.com> wrote:  
+> > > On Tue, Aug 15, 2023 at 10:19:55AM -0700, Lizhi Hou wrote:  
+> 
+> ...
+> 
+> > > Can you point out to the ACPI excerpt(s) of the description of anything related
+> > > to the device(s) in question?  
+> > 
+> > I don't understand what you are asking for.  
+> 
+> Through the email thread it was mentioned that this series was tested on the
+> ACPI enabled platform, Jonathan (IIRC) asked why do we need to have a shadow
+> DT for the something that ACPI already describes. That's why I'm trying to
+> understand if it's the case. and if so, how can we improve the approach.
+> 
 
-diff --git a/rust/Makefile b/rust/Makefile
-index 87958e864be0..2a2352638f11 100644
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@ -383,6 +383,7 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FORCE
- quiet_cmd_rustc_procmacro = $(RUSTC_OR_CLIPPY_QUIET) P $@
-       cmd_rustc_procmacro = \
- 	$(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-+		-C linker-flavor=gcc -C linker=$(HOSTCC) \
- 		--emit=dep-info=$(depfile) --emit=link=$@ --extern proc_macro \
- 		--crate-type proc-macro \
- 		--crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-index 8f7f842b54f9..0aa95a3af1c4 100644
---- a/scripts/Makefile.host
-+++ b/scripts/Makefile.host
-@@ -91,6 +91,7 @@ hostcxx_flags  = -Wp,-MMD,$(depfile) \
- # current working directory, which may be not accessible in the out-of-tree
- # modules case.
- hostrust_flags = --out-dir $(dir $@) --emit=dep-info=$(depfile) \
-+		 -C linker-flavor=gcc -C linker=$(HOSTCC) \
-                  $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-                  $(HOSTRUSTFLAGS_$(target-stem))
- 
+Patches from Frank Rowand series [1] are needed to create an of_root_node if a DT
+was not provided by the firmware, bootloader, etc that run the kernel.
+
+[1]: https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list@gmail.com/
+
+Current Lizhi's series creates nodes from the PCI host node during the PCI
+enumeration. It creates PCI-PCI bridge and PCI device nodes.
+
+I use these series on an ACPI system.
+
+I need one more missing component: the node related to the PCI host bridge
+This was the purpose of Clement's work. This work was not sent upstream yet and I
+am working on it in order to have a full tree from the of_root to the PCI device
+ie:
+ of_root                  <-- Frank Rowand series 
+   + of_host_pci_bridge   <-- Clement's work
+       + pci_bridge       <-- Current Lizhi series
+           + pci_bridge   <-- Current Lizhi series
+            ...
+             + pci_dev    <-- Current Lizhi series
+
+Hope that this status helped.
+
+Regards,
+Hervé
+
 -- 
-2.42.0.459.ge4e396fd5e-goog
-
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
