@@ -2,129 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2797A292F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9E97A2932
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237468AbjIOVPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S237496AbjIOVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237776AbjIOVPH (ORCPT
+        with ESMTP id S237637AbjIOVPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:15:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C73E10FA;
-        Fri, 15 Sep 2023 14:13:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26CA0C433B8;
-        Fri, 15 Sep 2023 21:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694812424;
-        bh=kwVCyuwmCscgtotgsB8jD0n68jkFaEcgtBnaGBUyKyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZhw53fzrT82yheV0xnWJ4/g9w/sF2neiZIgmuEA2lPaoIL+qnAI4893sV+R+QBYa
-         xGBrDRfBrV+A/FDCHy+Stqg5vRzT4P5R+9jUiLMGEoPx+sNGa96SWHal/EYFDOmruw
-         gc7jfrlUoPUFPMy3Nxa+btuYCpGFV2yBhnwAlftc4lRV8A54w0ngTKPZInD2uagTs6
-         saFeY1zZVYq6eXFd6UL1BI+50zIbYb0j2D3T6Nm8/sLg+TeVMJEZRJ8vbHS2qk0GFI
-         KH34abVCB+l9LJscenUJWiPiqza9jrRrtI3PHtJIuNYuCW8Uo4fnD0DC9h3KdhZ6Of
-         mT1dAZPIIokvQ==
-Date:   Fri, 15 Sep 2023 22:13:40 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] Documentation: dt-bindings: media: i2c: Add ROHM
- BU64754 bindings
-Message-ID: <20230915-starch-bankable-c4102e405a73@spud>
-References: <20230915165946.4183839-1-kieran.bingham@ideasonboard.com>
- <20230915165946.4183839-2-kieran.bingham@ideasonboard.com>
+        Fri, 15 Sep 2023 17:15:50 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B37CE50
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:15:03 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf5c314a57so21854685ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google; t=1694812502; x=1695417302; darn=vger.kernel.org;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7teTS75eyEcS4dZgXo+EcQywzkucHFzMxSjJFBdTG8Y=;
+        b=gQFM8VApOidWK0tDq0dRoHGzmCkfDoMbNV8gns2ba5RfW/7ZRoB3EquxOCaI7mBvsb
+         Ux2wCnc1eXaIeLe3O6HH/GVq3xIwewSTNpTJRmMwd1HIDWm8UMfqq/m1zHBcXNT2Xu6g
+         9y1ZugZuykwcnH2MAz36QkBqxlv38SmbxMIq3u44DYlWhyKIBy2yjokC2Kuzi9N5wpyk
+         baBPSAVjQBfqFad3c663Yc1itkgf3S97BKToEhcGq19bSnLeccFMarPQ9oRglVqZ0I4p
+         TqsgNILa/uJ3SUzaNmpQITFeFB61MfZ9Zf46mEX1PpyiPJX8c8vwNaMcCuNM5gxQAl3m
+         od+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694812502; x=1695417302;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7teTS75eyEcS4dZgXo+EcQywzkucHFzMxSjJFBdTG8Y=;
+        b=L/fdxdsSZnBS86Q4ADvF6/5vhrx4+nLKcPOu5RNy8yRQsbp/JXpjy0ENGom4Gp/djt
+         15W4xL61ZIi4hPwpZnXiWRJ61CCNx37MEfnqplrEek8gQj5iGFOzis+G8A1WcZa2w1vB
+         GTOpYfaynfvRVyenATDEosN9e8H1iS/HSpWLHy8w9dVbDqJCHhdtIJAASg/1RwNHJu9D
+         9YZsbjZJioXbuljm6JVC91kUbW0Z1OhJ8SGhsdO8NXg8zqlzSy1471sRE7OQ1CMHx3P4
+         qm9pmZ0hr6wUjCgExiyHlm+hgJ+TgZ/oGVqhlrEdJ7RX7vewsB442HTO4eE8a9DirZNW
+         nR0A==
+X-Gm-Message-State: AOJu0YzmG8Y+JgZH7Ow9HXpTOXYRO+jkGpbJ6yeEWXbOlwcYpzndsUPC
+        65KElfssii7PD+462MFbnL1siA==
+X-Google-Smtp-Source: AGHT+IG+M7M64WtxGxEzGQ+nMIdywrrCr5EkuN09OBfh+ct5EkdMstf4ZBHrJuQ7SW4gopMdT0gz/Q==
+X-Received: by 2002:a17:902:ea0f:b0:1bf:557c:5a2c with SMTP id s15-20020a170902ea0f00b001bf557c5a2cmr3127053plg.44.1694812502564;
+        Fri, 15 Sep 2023 14:15:02 -0700 (PDT)
+Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
+        by smtp.gmail.com with ESMTPSA id jk15-20020a170903330f00b001b9fef7f454sm1478417plb.73.2023.09.15.14.15.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Sep 2023 14:15:01 -0700 (PDT)
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Swapnil Sapkal'" <swapnil.sapkal@amd.com>,
+        <rafael.j.wysocki@intel.com>, <Ray.Huang@amd.com>,
+        <li.meng@amd.com>, <shuah@kernel.org>
+Cc:     <sukrut.bellary@gmail.com>, <gautham.shenoy@amd.com>,
+        <wyes.karny@amd.com>, <Perry.Yuan@amd.com>,
+        <Mario.Limonciello@amd.com>, <zwisler@chromium.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "Doug Smythies" <dsmythies@telus.net>
+References: <20230915104057.132210-1-swapnil.sapkal@amd.com> <20230915104057.132210-3-swapnil.sapkal@amd.com>
+In-Reply-To: <20230915104057.132210-3-swapnil.sapkal@amd.com>
+Subject: RE: [PATCH 2/2] tools/power/x86/intel_pstate_tracer: Use pygnuplot package for Gnuplot
+Date:   Fri, 15 Sep 2023 14:15:03 -0700
+Message-ID: <00b201d9e819$b2447e80$16cd7b80$@telus.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kq4SaRLaezFRFdFr"
-Content-Disposition: inline
-In-Reply-To: <20230915165946.4183839-2-kieran.bingham@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-ca
+Thread-Index: AQKwVkrK5CGttHhKf0ienv16Lobu0QKE+b5trlszgRA=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023.09.15 03:41 Swapnil Sapkal wrote:
 
---kq4SaRLaezFRFdFr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> In intel_pstate_tracer.py, Gnuplot is used to generate 2D plots.
+> In current implementation this tracer gives error while importing
+> the module because Gnuplot is imported from package Gnuplot-py which
+> does not support python 3.x. Fix this by using pygnuplot package to
+> import this module.
 
-Yo,
+As described in the prerequisites section, the package name is distribution dependant.
+On my distribution the original package name is phython3-gnuplot,
+and it is working fine.
 
-On Fri, Sep 15, 2023 at 05:59:45PM +0100, Kieran Bingham wrote:
-> Add YAML device tree bindings for the ROHM BU64754 VCM Motor Driver for
-> Camera Autofocus.
->=20
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+sys.version_info(major=3, minor=8, micro=10, releaselevel='final', serial=0)
+
+I don't currently have python3-pygnuplot installed, and so this patch breaks
+the  intel_pstate_tracer for me.
+
+So, I installed the python3-pygnuplot package, and it still didn't work, as there
+still wasn't a pygnuplot module to import.
+So, I found something called PyGnuplot.py and so changed to that and got further.
+But then it got upset with:
+
+  File "./intel_pstate_tracer.py.amd", line 298, in common_gnuplot_settings
+    g_plot = gnuplot.Gnuplot(persist=1)
+NameError: name 'gnuplot' is not defined
+
+I gave up and returned to the unpatched
+intel_pstate_tracer.py
+And checked that is still worked fine. It did.
+
+So, I do not accept this proposed patch.
+
+Not really related, but for a few years now I have been meaning to
+change the minimum python version prerequisite to >= 3.0 and
+to change the shebang line from this:
+
+#!/usr/bin/env python
+
+To this:
+
+#!/usr/bin/env python3
+
+I have to use the latter version on my distro.
+Back when I looked into it, things were inconsistent,
+so I didn't know what to do. The kernel tree has 52 .py files
+of the latter shebang and 11 of the former.
+
+... Doug
+
+> Signed-off-by: Swapnil Sapkal <swapnil.sapkal@amd.com>
 > ---
->  .../bindings/media/i2c/rohm,bu64754.yaml      | 48 +++++++++++++++++++
->  MAINTAINERS                                   |  7 +++
->  2 files changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/rohm,bu64=
-754.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/media/i2c/rohm,bu64754.yam=
-l b/Documentation/devicetree/bindings/media/i2c/rohm,bu64754.yaml
-> new file mode 100644
-> index 000000000000..22da4a46bb0c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/rohm,bu64754.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2023 Ideas on Board Oy.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/rohm,bu64754.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ROHM BU64754 Actuator Driver for Camera Autofocus
-> +
-> +maintainers:
-> +  - Kieran Bingham <kieran.bingham@ideasonboard.com>
-> +
-> +description: |
+> tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py      | 1 -
+> tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py | 4 ++--
+> 2 files changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py b/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
+> index 2448bb07973f..14f8d81f91de 100755
+> --- a/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
+> +++ b/tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
+> @@ -27,7 +27,6 @@ import re
+>  import signal
+>  import sys
+>  import getopt
+> -import Gnuplot
+>  from numpy import *
+>  from decimal import *
+>  sys.path.append(os.path.join(os.path.dirname(__file__), '../intel_pstate_tracer'))
+> diff --git a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> index ec3323100e1a..68412abdd7d4 100755
+> --- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> +++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+> @@ -32,7 +32,7 @@ import re
+>  import signal
+>  import sys
+> import getopt
+> -import Gnuplot
+> +from pygnuplot import gnuplot
+>  from numpy import *
+>  from decimal import *
+> 
+> @@ -295,7 +295,7 @@ def common_all_gnuplot_settings(output_png):
+> def common_gnuplot_settings():
+>      """ common gnuplot settings. """
+> 
+> -    g_plot = Gnuplot.Gnuplot(persist=1)
+> +    g_plot = gnuplot.Gnuplot(persist=1)
+> #   The following line is for rigor only. It seems to be assumed for .csv files
+>      g_plot('set datafile separator \",\"')
+>      g_plot('set ytics nomirror')
+> -- 
+> 2.34.1
 
-That | is surplus to requirements since you have no formatting to
-preserve.
 
-> +  The BU64754 is an actuator driver IC which can control the actuator
-> +  position precisely using an internal Hall Sensor.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - rohm,bu64754
-
-Why such a complicated pattern when you only have one item here?
-Why not just const: rohm,bu64754?
-
-Otherwise, looks fine to me.
-
---kq4SaRLaezFRFdFr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQTJBAAKCRB4tDGHoIJi
-0pX7APoD4Kw9SlBLfhiuKvhkDRf+fTvAqfbXIgomg0v8+f45SAD/c6EsQdkx35AK
-UEbTPbXlg9E1wyDB8q8C/ELFMgIXJQk=
-=bR/q
------END PGP SIGNATURE-----
-
---kq4SaRLaezFRFdFr--
