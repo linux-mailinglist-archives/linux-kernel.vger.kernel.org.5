@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CB37A135F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0BE7A135E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjIOB6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S231358AbjIOB6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjIOB6t (ORCPT
+        with ESMTP id S231234AbjIOB6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:58:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EFAA12712
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694743081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=k1Q/Fh/fdqx3vdLHA7F/mb5DjxeO42XcGIJeeeZs/TM=;
-        b=J/XkhIPsBHJryPy7mgR30c9+W/xuXhVosnExJhQOky3saJo+pp5fJIq2U/zOMGnwph1pt+
-        gDCnydi8hN6elWqeq1pr66aQaBAjtuYoSJjI3wnDeCqoZ3AKJvDWmsSKupZfso8Hjk2hAI
-        VW7MsONXtEYLJv1piOoRuK0Q02jZZAE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-591-DCliJKjrNpyEYoFMVC6BPQ-1; Thu, 14 Sep 2023 21:57:59 -0400
-X-MC-Unique: DCliJKjrNpyEYoFMVC6BPQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EE3F6800045;
-        Fri, 15 Sep 2023 01:57:58 +0000 (UTC)
-Received: from localhost (unknown [10.22.17.0])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E186B40C2070;
-        Fri, 15 Sep 2023 01:57:57 +0000 (UTC)
-Date:   Thu, 14 Sep 2023 22:57:56 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable-rt <stable-rt@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Jeff Brady <jeffreyjbrady@gmail.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 5.10.194-rt94
-Message-ID: <ZQO6JMUwo1SaCaV+@uudg.org>
+        Thu, 14 Sep 2023 21:58:47 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE022722;
+        Thu, 14 Sep 2023 18:58:42 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F1wd9K012149;
+        Fri, 15 Sep 2023 01:58:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=HoCgcgl+aCgjFCVJXKNMCqYwXYxwcfuRMm+pt4uqlts=;
+ b=d1Z2zIoYgzta+acURONtsnjrcq07hlezAtFY4yZTXu4Mu9NEh5HS6Sp8da39wkaVObCA
+ /JWfPQ6wyfTcczmQrxlp6ZpibxxwTapsbFrqmQTpzc08vKko8A4+XCIOaifZpDkx3Ze0
+ wN7BWnrAkb9DtOr0s1fmHDBOhX5wdlGo4jJGC3MRKQpcMnQyCZaX7pHXQ69NsBObjXPE
+ ZfqqVvWyilVT19cYO1TCipzA+oWTZDh+kncSf2X0XmT6ILIohHs/T25qEDFFaeTeTVxI
+ kZrxlFWQq30wjwmyadtH8OrlaAiXzIE/uL5zOiIGd4GFAxYuGmGYQPHtRWY6hFP7AfaX lA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4e2ag01s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 01:58:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38F1wbIa006657
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 01:58:37 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 14 Sep 2023 18:58:30 -0700
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
+        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v2 0/2] pinctl: qcom: Add SM4450 pinctrl driver 
+Date:   Fri, 15 Sep 2023 09:58:06 +0800
+Message-ID: <20230915015808.18296-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: r661Y_ZTWe3kufpvvqOZzY48f-h5VH7U
+X-Proofpoint-ORIG-GUID: r661Y_ZTWe3kufpvvqOZzY48f-h5VH7U
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_02,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=706 adultscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Add Sm4450 pinctrl driver for support enable uart console.
 
-I'm pleased to announce the 5.10.194-rt94 stable release.
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+---
+v1 -> v2:
+  - update right platform name
+  - update gpio-reserved-ranges have right maxItems
+  - update gpio-line-names have right maxItems
+  - add min/maxItems for pins properties
+  - redo dt_binding_check check
+  - delete reserved gpios setting
+  - combine separate pinctrl functions
 
-This release is just an update to the new stable 5.10.194
-version and no RT specific changes have been made.
+previous discussion here:
+[1] https://lore.kernel.org/linux-arm-msm/20230908063843.26835-1-quic_tengfan@quicinc.com/
 
-You can get this release via the git tree at:
+Tengfei Fan (2):
+  dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
+  pinctrl: qcom: Add SM4450 pinctrl driver
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+ .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    |  132 +++
+ drivers/pinctrl/qcom/Kconfig.msm              |    8 +
+ drivers/pinctrl/qcom/Makefile                 |    1 +
+ drivers/pinctrl/qcom/pinctrl-sm4450.c         | 1013 +++++++++++++++++
+ 4 files changed, 1154 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sm4450.c
 
-  branch: v5.10-rt
-  Head SHA1: 7d2f06611db33d0957999cc9354e5ac92a8db387
 
-Or to build 5.10.194-rt94 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.194.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.194-rt94.patch.xz
-
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
+base-commit: 98897dc735cf6635f0966f76eb0108354168fb15
+-- 
+2.17.1
 
