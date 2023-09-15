@@ -2,112 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1457A191A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CEB7A191D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbjIOIp0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 04:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
+        id S233069AbjIOIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjIOIpY (ORCPT
+        with ESMTP id S233092AbjIOIpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:45:24 -0400
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E42919A0;
-        Fri, 15 Sep 2023 01:45:19 -0700 (PDT)
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1d542f05b9aso139488fac.1;
-        Fri, 15 Sep 2023 01:45:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694767519; x=1695372319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bL0AhYUxrdUzQj4Hs45z84nA3TJ4ToZSnUkbGf3bwUM=;
-        b=vNcy9zJuxNcn8O8AkCBd/lX9x/tGf7b01oo8U3r1CbAhtvYE8HmX/y6lvZ6cHFpdAx
-         +Ml+zF/jlFIFT29h3Sg/G2kdJNsYJrZXVPZywAy/crwGxfvZCzJeeSTCtymEaQmWCwC+
-         Szj0T68CMaaV+BAa5eFuR5OwJSBfHLeEuGnyC4VMWBE3FcG48skc56r5Vf5fMa92JRzF
-         RQss0Waj7e2isN6/gdYiLoyRPBhobUt3YgA/tliq9zrO6q0wMhNVhM2JLA6MfLD1I/Kw
-         CDGTqqjdEz7lEq9jhCnb5D7DbavkxXLZYICnZsroEl4Gwe8qXPRoImWTKzbhMaEzZhg2
-         Ht5w==
-X-Gm-Message-State: AOJu0YzZSQpSbMqrXs1Pnk36i4SK969dxsTBU+OTDPQfQ4VabXvNFuEV
-        oe8WLUY041RzNkKG3z75Ch3Y8IJP6UpC7rbMYsw=
-X-Google-Smtp-Source: AGHT+IHl9PRzfbA8hGPGrt3+1ROWaBoHTLPlXkbCHBgq/t81poRMRxjJx/fiwhN8rIFqovs63lEpZzfcdrUxgqBUZyU=
-X-Received: by 2002:a05:6870:4250:b0:1d5:8faf:2935 with SMTP id
- v16-20020a056870425000b001d58faf2935mr1048882oac.4.1694767518748; Fri, 15 Sep
- 2023 01:45:18 -0700 (PDT)
+        Fri, 15 Sep 2023 04:45:55 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4852D2711
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694767549; x=1726303549;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=H7GanXGftaQ5SpvJrDxJhpXAN84SneN8kwBnokLJ00c=;
+  b=i2AoHaAcEzeMEexK6tSTlnqdNgH2h5RFH5wOH3CrV/8R14fZ04d9/pnj
+   TAPbtZPn/wNN4BgN2+E3wHayAv5FBLmJccvjiIpy57PdPGVtDNphnQEZb
+   g3nlDgQOnblVf+uG3BCcD/7oHkJpEDA9bf65Bw3qpakqNpdFn+TkQgGBH
+   x3maF21da0D3pHglL7/26NpuaKwEW7SwZD7Njb/qsoIUBle1KZUTo8D8A
+   W8AW15cdN7SZakY+QKx46Eg+8udzQ1PfN6PHQ0fVWh9RrbrDR24QCPgeY
+   r9TrPn0offPxs2rdSkdQ5iqN4TD+lzOhZNxwJQLS4Dzf6sDtHHu6HVQIb
+   A==;
+X-CSE-ConnectionGUID: RV8QYsOtQfaqLyG7dFyPmg==
+X-CSE-MsgGUID: AnUMj2eBQSSJO8MC9D3Jpw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="asc'?scan'208";a="5007679"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Sep 2023 01:45:48 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 15 Sep 2023 01:45:38 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 15 Sep 2023 01:45:33 -0700
+Date:   Fri, 15 Sep 2023 09:45:16 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>
+CC:     <linux-riscv@lists.infradead.org>, <kvm-riscv@lists.infradead.org>,
+        <greentime.hu@sifive.com>, <vincent.chen@sifive.com>,
+        <tjytimi@163.com>, <alex@ghiti.fr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Guo Ren <guoren@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        wchen <waylingii@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        David Hildenbrand <david@redhat.com>,
+        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Evan Green <evan@rivosinc.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] RISC-V: Detect and Enable Svadu Extension Support
+Message-ID: <20230915-triangle-fool-e7032469d3e1@wendy>
+References: <20230915082701.3643-1-yongxuan.wang@sifive.com>
+ <20230915082701.3643-2-yongxuan.wang@sifive.com>
 MIME-Version: 1.0
-References: <20230913163823.7880-1-james.morse@arm.com> <20230913163823.7880-28-james.morse@arm.com>
- <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
- <20230914155459.00002dba@Huawei.com> <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
- <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com> <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-In-Reply-To: <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 15 Sep 2023 10:45:07 +0200
-Message-ID: <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code first?]
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        James Morse <james.morse@arm.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
-        "justin.he@arm.com" <justin.he@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EjQ9rfLhfbgZuC1z"
+Content-Disposition: inline
+In-Reply-To: <20230915082701.3643-2-yongxuan.wang@sifive.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 9:09 AM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Fri, Sep 15, 2023 at 02:29:13AM +0000, Salil Mehta wrote:
-> > On x86, during init, if the MADT entry for LAPIC is found to be
-> > online-capable and is enabled as well then possible and present
->
-> Note that the ACPI spec says enabled + online-capable isn't defined.
->
-> "The information conveyed by this bit depends on the value of the
-> Enabled bit. If the Enabled bit is set, this bit is reserved and
-> must be zero."
->
-> So, if x86 is doing something with the enabled && online-capable
-> state (other than ignoring the online-capable) then technically it
-> is doing something that the spec doesn't define
+--EjQ9rfLhfbgZuC1z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And so it is wrong.
+On Fri, Sep 15, 2023 at 08:26:57AM +0000, Yong-Xuan Wang wrote:
+> We detect Svadu extension support from DTB and add arch_has_hw_pte_young()
+> to enable optimization in MGLRU and __wp_page_copy_user() if Svadu
+> extension is available.
+>=20
+> Signed-off-by: Jinyu Tang <tjytimi@163.com>
 
-> - and it's
-> completely fine if aarch64 does something else (maybe treating it
-> strictly as per the spec and ignoring online-capable.)
+You're either missing a From: or a Co-developed-by: tag here.
 
-That actually is the only compliant thing that can be done.
+> Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+> ---
+>  arch/riscv/include/asm/csr.h     | 1 +
+>  arch/riscv/include/asm/hwcap.h   | 1 +
+>  arch/riscv/include/asm/pgtable.h | 6 ++++++
+>  arch/riscv/kernel/cpufeature.c   | 1 +
+>  4 files changed, 9 insertions(+)
+>=20
+> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> index 777cb8299551..10648b372a2a 100644
+> --- a/arch/riscv/include/asm/csr.h
+> +++ b/arch/riscv/include/asm/csr.h
+> @@ -194,6 +194,7 @@
+>  /* xENVCFG flags */
+>  #define ENVCFG_STCE			(_AC(1, ULL) << 63)
+>  #define ENVCFG_PBMTE			(_AC(1, ULL) << 62)
+> +#define ENVCFG_HADE			(_AC(1, ULL) << 61)
+>  #define ENVCFG_CBZE			(_AC(1, UL) << 7)
+>  #define ENVCFG_CBCFE			(_AC(1, UL) << 6)
+>  #define ENVCFG_CBIE_SHIFT		4
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
+p.h
+> index b7b58258f6c7..1013661d6516 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -58,6 +58,7 @@
+>  #define RISCV_ISA_EXT_ZICSR		40
+>  #define RISCV_ISA_EXT_ZIFENCEI		41
+>  #define RISCV_ISA_EXT_ZIHPM		42
+> +#define RISCV_ISA_EXT_SVADU		43
+> =20
+>  #define RISCV_ISA_EXT_MAX		64
+> =20
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
+table.h
+> index b2ba3f79cfe9..f3d077dff8ac 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -629,6 +629,12 @@ static inline pgprot_t pgprot_writecombine(pgprot_t =
+_prot)
+>  	return __pgprot(prot);
+>  }
+> =20
+> +#define arch_has_hw_pte_young arch_has_hw_pte_young
+> +static inline bool arch_has_hw_pte_young(void)
+> +{
+> +	return riscv_has_extension_likely(RISCV_ISA_EXT_SVADU);
 
-As per the spec (quoted above), a platform firmware setting
-online-capable to 1 when Enabled is set is not compliant and it is
-invalid to treat this as meaningful data.
+No hardware currently has this, why is it likely?
 
-As currently defined, online-capable is only applicable to CPUs that
-are not enabled to start with and its role is to make it clear whether
-or not they can be enabled later AFAICS.
+> +}
+> +
+>  /*
+>   * THP functions
+>   */
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 1cfbba65d11a..ead378c04991 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -178,6 +178,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
+>  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+>  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+>  	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
+> +	__RISCV_ISA_EXT_DATA(svadu, RISCV_ISA_EXT_SVADU),
 
-If there is a need to represent the case in which a CPI that is
-enabled to start with can be disabled, but cannot be enabled again,
-the spec needs to be updated.
+This needs to be documented in riscv/extensions.yaml.
+
+Thanks,
+Conor.
+
+>  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+>  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+>  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+> --=20
+> 2.17.1
+>=20
+
+--EjQ9rfLhfbgZuC1z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQQZnAAKCRB4tDGHoIJi
+0ve4AP9Q0ygRFHy474fh3DdhHwB/cWcWUvu2epcVNm3sD+D+vAD/ThRidAt4fJqZ
+9lKQi1tz8nxCOaUKyukoH+PMnCRZrgw=
+=tV2Q
+-----END PGP SIGNATURE-----
+
+--EjQ9rfLhfbgZuC1z--
