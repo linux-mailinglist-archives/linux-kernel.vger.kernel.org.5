@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA1E7A2A3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08D87A2A40
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237092AbjIOWJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
+        id S237388AbjIOWLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237097AbjIOWJF (ORCPT
+        with ESMTP id S237617AbjIOWLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:09:05 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5161FDE
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694815735;
-        bh=jCDRcudEV2z0xDygC01UEyiZ7ZUyQQRl+C43Vbs1reA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=NBE+2GQvW+3ZM96PIB3FTFCsDWsGtRXsgh4WE06R/zbUaUNhgSwfG9TxDSeWzm+v0
-         ds7lxizlKv/6ZLzUGg9JdCAq4ggaQwza9pjv5vhQrG+fYqbmvHi5zt6vab4zVWXlvK
-         V6j7K9G76Fyz0zbK8eniBbnk3dhINtdBWIZb+hq8=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sat, 16 Sep 2023 00:08:54 +0200
-Subject: [PATCH] MAINTAINERS: nolibc: update tree location
+        Fri, 15 Sep 2023 18:11:19 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5041FD7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:11:14 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a49a42353so3099549a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694815873; x=1695420673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QzSWhVtYsIPnekLep1Vu6G/lb1VGtq/P5+5k7BGz5R8=;
+        b=bk4JZ3gRoBvhm+9zchkoW6J24LihPOu1cqsd+qAZPjxlsdtEk/99qyc5MJmssIrjjj
+         SuZ76DwlG6gKJYNfN7ZMybOFZSTwfkXPhUkDHeCQ6USP2JSjIVnvZSVvZw9Ke/EFmyxn
+         jKYA/A9VOtAidDw5XnVWgkVP7j3XniYsPWANU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694815873; x=1695420673;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzSWhVtYsIPnekLep1Vu6G/lb1VGtq/P5+5k7BGz5R8=;
+        b=MCg+65BN6zFzgbkiawA6uWzHjVDz6K8IWzpnyfZWhaUlvsvbk5zN5b1y0BWStCXkzS
+         M0Vitrcs5uX+15mQDHvIjzBgOzlQk06QD7mhUScySoZ4ffnM+gLBk+aseobQR2gDYRnA
+         IY/VZBPmYBeLJmDXntvm7y31hGb3HbnJCjUeihJsyDZagCs2kO2YH70fNaZdIDz8nzDN
+         gXYF3hlBoxGzoGP118+knHzd+oyXx+wQO1XOYQWpvzwGMLYPBYhSKykcpKxZx31EYmS5
+         w/anVPtWt5cgJwZJCcv7jfJMQCJGa9wu4d5NK5hGh4YyCZSQWqQdmiBiFfEAPNT5Yvhf
+         QoOQ==
+X-Gm-Message-State: AOJu0Yy5q9UNKOSpT38Lg30AEGlzmiomZZZ+m2LsD0q4K4hSafAEryiB
+        8Z8/ur7WzAlvac8o8pmVJoebSkYZJ9+W1ddqP5o1tKUr
+X-Google-Smtp-Source: AGHT+IGjrWIzyDha6vgO171kSsW5/ItGx2AL3VTZXtU43fqd2jMUbzu6oyoxQfDZyvgVEQxVeEjEEQ==
+X-Received: by 2002:a17:906:3d29:b0:9a1:c42e:5e5e with SMTP id l9-20020a1709063d2900b009a1c42e5e5emr2311881ejf.42.1694815872904;
+        Fri, 15 Sep 2023 15:11:12 -0700 (PDT)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b0099bd7b26639sm2957164ejb.6.2023.09.15.15.11.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 15:11:12 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso25156445e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:11:12 -0700 (PDT)
+X-Received: by 2002:a5d:5a97:0:b0:31f:fa1d:898 with SMTP id
+ bp23-20020a5d5a97000000b0031ffa1d0898mr1900059wrb.47.1694815871830; Fri, 15
+ Sep 2023 15:11:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230916-nolibc-tree-v1-1-06c9b59a5035@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAPXVBGUC/x3MQQqAIBBA0avIrBPUQqirRAtHpxoIDY0IpLsnL
- d/i/wqFMlOBSVTIdHPhFBt0J8DvLm4kOTSDUaZXo7YypoPRyysTyWA1OhwcoUdoxZlp5ee/zcv
- 7futbGbBdAAAA
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694815735; l=849;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=jCDRcudEV2z0xDygC01UEyiZ7ZUyQQRl+C43Vbs1reA=;
- b=p3MGH3rGLs9mlIl4dhvLUiWlSsgCRrJlTFkDU3aLK7DWk8gS4M/wzt3GqG5zde0qxFaMDnttk
- ILg2/13cXCuDxchHp/8MO/2fy9xntMBnGdyUXtBK/zmDIwTBaXFWu5P
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+ <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net> <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+ <20230915213231.GB23174@noisy.programming.kicks-ass.net> <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 15:10:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiq_0O+KT0x8OL5_rV2FkvxHNOWNxU=HKknmDGXin_r_w@mail.gmail.com>
+Message-ID: <CAHk-=wiq_0O+KT0x8OL5_rV2FkvxHNOWNxU=HKknmDGXin_r_w@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nolibc tree moved out of Willys user namespace into its own.
+On Fri, 15 Sept 2023 at 14:50, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Call it "cond_guard()", and make the syntax otherwise be the same as
+> "scoped_guard()", iow, using a unique ID for the guard name.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I *think* you don't even need a new "cond_guard()" macro.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..6c83087ea396 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15131,7 +15131,7 @@ NOLIBC HEADER FILE
- M:	Willy Tarreau <w@1wt.eu>
- M:	Thomas Weißschuh <linux@weissschuh.net>
- S:	Maintained
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git
- F:	tools/include/nolibc/
- F:	tools/testing/selftests/nolibc/
- 
+This might be as simple as having our current scoped_guard() macro
+have the conditional
 
----
-base-commit: 3f79a57865b33f49fdae6655510bd27c8e6610e0
-change-id: 20230916-nolibc-tree-d61bab4aebcb
+  "scope.lock && !done"
 
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
+instead of just the current "!done".
 
+Then you introduce "trylock" variants that conditionally set "lock = 1".
+
+I dunno. Maybe there's something really obvious I'm missing, but I
+really think that gives us the option to literally do just
+
+        scoped_guard(try_mutex, ..somelock..) {
+                ...
+        }
+
+and all it requires is for us to declare a "try_mutex" lock guard class.
+
+Ok, so the current DEFINE_LOCK_GUARD_x() macros clearly set .lock to 1
+unconditionally, so there's a small matter of extending the lock side
+to be conditional...
+
+"SMOP".
+
+                 Linus
