@@ -2,201 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262377A246E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89F47A2476
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbjIORQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
+        id S235647AbjIORR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235526AbjIORQn (ORCPT
+        with ESMTP id S235386AbjIORRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:16:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 292F983
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:16:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23CCB1FB;
-        Fri, 15 Sep 2023 10:17:15 -0700 (PDT)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 114303F5A1;
-        Fri, 15 Sep 2023 10:16:35 -0700 (PDT)
-Message-ID: <fa93564a-45b0-ccdd-c139-ae4867eacfb5@arm.com>
-Date:   Fri, 15 Sep 2023 18:16:11 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: resctrl2 - status
-Content-Language: en-GB
-To:     Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>
-Cc:     Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
- <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
- <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
- <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
- <ZOkU+d4AsLGSAG+y@agluck-desk3>
- <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
- <ZOlRNTq3lE7VNHjU@agluck-desk3>
- <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
- <ZPjDHN0nvHz9kWFn@agluck-desk3>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <ZPjDHN0nvHz9kWFn@agluck-desk3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 13:17:02 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4C583
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:16:56 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4043bc7c6c3so16848625e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694798215; x=1695403015; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Yhhwla0q64mfAEvxb+65DeZKNsI9N7tlzgRLGYw6MMQ=;
+        b=DSZB+5Ma9OY/BtxdTkrSpkeXHnatd3Db+QYRs8g42XVydIbnVYYuRP1tTZ9U18B9cE
+         KOL9rCUj4epM52ateuMhYWj7E+1FO5Wg3ronVw5/haJLc32/lsj9XLvnT9bi75+IxdmM
+         WjiQk0+yDzw8vnziSwiJzfSB3qdweF0IF6taCJt3nhCaKmbD9e5LSTzLo4BdVHziRR+l
+         9flEfCZ6iVGVUoy0RFkUNcbCJQCrTc+XZhtOgjL4UnK3Cyy3MnFmhXyMs7nMNcBelf/B
+         HYQOelv/qF1rrTw35mZ3KN6kX4rSJ4SDQiViH3kCBaPJoNINC67WVbHL6MmN/tWx623U
+         xJLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694798215; x=1695403015;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yhhwla0q64mfAEvxb+65DeZKNsI9N7tlzgRLGYw6MMQ=;
+        b=VGmCCrKlkRDpnOiHCZu4I1ooUrScTBdVrHqia6QHy6x87OPk5Q3raaDgvOcxPdwFsG
+         c2zvrOTJDmHsJ78zc1XLlS0XP9Gj4U472Qlskv4Bh+JTL+B1oQXm0b6q4zZpA4gCzm5y
+         pR3xNM8VkJ4t9lWGA9yKV8z4H1ovjnkWuoxiI7OtWkE0pcNpXui+Yo7vvtgb1RdxcYsK
+         oTe05yciJvZbvThwZMkBVVtxFFuSLk0/HuTXk7lzMnQb13EgYZGlghh85iKRZO2DaJUZ
+         OB24ahDwyhQFircjo/mHMDrQBOEVgOyVEYENaE6CRR9QAVV+dveu9WZVEDQTuBCYq58D
+         THBQ==
+X-Gm-Message-State: AOJu0YzNhZMe4dFlfDPBnAga+3NDt9RDuuhzjLUFTn/ZN6VGEid5GdgS
+        ZOELWoyLqJLIQ+83XaCmwulCCnDw
+X-Google-Smtp-Source: AGHT+IGOKZB3etJWSf3a4ggnUZAWd/NfGW/XWhm68UG564TCgWUah4IfQRybpm4jrxvkFEPjuE22hqDP
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
+ (user=ardb job=sendgmr) by 2002:a05:600c:219a:b0:402:f52f:10bc with SMTP id
+ e26-20020a05600c219a00b00402f52f10bcmr41340wme.4.1694798215386; Fri, 15 Sep
+ 2023 10:16:55 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 17:16:24 +0000
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3354; i=ardb@kernel.org;
+ h=from:subject; bh=EtVAkpkv5PV6KFRb2SeP4yuLjjWAyfwe/VX5jt4+kBo=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVlYnp+9qcExUmGP5ZvD/DSVn521DNiwf+rfxQlohZGh
+ qu+tJvaUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACayxZzhr+SR3RpTkn8F5318
+ qLA5y6Pc2GRy+7s5z85dSZ3Is/BY7QJGhud7lz73XlURWqOUvjRPpdxiI6e/7Knc7rqnivJV54N FmQE=
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230915171623.655440-10-ardb@google.com>
+Subject: [PATCH v3 0/8] x86/boot: Rework PE header generation
+From:   Ard Biesheuvel <ardb@google.com>
+To:     linux-efi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+From: Ard Biesheuvel <ardb@kernel.org>
 
-On 06/09/2023 19:21, Tony Luck wrote:
-> I've just pushed an updated set of patches to:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git resctrl_v65
-> 
-> Rebased to v6.5. Includes the module auto-load code discussed in
-> previous e-mail.
+Now that the EFI stub boot flow no longer relies on memory that is
+executable and writable at the same time, we can reorganize the PE/COFF
+view of the kernel image and expose the decompressor binary's code and
+r/o data as a .text section and data/bss as a .data section, using 4k
+alignment and limited permissions.
 
-I've taken a look at your resctrl2_v65rc7 branch. I don't think my reply to your first
-series got sent, sorry if I'm actually repeating myself.
+Doing so is necessary for compatibility with hardening measures that are
+being rolled out on x86 PCs built to run Windows (i.e., the majority of
+them). The EFI boot environment that the Linux EFI stub executes in is
+especially sensitive to safety issues, given that a vulnerability in the
+loader of one OS can be abused to attack another.
 
-It goes without saying that I'd prefer we refactor the existing filesystem into the shape
-we need, instead of a wholesale replacement.
+In true x86 fashion, this is a lot more complicated than on other
+architectures, which have implemented this code/data split with 4k
+alignment from the beginning. The complicating factor here is that the
+boot image consists of two different parts, which are stitched together
+and fixed up using a special build tool.
 
+After this series is applied, the only remaining task performed by the
+build tool is generating the CRC-32. Even though this checksum is
+usually wrong (given that distro kernels are signed for secure boot in a
+way that corrupts the CRC), this feature is retained as we cannot be
+sure that nobody is relying on this.
 
-All this focusses on the structure of the code, but we can change that anytime. I'd prefer
-we work out what user-space needs and go from there.
+This supersedes the work proposed by Evgeniy last year, which did a
+major rewrite of the build tool in order to clean it up, before updating
+it to generate the new 4k aligned image layout. As this series proves,
+the build tool is mostly unnecessary, and we have too many of those
+already.
 
-I think the problems are:
- * Discovering what the platform supports, including possible conflicting schemes.
- * Architecture/Platform specific schema. e.g. SMBA. MPAM will have a handful of these too.
-* User-space should know which schema are portable, and which are not. e.g. L2/L3/MB.
-* Different control types for the same resource. e.g. Intel uses a percentage for
-bandwidth control, AMD an absolute number. We should standardise this sort of thing and
-make it discoverable.
-* Conflicting schemes for the same hardware. e.g. CDP and mba_MBps
+Changes since v2:
+- rebase onto tip/master
+- drop patches that have been picked up already
+- fix issue in the linker script that resulted in a bogus setup_size in
+  some cases when using ld.bfd
+- fix comment capitalization
 
-~
+Changes since v1:
+- drop patch that removed the CRC and the build tool
+- do not use fixed setup_size but derive it in the setup.ld linker
+  script
+- reorganize the PE header so the .compat section only covers its
+  payload and the padding that follows it
+- add hpa's ack to patch #4
 
-I'd really like to keep the 'core' schema in the base driver. This is to ensure that 'L3'
-doesn't behave differently due to differing software implementation on Intel/AMD/Arm/riscv.
-
-The L{2.3} schema were really well defined as they reference other things that are already
-visible in sysfs, this makes them nice and portable. I think this is the standard we
-should aim for with any new schema, and only resort to making them arch-specific if the
-hardware is just too strange.
-I tried to find a way to do this for SMBA as arm platforms will certainly have something
-similar, but the 'any other NUMA node' behaviour was just too specific to what was built.
-
-I suspect this could be done with a frontend/backend split, with a 'common' directory
-holding the frontend driver for schema that apply to all architectures if the backend has
-shown up.
-
-~
-
-Because I think the types a schema is configured with should be portable across
-architectures, I'd prefer the string parsing code lives in the core code, and isn't
-duplicated by every submodule! String parsing in the kernel is bad enough!
-
-The obvious types we have so far are: bitmap/percentage/number/bandwidth. I think it makes
-sense for user-space to be told what the schema is configured with, and let the core code
-do that parsing.
-
-~
-
-I don't have a good answer for conflicting drivers for the same hardware resource. I think
-we'd need to find a way of making the existing command-line arguments work, causing the
-corresponding module to auto-load.
-
-But this sucks for distros, who would need somewhere to describe the policy of which
-modules get loaded. The good news is things like libvirt aren't mounting resctrl themselves.
-
-~
-
-I suspect the CDP schemes should be made arch-specific as x86 needs the odd/even pairing,
-whereas MPAM does not. This would allow a scheme where the Iside CLOSIDs can be shared to
-avoid halving the available CLOSID.
-
-Having somewhere sensible to put the MPAM driver is useful. It's currently dumped in
-drivers/platform as it doesn't really fit anywhere!
-
-Allowing each submodule to add extra files to the info directories looks useful. MPAM's
-priority control has a property to say whether 0 is the top of the scale or not, this
-would allow it to be exposed to user-space, instead of having to shift the range up/down
-to hide the difference in behaviour.
-
-MPAM only needs to update the hardware on a CPU that is part of target domain on some
-platforms. The vast majority would allow the MMIO writes to come from anywhere. Having the
-applychanges behaviour specific to the submodule would reduce the number of IPI.
-From what I've seen, riscv never needs an IPI here.
-
-It looks like all the core code runs at process context without touching the pre-empt
-counter or masking interrupts - this is a really nice property. Most of my headaches have
-come from this area.
-
-The limbo work isn't arch specific, that is a property of caches, it should really be core
-code behaviour to avoid duplication. MPAM needs that, I expect riscv does too.
-
-Making the CLOSID/RMID allocation behaviour arch specific saves some headaches. MPAM is
-particularly different in this area. I don't know what riscv's behaviour is here.
+Cc: Evgeniy Baskov <baskov@ispras.ru>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Jones <pjones@redhat.com>
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 
 
+Ard Biesheuvel (8):
+  x86/boot: Grab kernel_info offset from zoffset header directly
+  x86/boot: Set EFI handover offset directly in header asm
+  x86/boot: Define setup size in linker script
+  x86/boot: Derive file size from _edata symbol
+  x86/boot: Construct PE/COFF .text section from assembler
+  x86/boot: Drop PE/COFF .reloc section
+  x86/boot: Split off PE/COFF .data section
+  x86/boot: Increase section and file alignment to 4k/512
 
-> James: 
-> 
-> I'm now hoping for some feedback from ARM folks on whether this is a
-> useful direction. Is it possible to implement MPAM features on top of
-> this base architecture independent layer. If not, am I just missing
-> some simple extensions that you will need. Or is there some fundamental
-> problem that looks hard/impossible to resolve?
+ arch/x86/boot/Makefile                 |   2 +-
+ arch/x86/boot/compressed/vmlinux.lds.S |   5 +-
+ arch/x86/boot/header.S                 | 146 +++++++------
+ arch/x86/boot/setup.ld                 |   7 +-
+ arch/x86/boot/tools/build.c            | 223 +-------------------
+ 5 files changed, 97 insertions(+), 286 deletions(-)
 
+-- 
+2.42.0.459.ge4e396fd5e-goog
 
-You've got an rdt_l2_cat driver which is really a symlink to rdt_l3_cat built with
-different pre-processor defines. It's a good trick, but it only works because you know the
-full range of hardware that has been built.
-MPAM can't do things like this, it really is a bag of bits, and it isn't until the ACPI
-tables are parsed to find where the resources are - and then that hardware is probed -
-that we have a clue what was built.
-For example, the cache controls could be on any cache in the hierarchy, and the number is
-derived from the structure of the PPTT table. You've already got a fair amount of
-duplication when multiple struct resctrl_resources are defined. MPAM would have to
-allocate and populate these dynamically to avoid building a module for 'L5' ... just in
-case someone built that...
-
-The mba_MBps logic is really just software, I see no reason to duplicate it on multiple
-architectures. This should be in the core of the filesystem. We already have a mount
-option to enable it.
-
-I see the arch/submodules can't influence the domain numbers ... this is a problem as it
-hardcodes "you can have L2 or L3", which is something you were trying to avoid. MPAM will
-want to use NUMA-IDs for memory-side-caches, (I'd hope this to be a core/portable schema),
-as well as IOMMU-IDs for the I/O side of this.
-I don't think this is really a problem, as I'd like to add the things I need in this area
-as core/portable schema.
-
-Arm's IOMMU has support to label traffic with the equivalent to CLOSID/RMID. My prototype
-support for this adds IOMMU-groups to the resctrl tasks file so that the devices can be
-moved between control/monitor groups as if they were tasks. I think this would work for
-other architectures if they had similar support as IOMMU-groups are an existing concept.
-
-
-Thanks,
-
-James
