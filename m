@@ -2,124 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84347A22C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B533F7A22CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbjIOPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
+        id S236300AbjIOPp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236250AbjIOPoy (ORCPT
+        with ESMTP id S236316AbjIOPpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:44:54 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AE0F3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:44:45 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4142ca41b89so13475721cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1694792684; x=1695397484; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ad1gGutAVP5/Tgl+c7iRZuNausX9kqPfW/rFp80jjCw=;
-        b=uncMKVYFg6E+IO0/LthlqxYKHvF/Lt6BnSataDD12U0PjFjNRKjHufTyChsXVSqAC0
-         FOqZnzKWo2iCKOwoeubNc17ZiP1D4sbizCo/P3aal8KrXGWKNYXjCPOlNShHj3VjRpgr
-         Q+Pc7iw6shrlmQszD6UxkczHCx9AR0b34ozywWVEAhkdXB3v7BKed5a1XrhMNSv8r/5a
-         x/ctnC1k2bJ0qh6XeZdiX5rK7/ilnmesrLYkBc0/YRBObhrvt/102kfwooQOrzkGo6iN
-         3KTFW3L6N3R6uqzhaPL5/6LoYe0UTT4ZoKmas5noOF5kJ3drrkXBxzxsqH7x6ak7cu+y
-         p6nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694792684; x=1695397484;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ad1gGutAVP5/Tgl+c7iRZuNausX9kqPfW/rFp80jjCw=;
-        b=sG8VQ8ugjCa1oqjpi0dojF0j31lDbs0M14BxlAi/gK+vWL+K596melOrTjJHra2Gmf
-         sueKU7HzpqnNejCo51blZu+CWsulPNzKV6D+kogD+iDVE4OB4CXj60re3eEerZScXSve
-         p/RTYCd+BUoBYlEO3RYKe+fRTEANqnc/OcQx1WX4RzzzhRdqYbIn3b8KieiL2vsZYLdm
-         Z612c6DEsh0VSi5k3VUtxpHm8BFXG9miE81ScCR6lEvkqF3I72sSplY7xvf0NjRsWv+e
-         ds9U9ev4aJpupzyjKkOo7kfGuVQjq5l9eoOku609ZUg+nnreVjv3Ol1Np9X4PZliIETF
-         eV4g==
-X-Gm-Message-State: AOJu0YzRSi3Nanc0OUzOeX9et3/h6Jeib8I+MZYGrig6r1JVWy3U6a6e
-        uFVQ5UO3WSdepj0n4wv+lM6fb16IME8YCXNSQAJapA==
-X-Google-Smtp-Source: AGHT+IFCCAFQe2QKdmHmHF9P0nc3PPnFxwxNjA+I3SGdpiNMgEx9ZYpDNLvzY1Q1/ZD232OHwktajw==
-X-Received: by 2002:ac8:5d0b:0:b0:403:b395:b450 with SMTP id f11-20020ac85d0b000000b00403b395b450mr2764065qtx.2.1694792684693;
-        Fri, 15 Sep 2023 08:44:44 -0700 (PDT)
-Received: from dell-precision-5540 ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id ih17-20020a05622a6a9100b004100c132990sm1225549qtb.44.2023.09.15.08.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 08:44:43 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 11:44:40 -0400
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Greg Ungerer <gerg@uclinux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>
-Subject: Re: [PATCH] proc: nommu: /proc/<pid>/maps: release mmap read lock
-Message-ID: <ZQR76GSNEmG6w2oe@dell-precision-5540>
-References: <20230914163019.4050530-2-ben.wolsieffer@hefring.com>
- <20230915121514.GA2768@redhat.com>
+        Fri, 15 Sep 2023 11:45:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245ECE50;
+        Fri, 15 Sep 2023 08:45:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0059FC433C8;
+        Fri, 15 Sep 2023 15:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694792702;
+        bh=Qregf0tH1tsCYFbBuD+Q1zfzNkRiTa1wEmXhRR539Ek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QHw1jwoHjfR5dVAEhU+mPqm5LqyXTn7IHaJ7ORwf34e38PQ9SKQ3yYRdzQtG9RCDv
+         NybmMv1DkUZCVtMjTlY+I9uc9wC3SPNoRbY44vrAuah4Lb9qCt3fiQ6grgZ45Ils+/
+         sAReNwpTw8E2b79fQ7a0Cy+P2JDPiBk/gIvCbvy9cpx7s6nig9UWzmBTEOylfuPqHr
+         n/Mx00urPd3cb2OJHDSnLzZq/i7h1Z3CMBFN9oHCmo9MSFDerXVOtT2gk5LYv1085V
+         LZrt58Xt9B6UjzJwYaGl+rGPgRGlILnGALhFb+tMshLpTTxzFMmMqh4COjDZhpd205
+         X6/BDzPLHzFWQ==
+Date:   Fri, 15 Sep 2023 16:44:57 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: backlight: Add MPS MP3309C
+Message-ID: <20230915-sinuous-domestic-80cd8775ecb0@spud>
+References: <20230915140516.1294925-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yPgh0h9ks6ap+XUD"
 Content-Disposition: inline
-In-Reply-To: <20230915121514.GA2768@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230915140516.1294925-1-f.suligoi@asem.it>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:15:15PM +0200, Oleg Nesterov wrote:
-> Sorry for the offtopic question. I know NOTHING about nommu and when I tried to
-> review this patch I was puzzled by
-> 
-> 	/* See m_next(). Zero at the start or after lseek. */
-> 	if (addr == -1UL)
-> 		return NULL;
-> 
-> at the start of m_start(). OK, lets look at
-> 
-> 	static void *m_next(struct seq_file *m, void *_p, loff_t *pos)
-> 	{
-> 		struct vm_area_struct *vma = _p;
-> 
-> 		*pos = vma->vm_end;
-> 		return find_vma(vma->vm_mm, vma->vm_end);
-> 	}
-> 
-> where does this -1UL come from? Does this mean that on nommu
-> 
-> 	last_vma->vm_end == -1UL
-> 
-> or what?
-> 
-> fs/proc/task_mmu.c has the same check at the start, but in this case
-> the "See m_next()" comment actually helps.
 
-Yes, this is another copying mistake from the MMU implementation. In
-fact, it turns out that no-MMU /proc/<pid>/maps is completely broken
-after 0c563f148043 ("proc: remove VMA rbtree use from nommu"). It just
-returns an empty file.
+--yPgh0h9ks6ap+XUD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This happens because find_vma() doesn't do what we want here. It "look[s]
-up the first VMA in which addr resides, NULL if none", and the address
-will be zero in in m_start(), which makes find_vma() return NULL (unless
-presumably the zero address is actually part of the process's address
-space).
+Yo,
 
-I didn't run into this because I developed my patch against an older
-kernel, and didn't test the latest version until today.
+On Fri, Sep 15, 2023 at 04:05:15PM +0200, Flavio Suligoi wrote:
+> The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring=
+ a
+> programmable switching frequency to optimize efficiency.
+> The brightness can be controlled either by I2C commands (called "analog"
+> mode) or by a PWM input signal (PWM mode).
+> This driver supports both modes.
+>=20
+> For device driver details, please refer to:
+> - drivers/video/backlight/mp3309c_bl.c
+>=20
+> The datasheet is available at:
+> - https://www.monolithicpower.com/en/mp3309c.html
+>=20
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>=20
+> v2:
+>  - remove useless properties (dimming-mode, pinctrl-names, pinctrl-0,
+>    switch-on-delay-ms, switch-off-delay-ms, reset-gpios, reset-on-delay-m=
+s,
+>    reset-on-length-ms)
+>  - add common.yaml#
+>  - remove already included properties (default-brightness, max-brightness)
+>  - substitute three boolean properties, used for the overvoltage-protecti=
+on
+>    values, with a single enum property
+>  - remove some conditional definitions
+>  - remove the 2nd example
+> v1:
+>  - first version
+>=20
+>  .../bindings/leds/backlight/mps,mp3309c.yaml  | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/mps,=
+mp3309c.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c=
+=2Eyaml b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> new file mode 100644
+> index 000000000000..99ccdba2c08f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/backlight/mps,mp3309c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MPS MP3309C backlight
+> +
+> +maintainers:
+> +  - Flavio Suligoi <f.suligoi@asem.it>
+> +
+> +description: |
+> +  The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featur=
+ing a
+> +  programmable switching frequency to optimize efficiency.
+> +  It supports two different dimming modes:
+> +
+> +  - analog mode, via I2C commands (default)
+> +  - PWM controlled mode.
+> +
+> +  The datasheet is available at:
+> +  https://www.monolithicpower.com/en/mp3309c.html
+> +
+> +allOf:
+> +  - $ref: common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: mps,mp3309c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  pwms:
+> +    description: if present, the backlight is controlled in PWM mode.
+> +    maxItems: 1
+> +
+> +  enable-gpios:
+> +    description: GPIO used to enable the backlight in "analog-i2c" dimmi=
+ng mode.
+> +    maxItems: 1
+> +
+> +  mps,overvoltage-protection-microvolt:
+> +    description: Overvoltage protection (13.5V, 24V or 35.5V). If missin=
+g, the
+> +      hardware default of 35.5V is used.
+> +    enum: [ 13500000, 24000000, 35500000 ]
+You can add "default: 35500000" and drop the free form default as text
+in the description.
 
-I'm preparing a second patch to fix this bug.
+Cheers,
+Conor.
 
-> 
-> Just curious, thanks.
-> 
-> Oleg.
-> 
+> +
+> +  mps,no-sync-mode:
+> +    description: disable synchronous rectification mode
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - max-brightness
+> +  - default-brightness
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        /* Backlight with PWM control */
+> +        backlight_pwm: backlight@17 {
+> +            compatible =3D "mps,mp3309c-backlight";
 
-Thanks, Ben
+As the bot pointed out, the compatible doesn't contain "backlight".
+
+> +            reg =3D <0x17>;
+> +            pwms =3D <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*10^9 */
+> +            max-brightness =3D <100>;
+> +            default-brightness =3D <80>;
+> +            overvoltage-protection-microvolt =3D <24000000>;
+> +        };
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--yPgh0h9ks6ap+XUD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQR7+QAKCRB4tDGHoIJi
+0qu3AP9Bz0EaOdt7BsQosUR3kq9l/T8DdXqt/pJptO2kCXeKWQEA6onZzo3SVse2
+n9/uxRJXUqWxvY0hZmRJxJVus3oZQgc=
+=uV79
+-----END PGP SIGNATURE-----
+
+--yPgh0h9ks6ap+XUD--
