@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFC97A15A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6857A15AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjIOFrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
+        id S232144AbjIOFrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbjIOFrO (ORCPT
+        with ESMTP id S232141AbjIOFrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:47:14 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18712723
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:50 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6c0bbbbad81so1028180a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:46:50 -0700 (PDT)
+        Fri, 15 Sep 2023 01:47:20 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EB02719
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:47:14 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bfc5218dd8so27298281fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694756810; x=1695361610; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1694756833; x=1695361633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/CZRQ4CQ6CK+YkV5XceF78ucYRwapU0IqEIE5QvZWaU=;
-        b=Zz+uMINPeTq/PinHIQ6ze0FrNAmyBRdXSSBPWVQKf4y+ALbKu2w4HqPU/p3ae9qmGb
-         VzJ6xWNvRQnmeXYvL4V941hWdV8OUORhreFef9ybd3XWnagY4kFHG2lp4HN7amAzoXmd
-         NipFyr2+4dP3RH6MW1x58aU0Fzg+FYWnwuF2qjCpS1wz+TIjmXMaEmnsem5snXTuAUrW
-         o34gcjGhU5fB+e4zNZ/q7P2U1d/pzfgsU91e2arzXSjUSFul1XiXzGwo+JarxiIFjhlk
-         2ZJNKUFTCHmkz9MEmZa/LK4ljxOLA8iVn0W+kONL9UMP9sO5xjyX+DP0/AM0MMS05Z7W
-         vdVg==
+        bh=a5dc0RapsJHRQN53o8cJrIr79i5yRR+ziDw1tWj/hHA=;
+        b=QfIxft7IqHZLgWnz3JpSP9uxqXMnmkfORydpkR7+HIFHhc3MHEvLkfxZBSs3gDNdfU
+         FT0NxiO3c4uzVjuIUwGcT2z35h6xPN2a9m8Qs88aaYY5skMysZD4cM+A/xgbUalTvuyT
+         +YuZJS5kj4/FBP6z29+Ii79e+Ru4hCKnqPS0y/SDB0HynovWt2qL4pPc7LvoMzYST30c
+         s8ba7oujFhgLE9VjonsNzlWn7EIFux/IELkOyMaGmid+SFb1vyZGGB6w+s11A2z514N6
+         gzYfC9t9V3k2LMcHAbjdE/KpafCng9tRIFD9P31ZGALEy7Fqj/vEJlZhXG1gEaU2rmrG
+         jxxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694756810; x=1695361610;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/CZRQ4CQ6CK+YkV5XceF78ucYRwapU0IqEIE5QvZWaU=;
-        b=exdjlECcIYIjztkidq7DuSVzN/2JoIVNpRRVe+m0b3Zxi5pGdn7M3nlcUDLOrFYa8T
-         P44n4iQdecpKOx6KFzU6QdHL/derXBm+j7HmJW2g0IFwXcDzr4hQ5RaNvubml76knqtA
-         thZp799EFH7mecTKWa9QbQ+/1ruglgROXzyeyE3dPGuTFTA20nSfIj4w6Tohnh/aP/3r
-         JUlo27/7D0/pd1WbRVg354ALfpoJ3Po2us7isjWPBWLtzRtH1IraykG2tUfs83nft6/x
-         3g/jPEOcQKx1McicoKrgNwXzZFkD0SZE3DlTJt0GwH7EOWc4jThRpoka9yDwkWsogf1T
-         1jBw==
-X-Gm-Message-State: AOJu0YypPFNskomVOstD0Xwe6AtYuAVOavDEK2SENvPa7LVBcq6R4hAl
-        PYLel7HuXZvVbO9Ha9JSI7CY/g==
-X-Google-Smtp-Source: AGHT+IEAf62T3zogBmbVWVikOJPTGmIh1M7XLPIKHovm7Mf2QTBEXIlgbiBNth20Wm493LlEXcFXGQ==
-X-Received: by 2002:a9d:7316:0:b0:6bc:63ca:a245 with SMTP id e22-20020a9d7316000000b006bc63caa245mr579623otk.10.1694756809901;
-        Thu, 14 Sep 2023 22:46:49 -0700 (PDT)
-Received: from [10.84.145.144] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id j4-20020aa78dc4000000b00686fe7b7b48sm2190209pfr.121.2023.09.14.22.46.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 22:46:49 -0700 (PDT)
-Message-ID: <8f388b8f-bc19-5ad1-00ee-e67cdcdd9d4f@bytedance.com>
-Date:   Fri, 15 Sep 2023 13:46:43 +0800
+        d=1e100.net; s=20230601; t=1694756833; x=1695361633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a5dc0RapsJHRQN53o8cJrIr79i5yRR+ziDw1tWj/hHA=;
+        b=cpFEJ3MdWjUn0q7H7VBtvoBjtjo68RPKpoic3zPrnbjPie0nSmpSCrCoHl9Ix7e/7a
+         W0BBpL4C2dye2YTok+Vntg8vEKr4JkuRQpdiqQ4X5ivT6t5gp8b/03fna0RWqkziZFvy
+         ssw2foQJCOaFLYiArraau698nb8jNlP6l2Ev5y3siMliKaL6My+lBiIAwAnizBYlX+sp
+         5+ojXFpzSxc36daVo0YBGuOwHskfVX++MCUbaC0WTUaRhV4I/cjeavtXMWQjSxqGR7jF
+         4xv+cw/IbGuxf3ndGIxTlsElpxbrUKix99ejHxwDUfSZ2wyuOan8yxsNMFPkqncE8M+f
+         GXFQ==
+X-Gm-Message-State: AOJu0YwBSm2avD51OEIC30oykh5MdbtXr/BK6cxfJi6M4G9yu8g8gQmD
+        lAFwpCLaWnHnoQHEQcBjRm+baHv0+KKaM9kMcHM=
+X-Google-Smtp-Source: AGHT+IHvdaJpFwbo/Bxy9YcFi/E9XHr2+yJoPfdexlwLicIjMp5w2xNyBGPYT2kgxQDJpBlowPT54BifZOgYPFqahto=
+X-Received: by 2002:a2e:494a:0:b0:2bc:d634:2210 with SMTP id
+ b10-20020a2e494a000000b002bcd6342210mr623143ljd.16.1694756832856; Thu, 14 Sep
+ 2023 22:47:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [External] Re: [PATCH bpf-next v2 5/6] bpf: teach the verifier to
- enforce css_iter and process_iter in RCU CS
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-6-zhouchuyi@bytedance.com>
- <4c15c9fc-7c9f-9695-5c67-d3f214d04bd9@bytedance.com>
- <1f9cae15-979c-c049-78a9-f89d5cd1b53e@bytedance.com>
- <CAEf4BzZ18pjmav45mxhQ9eigJuAWnowgSm=+c==8dY0AUm2WdQ@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAEf4BzZ18pjmav45mxhQ9eigJuAWnowgSm=+c==8dY0AUm2WdQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <20230912103334.2074140-1-zhaoyang.huang@unisoc.com>
+ <ZQBW23Upv/CdN9v6@casper.infradead.org> <CAGWkznEt+mAGtEN+mQm3ZdxTpScmBBOa0TT=oLtuTF6Z-ipqZw@mail.gmail.com>
+ <ZQFv8+tI/hEaOzcD@shell.armlinux.org.uk> <CAGWkznHjSpYus5y=yYhQkdF9aaMtFvyfXLjc=fhrNs3CGHVwHg@mail.gmail.com>
+In-Reply-To: <CAGWkznHjSpYus5y=yYhQkdF9aaMtFvyfXLjc=fhrNs3CGHVwHg@mail.gmail.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Fri, 15 Sep 2023 13:47:01 +0800
+Message-ID: <CAGWkznHW0c3ZWyMrzwui5oqaz7e-v6JgvEegyTd6MQTM=_J2XQ@mail.gmail.com>
+Subject: Re: [PATCH] arch: arm: remove redundant clear_page when
+ CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ke.wang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,151 +76,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+any further comments, it is arised from a real performance issue
+observed double times of memset in ARM A55 which should be waste. What
+this patch suggest is to remove the latter one while ensure the page
+will be cleared under all scenarios
 
-在 2023/9/15 07:26, Andrii Nakryiko 写道:
-> On Thu, Sep 14, 2023 at 1:56 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->>
->>
->> 在 2023/9/13 21:53, Chuyi Zhou 写道:
->>> Hello.
->>>
->>> 在 2023/9/12 15:01, Chuyi Zhou 写道:
->>>> css_iter and process_iter should be used in rcu section. Specifically, in
->>>> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
->>>> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
->>>> use them directly.
->>>>
->>>> This patch checks whether we are in rcu cs before we want to invoke
->>>> bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
->>>> mark_stack_slots_iter(). If the rcu protection is guaranteed, we would
->>>> let st->type = PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() will
->>>> reject if reg->type is UNTRUSTED.
->>>
->>> I use the following BPF Prog to test this patch:
->>>
->>> SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
->>> int iter_task_for_each_sleep(void *ctx)
->>> {
->>>       struct task_struct *task;
->>>       struct task_struct *cur_task = bpf_get_current_task_btf();
->>>
->>>       if (cur_task->pid != target_pid)
->>>           return 0;
->>>       bpf_rcu_read_lock();
->>>       bpf_for_each(process, task) {
->>>           bpf_rcu_read_unlock();
->>>           if (task->pid == target_pid)
->>>               process_cnt += 1;
->>>           bpf_rcu_read_lock();
->>>       }
->>>       bpf_rcu_read_unlock();
->>>       return 0;
->>> }
->>>
->>> Unfortunately, we can pass the verifier.
->>>
->>> Then I add some printk-messages before setting/clearing state to help
->>> debug:
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index d151e6b43a5f..35f3fa9471a9 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -1200,7 +1200,7 @@ static int mark_stack_slots_iter(struct
->>> bpf_verifier_env *env,
->>>                   __mark_reg_known_zero(st);
->>>                   st->type = PTR_TO_STACK; /* we don't have dedicated reg
->>> type */
->>>                   if (is_iter_need_rcu(meta)) {
->>> +                       printk("mark reg_addr : %px", st);
->>>                           if (in_rcu_cs(env))
->>>                                   st->type |= MEM_RCU;
->>>                           else
->>> @@ -11472,8 +11472,8 @@ static int check_kfunc_call(struct
->>> bpf_verifier_env *env, struct bpf_insn *insn,
->>>                           return -EINVAL;
->>>                   } else if (rcu_unlock) {
->>>                           bpf_for_each_reg_in_vstate(env->cur_state,
->>> state, reg, ({
->>> +                               printk("clear reg_addr : %px MEM_RCU :
->>> %d PTR_UNTRUSTED : %d\n ", reg, reg->type & MEM_RCU, reg->type &
->>> PTR_UNTRUSTED);
->>>                                   if (reg->type & MEM_RCU) {
->>> -                                       printk("clear reg addr : %lld",
->>> reg);
->>>                                           reg->type &= ~(MEM_RCU |
->>> PTR_MAYBE_NULL);
->>>                                           reg->type |= PTR_UNTRUSTED;
->>>                                   }
->>>
->>>
->>> The demsg log:
->>>
->>> [  393.705324] mark reg_addr : ffff88814e40e200
->>>
->>> [  393.706883] clear reg_addr : ffff88814d5f8000 MEM_RCU : 0
->>> PTR_UNTRUSTED : 0
->>>
->>> [  393.707353] clear reg_addr : ffff88814d5f8078 MEM_RCU : 0
->>> PTR_UNTRUSTED : 0
->>>
->>> [  393.708099] clear reg_addr : ffff88814d5f80f0 MEM_RCU : 0
->>> PTR_UNTRUSTED : 0
->>> ....
->>> ....
->>>
->>> I didn't see ffff88814e40e200 is cleared as expected because
->>> bpf_for_each_reg_in_vstate didn't find it.
->>>
->>> It seems when we are doing bpf_read_unlock() in the middle of iteration
->>> and want to clearing state through bpf_for_each_reg_in_vstate, we can
->>> not find the previous reg which we marked MEM_RCU/PTR_UNTRUSTED in
->>> mark_stack_slots_iter().
->>>
->>
->> bpf_get_spilled_reg will skip slots if they are not STACK_SPILL, but in
->> mark_stack_slots_iter() we has marked the slots *STACK_ITER*
->>
->> With the following change, everything seems work OK.
->>
->> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->> index a3236651ec64..83c5ecccadb4 100644
->> --- a/include/linux/bpf_verifier.h
->> +++ b/include/linux/bpf_verifier.h
->> @@ -387,7 +387,7 @@ struct bpf_verifier_state {
->>
->>    #define bpf_get_spilled_reg(slot, frame)                               \
->>           (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
->> -         (frame->stack[slot].slot_type[0] == STACK_SPILL))             \
->> +         (frame->stack[slot].slot_type[0] == STACK_SPILL ||
->> frame->stack[slot].slot_type[0] == STACK_ITER))            \
->>            ? &frame->stack[slot].spilled_ptr : NULL)
->>
->> I am not sure whether this would harm some logic implicitly when using
->> bpf_get_spilled_reg/bpf_for_each_spilled_reg in other place. If so,
->> maybe we should add a extra parameter to control the picking behaviour.
->>
->> #define bpf_get_spilled_reg(slot, frame, stack_type)
->>                          \
->>          (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
->>            (frame->stack[slot].slot_type[0] == stack_type))              \
->>           ? &frame->stack[slot].spilled_ptr : NULL)
->>
->> Thanks.
-> 
-> I don't think it's safe to just make bpf_get_spilled_reg, and
-> subsequently bpf_for_each_reg_in_vstate and bpf_for_each_spilled_reg
-> just suddenly start iterating iterator states and/or dynptrs. At least
-> some of existing uses of those assume they are really working just
-> with registers.
-
-IIUC, when we are doing bpf_rcu_unlock, we do need to clear the state of 
-reg including STACK_ITER.
-
-Maybe here we only need change the logic when using 
-bpf_for_each_reg_in_vstate to clear state in bpf_rcu_unlock and keep 
-everything else unchanged ?
-
-Thanks.
+On Wed, Sep 13, 2023 at 4:53=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gmail=
+.com> wrote:
+>
+> On Wed, Sep 13, 2023 at 4:17=E2=80=AFPM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Wed, Sep 13, 2023 at 09:13:14AM +0800, Zhaoyang Huang wrote:
+> > > On Tue, Sep 12, 2023 at 8:18=E2=80=AFPM Matthew Wilcox <willy@infrade=
+ad.org> wrote:
+> > > >
+> > > > On Tue, Sep 12, 2023 at 06:33:34PM +0800, zhaoyang.huang wrote:
+> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > >
+> > > > > Double times of clear_page observed in an arm SOC(A55) when
+> > > > > CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on, which introduced by
+> > > > > vma_alloc_zeroed_movable_folio within do_anonymous_pages.
+> > > > > Since there is no D-cache operation within v6's clear_user_highpa=
+ge,
+> > > > > I would like to suggest to remove the redundant clear_page.
+> >
+> > So if CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled, then what ensures
+> > that the page is cleared?
+>
+> >
+> > > > >
+> > > > > struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struc=
+t *vma,
+> > > > >                                  unsigned long vaddr)
+> > > > > {
+> > > > >       struct folio *folio;
+> > > > >
+> > > > > //first clear_page invoked by vma_alloc_folio=3D=3D>alloc_page=3D=
+=3D>post_alloc_hook
+> > > > >       folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vad=
+dr, false);
+> > > > >       if (folio)
+> > > > > //second clear_page which is meaningless since it do nothing to D=
+-cache in armv6
+> > > > >               clear_user_highpage(&folio->page, vaddr);
+> >
+> > If this clear_user_highpage() is removed, how is this code then safe wh=
+en
+> > CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled?
+> when CONFIG_INIT_ON_ALLOC_DEFAULT_ON is off, want_init_on_alloc() will
+> return false and then clear_user_highpage will be called
+> >
+> > > >
+> > > > This is, of course, not the only place which calls clear_user_highp=
+age().
+> > > > Please explain why this patch is safe for all the _other_ places wh=
+ich
+> > > > call clear_user_highpage().
+> > > Here are all positions called clear_user_highpage which are paired
+> > > with alloc_pages. IMO,  it is safe to skip the second clear_page unde=
+r
+> > > armv6.
+> >
+> > No.
+> >
+> > Looking at, for example, the v4l case... This allocates a page and
+> > provides it to userspace. The page is allocated using GFP_USER |
+> > __GFP_DMA32. This does not set __GFP_ZERO. If
+> > CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not enabled, the page will not
+> > be initialised, and thus we will leak any data in that page to
+> > userspace.
+> as explained above, clear_user_highpage will be called in this scenario
+> >
+> > Now, it's not just about whether that configuration symbol is enabled
+> > in the kernel configuration - there is a command line argument to
+> > consider as well. CONFIG_INIT_ON_ALLOC_DEFAULT_ON can be y, but with
+> > init_on_alloc=3D0 passed to the kernel, if we remove the above
+> > clear_user_highpage(), the kernel then becomes unsafe.
+> Both of CONFIG_INIT_ON_ALLOC_DEFAULT_ON and cmdline configuration take
+> effect via the global variable init_on_alloc which is judged within
+> want_init_on_alloc()
+> >
+> > However, it's more than that. The kernel allocator has no idea that the
+> > page will be mapped to userspace, so it can't do the "clear the page at
+> > the user cache colour" trick for VIPT aliasing caches, which ensures
+> > that we hit cache lines that the user will see. So, I think we would
+> > then have to add arch specific cache operations to write-back the
+> > zeroing of the kernel mapping, _and_ cache operations to discard any
+> > data in the user cache colour.
+> ok, do you mean you will update v6's clear_user_highpage from memset
+> to D-cache flush things?
+> >
+> > So, essentially, I don't think that _even_ when init_on_alloc is
+> > enabled, we can skip calling clear_user_highpage() as that would lead
+> > to data exposure to userspace.
+> This patch only suggests making changes on the specific v6
+> architecture where clear_user_highpage equal to clear_page so far.
+> >
+> > --
+> > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> > FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
