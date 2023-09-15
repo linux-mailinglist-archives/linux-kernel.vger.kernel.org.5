@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBAB7A1FDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DBB7A1FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235357AbjIONac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        id S235361AbjIONc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234348AbjIONaa (ORCPT
+        with ESMTP id S235327AbjIONcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:30:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EED18D;
-        Fri, 15 Sep 2023 06:30:25 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694784624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t4a69QAJHoLA0O/kevTly+3PbGRi/ca9qXsnMKQmmz4=;
-        b=VvhyY2DjZI2vuivX7kUro9SCFkXJxhGEOzbmZVk78FLfzmED6+pXPF71mKfsEnmzi5ke/Y
-        JzUSn+Y4ieqsib0SLhHkNeXeE0eeZdOPsxH9BFFg8IGHpqUHhgLFKbM9jjmOlkBUh0oI7i
-        D0CUFWf00DY0DU2tvyKNA9Fy0I7H9gfSlZXnZdrEVs19CYik3pGy+KHhMjC7HIQUOPnBHB
-        6rtDDAbD2aLigxZObvxapKneQW+ZtNScPpN+tl85LIxzZiGvpCw/J+HUOEkOuxNEzFQ6WK
-        8Z7B7kQsYsXXU4WOrzqKpQOnKVj2jUk9bQFluXtkTHfD/+f37KWohaOdnnT1ZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694784624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t4a69QAJHoLA0O/kevTly+3PbGRi/ca9qXsnMKQmmz4=;
-        b=MB7u8FElR3aNFJLb/9MfgTw1mqXDhAupHamM3e/Ij4hNRTGnIiKMXsws8Nk249DLQk0XIb
-        2cTXmHAYSYrwk0Dg==
-To:     Peter Hilber <peter.hilber@opensynergy.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev
-Cc:     Peter Hilber <peter.hilber@opensynergy.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC PATCH 4/4] treewide: Use clocksource id for struct
- system_counterval_t
-In-Reply-To: <20230818011256.211078-5-peter.hilber@opensynergy.com>
-References: <20230818011256.211078-1-peter.hilber@opensynergy.com>
- <20230818011256.211078-5-peter.hilber@opensynergy.com>
-Date:   Fri, 15 Sep 2023 15:30:23 +0200
-Message-ID: <87cyyj1s40.ffs@tglx>
+        Fri, 15 Sep 2023 09:32:55 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890731BEB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:32:50 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-502b0d23f28so3574849e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694784769; x=1695389569; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EH3krxykBLViGheBAmECI15DsHYCa+0q5ptgJCLWm9s=;
+        b=ZB97HkeJ9/oivle4VQEhSZ38Zm/OIblzEfAbdlaY0CzCkUgmkVm+PhmkZ9eogmysg6
+         +CcxU+PZw3oTnsoIvu3X48n/vJLTpjI2/eNpok97TccpqaO3BESSaLle8WcLBq0DMJr4
+         lNsgyTCwj46uV2NVOEL3Y8GjbrybF3a5x/u2OquC8ysIEhQEa/WuOCStOrjUMer7zRkX
+         UmaPVv4NkFpw4ALijjKKXeLs7QicpiiLvCFtQZxbSl29kSUk1bXrhpDUcOnG7jNwg4zX
+         ziNGg28yM5k29TfANlGESD42gJDMyOpOIfNsBKb521TbfrzdijkMu4CU8rK3EkLAvvPD
+         2ukg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694784769; x=1695389569;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EH3krxykBLViGheBAmECI15DsHYCa+0q5ptgJCLWm9s=;
+        b=uQ0wXxIQrMAb+gHs+dyIkjnS3l3rIWXN0lEu+vM88tx6opIwJoPC5XF9otKvVCUwMk
+         uHz823T4+0xl08E+aQCLmx5HAvzxg7BrsgX2p6p9vJUujCTJ64TsQrfVTBFDiEvHuXKI
+         2HzLq9yccatw9bu1BLksUgXF5ZWIM/MHmcfQ0mvddGvTHb5Yr4RqTFoq5VDDLgMfCqVx
+         1DNQkEk4Z/cKHgDAY9D0j3TTfp6+J9aPgad7CgjePWPT93GyXaylgLZA+Asxn1iTa/SP
+         ktMUoA4jXKMdsGIh6QjxNIaoQlohRDY0WfCfEy09E/1nmgtRkRs09GHkMOA3t6DewLjq
+         A9XQ==
+X-Gm-Message-State: AOJu0Yy7FPPbmC4gSrDsW93nee1sIHX8jr/sWfffLsw7XodRr1e2k891
+        uHgyYBxWkdIvylEtmCe58PLHeqCbuRA5yXoZrGk=
+X-Google-Smtp-Source: AGHT+IELKv5mGywXFFOGHkIDg2uqTAyh4DcYGkaffsd2DsqhfxKNykBdu+A+bvdXZLgt3sdAn4V2zw==
+X-Received: by 2002:a05:6512:3b99:b0:500:bf33:3add with SMTP id g25-20020a0565123b9900b00500bf333addmr1869284lfv.47.1694784768784;
+        Fri, 15 Sep 2023 06:32:48 -0700 (PDT)
+Received: from [192.168.69.115] (6lp61-h01-176-171-209-234.dsl.sta.abo.bbox.fr. [176.171.209.234])
+        by smtp.gmail.com with ESMTPSA id g8-20020a50ee08000000b00521d2f7459fsm2251217eds.49.2023.09.15.06.32.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 06:32:48 -0700 (PDT)
+Message-ID: <033ad151-5f63-c7b5-6e0d-daea43786823@linaro.org>
+Date:   Fri, 15 Sep 2023 15:32:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v3 1/3] MIPS: Cleanup malta_defconfig
+Content-Language: en-US
+To:     Yuan Tan <tanyuan@tinylab.org>, tsbogend@alpha.franken.de,
+        42.hyeyoo@gmail.com
+Cc:     linux-mips@vger.kernel.org, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, falcon@tinylab.org, w@1wt.eu,
+        linux@weissschuh.net
+References: <cover.1694680448.git.tanyuan@tinylab.org>
+ <0b4450f083b612f78207e17499fc6ea6c65c6f3b.1694680448.git.tanyuan@tinylab.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <0b4450f083b612f78207e17499fc6ea6c65c6f3b.1694680448.git.tanyuan@tinylab.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter!
+On 14/9/23 10:43, Yuan Tan wrote:
+> Use 'make savedefconfig' to cleanup malta_defconfig.
+> 
+> Suggested-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+> ---
+>   arch/mips/configs/malta_defconfig | 39 +++++++------------------------
+>   1 file changed, 8 insertions(+), 31 deletions(-)
 
-On Fri, Aug 18 2023 at 03:12, Peter Hilber wrote:
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1313,7 +1313,7 @@ struct system_counterval_t convert_art_to_tsc(u64 art)
->  	res += tmp + art_to_tsc_offset;
->  
->  	return (struct system_counterval_t) {
-> -		.cs = have_art ? &clocksource_tsc : NULL,
-> +		.cs_id = have_art ? CSID_TSC : CSID_GENERIC,
->  		.cycles = res
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-Can you please change all of this so that:
-
-    patch 1:   Adds cs_id to struct system_counterval_t
-    patch 2-4: Add the clocksource ID and set the cs_id field
-    patch 5:   Switches the core to evaluate cs_id
-    patch 6:   Remove the cs field from system_counterval_t
-
-
-> --- a/include/linux/timekeeping.h
-> +++ b/include/linux/timekeeping.h
-> @@ -270,12 +270,12 @@ struct system_device_crosststamp {
->   * struct system_counterval_t - system counter value with the pointer to the
->   *				corresponding clocksource
->   * @cycles:	System counter value
-> - * @cs:		Clocksource corresponding to system counter value. Used by
-> + * @cs_id:	Clocksource corresponding to system counter value. Used by
->   *		timekeeping code to verify comparibility of two cycle values
-
-That comment is inaccurate. It's not longer the clocksource itself. It's
-the ID which is used for validation.
-
-Thanks,
-
-        tglx
