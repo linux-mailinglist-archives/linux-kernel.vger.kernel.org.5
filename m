@@ -2,56 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B557A15AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170BC7A15BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 07:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbjIOFrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 01:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
+        id S232160AbjIOFuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 01:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjIOFrW (ORCPT
+        with ESMTP id S231997AbjIOFus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 01:47:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61D12716;
-        Thu, 14 Sep 2023 22:47:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE0BC433B7;
-        Fri, 15 Sep 2023 05:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694756837;
-        bh=RyPR2NkOFcffhMr5xddvC27sEYDMrJaqGqZTUScQkPA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PcvjwDYx9G5f5Q1qxmIfIx5D0ne1wz4esF+c5nMP3hE41d6nNonhJxXX4/PUPMnzt
-         6IFVF+L5cUwGSpdXGC9UnPrlhotCcgfse/rpTnTcuP+ptih8GLpBYauZqloFgw4mKm
-         1BJ4h9wpYsZDVo/JkDqFS86S8QepQGmMcduIrPgKI9p+ayQKVK5++KZEbJZg+++hRi
-         APvnDLOLgHFa9QzULX+SIhe2v+5k6OYtaDDMPz3MGCP43ZqWapGyedZSR/31ZKtcxY
-         zc2AZBJQYwAAfcCSy28d4Vinr1VmiJGRwpjQCASK4NeItrige3SaZGkefwxAZMm0JB
-         fOjUjO2NE9U5Q==
-Date:   Fri, 15 Sep 2023 14:47:10 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Xin Li <xin3.li@intel.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com
-Subject: Re: [PATCH v10 02/38] x86/opcode: Add the WRMSRNS instruction to
- the x86 opcode map
-Message-Id: <20230915144710.7c2b94e93db16fd217acaf9f@kernel.org>
-In-Reply-To: <20230914044805.301390-3-xin3.li@intel.com>
-References: <20230914044805.301390-1-xin3.li@intel.com>
-        <20230914044805.301390-3-xin3.li@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 15 Sep 2023 01:50:48 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720DFE6E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 22:50:42 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 848D0320090A;
+        Fri, 15 Sep 2023 01:50:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 15 Sep 2023 01:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; t=1694757039; x=1694843439; bh=f
+        nt/1tGrYIgmAtZpbfYmp72DSY85xbo7uKz4JIoG494=; b=qP/ND55O2ZecjYJ+c
+        oKrpXHwsafuUjtxX4PyCv4Kvr8mm9Zilv7M/hvwbNH0vTnWLT+hgvf7FGec91Q0j
+        1XonXEpRany07WDdEobTX6TN6LXK0yyUS3TkSSrG+HOn71cu9H9u68dPBiQvZc7y
+        SDifra8rcCiiwTwNcbAJFYTneBFWWHn9YWrNzxzBkbzHUEQ6GsXF7sl+q2XQExJU
+        klxoBMXKbu6mcnEoTEeJy5zsswi5q5OT9JOrP8h0PEt/JkEz/6S1X2rIZv+J03J9
+        hGyhpX/5H6mrpEgY9U+JZqFb5JiXjzhnSP9jD5PceCD4JiTpS6zb/BPQTT9KrWrv
+        0bAkA==
+X-ME-Sender: <xms:r_ADZby_DwQOIpx4LnnxXRB0oHAQUjP13yVdd1krUZ6oKSNmHrA_uQ>
+    <xme:r_ADZTSnPfJfDUrHirGPJk6YPhw_znxUxGZn2Z39TDig5wVudFCWBQcVVQ2ZC9Ht-
+    RhtwPOMhWhw7_pkHJ4>
+X-ME-Received: <xmr:r_ADZVVBybsiOZk_y9e6Hx40gGzMAR4xipxC9mxIvWPZcALvrnhZWU_YMphH-sZbol4KAyaQxNA8AFLbadSoSOIVNWwc11_sufQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
+    hinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:r_ADZVibovp8npQQdpoHn_1syD0bS_WL8q7RBBGNvjTDn2prVe5-Dw>
+    <xmx:r_ADZdD4MJBniEolXMP2m8YFj-jHsgkuEjglBdQxbMCN7bRyxoNO9Q>
+    <xmx:r_ADZeJsC6UA1p8coihUUyzhWysbWzwji3WfETK79PhmbJ1Ie6oL5Q>
+    <xmx:r_ADZR5fB0129KZ0zynGwndWrmDR3m2WO8LVALhgLu20UxyC5ac-hA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Sep 2023 01:50:36 -0400 (EDT)
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Thomas Gleixner" <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Message-Id: <0a403120a682a525e6db2d81d1a3ffcc137c3742.1694756831.git.fthain@linux-m68k.org>
+From:   Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] sched: Optimize in_task() and in_interrupt() a bit
+Date:   Fri, 15 Sep 2023 15:47:11 +1000
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,56 +76,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 21:47:29 -0700
-Xin Li <xin3.li@intel.com> wrote:
+Except on x86, preempt_count is always accessed with READ_ONCE.
+Repeated invocations in macros like irq_count() produce repeated loads.
+These redundant instructions appear in various fast paths. In the one
+shown below, for example, irq_count() is evaluated during kernel entry
+if !tick_nohz_full_cpu(smp_processor_id()).
 
-> Add the opcode used by WRMSRNS, which is the non-serializing version of
-> WRMSR and may replace it to improve performance, to the x86 opcode map.
-> 
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
+0001ed0a <irq_enter_rcu>:
+   1ed0a:       4e56 0000       linkw %fp,#0
+   1ed0e:       200f            movel %sp,%d0
+   1ed10:       0280 ffff e000  andil #-8192,%d0
+   1ed16:       2040            moveal %d0,%a0
+   1ed18:       2028 0008       movel %a0@(8),%d0
+   1ed1c:       0680 0001 0000  addil #65536,%d0
+   1ed22:       2140 0008       movel %d0,%a0@(8)
+   1ed26:       082a 0001 000f  btst #1,%a2@(15)
+   1ed2c:       670c            beqs 1ed3a <irq_enter_rcu+0x30>
+   1ed2e:       2028 0008       movel %a0@(8),%d0
+   1ed32:       2028 0008       movel %a0@(8),%d0
+   1ed36:       2028 0008       movel %a0@(8),%d0
+   1ed3a:       4e5e            unlk %fp
+   1ed3c:       4e75            rts
 
-This looks good to me.
+This patch doesn't prevent the pointless btst and beqs instructions
+above, but it does eliminate 2 of the 3 pointless move instructions
+here and elsewhere.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On x86, preempt_count is per-cpu data and the problem does not arise
+presumably because the compiler is free to optimize more effectively.
 
-Thanks,
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 15115830c887 ("preempt: Cleanup the macro maze a bit")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+This patch was tested on m68k and x86. I was expecting no changes
+to object code for x86 and mostly that's what I saw. However, there
+were a few places where code generation was perturbed for some reason.
 
-> ---
->  arch/x86/lib/x86-opcode-map.txt       | 2 +-
->  tools/arch/x86/lib/x86-opcode-map.txt | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-> index 5168ee0360b2..1efe1d9bf5ce 100644
-> --- a/arch/x86/lib/x86-opcode-map.txt
-> +++ b/arch/x86/lib/x86-opcode-map.txt
-> @@ -1051,7 +1051,7 @@ GrpTable: Grp6
->  EndTable
->  
->  GrpTable: Grp7
-> -0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B)
-> +0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
->  1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
->  2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
->  3: LIDT Ms
-> diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-> index 5168ee0360b2..1efe1d9bf5ce 100644
-> --- a/tools/arch/x86/lib/x86-opcode-map.txt
-> +++ b/tools/arch/x86/lib/x86-opcode-map.txt
-> @@ -1051,7 +1051,7 @@ GrpTable: Grp6
->  EndTable
->  
->  GrpTable: Grp7
-> -0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B)
-> +0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
->  1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
->  2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
->  3: LIDT Ms
-> -- 
-> 2.34.1
-> 
+The performance issue addressed here is minor on uniprocessor m68k. I
+got a 0.01% improvement from this patch for a simple "find /sys -false"
+benchmark. For architectures and workloads susceptible to cache line bounce
+the improvement is expected to be larger. The only SMP architecture I have
+is x86, and as x86 unaffected I have not done any further measurements.
 
+Changed since v2:
+ - Clarify the comment about macros.
 
+Changed since v1:
+ - Added a comment that was requested by Frederic.
+---
+ include/linux/preempt.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 1424670df161..9aa6358a1a16 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -99,14 +99,21 @@ static __always_inline unsigned char interrupt_context_level(void)
+ 	return level;
+ }
+ 
++/*
++ * These macro definitions avoid redundant invocations of preempt_count()
++ * because such invocations would result in redundant loads given that
++ * preempt_count() is commonly implemented with READ_ONCE().
++ */
++
+ #define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+ #ifdef CONFIG_PREEMPT_RT
+ # define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
++# define irq_count()		((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | softirq_count())
+ #else
+ # define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
++# define irq_count()		(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_MASK))
+ #endif
+-#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
+ /*
+  * Macros to retrieve the current execution context:
+@@ -119,7 +126,11 @@ static __always_inline unsigned char interrupt_context_level(void)
+ #define in_nmi()		(nmi_count())
+ #define in_hardirq()		(hardirq_count())
+ #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
++#ifdef CONFIG_PREEMPT_RT
++# define in_task()		(!((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | in_serving_softirq()))
++#else
++# define in_task()		(!(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
++#endif
+ 
+ /*
+  * The following macros are deprecated and should not be used in new code:
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.39.3
+
