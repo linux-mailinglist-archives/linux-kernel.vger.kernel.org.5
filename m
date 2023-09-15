@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E5E7A215B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5A37A2154
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235822AbjIOOrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
+        id S235832AbjIOOqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbjIOOrk (ORCPT
+        with ESMTP id S235789AbjIOOqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:47:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F21BE6;
-        Fri, 15 Sep 2023 07:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694789255; x=1726325255;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=RSdffzo1Ydfr8wTOPsJoUEWKUqgBQtx4q1XDTHhuglM=;
-  b=gr2BqvAhnzs1sKFPuJolVLPoSBz5iV+PsWpNX3mkHmOBgEd7+ChD4UfG
-   v6SMaWMobfHOvL4GR3L4oEwil+Lr1SxBTWoPQIeGEtjdp3adVmIGwKwHc
-   APixYkkEwGcKxDW1hkepFURLVdfMxZ4XnU55y2bfluJfd9mba5IqrguOj
-   dFMUODdUe1sp5Fqo5pxnbyb2UDCruAbYEFDNKc+LZOleTpTi+mV+o9GMI
-   Rsmwj9pqItikf3EHl5vjiNRbSTg0R/q5g2pxd/Z9SLXpAoa0OYOUwk9FU
-   Xy5RAJZvN7iEGTtWtWLdJUchqT7HhoIlZEW8iIJ8kx2URTkoE90eu2B7X
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="410202250"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="410202250"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:45:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774340718"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="774340718"
-Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:45:44 -0700
-Date:   Fri, 15 Sep 2023 17:45:42 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v4 3/4] platform/x86: intel_scu_ipc: Don't override scu
- in intel_scu_ipc_dev_simple_command()
-In-Reply-To: <20230913212723.3055315-4-swboyd@chromium.org>
-Message-ID: <58e817b0-1872-6ff1-58bb-1aeeb572361@linux.intel.com>
-References: <20230913212723.3055315-1-swboyd@chromium.org> <20230913212723.3055315-4-swboyd@chromium.org>
+        Fri, 15 Sep 2023 10:46:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031361FCE;
+        Fri, 15 Sep 2023 07:46:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14FD2C433C8;
+        Fri, 15 Sep 2023 14:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694789162;
+        bh=vmWJjbUV9feQTNnTRpzFcWDL7EDviII2F9crbfYB6XI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CvLP61L5Srj5bBexjD3yccDBzkb0QAHF22eelHc/2Ww0BT7WfYu/CSZ56X9/nE6qu
+         5EU6lXh59ctX45FlSf8ZO+l5lfoUDbvLTbKUk8urSmWJYPCjlrJa0HJYtGmscey7ud
+         JJmR6bUhBJys4Y9sX0ySY9uue2XHYEWg5OvQFTSeO+jfS66qitFwy0wFjUWg/5/z74
+         9d3l/Fz1Yb6hGNZ7AjPBZshOdhPbebdTpEA6sHyVjyMFcZAq5qCKdqOF2CmiFix6c9
+         ewzUL0rCnYYgYX1/pLDH+43J//2ZUuVUySuu5a+FGUq8F9mxRS36J01YP5sVQX3st7
+         DbM/UIq8Yz2Cw==
+Received: (nullmailer pid 3702987 invoked by uid 1000);
+        Fri, 15 Sep 2023 14:45:59 -0000
+Date:   Fri, 15 Sep 2023 09:45:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kernel@pengutronix.de,
+        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain
+ dependency
+Message-ID: <20230915144559.GA3696959-robh@kernel.org>
+References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
+ <20230904115816.1237684-2-s.hauer@pengutronix.de>
+ <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
+ <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
+ <20230913065843.GF637806@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-769386324-1694789146=:2347"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913065843.GF637806@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-769386324-1694789146=:2347
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Wed, 13 Sep 2023, Stephen Boyd wrote:
-
-> Andy discovered this bug during patch review. The 'scu' argument to this
-> function shouldn't be overridden by the function itself. It doesn't make
-> any sense. Looking at the commit history, we see that commit
-> f57fa18583f5 ("platform/x86: intel_scu_ipc: Introduce new SCU IPC API")
-> removed the setting of the scu to ipcdev in other functions, but not
-> this one. That was an oversight. Remove this line so that we stop
-> overriding the scu instance that is used by this function.
+On Wed, Sep 13, 2023 at 08:58:43AM +0200, Sascha Hauer wrote:
+> On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
+> > On Tue, Sep 12, 2023 at 4:07â€¯PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > >
+> > > Top posting to bring Saravana Kannan into this discussion.
+> > >
+> > > This looks like a big hack to me, Saravana has been working
+> > > tirelessly to make the device tree probe order "sort itself out"
+> > > and I am pretty sure this issue needs to be fixed at the DT
+> > > core level and not in a driver.
+> > 
+> > We could merge all the IO domain stuff into the pinctrl node/driver,
+> > like is done for Allwinner? Maybe that would simplify things a bit?
 > 
-> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Closes: https://lore.kernel.org/r/ZPjdZ3xNmBEBvNiS@smile.fi.intel.com
+> I thought about this as well. On Rockchip the pinctrl driver and the IO
+> domain driver even work on the same register space, so putting these
+> into a single node/driver would even feel more natural than what we have
+> now.
 
-This looks somewhat unusual way to tag it. I'd just drop the Closes tag 
-as the email list is not a bug tracter.
+DT should reflect the hardware. If this is in fact 1 block, then it 
+should be 1 DT node. How you want to split the driver or not is up to 
+you.
 
-Other than that,
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
-> Cc: Prashant Malani <pmalani@chromium.org>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Fixes: f57fa18583f5 ("platform/x86: intel_scu_ipc: Introduce new SCU IPC API")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/platform/x86/intel_scu_ipc.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
-> index 299c15312acb..3271f81a9c00 100644
-> --- a/drivers/platform/x86/intel_scu_ipc.c
-> +++ b/drivers/platform/x86/intel_scu_ipc.c
-> @@ -443,7 +443,6 @@ int intel_scu_ipc_dev_simple_command(struct intel_scu_ipc_dev *scu, int cmd,
->  		mutex_unlock(&ipclock);
->  		return -ENODEV;
->  	}
-> -	scu = ipcdev;
->  	cmdval = sub << 12 | cmd;
->  	ipc_command(scu, cmdval);
->  	err = intel_scu_ipc_check_status(scu);
-> 
---8323329-769386324-1694789146=:2347--
+Rob
