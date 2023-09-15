@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89307A26AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1CF7A26C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbjIOS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S236815AbjIOTAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237096AbjIOS4W (ORCPT
+        with ESMTP id S236823AbjIOS7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:56:22 -0400
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89698273E
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:55:40 -0700 (PDT)
-Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
-        by cmsmtp with ESMTP
-        id hCWhqcS10ez0ChDyHqB64Y; Fri, 15 Sep 2023 18:55:17 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hDycqBulOr4o2hDydqhgal; Fri, 15 Sep 2023 18:55:39 +0000
-X-Authority-Analysis: v=2.4 cv=KIpJsXJo c=1 sm=1 tr=0 ts=6504a8ab
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=cm27Pg_UAAAA:8 a=nsourIgpG9fxkvA2dtoA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+yyGAcG5aiTScB77D4ddFEWmEpNCxP+1ch2FK/sWkJ0=; b=ETgwp8I05RAqPuPQc4BXIeQdas
-        poD6RrPDUERgRHEOLDgnob4I/CZHf87fcXS2PHWfcOv6GWIEq0hRNLD0su8PhviEzdydO04TDjONT
-        fXqTcLkECnqQi/9V5EQBbCkiqR7b6zjbYxT2a/uGOSjDLj+nXfzvJ/SSBnPGI8UMJlQy8VUJXzQuQ
-        +OwM82uOjao5Gq2BsIdBlWwZ1m+OZ3uZmDVpzy2iviGrj+QZBj2VwiI685vz9nbvMlXIQby4qKEpL
-        Y+sEOnH9sbROA11BaxVG38uZvqgV7AJQtVCGvv95r3b2k1HN6/wyIz13XFMuVNXvgqmd5dRrpOhnc
-        ojOPuljw==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:55148 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhDyc-000xBv-07;
-        Fri, 15 Sep 2023 13:55:38 -0500
-Message-ID: <df8f30c2-7a94-110d-cc99-876979ec28c3@embeddedor.com>
-Date:   Fri, 15 Sep 2023 12:56:34 -0600
+        Fri, 15 Sep 2023 14:59:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7F5D106
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694804341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ghzt0gMUW66V7NRyUGXJr6A3y8erfYE/z3VgzfOC+I0=;
+        b=C7+hsTRCKZKzJFP7og6zFqkkCxVUrxi1zvFE/odTGGpnOSXDNcw2o1T0xabConRxmxZQCJ
+        ejzVJ3u1+6AjWacjS24FfyyAUF+IJRuOgdkqn3E6nIt62Vc1TbBB3K2KqFlFZcnakJ2YJ8
+        Rab6xI2qh3SZcjaAzwN2I3rYveNg+h0=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-7PqY9IbOP9mVttjBgF8OOA-1; Fri, 15 Sep 2023 14:59:00 -0400
+X-MC-Unique: 7PqY9IbOP9mVttjBgF8OOA-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7983537d6c1so216450239f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:59:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694804339; x=1695409139;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ghzt0gMUW66V7NRyUGXJr6A3y8erfYE/z3VgzfOC+I0=;
+        b=uUJOzfIMv3uT9AK+cDB3lH1zAQLophn3n6Lv2cIFdRVvsFWviaEhUlfFMkFgicRUAc
+         IA9Gz1gfxF/9n1NMlhEbXL2sfparHaDRqn8wEMWsf7RsBVGoh5RnBtDJPB6oDYWdB68r
+         O3WjMKYbDzkSsbarnAPBozSV+OH39L6Fw+NnQv2h2MlXdqLtaqBDSe7qRynw/3NJEE2w
+         zN6SL0JbH13/pEgUJJa5PmyI/9ohqCorEPuZyXWLtvK4orcL8ElcaFjDWZtV+BLprh3i
+         1EuJkrc82GGTj9FVYArbFiURQ5y35uE6NBeW/ZjNeIYa7az5fjOElqrUg3+w0liV1KIA
+         s2Tg==
+X-Gm-Message-State: AOJu0Yzm79WnIgWdZqW62ynVstj78UL+vDKgJG3PAfbJhOKl+47/ToNN
+        hlbb4QVMI44vFTpwa41aWnxazBLYwqlOQ6wEKIdePoOVag1T7kMetyLnT9BVF5WdG76ZCwkxCW7
+        UOBdClpK03h7iO6ZR2IFFs1kP
+X-Received: by 2002:a92:6e11:0:b0:348:f4c1:4817 with SMTP id j17-20020a926e11000000b00348f4c14817mr2860638ilc.6.1694804339642;
+        Fri, 15 Sep 2023 11:58:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF/9dB1xKUUwpY6U9DzMEfcWwczlL+tvIN6z3KHXC0qPn5dpdT5/w5R10+8v2kZCO5wv48MFw==
+X-Received: by 2002:a92:6e11:0:b0:348:f4c1:4817 with SMTP id j17-20020a926e11000000b00348f4c14817mr2860624ilc.6.1694804339412;
+        Fri, 15 Sep 2023 11:58:59 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id l12-20020a056e020dcc00b0034f3220c086sm500944ilj.12.2023.09.15.11.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 11:58:58 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 12:58:58 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     oushixiong <oushixiong@kylinos.cn>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Brett Creeley <brett.creeley@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/pds: Use proper PF device access helper
+Message-ID: <20230915125858.72b75a16.alex.williamson@redhat.com>
+In-Reply-To: <20230914021332.1929155-1-oushixiong@kylinos.cn>
+References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH][next] drm/gud: Use size_add() in call to struct_size()
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Peter Stuge <peter@stuge.se>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <ZQSlyHKPdw/zsy4c@work> <202309151150.74DBDCA039@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <202309151150.74DBDCA039@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhDyc-000xBv-07
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:55148
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfEuX22TkzsUKojADwjnQLzGYK9N+3B42+CADVnsvHCaKzaJ0RBnpKAYifQC3TPA+CcPIy3zlH0c8RiwTxr5wLnQDbvfWKyh7Pb77niw7SdwHq2llve1M
- pE5lbFQc/VoyR9ELqUhEVpExnMUzA40/GXWet0bPCAWjkodJt3MqE1yalVs1weKYwULMJUTfU6/YTPtvCfbAZEYCx/9b60P1aL+jJQUeQqFrUqNmTS/KduiF
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,51 +82,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 14 Sep 2023 10:13:32 +0800
+oushixiong <oushixiong@kylinos.cn> wrote:
 
-
-On 9/15/23 12:52, Kees Cook wrote:
-> On Fri, Sep 15, 2023 at 12:43:20PM -0600, Gustavo A. R. Silva wrote:
->> If, for any reason, the open-coded arithmetic causes a wraparound, the
->> protection that `struct_size()` adds against potential integer overflows
->> is defeated. Fix this by hardening call to `struct_size()` with `size_add()`.
->>
->> Fixes: 40e1a70b4aed ("drm: Add GUD USB Display driver")
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>   drivers/gpu/drm/gud/gud_pipe.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/gud/gud_pipe.c b/drivers/gpu/drm/gud/gud_pipe.c
->> index d2f199ea3c11..a02f75be81f0 100644
->> --- a/drivers/gpu/drm/gud/gud_pipe.c
->> +++ b/drivers/gpu/drm/gud/gud_pipe.c
->> @@ -503,7 +503,7 @@ int gud_pipe_check(struct drm_simple_display_pipe *pipe,
->>   		return -ENOENT;
->>   
->>   	len = struct_size(req, properties,
->> -			  GUD_PROPERTIES_MAX_NUM + GUD_CONNECTOR_PROPERTIES_MAX_NUM);
->> +			  size_add(GUD_PROPERTIES_MAX_NUM, GUD_CONNECTOR_PROPERTIES_MAX_NUM));
+> From: Shixiong Ou <oushixiong@kylinos.cn>
 > 
-> There are both constant expressions, so there's not too much value in
-> wrapping them with size_add(), but for maintaining a common coding style
-> for dealing with allocation sizes, I can be convinced of the change. :)
+> The pci_physfn() helper exists to support cases where the physfn
+> field may not be compiled into the pci_dev structure. We've
+> declared this driver dependent on PCI_IOV to avoid this problem,
+> but regardless we should follow the precedent not to access this
+> field directly.
+> 
+> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
+> ---
+> 
+> This patch changes the subject line and commit log, and the previous 
+> patch's links is:
+> 	https://patchwork.kernel.org/project/kvm/patch/20230911080828.635184-1-oushixiong@kylinos.cn/
 
-Yep; I've found a mix of constant expressions and variables doing open-coded arithmetic
-in `struct_size()`, so I'm sending them all.
+Kevin & Jason,
+
+I assume your R-b's apply to this version as well.  Thanks,
+
+Alex
 
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+>  drivers/vfio/pci/pds/vfio_dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
+> index b46174f5eb09..649b18ee394b 100644
+> --- a/drivers/vfio/pci/pds/vfio_dev.c
+> +++ b/drivers/vfio/pci/pds/vfio_dev.c
+> @@ -162,7 +162,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
+>  	pci_id = PCI_DEVID(pdev->bus->number, pdev->devfn);
+>  	dev_dbg(&pdev->dev,
+>  		"%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
+> -		__func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
+> +		__func__, pci_dev_id(pci_physfn(pdev)), pci_id, vf_id,
+>  		pci_domain_nr(pdev->bus), pds_vfio);
+>  
+>  	return 0;
 
-Thanks!
---
-Gustavo
-
-> 
-> 
->>   	req = kzalloc(len, GFP_KERNEL);
->>   	if (!req)
->>   		return -ENOMEM;
->> -- 
->> 2.34.1
->>
-> 
