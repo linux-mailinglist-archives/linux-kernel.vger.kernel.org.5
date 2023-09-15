@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 396487A2490
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD597A2492
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbjIORWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S235622AbjIORXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235746AbjIORWQ (ORCPT
+        with ESMTP id S235812AbjIORW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:22:16 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30410272D;
-        Fri, 15 Sep 2023 10:22:02 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-502e6d632b6so3480965e87.0;
-        Fri, 15 Sep 2023 10:22:02 -0700 (PDT)
+        Fri, 15 Sep 2023 13:22:59 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B9BC1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:22:53 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59bbed7353aso33433767b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694798520; x=1695403320; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IwqMPyk1AnxpjwxRb2+p36Q5q6u/BphSF/nccRVsaQw=;
-        b=Sy1stqEIuNlpAj20ugkHzO5umd5iOCAqQ4jGa1iE2H6df5epGhHk2ATWrtdNIN0gsE
-         cfV9IhHSFnBD7KF526M6TOUN3EJ5y1Sa7rPEiRsfw+/jcf6DuoVDnl2xCFSngqYVGCfh
-         mAusWgx39QOab96mDwoNQt1GVknSx9/8R1v+8hUCoySen9+MaQ+ZSlzLA9tUar99cOzS
-         akJtN1w8yW5pxJJwgPaYvgLjXWG2LSxX3P8so5dOtx1K+Na7lFG81/PSgaIG9ySMCla5
-         /mJu2myDL8a2U6WJcGsETj0uaP8horBF9Gm9j2p7b2RbTs4vOvvFOlkYal+WTtmPsqMq
-         KRyg==
+        d=linaro.org; s=google; t=1694798573; x=1695403373; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2RWBQs5T7WlFgpSGFhWkY3V6/ADmjD9odSx9zwtedk=;
+        b=BKqeG12RUC2P6P27TdIGj2kcFAKtz0V1WMD4fw7YQBhg6a/ISIfhIPexmxFw8KtxUO
+         FKfAanKwp4kZ35JtRWlbeeMojHCzExkqVHirUC9qwtB9eVu0HAFecunUZQuWEHACHCbL
+         8Asnl8Is0LpZ9TrT8hwoPVziChX8/1e4d5uxzuTc7DuJfOnZ9kwRVg7dwqOufMyknRyK
+         VczGBgRiUFM6O7eZVVmXlJKzBFcI4kiKw8Vp3d/VRJqp5ppDsDan+LI5kkpzGhl7DVDN
+         KqGTb+vVZCX1qwlAuixGVY1l2/CvXSRCeWDnZcDmKUXSowL/+60hL/ZUWPAPYpPqpZs7
+         dctg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694798520; x=1695403320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IwqMPyk1AnxpjwxRb2+p36Q5q6u/BphSF/nccRVsaQw=;
-        b=oyofJXWkPhZfqYkVcKx41hjHobBLCKGukaOj3djqSbkGWprp5fF38h3Id4oUw9R0SG
-         g/Q8IbTk/0Ls0YGJ7ZIvZInQtO06VQQ4yNHEwpGo/66vOaeOC4de3dN1ESEJEysfqmd7
-         tg/b0RCSGydT2z7fSZ+PPTyMZ82LffjWgt62Lnb44bDjf6mMOs85qiF1bWaE1WKEA1uC
-         POIPwum/UZ6B2gdKpgBy1WqSCNO8rx5jKM+8D5HDiYX+QjzwyRkS/Pp3fPRZaSWs8c6G
-         nUuGE6dil8VcuPkXkVKcYRBdS9yQvn0jI1uK0HFviYgd63ku53rDOLgzJpgfQFAxq3cb
-         qh+Q==
-X-Gm-Message-State: AOJu0YwnUhhOIwPnCQ9pyv9XFb3dXFJGwAV/BRme3xgsFVgpYVGfa49x
-        Sx93OHK4x75wfaVDzfCnjgbXiGgEeg9TfsHgOTQIGIp7
-X-Google-Smtp-Source: AGHT+IEFU0H+UxH+0Ujr+mm0Oef8nG89b0jB+ZJij1UsOsw6TqtVH4QpoYmOlFD4Hp81Nk+nRwRKXDlPFobcVzceP/c=
-X-Received: by 2002:ac2:4c85:0:b0:500:adbd:43e9 with SMTP id
- d5-20020ac24c85000000b00500adbd43e9mr1720618lfl.15.1694798520011; Fri, 15 Sep
- 2023 10:22:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694798573; x=1695403373;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g2RWBQs5T7WlFgpSGFhWkY3V6/ADmjD9odSx9zwtedk=;
+        b=Jk9Jsr2oQplxnvPnqGfHooT4eUZkLPeLjSCrveB39Rr8KYevGf/n4P0cv8zgEE7TMU
+         Jjt1ahg/OnvCUtJAGemSuyN5FL+M7m9Rsx2cZAbscQmfF9IDo34Qjiy31754AhE9Lvt7
+         eikEzF7T4OrXT0pmDDzn6rCgjkh4HxFMx6T/kd+qaFiBr8WpXfnOlkwasKo0ATkEi07x
+         e1CY0L/arJB8C396VPZFQPTO5pTN5TGiYFVxLbEROHHVOXHYNArJNH0O3OxVfSzCELyd
+         BC7FogYjXRq0lm/OQ+jGTPXp8GJ7yxj+hq23eymSqWFuaD4FuB7HNt6Heh+q7uqwO817
+         vIjQ==
+X-Gm-Message-State: AOJu0YzBPiu4MWntBnETgYIbN7efperBqS5HJb7U6PWsz77QTQjRm/Eb
+        iySRP9RTmkqPwdM31iiipO3dFCU/2zjjm8UFQcqJJ+fW95R9I349
+X-Google-Smtp-Source: AGHT+IEH3oyPJB6QRNmpFNv17Lsy4u+2YFb7tHTfo1hIUqWNwwlxVVYFnU71LiQ5pZupfJE3oQ1KkAF8wseVhhS8n3I=
+X-Received: by 2002:a0d:d653:0:b0:59b:cf74:ee8d with SMTP id
+ y80-20020a0dd653000000b0059bcf74ee8dmr5997877ywd.10.1694798573063; Fri, 15
+ Sep 2023 10:22:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230915-bpf_collision-v2-1-027670d38bdf@google.com> <20230915171814.GA1721473@dev-arch.thelio-3990X>
-In-Reply-To: <20230915171814.GA1721473@dev-arch.thelio-3990X>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 15 Sep 2023 10:21:48 -0700
-Message-ID: <CAADnVQJVL7yo5ZrBZ99xO-MWHHg8L-SuSJrCTf-eUd-k5UO75g@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Fix BTF_ID symbol generation collision
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, stable <stable@vger.kernel.org>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Marcus Seyfarth <m.seyfarth@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+In-Reply-To: <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Fri, 15 Sep 2023 19:22:42 +0200
+Message-ID: <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 10:18=E2=80=AFAM Nathan Chancellor <nathan@kernel.o=
-rg> wrote:
+On Fri, 15 Sept 2023 at 19:04, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Fri, Sep 15, 2023 at 09:42:20AM -0700, Nick Desaulniers wrote:
-> > Marcus and Satya reported an issue where BTF_ID macro generates same
-> > symbol in separate objects and that breaks final vmlinux link.
+> On Fri, 15 Sept 2023 at 02:56, Alexey Dobriyan <adobriyan@gmail.com> wrote:
 > >
-> >   ld.lld: error: ld-temp.o <inline asm>:14577:1: symbol
-> >   '__BTF_ID__struct__cgroup__624' is already defined
-> >
-> > This can be triggered under specific configs when __COUNTER__ happens t=
-o
-> > be the same for the same symbol in two different translation units,
-> > which is already quite unlikely to happen.
-> >
-> > Add __LINE__ number suffix to make BTF_ID symbol more unique, which is
-> > not a complete fix, but it would help for now and meanwhile we can work
-> > on better solution as suggested by Andrii.
-> >
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-> > Reported-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1913
-> > Tested-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-> > Debugged-by: Nathan Chancellor <nathan@kernel.org>
-> > Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-> > Link: https://lore.kernel.org/bpf/CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQ=
-OfQKaOd0nQ51tw@mail.gmail.com/
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  tools/include/linux/btf_ids.h | 2 +-
+> > __free() got some usage and some of the usage is buggy:
 >
-> Shouldn't this diff be in include/linux/btf_ids.h as well? Otherwise, I
-> don't think it will be used by the kernel build.
+> Yeah, that's sad.
+>
+> I think the '__free(kfree)' thing should *only* be used in the form
+>
+>         struct obj *p __free(kfree) = kmalloc(...);
+>
+> which is what our docs mention. Anything else is simply buggy.
+>
+> But how do we *notice* this?
+>
+> I do want to stress how I was unhappy about this conversion to begin with
+>
+>     https://lore.kernel.org/lkml/CAHk-=wigZt6kVkY0HU1j_LJ5H1KzwPiYnwwk6CbqXqT=sGenjg@mail.gmail.com/
+>
+> but I reacted to the wrong issue.
+>
+> This stuff needs to be done *way* more carefully.
+>
+>               Linus
 
-argh.
-Let's do this patch as-is and another patch to update everything
-in tools/../btf_ids.h, since it got out of sync quite a bit.
+This is why I started with a *testing* driver. It's got "simulator" in
+the name for a reason. It doesn't deal with real HW and is mostly run
+in VMs anyway. Few people even build it at all so it makes for good
+testing grounds for experimental features.
+
+IMO this feature has much more potential at fixing existing memory
+leaks than introducing new ones. I agree, I should have been more
+careful, but I wouldn't exaggerate the issue. It's a bug, I sent a
+fix, it'll be fine in a few days. I hope it won't be seen as an
+argument against __free(). It just needs some time to mature.
+
+Bartosz
