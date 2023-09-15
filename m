@@ -2,268 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAB07A222F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99D57A2236
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236032AbjIOPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        id S236049AbjIOPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235968AbjIOPUK (ORCPT
+        with ESMTP id S236037AbjIOPVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:20:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7C7E6D
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Q2UaZF/yJBa4aq+9naVBxJvmFVpSvqxDv3evZCTMQPQ=; b=vPQ9h02vSmDfVoSIm5o+hLXAUP
-        oXI9pYbggPTvPhrcnH0euREVqbdJWVEvJACprB+lZ9Qo7EUfipKAa3cBMBGjPD48EoUb8ENbUkRVn
-        AcyLWBC5wlWO/HBntLlxrTJ9+asqTQ/zZXgARmxsqlX8diXUlKKOUOt+i06oQ4fxhcwBd27c6Okvv
-        4ICqrvmKQoA1j+IdV0iMCY73bY2ibymB5GNOzS4qZpuOBqwAX/ta/6mKSWc1UZ6B3AtBgbWtCs0qe
-        pRhWS7EPq6AozFr97ExDZaIBP/p6W3NaK1vY+4ltCc8SkRVraTYYQ0gtospfiq79ShuNZD7WzfnY8
-        wmwyzWpA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qhAbg-00ARL8-9v; Fri, 15 Sep 2023 15:19:44 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F322E300353; Fri, 15 Sep 2023 17:19:43 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 17:19:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
-        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        jstultz@google.com, juri.lelli@redhat.com, longman@redhat.com,
-        mgorman@suse.de, mingo@redhat.com, rostedt@goodmis.org,
-        swood@redhat.com, vincent.guittot@linaro.org, vschneid@redhat.com,
-        will@kernel.org
-Subject: Re: [PATCH v3 7/7] locking/rtmutex: Acquire the hb lock via trylock
- after wait-proxylock.
-Message-ID: <20230915151943.GD6743@noisy.programming.kicks-ass.net>
-References: <20230908162254.999499-1-bigeasy@linutronix.de>
- <20230908162254.999499-8-bigeasy@linutronix.de>
- <20230911141135.GB9098@noisy.programming.kicks-ass.net>
- <87fs3f1tl0.ffs@tglx>
+        Fri, 15 Sep 2023 11:21:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3472E50;
+        Fri, 15 Sep 2023 08:21:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 423DDC433D9;
+        Fri, 15 Sep 2023 15:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694791268;
+        bh=pTEjJA0kj/6QF5GhK14Gwc+awU8UExZq78QnqnmOkVU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FCZ6oVTEw4S8qoIydJ4ipzkUtXPDnJdYxdFMMCakRjp7uHM9QkVVx5kwAW1bHXivd
+         yKIR3/FU4+eGi5OOVluLMcNYEdHv/+p/5fYJIZziFmTN/iTO+8QnHQJFYuchNOifbu
+         qpFTzAemtZWgxCSvIKA8XrI2AFabOUUHa58749Eh6qsV5mIoD9V5ebUnzK9xEi1xz+
+         y4pJeyRcC/C5up22mBoeCTPIAxlyNPlHWil8uEZQOmac57mQOqGBupg8TeU75nWC5J
+         lLBYfOoA7/p/g5Vm+rEwBtW4pVB4PsS/qPkzeBVnR5z+eAp/5TbaK4ASFut8UdoMDP
+         Rok6WwEwwub3Q==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so3634269e87.1;
+        Fri, 15 Sep 2023 08:21:08 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzA5tBzKp4V5FDcAi7P08S/xGClIKkAC0yj0vJG5nhgpLoVEI/G
+        abnouMBNDiKDpf7huUaD+iwQ0Ev9+VQfwhu7yQ==
+X-Google-Smtp-Source: AGHT+IEeJqz589eXXSVJJbVSNQcKtyQwgFEuTFm32yaXsEAg/IIyFz8jivQT7gxFQK9DRVTikI5YfYsMBITqOxTHKNc=
+X-Received: by 2002:a05:6512:5c6:b0:502:c950:592e with SMTP id
+ o6-20020a05651205c600b00502c950592emr1666805lfo.25.1694791266478; Fri, 15 Sep
+ 2023 08:21:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fs3f1tl0.ffs@tglx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915062926.2460502-1-Delphine_CC_Chiu@wiwynn.com>
+ <20230915062926.2460502-3-Delphine_CC_Chiu@wiwynn.com> <20230915-quench-left-8fbc1ca3b1da@spud>
+In-Reply-To: <20230915-quench-left-8fbc1ca3b1da@spud>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 15 Sep 2023 10:20:54 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKWRfT71k56uMUJtU_abzFuicW01OBo-iScYash4Jrd2w@mail.gmail.com>
+Message-ID: <CAL_JsqKWRfT71k56uMUJtU_abzFuicW01OBo-iScYash4Jrd2w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: add MAX31790
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:58:35PM +0200, Thomas Gleixner wrote:
+On Fri, Sep 15, 2023 at 9:50=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> Yo,
+>
+> On Fri, Sep 15, 2023 at 02:29:24PM +0800, Delphine CC Chiu wrote:
+> > Add dt-bindings for the MAXIM MAX31790.
+> >
+> > Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> > ---
+> > Changelog:
+> > v2 - Add dt-bindings for the MAXIM MAX31790.
+> > ---
+> >  .../bindings/hwmon/maxim,max31790.yaml        | 59 +++++++++++++++++++
+> >  MAINTAINERS                                   |  6 ++
+> >  2 files changed, 65 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max31=
+790.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max31790.yam=
+l b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+> > new file mode 100644
+> > index 000000000000..2bd455b36b3f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+> > @@ -0,0 +1,59 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +
+> > +$id: http://devicetree.org/schemas/hwmon/maxim,max31790.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Maxim max31790
+> > +
+> > +maintainers:
+> > +  - Delphine CC Chiu  <Delphine_CC_Chiu@wiwynn.com>
+> > +
+> > +description: |
+> > +  The MAX31790 controls the speeds of up to six fans using
+> > +  six independent PWM outputs. The desired fan speeds (or PWM duty cyc=
+les)
+> > +  are written through the I2C        interface.
+> > +  The outputs drive =E2=80=9C4-wire=E2=80=9D fans directly, or can be =
+used to modulate
+> > +  the fan=E2=80=99s power terminals using an external pass transistor.
+> > +
+> > +  Datasheets:
+> > +    https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - maxim,max31790
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  pwm-as-tach:
+>
+> I don't see any other users of this in-tree, so you'd need a vendor
+> prefix. That said, I'm once bitten, twice shy about fan related
+> properties in hwmon, so I would definitely like Rob to comment on this
+> whole binding.
 
-> I spent quite some time to convince myself that this is correct. I was
-> not able to poke a hole into it. So that really should be safe to
-> do. Famous last words ...
+Please see this[1] and comment on it to ensure it meets your needs.
+Otherwise, omit any fan related properties for now.
 
-IKR :-/
+Rob
 
-Something like so then...
-
----
-Subject: futex/pi: Fix recursive rt_mutex waiter state
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Tue, 12 Sep 2023 13:17:11 +0200
-
-Some new assertions pointed out that the existing code has nested rt_mutex wait
-state in the futex code.
-
-Specifically, the futex_lock_pi() cancel case uses spin_lock() while there
-still is a rt_waiter enqueued for this task, resulting in a state where there
-are two waiters for the same task (and task_struct::pi_blocked_on gets
-scrambled).
-
-The reason to take hb->lock at this point is to avoid the wake_futex_pi()
-EAGAIN case.
-
-This happens when futex_top_waiter() and rt_mutex_top_waiter() state becomes
-inconsistent. The current rules are such that this inconsistency will not be
-observed.
-
-Notably the case that needs to be avoided is where futex_lock_pi() and
-futex_unlock_pi() interleave such that unlock will fail to observe a new
-waiter.
-
-*However* the case at hand is where a waiter is leaving, in this case the race
-means a waiter that is going away is not observed -- which is harmless,
-provided this race is explicitly handled.
-
-This is a somewhat dangerous proposition because the converse race is not
-observing a new waiter, which must absolutely not happen. But since the race is
-valid this cannot be asserted.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- pi.c      |   76 +++++++++++++++++++++++++++++++++++++++-----------------------
- requeue.c |    6 +++-
- 2 files changed, 52 insertions(+), 30 deletions(-)
-
-Index: linux-2.6/kernel/futex/pi.c
-===================================================================
---- linux-2.6.orig/kernel/futex/pi.c
-+++ linux-2.6/kernel/futex/pi.c
-@@ -610,29 +610,16 @@ int futex_lock_pi_atomic(u32 __user *uad
- /*
-  * Caller must hold a reference on @pi_state.
-  */
--static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_state)
-+static int wake_futex_pi(u32 __user *uaddr, u32 uval,
-+			 struct futex_pi_state *pi_state,
-+			 struct rt_mutex_waiter *top_waiter)
- {
--	struct rt_mutex_waiter *top_waiter;
- 	struct task_struct *new_owner;
- 	bool postunlock = false;
- 	DEFINE_RT_WAKE_Q(wqh);
- 	u32 curval, newval;
- 	int ret = 0;
- 
--	top_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
--	if (WARN_ON_ONCE(!top_waiter)) {
--		/*
--		 * As per the comment in futex_unlock_pi() this should not happen.
--		 *
--		 * When this happens, give up our locks and try again, giving
--		 * the futex_lock_pi() instance time to complete, either by
--		 * waiting on the rtmutex or removing itself from the futex
--		 * queue.
--		 */
--		ret = -EAGAIN;
--		goto out_unlock;
--	}
--
- 	new_owner = top_waiter->task;
- 
- 	/*
-@@ -1039,19 +1026,33 @@ retry_private:
- 	ret = rt_mutex_wait_proxy_lock(&q.pi_state->pi_mutex, to, &rt_waiter);
- 
- cleanup:
--	spin_lock(q.lock_ptr);
- 	/*
- 	 * If we failed to acquire the lock (deadlock/signal/timeout), we must
--	 * first acquire the hb->lock before removing the lock from the
--	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex wait
--	 * lists consistent.
-+	 * must unwind the above, however we canont lock hb->lock because
-+	 * rt_mutex already has a waiter enqueued and hb->lock can itself try
-+	 * and enqueue an rt_waiter through rtlock.
-+	 *
-+	 * Doing the cleanup without holding hb->lock can cause inconsistent
-+	 * state between hb and pi_state, but only in the direction of not
-+	 * seeing a waiter that is leaving.
-+	 *
-+	 * See futex_unlock_pi(), it deals with this inconsistency.
-+	 *
-+	 * There be dragons here, since we must deal with the inconsistency on
-+	 * the way out (here), it is impossible to detect/warn about the race
-+	 * the other way around (missing an incoming waiter).
- 	 *
--	 * In particular; it is important that futex_unlock_pi() can not
--	 * observe this inconsistency.
-+	 * What could possibly go wrong...
- 	 */
- 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
- 		ret = 0;
- 
-+	/*
-+	 * Now that the rt_waiter has been dequeued, it is safe to use
-+	 * spinlock/rtlock (which might enqueue its own rt_waiter) and fix up
-+	 * the
-+	 */
-+	spin_lock(q.lock_ptr);
- no_block:
- 	/*
- 	 * Fixup the pi_state owner and possibly acquire the lock if we
-@@ -1132,6 +1133,7 @@ retry:
- 	top_waiter = futex_top_waiter(hb, &key);
- 	if (top_waiter) {
- 		struct futex_pi_state *pi_state = top_waiter->pi_state;
-+		struct rt_mutex_waiter *rt_waiter;
- 
- 		ret = -EINVAL;
- 		if (!pi_state)
-@@ -1144,22 +1146,39 @@ retry:
- 		if (pi_state->owner != current)
- 			goto out_unlock;
- 
--		get_pi_state(pi_state);
- 		/*
- 		 * By taking wait_lock while still holding hb->lock, we ensure
--		 * there is no point where we hold neither; and therefore
--		 * wake_futex_p() must observe a state consistent with what we
--		 * observed.
-+		 * there is no point where we hold neither; and thereby
-+		 * wake_futex_pi() must observe any new waiters.
-+		 *
-+		 * Since the cleanup: case in futex_lock_pi() removes the
-+		 * rt_waiter without holding hb->lock, it is possible for
-+		 * wake_futex_pi() to not find a waiter while the above does,
-+		 * in this case the waiter is on the way out and it can be
-+		 * ignored.
- 		 *
- 		 * In particular; this forces __rt_mutex_start_proxy() to
- 		 * complete such that we're guaranteed to observe the
--		 * rt_waiter. Also see the WARN in wake_futex_pi().
-+		 * rt_waiter.
- 		 */
- 		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+
-+		/*
-+		 * Futex vs rt_mutex waiter state -- if there are no rt_mutex
-+		 * waiters even though futex thinks there are, then the waiter
-+		 * is leaving and the uncontended path is safe to take.
-+		 */
-+		rt_waiter = rt_mutex_top_waiter(&pi_state->pi_mutex);
-+		if (!rt_waiter) {
-+			raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+			goto do_uncontended;
-+		}
-+
-+		get_pi_state(pi_state);
- 		spin_unlock(&hb->lock);
- 
- 		/* drops pi_state->pi_mutex.wait_lock */
--		ret = wake_futex_pi(uaddr, uval, pi_state);
-+		ret = wake_futex_pi(uaddr, uval, pi_state, rt_waiter);
- 
- 		put_pi_state(pi_state);
- 
-@@ -1187,6 +1206,7 @@ retry:
- 		return ret;
- 	}
- 
-+do_uncontended:
- 	/*
- 	 * We have no kernel internal state, i.e. no waiters in the
- 	 * kernel. Waiters which are about to queue themselves are stuck
-Index: linux-2.6/kernel/futex/requeue.c
-===================================================================
---- linux-2.6.orig/kernel/futex/requeue.c
-+++ linux-2.6/kernel/futex/requeue.c
-@@ -850,11 +850,13 @@ int futex_wait_requeue_pi(u32 __user *ua
- 		pi_mutex = &q.pi_state->pi_mutex;
- 		ret = rt_mutex_wait_proxy_lock(pi_mutex, to, &rt_waiter);
- 
--		/* Current is not longer pi_blocked_on */
--		spin_lock(q.lock_ptr);
-+		/*
-+		 * See futex_unlock_pi()'s cleanup: comment.
-+		 */
- 		if (ret && !rt_mutex_cleanup_proxy_lock(pi_mutex, &rt_waiter))
- 			ret = 0;
- 
-+		spin_lock(q.lock_ptr);
- 		debug_rt_mutex_free_waiter(&rt_waiter);
- 		/*
- 		 * Fixup the pi_state owner and possibly acquire the lock if we
+[1] https://lore.kernel.org/all/20230830123202.3408318-2-billy_tsai@aspeedt=
+ech.com/
