@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D124E7A1707
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326EE7A16FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbjIOHMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
+        id S232651AbjIOHLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232570AbjIOHMn (ORCPT
+        with ESMTP id S232242AbjIOHLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:12:43 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AA5A1;
-        Fri, 15 Sep 2023 00:12:34 -0700 (PDT)
-Received: from localhost (unknown [124.16.138.129])
-        by APP-05 (Coremail) with SMTP id zQCowABnb1fBAwRlf4YUDQ--.60186S2;
-        Fri, 15 Sep 2023 15:12:01 +0800 (CST)
-From:   Chen Ni <nichen@iscas.ac.cn>
-To:     ychuang3@nuvoton.com, schung@nuvoton.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] tty: serial: ma35d1_serial: Add missing check for ioremap
-Date:   Fri, 15 Sep 2023 07:11:06 +0000
-Message-Id: <20230915071106.3347-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 15 Sep 2023 03:11:45 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7510F170E
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:11:28 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52e828ad46bso2105663a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694761887; x=1695366687; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=duNzL30y57/ySAf7C7Vscwm8B7UTpG6sGWYT0D1JL74=;
+        b=jc8PGvYKXoBm8/dmMCktI/8F0QPXtGaVHJlvW0UbMvpXx0Fyd+N9sQ5WqfDg1lqOij
+         As9N0DHiZz27AknsqdEmKtAqLEPe+phyBieCyRKbTjmy6dApKO4Nn5FQNW+aRyLc/e+X
+         4w6PNIcfof0uWL3qExcenWgujdzYFS8Cmw0xphg8dkXbcdhdLhgxHJpvwOcm2qUW93+C
+         F8pkF3zCdv+qCf1GjAOwhOPiJmlcHEQ9MiM1EfLxCkY3AOjAQeHbyneTAdM2jKUuPKcu
+         IiJ/kXWlet/oobOeISeALmtxN6sipKkB/cofZp/Lavmi5FO5AZBrIkK5K2CcbSDNUmNd
+         q+fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694761887; x=1695366687;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=duNzL30y57/ySAf7C7Vscwm8B7UTpG6sGWYT0D1JL74=;
+        b=vngK5AWi4iUvCkQDkPWSE9QLvSFJ1Q2LtUStfHyG+dFivFQAY8dLUTWX0RofOAwc6M
+         WLqxOjgGlwv4ESBJL61TpX4J5glv1ROLN3zwFS/Zf7TXOySJc9jjqJ9xyuDJgPlTKucc
+         5vKJsqU9nw7R+y/mUA12IyQKY2e0tcCqmoe+uy5FXUJ5FyifyNdUD4dt63OU8E2bNmqn
+         7pZHrdePwqir2OgEQixKI8+9ygrb5/KlvrNbJOOc4nZebNcXT4gFj0E2hbYOn/j0LwNb
+         KpKvOtsjwFYgTBz3eNviswrVug/j8J5LdwPyL0ObyPV1BYF+TCPUBPnlow193fWihGI9
+         LV4w==
+X-Gm-Message-State: AOJu0YypZAHF1UUdRwtVywaInXe+7N49w7r46inihzdVNKE/3nADAuRO
+        GF3jD0uJLlv0P03EbC4CeSHXgQ==
+X-Google-Smtp-Source: AGHT+IG80X1Vd9VVje2GNT+zD8duHxXIpA9OlMLUywM3CGAi4AX7C8Ef0fS8yntKTDXyicbSekDESw==
+X-Received: by 2002:aa7:d3cb:0:b0:52b:d187:61c2 with SMTP id o11-20020aa7d3cb000000b0052bd18761c2mr680552edr.29.1694761886864;
+        Fri, 15 Sep 2023 00:11:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id y2-20020aa7c242000000b0052a404e5929sm1836816edo.66.2023.09.15.00.11.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 00:11:26 -0700 (PDT)
+Message-ID: <5a386be4-facc-8aef-aad7-da6508aa0505@linaro.org>
+Date:   Fri, 15 Sep 2023 09:11:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowABnb1fBAwRlf4YUDQ--.60186S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4Utr48Aw13uw4UXryrWFg_yoWfWrb_CF
-        95W3yIqr409rs0kw1Sqry5uryftryqvF4kXF10v3sIkr98AaykWFWjvr1vyr47uw43WFy5
-        tr47KryfAw1qqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU10tC7UUUUU==
-X-Originating-IP: [124.16.138.129]
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 4/8] dt-bindings: arm-smmu: Add compatible for SM4450
+ SoC
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        catalin.marinas@arm.com
+Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_tsoni@quicinc.com,
+        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
+        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
+        quic_aiquny@quicinc.com, kernel@quicinc.com
+References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
+ <20230915021509.25773-3-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915021509.25773-3-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,29 +87,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check for ioremap() and return the error if it fails in order to
-guarantee the success of ioremap().
+On 15/09/2023 04:15, Tengfei Fan wrote:
+> Add the SoC specific compatible for SM4450 implementing arm,mmu-500.
+> 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index cf29ab10501c..b57751c8ad90 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -47,6 +47,7 @@ properties:
+>                - qcom,sdx55-smmu-500
+>                - qcom,sdx65-smmu-500
+>                - qcom,sdx75-smmu-500
+> +              - qcom,sm4450-smmu-500
+>                - qcom,sm6115-smmu-500
+>                - qcom,sm6125-smmu-500
+>                - qcom,sm6350-smmu-500
+> @@ -70,6 +71,7 @@ properties:
+>                - qcom,sc8180x-smmu-500
+>                - qcom,sc8280xp-smmu-500
+>                - qcom,sdm845-smmu-500
+> +              - qcom,sm4450-smmu-500
 
-Fixes: 930cbf92db01 ("tty: serial: Add Nuvoton ma35d1 serial driver support")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/tty/serial/ma35d1_serial.c | 3 +++
- 1 file changed, 3 insertions(+)
+Isn't there comment just few lines above your edit? Comment saying DON'T?
 
-diff --git a/drivers/tty/serial/ma35d1_serial.c b/drivers/tty/serial/ma35d1_serial.c
-index 465b1def9e11..4a9d1252de35 100644
---- a/drivers/tty/serial/ma35d1_serial.c
-+++ b/drivers/tty/serial/ma35d1_serial.c
-@@ -695,6 +695,9 @@ static int ma35d1serial_probe(struct platform_device *pdev)
- 
- 	up->port.iobase = res_mem->start;
- 	up->port.membase = ioremap(up->port.iobase, MA35_UART_REG_SIZE);
-+	if (!up->port.membase)
-+		return -ENOMEM;
-+
- 	up->port.ops = &ma35d1serial_ops;
- 
- 	spin_lock_init(&up->port.lock);
--- 
-2.25.1
+
+Best regards,
+Krzysztof
 
