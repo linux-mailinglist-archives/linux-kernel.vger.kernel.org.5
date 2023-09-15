@@ -2,83 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7767A1B7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9F67A1B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbjIOJ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
+        id S233921AbjIOJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233854AbjIOJ6h (ORCPT
+        with ESMTP id S234028AbjIOJ70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:58:37 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A0B3AB0;
-        Fri, 15 Sep 2023 02:56:56 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so30238641fa.3;
-        Fri, 15 Sep 2023 02:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694771814; x=1695376614; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMiSvg4Yw3aEFjiZx3jQ2DPRS3tXitXjq3AL84CvKNk=;
-        b=Fh9WkBeN3ND4cFbgw7GuyP5XAo3lJrg8ZRn8+lMw1QV9cbp2pY4d7jgP3LCDzuIREb
-         f84EeouUGUlytvtgOKybUee3HQe4/FU3R03p04YcYUGdSuYEAaKcEZhhqdOLWIMisvGG
-         EThlhErpTsnAUIBNeLaBLe9xvU6KlP42v2CvuiymYwuVxIEV41Cb6eUleMUUnf9hwOaF
-         bF8Jx4sle4WNPiQIjs/U/EgHPd/T/kDLCfp22WcSVcRfSSQr/t9LbyO6WpFYtE6Tdvaa
-         sBx6XXkCvWQUzEHDMpwdeYH1mYg+4pELEKsrkYeVQBKWAs4mCtAJR4lb7CCiV0o6q3E1
-         cE6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694771814; x=1695376614;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aMiSvg4Yw3aEFjiZx3jQ2DPRS3tXitXjq3AL84CvKNk=;
-        b=Gmn95mXLUyzMk09ZNGtST80wPdLzCJjREG52qm0xdxgBCQ/B7UXtJleMJ5dgXMOTkh
-         SjVliwAFDrH4DouSMyFlRWBFWKQoK8F6D15VX8bXiwkBnv7ytdpwIMJlucH/Y50Os7Ja
-         hHfX/pA4rALu4FSknDaNEhh7HhHKFbyS7fa2FuLf8fhdTMnIbOPzXp6qnKwFriNQgDYI
-         nQ7ZnGJGTk0EGmpykzKd7OFfuSJp1HWEqbOZzVQydS7amsk9DEYdgMe1XSdNlbowcEe1
-         pENcKskgDG4SNo7+Tgh0hGqVUkNF4dBgKwi97D3OLFLT+MfSFNYsJZiIvu8S4sokx9cP
-         IBdQ==
-X-Gm-Message-State: AOJu0YzSKvEEgbzHn+0T5jEZtJdtk4VmpaSACWgAEjrjcRT+8LDVg7m7
-        GMCNWG3fRkomFiEkOCo4fWk=
-X-Google-Smtp-Source: AGHT+IGiIrBzxdkDcZggY5VX3GV5v815lZiXPB+li9/p6okgCgXaH3NDcd7FeFWBOLK7jq/+AUtCFQ==
-X-Received: by 2002:a2e:950c:0:b0:2bf:ab17:d48b with SMTP id f12-20020a2e950c000000b002bfab17d48bmr1085429ljh.34.1694771813921;
-        Fri, 15 Sep 2023 02:56:53 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id l16-20020a2ea310000000b002bcbae4c21fsm651828lje.50.2023.09.15.02.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 02:56:53 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 12:56:51 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v5 2/3] dt-bindings: net: Add Loongson-1 Ethernet
- Controller
-Message-ID: <e5tsfcu7qg7bl4phybyg3dzxioa6ccrs3fsckrxmzukalhnumq@e76h5zzhjtjr>
-References: <20230914114435.481900-1-keguang.zhang@gmail.com>
- <20230914114435.481900-3-keguang.zhang@gmail.com>
+        Fri, 15 Sep 2023 05:59:26 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2132.outbound.protection.outlook.com [40.107.117.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1452735;
+        Fri, 15 Sep 2023 02:57:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ejscp8uoqWNOjjlDCWKO/f/vSluMyeIgagXwBl+gX216vVoaAbOq/1M6npRaoJjgxlXr98yUozlLoJ8czovD8SSM0aZgCA9B5v2MZoKHFlHhhCtZQ1KOCgKq5wnSYUO2lYYEwzJAKFvWixDZa0CAjKHM+XhJFaUvk7PQp8u7dD28wexwpxIs7vPv5ArAbAXkkxf+gWo61Ih6eNOyb/IIB+y7A5U4jMmphIRqY41GHpnpOCXtFQxcjF/2tWBmqnIu13FcY5IgGg5QVnRMPf2ey9vSkXSXtv1+BjkDqHM0d3wNFE41eb0JcDSa2qc7VC75F4Br3THKMrMbf7lk/cgUgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9NtG5w46J+qin33suvuWDWldx40kzXTtiF1HgsDTBb4=;
+ b=dal4ytknSKH2hq8xzV0mUxB5uJM58lStRSOkdElz0IEQYmFZtghajl2dxmWeA2N4fnudQsdMdspUlALdrvj6nREQ9T/by6Vl22NvhGU8rMtktEwhoPPdI/VCdg8RHiOQ7/wPvfUsl3mFTjEKaNWxSfETe7pV6azGJuBfjoxnaftwgkVRIvs8NXrpJ0fChE7OzbdiHWFUXZAdSrfFIfMCDRmL8mZoeRrujR+hrBpX04WiwKC2ZTrGWZrE3RalnUJoGaXCbWil2a1CcxAAYTMheA+4lCjnNAz051Kadlr4uN+8hES31QQt9o2/O2ZT3xshIAvwcAafTjWSWNaLYeIbpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9NtG5w46J+qin33suvuWDWldx40kzXTtiF1HgsDTBb4=;
+ b=ABuoqxjgfy7hh4rehTeMAbNvZm82tvnNgN+zzfBeIeELqMGbHwL0wdRKzjQq05KNektuOvw8ww9bvH+3P+MsrxlCaRDhSckZCbP1jO019lGJ+/8HMC+WOlRbDJ7+STuNZaB0j6VTX+yBcYGbtxb3SvpxBPrT2ZGYU1RBc9jyK9Q4VMynz8eXuxtINIIb/wY9f3uS+2r1diY6kyOasKM/iJMfsaxSMcalaxUQ2KWqKTfR+xGkirk6hDqmgV1gYVBs5hQrben4ooo8OXgb2UEPM6BinUxGeROqmVLWR1mvpjcrEmdxyECIpCVJA8IQTAbjYoDHzYViA/qEjtXLN2KLNA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
+ by TYZPR06MB5872.apcprd06.prod.outlook.com (2603:1096:400:334::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 15 Sep
+ 2023 09:57:13 +0000
+Received: from TY2PR06MB3342.apcprd06.prod.outlook.com
+ ([fe80::60d3:1ef9:d644:3959]) by TY2PR06MB3342.apcprd06.prod.outlook.com
+ ([fe80::60d3:1ef9:d644:3959%4]) with mapi id 15.20.6792.021; Fri, 15 Sep 2023
+ 09:57:13 +0000
+Message-ID: <315b565c-2f1c-4c51-a645-a5c3a4e1e3cc@vivo.com>
+Date:   Fri, 15 Sep 2023 17:57:09 +0800
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIXSBmcy13cml0ZWJhY2s6IHdyaXRlYmFj?=
+ =?UTF-8?Q?k=5Fsb=5Finodes=3A_Do_not_increase_=27total=5Fwrote=27_when_nothi?=
+ =?UTF-8?Q?ng_is_written?=
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     "chao@kernel.org" <chao@kernel.org>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230913131501.478516-1-guochunhai@vivo.com>
+ <20230913151651.gzmyjvqwan3euhwi@quack3>
+ <TY2PR06MB3342ED6EB614563BCC4FD23FBEF7A@TY2PR06MB3342.apcprd06.prod.outlook.com>
+ <20230914065853.qmvkymchyamx43k5@quack3>
+From:   Chunhai Guo <guochunhai@vivo.com>
+In-Reply-To: <20230914065853.qmvkymchyamx43k5@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR02CA0122.apcprd02.prod.outlook.com
+ (2603:1096:4:188::10) To TY2PR06MB3342.apcprd06.prod.outlook.com
+ (2603:1096:404:fb::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914114435.481900-3-keguang.zhang@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY2PR06MB3342:EE_|TYZPR06MB5872:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8e6bca4-cd62-437e-6b0c-08dbb5d222aa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 202SROzeftiiAtOTLNXZZpmD9I4CmX4ua07WPeRGYMxJ9ehi2pkKTGmXDWMtvofBBFfcvUotM56TVv0ySe9ti/Bzfd1DpOd/3adNB7MU61NXgiKgcu0kJVey92HRoUGnEZcV2TGQU1evc0td2pbNtmWpuebiyAsPFtVqva4gOxiwF/gcxh1tN0jf4WW5Xw6xLa5DW6W1n33GCjCF8J+Jx8yezkKRNlS3lC9Oxv0ZZZYl4FV88TkAgDxdA56gBRVomGjw6yo+1BDT/wRqnwzGl7B9Q/N5KA8fI+hrh6VuCyIRcUwk1cZRaOL3P3Y4iyKE3P/RLhdOpQ5hdu2JAN9XJQLmyRz+ymDg44C4ymYMDs6IzlDbSZz4UPJrdluWiU0C5TH6TLCRUC215SkLfViLKMiiMxar8LNEypwu1CBkwDRuwRZG0Wfc08kELgUzvRhb8r3a+0pWx5i5YPJg7Au8n40Mjhhy4OrZ9SWLIUAUXnuV9XXpnxBBHSenACMzcv8lcNlJZJ2X0VALtkxWmF8omqO7tNmuCLEypDOWV1Fpmf1D4FkEcrbOaWme+wPOhsIghNjWuDDxeFCsC7ntduBhJzTgNmDXicr2p16UAsNVHWZ1EOTzLc9WyxJ4YKRDMKV+tvYJPp6h/UbDWnW6iTFqvg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3342.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39850400004)(346002)(136003)(451199024)(1800799009)(186009)(66476007)(66946007)(478600001)(6486002)(54906003)(6506007)(6916009)(6666004)(66556008)(41300700001)(6512007)(316002)(31686004)(8936002)(5660300002)(4326008)(86362001)(36756003)(31696002)(2616005)(26005)(2906002)(38100700002)(224303003)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R241Y3FLRWtFUmVYU0tHbWYzK3Avc2VzRENObEJrV0c0aHJMbHIyNXJLRkxt?=
+ =?utf-8?B?allwd0xYb2ZZbkRIUDI1bkxZN1lTNnJJVTZrYkZUcmtnSjFiejlaTXNjVWFV?=
+ =?utf-8?B?RStkZW9RY2s3UFR5bjhjYXA0TlRaZjRJRjY3YkxQSjk0ZTFiY1lSMlE1MzBI?=
+ =?utf-8?B?bytnUFB4LytUeGVpM1BGUzJZRDl2emJHK2FoWUFZN2U0VUYxcVBMQkxFenVH?=
+ =?utf-8?B?TVpVdGgrNlpXVlM5SmtBczNyeU5kcTNoMkFjYkRwOWJDZzhMRkdNZUJ5dEVt?=
+ =?utf-8?B?OWlaUklkWDhoTG01VytQNk5kdXZmbHd6RmlwZUFQelBYU1liU2tKM0s1aEdp?=
+ =?utf-8?B?YUNXcmhCd0s2a0RaTXM4aEliWXhBZldQOWIzcXNCZ0xGOGhZeTRkdm1kSG5o?=
+ =?utf-8?B?ZlVKVmJHd2hjelExTkRIWkI0L0RFc0s1Y0hqSjdOZnBkYkhrQTVocTBNT2cv?=
+ =?utf-8?B?b3dnZ0pVNnFhRWxFTFUyQXE1RHBJRkZ2RGhEdk5CR2JGMXp3SW1iVmt1bTBv?=
+ =?utf-8?B?b2NZUW9sNUo3aFhuaTRKV3NSMzhUYkU2dHZMOW0zOGZzQU5UUjY4WGRBNXRw?=
+ =?utf-8?B?OEc1MDllOGdLQ2ZYTDArME9KMnBqN0JhTzRFd1FxQnBjZTBOdVJuekw2UTR5?=
+ =?utf-8?B?MVBNVHI0U2lCd0tHQi93TDhQRjFieFF2azdaY1lTejR3dFNibnBZOThOazhz?=
+ =?utf-8?B?VERiZjVjM2J4YzV1WGExcDJwQnRaU1JzTkdNdVd2dU10RHk3WHFCNWQ0Vk1E?=
+ =?utf-8?B?eFd4VmxWbkYzM3JJUGZLWjI3dnlDdWkvdkd4OWQzc0U2YUNhU2dPRUp5Yk94?=
+ =?utf-8?B?MkQ2eHBobkJlKy9MYVl4UnBMVmFDOTFraFN2aFlBUTdIUnprV0YweVZxaHh4?=
+ =?utf-8?B?WDZvb1Z3eDhVdktOZnJoZldPNUl6aGN4THltS1BsanR1MUJYaThvZnRQOUhE?=
+ =?utf-8?B?STZ6aTFoeEFmNDVnODl2RFlzY2Zya3JtNDh4RTJVZThFSTlFSVpvNUUzTUJy?=
+ =?utf-8?B?QUtpNitEbVFEWVJFbWlVRHRhQ2ZuSjNIWkhqSHIrNmtOOFZNNGlkZ05xZXZP?=
+ =?utf-8?B?KzdVQ2tKbnRoVmEveUMzK1ZkK21wT0piTU9ocVQzQ1lnd2RpY3Q0c2JER3Uv?=
+ =?utf-8?B?U1ByUVpqazRVcmNGZmlKQyt5cS9CK3FNWHVaVU9JSWk0QUhXdHJzb08yQ0F1?=
+ =?utf-8?B?azg0VUo0a0VZdElLSythMXV5MFErME1yT3BhQ2dLek9RNjZkdEdoZFBwRWhy?=
+ =?utf-8?B?L25JcHdPeFE4dCtNNFJRejRjNlJLcXcrRUFVcjh2bTVzdURCU0dmMzE5aG15?=
+ =?utf-8?B?YmhueDRmWVRXZTlHVlFlZ1Z4d05yWFQzb1lWK3BIZ2RSS1RzRHJyV0IydHEy?=
+ =?utf-8?B?UTJOM25rdzFlZzlEVk0yMjBQNWVnZWlMSmpzMkh3eWdFYk9STy9YZGhFY25i?=
+ =?utf-8?B?N3VJZFdzVVFIdDA1OHZvMUpuakw3em5wWHdQVUJWMm9TdGlTNng4Y2ZlTnp3?=
+ =?utf-8?B?NFovL041V213OGk4QzN3MUx2TzM1QkoxbDM4R3lPZjNTdndobExnSXZmY2d1?=
+ =?utf-8?B?ZHRFNElqbzl4WUM0cCszM3ZadVEyU0MveWttd1ZldjVEbEd6ekkzZHNMVGV2?=
+ =?utf-8?B?NVI4TkxDTFVIay9wR0FlSm54MmJ6bnZ2emJGNDB4YjNOU3J4MEVCNGt2VkFP?=
+ =?utf-8?B?eWpmaXFCUFNNRzFvL0FyT1VhT05pYWZhNkJ6RUJqNHV4cGQ1SzhoTyt4L3Fm?=
+ =?utf-8?B?ZDBPOHFKT00zVnFabG5MTzhKQUMyWk85aW8vdTVuMjVWVGJzMHRlVnZrY2or?=
+ =?utf-8?B?WCtTNnB0ZHlyN2FyR1QxMUJ1NlM1bm4zZVNKNEc1aTVIWGJ4SWpZVTV2TlRv?=
+ =?utf-8?B?UEwyRUw1VTNNWHJHYWtTbWliR1R5WnN2TDFSMEc4cXNIRmRjejJ5S3l3ZDNq?=
+ =?utf-8?B?bWY2aVpEZm5qSVFiNEZWaENPdDZCejRJRkRPamN1ZUluclFkbVluVERmMU52?=
+ =?utf-8?B?cjVtNVNrOFNWQkF6dXN5cndmb1V3RkZ3YUpTMi9PL2FSaHlCR3cycWZuOEdX?=
+ =?utf-8?B?Z3l0akxqcStUa3IwK1lyMTBkNEZxTGFNeUZ4YjFqb25ZTEdaeUpvQ2dyU0xE?=
+ =?utf-8?Q?AaRNpZ5nXKPnd6bL8rnlcucmG?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8e6bca4-cd62-437e-6b0c-08dbb5d222aa
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3342.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 09:57:13.4863
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U4OVvhqHtk4Q8q5+qaA+Y1HZtiG9VMJtfQff753QKvEBpYUT+uh0TPwr5XMbCwcYJB6lcIHyIjCDejDGzUn4yQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5872
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,294 +132,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 07:44:34PM +0800, Keguang Zhang wrote:
-> Add devicetree binding document for Loongson-1 Ethernet controller.
-> And modify MAINTAINERS to add a new F: entry for
-> Loongson1 dt-binding documents.
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
--Serge(y)
+在 2023/9/14 14:58, Jan Kara 写道:
+> On Thu 14-09-23 04:12:31, 郭纯海 wrote:
+>>> On Wed 13-09-23 07:15:01, Chunhai Guo wrote:
+>>>>  From the dump info, there are only two pages as shown below. One is
+>>>> updated and another is under writeback. Maybe f2fs counts the
+>>>> writeback page as a dirty one, so get_dirty_pages() got one. As you
+>>>> said, maybe this is unreasonable.
+>>>>
+>>>> Jaegeuk & Chao, what do you think of this?
+>>>>
+>>>>
+>>>> crash_32> files -p 0xE5A44678
+>>>>   INODE    NRPAGES
+>>>> e5a44678        2
+>>>>
+>>>>    PAGE    PHYSICAL   MAPPING    INDEX CNT FLAGS
+>>>> e8d0e338  641de000  e5a44810         0  5 a095
+>>> locked,waiters,uptodate,lru,private,writeback
+>>>> e8ad59a0  54528000  e5a44810         1  2 2036
+>>> referenced,uptodate,lru,active,private
+>>>
+>>> Indeed, incrementing pages_skipped when there's no dirty page is a bit odd.
+>>> That being said we could also harden requeue_inode() - in particular we could do
+>>> there:
+>>>
+>>>          if (wbc->pages_skipped) {
+>>>                  /*
+>>>                   * Writeback is not making progress due to locked buffers.
+>>>                   * Skip this inode for now. Although having skipped pages
+>>>                   * is odd for clean inodes, it can happen for some
+>>>                   * filesystems so handle that gracefully.
+>>>                   */
+>>>                  if (inode->i_state & I_DIRTY_ALL)
+>>>                          redirty_tail_locked(inode, wb);
+>>>                  else
+>>>                          inode_cgwb_move_to_attached(inode, wb);
+>>>          }
+>>>
+>>> Does this fix your problem as well?
+>>>
+>>>                                                                  Honza
+>>
+>> Thank you for your reply. Did you forget the 'return' statement? Since I encountered this issue on the 4.19 kernel and there is not inode_cgwb_move_to_attached() yet, I replaced it with inode_io_list_del_locked(). So, below is the test patch I am applying. Please have a check. By the way, the test will take some time. I will provide feedback when it is finished. Thanks.
+> 
+> Yeah, I forgot about the return.
 
-> ---
-> V4 -> V5: Add a new F: entry for Loongson1 dt-binding documents
-> V3 -> V4: Add "|" to description part
->           Amend "phy-mode" property
-> V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
->           and loongson,ls1c-emac.yaml (suggested by Serge Semin)
->           Change the compatibles to loongson,ls1b-gmac and loongson,ls1c-emac
->           Rename loongson,dwmac-syscon to loongson,ls1-syscon
->           Amend the title
->           Add description
->           Add Reviewed-by tag from Krzysztof Kozlowski(Sorry! I'm not sure)
-> V1 -> V2: Fix "clock-names" and "interrupt-names" property
->           Rename the syscon property to "loongson,dwmac-syscon"
->           Drop "phy-handle" and "phy-mode" requirement
->           Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
->           to snps,dwmac.yaml
+Hi Jan,
+The test is finished and this patch can fix this issue, too.
+Thanks,
 > 
->  .../bindings/net/loongson,ls1b-gmac.yaml      | 114 ++++++++++++++++++
->  .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  3 files changed, 228 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
->  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
+>> 	if (wbc->pages_skipped) {
+>> 		/*
+>> 		 * writeback is not making progress due to locked
+>> 		 * buffers. Skip this inode for now.
+>> 		 */
+>> -		redirty_tail_locked(inode, wb);
+>> +		if (inode->i_state & I_DIRTY_ALL)
+>> +			redirty_tail_locked(inode, wb);
+>> +		else
+>> +			inode_io_list_del_locked(inode, wb);
+>>   		return;
+>>   	}
 > 
-> diff --git a/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-> new file mode 100644
-> index 000000000000..c4f3224bad38
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-> @@ -0,0 +1,114 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/loongson,ls1b-gmac.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson-1B Gigabit Ethernet MAC Controller
-> +
-> +maintainers:
-> +  - Keguang Zhang <keguang.zhang@gmail.com>
-> +
-> +description: |
-> +  Loongson-1B Gigabit Ethernet MAC Controller is based on
-> +  Synopsys DesignWare MAC (version 3.50a).
-> +
-> +  Main features
-> +  - Dual 10/100/1000Mbps GMAC controllers
-> +  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-> +  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-> +  - RX Checksum Offload
-> +  - TX Checksum insertion
-> +  - MII interface
-> +  - RGMII interface
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - loongson,ls1b-gmac
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - loongson,ls1b-gmac
-> +      - const: snps,dwmac-3.50a
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: stmmaceth
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: macirq
-> +
-> +  loongson,ls1-syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the syscon containing some extra configurations
-> +      including PHY interface mode.
-> +
-> +  phy-mode:
-> +    enum:
-> +      - mii
-> +      - rgmii-id
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - loongson,ls1-syscon
-> +
-> +allOf:
-> +  - $ref: snps,dwmac.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    gmac0: ethernet@1fe10000 {
-> +        compatible = "loongson,ls1b-gmac", "snps,dwmac-3.50a";
-> +        reg = <0x1fe10000 0x10000>;
-> +
-> +        clocks = <&clkc LS1X_CLKID_AHB>;
-> +        clock-names = "stmmaceth";
-> +
-> +        interrupt-parent = <&intc1>;
-> +        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "macirq";
-> +
-> +        loongson,ls1-syscon = <&syscon>;
-> +
-> +        phy-handle = <&phy0>;
-> +        phy-mode = "mii";
-> +        snps,pbl = <1>;
-> +
-> +        mdio {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            compatible = "snps,dwmac-mdio";
-> +
-> +            phy0: ethernet-phy@0 {
-> +                reg = <0x0>;
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-> new file mode 100644
-> index 000000000000..99001b940b83
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-> @@ -0,0 +1,113 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/loongson,ls1c-emac.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson-1C Ethernet MAC Controller
-> +
-> +maintainers:
-> +  - Keguang Zhang <keguang.zhang@gmail.com>
-> +
-> +description: |
-> +  Loongson-1C Ethernet MAC Controller is based on
-> +  Synopsys DesignWare MAC (version 3.50a).
-> +
-> +  Main features
-> +  - 10/100Mbps
-> +  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-> +  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-> +  - IEEE 802.1Q VLAN tag detection for reception frames
-> +  - MII interface
-> +  - RMII interface
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - loongson,ls1c-emac
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - loongson,ls1c-emac
-> +      - const: snps,dwmac-3.50a
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: stmmaceth
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: macirq
-> +
-> +  loongson,ls1-syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the syscon containing some extra configurations
-> +      including PHY interface mode.
-> +
-> +  phy-mode:
-> +    enum:
-> +      - mii
-> +      - rmii
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - loongson,ls1-syscon
-> +
-> +allOf:
-> +  - $ref: snps,dwmac.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    emac: ethernet@1fe10000 {
-> +        compatible = "loongson,ls1c-emac", "snps,dwmac-3.50a";
-> +        reg = <0x1fe10000 0x10000>;
-> +
-> +        clocks = <&clkc LS1X_CLKID_AHB>;
-> +        clock-names = "stmmaceth";
-> +
-> +        interrupt-parent = <&intc1>;
-> +        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "macirq";
-> +
-> +        loongson,ls1-syscon = <&syscon>;
-> +
-> +        phy-handle = <&phy0>;
-> +        phy-mode = "mii";
-> +        snps,pbl = <1>;
-> +
-> +        mdio {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            compatible = "snps,dwmac-mdio";
-> +
-> +            phy0: ethernet-phy@13 {
-> +                reg = <0x13>;
-> +            };
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fa7487b7729b..e514b53fb225 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14379,6 +14379,7 @@ MIPS/LOONGSON1 ARCHITECTURE
->  M:	Keguang Zhang <keguang.zhang@gmail.com>
->  L:	linux-mips@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/devicetree/bindings/*/loongson,ls1*.yaml
->  F:	arch/mips/include/asm/mach-loongson32/
->  F:	arch/mips/loongson32/
->  F:	drivers/*/*loongson1*
-> -- 
-> 2.39.2
+> Looks good. Thanks for testing!
 > 
-> 
+> 								Honza
