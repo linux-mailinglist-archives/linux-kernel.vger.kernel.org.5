@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB507A26CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD437A26DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 21:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236948AbjIOTAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 15:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
+        id S236877AbjIOTC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 15:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237067AbjIOTAo (ORCPT
+        with ESMTP id S236963AbjIOTB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 15:00:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930BA270A;
-        Fri, 15 Sep 2023 12:00:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF916C4339A;
-        Fri, 15 Sep 2023 19:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694804429;
-        bh=MwYH2ME9s5GR5J22JIc9pHMsg8/BLoZqEWB3h/MNKug=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dc8ehB5SmqvG+DNp8dNDSxMhG6TsX6M2Tx1knthy1ka7AXh1nnnTV+JKs/Ham9X1W
-         3md8hC7WO1cITCN5OrswcKVsh5Fy1W7DIf5Ax8oN5FfaBJ5yZWyR3k9tEURxkhX9ZF
-         qNGNd+NHhuu+6+i4FytLLtQYvu8N7xtCcLFQFfIWMbuR28NGsHHVMMqeU7Z5M+OjOw
-         7HgYmICKCdR35+1RWyxVxRCMOFdSPFz+StmTuRGIBMd2E0SKfLvdGwAL+AtAPECYAo
-         kTi27M/ImM9c0gDUg/Q8A+JdhRNsC1gbUNUaw0o3YyuJkPjVDCUotXiTehzBM32kWj
-         FeCGvVBwtoKhg==
-Date:   Fri, 15 Sep 2023 13:01:23 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] mlxsw: Use size_mul() in call to struct_size()
-Message-ID: <ZQSqA80YyLQsnd1L@work>
+        Fri, 15 Sep 2023 15:01:57 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698CD2D71
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:01:30 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3acac5d0b87so3228835b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 12:01:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694804489; x=1695409289;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jIsxNI68mB9Kq0lc2JZJzazFfrMrZvjV6QtMhALsulY=;
+        b=A5yWfe0Nj4PBhnT3W+rlMc+4S1g4E0mRyKk9OUfO2Li3Su6wWaUXgrezhUqn26khsa
+         iiHTatszuxgXga5kXV9sPYtympAw34MK7Qh5tPOT8HiR/19o8YMigrxMFukP8E6c423B
+         yClUk9fyl9VM5e5pDQEoODjzbjtjlofWPbHlPzPPwJSeJ/DRR3Sop/hZglDncAdPHrHK
+         4ASqf+ldLd5WeIb5fTQIsmIoznXh+uSn2teuk76FJLsUD6P6j2Orvw2cZeIlygxG7o8V
+         fvH/TjaEfIS6ban5VzgLLbtgNepGHKdULe0X3ZYsIFFJAhU5zlF9ugCFZ219BdrTnJkw
+         k3LA==
+X-Gm-Message-State: AOJu0YzzBPe+amA4GB47keBSLWf9iLC9uutCxnTgViV/71I8xV7/cW0V
+        ak9z8SfoojBjwTSd4TNSqpIY28WTDKHXO2r7QZ402FPQfedX
+X-Google-Smtp-Source: AGHT+IEdW28QExD1CG+iyseqF14sfY7RwaCtlPwhqEcqryljdpqrzAKD69SsLJPnECJiegiA/z1xDUUpJu2RDnGpl364+DDKioM6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1589:b0:3ad:aeed:7ed9 with SMTP id
+ t9-20020a056808158900b003adaeed7ed9mr1009026oiw.2.1694804489679; Fri, 15 Sep
+ 2023 12:01:29 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 12:01:29 -0700
+In-Reply-To: <0000000000005c2d1f05e8945724@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000925bf206056a6b69@google.com>
+Subject: Re: [syzbot] [ntfs3?] BUG: unable to handle kernel NULL pointer
+ dereference in __d_instantiate
+From:   syzbot <syzbot+29dc75ed37be943c610e@syzkaller.appspotmail.com>
+To:     adilger@dilger.ca, almaz.alexandrovich@paragon-software.com,
+        edward.lo@ambergroup.io, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If, for any reason, the open-coded arithmetic causes a wraparound, the
-protection that `struct_size()` adds against potential integer overflows
-is defeated. Fix this by hardening call to `struct_size()` with `size_mul()`.
+syzbot suspects this issue was fixed by commit:
 
-Fixes: 2285ec872d9d ("mlxsw: spectrum_acl_bloom_filter: use struct_size() in kzalloc()")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 54e45702b648b7c0000e90b3e9b890e367e16ea8
+Author: Edward Lo <edward.lo@ambergroup.io>
+Date:   Thu Sep 22 16:50:23 2022 +0000
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
-index e2aced7ab454..95f63fcf4ba1 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_bloom_filter.c
-@@ -496,7 +496,7 @@ mlxsw_sp_acl_bf_init(struct mlxsw_sp *mlxsw_sp, unsigned int num_erp_banks)
- 	 * is 2^ACL_MAX_BF_LOG
- 	 */
- 	bf_bank_size = 1 << MLXSW_CORE_RES_GET(mlxsw_sp->core, ACL_MAX_BF_LOG);
--	bf = kzalloc(struct_size(bf, refcnt, bf_bank_size * num_erp_banks),
-+	bf = kzalloc(struct_size(bf, refcnt, size_mul(bf_bank_size, num_erp_banks)),
- 		     GFP_KERNEL);
- 	if (!bf)
- 		return ERR_PTR(-ENOMEM);
--- 
-2.34.1
+    fs/ntfs3: Validate resident attribute name
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12403c74680000
+start commit:   f9ff5644bcc0 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c163713cf9186fe7
+dashboard link: https://syzkaller.appspot.com/bug?extid=29dc75ed37be943c610e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1077def7880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10175baf880000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs/ntfs3: Validate resident attribute name
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
