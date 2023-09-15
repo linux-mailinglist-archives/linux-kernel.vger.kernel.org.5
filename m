@@ -2,531 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C927A168B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226837A1692
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbjIOGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
+        id S232498AbjIOGyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjIOGxz (ORCPT
+        with ESMTP id S230109AbjIOGyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:53:55 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6302722;
-        Thu, 14 Sep 2023 23:53:37 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rn4bq5s69zrS3S;
-        Fri, 15 Sep 2023 14:51:35 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 14:53:35 +0800
-Subject: Re: [PATCH 2/2] crypto: hisilicon/zip - remove zlib and gzip
-To:     Yang Shen <shenyang39@huawei.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-References: <20230914090908.3849318-1-shenyang39@huawei.com>
- <20230914090908.3849318-3-shenyang39@huawei.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <d40b6209-8059-4dc9-7e9a-05cd51817afd@huawei.com>
-Date:   Fri, 15 Sep 2023 14:53:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 15 Sep 2023 02:54:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7EAE1271B
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694760831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1yo/ltbu6gyQyMT5IUFnw0353h8EE843EVbYpVcgDCY=;
+        b=fOfXgsebTK24AKu48VUFmPQaBhoEL2/paJzt4YQFC4rePPYNqgzrpQH5YhiiF7ifXDhUg5
+        ahuLpicKzwKKgvDrQEazRGc9ZlcNIL6ZjXaYn48yT9PY3Qn221/QvYIMuZvNpoE8bJV14W
+        Mjyx7NsQ7KCcHXbhPkq1qnkibETjLX4=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-7-33B9WMTWPjmwKj1D5zy3Lg-1; Fri, 15 Sep 2023 02:53:48 -0400
+X-MC-Unique: 33B9WMTWPjmwKj1D5zy3Lg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-500c67585acso2096529e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:53:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694760827; x=1695365627;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1yo/ltbu6gyQyMT5IUFnw0353h8EE843EVbYpVcgDCY=;
+        b=TY/WHiKu8KQV/Lb7F1IhWveeAKF+UtKlwyZcNUqAzlMeKBB0o+XEX8k48GDQ8dxw0z
+         wfptYrnQQn2aqg8DDWzVQ+xrhVZn6nahik/PGYUcO+iEKYyHdUNsuxLPgH3EwJIQdtT2
+         ORj7mWeGtn89DFEzpgYEEv8BAG47SLtgTMKcy7Rx56ypyy5ggv3+yZcL+azeeb/7e62b
+         trOxaD6ZdPkHjsgMcJujHgx+39IKdgoIU95Nv8L9lGuT8xutwrSre0hJvx5fu9wY/D3n
+         CwC+x1VGVgRk/AeEML5KuJOD5sONRDAaqjGPBfh7iBR0gdmlfxTyiBJa0diBuuAFDj2O
+         RWaA==
+X-Gm-Message-State: AOJu0YwA+z+/0jGnoO7dMgwTrq9srbTRD3Kqva+NCWzEes9HrsE+kYwL
+        AwV2pvMNRNLxCAd+7Z5vC8GQeaE8IYskOQFCQgph+080Os3AUlE/6Awg60w/RGYTubx7BsHt5Ev
+        gw/ASqIKqDU0Pie2SUQ+KZ9RxJKPvs28qsJQK/aoq
+X-Received: by 2002:a05:6512:2118:b0:4fb:bef0:948e with SMTP id q24-20020a056512211800b004fbbef0948emr756377lfr.5.1694760826848;
+        Thu, 14 Sep 2023 23:53:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGUH4I6aV5QreN6mk31ZBMA6OFB1mVM2TE0phoCc5O/m60tRNYb9K8GAZYxOqPql8v8ND7yp1NfW/D+aXFo530=
+X-Received: by 2002:a05:6512:2118:b0:4fb:bef0:948e with SMTP id
+ q24-20020a056512211800b004fbbef0948emr756367lfr.5.1694760826555; Thu, 14 Sep
+ 2023 23:53:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230914090908.3849318-3-shenyang39@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.110]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829174014.928189-2-dtatulea@nvidia.com>
+In-Reply-To: <20230829174014.928189-2-dtatulea@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 15 Sep 2023 14:53:35 +0800
+Message-ID: <CACGkMEuQHsWi=FkKyRQk_tg8-gBjLfr9K48LzK9t9DKbaHga5w@mail.gmail.com>
+Subject: Re: [PATCH] vdpa/mlx5: Fix double release of debugfs entry
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Gal Pressman <gal@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/14 17:09, Yang Shen wrote:
-> Remove the support of zlib-deflate and gzip.
-> 
-> Signed-off-by: Yang Shen <shenyang39@huawei.com>
-> ---
->  drivers/crypto/hisilicon/zip/zip_crypto.c | 308 ++--------------------
->  drivers/crypto/hisilicon/zip/zip_main.c   |   2 +-
->  2 files changed, 22 insertions(+), 288 deletions(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-> index 09f60f786779..636ac794ebb7 100644
-> --- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-> +++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-> @@ -17,38 +17,14 @@
->  /* hisi_zip_sqe dw9 */
->  #define HZIP_REQ_TYPE_M				GENMASK(7, 0)
->  #define HZIP_ALG_TYPE_DEFLATE			0x01
-> -#define HZIP_ALG_TYPE_ZLIB			0x02
-> -#define HZIP_ALG_TYPE_GZIP			0x03
->  #define HZIP_BUF_TYPE_M				GENMASK(11, 8)
-> -#define HZIP_PBUFFER				0x0
->  #define HZIP_SGL				0x1
->  
-> -#define HZIP_ZLIB_HEAD_SIZE			2
-> -#define HZIP_GZIP_HEAD_SIZE			10
-> -
-> -#define GZIP_HEAD_FHCRC_BIT			BIT(1)
-> -#define GZIP_HEAD_FEXTRA_BIT			BIT(2)
-> -#define GZIP_HEAD_FNAME_BIT			BIT(3)
-> -#define GZIP_HEAD_FCOMMENT_BIT			BIT(4)
-> -
-> -#define GZIP_HEAD_FLG_SHIFT			3
-> -#define GZIP_HEAD_FEXTRA_SHIFT			10
-> -#define GZIP_HEAD_FEXTRA_XLEN			2UL
-> -#define GZIP_HEAD_FHCRC_SIZE			2
-> -
-> -#define HZIP_GZIP_HEAD_BUF			256
->  #define HZIP_ALG_PRIORITY			300
->  #define HZIP_SGL_SGE_NR				10
->  
-> -#define HZIP_ALG_ZLIB				GENMASK(1, 0)
-> -#define HZIP_ALG_GZIP				GENMASK(3, 2)
->  #define HZIP_ALG_DEFLATE			GENMASK(5, 4)
->  
-> -static const u8 zlib_head[HZIP_ZLIB_HEAD_SIZE] = {0x78, 0x9c};
-> -static const u8 gzip_head[HZIP_GZIP_HEAD_SIZE] = {
-> -	0x1f, 0x8b, 0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x03
-> -};
-> -
->  enum hisi_zip_alg_type {
->  	HZIP_ALG_TYPE_COMP = 0,
->  	HZIP_ALG_TYPE_DECOMP = 1,
-> @@ -61,22 +37,10 @@ enum {
->  };
->  
->  #define COMP_NAME_TO_TYPE(alg_name)					\
-> -	(!strcmp((alg_name), "deflate") ? HZIP_ALG_TYPE_DEFLATE :	\
-> -	(!strcmp((alg_name), "zlib-deflate") ? HZIP_ALG_TYPE_ZLIB :	\
-> -	 !strcmp((alg_name), "gzip") ? HZIP_ALG_TYPE_GZIP : 0))		\
-> -
-> -#define TO_HEAD_SIZE(req_type)						\
-> -	(((req_type) == HZIP_ALG_TYPE_ZLIB) ? sizeof(zlib_head) :	\
-> -	 ((req_type) == HZIP_ALG_TYPE_GZIP) ? sizeof(gzip_head) : 0)	\
-> -
-> -#define TO_HEAD(req_type)						\
-> -	(((req_type) == HZIP_ALG_TYPE_ZLIB) ? zlib_head :		\
-> -	 ((req_type) == HZIP_ALG_TYPE_GZIP) ? gzip_head : NULL)		\
-> +	(!strcmp((alg_name), "deflate") ? HZIP_ALG_TYPE_DEFLATE : 0)
->  
->  struct hisi_zip_req {
->  	struct acomp_req *req;
-> -	u32 sskip;
-> -	u32 dskip;
->  	struct hisi_acc_hw_sgl *hw_src;
->  	struct hisi_acc_hw_sgl *hw_dst;
->  	dma_addr_t dma_src;
-> @@ -141,85 +105,8 @@ static u16 sgl_sge_nr = HZIP_SGL_SGE_NR;
->  module_param_cb(sgl_sge_nr, &sgl_sge_nr_ops, &sgl_sge_nr, 0444);
->  MODULE_PARM_DESC(sgl_sge_nr, "Number of sge in sgl(1-255)");
->  
-> -static u32 get_extra_field_size(const u8 *start)
-> -{
-> -	return *((u16 *)start) + GZIP_HEAD_FEXTRA_XLEN;
-> -}
-> -
-> -static u32 get_name_field_size(const u8 *start)
-> -{
-> -	return strlen(start) + 1;
-> -}
-> -
-> -static u32 get_comment_field_size(const u8 *start)
-> -{
-> -	return strlen(start) + 1;
-> -}
-> -
-> -static u32 __get_gzip_head_size(const u8 *src)
-> -{
-> -	u8 head_flg = *(src + GZIP_HEAD_FLG_SHIFT);
-> -	u32 size = GZIP_HEAD_FEXTRA_SHIFT;
-> -
-> -	if (head_flg & GZIP_HEAD_FEXTRA_BIT)
-> -		size += get_extra_field_size(src + size);
-> -	if (head_flg & GZIP_HEAD_FNAME_BIT)
-> -		size += get_name_field_size(src + size);
-> -	if (head_flg & GZIP_HEAD_FCOMMENT_BIT)
-> -		size += get_comment_field_size(src + size);
-> -	if (head_flg & GZIP_HEAD_FHCRC_BIT)
-> -		size += GZIP_HEAD_FHCRC_SIZE;
-> -
-> -	return size;
-> -}
-> -
-> -static u32 __maybe_unused get_gzip_head_size(struct scatterlist *sgl)
-> -{
-> -	char buf[HZIP_GZIP_HEAD_BUF];
-> -
-> -	sg_copy_to_buffer(sgl, sg_nents(sgl), buf, sizeof(buf));
-> -
-> -	return __get_gzip_head_size(buf);
-> -}
-> -
-> -static int add_comp_head(struct scatterlist *dst, u8 req_type)
-> -{
-> -	int head_size = TO_HEAD_SIZE(req_type);
-> -	const u8 *head = TO_HEAD(req_type);
-> -	int ret;
-> -
-> -	ret = sg_copy_from_buffer(dst, sg_nents(dst), head, head_size);
-> -	if (unlikely(ret != head_size)) {
-> -		pr_err("the head size of buffer is wrong (%d)!\n", ret);
-> -		return -ENOMEM;
-> -	}
-> -
-> -	return head_size;
-> -}
-> -
-> -static int get_comp_head_size(struct acomp_req *acomp_req, u8 req_type)
-> -{
-> -	if (unlikely(!acomp_req->src || !acomp_req->slen))
-> -		return -EINVAL;
-> -
-> -	if (unlikely(req_type == HZIP_ALG_TYPE_GZIP &&
-> -		     acomp_req->slen < GZIP_HEAD_FEXTRA_SHIFT))
-> -		return -EINVAL;
-> -
-> -	switch (req_type) {
-> -	case HZIP_ALG_TYPE_ZLIB:
-> -		return TO_HEAD_SIZE(HZIP_ALG_TYPE_ZLIB);
-> -	case HZIP_ALG_TYPE_GZIP:
-> -		return TO_HEAD_SIZE(HZIP_ALG_TYPE_GZIP);
-> -	default:
-> -		pr_err("request type does not support!\n");
-> -		return -EINVAL;
-> -	}
-> -}
-> -
-> -static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,
-> -						struct hisi_zip_qp_ctx *qp_ctx,
-> -						size_t head_size, bool is_comp)
-> +static struct hisi_zip_req *hisi_zip_create_req(struct hisi_zip_qp_ctx *qp_ctx,
-> +						struct acomp_req *req)
->  {
->  	struct hisi_zip_req_q *req_q = &qp_ctx->req_q;
->  	struct hisi_zip_req *q = req_q->q;
-> @@ -242,14 +129,6 @@ static struct hisi_zip_req *hisi_zip_create_req(struct acomp_req *req,
->  	req_cache->req_id = req_id;
->  	req_cache->req = req;
->  
-> -	if (is_comp) {
-> -		req_cache->sskip = 0;
-> -		req_cache->dskip = head_size;
-> -	} else {
-> -		req_cache->sskip = head_size;
-> -		req_cache->dskip = 0;
-> -	}
-> -
->  	return req_cache;
->  }
->  
-> @@ -275,10 +154,8 @@ static void hisi_zip_fill_buf_size(struct hisi_zip_sqe *sqe, struct hisi_zip_req
->  {
->  	struct acomp_req *a_req = req->req;
->  
-> -	sqe->input_data_length = a_req->slen - req->sskip;
-> -	sqe->dest_avail_out = a_req->dlen - req->dskip;
-> -	sqe->dw7 = FIELD_PREP(HZIP_IN_SGE_DATA_OFFSET_M, req->sskip);
-> -	sqe->dw8 = FIELD_PREP(HZIP_OUT_SGE_DATA_OFFSET_M, req->dskip);
-> +	sqe->input_data_length = a_req->slen;
-> +	sqe->dest_avail_out = a_req->dlen;
->  }
->  
->  static void hisi_zip_fill_buf_type(struct hisi_zip_sqe *sqe, u8 buf_type)
-> @@ -299,12 +176,7 @@ static void hisi_zip_fill_req_type(struct hisi_zip_sqe *sqe, u8 req_type)
->  	sqe->dw9 = val;
->  }
->  
-> -static void hisi_zip_fill_tag_v1(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-> -{
-> -	sqe->dw13 = req->req_id;
-> -}
-> -
-> -static void hisi_zip_fill_tag_v2(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-> +static void hisi_zip_fill_tag(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
->  {
->  	sqe->dw26 = req->req_id;
->  }
-> @@ -333,8 +205,8 @@ static void hisi_zip_fill_sqe(struct hisi_zip_ctx *ctx, struct hisi_zip_sqe *sqe
->  	ops->fill_sqe_type(sqe, ops->sqe_type);
->  }
->  
-> -static int hisi_zip_do_work(struct hisi_zip_req *req,
-> -			    struct hisi_zip_qp_ctx *qp_ctx)
-> +static int hisi_zip_do_work(struct hisi_zip_qp_ctx *qp_ctx,
-> +			    struct hisi_zip_req *req)
->  {
->  	struct hisi_acc_sgl_pool *pool = qp_ctx->sgl_pool;
->  	struct hisi_zip_dfx *dfx = &qp_ctx->zip_dev->dfx;
-> @@ -386,12 +258,7 @@ static int hisi_zip_do_work(struct hisi_zip_req *req,
->  	return ret;
->  }
->  
-> -static u32 hisi_zip_get_tag_v1(struct hisi_zip_sqe *sqe)
-> -{
-> -	return sqe->dw13;
-> -}
-> -
-> -static u32 hisi_zip_get_tag_v2(struct hisi_zip_sqe *sqe)
-> +static u32 hisi_zip_get_tag(struct hisi_zip_sqe *sqe)
->  {
->  	return sqe->dw26;
->  }
-> @@ -417,8 +284,8 @@ static void hisi_zip_acomp_cb(struct hisi_qp *qp, void *data)
->  	u32 tag = ops->get_tag(sqe);
->  	struct hisi_zip_req *req = req_q->q + tag;
->  	struct acomp_req *acomp_req = req->req;
-> -	u32 status, dlen, head_size;
->  	int err = 0;
-> +	u32 status;
->  
->  	atomic64_inc(&dfx->recv_cnt);
->  	status = ops->get_status(sqe);
-> @@ -430,13 +297,10 @@ static void hisi_zip_acomp_cb(struct hisi_qp *qp, void *data)
->  		err = -EIO;
->  	}
->  
-> -	dlen = ops->get_dstlen(sqe);
-> -
->  	hisi_acc_sg_buf_unmap(dev, acomp_req->src, req->hw_src);
->  	hisi_acc_sg_buf_unmap(dev, acomp_req->dst, req->hw_dst);
->  
-> -	head_size = (qp->alg_type == 0) ? TO_HEAD_SIZE(qp->req_type) : 0;
-> -	acomp_req->dlen = dlen + head_size;
-> +	acomp_req->dlen = ops->get_dstlen(sqe);
->  
->  	if (acomp_req->base.complete)
->  		acomp_request_complete(acomp_req, err);
-> @@ -450,24 +314,13 @@ static int hisi_zip_acompress(struct acomp_req *acomp_req)
->  	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_COMP];
->  	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
->  	struct hisi_zip_req *req;
-> -	int head_size = 0;
->  	int ret;
->  
-> -	/* let's output compression head now */
-> -	if (qp_ctx->qp->req_type != HZIP_ALG_TYPE_DEFLATE) {
-> -		head_size = add_comp_head(acomp_req->dst, qp_ctx->qp->req_type);
-> -		if (unlikely(head_size < 0)) {
-> -			dev_err_ratelimited(dev, "failed to add comp head (%d)!\n",
-> -					head_size);
-> -			return head_size;
-> -		}
-> -	}
-> -
-> -	req = hisi_zip_create_req(acomp_req, qp_ctx, head_size, true);
-> +	req = hisi_zip_create_req(qp_ctx, acomp_req);
->  	if (IS_ERR(req))
->  		return PTR_ERR(req);
->  
-> -	ret = hisi_zip_do_work(req, qp_ctx);
-> +	ret = hisi_zip_do_work(qp_ctx, req);
->  	if (unlikely(ret != -EINPROGRESS)) {
->  		dev_info_ratelimited(dev, "failed to do compress (%d)!\n", ret);
->  		hisi_zip_remove_req(qp_ctx, req);
-> @@ -482,22 +335,13 @@ static int hisi_zip_adecompress(struct acomp_req *acomp_req)
->  	struct hisi_zip_qp_ctx *qp_ctx = &ctx->qp_ctx[HZIP_QPC_DECOMP];
->  	struct device *dev = &qp_ctx->qp->qm->pdev->dev;
->  	struct hisi_zip_req *req;
-> -	int head_size = 0, ret;
-> -
-> -	if (qp_ctx->qp->req_type != HZIP_ALG_TYPE_DEFLATE) {
-> -		head_size = get_comp_head_size(acomp_req, qp_ctx->qp->req_type);
-> -		if (unlikely(head_size < 0)) {
-> -			dev_err_ratelimited(dev, "failed to get comp head size (%d)!\n",
-> -					head_size);
-> -			return head_size;
-> -		}
-> -	}
-> +	int ret;
->  
-> -	req = hisi_zip_create_req(acomp_req, qp_ctx, head_size, false);
-> +	req = hisi_zip_create_req(qp_ctx, acomp_req);
->  	if (IS_ERR(req))
->  		return PTR_ERR(req);
->  
-> -	ret = hisi_zip_do_work(req, qp_ctx);
-> +	ret = hisi_zip_do_work(qp_ctx, req);
->  	if (unlikely(ret != -EINPROGRESS)) {
->  		dev_info_ratelimited(dev, "failed to do decompress (%d)!\n",
->  				     ret);
-> @@ -534,28 +378,15 @@ static void hisi_zip_release_qp(struct hisi_zip_qp_ctx *qp_ctx)
->  	hisi_qm_free_qps(&qp_ctx->qp, 1);
->  }
->  
-> -static const struct hisi_zip_sqe_ops hisi_zip_ops_v1 = {
-> -	.sqe_type		= 0,
-> -	.fill_addr		= hisi_zip_fill_addr,
-> -	.fill_buf_size		= hisi_zip_fill_buf_size,
-> -	.fill_buf_type		= hisi_zip_fill_buf_type,
-> -	.fill_req_type		= hisi_zip_fill_req_type,
-> -	.fill_tag		= hisi_zip_fill_tag_v1,
-> -	.fill_sqe_type		= hisi_zip_fill_sqe_type,
-> -	.get_tag		= hisi_zip_get_tag_v1,
-> -	.get_status		= hisi_zip_get_status,
-> -	.get_dstlen		= hisi_zip_get_dstlen,
-> -};
-> -
-> -static const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
-> +static const struct hisi_zip_sqe_ops hisi_zip_ops = {
->  	.sqe_type		= 0x3,
->  	.fill_addr		= hisi_zip_fill_addr,
->  	.fill_buf_size		= hisi_zip_fill_buf_size,
->  	.fill_buf_type		= hisi_zip_fill_buf_type,
->  	.fill_req_type		= hisi_zip_fill_req_type,
-> -	.fill_tag		= hisi_zip_fill_tag_v2,
-> +	.fill_tag		= hisi_zip_fill_tag,
->  	.fill_sqe_type		= hisi_zip_fill_sqe_type,
-> -	.get_tag		= hisi_zip_get_tag_v2,
-> +	.get_tag		= hisi_zip_get_tag,
->  	.get_status		= hisi_zip_get_status,
->  	.get_dstlen		= hisi_zip_get_dstlen,
->  };
-> @@ -591,10 +422,7 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
->  		qp_ctx->zip_dev = hisi_zip;
->  	}
->  
-> -	if (hisi_zip->qm.ver < QM_HW_V3)
-> -		hisi_zip_ctx->ops = &hisi_zip_ops_v1;
-> -	else
-> -		hisi_zip_ctx->ops = &hisi_zip_ops_v2;
-> +	hisi_zip_ctx->ops = &hisi_zip_ops;
->  
->  	return 0;
->  }
-> @@ -788,106 +616,12 @@ static void hisi_zip_unregister_deflate(struct hisi_qm *qm)
->  	crypto_unregister_acomp(&hisi_zip_acomp_deflate);
->  }
->  
-> -static struct acomp_alg hisi_zip_acomp_zlib = {
-> -	.init			= hisi_zip_acomp_init,
-> -	.exit			= hisi_zip_acomp_exit,
-> -	.compress		= hisi_zip_acompress,
-> -	.decompress		= hisi_zip_adecompress,
-> -	.base			= {
-> -		.cra_name		= "zlib-deflate",
-> -		.cra_driver_name	= "hisi-zlib-acomp",
-> -		.cra_module		= THIS_MODULE,
-> -		.cra_priority           = HZIP_ALG_PRIORITY,
-> -		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
-> -	}
-> -};
-> -
-> -static int hisi_zip_register_zlib(struct hisi_qm *qm)
-> -{
-> -	int ret;
-> -
-> -	if (!hisi_zip_alg_support(qm, HZIP_ALG_ZLIB))
-> -		return 0;
-> -
-> -	ret = crypto_register_acomp(&hisi_zip_acomp_zlib);
-> -	if (ret)
-> -		dev_err(&qm->pdev->dev, "failed to register to zlib (%d)!\n", ret);
-> -
-> -	return ret;
-> -}
-> -
-> -static void hisi_zip_unregister_zlib(struct hisi_qm *qm)
-> -{
-> -	if (!hisi_zip_alg_support(qm, HZIP_ALG_ZLIB))
-> -		return;
-> -
-> -	crypto_unregister_acomp(&hisi_zip_acomp_zlib);
-> -}
-> -
-> -static struct acomp_alg hisi_zip_acomp_gzip = {
-> -	.init			= hisi_zip_acomp_init,
-> -	.exit			= hisi_zip_acomp_exit,
-> -	.compress		= hisi_zip_acompress,
-> -	.decompress		= hisi_zip_adecompress,
-> -	.base			= {
-> -		.cra_name		= "gzip",
-> -		.cra_driver_name	= "hisi-gzip-acomp",
-> -		.cra_module		= THIS_MODULE,
-> -		.cra_priority           = HZIP_ALG_PRIORITY,
-> -		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
-> -	}
-> -};
-> -
-> -static int hisi_zip_register_gzip(struct hisi_qm *qm)
-> -{
-> -	int ret;
-> -
-> -	if (!hisi_zip_alg_support(qm, HZIP_ALG_GZIP))
-> -		return 0;
-> -
-> -	ret = crypto_register_acomp(&hisi_zip_acomp_gzip);
-> -	if (ret)
-> -		dev_err(&qm->pdev->dev, "failed to register to gzip (%d)!\n", ret);
-> -
-> -	return ret;
-> -}
-> -
-> -static void hisi_zip_unregister_gzip(struct hisi_qm *qm)
-> -{
-> -	if (!hisi_zip_alg_support(qm, HZIP_ALG_GZIP))
-> -		return;
-> -
-> -	crypto_unregister_acomp(&hisi_zip_acomp_gzip);
-> -}
-> -
->  int hisi_zip_register_to_crypto(struct hisi_qm *qm)
->  {
-> -	int ret = 0;
-> -
-> -	ret = hisi_zip_register_deflate(qm);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = hisi_zip_register_zlib(qm);
-> -	if (ret)
-> -		goto err_unreg_deflate;
-> -
-> -	ret = hisi_zip_register_gzip(qm);
-> -	if (ret)
-> -		goto err_unreg_zlib;
-> -
-> -	return 0;
-> -
-> -err_unreg_zlib:
-> -	hisi_zip_unregister_zlib(qm);
-> -err_unreg_deflate:
-> -	hisi_zip_unregister_deflate(qm);
-> -	return ret;
-> +	return hisi_zip_register_deflate(qm);
->  }
->  
->  void hisi_zip_unregister_from_crypto(struct hisi_qm *qm)
->  {
->  	hisi_zip_unregister_deflate(qm);
-> -	hisi_zip_unregister_zlib(qm);
-> -	hisi_zip_unregister_gzip(qm);
->  }
-> diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-> index da7a23c0e594..0d5d1ee363e4 100644
-> --- a/drivers/crypto/hisilicon/zip/zip_main.c
-> +++ b/drivers/crypto/hisilicon/zip/zip_main.c
-> @@ -236,7 +236,7 @@ static struct hisi_qm_cap_info zip_basic_cap_info[] = {
->  	{ZIP_CLUSTER_DECOMP_NUM_CAP, 0x313C, 0, GENMASK(7, 0), 0x6, 0x6, 0x3},
->  	{ZIP_DECOMP_ENABLE_BITMAP, 0x3140, 16, GENMASK(15, 0), 0xFC, 0xFC, 0x1C},
->  	{ZIP_COMP_ENABLE_BITMAP, 0x3140, 0, GENMASK(15, 0), 0x3, 0x3, 0x3},
-> -	{ZIP_DRV_ALG_BITMAP, 0x3144, 0, GENMASK(31, 0), 0xF, 0xF, 0x3F},
-> +	{ZIP_DRV_ALG_BITMAP, 0x3144, 0, GENMASK(31, 0), 0x0, 0x0, 0x30},
->  	{ZIP_DEV_ALG_BITMAP, 0x3148, 0, GENMASK(31, 0), 0xF, 0xF, 0x3F},
->  	{ZIP_CORE1_ALG_BITMAP, 0x314C, 0, GENMASK(31, 0), 0x5, 0x5, 0xD5},
->  	{ZIP_CORE2_ALG_BITMAP, 0x3150, 0, GENMASK(31, 0), 0x5, 0x5, 0xD5},
-> 
-Reviewed-by: Longfang Liu <liulongfang@huawei.com>
+On Wed, Aug 30, 2023 at 1:40=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> The error path in setup_driver deletes the debugfs entry but doesn't
+> clear the pointer. During .dev_del the invalid pointer will be released
+> again causing a crash.
+>
+> This patch fixes the issue by always clearing the debugfs entry in
+> mlx5_vdpa_remove_debugfs. Also, stop removing the debugfs entry in
+> .dev_del op: the debugfs entry is already handled within the
+> setup_driver/teardown_driver scope.
+>
+> Fixes: f0417e72add5 ("vdpa/mlx5: Add and remove debugfs in setup/teardown=
+ driver")
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Gal Pressman <gal@nvidia.com>
 
-Thanks.
-Longfang.
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
+> ---
+>  drivers/vdpa/mlx5/net/debug.c     | 5 +++--
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 ++-----
+>  drivers/vdpa/mlx5/net/mlx5_vnet.h | 2 +-
+>  3 files changed, 6 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/debug.c b/drivers/vdpa/mlx5/net/debug.=
+c
+> index 60d6ac68cdc4..9c85162c19fc 100644
+> --- a/drivers/vdpa/mlx5/net/debug.c
+> +++ b/drivers/vdpa/mlx5/net/debug.c
+> @@ -146,7 +146,8 @@ void mlx5_vdpa_add_debugfs(struct mlx5_vdpa_net *ndev=
+)
+>                 ndev->rx_dent =3D debugfs_create_dir("rx", ndev->debugfs)=
+;
+>  }
+>
+> -void mlx5_vdpa_remove_debugfs(struct dentry *dbg)
+> +void mlx5_vdpa_remove_debugfs(struct mlx5_vdpa_net *ndev)
+>  {
+> -       debugfs_remove_recursive(dbg);
+> +       debugfs_remove_recursive(ndev->debugfs);
+> +       ndev->debugfs =3D NULL;
+>  }
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 37be945a0230..f91c938b4be1 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -2713,7 +2713,7 @@ static int setup_driver(struct mlx5_vdpa_dev *mvdev=
+)
+>  err_rqt:
+>         teardown_virtqueues(ndev);
+>  err_setup:
+> -       mlx5_vdpa_remove_debugfs(ndev->debugfs);
+> +       mlx5_vdpa_remove_debugfs(ndev);
+>  out:
+>         return err;
+>  }
+> @@ -2727,8 +2727,7 @@ static void teardown_driver(struct mlx5_vdpa_net *n=
+dev)
+>         if (!ndev->setup)
+>                 return;
+>
+> -       mlx5_vdpa_remove_debugfs(ndev->debugfs);
+> -       ndev->debugfs =3D NULL;
+> +       mlx5_vdpa_remove_debugfs(ndev);
+>         teardown_steering(ndev);
+>         destroy_tir(ndev);
+>         destroy_rqt(ndev);
+> @@ -3489,8 +3488,6 @@ static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev =
+*v_mdev, struct vdpa_device *
+>         struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+>         struct workqueue_struct *wq;
+>
+> -       mlx5_vdpa_remove_debugfs(ndev->debugfs);
+> -       ndev->debugfs =3D NULL;
+>         unregister_link_notifier(ndev);
+>         _vdpa_unregister_device(dev);
+>         wq =3D mvdev->wq;
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.h b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.h
+> index 36c44d9fdd16..60cdbc903037 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.h
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.h
+> @@ -88,7 +88,7 @@ struct macvlan_node {
+>  };
+>
+>  void mlx5_vdpa_add_debugfs(struct mlx5_vdpa_net *ndev);
+> -void mlx5_vdpa_remove_debugfs(struct dentry *dbg);
+> +void mlx5_vdpa_remove_debugfs(struct mlx5_vdpa_net *ndev);
+>  void mlx5_vdpa_add_rx_flow_table(struct mlx5_vdpa_net *ndev);
+>  void mlx5_vdpa_remove_rx_flow_table(struct mlx5_vdpa_net *ndev);
+>  void mlx5_vdpa_add_tirn(struct mlx5_vdpa_net *ndev);
+> --
+> 2.41.0
+>
+
