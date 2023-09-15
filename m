@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389527A1D7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1213F7A1D80
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbjIOLbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
+        id S234396AbjIOLdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbjIOLbL (ORCPT
+        with ESMTP id S233695AbjIOLdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:31:11 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F431AD;
-        Fri, 15 Sep 2023 04:31:02 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so1884400f8f.0;
-        Fri, 15 Sep 2023 04:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694777461; x=1695382261; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4LR91jDbhT82zr0n9jJHX5VigPs/ZpXk32vV8Q1Vz3c=;
-        b=ZMO2EUbvcw00Il4aJiRiRfRhXfQvLre2PqjA/TM9yXGcXZgMH2S4m9xm51O0aVklPZ
-         InBTH9e1crIPMeqg6FMKzZn4mkkzs3GiULbxr8YbLIr+Yja3AdMh8tpatJqQNzaoM62V
-         2d2W/5RymeYNkvDT9+BH2NJXTdUgANdeCm36nd0AV5gAN45VgYK+YNVyfLVhs9W3aWfq
-         OpmKoVl3P06ZgCQRyT7T1BdGfTbiK27np6t4c5oDXs3AlPwXsMb48AtptRd8RKhKid8Y
-         zDPItu784Kqf3GRQaoAm7dX1LL4O7jiU8oAo5gj2WWeh8D2qvvwybWG5knyQu66+4ugx
-         kH4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694777461; x=1695382261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4LR91jDbhT82zr0n9jJHX5VigPs/ZpXk32vV8Q1Vz3c=;
-        b=gYmJlOFUQ2SvfvynmOn3z4WcpotX16oIS0Czo976PX2rKE4ZkI0EEO2ORyhjIJ1yWL
-         IyX91kMHmj/rVmtkGN5XFp0vBsHffJnDgloiDd6cXHNS09BcTKwowqySiz+hiqAAsdUR
-         znEEHcsnKVGR9Hu6VU+49UR0LguxbvWNDFzxyNt+bCyq7Kc4ghZPSBzZw+LhRwFTRUNC
-         +VsHkB5JxZNdGWVk3S3ylUUljpam995D1olFzXV8ZkjZsRpKiNGGDHoGNBcGwFYYUbd2
-         +jnpvfljNN7Z3O3/b9xCTC2LpIEGlF/I2Bb4n0+7yqZsU+X4+L0RIGpJHUlZ0P6Uf7Cy
-         wsKw==
-X-Gm-Message-State: AOJu0YwoYQjS68Lbvq2lwBCbimyMnZPz8glqfCsemOvNMnrmRUVhKYtE
-        8JQT4H9v9mUq/MSMj7D83Uo=
-X-Google-Smtp-Source: AGHT+IFXqF9kII3kAUmZb4zO/yHMODlRmBXr1aN2q4n6+SsUxwBxztG+fhH2Aad/2ESymAgGJlRvxA==
-X-Received: by 2002:adf:e40c:0:b0:31f:b36b:6d45 with SMTP id g12-20020adfe40c000000b0031fb36b6d45mr1065646wrm.52.1694777460937;
-        Fri, 15 Sep 2023 04:31:00 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id a4-20020adffb84000000b0031c5e9c2ed7sm4172487wrr.92.2023.09.15.04.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 04:31:00 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 13:30:58 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Ard Biesheuvel <ardb@google.com>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
-Message-ID: <ZQRAckHVxQZRNEGA@gmail.com>
-References: <20230912090051.4014114-17-ardb@google.com>
- <ZQQiUxh5vmeZnp7s@gmail.com>
+        Fri, 15 Sep 2023 07:33:15 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44574CC6;
+        Fri, 15 Sep 2023 04:33:10 -0700 (PDT)
+Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38FBWXI2019756;
+        Fri, 15 Sep 2023 20:32:33 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
+ Fri, 15 Sep 2023 20:32:33 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38FBWW8A019752
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 15 Sep 2023 20:32:32 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <1f5e725d-58b6-eca2-97dc-d7c1209ff167@I-love.SAKURA.ne.jp>
+Date:   Fri, 15 Sep 2023 20:32:32 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQQiUxh5vmeZnp7s@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v15 01/11] LSM: Identify modules by more than name
+Content-Language: en-US
+To:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, stephen.smalley.work@gmail.com,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        mic@digikod.net
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-2-casey@schaufler-ca.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20230912205658.3432-2-casey@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Ingo Molnar <mingo@kernel.org> wrote:
-
-> > Ard Biesheuvel (15):
-> >   x86/efi: Drop EFI stub .bss from .data section
-> >   x86/efi: Disregard setup header of loaded image
-> >   x86/efi: Drop alignment flags from PE section headers
-> >   x86/boot: Remove the 'bugger off' message
-> >   x86/boot: Omit compression buffer from PE/COFF image memory footprint
-> >   x86/boot: Drop redundant code setting the root device
-> >   x86/boot: Grab kernel_info offset from zoffset header directly
-> >   x86/boot: Drop references to startup_64
+On 2023/09/13 5:56, Casey Schaufler wrote:
+> Create a struct lsm_id to contain identifying information about Linux
+> Security Modules (LSMs). At inception this contains the name of the
+> module and an identifier associated with the security module.  Change
+> the security_add_hooks() interface to use this structure.  Change the
+> individual modules to maintain their own struct lsm_id and pass it to
+> security_add_hooks().
 > 
-> I've applied these first 8 patches to tip:x86/boot with minor edits.
-> (Please preserve existing comment capitalization conventions ...)
+> The values are for LSM identifiers are defined in a new UAPI
+> header file linux/lsm.h. Each existing LSM has been updated to
+> include it's LSMID in the lsm_id.
 > 
-> >   x86/boot: Set EFI handover offset directly in header asm
-> >   x86/boot: Define setup size in linker script
-> >   x86/boot: Derive file size from _edata symbol
-> >   x86/boot: Construct PE/COFF .text section from assembler
-> >   x86/boot: Drop PE/COFF .reloc section
-> >   x86/boot: Split off PE/COFF .data section
-> >   x86/boot: Increase section and file alignment to 4k/512
+> The LSM ID values are sequential, with the oldest module
+> LSM_ID_CAPABILITY being the lowest value and the existing modules
+> numbered in the order they were included in the main line kernel.
+> This is an arbitrary convention for assigning the values, but
+> none better presents itself. The value 0 is defined as being invalid.
+> The values 1-99 are reserved for any special case uses which may
+> arise in the future. This may include attributes of the LSM
+> infrastructure itself, possibly related to namespacing or network
+> attribute management. A special range is identified for such attributes
+> to help reduce confusion for developers unfamiliar with LSMs.
 > 
-> The rest conflicted with recent upstream changes, and I suppose it's
-> prudent to test these changes bit by bit anyway.
+> LSM attribute values are defined for the attributes presented by
+> modules that are available today. As with the LSM IDs, The value 0
+> is defined as being invalid. The values 1-99 are reserved for any
+> special case uses which may arise in the future.
+> 
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: linux-security-module <linux-security-module@vger.kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+> Reviewed-by: Mickael Salaun <mic@digikod.net>
+> Reviewed-by: John Johansen <john.johansen@canonical.com>
 
-So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootup,
-due to the 8th patch:
+Nacked-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-  988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
-  commit 988b52b207a9fe74c3699bda8c2256714926b94b
-  Author: Ard Biesheuvel <ardb@kernel.org>
-  Date:   Tue Sep 12 09:01:01 2023 +0000
+https://lkml.kernel.org/r/4a6b6e2c-9872-4d4c-e42e-4ff0fb79f3ae@I-love.SAKURA.ne.jp
 
-      x86/boot: Define setup size in linker script
-
-I've removed it for now - but this side effect was not expected.
-
-Thanks,
-
-	Ingo
