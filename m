@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0CD7A1ED8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11847A1EDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbjIOMhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        id S234941AbjIOMiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbjIOMhG (ORCPT
+        with ESMTP id S234928AbjIOMiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:37:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3438EA1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694781375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hiYpz5dXhxfUZTQa6zmGlfzr3xCWWU+duccDm51H4g4=;
-        b=FDwIB5wrFFMG78uzY058HLLGgEQ67zOlytTnxrmo2foE9QHyfPeAopTetvqgSeRXtUPvdG
-        2pSguqdo2KxDqFsFpYp7OKXqGgBdZBJR36c8c8L6jbYpf3dXR0zd+WfAT+0w7OfIsY09Qe
-        cWvdEp6MPEHzZsJa5Lx1cDPrBqTKLXg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-151-cqmwHRoKMT67BfSo_FuhuQ-1; Fri, 15 Sep 2023 08:36:10 -0400
-X-MC-Unique: cqmwHRoKMT67BfSo_FuhuQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E060811E86;
-        Fri, 15 Sep 2023 12:36:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BB98F200BFE3;
-        Fri, 15 Sep 2023 12:36:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <72e93605b28742c2a496ce4890ecaa80@AcuMS.aculab.com>
-References: <72e93605b28742c2a496ce4890ecaa80@AcuMS.aculab.com> <5017b9fa177f4deaa5d481a5d8914ab4@AcuMS.aculab.com> <dcc6543d71524ac488ca2a56dd430118@AcuMS.aculab.com> <20230914221526.3153402-1-dhowells@redhat.com> <20230914221526.3153402-10-dhowells@redhat.com> <3370515.1694772627@warthog.procyon.org.uk> <3449352.1694776980@warthog.procyon.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, "Christoph Hellwig" <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "David Hildenbrand" <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 9/9] iov_iter: Add benchmarking kunit tests for UBUF/IOVEC
+        Fri, 15 Sep 2023 08:38:01 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA21268A;
+        Fri, 15 Sep 2023 05:37:49 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38F7HPlw000981;
+        Fri, 15 Sep 2023 14:37:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=d54xQwFezSfKDhhyKZcu5xSLNpFhc3U0kDxKON1U7Vg=; b=nL
+        pW7x4pS1ygHUlyLu/YKibkUy7qBJ85Bmb8G/uIRQajn7ngQiek/RL9/0sPHU9joX
+        /I6GmOGw4cWebumHhmuSWoZcC7JJN1cBsGQh+PcyVas6CDuMMkd5EqcHtC44WqV+
+        qF160O1hdVhuF/7FrSJA0R0bAAD8EXR1n/pRVo2IiQfklQCrEZ0arOqCwAbeD4lG
+        8/8XiU4Pff4TBvjvGV0exfsykJrMoGXnbgBEkl6ITBQ1gVjEXnn3SU2Ai/OvZmav
+        GWxbsUbr6IX7lcHTrn/n95GaqvlewnUrekfTvdG8YWdMYluOh4HVpTrOAvurux/K
+        Pvfuykux0L6Dl28lnmLA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t2y7kn33c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 14:37:21 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BDEFD10004B;
+        Fri, 15 Sep 2023 14:37:19 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B47DD22F7AA;
+        Fri, 15 Sep 2023 14:37:19 +0200 (CEST)
+Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
+ 2023 14:37:18 +0200
+Message-ID: <d7c9b1e9-b576-d564-d40f-f557853a414d@foss.st.com>
+Date:   Fri, 15 Sep 2023 14:37:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3585403.1694781366.1@warthog.procyon.org.uk>
-Date:   Fri, 15 Sep 2023 13:36:06 +0100
-Message-ID: <3585404.1694781366@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 07/10] dt-bindings: rng: add st,rng-lock-conf
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>
+CC:     Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230908165120.730867-1-gatien.chevallier@foss.st.com>
+ <20230908165120.730867-8-gatien.chevallier@foss.st.com>
+ <20230911150958.GA1255978-robh@kernel.org>
+ <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
+ <726e7f51-ce2c-5ac1-5347-21d6cf40c8c8@linaro.org>
+From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <726e7f51-ce2c-5ac1-5347-21d6cf40c8c8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_09,2023-09-14_01,2023-05-22_02
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Laight <David.Laight@ACULAB.COM> wrote:
 
-> I was thinking of import_iovec() - or whatever its current
-> name is.
+On 9/15/23 12:33, Krzysztof Kozlowski wrote:
+> On 15/09/2023 11:28, Gatien CHEVALLIER wrote:
+>> Hello Rob,
+>>
+>> On 9/11/23 17:09, Rob Herring wrote:
+>>> On Fri, Sep 08, 2023 at 06:51:17PM +0200, Gatien Chevallier wrote:
+>>>> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
+>>>> and RNG_NSCR will be locked. It is supported starting from the RNG
+>>>> version present in the STM32MP13
+>>>
+>>> This should be squashed into the prior binding patch.
+>>>
+>>>>
+>>>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+>>>> ---
+>>>>    .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
+>>>>    1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>>> index 59abdc85a9fb..0055f14a8e3f 100644
+>>>> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>>> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+>>>> @@ -37,6 +37,20 @@ required:
+>>>>      - reg
+>>>>      - clocks
+>>>>    
+>>>> +allOf:
+>>>> +  - if:
+>>>> +      properties:
+>>>> +        compatible:
+>>>> +          contains:
+>>>> +            enum:
+>>>> +              - st,stm32mp13-rng
+>>>> +    then:
+>>>> +      properties:
+>>>> +        st,rng-lock-conf:
+>>>> +          type: boolean
+>>>> +          description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
+>>>> +                       RNG_NSCR will be locked.
+>>>
+>>> Define the property at the top-level and then restrict its presence in
+>>> a if/then schema.
+>>>
+>>
+>> Can you please point me to an example of such case. I can't find a way
+>> to define at the top-level the property then restrict it to specific
+>> compatibles.
+> 
+> You can check my slides from the talks about not reaching 10 iterations
+> of bindings patches.
+> 
+> Or open example-schema (this should be your starting point):
+> https://elixir.bootlin.com/linux/v5.19/source/Documentation/devicetree/bindings/example-schema.yaml#L212
+> 
+> 
+> Also:
+> https://elixir.bootlin.com/linux/v6.4-rc7/source/Documentation/devicetree/bindings/net/qcom,ipa.yaml#L174
 
-That doesn't actually access the buffer described by the iovec[].
+Thank you for the links, it really helped me out.
 
-> That really needs a single structure that contains the iov_iter
-> and the cache[] (which the caller pretty much always allocates
-> in the same place).
-
-cache[]?
-
-> Fiddling with that is ok until you find what io_uring does.
-> Then it all gets entirely horrid.
-
-That statement sounds like back-of-the-OLS-T-shirt material ;-)
-
-David
-
+>>
+>> Else I'd change
+>> additionalProperties :false to
+>> unevaluatedProperties: false
+>>
+>> so the definition of the property is seen.
+> 
+> No, why? Definition is there when you move it to the top as asked.
+> 
+> Best regards,
+> Krzysztof
+> 
