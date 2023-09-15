@@ -2,244 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1A57A20E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1655B7A20EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbjIOO2n convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 10:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        id S235744AbjIOO3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234569AbjIOO2m (ORCPT
+        with ESMTP id S235671AbjIOO3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:28:42 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A498139;
-        Fri, 15 Sep 2023 07:28:37 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59bf1dde73fso18759527b3.3;
-        Fri, 15 Sep 2023 07:28:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694788116; x=1695392916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bn1p9PWD9M/QH61SwAtt2wEqm40o+I7tjZZDTVXnnK8=;
-        b=e2u2T//bjE+/FUQQIED3bcxk02HuhILe+8u3kfUXzUz5/ZFj/f2XCoDv3JTEA64snp
-         Up4ACilxL/Zxg6ngoWMq0FkfyGRgj/XvyUnO+gdgGnU8Yaa71ttKre2sZ3CBPovc+Uxr
-         R+dR51Zedmk+8ITZJtQiewiWYJOllky2EmoW2sBZzCqUB2T+cLm9xKVHv+HrOH3Iwoq2
-         4zTkhsfIE+PAk6B3yt+pZ7ghKTtMPOe3JcAVXlec45JKiHalP5MccRPFgUOx+VedtvFL
-         0RajZrEDOczole23THle57ug6KvBCeftrMD23GMQ+RE86XcoBoCebjkIk/nhlMGlJby+
-         5kmQ==
-X-Gm-Message-State: AOJu0YxfF2sIL8KTd32V6xIwhVESwh3rxMnWhZd3PUFp6qKrxboRj1UE
-        vcF7BH4SoApdZIzCjxwPGcOul1/Z8JW9iQ==
-X-Google-Smtp-Source: AGHT+IHdmjEds78hbsOEeSLtAfN3QTdsTIw/agsLerC2Z0my1Y2cycGvka7uXrH3uva1TgD3j3QT6w==
-X-Received: by 2002:a0d:ebcf:0:b0:595:80be:fc6b with SMTP id u198-20020a0debcf000000b0059580befc6bmr2346378ywe.18.1694788116102;
-        Fri, 15 Sep 2023 07:28:36 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id s66-20020a819b45000000b0059c01bcc363sm637830ywg.49.2023.09.15.07.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 07:28:35 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d77ad095e5cso2192231276.0;
-        Fri, 15 Sep 2023 07:28:35 -0700 (PDT)
-X-Received: by 2002:a25:8448:0:b0:d7f:25c:b0ac with SMTP id
- r8-20020a258448000000b00d7f025cb0acmr1504868ybm.65.1694788114826; Fri, 15 Sep
- 2023 07:28:34 -0700 (PDT)
+        Fri, 15 Sep 2023 10:29:41 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78DF2708;
+        Fri, 15 Sep 2023 07:29:19 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FEGNph012977;
+        Fri, 15 Sep 2023 14:28:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=L1JdvrFXRMAq+NwN/x/5/Pebd2+L1Pp1g6La/uh1FLc=;
+ b=ruej39xRmhdWDO9p3/uC/K2DcA5UDk0JUoaxbYkAtpEjTIVA9chEP+Hyz0nngf13/OSU
+ O+2Q6twUffQgK/ifzuTT8rE9HhUQqL8dmN7y+ffoBMbBBr8p3sT/plOClwNStX5pGKEU
+ caI2MXKNMeSOsTpM93xXPl3U5spJJL9pMDOVTGqM5OZ2BnznYHui6YuGFFtkKbg2yHvw
+ b6QXsk+FEkyGvljdpReDnxGC3SJmL4AEyKijU5efa4n68GlWdW9RdgBqm2DqdDtB75CU
+ 5aV4sOTTGNFsyEm839gQDOB+ortZbHsEIPy/RX3M9h+asv8p4IqlY9i7eZrftvuSBOsv aw== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4r9b1b13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 14:28:56 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38FCgYrZ011942;
+        Fri, 15 Sep 2023 14:28:55 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r2kvub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 14:28:55 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38FESswU31064346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Sep 2023 14:28:55 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F0E558052;
+        Fri, 15 Sep 2023 14:28:54 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 36B9358045;
+        Fri, 15 Sep 2023 14:28:53 +0000 (GMT)
+Received: from [9.67.12.83] (unknown [9.67.12.83])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Sep 2023 14:28:53 +0000 (GMT)
+Message-ID: <ccb1ade9-5a5b-99dc-f26f-2637059249ef@linux.ibm.com>
+Date:   Fri, 15 Sep 2023 09:28:52 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v2] crypto: vmx: Improved AES/XTS performance of 6-way
+ unrolling for ppc.
+Content-Language: en-US
+To:     Michael Ellerman <mpe@ellerman.id.au>, linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, leitao@debian.org,
+        nayna@linux.ibm.com, appro@cryptogams.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
+References: <20230830134911.179765-1-dtsen@linux.ibm.com>
+ <8734zf7ef6.fsf@mail.lhotse>
+From:   Danny Tsen <dtsen@linux.ibm.com>
+In-Reply-To: <8734zf7ef6.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aBeT9aIEofoOYbXD872lv7cLLktXoLIo
+X-Proofpoint-ORIG-GUID: aBeT9aIEofoOYbXD872lv7cLLktXoLIo
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 2 URL's were un-rewritten
 MIME-Version: 1.0
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-34-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20230912045157.177966-34-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 15 Sep 2023 16:28:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUfwtpe5qLonZ0CZcaRw1j5x7xLLXJpMqpWLX5AzK3xmw@mail.gmail.com>
-Message-ID: <CAMuHMdUfwtpe5qLonZ0CZcaRw1j5x7xLLXJpMqpWLX5AzK3xmw@mail.gmail.com>
-Subject: Re: [PATCH 33/37] arm64: dts: renesas: rzg3l-smarc-som: add initial
- support for RZ/G3S SMARC Carrier-II SoM
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_11,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=551 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150126
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+Still waiting for the CCLA to send to Openssl.
 
-Thanks for your patch!
+Thanks.
 
-On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+-Danny
+
+On 9/15/23 8:29 AM, Michael Ellerman wrote:
+> Danny Tsen <dtsen@linux.ibm.com> writes:
+>> Improve AES/XTS performance of 6-way unrolling for PowerPC up
+>> to 17% with tcrypt.  This is done by using one instruction,
+>> vpermxor, to replace xor and vsldoi.
+>>
+>> The same changes were applied to OpenSSL code and a pull request was
+>> submitted.
+> https://github.com/openssl/openssl/pull/21812
 >
-> Add initial support for RZ/G3S SMARC Carrier-II SoM. SoM contains the following
-> devices:
-> - RZ/G3S microcontroller: Renesas R9A08G045S33GBG
-> - 9-channel PMIC: Renesas RAA215300
-> - Clock Generator: Renesas 5L35023B
-> - 128M QSPI Flash: Renesas AT25QL128A
-> - 8G LPDDR4 SDRAM: Micron MT53D512M16D1DS-046
-
-That's an 8 Gib part, so 1 GiB?
-
-> - 64GB eMMC Flash: Micron MTFC64GBCAQTC
-> - 2x Gigabit Ethernet Transceiver: Microchip KSZ9131RNX
-> - 5x Current Monitors: Renesas ISL28025FR12Z
+> Still unmerged as of today.
 >
-> The following interfaces are available on SoM board:
-> - 2 uSD interfaces
-> - 12-pin, 1.0mm pitch connector to the RZ/G3S ADC IO
-> - 4-pin, 1.0mm pitch connector to the RZ/G3S I3C IO
-> - JTAG connector
-
-Please drop the description of parts you are not adding to the DTS yet.
-
-> At the moment the 24MHz output of 5L35023B, memory SD ch0 (with all its
-> bits) were described in device tree.
->
-> SD channel 0 of RZ/G3S is connected to an uSD card interface
-> and an eMMC. The selection b/w them is done though a hardware switch.
-> The DT will select b/w uSD and eMMC though SW_SD0_DEV_SEL build flag.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-> @@ -0,0 +1,147 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/*
-> + * Device Tree Source for the R9A08G045S33 SMARC Carrier-II's SoM board.
-> + *
-> + * Copyright (C) 2023 Renesas Electronics Corp.
-> + */
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
-> +
-> +/*
-> + * Signals of SW_CONFIG switches:
-> + * @SW_SD0_DEV_SEL:
-> + *     0 - SD0 is connected to eMMC
-> + *     1 - SD0 is connected to uSD0 card
-> + */
-> +#define SW_SD0_DEV_SEL 1
-> +
-> +/ {
-> +       aliases {
-> +               mmc0 = &sdhi0;
-> +       };
-> +
-> +       chosen {
-> +               bootargs = "ignore_loglevel";
-> +               stdout-path = "serial0:115200n8";
-> +       };
-> +
-> +       memory@48000000 {
-> +               device-type = "memory";
-> +               /* First 128MB is reserved for secure area. */
-> +               reg = <0x0 0x48000000 0x0 0x38000000>;
-> +       };
-> +
-> +       reg_3p3v: regulator0 {
-> +               compatible = "regulator-fixed";
-> +               regulator-name = "fixed-3.3V";
-> +               regulator-min-microvolt = <3300000>;
-> +               regulator-max-microvolt = <3300000>;
-> +               regulator-boot-on;
-> +               regulator-always-on;
-> +       };
-> +
-> +#if SW_SD0_DEV_SEL
-> +       vccq_sdhi0: regulator1 {
-> +               compatible = "regulator-gpio";
-> +               regulator-name = "SDHI0 VccQ";
-> +               regulator-min-microvolt = <1800000>;
-> +               regulator-max-microvolt = <3300000>;
-> +               gpios = <&pinctrl RZG2L_GPIO(2, 2) GPIO_ACTIVE_HIGH>;
-> +               gpios-states = <1>;
-> +               states = <3300000 1>, <1800000 0>;
-> +       };
-> +#else
-> +       reg_1p8v: regulator1 {
-> +               compatible = "regulator-fixed";
-> +               regulator-name = "fixed-1.8V";
-> +               regulator-min-microvolt = <1800000>;
-> +               regulator-max-microvolt = <1800000>;
-> +               regulator-boot-on;
-> +               regulator-always-on;
-> +       };
-> +#endif
-> +};
-> +
-> +&extal_clk {
-> +       clock-frequency = <24000000>;
-> +};
-> +
-> +#if SW_SD0_DEV_SEL
-> +/* SD0 slot */
-> +&sdhi0 {
-> +       pinctrl-0 = <&sdhi0_pins>;
-> +       pinctrl-1 = <&sdhi0_uhs_pins>;
-> +       pinctrl-names = "default", "state_uhs";
-> +       vmmc-supply = <&reg_3p3v>;
-> +       vqmmc-supply = <&vccq_sdhi0>;
-> +       bus-width = <4>;
-> +       sd-uhs-sdr50;
-> +       sd-uhs-sdr104;
-> +       max-frequency = <125000000>;
-> +       status = "okay";
-> +};
-> +#else
-> +/* eMMC */
-> +&sdhi0 {
-> +       pinctrl-0 = <&sdhi0_emmc_pins>;
-> +       pinctrl-1 = <&sdhi0_emmc_pins>;
-> +       pinctrl-names = "default", "state_uhs";
-> +       vmmc-supply = <&reg_3p3v>;
-> +       vqmmc-supply = <&reg_1p8v>;
-> +       bus-width = <8>;
-> +       mmc-hs200-1_8v;
-> +       non-removable;
-> +       fixed-emmc-driver-type = <1>;
-> +       max-frequency = <125000000>;
-> +       status = "okay";
-> +};
-> +#endif
-> +
-> +&pinctrl {
-> +       sd0-pwr-en-hog {
-> +               gpio-hog;
-> +               gpios = <RZG2L_GPIO(2, 1) GPIO_ACTIVE_HIGH>;
-
-According to the schematics, P2_1 controls power to the uSD slot.
-Hence shouldn't reg_3p3v above be modelled using regulator-gpio,
-with enable-gpios pointing to P2_1?
-
-> +               output-high;
-> +               line-name = "sd0_pwr_en";
-> +       };
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> cheers
