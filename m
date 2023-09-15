@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9958E7A203D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E97A2041
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbjIONwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S234877AbjIONwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234806AbjIONwG (ORCPT
+        with ESMTP id S234801AbjIONwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:52:06 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54334268F
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:55 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad8bba8125so288491266b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:51:55 -0700 (PDT)
+        Fri, 15 Sep 2023 09:52:45 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC86EB8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:52:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso279895466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694785913; x=1695390713; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694785958; x=1695390758; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YKeNS2i0N5nQ1uQ2kxRp2a99pDuiA0Cjg/sUKEabIGg=;
-        b=wqbbSVqAMpncKPXEdBVGP3jfhHjwnLL+hEYYOuFN1rjF/OKiPB6xr8FrW3PNgcJH0d
-         gKZrg3BxmEC+TG81mCd0RZ/WrV35GsTGWzBDvWEr1gi1iZTI6OUJJtSA1VWYzOjCfVr2
-         rXcTh0DekLxSGyLbIMmihMTuLuwc1TJvYdWNRf4gkvLX4gtocsNGlSkhO6tK6JDcTQab
-         zTKgiPvCZfkaY7qhDW2ol2CQ3Mq0BMhT6ifsTDVjSihe1cK4itQ4CU4guuWnO63agD1C
-         IONphnAHAb5IVwWAe3wDpkFoAPrWdOzkrRqJBoGQ/wGifIQ3LAc/ev5rtPtfxKmB/Quu
-         +w9Q==
+        bh=dvBrYykFcdabK3VBwLNpD2+rQenLlz52r2r7e+pmXS0=;
+        b=h11Ea29jz8cI/slGn2bxtRgwXnIycO/3E0jAvk7b05WkC8XBHk34aAZFdQVdI/61h1
+         eawToXkFS67i8Fjfc0gSPz5p+CZCOwKPL3DUKbEVKVmexvM5kyB2IBaea/mPdLmzKpv4
+         P4ULJVlP6Ag7T3yDTVzdaEbU4y2+INL1LsfipuQrWln+vek+aV7Zm7zACM2/CGVujB4o
+         T5E4A0lP5F6f8WzoH8VtXNB3UbYHylbA92e+u/Ifigqy7xgXscOoil1Q4MztO9SFjut8
+         JMRZOkhk8xOrAoUg/0Tv/tqzkVkOFvTLfQpKFeHZ59PLmzGBE85jsYKrg2FqCtO8l7TJ
+         yfQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694785913; x=1695390713;
+        d=1e100.net; s=20230601; t=1694785958; x=1695390758;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YKeNS2i0N5nQ1uQ2kxRp2a99pDuiA0Cjg/sUKEabIGg=;
-        b=qBn3wTTBHGqe/NFCXtABfeU+P6rH5jStPfWO17fk0vDGY76egiknY9I+/dXVO1QZZi
-         N+VBv9Z3w94jcPntdPvmvxThi1Pt7BQc7CQGlWc1XbuE27h/Tjx95jYQwXmsDNx2yeqO
-         qWL/Fba2fNQT9Rr+/LB0CWY14yZEgCX5vUuhsc9+wnG0eGwttD3EXu3J0BeKfGtnholH
-         /15MK9Aq20q0dHzSPmvD7thT5AzpdcS7HuY3d6ZZAKDdgfcRAJrVlDuQpA7LJQLwieXB
-         3US7nenJF1qgSWZszUcU3xlTARfId8Kj2fL8psId6IoZv/9gTyvaMnkpeQhDDrsoUZY5
-         eZHg==
-X-Gm-Message-State: AOJu0YwaOjmdb+a1Z5H1+hqZCJ08dKz04dhjo6p5lSopGpe6s031O+yw
-        ZxIx5RT/Q4c8yN6XMGSe+LhoAg==
-X-Google-Smtp-Source: AGHT+IEXQIFMHadyDRChtGWsNdu4tIcR8I5uss+Itz+qjtQCYQjp7KZD7tJPpRt1hh9fB5z8JoAqkA==
-X-Received: by 2002:a17:906:cc9:b0:977:ecff:3367 with SMTP id l9-20020a1709060cc900b00977ecff3367mr1598339ejh.40.1694785913646;
-        Fri, 15 Sep 2023 06:51:53 -0700 (PDT)
+        bh=dvBrYykFcdabK3VBwLNpD2+rQenLlz52r2r7e+pmXS0=;
+        b=bboqxoprTM74mKlHsebGXTM2emq22jfL1YSx0oz/uUupxzIqOh4MMMcO7CTTMYg3KW
+         vM40HJbY8hYpqnjIz1xqFIzc5Cb1hXZ7xG3bkDxjFm28+Y5YkgtD/pLHpwbasz4Au35v
+         Wn+p6ZTks52IbCScqUsRdnQEq/9NwqQQYCDVa7iUtDj0eew04+LggT8Zb/T5MRhexpyN
+         Cr7OLsOFhtSDu30M1MjiAmO066UBGAJ3WdMszbdSbs/3BHIntaJzKmVH0eMieXsiAlXb
+         vWbuWYn5Z8EdzxwWtXJYR2SJwmV+2JQB+RHxAJgmO6e3fqnw/40Fe7cgHDU67To1ejsM
+         AeYA==
+X-Gm-Message-State: AOJu0YyyYiainNq927YWSJqjUc1wTcIFAAGiuBgZ6ZcXqz+vNFZuz2sp
+        /qI3ms22jSdOkSop2QlpNxmi9Q==
+X-Google-Smtp-Source: AGHT+IHsaTMwtzQx49I19iulLbUwwC8pP6k6/AWKSekg0Tcl7L3v+ZyQTkxLUhYXE/vuvtljp0dX1Q==
+X-Received: by 2002:a17:907:a064:b0:9a1:e8c0:7e2e with SMTP id ia4-20020a170907a06400b009a1e8c07e2emr1438238ejc.14.1694785958347;
+        Fri, 15 Sep 2023 06:52:38 -0700 (PDT)
 Received: from [192.168.37.232] (178235177024.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.24])
-        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm2467926ejf.90.2023.09.15.06.51.52
+        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm2467926ejf.90.2023.09.15.06.52.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 06:51:53 -0700 (PDT)
-Message-ID: <b66a72ef-653b-47cb-8c0a-df8418c3619c@linaro.org>
-Date:   Fri, 15 Sep 2023 15:51:52 +0200
+        Fri, 15 Sep 2023 06:52:37 -0700 (PDT)
+Message-ID: <9ad1264f-efb5-40b5-bd7a-1477e86501a1@linaro.org>
+Date:   Fri, 15 Sep 2023 15:52:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/9] arm64: dts: qcom: msm8916/39: Move mpss_mem size to
- boards
+Subject: Re: [PATCH 4/9] arm64: dts: qcom: msm8916: Reserve firmware memory
+ dynamically
 Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
- <20230911-msm8916-rmem-v1-8-b7089ec3e3a1@gerhold.net>
+ <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
+ <912f90ee-0816-43ae-bc6f-a9a9a3e33d8a@linaro.org>
+ <9b1beb38-9ec2-4bdb-97f5-fccf98d3b0c3@linaro.org>
+ <ZQGLioVhjCK3TRva@gerhold.net>
+ <568b4e18-1ade-4a12-9766-d16d8ca9838d@linaro.org>
+ <ZQMUDia6cYA0mGmL@gerhold.net>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -100,37 +105,109 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230911-msm8916-rmem-v1-8-b7089ec3e3a1@gerhold.net>
+In-Reply-To: <ZQMUDia6cYA0mGmL@gerhold.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.2023 19:41, Stephan Gerhold wrote:
-> The modem firmware size is typically highly device-specific.
-> The current size of the mpss_mem region in msm8916.dtsi (0x2b00000)
-> only works for some APQ8016 devices without full-featured modem,
-> such as the DragonBoard 410c.
+On 14.09.2023 16:09, Stephan Gerhold wrote:
+> On Wed, Sep 13, 2023 at 09:39:50PM +0200, Konrad Dybcio wrote:
+>> On 13.09.2023 12:14, Stephan Gerhold wrote:
+>>> On Wed, Sep 13, 2023 at 10:12:12AM +0100, Bryan O'Donoghue wrote:
+>>>> On 13/09/2023 10:06, Konrad Dybcio wrote:
+>>>>> On 11.09.2023 19:41, Stephan Gerhold wrote:
+>>>>>> Most of the reserved firmware memory on MSM8916 can be relocated when
+>>>>>> respecting the required alignment. To avoid having to precompute the
+>>>>>> reserved memory regions in every board DT, describe the actual
+>>>>>> requirements (size, alignment, alloc-ranges) using the dynamic reserved
+>>>>>> memory allocation.
+>>>>>>
+>>>>>> This approach has several advantages:
+>>>>>>
+>>>>>>   1. We can define "templates" for the reserved memory regions in
+>>>>>>      msm8916.dtsi and keep only device-specific details in the board DT.
+>>>>>>      This is useful for the "mpss" region size for example, which varies
+>>>>>>      from device to device. It is no longer necessary to redefine all
+>>>>>>      firmware regions to shift their addresses.
+>>>>>>
+>>>>>>   2. When some of the functionality (e.g. WCNSS, Modem, Venus) is not
+>>>>>>      enabled or needed for a device, the reserved memory can stay
+>>>>>>      disabled, freeing up the unused reservation for Linux.
+>>>>>>
+>>>>>>   3. Devices with special requirements for one of the firmware regions
+>>>>>>      are handled automatically. For example, msm8916-longcheer-l8150
+>>>>>>      has non-relocatable "wcnss" firmware that must be loaded exactly
+>>>>>>      at address 0x8b600000. When this is defined as a static region,
+>>>>>>      the other dynamic allocations automatically adjust to a different
+>>>>>>      place with suitable alignment.
+>>>>>>
+>>>>>> All in all this approach significantly reduces the boilerplate necessary
+>>>>>> to define the different firmware regions, and makes it easier to enable
+>>>>>> functionality on the different devices.
+>>>>>>
+>>>>>> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+>>>>>> ---
+>>>>> [...]
+>>>>>
+>>>>>>   		mpss_mem: mpss@86800000 {
+>>>>>> +			/*
+>>>>>> +			 * The memory region for the mpss firmware is generally
+>>>>>> +			 * relocatable and could be allocated dynamically.
+>>>>>> +			 * However, many firmware versions tend to fail when
+>>>>>> +			 * loaded to some special addresses, so it is hard to
+>>>>>> +			 * define reliable alloc-ranges.
+>>>>>> +			 *
+>>>>>> +			 * alignment = <0x0 0x400000>;
+>>>>>> +			 * alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
+>>>>>> +			 */
+>>>>> Do we know of any devices that this would actually work on?
+>> [...]
+>>>  - On DB410c it works just fine. All addresses I tried work without any
+>>>    problems.
+>>>
+>>>  - On longcheer-l8150 the modem firmare works fine when the memory
+>>>    region starts somewhere between 0x86800000 and 0x8a800000. It also
+>>>    works again after 0x8e800000. But on anything between 0x8a800000 and
+>>>    0x8e800000 it's broken for who knows what reason.
+>>> [...]
+>> Were you able to find a phone (likely a very reference-design-based
+>> one) that this worked on, btw?
 > 
-> The full modem firmware is typically about twice as large (~45 MiB
-> -> ~90 MiB) but also varies by a few MiB from device to device. Since
-> these devices are quite memory-constrained nowadays it's important to
-> minimize the unnecessary memory reservations.
+> Actually I would count the Longcheer devices (l8150 = Wileyfox Swift and
+> l8910 = BQ Aquaris X5) to the category of close-to-QRD-based devices.
+> Based on quick tests both behave like described above (only
+> 0x8a800000-0x8e800000 is broken). Same for wingtech-wt88047.
 > 
-> Make it clear that each board needs to specify the necessary mpss_mem
-> size by replacing the DB410c-specific size in msm8916.dtsi with a
-> simple comment. &mpss_mem is disabled by default so it's fine to leave
-> some properties up to the boards if they want to enable it.
+> In other words, for those using the dynamic allocation would work fine,
+> because the alloc-ranges = <0x0 0x86800000 0x0 0x8000000>; only includes
+> working start addresses from 0x86800000 to ~0x89800000 (with a size of
+> 0x5000000).
 > 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
-Any reason not to squash it with one of the earlier patches then?
+> I guess I could use it for them and only make other devices use a fixed
+> address. But I also don't quite have the capacity to test every device
+> to see if relocating the region works or not.
+> 
+> I think it's still easiest to allocate mpss on a fixed address
+> everywhere. The only real disadvantage is that overriding "reg", e.g.
+> 
+> 	&mpss_mem {
+> 		reg = <0x0 0x86800000 0x0 0x5100000>;
+> 	};
+> 
+> is a bit more ugly than overriding size:
+> 
+> 	&mpss_mem {
+> 		size = <0x0 0x5100000>;
+> 	};
+> 
+> but well, this is a very minor disadvantage.
+So in other words, this only *really* works on apq8016?
 
 Konrad
