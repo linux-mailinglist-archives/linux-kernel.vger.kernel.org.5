@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1155C7A1C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3AE7A1C68
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjIOKgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S233002AbjIOKhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbjIOKgN (ORCPT
+        with ESMTP id S233269AbjIOKho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:36:13 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4822A1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:36:07 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso264006366b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:36:07 -0700 (PDT)
+        Fri, 15 Sep 2023 06:37:44 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F478193
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:37 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-79565370aa3so74538439f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694774166; x=1695378966; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YOGuQvyKIEvGatIdgqwwx1vnmFxyP0QzDb7QKoox0rU=;
-        b=KNW3zmZj4hD//4GOVtgSBq9/ON/12lATBn4v7X+qDLZNpbBS9ILJA7AKfYlYGQrZUT
-         Zn2MUSJxIMkUyxp7tMs0MjMICJ15iGhgJAvKSJgKC7HhrN6kxLT0qTrnTrr+qkheYbZw
-         XT8uKLgqZ2yiy96Isoki+I/H0IoFG1CoWDypvZwTEVNQLw2A2i9VXM21C1nVOU5XAs6l
-         DnkOc+PdvTkULUg5oOEdyjxAob2lJjvCUgW//83MN4NsQSNm9xqcQdY3EsbK+MBx8iKU
-         //vONQUxhODriVqVjeY7XZcl25tMAkFFIKmT9H63gOFxBz9WY/ntha+aMFeWyp4UH/Bi
-         YeJw==
+        d=google.com; s=20230601; t=1694774256; x=1695379056; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L1M0/0ecR5D/JjO5eCZw5wQnSPeaMytczG5hNDeARmM=;
+        b=d9xvhEOmdD+Y9pI2D1c7OQ9Djy+hdNRtfQWeihZmaJ1Z/b5aJQryJV/1ZaAcIM0Npt
+         RDO1j+U4/PcDYLRo6mymptUqJOa3r4mHGNUwR9MMTYkKcFlO/vZCwYkfu1j4M5y89bns
+         aCgmBVTC2ydEGxkdYwiyzb8SLYQVmfFUzdtBE0s/GYn6LbdsD+WyvPMXwuKxkXud30NI
+         ey11CCaDj+mgeWVv2L7d7RCGAqUwRUwqjvN3VVS7JBITZDQiJDmlfbNG/u7lymu41NRe
+         Ir26C1yeM5spj6XhVBnKDG0BmQM1gamOSLEEyarmoRbRd3e2RtBEG38TkFxUs2Qt+hny
+         xPtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774166; x=1695378966;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YOGuQvyKIEvGatIdgqwwx1vnmFxyP0QzDb7QKoox0rU=;
-        b=hQwShuK/KfazFs4kYhqHq16GBrMsU2ktkcjJ07b0a2uP/+YzGm4Rubjw9ANcDq0mdD
-         WHK9Rab6gySwwR//Cq8hCdQasORo6DfNiSzHJwnt2PC3NDrTVPk9eg+tuwe44jo+Zy2P
-         JqF3nzI8fSjNAbHqUUjIHR9/alHv9TQN3Mbfrn+fvd1KZoz1XhixQ4NVYcxI7YGneCr9
-         n9KMUvwGmxS55sPisGFYlAu0MqvFcomwDy8CJCwAiikgseodnZ5GTeoD2bqPw9gEz5vD
-         VLA/DJu3AcqDD2rhK6fucremW1t1dalvdhAv8OJcgK8gpW+FCeSNyyWzH4CqVhInMqCo
-         tRoA==
-X-Gm-Message-State: AOJu0Yz0yZgDrKvi5aVEpjAKLlUD3+x4xbM20OhIZ4z1iMyj3UTx7UnF
-        bg2jXWDHvuZ0UE+Dbqzw1Zd/kw==
-X-Google-Smtp-Source: AGHT+IGS0jKR8/GziN8CPYCaB+oKHmwOUHJOR8LOLDNfKE1g71vzGMk2ygtAxDqrZgORxBrUTqjoxg==
-X-Received: by 2002:a17:906:3019:b0:9a9:f14f:7e3b with SMTP id 25-20020a170906301900b009a9f14f7e3bmr1169368ejz.16.1694774166327;
-        Fri, 15 Sep 2023 03:36:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id z15-20020a17090655cf00b00997d7aa59fasm2274540ejp.14.2023.09.15.03.36.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 03:36:05 -0700 (PDT)
-Message-ID: <aa15d41e-c05b-7fc5-77fb-9416f4f190b5@linaro.org>
-Date:   Fri, 15 Sep 2023 12:36:04 +0200
+        d=1e100.net; s=20230601; t=1694774256; x=1695379056;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L1M0/0ecR5D/JjO5eCZw5wQnSPeaMytczG5hNDeARmM=;
+        b=dwP1/Cd7PT/g2DtyoBxIznfnY2ZpviPloGI8UCxFmZDVe7jUt97CKqZjY3kIu7d0Ta
+         tQ3tNNfa6+SGbZrsf/r/Gr6TF8/YpX5L4z7BLmhfH6BHQEGlY6PsHVyOPo8AbjxbBy1T
+         wpUdL/6LjyIEt9tZ6DUrNBuHunqhRppwRUvJws5Fs/E9qM1ZkDBDxUgvfvm0jFLXIi7B
+         9Km1qx79bAy30+h+FJ4R/yUd5ZMIL6e3WnzMIWiI+jwtGtGDjgCA5g1XG8yhd3Y5xjzu
+         PP28UsZPJGsrWW7cNUi802IOp6XqxJTv0l9Vqx50NzKG5qOJtu2+Vlfnb+evqcRhsJFj
+         9V/Q==
+X-Gm-Message-State: AOJu0YwFCDSLFXH0a2gKKeeJW2f8b4X1YHuRK3rLrikpBaKMx13s66FT
+        nyfSroMxArNdxx/rMcr902GLQh0cEcw00exMawwrIQ==
+X-Google-Smtp-Source: AGHT+IFgxsuOsWk6AFDfPmDxp226TK7N3eIMtQRvYBazzJzhbW4VMOvdKOYSKlIfmLdOxrT9VEgl58EwtzjzStmLNes=
+X-Received: by 2002:a6b:d918:0:b0:795:1a7c:486f with SMTP id
+ r24-20020a6bd918000000b007951a7c486fmr1140189ioc.14.1694774256505; Fri, 15
+ Sep 2023 03:37:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 03/42] dt-bindings: clock: Add Cirrus EP93xx
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-3-a1d779dcec10@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915-ep93xx-v4-3-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <cover.1693328501.git.andreyknvl@google.com> <89c2f64120a7dd6b2255a9a281603359a50cf6f7.1693328501.git.andreyknvl@google.com>
+ <CAG_fn=WsYH8iwHCGsoBRL9BRM-uzKJ3+RDgrB5DEGVJKLPagVw@mail.gmail.com> <CA+fCnZftKPJ7zDWmPRjxYXQK91DX2eEw0nDNtYW856399v__Hg@mail.gmail.com>
+In-Reply-To: <CA+fCnZftKPJ7zDWmPRjxYXQK91DX2eEw0nDNtYW856399v__Hg@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 15 Sep 2023 12:36:56 +0200
+Message-ID: <CAG_fn=USVp-HtC=K=BwaNQVCVVeHDRcGSCpF8dS6f9C1Vd8wjg@mail.gmail.com>
+Subject: Re: [PATCH 05/15] stackdepot: use fixed-sized slots for stack records
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,70 +74,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 10:10, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
+> > As a side note, kmsan_internal_chain_origin()
+> > (https://elixir.bootlin.com/linux/latest/source/mm/kmsan/core.c#L214)
+> > creates small 3-frame records in the stack depot to link two stacks
+> > together, which will add unnecessary stackdepot pressure.
+> > But this can be fixed by storing both the new stack trace and the link
+> > to the old stack trace in the same record.
+>
+> Do you mean this can be fixed in KMSAN? Or do you mean some kind of an
+> extension to the stack depot interface?
 
-Thank you for your patch. There is something to discuss/improve.
-
-
-> diff --git a/include/dt-bindings/clock/cirrus,ep9301-clk.h b/include/dt-bindings/clock/cirrus,ep9301-clk.h
-> new file mode 100644
-> index 000000000000..3cd053c0fdea
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/cirrus,ep9301-clk.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> +#ifndef DT_BINDINGS_CIRRUS_EP93XX_CLOCK_H
-> +#define DT_BINDINGS_CIRRUS_EP93XX_CLOCK_H
-> +
-> +#define EP93XX_CLK_UART1	0
-> +#define EP93XX_CLK_UART2	1
-> +#define EP93XX_CLK_UART3	2
-> +
-> +#define EP93XX_CLK_ADC		3
-> +#define EP93XX_CLK_ADC_EN	4
-> +
-> +#define EP93XX_CLK_KEYPAD   5
-
-Wrong indentation - use tab instead of spaces, just like in other places.
-
-> +
-> +#define EP93XX_CLK_VIDEO	6
-> +
-> +#define EP93XX_CLK_I2S_MCLK	7
-> +#define EP93XX_CLK_I2S_SCLK	8
-> +#define EP93XX_CLK_I2S_LRCLK	9
-> +
-> +#define EP93XX_CLK_UART		10
-> +#define EP93XX_CLK_SPI		11
-> +#define EP93XX_CLK_PWM		12
-> +#define EP93XX_CLK_USB		13
-> +
-> +#define EP93XX_CLK_M2M0		14
-> +#define EP93XX_CLK_M2M1		15
-> +
-> +#define EP93XX_CLK_M2P0		16
-> +#define EP93XX_CLK_M2P1		17
-> +#define EP93XX_CLK_M2P2		18
-> +#define EP93XX_CLK_M2P3		19
-> +#define EP93XX_CLK_M2P4		20
-> +#define EP93XX_CLK_M2P5		21
-> +#define EP93XX_CLK_M2P6		22
-> +#define EP93XX_CLK_M2P7		23
-> +#define EP93XX_CLK_M2P8		24
-> +#define EP93XX_CLK_M2P9		25
-> +
-> +#define EP93XX_CLK_END      26
-
-Here as well... except I propose to drop it. Number of clocks should not
-be part of bindings, because then you cannot grow it.
-
-With indentation fixed and CLK_END dropped:
-
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Yes, I'll just fix this on the KMSAN side.
