@@ -2,91 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F2C7A1F00
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8927A1F04
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235007AbjIOMoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42280 "EHLO
+        id S235016AbjIOMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234986AbjIOMoM (ORCPT
+        with ESMTP id S234981AbjIOMou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:44:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993A1DD;
-        Fri, 15 Sep 2023 05:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694781846; x=1726317846;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UdF/yb3hDzUX34AS52kDXjTGovRQt8ow6ztwyihEg7s=;
-  b=Quh+NLtKbBFx8/gUg5mEi+LGrW09rkejE03p/Nr8wHqOIe1IMRnuXjma
-   0o8NxEW65bHIFzgiHHXckDisNAxjJ0odXO80eWiUIrAbWEVa9NmHgsSkb
-   IP9FUwqme8Qa6iJ6hyN/DbFylmsm73QP8F5bFx39iEdtO0eu2LRA6Kpr3
-   dpKH9nQbnGeSH1So5rKfPmYCU8AiUHwXoDNnHIEChl9ijRidAjTmiYKOS
-   la4C2Lr5gOk/KT5z/S7PWNKAn5zL8ga084Uss5KhCKWv6S9BUkTvF+5jy
-   NVjtjQpjEOol5x2u5azezVDaf/TwNJ/ote27Zyg8+i1XdaKnXsEV9oLqI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="369555957"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="369555957"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:44:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="1075783226"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="1075783226"
-Received: from mylly.fi.intel.com (HELO [10.237.72.154]) ([10.237.72.154])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Sep 2023 05:44:03 -0700
-Message-ID: <a330da0f-e8f5-4703-872b-ae1037d7aed9@linux.intel.com>
-Date:   Fri, 15 Sep 2023 15:44:02 +0300
+        Fri, 15 Sep 2023 08:44:50 -0400
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB205D3;
+        Fri, 15 Sep 2023 05:44:43 -0700 (PDT)
+Received: from [192.168.42.133] (host-178-72-203-90.ip.nej.cz [178.72.203.90])
+        by mx.gpxsee.org (Postfix) with ESMTPSA id A35BE326A6;
+        Fri, 15 Sep 2023 14:44:41 +0200 (CEST)
+Message-ID: <4b0fe0ec-79fd-42fc-afe8-c44eef471621@gpxsee.org>
+Date:   Fri, 15 Sep 2023 14:44:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-To:     Jan Bottorff <janb@os.amperecomputing.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalrayinc.com>
-References: <20230913232938.420423-1-janb@os.amperecomputing.com>
+Subject: Re: [RESEND PATCH v9 1/2] Added Digiteq Automotive MGB4 driver
 Content-Language: en-US
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230913232938.420423-1-janb@os.amperecomputing.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+References: <20230912120745.902-1-tumic@gpxsee.org>
+ <20230912120745.902-2-tumic@gpxsee.org>
+ <c38400f8-6193-46b6-9e26-0094af6627ca@xs4all.nl>
+From:   =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>
+In-Reply-To: <c38400f8-6193-46b6-9e26-0094af6627ca@xs4all.nl>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/23 02:29, Jan Bottorff wrote:
-> Errors were happening in the ISR that looked like corrupted
-> memory. This was because memory writes from the core enabling
-> interrupts were not yet visible to the core running the ISR. The
-> kernel log would get the message "i2c_designware APMC0D0F:00:
-> controller timed out" during in-band IPMI SSIF stress tests.
+Hi Hans,
+
+On 15. 09. 23 13:50, Hans Verkuil wrote:
+> Hi Martin,
 > 
-> Add a write barrier before enabling interrupts to assure data written
-> by the current core is visible to all cores before the interrupt fires.
+> On 12/09/2023 14:07, tumic@gpxsee.org wrote:
+>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>
+>> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
+>> video interfaces. As for now, two modules - FPD-Link and GMSL - are
+>> available and supported by the driver. The card has two inputs and two
+>> outputs (FPD-Link only).
+>>
+>> In addition to the video interfaces it also provides a trigger signal
+>> interface and a MTD interface for FPGA firmware upload.
+>>
+>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>> ---
 > 
-> The ARM Barrier Litmus Tests and Cookbook has an example under
-> Sending Interrupts and Barriers that matches the usage in this
-> driver. That document says a DSB barrier is required.
+> <snip>
 > 
-> Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
-> Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
-> Tested-by: Yann Sionneau <ysionneau@kalrayinc.com>
-> ---
->   drivers/i2c/busses/i2c-designware-master.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
+>> +static ssize_t video_source_show(struct device *dev,
+>> +				 struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vout_dev *voutdev = video_get_drvdata(vdev);
+>> +	u32 config = mgb4_read_reg(&voutdev->mgbdev->video,
+>> +	  voutdev->config->regs.config);
+>> +
+>> +	return sprintf(buf, "%u\n", (config & 0xc) >> 2);
+>> +}
+>> +
+>> +static ssize_t video_source_store(struct device *dev,
+>> +				  struct device_attribute *attr,
+>> +				  const char *buf, size_t count)
+>> +{
+>> +	struct video_device *vdev = to_video_device(dev);
+>> +	struct mgb4_vout_dev *voutdev = video_get_drvdata(vdev);
+>> +	struct mgb4_dev *mgbdev = voutdev->mgbdev;
+>> +	struct mgb4_vin_dev *loopin_new = 0, *loopin_old = 0;
+>> +	unsigned long val;
+>> +	unsigned long flags_in[MGB4_VIN_DEVICES], flags_out[MGB4_VOUT_DEVICES];
+>> +	ssize_t ret;
+>> +	u32 config;
+>> +	int i;
+>> +
+>> +	memset(flags_in, 0, sizeof(flags_in));
+>> +	memset(flags_out, 0, sizeof(flags_out));
+>> +
+>> +	ret = kstrtoul(buf, 10, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +	if (val > 3)
+>> +		return -EINVAL;
+>> +
+>> +	for (i = 0; i < MGB4_VIN_DEVICES; i++)
+>> +		if (mgbdev->vin[i])
+>> +			spin_lock_irqsave(&mgbdev->vin[i]->vdev.fh_lock,
+>> +					  flags_in[i]);
+>> +	for (i = 0; i < MGB4_VOUT_DEVICES; i++)
+>> +		if (mgbdev->vout[i])
+>> +			spin_lock_irqsave(&mgbdev->vout[i]->vdev.fh_lock,
+>> +					  flags_out[i]);
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> I missed this in my review: never use fh_lock, that's for internal use only.
+> 
+> Instead, use the vdev->lock mutex.
+> 
+>> +
+>> +	ret = -EBUSY;
+>> +	for (i = 0; i < MGB4_VIN_DEVICES; i++)
+>> +		if (mgbdev->vin[i] && !list_empty(&mgbdev->vin[i]->vdev.fh_list))
+>> +			goto error;
+> 
+> This is also wrong, the key moment at which such changes are no longer allowed
+> is when you allocate buffers for the first time. Use vb2_is_busy() to detect that.
+> 
+>  From what I can see in the code most store functions operate on a single video device,
+> so for those using mutex_lock_interruptible(vdev->lock) and vb2_is_busy() will do the
+> trick.
+> 
+
+Ok, I will change the check to vb2_is_busy() under the vdev->lock for 
+all the "standard" cases (which are all, except the video_source_store() 
+case).
+
+> For this store function that needs to check all devices it is more complicated.
+> 
+> I think the best approach would be to create a top-level field 'reconfig_in_progress'
+> (or something along those lines), protected by a spinlock.
+> 
+> At the start this function will take the lock, check if reconfig is already in progress
+> and just return EBUSY here. Otherwise it sets reconfig_in_progress to true and unlocks
+> the lock.
+> 
+> After that for each video device you take the vdev->lock, check if vb2_is_busy() and
+> unlock vdev->lock. If any is busy, then set reconfig_in_progress back to false and
+> return EBUSY here.
+> 
+> To prevent another process from creating buffers, you have to check in the queue_setup
+> functions if a reconfig is in progress and return EBUSY there.
+> 
+> This scheme avoids having to lock ALL video devices (bad practice), and it should
+> also avoid this smatch warning.
+> 
+
+Ok, for this "ugly" one configuration I will add a PCIe device-based 
+field and check it in all the v4l2 device's queue_setup() functions. 
+Sounds better than locking all the devices at the same time.
+
+Thanks for your help, I will send you a v10 with this two changes 
+(together with the sparse/smatch fixes) soon.
+
+M.
+
+> Note: instead of using a spinlock I think you can also use test_and_set_bit: that's
+> atomic and you can avoid adding a spinlock.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>> +	for (i = 0; i < MGB4_VOUT_DEVICES; i++)
+>> +		if (mgbdev->vout[i] && !list_empty(&mgbdev->vout[i]->vdev.fh_list))
+>> +			goto error;
+>> +
+>> +	config = mgb4_read_reg(&mgbdev->video, voutdev->config->regs.config);
+>> +
+>> +	if (((config & 0xc) >> 2) < MGB4_VIN_DEVICES)
+>> +		loopin_old = mgbdev->vin[(config & 0xc) >> 2];
+>> +	if (val < MGB4_VIN_DEVICES)
+>> +		loopin_new = mgbdev->vin[val];
+>> +	if (loopin_old && loopin_cnt(loopin_old) == 1)
+>> +		mgb4_mask_reg(&mgbdev->video, loopin_old->config->regs.config,
+>> +			      0x2, 0x0);
+>> +	if (loopin_new)
+>> +		mgb4_mask_reg(&mgbdev->video, loopin_new->config->regs.config,
+>> +			      0x2, 0x2);
+>> +
+>> +	if (val == voutdev->config->id + MGB4_VIN_DEVICES)
+>> +		mgb4_write_reg(&mgbdev->video, voutdev->config->regs.config,
+>> +			       config & ~(1 << 1));
+>> +	else
+>> +		mgb4_write_reg(&mgbdev->video, voutdev->config->regs.config,
+>> +			       config | (1U << 1));
+>> +
+>> +	mgb4_mask_reg(&mgbdev->video, voutdev->config->regs.config, 0xc,
+>> +		      val << 2);
+>> +
+>> +	ret = count;
+>> +
+>> +error:
+>> +	for (i = MGB4_VOUT_DEVICES - 1; i >= 0; i--)
+>> +		if (mgbdev->vout[i])
+>> +			spin_unlock_irqrestore(&mgbdev->vout[i]->vdev.fh_lock,
+>> +					       flags_out[i]);
+>> +	for (i = MGB4_VIN_DEVICES - 1; i >= 0; i--)
+>> +		if (mgbdev->vin[i])
+>> +			spin_unlock_irqrestore(&mgbdev->vin[i]->vdev.fh_lock,
+>> +					       flags_in[i]);
+>> +
+>> +	return ret;
+>> +}
+> 
+
