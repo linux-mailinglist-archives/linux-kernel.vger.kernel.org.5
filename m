@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33787A24C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADEF7A24C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236256AbjIOR3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S236309AbjIOR3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235952AbjIOR3L (ORCPT
+        with ESMTP id S235980AbjIOR3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:29:11 -0400
+        Fri, 15 Sep 2023 13:29:13 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAC42105;
-        Fri, 15 Sep 2023 10:29:06 -0700 (PDT)
-Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLkc52pkz6K6LZ;
-        Sat, 16 Sep 2023 01:28:24 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5931BF2;
+        Fri, 15 Sep 2023 10:29:07 -0700 (PDT)
+Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLdz1rJyz67nfn;
+        Sat, 16 Sep 2023 01:24:23 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 18:29:04 +0100
+ 15.1.2507.31; Fri, 15 Sep 2023 18:29:05 +0100
 From:   <shiju.jose@huawei.com>
 To:     <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>
@@ -35,9 +35,9 @@ CC:     <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
         <gthelen@google.com>, <linuxarm@huawei.com>,
         <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
         <prime.zeng@hisilicon.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 3/9] Documentation/scrub-configure.rst: Add documentation for scrub driver
-Date:   Sat, 16 Sep 2023 01:28:12 +0800
-Message-ID: <20230915172818.761-4-shiju.jose@huawei.com>
+Subject: [RFC PATCH 4/9] ACPI:RASF: Add extract RASF table to register RASF platform devices
+Date:   Sat, 16 Sep 2023 01:28:13 +0800
+Message-ID: <20230915172818.761-5-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20230915172818.761-1-shiju.jose@huawei.com>
 References: <20230915172818.761-1-shiju.jose@huawei.com>
@@ -57,78 +57,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shiju Jose <shiju.jose@huawei.com>
+From: A Somasundaram <somasundaram.a@hpe.com>
 
-Add documentation for scrub driver, supports configure scrub parameters,
-in Documentation/scrub-configure.rst
+The driver adds extraction of ACPI RASF table as per ACPI 5.1 & upwards
+revision. ACPI specification section 5.2.20 for RASF table is the reference
+for this implementation. Driver adds a platform device which binds to the
+RASF memory driver.
 
+Signed-off-by: A Somasundaram <somasundaram.a@hpe.com>
+Co-developed-by: Shiju Jose <shiju.jose@huawei.com>
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- Documentation/scrub-configure.rst | 55 +++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 Documentation/scrub-configure.rst
+ drivers/acpi/Kconfig     |  9 ++++
+ drivers/acpi/Makefile    |  1 +
+ drivers/acpi/rasf_acpi.c | 97 ++++++++++++++++++++++++++++++++++++++++
+ include/acpi/rasf_acpi.h | 19 ++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100755 drivers/acpi/rasf_acpi.c
+ create mode 100755 include/acpi/rasf_acpi.h
 
-diff --git a/Documentation/scrub-configure.rst b/Documentation/scrub-configure.rst
-new file mode 100644
-index 000000000000..9f8581b88788
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index cee82b473dc5..e5fd8edc5b35 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -279,6 +279,15 @@ config ACPI_CPPC_LIB
+ 	  If your platform does not support CPPC in firmware,
+ 	  leave this option disabled.
+ 
++config ACPI_RASF
++	bool "ACPI RASF driver"
++	depends on ACPI_PROCESSOR
++	select MAILBOX
++	help
++	  The driver adds support for extraction of RASF table from OS
++	  system table. Driver adds platform device which binds to the
++	  RASF memory driver.
++
+ config ACPI_PROCESSOR
+ 	tristate "Processor"
+ 	depends on X86 || IA64 || ARM64 || LOONGARCH
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index eaa09bf52f17..f8a1263f6128 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -104,6 +104,7 @@ obj-$(CONFIG_ACPI_CUSTOM_METHOD)+= custom_method.o
+ obj-$(CONFIG_ACPI_BGRT)		+= bgrt.o
+ obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc_acpi.o
+ obj-$(CONFIG_ACPI_SPCR_TABLE)	+= spcr.o
++obj-$(CONFIG_ACPI_RASF)		+= rasf_acpi.o
+ obj-$(CONFIG_ACPI_DEBUGGER_USER) += acpi_dbg.o
+ obj-$(CONFIG_ACPI_PPTT) 	+= pptt.o
+ obj-$(CONFIG_ACPI_PFRUT)	+= pfr_update.o pfr_telemetry.o
+diff --git a/drivers/acpi/rasf_acpi.c b/drivers/acpi/rasf_acpi.c
+new file mode 100755
+index 000000000000..b30ba2a5e4ff
 --- /dev/null
-+++ b/Documentation/scrub-configure.rst
-@@ -0,0 +1,55 @@
-+==========================
-+Scrub subsystem driver
-+==========================
++++ b/drivers/acpi/rasf_acpi.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * rasf_acpi.c - ACPI RASF table processing functions
++ *
++ * (C) Copyright 2014, 2015 Hewlett-Packard Enterprises.
++ *
++ * Copyright (c) 2023 HiSilicon Limited.
++ *
++ * Support for
++ * RASF - ACPI 6.5 Specification, section 5.2.20
++ *
++ * Code contains RASF init, which extracts the ACPI RASF table and
++ * RASF platform communication channel identifier for communicating
++ * with the ACPI compliant platform that contains RASF command
++ * support in the hardware. Driver adds platform device which
++ * binds to the RASF memory driver.
++ */
 +
-+Copyright (c) 2023 HiSilicon Limited.
++#define pr_fmt(fmt)	"ACPI RASF: " fmt
 +
-+:Author:   Shiju Jose <shiju.jose@huawei.com>
-+:License:  The GNU Free Documentation License, Version 1.2
-+          (dual licensed under the GPL v2)
-+:Original Reviewers:
++#include <linux/export.h>
++#include <linux/delay.h>
++#include <linux/ktime.h>
++#include <linux/platform_device.h>
++#include <acpi/rasf_acpi.h>
++#include <acpi/acpixf.h>
 +
-+- Written for: 6.7
-+- Updated for:
++static struct platform_device *rasf_add_platform_device(char *name, const void *data,
++							size_t size)
++{
++	int ret;
++	struct platform_device *pdev;
 +
-+Introduction
-+------------
-+The scrub subsystem driver provides the interface for configure the
-+parameters of memory scrubbers in the system. The scrub device drivers
-+in the system register with the scrub configure subsystem.
++	pdev = platform_device_alloc(name, PLATFORM_DEVID_AUTO);
++	if (!pdev)
++		return NULL;
 +
-+The scrub configure driver exposes the scrub controls to the user
-+via sysfs.
++	ret = platform_device_add_data(pdev, data, size);
++	if (ret)
++		goto dev_put;
 +
-+The File System
-+---------------
++	ret = platform_device_add(pdev);
++	if (ret)
++		goto dev_put;
 +
-+The configuration parameters of the registered scrubbers could be
-+accessed via the /sys/class/scrub/scrubX/regionN/
++	return pdev;
 +
-+sysfs
-+-----
++dev_put:
++	platform_device_put(pdev);
 +
-+Sysfs files are documented in
-+`Documentation/ABI/testing/sysfs-class-scrub-configure`.
++	return NULL;
++}
 +
-+Example
-+-------
++int __init rasf_acpi_init(void)
++{
++	acpi_status status;
++	acpi_size rasf_size;
++	int pcc_subspace_idx;
++	struct platform_device *pdev;
++	struct acpi_table_rasf *pRasfTable;
++	struct acpi_table_header *pAcpiTable = NULL;
 +
-+  The usage takes the form shown in this example::
++	status = acpi_get_table("RASF", 0, &pAcpiTable);
++	if (ACPI_FAILURE(status) || !pAcpiTable) {
++		pr_err("ACPI RASF driver failed to initialize, get table failed\n");
++		return RASF_FAILURE;
++	}
 +
-+    # echo 0x300000 > /sys/class/scrub/scrub0/region0/addr_base
-+    # echo 0x100000 > /sys/class/scrub/scrub0/region0/addr_size
-+    # cat /sys/class/scrub/scrub0/region0/speed_available
-+    # 1-60
-+    # echo 25 > /sys/class/scrub/scrub0/region0/speed
-+    # echo 1 > /sys/class/scrub/scrub0/region0/enable
++	rasf_size = pAcpiTable->length;
++	if (rasf_size < sizeof(struct acpi_table_rasf)) {
++		pr_err("ACPI RASF table present but broken (too short #1)\n");
++		goto free_rasf_table;
++	}
 +
-+    # cat /sys/class/scrub/scrub0/region0/speed
-+    # 0x19
-+    # cat /sys/class/scrub/scrub0/region0/addr_base
-+    # 0x100000
-+    # cat /sys/class/scrub/scrub0/region0/addr_size
-+    # 0x200000
++	pRasfTable = (struct acpi_table_rasf *)pAcpiTable;
 +
-+    # echo 0 > /sys/class/scrub/scrub0/region0/enable
++	/* Extract the PCC subspace channel id from the table */
++	memcpy(&pcc_subspace_idx, &pRasfTable->channel_id, sizeof(pcc_subspace_idx));
++	pr_debug("ACPI RASF pcc subspace channel id =%d\n",
++		 pcc_subspace_idx);
++	if (pcc_subspace_idx < 0)
++		goto free_rasf_table;
++
++	/* Add the platform device and bind rasf memory driver */
++	pdev = rasf_add_platform_device("rasf", &pcc_subspace_idx,
++					sizeof(pcc_subspace_idx));
++	if (!pdev)
++		goto free_rasf_table;
++
++	acpi_put_table(pAcpiTable);
++	return RASF_SUCCESS;
++
++free_rasf_table:
++	acpi_put_table(pAcpiTable);
++	return RASF_FAILURE;
++}
++late_initcall(rasf_acpi_init)
+diff --git a/include/acpi/rasf_acpi.h b/include/acpi/rasf_acpi.h
+new file mode 100755
+index 000000000000..1c4c3e94d472
+--- /dev/null
++++ b/include/acpi/rasf_acpi.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
++/*
++ * RASF Diagnostic driver header file
++ *
++ * (C) Copyright 2014, 2015 Hewlett-Packard Enterprises
++ *
++ * Copyright (c) 2023 HiSilicon Limited
++ */
++
++#ifndef _RASF_ACPI_H
++#define _RASF_ACPI_H
++
++#include <linux/acpi.h>
++#include <linux/types.h>
++
++#define RASF_FAILURE 0
++#define RASF_SUCCESS 1
++
++#endif /* _RASF_ACPI_H */
 -- 
 2.34.1
 
