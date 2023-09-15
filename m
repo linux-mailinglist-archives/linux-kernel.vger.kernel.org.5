@@ -2,235 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01A87A208F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BE17A2093
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbjIOOMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
+        id S235607AbjIOONs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235582AbjIOOMV (ORCPT
+        with ESMTP id S235203AbjIOONr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:12:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30661FCE;
-        Fri, 15 Sep 2023 07:12:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717D9C433C9;
-        Fri, 15 Sep 2023 14:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694787135;
-        bh=/HmAzgm/+XfH2LHmsna9iSpae4XQo0btQtAdXOJ8lmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mjYxRMQNwaQHIKQyYqQlgdWqCfnn9IZcTlEUtfZyLYqAA8oxvZV68JJrPo0oh4EU4
-         qE3X4RPLodL+YxmytKft3urNRQvw8EPPPH3HAwKX2yBZB3zGvHGs/+IduNDyKBBbow
-         QuhJk/wvqrH3k9B90Zpu5zsZQIBgqVGR+mYFK84Gsf6pcSGVhGScXYV5+3z6xVEBf/
-         oNL0GGCMG6glpSM0mBHJU/C/3ByYZIxqHkDjj7XWdyKEv5C1vsjrWl2Pv7YeHNVN0w
-         3oirLCA0Aem0LuUgx4+aDtkfgK5H5gz6yC9ZH+Qq1gcUYC6xhhht/1NJ9PYsBDN6rV
-         QxAi18p1Ej6Bg==
-Date:   Fri, 15 Sep 2023 16:12:07 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230915-zweit-frech-0e06394208a3@brauner>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
- <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
- <20230914165805.GJ800259@ZenIV>
- <20230915-elstern-etatplanung-906c6780af19@brauner>
+        Fri, 15 Sep 2023 10:13:47 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7C81FC9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:13:42 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-401b393ddd2so25136825e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 07:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694787221; x=1695392021; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K6yZXoqtvOOS4qbu6sLA5FY9z1WwgeTbxy586H6k95M=;
+        b=j84yIcWXOdKxU+LkEhNe7oxpoqjXsxtzJT9btQ8+YveAjK327mIwg4VBnGj3Ubq8YQ
+         e+IupUeZPcvejcc504qaN2D8KOUMVzuxk9o9aj4dYfbHu86rtg0fh7uYvdp+iulw2iec
+         PnURk7w92gv+t9/QEpv56dx0F2FRZgpOQdEj9gZlt/ou9gG6f9EeXdq4Dk78Ng21l1hI
+         6ZWq4cAfrAgDyy4C1aIlbCdRTTZd0LF3kbigXBGLRBeoczMs8tsFQwMUC1oc3QyIFWqN
+         P3zPsOAiknSqJxRy9zceWqPUZfkrOV1GSxyz2E+Ne1iEt13HSXiVWZswhGzp5nFEPjHc
+         mZpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694787221; x=1695392021;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K6yZXoqtvOOS4qbu6sLA5FY9z1WwgeTbxy586H6k95M=;
+        b=iKzBdBEEVYtSzD8crs1/6Fswn5xg6ud1TYoN53YKhdijXXsbZ1i+sGKKBTmpCe25/e
+         go9kGKmXCnilkNUz7JcryOWI+z9gEL20CmG1JL1gEeMaZSFzhBpIE9DU5fl5vY+fk6eW
+         l4Ogmf9uL/KGRVzGU9BrQyy5CeMQ6DXkeA9jPg70rtR2bTFMviXAoQr873RIw1fVohlH
+         oWLqrE3NVEgVym0ewskzhmxLXrJ8If6uX2mWOfQ9JBzSWbMLMpqPxJgYAWIv8uAVaiuG
+         XyXlNHB4p1FKfBz+6or2mn0n5FvxNU2r4iG2YbmBB6wRtzkhfunZ3wUDuTdLOQZ1k4Ou
+         +rxw==
+X-Gm-Message-State: AOJu0YyOREb9GrrNa96iJtSbIcM4q4EcDY+NZ1IOzYgbFbUFOv0AVFhz
+        OjXhBYmjoyMmLT33k5QQEXB9gQ==
+X-Google-Smtp-Source: AGHT+IGNni64BZTGUnXlSAyqxyh5hPWg10T5R2V9mWZY4Z78EANoT4sztE+/HOPhH4TuL8+x2Y8k7A==
+X-Received: by 2002:a05:600c:144:b0:401:b504:b6a0 with SMTP id w4-20020a05600c014400b00401b504b6a0mr2000348wmm.3.1694787220735;
+        Fri, 15 Sep 2023 07:13:40 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id p18-20020a1c7412000000b00401d6c0505csm4711631wmc.47.2023.09.15.07.13.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 07:13:40 -0700 (PDT)
+Message-ID: <d8d80db6-7010-47c1-a068-f73fbcbc96a0@linaro.org>
+Date:   Fri, 15 Sep 2023 15:13:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230915-elstern-etatplanung-906c6780af19@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFT 00/20] Venus cleanups
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dikshita Agarwal <quic_dikshita@quicinc.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > tree of any filesystem (in-tree one or not) will have to go through the
-> > changes and figure out WTF to do with their existing code.  We are
-> > going to play whack-a-mole for at least several years as development
-> > branches get rebased and merged.
+On 11/09/2023 16:10, Konrad Dybcio wrote:
+> With the driver supporting multiple generations of hardware, some mold
+> has definitely grown over the code..
 > 
-> Let me write something up.
+> This series attempts to amend this situation a bit by commonizing some
+> code paths and fixing some bugs while at it.
+> 
+> Only tested on SM8250.
+> 
+> Definitely needs testing on:
+> 
+> - SDM845 with old bindings
+> - SDM845 with new bindings or 7180
+> - MSM8916
+> - MSM8996
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+> Konrad Dybcio (20):
+>        media: venus: pm_helpers: Only set rate of the core clock in core_clks_enable
+>        media: venus: pm_helpers: Rename core_clks_get to venus_clks_get
+>        media: venus: pm_helpers: Add kerneldoc to venus_clks_get()
+>        media: venus: core: Set OPP clkname in a common code path
+>        media: venus: pm_helpers: Kill dead code
+>        media: venus: pm_helpers: Move reset acquisition to common code
+>        media: venus: pm_helpers: Use reset_bulk API
+>        media: venus: core: Constify all members of the resource struct
+>        media: venus: core: Deduplicate OPP genpd names
+>        media: venus: core: Get rid of vcodec_num
+>        media: venus: core: Drop cache properties in resource struct
+>        media: venus: core: Use GENMASK for dma_mask
+>        media: venus: core: Remove cp_start
+>        media: venus: pm_helpers: Commonize core_power
+>        media: venus: pm_helpers: Remove pm_ops->core_put
+>        media: venus: core: Define a pointer to core->res
+>        media: venus: pm_helpers: Simplify vcodec clock handling
+>        media: venus: pm_helpers: Commonize getting clocks and GenPDs
+>        media: venus: pm_helpers: Commonize vdec_get()
+>        media: venus: pm_helpers: Commonize venc_get()
+> 
+>   drivers/media/platform/qcom/venus/core.c       | 138 ++++-------
+>   drivers/media/platform/qcom/venus/core.h       |  64 +++--
+>   drivers/media/platform/qcom/venus/firmware.c   |   3 +-
+>   drivers/media/platform/qcom/venus/hfi_venus.c  |   7 +-
+>   drivers/media/platform/qcom/venus/pm_helpers.c | 328 +++++++++----------------
+>   drivers/media/platform/qcom/venus/pm_helpers.h |  10 +-
+>   drivers/media/platform/qcom/venus/vdec.c       |   9 +-
+>   drivers/media/platform/qcom/venus/venc.c       |   9 +-
+>   8 files changed, 213 insertions(+), 355 deletions(-)
+> ---
+> base-commit: 7bc675554773f09d88101bf1ccfc8537dc7c0be9
+> change-id: 20230911-topic-mars-e60bb2269411
+> 
+> Best regards,
 
-So here I've written two porting.rst patches that aim to reflect the
-current state of things (They do _not_ reflect what's in Christoph's
-series here as that'ss again pretty separate and will require additional
-spelling out.).
-
-I'm adding explanation for both the old and new logic fwiw. I hope to
-upstream these docs soon so we all have something to point to.
-
-From 200666901f53db74edf309d48e3c74fd275a822a Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 15 Sep 2023 16:01:02 +0200
-Subject: [PATCH 1/2] porting: document new block device opening order
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+b4 shazam 20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org
+Grabbing thread from 
+lore.kernel.org/all/20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org/t.mbox.gz
+Checking for newer revisions
+Grabbing search results from lore.kernel.org
+Analyzing 27 messages in the thread
+Checking attestation on all messages, may take a moment...
 ---
- Documentation/filesystems/porting.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/Documentation/filesystems/porting.rst b/Documentation/filesystems/porting.rst
-index deac4e973ddc..f436b64b77bf 100644
---- a/Documentation/filesystems/porting.rst
-+++ b/Documentation/filesystems/porting.rst
-@@ -949,3 +949,27 @@ mmap_lock held.  All in-tree users have been audited and do not seem to
- depend on the mmap_lock being held, but out of tree users should verify
- for themselves.  If they do need it, they can return VM_FAULT_RETRY to
- be called with the mmap_lock held.
-+
-+---
-+
-+**mandatory**
-+
-+The order of opening block devices and matching or creating superblocks has
-+changed.
-+
-+The old logic opened block devices first and then tried to find a
-+suitable superblock to reuse based on the block device pointer.
-+
-+The new logic finds or creates a superblock first, opening block devices
-+afterwards. Since opening block devices cannot happen under s_umount because of
-+lock ordering requirements s_umount is now dropped while opening block
-+devices and reacquired before calling fill_super().
-+
-+In the old logic concurrent mounters would find the superblock on the list of
-+active superblock for the filesystem type. Since the first opener of the block
-+device would hold s_umount they would wait until the superblock became either
-+born or died prematurely due to initialization failure.
-+
-+Since the new logic drops s_umount concurrent mounters could grab s_umount and
-+would spin. Instead they are now made to wait using an explicit wait-wake
-+mechanism without having to hold s_umount.
--- 
-2.34.1
-
-From 1f09898322b4402219d8d3219d399c9e56a76bae Mon Sep 17 00:00:00 2001
-From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 15 Sep 2023 16:01:40 +0200
-Subject: [PATCH 2/2] porting: document superblock as block device holder
-
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+   [PATCH 1/20] media: venus: pm_helpers: Only set rate of the core 
+clock in core_clks_enable
+   [PATCH 2/20] media: venus: pm_helpers: Rename core_clks_get to 
+venus_clks_get
+   [PATCH 3/20] media: venus: pm_helpers: Add kerneldoc to venus_clks_get()
+   [PATCH 4/20] media: venus: core: Set OPP clkname in a common code path
+   [PATCH 5/20] media: venus: pm_helpers: Kill dead code
+   [PATCH 6/20] media: venus: pm_helpers: Move reset acquisition to 
+common code
+   [PATCH 7/20] media: venus: pm_helpers: Use reset_bulk API
+   [PATCH 8/20] media: venus: core: Constify all members of the resource 
+struct
+   [PATCH 9/20] media: venus: core: Deduplicate OPP genpd names
+   [PATCH 10/20] media: venus: core: Get rid of vcodec_num
+   [PATCH 11/20] media: venus: core: Drop cache properties in resource 
+struct
+   [PATCH 12/20] media: venus: core: Use GENMASK for dma_mask
+   [PATCH 13/20] media: venus: core: Remove cp_start
+   [PATCH 14/20] media: venus: pm_helpers: Commonize core_power
+   [PATCH 15/20] media: venus: pm_helpers: Remove pm_ops->core_put
+   [PATCH 16/20] media: venus: core: Define a pointer to core->res
+   [PATCH 17/20] media: venus: pm_helpers: Simplify vcodec clock handling
+   [PATCH 18/20] media: venus: pm_helpers: Commonize getting clocks and 
+GenPDs
+   [PATCH 19/20] media: venus: pm_helpers: Commonize vdec_get()
+   [PATCH 20/20] media: venus: pm_helpers: Commonize venc_get()
+   ---
+   ✗ No key: ed25519/konrad.dybcio@linaro.org
+   ---
+   NOTE: install dkimpy for DKIM signature verification
 ---
- Documentation/filesystems/porting.rst | 79 +++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+Total patches: 20
+---
+  Base: base-commit 7bc675554773f09d88101bf1ccfc8537dc7c0be9 not known, 
+ignoring
+Applying: media: venus: pm_helpers: Only set rate of the core clock in 
+core_clks_enable
+Applying: media: venus: pm_helpers: Rename core_clks_get to venus_clks_get
+Applying: media: venus: pm_helpers: Add kerneldoc to venus_clks_get()
+Applying: media: venus: core: Set OPP clkname in a common code path
+Applying: media: venus: pm_helpers: Kill dead code
+Applying: media: venus: pm_helpers: Move reset acquisition to common code
+Applying: media: venus: pm_helpers: Use reset_bulk API
+Applying: media: venus: core: Constify all members of the resource struct
+Applying: media: venus: core: Deduplicate OPP genpd names
+Applying: media: venus: core: Get rid of vcodec_num
+Applying: media: venus: core: Drop cache properties in resource struct
+Applying: media: venus: core: Use GENMASK for dma_mask
+Applying: media: venus: core: Remove cp_start
+Applying: media: venus: pm_helpers: Commonize core_power
+Applying: media: venus: pm_helpers: Remove pm_ops->core_put
+Applying: media: venus: core: Define a pointer to core->res
+Applying: media: venus: pm_helpers: Simplify vcodec clock handling
+Applying: media: venus: pm_helpers: Commonize getting clocks and GenPDs
+Applying: media: venus: pm_helpers: Commonize vdec_get()
+Applying: media: venus: pm_helpers: Commonize venc_get()
 
-diff --git a/Documentation/filesystems/porting.rst b/Documentation/filesystems/porting.rst
-index f436b64b77bf..fefefaf289b4 100644
---- a/Documentation/filesystems/porting.rst
-+++ b/Documentation/filesystems/porting.rst
-@@ -973,3 +973,82 @@ born or died prematurely due to initialization failure.
- Since the new logic drops s_umount concurrent mounters could grab s_umount and
- would spin. Instead they are now made to wait using an explicit wait-wake
- mechanism without having to hold s_umount.
-+
-+---
-+
-+**mandatory**
-+
-+The holder of a block device is now the superblock.
-+
-+The holder of a block device used to be the file_system_type which wasn't
-+particularly useful. It wasn't possible to go from block device to owning
-+superblock without matching on the device pointer stored in the superblock.
-+This mechanism would only work for a single device so the block layer couldn't
-+find the owning superblock associated with additional devices.
-+
-+In the old mechanism reusing or creating a superblock for racing mount(2) and
-+umount(2) relied on the file_system_type as the holder. This was severly
-+underdocumented however:
-+
-+(1) If the concurrent mount(2) managed to grab an active reference before the
-+    umount(2) dropped the last active reference in deactivate_locked_super()
-+    the mounter would simply reuse the existing superblock.
-+
-+(2) If the mounter came after deactivate_locked_super() but before
-+    the superblock had been removed from the list of superblocks of the
-+    filesystem type the mounter would wait until the superblock was shutdown
-+    and allocated a new superblock.
-+
-+(3) If the mounter came after deactivate_locked_super() and after
-+    the superblock had been removed from the list of superblocks of the
-+    filesystem type the mounter would allocate a new superblock.
-+
-+Because the holder of the block device was the filesystem type any concurrent
-+mounter could open the block device without risking seeing EBUSY because the
-+block device was still in use.
-+
-+Making the superblock the owner of the block device changes this as the holder
-+is now a unique superblock and not shared among all superblocks of the
-+filesystem type. So a concurrent mounter in (2) could suddenly see EBUSY when
-+trying to open a block device whose holder was a different superblock.
-+
-+The new logic thus waits until the superblock and the devices are shutdown in
-+->kill_sb(). Removal of the superblock from the list of superblocks of the
-+filesystem type is now moved to a later point when the devices are closed:
-+
-+(1) Any concurrent mounter managing to grab an active reference on an existing
-+    superblock is made to wait until the superblock is either ready or until
-+    the superblock and all devices are shutdown in ->kill_sb().
-+
-+(2) If the mounter came after deactivate_locked_super() but before
-+    the superblock had been removed from the list of superblocks of the
-+    filesystem type the mounter is made to wait until the superblock and the
-+    devices are shut down in ->kill_sb() and the superblock is removed from the
-+    list of superblocks of the filesystem type.
-+
-+(3) This case is now collapsed into (2) as the superblock is left on the list
-+    of superblocks of the filesystem type until all devices are shutdown in
-+    ->kill_sb().
-+
-+As this is a VFS level change it has no practical consequences for filesystems
-+other than that all of them must use one of the provided kill_litter_super(),
-+kill_anon_super(), or kill_block_super() helpers.
-+
-+Filesystems that reuse superblocks based on non-static keys such as
-+sb->s_fs_info must ensure that these keys remain valid across kill_*_super()
-+calls. The expected pattern is::
-+
-+	static struct file_system_type some_fs_type = {
-+		.name 		= "somefs",
-+		.kill_sb 	= some_fs_kill_sb,
-+	};
-+
-+	static void some_fs_kill_sb(struct super_block *sb)
-+	{
-+		struct some_fs_info *info = sb->s_fs_info;
-+
-+		kill_*_super(sb);
-+		kfree(info);
-+	}
-+
-+It's best practice to never deviate from this pattern.
--- 
-2.34.1
+   MODPOST Module.symvers
+^[[BERROR: modpost: "vcodec_clks_get" 
+[drivers/media/platform/qcom/venus/venus-dec.ko] undefined!
+ERROR: modpost: "vcodec_clks_get" 
+[drivers/media/platform/qcom/venus/venus-enc.ko] undefined!
+make[3]: *** 
+[/home/deckard/Development/qualcomm/qlt-kernel/scripts/Makefile.modpost:145: 
+Module.symvers] Error 1
+make[2]: *** 
+[/home/deckard/Development/qualcomm/qlt-kernel/Makefile:1865: modpost] 
+Error 2
+make[1]: *** 
+[/home/deckard/Development/qualcomm/qlt-kernel/Makefile:234: __sub-make] 
+Error 2
+
+---
+bod
 
