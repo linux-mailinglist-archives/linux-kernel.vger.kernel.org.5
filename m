@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA907A13BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AD87A13CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 04:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjIOCR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 22:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        id S231604AbjIOCYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 22:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjIOCRz (ORCPT
+        with ESMTP id S230512AbjIOCYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 22:17:55 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD8826AB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 19:17:51 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2684e225a6cso200313a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 19:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694744270; x=1695349070; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZoHnjqbtxyoT00zY+yvVt56U2UHEZvOnPOttiwSNwMA=;
-        b=feQAW3OcACkCvhSXxMa5ZH4HlzKs2AnF+9tWe/YJh1+mKvP2KxXoOdZcbuQW3klpFD
-         Eemuh0YpZW9jOka4X3w/BNcyXyJk6k++jf05KR/JmaV4LQKvlOdm2lIoVAP/jBZkKh7S
-         XySM/iYMDrA+vBOm9fOH2L4JKCjOU3I5PaoVwM3bi7bxpuIO51tq/rsEG5GTA+n3g4vy
-         lfhnSsp2aDYJw1EnVZDWkm3YpGrPKlqrLQ7Eh5Uh1xEBHf46nnKUT73EHopuQ6rDflkR
-         0ao1JrK+l++GxCE/Dof0O0d1LjTjEPUcME5Nw7FXlPug5OC1BB0xcAyZFyZwtIZhKPGu
-         6bmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694744270; x=1695349070;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZoHnjqbtxyoT00zY+yvVt56U2UHEZvOnPOttiwSNwMA=;
-        b=IjaaTcUCUnTvHEa+rhJiWf1INhm3Ftb0gNty8emO5K1ekjHGheRT2oBRLiNYJfFnm9
-         ew8UlBZECAjaKprfOFEdr0pxqSbvckQ+k62E2Jxz90aiNX8MxCeRK1c9KnuHojfD0C2g
-         OhJ0eS8yyUw1ai+yLPe+3r/jh78pBnoIkJdGQyOUX0JE3fhzMNxHYGVLfnjZlyie35bv
-         Diz/djq8LIsgfgkSJrEynj5F7qrd2qhILb2O4d0602LZRB98yjgsjbH2pAXr0i3VgCzO
-         7v0WeZAHDuXymZhnReW+RnNV7KDLQDlZG33xFSr8frFLQ9PxyMlRx06CWZFi5QZJ94bi
-         mAsA==
-X-Gm-Message-State: AOJu0YypMxaRBGlLdMSWd2gr0C/yyX7AD+5saj6D6XPBAbRFpwQ/gq7O
-        2jOjOpt/lphKLXQuYv5xaIqgHw==
-X-Google-Smtp-Source: AGHT+IFlDvDvyNJEv69o8q3qvbyHShhhCcIO9L8nnAGn3WgucN4i3B33ro22aDhSlfFxOirJ8GnIag==
-X-Received: by 2002:a17:90a:7483:b0:273:e4a7:ce72 with SMTP id p3-20020a17090a748300b00273e4a7ce72mr247084pjk.3.1694744270439;
-        Thu, 14 Sep 2023 19:17:50 -0700 (PDT)
-Received: from [10.84.155.178] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id h29-20020a63385d000000b0057764ccdd0esm1782720pgn.49.2023.09.14.19.17.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 19:17:49 -0700 (PDT)
-Message-ID: <51ae860f-fc8d-fc76-d326-68308e98bf7d@bytedance.com>
-Date:   Fri, 15 Sep 2023 10:17:43 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: linux-next: manual merge of the btrfs tree with the mm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20230915091421.58207f2c@canb.auug.org.au>
- <20230915094731.076a3e98@canb.auug.org.au>
-Content-Language: en-US
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230915094731.076a3e98@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Thu, 14 Sep 2023 22:24:14 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5131C2130;
+        Thu, 14 Sep 2023 19:24:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 889D82183F;
+        Fri, 15 Sep 2023 02:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694744643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRhO5Usk0tWo8ZTx91/qTeniCJK8iZhQwKtez0oWKNI=;
+        b=IEvMveqRwkUSLtnNpuEc/3mI3EuLIDvJkQkS6zRouGGAPbmuTakqQTLTeAGdRIVQ+BCjln
+        RaSxF4GJE47uB6ZBgOnNlTrKfKRywkCawzjEvATxUSUFHDyGQeR9vvPB320LVSXQfiHyhV
+        1KkljTisSXHWaBAfNnhmkTxLGCalNVs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694744643;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRhO5Usk0tWo8ZTx91/qTeniCJK8iZhQwKtez0oWKNI=;
+        b=hENIJPQHFR8kj/UMR6GFExr5ladvIWq3xMzpEmaHQAAyO5zfAjp0Dizjh/mLDXGRcPz99M
+        6khArsxN8tpdKcBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB9EB1358A;
+        Fri, 15 Sep 2023 02:24:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eHqfG0DAA2W5HgAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 15 Sep 2023 02:24:00 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Linux NFS Mailing List" <linux-nfs@vger.kernel.org>,
+        "Liam Howlett" <liam.howlett@oracle.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "David Gow" <davidgow@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 11/17 SQUASH and replace commit message] lib: add light-weight
+ queuing mechanism.
+In-reply-to: <20230911183025.5f808a70a62df79a3a1e349e@linux-foundation.org>
+References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>,
+ <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>,
+ <20230911111333.4d1a872330e924a00acb905b@linux-foundation.org>,
+ <4D5C2693-40E9-467D-9F2F-59D92CBE9D3B@oracle.com>,
+ <20230911140439.b273bf9e120881f038da0de7@linux-foundation.org>,
+ <169447439989.19905.9386812394578844629@noble.neil.brown.name>,
+ <20230911183025.5f808a70a62df79a3a1e349e@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 12:22:36 +1000
+Message-id: <169474455669.8274.9157028681960361538@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-The diff looks good to me.
+lwq is a FIFO single-linked queue that only requires a spinlock
+for dequeueing, which happens in process context.  Enqueueing is atomic
+with no spinlock and can happen in any context.
 
-Thanks,
-Qi
+This is particularly useful when work items are queued from BH or IRQ
+context, and when they are handled one at a time by dedicated threads.
 
-On 2023/9/15 07:47, Stephen Rothwell wrote:
-> Hi all,
-> 
-> [Forgot the diff ...]
-> 
-> On Fri, 15 Sep 2023 09:14:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Today's linux-next merge of the btrfs tree got a conflict in:
->>
->>    fs/btrfs/super.c
->>
->> between commit:
->>
->>    c0824542e4d1 ("fs: super: dynamically allocate the s_shrink")
->>
->> from the mm tree and commit:
->>
->>    2ebed4689ba2 ("btrfs: open block devices after superblock creation")
->>
->> from the btrfs tree.
->>
->> I fixed it up (see below) and can carry the fix as necessary. This
->> is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
-> 
+Avoiding any locking when enqueueing means there is no need to disable
+BH or interrupts, which is generally best avoided (particularly when
+there are any RT tasks on the machine).
+
+This solution is superior to using "list_head" links because we need
+half as many pointers in the data structures, and because list_head
+lists would need locking to add items to the queue.
+
+This solution is superior to a bespoke solution as all locking and
+container_of casting is integrated, so the interface is simple.
+
+Despite the similar name, this solution meets a distinctly different
+need to kfifo.  kfifo provides a fixed sized circular buffer to which
+data can be added at one end and removed at the other, and does not
+provide any locking.  lwq does not have any size limit and works with
+data structures (objects?) rather than data (bytes).
+
+A unit test for basic functionality, which runs at boot time, is included.
+
+Signed-off-by: NeilBrown <neilb@suse.de>
+---
+ include/linux/lwq.h | 4 ++++
+ lib/lwq.c           | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/include/linux/lwq.h b/include/linux/lwq.h
+index 52b9c81b493a..c4148fe1cf72 100644
+--- a/include/linux/lwq.h
++++ b/include/linux/lwq.h
+@@ -7,6 +7,10 @@
+  *
+  * Entries can be enqueued from any context with no locking.
+  * Entries can be dequeued from process context with integrated locking.
++ *
++ * This is particularly suitable when work items are queued in
++ * BH or IRQ context, and where work items are handled one at a time
++ * by dedicated threads.
+  */
+ #include <linux/container_of.h>
+ #include <linux/spinlock.h>
+diff --git a/lib/lwq.c b/lib/lwq.c
+index 7fe6c7125357..eb8324225309 100644
+--- a/lib/lwq.c
++++ b/lib/lwq.c
+@@ -8,6 +8,10 @@
+  * Entries are dequeued using a spinlock to protect against
+  * multiple access.  The llist is staged in reverse order, and refreshed
+  * from the llist when it exhausts.
++ * 
++ * This is particularly suitable when work items are queued in
++ * BH or IRQ context, and where work items are handled one at a time
++ * by dedicated threads.
+  */
+ #include <linux/rcupdate.h>
+ #include <linux/lwq.h>
+-- 
+2.42.0
+
