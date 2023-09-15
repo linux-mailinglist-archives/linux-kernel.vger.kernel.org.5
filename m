@@ -2,267 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A367A1F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D1D7A1F3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbjIOMwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        id S235118AbjIOMxW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 08:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbjIOMwc (ORCPT
+        with ESMTP id S234651AbjIOMxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:52:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE35219AE
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:51:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAE2E1FB;
-        Fri, 15 Sep 2023 05:52:25 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E0123F5A1;
-        Fri, 15 Sep 2023 05:51:46 -0700 (PDT)
-Message-ID: <b116b736-8d4b-5809-0e1e-0c22fe5ceac3@arm.com>
-Date:   Fri, 15 Sep 2023 13:51:27 +0100
+        Fri, 15 Sep 2023 08:53:20 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB319173A;
+        Fri, 15 Sep 2023 05:53:15 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59c26aa19b7so1523647b3.2;
+        Fri, 15 Sep 2023 05:53:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694782395; x=1695387195;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q9UOXsTHLtyILmXxjRADy8o2iP5tGoLsuD7drO9aP90=;
+        b=ImHuMK3vTld0WGRs09iR99nYrPlxaJDZiygs6osOeCU7AulSkqVpekt36AeYrswe4b
+         VF1Q1JvSWY32WnHJfOP5/KkYGcqmvDCkYgLmE+F8BXe69usWok0/VXriDrEATcNDx1wb
+         Vp7fAnrC6o7AUB9T2IPMb26s3kj/+ZN+6M6e1aNzcniN+2w2oj9cfA8JuQGUHKhAuXAJ
+         8FaK+QK/IZZXuNDtsdZhbfVpNv/HnHlNkloQMfab+kjXUqpFZvqHQCrDIZAXT7zjymsH
+         KhuFV6Jp/UerQ5GAM1ese5LC9nY7mGELbY1UGkEUBm9ocNxXhsTCwVVfhJcjeJkS4Bbo
+         xZPA==
+X-Gm-Message-State: AOJu0YwyUepJ8K16yxP5qgLvk8sdNqcNcFoIRVoQx3LgJFrU8vVvxRyP
+        Igk9aXLHhqW/jlxmM+zqdtKniwlbpG682A==
+X-Google-Smtp-Source: AGHT+IEiG+J/MtyiASFsbJojo/dOvWuNx/+PiFaaXKi5X4GHvaWkd+lh+nc5KJsxGZWrf6hpsbLd6g==
+X-Received: by 2002:a81:83d2:0:b0:586:9f6c:4215 with SMTP id t201-20020a8183d2000000b005869f6c4215mr1618500ywf.33.1694782394654;
+        Fri, 15 Sep 2023 05:53:14 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id m5-20020a817105000000b0058038e6609csm840043ywc.74.2023.09.15.05.53.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 05:53:14 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d81afd5273eso1360503276.3;
+        Fri, 15 Sep 2023 05:53:13 -0700 (PDT)
+X-Received: by 2002:a25:cf06:0:b0:d74:6c9f:e734 with SMTP id
+ f6-20020a25cf06000000b00d746c9fe734mr1318086ybg.47.1694782393719; Fri, 15 Sep
+ 2023 05:53:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2 2/2] coresight: Allow guests to be traced when FEAT_TRF
- and VHE are present
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, broonie@kernel.org,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-References: <20230904140705.1620708-1-james.clark@arm.com>
- <20230904140705.1620708-3-james.clark@arm.com>
- <a50a7468-923b-fbb2-32b9-7e371710a1d5@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <a50a7468-923b-fbb2-32b9-7e371710a1d5@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com> <20230912045157.177966-23-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20230912045157.177966-23-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Sep 2023 14:52:59 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUCpbPA3cDjNAq1irvr6z4Jux-5-tVDBuyr6nx_qOQGpg@mail.gmail.com>
+Message-ID: <CAMuHMdUCpbPA3cDjNAq1irvr6z4Jux-5-tVDBuyr6nx_qOQGpg@mail.gmail.com>
+Subject: Re: [PATCH 22/37] clk: renesas: add minimal boot support for RZ/G3S SoC
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, ulf.hansson@linaro.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Claudiu,
 
+On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add minimal clock and reset support for RZ/G3S SoC to be able to boot
+> Linux from SD Card/eMMC. This includes necessary core clocks for booting
+> and GIC, SCIF, GPIO, SD0 mod clocks and resets.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-On 12/09/2023 18:37, Suzuki K Poulose wrote:
-> Hi James
-> 
-> 
-> On 04/09/2023 15:07, James Clark wrote:
->> Currently the userspace and kernel filters for guests are never set, so
->> no trace will be generated for them. Add it by writing to the guest
->> filters when exclude_guest isn't set. By writing either E1TRE or E0TRE,
->> filtering on either guest kernel or guest userspace is also supported.
->>
->> Since TRFCR_EL1 access is trapped, this can't be  modified by the guest.
->>
->> This change also brings exclude_host support which is difficult to add
->> as a separate commit without excess churn and resulting in no trace at
->> all.
->>
->> Testing
->> =======
->>
->> The addresses were counted with the following:
->>
->>    $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
->>
->> Guest kernel only:
->>
->>    $ perf record -e cs_etm//Gk -a -- true
->>      535 EL1
->>        1 EL2
->>
->> Guest user only (0 addresses expected because the guest OS hasn't reached
->> userspace yet):
->>
->>    $ perf record -e cs_etm//Gu -a -- true
->>
->> Host kernel only:
->>
->>    $  perf record -e cs_etm//Hk -a -- true
->>     3501 EL2
->>
->> Host userspace only:
->>
->>    $  perf record -e cs_etm//Hu -a -- true
->>      408 EL0
->>        1 EL2
->>
->> Reviewed-by: Mark Brown <broonie@kernel.org> (sysreg)
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   arch/arm64/tools/sysreg                       |  4 ++
->>   .../coresight/coresight-etm4x-core.c          | 51 ++++++++++++++++---
->>   drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
->>   drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
->>   4 files changed, 53 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
->> index 6ca7db69d6c9..cae9139b6c05 100644
->> --- a/arch/arm64/tools/sysreg
->> +++ b/arch/arm64/tools/sysreg
->> @@ -2531,3 +2531,7 @@ EndSysreg
->>   Sysreg    TRFCR_EL2    3    4    1    2    1
->>   Fields    TRFCR_EL2
->>   EndSysreg
->> +
->> +Sysreg TRFCR_EL12    3    5    1    2    1
->> +Fields    TRFCR_ELx
->> +EndSysreg
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> index 77b0271ce6eb..6c16a14d6fbe 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> @@ -274,6 +274,18 @@ static void etm4x_prohibit_trace(struct
->> etmv4_drvdata *drvdata)
->>       cpu_prohibit_trace();
->>   }
->>   +static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
->> +{
->> +    u64 trfcr = drvdata->trfcr;
->> +
->> +    if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
->> +        trfcr &= ~TRFCR_ELx_ExTRE;
->> +    if (drvdata->config.mode & ETM_MODE_EXCL_USER)
->> +        trfcr &= ~TRFCR_ELx_E0TRE;
->> +
->> +    return trfcr;
->> +}
->> +
->>   /*
->>    * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
->>    * as configured by the drvdata->config.mode for the current
->> @@ -286,18 +298,39 @@ static void etm4x_prohibit_trace(struct
->> etmv4_drvdata *drvdata)
->>    */
->>   static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
->>   {
->> -    u64 trfcr = drvdata->trfcr;
->> +    u64 trfcr;
->>         /* If the CPU doesn't support FEAT_TRF, nothing to do */
->> -    if (!trfcr)
->> +    if (!drvdata->trfcr)
->>           return;
->>   -    if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
->> -        trfcr &= ~TRFCR_ELx_ExTRE;
->> -    if (drvdata->config.mode & ETM_MODE_EXCL_USER)
->> -        trfcr &= ~TRFCR_ELx_E0TRE;
->> +    if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
->> +        trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
->> +    else
->> +        trfcr = etm4x_get_kern_user_filter(drvdata);
->>         write_trfcr(trfcr);
->> +
->> +    /*
->> +     * Filters for EL1 and EL0 (when running a guest) are stored in
->> +     * TRFCR_EL1 so write it there for VHE. For nVHE, the filters in
->> +     * have to be re-applied when switching to the guest instead.
->> +     */
->> +    if (!is_kernel_in_hyp_mode())
->> +        return;
->> +
->> +    if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
->> +        trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
->> +    else
->> +        trfcr = etm4x_get_kern_user_filter(drvdata);
->> +
->> +    /*
->> +     * TRFCR_EL1 doesn't have CX and TRFCR_EL1.TS has no effect when
->> TS is
->> +     * set in EL2 so mask them out.
->> +     */
->> +    trfcr &= ~(TRFCR_ELx_TS_MASK | TRFCR_EL2_CX);
->> +
->> +    write_sysreg_s(trfcr, SYS_TRFCR_EL12);
-> 
-> 
-> 
-> While I agree with the intention of the patch, I am not sure if we
-> should do the TRFCR_EL1 (via TRFCR_EL12) updates from CoreSight driver.
-> 
-> It might be much better to do it from the KVM for both VHE and nVHE.
-> 
+Thanks for your patch!
 
-For the next version of the nVHE change [1] I planned to re-write it
-just in terms of the guest trfcr register value rather than
-exclude_guest/exclude host. That means that it would be pretty easy to
-move the write to SYS_TRFCR_EL12 to the VHE implementation of
-kvm_etm_set_guest_trfcr(). So yes I can make this change I think it
-makes sense.
+> --- /dev/null
+> +++ b/drivers/clk/renesas/r9a08g045-cpg.c
+> @@ -0,0 +1,217 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * RZ/G3S CPG driver
+> + *
+> + * Copyright (C) 2023 Renesas Electronics Corp.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +
+> +#include <dt-bindings/clock/r9a08g045-cpg.h>
+> +
+> +#include "rzg2l-cpg.h"
+> +
+> +/* RZ/G3S Specific registers. */
+> +#define G3S_CPG_PL2_DDIV               (0x204)
+> +#define G3S_CPG_SDHI_DDIV              (0x218)
+> +#define G3S_CPG_PLL_DSEL               (0x240)
+> +#define G3S_CPG_SDHI_DSEL              (0x244)
+> +#define G3S_CLKSELSTATUS               (0x284)
+> +
+> +/* RZ/G3S Specific division configuration.  */
+> +#define G3S_DIVPL2B            DDIV_PACK(G3S_CPG_PL2_DDIV, 4, 3)
+> +#define G3S_DIV_SDHI0          DDIV_PACK(G3S_CPG_SDHI_DDIV, 0, 1)
+> +
+> +/* RZ/G3S Clock status configuration. */
+> +#define G3S_DIVPL1A_STS                DDIV_PACK(CPG_CLKSTATUS, 0, 1)
+> +#define G3S_DIVPL2B_STS                DDIV_PACK(CPG_CLKSTATUS, 5, 1)
+> +#define G3S_DIVPL3A_STS                DDIV_PACK(CPG_CLKSTATUS, 8, 1)
+> +#define G3S_DIVPL3B_STS                DDIV_PACK(CPG_CLKSTATUS, 9, 1)
+> +#define G3S_DIVPL3C_STS                DDIV_PACK(CPG_CLKSTATUS, 10, 1)
+> +#define G3S_DIV_SDHI0_STS      DDIV_PACK(CPG_CLKSTATUS, 24, 1)
 
-[1]:
-https://lore.kernel.org/kvmarm/20230804101317.460697-1-james.clark@arm.com/
+The register at offset 0x280 is called CPG_CLKDIVSTATUS, so
+you probably want to add and use a G3S-specific definition.
 
-James
+> +#define G3S_SEL_PLL4_STS       SEL_PLL_PACK(G3S_CLKSELSTATUS, 6, 1)
+> +#define G3S_SEL_SDHI0_STS      SEL_PLL_PACK(G3S_CLKSELSTATUS, 16, 1)
+> +
+> +/* RZ/G3S Specific clocks select. */
+> +#define G3S_SEL_PLL4           SEL_PLL_PACK(G3S_CPG_PLL_DSEL, 6, 1)
+> +#define G3S_SEL_SDHI0          SEL_PLL_PACK(G3S_CPG_SDHI_DSEL, 0, 2)
+> +
+> +/* PLL 1/4/6 configuration registers macro. */
+> +#define G3S_PLL146_CONF(clk1, clk2)    ((clk1) << 22 | (clk2) << 12)
+> +
+> +#define DEF_G3S_MUX(_name, _id, _conf, _parent_names, _mux_flags, _clk_flags) \
+> +       DEF_TYPE(_name, _id, CLK_TYPE_MUX, .conf = (_conf), \
+> +                .parent_names = (_parent_names), \
+> +                .num_parents = ARRAY_SIZE((_parent_names)), \
+> +                .mux_flags = CLK_MUX_HIWORD_MASK | (_mux_flags), \
+> +                .flag = (_clk_flags))
+> +
+> +enum clk_ids {
+> +       /* Core Clock Outputs exported to DT */
+> +       LAST_DT_CORE_CLK = R9A08G045_SWD,
+> +
+> +       /* External Input Clocks */
+> +       CLK_EXTAL,
+> +
+> +       /* Internal Core Clocks */
+> +       CLK_OSC_DIV1000,
+> +       CLK_PLL1,
+> +       CLK_PLL2,
+> +       CLK_PLL2_DIV2,
+> +       CLK_PLL2_DIV2_8,
+> +       CLK_PLL2_DIV6,
+> +       CLK_PLL3,
+> +       CLK_PLL3_DIV2,
+> +       CLK_PLL3_DIV2_2,
 
-> 
-> Marc
-> 
-> What are your thoughts on this ?
-> 
-> Suzuki
-> 
-> 
->>   }
->>     #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
->> @@ -655,6 +688,12 @@ static int etm4_parse_event_config(struct
->> coresight_device *csdev,
->>       if (attr->exclude_user)
->>           config->mode = ETM_MODE_EXCL_USER;
->>   +    if (attr->exclude_host)
->> +        config->mode |= ETM_MODE_EXCL_HOST;
->> +
->> +    if (attr->exclude_guest)
->> +        config->mode |= ETM_MODE_EXCL_GUEST;
->> +
->>       /* Always start from the default config */
->>       etm4_set_default_config(config);
->>   diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h
->> b/drivers/hwtracing/coresight/coresight-etm4x.h
->> index 20e2e4cb7614..3f170599822f 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
->> @@ -841,7 +841,7 @@ enum etm_impdef_type {
->>    * @s_ex_level: Secure ELs where tracing is supported.
->>    */
->>   struct etmv4_config {
->> -    u32                mode;
->> +    u64                mode;
->>       u32                pe_sel;
->>       u32                cfg;
->>       u32                eventctrl0;
->> diff --git a/drivers/hwtracing/coresight/coresight-priv.h
->> b/drivers/hwtracing/coresight/coresight-priv.h
->> index 767076e07970..727dd27ba800 100644
->> --- a/drivers/hwtracing/coresight/coresight-priv.h
->> +++ b/drivers/hwtracing/coresight/coresight-priv.h
->> @@ -39,6 +39,9 @@
->>     #define ETM_MODE_EXCL_KERN    BIT(30)
->>   #define ETM_MODE_EXCL_USER    BIT(31)
->> +#define ETM_MODE_EXCL_HOST    BIT(32)
->> +#define ETM_MODE_EXCL_GUEST    BIT(33)
->> +
->>   struct cs_pair_attribute {
->>       struct device_attribute attr;
->>       u32 lo_off;
-> 
+Do you need CLK_PLL3_DIV2_2?
+When adding support for R9A07G043_CLK_AT later, you can define it
+as CLK_PLL3_DIV2 / 2.
+
+> +       CLK_PLL3_DIV2_4,
+> +       CLK_PLL3_DIV2_8,
+> +       CLK_PLL3_DIV6,
+> +       CLK_PLL4,
+> +       CLK_PLL6,
+> +       CLK_PLL6_DIV2,
+> +       CLK_SEL_SDHI0,
+> +       CLK_SEL_PLL4,
+> +       CLK_P1_DIV2,
+> +       CLK_P3_DIV2,
+
+Do you need CLK_P1_DIV2 and CLK_P3_DIV2?
+I don't see them in Figure 7.3 ("Clock System Diagram (2)").
+
+> +       CLK_SD0_DIV,
+
+CLK_SD0_DIV is unused.
+
+> +       CLK_SD0_DIV4,
+> +       CLK_S0_DIV2,
+
+CLK_S0_DIV2 is unused.
+
+> +
+> +       /* Module Clocks */
+> +       MOD_CLK_BASE,
+> +};
+> +
+> +/* Divider tables */
+> +static const struct clk_div_table dtable_1_2[] = {
+> +       {0, 1},
+
+"{ 0, 1 }," etc...
+
+> +       {1, 2},
+> +       {0, 0},
+> +};
+> +
+> +static const struct clk_div_table dtable_1_8[] = {
+> +       {0, 1},
+> +       {1, 2},
+> +       {2, 4},
+> +       {3, 8},
+> +       {0, 0},
+> +};
+> +
+> +static const struct clk_div_table dtable_1_32[] = {
+> +       {0, 1},
+> +       {1, 2},
+> +       {2, 4},
+> +       {3, 8},
+> +       {4, 32},
+> +       {0, 0},
+> +};
+> +
+> +/* Mux clock names tables. */
+> +static const char * const sel_sdhi[] = { ".pll2_div2", ".pll6", ".pll2_div6" };
+> +static const char * const sel_pll4[] = { ".osc_div1000", ".pll4" };
+> +
+> +/* Mux clock indexes tables. */
+
+indices
+
+> +static const u32 mtable_sd[] = { 0, 2, 3 };
+> +static const u32 mtable_pll4[] = { 0, 1 };
+> +
+> +static const struct cpg_core_clk r9a08g045_core_clks[] __initconst = {
+> +       /* External Clock Inputs */
+> +       DEF_INPUT("extal", CLK_EXTAL),
+> +
+> +       /* Internal Core Clocks */
+> +       DEF_FIXED(".osc", R9A08G045_OSCCLK, CLK_EXTAL, 1, 1),
+
+"OSC", as this is not an internal core clock.
+
+> +       DEF_FIXED(".osc2", R9A08G045_OSCCLK2, CLK_EXTAL, 1, 3),
+
+"OSC2"
+
+> +       DEF_FIXED(".osc_div1000", CLK_OSC_DIV1000, CLK_EXTAL, 1, 1000),
+> +       DEF_G3S_SAMPLL(".pll1", CLK_PLL1, CLK_EXTAL, G3S_PLL146_CONF(0x4, 0x8)),
+> +       DEF_FIXED(".pll2", CLK_PLL2, CLK_EXTAL, 200, 3),
+> +       DEF_FIXED(".pll3", CLK_PLL3, CLK_EXTAL, 200, 3),
+> +       DEF_FIXED(".pll4", CLK_PLL4, CLK_EXTAL, 100, 3),
+> +       DEF_FIXED(".pll6", CLK_PLL6, CLK_EXTAL, 125, 6),
+> +       DEF_FIXED(".pll2_div2", CLK_PLL2_DIV2, CLK_PLL2, 1, 2),
+> +       DEF_FIXED(".pll2_div2_8", CLK_PLL2_DIV2_8, CLK_PLL2_DIV2, 1, 8),
+> +       DEF_FIXED(".pll2_div6", CLK_PLL2_DIV6, CLK_PLL2, 1, 6),
+> +       DEF_FIXED(".pll3_div2", CLK_PLL3_DIV2, CLK_PLL3, 1, 2),
+> +       DEF_FIXED(".pll3_div2_2", CLK_PLL3_DIV2_2, CLK_PLL3_DIV2, 1, 2),
+> +       DEF_FIXED(".pll3_div2_4", CLK_PLL3_DIV2_4, CLK_PLL3_DIV2, 1, 4),
+> +       DEF_FIXED(".pll3_div2_8", CLK_PLL3_DIV2_8, CLK_PLL3_DIV2, 1, 8),
+> +       DEF_FIXED(".pll3_div6", CLK_PLL3_DIV6, CLK_PLL3, 1, 6),
+> +       DEF_FIXED(".pll6_div2", CLK_PLL6_DIV2, CLK_PLL6, 1, 2),
+> +       DEF_SD_MUX(".sel_sd0", CLK_SEL_SDHI0, G3S_SEL_SDHI0, G3S_SEL_SDHI0_STS, sel_sdhi,
+> +                  mtable_sd, 0, NULL),
+> +       DEF_SD_MUX(".sel_pll4", CLK_SEL_PLL4, G3S_SEL_PLL4, G3S_SEL_PLL4_STS, sel_pll4,
+> +                  mtable_pll4, CLK_SET_PARENT_GATE, NULL),
+> +
+> +       /* Core output clk */
+> +       DEF_G3S_DIV("I", R9A08G045_CLK_I, CLK_PLL1, DIVPL1A, G3S_DIVPL1A_STS, dtable_1_8,
+> +                   0, 0, NULL),
+> +       DEF_G3S_DIV("P0", R9A08G045_CLK_P0, CLK_PLL2_DIV2_8, G3S_DIVPL2B, G3S_DIVPL2B_STS,
+> +                   dtable_1_32, 0, 0, NULL),
+> +       DEF_G3S_DIV("SD0", R9A08G045_CLK_SD0, CLK_SEL_SDHI0, G3S_DIV_SDHI0, G3S_DIV_SDHI0_STS,
+> +                   dtable_1_2, 800000000UL, CLK_SET_RATE_PARENT, DIV_NOTIF),
+> +       DEF_FIXED("SD0_DIV4", CLK_SD0_DIV4, R9A08G045_CLK_SD0, 1, 4),
+
+".sd0_div4", as this is not a public core clock.
+
+> +       DEF_FIXED("M0", R9A08G045_CLK_M0, CLK_PLL3_DIV2_4, 1, 1),
+> +       DEF_G3S_DIV("P1", R9A08G045_CLK_P1, CLK_PLL3_DIV2_4, DIVPL3A, G3S_DIVPL3A_STS,
+> +                   dtable_1_32, 0, 0, NULL),
+> +       DEF_FIXED("P1_DIV2", CLK_P1_DIV2, R9A08G045_CLK_P1, 1, 2),
+> +       DEF_G3S_DIV("P2", R9A08G045_CLK_P2, CLK_PLL3_DIV2_8, DIVPL3B, G3S_DIVPL3B_STS,
+> +                   dtable_1_32, 0, 0, NULL),
+> +       DEF_G3S_DIV("P3", R9A08G045_CLK_P3, CLK_PLL3_DIV2_4, DIVPL3C, G3S_DIVPL3C_STS,
+> +                   dtable_1_32, 0, 0, NULL),
+> +       DEF_FIXED("P3_DIV2", CLK_P3_DIV2, R9A08G045_CLK_P3, 1, 2),
+> +       DEF_FIXED("S0", R9A08G045_CLK_S0, CLK_SEL_PLL4, 1, 2),
+> +       DEF_FIXED("S0_DIV2", CLK_S0_DIV2, R9A08G045_CLK_S0, 1, 2),
+> +};
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
