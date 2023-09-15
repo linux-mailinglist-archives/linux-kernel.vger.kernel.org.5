@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B105B7A1CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B0B7A1CAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbjIOKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S233553AbjIOKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbjIOKq4 (ORCPT
+        with ESMTP id S233578AbjIOKrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:46:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E17DD;
-        Fri, 15 Sep 2023 03:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694774810; x=1726310810;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=A4k+Kycs5eiCi32oXVEr6wYi9aLQvheDDXp0X3nUgNg=;
-  b=FMkrh2N0tLgiYm58yyAcfyLtgio4MvXQxJcKkpb8myMMLoxVTiEc1kOJ
-   dpHtM2EMrL5reyp+wdVCqZDqQhwmjdTgg8LkC9vTdpXVUaZbj1/q3EITg
-   OFilelYDtGQsH1/vOk9II2IX/eEttF5IUSE6ofGvcoZi6fBjMrqEq0bNx
-   sCGtTDZycFt2RQ0/oXew/ohjcZ3LjGqcD7MIfTe2/JePU9gBlxxio5XDC
-   lkDhKZ08dOik+ZK0na1MTbBCrUw55LpLOR+LKWD6nLsqBe9H5D8HKRmVj
-   sPjVsSP1vlI5Uqv7Y30FFrJGAbqbwPAOptB3cMEs62c862LpZDTNIAVc5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465583143"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="465583143"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 03:46:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="748165841"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="748165841"
-Received: from andreipo-mobl1.ger.corp.intel.com (HELO [10.252.48.105]) ([10.252.48.105])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 03:46:48 -0700
-Message-ID: <11672c6d-e021-eeda-5907-3fefb307ce9d@linux.intel.com>
-Date:   Fri, 15 Sep 2023 13:46:45 +0300
+        Fri, 15 Sep 2023 06:47:13 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68BD118
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:47:07 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so260140166b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:47:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694774826; x=1695379626; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K/o4N+rJdDvPOkHZP4rGeji09Be+GMTp3ncXx+q6uC0=;
+        b=icG5iIDZbs+c41vEqRqwJCd2yZhBnHjuWRpAGvFzCVGt1LybTXZIJnG5IyVWedUCsu
+         A3l1kbET70LN0DcPv7u97MkPJ0KjmsN1D92X47rb49tnmWT37ByXSlP1BbtSM11JInTX
+         MF1K6rnHPcFuaOHkHVxUNQBe8PhUFCL6L/HL0cCcJGshExeIFsP95CeWS/Fqv5FClh2S
+         fIW3/iGywh+JEf9gZ/Z82dEjqNHyuDq4MFTUOssybK8sgixh/1G1b0wbGL82rK5rwDcg
+         NqVmKnqSct8EXVgxB7XGHWt4/5EFN3boSG/cVCx8mDnWQUQi8w4gElQCiT7E8HrqZL0k
+         vUdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694774826; x=1695379626;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K/o4N+rJdDvPOkHZP4rGeji09Be+GMTp3ncXx+q6uC0=;
+        b=LMFjoEzyWV4StELaQlUa0EYjdrwdrM4M4wimBkIQYf/rHKH8m3j6EvfAW6PsvpGCOx
+         2bd1BHS+caV4CiSWQPTFCY8VCC8cam9DyoWrdGFtSXWVLmNQmTzIp4A+WAyDPFP5WZeo
+         LCy6Kx8mTP18m3LPmlCi/3tnpIgvehqT1T/gqv+ljWU6p+pBPrddL/mH1eQO2ugdYKrY
+         SBWH8rDQVst7ng0k2dwbqczwNwXT1t+2l7o5Ves25vWrq/X904UvtbQQ4yjx0DL++5qa
+         zNFAmeqkz3Dz4HOCdnMf4WOGWwjLV2i3ziFAfLHP14u6os2U6OEhHCfWTAwKRiCthqtE
+         zeGA==
+X-Gm-Message-State: AOJu0Ywl6of58Ig2PlbFrUmS5u0Ou1O4kQP6U7pv8wmZBxEVj1Xjpg+a
+        gALD+dAEbcNztC2xQJ/sRfbXqw==
+X-Google-Smtp-Source: AGHT+IHVOd/ddryjn2v0lhERAAcKk6mQCZCf4sdk9KrpW6+CUqWi6F4ZfilyAWQn9jSB9zOV0NnX8g==
+X-Received: by 2002:a17:906:311b:b0:9a1:c352:b6a5 with SMTP id 27-20020a170906311b00b009a1c352b6a5mr1069106ejx.69.1694774826009;
+        Fri, 15 Sep 2023 03:47:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id a18-20020a170906191200b0098e42bef736sm2224043eje.176.2023.09.15.03.47.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 03:47:05 -0700 (PDT)
+Message-ID: <d334267f-38dd-bf70-4246-263de1a4747f@linaro.org>
+Date:   Fri, 15 Sep 2023 12:47:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH] tracing/synthetic: Print out u64 values properly
+Subject: Re: [PATCH v4 19/42] dt-bindings: spi: Add Cirrus EP93xx
 Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, artem.bityutskiy@linux.intel.com,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20230911141704.3585965-1-tero.kristo@linux.intel.com>
- <20230915150101.ef50c4774ab85aa2ff7431ec@kernel.org>
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-In-Reply-To: <20230915150101.ef50c4774ab85aa2ff7431ec@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     nikita.shubin@maquefel.me, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+ <20230915-ep93xx-v4-19-a1d779dcec10@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915-ep93xx-v4-19-a1d779dcec10@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On 15/09/2023 10:11, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> Add YAML bindings for ep93xx SoC SPI.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> ---
 
-On 15/09/2023 09:01, Masami Hiramatsu (Google) wrote:
-> Hi Tero,
->
-> On Mon, 11 Sep 2023 17:17:04 +0300
-> Tero Kristo <tero.kristo@linux.intel.com> wrote:
->
->> The synth traces incorrectly print pointer to the synthetic event values
->> instead of the actual value when using u64 type. Fix by addressing the
->> contents of the union properly.
-> Thanks for pointing it out.
-> But I would like to see a new "case 8:" print code instead of changing
-> "default". Can you keep the default as it is and add "case 8:" case there?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Are you sure about that? I think keeping the default as is would just 
-print out a useless pointer value to the synth event itself (which is 
-what happened with u64 type.)
+Best regards,
+Krzysztof
 
-Anyways, that requires a new patch to be created on top as this has hit 
-the mainline as a fix already.
-
--Tero
-
-
->
-> Thanks,
->
->> Fixes: ddeea494a16f ("tracing/synthetic: Use union instead of casts")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
->> ---
->>   kernel/trace/trace_events_synth.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
->> index 7fff8235075f..070365959c0a 100644
->> --- a/kernel/trace/trace_events_synth.c
->> +++ b/kernel/trace/trace_events_synth.c
->> @@ -337,7 +337,7 @@ static void print_synth_event_num_val(struct trace_seq *s,
->>   		break;
->>   
->>   	default:
->> -		trace_seq_printf(s, print_fmt, name, val, space);
->> +		trace_seq_printf(s, print_fmt, name, val->as_u64, space);
->>   		break;
->>   	}
->>   }
->> -- 
->> 2.40.1
->>
->
