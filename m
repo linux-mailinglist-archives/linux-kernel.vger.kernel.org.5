@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D5E7A268A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29F57A267E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 20:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbjIOSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 14:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        id S236763AbjIOSqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 14:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236702AbjIOSsF (ORCPT
+        with ESMTP id S236990AbjIOSp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 14:48:05 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2FC49C0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:00 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so2348a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:45:00 -0700 (PDT)
+        Fri, 15 Sep 2023 14:45:58 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22FE199
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:44:45 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf1935f6c2so18213225ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 11:44:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694803496; x=1695408296; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KSCgW2z0ZP1zu6DIfy6jBz9WPyw7XMOFSKI7dtFpaTE=;
-        b=yWb7uY57KybRruvlisxKkp71jLAC0Ku5L5uZ1VXYryC7azASsutrig0yoQxE9lzWvP
-         FusHREegPvFOlh5SLwA5UJgJZT9FT6DZT5LWSiAhjB2kwi/R04DywXLu/Bfc6a4PiLsl
-         Nb4jygdRoVvNIEECaXFd6lC8wfsve4zxx1Q8ZE2hoptUSa1XRqsxwZJPXr9zP+6pY+XG
-         LACEpX2i/VpFLnbTjViZEo9IknssSRaqjfTiYPtvnZ2GoHCm+aSlVfSfQoVXnDCNNeDK
-         zDEHu/290dA9SqZIV+R2//pUw26TDfvY2QHq52MZTxX/Gk12O71pp0KJbj8A052GXsNH
-         coSQ==
+        d=chromium.org; s=google; t=1694803482; x=1695408282; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Itsw2lvjOF4d1lcaGatZ2lrxzNTInyFHU12iNAuhsa0=;
+        b=UcohAoQAIsWWDIgI7BS4TdftP8BkbFCWvYnlnqDpaUUXHCH9eMK8yVInnUisQPL/nW
+         A7oQQCsvjwu+RLSIEUvthKcMWY8iucOrVF5JVTBqvllmUOvFSIvU9CIqvhLQylqUJaqx
+         Yp9nPC5lhePXZuKibzmoFKXut+dIY8LbYzvMs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694803496; x=1695408296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KSCgW2z0ZP1zu6DIfy6jBz9WPyw7XMOFSKI7dtFpaTE=;
-        b=KOsB7vNQP8MrWq2TSbwTfF1hvohQVZOF2XntWz3DBmkbfvd5WB4aox7TVcUOWolUXw
-         sZT88QmaEqCfFtcNVfRAx0hEvtbqC48HQnPRliCGs94ADCxjj6IybpPKQPCj6T4ddAcG
-         r/FFi+aiTGCwwaTQ5wgUqwNBGqD4wDqc10LZ3odS+trKqhvK6zHO4Qfwa5ZEp+QEjQhO
-         0/BvFJGqXytc0X903g7Ed1DDcSVI8mWtbbBxiIRq2Wsu/7mGMNiPuqNaDjuzUfhsR8E8
-         5orTVXaD2peBXVgCAuhz0BBEBPL06n8yI79MvYezQUDcboxSszSb2Yu0IEsVcwmIA245
-         wWZg==
-X-Gm-Message-State: AOJu0YygBCdIdwtvmaXe6XSaEVw8pW8TnZO5dALFJNFI0/vfkIn/6VwF
-        Y5BJ+onK0b8xfp7LwEeD4KDksF3TZqxHYP6vgeMV0w==
-X-Google-Smtp-Source: AGHT+IGruFlNC2MV7TinGtic0YC4D0CrmVMB8xXi6uHTHmxcAkcsrLu69G31mpCbAqH4ix4BENWfAzsULUwaSYOobWs=
-X-Received: by 2002:a50:d583:0:b0:522:4741:d992 with SMTP id
- v3-20020a50d583000000b005224741d992mr16737edi.4.1694803495533; Fri, 15 Sep
- 2023 11:44:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694803482; x=1695408282;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Itsw2lvjOF4d1lcaGatZ2lrxzNTInyFHU12iNAuhsa0=;
+        b=Pj/z2abv4tOc5TJv8yg9pR5xAJ0EC3IT4Vd9o05GaIQhvn03e1xpZEOhb72xkXrobl
+         RRfyIZE6XBFSuC979VRSKm/ezsdRjkFR9bfwenw91oGt0fX9ZZwezAjU/TChHs2IFxWq
+         2j9cJmZ9oobec8+3PfYlgGSuY5BI5hUcumcxMwNA4D+9P3fSzdJDdcbWrEwq2i3VVBWk
+         L/eVqyEqtDEin3Z2IMT2aQO0bNx3kfJE8dT/2bF0oTEvosIIxZK3qZvTXJOqxQOzWQVL
+         GBwUSsxboqK+5BGl0sta+e1yFLsTSu9ZYgdLmxWac995W4lXP6gyvohfLmRJ0Vt9qVQh
+         Se1g==
+X-Gm-Message-State: AOJu0Yyng05bPZ2yK0ZEmONt89EIVXIuxG6p9+eCKi5ybwhTVfUxVCAD
+        6wDiwk/KfFLcaPgaw/15VghpDQ==
+X-Google-Smtp-Source: AGHT+IGM/U9TMc9dhOkJaD9Q2LSMeEhEmfp04Mj+FcHBxuLYmJmp+99UA23YpkT+qqmkIf+jiqtkCQ==
+X-Received: by 2002:a17:902:c213:b0:1c3:b0c7:38bf with SMTP id 19-20020a170902c21300b001c3b0c738bfmr6342438pll.12.1694803481936;
+        Fri, 15 Sep 2023 11:44:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s18-20020a170902b19200b001bb9aadfb04sm3771453plr.220.2023.09.15.11.44.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 11:44:41 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 11:44:40 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] gve: Use size_add() in call to struct_size()
+Message-ID: <202309151144.E420B9F8@keescook>
+References: <ZQSfze9HgfLDkFPV@work>
 MIME-Version: 1.0
-References: <20230818233451.3615464-1-srutherford@google.com> <ZQRHIN7as8f+PFeh@gmail.com>
-In-Reply-To: <ZQRHIN7as8f+PFeh@gmail.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Fri, 15 Sep 2023 11:44:16 -0700
-Message-ID: <CABayD+fH+AVu1u+LAtpd4-vRO9E12tVajR9WdWMtr1x_McoO6A@mail.gmail.com>
-Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page aligned
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQSfze9HgfLDkFPV@work>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I believe V3 of this fix was already merged into both x86 and Linus'
-tree (I think as ac3f9c9f1b37edaa7d1a9b908bc79d843955a1a2, "x86/sev:
-Make enc_dec_hypercall() accept a size instead of npages").
+On Fri, Sep 15, 2023 at 12:17:49PM -0600, Gustavo A. R. Silva wrote:
+> If, for any reason, `tx_stats_num + rx_stats_num` wraps around, the
+> protection that struct_size() adds against potential integer overflows
+> is defeated. Fix this by hardening call to struct_size() with size_add().
+> 
+> Fixes: 691f4077d560 ("gve: Replace zero-length array with flexible-array member")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
+Thanks, yes, this will maintain SIZE_MAX saturation if it happens.
 
-On Fri, Sep 15, 2023 at 4:59=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrot=
-e:
->
->
-> * Steve Rutherford <srutherford@google.com> wrote:
->
-> > early_set_memory_decrypted() assumes its parameters are page aligned.
-> > Non-page aligned calls result in additional pages being marked as
-> > decrypted via the encryption status hypercall, which results in
-> > consistent corruption of pages during live migration. Live
-> > migration requires accurate encryption status information to avoid
-> > migrating pages from the wrong perspective.
-> >
-> > Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when SE=
-V is active")
-> > Signed-off-by: Steve Rutherford <srutherford@google.com>
-> > ---
-> >  arch/x86/kernel/kvm.c | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> I suppose this fix is going through the KVM tree, or should we pick it up
-> in the x86 tree?
->
-> Thanks,
->
->         Ingo
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
