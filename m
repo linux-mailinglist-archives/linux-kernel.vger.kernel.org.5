@@ -2,54 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C646D7A28F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A3E7A28A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237435AbjIOVGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S237405AbjIOUvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbjIOUvN (ORCPT
+        with ESMTP id S237822AbjIOUu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:51:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B2730DE;
-        Fri, 15 Sep 2023 13:50:32 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7A7C56600B9D;
-        Fri, 15 Sep 2023 21:50:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694811031;
-        bh=tMa5KHMI9xyhHbWkapaVXRddMW+G7/fhHz/CbsZZBio=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kh2wYcPCHxtajuqaVKLwqA2qOglTymKGRPLHHJnfaZUq35xr3RoRvxln+3fo+ijR6
-         t86ziJUB/OU7KZZvg7kD40CLWNiWkBNNb0EUJKsiyFJ+jgWYtCtHxHvMggsVaGOX9O
-         Yc9Zl9fDmbgePgxp2O2M03LydMQPqLYyMVemKwooFkmeMo/joHkJJAQ+504yoj/ufM
-         JhqkQznY6XU22OO+nm8aiZ2TKnUsk+Fw6ci3/diXyMUgCu0KaJztWIxUmTDE/shJWS
-         svc41FxO07izU/zCw8ugtVtZdE0WLND9l4kIltMuJQjHZcWK1tmdCSxGC9GBQsxMup
-         4J6aVgaGWhvkg==
-Received: by mercury (Postfix, from userid 1000)
-        id 6CA0D106044B; Fri, 15 Sep 2023 22:50:29 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 22:50:29 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 45/50] power: reset: at91-reset: add sdhwc support for
- sam9x7 SoC
-Message-ID: <20230915205029.mqtb2jew5xob65l2@mercury.elektranox.org>
-References: <20230728103032.267597-1-varshini.rajendran@microchip.com>
+        Fri, 15 Sep 2023 16:50:27 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194882709
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:49:43 -0700 (PDT)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+        by cmsmtp with ESMTP
+        id hAM3q8doIOzKlhFl0qIHyU; Fri, 15 Sep 2023 20:49:42 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id hFkzq9xmgqs1vhFl0qU9Gh; Fri, 15 Sep 2023 20:49:42 +0000
+X-Authority-Analysis: v=2.4 cv=OO40YAWB c=1 sm=1 tr=0 ts=6504c366
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=SEtKQCMJAAAA:8 a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9
+ a=QEXdDO2ut3YA:10 a=kyTSok1ft720jgMXX5-3:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WPXWF77vQI3mRyN0nqVJHqF477a6uTsaeYOM8/wRXhs=; b=DGpiEzz9moDN7MXFfJ+t+Stxid
+        CNygQrCWOzNMLuvdvxd9sCAdK/biMwSTztO9AgmKuDH6hnO3qb1m1sGAy7WBkES6ezICHbz6TD4aw
+        m0Piym4aMYV7ZYKWWc7WHnw0ZP7dlEjmPURw/RNwsClAVWa90jWoXQr9AcXq46gW4U6ueMYaabRM3
+        ES6TcINf4+GCir7e3KjDDCZurNlTeW5tqCH+l9dQ9cWSILRAQTO2Ajgh+uKm2CwgJAm+TD7YoFTfv
+        EA8+qVQexXANmhL/azXEc2ZmBz6ubD4QDTcL6qrTxp2teXPhHGZcisWFiJNmSkq8S4VvQEJvpAa5I
+        LZuXJ9dg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:36918 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qhFky-002ewp-2W;
+        Fri, 15 Sep 2023 15:49:40 -0500
+Message-ID: <c36a8c7f-cb6a-cf32-3898-37159e363382@embeddedor.com>
+Date:   Fri, 15 Sep 2023 14:50:36 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fcwhesnxamk2gg2p"
-Content-Disposition: inline
-In-Reply-To: <20230728103032.267597-1-varshini.rajendran@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] NFS/flexfiles: Annotate struct nfs4_ff_layout_segment
+ with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc:     Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230915201434.never.346-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230915201434.never.346-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qhFky-002ewp-2W
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:36918
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 436
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfGSOkq31hVlilupsS6YadzrV+NXzSt9L+k7c9Uy2Y/oHxPLLAxUbdovrG/MM9fO/BzqDsSfzZMMmaOE6dcJ5sbR8waCZbLzEE9x8if8RiL4rjO/HtGPL
+ GbCzYpK3VttuQpnnP7B4yN5UXmXq49ygKvzoSSLMu98e72opghphRQWRPUKX38eggnliQtgxGlne5cbhO54PBDjZsIJV6Wn1lFPq1xNRAiBIJCN1g8YxXl8A
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,61 +97,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fcwhesnxamk2gg2p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 9/15/23 14:14, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct nfs4_ff_layout_segment.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> Cc: Anna Schumaker <anna@kernel.org>
+> Cc: linux-nfs@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On Fri, Jul 28, 2023 at 04:00:32PM +0530, Varshini Rajendran wrote:
-> Add shutdown controller support for SAM9X7 SoC.
->=20
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
 > ---
-
-Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->  drivers/power/reset/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-> index 518b232bfd3d..8571b592f257 100644
-> --- a/drivers/power/reset/Kconfig
-> +++ b/drivers/power/reset/Kconfig
-> @@ -34,7 +34,7 @@ config POWER_RESET_AT91_RESET
->  config POWER_RESET_AT91_SAMA5D2_SHDWC
->  	tristate "Atmel AT91 SAMA5D2-Compatible shutdown controller driver"
->  	depends on ARCH_AT91
-> -	default SOC_SAM9X60 || SOC_SAMA5
-> +	default SOC_SAM9X60 || SOC_SAM9X7 || SOC_SAMA5
->  	help
->  	  This driver supports the alternate shutdown controller for some Atmel
->  	  SAMA5 SoCs. It is present for example on SAMA5D2 SoC.
-> --=20
-> 2.25.1
->=20
-
---fcwhesnxamk2gg2p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUEw5UACgkQ2O7X88g7
-+pqJOw/+MLLYmGm7IgO4W+jIsY0MrFOqCu63PeTrmYhU9lcDC6ln5wmiQY2Sl340
-wxEwLJfGxQZ2IJq3OWqvrAg1WUjMHa+TnxGCMGrIk7OzugP+vTeTlvDc7n1741z6
-Tp012hb1Y4flgoR+R13c5EkFws8EjpNSZIVa1ldQJxuFljJddNCjyuMGSiRo4XYV
-FnbJJDjW0tD7i39lDSI+nqv/+LDlT9USv7klbNHCfcD24uF8QX5Qj8lBcrryHqiX
-+DGBdlvFHf56/I7O9Xioxy5lHcx+EM75pnriPb7fkCI81lsIZ2wYJdydB2j7j0vL
-a96wIV5Dd8X6RXnBnOBLbww/qQAjyMn0ifIiQD7TYREpOVU6jV+URi6li4tlvDqj
-OLwCzDOn4FO2Utj/3LEyNvDMc5dvuyxhWG7OyRCKadVDIXWLka6AVf0w71gz3zg1
-XcoMcbM+0i4urNWzmksZDMBgVd7V9Yfb6SLth3iBH0lDYYuNR9thaUA7ReG3AWOL
-pEaRPBcKJZ5WfEmz8jWzDHF4xeXWEoPKdwGWk6vnGFNX3lVoRl5AWFxvymWgt79h
-Ac0DRW1igRwDV830dKVJY1kZ/kzCI2UfipeIOQbda/fVFax99At1ug8chJXEuLok
-8wK9TFNcHD5W2brPvJd4O3OFvM8oL9cAwojTNGFaG2HWlTxFTrk=
-=PShN
------END PGP SIGNATURE-----
-
---fcwhesnxamk2gg2p--
+>   fs/nfs/flexfilelayout/flexfilelayout.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/nfs/flexfilelayout/flexfilelayout.h b/fs/nfs/flexfilelayout/flexfilelayout.h
+> index 354a031c69b1..f84b3fb0dddd 100644
+> --- a/fs/nfs/flexfilelayout/flexfilelayout.h
+> +++ b/fs/nfs/flexfilelayout/flexfilelayout.h
+> @@ -99,7 +99,7 @@ struct nfs4_ff_layout_segment {
+>   	u64				stripe_unit;
+>   	u32				flags;
+>   	u32				mirror_array_cnt;
+> -	struct nfs4_ff_layout_mirror	*mirror_array[];
+> +	struct nfs4_ff_layout_mirror	*mirror_array[] __counted_by(mirror_array_cnt);
+>   };
+>   
+>   struct nfs4_flexfile_layout {
