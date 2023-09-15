@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1177A1D53
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECB57A1D56
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbjIOLVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        id S234001AbjIOLXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjIOLVR (ORCPT
+        with ESMTP id S230153AbjIOLXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:21:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6877101;
-        Fri, 15 Sep 2023 04:21:11 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694776870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TsnkGbttQgVvHiV9M03Q+LlQoOR8o5QNvoHNuHa+6nY=;
-        b=kUVLHiYJMpOIKyckOH3EGEThs0EpvU+s0q8h8ytzvinMvOtAfd5B7odHXAHSsKB6ibsXQK
-        PnVg39zA19vvSxKixPQ+lABJT51nPvqCctMMvlpaSLwmUt0ComnPBAbfOeDqJkm22KVl5U
-        69v1YPuRztdswpOaGK+V1mXP6/RYTyNTYTIpwcwlIW6bdb4dXpkVV+7oGssiK5q2PP4b7N
-        S4ApnDPDAMrpld//Dw0tCaKyFut5XTSw4/B2YXE/SrDtZgEkRgbbAd9XRRdohfU850iP1Y
-        sbsq1DHisj/HMJsjV4h+/F/DlveahLIkHgxgeYBSTU+NxAqze0LLubPKBH6ffA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694776870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TsnkGbttQgVvHiV9M03Q+LlQoOR8o5QNvoHNuHa+6nY=;
-        b=W6ioBJ1+Iw5AzubKd6BZK7wo1pNLk50251horbdq/DP+xQJ60XUc0+8TacyLFi3g3eztn+
-        M8sSTyUWXVfOOHCQ==
-To:     Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
+        Fri, 15 Sep 2023 07:23:01 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE64C1AB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:22:56 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401ec23be82so20991825e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694776975; x=1695381775; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fCZPvKJZFLYsRKxBEXIvSXuAd3mfyz+vRzHl+fPG8MY=;
+        b=Ho4Os4fue8m/1Fx9QHfplA7j4Xy9Dq9BnSmeONCy/Hhd16kO9zGh8HYud+q5ZhO6yL
+         6VPC3CQiBCvzbWj987MYIZUIcdtE525JY3OVuDI9Rk2culNVEm27UeMaOQUqPVwOP1Fo
+         Y8/4dtsoSJoT2sHlfHPzSNk0Wb8sMmRDOIMcYhVCqJFGbGwI0PXeDx8NkKmYS+B1vsfw
+         sssDTLZpk4SQWyShDmmpw//I+rZu8moLr7MgsRRFuSBG6NLc3DZj/qsiNd7W2roQCU+j
+         VxDC9SEaNjMVhiaE6Ev/+z8bYWg81c7CBysfIFZH4vM+rs3d60LnQJhOjWBFKKB3jt4K
+         7CWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694776975; x=1695381775;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fCZPvKJZFLYsRKxBEXIvSXuAd3mfyz+vRzHl+fPG8MY=;
+        b=uCCA69bCuXxKhwxZs/AmvsRg54ARWYuNVZRJUAFMPhHoJ+mIcAiteoIjP6uIXC3AmD
+         QY1AKUmKAvHREhQiQifYPRkwCEvBnXWXFA++0t5Nbmw/jQmktThSDsR0hTLlmE4/iiak
+         tbT/isYHj6qJtItqcu5UdSTdEGTYWfVLitiSnGqhgiqJivx0FUP3hgmc0MHPMrpCOXY0
+         86QhsLjTHCEHQafWcAKcSXspxtK59blLPWI1meiNcQwUGQ2kXTIUGk5HwvRPWZ2BmS46
+         kfNj2MjYX6D9ScXjFkKFi2Uqg7WVxzCC1M6ujcV0y5HGXt8MPpD10FaK6Bv3/++AWhtR
+         jNFw==
+X-Gm-Message-State: AOJu0Yw49px6u9GlwSxarYTpZVOUU3/stoz5DWD3lqH9X/ATWuoNVgsX
+        NCXBd4cIQmx8halepBbf4Mk=
+X-Google-Smtp-Source: AGHT+IFnGW5dp3zhCTdpYIaDBV1kseyK2epSygpwjQ86f1UcDudDJA8hF4uDKAM4II2OiMFAHJ/iag==
+X-Received: by 2002:a7b:ce07:0:b0:401:bdd7:499d with SMTP id m7-20020a7bce07000000b00401bdd7499dmr1290628wmc.25.1694776975183;
+        Fri, 15 Sep 2023 04:22:55 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b003fee53feab5sm4394256wmc.10.2023.09.15.04.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 04:22:54 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 15 Sep 2023 13:22:52 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH tty v1 06/74] serial: 8250: Use port lock wrappers
-In-Reply-To: <2045de5e-b7f8-18fe-dc92-e1d88a62f810@linux.intel.com>
-References: <20230914183831.587273-1-john.ogness@linutronix.de>
- <20230914183831.587273-7-john.ogness@linutronix.de>
- <2045de5e-b7f8-18fe-dc92-e1d88a62f810@linux.intel.com>
-Date:   Fri, 15 Sep 2023 13:27:05 +0206
-Message-ID: <87y1h7vg0u.fsf@jogness.linutronix.de>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 2/2] x86/percpu: Use raw_cpu_try_cmpxchg in
+ preempt_count_set
+Message-ID: <ZQQ+jKenSo6cgMeN@gmail.com>
+References: <20230830151623.3900-1-ubizjak@gmail.com>
+ <20230830151623.3900-2-ubizjak@gmail.com>
+ <ZQQoHWkJ5or/K7UH@gmail.com>
+ <ZQQ817oApcALz9jy@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQQ817oApcALz9jy@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-15, Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
->> @@ -3403,9 +3403,9 @@ void serial8250_console_write(struct uart_8250_por=
-t *up, const char *s,
->>  	touch_nmi_watchdog();
->>=20=20
->>  	if (oops_in_progress)
->> -		locked =3D spin_trylock_irqsave(&port->lock, flags);
->> +		locked =3D uart_port_trylock_irqsave(port, &flags);
->>  	else
->> -		spin_lock_irqsave(&port->lock, flags);
->> +		uart_port_lock_irqsave(port, &flags);
->
-> Not related to any problem (with this patch) but I'm a bit curious is
-> this construct going to remain there after the follow-up work?
 
-Yes. The uart port lock already provides excellent coverage of unsafe
-regions in uart drivers. We want to take advantage of that.
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-> And there's the similar one in some other drivers (with some
-> variations related to local_irq_save()):
->
->         if (port->sysrq) {
->                 locked =3D 0;
->         } else if (oops_in_progress) {
->                 locked =3D spin_trylock(&port->lock);
->         } else {
->                 spin_lock(&port->lock);
->                 locked =3D 1;
->         }
+> 
+> * Ingo Molnar <mingo@kernel.org> wrote:
+> 
+> > 
+> > * Uros Bizjak <ubizjak@gmail.com> wrote:
+> > 
+> > > Use raw_cpu_try_cmpxchg instead of raw_cpu_cmpxchg (*ptr, old, new) == old.
+> > > x86 CMPXCHG instruction returns success in ZF flag, so this change saves a
+> > > compare after cmpxchg (and related move instruction in front of cmpxchg).
+> > > 
+> > > Also, raw_cpu_try_cmpxchg implicitly assigns old *ptr value to "old" when
+> > > cmpxchg fails. There is no need to re-read the value in the loop.
+> > > 
+> > > No functional change intended.
+> > > 
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > Cc: Borislav Petkov <bp@alien8.de>
+> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > > ---
+> > >  arch/x86/include/asm/preempt.h | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+> > > index 2d13f25b1bd8..4527e1430c6d 100644
+> > > --- a/arch/x86/include/asm/preempt.h
+> > > +++ b/arch/x86/include/asm/preempt.h
+> > > @@ -31,11 +31,11 @@ static __always_inline void preempt_count_set(int pc)
+> > >  {
+> > >  	int old, new;
+> > >  
+> > > +	old = raw_cpu_read_4(pcpu_hot.preempt_count);
+> > >  	do {
+> > > -		old = raw_cpu_read_4(pcpu_hot.preempt_count);
+> > >  		new = (old & PREEMPT_NEED_RESCHED) |
+> > >  			(pc & ~PREEMPT_NEED_RESCHED);
+> > > -	} while (raw_cpu_cmpxchg_4(pcpu_hot.preempt_count, old, new) != old);
+> > > +	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.preempt_count, &old, new));
+> > 
+> > It would be really nice to have a before/after comparison of generated 
+> > assembly code in the changelog, to demonstrate the effectiveness of this 
+> > optimization.
+> 
+> Never mind, you did exactly that in the September 6 variation of these 
+> changes. I'll apply those.
 
-With the follow-up work we are introducing a new type of console
-(CON_NBCON) that supports atomic and threaded printing. Current console
-drivers must be converted if they want these features. When converting a
-driver to NBCON, such variations as above will need to be addressed. The
-follow-up work provides new functions and semantics to allow drivers to
-implement more reliable code than just: "trylock and keep going no
-matter what".
+I mean, this third patch of yours:
 
-For console drivers that are _not_ converted to NBCON, the uart port
-lock wrappers will not provide any changed functionality.
+   [PATCH] x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
 
-John Ogness
+Had a proper disassembly comparison - so I've applied all 3 optimization 
+patches to tip:x86/asm as:
+
+  b8e3dfa16ec5 ("x86/percpu: Use raw_cpu_try_cmpxchg() in preempt_count_set()")
+  5f863897d964 ("x86/percpu: Define raw_cpu_try_cmpxchg and this_cpu_try_cmpxchg()")
+  54cd971c6f44 ("x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}")
+
+Thanks,
+
+	Ingo
