@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF807A1702
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C65B7A1717
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbjIOHMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
+        id S232691AbjIOHPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbjIOHMU (ORCPT
+        with ESMTP id S232570AbjIOHPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:12:20 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85BE19A0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:12:07 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso2929338e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:12:07 -0700 (PDT)
+        Fri, 15 Sep 2023 03:15:40 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60117115;
+        Fri, 15 Sep 2023 00:15:29 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c06f6f98c0so16329175ad.3;
+        Fri, 15 Sep 2023 00:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694761926; x=1695366726; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L+1MAm8CUnGgXuX6co+0aREskJOB2spO/R6IQZ493/g=;
-        b=nb4hkNhVBpz55nuhBksYMxXVm4INb4aJVBwb/pyC+/SslEwkCzD4QhqbokQYD8C9st
-         tmKDIpY22+hdp54GKae3z0f2Jj+FbDCqYu6u0LmZpWC3hRy5kwdRqi/K+FZf8UYaaxlX
-         BaKS5MnUK0/l4lcyHHrDbRdCynctBkFNcJN3qlRJvSid7ugX1lkmiX0GmvtxsEWLes7h
-         i/zSRuOcQCEe76zbRDv8vrwLEEw0PD4BAPDY1Gi3rUQ7JodaZ+3cKNEy2xwTmA/Q/voV
-         THw/fNS5XOl3vNeSObTFT5/OaBC9kMq73RCaQUjYwasvDrk9ZdHQ0hZKlE0nkfGGeYPI
-         KsRQ==
+        d=gmail.com; s=20230601; t=1694762129; x=1695366929; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xPt+lflGxmD7kew86V+AaK7Q6nPGEAHxfdx7vSqNo0w=;
+        b=ANaTPxcQofAhoSZo/2/yIQ6WSDH+xFZdb8dos3AtdWIArBZbslu1Lh5r4KqddMalPB
+         QVVZHQ15F0x3EFuKlJlXkcNSoCSmYNj7ejo7iczNd1VjkHB4zjobrfkLTdSKyUippwvw
+         E5Bvq+EIoNM+auX6L5vYu7YfY0jUq1+MOAkeIV119tZ/LEG9RsM4Hqm80494+B7ss+pI
+         O8NjrcpztaXoxbbIZNF+g9+h4mD8NRTQ3CGkQZYLzWuCtfJ/85oGkzXwFiJLcHOlO7nE
+         Ab2KJhvCHCEYHTsmbpapmSNDHTb6+tyT5Dxdnu295CKqaUgLRxr9tHzsRpPqVvC3Psv5
+         p+/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694761926; x=1695366726;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L+1MAm8CUnGgXuX6co+0aREskJOB2spO/R6IQZ493/g=;
-        b=tLT/1nCYrOTPeG0XrsQG/yhiAW2cY2X0AroqtnNmA9Z1Chqhm6GUrb0/O6nBSiVhYB
-         kvHvAE8zumNnkqk6BqFvfGcIxjN1em3drRudeWfDyl03EdTVc0UTpIvXeVpPhoJ+6ofB
-         s5qipHSAP36EBFFYuVeLyCyDFhBJKJKuNaTvvuVvxE9JvI7nQnlDZ3PSdyxUERLCRqAM
-         ZQFC0oKn2ZeFgjFoRUQueAvf7FgTRAJ5O6O/5NBWhiWr8neYN9B4vP6+OSrVTU6p1Ik1
-         /6l4NoJxzh5SoWiqiyARZaEpKEDv68tJj6hwjhSTCLGQsFOKRyJi2cA2FmKFl6qmBPY2
-         kYqw==
-X-Gm-Message-State: AOJu0YzGKr/eFVp9dEkWiaKDxl9TREuD6m3orAA9vnYt656WfAoj+uu1
-        37peEwMgEXFEY3gp72Esr+VeoA==
-X-Google-Smtp-Source: AGHT+IHECa1brdHbyZ+RRYmTLFGKg3RSF3pozRwZjz4PFeKi2aM/YBgZ+azN8FxCn8uEPW/fu+Melw==
-X-Received: by 2002:a19:f507:0:b0:502:acf2:88df with SMTP id j7-20020a19f507000000b00502acf288dfmr632313lfb.35.1694761925299;
-        Fri, 15 Sep 2023 00:12:05 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id e6-20020a056402088600b00528dc95ad4bsm1829422edy.95.2023.09.15.00.12.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 00:12:04 -0700 (PDT)
-Message-ID: <bab9dd29-9509-f724-bcba-040501851e5e@linaro.org>
-Date:   Fri, 15 Sep 2023 09:12:00 +0200
+        d=1e100.net; s=20230601; t=1694762129; x=1695366929;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xPt+lflGxmD7kew86V+AaK7Q6nPGEAHxfdx7vSqNo0w=;
+        b=gc+eajuZTXFkUgqm1/a8K17T8Qn8X963vfF43pQdS6TScaKJ6fyXIHV5J3D6o9Tl8g
+         nZaU1xHVv0Bv7yPy6vdUOxThcwrrlbwH2rUwGr7sc9+Smj/C4hfw4O/1TROXVvpjEg0e
+         POjLAxynDCpDx4eZJXjQbT5eTfVVar3C3WBfBO1SKLFgXK5koF29ua3a5pLKVk8C5s0r
+         V+cHE9QE5Fnk2JhZj8rvLIxCnJpFL4TbE7ztb4fHN9LyQn0CK16/YyNCxfNbyyK8lvNX
+         lulVUegHa6ELqpdXqq5AXTt/eloWSqEB7TCoJyyMjfya1T1R1Wpzr9SVfouKgXHnC08a
+         8+CA==
+X-Gm-Message-State: AOJu0YyOom0J7tHcfzY6kMc3GOtGzgDT8xwFJOZ0ORBW+8HPJF/LkS3x
+        sGiB4Hu4VPPEK7hYkKQE6N0=
+X-Google-Smtp-Source: AGHT+IFCdr2RrtfYmIsOzqNUg5/c7ZTKK3DcpYDUDxfJxaRuGC+qz4+2B1LFXLrvhMSnOIofAHGA+g==
+X-Received: by 2002:a17:902:a3cc:b0:1b8:1bac:3782 with SMTP id q12-20020a170902a3cc00b001b81bac3782mr889683plb.6.1694762128648;
+        Fri, 15 Sep 2023 00:15:28 -0700 (PDT)
+Received: from localhost.localdomain ([222.95.63.58])
+        by smtp.gmail.com with ESMTPSA id q23-20020a170902789700b001bdc6e13665sm2723958pll.275.2023.09.15.00.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 00:15:28 -0700 (PDT)
+From:   Wang Chen <unicornxw@gmail.com>
+X-Google-Original-From: Wang Chen <wangchen20@iscas.ac.cn>
+To:     linux-riscv@lists.infradead.org, conor@kernel.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>
+Subject: [PATCH 02/12] dt-bindings: vendor-prefixes: add milkv/sophgo
+Date:   Fri, 15 Sep 2023 15:14:09 +0800
+Message-Id: <20230915071409.117692-1-wangchen20@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 4/8] dt-bindings: arm-smmu: Add compatible for SM4450
- SoC
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        catalin.marinas@arm.com
-Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_tsoni@quicinc.com,
-        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
-        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
-        quic_aiquny@quicinc.com, kernel@quicinc.com
-References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
- <20230915021509.25773-6-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915021509.25773-6-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,34 +73,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 04:15, Tengfei Fan wrote:
-> Add the SoC specific compatible for SM4450 implementing arm,mmu-500.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> index cf29ab10501c..b57751c8ad90 100644
-> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> @@ -47,6 +47,7 @@ properties:
->                - qcom,sdx55-smmu-500
->                - qcom,sdx65-smmu-500
->                - qcom,sdx75-smmu-500
-> +              - qcom,sm4450-smmu-500
->                - qcom,sm6115-smmu-500
->                - qcom,sm6125-smmu-500
->                - qcom,sm6350-smmu-500
-> @@ -70,6 +71,7 @@ properties:
->                - qcom,sc8180x-smmu-500
->                - qcom,sc8280xp-smmu-500
->                - qcom,sdm845-smmu-500
-> +              - qcom,sm4450-smmu-500
+Add new vendor strings to dt bindings.
 
-Duplicated patch. Same problem.
+Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 573578db9509..fcca9e070a9a 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -863,6 +863,8 @@ patternProperties:
+     description: MikroElektronika d.o.o.
+   "^mikrotik,.*":
+     description: MikroTik
++  "^milkv,.*":
++    description: MilkV Technology Co., Ltd
+   "^miniand,.*":
+     description: Miniand Tech
+   "^minix,.*":
+@@ -1273,6 +1275,8 @@ patternProperties:
+     description: Solomon Systech Limited
+   "^sony,.*":
+     description: Sony Corporation
++  "^sophgo,.*":
++    description: Sophgo Technology Inc.
+   "^sourceparts,.*":
+     description: Source Parts Inc.
+   "^spansion,.*":
+-- 
+2.25.1
 
