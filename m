@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3847A28A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7FB7A28B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237681AbjIOUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S237752AbjIOUvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237768AbjIOUtr (ORCPT
+        with ESMTP id S237935AbjIOUv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:49:47 -0400
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5AE2723
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:49:20 -0700 (PDT)
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-        by cmsmtp with ESMTP
-        id hFjtqMNnbEoVshFkeqHyXd; Fri, 15 Sep 2023 20:49:20 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hFkdqJbjwXyW8hFkeq9MLo; Fri, 15 Sep 2023 20:49:20 +0000
-X-Authority-Analysis: v=2.4 cv=IfeU5Ema c=1 sm=1 tr=0 ts=6504c350
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=iox4zFpeAAAA:8 a=cm27Pg_UAAAA:8 a=VwQbUJbxAAAA:8 a=PN5XkUvCLqoqEaR2be0A:9
- a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=xmb-EsYY8bH0VWELuYED:22
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hYpEA/a0nYCN+dxDO1fQXq4rAKGRzZrtl0k6uVZ1AeE=; b=UJ7yPfFOpUGx5kNv0igW/tIhQw
-        kvDXUQFzpxc08aTS6P2Nno6ei1reKQtKw6uwz1egbDBXKKN10ljPPUwKNvzARMtqJoPvH3hDuIRVn
-        upa0AueL7k3DOOtzQp484XDfw9AcwQ8H4T0ZehYEka92VzQZ8LuVVLBI6wYtbk0+XVcbk1pYpmaa0
-        6ZWXNxyUCluOi/nrBmXJ2ThheKh+2cnsclffbKB+qbxKViQH+8iSk4zXQPPb0px7WWtZQxE4YJpGG
-        lftn0SvUU+2H0Fm2ue+vjbs16sYJcOSBwoRztW26UBuN5sm0pBVhDdAnE3AUO+aF7WjqGCXMZnha5
-        EebIj/7g==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:46604 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhFkc-002ebv-0A;
-        Fri, 15 Sep 2023 15:49:18 -0500
-Message-ID: <118576aa-a667-8c91-821a-351562dc4c61@embeddedor.com>
-Date:   Fri, 15 Sep 2023 14:50:14 -0600
+        Fri, 15 Sep 2023 16:51:29 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691ED2D49
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:50:36 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso794412466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694811034; x=1695415834; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rkiDdS/1LR9sFxtLFrJTZjeayIRFE7jynLiCCcENQ8s=;
+        b=c9FhPKz+31rD/xkkdo63bX9gCAQIkN0hJxjDqprC3z/mStSS2s3ToXlDYug+Mug85d
+         PdgD8mPNKyhQaylgdFp+oKbmpxSGiKnSO/twAD1jhbGqglIIiesI3Jidssecdk+4GPK0
+         1BtNxazSvCJKuG/huE/Jv3lh3OOfT1kH+b/fk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694811034; x=1695415834;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rkiDdS/1LR9sFxtLFrJTZjeayIRFE7jynLiCCcENQ8s=;
+        b=rSLyA6D0BQekTptLGXQNB9Rz3RcvFrxeJUD622eKmoh5MVzntv7nJQD7Z9fV0y58uX
+         Dd5pzaAvH23EYWtF6H7SyNRCnpXWVwQNoRevT4KzclQpc0ZTYi2wDVrE7JOQoVmewb7K
+         YbKLa7rnEPVRmt8HDvJnSEHqobu1pn4hjPe15fqm3C62SmAMaRnDAGa3onslpl/jfgTX
+         eERoZfjyAhJCHzr0S34yeGAuLOUTBvI6hSMjHMlixq+jtb0IvDi2f60R0adnXiIStcGz
+         M+1FThZrbrkSOmhukcQmNhMJAztkXbblFlrhFAaKnU+X93IxmrRUtYU5+/9zziE1IsbE
+         wLiA==
+X-Gm-Message-State: AOJu0YwQcQh5+bU1RkDeIsv65Byv9R3d8D+8Cl3PMyQtvRBsOiSJAADV
+        /GpRobLjgOEryhBz4PrcBIIiBEow97yhQ6Op3hwveYPl
+X-Google-Smtp-Source: AGHT+IHe2SR3ybvjqlivnS5sh15AiSzV9WDaDi2FkyEfCfW9j9TABnJbLYZTnxhH8xX70ahMcYSO+g==
+X-Received: by 2002:a17:907:781a:b0:9a1:b33a:e464 with SMTP id la26-20020a170907781a00b009a1b33ae464mr4352894ejc.31.1694811034798;
+        Fri, 15 Sep 2023 13:50:34 -0700 (PDT)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id j19-20020a170906411300b009930308425csm2844337ejk.31.2023.09.15.13.50.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 13:50:34 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9adb9fa7200so483330466b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:50:34 -0700 (PDT)
+X-Received: by 2002:a17:907:3f0f:b0:9a9:9d19:b250 with SMTP id
+ hq15-20020a1709073f0f00b009a99d19b250mr7061769ejc.17.1694811033687; Fri, 15
+ Sep 2023 13:50:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] udf: Annotate struct udf_bitmap with __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jan Kara <jack@suse.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915201404.never.574-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915201404.never.574-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhFkc-002ebv-0A
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:46604
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 416
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfD/fXFR520Pm9+RH43fXbyLU4VOFWYDJu0+IyfMApIz2FGE2wYPySOL6yAEKbtCRbaZ/jp9A2Zz/IxsuZSsIJsHaCao23tHHYDefE2cgMWVCfnFohilN
- //249q/UpyzYSybMSEhNkvPARbEhppLB0SH9uGolH7HKqtiTLlF6lcBV3AogkHqeJT+8AFp/bHHHaIc61yEmi5JS91LxP2VB+pAIKwXEAZUWuHBgEaz5tL5F
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230913192905.0a92bcab@gandalf.local.home> <CAHk-=whAkgy10YVwjQGn1AO=1ZFc193ujvMXwmDOJAc=Jaeg5A@mail.gmail.com>
+ <20230915163637.77c673a6@gandalf.local.home>
+In-Reply-To: <20230915163637.77c673a6@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 13:50:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whNU3JaPMq_E7mwVGpTKxxeQxV=13o84u-tTeqfB_t05g@mail.gmail.com>
+Message-ID: <CAHk-=whNU3JaPMq_E7mwVGpTKxxeQxV=13o84u-tTeqfB_t05g@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Add eventfs file to help with debugging any
+ more issues
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 Sept 2023 at 13:36, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I'm OK with it not going in now, but instead I'll wrap an ifdef around it
+> and move it to my queue for the next merge window. I still would like to
+> keep these "what's going on internally" available, as I'll ask people to
+> enable them when they report an issue.
 
+Honestly, you copied the pattern from the /proc filesystem.
 
-On 9/15/23 14:14, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct udf_bitmap.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Jan Kara <jack@suse.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+The /proc filesyustem is widely used and has never had this kind of
+random debugging code in mainline.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Seriously, that eventfs_file thing is not worthy of this kind of
+special debug code.
 
-Thanks
--- 
-Gustavo
+That debug code seems to be approaching the same order of size as all
+the code evetfs_file code itself is.
 
-> ---
->   fs/udf/udf_sb.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
-> index 9af6ff7f9747..f9a60bc1abcf 100644
-> --- a/fs/udf/udf_sb.h
-> +++ b/fs/udf/udf_sb.h
-> @@ -86,7 +86,7 @@ struct udf_virtual_data {
->   struct udf_bitmap {
->   	__u32			s_extPosition;
->   	int			s_nr_groups;
-> -	struct buffer_head	*s_block_bitmap[];
-> +	struct buffer_head	*s_block_bitmap[] __counted_by(s_nr_groups);
->   };
->   
->   struct udf_part_map {
+There's a point where this kind of stuff just becomes ridiculous. At
+least wait until there's a *reason* to debug a simple linked list of
+objects.
+
+If you have a hard time figuring out what the eventfs entries are,
+maybe you should just have made "iterate_shared" show them, and then
+you could use fancy tools like "ls" to see what the heck is up in that
+directory?
+
+                 Linus
