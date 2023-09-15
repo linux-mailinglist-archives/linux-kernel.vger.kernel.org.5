@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5A37A2154
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2480D7A2169
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbjIOOqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S235846AbjIOOtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235789AbjIOOqH (ORCPT
+        with ESMTP id S235401AbjIOOtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:46:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031361FCE;
-        Fri, 15 Sep 2023 07:46:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14FD2C433C8;
-        Fri, 15 Sep 2023 14:46:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694789162;
-        bh=vmWJjbUV9feQTNnTRpzFcWDL7EDviII2F9crbfYB6XI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CvLP61L5Srj5bBexjD3yccDBzkb0QAHF22eelHc/2Ww0BT7WfYu/CSZ56X9/nE6qu
-         5EU6lXh59ctX45FlSf8ZO+l5lfoUDbvLTbKUk8urSmWJYPCjlrJa0HJYtGmscey7ud
-         JJmR6bUhBJys4Y9sX0ySY9uue2XHYEWg5OvQFTSeO+jfS66qitFwy0wFjUWg/5/z74
-         9d3l/Fz1Yb6hGNZ7AjPBZshOdhPbebdTpEA6sHyVjyMFcZAq5qCKdqOF2CmiFix6c9
-         ewzUL0rCnYYgYX1/pLDH+43J//2ZUuVUySuu5a+FGUq8F9mxRS36J01YP5sVQX3st7
-         DbM/UIq8Yz2Cw==
-Received: (nullmailer pid 3702987 invoked by uid 1000);
-        Fri, 15 Sep 2023 14:45:59 -0000
-Date:   Fri, 15 Sep 2023 09:45:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Chen-Yu Tsai <wens@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain
- dependency
-Message-ID: <20230915144559.GA3696959-robh@kernel.org>
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
- <20230904115816.1237684-2-s.hauer@pengutronix.de>
- <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
- <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
- <20230913065843.GF637806@pengutronix.de>
+        Fri, 15 Sep 2023 10:49:49 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA641BE6;
+        Fri, 15 Sep 2023 07:49:44 -0700 (PDT)
+Received: from lhrpeml100002.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnH630yTpz67Nc8;
+        Fri, 15 Sep 2023 22:44:59 +0800 (CST)
+Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
+ lhrpeml100002.china.huawei.com (7.191.160.241) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 15 Sep 2023 15:49:41 +0100
+Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
+ lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
+ Fri, 15 Sep 2023 15:49:41 +0100
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "James Morse" <james.morse@arm.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>
+Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
+ first?]
+Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
+ [code first?]
+Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAABq9gIAAG4DQ////VACAAFZdgA==
+Date:   Fri, 15 Sep 2023 14:49:41 +0000
+Message-ID: <cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-28-james.morse@arm.com>
+        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
+        <20230914155459.00002dba@Huawei.com>
+        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
+        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
+        <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
+        <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
+        <80e36ff513504a0382a1cbce83e42295@huawei.com>
+ <CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.174.239]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230913065843.GF637806@pengutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:58:43AM +0200, Sascha Hauer wrote:
-> On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
-> > On Tue, Sep 12, 2023 at 4:07 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > >
-> > > Top posting to bring Saravana Kannan into this discussion.
-> > >
-> > > This looks like a big hack to me, Saravana has been working
-> > > tirelessly to make the device tree probe order "sort itself out"
-> > > and I am pretty sure this issue needs to be fixed at the DT
-> > > core level and not in a driver.
-> > 
-> > We could merge all the IO domain stuff into the pinctrl node/driver,
-> > like is done for Allwinner? Maybe that would simplify things a bit?
-> 
-> I thought about this as well. On Rockchip the pinctrl driver and the IO
-> domain driver even work on the same register space, so putting these
-> into a single node/driver would even feel more natural than what we have
-> now.
-
-DT should reflect the hardware. If this is in fact 1 block, then it 
-should be 1 DT node. How you want to split the driver or not is up to 
-you.
-
-Rob
+PiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZy
+aWRheSwgU2VwdGVtYmVyIDE1LCAyMDIzIDExOjIxIEFNDQo+IFRvOiBTYWxpbCBNZWh0YSA8c2Fs
+aWwubWVodGFAaHVhd2VpLmNvbT4NCj4gQ2M6IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWxAa2Vy
+bmVsLm9yZz47IFJ1c3NlbGwgS2luZyAoT3JhY2xlKQ0KPiA8bGludXhAYXJtbGludXgub3JnLnVr
+PjsgQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9yZz47IEpvbmF0aGFuIENhbWVyb24NCj4g
+PGpvbmF0aGFuLmNhbWVyb25AaHVhd2VpLmNvbT47IEphbWVzIE1vcnNlIDxqYW1lcy5tb3JzZUBh
+cm0uY29tPjsgbGludXgtDQo+IHBtQHZnZXIua2VybmVsLm9yZzsgbG9vbmdhcmNoQGxpc3RzLmxp
+bnV4LmRldjsgbGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWFyY2hAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0tDQo+IGtl
+cm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRlYWQub3Jn
+Ow0KPiBrdm1hcm1AbGlzdHMubGludXguZGV2OyB4ODZAa2VybmVsLm9yZzsgSmVhbi1QaGlsaXBw
+ZSBCcnVja2VyIDxqZWFuLQ0KPiBwaGlsaXBwZUBsaW5hcm8ub3JnPjsgamlhbnlvbmcud3VAYXJt
+LmNvbTsganVzdGluLmhlQGFybS5jb20NCj4gU3ViamVjdDogUmU6IFtSRkMgUEFUQ0ggdjIgMjcv
+MzVdIEFDUElDQTogQWRkIG5ldyBNQURUIEdJQ0MgZmxhZ3MgZmllbGRzDQo+IFtjb2RlIGZpcnN0
+P10NCj4gDQo+IE9uIEZyaSwgU2VwIDE1LCAyMDIzIGF0IDExOjM04oCvQU0gU2FsaWwgTWVodGEg
+PHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4NCj4gPiA+IEZyb206
+IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWxAa2VybmVsLm9yZz4NCj4gPiA+IFNlbnQ6IEZyaWRh
+eSwgU2VwdGVtYmVyIDE1LCAyMDIzIDk6NDUgQU0NCj4gPiA+IFRvOiBSdXNzZWxsIEtpbmcgKE9y
+YWNsZSkgPGxpbnV4QGFybWxpbnV4Lm9yZy51az4NCj4gPiA+IENjOiBTYWxpbCBNZWh0YSA8c2Fs
+aWwubWVodGFAaHVhd2VpLmNvbT47IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+Ow0K
+PiA+ID4gSm9uYXRoYW4gQ2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsgSmFt
+ZXMgTW9yc2UgDQo+ID4gPiA8amFtZXMubW9yc2VAYXJtLmNvbT47IGxpbnV4LXBtQHZnZXIua2Vy
+bmVsLm9yZzsgbG9vbmdhcmNoQGxpc3RzLmxpbnV4LmRldjsNCj4gPiA+IGxpbnV4LWFjcGlAdmdl
+ci5rZXJuZWwub3JnOyBsaW51eC1hcmNoQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+ID4gPiBr
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmc7IGxpbnV4LQ0KPiA+ID4gcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsga3ZtYXJtQGxpc3Rz
+LmxpbnV4LmRldjsgeDg2QGtlcm5lbC5vcmc7DQo+IEplYW4tDQo+ID4gPiBQaGlsaXBwZSBCcnVj
+a2VyIDxqZWFuLXBoaWxpcHBlQGxpbmFyby5vcmc+OyBqaWFueW9uZy53dUBhcm0uY29tOw0KPiA+
+ID4ganVzdGluLmhlQGFybS5jb20NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIHYyIDI3
+LzM1XSBBQ1BJQ0E6IEFkZCBuZXcgTUFEVCBHSUNDIGZsYWdzDQo+IGZpZWxkcw0KPiA+ID4gW2Nv
+ZGUgZmlyc3Q/XQ0KPiA+ID4NCj4gPiA+IE9uIEZyaSwgU2VwIDE1LCAyMDIzIGF0IDk6MDnigK9B
+TSBSdXNzZWxsIEtpbmcgKE9yYWNsZSkNCj4gPiA+IDxsaW51eEBhcm1saW51eC5vcmcudWs+IHdy
+b3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBPbiBGcmksIFNlcCAxNSwgMjAyMyBhdCAwMjoyOToxM0FN
+ICswMDAwLCBTYWxpbCBNZWh0YSB3cm90ZToNCj4gPiA+ID4gPiBPbiB4ODYsIGR1cmluZyBpbml0
+LCBpZiB0aGUgTUFEVCBlbnRyeSBmb3IgTEFQSUMgaXMgZm91bmQgdG8gYmUNCj4gPiA+ID4gPiBv
+bmxpbmUtY2FwYWJsZSBhbmQgaXMgZW5hYmxlZCBhcyB3ZWxsIHRoZW4gcG9zc2libGUgYW5kIHBy
+ZXNlbnQNCj4gPiA+ID4NCj4gPiA+ID4gTm90ZSB0aGF0IHRoZSBBQ1BJIHNwZWMgc2F5cyBlbmFi
+bGVkICsgb25saW5lLWNhcGFibGUgaXNuJ3QgZGVmaW5lZC4NCj4gPiA+ID4NCj4gPiA+ID4gIlRo
+ZSBpbmZvcm1hdGlvbiBjb252ZXllZCBieSB0aGlzIGJpdCBkZXBlbmRzIG9uIHRoZSB2YWx1ZSBv
+ZiB0aGUNCj4gPiA+ID4gRW5hYmxlZCBiaXQuIElmIHRoZSBFbmFibGVkIGJpdCBpcyBzZXQsIHRo
+aXMgYml0IGlzIHJlc2VydmVkIGFuZA0KPiA+ID4gPiBtdXN0IGJlIHplcm8uIg0KPiA+ID4gPg0K
+PiA+ID4gPiBTbywgaWYgeDg2IGlzIGRvaW5nIHNvbWV0aGluZyB3aXRoIHRoZSBlbmFibGVkICYm
+IG9ubGluZS1jYXBhYmxlDQo+ID4gPiA+IHN0YXRlIChvdGhlciB0aGFuIGlnbm9yaW5nIHRoZSBv
+bmxpbmUtY2FwYWJsZSkgdGhlbiB0ZWNobmljYWxseSBpdA0KPiA+ID4gPiBpcyBkb2luZyBzb21l
+dGhpbmcgdGhhdCB0aGUgc3BlYyBkb2Vzbid0IGRlZmluZQ0KPiA+ID4NCj4gPiA+IEFuZCBzbyBp
+dCBpcyB3cm9uZy4NCj4gPg0KPiA+DQo+ID4gT3IgbWF5YmUsIHNwZWNpZmljYXRpb24gaGFzIG5v
+dCBiZWVuIHVwZGF0ZWQgeWV0LiBjb2RlLWZpcnN0Pw0KPiANCj4gV2VsbCwgaWYgeW91IGFyZSBh
+d2FyZSBvZiBhbnkgY2hhbmdlIHJlcXVlc3RzIHJlbGF0ZWQgdG8gdGhpcyBhbmQNCj4gcG9zdGVk
+IGFzIGNvZGUtZmlyc3QsIHBsZWFzZSBsZXQgbWUga25vdy4NCg0KSSBhbSBub3QgYXdhcmUgb2Yg
+YW55IG9uIHg4Ni4gTWF5YmUgd2UgY2FuIGRvIGl0IG9uIEFSTSBmaXJzdCBhbmQNCmxldCBvdGhl
+ciBBcmNoIHBpdGNoLWluIHRoZWlyIG9iamVjdGlvbiBsYXRlcj8gQWZ0ZXJhbGwsIHRoZXJlIGlz
+DQphIGxlZ2l0aW1hdGUgdXNlLWNhc2UgaW4gY2FzZSBvZiBBUk0uIEhhdmluZyBtdXR1YWxseSBl
+eGNsdXNpdmUNCmJpdHMgYnJlYWtzIGNlcnRhaW4gdXNlLWNhc2VzIGFuZCB3ZSBoYXZlIHRvIGRv
+IHRoZSB0cmFkZW9mZnMuIA0KDQpUaGlzIGNhbiBiZSBkb25lIGluIHBhcmFsbGVsIHdoaWxlIG90
+aGVyIHBhdGNoZXMgYXJlIGdldHRpbmcNCnJldmlld2VkIGFuZCBtb21lbnRhcmlseSBsaXZpbmcg
+d2l0aCB0aGUgdHJhZGVvZmZzIHRpbGwNCnNwZWNpZmljYXRpb24gaXMgc29ydGVkLiBCdXQgb2Yg
+Y291cnNlIGl0IGRlcGVuZHMgdXBvbiB3aGF0DQpvdGhlciBzdGFrZSBob2xkZXJzIGFuZCBtb3N0
+IGltcG9ydGFudGx5IHdoYXQgQVJNIEFyY2ggcGVvcGxlDQp0aGluayBvZiBpdC4NCg0KVGhhbmtz
+DQpTYWxpbC4NCg0KICANCg0KDQoNCg0KDQoNCg==
