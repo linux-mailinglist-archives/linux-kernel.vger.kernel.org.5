@@ -2,149 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A7F7A1A8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD91B7A1A95
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbjIOJ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
+        id S233585AbjIOJad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233371AbjIOJ3T (ORCPT
+        with ESMTP id S232633AbjIOJaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:29:19 -0400
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24C326B8;
-        Fri, 15 Sep 2023 02:28:44 -0700 (PDT)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38F7ElsG002919;
-        Fri, 15 Sep 2023 11:28:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=1Of1fldvAc+SLebPZyCDhNTzbbsU2y5odJdWE5qVCiI=; b=Hd
-        igeR1KLEPtrblw5zVOznhSk5Z5Ik6TJeBslqk+yXH6I94o9HKk3wLwtx4hCvmN3e
-        OjjIz1M/dxfG7kuiq+78CqUM+5wA2HLpIgbbV27J7okGOUcTUBXzjp3/YOtCymF/
-        r3YH4Nxi/d0p+eqODAPAnR9ofyKn6Yto+wgh1dahea8i6pdyfc3u15IENXnMNTri
-        SU3snXuOCA8wVsI57kBnXC5hGFdsXNYgOGPudLW4fkTIdxUO+UiSBvs5KOY+1gjg
-        DFZxQzOFkU/JAuDvT+UNmWSSd4iyURz2hNzWvjV0UJj7AzPhYZcEooJfb0VojLEh
-        3Y+wRvbO3tvSq3xdE+/g==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t434d3xsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 11:28:15 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C4149100040;
-        Fri, 15 Sep 2023 11:28:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BA41521ADDB;
-        Fri, 15 Sep 2023 11:28:13 +0200 (CEST)
-Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
- 2023 11:28:13 +0200
-Message-ID: <4819d89b-c2a4-0c75-27e1-d8122827ceca@foss.st.com>
-Date:   Fri, 15 Sep 2023 11:28:06 +0200
+        Fri, 15 Sep 2023 05:30:30 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749C8CED;
+        Fri, 15 Sep 2023 02:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694770225; x=1726306225;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZxrVsRDpUNvxd12RQOucpkAkUdoy3mk3RtU+h+psW7c=;
+  b=Kb+e7OstiirIj/RxcOOEhdNaf4//q0WxA8Jc2R0ZeODLIG9cslCy8I9E
+   9LSnmURFd3gEMIDPovlVL59qYiUL8AC7OzMxzWHgEmJBGpVORv9hZOY4V
+   hNc2USO9NVs4aqoUWhWidRht15WQE9CPwB45SilEfKZ15c8JkLxcQUQLe
+   EWYgnFsTgSKcWGXwMlu7FaPSAeZynHenS2nfUHQBrITx/4ayHGuNxmZ9e
+   NzN1iGtkOeR2PnsVu21MfAt53aj/mOG4lSIym3FEdqC5UXmj1zbUHAJWn
+   6HdlvahzYw1Ln7QCIJBo+Jv3bifZzH7qSSd3YCAbGttMkvb9y2wwsOPM6
+   A==;
+X-CSE-ConnectionGUID: G+JhttbMRHS/WWWcCiUIww==
+X-CSE-MsgGUID: XyI0AJRFQVq2neUO9r88Pw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
+   d="asc'?scan'208";a="4701469"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Sep 2023 02:30:24 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 15 Sep 2023 02:29:28 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 15 Sep 2023 02:29:26 -0700
+Date:   Fri, 15 Sep 2023 10:29:10 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Conor Dooley <conor@kernel.org>
+Subject: Re: [PATCH v2 13/17] pmdomain: starfive: Move Kconfig file to the
+ pmdomain subsystem
+Message-ID: <20230915-lark-gangrene-b7cbd445b511@wendy>
+References: <20230915092003.658361-1-ulf.hansson@linaro.org>
+ <20230915092003.658361-14-ulf.hansson@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 07/10] dt-bindings: rng: add st,rng-lock-conf
-To:     Rob Herring <robh@kernel.org>
-CC:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230908165120.730867-1-gatien.chevallier@foss.st.com>
- <20230908165120.730867-8-gatien.chevallier@foss.st.com>
- <20230911150958.GA1255978-robh@kernel.org>
-Content-Language: en-US
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <20230911150958.GA1255978-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_06,2023-09-14_01,2023-05-22_02
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1ZlFlc8C7bX0329f"
+Content-Disposition: inline
+In-Reply-To: <20230915092003.658361-14-ulf.hansson@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+--1ZlFlc8C7bX0329f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/11/23 17:09, Rob Herring wrote:
-> On Fri, Sep 08, 2023 at 06:51:17PM +0200, Gatien Chevallier wrote:
->> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
->> and RNG_NSCR will be locked. It is supported starting from the RNG
->> version present in the STM32MP13
-> 
-> This should be squashed into the prior binding patch.
-> 
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->> ---
->>   .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> index 59abdc85a9fb..0055f14a8e3f 100644
->> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> @@ -37,6 +37,20 @@ required:
->>     - reg
->>     - clocks
->>   
->> +allOf:
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - st,stm32mp13-rng
->> +    then:
->> +      properties:
->> +        st,rng-lock-conf:
->> +          type: boolean
->> +          description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
->> +                       RNG_NSCR will be locked.
-> 
-> Define the property at the top-level and then restrict its presence in
-> a if/then schema.
-> 
+On Fri, Sep 15, 2023 at 11:19:59AM +0200, Ulf Hansson wrote:
+> The Kconfig belongs closer to the corresponding implementation, hence let=
+'s
+> move it from the soc subsystem to the pmdomain subsystem.
 
-Can you please point me to an example of such case. I can't find a way
-to define at the top-level the property then restrict it to specific
-compatibles.
+Thanks for updating the MAINTAINERS bits.
 
-Else I'd change
-additionalProperties :false to
-unevaluatedProperties: false
+> Cc: Walker Chen <walker.chen@starfivetech.com>
+> Cc: Conor Dooley <conor@kernel.org>
+> Acked-by: Conor Dooley <conor@kernel.org>
 
-so the definition of the property is seen.
+Unless my macro changed without me noticing, I don't think that's
+the email address I used for the ack. Just to be sure:
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Best regards,
-Gatien
+Thanks,
+Conor.
 
->> +
->>   additionalProperties: false
-> 
-> Did you test this property is allowed? No, because additionalProperties
-> won't work with properties defined in if/then schemas.
-> 
->>   
->>   examples:
->> -- 
->> 2.25.1
->>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  MAINTAINERS                                | 3 +--
+>  drivers/pmdomain/Kconfig                   | 1 +
+>  drivers/{soc =3D> pmdomain}/starfive/Kconfig | 0
+>  drivers/soc/Kconfig                        | 1 -
+>  4 files changed, 2 insertions(+), 3 deletions(-)
+>  rename drivers/{soc =3D> pmdomain}/starfive/Kconfig (100%)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6b491ebcf790..40744fefed3d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -20515,7 +20515,7 @@ M:	Walker Chen <walker.chen@starfivetech.com>
+>  M:	Changhuang Liang <changhuang.liang@starfivetech.com>
+>  S:	Supported
+>  F:	Documentation/devicetree/bindings/power/starfive*
+> -F:	drivers/pmdomain/starfive/jh71xx-pmu.c
+> +F:	drivers/pmdomain/starfive/
+>  F:	include/dt-bindings/power/starfive,jh7110-pmu.h
+> =20
+>  STARFIVE SOC DRIVERS
+> @@ -20523,7 +20523,6 @@ M:	Conor Dooley <conor@kernel.org>
+>  S:	Maintained
+>  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/
+>  F:	Documentation/devicetree/bindings/soc/starfive/
+> -F:	drivers/soc/starfive/
+> =20
+>  STARFIVE TRNG DRIVER
+>  M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
+> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
+> index 08f8a3aa9805..2286c36076db 100644
+> --- a/drivers/pmdomain/Kconfig
+> +++ b/drivers/pmdomain/Kconfig
+> @@ -12,5 +12,6 @@ source "drivers/pmdomain/renesas/Kconfig"
+>  source "drivers/pmdomain/rockchip/Kconfig"
+>  source "drivers/pmdomain/samsung/Kconfig"
+>  source "drivers/pmdomain/st/Kconfig"
+> +source "drivers/pmdomain/starfive/Kconfig"
+> =20
+>  endmenu
+> diff --git a/drivers/soc/starfive/Kconfig b/drivers/pmdomain/starfive/Kco=
+nfig
+> similarity index 100%
+> rename from drivers/soc/starfive/Kconfig
+> rename to drivers/pmdomain/starfive/Kconfig
+> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+> index 8b46da40f107..10a9ff84ff41 100644
+> --- a/drivers/soc/Kconfig
+> +++ b/drivers/soc/Kconfig
+> @@ -23,7 +23,6 @@ source "drivers/soc/renesas/Kconfig"
+>  source "drivers/soc/rockchip/Kconfig"
+>  source "drivers/soc/samsung/Kconfig"
+>  source "drivers/soc/sifive/Kconfig"
+> -source "drivers/soc/starfive/Kconfig"
+>  source "drivers/soc/sunxi/Kconfig"
+>  source "drivers/soc/tegra/Kconfig"
+>  source "drivers/soc/ti/Kconfig"
+> --=20
+> 2.34.1
+>=20
+
+--1ZlFlc8C7bX0329f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQQj5gAKCRB4tDGHoIJi
+0ni0APwKcNwJSKsOPvp2+jVoNLd8F/Qp3atCKUuE1/sjfqR/dwEA88V4E7km/zn5
+cyWfek8D2WHLjgQjfvInsrZjiWvA7Ac=
+=9J6Y
+-----END PGP SIGNATURE-----
+
+--1ZlFlc8C7bX0329f--
