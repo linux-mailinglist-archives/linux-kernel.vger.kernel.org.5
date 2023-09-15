@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E7F7A2843
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C551A7A2846
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237379AbjIOUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
+        id S237391AbjIOUim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237312AbjIOUhz (ORCPT
+        with ESMTP id S237458AbjIOUiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:37:55 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F687B2;
-        Fri, 15 Sep 2023 13:37:50 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso3080375a12.3;
-        Fri, 15 Sep 2023 13:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694810269; x=1695415069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LlwYCvNiValFIdZJV91TP0CGm/bPmLsjvUp+RBWRPbI=;
-        b=Ea5YJO7HTY0qAZaAzgzFgo2z1mHeKtHIN1Q4N/3zxx1us++DuwChWakEmOOI/IBw2d
-         jlBGJtL6EKd6kpQhKnZSzaLbhsGrjNguw3C06H8DRjB3LP0lYtcE3/Ae1pydJEQRC5jP
-         1PL07UWrJzhtC15AS5/Vh+G6+4mRMN1NvsgAovosUSEk4OQJY2qj0X6RC1uaL+1yxGBg
-         XCPJZqvc9VhHWoyepM/Wj1XRPEohIL3cNkusODlJv2OkLu1KLY2j0jnKyr4UiLc2+PqZ
-         qEoDRWVw2GSTOgVev4unR7BcCsvVSyY9TIgiIcPrc+YLRqZnD3FVYRXC0DUeN8o5YpuG
-         nOnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694810269; x=1695415069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LlwYCvNiValFIdZJV91TP0CGm/bPmLsjvUp+RBWRPbI=;
-        b=gFL3Jqx3TgOrPeanBUsMq/kk6+oOD9QPH7xC+KztRC4lcU7dgi5npUBAS3Y2vbvv1C
-         xLGXwosMjpIQ6/9wV4DONE1Q1PAH2ylkomiPEByjqlPocIRpvY3xFgT0YiL+fDlujXyO
-         G0LnZnuJ74l8N6/74XyRwp69XMvS5mSQf67vBxQWNg1YamlMaSbL4E6CEhtweDEOPIvl
-         ngkBZcUheDKw7qR35KaCM9RaeBByikghLoaXBxdb3tAjaDRhEC1NZYQGuLEQ7jp/q1ud
-         RQXUHMBHa4VA2nKVHeo0S2rO2LgaAMjf3aUzRtUjn2239msoPjpGFo8VbfA22NipZPrd
-         xXbQ==
-X-Gm-Message-State: AOJu0YywiE98efYWqVQk8pwaUumWzgYje20Vg322nlatyK0rHWhLlhaZ
-        lZjaEj/hTz6KmuatAWP9TBsYz/Ya6pjeV+mYuqc=
-X-Google-Smtp-Source: AGHT+IH3z1RWP2AOuU4Cis7a6to8hXVq6KWI52v8jgXEfVCmdaGwGilMlm624nhniiCI/NioqZUQrO85rP4bVM984d4=
-X-Received: by 2002:aa7:caca:0:b0:523:387d:f5f1 with SMTP id
- l10-20020aa7caca000000b00523387df5f1mr2449282edt.24.1694810268479; Fri, 15
- Sep 2023 13:37:48 -0700 (PDT)
+        Fri, 15 Sep 2023 16:38:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4F2FB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694810299; x=1726346299;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qll2EIG/++Z0LR/EySU9HTie6OVnITZ+n/uOnRdY5JM=;
+  b=OjtqqYL/w5Og/avxMLFa5Mj+oxfcg3Y34mv8t0YLZmODtNgKr34JoTnS
+   4nApKGHKQxpflniPlp0fBbPzf5NfmwxFycNezCrRuNJqwPsEE3y/1rcvd
+   0tCucnfbIQXagsy9b4X2Hi0GXxVhH+OSJU0o5edo2RXfJbLeuO2U3BD2I
+   sUHyQNy5rwahs2OscT/4wFfizjXvWN8FhDker0Crs3tK/8OEly9HPOiqh
+   WLcEHRD323GtmNPWwFoyUJhJLHx5Bl4DEqHQzA5psfcXNxONaAVTrbYM7
+   5tKpSmbdA35wxX/wmKnOnd/7XY+PkvMCMdykSd4F0xRD8QEvZAndZMOrv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="378248193"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="378248193"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 13:38:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="694837372"
+X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
+   d="scan'208";a="694837372"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 13:38:17 -0700
+Date:   Fri, 15 Sep 2023 13:38:16 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     James Morse <james.morse@arm.com>
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: resctrl2 - status
+Message-ID: <ZQTAuChYjK9Y93y7@agluck-desk3>
+References: <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+ <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+ <ZOkU+d4AsLGSAG+y@agluck-desk3>
+ <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
+ <ZOlRNTq3lE7VNHjU@agluck-desk3>
+ <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
+ <ZPjDHN0nvHz9kWFn@agluck-desk3>
+ <fa93564a-45b0-ccdd-c139-ae4867eacfb5@arm.com>
 MIME-Version: 1.0
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-4-zhouchuyi@bytedance.com> <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
- <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com>
-In-Reply-To: <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 15 Sep 2023 13:37:36 -0700
-Message-ID: <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: Introduce process open coded
- iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa93564a-45b0-ccdd-c139-ae4867eacfb5@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,171 +79,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 8:03=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
->
->
-> =E5=9C=A8 2023/9/15 07:26, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Tue, Sep 12, 2023 at 12:02=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
-e.com> wrote:
-> >>
-> >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
-> >> creation and manipulation of struct bpf_iter_process in open-coded ite=
-rator
-> >> style. BPF programs can use these kfuncs or through bpf_for_each macro=
- to
-> >> iterate all processes in the system.
-> >>
-> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> >> ---
-> >>   include/uapi/linux/bpf.h       |  4 ++++
-> >>   kernel/bpf/helpers.c           |  3 +++
-> >>   kernel/bpf/task_iter.c         | 29 +++++++++++++++++++++++++++++
-> >>   tools/include/uapi/linux/bpf.h |  4 ++++
-> >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
-> >>   5 files changed, 45 insertions(+)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index de02c0971428..befa55b52e29 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -7322,4 +7322,8 @@ struct bpf_iter_css_task {
-> >>          __u64 __opaque[1];
-> >>   } __attribute__((aligned(8)));
-> >>
-> >> +struct bpf_iter_process {
-> >> +       __u64 __opaque[1];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index d6a16becfbb9..9b7d2c6f99d1 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -2507,6 +2507,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER=
-_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NUL=
-L)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> >> index d8539cc05ffd..9d1927dc3a06 100644
-> >> --- a/kernel/bpf/task_iter.c
-> >> +++ b/kernel/bpf/task_iter.c
-> >> @@ -851,6 +851,35 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct=
- bpf_iter_css_task *it)
-> >>          kfree(kit->css_it);
-> >>   }
-> >>
-> >> +struct bpf_iter_process_kern {
-> >> +       struct task_struct *tsk;
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >
-> > Few high level thoughts. I think it would be good to follow
-> > SEC("iter/task") naming and approach. Open-coded iterators in many
-> > ways are in-kernel counterpart to iterator programs, so keeping them
-> > close enough within reason is useful for knowledge transfer.
-> >
-> > SEC("iter/task") allows to:
-> > a) iterate all threads in the system
-> > b) iterate all threads for a given TGID
-> > c) it also allows to "iterate" a single thread or process, but that's
-> > a bit less relevant for in-kernel iterator, but we can still support
-> > them, why not?
-> >
-> > I'm not sure if it supports iterating all processes (as in group
-> > leaders of each task group) in the system, but if it's possible I
-> > think we should support it at least for open-coded iterator, seems
-> > like a very useful functionality.
-> >
-> > So to that end, let's design a small set of input arguments for
-> > bpf_iter_process_new() that would allow to specify this as flags +
-> > either (optional) struct task_struct * pointer to represent
-> > task/process or PID/TGID.
-> >
->
-> Another concern from Alexei was the readability of the API of open-coded
-> in BPF Program[1].
->
-> bpf_for_each(task, curr) is straightforward. Users can easily understand
-> that this API does the same thing as 'for_each_process' in kernel.
+On Fri, Sep 15, 2023 at 06:16:11PM +0100, James Morse wrote:
+> Hi Tony,
 
-In general, users might have no idea about for_each_process macro in
-the kernel, so I don't find this particular argument very convincing.
+Hi James.
 
-We can add a separate set of iterator kfuncs for every useful
-combination of conditions, of course, but it's a double-edged sword.
-Needing to use a different iterator just to specify a different
-direction of cgroup iteration (from the example you referred in [1])
-also means that it's now harder to write some generic function that
-needs to do something for all cgroups matching some criteria where the
-order might be coming as an argument.
+> 
+> On 06/09/2023 19:21, Tony Luck wrote:
+> > I've just pushed an updated set of patches to:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git resctrl_v65
+> > 
+> > Rebased to v6.5. Includes the module auto-load code discussed in
+> > previous e-mail.
+> 
+> I've taken a look at your resctrl2_v65rc7 branch. I don't think my reply to your first
+> series got sent, sorry if I'm actually repeating myself.
+> 
+> It goes without saying that I'd prefer we refactor the existing filesystem into the shape
+> we need, instead of a wholesale replacement.
 
-Similarly for task iterators. It's not hard to imagine some processing
-that can be equivalently done per thread or per process in the system,
-or on each thread of the process, depending on some conditions or
-external configuration. Having to do three different
-bpf_for_each(task_xxx, task, ...) for this seems suboptimal. If the
-nature of the thing that is iterated over is the same, and it's just a
-different set of filters to specify which subset of those items should
-be iterated, I think it's better to try to stick to the same iterator
-with few simple arguments. IMO, of course, there is no objectively
-best approach.
+I'm going to start this e-mail by disagreeing (but there is much
+agreement to come below). I think the fastest way to get to where
+we want to be (core code architecture independent with a mostly
+clear line between that and the architecture specific code) is to
+start over from scratch.
 
->
-> However, if we keep the approach of SEC("iter/task")
->
-> enum ITER_ITEM {
->         ITER_TASK,
->         ITER_THREAD,
-> }
->
-> __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_process *it, struct
-> task_struct *group_task, enum ITER_ITEM type)
->
-> the API have to chang:
->
->
-> bpf_for_each(task, curr, NULL, ITERATE_TASK) // iterate all process in
-> the  system
-> bpf_for_each(task, curr, group_leader, ITERATE_THREAD) // iterate all
-> thread of group_leader
-> bpf_for_each(task, curr, NULL, ITERATE_THREAD) //iterate all threads of
-> all the process in the system
->
-> Useres may guess what are this API actually doing....
+> 
+> All this focusses on the structure of the code, but we can change that anytime. I'd prefer
+> we work out what user-space needs and go from there.
+> 
+> I think the problems are:
+>  * Discovering what the platform supports, including possible conflicting schemes.
+>  * Architecture/Platform specific schema. e.g. SMBA. MPAM will have a handful of these too.
+> * User-space should know which schema are portable, and which are not. e.g. L2/L3/MB.
+> * Different control types for the same resource. e.g. Intel uses a percentage for
+> bandwidth control, AMD an absolute number. We should standardise this sort of thing and
+> make it discoverable.
+> * Conflicting schemes for the same hardware. e.g. CDP and mba_MBps
 
-I'd expect users to consult documentation before trying to use an
-unfamiliar cutting-edge functionality. So let's try to keep
-documentation clear and up to the point. Extra flag argument doesn't
-seem to be a big deal.
+Good list. In addition to the user-space needs, I'd like to also look
+at the developer/maintainer needs ... which is why I think we need a
+clear line between core code and architecture code.
 
+> ~
+> 
+> I'd really like to keep the 'core' schema in the base driver. This is to ensure that 'L3'
+> doesn't behave differently due to differing software implementation on Intel/AMD/Arm/riscv.
+> 
+> The L{2.3} schema were really well defined as they reference other things that are already
+> visible in sysfs, this makes them nice and portable. I think this is the standard we
+> should aim for with any new schema, and only resort to making them arch-specific if the
+> hardware is just too strange.
+> I tried to find a way to do this for SMBA as arm platforms will certainly have something
+> similar, but the 'any other NUMA node' behaviour was just too specific to what was built.
+> 
+> I suspect this could be done with a frontend/backend split, with a 'common' directory
+> holding the frontend driver for schema that apply to all architectures if the backend has
+> shown up.
+> 
+> ~
+> 
+> Because I think the types a schema is configured with should be portable across
+> architectures, I'd prefer the string parsing code lives in the core code, and isn't
+> duplicated by every submodule! String parsing in the kernel is bad enough!
+> 
+> The obvious types we have so far are: bitmap/percentage/number/bandwidth. I think it makes
+> sense for user-space to be told what the schema is configured with, and let the core code
+> do that parsing.
 
->
-> So, I'm thinking if we can add a layer of abstraction to hide the
-> details from the users:
->
-> #define bpf_for_each_process(task) \
->         bpf_for_each(task, curr, NULL, ITERATE_TASK)
->
->
-> It would be nice if you could give me some better suggestions.
+My PoC code went full throttle on pushing all the schemata code to the
+driver. But you are right that this may be too drastic.  Drivers could
+just indicate that they need one of the basic types "bitmap, percentage,
+number, bandwidth" together with some parameters (number of bits for
+bitmap, granularity for percentage, high/low values for number, ditto
+for bandwidth) and have core code handle the inital parsing. Then give
+to the module for validation (e.g. for the Intel requirement that
+cache bit masks have contiguous "1" bits), and some CPU models require
+that a minimum of two bits are set). Also pass to the module to apply
+(wrmsr() on a CPU in the domain for x86, MMIO from anywhere for ARM).
 
-No, please no. This macro wrapper is useless and just obfuscates what
-is going on. If users think it's helpful for them, they can trivially
-define it for their own code.
+For bitmasks - MPAM seems to allow very long masks. Perhaps the kernel
+can make use of the "%*pb" format to scanf/printk to cope with those?
+It would mean commas in the masks like 0000,00000fff,ffffff00,0000000f
 
->
-> Thanks!
->
-> [1]
-> https://lore.kernel.org/lkml/CAADnVQLbDWUxFen-RS67C86sOE5DykEPD8xyihJ2RnG=
-1WEnTQg@mail.gmail.com/
+> ~
+> 
+> I don't have a good answer for conflicting drivers for the same hardware resource. I think
+> we'd need to find a way of making the existing command-line arguments work, causing the
+> corresponding module to auto-load.
+> 
+> But this sucks for distros, who would need somewhere to describe the policy of which
+> modules get loaded. The good news is things like libvirt aren't mounting resctrl themselves.
+
+This is where I don't think we need to perfectly emulate the system
+administrator interface. People deploying resctrl features have to
+understand the features. This level of QoS control isn't going to
+be a "one-size-fits-all" proposition (even between different generations
+of the same CPU architecture, much less across different architectures.
+
+> ~
+> 
+> I suspect the CDP schemes should be made arch-specific as x86 needs the odd/even pairing,
+> whereas MPAM does not. This would allow a scheme where the Iside CLOSIDs can be shared to
+> avoid halving the available CLOSID.
+> 
+> Having somewhere sensible to put the MPAM driver is useful. It's currently dumped in
+> drivers/platform as it doesn't really fit anywhere!
+> 
+> Allowing each submodule to add extra files to the info directories looks useful. MPAM's
+> priority control has a property to say whether 0 is the top of the scale or not, this
+> would allow it to be exposed to user-space, instead of having to shift the range up/down
+> to hide the difference in behaviour.
+
+I'm contemplating allowing submodules to have one extra level of
+directory structure below info. E.g. so they could make
+info/FEATURE/socket{0,1,...}/param{1,2,...} as I have a feature
+that may be easier to describe this way.
+
+> MPAM only needs to update the hardware on a CPU that is part of target domain on some
+> platforms. The vast majority would allow the MMIO writes to come from anywhere. Having the
+> applychanges behaviour specific to the submodule would reduce the number of IPI.
+> >From what I've seen, riscv never needs an IPI here.
+
+See above. The "applychanges" phase of a schemata update is necessarily
+CPU architecuture specific. IPI or not is an architecture decision.
+
+> It looks like all the core code runs at process context without touching the pre-empt
+> counter or masking interrupts - this is a really nice property. Most of my headaches have
+> come from this area.
+> 
+> The limbo work isn't arch specific, that is a property of caches, it should really be core
+> code behaviour to avoid duplication. MPAM needs that, I expect riscv does too.
+
+Yes. I'm not super happy with how much of the monitor code I stuffed
+down into resctrl2/arch/x86. Partly it was done because of how many
+bits need to be shared by different modules (e.g. the MBmpbs module
+needs to read the MBM counters).
+
+But note that if the user doesn't care about cache occupancy monitoring,
+they can skip loading the module that reports that, and then they can
+skip the whole limbo dance with periodic interrupts sampling cache
+occupancy until the monitor counter gets to a low enough value to put
+it back on the free list.
+
+So while the code might be in the core, it should be aware of whether
+it needs to do anything.
+
+> Making the CLOSID/RMID allocation behaviour arch specific saves some headaches. MPAM is
+> particularly different in this area. I don't know what riscv's behaviour is here.
+
+Heh! This was my initial motivation for the rewrite. I saw where your
+patches had to pass closid + rmid around to functions that only needed
+one or the other on X86 and thought "we should just have a neutral
+"resctrl_ids_t" typedef for that (I'm moving away from "u64" to this
+typedef as I continue work on this).
+> 
+> 
+> 
+> > James: 
+> > 
+> > I'm now hoping for some feedback from ARM folks on whether this is a
+> > useful direction. Is it possible to implement MPAM features on top of
+> > this base architecture independent layer. If not, am I just missing
+> > some simple extensions that you will need. Or is there some fundamental
+> > problem that looks hard/impossible to resolve?
+> 
+> 
+> You've got an rdt_l2_cat driver which is really a symlink to rdt_l3_cat built with
+> different pre-processor defines. It's a good trick, but it only works because you know the
+> full range of hardware that has been built.
+> MPAM can't do things like this, it really is a bag of bits, and it isn't until the ACPI
+> tables are parsed to find where the resources are - and then that hardware is probed -
+> that we have a clue what was built.
+> For example, the cache controls could be on any cache in the hierarchy, and the number is
+> derived from the structure of the PPTT table. You've already got a fair amount of
+> duplication when multiple struct resctrl_resources are defined. MPAM would have to
+> allocate and populate these dynamically to avoid building a module for 'L5' ... just in
+> case someone built that...
+
+In my code that's an arch/x86 driver. You can do something completely
+different for ARM/MPAM that meets your needs. Perhaps that's easier to
+see with the changes proposed above where core code handles the basic
+parsing of schemata bitmasks/numbers/...
+
+> The mba_MBps logic is really just software, I see no reason to duplicate it on multiple
+> architectures. This should be in the core of the filesystem. We already have a mount
+> option to enable it.
+
+Maybe. But it needs access to both the monitoring data, and the MBA
+control registers. Would need suitable interfaces between arch specific
+code that can get that data and tweak those control registers.
+
+> I see the arch/submodules can't influence the domain numbers ... this is a problem as it
+> hardcodes "you can have L2 or L3", which is something you were trying to avoid. MPAM will
+> want to use NUMA-IDs for memory-side-caches, (I'd hope this to be a core/portable schema),
+> as well as IOMMU-IDs for the I/O side of this.
+> I don't think this is really a problem, as I'd like to add the things I need in this area
+> as core/portable schema.
+
+The modules can supply a "scope" which could be any of CPU, core,
+module, socket, or tied to some specific cache domain level. If
+there is something more exotic, we could add a callback function
+so the module could provide its own custom CPU->domain mapping.
+
+> Arm's IOMMU has support to label traffic with the equivalent to CLOSID/RMID. My prototype
+> support for this adds IOMMU-groups to the resctrl tasks file so that the devices can be
+> moved between control/monitor groups as if they were tasks. I think this would work for
+> other architectures if they had similar support as IOMMU-groups are an existing concept.
+
+So "tasks" accepts and reports non-numbers for these IOMMU-groups? And
+those tie to something in /sys that tells the user which set of devices
+they are monitoring/controlling?
+
+> 
+> Thanks,
+> 
+> James
+
+Thanks for your detailed reply. It's given me a lot to think about.
+
+-Tony
