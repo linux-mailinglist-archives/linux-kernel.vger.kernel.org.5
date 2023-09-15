@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D977A19E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16937A19E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbjIOJFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S233300AbjIOJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjIOJFJ (ORCPT
+        with ESMTP id S233269AbjIOJD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:05:09 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C6449ED
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:02:18 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d819b185e74so1963163276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694768532; x=1695373332; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wYhuR58x0PfWp746xuq3bl6Wnhj1B6G4ZyoH5DkvAmk=;
-        b=cIRQXFXUYUlp7ECWE+6fj5e2i7UmAVv1JRey8nIvLDcDmETZ7Y5X1eG1p9KooDc8T/
-         k5cXaKRLpQQEyLd1cinaPmuljSCnFuTulPJvJtOGmleGYYADnPdm4oIDKX6/q3CtNCM/
-         IrvhdebisdkQt2JcmH0vEMUnb9f0TcD3wGDs2y/cEhqKJnYjHDlSTwYs3xYE3qTm0mk/
-         ggYi4ybWfu5twZzmTKwLHDrp66UGyGv2E6vO9EMWWkTIN4KD/xfyQxfpu0PYKecVdHkW
-         tnMtvV4t3aYcA2Ffz9/UB8IM9BvBu2r1fRYtDHbETulUEDsWNRJmYybB8FWHIVgE1f25
-         CNDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694768532; x=1695373332;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wYhuR58x0PfWp746xuq3bl6Wnhj1B6G4ZyoH5DkvAmk=;
-        b=IT6eUxyuDNTSfSIxaA80RhL+Hpiw87mBBO5V5hz4JJhvdUvHiVc2mFtmtjwOw9jt1X
-         k7uFSpL3uIKsmX+5IOeqgGRn+xj3cfpgEI1sbR08f4XHptecPErXoK9NrD9Ws3p/sUoD
-         +ybZo9zzL6zYBQ64+zFtvAiKCdVyTMyVb8GKNtO6kzvoRgqdvnqXAJse6BLD5eKd38bJ
-         MhYVVdQXtdcIrLiwYiHVWnAjZ8/ElaH/fBmEHa+0vEMm4FACqydy/jLH8vtmzcvpYt7a
-         S1AtQkULF5hBMjZpZFel3zhgdIhmZ9GTczugK6+rTOQxlQTyZHUiSaBM2Yar8PUSxFCw
-         iULg==
-X-Gm-Message-State: AOJu0YzBNuRSvHuiD9n+qrjLqJXllt+Yy0t6D+jW6W1xEaAryJqQmbJH
-        Tdf9P1yqti4CvM3w0nYHbTU5YVw+BQMlSAYskdA1Gw==
-X-Google-Smtp-Source: AGHT+IG5PlShkx8XUQaH04ChTdxjlTUZHDSyYhtXGqNxvmL4QyV4L8VamjlX4xQtVG1x/DUlfzOCVJsHwm17BQNpPwM=
-X-Received: by 2002:a25:f61f:0:b0:d81:41e9:6cf5 with SMTP id
- t31-20020a25f61f000000b00d8141e96cf5mr4312903ybd.27.1694768532590; Fri, 15
- Sep 2023 02:02:12 -0700 (PDT)
+        Fri, 15 Sep 2023 05:03:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E0E30D6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:02:28 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8301E66072BB;
+        Fri, 15 Sep 2023 10:02:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694768546;
+        bh=SETywAy77nay+2dj9q5+6oCiUOOHaWMn0eTNWs9LtXw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L9gnLm0qbJiGA9oC9AGXDP1uhEorCm8fVLop7GIWlAHmBPZzB0TS07CvAkdJS1YEA
+         QjBTqSAnmfYRfweLfY8g8dveRtX5VuHl7c3MLhwBDX5cofBS+uJLJG5b02ftcLVNio
+         322MfICu9U/deVTlVdJJEIfGFOAA3iQsxo9xkLpmiQrzAls2rq2cz7NmmeSpJ0fHTb
+         0Vv9Pzm9RmW6Wj6dk9LOOC5CluO3xOY5YfNmRGx7A9g0OmO+lWpKNxSf6ASBl4w8WV
+         VvxfdWS+bgaCipcUUxqdua2YgEsmUKRFU5IaopqmecFya7JF1/O5t+k65hg4Cd9Quf
+         uRzdbQjcb4IHQ==
+Message-ID: <9b0dde15-12e3-713e-a2f9-9b2534691476@collabora.com>
+Date:   Fri, 15 Sep 2023 11:02:22 +0200
 MIME-Version: 1.0
-References: <20230915031123.14515-1-larry.lai@yunjingtech.com> <20230915031123.14515-3-larry.lai@yunjingtech.com>
-In-Reply-To: <20230915031123.14515-3-larry.lai@yunjingtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 15 Sep 2023 11:02:01 +0200
-Message-ID: <CACRpkdbi0bS0yiJ9ac6Z44os0w6FyKm+UsvbgQEYzYKymjww-w@mail.gmail.com>
-Subject: Re: [PATCH V6 2/3] pinctrl: Add support pin control for UP board CPLD/FPGA
-To:     "larry.lai" <larry.lai@yunjingtech.com>
-Cc:     lee@kernel.org, andriy.shevchenko@linux.intel.com, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
-        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
-        noah.hung@yunjingtech.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] drm/mediatek: dsi: Fix EOTp generation
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230915075756.263591-1-mwalle@kernel.org>
+ <0a184b35-133b-483c-d475-01120fbdc2ca@collabora.com>
+ <eb1f4f78be9b2da3ae2d54ec9417f2f7@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <eb1f4f78be9b2da3ae2d54ec9417f2f7@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 5:12=E2=80=AFAM larry.lai <larry.lai@yunjingtech.co=
-m> wrote:
+Il 15/09/23 11:01, Michael Walle ha scritto:
+> Hi,
+> 
+> Am 2023-09-15 10:58, schrieb AngeloGioacchino Del Regno:
+>> Il 15/09/23 09:57, Michael Walle ha scritto:
+>>> The commit c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register
+>>> definition") inverted the logic of the control bit. Maybe it was because
+>>> of the bad naming which was fixed in commit 0f3b68b66a6d ("drm/dsi: Add
+>>> _NO_ to MIPI_DSI_* flags disabling features"). In any case, the logic
+>>> wrong and there will be no EOTp on the DSI link by default. Fix it.
+>>>
+>>> Fixes: c87d1c4b5b9a ("drm/mediatek: dsi: Use symbolized register definition")
+>>> Signed-off-by: Michael Walle <mwalle@kernel.org>
+>>
+>> Hello Michael,
+>> your commit is missing a small piece! :-)
+>>
+>> Besides, I've already sent a fix for what you're trying to do here:
+>> https://lore.kernel.org/linux-arm-kernel/07c93d61-c5fd-f074-abb2-73fdaa81fd65@collabora.com/T/
+> 
+> Ahh thanks, didn't noticed this. If not already applied, I'll send
+> a Tested-by: later.
+> 
 
-> The UP Squared board <http://www.upboard.com> implements certain
-> features (pin control) through an on-board FPGA.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
-> Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
+No worries, it happens.
 
-This v6 overall looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cheers,
+Angelo
 
-Can the patch be merged on its own?
+> Please disregard this patch then.
+> 
+> -michael
 
-> +#include "core.h"
-> +#include "intel/pinctrl-intel.h"
-
-Didn't notice this before. But if Andy is OK with it, I'm
-OK with it, I guess there is a reason? Perhaps it warrants
-a comment explaining why you do this?
-
-Valid reasons:
-- You are using Intel-specific HW features also found in this
-   FPGA
-
-Invalid reasons:
-- Using nifty macros or helpers, then either make them generic
-  or (if they are small) duplicate them.
-
-If it was that thing I asked Andy to keep locally because I didn't
-agree with its generic usefulness, maybe I should be told to
-reconsider.
-
-Yours,
-Linus Walleij
