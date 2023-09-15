@@ -2,142 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DCB7A12DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929397A12E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjIOBUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        id S231189AbjIOBXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjIOBUv (ORCPT
+        with ESMTP id S230100AbjIOBXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:20:51 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2B42100;
-        Thu, 14 Sep 2023 18:20:47 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 33767320093B;
-        Thu, 14 Sep 2023 21:20:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 14 Sep 2023 21:20:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694740845; x=1694827245; bh=pmP7OP8Teh0wQAibyNwOhpBxRHvDRLuM8su
-        1niOjxnQ=; b=NqhFWMnVCcxQHZPlXyLw0n7dKBIX2C8Jsn5W9axT3zoFM/sTGxj
-        LnECOWQ4SqR878gxfxPCxd/HgY2M/ZSbwbVr59gkl42U4aJlAMfk+/nf5HWLok5S
-        e3DpNyYJTIdf2aBgi3JKEFdxgXf7MBIn8FFLAX/yKQU+0BNkxyrM7f3+jJpcgL8i
-        RT571MYz/JY1HNPzAuOz205Os1PT3HqMHwmHoCBW7rgwjKs8r/FC3f8HO3qvgboS
-        VO6elqDybO+zYZa17Ka72MvynEGydL+3iuFv90+tXt1xVRedRjgyKeVVGg64hwe+
-        mUiM5PggvTS7Qbdthzpd3EN5s9TMrLuiFyg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1694740845; x=1694827245; bh=pmP7OP8Teh0wQAibyNwOhpBxRHvDRLuM8su
-        1niOjxnQ=; b=jE3sXdcqMRKGAL+0avRoWasTzWML+Ek8m0C6HJCGg+2+rMqgiaT
-        XX2cw0J9LpAzI2nVaYHletTIve0xGkLbQ14U1g5SdxegqbKPow4EjcMV1cUokrCS
-        0OuobbOJjUAwzDw4deAmvx4qmzXr8EBiXCdykPwlfKxray0HP+FlaURGnvcLyxmS
-        6Eo8xEl6/7jt8/kTEueJjK/UKnUmiZtTk88/gUtHva+fiSGqS2EQajs2jsEky1Ie
-        BBnrG/0/bproKk9CGIQvpWAeUnd4DGISXc78UHFeAtbDxBoSzRc0gCje6ns2Pvz2
-        EYvXhiPuUCih68Wu89aareqB/caTtuEJ5LQ==
-X-ME-Sender: <xms:bbEDZYz3U3uTLR6OF7JIrHAuZvoAx4RUgbKJ3vVGIZfnlANqXm0ptw>
-    <xme:bbEDZcRKLtg5DwDicCJKun8Q_0GJVrPKEmn6KY731dYv6OTYSJoPkX2IrTiLS_w9l
-    Vjd8SADVrvI>
-X-ME-Received: <xmr:bbEDZaVF8n4NWE0ArebMmg-JLA22gNAsyxaDbHesyOUcUewFUuTuexn0MI7ht7_cd2onncGuFsroYEH0Pb3nDJ__ndAXmV_2SfXwQJsbAiGlRwTfLoH2>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epgedvteevvdefiedvueeujeegtedvheelhfehtefhkefgjeeuffeguefgkeduhfejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:bbEDZWhRuUaBVlLzmQ4jUJKO7tqQJqZTWkxt77y288tkZSdyYlt2iw>
-    <xmx:bbEDZaDdLhT6HMc2k2fZDM9QIw3s7zbQJg36_CFvpt1-wGQQnpx3cw>
-    <xmx:bbEDZXK5eEOluEb2yRcMaBRsmQTOojCZbpvpl4aQJbDepopwt3y9zQ>
-    <xmx:bbEDZSuc5We0fdnIICrw3rnOkCmJE4mHp84VZCqYZ4V5RwbPqhXb3A>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Sep 2023 21:20:40 -0400 (EDT)
-Message-ID: <904a8d17-b6df-e294-fcf6-6f95459e1ffa@themaw.net>
-Date:   Fri, 15 Sep 2023 09:20:38 +0800
+        Thu, 14 Sep 2023 21:23:34 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9992100
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:23:29 -0700 (PDT)
+X-QQ-mid: bizesmtp75t1694740940t8kew929
+Received: from [192.168.70.112] ( [125.75.40.56])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 15 Sep 2023 09:22:17 +0800 (CST)
+X-QQ-SSF: 01200000000000907000000A0000000
+X-QQ-FEAT: znfcQSa1hKY4h3agG1U0orjKrbIsys7Af2fhfVGMjIYYI96qPTRd00OoX5Ahh
+        s/Hwo3MO4iRDUbk6kFmosuZiDx4uxSfgvGHRXnv3HXrw25f0HM6I97R0zojs3pNvZG/8Vlz
+        dmK7ZtXOlrpe6K+Fh7XGkx4JV0DkWlPy0BHXkqQxkv8mbYCryolZbTQ8VJAUDn1yH44Yms6
+        V+ljQNiEXhb9JqHWZa13vkJdIyUuyZrjfptTEUDBh2/pdtXPUQX4uIb+jXoW5xyYUu2hkDi
+        LHQOa6frdnm3Iu0vKxw0mUB5pv7fxf7JtVSPA/AawI5rSh+B2e5tsaL+3E7PhxIYTw0TdS7
+        c/cYJtQCWEZHUXFTuY=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13761634547373889057
+Message-ID: <B4EC5520E6B64383+2324a0e9-db14-421b-876f-2d4f2f2f746d@tinylab.org>
+Date:   Fri, 15 Sep 2023 09:22:17 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 0/3] quering mount attributes
-Content-Language: en-US
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>
-References: <20230913152238.905247-1-mszeredi@redhat.com>
- <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] Kconfig: Add dependencies of POWER_RESET for x86
+Content-Language: en-GB
+To:     Dave Hansen <dave.hansen@intel.com>, tglx@linutronix.de,
+        mingo@redhat.com
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, falcon@tinylab.org,
+        w@1wt.eu, linux@weissschuh.net
+References: <cover.1694687048.git.tanyuan@tinylab.org>
+ <0f2cbd3026357a3936c0853057ed41b63db83d59.1694687048.git.tanyuan@tinylab.org>
+ <f2642936-75b7-6c64-f3d6-ef3bf7fd8a31@intel.com>
+From:   Yuan Tan <tanyuan@tinylab.org>
+In-Reply-To: <f2642936-75b7-6c64-f3d6-ef3bf7fd8a31@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/9/23 14:47, Amir Goldstein wrote:
-> On Wed, Sep 13, 2023 at 6:22 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
->> Implement the mount querying syscalls agreed on at LSF/MM 2023.  This is an
->> RFC with just x86_64 syscalls.
->>
->> Excepting notification this should allow full replacement for
->> parsing /proc/self/mountinfo.
-> Since you mentioned notifications, I will add that the plan discussed
-> in LFSMM was, once we have an API to query mount stats and children,
-> implement fanotify events for:
-> mount [mntuid] was un/mounted at [parent mntuid],[dirfid+name]
+
+On 9/15/2023 12:09 AM, Dave Hansen wrote:
+> On 9/14/23 03:36, Yuan Tan wrote:
+>> x86 and x86_64's power off depends on ACPI and PCI to work. Enable them
+>> when POWER_RESET is set for convenience.
+> I'm a bit confused by this.
 >
-> As with other fanotify events, the self mntuid and dirfid+name
-> information can be omitted and without it, multiple un/mount events
-> from the same parent mntuid will be merged, allowing userspace
-> to listmnt() periodically only mntuid whose child mounts have changed,
-> with little risk of event queue overflow.
->
-> The possible monitoring scopes would be the entire mount namespace
-> of the monitoring program or watching a single mount for change in
-> its children mounts. The latter is similar to inotify directory children watch,
-> where the watches needs to be set recursively, with all the weight on
-> userspace to avoid races.
+> Which code is this referring to, exactly?  Are you saying that no x86
+> system can power off or reset unless it supports ACPI or PCI?
 
-It's been my belief that the existing notification mechanisms don't
+Yes, after testing on qemu-system-x86_64 and qemu-system-i386, I found 
+that x86 can only power off when it enable ACPI and PCI.
 
-quite fully satisfy the needs of users of these calls (aka. the need
+I wanted to test nolibc based on tinyconfig and found it hard to find 
+the dependence to enable poweroff.
 
-I found when implementing David's original calls into systemd).
-
-
-Specifically the ability to process a batch of notifications at once.
-
-Admittedly the notifications mechanism that David originally implemented
-
-didn't fully implement what I found I needed but it did provide for a
-
-settable queue length and getting a batch of notifications at a time.
-
-
-Am I mistaken in my belief?
-
-
-Don't misunderstand me, it would be great for the existing notification
-
-mechanisms to support these system calls, I just have a specific use case
-
-in mind that I think is important, at least to me.
-
-
-Ian
 
