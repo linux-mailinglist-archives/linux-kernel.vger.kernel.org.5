@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F08097A2ACA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB467A2ACC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237863AbjIOW5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S237824AbjIOW6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237822AbjIOW4g (ORCPT
+        with ESMTP id S237887AbjIOW63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:56:36 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB587AF;
-        Fri, 15 Sep 2023 15:56:31 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c0db66af1bso21049085ad.2;
-        Fri, 15 Sep 2023 15:56:31 -0700 (PDT)
+        Fri, 15 Sep 2023 18:58:29 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0E0101
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:58:23 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3ab244f2c89so1745089b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694818591; x=1695423391; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IYhaJs0QfjNPt5yJIDvqz/fYTXFTi+vd06sH5X+6Upk=;
-        b=NftQiGoljlLi6Mb7XayJj3Mit0Kqie62TZFBWksy/z1gqKSVnwNnQQtx4vEeFJO/Ga
-         3fWAS+mARs1o48dOGTInWphKsufD9ogmUzXlEBAo0kN18xGjbVstbtBaTagFsb4HKlqx
-         yCg0xfVEyF2PIUSOhGywIBeIT6vi2jJ78gQBbpv/C204vLC5KMuwggr4M/SD1QIf+U6n
-         /wY2y9MuVXiFxp0TgRohUsuMPB1Lm5w+14ZQuVEwofZSn+ciifXH0Y2RVJCgfBDbcrzV
-         XX76h7OGtLGtEWvSFkzyE+5HDorWdxKlQA5w3P2DeR6oRklkQRi3N+UnLpmJqeMRWM7K
-         pXYQ==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1694818703; x=1695423503; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/WHC5fOtD0kGcTh6VRyI5qWBD4SEzsqeup1TPivNbvs=;
+        b=OdjkJiyFMrXalMwrXFau6hKQVB52qNz8EVi7lqutJseRpsRVgx718mLPbjfFbtNWO8
+         oJowf/xE2+a4Zu148KBUGpT6wvPY98UgCSWWguqq1A8f2q6IKmfG7YKNWjrGeHqWyDB1
+         WDovKENnv+5nkUxFYuN83PLo5dYrUI3aHWxmllrDzfBsKkryVukMpi7IHTAE4MFtdz9O
+         Tm6/uoPYld4V1aAc2/VFLe6ko+jrj8BrrpN2V8HyB/vsJJ3ya5Lluf3DZZDW9tqq1kKp
+         g8JnvCaf7jPPz27uklAq8U87Oa1EEYM7sRma4Olak5LRJBmBCKANh8huPqfYXrLTzd0W
+         5C7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694818591; x=1695423391;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IYhaJs0QfjNPt5yJIDvqz/fYTXFTi+vd06sH5X+6Upk=;
-        b=bhxiduAsynhqHxaIqxI/a6GSJ9eMC0dMlouoF2GaDiQ6Q3ffhCNO9A/FnRN1smotS8
-         g0v7+PMEDgxpv1mNjre8mZOmTCzpF9AazCgs1AhnW+O8fQWn6iQcuvpsATEIqcFzvLSV
-         cL2iF7Yvsmwi/GW1K/I4RyuCcT8OPxBhlesbeG7YOhK/TvQfripcTwHKJm5/w2+zCR2j
-         EgdbHJQ9V8u0UzAq2Fxg/0FNkkiLWtOLlWvRD3zEyI93ItcE7boTSlBedz7q1HJSN5Bl
-         siLmvkAXKnEt7ZlQB+4A3K7ZRejDAWnDbd+CdIjZ29lWe3rIzXoR1k61kqVmJ+He+IIK
-         RO5w==
-X-Gm-Message-State: AOJu0YyKZAkGmv5XjemjP9UsEIj/Dzhtavnu+wnSmayO7rR1thRK/f4X
-        hfIOlheQgIKmrUcedPfGrOo=
-X-Google-Smtp-Source: AGHT+IFd3bG3L2tySHG9ogSRmoQU14yC4ccoLWfU63vyX1xXbz3gIiKyPMBfB/wthO0+kqOBqPG0rQ==
-X-Received: by 2002:a17:902:da8e:b0:1c0:c640:3f3e with SMTP id j14-20020a170902da8e00b001c0c6403f3emr3508643plx.42.1694818591014;
-        Fri, 15 Sep 2023 15:56:31 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b001b898595be7sm3981989plj.291.2023.09.15.15.56.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 15:56:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 15 Sep 2023 15:56:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc:     Guenter Roeck <groeck7@gmail.com>,
-        David Ober <dober6023@gmail.com>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jdelvare@suse.com, corbet@lwn.net, David Ober <dober@lenovo.com>
-Subject: Re: [PATCH] hwmon:Add MEC172x Micro Chip driver for Lenovo
- motherboards
-Message-ID: <68c6df3f-f83b-48da-9ee2-351995479915@roeck-us.net>
-References: <20230915150340.301067-1-dober6023@gmail.com>
- <8a566102-5ea6-4449-9083-8feebe711065@roeck-us.net>
- <TYZPR03MB59949F797738F5B1B8638278BDF6A@TYZPR03MB5994.apcprd03.prod.outlook.com>
- <55f22980-b47a-4a22-8f19-2b0a5b4e6a1a@app.fastmail.com>
+        d=1e100.net; s=20230601; t=1694818703; x=1695423503;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/WHC5fOtD0kGcTh6VRyI5qWBD4SEzsqeup1TPivNbvs=;
+        b=lW9f5cmWO8MG0Vc+tPJ7H0sArRPUHKKSjM9h5PcKFUBAh4w4pAKSYMt2GvEi8KLE1h
+         ypX6POYeVQxIr6tCsqYdSRa48+SVSmLzOgsIdt/lDzKueR9g79857m8uBaEYLgCQ/Pg+
+         MRnlm8kn5nHWgSKjjUdhGhkG2C5qTsrK+kSA6SYSPaU0/AFW6HUQH6g17oVXkByeEURU
+         5Y/EEwCFNi+N6Z457o+RJz0W8AK79TWb23qDbXIaCUIWkFI5yfzUmx0zielV7jeiQ8wO
+         NJZ2xMlGivrdRP60jaoF7v3Llw0jYPVkEaUMjZiKrfxHS/aJIymD8E/6a+S/96VBZdLG
+         +qSQ==
+X-Gm-Message-State: AOJu0YzKJMyJJ7A0WXE6W9ccRwfHdIHk58dSJ0sqopOWDBlioCIF/fyY
+        0Z6Mqd6Yp7KxvolFIBWiMShg3Q==
+X-Google-Smtp-Source: AGHT+IEuqrYQMqef82/PipZbhtXVCMFgEyXx7i3f2X9kjkSxUC9q1/Eud8UjS7MXweE4dh5yn2uVXg==
+X-Received: by 2002:a05:6808:aa8:b0:3a7:4f89:5b6d with SMTP id r8-20020a0568080aa800b003a74f895b6dmr2995025oij.58.1694818702982;
+        Fri, 15 Sep 2023 15:58:22 -0700 (PDT)
+Received: from ?IPV6:2804:7f1:e2c2:58f9:c053:39fb:8dc4:3de5? ([2804:7f1:e2c2:58f9:c053:39fb:8dc4:3de5])
+        by smtp.gmail.com with ESMTPSA id c21-20020aca1c15000000b003a9a28f6ec7sm1994473oic.52.2023.09.15.15.58.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 15:58:22 -0700 (PDT)
+Message-ID: <4deec0bc-1eee-4853-8683-767a278f9e0a@mojatatu.com>
+Date:   Fri, 15 Sep 2023 19:58:18 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55f22980-b47a-4a22-8f19-2b0a5b4e6a1a@app.fastmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: sched: drr: dont intepret cls results when asked to
+ drop
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Pedro Tammela <pctammela@mojatatu.com>,
+        Ma Ke <make_ruc2021@163.com>, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230915104156.3406380-1-make_ruc2021@163.com>
+ <CANn89iJyktWcztc76Pw16MP-k-DfSjstW+WFgRxwUat7p25CGw@mail.gmail.com>
+ <16461255-c2c0-2ffd-f031-5b7a1f67bf7e@mojatatu.com>
+ <CANn89i++j0-QJ1WE=RO4_ucN9k-DgqK52jLSTcz_s_DmFiAnFw@mail.gmail.com>
+ <CAM0EoMmzCBewv4hfWQrNb+gaO_+aR7jnMbsQScN+FEchTdWXmw@mail.gmail.com>
+Content-Language: en-US
+From:   Victor Nogueira <victor@mojatatu.com>
+In-Reply-To: <CAM0EoMmzCBewv4hfWQrNb+gaO_+aR7jnMbsQScN+FEchTdWXmw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,75 +82,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 06:43:02PM -0400, Mark Pearson wrote:
-> Hi Guenter,
-> 
-> > From: Guenter Roeck <groeck7@gmail.com> on behalf of Guenter Roeck 
-> > On Fri, Sep 15, 2023 at 11:03:40AM -0400, David Ober wrote:
-> >> This addition adds in the ability for the system to scan the
-> >> MEC172x EC chip in Lenovo ThinkStation systems to get the
-> >> current fan RPM speeds and the Maximum speed value for each
-> >> fan also provides the current CPU and DIMM thermal status
-> >>
-> >> Signed-off-by: David Ober <dober6023@gmail.com>
-> >>
-> >> Written by David Ober from Lenovo using this gmail address since
-> >> my corporate email address does not comply with git email
-> >
-> > FWIW, this needs to be after '---'
-> >
-> > Anyway, thinking about this submission makes me even more concerned.
-> >
-> > This isn't really a driver for MEC172x; it is simply a driver
-> > accessing an EC on a set of PCs and/or laptops from Lenovo
-> > which uses a vertain API for communication between EC and main
-> > CPU.
-> >
-> > Such ECs are typically accessed through ACPI. Yet, in this driver
-> > there is no mention of ACPI, much less any protection against
-> > parallel use by ACPI code (that access lock in get_ec_reg() doesn't
-> > even protect against parallel access from userspace, much less
-> > against parallel access from other drivers or ACPI, for example
-> > by using request_region() to reserve the used memory ranges).
-> >
-> > There needs to be explanations and clarifications
-> > - Why this driver will only be used for communication with MEC172X
-> >   based chips, and why the exact EC chip is relevant in the first place
-> >   to be mentioned as much as it is.
-> > - How it is guaranteed that the EC is not and will never be accessed
-> >   through ACPI.
-> > - How it is guaranteed that there will never be any other kernel drivers
-> >   accessing the chip.
-> >
-> I assume for this we just need confirmation from the BIOS team that this is how it will be handled and it's intentional by design?
-> 
-> Agreed this is normally done by ACPI, but my understanding is that it's not the case on these particular workstation platforms. FWIW Windows is also doing access by a separate driver. 
-> I'm not sure why the design is done this way but will confirm to make sure.
-> 
-> With regards to guaranteeing that no other kernel drivers access the chip - I'm not sure how we can ensure that. Or do you mean if another vendor is using this chip but with different platform IDs and want to use a similar driver? 
-> For this case we can make the driver generic (rename it mec172x.c) so others could add their platform support in the future (the platform IDs will be unique). Either that or I can confirm with Microchip if this particular chip is Lenovo specific.
-
-This has nothing to do with the microcontroller you use as EC,
-and you can not tell anyone that they must not use the same
-microcontroller in their system.
-
-If the chip is not accessed from another driver, you can use
-request_region() to reserve the memory space used by the chip.
-
-Guenter
 
 
+On 15/09/2023 19:55, Jamal Hadi Salim wrote:
+> On Fri, Sep 15, 2023 at 11:06 AM Eric Dumazet <edumazet@google.com> wrote:
+>>
+>> On Fri, Sep 15, 2023 at 5:03 PM Pedro Tammela <pctammela@mojatatu.com> wrote:
+>>>
+>>> On 15/09/2023 09:55, Eric Dumazet wrote:
+>>>> On Fri, Sep 15, 2023 at 12:42 PM Ma Ke <make_ruc2021@163.com> wrote:
+>>>>>
+>>>>> If asked to drop a packet via TC_ACT_SHOT it is unsafe to
+>>>>> assume res.class contains a valid pointer.
+>>>>>
+>>>>> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+>>>>> ---
+>>>>>    net/sched/sch_drr.c | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/net/sched/sch_drr.c b/net/sched/sch_drr.c
+>>>>> index 19901e77cd3b..2b854cb6edf9 100644
+>>>>> --- a/net/sched/sch_drr.c
+>>>>> +++ b/net/sched/sch_drr.c
+>>>>> @@ -309,6 +309,8 @@ static struct drr_class *drr_classify(struct sk_buff *skb, struct Qdisc *sch,
+>>>>>           *qerr = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
+>>>>>           fl = rcu_dereference_bh(q->filter_list);
+>>>>>           result = tcf_classify(skb, NULL, fl, &res, false);
+>>>>> +       if (result == TC_ACT_SHOT)
+>>>>> +               return NULL;
+>>>>>           if (result >= 0) {
+>>>>>    #ifdef CONFIG_NET_CLS_ACT
+>>>>>                   switch (result) {
+>>>>> --
+>>>>> 2.37.2
+>>>>>
+>>>>
+>>>>    I do not see a bug, TC_ACT_SHOT is handled in the switch (result) just fine
+>>>> at line 320 ?
+>>>
+>>> Following the code path (with CONFIG_NET_CLS_ACT=n in mind), it looks
+>>> like there are a couple of places which return TC_ACT_SHOT before
+>>> calling any classifiers, which then would cause some qdiscs to look into
+>>> a uninitialized 'struct tcf_result res'.
+>>> I could be misreading it... But if it's the problem the author is trying
+>>> to fix, the obvious way to do it would be:
+>>>          struct tcf_result res = {};
+>>
+>> CONFIG_NET_CLS_ACT=n, how come TC_ACT_SHOT could be used ?
+>>
+>> Can we get rid of CONFIG_NET_CLS_ACT, this seems obfuscation to me at
+>> this point.
+> 
+> The problem is the verdict vs return code are intermixed - not saying
+> this was fixing anything useful.
+> We discussed this in the past after/during commit
+> caa4b35b4317d5147b3ab0fbdc9c075c7d2e9c12
+> Victor worked on a patch to resolve that. Victor, maybe revive that
+> patch and post as RFC?
 
-> 
-> Let me know if I'm misunderstanding or missing something obvious here. Ack on reserving the region.
-> 
-> >> ---
-> >>  drivers/hwmon/Kconfig             |  10 +
-> >>  drivers/hwmon/Makefile            |   1 +
-> >>  drivers/hwmon/lenovo-ec-sensors.c | 471 ++++++++++++++++++++++++++++++
-> >
-> > Documentation missing.
-> Ack. I assume under Documentation/hwmon
-> 
-> Thanks for the review
-> Mark
+Okk, will review, rebase on top of net-next and post.
+
+cheers,
+Victor
