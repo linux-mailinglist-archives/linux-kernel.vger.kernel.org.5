@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67317A1866
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD987A1867
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbjIOIN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        id S233254AbjIOIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbjIOIMz (ORCPT
+        with ESMTP id S233080AbjIOIMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Sep 2023 04:12:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECEB2D40;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD41A2D41;
         Fri, 15 Sep 2023 01:12:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5A27FC433AB;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 64DDFC32774;
         Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694765530;
-        bh=kytao0PWdxX8sYdPf9r1aM1MbXR7fYVBdukGUXys20Q=;
+        bh=p+tfRZ3pQvswdqiustDmxA1N43Os4gY9YGvnB/EY5Ho=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=lwTODKPfoEAuKhHTN81uMBYG4mkp1NbEFbSblXAtnNjNmKU2oN4uxzkhBylRQCmkF
-         YZ4iiI9nOx4o5aq4LWHfOIjFvUg13bWVOfcwRpbxkHi4JTI9550cqT8bz/jnZaUBRE
-         g+3i2+VyCijVM9zAIp5KhjJ/1zmYAzR8gAJKwpB9J5LCznVjGsUdJFHQ3IEz9ZLAlb
-         nVXtP7GxPzeEPGWqH/V5SZAuybos2Nemz2sud5A5j11qXScrWSqXz8aZ9W4pcLq0Ga
-         THFjTyZ+jqmawW/0sVeMYt6IlmOWHf+kqCLduL5BtLkD0pwxYsdRXnte37xZrRwfpy
-         F3lzHrg88qZLg==
+        b=vPgmoq5JXp3l322/VeHyVhFKrGb7qUVL8Ys6yKEMNAZ2f2aTnVyxfNarvTsfl6khR
+         GPjh0iQFEyAsbeuRg9FEJ0AZNpgQrpGO/8sMKgzvQIg3bSVzLPbbPcpXYvjhnLrowN
+         wYYyEDj4jgZHBK/bKYRE1Ap5QsVZv2LquSJ3YWOkzu5rrNSnqNIzPoJ8L7X1Luq2qB
+         V+7UMnAKmZhtNtsKsY6986X7Sl0Uz+U4ixfDrgNAqfyvMjps/brO1YL7K9eAwNCcD6
+         FZ9Xhp8R3L+DGLVacqodiSZWRaE4tUOJ7U4o3IXsDZP95ymj1wN/69S+XiMXCegUyJ
+         gTwGGurFqONVQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 44381EE6440;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 5020EEE6446;
         Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Fri, 15 Sep 2023 11:11:19 +0300
-Subject: [PATCH v4 37/42] pwm: ep93xx: drop legacy pinctrl
+Date:   Fri, 15 Sep 2023 11:11:20 +0300
+Subject: [PATCH v4 38/42] ata: pata_ep93xx: remove legacy pinctrl use
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230915-ep93xx-v4-37-a1d779dcec10@maquefel.me>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230915-ep93xx-v4-38-a1d779dcec10@maquefel.me>
 References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 To:     Hartley Sweeten <hsweeten@visionengravers.com>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Linus Walleij <linus.walleij@linaro.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=4387;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=5262;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=+H6BcjEvQkXUWks0Ze6NjUnpOpQSjctGux0k/huFsnE=; =?utf-8?q?b=3D4ZSAqM2B9rkP?=
- =?utf-8?q?doVMzsitu4JApJXe5FaHAPd0G+aRbm2On7hjJCnuB7exszsmHJP5ym+R1bI00c9+?=
- 38pDlJkDBHpMjLAmPRVXrqzG0A/rP27KhH8a68dyJghy70MoWiNx
+ bh=clQMc6L/CZou9DWOlYtYYIgz0cXmxb3L8zWECLnFfFI=; =?utf-8?q?b=3DN12UH/nt/oLW?=
+ =?utf-8?q?/ODhnWSBW1yzNMHRjkCNxZpvKAtMQpH9Y6CSwJvFlA49hqsDTQUj+sMbP8z0X5Sj?=
+ 7Rb5AdCXCa0QRwKS33sIBueC+Zk4bXaANLI73kDYHPDOxSI8o1ev
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -75,136 +76,176 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Drop legacy gpio request/free since we are using
-pinctrl for this now.
+Drop legacy acquire/release since we are using pinctrl for this now.
 
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- arch/arm/mach-ep93xx/core.c       | 42 ---------------------------------------
- drivers/pwm/pwm-ep93xx.c          | 18 -----------------
- include/linux/soc/cirrus/ep93xx.h |  4 ----
- 3 files changed, 64 deletions(-)
+ arch/arm/mach-ep93xx/core.c       | 72 ---------------------------------------
+ drivers/ata/pata_ep93xx.c         | 25 ++++----------
+ include/linux/soc/cirrus/ep93xx.h |  4 ---
+ 3 files changed, 6 insertions(+), 95 deletions(-)
 
 diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
-index c60a9d3632dd..9afc6095d1c1 100644
+index 9afc6095d1c1..66dba9b4a6f9 100644
 --- a/arch/arm/mach-ep93xx/core.c
 +++ b/arch/arm/mach-ep93xx/core.c
-@@ -576,48 +576,6 @@ void __init ep93xx_register_pwm(int pwm0, int pwm1)
- 		platform_device_register(&ep93xx_pwm1_device);
+@@ -778,78 +778,6 @@ void __init ep93xx_register_ide(void)
+ 	platform_device_register(&ep93xx_ide_device);
  }
  
--int ep93xx_pwm_acquire_gpio(struct platform_device *pdev)
+-int ep93xx_ide_acquire_gpio(struct platform_device *pdev)
 -{
 -	int err;
+-	int i;
 -
--	if (pdev->id == 0) {
--		err = 0;
--	} else if (pdev->id == 1) {
--		err = gpio_request(EP93XX_GPIO_LINE_EGPIO14,
--				   dev_name(&pdev->dev));
+-	err = gpio_request(EP93XX_GPIO_LINE_EGPIO2, dev_name(&pdev->dev));
+-	if (err)
+-		return err;
+-	err = gpio_request(EP93XX_GPIO_LINE_EGPIO15, dev_name(&pdev->dev));
+-	if (err)
+-		goto fail_egpio15;
+-	for (i = 2; i < 8; i++) {
+-		err = gpio_request(EP93XX_GPIO_LINE_E(i), dev_name(&pdev->dev));
 -		if (err)
--			return err;
--		err = gpio_direction_output(EP93XX_GPIO_LINE_EGPIO14, 0);
+-			goto fail_gpio_e;
+-	}
+-	for (i = 4; i < 8; i++) {
+-		err = gpio_request(EP93XX_GPIO_LINE_G(i), dev_name(&pdev->dev));
 -		if (err)
--			goto fail;
--
--		/* PWM 1 output on EGPIO[14] */
--		ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_PONG);
--	} else {
--		err = -ENODEV;
+-			goto fail_gpio_g;
+-	}
+-	for (i = 0; i < 8; i++) {
+-		err = gpio_request(EP93XX_GPIO_LINE_H(i), dev_name(&pdev->dev));
+-		if (err)
+-			goto fail_gpio_h;
 -	}
 -
--	return err;
+-	/* GPIO ports E[7:2], G[7:4] and H used by IDE */
+-	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_EONIDE |
+-				 EP93XX_SYSCON_DEVCFG_GONIDE |
+-				 EP93XX_SYSCON_DEVCFG_HONIDE);
+-	return 0;
 -
--fail:
--	gpio_free(EP93XX_GPIO_LINE_EGPIO14);
+-fail_gpio_h:
+-	for (--i; i >= 0; --i)
+-		gpio_free(EP93XX_GPIO_LINE_H(i));
+-	i = 8;
+-fail_gpio_g:
+-	for (--i; i >= 4; --i)
+-		gpio_free(EP93XX_GPIO_LINE_G(i));
+-	i = 8;
+-fail_gpio_e:
+-	for (--i; i >= 2; --i)
+-		gpio_free(EP93XX_GPIO_LINE_E(i));
+-	gpio_free(EP93XX_GPIO_LINE_EGPIO15);
+-fail_egpio15:
+-	gpio_free(EP93XX_GPIO_LINE_EGPIO2);
 -	return err;
 -}
--EXPORT_SYMBOL(ep93xx_pwm_acquire_gpio);
+-EXPORT_SYMBOL(ep93xx_ide_acquire_gpio);
 -
--void ep93xx_pwm_release_gpio(struct platform_device *pdev)
+-void ep93xx_ide_release_gpio(struct platform_device *pdev)
 -{
--	if (pdev->id == 1) {
--		gpio_direction_input(EP93XX_GPIO_LINE_EGPIO14);
--		gpio_free(EP93XX_GPIO_LINE_EGPIO14);
+-	int i;
 -
--		/* EGPIO[14] used for GPIO */
--		ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_PONG);
--	}
+-	for (i = 2; i < 8; i++)
+-		gpio_free(EP93XX_GPIO_LINE_E(i));
+-	for (i = 4; i < 8; i++)
+-		gpio_free(EP93XX_GPIO_LINE_G(i));
+-	for (i = 0; i < 8; i++)
+-		gpio_free(EP93XX_GPIO_LINE_H(i));
+-	gpio_free(EP93XX_GPIO_LINE_EGPIO15);
+-	gpio_free(EP93XX_GPIO_LINE_EGPIO2);
+-
+-
+-	/* GPIO ports E[7:2], G[7:4] and H used by GPIO */
+-	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_EONIDE |
+-			       EP93XX_SYSCON_DEVCFG_GONIDE |
+-			       EP93XX_SYSCON_DEVCFG_HONIDE);
 -}
--EXPORT_SYMBOL(ep93xx_pwm_release_gpio);
--
+-EXPORT_SYMBOL(ep93xx_ide_release_gpio);
 -
  /*************************************************************************
-  * EP93xx video peripheral handling
+  * EP93xx ADC
   *************************************************************************/
-diff --git a/drivers/pwm/pwm-ep93xx.c b/drivers/pwm/pwm-ep93xx.c
-index 361984ef4c0b..ac08bd0e7572 100644
---- a/drivers/pwm/pwm-ep93xx.c
-+++ b/drivers/pwm/pwm-ep93xx.c
-@@ -27,8 +27,6 @@
+diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+index 47686dc1fed6..bcf90e46bad4 100644
+--- a/drivers/ata/pata_ep93xx.c
++++ b/drivers/ata/pata_ep93xx.c
+@@ -928,28 +928,18 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 	void __iomem *ide_base;
+ 	int err;
  
- #include <asm/div64.h>
- 
--#include <linux/soc/cirrus/ep93xx.h>	/* for ep93xx_pwm_{acquire,release}_gpio() */
+-	err = ep93xx_ide_acquire_gpio(pdev);
+-	if (err)
+-		return err;
 -
- #define EP93XX_PWMx_TERM_COUNT	0x00
- #define EP93XX_PWMx_DUTY_CYCLE	0x04
- #define EP93XX_PWMx_ENABLE	0x08
-@@ -45,20 +43,6 @@ static inline struct ep93xx_pwm *to_ep93xx_pwm(struct pwm_chip *chip)
- 	return container_of(chip, struct ep93xx_pwm, chip);
+ 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		err = irq;
+-		goto err_rel_gpio;
+-	}
++	if (irq < 0)
++		return irq;
+ 
+ 	ide_base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem_res);
+-	if (IS_ERR(ide_base)) {
+-		err = PTR_ERR(ide_base);
+-		goto err_rel_gpio;
+-	}
++	if (IS_ERR(ide_base))
++		return PTR_ERR(ide_base);
+ 
+ 	drv_data = devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERNEL);
+-	if (!drv_data) {
+-		err = -ENOMEM;
+-		goto err_rel_gpio;
+-	}
++	if (!drv_data)
++		return -ENOMEM;
+ 
+ 	drv_data->pdev = pdev;
+ 	drv_data->ide_base = ide_base;
+@@ -1006,8 +996,6 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 
+ err_rel_dma:
+ 	ep93xx_pata_release_dma(drv_data);
+-err_rel_gpio:
+-	ep93xx_ide_release_gpio(pdev);
+ 	return err;
  }
  
--static int ep93xx_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
--{
--	struct platform_device *pdev = to_platform_device(chip->dev);
--
--	return ep93xx_pwm_acquire_gpio(pdev);
--}
--
--static void ep93xx_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
--{
--	struct platform_device *pdev = to_platform_device(chip->dev);
--
--	ep93xx_pwm_release_gpio(pdev);
--}
--
- static int ep93xx_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			    const struct pwm_state *state)
- {
-@@ -157,8 +141,6 @@ static int ep93xx_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -1019,7 +1007,6 @@ static int ep93xx_pata_remove(struct platform_device *pdev)
+ 	ata_host_detach(host);
+ 	ep93xx_pata_release_dma(drv_data);
+ 	ep93xx_pata_clear_regs(drv_data->ide_base);
+-	ep93xx_ide_release_gpio(pdev);
+ 	return 0;
  }
  
- static const struct pwm_ops ep93xx_pwm_ops = {
--	.request = ep93xx_pwm_request,
--	.free = ep93xx_pwm_free,
- 	.apply = ep93xx_pwm_apply,
- 	.owner = THIS_MODULE,
- };
 diff --git a/include/linux/soc/cirrus/ep93xx.h b/include/linux/soc/cirrus/ep93xx.h
-index 4327f66b7cf5..0df0f3322487 100644
+index 0df0f3322487..3212a145ae0f 100644
 --- a/include/linux/soc/cirrus/ep93xx.h
 +++ b/include/linux/soc/cirrus/ep93xx.h
-@@ -12,8 +12,6 @@ struct regmap;
+@@ -12,15 +12,11 @@ struct regmap;
  #define EP93XX_CHIP_REV_E2	7
  
  #if defined(CONFIG_EP93XX_SOC_COMMON)
--int ep93xx_pwm_acquire_gpio(struct platform_device *pdev);
--void ep93xx_pwm_release_gpio(struct platform_device *pdev);
- int ep93xx_ide_acquire_gpio(struct platform_device *pdev);
- void ep93xx_ide_release_gpio(struct platform_device *pdev);
+-int ep93xx_ide_acquire_gpio(struct platform_device *pdev);
+-void ep93xx_ide_release_gpio(struct platform_device *pdev);
  int ep93xx_i2s_acquire(void);
-@@ -21,8 +19,6 @@ void ep93xx_i2s_release(void);
+ void ep93xx_i2s_release(void);
  unsigned int ep93xx_chip_revision(void);
  
  #else
--static inline int ep93xx_pwm_acquire_gpio(struct platform_device *pdev) { return 0; }
--static inline void ep93xx_pwm_release_gpio(struct platform_device *pdev) {}
- static inline int ep93xx_ide_acquire_gpio(struct platform_device *pdev) { return 0; }
- static inline void ep93xx_ide_release_gpio(struct platform_device *pdev) {}
+-static inline int ep93xx_ide_acquire_gpio(struct platform_device *pdev) { return 0; }
+-static inline void ep93xx_ide_release_gpio(struct platform_device *pdev) {}
  static inline int ep93xx_i2s_acquire(void) { return 0; }
+ static inline void ep93xx_i2s_release(void) {}
+ static inline unsigned int ep93xx_chip_revision(void) { return 0; }
 
 -- 
 2.39.2
