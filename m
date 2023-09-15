@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2347A2196
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25567A219C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235721AbjIOO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        id S233243AbjIOO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbjIOO5o (ORCPT
+        with ESMTP id S229568AbjIOO6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:57:44 -0400
+        Fri, 15 Sep 2023 10:58:20 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2CC1BE6;
-        Fri, 15 Sep 2023 07:57:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5305C1BE6;
+        Fri, 15 Sep 2023 07:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694789858; x=1726325858;
+  t=1694789895; x=1726325895;
   h=date:from:to:cc:subject:in-reply-to:message-id:
    references:mime-version;
-  bh=rEf9Z4LNeh54fCUJ0cFYoLvWjBKytco8Ls7maBLYR6w=;
-  b=YcInYwXA7fq2V9FayK3s3ZfEueyKzhkJnDjV7dZTf2IbXRO1M5qeM8nY
-   kQqvIMwoOQ4bIQqc5BaWmBxoRDtZQmaP4fiYBGf5CKD3gl57kqggddNvf
-   W4vRLSrUBRvSeRQHZrL7kM75BTF6HvEuHwrJ6sfdZfjQf4kCaQ16VvjYa
-   306GFevNldy4oJtNkjfSgGG9Bjd2/7OfMQ8bUBjR8gSaF0oXHMatuSyTa
-   GCGN9B+h2OJ7csIpCndvCfitji/3tMk8Mi02krFjbQDVqGKtQoTa50ePa
-   +Kky1eAJlRm99lDXP3hWnVGWKyPtRwnAkN6BITybSuiKqTd6lMCBAVUj1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="410204121"
+  bh=2z/dkyd5Stib+6LmzNwLg0OjKOGPr/1NjgAbwJkJ+88=;
+  b=AfhE7lNDdF3FlEoqq0xiNx9/fJURdKFkr8i3Rw846Dih00TedPbpqVMz
+   dM6QLshuOVCvrYPLA/UmIFcRHydkMTnysFH4N/70OYinddO4wzWNHqGBv
+   idVF89RQtrhCoPf9fLfqyopXAr7Yqg+ZLLToQzD0My+qW8oiyMjAfdV7n
+   dYPgYA51GGqvFut014hhXfEv6TFinobMtIih653cmXY9Sj5mnpGDEmmBh
+   IH3Z7S0D6fUaBkU/TZcdw+eqr4f33chkdIozWpkN3q307riZfbQjHjE8N
+   3O6Dd6HBvPzN/V/ROKEVfmA9zrN7DdyWqgMXDOr2niwdDc1gaKM4HbgDY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="410204205"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="410204121"
+   d="scan'208";a="410204205"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:57:34 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:58:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="1075825956"
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="1075826203"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="1075825956"
+   d="scan'208";a="1075826203"
 Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:57:23 -0700
-Date:   Fri, 15 Sep 2023 17:57:19 +0300 (EEST)
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:58:01 -0700
+Date:   Fri, 15 Sep 2023 17:57:59 +0300 (EEST)
 From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 cc:     Hans de Goede <hdegoede@redhat.com>,
@@ -47,13 +47,13 @@ cc:     Hans de Goede <hdegoede@redhat.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Pearson <markpearson@lenovo.com>,
         Mark Gross <markgross@kernel.org>
-Subject: Re: [PATCH v1 1/2] platform/x86: think-lmi: Replace kstrdup() +
- strreplace() with kstrdup_and_replace()
-In-Reply-To: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <b97ac865-40a7-1278-1fa4-138fdc99f680@linux.intel.com>
-References: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 2/2] platform/x86: think-lmi: Use strreplace() to
+ replace a character by nul
+In-Reply-To: <20230913092701.440959-2-andriy.shevchenko@linux.intel.com>
+Message-ID: <227454d0-e33a-179c-b4df-1f486136ca6@linux.intel.com>
+References: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com> <20230913092701.440959-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1181405544-1694789845=:2347"
+Content-Type: multipart/mixed; boundary="8323329-2140016275-1694789883=:2347"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -67,142 +67,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1181405544-1694789845=:2347
+--8323329-2140016275-1694789883=:2347
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 8BIT
 
 On Wed, 13 Sep 2023, Andy Shevchenko wrote:
 
-> Replace open coded functionalify of kstrdup_and_replace() with a call.
+> We can replace
+> 	p = strchrnul(str, '$OLD');
+> 	*p = '\0';
+> with
+> 	strreplace(str, '$OLD', '\0');
+> that does the compatible modification without a need of the temporary variable.
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/platform/x86/think-lmi.c | 43 +++++++++++---------------------
->  1 file changed, 15 insertions(+), 28 deletions(-)
+>  drivers/platform/x86/think-lmi.c | 19 ++++---------------
+>  1 file changed, 4 insertions(+), 15 deletions(-)
 > 
 > diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-> index 79346881cadb..94a3c7a74bc4 100644
+> index 94a3c7a74bc4..2f20fafe7f55 100644
 > --- a/drivers/platform/x86/think-lmi.c
 > +++ b/drivers/platform/x86/think-lmi.c
-> @@ -15,7 +15,7 @@
->  #include <linux/errno.h>
->  #include <linux/fs.h>
->  #include <linux/mutex.h>
-> -#include <linux/string.h>
-> +#include <linux/string_helpers.h>
->  #include <linux/types.h>
->  #include <linux/dmi.h>
->  #include <linux/wmi.h>
-> @@ -432,13 +432,11 @@ static ssize_t new_password_store(struct kobject *kobj,
->  	if (!tlmi_priv.can_set_bios_password)
->  		return -EOPNOTSUPP;
+> @@ -198,14 +198,6 @@ static struct think_lmi tlmi_priv;
+>  static struct class *fw_attr_class;
+>  static DEFINE_MUTEX(tlmi_mutex);
 >  
-> -	new_pwd = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present, setting password won't work if it is present */
-> +	new_pwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_pwd)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present, setting password won't work if it is present */
-> -	strip_cr(new_pwd);
+> -/* ------ Utility functions ------------*/
+> -/* Strip out CR if one is present */
+> -static void strip_cr(char *str)
+> -{
+> -	char *p = strchrnul(str, '\n');
+> -	*p = '\0';
+> -}
 > -
->  	/* Use lock in case multiple WMI operations needed */
->  	mutex_lock(&tlmi_mutex);
+>  /* Convert BIOS WMI error string to suitable error code */
+>  static int tlmi_errstr_to_err(const char *errstr)
+>  {
+> @@ -411,7 +403,7 @@ static ssize_t current_password_store(struct kobject *kobj,
 >  
-> @@ -709,13 +707,11 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
->  	if (!setting->signature || !setting->signature[0])
->  		return -EACCES;
+>  	strscpy(setting->password, buf, setting->maxlen);
+>  	/* Strip out CR if one is present, setting password won't work if it is present */
+> -	strip_cr(setting->password);
+> +	strreplace(setting->password, '\n', '\0');
+>  	return count;
+>  }
 >  
-> -	passwd = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	passwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!passwd)
->  		return -ENOMEM;
+> @@ -921,7 +913,7 @@ static ssize_t display_name_show(struct kobject *kobj, struct kobj_attribute *at
+>  static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+>  {
+>  	struct tlmi_attr_setting *setting = to_tlmi_attr_setting(kobj);
+> -	char *item, *value, *p;
+> +	char *item, *value;
+>  	int ret;
 >  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(passwd);
-> -
->  	/* Format: 'Password,Signature' */
->  	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
->  	if (!auth_str) {
-> @@ -765,11 +761,10 @@ static ssize_t certificate_store(struct kobject *kobj,
->  		return ret ?: count;
+>  	ret = tlmi_setting(setting->index, &item, LENOVO_BIOS_SETTING_GUID);
+> @@ -934,8 +926,7 @@ static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *a
+>  		ret = -EINVAL;
+>  	else {
+>  		/* On Workstations remove the Options part after the value */
+> -		p = strchrnul(value, ';');
+> -		*p = '\0';
+> +		strreplace(value, ';', '\0');
+>  		ret = sysfs_emit(buf, "%s\n", value + 1);
 >  	}
+>  	kfree(item);
+> @@ -1418,7 +1409,6 @@ static int tlmi_analyze(void)
+>  	for (i = 0; i < TLMI_SETTINGS_COUNT; ++i) {
+>  		struct tlmi_attr_setting *setting;
+>  		char *item = NULL;
+> -		char *p;
 >  
-> -	new_cert = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_cert = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_cert)
->  		return -ENOMEM;
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_cert);
+>  		tlmi_priv.setting[i] = NULL;
+>  		ret = tlmi_setting(i, &item, LENOVO_BIOS_SETTING_GUID);
+> @@ -1435,8 +1425,7 @@ static int tlmi_analyze(void)
+>  		strreplace(item, '/', '\\');
 >  
->  	if (setting->cert_installed) {
->  		/* Certificate is installed so this is an update */
-> @@ -817,13 +812,11 @@ static ssize_t signature_store(struct kobject *kobj,
->  	if (!tlmi_priv.certificate_support)
->  		return -EOPNOTSUPP;
+>  		/* Remove the value part */
+> -		p = strchrnul(item, ',');
+> -		*p = '\0';
+> +		strreplace(item, ',', '\0');
 >  
-> -	new_signature = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_signature)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_signature);
-> -
->  	/* Free any previous signature */
->  	kfree(setting->signature);
->  	setting->signature = new_signature;
-> @@ -846,13 +839,11 @@ static ssize_t save_signature_store(struct kobject *kobj,
->  	if (!tlmi_priv.certificate_support)
->  		return -EOPNOTSUPP;
->  
-> -	new_signature = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_signature)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_signature);
-> -
->  	/* Free any previous signature */
->  	kfree(setting->save_signature);
->  	setting->save_signature = new_signature;
-> @@ -985,13 +976,11 @@ static ssize_t current_value_store(struct kobject *kobj,
->  	if (!tlmi_priv.can_set_bios_settings)
->  		return -EOPNOTSUPP;
->  
-> -	new_setting = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_setting)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_setting);
-> -
->  	/* Use lock in case multiple WMI operations needed */
->  	mutex_lock(&tlmi_mutex);
->  
-> @@ -1163,13 +1152,11 @@ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr
->  	if (!tlmi_priv.can_debug_cmd)
->  		return -EOPNOTSUPP;
->  
-> -	new_setting = kstrdup(buf, GFP_KERNEL);
-> +	/* Strip out CR if one is present */
-> +	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
->  	if (!new_setting)
->  		return -ENOMEM;
->  
-> -	/* Strip out CR if one is present */
-> -	strip_cr(new_setting);
-> -
->  	if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
->  		auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
->  				tlmi_priv.pwd_admin->password,
+>  		/* Create a setting entry */
+>  		setting = kzalloc(sizeof(*setting), GFP_KERNEL);
 > 
 
 Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
@@ -210,4 +157,4 @@ Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 -- 
  i.
 
---8323329-1181405544-1694789845=:2347--
+--8323329-2140016275-1694789883=:2347--
