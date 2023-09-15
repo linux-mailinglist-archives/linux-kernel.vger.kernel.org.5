@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF377A1934
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA2F7A1964
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbjIOIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
+        id S233413AbjIOIym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjIOIxR (ORCPT
+        with ESMTP id S233217AbjIOIyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:53:17 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BBFFB;
-        Fri, 15 Sep 2023 01:53:11 -0700 (PDT)
-Received: from [192.168.1.103] (31.173.84.123) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Fri, 15 Sep
- 2023 11:53:07 +0300
-Subject: Re: [PATCH v4 28/42] ata: pata_ep93xx: add device tree support
-To:     <nikita.shubin@maquefel.me>, Damien Le Moal <dlemoal@kernel.org>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-28-a1d779dcec10@maquefel.me>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <636daf51-8f5d-5fc5-2ca5-07900db064c9@omp.ru>
-Date:   Fri, 15 Sep 2023 11:53:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 15 Sep 2023 04:54:25 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA852728
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:54:16 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7135:da8b:ba1d:1a7c])
+        by albert.telenet-ops.be with bizsmtp
+        id m8uE2A00K3q21w7068uEY6; Fri, 15 Sep 2023 10:54:14 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh4aJ-003lFt-3P;
+        Fri, 15 Sep 2023 10:54:14 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh4ac-00Gdaj-4I;
+        Fri, 15 Sep 2023 10:54:14 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v4 01/41] MAINTAINER: Create entry for Renesas SH-Mobile DRM drivers
+Date:   Fri, 15 Sep 2023 10:53:16 +0200
+Message-Id: <7cbcec72214886b67afa8d724a9245661d8cd675.1694767208.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694767208.git.geert+renesas@glider.be>
+References: <cover.1694767208.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <20230915-ep93xx-v4-28-a1d779dcec10@maquefel.me>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [31.173.84.123]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 09/15/2023 08:20:17
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 179883 [Sep 15 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.123 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.123 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.123
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/15/2023 08:32:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 9/15/2023 7:21:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 11:11 AM, Nikita Shubin via B4 Relay wrote:
+Split off DRM drivers for Renesas SH-Mobile into its own entry, and add
+Geert Uytterhoeven as a maintainer.
 
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Add OF ID match table.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Kieran: do you want to join the club, too? ;-)
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+v4:
+  - No changes,
 
-[...]
+v3:
+  - No changes,
 
-MBR, Sergey
+v2:
+  - New.
+---
+ MAINTAINERS | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9ceab03332d749fc..70535048b6a96d55 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7015,7 +7015,7 @@ F:	drivers/gpu/host1x/
+ F:	include/linux/host1x.h
+ F:	include/uapi/drm/tegra_drm.h
+ 
+-DRM DRIVERS FOR RENESAS
++DRM DRIVERS FOR RENESAS R-CAR
+ M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+ M:	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+ L:	dri-devel@lists.freedesktop.org
+@@ -7026,7 +7026,15 @@ F:	Documentation/devicetree/bindings/display/bridge/renesas,dsi-csi2-tx.yaml
+ F:	Documentation/devicetree/bindings/display/bridge/renesas,dw-hdmi.yaml
+ F:	Documentation/devicetree/bindings/display/bridge/renesas,lvds.yaml
+ F:	Documentation/devicetree/bindings/display/renesas,du.yaml
+-F:	drivers/gpu/drm/renesas/
++F:	drivers/gpu/drm/renesas/rcar-du/
++
++DRM DRIVERS FOR RENESAS SHMOBILE
++M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++M:	Geert Uytterhoeven <geert+renesas@glider.be>
++L:	dri-devel@lists.freedesktop.org
++L:	linux-renesas-soc@vger.kernel.org
++S:	Supported
++F:	drivers/gpu/drm/renesas/shmobile/
+ F:	include/linux/platform_data/shmob_drm.h
+ 
+ DRM DRIVERS FOR ROCKCHIP
+-- 
+2.34.1
+
