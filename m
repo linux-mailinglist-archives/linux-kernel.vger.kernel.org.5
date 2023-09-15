@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E9F7A165A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358A37A165C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 08:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjIOGqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 02:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
+        id S232335AbjIOGrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 02:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjIOGqU (ORCPT
+        with ESMTP id S232151AbjIOGrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 02:46:20 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A52268F;
-        Thu, 14 Sep 2023 23:46:14 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rn4QK1BPZzVkxw;
-        Fri, 15 Sep 2023 14:43:21 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 14:46:11 +0800
-Subject: Re: [PATCH v15 0/2] add debugfs to migration driver
-To:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>
-CC:     <bcreeley@amd.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <20230901023606.47587-1-liulongfang@huawei.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <2fe9278c-2480-b718-8958-b52fa5c08eb8@huawei.com>
-Date:   Fri, 15 Sep 2023 14:46:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 15 Sep 2023 02:47:09 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54312708
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 23:47:03 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38F6krgV112928;
+        Fri, 15 Sep 2023 01:46:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694760413;
+        bh=5e/6Ce7vVJmSfy0L05izkNPmhmUIjdtio+jkh3g1ODI=;
+        h=From:To:CC:Subject:Date;
+        b=wha/9fke5ProGHzjxZll9ECxBEISRy6v4REqBtrL+nvPr6OtjPPbgSS+p79FxgdmI
+         EuFxIPyKrzuCdfwYK8Rj7Kvdafkjoy+X16e9HINUW3Z/ocAzqtAeXzkpzGARFMU/W7
+         Okll3Y4DdQx3X6yyEs3I3ZNmYuXCms8z+s40L0Pw=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38F6krMl043824
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Sep 2023 01:46:53 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Sep 2023 01:46:53 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Sep 2023 01:46:53 -0500
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38F6kota071619;
+        Fri, 15 Sep 2023 01:46:51 -0500
+From:   Neha Malcom Francis <n-francis@ti.com>
+To:     <nm@ti.com>, <ssantosh@kernel.org>, <t-konduru@ti.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <n-francis@ti.com>,
+        <u-kumar1@ti.com>
+Subject: [PATCH v2 0/2] Revamp k3-socinfo driver
+Date:   Fri, 15 Sep 2023 12:16:48 +0530
+Message-ID: <20230915064650.2287638-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230901023606.47587-1-liulongfang@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.110]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/1 10:36, liulongfang wrote:
-> Add a debugfs function to the migration driver in VFIO to provide
-> a step-by-step debugfs information for the migration driver.
-> 
-> Changes v14 -> v15
-> 	Update the output status value of live migration.
-> 
-> Changes v13 -> v14
-> 	Split the patchset and keep the vfio debugfs frame.
-> 
-> Changes v12 -> v13
-> 	Solve the problem of open and close competition to debugfs.
-> 
-> Changes v11 -> v12
-> 	Update loading conditions of vfio debugfs.
-> 
-> Changes v10 -> v11
-> 	Delete the device restore function in debugfs.
-> 
-> Changes v9 -> v10
-> 	Update the debugfs file of the live migration driver.
-> 
-> Changes v8 -> v9
-> 	Update the debugfs directory structure of vfio.
-> 
-> Changes v7 -> v8
-> 	Add support for platform devices.
-> 
-> Changes v6 -> v7
-> 	Fix some code style issues.
-> 
-> Changes v5 -> v6
-> 	Control the creation of debugfs through the CONFIG_DEBUG_FS.
-> 
-> Changes v4 -> v5
-> 	Remove the newly added vfio_migration_ops and use seq_printf
-> 	to optimize the implementation of debugfs.
-> 
-> Changes v3 -> v4
-> 	Change the migration_debug_operate interface to debug_root file.
-> 
-> Changes v2 -> v3
-> 	Extend the debugfs function from hisilicon device to vfio.
-> 
-> Changes v1 -> v2
-> 	Change the registration method of root_debugfs to register
-> 	with module initialization.
-> 
-> Longfang Liu (2):
->   vfio/migration: Add debugfs to live migration driver
->   Documentation: add debugfs description for vfio
-> 
->  Documentation/ABI/testing/debugfs-vfio | 25 ++++++++
->  MAINTAINERS                            |  1 +
->  drivers/vfio/Makefile                  |  1 +
->  drivers/vfio/vfio.h                    | 14 +++++
->  drivers/vfio/vfio_debugfs.c            | 80 ++++++++++++++++++++++++++
->  drivers/vfio/vfio_main.c               |  5 +-
->  include/linux/vfio.h                   |  7 +++
->  7 files changed, 132 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/ABI/testing/debugfs-vfio
->  create mode 100644 drivers/vfio/vfio_debugfs.c
-> 
+k3-socinfo driver doesn't account for difference series of silicon
+revisions instead of the typical 1.0, 2.0 etc case. This exception is
+currently already seen in J721E. This series aims to modify the driver
+to account for those exceptions as well as clean things up a bit.
 
-Hi, Alex.
-Is there anything else that needs to be modified in this patchset?
+Changes since v1:
+	- Nishanth:
+		- undo churning of family attribute
+		- remove unnecessary code relocation
+		- add Thejasvi to Signed-off-by as we are now similar to
+		  the initial attempt [1]
+		- separate out typo fixes to another patch (2/2)
 
-Thanks,
-Longfang.
+v1: https://lore.kernel.org/linux-arm-kernel/20230914074426.1901226-1-n-francis@ti.com/T/
+
+[1] https://lore.kernel.org/all/20230607080349.26671-1-t-konduru@ti.com/
+
+Neha Malcom Francis (2):
+  soc: ti: k3-socinfo: Revamp driver to accommodate different rev
+    structs
+  soc: ti k3-socinfo: Fix typo
+
+ drivers/soc/ti/k3-socinfo.c | 73 +++++++++++++++++++++++++++++--------
+ 1 file changed, 57 insertions(+), 16 deletions(-)
+
+-- 
+2.34.1
+
