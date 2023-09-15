@@ -2,143 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096EA7A1BB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556977A1BAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbjIOKFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
+        id S234060AbjIOKFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234129AbjIOKFT (ORCPT
+        with ESMTP id S231341AbjIOKFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:05:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BB4268A;
-        Fri, 15 Sep 2023 03:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694772178; x=1726308178;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dlwnheLHWrheCZf+0lnqyF5y1gAk0XJDuzApxL+C0IU=;
-  b=gI3engqurk/g/497fI/CT66pBwFbuwP1ckNDl9K2h2Uy2QkoNG0CwqNJ
-   dYUpHTZbDlP4VueUD0xrGldn52YsMKtzD2NyJAY3FwL/TCI2y4qwMath2
-   CNDkw8G/Grkp0XCDg4cPL4W9RKYojpbup0TNYvjZypnYax3JpJ4yNmOeB
-   EN1iNesEl3AT/9Ann9Dkgj4uEJm8cWVHyyRAEZmLSzFRQh0EXyLz/ryA9
-   Z7xhOW36Fw2rgkt4UL7MgGM5NWDIP/T+zAsRH19yXFqDm7FQc7tTce9Ee
-   0i8KvbKa3a5vzIklEItn0c570dG4m/e62VxuTooHwnM+SUZzEongmdns1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381938741"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="381938741"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 02:54:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744916324"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="744916324"
-Received: from pglc00032.png.intel.com ([10.221.207.52])
-  by orsmga002.jf.intel.com with ESMTP; 15 Sep 2023 02:54:33 -0700
-From:   Rohan G Thomas <rohan.g.thomas@intel.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        fancer.lancer@gmail.com
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rohan G Thomas <rohan.g.thomas@intel.com>
-Subject: [PATCH net-next v6 2/2] net: stmmac: Tx coe sw fallback
-Date:   Fri, 15 Sep 2023 17:54:17 +0800
-Message-Id: <20230915095417.1949-3-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230915095417.1949-1-rohan.g.thomas@intel.com>
-References: <20230915095417.1949-1-rohan.g.thomas@intel.com>
+        Fri, 15 Sep 2023 06:05:07 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC3F4489
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:01:57 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 22AFB3200976;
+        Fri, 15 Sep 2023 06:01:33 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 15 Sep 2023 06:01:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1694772092; x=1694858492; bh=bvSMhElmkv
+        fznLgl5c8sT6LHpxhlXaxMtsom3WPqn90=; b=LxYlaN4zOGQGQUwkb1LyLGwkeO
+        oJovUpMcq0UmdwZdbrXVcSgY8C88+EkFur+bRxXEfCNJqPzH9GJSNeDVJd73BCv/
+        cpu9CfV7rqFw6/AUD9rlH5cyeHjMCaHO93aEu2dRhdWtzHZoWXmXN40DCFw6PHof
+        YL8hrZkpbJbj0ed9wagM6z2om9B5vyeelJmLVDMYxOaOC1m4hJR04cH4S3qlORMk
+        IgcoKVCgqRAfPF9jP2bIhsXSmpS7R0NtUp9yc6N0TOOpwGZKDmgcoFXDyh3E5JbW
+        Wbe2V9m2VpWPy5AZh92DfnwUTKug1+3VyDV0tRaYaQwqCWJgSWcX5D/d1JXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694772092; x=1694858492; bh=bvSMhElmkvfznLgl5c8sT6LHpxhlXaxMtso
+        m3WPqn90=; b=Gra5pVKw+y2CYGY36PVUM5k/4dYK5r6i03lSBNW/TLgjlp9pX87
+        IVxTMF80XPeG+q06Xuhpxfd7Wh6QHTCONTh+zLcVcW4TrhnDhDlawM9PUNPCBIhr
+        d1FGKWVApK9j+qh+TK+5f94gM2s+MZKVeLMbYvtIn5ZLyYc1c4bV11rb8KM/qvkW
+        kMaJS8z3xNQnoQKoQT2csO9OpGO9WobNAslZLv3kJE/jMTfSSeE5kWyZp1DX7m/K
+        9cz4+7YEzG1vfENceI/vY9l8UsZIbK9PIE3CtoYWhU9JSy6ycDI6vnFuWp1XQ2w0
+        ZsbggwZneUMLD427+xuDqHK5VsQuwKwNt4w==
+X-ME-Sender: <xms:fCsEZanFVIqBvQ7q8gYiQkAh4JkkG-h-BBNSkmcIrhDtjHD-mrk4XA>
+    <xme:fCsEZR0bcB1idUNe9AYUw3s-S5z4O1za4lQQ0JcjRt_jpW_i2xW_vI06AkDS5KZ6-
+    iWDDDJFFxD08dL0NH8>
+X-ME-Received: <xmr:fCsEZYrxM1103zQK4lYokoDZ7Q7g-drKVRUrEbh6499eR_CMuVqjnroUsFVAa9lZu6929fwsj1fVniFbf296cDiZU3GCFhdifQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejvddgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
+    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
+    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:fCsEZek_O_b0L0eqvJDQ0XHkH8ZTquWCpeFYvcTpC4-lfjvzK1SxDg>
+    <xmx:fCsEZY1QtUeBZkQ9-Uo4_H3w3ng26K5rTnkVRg0la4B60syP3Y03_g>
+    <xmx:fCsEZVuWdHeEc8HKBHhQVO0KUavRoszaX-XyiYVeo_gw1txrbmCw2g>
+    <xmx:fCsEZd_19Q2J1LdJRH1sPN2-Ux9u3xDBL6rpigZ1sg49JlOevdQ3Xw>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Sep 2023 06:01:31 -0400 (EDT)
+Date:   Fri, 15 Sep 2023 19:01:28 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] firewire fixes for 6.6-rc2
+Message-ID: <20230915100128.GA140388@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sw fallback of tx checksum calculation for those tx queues that
-don't support tx checksum offloading. DW xGMAC IP can be synthesized
-such that it can support tx checksum offloading only for a few
-initial tx queues. Also as Serge pointed out, for the DW QoS IP, tx
-coe can be individually configured for each tx queue.
+Hi Linus,
 
-So when tx coe is enabled, for any tx queue that doesn't support
-tx coe with 'coe-unsupported' flag set will have a sw fallback
-happen in the driver for tx checksum calculation when any packets to
-be transmitted on these tx queues.
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     | 10 ++++++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c |  3 +++
- include/linux/stmmac.h                                |  1 +
- 3 files changed, 14 insertions(+)
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 2206789802bf..9201ed778ebc 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -4401,6 +4401,16 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
- 	WARN_ON(tx_q->tx_skbuff[first_entry]);
- 
- 	csum_insertion = (skb->ip_summed == CHECKSUM_PARTIAL);
-+	/* DWMAC IPs can be synthesized to support tx coe only for a few tx
-+	 * queues. In that case, checksum offloading for those queues that don't
-+	 * support tx coe needs to fallback to software checksum calculation.
-+	 */
-+	if (csum_insertion &&
-+	    priv->plat->tx_queues_cfg[queue].coe_unsupported) {
-+		if (unlikely(skb_checksum_help(skb)))
-+			goto dma_map_err;
-+		csum_insertion = !csum_insertion;
-+	}
- 
- 	if (likely(priv->extend_desc))
- 		desc = (struct dma_desc *)(tx_q->dma_etx + entry);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 0f28795e581c..a09014c9e7d0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -276,6 +276,9 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
- 			plat->tx_queues_cfg[queue].use_prio = true;
- 		}
- 
-+		plat->tx_queues_cfg[queue].coe_unsupported =
-+			of_property_read_bool(q_node, "snps,coe-unsupported");
-+
- 		queue++;
- 	}
- 	if (queue != plat->tx_queues_to_use) {
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index ce89cc3e4913..c0079a7574ae 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -139,6 +139,7 @@ struct stmmac_rxq_cfg {
- 
- struct stmmac_txq_cfg {
- 	u32 weight;
-+	bool coe_unsupported;
- 	u8 mode_to_use;
- 	/* Credit Base Shaper parameters */
- 	u32 send_slope;
--- 
-2.25.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.6-rc2
+
+for you to fetch changes up to 3c70de9b580998e5d644f4e80a9944c30aa1197b:
+
+  Revert "firewire: core: obsolete usage of GFP_ATOMIC at building node tree" (2023-09-15 18:37:52 +0900)
+
+----------------------------------------------------------------
+firewire fixes for 6.6-rc2
+
+A change applied to v6.5 kernel brings an issue that usual GFP allocation
+is done in atomic context under acquired spin-lock. Let us revert it.
+
+----------------------------------------------------------------
+Takashi Sakamoto (1):
+      Revert "firewire: core: obsolete usage of GFP_ATOMIC at building node tree"
+
+ drivers/firewire/core-device.c   | 2 +-
+ drivers/firewire/core-topology.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+
+Regards
+
+Takashi Sakamoto
