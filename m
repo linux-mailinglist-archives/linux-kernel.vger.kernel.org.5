@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3147A7A1F1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665A07A1EBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbjIOMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S234854AbjIOMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234979AbjIOMqi (ORCPT
+        with ESMTP id S229841AbjIOMbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:46:38 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7D02D51;
-        Fri, 15 Sep 2023 05:46:01 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38FCjtxX024939;
-        Fri, 15 Sep 2023 07:45:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694781955;
-        bh=BRW8EyUjjI/j4vI+qIaQK8OauJ8jbUUuCaWiIex1n10=;
-        h=From:To:CC:Subject:Date;
-        b=bb2fptpeTtxGKySsY07ibStDdulLhF4a78Hc1m2NH7IR2YBxwcn0FOGzUgmyOQwdW
-         4AFHTApmAKgx+wyOfJNMEmtfqEER5ltNeGGi9GVC6ZoYdSXWbjAI+BPPa/LbP4ofVu
-         hM5CJ75xWpRHeNbzrSmQfJ6eQKo0JgXKjvWBlb/Q=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38FCjtRp100203
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Sep 2023 07:45:55 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
- Sep 2023 07:45:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 15 Sep 2023 07:45:55 -0500
-Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38FCjqOc016962;
-        Fri, 15 Sep 2023 07:45:52 -0500
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dhruva Gole <d-gole@ti.com>, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] spi: spi-cadence-quadspi: Fix missing unwind goto warnings
-Date:   Fri, 15 Sep 2023 18:01:04 +0530
-Message-ID: <20230915123103.2493640-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 15 Sep 2023 08:31:47 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84466DD
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:31:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so3350847e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694781100; x=1695385900; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gMZ7XUyzdHt60v82Ptduk4zBdtsS1JXuRnupgoYfUWQ=;
+        b=lhZOeovQFXZVBL3URJRGtu5KHJB+5MqtmY9C2EeHTEc/hfrxPFwpk403gATNVpn/yQ
+         CuI2GzGrOBJGN+neVml0mymy+3VSBnzFs82+rlSyu8AQb9fGeUbl6pRbalrWaJihvE3x
+         IpUv2tXY2k4m6i8UZ8/fy1BuILa+e7Tr8M+kB8SSjsxvjRoMpfkF7RusWgpDHXPcDyU6
+         QqFyj15S5wjTeEdMoVybfrfK0m4i3lIXpD+yRYmAUkHKjzw2i2SiNOa83QUxCjjGUhuV
+         /ggdHkI0P2TdruCQEjUD9lEpLPI9GBTrLy7CZ81P8mc23ThtgpWoXRAzxrlADpQ6E4bP
+         Typg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694781100; x=1695385900;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gMZ7XUyzdHt60v82Ptduk4zBdtsS1JXuRnupgoYfUWQ=;
+        b=IdJNYUZ+Qx9/bM0uAstD+TQFP8yhqQ+UdWn9mANu5nG3sqdldpsvnZLBiDwPWhwk3+
+         MpqmrvNLcvADg+pzdBV/uvpgKdWmo15Ht6saftJFbpuVhhQeb4Id+FE3b+LogDpsEsnw
+         piU9RNaLeo8YEezTDtt2YHQIuFYU+72S2/CbRyavQ51k5+3tt7qREdP4K8RSsSekv1DP
+         Zih/E4BARqfOd3nMVYgpPIiTY6YGH/dtpXsmcAnCTdhwRZcRwEha0vsxJnnPCx4qmBgE
+         6X8HfiL/M2opjFnrmjCjBROINp/3N2bqbU6DB/ALA5jhOpmjje6xp67gPjDS4JXIC9ZR
+         vAbA==
+X-Gm-Message-State: AOJu0YxmUmO0TvI4/a6x6LtuoGMbQNB4ue70E6goMLacZvvzHw2l72+a
+        dN4+X3QBYTjFIFg3ZMZTFi9zOA==
+X-Google-Smtp-Source: AGHT+IEUty0fFIjHdSAMWxYfy5TdEZT0g4uBgez+KWHoD6Z0vZwAT79FlizQj4+A0bnqz+vkYYn/QQ==
+X-Received: by 2002:a05:6512:2390:b0:502:f740:220 with SMTP id c16-20020a056512239000b00502f7400220mr1279087lfv.58.1694781098880;
+        Fri, 15 Sep 2023 05:31:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id u24-20020a056402065800b005231e3d89efsm2194149edx.31.2023.09.15.05.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 05:31:37 -0700 (PDT)
+Message-ID: <d798e6b7-3a3d-cd80-6504-8ed78c46b740@linaro.org>
+Date:   Fri, 15 Sep 2023 14:31:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 4/5] dt-bindings: firmware: qcom,scm: document IPQ5018
+ compatible
+Content-Language: en-US
+To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Robert Marko <robimarko@gmail.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_gurus@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     computersforpeace@gmail.com
+References: <20230815140030.1068590-1-robimarko@gmail.com>
+ <20230815140030.1068590-4-robimarko@gmail.com>
+ <0bb12177-e8f0-1873-4ffb-9a0df0a9f24d@linaro.org>
+ <9a723cc7-bc85-7dac-8923-e4e1974ded85@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <9a723cc7-bc85-7dac-8923-e4e1974ded85@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the smatch warnings that were recently introduced in the runtime pm
-patch [0]:
-drivers/spi/spi-cadence-quadspi.c:1882 cqspi_probe() warn: missing
-unwind goto?
+On 15/09/2023 14:23, Sricharan Ramabadhran wrote:
+> 
+> 
+> On 8/16/2023 11:40 AM, Krzysztof Kozlowski wrote:
+>> On 15/08/2023 15:59, Robert Marko wrote:
+>>> It seems that IPQ5018 compatible was never documented in the bindings.
+>>>
+>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>> ---
+>>>   Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
+>>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+> 
+>   I earlier posted this here, [1]
+> 
+>   [1] https://www.spinics.net/lists/linux-mmc/msg77015.html
 
-[0] https://lore.kernel.org/all/20230829062706.786637-1-d-gole@ti.com/
+So it should be applied... although status said superseded. No clue,
+please check with Bjorn.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202309140543.03dMbMM5-lkp@intel.com/
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
+https://patchwork.kernel.org/project/linux-arm-msm/list/?series=770464&state=*
 
-Link: https://lore.kernel.org/r/20230915123103.2493640-1-d-gole@ti.com
-
-Tested locally using the following cmd:
-make -j32 ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- drivers/spi/spi-cadence-quadspi.o CHECK="smatch -p=kernel" C=1 W=1
-
- drivers/spi/spi-cadence-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 4828da4587c5..e04f257c1067 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1879,7 +1879,7 @@ static int cqspi_probe(struct platform_device *pdev)
- 
- 	ret = devm_pm_runtime_enable(dev);
- 	if (ret)
--		return ret;
-+		goto probe_setup_failed;
- 
- 	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
- 	pm_runtime_use_autosuspend(dev);
--- 
-2.34.1
+Best regards,
+Krzysztof
 
