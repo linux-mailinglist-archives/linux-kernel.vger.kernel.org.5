@@ -2,56 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FAF7A2855
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6697A2861
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237295AbjIOUoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
+        id S237386AbjIOUpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjIOUne (ORCPT
+        with ESMTP id S237405AbjIOUp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:43:34 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EF418D;
-        Fri, 15 Sep 2023 13:43:29 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B6DA766072BE;
-        Fri, 15 Sep 2023 21:43:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694810607;
-        bh=kDX5Yws24juaWMmgBhmpCp9TZ/myYfWBHnXaef5fOzw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BcQZmvB+w08zKhoo4FheZE8owlX0OKnJvSQ0LbZemQ16N8hSod/HTg5oNF4aCPm4L
-         buZB4IaIefT5RKPyEuUxX0TtUx5ul7l8zHmAvl1pdQl55g4nUN/dBjqEs09FbjiweM
-         elDm88eSf7ksoxdDV9qlS7q84AV9w9mRvH3Ldxw4Ozka+eeX5lnLN8h29/X9K5l8Ri
-         uPmaLwLj6Gjx3n8lelEmnUXNekpZlN0L55eoX8yzRzs9G2l0WRoSYLRzE88lN3SWqb
-         sbA61++Msiocxf+orUrE6MwGIa/WsrtO7K4mAVsDsld5AEP5LtSO+WPmdfYJipM6CD
-         dGyS7fS5kXysg==
-Received: by mercury (Postfix, from userid 1000)
-        id 16726106044B; Fri, 15 Sep 2023 22:43:25 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 22:43:25 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Grant B Adams <nemith592@gmail.com>
-Cc:     linux-omap@vger.kernel.org, tony@atomide.com,
-        Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] power: supply: Fix tps65217-charger vs vbus irq
- conflict
-Message-ID: <20230915204325.mokj2nmdwjdekxfo@mercury.elektranox.org>
-References: <20230823085430.6610-1-nemith592@gmail.com>
- <20230823085430.6610-2-nemith592@gmail.com>
+        Fri, 15 Sep 2023 16:45:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBB299;
+        Fri, 15 Sep 2023 13:45:23 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FJuHn5000812;
+        Fri, 15 Sep 2023 20:44:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=TwFdUJBoBZv3Jp0TbnAsoL/CZRjAWRikLTj/EymlHiY=;
+ b=pEKuRDpvlw7ZKG+NV4FuTr9/vFxVHglZM50wCiSCYqioskILmTox/6cPy5cMGVMNG10f
+ 0D2DBvfmD3i52lGGQCkNYu2VkvNddBXUykBuD9VYKcpNwb/iIt/PRJLyzaQp1/Ua5rHV
+ yFeN10SZAbHQwcj1XvuWHZkYNDWPLQoowtmGcSbLW3ycs0BethoiUpxajA9sUH/MJXJg
+ MhiveogFRtFdM0QWMN1gNEIwLRjts3ri0UFI+CAoXpz4oszFGKDat0aAqqODDggyOG6S
+ ZH8Gocf9WsbGR9yzVVBu38/A+pW3gCx33GH8UZMVlIswJi8E1HsT6sKI6vZ/Lt17E5R1 7w== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g2xj7ur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:44:36 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKiZYZ021895
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:44:35 GMT
+Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 15 Sep 2023 13:44:35 -0700
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+To:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>, Hai Li <hali@codeaurora.org>
+CC:     <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/msm/dsi: skip the wait for video mode done if not applicable
+Date:   Fri, 15 Sep 2023 13:44:25 -0700
+Message-ID: <20230915204426.19011-1-quic_abhinavk@quicinc.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="flopxljazsb4eo7e"
-Content-Disposition: inline
-In-Reply-To: <20230823085430.6610-2-nemith592@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JHAsSsF9gtJJnr0se6qijXhe-eXgAngG
+X-Proofpoint-ORIG-GUID: JHAsSsF9gtJJnr0se6qijXhe-eXgAngG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ phishscore=0 impostorscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150186
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,68 +81,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+dsi_wait4video_done() API waits for the DSI video mode engine to
+become idle so that we can transmit the DCS commands in the
+beginning of BLLP. However, with the current sequence, the MDP
+timing engine is turned on after the panel's pre_enable() callback
+which can send out the DCS commands needed to power up the panel.
 
---flopxljazsb4eo7e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+During those cases, this API will always timeout and print out the
+error spam leading to long bootup times and log flooding.
 
-Hi,
+Fix this by checking if the DSI video engine was actually busy before
+waiting for it to become idle otherwise this is a redundant wait.
 
-On Wed, Aug 23, 2023 at 10:54:29AM +0200, Grant B Adams wrote:
-> Enabling the tps65217-charger driver/module causes an interrupt conflict
-> with the vbus driver resulting in a probe failure.
-> The conflict is resolved by changing both driver's threaded interrupt
-> request function from IRQF_ONESHOT to IRQF_SHARED.
->=20
-> Signed-off-by: Grant B Adams <nemith592@gmail.com>
-> ---
+changes in v2:
+	- move the reg read below the video mode check
+	- minor fixes in commit text
 
-Your commit message does not explain why IRQF_ONESHOT is dropped;
-IRQF_ONESHOT and IRQF_SHARED are not mutually exclusive.
+Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/34
+Fixes: a689554ba6ed ("drm/msm: Initial add DSI connector support")
+Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+---
+ drivers/gpu/drm/msm/dsi/dsi_host.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
--- Sebastian
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+index 0c4ec0530efc..1a2afe31fa86 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -1075,9 +1075,21 @@ static void dsi_wait4video_done(struct msm_dsi_host *msm_host)
+ 
+ static void dsi_wait4video_eng_busy(struct msm_dsi_host *msm_host)
+ {
++	u32 data;
++
+ 	if (!(msm_host->mode_flags & MIPI_DSI_MODE_VIDEO))
+ 		return;
+ 
++	data = dsi_read(msm_host, REG_DSI_STATUS0);
++
++	/* if video mode engine is not busy, its because
++	 * either timing engine was not turned on or the
++	 * DSI controller has finished transmitting the video
++	 * data already, so no need to wait in those cases
++	 */
++	if (!(data & DSI_STATUS0_VIDEO_MODE_ENGINE_BUSY))
++		return;
++
+ 	if (msm_host->power_on && msm_host->enabled) {
+ 		dsi_wait4video_done(msm_host);
+ 		/* delay 4 ms to skip BLLP */
+-- 
+2.40.1
 
->  drivers/power/supply/tps65217_charger.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supp=
-ly/tps65217_charger.c
-> index a4bc9f2a10bc..6f68becdbfd0 100644
-> --- a/drivers/power/supply/tps65217_charger.c
-> +++ b/drivers/power/supply/tps65217_charger.c
-> @@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_dev=
-ice *pdev)
->  	for (i =3D 0; i < NUM_CHARGER_IRQS; i++) {
->  		ret =3D devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
->  						tps65217_charger_irq,
-> -						IRQF_ONESHOT, "tps65217-charger",
-> +						IRQF_SHARED, "tps65217-charger",
->  						charger);
->  		if (ret) {
->  			dev_err(charger->dev,
-> --=20
-> 2.34.1
->=20
-
---flopxljazsb4eo7e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUEweIACgkQ2O7X88g7
-+pqBFg//TKpyJrIWxj3CQDqbQlO4Ws8EmT0gAZP8DVzjXF7KZn+RDJ1tCu4QarWl
-iOJR72KDBckp2eMwJ3sFdm9MVclv+Z6SvQ9mCv21pCcsZR5I4lClaVHK+FxO23en
-vapSg22m8mMtPV7EJsr5UXj4uvRGvBtvZy6VyFc+Afk+u/EmHj8ZUxX27w2oEL/f
-xyFBYrXDGkf7hEdzaY9nU9dHjD9qQef9sDE8RlC6GAi4iahW8SysrGhEtPB8yYUR
-/HYVAg5S8FEmB+tt5arQO2lkn7Fxz1RKVZlPUaRxx/3HQ2vTqmWBvpG5JkNwezVS
-hcD1L0jvBByGxLI/oLNxLW6t56QM6Pz4YkxWdqLJbM+vQiTFaULcKpqxNiNhPBzX
-UagvMg8uvGLxZ0rUMg3+EQ1JrkKUAJikZaeoYxUealnAa53i6ozKKG5Y92PeLYyK
-yhRtX8FgxKeOT5GyBAn8xT6EUFexigdZ+CZYmsB7B/aWz3S9+rXPNJ5Fxo29g+Bh
-H36olrsqE8hqkD1uWrr0dqoIQ0MoWvZxczeiIuMQqtn8yDe24ntxYSAyq62EwPp8
-fEVjJwtCsJfqQOiACXtbipOjg0BFY4cwHHJOGy2f9mzL9pJAOTxJq7vWCcZJZaSl
-EoPuk2/NG2C6UPB2paj19j/WJAWlgWeKZX1KDP/B/FRCqTMnAZg=
-=fRtN
------END PGP SIGNATURE-----
-
---flopxljazsb4eo7e--
