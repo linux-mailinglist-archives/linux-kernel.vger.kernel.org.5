@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DDA7A1D44
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95297A1D4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbjIOLSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        id S233573AbjIOLSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjIOLSQ (ORCPT
+        with ESMTP id S230153AbjIOLSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:18:16 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55C89101;
-        Fri, 15 Sep 2023 04:18:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91C241FB;
-        Fri, 15 Sep 2023 04:18:47 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD0133F5A1;
-        Fri, 15 Sep 2023 04:18:07 -0700 (PDT)
-Message-ID: <b269f9d0-9d7a-4d06-a897-c173e1eb2d0e@arm.com>
-Date:   Fri, 15 Sep 2023 12:17:56 +0100
+        Fri, 15 Sep 2023 07:18:35 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424381B8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:18:25 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31ff2ce9d4cso485992f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694776703; x=1695381503; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ziVc+rtn+8qCfab0pW6dHdwsWNPjZ4WKT9IYLhgHUbs=;
+        b=Qr4PENK69EPGv/oguyeWKmN26fML2ukFJwolGFuTw8S0zD46EU+ANjPv1ZbXKWb43q
+         B7PUIgeSxHj+fHNkvC/9yyaoGv6JyCPZ1mCKJ0JYCcCS7DW6ekqKA2BFkrPIt6QAFd4t
+         2FY4oB/6bOJkKquva2Qr/wscao6g9yoJ27PgSMNoVd35lQcvBLTCRZMAn0qN6ZfMtr6C
+         r5n8U14mE5gvlY5wzXLlAwpEpPFMeB87c7tckg5atxFdwHUQNV5iZ/4ZCxYvQb203+91
+         hkDAha0kp8ZxAjbBKkKUvZPBBkczP2CEQHts5IhGig7gvkg/HiUvcNs8klNTH/xZrXXT
+         5awA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694776703; x=1695381503;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ziVc+rtn+8qCfab0pW6dHdwsWNPjZ4WKT9IYLhgHUbs=;
+        b=SBjB36ac4qhSrSYKfjd8fu3ZmJbihluyf9/aIdsokX8pR/C99AXVGwcej67nLKPZqX
+         tye56STdLWOA49CRh9azFEGtvyMqCqwc0EhPFqoI5fonjPKGC7FbsZ2S07gzwwuo0d3X
+         2PL6twOkJp1hV4Thpp56MyZdejLSwYlzodQCjci0Qea/2RkBRc1xfCip6VOhzkV12c0H
+         TruuwC6RjuivOgm/4CWwijOOGyX+z066OaKwPK+qYyp8WUhBVHzlprJgUH1RwZhIRq7Q
+         HZxbEo3ZyKmDZQDJR4pEWWkFo5S24zpvwYPOYj0JdDjIk9FVGeEz/aVMpFtp5gyu6H9N
+         Yycg==
+X-Gm-Message-State: AOJu0YweSYNPp7tOYgVPbu4pAekL1O4fBrvV+eRhXhqHJzJK7HFnXpW3
+        XVDdyccr6uKXPyf2hp6LACSL5A==
+X-Google-Smtp-Source: AGHT+IEKQn+nZjBWSB3TGQyOP/D1nrIbfCnlJO1lZ0KeXdDZvnXyjSj7LFWoSMjG2My6gei9PoYuCQ==
+X-Received: by 2002:adf:f842:0:b0:31f:e19e:a2c with SMTP id d2-20020adff842000000b0031fe19e0a2cmr1180771wrq.32.1694776703692;
+        Fri, 15 Sep 2023 04:18:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id e17-20020adffc51000000b0031435731dfasm4159793wrs.35.2023.09.15.04.18.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 04:18:23 -0700 (PDT)
+Message-ID: <880d17f8-ee9b-fc7a-114f-542962022b2a@linaro.org>
+Date:   Fri, 15 Sep 2023 13:18:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v3 2/3] perf pmus: Simplify perf_pmus__find_core_pmu()
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 31/42] dt-bindings: wdt: Add ts72xx
 Content-Language: en-US
-To:     linux-perf-users@vger.kernel.org, irogers@google.com,
-        acme@kernel.org
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230913153355.138331-1-james.clark@arm.com>
- <20230913153355.138331-3-james.clark@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230913153355.138331-3-james.clark@arm.com>
+To:     nikita.shubin@maquefel.me,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+ <20230915-ep93xx-v4-31-a1d779dcec10@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915-ep93xx-v4-31-a1d779dcec10@maquefel.me>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,86 +82,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 13/09/2023 16:33, James Clark wrote:
-> Currently the while loop always either exits on the first iteration with
-> a core PMU, or exits with NULL on heterogeneous systems or when not all
-> CPUs are online.
+On 15/09/2023 10:11, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> Both of the latter behaviors are undesirable for platforms other than
-> Arm so simplify it to always return the first core PMU, or NULL if none
-> exist.
+> Add DT binding for Technologic Systems TS-72xx watchdog.
 > 
-> This behavior was depended on by the Arm version of
-> pmu_metrics_table__find(), so the logic has been moved there instead.
-> 
-> Suggested-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Turns out the "Simple expression parser" test is failing on
-heterogeneous arm systems without this patch. I didn't realise there was
-a dependency and should have put the commits the other way round. I will
-leave the error message here in case someone bumps into it, but no fix
-is required apart from applying the remaining patches in this set:
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
- $ perf test expr -v
-  4: Simple expression parser                                        :
- --- start ---
- test child forked, pid 4902
- Using CPUID 0x00000000410fd070
- FAILED tests/expr.c:83 get_cpuid
- test child finished with -1
- ---- end ----
- Simple expression parser: FAILED!
+Best regards,
+Krzysztof
 
-
-> ---
->  tools/perf/arch/arm64/util/pmu.c |  8 +++++++-
->  tools/perf/util/pmus.c           | 14 +-------------
->  2 files changed, 8 insertions(+), 14 deletions(-)
-> 
-> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
-> index 3d9330feebd2..3099f5f448ba 100644
-> --- a/tools/perf/arch/arm64/util/pmu.c
-> +++ b/tools/perf/arch/arm64/util/pmu.c
-> @@ -10,8 +10,14 @@
->  
->  const struct pmu_metrics_table *pmu_metrics_table__find(void)
->  {
-> -	struct perf_pmu *pmu = perf_pmus__find_core_pmu();
-> +	struct perf_pmu *pmu;
-> +
-> +	/* Metrics aren't currently supported on heterogeneous Arm systems */
-> +	if (perf_pmus__num_core_pmus() > 1)
-> +		return NULL;
->  
-> +	/* Doesn't matter which one here because they'll all be the same */
-> +	pmu = perf_pmus__find_core_pmu();
->  	if (pmu)
->  		return perf_pmu__find_metrics_table(pmu);
->  
-> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> index cec869cbe163..64e798e68a2d 100644
-> --- a/tools/perf/util/pmus.c
-> +++ b/tools/perf/util/pmus.c
-> @@ -596,17 +596,5 @@ struct perf_pmu *evsel__find_pmu(const struct evsel *evsel)
->  
->  struct perf_pmu *perf_pmus__find_core_pmu(void)
->  {
-> -	struct perf_pmu *pmu = NULL;
-> -
-> -	while ((pmu = perf_pmus__scan_core(pmu))) {
-> -		/*
-> -		 * The cpumap should cover all CPUs. Otherwise, some CPUs may
-> -		 * not support some events or have different event IDs.
-> -		 */
-> -		if (RC_CHK_ACCESS(pmu->cpus)->nr != cpu__max_cpu().cpu)
-> -			return NULL;
-> -
-> -		return pmu;
-> -	}
-> -	return NULL;
-> +	return perf_pmus__scan_core(NULL);
->  }
