@@ -2,133 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BB17A24EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00BF7A24F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbjIORgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S236502AbjIORgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236319AbjIORfz (ORCPT
+        with ESMTP id S236563AbjIORgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:35:55 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD7530D7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:39 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c081a44afso16005007b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694799278; x=1695404078; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJC1MpNA41XSWsvvv83w1mhfvF8TpSh3HYkxNC3IYos=;
-        b=jgFa188BP2SILiAWR0B1X6XsgVn7BslM7Us/SDpdwusZSBp4uy5fa4ZWfRopAT4u0s
-         SAbSQVVtOHZAdekCInESBcRinfCezDiagRudwdZzr6sfx2YnmOWO780oo5cNQjItwNZu
-         vI4Efah3+uA29/9yQAucvuKOYPKkU23xhlAvyFxhb95D5dFCX0T3WgjKkKM1nJPfWPNu
-         fhI/ZZiwKXYkgWbsSwJVaqK4dH61qq8WaGms2VBnhb0soPQeGPeS9xh/Kp4NS+S4kkcm
-         DaqUJNBLgEFroMV4tPSOPEH/AUKlk+hQS/pkr2armRbxVfkSpASKcedhRvk1q9J+ZwBI
-         atXw==
+        Fri, 15 Sep 2023 13:36:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35ECF30EB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694799285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I8Q7NvhKrNUpZ1wyEQLmlUvhyw6KnFkbyTR3LCH8q2k=;
+        b=coG/S+6AOpIr3hdP172ULAULP/f9nLfARDJlwDZ/1VafrYy2zdS/gD5w3g0PvFmO961QTl
+        0bTklqesOwgiEOyfEajxtCM9x2CgkcBNOF3rFFIdnIYxS9JknZwuGpAyUVX8qF2dne5KmP
+        dw9ttlP/D8YzRjAUuOLGyQ0JGyaCYcc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-492-fXSFP-y7MpCuauT5hfTXhw-1; Fri, 15 Sep 2023 13:34:44 -0400
+X-MC-Unique: fXSFP-y7MpCuauT5hfTXhw-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-414d7fb4859so25587431cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:34:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694799278; x=1695404078;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJC1MpNA41XSWsvvv83w1mhfvF8TpSh3HYkxNC3IYos=;
-        b=WyNvZO5fZsNN3m2vpQITqDtOUJ3D3kG01z/TVjROcyiSVntsHX6kNm224rmuKD6lXC
-         uSeRgpJsPcRc2j2SCjq8S9n8kaeDSSCpHCQ296CiCd71G5CFBK7mX2lQ/PfJoDLodgQD
-         fj9F9mZHCZoWeEgPxJ8o9OBUfR/CL6Bd23OMn/IlIWTimHy3TsnuR2tOXJWOtfvK91NC
-         9W/FuHY7AZn9oMCNmxeO0wcAOK90/fGltia/HhXIlbFG4wKWq7PJ3lidbXMiLlhmrX9U
-         JskQ20z275lanbDAeHDsa2ul5IMo8+OSr1sJTkBlxkR/SmOgxtqxynXgV26ujb5B4Bln
-         sVTA==
-X-Gm-Message-State: AOJu0YwTFXt2gB9VnSXzn1aCsCYdEngfvw3Q8FgslaR7BgAXfmz07Kw/
-        NFnHQW4L4ZVjjXig8VOZZx7FbTcr3L33znqDWrI=
-X-Google-Smtp-Source: AGHT+IE9UAT+K+q9ytinkFyMWYt0GrL3lw/3Oewo8P4+2sZ76QzEaJefM4cOvauekXpyLQEY5rvHcSIjPxsuBoor+qM=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:7f04:6b3:b482:dd2c])
- (user=ndesaulniers job=sendgmr) by 2002:a81:ac05:0:b0:59b:ea2e:23f0 with SMTP
- id k5-20020a81ac05000000b0059bea2e23f0mr60367ywh.2.1694799278777; Fri, 15 Sep
- 2023 10:34:38 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 10:34:28 -0700
-In-Reply-To: <20230915-bpf_collision-v3-0-263fc519c21f@google.com>
-Mime-Version: 1.0
-References: <20230915-bpf_collision-v3-0-263fc519c21f@google.com>
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694799273; l=1657;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=kgMWLZDqu9UqeTMmXyEC7cxyK+tytDiO2sXAmlSWnBI=; b=7Fop81vSJL23p4VMu5VzZxe8rIQuLhkNpBVhUlwKmPRY48Ma16klxeWZnl8lr8TXo/sQ0gPcx
- t/omK9dcidKAX6N/6NMBikRu7Gj1erxfAt6dZLA53bmu2mXDriFKJow
-X-Mailer: b4 0.12.3
-Message-ID: <20230915-bpf_collision-v3-2-263fc519c21f@google.com>
-Subject: [PATCH  bpf  v3 2/2] bpf: Fix BTF_ID symbol generation collision in tools/
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Marcus Seyfarth <m.seyfarth@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1694799283; x=1695404083;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I8Q7NvhKrNUpZ1wyEQLmlUvhyw6KnFkbyTR3LCH8q2k=;
+        b=ooyNl1YRVeqjjFbJMldpGKhBWiOWhdSfQ8I44sF/P8AxJR/W8wycAYfxdLF/8owc9h
+         /2Mtf1Y6rf/7d6uvgHzBgV0mvKf/o674EvvAWsAY10KO5wgygf9MjJy/3cuxer9L6eqc
+         ecwCIsDofWRsufcHR8F4SPteUGQXoDwRh8vpkA0+Q0L4mz2na2rTih6JXhHhqeCdwQL+
+         6EYZ3mhD9LcLvT6dk3QU7sPPclj0SKx4jC5MdC3uIUOk++7EwTqV+BTFyMZVWj+3lK/P
+         lNHMvk6b4+GDB5H54JWY9d8PTBe6p6VCJX4/cgtJR7B9UjXkTh5fvXgwp2YMNrODmzK/
+         g+4g==
+X-Gm-Message-State: AOJu0Yy47ccX+ZxKjVf0di0f5JIyMUf1XxdzHAdnrDqXFDAvq5knQ1a2
+        hPVLm/8AnEG2BOTpqn3wvgRc3R+y2M1LHetw/51qwVTsFD1ptIbIOr5bZQBdm/ZDefyNGaaZZIH
+        T91T/vY58G8V4kl/T8A3buhxoV2pvgpUE
+X-Received: by 2002:ac8:5701:0:b0:403:cecf:4ade with SMTP id 1-20020ac85701000000b00403cecf4ademr3237069qtw.32.1694799283265;
+        Fri, 15 Sep 2023 10:34:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH23IQ3dxGhZ9gN1USPsCNMq0X92TLWKItrONedXesd3PQqAjirC0kn2Zv9fgi5UN/hQwH9sw==
+X-Received: by 2002:ac8:5701:0:b0:403:cecf:4ade with SMTP id 1-20020ac85701000000b00403cecf4ademr3237049qtw.32.1694799283049;
+        Fri, 15 Sep 2023 10:34:43 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id b6-20020a05620a126600b007675c4b530fsm1370418qkl.28.2023.09.15.10.34.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 10:34:42 -0700 (PDT)
+Message-ID: <cf0f001fe5688d956c6a8521af494694377efb5b.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/pm: refactor deprecated strncpy
+From:   Lyude Paul <lyude@redhat.com>
+To:     Justin Stitt <justinstitt@google.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date:   Fri, 15 Sep 2023 13:34:41 -0400
+In-Reply-To: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-v1-1-4b09ed453f84@google.com>
+References: <20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c-v1-1-4b09ed453f84@google.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marcus and Satya reported an issue where BTF_ID macro generates same
-symbol in separate objects and that breaks final vmlinux link.
+...oops, responded to the wrong email :P
 
-  ld.lld: error: ld-temp.o <inline asm>:14577:1: symbol
-  '__BTF_ID__struct__cgroup__624' is already defined
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-This can be triggered under specific configs when __COUNTER__ happens to
-be the same for the same symbol in two different translation units,
-which is already quite unlikely to happen.
 
-Add __LINE__ number suffix to make BTF_ID symbol more unique, which is
-not a complete fix, but it would help for now and meanwhile we can work
-on better solution as suggested by Andrii.
+On Thu, 2023-09-14 at 22:17 +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1]=
+.
+>=20
+> We should prefer more robust and less ambiguous string interfaces.
+>=20
+> A suitable replacement is `strscpy` [2] due to the fact that it guarantee=
+s
+> NUL-termination on the destination buffer without unnecessarily NUL-paddi=
+ng.
+>=20
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
+cpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
+tml [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c b/drivers/gpu/=
+drm/nouveau/nvkm/engine/pm/base.c
+> index 8fe0444f761e..131db2645f84 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/pm/base.c
+> @@ -462,7 +462,7 @@ nvkm_perfmon_mthd_query_domain(struct nvkm_perfmon *p=
+erfmon,
+> =20
+>  		args->v0.id         =3D di;
+>  		args->v0.signal_nr  =3D nvkm_perfdom_count_perfsig(dom);
+> -		strncpy(args->v0.name, dom->name, sizeof(args->v0.name) - 1);
+> +		strscpy(args->v0.name, dom->name, sizeof(args->v0.name));
+> =20
+>  		/* Currently only global counters (PCOUNTER) are implemented
+>  		 * but this will be different for local counters (MP). */
+> @@ -513,8 +513,7 @@ nvkm_perfmon_mthd_query_signal(struct nvkm_perfmon *p=
+erfmon,
+>  			snprintf(args->v0.name, sizeof(args->v0.name),
+>  				 "/%s/%02x", dom->name, si);
+>  		} else {
+> -			strncpy(args->v0.name, sig->name,
+> -				sizeof(args->v0.name) - 1);
+> +			strscpy(args->v0.name, sig->name, sizeof(args->v0.name));
+>  		}
+> =20
+>  		args->v0.signal =3D si;
+> @@ -572,7 +571,7 @@ nvkm_perfmon_mthd_query_source(struct nvkm_perfmon *p=
+erfmon,
+> =20
+>  		args->v0.source =3D sig->source[si];
+>  		args->v0.mask   =3D src->mask;
+> -		strncpy(args->v0.name, src->name, sizeof(args->v0.name) - 1);
+> +		strscpy(args->v0.name, src->name, sizeof(args->v0.name));
+>  	}
+> =20
+>  	if (++si < source_nr) {
+>=20
+> ---
+> base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+> change-id: 20230914-strncpy-drivers-gpu-drm-nouveau-nvkm-engine-pm-base-c=
+-38bf9c78bc0f
+>=20
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+>=20
 
-Cc: stable@vger.kernel.org
-Reported-by: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-Reported-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1913
-Debugged-by: Nathan Chancellor <nathan@kernel.org>
-Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- tools/include/linux/btf_ids.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-index 71e54b1e3796..2f882d5cb30f 100644
---- a/tools/include/linux/btf_ids.h
-+++ b/tools/include/linux/btf_ids.h
-@@ -38,7 +38,7 @@ asm(							\
- 	____BTF_ID(symbol)
- 
- #define __ID(prefix) \
--	__PASTE(prefix, __COUNTER__)
-+	__PASTE(__PASTE(prefix, __COUNTER__), __LINE__)
- 
- /*
-  * The BTF_ID defines unique symbol for each ID pointing
-
--- 
-2.42.0.459.ge4e396fd5e-goog
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
