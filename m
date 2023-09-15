@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635347A1463
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 05:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4DF7A1466
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 05:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjIOD2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 23:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        id S230497AbjIODaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 23:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbjIOD2m (ORCPT
+        with ESMTP id S231337AbjIODaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 23:28:42 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDEF270C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:28:38 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d8020510203so1661141276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:28:38 -0700 (PDT)
+        Thu, 14 Sep 2023 23:30:03 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6586270C
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fc081cd46so1629865b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694748517; x=1695353317; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aoetoUv4yUreIuSjYjk1T1X4tYlTD7mzIQaWPL4/I1g=;
-        b=LsHOs+L8jiC9Z7LivNq0q5mi4FjZVq6K3J46xIrCsUXPTNaWKAvQiB/iHJ87HFT4Xz
-         Bz/O7ILiGzNRROlV0YQjwi1He9JK1wbU6tkdwmwuHfTSEoIauqtV3G/ySx0jvtg2z6RS
-         xKrL29x9A/tLxBnmOvKuAo3HmWIwHmYWqLFzR3nadjWVBmD1G8GpLrXz/cE60eoLO0n3
-         kNa1EpHw4PBp5iDkcNLDvzm4DyMfLR9PWryAQhnXKykFAF7d5ca8pOO1ZtLG1LVBSXdl
-         pYEXfgQr9OT3CJeFf5/zxeqV5NtutXAdICPTZ79mZbcDvWvy72KRYhHUL+L0vf/Br8a6
-         r+pg==
+        d=chromium.org; s=google; t=1694748598; x=1695353398; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=foL7uPoELeXThgRtp4NfsBE8jbNLcnM/fz3r3P9dwSA=;
+        b=Xm4TIlGgBMVG7YlREoLQzquxcoBJm/KxFvp+4caFPtBleVC4FkMHfR3D3E91bqlfT/
+         8JTQcWZogEbjgVmxwBBWwpeytVEFWKU8fSUvLfCAWqvbWkvusRhICBKV2nN9n/zu5Xgb
+         8k34S2IJVe19M6JdTfoTUWQmU8JVoaBY9G/sA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694748517; x=1695353317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aoetoUv4yUreIuSjYjk1T1X4tYlTD7mzIQaWPL4/I1g=;
-        b=Puk1M3svD63plzyGlAJbi3/d2srGxDbmejIB0hKrAvyoe0R3LEP5pCkd/1zfpNXAia
-         9bUrvCV3MddIC2Y6qu98bkSbl9ax4TMqC/8lVtUBCzHn9htv5EZFL1x3ERjVGIC3FA1I
-         5ru68lbzJ/CPv0zSl+bJdlcHoxwKYibBtUaOTmnwBfHjy9wM959aNILmup1brm6KL3rG
-         Jea7YqL2w36RE2f3D87SOAPoPi/qAnXq59k48IGp6T1Gz9Iw6d5HHI5C8AosPrH84Jrp
-         P9BRE6UDEm1n2+3OD7+7y4anNFN6J4vqnvSs5/VSQ6AHnqLA/fW/p7ATrwABSlNGbjOs
-         wU1g==
-X-Gm-Message-State: AOJu0Yw4qwUuiXfldy403wwwOzYqpCgI0BsYzWHFDQ5QnsnymT9qKEtl
-        TNM6E9EB8VAe0OxCoKJhbuMjHpqXi2jKLSiispfGrw==
-X-Google-Smtp-Source: AGHT+IE123J0ofC5tc7ux3uXbJpHdEduMMUnQ/jGJh8rlWi51MUY0HINvHjs43GbwySqu/kz9rZWjoPEa9FIqeMVCR0=
-X-Received: by 2002:a25:5c9:0:b0:d81:5436:9896 with SMTP id
- 192-20020a2505c9000000b00d8154369896mr384787ybf.2.1694748517385; Thu, 14 Sep
- 2023 20:28:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694748598; x=1695353398;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=foL7uPoELeXThgRtp4NfsBE8jbNLcnM/fz3r3P9dwSA=;
+        b=HOydgMOMQyZ2yXLHe/bUJl6U68TRdFMOAK57zWfQS2W7iNLFqcwzrUxYHS4PvCIj0I
+         aEnP4f36fsQ8kSOGa4KUzOXEqjHqrlhWq+4ElKjm4ikUoDk4xKhNZxrkA5QOcXiJLuul
+         KtzMq1I8vD+5aRDBHMvQsNMInq/wz3gnkc3z96Qi3x3B6FHt8g9TVwZRz8aYcwA9MjnY
+         znwFkGuMWbymY+Jkj8or6UxEOpI1fSU2JTRL6ksEHIMepdOQ+wsnzyQ1beLY9xrEV5XZ
+         Olj2cUVlmpBFwc1MwdnoQGVcFZdZklz0DU1CTGEoMZ7YweZqfoMq7sksMJMu9u7xJaec
+         SGcw==
+X-Gm-Message-State: AOJu0YwhCMgYlJ5VI3gj/tNRADdHP/6Ob13BoJD+PQVm1gLox87z6viO
+        Ug7sJ3t0sYQLeSCNnRm2LtJKzA==
+X-Google-Smtp-Source: AGHT+IFUiPPqwu1gNzFfL58DjBiKY5tF49qfpn5IiLp2dlsbMFFWxYolo8hGE+rNBbs9Q0R7lVX1cg==
+X-Received: by 2002:a05:6a20:5659:b0:140:a6ec:b56a with SMTP id is25-20020a056a20565900b00140a6ecb56amr602604pzc.3.1694748598402;
+        Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902748500b001a5fccab02dsm2339310pll.177.2023.09.14.20.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 20:29:57 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 20:29:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
+ struct_size()
+Message-ID: <202309142029.D432EEB8C@keescook>
+References: <ZP+if342EMhModzZ@work>
 MIME-Version: 1.0
-References: <20230914152620.2743033-1-surenb@google.com> <20230914152620.2743033-3-surenb@google.com>
- <4F9BBE45-22D0-4F8D-BA56-CA3459998DC4@gmail.com>
-In-Reply-To: <4F9BBE45-22D0-4F8D-BA56-CA3459998DC4@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 14 Sep 2023 20:28:23 -0700
-Message-ID: <CAJuCfpGWkzDUL4+9evD-Kx5uGoc+=g808CXtc1hrSUdCRMtRgA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>, lokeshgidra@google.com,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>, mhocko@suse.com,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, Liam.Howlett@oracle.com,
-        Jann Horn <jannh@google.com>, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP+if342EMhModzZ@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 2:57=E2=80=AFPM Nadav Amit <nadav.amit@gmail.com> w=
-rote:
->
->
-> > On Sep 14, 2023, at 8:26 AM, Suren Baghdasaryan <surenb@google.com> wro=
-te:
-> >
-> > +     if (!pte_same(ptep_clear_flush(src_vma, src_addr, src_pte),
-> > +             orig_src_pte))
-> > +             BUG_ON(1);
->
-> Just a minor detail regarding these few lines:
->
-> Besides the less-than-ideal use of BUG_ON() here, I think that this code
-> assumes that the PTE cannot change at this point. However, as the PTE was
-> still mapped at this point, I think the access and dirty bits can be set.
+On Mon, Sep 11, 2023 at 05:27:59PM -0600, Gustavo A. R. Silva wrote:
+> Harden calls to struct_size() with size_add() and size_mul().
 
-At this point we are holding PTLs for both PTEs (see
-double_pt_lock()).  Can a PTE be modified from under us in this
-situation?
+Specifically, make sure that open-coded arithmetic cannot cause an
+overflow/wraparound. (i.e. it will stay saturated at SIZE_MAX.)
 
->
-> tl;dr: this appears to be triggerable by userspace.
->
-> [ as for the performance of this code, the lack of batching would mean
->   that for multithreaded applications where more than a single page is
->   remapped, performance would suffer ]
+> 
+> Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
+> Fixes: a4676388e2e2 ("RDMA/core: Simplify how the gid_attrs sysfs is created")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Thanks for the note! I'll see if it's possible to implement some
-batching mechanism here.
-Thanks,
-Suren.
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+> ---
+> Changes in v2:
+>  - Update changelog text: remove the part about binary differences (it
+>    was added by mistake).
+> 
+>  drivers/infiniband/core/sysfs.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> index ee59d7391568..ec5efdc16660 100644
+> --- a/drivers/infiniband/core/sysfs.c
+> +++ b/drivers/infiniband/core/sysfs.c
+> @@ -903,7 +903,7 @@ alloc_hw_stats_device(struct ib_device *ibdev)
+>  	 * Two extra attribue elements here, one for the lifespan entry and
+>  	 * one to NULL terminate the list for the sysfs core code
+>  	 */
+> -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
+> +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+>  		       GFP_KERNEL);
+>  	if (!data)
+>  		goto err_free_stats;
+> @@ -1009,7 +1009,7 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
+>  	 * Two extra attribue elements here, one for the lifespan entry and
+>  	 * one to NULL terminate the list for the sysfs core code
+>  	 */
+> -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
+> +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+>  		       GFP_KERNEL);
+>  	if (!data)
+>  		goto err_free_stats;
+> @@ -1140,7 +1140,7 @@ static int setup_gid_attrs(struct ib_port *port,
+>  	int ret;
+>  
+>  	gid_attr_group = kzalloc(struct_size(gid_attr_group, attrs_list,
+> -					     attr->gid_tbl_len * 2),
+> +					     size_mul(attr->gid_tbl_len, 2)),
+>  				 GFP_KERNEL);
+>  	if (!gid_attr_group)
+>  		return -ENOMEM;
+> @@ -1205,8 +1205,8 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
+>  	int ret;
+>  
+>  	p = kvzalloc(struct_size(p, attrs_list,
+> -				attr->gid_tbl_len + attr->pkey_tbl_len),
+> -		    GFP_KERNEL);
+> +				size_add(attr->gid_tbl_len, attr->pkey_tbl_len)),
+> +		     GFP_KERNEL);
+>  	if (!p)
+>  		return ERR_PTR(-ENOMEM);
+>  	p->ibdev = device;
+> -- 
+> 2.34.1
+> 
+
+-- 
+Kees Cook
