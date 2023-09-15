@@ -2,127 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8947A1425
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 05:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3417A1433
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 05:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbjIODK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 23:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        id S231880AbjIODMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 23:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjIODKZ (ORCPT
+        with ESMTP id S230497AbjIODMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 23:10:25 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F871270B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:10:21 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so15052165ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 20:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694747420; x=1695352220; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s66uVsXieXZEwrz2tGtxEkm4KD1eEh+8pBHuZBZ6AXU=;
-        b=P2w+CZR3beoD5p/U38+1uhux+DgXnGntEWHLtjl+CMCIwWyBqnc7aYA6/SfpkZvWBG
-         jal7TD6wp+GWlM/LpHSoGye9x+OvljaXjBFPglv+yybcQQovvexv/4OTYKcKOJkim9Lt
-         kyZdd/M5d5G3Zxir4hZLiu4c9ur80vlctnZ+A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694747420; x=1695352220;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s66uVsXieXZEwrz2tGtxEkm4KD1eEh+8pBHuZBZ6AXU=;
-        b=gGLdDtCKTDxhGKOTXM0TPJzk1U8/VlMqjqDBWMKdujINdDnDZXnaCH2RJ9reUwSGL1
-         yH64wqBqyzXMCq1zd+ELMGjIanC7aWotwUBuOQ5tJ9McKIdjYpBp4J8+pwnA2MsEFeUR
-         rf/IHqwCOi5jYwbhTSOBXxtQi8UIl8EDSJ1jJ5NWnX8uWq/1xn+Yf3x/tU37xkjPfqrD
-         KSpeTQe7gzN4kgyPyWi69M2TI4SZ5nY6tCS0fwpT7EH53tr377P+m4tcWPu7F7HuBOrR
-         re6BKGM2WQGKQt6RfhgtNXRBSRd3FtfX3OZIFhgLPWjigKCiEYCnlUh0uOft8AEzhuYm
-         ksWg==
-X-Gm-Message-State: AOJu0YzkVjWYdE5+mn+udP38ZJ67449gf9+sWR/H9FYxRfKC94V4ZzhN
-        5GGWDgRTpYL6y9rV+qRuqzk8JA==
-X-Google-Smtp-Source: AGHT+IHiPr6yjry1eOi32qemWdUt8KSs5Y4FRrVUY+L6LPMW/8uikqG4J6/IPV1vKIwXV6zuvnYF/Q==
-X-Received: by 2002:a17:902:76c5:b0:1bb:c06e:647a with SMTP id j5-20020a17090276c500b001bbc06e647amr443590plt.53.1694747420577;
-        Thu, 14 Sep 2023 20:10:20 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y7-20020a17090322c700b001c0a414695dsm2285725plg.62.2023.09.14.20.10.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 20:10:20 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 20:10:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] xen/efi: refactor deprecated strncpy
-Message-ID: <202309142009.DD5AE193@keescook>
-References: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
+        Thu, 14 Sep 2023 23:12:17 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2112.outbound.protection.outlook.com [40.107.215.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F82270B;
+        Thu, 14 Sep 2023 20:12:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fvRe1NYUrjuZuHouYIrHPMwws+8jLEiDYCWrpJhw03NKN7lxLuXaJvy8k6b8c9iC9ySgA+sXQc/twoowbJ99x1EGphd9lL0uQGVEdSz8RJmYnhvI8W1Qqm+odJPRrGB3jJxEIU1Tqs/rzV09FJlCi+gVRKUA99Sg/AAKnxryQIQfwCEXR8tRnwdSocH3Xi4bU7o5woL40uIGXJWGMNvyMoSlQaz3sWJWB4FwsZx0AFRMRw7X11aCDmu3aegnXy+6KR7t/KsGjsIrhNnVcDZZxy8oV5fjvkrRg1MfjoQ0fRMY73Swx2kY9tFsfjICPRhL/F2+4wahD1HZgIcOMElRWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G6iwr2T8qCeHg7iDYQct+tqMHGlHto6EU2sE7I5fC7Y=;
+ b=N+WtadfjZpoD9hcosyIRxj+gSZdn7Gef4GSKS2xXJ4Rn8RILibXuQMeS8OdMvWvIdm3+l6d16K3U+PPIHCz85aH+sHmnPtIOpCt0GucoNHWJHgjAtX9vlCUACZWEd3gt10gyNR0YcMrzGNZQLd1zx9jyBKDV9KiXzs3Gj6oTDRRd03vyCB4drpF4pQB3PB+MwsR/gOV94vpOyQX0QZWnsLfJfzxk4MIv4t6alf32WWAXOFAR31B8qlSXCmhd/hxJyPVsncLKfkFLmqa+dFiw0ia1OvZlf1MH7tj+huhb9xoYrPK22JmCPw4XB+6TrBlhHJtTEG5rJjDLkM5sxHaLYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=yunjingtech.com; dmarc=pass action=none
+ header.from=yunjingtech.com; dkim=pass header.d=yunjingtech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=yunjingtech.com;
+Received: from SEYPR06MB6507.apcprd06.prod.outlook.com (2603:1096:101:177::9)
+ by JH0PR06MB6654.apcprd06.prod.outlook.com (2603:1096:990:36::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Fri, 15 Sep
+ 2023 03:12:04 +0000
+Received: from SEYPR06MB6507.apcprd06.prod.outlook.com
+ ([fe80::3fe6:a3fc:55d:fba0]) by SEYPR06MB6507.apcprd06.prod.outlook.com
+ ([fe80::3fe6:a3fc:55d:fba0%4]) with mapi id 15.20.6792.021; Fri, 15 Sep 2023
+ 03:12:03 +0000
+From:   "larry.lai" <larry.lai@yunjingtech.com>
+To:     lee@kernel.org, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, pavel@ucw.cz
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
+        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
+        noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>
+Subject: [PATCH V6 0/3] Add support control UP board CPLD/FPGA pin control
+Date:   Fri, 15 Sep 2023 11:11:20 +0800
+Message-Id: <20230915031123.14515-1-larry.lai@yunjingtech.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0099.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b4::17) To SEYPR06MB6507.apcprd06.prod.outlook.com
+ (2603:1096:101:177::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911-strncpy-arch-x86-xen-efi-c-v1-1-96ab2bba2feb@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEYPR06MB6507:EE_|JH0PR06MB6654:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e2bdad6-4dcb-43c7-4f65-08dbb5998894
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1uU1yRpB437NDa/at3mX9pu+d3OaUJUimPyDYMLs0TF/GUAiYBTL5SrGgQJOCMQyIRDs/0r0Pr/7yETHAeV/J6575zPRx7qNo15ENIo3TaH0aQr5JkScALCgWVgi2IpcWmZxbvF37/5+QXAAtBRhct8iPrR9U8K3KDhxirbAM/yjug+5ZoU0M9X9BEUoFwowOifFTf3XqLdlE5jxkbL8QcOPK3AYo0m/i6IsgWnKopsVM3KDjOlSTlm8iA7F0FTwt3QJVYdfHz3hU+DRcnb+gSamZ0ImXJLEcxXXiJmk0YQRp1KDPTtwcIZwADCPsRjAzzQBUc/jJYEqQgYetPTZ8vSyF+dJlk0jByoXfUXWe71V7cL/Cb2ekwH2bEnFfTYpbkvDN65EByiVrtf/CC6L9k67KgisQV+7En8GNAbysPM2qN3Ydr1mt7S7lv+5vtlN80PNWrIiZAud0d/nqmOcd/uEmKeZletVUdeSJYPPebxCoOXKNQKpgYEoj7bk8Jrw426/AD/wscmiy//l105Iskj/bYzTdoC9oMuuqYMbCtEfUZVINPjEI6ZppFyK2UtgWv/8n4dx8VoIFH9GxGkgTYpahd+JsDgHhCuGvxj13Lo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39830400003)(346002)(376002)(451199024)(1800799009)(186009)(36756003)(38350700002)(38100700002)(86362001)(52116002)(6666004)(4326008)(6486002)(478600001)(2906002)(8936002)(8676002)(41300700001)(5660300002)(6512007)(6506007)(83380400001)(316002)(66556008)(66946007)(66476007)(1076003)(2616005)(26005)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VJxbDAJFAx27Nud3nah4u7OuPu6The1SYc2+DNTbgnxnANWNwgvdse5fwZES?=
+ =?us-ascii?Q?YpEIgtP8IP7zCNBleO++9gD50n5Z4iNFQKZWm9tl56LUaUiGze2G32LuN+Ko?=
+ =?us-ascii?Q?tz3zcowUuODOcAecBtRMJxqqOikSZTEvhT8L+HL5sDR7vbNk+zpdQ2Lfw28D?=
+ =?us-ascii?Q?toE8OexuV6vwsWMk9y/jaxQ2XSYycuoeJ7s7KaEcMcjTUR9mYq7Ghpb+pI9+?=
+ =?us-ascii?Q?xXPZC/lNFMUCudvnnM55cKpAHHIokJdeLuyvBU7gHb/JZHizwZiA3rXPU2HU?=
+ =?us-ascii?Q?PFtX+PL5XSSz5osDYfWrnWnXlYPZKMCtc5ZALyPx7yIRg3/nhCnNTA5oQSPh?=
+ =?us-ascii?Q?nmrgK67yOAZuobw/d301LaX2QVKCvNuhJejoPa91mhj+HhZ77raa88vNdmyf?=
+ =?us-ascii?Q?PdJSWO7CyiKAc9KRLAzpHDlEw69oeNzzOSzNqJBF0byf/ruNffyD4qHEyXLW?=
+ =?us-ascii?Q?OoBuYowdacyBwl3XI+0XTlWKBnHF9uUJcVn2oNCEsYbqPo6zXsw5PSBsesok?=
+ =?us-ascii?Q?G22o8CAdNBwXeQj5nm7VEf/WRRGuTkAIAzbvSCfmUZDxboWyklbYYif/cDgT?=
+ =?us-ascii?Q?xhUg9v6BLrmifZo1PG7+k2aw7TcldexWqTJlnl6swfR4fw2AxrpRnFo8ZsMM?=
+ =?us-ascii?Q?KLSd9otlX3j8iANBO/c/Pefoj4NcReTjiqbSB7HrjWaZxPOlcIognb4FYMSv?=
+ =?us-ascii?Q?IdJiDkj2zb9ZT0i2rd+qhCnB5mlptiTEUAcR81dSvA1XpjIJWU10szo4JNTZ?=
+ =?us-ascii?Q?yoEjPusK0qoEtQizFOcWMaHzsvbk3feCAOYPZ7KxrjXxU8clZZdQzn2YoDtB?=
+ =?us-ascii?Q?1jRRl75rOuk14tQqPWgHSwLDwkO1dWuJY4BgWXJC9jItc3YcgGXzDTOHcD1w?=
+ =?us-ascii?Q?YSQAxOxMYMiFzVXBq9sSA2/J/FdWX1X4JIT1YFEpZfh1Iljj/NDBNl98vR9w?=
+ =?us-ascii?Q?LjXwmPXViKEOnc2QPymARYKyGBqqTQ+ZDi3Fn3pLpyX2UNHmtbTki/tJJvZJ?=
+ =?us-ascii?Q?u6WcgENSmXNqO4BQ4xOzhmmmh7XbxEiqDknTd4S4uD+wukLJVDGa1dcCOYPj?=
+ =?us-ascii?Q?3Lr9T6S1SRMlg7XRMEe35NScaVmTQq6D/tCWMnFeUuOZt4O3SB8Jr4QB1kLQ?=
+ =?us-ascii?Q?gVsz1DTWKPOcuWGPCZV4Nu4Ne+NSqgYERwOv0n/X/aMYyQbW0sFeWu6A/2/V?=
+ =?us-ascii?Q?SKwdot6kUt/ZIlSLqlIT9V0nsW6DtaSvNzyO9f89Sn8/n9zu0cfDajIiADQ+?=
+ =?us-ascii?Q?JoVC6x3HUsZIIZgVvuCLmn1znfF+pygaotRN8OlHf42g+Fgy7BPG2GL83nfw?=
+ =?us-ascii?Q?PMeNYGxKEZTPIxH8mL6SDdNYNF2BTXAs8ogrcqmq857+/sviYaTlmySXoTA+?=
+ =?us-ascii?Q?F7WWALRh0QKZCP/A22lVffgVJXO2/JONX0cgoKTTr2c+QCQOjBpkeVeSJfz7?=
+ =?us-ascii?Q?STV0w11CyHMXieCAM+3kuQXhUAzfdmnGxso7H6IHzFE9E9zveZ2vgbiOmNxV?=
+ =?us-ascii?Q?/0Vnu/Uv84OxAvI85tA3zK01huN5CyYZak/HZQaLXc60SG4aaSBsV64JU1lm?=
+ =?us-ascii?Q?S3HzeVGze/vPAtc72NCnNz/3Jsy5dZBabwMhg2WoFZOHuAKz+brIf1AMpyD2?=
+ =?us-ascii?Q?jw=3D=3D?=
+X-OriginatorOrg: yunjingtech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e2bdad6-4dcb-43c7-4f65-08dbb5998894
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6507.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 03:12:03.1254
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: be2d5505-f7e6-4600-bbe2-b3201c91b344
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XKCkUQbAwbCxVhdfsHIhGsN91CMJgRWDMayX8dbhESNIWwpzdy4EBUotWOKgGOEXBmxZ2/BN4GHhggFS1UXhstR6bDQBmCT1cM92idLGa+Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6654
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 06:59:31PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> `efi_loader_signature` has space for 4 bytes. We are copying "Xen" (3 bytes)
-> plus a NUL-byte which makes 4 total bytes. With that being said, there is
-> currently not a bug with the current `strncpy()` implementation in terms of
-> buffer overreads but we should favor a more robust string interface
-> either way.
+The UP board <https://up-board.org/> is the computer board for 
+Professional Makers and Industrial Applications. We want to upstream 
+the UP board 40-pin GP-bus Kernel driver for giving the users better 
+experience on the software release. (not just download from UP board 
+github)
 
-Yeah, this will work. Since this is a u32 destination, I do wonder if
-strtomem_pad() would be better since we're not really writing a string?
-But since this is all hard-coded, it doesn't matter. :)
+These patches are generated from the Linux kernel mainline tag v6.0.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+This is the PATCH V6 and fixed kernel test robot compiler warning and 
+addressed Linus Walleij review comments.
 
--Kees
+larry.lai (3):
+  mfd: Add support for UP board CPLD/FPGA
+  pinctrl: Add support pin control for UP board CPLD/FPGA
+  leds: Add support for UP board CPLD onboard LEDS
 
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-> NUL-termination on the destination buffer while being functionally the
-> same in this case.
-> 
-> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested
-> ---
->  arch/x86/xen/efi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/xen/efi.c b/arch/x86/xen/efi.c
-> index 863d0d6b3edc..7250d0e0e1a9 100644
-> --- a/arch/x86/xen/efi.c
-> +++ b/arch/x86/xen/efi.c
-> @@ -138,7 +138,7 @@ void __init xen_efi_init(struct boot_params *boot_params)
->  	if (efi_systab_xen == NULL)
->  		return;
->  
-> -	strncpy((char *)&boot_params->efi_info.efi_loader_signature, "Xen",
-> +	strscpy((char *)&boot_params->efi_info.efi_loader_signature, "Xen",
->  			sizeof(boot_params->efi_info.efi_loader_signature));
->  	boot_params->efi_info.efi_systab = (__u32)__pa(efi_systab_xen);
->  	boot_params->efi_info.efi_systab_hi = (__u32)(__pa(efi_systab_xen) >> 32);
-> 
-> ---
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> change-id: 20230911-strncpy-arch-x86-xen-efi-c-14292f5a79ee
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+ drivers/leds/Kconfig              |   10 +
+ drivers/leds/Makefile             |    1 +
+ drivers/leds/leds-upboard.c       |   79 ++
+ drivers/mfd/Kconfig               |   12 +
+ drivers/mfd/Makefile              |    1 +
+ drivers/mfd/upboard-fpga.c        |  492 ++++++++++
+ drivers/pinctrl/Kconfig           |   14 +
+ drivers/pinctrl/Makefile          |    1 +
+ drivers/pinctrl/pinctrl-upboard.c | 1390 +++++++++++++++++++++++++++++
+ include/linux/mfd/upboard-fpga.h  |   55 ++
+ 10 files changed, 2055 insertions(+)
+ create mode 100644 drivers/leds/leds-upboard.c
+ create mode 100644 drivers/mfd/upboard-fpga.c
+ create mode 100644 drivers/pinctrl/pinctrl-upboard.c
+ create mode 100644 include/linux/mfd/upboard-fpga.h
 
+
+base-commit: 4fe89d07dcc2804c8b562f6c7896a45643d34b2f
 -- 
-Kees Cook
+2.17.1
+
