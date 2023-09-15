@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D069F7A17CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347097A17CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 09:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbjIOHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 03:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        id S232274AbjIOHwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 03:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjIOHv1 (ORCPT
+        with ESMTP id S229943AbjIOHwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:51:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA96A1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZFwnsbKYl3NmgETwTRCgjJWOjPQCpSyxYv0AKkY25Tk=; b=q+v0MKGUeyvJ1iwyEqUMcYPhLs
-        y5gpW9PY2dfP/8A3YxeYtmWMT7gw+l4dbPHeKdjQNqFVazezDONr4stQa/P0piFd15wXRdf5w9qV7
-        Cj8LymEyhiX6isnlTnCYuBh/5fX4RRG6fyNkIk6C5N6XFVXJ4mS4oxENLz+aNjjZYhR5Qwret4t/6
-        9IXqkmRk85zr2TpK1M6RiKuQ6OF7vew+N7dFtkvpNHxQIzX56ApyUq+ISV/rypixhBL25dAUAcx7G
-        jN5CSX0YlWE/Yd+rn+YDL2hjouYP0uQgCvNGxd4OEKzMAWrNaeLbwcdty4YE0CegpWIyBgh6+UEA0
-        LaqO3bQw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qh3bV-008p5A-18;
-        Fri, 15 Sep 2023 07:51:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 738B93003F2; Fri, 15 Sep 2023 09:51:06 +0200 (CEST)
-Date:   Fri, 15 Sep 2023 09:51:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
-Message-ID: <20230915075106.GA6787@noisy.programming.kicks-ass.net>
-References: <20230907153036.GBZPnsnNreLCyGpJFn@fat_crate.local>
- <20230909075009.GAZPwjsYZ4sSALN/5+@fat_crate.local>
- <20230909092554.GC2771@noisy.programming.kicks-ass.net>
- <20230910144227.GAZP3V0/mQ73C2hx/l@fat_crate.local>
- <20230912092709.GE35261@noisy.programming.kicks-ass.net>
- <20230912094441.GA13926@noisy.programming.kicks-ass.net>
- <20230913043738.GCZQE8kuw8p3WsnCXd@fat_crate.local>
- <20230913084658.GA692@noisy.programming.kicks-ass.net>
- <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
- <20230915074647.GA6721@noisy.programming.kicks-ass.net>
+        Fri, 15 Sep 2023 03:52:41 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F755A1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:52:36 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so2172984a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 00:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694764355; x=1695369155; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1DmNveiP8xHX58IAf7GJRRnmwEbVvFnwIttOiAgQ004=;
+        b=L4RaL8CdamXJ1n961ofptOQG6ridNxCCg5vq0sHVgSbBVHxurZNySoZqTjeKRBs/5H
+         TzR3JULwJo3R0RGeUhiNKjwtn20QYnTFfpRvQw22B9AclekwX7HaPirYX5u5EYxmK8tf
+         iyKTRDgjlO4m7eQt1c7bjHNnHvbxlXwPvD98TOn1GNXH/M6pWKUMKmfBiIJl7oTIwZvj
+         T9b9Mk9e835KG+DFnjpCXkWlMd4rhWMqn+LtWkd7GW1oJdIWaK3MVwc/VtcL047nrBIW
+         0mKKaS31UfhxiyzAPNwuO3i945KBDuWxyjzIYD7GctivBHf/QFQBBDBfxdYuaiwWZbm5
+         UEMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694764355; x=1695369155;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1DmNveiP8xHX58IAf7GJRRnmwEbVvFnwIttOiAgQ004=;
+        b=WeW7oOt4JF/PrJAzG4p06V5fiVOPkEaNvGPrUGth11c63Q98uZNxWVWl1yWtH+ju2A
+         OT1pTY0z0wLsx060/RzXmmjcnM0tqK1BsQFEWiJsHn3D3zRbTMOQP1ICvC5S0y+SUCxm
+         qciMKBUZv2YW++UNV7wzJlcu7FOIKmNaU0agnbDdniZhzIQIMkK3ndsn8KY40tZePaB7
+         pkQ+DsXnim3N70X5Yj3zbuidAZJUv7SKQfnN2ajwE+eQiUYPCmUjHfTKtcu9DgdTvDSx
+         uxkRVmu6TWfTftqyNDksMDiw9xqPTOExDtKILVVb6FUAJhiZIbHGf55xnhlB4AjlqT1Q
+         Yufg==
+X-Gm-Message-State: AOJu0Yx8vo8U1hW9c868j7AuSbgN/QPo7cxjC1L8Ae5yd7lU4ZDQGXPr
+        lxI/05mIppY3aHJ13FIAjFokdQ==
+X-Google-Smtp-Source: AGHT+IG3viMjTUAP25MuwtYIdv3N1ev0u+/SYqVBSVH0BOrYl2RsGa4IaFywaU+81yE3KsWBeGeP+A==
+X-Received: by 2002:a05:6402:14c4:b0:52a:1c3c:2ecc with SMTP id f4-20020a05640214c400b0052a1c3c2eccmr687838edx.25.1694764355070;
+        Fri, 15 Sep 2023 00:52:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id dm6-20020a05640222c600b0053090e2afafsm328735edb.22.2023.09.15.00.52.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 00:52:34 -0700 (PDT)
+Message-ID: <83142b6a-90da-b705-5170-5468175cf23d@linaro.org>
+Date:   Fri, 15 Sep 2023 09:52:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915074647.GA6721@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1 1/2] dt-bindings: soc: mediatek: add mt8188 svs
+ dt-bindings
+Content-Language: en-US
+To:     Mark Tseng <chun-jen.tseng@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Roger Lu <roger.lu@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230915075003.1552-1-chun-jen.tseng@mediatek.com>
+ <20230915075003.1552-2-chun-jen.tseng@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230915075003.1552-2-chun-jen.tseng@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 09:46:47AM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 13, 2023 at 04:38:47PM +0200, Borislav Petkov wrote:
+On 15/09/2023 09:50, Mark Tseng wrote:
+> Add mt8188 svs compatible in dt-bindings.
 > 
-> >   [ bp: Make labels unique and thus all sizing use unambiguous labels.
-> >     Add more info. ]
-> 
-> > +#define __ALTERNATIVE(oldinstr, newinstr, ft_flags, n)			\
-> > +	OLDINSTR(oldinstr, n)						\
-> > +	ALTINSTR_ENTRY(ft_flags)					\
-> > +	ALTINSTR_REPLACEMENT(newinstr)
-> 
-> > +#define ALTERNATIVE_2(oldinst, newinst1, flag1, newinst2, flag2)	\
-> > +	__ALTERNATIVE(ALTERNATIVE(oldinst, newinst1, flag1),		\
-> > +		    newinst2, flag2, 1)
-> 
-> > +#define ALTERNATIVE_3(oldinst, newinst1, flag1, newinst2, flag2,	\
-> > +		      newinst3, flag3)					\
-> > +	__ALTERNATIVE(ALTERNATIVE_2(oldinst, newinst1, flag1, newinst2, flag2), \
-> > +		    newinst3, flag3, 2)
-> 
-> 
-> So I see what you did with that @n argument, but urgh, do we really need
-> this? I mean, it just makes things harder to use and it doesn't actually
-> fix anything.. :/
+> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+> ---
 
-That is, if we can magic this using __COUNTER__ without a user interface
-penalty, then sure. But the last time I tried that I failed utterly and
-ended up with labels like:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-  .Lalt_old___COUNTER__:
+Best regards,
+Krzysztof
 
-no matter how many layers of CPP macro eval I stuck in it. So clearly I
-wasn't having a good day ....
