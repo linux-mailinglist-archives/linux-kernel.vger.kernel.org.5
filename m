@@ -2,179 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1542A7A2061
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449D47A2065
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235440AbjIOODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S235504AbjIOOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235203AbjIOODD (ORCPT
+        with ESMTP id S235203AbjIOOD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:03:03 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FA1B1FD0;
-        Fri, 15 Sep 2023 07:02:52 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxtPAKZARlTX4oAA--.13156S3;
-        Fri, 15 Sep 2023 22:02:50 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxvdz9YwRl_WEHAA--.14359S3;
-        Fri, 15 Sep 2023 22:02:48 +0800 (CST)
-Message-ID: <743e062e-17e8-dec0-30ba-c7682ea3109e@loongson.cn>
-Date:   Fri, 15 Sep 2023 22:02:36 +0800
+        Fri, 15 Sep 2023 10:03:59 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FF11FCC;
+        Fri, 15 Sep 2023 07:03:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694786632; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=omCZd6/9yhvLZBo73WZZU5HJ8bdu2OTIpUAZNrhVAJKLo5WEANSg2Bw2WLhzTxiwZo
+    pABAYWtkLy/U0fQKeS4vbJct7UOKw9TXe1WwYI1jG3493Y5XBfNJ+LINZPQXbvOjV3fT
+    Uyu7y2uyrno1QcWecxIk+7o6OVMZ6QS1o/dwOvePU59CxrPOh/GllrchgUeBMyDzkCGd
+    7uyM8rfb4ok+n7x6WA2OM916S4vjcyEKw8lN7lMgpLRh2gJpzHnq0CIHjXSNVKI+ps8z
+    m6oMKws1Guzhx/DkT15+2q0E7tS8+oPR/Id3RDTeh/Do9snm7xM3EmXfdbTruct/r5HN
+    /XOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694786632;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=qXmRpKWGQUUyQvMEuBI6R1swvLoRgyJsRJNin4XNLRg=;
+    b=lRwtwJ6KdfF9vujzuE4C+Isk9P0e1L9tV21oA/U4MIvALsA3ogoRR9A3OlW2LJINi7
+    Hy5D5ZPLEzuqkTZhvoUvJBd6ThlyAZ4h/zoak2+08Nfr+GJ+bbTvaPtEP3ITuBds0Lzh
+    LpQu9WNoZhyazTJTbu5c841OnFc9MsFLc6RAdrdjACqa542PXUe9hmxstkwYpKl7XQ8S
+    hxnNPxR30cW1WuyGQTVlNC4R2jG5nVCTU5yzfAO9wkof+SV/lL3NWigKzdNU+WkWdTbs
+    MGx7NZN+ZKJLeH5lquG+z2HqlxJVrYATXz/gt8KRpdafYGIl6emx+O50da9mr5nRSpE5
+    L/mQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694786632;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=qXmRpKWGQUUyQvMEuBI6R1swvLoRgyJsRJNin4XNLRg=;
+    b=sldxj1i+ZOXCi5SVVCCFOzbqDSCQTKSHfFGGOMVzhH8UC3i6gQBKgMZdCY+vErsNB7
+    Sf5YLwv0wveDuUE5wcLlbLRVoe+1uHdIWpwQOw54A43WdKvJ5Q9euQiAkScC40BGxil4
+    8EeBajUZ6dqR/U9xUO4i4/ajGrVlPjSBRb1wkVdDA1GibmrbSCcNP1isH3anYTovylhF
+    /PQWtUuDrlqdM/oF5pCenD2efTe/qZlujwBFAwUGujlWGg92LMmdY94bCU66R0Cl5bf4
+    THArfkscxtigODqUOZe9bTnaGzYwvZRvakJElh9VJabQcgs9fWNXQKJYSVaQIqrOgxKY
+    3bvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694786632;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=qXmRpKWGQUUyQvMEuBI6R1swvLoRgyJsRJNin4XNLRg=;
+    b=SLDRGKKuHdm+7z6Ip++P8CyHwpVfcmmWbjWJ08yHp9cTntEOUHLWruLnE1DTAozuYq
+    XNOhRQqiLTi5R1Uas3AA==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8piJ1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id R04c57z8FE3p81B
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 15 Sep 2023 16:03:51 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 16:03:50 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH 8/9] arm64: dts: qcom: msm8916/39: Move mpss_mem size to
+ boards
+Message-ID: <ZQRkRugxT4n9xIhS@gerhold.net>
+References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
+ <20230911-msm8916-rmem-v1-8-b7089ec3e3a1@gerhold.net>
+ <b66a72ef-653b-47cb-8c0a-df8418c3619c@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFT PATCH 2/6] drm: Call drm_atomic_helper_shutdown() at
- shutdown time for misc drivers
-Content-Language: en-US
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        airlied@redhat.com, alain.volmat@foss.st.com,
-        alexander.deucher@amd.com, alexandre.belloni@bootlin.com,
-        alison.wang@nxp.com, bbrezillon@kernel.org,
-        christian.koenig@amd.com, claudiu.beznea@microchip.com,
-        daniel@ffwll.ch, drawat.floss@gmail.com, javierm@redhat.com,
-        jernej.skrabec@gmail.com, jfalempe@redhat.com, jstultz@google.com,
-        kong.kongxinwei@hisilicon.com, kraxel@redhat.com,
-        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, liviu.dudau@arm.com,
-        nicolas.ferre@microchip.com, paul.kocialkowski@bootlin.com,
-        sam@ravnborg.org, samuel@sholland.org,
-        spice-devel@lists.freedesktop.org, stefan@agner.ch,
-        sumit.semwal@linaro.org, tiantao6@hisilicon.com,
-        tomi.valkeinen@ideasonboard.com, tzimmermann@suse.de,
-        virtualization@lists.linux-foundation.org, wens@csie.org,
-        xinliang.liu@linaro.org, yongqin.liu@linaro.org, zackr@vmware.com
-References: <20230901234015.566018-1-dianders@chromium.org>
- <20230901163944.RFT.2.I9115e5d094a43e687978b0699cc1fe9f2a3452ea@changeid>
- <e7d855b6-327e-8c0c-5913-75bba9b6cfcd@loongson.cn>
- <CAD=FV=XF65otS2S+6sg6qga6Le3xb1f5GC6R6qpf27zx49DQ6w@mail.gmail.com>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <CAD=FV=XF65otS2S+6sg6qga6Le3xb1f5GC6R6qpf27zx49DQ6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cxvdz9YwRl_WEHAA--.14359S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZr4rGFWDKr43JrWxXr4DKFX_yoW5Kw4xpr
-        W5Zas0krs8JrsrArn2qr17Wa4Syw4Sy34fXrsrKr1Uurs0gFW2qF4Fqr15Cas8W397Kr42
-        yw42qwn8uFy5AacCm3ZEXasCq-sJn29KB7ZKAUJUUUjf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVWxJr0_GcWln4kS14v26r4a6rW5M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
-        6rW5McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Wrv_ZF1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wrylx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
-        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU58cTP
-        UUUUU==
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b66a72ef-653b-47cb-8c0a-df8418c3619c@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 15, 2023 at 03:51:52PM +0200, Konrad Dybcio wrote:
+> On 11.09.2023 19:41, Stephan Gerhold wrote:
+> > The modem firmware size is typically highly device-specific.
+> > The current size of the mpss_mem region in msm8916.dtsi (0x2b00000)
+> > only works for some APQ8016 devices without full-featured modem,
+> > such as the DragonBoard 410c.
+> > 
+> > The full modem firmware is typically about twice as large (~45 MiB
+> > -> ~90 MiB) but also varies by a few MiB from device to device. Since
+> > these devices are quite memory-constrained nowadays it's important to
+> > minimize the unnecessary memory reservations.
+> > 
+> > Make it clear that each board needs to specify the necessary mpss_mem
+> > size by replacing the DB410c-specific size in msm8916.dtsi with a
+> > simple comment. &mpss_mem is disabled by default so it's fine to leave
+> > some properties up to the boards if they want to enable it.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> Any reason not to squash it with one of the earlier patches then?
+> 
 
+I'm not strictly opposed but these are really two independent changes.
+One drops the fixed memory regions and makes the allocation dynamic,
+in the SoC dtsi. This one moves board-specific information out of the
+SoC dtsi (to the boards).
 
-On 2023/9/15 21:44, Doug Anderson wrote:
-> Hi,
->
-> On Fri, Sep 15, 2023 at 2:11 AM suijingfeng <suijingfeng@loongson.cn> wrote:
->> Hi,
->>
->>
->> On 2023/9/2 07:39, Douglas Anderson wrote:
->>> Based on grepping through the source code these drivers appear to be
->>> missing a call to drm_atomic_helper_shutdown() at system shutdown
->>> time. Among other things, this means that if a panel is in use that it
->>> won't be cleanly powered off at system shutdown time.
->>>
->>> The fact that we should call drm_atomic_helper_shutdown() in the case
->>> of OS shutdown/restart comes straight out of the kernel doc "driver
->>> instance overview" in drm_drv.c.
->>>
->>> All of the drivers in this patch were fairly straightforward to fix
->>> since they already had a call to drm_atomic_helper_shutdown() at
->>> remove/unbind time but were just lacking one at system shutdown. The
->>> only hitch is that some of these drivers use the component model to
->>> register/unregister their DRM devices. The shutdown callback is part
->>> of the original device. The typical solution here, based on how other
->>> DRM drivers do this, is to keep track of whether the device is bound
->>> based on drvdata. In most cases the drvdata is the drm_device, so we
->>> can just make sure it is NULL when the device is not bound. In some
->>> drivers, this required minor code changes. To make things simpler,
->>> drm_atomic_helper_shutdown() has been modified to consider a NULL
->>> drm_device as a noop in the patch ("drm/atomic-helper:
->>> drm_atomic_helper_shutdown(NULL) should be a noop").
->>>
->>> Suggested-by: Maxime Ripard <mripard@kernel.org>
->>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>> ---
->>
->> I have just tested the whole series, thanks for the patch. For drm/loongson only:
->>
->>
->> Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> Tested-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> Thanks!
->
->
->> By the way, I add 'pr_info("lsdc_pci_shutdown\n");' into the lsdc_pci_shutdown() function,
->> And seeing that lsdc_pci_shutdown() will be called when reboot and shutdown the machine.
->> I did not witness something weird happen at present. As you have said, this is useful for
->> drm panels drivers. But for the rest(drm/hibmc, drm/ast, drm/mgag200 and drm/loongson etc)
->> drivers, you didn't mention what's the benefit for those drivers.
-> I didn't mention it because I have no idea! I presume that for
-> non-drm_panel use cases it's not a huge deal, otherwise it wouldn't
-> have been missing from so many drivers. Thus, my "one sentence" reason
-> for the non-drm_panel case is just "we should do this because the
-> documentation of the API says we should", which is already in the
-> commit message. ;-)
->
-
-OK, this sound fine.
-
-> If you have a specific other benefit you'd like me to list then I'm happy to.
-
-You should think about the answer of this question yourself.
-But I will not object if you can't find one. OK. :-)
-
->
->> Probably, you can
->> mention it with at least one sentence at the next version. I also prefer to alter the
->> lsdc_pci_shutdown() function as the following pattern:
->>
->>
->> static void lsdc_pci_shutdown(struct pci_dev *pdev)
->> {
->>
->>       struct drm_device *ddev = pci_get_drvdata(pdev);
->>
->>       drm_atomic_helper_shutdown(ddev);
->> }
-> I was hoping to land this patch without spinning it unless there's a
-> good reason. How strongly do you feel about needing to change the
-> above?
-
-
-Not very strong, this version looks just fine.
-I will not object if you keep it as is.
-But I will also hear what the others reviewers say.
-Thanks for the patch.
-
->
-> -Doug
-
+Thanks,
+Stephan
