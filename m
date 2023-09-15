@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD297A232E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F367A2337
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 18:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbjIOQC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 12:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
+        id S234992AbjIOQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 12:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236353AbjIOQCk (ORCPT
+        with ESMTP id S236369AbjIOQFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:02:40 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073B6173A
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:02:34 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-34f5357cca7so2206985ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:02:33 -0700 (PDT)
+        Fri, 15 Sep 2023 12:05:33 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCC72102
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:05:23 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-770819c1db6so149092585a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 09:05:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1694793753; x=1695398553; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SU4Y10plz8qUMuJm0JLA4PaC91yhdIoxwR3qIThUido=;
-        b=Yvv7/6MI7z9HGU0cFzurVpJ+Tv4FgKXLXavF4rYgddSa8/B4zHg9WW3xrmSWULByKr
-         DsC85Fn0QBTDguxT0wsQGxWRdDeOcYNhJbhkwhQgbUeDs5dOGl/8ldRa+laFNThvjUgo
-         VEZIl0s6hBqQ/r/mF0rMS+CeLdX+PXkliAkhU=
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1694793922; x=1695398722; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fk8or89hqXtZNxRZ7/0FlKmmKA1FK/3FeO0U6tr3+Qw=;
+        b=gGn6NV2E8bWZ9T5PsSi6eJ+t8/YYsopEEcY7XaOm5C0k3Fk2qZ/raXM+RKIjzlWvZs
+         SckIpabPqYym/8yBNqP9MoUftyiq7C+L48d0CAL24qhmTdgem64BWpWDEOGqkXuKiEKF
+         BV6eGsq9L+4b2BkJ+CIrd2AGCKBnslwRg7WpXyMXtlDcbWe0VQPwDicDgcQnY/RXM6L4
+         H+6hMIjZ2KtkeJig2zea4u/iUmKfReHM/hx80UT99xXs0ZCjpg5fX5DVYd0xhb9vloIB
+         Ekxnwh+ERVDxXaeTQppJrHRYdi8H3Vgup61ly5WcHsulsUW7jPRdBFx3IY/Snz5TP8fG
+         Lw7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694793753; x=1695398553;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SU4Y10plz8qUMuJm0JLA4PaC91yhdIoxwR3qIThUido=;
-        b=vK06fEofBKp+HLec207o4JHfMQaI4RZqUY1FYamkQ+60AlAB4Kr1k9ZcYiS7aW3z+h
-         9KjYyDSSVjxeT3YpmUkNfS5BSbA0t0qMVI6eB5JBl60hjUiJIZIf8qeAJmnigihGHFS5
-         jLJuwx54BgIwDSU7Qg38z4te7nVZcwKTFv8sJcDCFyqf/7y2RSbIRLAGhfksCMz1zXhm
-         VGAis18AdDptph3qCe22g1JkP5mFchYRKwi2QLXaYJib7Qqf9akExH2UzB+TxzW4Nj5m
-         im2v2hski1jjMqynSXBBKXI1wpDydT7i3MtipScKGCOYs8jXqdnQO6RpKKMrxdihqyq4
-         JcWw==
-X-Gm-Message-State: AOJu0YxIOo0FchYAiSg2FzcQCv8m7gkErP08W5MSbTiSogYNhz3S5phr
-        rBFYVNvMm0FTOkWzqNbpGnd9o271NonNyXbtTUQ=
-X-Google-Smtp-Source: AGHT+IEcGE95ViEzDR2M6vtuBCNoKV4OqOm1d1DBvPmU6xM+F9rbsThXXPI2gZ8MUHQSaxd9Ch8J+w==
-X-Received: by 2002:a92:c646:0:b0:349:983c:4940 with SMTP id 6-20020a92c646000000b00349983c4940mr2586196ill.1.1694793753310;
-        Fri, 15 Sep 2023 09:02:33 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id dp10-20020a0566381c8a00b0042b6f103e62sm1098108jab.133.2023.09.15.09.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 09:02:32 -0700 (PDT)
-Message-ID: <8fc6a2d8-948a-af0c-1189-c12593766433@linuxfoundation.org>
-Date:   Fri, 15 Sep 2023 10:02:32 -0600
+        d=1e100.net; s=20230601; t=1694793922; x=1695398722;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fk8or89hqXtZNxRZ7/0FlKmmKA1FK/3FeO0U6tr3+Qw=;
+        b=isBrMBFAzHjXxIku1Px42Dm5riQXj4XnSfQp+K73RvKhtQALwtqpAvRXpHGfO4GWIr
+         sNoKdNuuCFs8lj35rQr8G4ZbI/jTH7dB4clThfChPxexMnnTLLQOfrqPLH0asQlbglX/
+         iWR+PTz1QBgptr4ysP6VWxTVRo2oR+FI5QEK+2kds4Twj/7t2Nm3ejKSN4HwmTZ1gN36
+         KfotAZTm8gPvFj53aA7g+b4394GWXPJ2sMfxf+9QN3avcbaANYMkIz4L/SjL1Avuvrru
+         q5xZgbYtEYV2oQE3Jb8dwC0xpZK58JujA8E+9cW8/PScJwNvgXlRed1w/RlQnMG4Rl0H
+         XlDQ==
+X-Gm-Message-State: AOJu0Yyi+4zMHNwbWlHoHlg9IYh53zNAO/Oykj24DGdOmwgsmsSWtyV/
+        F0UpvmfTwUu32i5ag4YpLSep7DJ8vilyXVQ8XQ7UPw==
+X-Google-Smtp-Source: AGHT+IGNopyQAWgjLiZyLLE2OHldJh9hVHBKQnVhoXeQg4js5a7zst/J8AzN/m9JdWEFQ8h10KrTpA==
+X-Received: by 2002:a05:620a:280c:b0:76f:12fa:c1ac with SMTP id f12-20020a05620a280c00b0076f12fac1acmr2187595qkp.28.1694793922431;
+        Fri, 15 Sep 2023 09:05:22 -0700 (PDT)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id v5-20020ae9e305000000b0076d9e298928sm1311009qkf.66.2023.09.15.09.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 09:05:21 -0700 (PDT)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH] proc: nommu: fix empty /proc/<pid>/maps
+Date:   Fri, 15 Sep 2023 12:00:56 -0400
+Message-ID: <20230915160055.971059-2-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] selftests/user_events: Fix failures when user_events
- is not installed
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Mark Brown <broonie@kernel.org>, shuah@kernel.org,
-        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, naresh.kamboju@linaro.org,
-        anders.roxell@linaro.org, arnd@arndb.de,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230908201916.562-1-beaub@linux.microsoft.com>
- <29fce076-746c-4650-8358-b4e0fa215cf7@sirena.org.uk>
- <20230908212712.211a4964@gandalf.local.home>
- <20230912171234.GA3704-beaub@linux.microsoft.com>
- <20230912134644.3b7959b9@gandalf.local.home>
- <b2d8d216-7d02-707e-937a-b42863f9e76d@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <b2d8d216-7d02-707e-937a-b42863f9e76d@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,30 +74,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 09:54, Shuah Khan wrote:
-> On 9/12/23 11:46, Steven Rostedt wrote:
->> On Tue, 12 Sep 2023 10:12:34 -0700
->> Beau Belgrave <beaub@linux.microsoft.com> wrote:
->>
->>
->>>> I guess I was wrong and some people do care ;-)
->>>>
->>>> -- Steve
->>>
->>> It looks like this change got applied [1] to the fixes branch of
->>> linux-kselftest. I can either send a V3 with this addressed or build a
->>> patch based upon the fixes branch on top of this one to address it.
->>>
->>> Which way do you all prefer?
-> 
-> Please send me patch on top of this one on linux-kselftest fixes.
-> 
+On no-MMU, /proc/<pid>/maps reads as an empty file. This happens because
+find_vma(mm, 0) always returns NULL (assuming no vma actually contains
+the zero address, which is normally the case).
 
-One more thing. I am sending pull request now with this patch to address
-the test failures.
+To fix this bug and improve the maintainability in the future, this
+patch makes the no-MMU implementation as similar as possible to the MMU
+implementation.
 
-Please send the unmount fix as soon as possible to include it in the next
-rc.
+The only remaining differences are the lack of
+hold/release_task_mempolicy and the extra code to shoehorn the gate vma
+into the iterator.
 
-thanks,
--- Shuah
+This has been tested on top of 6.5.3 on an STM32F746.
+
+Fixes: 0c563f148043 ("proc: remove VMA rbtree use from nommu")
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+ fs/proc/internal.h   |  2 --
+ fs/proc/task_nommu.c | 37 ++++++++++++++++++++++---------------
+ 2 files changed, 22 insertions(+), 17 deletions(-)
+
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index 9dda7e54b2d0..9a8f32f21ff5 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -289,9 +289,7 @@ struct proc_maps_private {
+ 	struct inode *inode;
+ 	struct task_struct *task;
+ 	struct mm_struct *mm;
+-#ifdef CONFIG_MMU
+ 	struct vma_iterator iter;
+-#endif
+ #ifdef CONFIG_NUMA
+ 	struct mempolicy *task_mempolicy;
+ #endif
+diff --git a/fs/proc/task_nommu.c b/fs/proc/task_nommu.c
+index 061bd3f82756..d3e19080df4a 100644
+--- a/fs/proc/task_nommu.c
++++ b/fs/proc/task_nommu.c
+@@ -188,15 +188,28 @@ static int show_map(struct seq_file *m, void *_p)
+ 	return nommu_vma_show(m, _p);
+ }
+ 
+-static void *m_start(struct seq_file *m, loff_t *pos)
++static struct vm_area_struct *proc_get_vma(struct proc_maps_private *priv,
++						loff_t *ppos)
++{
++	struct vm_area_struct *vma = vma_next(&priv->iter);
++
++	if (vma) {
++		*ppos = vma->vm_start;
++	} else {
++		*ppos = -1UL;
++	}
++
++	return vma;
++}
++
++static void *m_start(struct seq_file *m, loff_t *ppos)
+ {
+ 	struct proc_maps_private *priv = m->private;
++	unsigned long last_addr = *ppos;
+ 	struct mm_struct *mm;
+-	struct vm_area_struct *vma;
+-	unsigned long addr = *pos;
+ 
+-	/* See m_next(). Zero at the start or after lseek. */
+-	if (addr == -1UL)
++	/* See proc_get_vma(). Zero at the start or after lseek. */
++	if (last_addr == -1UL)
+ 		return NULL;
+ 
+ 	/* pin the task and mm whilst we play with them */
+@@ -218,12 +231,9 @@ static void *m_start(struct seq_file *m, loff_t *pos)
+ 		return ERR_PTR(-EINTR);
+ 	}
+ 
+-	/* start the next element from addr */
+-	vma = find_vma(mm, addr);
+-	if (vma)
+-		return vma;
++	vma_iter_init(&priv->iter, mm, last_addr);
+ 
+-	return NULL;
++	return proc_get_vma(priv, ppos);
+ }
+ 
+ static void m_stop(struct seq_file *m, void *v)
+@@ -240,12 +250,9 @@ static void m_stop(struct seq_file *m, void *v)
+ 	priv->task = NULL;
+ }
+ 
+-static void *m_next(struct seq_file *m, void *_p, loff_t *pos)
++static void *m_next(struct seq_file *m, void *_p, loff_t *ppos)
+ {
+-	struct vm_area_struct *vma = _p;
+-
+-	*pos = vma->vm_end;
+-	return find_vma(vma->vm_mm, vma->vm_end);
++	return proc_get_vma(m->private, ppos);
+ }
+ 
+ static const struct seq_operations proc_pid_maps_ops = {
+-- 
+2.42.0
+
