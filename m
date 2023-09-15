@@ -2,186 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBFD7A2959
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75BF7A295B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbjIOVY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S236508AbjIOV0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237718AbjIOVYg (ORCPT
+        with ESMTP id S237728AbjIOV0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:24:36 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A66C1AC;
-        Fri, 15 Sep 2023 14:24:16 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FJt3GG008372;
-        Fri, 15 Sep 2023 21:23:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=j2srMlgd+gSkKgJyE08vvd3NQ0c7NlhfaDS/LP6uMFM=;
- b=ff6ue9Q3as93DGU1bIye5qHvjAZIRmy8gZQHRlUetZcNyffjtzHjrs0DZf6QkyeFrSgq
- JuUE//udbgfarjf35n/6PdCJRBOcY63CoymEoeBOG6Zdu0Ekag1dDdj/wzUTWks/qHTQ
- GfSJLKVF4P0vmpuQRPFP1AwZJO6gv5Ms59eYO//0bGqkV6ZCtBVYDf8VMnd2/6NNBWgY
- 9zkwStdlT00YRxlCVBTKuuIMq8Ia0kJHSX4Y7CnRr7OHjGFAp3Fo7TpqwoY190VsgY+k
- VoY4qSs/xhiqyW83crwNm2YOC3X4g/cXkMXIol4MU43sRoGL+ZLGW1+11JcOo54Iuake uA== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g86t5pe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 21:23:56 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FLNtRj020242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 21:23:55 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 14:23:55 -0700
-Message-ID: <66dacc5c-fa00-1903-43d9-53094c516ebb@quicinc.com>
-Date:   Fri, 15 Sep 2023 14:23:54 -0700
+        Fri, 15 Sep 2023 17:26:15 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849DC101
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:26:08 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bfbd7d49e7so42093721fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694813166; x=1695417966; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yePpIdQ7WZGAqEgEwzbub2QYZTvPnhatZu9Hi1ymeRU=;
+        b=VE5g7ClR/ct5me5mLRm/Qdgli8EsMioaKNBE4BPIcOpeIUSYtgiRD4IoZ9pq2EIkDV
+         5BQKSRh82Cnr4P1FSFK5DX2aU2Cmgme+32pcwfo/bE2xaQlsQZp3c6U+la3HsUvZuXva
+         N0/uQdnNqVIC53U6F1NynDd4GPEsSk9kaV8qU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694813166; x=1695417966;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yePpIdQ7WZGAqEgEwzbub2QYZTvPnhatZu9Hi1ymeRU=;
+        b=kQZaSg3D0/gLNNmnXt8cI/hV3d5qQGc8eO0yohgumKjd1zpXljqVh+QDOoLc7mAnSy
+         KmCOHuMjAPjqhsOg/4EQjuCSt9ohqengQbkIBzMGZgZExoZ/GpYhGMvtpY4CM8LONsVn
+         MjFaoWFnDvN8YX4wUox5xsVhBMW8aWMhHpM84LzDfxCvQs6wCaGKW8bz1gS7A/ST2tID
+         aizv+PwYAKFxcx/N53WD2jB5B/9PM/GdQ0SAVmkxpw8iH5mKE0ZMnhV+EGWShZY0mj/o
+         O81BAIfNuzj0nMBwxaRrOkMXolD/MBfsCyBdyy/UYmBAbBUGKR0833CB0z7TKKuruRWI
+         rB3w==
+X-Gm-Message-State: AOJu0YwVcTBfqTPFBrSuW9yt63GOOBtk4rTi2Hruz1gXmQp3l3v8HBqf
+        T0mkS7Le3MlA5bzeYhq8USSyPhuFez/9yjYnR/+ZfBAj
+X-Google-Smtp-Source: AGHT+IGuYrmo4NgEqirNDEJGV2aS0sIpfoa6NNog0az2GM00lBf0iunirxCdUHIBuqEau1MQnMXeaA==
+X-Received: by 2002:a2e:a0cb:0:b0:2bc:b6b0:1c4d with SMTP id f11-20020a2ea0cb000000b002bcb6b01c4dmr2521123ljm.10.1694813166705;
+        Fri, 15 Sep 2023 14:26:06 -0700 (PDT)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id z15-20020a1709060acf00b0098d2d219649sm2918391ejf.174.2023.09.15.14.26.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 14:26:05 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso3063130a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:26:05 -0700 (PDT)
+X-Received: by 2002:aa7:d416:0:b0:525:7d81:71ee with SMTP id
+ z22-20020aa7d416000000b005257d8171eemr2220876edq.15.1694813165215; Fri, 15
+ Sep 2023 14:26:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/8] drm/panel: nv3052c: Allow specifying registers
- per panel
-Content-Language: en-US
-To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
-CC:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-6-contact@jookia.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20230911090206.3121440-6-contact@jookia.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KEpVqJR02qWL-WP30iz1EDOS-YkFArgK
-X-Proofpoint-ORIG-GUID: KEpVqJR02qWL-WP30iz1EDOS-YkFArgK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150191
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+ <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net> <20230915211815.GA34041@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230915211815.GA34041@noisy.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 14:25:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wix3KGMBAR52LexxvJA4b6aSbsh8b60JFXig2Rdvp_2qQ@mail.gmail.com>
+Message-ID: <CAHk-=wix3KGMBAR52LexxvJA4b6aSbsh8b60JFXig2Rdvp_2qQ@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 Sept 2023 at 14:18, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Hmm, perhaps I can do a class for it and write the thing like:
 
+.. crossed emails.
 
-On 9/11/2023 2:02 AM, John Watts wrote:
-> Panel initialization registers are per-display and not tied to the
-> controller itself. Different panels will specify their own registers.
-> Attach the sequences to the panel info struct so future panels
-> can specify their own sequences.
-> 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->   .../gpu/drm/panel/panel-newvision-nv3052c.c   | 25 ++++++++++++-------
->   1 file changed, 16 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> index 307335d0f1fc..b2ad9b3a5eb7 100644
-> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> @@ -20,11 +20,18 @@
->   #include <drm/drm_modes.h>
->   #include <drm/drm_panel.h>
->   
-> +struct nv3052c_reg {
-> +	u8 cmd;
-> +	u8 val;
-> +};
-> +
->   struct nv3052c_panel_info {
->   	const struct drm_display_mode *display_modes;
->   	unsigned int num_modes;
->   	u16 width_mm, height_mm;
->   	u32 bus_format, bus_flags;
-> +	const struct nv3052c_reg *panel_regs;
-> +	int panel_regs_len;
->   };
->   
->   struct nv3052c {
-> @@ -36,12 +43,7 @@ struct nv3052c {
->   	struct gpio_desc *reset_gpio;
->   };
->   
-> -struct nv3052c_reg {
-> -	u8 cmd;
-> -	u8 val;
-> -};
-> -
-> -static const struct nv3052c_reg nv3052c_panel_regs[] = {
-> +static const struct nv3052c_reg ltk035c5444t_panel_regs[] = {
->   	// EXTC Command set enable, select page 1
->   	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x01 },
->   	// Mostly unknown registers
-> @@ -244,6 +246,7 @@ static inline struct nv3052c *to_nv3052c(struct drm_panel *panel)
->   static int nv3052c_prepare(struct drm_panel *panel)
->   {
->   	struct nv3052c *priv = to_nv3052c(panel);
-> +	const struct nv3052c_reg *panel_regs = priv->panel_info->panel_regs;
->   	struct mipi_dbi *dbi = &priv->dbi;
->   	unsigned int i;
->   	int err;
-> @@ -260,9 +263,11 @@ static int nv3052c_prepare(struct drm_panel *panel)
->   	gpiod_set_value_cansleep(priv->reset_gpio, 0);
->   	msleep(150);
->   
-> -	for (i = 0; i < ARRAY_SIZE(nv3052c_panel_regs); i++) {
-> -		err = mipi_dbi_command(dbi, nv3052c_panel_regs[i].cmd,
-> -				       nv3052c_panel_regs[i].val);
-> +	int panel_regs_len = priv->panel_info->panel_regs_len;
+Yes.
 
-Hi John,
+Except I think a full-fledged class thing is overkill for a one-time
+use, and I think you really could just write it out as plain "this is
+the constructor, this is the cleanup".
 
-Sorry for not catching this earlier -- can you move the declaration of 
-panel_regs_len to the top of the function? Otherwise this throws a 
-compiler warning.
+Yes, yes, that is obviously what our CLASS() thing *is*, but at least
+my personal mental model is that a "class" is for when you really
+export it to other uses.
 
-With that change,
+If you just have a one-off, you don't need the class abstraction to
+export to anybody else.  You just do a one-off "alloc like this, free
+like this".
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Again, this I think is really just a "mental model" rather than any hard rule.
 
-Thanks,
-
-Jessica Zhang
-
-> +
-> +	for (i = 0; i < panel_regs_len; i++) {
-> +		err = mipi_dbi_command(dbi, panel_regs[i].cmd,
-> +				       panel_regs[i].val);
->   
->   		if (err) {
->   			dev_err(priv->dev, "Unable to set register: %d\n", err);
-> @@ -466,6 +471,8 @@ static const struct nv3052c_panel_info ltk035c5444t_panel_info = {
->   	.height_mm = 64,
->   	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->   	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-> +	.panel_regs = ltk035c5444t_panel_regs,
-> +	.panel_regs_len = ARRAY_SIZE(ltk035c5444t_panel_regs),
->   };
->   
->   static const struct spi_device_id nv3052c_ids[] = {
-> -- 
-> 2.42.0
-> 
+               Linus
