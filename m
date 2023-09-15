@@ -2,206 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 359A77A2A71
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6603B7A2A76
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 00:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237769AbjIOW07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 18:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S237798AbjIOW2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 18:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237579AbjIOW0l (ORCPT
+        with ESMTP id S237579AbjIOW2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 18:26:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8651383
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 15:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694816796; x=1726352796;
-  h=date:from:to:cc:subject:message-id;
-  bh=7TVTeyeGJSlIMVyRvU0upmZIyuWisKk4UGCSg++pitw=;
-  b=GVnFZqzCZY3h5aeZv9+JeHfcdhsLARoabLFJ1stORHF5qRl4iDQUSNBj
-   0ux6X8E1ltfIWtfaQ4X1RHJWuDtfxcVOXRNbG5SlKevGxsuITMHhiplJr
-   9M4m1iyXAilZiP3k/Xurvc5XSai5MiGfJRDEBvyEtRAG7rBrecQk7gp6b
-   2xwibcrL0KuHrWFHXYOPZguLYEIuSFCGoYYrPi8gn7u6eN/fs7sL6JnFP
-   IasdlGxwkxw2QKCyJWZjC59pcAaE3eoDNfnMic506IP+veMrrn5+AUbpn
-   tu7CDWnRO8MX9K2iOGvwqTY/rMP1EU7UBZj2ooYZLX4RfqHq94byYnSZd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359601774"
-X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
-   d="scan'208";a="359601774"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 15:26:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="745155181"
-X-IronPort-AV: E=Sophos;i="6.02,150,1688454000"; 
-   d="scan'208";a="745155181"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 15 Sep 2023 15:26:34 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhHGi-0003Y0-2E;
-        Fri, 15 Sep 2023 22:26:32 +0000
-Date:   Sat, 16 Sep 2023 06:25:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.09.14a] BUILD SUCCESS
- 1986ac383193c963d8f5da4b69da6add4f473901
-Message-ID: <202309160641.BcdMBmUM-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 18:28:04 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0DC183;
+        Fri, 15 Sep 2023 15:27:58 -0700 (PDT)
+Received: from localhost.localdomain (unknown [4.155.48.125])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6992C212BE7E;
+        Fri, 15 Sep 2023 15:27:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6992C212BE7E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1694816878;
+        bh=/8z3AEQ24YTro7keEG8buhoc3usXHslsxfG7k0QXs58=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qeLI7rvg0vt3CAIUEnCNwCBwjgpY8sq1g2DwUns2Ca1BeSsCzQu2PwnqWHl/CGojs
+         2oW26WfgE74X3BCVrEm5X5VKimtDnSjuEyuCQGOUolvsjJd0R/QcaVdIaV/oaC5Lfz
+         fUqmnK+ytI0UscqZkEhpkaSRNJtA+egBKnZl4CmY=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, shuah@kernel.org, mhiramat@kernel.org,
+        broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests/user_events: Fix to unmount tracefs when test created mount
+Date:   Fri, 15 Sep 2023 22:27:54 +0000
+Message-Id: <20230915222754.16591-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.09.14a
-branch HEAD: 1986ac383193c963d8f5da4b69da6add4f473901  EXP sched: Export dump_cpu_task() to GPL modules for locktorture
+Fix to unmount tracefs if the self-test mounted it to allow testing.
+If tracefs was already mounted, this does nothing.
 
-elapsed time: 757m
+Suggested-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/all/29fce076-746c-4650-8358-b4e0fa215cf7@sirena.org.uk/
+Fixes: a06023a8f78d ("selftests/user_events: Fix failures when user_events is not installed")
 
-configs tested: 129
-configs skipped: 2
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ .../testing/selftests/user_events/abi_test.c  |  4 +++-
+ .../testing/selftests/user_events/dyn_test.c  |  5 +++-
+ .../selftests/user_events/ftrace_test.c       |  5 +++-
+ .../testing/selftests/user_events/perf_test.c |  5 +++-
+ .../user_events/user_events_selftests.h       | 24 +++++++++++++++----
+ 5 files changed, 34 insertions(+), 9 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
+index 22374d29ffdd..8202f1327c39 100644
+--- a/tools/testing/selftests/user_events/abi_test.c
++++ b/tools/testing/selftests/user_events/abi_test.c
+@@ -91,16 +91,18 @@ static int reg_disable(long *enable, int bit)
+ 
+ FIXTURE(user) {
+ 	long check;
++	bool umount;
+ };
+ 
+ FIXTURE_SETUP(user) {
+-	USER_EVENT_FIXTURE_SETUP(return);
++	USER_EVENT_FIXTURE_SETUP(return, self->umount);
+ 
+ 	change_event(false);
+ 	self->check = 0;
+ }
+ 
+ FIXTURE_TEARDOWN(user) {
++	USER_EVENT_FIXTURE_TEARDOWN(self->umount);
+ }
+ 
+ TEST_F(user, enablement) {
+diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
+index 32c827a52d7d..a85980190bea 100644
+--- a/tools/testing/selftests/user_events/dyn_test.c
++++ b/tools/testing/selftests/user_events/dyn_test.c
+@@ -144,13 +144,16 @@ do { \
+ 
+ FIXTURE(user) {
+ 	int check;
++	bool umount;
+ };
+ 
+ FIXTURE_SETUP(user) {
+-	USER_EVENT_FIXTURE_SETUP(return);
++	USER_EVENT_FIXTURE_SETUP(return, self->umount);
+ }
+ 
+ FIXTURE_TEARDOWN(user) {
++	USER_EVENT_FIXTURE_TEARDOWN(self->umount);
++
+ 	wait_for_delete();
+ }
+ 
+diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
+index 6a260caeeddc..dcd7509fe2e0 100644
+--- a/tools/testing/selftests/user_events/ftrace_test.c
++++ b/tools/testing/selftests/user_events/ftrace_test.c
+@@ -204,10 +204,11 @@ FIXTURE(user) {
+ 	int data_fd;
+ 	int enable_fd;
+ 	int check;
++	bool umount;
+ };
+ 
+ FIXTURE_SETUP(user) {
+-	USER_EVENT_FIXTURE_SETUP(return);
++	USER_EVENT_FIXTURE_SETUP(return, self->umount);
+ 
+ 	self->status_fd = open(status_file, O_RDONLY);
+ 	ASSERT_NE(-1, self->status_fd);
+@@ -219,6 +220,8 @@ FIXTURE_SETUP(user) {
+ }
+ 
+ FIXTURE_TEARDOWN(user) {
++	USER_EVENT_FIXTURE_TEARDOWN(self->umount);
++
+ 	close(self->status_fd);
+ 	close(self->data_fd);
+ 
+diff --git a/tools/testing/selftests/user_events/perf_test.c b/tools/testing/selftests/user_events/perf_test.c
+index f893398cda05..5288e768b207 100644
+--- a/tools/testing/selftests/user_events/perf_test.c
++++ b/tools/testing/selftests/user_events/perf_test.c
+@@ -111,16 +111,19 @@ static int clear(int *check)
+ FIXTURE(user) {
+ 	int data_fd;
+ 	int check;
++	bool umount;
+ };
+ 
+ FIXTURE_SETUP(user) {
+-	USER_EVENT_FIXTURE_SETUP(return);
++	USER_EVENT_FIXTURE_SETUP(return, self->umount);
+ 
+ 	self->data_fd = open(data_file, O_RDWR);
+ 	ASSERT_NE(-1, self->data_fd);
+ }
+ 
+ FIXTURE_TEARDOWN(user) {
++	USER_EVENT_FIXTURE_TEARDOWN(self->umount);
++
+ 	close(self->data_fd);
+ 
+ 	if (clear(&self->check) != 0)
+diff --git a/tools/testing/selftests/user_events/user_events_selftests.h b/tools/testing/selftests/user_events/user_events_selftests.h
+index 690378942f82..e1c3c063c031 100644
+--- a/tools/testing/selftests/user_events/user_events_selftests.h
++++ b/tools/testing/selftests/user_events/user_events_selftests.h
+@@ -11,13 +11,19 @@
+ 
+ #include "../kselftest.h"
+ 
+-static inline bool tracefs_enabled(char **message, bool *fail)
++static inline void tracefs_unmount(void)
++{
++	umount("/sys/kernel/tracing");
++}
++
++static inline bool tracefs_enabled(char **message, bool *fail, bool *umount)
+ {
+ 	struct stat buf;
+ 	int ret;
+ 
+ 	*message = "";
+ 	*fail = false;
++	*umount = false;
+ 
+ 	/* Ensure tracefs is installed */
+ 	ret = stat("/sys/kernel/tracing", &buf);
+@@ -37,6 +43,8 @@ static inline bool tracefs_enabled(char **message, bool *fail)
+ 			return false;
+ 		}
+ 
++		*umount = true;
++
+ 		ret = stat("/sys/kernel/tracing/README", &buf);
+ 	}
+ 
+@@ -49,13 +57,14 @@ static inline bool tracefs_enabled(char **message, bool *fail)
+ 	return true;
+ }
+ 
+-static inline bool user_events_enabled(char **message, bool *fail)
++static inline bool user_events_enabled(char **message, bool *fail, bool *umount)
+ {
+ 	struct stat buf;
+ 	int ret;
+ 
+ 	*message = "";
+ 	*fail = false;
++	*umount = false;
+ 
+ 	if (getuid() != 0) {
+ 		*message = "Must be run as root";
+@@ -63,7 +72,7 @@ static inline bool user_events_enabled(char **message, bool *fail)
+ 		return false;
+ 	}
+ 
+-	if (!tracefs_enabled(message, fail))
++	if (!tracefs_enabled(message, fail, umount))
+ 		return false;
+ 
+ 	/* Ensure user_events is installed */
+@@ -85,10 +94,10 @@ static inline bool user_events_enabled(char **message, bool *fail)
+ 	return true;
+ }
+ 
+-#define USER_EVENT_FIXTURE_SETUP(statement) do { \
++#define USER_EVENT_FIXTURE_SETUP(statement, umount) do { \
+ 	char *message; \
+ 	bool fail; \
+-	if (!user_events_enabled(&message, &fail)) { \
++	if (!user_events_enabled(&message, &fail, &(umount))) { \
+ 		if (fail) { \
+ 			TH_LOG("Setup failed due to: %s", message); \
+ 			ASSERT_FALSE(fail); \
+@@ -97,4 +106,9 @@ static inline bool user_events_enabled(char **message, bool *fail)
+ 	} \
+ } while (0)
+ 
++#define USER_EVENT_FIXTURE_TEARDOWN(umount) do { \
++	if ((umount))  \
++		tracefs_unmount(); \
++} while (0)
++
+ #endif /* _USER_EVENTS_SELFTESTS_H */
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230915   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230915   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230915   gcc  
-i386         buildonly-randconfig-002-20230915   gcc  
-i386         buildonly-randconfig-003-20230915   gcc  
-i386         buildonly-randconfig-004-20230915   gcc  
-i386         buildonly-randconfig-005-20230915   gcc  
-i386         buildonly-randconfig-006-20230915   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230915   gcc  
-i386                  randconfig-002-20230915   gcc  
-i386                  randconfig-004-20230915   gcc  
-i386                  randconfig-005-20230915   gcc  
-i386                  randconfig-006-20230915   gcc  
-i386                  randconfig-011-20230915   gcc  
-i386                  randconfig-012-20230915   gcc  
-i386                  randconfig-013-20230915   gcc  
-i386                  randconfig-014-20230915   gcc  
-i386                  randconfig-015-20230915   gcc  
-i386                  randconfig-016-20230915   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230915   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230915   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230915   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230915   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230915   gcc  
-x86_64       buildonly-randconfig-002-20230915   gcc  
-x86_64       buildonly-randconfig-003-20230915   gcc  
-x86_64       buildonly-randconfig-004-20230915   gcc  
-x86_64       buildonly-randconfig-005-20230915   gcc  
-x86_64       buildonly-randconfig-006-20230915   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230915   gcc  
-x86_64                randconfig-002-20230915   gcc  
-x86_64                randconfig-003-20230915   gcc  
-x86_64                randconfig-004-20230915   gcc  
-x86_64                randconfig-005-20230915   gcc  
-x86_64                randconfig-006-20230915   gcc  
-x86_64                randconfig-011-20230915   gcc  
-x86_64                randconfig-012-20230915   gcc  
-x86_64                randconfig-013-20230915   gcc  
-x86_64                randconfig-014-20230915   gcc  
-x86_64                randconfig-015-20230915   gcc  
-x86_64                randconfig-016-20230915   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
+base-commit: 7e021da80f48582171029714f8a487347f29dddb
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
