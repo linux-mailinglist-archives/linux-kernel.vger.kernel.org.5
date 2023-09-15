@@ -2,20 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AACE17A1E85
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54197A1E17
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 14:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbjIOMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 08:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S234630AbjIOMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 08:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234750AbjIOMVx (ORCPT
+        with ESMTP id S234606AbjIOMG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 08:21:53 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Sep 2023 05:21:28 PDT
-Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147F51FFA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:21:28 -0700 (PDT)
+        Fri, 15 Sep 2023 08:06:28 -0400
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEFB3A86
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 05:03:42 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; t=1694779416; cv=none; 
         d=zohomail.com; s=zohoarc; 
         b=H9SJ2/ylRin1fjSy+mrNOs5Hu65G+9KER1RnNpQu74qp58wxXQfoQo+I/Hwpq9AT++UPrvDOrCs7EoS1+HWEc/CAsscSpb7xo+DyL/Wl1zG17fSqRLrknzW6lzb8dzXMARM8zcJIKemGV4g3alwf6aaI0p998ES/n3NalPmAeBA=
@@ -55,8 +54,8 @@ In-Reply-To: <2023091533-subdued-antler-d6ac@gregkh>
 X-ZohoMailClient: External
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
