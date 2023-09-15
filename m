@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04257A1C7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062717A1C83
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjIOKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S233019AbjIOKlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232404AbjIOKkX (ORCPT
+        with ESMTP id S232599AbjIOKlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:40:23 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A384B1AD;
-        Fri, 15 Sep 2023 03:40:14 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf57366ccdso22520345ad.1;
-        Fri, 15 Sep 2023 03:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694774414; x=1695379214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=buBIVholknHiWUJctiiDrt74bolRbOHTJ1nmcGC/y4c=;
-        b=ZyWMmAOTeNAi30Ls5H2RBheiDyTpZzj4qN+4HSQ98n1jDHU5vrawaR/Gcvhx5Axdwp
-         EKQkbjEtONTpPFKd8/34SYiBSuDiXH76nwJlStr+hepgjp/05zGr3h5o3/AIhMgZp6ck
-         VpxggaB5zNGWY0FiVVOtRPU7WlW33g5eArlNKt8pzvbwH3pTR57yHizogd1gFLfiVAUr
-         O7Hu1JOub+H58AM9R/1sVbLVf61OzJkNvGVVE0OSDJES3whaBnzN4+lRwU5P7BNTeePB
-         8kJhn33TdIayIUi8UWuHkIYj2h3GZB4DqpqHmpjPZ30SayidnTm/TajLyCFytM6v3kN/
-         BX5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694774414; x=1695379214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=buBIVholknHiWUJctiiDrt74bolRbOHTJ1nmcGC/y4c=;
-        b=eX5MU32+bveTJwjEOPqJ+GyNtLkPLgvvwkK9oZtVZM+Zy1skYU5E3/hl9RbBR4Y7QF
-         lVXkIHutKpiMyWx/5lptfgGPHkgNjvKl7K5nTmAMWvAnw/sEsn/FzXJmgngVJPl0pVq3
-         Q9+Z+knazguC85Io+KFj7qBJdtW5efempMf5c64dD7twjsCaXhtudsxFSzQi84LkelA9
-         q4pMk00jVSDp2+tO4hRZgtQELYEnsH/CZFqDHO7ayeCSNkJ5gi6kUe1VaTW0ji7FCkBn
-         7JAPkc96JhsSNq0KotrMLDx94LSjt89aK6vcwsJGK6e98IxWEIyBhGR1RSGbwkaxKscN
-         mD/w==
-X-Gm-Message-State: AOJu0YyEA+vKFk4S7kSCkbZ+V+hv0khDda8wB6Eq/7v4XQV5rh0CYyVk
-        twjNz47HGJMRBJD+QMJ3enI=
-X-Google-Smtp-Source: AGHT+IFCl8rJP+X5voFkMbpPc9mRMG0z9bYpbf/GMuWMKGwebJdeUijsk3q0w79tJBi4GxS4r6o4EA==
-X-Received: by 2002:a17:902:f7d4:b0:1c4:314a:d045 with SMTP id h20-20020a170902f7d400b001c4314ad045mr1496684plw.14.1694774413981;
-        Fri, 15 Sep 2023 03:40:13 -0700 (PDT)
-Received: from gondor.apana.org.au ([2404:c804:1b2a:5507:c00a:8aff:fe00:b003])
-        by smtp.gmail.com with ESMTPSA id iz19-20020a170902ef9300b001c3bc7b8816sm3183808plb.284.2023.09.15.03.40.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 03:40:13 -0700 (PDT)
-Sender: Herbert Xu <herbertx@gmail.com>
-Date:   Fri, 15 Sep 2023 18:40:13 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     thomas.lendacky@amd.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] Fixes for dynamic boost control for 6.6
-Message-ID: <ZQQ0jdhE2jPz3A8i@gondor.apana.org.au>
-References: <20230829150759.156126-1-mario.limonciello@amd.com>
+        Fri, 15 Sep 2023 06:41:44 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2056.outbound.protection.outlook.com [40.107.93.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48779C1;
+        Fri, 15 Sep 2023 03:41:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wm1zOsBp9+Xfi8dxlwx17g+7h2AwdYLO5jFhwY+j07JtCx6xc8WO3GM5aY9YOrk0R929mnDB/UmAzphIIxTXRPXSGlZ2ROHtzW/HbuxP6HmjsR76mtApbfL57R4J1NQUrOnB8e7XYJzgDrAR++hW3wViIG8qvndYyIg4w5pRigf1RukiiIZzj0M3xUMtjFAVVtvbkUYrJr66YUadNhkohBCA+DryocgCcjC1D9PhijLAxdBrZL7bg+UlfCo1nSjlXe1i170lynUqul/D9qQok/AsC9lPE29Qw2GJJ+1NJnHujMh/DEpW6QwtsT3Xsh8wk0poah+L2uY33muN/HQNjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hVGOYC0AG3mvj6i+NeaJGc4eIE+uhrTlrNL/G/z9aUw=;
+ b=KLd/CN87dZZE9IkIvx+AcTgnLPbO5xiW/Z0MKkTeyXcomvQ35SxW6jH165dpOmWe5qlvqDuiSG4/SiUGtFDtTD5lSE5RJ0qiw0Ym9Uuol/6ARrdsYIwM8Fdx0WhHC0UNyh0hoSX0icya9cPsc6NDLoHDiiDCUP66j+t7tCyoRZD6jrgq8MAkdmpWMlaGgNqKbsjLnNu8oErHW7fp+wUhzXfSZA7UBtuNcy873LS/hAdLkjWrroJgPkdG3zViRy0uzm7rXUWhH74V/ld4mO1OeFzjy9uN1yIzBKf4htJ6D/0T7tYFlMPDEztHAW3QpQ2d3F0CwnlRksRNggOCou+wBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hVGOYC0AG3mvj6i+NeaJGc4eIE+uhrTlrNL/G/z9aUw=;
+ b=KKpOpugWw9df/mGVVJNL+frMaHLpYMVLE5JI+KdowGdmYr9k3dkrBOWiw7//2zgYHMRX+RhE9xHic/e4iIkdCExqErU+zDGJPqmNuSx/m4zqOVfRZfRTT8CCqu7Bh6bF2yhCmISUuZMSHbCoDwdDMIpl+ieF9n+p9r5+H+l8PgE=
+Received: from CH0PR03CA0245.namprd03.prod.outlook.com (2603:10b6:610:e5::10)
+ by MW4PR12MB7312.namprd12.prod.outlook.com (2603:10b6:303:21a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 15 Sep
+ 2023 10:41:35 +0000
+Received: from DS2PEPF00003444.namprd04.prod.outlook.com
+ (2603:10b6:610:e5:cafe::90) by CH0PR03CA0245.outlook.office365.com
+ (2603:10b6:610:e5::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21 via Frontend
+ Transport; Fri, 15 Sep 2023 10:41:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003444.mail.protection.outlook.com (10.167.17.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.19 via Frontend Transport; Fri, 15 Sep 2023 10:41:35 +0000
+Received: from ethanolxb491host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Sep
+ 2023 05:41:13 -0500
+From:   Swapnil Sapkal <swapnil.sapkal@amd.com>
+To:     <rafael.j.wysocki@intel.com>, <Ray.Huang@amd.com>,
+        <li.meng@amd.com>, <shuah@kernel.org>
+CC:     <sukrut.bellary@gmail.com>, <gautham.shenoy@amd.com>,
+        <wyes.karny@amd.com>, <Perry.Yuan@amd.com>,
+        <Mario.Limonciello@amd.com>, <zwisler@chromium.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "Swapnil Sapkal" <swapnil.sapkal@amd.com>
+Subject: [PATCH 0/2] Fix issues observed with selftests/amd-pstate
+Date:   Fri, 15 Sep 2023 10:40:55 +0000
+Message-ID: <20230915104057.132210-1-swapnil.sapkal@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829150759.156126-1-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003444:EE_|MW4PR12MB7312:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa8c5157-2e79-4bfa-33df-08dbb5d85551
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 472I0qFLbEHelSvOAk6kckBuxAGlBH5Pru0EzIJ2Gumf2WR3YLHcCTMjU3dRYJHJkXRiZ4s0xHL4FlpMeEUDDYvFDifjvkYm9ADeH8Z9t1+wXZZABjz+H9MxDePX5AYoIdM3HQTjhY7Yu96Pt6+2yGKjJfJb+e5iCJKx7wHRUzkOlNcOXQhtVHr0Xg9Vy+wejmP1iuubYxWfern5z9BC1DgR/ZWEiMkVD+fsLZ3hIgcklCnJmxkqsmLLr39f21gOV8nnc3Xy/lu7bisgcf7DcKpLyUTG71ZZzLbT3tIRx1/34gh2ToX+ONPcog9ey1rnWOQ1YA32nznvQDsF37AUlvS5ZDmetJiPZhy8s8Cz4I5aZVX/8h74/dCrfJHrd/zCXzEiB/kz11ZvtCIDY3TjmGMyz0ziusLdV7LOwZzbadyeZxlOu5xMCPT9oH7i4RtMkCrqSIDUD4xVuDXS6IgqTcFRxjOWU6nVMuNL/rYjayu/8FX7Bw2bSmpyPP0NafaF0f4x1ViKQLEnt35PvhRz41KSyXzH/w6KF+QZ5e2UW3w7uLIkd0Cf4TkqD7F0BHDBjhmHkIoz6urmmIfG5aguvurBwyqownWW3GH87wdoxSJIxrLraepJNNqRRiDMBQ9CvWkE9+j4I6ByYJIKqGl50VynAZiwnJ6/9Mvmf/GbfDX5/yv7nnJbosaR1j7L/fpebREgSx5GIs5p2i9PvA1wZHeN0pdhd02zpr4F8LVs6B8OCvZVCh/PKty5xR104N7Y6BgBWxV5ONOBTlk61g1xxzYyS2jHlYF+lw7QaEXGv3U=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(376002)(136003)(1800799009)(451199024)(82310400011)(186009)(40470700004)(46966006)(36840700001)(70206006)(81166007)(356005)(36860700001)(7696005)(6666004)(36756003)(4744005)(82740400003)(40480700001)(47076005)(336012)(8936002)(426003)(478600001)(26005)(40460700003)(16526019)(86362001)(41300700001)(2906002)(2616005)(70586007)(110136005)(54906003)(4326008)(8676002)(316002)(44832011)(83380400001)(1076003)(5660300002)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 10:41:35.1224
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa8c5157-2e79-4bfa-33df-08dbb5d85551
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003444.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7312
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:07:54AM -0500, Mario Limonciello wrote:
-> Testing the code that is submitted for kernel 6.6 found some occasional
-> problems with memory allocation and with the test suite and sample
-> application as merged.
-> 
-> This series fixes all problems found. Ideally all patches should
-> be submitted for a future 6.6-rc, but, the most important is
-> "crypto: ccp: Get a free page to use while fetching initial nonce"
-> if the rest must be pushed to 6.7.
-> 
-> This series merges together the two previous submissions, re-orders them
-> and fixes one more problem found with unfused tests.
-> Link: https://lore.kernel.org/linux-crypto/20230828190200.1598-1-mario.limonciello@amd.com/T/#m5f336a50707d2426c2a0d47d751f06d233e5c816
-> Link: https://lore.kernel.org/linux-crypto/20230824221932.2807-1-mario.limonciello@amd.com/#t
-> 
-> Mario Limonciello (5):
->   crypto: ccp: Get a free page to use while fetching initial nonce
->   crypto: ccp: Fix ioctl unit tests
->   crypto: ccp: Fix DBC sample application error handling
->   crypto: ccp: Fix sample application signature passing
->   crypto: ccp: Fix some unfused tests
-> 
->  drivers/crypto/ccp/dbc.c     |  2 +-
->  tools/crypto/ccp/dbc.c       | 17 +++++++-------
->  tools/crypto/ccp/dbc.py      |  8 +++----
->  tools/crypto/ccp/test_dbc.py | 45 +++++++++++++++++++++---------------
->  4 files changed, 41 insertions(+), 31 deletions(-)
-> 
-> 
-> base-commit: 85b9bf9a514d991fcecb118d0a8a35e754ff9265
-> -- 
-> 2.34.1
+This series fixes the issues observed with selftests/amd-pstate while
+running performance comparison tests with different governors. First
+patch changes relative paths with absolute path and also change it with
+correct path wherever it is broken.
+The second patch fixes error observed while importing the Gnuplot in
+intel_pstate_tracer.py.
 
-All applied.  Thanks.
+Swapnil Sapkal (2):
+  selftests/amd-pstate: Fix broken paths to run workloads in
+    amd-pstate-ut
+  tools/power/x86/intel_pstate_tracer: Use pygnuplot package for Gnuplot
+
+ .../x86/amd_pstate_tracer/amd_pstate_trace.py |  3 +--
+ .../intel_pstate_tracer.py                    |  4 ++--
+ .../testing/selftests/amd-pstate/gitsource.sh | 14 +++++++-----
+ tools/testing/selftests/amd-pstate/run.sh     | 22 +++++++++++++------
+ tools/testing/selftests/amd-pstate/tbench.sh  |  4 ++--
+ 5 files changed, 29 insertions(+), 18 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.34.1
+
