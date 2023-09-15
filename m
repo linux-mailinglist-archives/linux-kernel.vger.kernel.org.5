@@ -2,140 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2480D7A2169
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941E87A2181
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 16:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbjIOOtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 10:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
+        id S235838AbjIOOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 10:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbjIOOtt (ORCPT
+        with ESMTP id S235891AbjIOOvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 10:49:49 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA641BE6;
-        Fri, 15 Sep 2023 07:49:44 -0700 (PDT)
-Received: from lhrpeml100002.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnH630yTpz67Nc8;
-        Fri, 15 Sep 2023 22:44:59 +0800 (CST)
-Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
- lhrpeml100002.china.huawei.com (7.191.160.241) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 15:49:41 +0100
-Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
- lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.031;
- Fri, 15 Sep 2023 15:49:41 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "James Morse" <james.morse@arm.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
-        "justin.he@arm.com" <justin.he@arm.com>
-Subject: RE: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code
- first?]
-Thread-Topic: [RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields
- [code first?]
-Thread-Index: AQHZ5mDqpYLh+nkhC0mj9mPBt3XEBLAZ5MMAgAB0lICAAAsFgIAAEfIQgADzSoCAABq9gIAAG4DQ////VACAAFZdgA==
-Date:   Fri, 15 Sep 2023 14:49:41 +0000
-Message-ID: <cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-28-james.morse@arm.com>
-        <CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com>
-        <20230914155459.00002dba@Huawei.com>
-        <CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com>
-        <f5d9beea95e149ab89364dcdb0f8bf69@huawei.com>
-        <ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk>
-        <CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com>
-        <80e36ff513504a0382a1cbce83e42295@huawei.com>
- <CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.174.239]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 15 Sep 2023 10:51:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB241FD2;
+        Fri, 15 Sep 2023 07:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694789474; x=1726325474;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZhU/YBjNOOPe5s3iZG0OgiJEfBTYLPIc8dia6attIks=;
+  b=Oj8SeQ1p3D5QjbJv8HZ9bS0r7JYrbfemlfQxR9njDaqUMVI/aK4J+rvv
+   4ag/mTD9wvpD1Go8owcaiXuB4vFtH2p1DdPJCVW4ZuUQDwBDoeJ9BE7RA
+   D0ZHU9Iyk0KLwNR7siHXM0dptncWKm171lNhkXUlNGPXDCcKn71p4RYAm
+   IcXn5I/N64ud+Om1YvtQAp3Ohl9Sbd6vBkEgIxDG1CsxHL0aYcJjwJHHk
+   WuQFO5L5BsQ1xEA7Duknd5ba9wBml/oNtQWYimYYP5j7aQp7dloUQ2UmO
+   bI6j+SwTkk+V5ofe1QDHOcigleSaU1/qxVmbYFusve09SOlORr8XBrspV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="443326475"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="443326475"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:49:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="860181871"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="860181871"
+Received: from srdoo-mobl1.ger.corp.intel.com ([10.252.38.99])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 07:49:55 -0700
+Date:   Fri, 15 Sep 2023 17:49:53 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH v4 4/4] platform/x86: intel_scu_ipc: Fail IPC send if
+ still busy
+In-Reply-To: <20230913212723.3055315-5-swboyd@chromium.org>
+Message-ID: <3e17994a-9481-acc5-dfac-3878929b7038@linux.intel.com>
+References: <20230913212723.3055315-1-swboyd@chromium.org> <20230913212723.3055315-5-swboyd@chromium.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-496999276-1694789398=:2347"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZy
-aWRheSwgU2VwdGVtYmVyIDE1LCAyMDIzIDExOjIxIEFNDQo+IFRvOiBTYWxpbCBNZWh0YSA8c2Fs
-aWwubWVodGFAaHVhd2VpLmNvbT4NCj4gQ2M6IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWxAa2Vy
-bmVsLm9yZz47IFJ1c3NlbGwgS2luZyAoT3JhY2xlKQ0KPiA8bGludXhAYXJtbGludXgub3JnLnVr
-PjsgQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9yZz47IEpvbmF0aGFuIENhbWVyb24NCj4g
-PGpvbmF0aGFuLmNhbWVyb25AaHVhd2VpLmNvbT47IEphbWVzIE1vcnNlIDxqYW1lcy5tb3JzZUBh
-cm0uY29tPjsgbGludXgtDQo+IHBtQHZnZXIua2VybmVsLm9yZzsgbG9vbmdhcmNoQGxpc3RzLmxp
-bnV4LmRldjsgbGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWFyY2hAdmdlci5r
-ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0tDQo+IGtl
-cm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRlYWQub3Jn
-Ow0KPiBrdm1hcm1AbGlzdHMubGludXguZGV2OyB4ODZAa2VybmVsLm9yZzsgSmVhbi1QaGlsaXBw
-ZSBCcnVja2VyIDxqZWFuLQ0KPiBwaGlsaXBwZUBsaW5hcm8ub3JnPjsgamlhbnlvbmcud3VAYXJt
-LmNvbTsganVzdGluLmhlQGFybS5jb20NCj4gU3ViamVjdDogUmU6IFtSRkMgUEFUQ0ggdjIgMjcv
-MzVdIEFDUElDQTogQWRkIG5ldyBNQURUIEdJQ0MgZmxhZ3MgZmllbGRzDQo+IFtjb2RlIGZpcnN0
-P10NCj4gDQo+IE9uIEZyaSwgU2VwIDE1LCAyMDIzIGF0IDExOjM04oCvQU0gU2FsaWwgTWVodGEg
-PHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4NCj4gPiA+IEZyb206
-IFJhZmFlbCBKLiBXeXNvY2tpIDxyYWZhZWxAa2VybmVsLm9yZz4NCj4gPiA+IFNlbnQ6IEZyaWRh
-eSwgU2VwdGVtYmVyIDE1LCAyMDIzIDk6NDUgQU0NCj4gPiA+IFRvOiBSdXNzZWxsIEtpbmcgKE9y
-YWNsZSkgPGxpbnV4QGFybWxpbnV4Lm9yZy51az4NCj4gPiA+IENjOiBTYWxpbCBNZWh0YSA8c2Fs
-aWwubWVodGFAaHVhd2VpLmNvbT47IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+Ow0K
-PiA+ID4gSm9uYXRoYW4gQ2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsgSmFt
-ZXMgTW9yc2UgDQo+ID4gPiA8amFtZXMubW9yc2VAYXJtLmNvbT47IGxpbnV4LXBtQHZnZXIua2Vy
-bmVsLm9yZzsgbG9vbmdhcmNoQGxpc3RzLmxpbnV4LmRldjsNCj4gPiA+IGxpbnV4LWFjcGlAdmdl
-ci5rZXJuZWwub3JnOyBsaW51eC1hcmNoQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+ID4gPiBr
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
-cmc7IGxpbnV4LQ0KPiA+ID4gcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsga3ZtYXJtQGxpc3Rz
-LmxpbnV4LmRldjsgeDg2QGtlcm5lbC5vcmc7DQo+IEplYW4tDQo+ID4gPiBQaGlsaXBwZSBCcnVj
-a2VyIDxqZWFuLXBoaWxpcHBlQGxpbmFyby5vcmc+OyBqaWFueW9uZy53dUBhcm0uY29tOw0KPiA+
-ID4ganVzdGluLmhlQGFybS5jb20NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIHYyIDI3
-LzM1XSBBQ1BJQ0E6IEFkZCBuZXcgTUFEVCBHSUNDIGZsYWdzDQo+IGZpZWxkcw0KPiA+ID4gW2Nv
-ZGUgZmlyc3Q/XQ0KPiA+ID4NCj4gPiA+IE9uIEZyaSwgU2VwIDE1LCAyMDIzIGF0IDk6MDnigK9B
-TSBSdXNzZWxsIEtpbmcgKE9yYWNsZSkNCj4gPiA+IDxsaW51eEBhcm1saW51eC5vcmcudWs+IHdy
-b3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBPbiBGcmksIFNlcCAxNSwgMjAyMyBhdCAwMjoyOToxM0FN
-ICswMDAwLCBTYWxpbCBNZWh0YSB3cm90ZToNCj4gPiA+ID4gPiBPbiB4ODYsIGR1cmluZyBpbml0
-LCBpZiB0aGUgTUFEVCBlbnRyeSBmb3IgTEFQSUMgaXMgZm91bmQgdG8gYmUNCj4gPiA+ID4gPiBv
-bmxpbmUtY2FwYWJsZSBhbmQgaXMgZW5hYmxlZCBhcyB3ZWxsIHRoZW4gcG9zc2libGUgYW5kIHBy
-ZXNlbnQNCj4gPiA+ID4NCj4gPiA+ID4gTm90ZSB0aGF0IHRoZSBBQ1BJIHNwZWMgc2F5cyBlbmFi
-bGVkICsgb25saW5lLWNhcGFibGUgaXNuJ3QgZGVmaW5lZC4NCj4gPiA+ID4NCj4gPiA+ID4gIlRo
-ZSBpbmZvcm1hdGlvbiBjb252ZXllZCBieSB0aGlzIGJpdCBkZXBlbmRzIG9uIHRoZSB2YWx1ZSBv
-ZiB0aGUNCj4gPiA+ID4gRW5hYmxlZCBiaXQuIElmIHRoZSBFbmFibGVkIGJpdCBpcyBzZXQsIHRo
-aXMgYml0IGlzIHJlc2VydmVkIGFuZA0KPiA+ID4gPiBtdXN0IGJlIHplcm8uIg0KPiA+ID4gPg0K
-PiA+ID4gPiBTbywgaWYgeDg2IGlzIGRvaW5nIHNvbWV0aGluZyB3aXRoIHRoZSBlbmFibGVkICYm
-IG9ubGluZS1jYXBhYmxlDQo+ID4gPiA+IHN0YXRlIChvdGhlciB0aGFuIGlnbm9yaW5nIHRoZSBv
-bmxpbmUtY2FwYWJsZSkgdGhlbiB0ZWNobmljYWxseSBpdA0KPiA+ID4gPiBpcyBkb2luZyBzb21l
-dGhpbmcgdGhhdCB0aGUgc3BlYyBkb2Vzbid0IGRlZmluZQ0KPiA+ID4NCj4gPiA+IEFuZCBzbyBp
-dCBpcyB3cm9uZy4NCj4gPg0KPiA+DQo+ID4gT3IgbWF5YmUsIHNwZWNpZmljYXRpb24gaGFzIG5v
-dCBiZWVuIHVwZGF0ZWQgeWV0LiBjb2RlLWZpcnN0Pw0KPiANCj4gV2VsbCwgaWYgeW91IGFyZSBh
-d2FyZSBvZiBhbnkgY2hhbmdlIHJlcXVlc3RzIHJlbGF0ZWQgdG8gdGhpcyBhbmQNCj4gcG9zdGVk
-IGFzIGNvZGUtZmlyc3QsIHBsZWFzZSBsZXQgbWUga25vdy4NCg0KSSBhbSBub3QgYXdhcmUgb2Yg
-YW55IG9uIHg4Ni4gTWF5YmUgd2UgY2FuIGRvIGl0IG9uIEFSTSBmaXJzdCBhbmQNCmxldCBvdGhl
-ciBBcmNoIHBpdGNoLWluIHRoZWlyIG9iamVjdGlvbiBsYXRlcj8gQWZ0ZXJhbGwsIHRoZXJlIGlz
-DQphIGxlZ2l0aW1hdGUgdXNlLWNhc2UgaW4gY2FzZSBvZiBBUk0uIEhhdmluZyBtdXR1YWxseSBl
-eGNsdXNpdmUNCmJpdHMgYnJlYWtzIGNlcnRhaW4gdXNlLWNhc2VzIGFuZCB3ZSBoYXZlIHRvIGRv
-IHRoZSB0cmFkZW9mZnMuIA0KDQpUaGlzIGNhbiBiZSBkb25lIGluIHBhcmFsbGVsIHdoaWxlIG90
-aGVyIHBhdGNoZXMgYXJlIGdldHRpbmcNCnJldmlld2VkIGFuZCBtb21lbnRhcmlseSBsaXZpbmcg
-d2l0aCB0aGUgdHJhZGVvZmZzIHRpbGwNCnNwZWNpZmljYXRpb24gaXMgc29ydGVkLiBCdXQgb2Yg
-Y291cnNlIGl0IGRlcGVuZHMgdXBvbiB3aGF0DQpvdGhlciBzdGFrZSBob2xkZXJzIGFuZCBtb3N0
-IGltcG9ydGFudGx5IHdoYXQgQVJNIEFyY2ggcGVvcGxlDQp0aGluayBvZiBpdC4NCg0KVGhhbmtz
-DQpTYWxpbC4NCg0KICANCg0KDQoNCg0KDQoNCg==
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-496999276-1694789398=:2347
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Wed, 13 Sep 2023, Stephen Boyd wrote:
+
+> It's possible for interrupts to get significantly delayed to the point
+> that callers of intel_scu_ipc_dev_command() and friends can call the
+> function once, hit a timeout, and call it again while the interrupt
+> still hasn't been processed. This driver will get seriously confused if
+> the interrupt is finally processed after the second IPC has been sent
+> with ipc_command(). It won't know which IPC has been completed. This
+> could be quite disastrous if calling code assumes something has happened
+> upon return from intel_scu_ipc_dev_simple_command() when it actually
+> hasn't.
+> 
+> Let's avoid this scenario by simply returning -EBUSY in this case.
+> Hopefully higher layers will know to back off or fail gracefully when
+> this happens. It's all highly unlikely anyway, but it's better to be
+> correct here as we have no way to know which IPC the status register is
+> telling us about if we send a second IPC while the previous IPC is still
+> processing.
+> 
+> Cc: Prashant Malani <pmalani@chromium.org>
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Fixes: ed12f295bfd5 ("ipc: Added support for IPC interrupt mode")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+> ---
+>  drivers/platform/x86/intel_scu_ipc.c | 40 +++++++++++++++++++---------
+>  1 file changed, 28 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+> index 3271f81a9c00..a68df4133403 100644
+> --- a/drivers/platform/x86/intel_scu_ipc.c
+> +++ b/drivers/platform/x86/intel_scu_ipc.c
+> @@ -265,6 +265,24 @@ static int intel_scu_ipc_check_status(struct intel_scu_ipc_dev *scu)
+>  	return scu->irq > 0 ? ipc_wait_for_interrupt(scu) : busy_loop(scu);
+>  }
+>  
+> +static struct intel_scu_ipc_dev *intel_scu_ipc_get(struct intel_scu_ipc_dev *scu)
+> +{
+> +	u8 status;
+> +
+> +	if (!scu)
+> +		scu = ipcdev;
+> +	if (!scu)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	status = ipc_read_status(scu);
+> +	if (status & IPC_STATUS_BUSY) {
+> +		dev_dbg(&scu->dev, "device is busy\n");
+> +		return ERR_PTR(-EBUSY);
+> +	}
+> +
+> +	return scu;
+> +}
+> +
+>  /* Read/Write power control(PMIC in Langwell, MSIC in PenWell) registers */
+>  static int pwr_reg_rdwr(struct intel_scu_ipc_dev *scu, u16 *addr, u8 *data,
+>  			u32 count, u32 op, u32 id)
+> @@ -278,11 +296,10 @@ static int pwr_reg_rdwr(struct intel_scu_ipc_dev *scu, u16 *addr, u8 *data,
+>  	memset(cbuf, 0, sizeof(cbuf));
+>  
+>  	mutex_lock(&ipclock);
+> -	if (!scu)
+> -		scu = ipcdev;
+> -	if (!scu) {
+> +	scu = intel_scu_ipc_get(scu);
+> +	if (IS_ERR(scu)) {
+>  		mutex_unlock(&ipclock);
+> -		return -ENODEV;
+> +		return PTR_ERR(scu);
+>  	}
+>  
+>  	for (nc = 0; nc < count; nc++, offset += 2) {
+> @@ -437,12 +454,12 @@ int intel_scu_ipc_dev_simple_command(struct intel_scu_ipc_dev *scu, int cmd,
+>  	int err;
+>  
+>  	mutex_lock(&ipclock);
+> -	if (!scu)
+> -		scu = ipcdev;
+> -	if (!scu) {
+> +	scu = intel_scu_ipc_get(scu);
+> +	if (IS_ERR(scu)) {
+>  		mutex_unlock(&ipclock);
+> -		return -ENODEV;
+> +		return PTR_ERR(scu);
+>  	}
+> +
+>  	cmdval = sub << 12 | cmd;
+>  	ipc_command(scu, cmdval);
+>  	err = intel_scu_ipc_check_status(scu);
+> @@ -482,11 +499,10 @@ int intel_scu_ipc_dev_command_with_size(struct intel_scu_ipc_dev *scu, int cmd,
+>  		return -EINVAL;
+>  
+>  	mutex_lock(&ipclock);
+> -	if (!scu)
+> -		scu = ipcdev;
+> -	if (!scu) {
+> +	scu = intel_scu_ipc_get(scu);
+> +	if (IS_ERR(scu)) {
+>  		mutex_unlock(&ipclock);
+> -		return -ENODEV;
+> +		return PTR_ERR(scu);
+>  	}
+>  
+>  	memcpy(inbuf, in, inlen);
+> 
+--8323329-496999276-1694789398=:2347--
