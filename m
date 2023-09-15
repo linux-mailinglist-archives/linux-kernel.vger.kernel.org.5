@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDB17A1D3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8DC7A1D3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbjIOLPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        id S232793AbjIOLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 07:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjIOLPr (ORCPT
+        with ESMTP id S231221AbjIOLQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:15:47 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B531BF
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:15:40 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31aec0a1a8bso1328522f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694776539; x=1695381339; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qk/FijrZBqF14qcLhaLuag4OEieqki7GgwoaTvwFh3I=;
-        b=WnTenQ5hS4s+aJDNTI15k1smihROvyu8KUZ2PafzIEt7FtPDgM55OvulOqKERDeUA+
-         mkTwu3h6Vip5wP/dPuJP9kcJGgyp82+jzFKiywr1dKgdGp9HVxmYnKtRMxmE9QVUq/vz
-         qrUwtx8SxQ0hXn0xvSgy6FSLLkAde8pqrhQWXdgKhhMi1VPyx4MqPkzZw3sinnJCkOT4
-         USlh0YYOZg8el17cFw0i3R7+pVSqo9VDrjlAIPoYq/RsKPkIi7GQcqSU5/i+f185C9Lb
-         wPmqve2etMNItgb11RAOV7gKb+QQiirJT+pi0YLVEHZLf8AthxL61PP+3UJ+J0Q0FJQg
-         c1Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694776539; x=1695381339;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qk/FijrZBqF14qcLhaLuag4OEieqki7GgwoaTvwFh3I=;
-        b=mICZA+LRNNWlqmMvEaQopMh8Ig83QD5XMmsIx4l27UL+ykIilyBY1i6BV1lGXO9dto
-         5G2kBoeRDoT6v19YuVzs1zm88D2zMpgkttD6yyYbFTB4nZIPfV8nk00oDnnGi/L5NyzF
-         /o2GkaaY1cM/87ds/8FC8qBDx15QTjGAV/wkNqbI4dd3JAG7pn4gO4woJzjExMaq25l3
-         N9CWYoTmLI+qtcoVs9ZVneJ2v1WcCCL310ZZEv+qyDxkRSXw1BFqq80FyexfQjNwNUSn
-         jOpvXuu7BDxugJdhUOVKn3iy0nJ/ea85sjDGDXqwj2pcDdUhYpQpeltQNOwz8K+znHsx
-         ldzw==
-X-Gm-Message-State: AOJu0Ywod2SfZQvblwTm+Dbi3DDCKiCFcz7TuR95Cs84OlgunhsHeIMX
-        kfbjcKvYvt7QNdLgc4XIWzY=
-X-Google-Smtp-Source: AGHT+IHHR7071Lofsum0pnMAwHBLUJw+J3zW5LV0ooMobbEvwoQ17UGo6FfniAJGbwclNoqdmmLITg==
-X-Received: by 2002:adf:fc42:0:b0:31f:d8be:a313 with SMTP id e2-20020adffc42000000b0031fd8bea313mr965395wrs.5.1694776538932;
-        Fri, 15 Sep 2023 04:15:38 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id k15-20020a5d628f000000b0031f729d883asm4150018wru.42.2023.09.15.04.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 04:15:37 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 13:15:35 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/2] x86/percpu: Use raw_cpu_try_cmpxchg in
- preempt_count_set
-Message-ID: <ZQQ817oApcALz9jy@gmail.com>
-References: <20230830151623.3900-1-ubizjak@gmail.com>
- <20230830151623.3900-2-ubizjak@gmail.com>
- <ZQQoHWkJ5or/K7UH@gmail.com>
+        Fri, 15 Sep 2023 07:16:51 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C444C189;
+        Fri, 15 Sep 2023 04:16:45 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38FBGFs9004976;
+        Fri, 15 Sep 2023 06:16:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694776575;
+        bh=3iyqIz1bm5Ap2Jx3eiz+CK/eHKTJuDer271I8mtLQW4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=fySl1bYcuuZcNdtLhm3qG6VVnnfKnzPiwSsKR6xj/1Cb7tbQ4f1olro5Ywh/ZX8kL
+         MbCo+BM1+iw70FeDNB3LULf0w22Wj9HPIjM3FMQGUZ0aZ9yN684MBUbs3Ah7GQniBD
+         y3PTl88X5EDTqnwvwe5M1SJJQWihaIln7Pu4rWbg=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38FBGFcL013382
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 15 Sep 2023 06:16:15 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Sep 2023 06:16:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Sep 2023 06:16:14 -0500
+Received: from [10.250.135.44] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38FBG75X022097;
+        Fri, 15 Sep 2023 06:16:08 -0500
+Message-ID: <0994c10b-8805-7ce3-dc1b-13410b3a959c@ti.com>
+Date:   Fri, 15 Sep 2023 14:16:06 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQQoHWkJ5or/K7UH@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/3] arm64: dts: ti: Add GPMC NAND support
+To:     Nitin Yadav <n-yadav@ti.com>, <nm@ti.com>, <vigneshr@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230913114711.2937844-1-n-yadav@ti.com>
+ <20230913114711.2937844-2-n-yadav@ti.com>
+Content-Language: en-US
+From:   Roger Quadros <rogerq@ti.com>
+In-Reply-To: <20230913114711.2937844-2-n-yadav@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nitin,
 
-* Ingo Molnar <mingo@kernel.org> wrote:
+On 13.9.2023 14.47, Nitin Yadav wrote:
+> Add support for AM62Q NAND card: X8 NAND EXPANSION
+> BOARD card (PROC143E1) for AM62x LP SK board.
+
+This patch is not adding NAND support but GPMC and ELM nodes.
 
 > 
-> * Uros Bizjak <ubizjak@gmail.com> wrote:
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 29 ++++++++++++++++++++++++
+>   arch/arm64/boot/dts/ti/k3-am62.dtsi      |  2 ++
+>   2 files changed, 31 insertions(+)
 > 
-> > Use raw_cpu_try_cmpxchg instead of raw_cpu_cmpxchg (*ptr, old, new) == old.
-> > x86 CMPXCHG instruction returns success in ZF flag, so this change saves a
-> > compare after cmpxchg (and related move instruction in front of cmpxchg).
-> > 
-> > Also, raw_cpu_try_cmpxchg implicitly assigns old *ptr value to "old" when
-> > cmpxchg fails. There is no need to re-read the value in the loop.
-> > 
-> > No functional change intended.
-> > 
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > ---
-> >  arch/x86/include/asm/preempt.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-> > index 2d13f25b1bd8..4527e1430c6d 100644
-> > --- a/arch/x86/include/asm/preempt.h
-> > +++ b/arch/x86/include/asm/preempt.h
-> > @@ -31,11 +31,11 @@ static __always_inline void preempt_count_set(int pc)
-> >  {
-> >  	int old, new;
-> >  
-> > +	old = raw_cpu_read_4(pcpu_hot.preempt_count);
-> >  	do {
-> > -		old = raw_cpu_read_4(pcpu_hot.preempt_count);
-> >  		new = (old & PREEMPT_NEED_RESCHED) |
-> >  			(pc & ~PREEMPT_NEED_RESCHED);
-> > -	} while (raw_cpu_cmpxchg_4(pcpu_hot.preempt_count, old, new) != old);
-> > +	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.preempt_count, &old, new));
-> 
-> It would be really nice to have a before/after comparison of generated 
-> assembly code in the changelog, to demonstrate the effectiveness of this 
-> optimization.
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> index 284b90c94da8..e93e79d8083f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> @@ -955,4 +955,33 @@ mcasp2: audio-controller@2b20000 {
+>   		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
+>   		status = "disabled";
+>   	};
+> +	gpmc0: memory-controller@3b000000 {
+> +		status = "disabled";
+> +		compatible = "ti,am64-gpmc";
+> +		power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 80 0>;
+> +		clock-names = "fck";
+> +		reg = <0x00 0x03b000000 0x00 0x400>,
+> +		      <0x00 0x050000000 0x00 0x8000000>;
+> +		reg-names = "cfg", "data";
+> +		interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+> +		gpmc,num-cs = <3>;
+> +		gpmc,num-waitpins = <2>;
+> +		#address-cells = <2>;
+> +		#size-cells = <1>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <2>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +	};
+> +
+> +	elm0: ecc@25010000 {
+> +		status = "disabled";
+> +		compatible = "ti,am3352-elm";
+> +		reg = <0x00 0x25010000 0x00 0x2000>;
+> +		interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
+> +		power-domains = <&k3_pds 54 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 54 0>;
+> +		clock-names = "fck";
+> +	};
+>   };
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62.dtsi b/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> index 11f14eef2d44..f7d8aad0a016 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62.dtsi
+> @@ -76,6 +76,8 @@ cbass_main: bus@f0000 {
+>   			 <0x00 0x70000000 0x00 0x70000000 0x00 0x00010000>, /* OCSRAM */
+>   			 <0x01 0x00000000 0x01 0x00000000 0x00 0x00310000>, /* A53 PERIPHBASE */
+>   			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
+> +			 <0x00 0x3b000000 0x00 0x3b000000 0x00 0x00000400>, /* GPMC0_CFG */
+> +			 <0x00 0x50000000 0x00 0x50000000 0x00 0x08000000>, /* GPMC0 DATA */
+>   
+>   			 /* MCU Domain Range */
+>   			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>,
 
-Never mind, you did exactly that in the September 6 variation of these 
-changes. I'll apply those.
-
-Thanks,
-
-	Ingo
+-- 
+cheers,
+-roger
