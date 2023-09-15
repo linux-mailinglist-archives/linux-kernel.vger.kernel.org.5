@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FD77A1B38
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FAA7A1B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjIOJvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S233117AbjIOJui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjIOJvF (ORCPT
+        with ESMTP id S231307AbjIOJue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:51:05 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D032717
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:47:14 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31f71b25a99so1800606f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:47:14 -0700 (PDT)
+        Fri, 15 Sep 2023 05:50:34 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5B03AB7;
+        Fri, 15 Sep 2023 02:49:05 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3d6d88231so16519175ad.0;
+        Fri, 15 Sep 2023 02:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694771232; x=1695376032; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J+nJAJwe0UDJzttNbv8oHth+6FLlunmo95hq60vDU30=;
-        b=hTzslHoi3agOcMv0SoBObFS6gtuBTy3NlUXoY95bmnilsZPwGchLH84cmEy+FyoLoh
-         mUON6Ib10dIbTm96kJFjU6qVo3lYpIm0o3mLD3vQ1dF3hJDAPkVh3jB2fR+KoNn8mdru
-         fpVoSoqdCe0JmH0VfZ3kMtyT0zNjCqt2TxISy98cZKyfYmKRDiMKAgtLluorzxKnL9/f
-         A21gR/iWi3RHJDizn7fXpiACQhOxYxwYx1vjflX7lDFmx0PJxVr8Z93dXm1nNcFA5khZ
-         6HNRfJRRLuo1Qzzto5ptqVBfp/OLHH8YRQl9jxaF4crV+d2Kqzgtfugqh3rZ9i9P1St/
-         zbrw==
+        d=gmail.com; s=20230601; t=1694771343; x=1695376143; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/TVQJoENhu00vx5rI/GikJKd4kuvFkeP8vi3vVfEcfo=;
+        b=aym6NrPvVQ8Sm+0tt8v2wWjHOuxq34mWO/MH9zvIWrBmb43xTjfjMe+DriZsj2t1Eo
+         5e93AmlnOQu5OAWuWDAYS/TQvKJmMp6U5+fc57LUgWk+uV8xILolSnPg6Zkt0CFfGFCa
+         VnIRe1G3xEiniJueRFvXZq4XZ90dWbQNjeGfRLEt13EPTtzaVEmnr41gzj3sIyIDiQgU
+         mfLDJzFUMvKOjzaHzdQMQhItpRo4w035ajIE0Rn5UCrVZfB+8LcnXbgfDBBVJOYFyeZt
+         3XFcDZNKTCC4H5fFR3O/szUhBeiGWY/zBcqvd3PeTVgQ6Ks64+XpFWNfkbK/N7FSMZag
+         ObCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694771232; x=1695376032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J+nJAJwe0UDJzttNbv8oHth+6FLlunmo95hq60vDU30=;
-        b=k/6u2fpbsZmFujD/iBrQ77O9LX3Cfv6pYiH1q1InsgfRctHom+1dOAlZd14Z1uNW9R
-         Lz0PVwBcqPHX20/41Pj2gd87omlnpWtHfWCKkgtXb1C+h8CgDfgLMYIKXJAvCvXqhPTi
-         vHwRL5PnZb2w0xCYy31OhQnGdur4KRZD2n0pbQuR+YKJlwgSO1a2J5QEZWODJ+M0aIQh
-         W4JtKLOkqQLBNNCbtUkIlPnNe38BnS7cgOLKEOHSH6xunwvyroIIEfukK+ci1fXeAa8z
-         PBREeHNwWIng/mZTS1V2du6P0gSwBSnlhNn/SxP9q6l6JRJOg3iJ+vJmKe98lF9FVpKE
-         02iQ==
-X-Gm-Message-State: AOJu0Yxn922CrWKN0AkFj7c7OfAvVBw2RhCMtbp0A+1DZ4wzghZGJDet
-        Nxht1XCHIG0q4dJY+ThgZyfXzIEb/38=
-X-Google-Smtp-Source: AGHT+IH74A4AWcuVCL4mcKaZhu79A3E44kI+RNGtRyN63BHIQ32/0QKB1k5KSh0Ejwwahc8rpl+8ZA==
-X-Received: by 2002:adf:f5ce:0:b0:31d:c3d2:4300 with SMTP id k14-20020adff5ce000000b0031dc3d24300mr744504wrp.71.1694771232069;
-        Fri, 15 Sep 2023 02:47:12 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id s1-20020a5d4ec1000000b0031fbbe347e1sm3975128wrv.65.2023.09.15.02.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 02:47:11 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 15 Sep 2023 11:47:09 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/2] x86/percpu: Use raw_cpu_try_cmpxchg in
- preempt_count_set
-Message-ID: <ZQQoHWkJ5or/K7UH@gmail.com>
-References: <20230830151623.3900-1-ubizjak@gmail.com>
- <20230830151623.3900-2-ubizjak@gmail.com>
+        d=1e100.net; s=20230601; t=1694771343; x=1695376143;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/TVQJoENhu00vx5rI/GikJKd4kuvFkeP8vi3vVfEcfo=;
+        b=C8R1VSEJVAzKEWwk50aw8F0gGxmGkpg94JEgYK24GEOFrOriRnTXBHtEQVvqmZ3Nox
+         pb5eCWj8fTL3Ek595KlPzxGx5hAzxowtf3tWtMQjgG0VhpVPBVPOmtRfWBy9QRw8J7DI
+         d4Jq+nRvoF8o8nNOQK/W5909w2Lp1Tzc4D6TsGQghFY/U7bFvq0OASCkwAyGxMSZYGFr
+         ULSlPc+qwtUa610A58R0SL87UPAtH0unkm3EkBakl/GcHOojxqf4EAm4qWeFFZkwSRuY
+         RDM+uKBGkY3Ae5jbZpnkCkJQsLFxXlMp3XcWsrF5mVXWvoxRgY6H/Gzh1XqBNG9XqtUf
+         tlAw==
+X-Gm-Message-State: AOJu0Yyw8oYmSjjY4FjBe4kCnXDyUvWPtXis66ep6I7lA0BYE+e5RAGt
+        JjBlhV3f+ckMqnW7rWRkddE=
+X-Google-Smtp-Source: AGHT+IFKZZ7G1kbjDLssD1PYTqUJNDMyGB0g5aLVlwvvAL1wsMt77xEH5dArwfKSWKapUwbINpHEvg==
+X-Received: by 2002:a17:902:e9d5:b0:1c1:f1db:e86d with SMTP id 21-20020a170902e9d500b001c1f1dbe86dmr880494plk.7.1694771343330;
+        Fri, 15 Sep 2023 02:49:03 -0700 (PDT)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902c20c00b001b8c6662094sm3062686pll.188.2023.09.15.02.49.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 02:49:02 -0700 (PDT)
+Message-ID: <d4e74e31-246c-1f8c-1465-b0bb6ce8454c@gmail.com>
+Date:   Fri, 15 Sep 2023 17:49:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830151623.3900-2-ubizjak@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] tty: serial: ma35d1_serial: Add missing check for ioremap
+To:     Chen Ni <nichen@iscas.ac.cn>, ychuang3@nuvoton.com,
+        schung@nuvoton.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20230915071106.3347-1-nichen@iscas.ac.cn>
+Content-Language: en-US
+From:   Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <20230915071106.3347-1-nichen@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,48 +78,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Uros Bizjak <ubizjak@gmail.com> wrote:
 
-> Use raw_cpu_try_cmpxchg instead of raw_cpu_cmpxchg (*ptr, old, new) == old.
-> x86 CMPXCHG instruction returns success in ZF flag, so this change saves a
-> compare after cmpxchg (and related move instruction in front of cmpxchg).
-> 
-> Also, raw_cpu_try_cmpxchg implicitly assigns old *ptr value to "old" when
-> cmpxchg fails. There is no need to re-read the value in the loop.
-> 
-> No functional change intended.
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+On 2023/9/15 下午 03:11, Chen Ni wrote:
+> CAUTION - External Email: Do not click links or open attachments unless you acknowledge the sender and content.
+>
+>
+> Add check for ioremap() and return the error if it fails in order to
+> guarantee the success of ioremap().
+>
+> Fixes: 930cbf92db01 ("tty: serial: Add Nuvoton ma35d1 serial driver support")
+> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
 > ---
->  arch/x86/include/asm/preempt.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-> index 2d13f25b1bd8..4527e1430c6d 100644
-> --- a/arch/x86/include/asm/preempt.h
-> +++ b/arch/x86/include/asm/preempt.h
-> @@ -31,11 +31,11 @@ static __always_inline void preempt_count_set(int pc)
->  {
->  	int old, new;
->  
-> +	old = raw_cpu_read_4(pcpu_hot.preempt_count);
->  	do {
-> -		old = raw_cpu_read_4(pcpu_hot.preempt_count);
->  		new = (old & PREEMPT_NEED_RESCHED) |
->  			(pc & ~PREEMPT_NEED_RESCHED);
-> -	} while (raw_cpu_cmpxchg_4(pcpu_hot.preempt_count, old, new) != old);
-> +	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.preempt_count, &old, new));
+>   drivers/tty/serial/ma35d1_serial.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/tty/serial/ma35d1_serial.c b/drivers/tty/serial/ma35d1_serial.c
+> index 465b1def9e11..4a9d1252de35 100644
+> --- a/drivers/tty/serial/ma35d1_serial.c
+> +++ b/drivers/tty/serial/ma35d1_serial.c
+> @@ -695,6 +695,9 @@ static int ma35d1serial_probe(struct platform_device *pdev)
+>
+>          up->port.iobase = res_mem->start;
+>          up->port.membase = ioremap(up->port.iobase, MA35_UART_REG_SIZE);
+> +       if (!up->port.membase)
+> +               return -ENOMEM;
+> +
+>          up->port.ops = &ma35d1serial_ops;
+>
+>          spin_lock_init(&up->port.lock);
+> --
+> 2.25.1
+>
 
-It would be really nice to have a before/after comparison of generated 
-assembly code in the changelog, to demonstrate the effectiveness of this 
-optimization.
+Thank you for this update.
 
-Thanks,
+Acked-by: Jacky Huang <ychuang3@nuvoton.com>
 
-	Ingo
+
+Best Regards,
+Jacky
+
