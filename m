@@ -2,174 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BC47A1891
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A3B7A18BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjIOIXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S233200AbjIOI1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbjIOIXl (ORCPT
+        with ESMTP id S233125AbjIOI0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:23:41 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00232449C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:22:29 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rn6XB5N3gzMlNh;
-        Fri, 15 Sep 2023 16:18:34 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 15 Sep
- 2023 16:22:03 +0800
-From:   Jinjie Ruan <ruanjinjie@huawei.com>
-To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH] static_call: Fix a wild-memory-access bug in static_call_del_module()
-Date:   Fri, 15 Sep 2023 16:21:25 +0800
-Message-ID: <20230915082126.4187913-1-ruanjinjie@huawei.com>
+        Fri, 15 Sep 2023 04:26:50 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360133C1B
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:24:22 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7135:da8b:ba1d:1a7c])
+        by michel.telenet-ops.be with bizsmtp
+        id m8QK2A00Y3q21w7068QKEm; Fri, 15 Sep 2023 10:24:20 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh47M-003lDg-NX;
+        Fri, 15 Sep 2023 10:24:19 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh47f-00GZTR-Mj;
+        Fri, 15 Sep 2023 10:24:19 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.6 (take two)
+Date:   Fri, 15 Sep 2023 10:24:16 +0200
+Message-Id: <20230915082416.3949600-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inject fault while probing btrfs.ko, if the first kzalloc() fails
-in __static_call_init(), key->mods will no be initialized. And then
-in static_call_del_module() the site_mod->mod will cause
-wild-memory-access as below:
+	Hi Linus,
 
-So assign key->mods to NULL in __static_call_init() if it fails
-to fix the issue. And if kzalloc fails, it will just return in init
-func, so it should break if it the key->mods is NULL in exit func.
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
- general protection fault, probably for non-canonical address 0xeb800159c89f94a0: 0000 [#1] PREEMPT SMP KASAN
- KASAN: maybe wild-memory-access in range [0x5c002ace44fca500-0x5c002ace44fca507]
- CPU: 2 PID: 1843 Comm: modprobe Tainted: G        W        N 6.6.0-rc1+ #60
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- RIP: 0010:static_call_del_module+0x113/0x280
- Code: 3c 20 00 0f 85 ef 00 00 00 49 8b 6e 08 48 85 ed 75 0d eb 75 48 85 db 74 70 49 89 ef 48 89 dd 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 75 78 48 89 e8 4c 8b 6d 08 48 c1 e8 03 42 80 3c 20
- RSP: 0018:ffff888101d3f860 EFLAGS: 00010206
- RAX: 0b800559c89f94a0 RBX: 5c002ace44fca4f8 RCX: ffffffffa0210f00
- RDX: ffffffffa0210ed4 RSI: ffffffffa0210edc RDI: 5c002ace44fca500
- RBP: 5c002ace44fca4f8 R08: 0000000000000000 R09: ffffed10233e4eea
- R10: ffffed10233e4ee9 R11: ffff888119f2774b R12: dffffc0000000000
- R13: 80002ace3cfca4f8 R14: ffffffff85196de0 R15: ffffffff84ee9f99
- FS:  00007f4ff6faa540(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007ffc3d1f19e8 CR3: 0000000109fa6001 CR4: 0000000000170ee0
- DR0: ffffffff8faefce8 DR1: ffffffff8faefce9 DR2: ffffffff8faefcea
- DR3: ffffffff8faefceb DR6: 00000000ffff0ff0 DR7: 0000000000000600
- Call Trace:
-  <TASK>
-  ? __die_body+0x1b/0x60
-  ? die_addr+0x43/0x70
-  ? exc_general_protection+0x121/0x210
-  ? asm_exc_general_protection+0x22/0x30
-  ? static_call_del_module+0x113/0x280
-  ? __SCT__tp_func_ipi_exit+0x8/0x8
-  static_call_module_notify+0x27f/0x390
-  ? rcu_segcblist_inc_len+0x17/0x20
-  notifier_call_chain+0xbf/0x280
-  notifier_call_chain_robust+0x7f/0xe0
-  ? notifier_call_chain+0x280/0x280
-  ? kasan_quarantine_put+0x46/0x160
-  blocking_notifier_call_chain_robust+0x5b/0x80
-  load_module+0x4d1d/0x69f0
-  ? module_frob_arch_sections+0x20/0x20
-  ? update_cfs_group+0x10c/0x2a0
-  ? __wake_up_common+0x10b/0x5d0
-  ? kernel_read_file+0x3ca/0x510
-  ? __x64_sys_fsconfig+0x650/0x650
-  ? __schedule+0xa0b/0x2a60
-  ? init_module_from_file+0xd2/0x130
-  init_module_from_file+0xd2/0x130
-  ? __ia32_sys_init_module+0xa0/0xa0
-  ? _raw_spin_lock_irqsave+0xe0/0xe0
-  ? ptrace_stop+0x487/0x790
-  idempotent_init_module+0x32d/0x6a0
-  ? init_module_from_file+0x130/0x130
-  ? __fget_light+0x57/0x500
-  __x64_sys_finit_module+0xbb/0x130
-  do_syscall_64+0x35/0x80
-  entry_SYSCALL_64_after_hwframe+0x46/0xb0
- RIP: 0033:0x7f4ff691b839
- Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
- RSP: 002b:00007ffc07b09718 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
- RAX: ffffffffffffffda RBX: 000055978f13e070 RCX: 00007f4ff691b839
- RDX: 0000000000000000 RSI: 000055978da1bc2e RDI: 0000000000000003
- RBP: 000055978da1bc2e R08: 0000000000000000 R09: 000055978f13ddb0
- R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
- R13: 000055978f13e020 R14: 0000000000040000 R15: 000055978f13ddb0
-  </TASK>
- Modules linked in: tifm_core(+)
- Dumping ftrace buffer:
-    (ftrace buffer empty)
- ---[ end trace 0000000000000000 ]---
- RIP: 0010:static_call_del_module+0x113/0x280
- Code: 3c 20 00 0f 85 ef 00 00 00 49 8b 6e 08 48 85 ed 75 0d eb 75 48 85 db 74 70 49 89 ef 48 89 dd 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 75 78 48 89 e8 4c 8b 6d 08 48 c1 e8 03 42 80 3c 20
- RSP: 0018:ffff888101d3f860 EFLAGS: 00010206
- RAX: 0b800559c89f94a0 RBX: 5c002ace44fca4f8 RCX: ffffffffa0210f00
- RDX: ffffffffa0210ed4 RSI: ffffffffa0210edc RDI: 5c002ace44fca500
- RBP: 5c002ace44fca4f8 R08: 0000000000000000 R09: ffffed10233e4eea
- R10: ffffed10233e4ee9 R11: ffff888119f2774b R12: dffffc0000000000
- R13: 80002ace3cfca4f8 R14: ffffffff85196de0 R15: ffffffff84ee9f99
- FS:  00007f4ff6faa540(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007ffc3d1f19e8 CR3: 0000000109fa6001 CR4: 0000000000170ee0
- DR0: ffffffff8faefce8 DR1: ffffffff8faefce9 DR2: ffffffff8faefcea
- DR3: ffffffff8faefceb DR6: 00000000ffff0ff0 DR7: 0000000000000600
- Kernel panic - not syncing: Fatal exception
- Dumping ftrace buffer:
-    (ftrace buffer empty)
- Kernel Offset: disabled
- Rebooting in 1 seconds..
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-Fixes: 8fd4ddda2f49 ("static_call: Don't make __static_call_return0 static")
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
----
- kernel/static_call_inline.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+are available in the Git repository at:
 
-diff --git a/kernel/static_call_inline.c b/kernel/static_call_inline.c
-index 639397b5491c..e7aa70d33530 100644
---- a/kernel/static_call_inline.c
-+++ b/kernel/static_call_inline.c
-@@ -256,8 +256,10 @@ static int __static_call_init(struct module *mod,
- 			}
- 
- 			site_mod = kzalloc(sizeof(*site_mod), GFP_KERNEL);
--			if (!site_mod)
-+			if (!site_mod) {
-+				key->mods = NULL;
- 				return -ENOMEM;
-+			}
- 
- 			/*
- 			 * When the key has a direct sites pointer, extract
-@@ -422,7 +424,7 @@ static void static_call_del_module(struct module *mod)
- 			;
- 
- 		if (!site_mod)
--			continue;
-+			break;
- 
- 		*prev = site_mod->next;
- 		kfree(site_mod);
--- 
-2.34.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.6-tag2
 
+for you to fetch changes up to 010d358b9087748f403fd33c4cf34c27584871bf:
+
+  m68k: sun3/3x: Add and use "sun3.h" (2023-09-13 16:17:24 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.6 (take two)
+
+  - Miscellaneous esthetical improvements for the floating point
+    emulator,
+  - Miscellaneous fixes for W=1 builds.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (58):
+      m68k: math-emu: Fix incorrect file reference in fp_log.c
+      m68k: math-emu: Sanitize include guards
+      m68k: math-emu: Make multi_arith.h self-contained
+      m68k: math-emu: Replace external declarations by header inclusion
+      m68k: math-emu: Reformat function and variable headers
+      m68k: math-emu: Add missing prototypes
+      m68k: kernel: Add missing asmlinkage to do_notify_resume()
+      m68k: kernel: Include <linux/cpu.h> for trap_init()
+      m68k: kernel: Make bad_super_trap() static
+      m68k: kernel: Add and use <asm/syscalls.h>
+      m68k: kernel: Add and use "ints.h"
+      m68k: kernel: Add and use "process.h"
+      m68k: kernel: Add and use "ptrace.h"
+      m68k: kernel: Add and use "signal.h"
+      m68k: kernel: Add and use "traps.h"
+      m68k: kernel: Add and use "vectors.h"
+      m68k: mm: Include <asm/hwtest.h> for hwreg_()
+      m68k: mm: Move paging_init() to common <asm/pgtable.h>
+      m68k: mm: Add and use "fault.h"
+      m68k: emu: Remove unused vsnprintf() return value in nfprint()
+      m68k: emu: Mark version[] __maybe_unused
+      m68k: amiga: pcmcia: Replace set but not used variable by READ_ONCE()
+      m68k: amiga: Add and use "amiga.h"
+      m68k: atari: Document data parameter of stdma_try_lock()
+      m68k: atari: Make ikbd_reset() static
+      m68k: atari: Make atari_platform_init() static
+      m68k: atari: Make atari_stram_map_pages() static
+      m68k: atari: Add and use "atari.h"
+      m68k: apollo: Remove unused debug console functions
+      m68k: apollo: Make local reset, serial, and irq functions static
+      m68k: apollo: Replace set but not used variable by READ_ONCE()
+      m68k: apollo: Add and use "apollo.h"
+      m68k: bvme6000: Make bvme6000_abort_int() static
+      m68k: hp300: Include "time.h" for hp300_sched_init()
+      m68k: mac: Remove unused sine_data[]
+      m68k: mac: Remove unused yday in unmktime()
+      m68k: mac: Make mac_platform_init() static
+      m68k: mac: Add and use "mac.h"
+      m68k: mvme147: Make mvme147_init_IRQ() static
+      m68k: mvme16x: Remove unused sink in mvme16x_cons_write()
+      m68k: mvme16x: Add and use "mvme16x.h"
+      m68k: q40: Add and use "q40.h"
+      m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
+      m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
+      m68k: sun3: Fix context restore in flush_tlb_range()
+      m68k: sun3: Fix signature of sun3_get_model()
+      m68k: sun3: Add missing asmlinkage to sun3_init()
+      m68k: sun3: Remove unused orig_baddr in free_baddr()
+      m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
+      m68k: sun3: Remove unused vsprintf() return value in prom_printf()
+      m68k: sun3: Annotate prom_printf() with __printf()
+      m68k: sun3: Make print_pte() static
+      m68k: sun3: Make sun3_platform_init() static
+      m68k: sun3x: Fix signature of sun3_leds()
+      m68k: sun3x: Do not mark dvma_map_iommu() inline
+      m68k: sun3x: Make sun3x_halt() static
+      m68k: sun3x: Make dvma_print() static
+      m68k: sun3/3x: Add and use "sun3.h"
+
+ arch/m68k/amiga/amiga.h            |  5 ++++
+ arch/m68k/amiga/amisound.c         |  2 ++
+ arch/m68k/amiga/config.c           |  4 +--
+ arch/m68k/amiga/pcmcia.c           |  3 +--
+ arch/m68k/apollo/apollo.h          |  4 +++
+ arch/m68k/apollo/config.c          | 45 +++++++------------------------
+ arch/m68k/apollo/dn_ints.c         |  8 +++---
+ arch/m68k/atari/ataints.c          |  3 +--
+ arch/m68k/atari/atakeyb.c          |  2 +-
+ arch/m68k/atari/atari.h            | 15 +++++++++++
+ arch/m68k/atari/atasound.c         |  1 +
+ arch/m68k/atari/config.c           | 13 +++------
+ arch/m68k/atari/stdma.c            |  1 +
+ arch/m68k/atari/stram.c            |  2 +-
+ arch/m68k/atari/time.c             |  2 ++
+ arch/m68k/bvme6000/config.c        |  2 +-
+ arch/m68k/emu/natfeat.c            |  3 +--
+ arch/m68k/emu/nfeth.c              |  2 +-
+ arch/m68k/hp300/time.c             |  2 ++
+ arch/m68k/include/asm/dvma.h       |  8 +++++-
+ arch/m68k/include/asm/oplib.h      |  4 ++-
+ arch/m68k/include/asm/pgtable.h    |  9 +++++++
+ arch/m68k/include/asm/pgtable_no.h |  1 -
+ arch/m68k/include/asm/syscalls.h   | 19 ++++++++++++++
+ arch/m68k/include/asm/tlbflush.h   |  1 +
+ arch/m68k/kernel/early_printk.c    |  4 +--
+ arch/m68k/kernel/ints.c            |  2 ++
+ arch/m68k/kernel/ints.h            |  7 +++++
+ arch/m68k/kernel/process.c         |  1 +
+ arch/m68k/kernel/process.h         |  8 ++++++
+ arch/m68k/kernel/ptrace.c          |  2 ++
+ arch/m68k/kernel/ptrace.h          |  6 +++++
+ arch/m68k/kernel/setup_mm.c        |  2 --
+ arch/m68k/kernel/signal.c          |  4 ++-
+ arch/m68k/kernel/signal.h          |  7 +++++
+ arch/m68k/kernel/sys_m68k.c        |  4 +--
+ arch/m68k/kernel/traps.c           | 11 ++++----
+ arch/m68k/kernel/traps.h           | 10 +++++++
+ arch/m68k/kernel/vectors.c         |  3 +++
+ arch/m68k/kernel/vectors.h         |  3 +++
+ arch/m68k/mac/baboon.c             |  2 ++
+ arch/m68k/mac/config.c             | 14 +++-------
+ arch/m68k/mac/iop.c                |  2 ++
+ arch/m68k/mac/mac.h                | 25 ++++++++++++++++++
+ arch/m68k/mac/macboing.c           | 11 ++------
+ arch/m68k/mac/misc.c               |  5 ++--
+ arch/m68k/mac/oss.c                |  2 ++
+ arch/m68k/mac/psc.c                |  2 ++
+ arch/m68k/mac/via.c                |  2 ++
+ arch/m68k/math-emu/fp_arith.c      | 49 ++++++++++++----------------------
+ arch/m68k/math-emu/fp_arith.h      | 49 ++++++++++++++--------------------
+ arch/m68k/math-emu/fp_log.c        | 46 ++++++++++++--------------------
+ arch/m68k/math-emu/fp_log.h        | 44 +++++++++++++++++++++++++++++++
+ arch/m68k/math-emu/fp_trig.c       | 54 +++++++++++++-------------------------
+ arch/m68k/math-emu/fp_trig.h       | 25 +++++++++++++++---
+ arch/m68k/math-emu/multi_arith.h   |  8 +++---
+ arch/m68k/mm/fault.c               |  2 ++
+ arch/m68k/mm/fault.h               |  7 +++++
+ arch/m68k/mm/hwtest.c              |  2 ++
+ arch/m68k/mm/sun3kmap.c            |  6 ++---
+ arch/m68k/mm/sun3mmu.c             |  2 +-
+ arch/m68k/mvme147/config.c         |  2 +-
+ arch/m68k/mvme16x/config.c         |  5 ++--
+ arch/m68k/mvme16x/mvme16x.h        |  6 +++++
+ arch/m68k/q40/config.c             |  6 ++---
+ arch/m68k/q40/q40.h                |  6 +++++
+ arch/m68k/q40/q40ints.c            |  2 ++
+ arch/m68k/sun3/config.c            | 13 +++++----
+ arch/m68k/sun3/idprom.c            |  4 ++-
+ arch/m68k/sun3/intersil.c          |  1 +
+ arch/m68k/sun3/leds.c              |  2 ++
+ arch/m68k/sun3/mmu_emu.c           |  3 ++-
+ arch/m68k/sun3/prom/printf.c       |  5 ++--
+ arch/m68k/sun3/sun3.h              | 22 ++++++++++++++++
+ arch/m68k/sun3/sun3dvma.c          | 17 ------------
+ arch/m68k/sun3/sun3ints.c          |  2 +-
+ arch/m68k/sun3x/config.c           |  6 ++---
+ arch/m68k/sun3x/dvma.c             |  5 ++--
+ arch/m68k/sun3x/prom.c             |  2 +-
+ 79 files changed, 422 insertions(+), 281 deletions(-)
+ create mode 100644 arch/m68k/amiga/amiga.h
+ create mode 100644 arch/m68k/apollo/apollo.h
+ create mode 100644 arch/m68k/atari/atari.h
+ create mode 100644 arch/m68k/include/asm/syscalls.h
+ create mode 100644 arch/m68k/kernel/ints.h
+ create mode 100644 arch/m68k/kernel/process.h
+ create mode 100644 arch/m68k/kernel/ptrace.h
+ create mode 100644 arch/m68k/kernel/signal.h
+ create mode 100644 arch/m68k/kernel/traps.h
+ create mode 100644 arch/m68k/kernel/vectors.h
+ create mode 100644 arch/m68k/mac/mac.h
+ create mode 100644 arch/m68k/math-emu/fp_log.h
+ create mode 100644 arch/m68k/mm/fault.h
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
+ create mode 100644 arch/m68k/q40/q40.h
+ create mode 100644 arch/m68k/sun3/sun3.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
