@@ -2,171 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD91B7A1A95
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90E27A1A98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 11:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbjIOJad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 05:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        id S233529AbjIOJcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 05:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjIOJaa (ORCPT
+        with ESMTP id S232633AbjIOJcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:30:30 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749C8CED;
-        Fri, 15 Sep 2023 02:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694770225; x=1726306225;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZxrVsRDpUNvxd12RQOucpkAkUdoy3mk3RtU+h+psW7c=;
-  b=Kb+e7OstiirIj/RxcOOEhdNaf4//q0WxA8Jc2R0ZeODLIG9cslCy8I9E
-   9LSnmURFd3gEMIDPovlVL59qYiUL8AC7OzMxzWHgEmJBGpVORv9hZOY4V
-   hNc2USO9NVs4aqoUWhWidRht15WQE9CPwB45SilEfKZ15c8JkLxcQUQLe
-   EWYgnFsTgSKcWGXwMlu7FaPSAeZynHenS2nfUHQBrITx/4ayHGuNxmZ9e
-   NzN1iGtkOeR2PnsVu21MfAt53aj/mOG4lSIym3FEdqC5UXmj1zbUHAJWn
-   6HdlvahzYw1Ln7QCIJBo+Jv3bifZzH7qSSd3YCAbGttMkvb9y2wwsOPM6
-   A==;
-X-CSE-ConnectionGUID: G+JhttbMRHS/WWWcCiUIww==
-X-CSE-MsgGUID: XyI0AJRFQVq2neUO9r88Pw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="asc'?scan'208";a="4701469"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Sep 2023 02:30:24 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 15 Sep 2023 02:29:28 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 15 Sep 2023 02:29:26 -0700
-Date:   Fri, 15 Sep 2023 10:29:10 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Conor Dooley <conor@kernel.org>
-Subject: Re: [PATCH v2 13/17] pmdomain: starfive: Move Kconfig file to the
- pmdomain subsystem
-Message-ID: <20230915-lark-gangrene-b7cbd445b511@wendy>
-References: <20230915092003.658361-1-ulf.hansson@linaro.org>
- <20230915092003.658361-14-ulf.hansson@linaro.org>
+        Fri, 15 Sep 2023 05:32:48 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0DDCED
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:32:43 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31f7638be6eso1763603f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 02:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694770361; x=1695375161; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HETKbupRhTYs1z9MLvczngFisFfV/0QzW50/Eiut1z4=;
+        b=Bnw46qXMq1iYxHtxcTTCbMtt7WEZ5F0v7aKGClRfHgXsWh2oQhMgZdMuVhofIzycqP
+         kWekxGcA9dKVuXTRb2ZTQHyuB6FD+mul1QmGvkaUv/aVIwJd5jKWI/iE+toTvZG0G8Ge
+         AbeuPy9PH0+yvXbWRlSPoDkU5zHCuDdbEfrOQkERbkrFLBuFXvAVxogbIfJ5sJw28+QD
+         yy6X6iXVB75hL20F67iXFg6hgBLeXnyfBve+bl5k4L5F2lbQekE5McYtb/xPPUTypDNR
+         AXw6rntaw0m7nBbZ18ZSDTAtvA3MbYpuk513ke2Sm6xZ5pTqivksFNRq2en+VqkG42IC
+         5PBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694770361; x=1695375161;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HETKbupRhTYs1z9MLvczngFisFfV/0QzW50/Eiut1z4=;
+        b=mvQYq6moztmIph5zBPBeGhEiZkj+SJhP/TKpURd5+JqCiXeNotO1cZkQ2p9kjyg13K
+         7trO0vL3C/1cWT/5bdvsNpqEfC1+7tX9/DGbtCwS+Zf5NRFTzDzaLlxQTTUgz1lLlIW7
+         /31HXGawOOadH+BNKahYVVuPupXWHhtvxbXRr+R7OqvKMIfyaC1ECYvu2osgDcroKR4E
+         O+sSNhFKOqskquZEISuFTkGF9bPT2VeDaQeJJu6u+upRDF+3i44QW5nzTBrweavIVZxv
+         wTKBn4keXef1kGzGdqzYBcMxWuiQzIjauCQmPrfygkh7N7KIY9ffPW36lbaO4IUl8LES
+         Ke5w==
+X-Gm-Message-State: AOJu0YwjEu4/xbTZl8dAmJPHIa/zh9rxTpSsrdL/1bt8DNY0tYDvHO13
+        ZeA6FzYV6K+LJCgH3d+oDE0=
+X-Google-Smtp-Source: AGHT+IHCTwneR8c2SNEnOg6XrWMjyFnTAG+5GiPew/rJysjCFZm8QIppYR64TsM2ynWOerEhQPwQdA==
+X-Received: by 2002:adf:f7c4:0:b0:31f:ea18:6f6b with SMTP id a4-20020adff7c4000000b0031fea186f6bmr1120906wrq.19.1694770361264;
+        Fri, 15 Sep 2023 02:32:41 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id c18-20020a5d4cd2000000b0031762e89f94sm3902903wrt.117.2023.09.15.02.32.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 02:32:40 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 15 Sep 2023 11:32:38 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH v2] x86: Fix build of UML with KASAN
+Message-ID: <ZQQkthfNuV3dOhZe@gmail.com>
+References: <20230915-uml-kasan-v2-1-ef3f3ff4f144@axis.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1ZlFlc8C7bX0329f"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915092003.658361-14-ulf.hansson@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230915-uml-kasan-v2-1-ef3f3ff4f144@axis.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---1ZlFlc8C7bX0329f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 15, 2023 at 11:19:59AM +0200, Ulf Hansson wrote:
-> The Kconfig belongs closer to the corresponding implementation, hence let=
-'s
-> move it from the soc subsystem to the pmdomain subsystem.
+* Vincent Whitchurch <vincent.whitchurch@axis.com> wrote:
 
-Thanks for updating the MAINTAINERS bits.
+> Building UML with KASAN fails since commit 69d4c0d32186 ("entry, kasan,
+> x86: Disallow overriding mem*() functions") with the following errors:
+> 
+>  $ tools/testing/kunit/kunit.py run --kconfig_add CONFIG_KASAN=y
+>  ...
+>  ld: mm/kasan/shadow.o: in function `memset':
+>  shadow.c:(.text+0x40): multiple definition of `memset';
+>  arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
+>  ld: mm/kasan/shadow.o: in function `memmove':
+>  shadow.c:(.text+0x90): multiple definition of `memmove';
+>  arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
+>  ld: mm/kasan/shadow.o: in function `memcpy':
+>  shadow.c:(.text+0x110): multiple definition of `memcpy';
+>  arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
 
-> Cc: Walker Chen <walker.chen@starfivetech.com>
-> Cc: Conor Dooley <conor@kernel.org>
-> Acked-by: Conor Dooley <conor@kernel.org>
+So the breakage was ~9 months ago, and apparently nobody build-tested UML?
 
-Unless my macro changed without me noticing, I don't think that's
-the email address I used for the ack. Just to be sure:
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Does UML boot with the fix?
+
+> UML does not use GENERIC_ENTRY and is still supposed to be allowed to
+> override the mem*() functions, so use weak aliases in that case.
+> 
+> Fixes: 69d4c0d32186 ("entry, kasan, x86: Disallow overriding mem*() functions")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+> Changes in v2:
+> - Use CONFIG_UML instead of CONFIG_GENERIC_ENTRY.
+> - Link to v1: https://lore.kernel.org/r/20230609-uml-kasan-v1-1-5fac8d409d4f@axis.com
+> ---
+>  arch/x86/lib/memcpy_64.S  | 4 ++++
+>  arch/x86/lib/memmove_64.S | 4 ++++
+>  arch/x86/lib/memset_64.S  | 4 ++++
+>  3 files changed, 12 insertions(+)
+> 
+> diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
+> index 8f95fb267caa..47b004851cf3 100644
+> --- a/arch/x86/lib/memcpy_64.S
+> +++ b/arch/x86/lib/memcpy_64.S
+> @@ -40,7 +40,11 @@ SYM_TYPED_FUNC_START(__memcpy)
+>  SYM_FUNC_END(__memcpy)
+>  EXPORT_SYMBOL(__memcpy)
+>  
+> +#ifdef CONFIG_UML
+> +SYM_FUNC_ALIAS_WEAK(memcpy, __memcpy)
+> +#else
+>  SYM_FUNC_ALIAS(memcpy, __memcpy)
+> +#endif
+>  EXPORT_SYMBOL(memcpy)
+
+Meh, the extra 3 #ifdefs are rather ugly and don't really express UML's 
+expectations here.
+
+So how about introducing a SYM_FUNC_ALIAS_MEMFUNC() variant on x86 in a 
+suitable header, which maps to the right thing, with a comment added that 
+explains that this is for UML's mem*() functions?
 
 Thanks,
-Conor.
 
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  MAINTAINERS                                | 3 +--
->  drivers/pmdomain/Kconfig                   | 1 +
->  drivers/{soc =3D> pmdomain}/starfive/Kconfig | 0
->  drivers/soc/Kconfig                        | 1 -
->  4 files changed, 2 insertions(+), 3 deletions(-)
->  rename drivers/{soc =3D> pmdomain}/starfive/Kconfig (100%)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6b491ebcf790..40744fefed3d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20515,7 +20515,7 @@ M:	Walker Chen <walker.chen@starfivetech.com>
->  M:	Changhuang Liang <changhuang.liang@starfivetech.com>
->  S:	Supported
->  F:	Documentation/devicetree/bindings/power/starfive*
-> -F:	drivers/pmdomain/starfive/jh71xx-pmu.c
-> +F:	drivers/pmdomain/starfive/
->  F:	include/dt-bindings/power/starfive,jh7110-pmu.h
-> =20
->  STARFIVE SOC DRIVERS
-> @@ -20523,7 +20523,6 @@ M:	Conor Dooley <conor@kernel.org>
->  S:	Maintained
->  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/
->  F:	Documentation/devicetree/bindings/soc/starfive/
-> -F:	drivers/soc/starfive/
-> =20
->  STARFIVE TRNG DRIVER
->  M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
-> diff --git a/drivers/pmdomain/Kconfig b/drivers/pmdomain/Kconfig
-> index 08f8a3aa9805..2286c36076db 100644
-> --- a/drivers/pmdomain/Kconfig
-> +++ b/drivers/pmdomain/Kconfig
-> @@ -12,5 +12,6 @@ source "drivers/pmdomain/renesas/Kconfig"
->  source "drivers/pmdomain/rockchip/Kconfig"
->  source "drivers/pmdomain/samsung/Kconfig"
->  source "drivers/pmdomain/st/Kconfig"
-> +source "drivers/pmdomain/starfive/Kconfig"
-> =20
->  endmenu
-> diff --git a/drivers/soc/starfive/Kconfig b/drivers/pmdomain/starfive/Kco=
-nfig
-> similarity index 100%
-> rename from drivers/soc/starfive/Kconfig
-> rename to drivers/pmdomain/starfive/Kconfig
-> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> index 8b46da40f107..10a9ff84ff41 100644
-> --- a/drivers/soc/Kconfig
-> +++ b/drivers/soc/Kconfig
-> @@ -23,7 +23,6 @@ source "drivers/soc/renesas/Kconfig"
->  source "drivers/soc/rockchip/Kconfig"
->  source "drivers/soc/samsung/Kconfig"
->  source "drivers/soc/sifive/Kconfig"
-> -source "drivers/soc/starfive/Kconfig"
->  source "drivers/soc/sunxi/Kconfig"
->  source "drivers/soc/tegra/Kconfig"
->  source "drivers/soc/ti/Kconfig"
-> --=20
-> 2.34.1
->=20
-
---1ZlFlc8C7bX0329f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQQj5gAKCRB4tDGHoIJi
-0ni0APwKcNwJSKsOPvp2+jVoNLd8F/Qp3atCKUuE1/sjfqR/dwEA88V4E7km/zn5
-cyWfek8D2WHLjgQjfvInsrZjiWvA7Ac=
-=9J6Y
------END PGP SIGNATURE-----
-
---1ZlFlc8C7bX0329f--
+	Ingo
