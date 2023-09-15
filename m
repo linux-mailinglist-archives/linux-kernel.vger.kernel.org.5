@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1CC7A29CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152667A29CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237464AbjIOVvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
+        id S237853AbjIOVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237835AbjIOVuv (ORCPT
+        with ESMTP id S237798AbjIOVvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:50:51 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169B0139;
-        Fri, 15 Sep 2023 14:50:46 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FJptK3025396;
-        Fri, 15 Sep 2023 21:50:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=YaIhyTwd65Ep3+ss30ZCSQRNxKPlbSI/5fE+GHse75U=;
- b=VrPB4QP7HJ0Sr0DzopY9VMK3ePM6jC9vQFUoz/zSa1hh7qodC5r9Ia4TkwdDoGSE/K5b
- ZmzabUlmRpozSzeTUbm5Vff8IlhqAR1Ok8vUlIsoeMdcgvwz9qdG1hps2KQFx7x1ygcY
- 46fIGOJK8nmLp7n38czjTa/NKz+gTnZ+QDkBvBRumdC/HUx7VrilE5re/X+DcChUEcT6
- hGxYYOo4A6EjwJRirICYAqg0ICwGvpknKDgmU3PCCuDIma2nL5F22VPZ2+cA5vd5vNHG
- 8wpcmEOvDw9RFolg4wWxnHL/M2c8JkjI3LjGLTeSfRh0kyEtE+aLmTyG7Ry2Xi3Do3CG FQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4vwc0cf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 21:50:18 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FLoHEw029152
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 21:50:17 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 14:50:17 -0700
-Message-ID: <b948d505-3cfd-318d-20eb-9f60a2865d23@quicinc.com>
-Date:   Fri, 15 Sep 2023 14:50:16 -0700
+        Fri, 15 Sep 2023 17:51:16 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1910610E
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:51:08 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso330414166b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694814666; x=1695419466; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=M/1H/23B2pkin+rn0KDXQiysBhZl0AsbvPleWos4qKQ=;
+        b=I1skia3iXZPN5fOujj4G0hpY/pFPaeK9a3BZfbe7r53ycatMMpo3wkbmz4bvQfKTm7
+         XMDtm+lJS4LJT/psmmPZ2hEmMLQb5RO73JfRgun/DJ0ORr6WwPh5vV7439V4oZkbXu63
+         rqa6qvVqD49H05Fr+DvDzrmokZNFSM+EmX+Qg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694814666; x=1695419466;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M/1H/23B2pkin+rn0KDXQiysBhZl0AsbvPleWos4qKQ=;
+        b=XX6iS8u12VT6olWZS6OZB+BbeHEeoU5BIALy6w5CESxklrXW+A/gtFDjNmLv1Nn7i6
+         bsE+w4qY3I0II4osVEqAhaB1jAQOXz3PQkK6sfRSzQEe5P/0HwY4oJAELQmDw3aFUgEP
+         eyXY6DGx6S7kHBNmuJkwRBdehNe4Jfu0e3HJRknUTi5dAK73JSgafBhjvdTFqngqLe3t
+         yjJhJZXxPtTBbSoqbIaZzhiObA8MN8JZHD/wWR/gzPVI5Yc7WvQ32i1WliDsL8cdhB+h
+         QZJodEs6UVCFRu7KbcX8h8e2zsOnxbItv5IXGc/JP4ZEbRADi7fYsQO/Uv4Xf1cTvDUJ
+         IebA==
+X-Gm-Message-State: AOJu0YxZmaGZQtqQ7sy6YRHbAf/j5EIcoJNOVprkoBTNaUqdP8mUOnXb
+        ARzeV4/09o6ofIffJQlbkhUTmrwHvRP7EvKsLYzWT6g5
+X-Google-Smtp-Source: AGHT+IFxEnNDEw/jONckUh9M4AifHB/zBR3wLZacSiL7D29j4hF/GQVlLgJbRT0kb6Rs+sVNJkRLcw==
+X-Received: by 2002:a17:906:844a:b0:9a2:225a:8d01 with SMTP id e10-20020a170906844a00b009a2225a8d01mr2686503ejy.7.1694814666290;
+        Fri, 15 Sep 2023 14:51:06 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id s22-20020a1709066c9600b00993a9a951fasm2955715ejr.11.2023.09.15.14.51.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 14:51:05 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99c3c8adb27so331997366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:51:05 -0700 (PDT)
+X-Received: by 2002:a17:906:3146:b0:9a1:cbe4:d033 with SMTP id
+ e6-20020a170906314600b009a1cbe4d033mr2412770eje.53.1694814665221; Fri, 15 Sep
+ 2023 14:51:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/8] drm/panel: nv3052c: Add SPI device IDs
-Content-Language: en-US
-To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
-CC:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-3-contact@jookia.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20230911090206.3121440-3-contact@jookia.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jZyOm69phZhMkFV-iM1kJB4ylEpIvXL4
-X-Proofpoint-ORIG-GUID: jZyOm69phZhMkFV-iM1kJB4ylEpIvXL4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_19,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 adultscore=0 phishscore=0
- suspectscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309150196
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183> <CAHk-=whO1+-4ALjFWSE0kzytz1kEbWPvy3xWvcUP1dJ4t-QqkA@mail.gmail.com>
+ <CACMJSetxQi+t3SBXu6OvBbmxV8AbX2CfdSA9JvF1chLJSU9Ppw@mail.gmail.com>
+ <CAHk-=wgRHiV5VSxtfXA4S6aLUmcQYEuB67u3BJPJPtuESs1JyA@mail.gmail.com>
+ <CACMJSevZQgik7S-62fz9H7+Mib+W0CgYMV4GyWjYV7N_E6iHVQ@mail.gmail.com>
+ <CACMJSevrJ5KSPAZVheXkNaYj8KQFD8ck55kU_E4vEj4vzR8wnQ@mail.gmail.com>
+ <CAHk-=wicfvWPuRVDG5R1mZSxD8Xg=-0nLOiHay2T_UJ0yDX42g@mail.gmail.com>
+ <20230915210851.GA23174@noisy.programming.kicks-ass.net> <CAHk-=whvOGL3aNhtps0YksGtzvaob_bvZpbaTcVEqGwNMxB6xg@mail.gmail.com>
+ <20230915213231.GB23174@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230915213231.GB23174@noisy.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 15 Sep 2023 14:50:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+Message-ID: <CAHk-=wi08ZUguV_n88h=bP6X01-tah29RtB0t9TmXtyuEJev-Q@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 Sept 2023 at 14:32, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+> It also got me thinking about named_guard() for the myriad of
+> conditional locks we have.
+>
+>         named_guard(try_mutex, foo_guard)(&foo->lock);
+>         if (foo_guard) {
+>                 // we got the lock, do our thing
+>         }
 
+Hmm. It looks ugly to me. I really hate the "named_guard" thing. One
+of the reasons I liked the guard/scoped_guard() macros was because how
+it created _anonymous_ guards, and made it completely unnecessary to
+make up a pointless name.
 
-On 9/11/2023 2:02 AM, John Watts wrote:
-> SPI drivers needs their own list of compatible device IDs in order
-> for automatic module loading to work. Add those for this driver.
+If trylock ends up being a common pattern, I think we should strive to
+make it a lot easier to use.
 
-Hi John,
+Can we make it act like "scoped_guard()", except the lock function is
+fundamentally conditional?
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Call it "cond_guard()", and make the syntax otherwise be the same as
+"scoped_guard()", iow, using a unique ID for the guard name.
 
-Thanks,
+So
 
-Jessica Zhang
+        cond_guard(try_mutex)(&foo->lock) {
+                .. this is the "we got the lock" region ..
+        }
 
-> 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->   drivers/gpu/drm/panel/panel-newvision-nv3052c.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> index 589431523ce7..90dea21f9856 100644
-> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> @@ -465,6 +465,12 @@ static const struct nv3052c_panel_info ltk035c5444t_panel_info = {
->   	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
->   };
->   
-> +static const struct spi_device_id nv3052c_ids[] = {
-> +	{ "ltk035c5444t", },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, nv3052c_ids);
-> +
->   static const struct of_device_id nv3052c_of_match[] = {
->   	{ .compatible = "leadtek,ltk035c5444t", .data = &ltk035c5444t_panel_info },
->   	{ /* sentinel */ }
-> @@ -476,6 +482,7 @@ static struct spi_driver nv3052c_driver = {
->   		.name = "nv3052c",
->   		.of_match_table = nv3052c_of_match,
->   	},
-> +	.id_table = nv3052c_ids,
->   	.probe = nv3052c_probe,
->   	.remove = nv3052c_remove,
->   };
-> -- 
-> 2.42.0
-> 
+would I think be a much better syntax.
+
+Could we live with that?
+
+               Linus
