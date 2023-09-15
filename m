@@ -2,157 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B7D7A1F78
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F2C7A1F7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235226AbjIONDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S235225AbjIONEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbjIONDI (ORCPT
+        with ESMTP id S235155AbjIONEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:03:08 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E8C10E;
-        Fri, 15 Sep 2023 06:02:58 -0700 (PDT)
-Received: from [IPV6:2a01:e0a:120:3210:7735:5996:cf40:bca6] (unknown [IPv6:2a01:e0a:120:3210:7735:5996:cf40:bca6])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Fri, 15 Sep 2023 09:04:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CFE31AC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694783017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZpfbgJ5FdmMlvqcljfZeMWdf6Pp3ie+fbXvpKVgnxSk=;
+        b=Z9WftRfMZ6po/DxkkmdQdcU4nxyQ867pY0M5yfywqDkvEJmtmbbb3UpLt6/bpKdpwWNkoC
+        0K9wBlekPBIDcpKZYZTEYaPm5tJvjU/0G4G9b3VUahRd/Hv5LU2rEI7xQeFLmgYMOPlnBQ
+        W9WB8XPelFINoQ/nGp3y3RwFw9uVOCM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-467-CFYeF0T8NXStZbVp2ZErcg-1; Fri, 15 Sep 2023 09:03:33 -0400
+X-MC-Unique: CFYeF0T8NXStZbVp2ZErcg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1D60B66072ED;
-        Fri, 15 Sep 2023 14:02:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694782976;
-        bh=p3dIJk432sgjwEaG99pDgDD1HBalYst4ezbAkgYJyz4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jqb6/GyVg5IuUKgGjzBkcnNg1wXFDJFiSi6o2rQe5WYoXkRfqvzt8Zinleucikwy+
-         hRA2+5AaN16cDBPUxAABqKfK854lwKRdJYLH8RyKWUWiXqEzYHGLPF9Ys9CeeeBeLt
-         P5ikdtNdI08HzbDRZarbCfotl/dnWAQV31r2PuTklWR/YoAVfZUlHMP4VIrQXpyl1e
-         nK+EOUaUt0FpTB3XBAIdy3He2cwufeUhtmXD+wwrne81yOtRh+7LA8r6ziwG6U/0tg
-         5kKbsqRIMxeBTLzXkSWnJ9ADpe9KeV6QS8W7ybOhnSMEcatthVpy6JUQDM/efEajFH
-         JtGFEwcByqq1A==
-Message-ID: <b048719a-9397-7490-0651-7c1470ef61e0@collabora.com>
-Date:   Fri, 15 Sep 2023 15:02:53 +0200
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB87780A154;
+        Fri, 15 Sep 2023 13:03:32 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 16DDF1006B70;
+        Fri, 15 Sep 2023 13:03:31 +0000 (UTC)
+Date:   Fri, 15 Sep 2023 21:03:29 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 9/9] mm: vmalloc: Set nr_nodes/node_size based on
+ CPU-cores
+Message-ID: <ZQRWIRzhspyU1xIE@MiWiFi-R3L-srv>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-10-urezki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 45/49] media: core: Add bitmap manage bufs array
- entries
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>, mchehab@kernel.org,
-        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
-        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
-        nicolas.dufresne@collabora.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230914133323.198857-46-benjamin.gaignard@collabora.com>
- <202309150835.kxjWQyEU-lkp@intel.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <202309150835.kxjWQyEU-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829081142.3619-10-urezki@gmail.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+......
+> real    1m28.382s
+> user    0m0.014s
+> sys     0m0.026s
+> urezki@pc638:~$
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  mm/vmalloc.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 
-Le 15/09/2023 à 02:47, kernel test robot a écrit :
-> Hi Benjamin,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v6.6-rc1]
-> [cannot apply to next-20230914]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Gaignard/media-videobuf2-Rework-offset-cookie-encoding-pattern/20230914-221757
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/20230914133323.198857-46-benjamin.gaignard%40collabora.com
-> patch subject: [PATCH v7 45/49] media: core: Add bitmap manage bufs array entries
-> config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230915/202309150835.kxjWQyEU-lkp@intel.com/config)
-> compiler: sparc64-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230915/202309150835.kxjWQyEU-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309150835.kxjWQyEU-lkp@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->     samples/v4l/v4l2-pci-skeleton.c: In function 'queue_setup':
->>> samples/v4l/v4l2-pci-skeleton.c:170:15: error: 'struct vb2_queue' has no member named 'num_buffers'
->       170 |         if (vq->num_buffers + *nbuffers < 3)
->           |               ^~
->     samples/v4l/v4l2-pci-skeleton.c:171:35: error: 'struct vb2_queue' has no member named 'num_buffers'
->       171 |                 *nbuffers = 3 - vq->num_buffers;
->           |                                   ^~
-> --
->     drivers/input/touchscreen/sur40.c: In function 'sur40_queue_setup':
->>> drivers/input/touchscreen/sur40.c:851:14: error: 'struct vb2_queue' has no member named 'num_buffers'
->       851 |         if (q->num_buffers + *nbuffers < 3)
->           |              ^~
->     drivers/input/touchscreen/sur40.c:852:34: error: 'struct vb2_queue' has no member named 'num_buffers'
->       852 |                 *nbuffers = 3 - q->num_buffers;
->           |                                  ^~
->
->
-> vim +170 samples/v4l/v4l2-pci-skeleton.c
+LGTM,
 
-v4l2 drivers outside drivers/media or drivers/staging/media direct directories.
-I have miss them. I will fix that in v8.
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
-Regards,
-Benjamin
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 9cce012aecdb..08990f630c21 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -796,6 +796,9 @@ struct vmap_node {
+>  	atomic_t fill_in_progress;
+>  };
+>  
+> +#define MAX_NODES U8_MAX
+> +#define MAX_NODE_SIZE SZ_4M
+> +
+>  static struct vmap_node *nodes, snode;
+>  static __read_mostly unsigned int nr_nodes = 1;
+>  static __read_mostly unsigned int node_size = 1;
+> @@ -4803,11 +4806,24 @@ static void vmap_init_free_space(void)
+>  	}
+>  }
+>  
+> +static unsigned int calculate_nr_nodes(void)
+> +{
+> +	unsigned int nr_cpus;
+> +
+> +	nr_cpus = num_present_cpus();
+> +	if (nr_cpus <= 1)
+> +		nr_cpus = num_possible_cpus();
+> +
+> +	/* Density factor. Two users per a node. */
+> +	return clamp_t(unsigned int, nr_cpus >> 1, 1, MAX_NODES);
+> +}
+> +
+>  static void vmap_init_nodes(void)
+>  {
+>  	struct vmap_node *vn;
+>  	int i;
+>  
+> +	nr_nodes = calculate_nr_nodes();
+>  	nodes = &snode;
+>  
+>  	if (nr_nodes > 1) {
+> @@ -4830,6 +4846,16 @@ static void vmap_init_nodes(void)
+>  		INIT_LIST_HEAD(&vn->free.head);
+>  		spin_lock_init(&vn->free.lock);
+>  	}
+> +
+> +	/*
+> +	 * Scale a node size to number of CPUs. Each power of two
+> +	 * value doubles a node size. A high-threshold limit is set
+> +	 * to 4M.
+> +	 */
+> +#if BITS_PER_LONG == 64
+> +	if (nr_nodes > 1)
+> +		node_size = min(SZ_64K << fls(num_possible_cpus()), SZ_4M);
+> +#endif
+>  }
+>  
+>  void __init vmalloc_init(void)
+> -- 
+> 2.30.2
+> 
 
->
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  145
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  146  /*
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  147   * Setup the constraints of the queue: besides setting the number of planes
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  148   * per buffer and the size and allocation context of each plane, it also
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  149   * checks if sufficient buffers have been allocated. Usually 3 is a good
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  150   * minimum number: many DMA engines need a minimum of 2 buffers in the
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  151   * queue and you need to have another available for userspace processing.
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  152   */
-> df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  153  static int queue_setup(struct vb2_queue *vq,
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  154  		       unsigned int *nbuffers, unsigned int *nplanes,
-> 36c0f8b32c4bd4 samples/v4l/v4l2-pci-skeleton.c               Hans Verkuil 2016-04-15  155  		       unsigned int sizes[], struct device *alloc_devs[])
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  156  {
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  157  	struct skeleton *skel = vb2_get_drv_priv(vq);
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  158
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  159  	skel->field = skel->format.field;
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  160  	if (skel->field == V4L2_FIELD_ALTERNATE) {
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  161  		/*
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  162  		 * You cannot use read() with FIELD_ALTERNATE since the field
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  163  		 * information (TOP/BOTTOM) cannot be passed back to the user.
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  164  		 */
-> 3130a28a1568b1 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-23  165  		if (vb2_fileio_is_active(vq))
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  166  			return -EINVAL;
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  167  		skel->field = V4L2_FIELD_TOP;
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  168  	}
-> 5f26f2501b8119 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-04-11  169
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14 @170  	if (vq->num_buffers + *nbuffers < 3)
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  171  		*nbuffers = 3 - vq->num_buffers;
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  172
-> df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  173  	if (*nplanes)
-> df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  174  		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  175  	*nplanes = 1;
-> df9ecb0cad14b9 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2015-10-28  176  	sizes[0] = skel->format.sizeimage;
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  177  	return 0;
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  178  }
-> 926977e0ae7556 Documentation/video4linux/v4l2-pci-skeleton.c Hans Verkuil 2014-03-14  179
->
