@@ -2,266 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CAE7A12A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 02:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9D77A12AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjIOA7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 20:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
+        id S231207AbjIOBA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjIOA7Q (ORCPT
+        with ESMTP id S230399AbjIOBA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 20:59:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F064826B8;
-        Thu, 14 Sep 2023 17:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1694739536; x=1695344336; i=quwenruo.btrfs@gmx.com;
- bh=VlDDoWgla76Sf4yY8OaOOXJ2BDa1IoTUWPPLyautPtc=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=NrUGCxBpCNzsOfCD0UwjgdlMSudhXFUv+/LzEAyDBoYivikSvCDE7Pecq+nyJoHPWQ5Gn+8kwHv
- UMFTNhBYUkK9kcar2f/JmjBg+WV07ytq36NsILBBwEABOXPVw3c6Mrb8/hM59Ta48CpbNx58hNfO6
- jhbF3m+CxhokDzjcKoBhYG6TTkdstIyZphlxsv2yv28CEYSlmNpBG6BJjYToIkmr5ghoJDfhN6BId
- uTwlXeYLUfiutX9Z6sualpPKk9KRckZacVRPnnMKKgyhgbljy4QY+zem9oMVUy/wSYdLgqgz0Xdqw
- lNN/nAnt2tIqXas6ncAZ66aspQugCZ6Wgesg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.27.112.223] ([154.6.151.156]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBlxM-1qt0Oh10sW-00C9Tm; Fri, 15
- Sep 2023 02:58:55 +0200
-Message-ID: <33f4c547-65bc-4523-b1c0-bae0c7ad1e65@gmx.com>
-Date:   Fri, 15 Sep 2023 10:28:50 +0930
+        Thu, 14 Sep 2023 21:00:28 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BE91FE8;
+        Thu, 14 Sep 2023 18:00:24 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 7E9C83200981;
+        Thu, 14 Sep 2023 21:00:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 14 Sep 2023 21:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694739622; x=1694826022; bh=EMHXuxFrQtckqm0xBirePySXvbt3CcrfaVO
+        hphckfLs=; b=HSsubA7dfjwk6/cnRxTOQ0uirFf9Gu9PicIpc0IRzOcjsTAgrM5
+        f9LKB8B2XA1qgUXBC19ILZ+KPUBEHWMF+tO5JQpfZsgHhGAp2XIZ5BR1Z3Ji+B9+
+        pYVFeUqTas32nfcvStjyb0WJTZzIEHPVKQdQK+KWFFj9ocZ6+Kv3vzPk+hieoybW
+        WyKGz2IehR2fd7BJAfrKPOCnKHTEtzbEz1/Vao/2zVNjCIDiMeF/NgLhEbDky/nq
+        /o1scyxxoMCkQv1FjDL7dG7PvVMjomd1rlcQuYymUykPaywU0BLeSMkHSEIiWHDz
+        yepwHMQroaqQJDLn/jUtQHWYvYKbxYh+EEg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694739622; x=1694826022; bh=EMHXuxFrQtckqm0xBirePySXvbt3CcrfaVO
+        hphckfLs=; b=Nt7Fvwzydx2kf2ZlM99uXFbynkHXouVezinuEF4/PTj/k76DHsC
+        P5rwjgrGV12XIFgbv4fzBgw545a0QLrcezFuwGFQ6A+966qMZv/WAbUns471wNec
+        99StB9hlwq8VNbD71QLnp6x/MPfS5qyDhxPJp5DPHFYB+a7eLSX8baaODA5rwBKF
+        xvp40kK+h34T6obof8MoB/PG8j7Y4l9YKf6IK4FRbI8yV7PQSwWqyg2iRfNKHOSu
+        /KeWZEMPv8ZPeCBeQxr41vbfg3UBUDKS05xkev9KUV4WHgZkOsFFvBNTziNzRTLn
+        sMQYvdmLg4RmlOXjZ4L8ITEWCEVMoQjpdLg==
+X-ME-Sender: <xms:pawDZTcVZn0mGWVJHBbsXK2cG1yWizqeNp22pUKpfMQXOm8UvOfIjA>
+    <xme:pawDZZOOMKSJ0rbt-xqhAUVz1qwKkshufkpDTWYCu0YhoebEfTt5Akg7JC4A36_07
+    2WzoJ83Qla7>
+X-ME-Received: <xmr:pawDZcgeqWnzF4m3ZkQJJ3tZmeP37meqJPJHNolB-1K9YXeOgErMW5lpPplh3JZ6RoCQCtKhbMFGYvdnYNxZZaM95pHbg80zmsWj3d4kwjT2mmRrsN1H>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epgedvteevvdefiedvueeujeegtedvheelhfehtefhkefgjeeuffeguefgkeduhfejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:pawDZU837QMEysNG0ioEKHukPPbEMoT4GDKgwipwSaEkuogsjgc8CQ>
+    <xmx:pawDZftKyYaxD8Ij_ZXAFpMQYNOQu9wg6E5d0SHhJsbP3NKqVNuS2w>
+    <xmx:pawDZTELXYe1iY6P5XUrYeIVuDh7aauNznM4lwhum3Bn3KOkkHEMNg>
+    <xmx:pqwDZdLJiqa_bTptbahE4YBkaXLP8fPoRQVjuHsZg38ub1XvtCcsfw>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Sep 2023 21:00:16 -0400 (EDT)
+Message-ID: <eec71402-f347-fd86-6c9e-06b78c1ed2eb@themaw.net>
+Date:   Fri, 15 Sep 2023 09:00:13 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 06/11] btrfs: implement RST version of scrub
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 3/3] add listmnt(2) syscall
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <20230913152238.905247-4-mszeredi@redhat.com>
+ <CAOQ4uxh4ETADj7cD56d=8+0t7L_DHaSQpoPGHmwHFqCreOQjdQ@mail.gmail.com>
 Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230914-raid-stripe-tree-v9-0-15d423829637@wdc.com>
- <20230914-raid-stripe-tree-v9-6-15d423829637@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230914-raid-stripe-tree-v9-6-15d423829637@wdc.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAOQ4uxh4ETADj7cD56d=8+0t7L_DHaSQpoPGHmwHFqCreOQjdQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EDkxKVOovDGSAAkZrF6u68exI6XAoCYplMkdVceCTQDYvyk9af1
- fdTFkGe++YYwb1SZrFqUDVbzTlcwk2AnuucmljkBrJc8hHg9yaHuW6s6bhtHsA1WeOWniRD
- 9O+i/ozGx8FVLbupqC+GM7EgxGrLIu1fAvoJXqjnkHWhxVOGqkCtf143ZFHwjexacoFNsAB
- W72mTgH4736N7+xKu+s0Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7to4/C0exbk=;7qf1a6ks51HIGVYgdd/nZNLSDwl
- 6PFOyR+UWlL85eq/hvBpZfCp3ZnXT53yfIYhZdvUtjECVNmYlrlhFuFMYukZJfiZFycsUC0hb
- ZvzaRljgTOrhzEjuvjvpV/kDDbMKRi6Z2KsXPzJPmyEiA2d+6UETKPe0YnpA2jM9WLkloobUA
- PLt13hy0Wtfak034qHJIWK3u7Fj8q5OkVqn6Y/wlITl4ltfADfkHMJWYfnbDi/ahBqnrdwySL
- P0jgyvmyFTubO/NFtvbJ30ywXH1RA6lbGFgMLjAgqnfyTHS5N5fwhBDmBDxwlAC6z1DTvKubc
- ge9RaCb9A3R8y5s4AojHRm4OtFE5JSe5hQSbjVtb/uXn9MjvLLK0+4RL70Ti+yUkORyR/cmgw
- 4Q1cgcubzE6sWN+uLbpNEqkrtrS1Pf1oohhwHhIxv0BMYDfteVwnFuLRqDlVIX7iSienyq3WE
- JdTkbiM2DCdNax8eS9civ8JaL+G2kujQdwTwf4YHYO8Y9mCu3Z5rpnvB80sDL8SMhBf18Q6qg
- od5RWG8CCIXwYmStETQVZ2xqsKAJkkkj/FwQ8/IPaVpBbFWE9G7G2paif76SOUzB+T3YN10s9
- l6sdsjxRD13WLzsf3d9wXhBjrETODbZYjiMLhp80Ni9RKwrszR8bvqcR9oiEJ1a/Qexpu3Zku
- xcp02SKKKCDcq6YyJhha9or77SCHkon8lfBYdD5/7cy9O7v3/CqkAYvXzdS0uIJeaNC8C0iy7
- 9M4rlHJuRm4YpRRGDzIyXlXrK1+lr7epcOwzfQVj5HZHLLqF7HKnLwA8UpjrcYdj8QZflSQqM
- 56uVo/eazZUhrcqQbdtIm5jUGh01v1gzQmB2aYIIIsPboZKHb1efGekxDr7TiSXfwgGCjITLJ
- R5SZyVpHr+tmSJfKrYb7Zh7LI5poSg8sZu0OU3UuPbRdgKoCiiHMsit0JQVf6pOkNiVCo6xCW
- UMH6dsCnYGsWK8Ll39Ri4/URbRc=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/9/23 14:00, Amir Goldstein wrote:
+> On Wed, Sep 13, 2023 at 6:22 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>> Add way to query the children of a particular mount.  This is a more
+>> flexible way to iterate the mount tree than having to parse the complete
+>> /proc/self/mountinfo.
+>>
+>> Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+>> needs to be queried based on path, then statx(2) can be used to first query
+>> the mount ID belonging to the path.
+>>
+>> Return an array of new (64bit) mount ID's.  Without privileges only mounts
+>> are listed which are reachable from the task's root.
+>>
+>> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+>> ---
+>>   arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+>>   fs/namespace.c                         | 51 ++++++++++++++++++++++++++
+>>   include/linux/syscalls.h               |  2 +
+>>   include/uapi/asm-generic/unistd.h      |  5 ++-
+>>   4 files changed, 58 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+>> index 6d807c30cd16..0d9a47b0ce9b 100644
+>> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+>> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+>> @@ -376,6 +376,7 @@
+>>   452    common  fchmodat2               sys_fchmodat2
+>>   453    64      map_shadow_stack        sys_map_shadow_stack
+>>   454    common  statmnt                 sys_statmnt
+>> +455    common  listmnt                 sys_listmnt
+>>
+>>   #
+>>   # Due to a historical design error, certain syscalls are numbered differently
+>> diff --git a/fs/namespace.c b/fs/namespace.c
+>> index 088a52043bba..5362b1ffb26f 100644
+>> --- a/fs/namespace.c
+>> +++ b/fs/namespace.c
+>> @@ -4988,6 +4988,57 @@ SYSCALL_DEFINE5(statmnt, u64, mnt_id,
+>>          return err;
+>>   }
+>>
+>> +static long do_listmnt(struct vfsmount *mnt, u64 __user *buf, size_t bufsize,
+>> +                     const struct path *root)
+>> +{
+>> +       struct mount *r, *m = real_mount(mnt);
+>> +       struct path rootmnt = { .mnt = root->mnt, .dentry = root->mnt->mnt_root };
+>> +       long ctr = 0;
+>> +
+>> +       if (!capable(CAP_SYS_ADMIN) &&
+>> +           !is_path_reachable(m, mnt->mnt_root, &rootmnt))
+>> +               return -EPERM;
+>> +
+>> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
+>> +               if (!capable(CAP_SYS_ADMIN) &&
+>> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
+>> +                       continue;
+>> +
+>> +               if (ctr >= bufsize)
+>> +                       return -EOVERFLOW;
+>> +               if (put_user(r->mnt_id_unique, buf + ctr))
+>> +                       return -EFAULT;
+>> +               ctr++;
+>> +               if (ctr < 0)
+>> +                       return -ERANGE;
+> I think it'd be good for userspace to be able to query required
+> bufsize with NULL buf, listattr style, rather than having to
+> guess and re-guess on EOVERFLOW.
+
+Agreed, I also think that would be useful.
 
 
-On 2023/9/15 01:37, Johannes Thumshirn wrote:
-> A filesystem that uses the RAID stripe tree for logical to physical
-> address translation can't use the regular scrub path, that reads all
-> stripes and then checks if a sector is unused afterwards.
->
-> When using the RAID stripe tree, this will result in lookup errors, as t=
-he
-> stripe tree doesn't know the requested logical addresses.
->
-> Instead, look up stripes that are backed by the extent bitmap.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/bio.c              |  2 ++
->   fs/btrfs/raid-stripe-tree.c |  8 ++++++-
->   fs/btrfs/scrub.c            | 53 +++++++++++++++++++++++++++++++++++++=
-++++++++
->   fs/btrfs/volumes.h          |  1 +
->   4 files changed, 63 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index ddbe6f8d4ea2..bdb6e3effdbb 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -663,6 +663,8 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbi=
-o, int mirror_num)
->   	blk_status_t ret;
->   	int error;
->
-> +	smap.is_scrub =3D !bbio->inode;
-> +
->   	btrfs_bio_counter_inc_blocked(fs_info);
->   	error =3D btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_lengt=
-h,
->   				&bioc, &smap, &mirror_num, 1);
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index 697a6e1fd255..63bf62c33436 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -334,6 +334,11 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_in=
-fo *fs_info,
->   	if (!path)
->   		return -ENOMEM;
->
-> +	if (stripe->is_scrub) {
-> +		path->skip_locking =3D 1;
-> +		path->search_commit_root =3D 1;
-> +	}
-> +
->   	ret =3D btrfs_search_slot(NULL, stripe_root, &stripe_key, path, 0, 0)=
-;
->   	if (ret < 0)
->   		goto free_path;
-> @@ -420,7 +425,8 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_inf=
-o *fs_info,
->   out:
->   	if (ret > 0)
->   		ret =3D -ENOENT;
-> -	if (ret && ret !=3D -EIO) {
-> +	if (ret && ret !=3D -EIO && !stripe->is_scrub) {
-> +
+Ian
 
-One extra newline.
-
-And why scrub path doesn't need the warning?
-IIRC if our rst doesn't match extent tree, it can be a problem and we
-need some error messages.
-
-Thanks,
-Qu
->   		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
->   			btrfs_print_tree(leaf, 1);
->   		btrfs_err(fs_info,
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index f16220ce5fba..42948b66d4be 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -23,6 +23,7 @@
->   #include "accessors.h"
->   #include "file-item.h"
->   #include "scrub.h"
-> +#include "raid-stripe-tree.h"
->
->   /*
->    * This is only the first step towards a full-features scrub. It reads=
- all
-> @@ -1634,6 +1635,53 @@ static void scrub_reset_stripe(struct scrub_strip=
-e *stripe)
->   	}
->   }
->
-> +static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
-> +					    struct scrub_stripe *stripe)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D stripe->bg->fs_info;
-> +	struct btrfs_bio *bbio =3D NULL;
-> +	int mirror =3D stripe->mirror_num;
-> +	int i;
-> +
-> +	atomic_inc(&stripe->pending_io);
-> +
-> +	for_each_set_bit(i, &stripe->extent_sector_bitmap, stripe->nr_sectors)=
- {
-> +		struct page *page =3D scrub_stripe_get_page(stripe, i);
-> +		unsigned int pgoff =3D scrub_stripe_get_page_offset(stripe, i);
-> +
-> +		/* The current sector cannot be merged, submit the bio. */
-> +		if (bbio &&
-> +		    ((i > 0 && !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
-> +		     bbio->bio.bi_iter.bi_size >=3D BTRFS_STRIPE_LEN)) {
-> +			ASSERT(bbio->bio.bi_iter.bi_size);
-> +			atomic_inc(&stripe->pending_io);
-> +			btrfs_submit_bio(bbio, mirror);
-> +			bbio =3D NULL;
-> +		}
-> +
-> +		if (!bbio) {
-> +			bbio =3D btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
-> +				fs_info, scrub_read_endio, stripe);
-> +			bbio->bio.bi_iter.bi_sector =3D (stripe->logical +
-> +				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
-> +		}
-> +
-> +		__bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
-> +	}
-> +
-> +	if (bbio) {
-> +		ASSERT(bbio->bio.bi_iter.bi_size);
-> +		atomic_inc(&stripe->pending_io);
-> +		btrfs_submit_bio(bbio, mirror);
-> +	}
-> +
-> +	if (atomic_dec_and_test(&stripe->pending_io)) {
-> +		wake_up(&stripe->io_wait);
-> +		INIT_WORK(&stripe->work, scrub_stripe_read_repair_worker);
-> +		queue_work(stripe->bg->fs_info->scrub_workers, &stripe->work);
-> +	}
-> +}
-> +
->   static void scrub_submit_initial_read(struct scrub_ctx *sctx,
->   				      struct scrub_stripe *stripe)
->   {
-> @@ -1645,6 +1693,11 @@ static void scrub_submit_initial_read(struct scru=
-b_ctx *sctx,
->   	ASSERT(stripe->mirror_num > 0);
->   	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
->
-> +	if (btrfs_need_stripe_tree_update(fs_info, stripe->bg->flags)) {
-> +		scrub_submit_extent_sector_read(sctx, stripe);
-> +		return;
-> +	}
-> +
->   	bbio =3D btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
->   			       scrub_read_endio, stripe);
->
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 2043aff6e966..067859de8f4c 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -393,6 +393,7 @@ struct btrfs_io_stripe {
->   	/* Block mapping */
->   	u64 physical;
->   	u64 length;
-> +	bool is_scrub;
->   	/* For the endio handler */
->   	struct btrfs_io_context *bioc;
->   };
->
