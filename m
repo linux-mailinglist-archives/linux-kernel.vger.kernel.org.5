@@ -2,100 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC66F7A2888
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF107A28A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbjIOUs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        id S237715AbjIOUuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237589AbjIOUsf (ORCPT
+        with ESMTP id S237765AbjIOUtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:48:35 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78A5E58
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:48:15 -0700 (PDT)
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-        by cmsmtp with ESMTP
-        id hAJpq8d8OOzKlhFjbqIHBb; Fri, 15 Sep 2023 20:48:15 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hFjaq9wndqs1vhFjbqU8Uc; Fri, 15 Sep 2023 20:48:15 +0000
-X-Authority-Analysis: v=2.4 cv=OO40YAWB c=1 sm=1 tr=0 ts=6504c30f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=ER_8r6IbAAAA:8 a=pGLkceISAAAA:8 a=P-IC7800AAAA:8 a=sozttTNsAAAA:8
- a=VwQbUJbxAAAA:8 a=JfrnYn6hAAAA:8 a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9
- a=QEXdDO2ut3YA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=d3PnA9EDa4IxuAV0gXij:22
- a=aeg5Gbbo78KNqacMgKqU:22 a=AjGcO6oz07-iQ99wixmX:22 a=1CNFftbPRP8L7MoqJWF3:22
- a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=v65a4RFp+sMcmemfAmTnmiDwoMy+rn1eiNS9UY+L9Jc=; b=xhTcHRzMNlYF2SpjieV2likVC3
-        6nLuBjvO2+ksA3n+z7tt+LWXWrhItk8ETbIgkAlAJoYwsBFqUVxF4PlLyofAn+NtakNjVL61KAxQo
-        Ny3F9ooJDBNF+5cg7v2QqFDUqyMCwix7SQ4oh3MkN9q3mwi3Mh8g65ztPvgih10VwnOyIketl3Rtv
-        MVNPyAAO2jSKcFeTT/IpEbsw1IQUtHGY20ZIzXdtgxawGGM855sRHZ8qh9rBjC8zhbyXMpSq0EK2I
-        tl7kdDebEXuAZv4X2+sW+Io1jM7D/pB2jZYCYZ7nl5ARp/vRiGQYzQJZGu5QuOcmegEAHlcW3g20g
-        tt2GlAvQ==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:60426 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhFjY-002dEH-1u;
-        Fri, 15 Sep 2023 15:48:12 -0500
-Message-ID: <c2e2f28e-64b6-9e8d-6d60-1a78bd3b5147@embeddedor.com>
-Date:   Fri, 15 Sep 2023 14:49:08 -0600
+        Fri, 15 Sep 2023 16:49:47 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1132D48;
+        Fri, 15 Sep 2023 13:49:18 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 324126600B9D;
+        Fri, 15 Sep 2023 21:49:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694810957;
+        bh=vLgY8rCiM5Qt+aHqvAkM8PPmsp9niBHALfFONENovW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L1wGH56Z0WS8OhEY8S0k8nySdlcbENukcNliDWh8ttwcqWmEaVn/UZpzQrt9TOFMB
+         xgXzt2cnBNSf3pt2Ud+3nl7eGK0RUka5UroNLHx5ph8Bxw4fJM6DugVx+pcLV5Ktdv
+         bdwqrBpLd0UmMTGWvmcW+yo25U+uc5Vwgtftgba5bRN3eyHDkLNyZ/kXzIXobP6cvZ
+         2GtZTCDq3UfWsBVgakQbxy+hGirAjBuguuqxjtEfbQShqZ8RCKRMTKYPwPEGp6cbfW
+         44P7hs8Yyns3MUP70SCqK/rPF/53qeGKjowW60z2g35szc+VRlCtVNLVkrmm7+vPsg
+         tGqRYPkHOxsZA==
+Received: by mercury (Postfix, from userid 1000)
+        id 5B719106044B; Fri, 15 Sep 2023 22:49:14 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 22:49:14 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc:     claudiu.beznea@microchip.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 07/50] dt-bindings: power: reset: atmel,sama5d2-shdwc:
+ add sam9x7
+Message-ID: <20230915204914.5ydicuwkiwmsuop4@mercury.elektranox.org>
+References: <20230728102407.265617-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mtd: rawnand: ingenic: Annotate struct ingenic_nfc with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915201234.never.868-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915201234.never.868-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhFjY-002dEH-1u
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:60426
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 338
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfICgPGk0wh74LA845b9Do5xGMQtGKTvYfHWp5ZBtlnIVF0AWOKIyNnXOAuWtLL3G2tQnA0Ba8m1Yc0N/SOCT7lAFhdMtwdb4NHGHDgvMiWWyWSn0tqM0
- 3b4FW1f9XLGhxhLPd9wDxWf35XjH2BkpO3gNtURqqrDRGzFG95JadOYuZpMESVmjUDa9yhUWRgS3tJ+2/h3wwd/AIvkjXkdBHVNIVljIXulDD65e6n/rxpyL
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4rmbok64xucswjqi"
+Content-Disposition: inline
+In-Reply-To: <20230728102407.265617-1-varshini.rajendran@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -103,47 +61,66 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--4rmbok64xucswjqi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/15/23 14:12, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct ingenic_nfc.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hi,
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
--- 
-Gustavo
-
+On Fri, Jul 28, 2023 at 03:54:07PM +0530, Varshini Rajendran wrote:
+> Add shutdown controller DT bindings.
+>=20
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->   drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> index 6748226b8bd1..ce9ef4e65597 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> @@ -46,7 +46,7 @@ struct ingenic_nfc {
->   	struct nand_controller controller;
->   	unsigned int num_banks;
->   	struct list_head chips;
-> -	struct ingenic_nand_cs cs[];
-> +	struct ingenic_nand_cs cs[] __counted_by(num_banks);
->   };
->   
->   struct ingenic_nand {
+
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+>  .../devicetree/bindings/power/reset/atmel,sama5d2-shdwc.yaml   | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/power/reset/atmel,sama5d2-=
+shdwc.yaml b/Documentation/devicetree/bindings/power/reset/atmel,sama5d2-sh=
+dwc.yaml
+> index 8c58e12cdb60..0735ceb7c103 100644
+> --- a/Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.y=
+aml
+> +++ b/Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.y=
+aml
+> @@ -22,6 +22,9 @@ properties:
+>        - enum:
+>            - atmel,sama5d2-shdwc
+>            - microchip,sam9x60-shdwc
+> +      - items:
+> +          - const: microchip,sam9x7-shdwc
+> +          - const: microchip,sam9x60-shdwc
+> =20
+>    reg:
+>      maxItems: 1
+> --=20
+> 2.25.1
+>=20
+
+--4rmbok64xucswjqi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUEw0oACgkQ2O7X88g7
++pqMaQ//fRpW3IAmANjZp1vqMTaLUVucVuRl9o6bRdbKxWdE52Vb11f44Q27IkdK
+eBECNresd47jrMxzMc5I2GrUmQP31aAfr1gtAWO2tmIoctf1gEvoFWOPnLmrBN7U
+tlnHfAGkgKd9fZocN5J9r3QBGrb+y9wWDnjgdxMcU6pg0UnVZS6cbx765W1jjbTi
+exjLlh4k7BvIaqIrQg19gbbofVbsn0PeFCW7nFXiO5Fqux8Z2xxHTNTD9x+Jjnzw
+ISOHEy/2F1PvOk5Ih/Zr3mRr7FQBHAVTqj9BLriMTUc0xiJeycClc5olw5+hn7Aa
+MD/F2orU9U1lEUdAJrXfPBw3kxqjjUupDfP1+/866W0+/5JrnTCDNN15HSaCmfHV
+wjsSOtf3o0UTdjQbWlycomzGsh95DVUPfhy1J81dOlgPbX2newx8PeyXqPuDfB5/
+aVlllGqUi71J/FJnYNm3lkbvg2o5sz67fmvimj3T8vYQ27+rCiG+t6RTKyROrJx0
+9FrmxpybxpWkY4MIfuqsg+DAoZXn+ECa+t3+ScwClG0HY+61dk08XRA+ySe0mmk2
+XxV8ZI6VWlsratzwlcHJJQFNEgkEbWdh3gYTAx5EspcXd/EP7hApWTGeEavL1OIV
+vYqSNJAvPyV7+jBfW0xim6YsUjp+qM0XtbkpOxL7G9ePlImSb34=
+=deto
+-----END PGP SIGNATURE-----
+
+--4rmbok64xucswjqi--
