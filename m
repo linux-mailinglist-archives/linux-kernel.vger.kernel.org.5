@@ -2,114 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48777A1D5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B327A1D5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 13:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbjIOLYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 07:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        id S234284AbjIOLYr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 07:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234183AbjIOLYB (ORCPT
+        with ESMTP id S234285AbjIOLYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 07:24:01 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CFC1B0;
-        Fri, 15 Sep 2023 04:23:56 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FB8BH0027314;
-        Fri, 15 Sep 2023 11:23:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7+tJ/KsIswTmNeKa3tLG1ExmR6SfnnZoUA5bR+lKBMU=;
- b=bkEc/rhonQfrChQKspzo6V0xCg5+tTPJuGHuTBhoZBuBPFNvRgMy1P5XRQL0Cz2nn8+v
- LnKIey2nwxwcZnA2YHTN0kOFa/keshp1ZNKDawssFKZWtKwISYfrCS5BkfnZFZ8qCIb9
- QYGz99nxHhzCG4xAcC0+grlcth5NrvjGsqgr9eYh1mjHxAPZ6UbwlDYQ6MfmDwFjXE01
- QQJ9hMZbCTRBuUadG+R0hsPIH+Alq0qeS3A8D/RL9EAZGT0nZd4iVPB3RnAkUxGR68j3
- V+BYcM31fUVohOxa/J2LA/iZvfImlrJqcuEl3dnVpP4vrF2OPl5wzMwv0lUV/XHTcI4H ew== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t4nrg0yb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 11:23:31 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38FANkxP024039;
-        Fri, 15 Sep 2023 11:23:30 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131tucsh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Sep 2023 11:23:30 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38FBNTC951118478
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Sep 2023 11:23:29 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2632158056;
-        Fri, 15 Sep 2023 11:23:29 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9E0E58050;
-        Fri, 15 Sep 2023 11:23:27 +0000 (GMT)
-Received: from [9.67.12.83] (unknown [9.67.12.83])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 15 Sep 2023 11:23:27 +0000 (GMT)
-Message-ID: <6297a0bd-3101-d8cc-5a8f-24b3b82a92e6@linux.ibm.com>
-Date:   Fri, 15 Sep 2023 06:23:25 -0500
+        Fri, 15 Sep 2023 07:24:45 -0400
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5916E1B9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:24:40 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59bd2e19c95so22656607b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:24:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694777079; x=1695381879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F0PpysMM8Y9ZK703ol6vVQ3DajyNr/T628aVy9tnICc=;
+        b=MbBlViL2tR6raUKEh6d9NzQ9BiMPqfud8ix2Wr6iGddEuW1L5/sWfbvEiBCzy0KS3C
+         YJ1yAnEqajpMfkRbD6fI2tjtEFC8UM0lfaYbwARzMcwLMllyvTCn5jy99ZjFYgUCRF2L
+         XSdP/LHgI5DBec28sd3WS5Kw8NTAPcM9wcAJBpnoPGLquvZfHsJDBQ1f7v78vqBrThP3
+         z5p5vBxcoi/Dws0Naf7TziTtpST4XRTCqpLO6ocj2EqF0sTLvz+Y8RzDDNod//9tkOdN
+         veSm6ViBKuIkGBVfyIlx+Kh0wRO5lwcCW2pkgEu0dytryP6Nqk4IUaRS/mOaZq8N4B0P
+         vJwA==
+X-Gm-Message-State: AOJu0YyaCPBusjqbC7XvNfi8owgOd1hZnePFAoUn4oxa15m5u+N1kj3t
+        xL1/9uz1Fnn2xZJMl00RCAMGZGtEM0Ttmw==
+X-Google-Smtp-Source: AGHT+IF/9BHbXiHFFXUQokeTfT+DCnTlhpIKFX+uNa9xFgksMOjkwaofx0joS7/c/CnfC79az98AHA==
+X-Received: by 2002:a0d:d652:0:b0:589:e586:6f0a with SMTP id y79-20020a0dd652000000b00589e5866f0amr1383691ywd.3.1694777079337;
+        Fri, 15 Sep 2023 04:24:39 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id h125-20020a816c83000000b00582fae92aa7sm811761ywc.93.2023.09.15.04.24.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 04:24:39 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5925e580f12so22424537b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 04:24:39 -0700 (PDT)
+X-Received: by 2002:a81:7c42:0:b0:58f:bda3:8dd with SMTP id
+ x63-20020a817c42000000b0058fbda308ddmr1529650ywc.32.1694777078863; Fri, 15
+ Sep 2023 04:24:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v2] crypto: vmx: Improved AES/XTS performance of 6-way
- unrolling for ppc.
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, leitao@debian.org,
-        nayna@linux.ibm.com, appro@cryptogams.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
-References: <20230830134911.179765-1-dtsen@linux.ibm.com>
- <ZQQ06U7LEgoZMSY6@gondor.apana.org.au>
-Content-Language: en-US
-From:   Danny Tsen <dtsen@linux.ibm.com>
-In-Reply-To: <ZQQ06U7LEgoZMSY6@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: k1wFaZS8WDv_pgb1ahtL03Oaohp_mJzl
-X-Proofpoint-GUID: k1wFaZS8WDv_pgb1ahtL03Oaohp_mJzl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_08,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- clxscore=1015 mlxlogscore=678 spamscore=0 priorityscore=1501 adultscore=0
- mlxscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309150098
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230913101634.553699-1-john.ogness@linutronix.de>
+In-Reply-To: <20230913101634.553699-1-john.ogness@linutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Sep 2023 13:24:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWts9NKU=DfPujTKAQNU6T3uawVtejwiTkp=usMu0rH-A@mail.gmail.com>
+Message-ID: <CAMuHMdWts9NKU=DfPujTKAQNU6T3uawVtejwiTkp=usMu0rH-A@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: fix duplicate wq_update_pod_attrs_buf allocation
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Herbert.
+On Wed, Sep 13, 2023 at 8:05 PM John Ogness <john.ogness@linutronix.de> wrote:
+> One of the hunks for the patch resulting in
+> commit 84193c07105c ("workqueue: Generalize unbound CPU pods") was
+> applied incorrectly. This resulted in @wq_update_pod_attrs_buf
+> being allocated twice.
+>
+> From the kmemleak detector:
+>
+> unreferenced object 0xc0000000040074c0 (size 64):
+>   comm "swapper/0", pid 0, jiffies 4294937296 (age 1936.580s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<0000000076b83a6e>] .kmalloc_trace+0x54/0x190
+>     [<00000000898f2356>] .alloc_workqueue_attrs+0x2c/0x60
+>     [<0000000063365e1f>] .workqueue_init_early+0xe4/0x4b8
+>     [<00000000ca97ff39>] .start_kernel+0x8d0/0xba4
+>     [<000000002ee12080>] start_here_common+0x1c/0x20
+>
+> Remove the redundant allocation.
+>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
--Danny
+Stephen posted a similar patch before:
+https://lore.kernel.org/all/20230905174935.2d75feab@gandalf.local.home
 
-On 9/15/23 5:41 AM, Herbert Xu wrote:
-> On Wed, Aug 30, 2023 at 09:49:11AM -0400, Danny Tsen wrote:
->> Improve AES/XTS performance of 6-way unrolling for PowerPC up
->> to 17% with tcrypt.  This is done by using one instruction,
->> vpermxor, to replace xor and vsldoi.
->>
->> The same changes were applied to OpenSSL code and a pull request was
->> submitted.
->>
->> This patch has been tested with the kernel crypto module tcrypt.ko and
->> has passed the selftest.  The patch is also tested with
->> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
->>
->> Signed-off-by: Danny Tsen <dtsen@linux.ibm.com>
->> ---
->>   drivers/crypto/vmx/aesp8-ppc.pl | 141 +++++++++++++++++++++-----------
->>   1 file changed, 92 insertions(+), 49 deletions(-)
-> Patch applied.  Thanks.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
