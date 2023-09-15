@@ -2,60 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE327A18FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A2E7A1903
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbjIOIgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        id S232874AbjIOIiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbjIOIgf (ORCPT
+        with ESMTP id S231949AbjIOIiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:36:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0807E7E;
-        Fri, 15 Sep 2023 01:36:28 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 08:36:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694766987;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Fri, 15 Sep 2023 04:38:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D9F1FD0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:38:03 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 759F92186F;
+        Fri, 15 Sep 2023 08:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694767082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gblbQos8VTNNdUR5WR/h70J7iw2C+0i404bkbVCQRoI=;
-        b=KQVFclS0QKWzqEXxbT+1qkip+4o6d3/VMsLrND60Zo3g32lWCHscjOl8YkWhKxKZKSpjKU
-        MSiPedACt1Uc3xP2/oq0mxGeueNYlBORmP6VcL9S6xrn2e42shi39ieDT2w5ngI0bfPkC8
-        OGCS+pLNH4PrIo+g6cGLNzgFElEjNq3Df21VuTQ0Wg/F1y7WM4+5UThiFchGK9Bxt/SRZl
-        cCBoWfqJtWHBGjdndvCwAWTOqh2OdNYQxBTengPCy9HNs2J3Qe5cV+RVXcjoMyNPt3zoaF
-        YgayGYGCdlQgfnp8UG+ZIBsSwZOzgr6fEUVDDFkOf+3I74id7wnLbv7M2ymCSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694766987;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gblbQos8VTNNdUR5WR/h70J7iw2C+0i404bkbVCQRoI=;
-        b=oc2zV1Oj+U9a3vg/XiC8NJIdfJ7jt5ZTPK0ixXHC6Y1xndJZLrl7ji/ts2JPV5sgmK6/Xy
-        vMe452etrsSp7mBw==
-From:   "tip-bot2 for Song Liu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/purgatory: Remove LTO flags
-Cc:     Song Liu <song@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230914170138.995606-1-song@kernel.org>
-References: <20230914170138.995606-1-song@kernel.org>
+        bh=xfgyyzazrOp9lV1wfwFfoCZhiUNB4T4EERql1ERZJ8A=;
+        b=gI0wlMXwJJUUmgLw519e+ocIuJsOWQCaE+nOhNYG1+onzCkWe8UMbt4M9IpQ2usOGPCwfY
+        SFP3ZiFVsYZJJ4cp99fQFhLlubZiH4jWPZodRUQLAm+Q1em9UjHpzaMRniUmFBcJScVFvO
+        m6tUnOxjKGJ7hsZE2lNSqJcnAMFEIf8=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2201E2C142;
+        Fri, 15 Sep 2023 08:38:02 +0000 (UTC)
+Date:   Fri, 15 Sep 2023 10:38:01 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v4 8/8] printk: nbcon: Allow drivers to mark
+ unsafe regions and check state
+Message-ID: <ZQQX6V93nJGoBwfJ@alley>
+References: <20230908185008.468566-1-john.ogness@linutronix.de>
+ <20230908185008.468566-9-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169476698697.27769.6321588484141795759.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908185008.468566-9-john.ogness@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,64 +57,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri 2023-09-08 20:56:08, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> For the write_atomic callback, the console driver may have unsafe
+> regions that need to be appropriately marked. Provide functions
+> that accept the nbcon_write_context struct to allow for the driver
+> to enter and exit unsafe regions.
+> 
+> Also provide a function for drivers to check if they are still the
+> owner of the console.
+> 
+> diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+> index e2c274f4142e..04fac73c6e96 100644
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> @@ -660,6 +660,32 @@ static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_s
+>  	return false;
+>  }
+>  
+> +/**
+> + * nbcon_can_proceed - Check whether ownership can proceed
+> + * @wctxt:	The write context that was handed to the write function
+> + *
+> + * Return:	True if this context still owns the console. False if
+> + *		ownership was handed over or taken.
+> + *
+> + * Must be invoked at appropriate safe places in the driver.
 
-Commit-ID:     f7d2101197488fdd2106ca21346733562f398765
-Gitweb:        https://git.kernel.org/tip/f7d2101197488fdd2106ca21346733562f398765
-Author:        Song Liu <song@kernel.org>
-AuthorDate:    Thu, 14 Sep 2023 10:01:38 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 15 Sep 2023 10:31:26 +02:00
+This is a bit vague. I guess that enter_unsafe()/exit_unsafe() will be
+used most of the time. The guestion is if this need to be called
+in another locations explicitely.
 
-x86/purgatory: Remove LTO flags
+I would write something similar as I suggested for nbcon_context_can_proceed():
 
--flto* implies -ffunction-sections. With LTO enabled, ld.lld generates
-multiple .text sections for purgatory.ro:
+  * It is used in nbcon_enter_unsafe() to make sure that it still owns the lock.
+  * Also it is used in nbcon_exit_unsafe() to eventually free the lock
+  * for a higher priority context which asked for the friendly handover.
+  *
+  * It can be called inside an unsafe section when the console is just
+  * temporary in safe state instead of exiting and entering the unsafe
+  * state.
+  *
+  * Also it can be called in the safe context before doing an expensive
+  * safe operation. It does not make sense to do the operation when
+  * a higher priority context took the lock.
 
-  $ readelf -S purgatory.ro  | grep " .text"
-    [ 1] .text             PROGBITS         0000000000000000  00000040
-    [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
-    [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
-    [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
-    [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
-    [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
-    [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
+> + *
+> + * When this function returns false then the calling context no longer owns
+> + * the console and is no longer allowed to go forward. In this case it must
+> + * back out immediately and carefully. The buffer content is also no longer
+> + * trusted since it no longer belongs to the calling context.
+> + */
+> +bool nbcon_can_proceed(struct nbcon_write_context *wctxt)
+> +{
+> +	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
+> +	struct console *con = ctxt->console;
+> +	struct nbcon_state cur;
+> +
+> +	nbcon_state_read(con, &cur);
+> +
+> +	return nbcon_context_can_proceed(ctxt, &cur);
+> +}
+> +EXPORT_SYMBOL_GPL(nbcon_can_proceed);
+> +
 
-This causes WARNING from kexec_purgatory_setup_sechdrs():
+With the updated comment:
 
-  WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
-  kexec_load_purgatory+0x37f/0x390
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Fix this by disabling LTO for purgatory.
-
-[ AFAICT, x86 is the only arch that supports LTO and purgatory. ]
-
-We could also fix this with an explicit linker script to rejoin .text.*
-sections back into .text. However, given the benefit of LTOing purgatory
-is small, simply disable the production of more .text.* sections for now.
-
-Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
-Signed-off-by: Song Liu <song@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Link: https://lore.kernel.org/r/20230914170138.995606-1-song@kernel.org
----
- arch/x86/purgatory/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index c2a29be..08aa0f2 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -19,6 +19,10 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS -D__NO_FORTIFY
- # optimization flags.
- KBUILD_CFLAGS := $(filter-out -fprofile-sample-use=% -fprofile-use=%,$(KBUILD_CFLAGS))
- 
-+# When LTO is enabled, llvm emits many text sections, which is not supported
-+# by kexec. Remove -flto=* flags.
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
-+
- # When linking purgatory.ro with -r unresolved symbols are not checked,
- # also link a purgatory.chk binary without -r to check for unresolved symbols.
- PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
+Best Regards,
+Petr
