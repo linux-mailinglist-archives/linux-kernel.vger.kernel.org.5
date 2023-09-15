@@ -2,189 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F6B7A201F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152D77A2021
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbjIONrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 09:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        id S234624AbjIONsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 09:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235461AbjIONrr (ORCPT
+        with ESMTP id S234618AbjIONso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:47:47 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2070.outbound.protection.outlook.com [40.107.105.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8691BEB;
-        Fri, 15 Sep 2023 06:47:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W3whhnAF5mLhTdfVesRNd/GgYr15BuI3u/lQ2joCYM5rnbIVy2rJD00a6Tdjm7jB0DGV2sdqR+T0P6Ju5Q2IucYqbQyjcmP4vy38i9X5XqymDiOK3WLzLKgf3LCarmUsGnO92lF254E6r48Ak7O+LgkksLpX/VBsa5+begXyt8su8tlTj77Mkuuma59GoHbnjEEJTl6q2C7yHK756CkiZbgiAC6UTKTva5qyA972hh4ItjOeBbxfoVqS9/3eY1lKxlPpiIcpHjjz43gIzfuq75zKWQ+vHx6u8HTbWq0BD0fKJ89rjG6XI3/5Y/mvTloQIVMIEMMJmLxWyq6nOdd7DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LALxW/oAIyxG7vh7eSxOonN+J0b9RaumMYhm7Wjenvw=;
- b=n7z0w36Woih7aeIg8hWd1jvhxw59Lo4BC0nrXMHwRei2wRu+EB7qmo7PqCYtpVY5Odt42Al6LLOpeQx9pMyFs0PSNHo9mOS3HJ2af11SpOQI4xDpz58GsX1SQs0NwHI7qNvjW0ZmxdQQiwwH0/vNSNXFnI3+yOSspzxJdTO06ZcHvwhZ8RJxtk9hT3RF5YhL8hUx67LlJRG81c4ocCkl+DGQ3fRC1H/YQZeojGyChnW6/96qXipRmLC5X43SGnFiqBfo8pPC748j6CES72fTiWLn7dZN9uc1EEP0cMYNiO9WBBvhbEc/8lDBIDiKJSfHG3lPP/L78nHsyDoyGsNz+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LALxW/oAIyxG7vh7eSxOonN+J0b9RaumMYhm7Wjenvw=;
- b=uajlXT9m/K3l5b951EYzODudZ1jDMFJSl3WmZaTGdY9bsZlqRuU23BQzZXV+irFt/yYGTfUjduB3whIIyzklWJJbuVkkDAoTN/wkbvbyuep/GRCJYX0AWp5MS5QiiNLDeDzecDjR0Ygjxm/AhVJGpc/2KYlIyZeC28ejitUCoGE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PAWPR08MB9783.eurprd08.prod.outlook.com (2603:10a6:102:2ee::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Fri, 15 Sep
- 2023 13:47:37 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::bc92:216b:11ed:db63]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::bc92:216b:11ed:db63%6]) with mapi id 15.20.6792.020; Fri, 15 Sep 2023
- 13:47:37 +0000
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-Date:   Fri, 15 Sep 2023 15:47:25 +0200
-Subject: [PATCH v2 2/2] Input: st1232 - add wake up event counting
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230826-feature-st1232_freeze_wakeup-v2-2-29ae9f747137@wolfvision.net>
-References: <20230826-feature-st1232_freeze_wakeup-v2-0-29ae9f747137@wolfvision.net>
-In-Reply-To: <20230826-feature-st1232_freeze_wakeup-v2-0-29ae9f747137@wolfvision.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco@wolfvision.net>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694785656; l=1867;
- i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=o408kdN/AxMKMa4Y2r3gFHy5WAht80gNXp9pdeuz7ak=;
- b=2pGM2GOIs9OZ9STHxUNzvClhwzeOp6P8fd/aDww2jHScsECTYrCwWU9Xa3ycrpIau3poIe8Dr
- L+Lsl8WrQNPDHCpR+XeG6CSw2+AjlsGzC3f6M0anIH+0HYZK7nd2qy5
-X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-ClientProxiedBy: VI1PR08CA0233.eurprd08.prod.outlook.com
- (2603:10a6:802:15::42) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+        Fri, 15 Sep 2023 09:48:44 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23EC2134
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:48:25 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso36062291fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 06:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694785704; x=1695390504; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WLoVQHNPO7ESrRbvHvtdSLnA8ygdJfPRZs36Hp3fy4s=;
+        b=FV4Xn30eJWjT4XSxr49L88eXC220LAuKU8s19MwXzB06eV6pbWm8OwA2gL+TyJ+5Hz
+         yOFhvK3EnDvksUyi8mEpLPevYTC0JzAtyYNnKWEn9XO4+/jCy+f1PL8TQnzBCrc/ZCxV
+         AR9Rlf8qSHQQ7Sq+0468KQbLT/Zu1D2MbjGDUn93WslsPFZfKKCAGSroo9L4jXye4s83
+         WFiOb5ZFafQtwaBIjpLnvCqIta8oHi21C5AOVI934LZK9cbkTyE9DcW9cCwwyyByDOXx
+         /wSzKJ2JdxayZRlZAcp0SUNzJWwc7qbMKTlHUcsSbS03kzE+2Z9ko+zoaERBMZOPInNp
+         WxJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694785704; x=1695390504;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLoVQHNPO7ESrRbvHvtdSLnA8ygdJfPRZs36Hp3fy4s=;
+        b=vWF+n+U38ZWXKpHeFGq1A6TeBCNlXqh7lBCABzeAxrK0MLc7Q52SU5Ne86G8io3giU
+         Vzy9R1PgK6S4zck97nPVsrqbXrkz00Ibq3zJ+JGWso7h1vR+UYOvQk6f11T9KChP8p+R
+         HMCNBS2klx00NJiLtV/+I9p3yQGb5bW5lV74PkorEfgvA2CGgV1l3CsDk17RnOmsw00+
+         8jLGcp3ziwmIqXfxKtuzKUaaQbGkioCjCq4XmlFrbBOBM1gJw/Jk4ZbI3Jd0xQIurasg
+         4AcSo5KObrTsIKf5yCRHsF2WsaWX0giXWMjeOVdg4leUni8mn8MBEK40HUGbFsHItTib
+         LZqA==
+X-Gm-Message-State: AOJu0Yx8VfvSlVSc0v5InWjGJxVBzQjhJ8yYx5uXzw3rrkqpFIuz1nse
+        JkLO9dm4LGmxEQQo2ewHn6ezYw==
+X-Google-Smtp-Source: AGHT+IEYEq1P0psQTkdX/nX4ET1GV+WxWYIW6UFBZT4mI5ipXyYF8ygfjV+nw61ugc3545DB6rGHOg==
+X-Received: by 2002:a2e:95d4:0:b0:2b6:ea3b:f082 with SMTP id y20-20020a2e95d4000000b002b6ea3bf082mr1580793ljh.38.1694785704010;
+        Fri, 15 Sep 2023 06:48:24 -0700 (PDT)
+Received: from [192.168.37.232] (178235177024.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.24])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170906068b00b00991faf3810esm2444001ejb.146.2023.09.15.06.48.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 06:48:23 -0700 (PDT)
+Message-ID: <825bc60b-2067-43e2-8b43-9d38b7cebf02@linaro.org>
+Date:   Fri, 15 Sep 2023 15:48:21 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAWPR08MB9783:EE_
-X-MS-Office365-Filtering-Correlation-Id: f0234497-bb9d-4b86-1b56-08dbb5f2523a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gT2lOEChJfZ4MwsA3hEutE64NaCkYO1giojBSmKw/KP8mIUHj0/f+b1B3u2x5lYf5jCEa10lDghPDZiRu4IvQxjsxmfpkpAyBC7PTQ9JNA8zQYkWaKbIYPk7atU2B4aOcLU3AZYMFq4Xa+8/7n0cSD0UAhCM757t1JGAQKEc/BS+oY2wySfy02nLLX0h74dVe77xfws4ga0yQ6C5b7OkCgvK2W/CsCgjK/BTd9GS2UnMxsyMytGKHnLf331VDr+09PNqO2kMJUQ8JgV1dOXdbZfm7mgY/cayVmcj+yBDeCgWHPVj9gss59T5mbPNaqCZhMQIbIYKfW8pdBSCyp2gte5Aad+g7BXqs5WhN1Mgohi38xtxBmbIQgoqaeGBrQwdPDR8ICiCRi9q3L5xXCxegCYGcnRF6C6nphvcq2tH64L9cqp/5bMPweIPHNz47AAjWCGiGLM9Uia+A8YC5g6OgRgjznTMoKavn8zHGAv04mjiFZNkuS0sKjnLMyQWwL+0iT5NBHAdfqn/mM1kEKLRJ7alKlm5KbYBvfci0QbnVCjrPY2Y0cAzVvrUvOik2tWdL+fTwj/2XMLJNEAqKISFPtWEsHwI3+nUCJM6Kc7pU4P3AzgmVpcE3R0/a7NqcsXe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(136003)(396003)(346002)(186009)(451199024)(1800799009)(41300700001)(6506007)(52116002)(6486002)(6666004)(38100700002)(26005)(36756003)(6512007)(86362001)(38350700002)(2906002)(2616005)(83380400001)(6916009)(8936002)(8676002)(478600001)(5660300002)(66556008)(4326008)(44832011)(107886003)(66946007)(316002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WXdkaTlRQVp4KzFLZndNSTNhdjV5bEJQSVIxMFpjUmVXa3lWTDh4Z2dyZ0hG?=
- =?utf-8?B?LzIxemFoSzBuc0RnWUd5MUYvT0p2LzFJKzVMNmtLRHl5M040T3NjQ0dMaVdL?=
- =?utf-8?B?S3pqWm1nRWlhYk9aZURuV1VEVjlyOUVyK3JJQ1BRdk5xczJjZ3ozSms0UEVs?=
- =?utf-8?B?b2R3S3E5S3NDTjNQZlFJK1pvclc5SjVGbFM0UlUzK0xsUkxETVdvcWFLdW9j?=
- =?utf-8?B?N1hhN2xvMGNJdUZQQU5ZS3k2NVc5SzBzS3NCanZvejg0S0QyMFN5NmNDUFh4?=
- =?utf-8?B?VjV5MU9ZdWRmY3Q5RG4yQWM4TCtuakJBMVFlY1B3a2hNVk9NZWthaGRNNks5?=
- =?utf-8?B?N0ViQXlHNGhoMVEvelhGWjNOamZkOU1COTFEYWV3Y1NaMFRnMTlEbzUvNXps?=
- =?utf-8?B?d3VPbjZQM0RaM090WkRGbjdIUncyNmlxSk80UTFBbEtiTXZ0UE1Pak5SdCtk?=
- =?utf-8?B?dk5FYURaTFRpWVlnZGMxWkFCM1ZhdGFyZWZKNDQ2R1FoTTAzVVl6YWczWmcz?=
- =?utf-8?B?UWN2TTNaejVqUXJMbkFoTm15YU9CMTBqNGtjdkVCbTJqU05kZkZuaFpxNlJ4?=
- =?utf-8?B?T1EzSithbDdPcklJRHVqK1g0KzlkNXQwOWh5NTU3YVh6WlFWMzBuSEV3bGpC?=
- =?utf-8?B?d01tUkZpb0VXcEt3Qit4RDlRK29UaVRiTUdpVm1qSFBIckVrVHZCSE5iZEhM?=
- =?utf-8?B?blZnVnkzcGdvQ3gzRU5tYkpKRzAwY1BUc1FtSWU3VE5hLzZDUWY1MVVnZTdu?=
- =?utf-8?B?bW15SGJDTDZwWERQZVZ2VzBGUFg3NysyYXlQTGthaWRKYThjWlIyZ3ArbnRU?=
- =?utf-8?B?ZkVVVDBBajlMenhTNTlzYkRPbTd0UVZBenFLcEI2bEVZUFNkS0x3SHdWa3R3?=
- =?utf-8?B?amZTVFdndFp5OUR4MjBCN2wxaEJvYjBFaG16WWRidlFQc1dMT1pEQ0h1RHox?=
- =?utf-8?B?Vm5sbVZodWxreitKcjRyeVF0WXNlVHRpTGZZU0wwYjV3VjNnbktzckpKb1Bq?=
- =?utf-8?B?ZVp6dnZyZlV3c2I5QWFhZllRcmhJMkJ6c2xKQ2s3ZkY3ODRVVUpSKzJGcGlk?=
- =?utf-8?B?YUJmVEpmNDh0U0xDQmJhVWxoQmdaWkE1cHhxdEcvS3U2NmNGK3UxaHNhMDFh?=
- =?utf-8?B?OFFWY2FGLzc2cEhhWGxNYnRrSHE0cnlQeWE2eEN6QU9DYmZ5Qkhob1FqTEQ0?=
- =?utf-8?B?alBja0M4NnNHbUE3MHNnZ3NJa202bWczWUJSMFlHNHFQVXpPY2xUZXdkU2x5?=
- =?utf-8?B?VFk0T01uUlJodjRDT3NvUWtNQXBRSEpmTUh0M1hRTGNKT0dPWGJWOFhlZXFt?=
- =?utf-8?B?YnExenVoYzRISmdaeU5UR25oZmFtQndZMXVmWXZOYWR0UTJiaENrbWljeVRU?=
- =?utf-8?B?YmRUQlBPamtWTUNmMi9GeEI5aUxpTTFhRVFKRWdNVHRKeklWbHFBSTNoVHNK?=
- =?utf-8?B?MWNRWmdrVWlETXJaSTcrTFVtMzBxQlFtWjRKVW84ZWFtQWhxMWRuT1c5SmVO?=
- =?utf-8?B?VWc0bWk4NVRHRHRhMUNpRXRDV3A3VS9HbjNQd2k2cVJuK0JKR2pYelVLcFFS?=
- =?utf-8?B?VDcxYlkvWXNNcXVTa3cwSWdPUmFXZDl2NXZXc2lCN3pGUW1PNFlQbHoxQjNk?=
- =?utf-8?B?TmFOR0NYSVVIN052aXJaam5ITjVpWWlRSklhNGZmWFhQd095LzhhSFJmUVQz?=
- =?utf-8?B?VndDbi9WZWN3U09GU2I1RTU5VE45aHd0TWZLT2M0RlNCZWUrSXZYRFpkdG9v?=
- =?utf-8?B?REFiK1JKUUQ5M1dndU9VUExsR1lLdmw3azJuMEVQb1J3NWtUYkduTEk2MmFk?=
- =?utf-8?B?WnVuZTlTU2lRalJ0TFg1OHZTeE5ESjlmV0RHSThUNnMzTW02RzMya1dvOXl2?=
- =?utf-8?B?RkZXYUVyN3RSaThHMTBtY1drZUwvMDRUUXJwOTlISzhOTGhEK1JMcUs3K1NL?=
- =?utf-8?B?TWMyamZZdlpvNVUvd0RaK3N4b24xVkRudFlydmpZeENyb1BxSEgxWUhIN1BX?=
- =?utf-8?B?MmVOa1F2ZXEvMHpMUndFY2VZNXQvYU1UNytCQ3Jwb1ltbFZ3R1JvWDRsZksz?=
- =?utf-8?B?bG1aZDA5azdKa3RiMVlvakJ6SXFBOUxHUytuNnFGRVpwTEx5cTl4R1BwY05h?=
- =?utf-8?B?SU1vcmo5MGdIU2tia2xsd28xNVV1QUg1VjJORkhrNmduaE5mdEhyTjhvZ3I1?=
- =?utf-8?Q?1X3JX4W8UwtQlnX3Lg1flJY=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0234497-bb9d-4b86-1b56-08dbb5f2523a
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 13:47:37.0666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r+haayAeTfl7g0aUZjZSJaVWTTy3UN0LVfEtw90NE4sNbMUFdJKTqYhcVDL6d9i0MtA0Z0QL7mJmTWP9cChomPzVMyrMfDcVOmPyUIfqHo4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB9783
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 10/13] usb: dwc3: qcom: Add multiport suspend/resume
+ support for wrapper
+Content-Language: en-US
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
+ <20230828133033.11988-11-quic_kriskura@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230828133033.11988-11-quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device driver provides wakeup capabilities but the wakeup events
-are not reflected in sysfs. Add pm_wakeup_event to the interrupt handler
-in order to do so.
+On 28.08.2023 15:30, Krishna Kurapati wrote:
+> QCOM SoC SA8295P's tertiary quad port controller supports 2 HS+SS
+> ports and 2 HS only ports. Add support for configuring PWR_EVENT_IRQ's
+> for all the ports during suspend/resume.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 39 +++++++++++++++++++++++++++++-------
+>  1 file changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index f8f8c5e39a01..34eeebb74a6a 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -37,7 +37,11 @@
+>  #define PIPE3_PHYSTATUS_SW			BIT(3)
+>  #define PIPE_UTMI_CLK_DIS			BIT(8)
+>  
+> -#define PWR_EVNT_IRQ_STAT_REG			0x58
+> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
+> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
+> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
+> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
+> +
+>  #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
+>  #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
+>  
+> @@ -107,6 +111,19 @@ struct dwc3_qcom {
+>  	int			num_ports;
+>  };
+>  
+> +/*
+> + * SA8295 has 4 power event IRQ STAT registers to be checked
+> + * during suspend resume.
+> + */
+But this driver supports much more than just SA8295?
 
-Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
----
- drivers/input/touchscreen/st1232.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> +#define NUM_PWR_EVENT_STAT_REGS	4
+> +
+> +static u32 pwr_evnt_irq_stat_reg_offset[NUM_PWR_EVENT_STAT_REGS] = {
+> +	PWR_EVNT_IRQ1_STAT_REG,
+> +	PWR_EVNT_IRQ2_STAT_REG,
+> +	PWR_EVNT_IRQ3_STAT_REG,
+> +	PWR_EVNT_IRQ4_STAT_REG,
+> +};
+> +
+>  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>  {
+>  	u32 reg;
+> @@ -440,15 +457,19 @@ static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+>  
+>  static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>  {
+> +	u8 num_ports;
+Maybe I'm picky, but I'm not sure defining a variable for
+a single use of an object with a rather short name
+(qcom->num_ports) is justified, here and below..
 
-diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-index d0ee90abc293..ad18d3944bf2 100644
---- a/drivers/input/touchscreen/st1232.c
-+++ b/drivers/input/touchscreen/st1232.c
-@@ -59,6 +59,7 @@ struct st1232_ts_data {
- 	const struct st_chip_info *chip_info;
- 	int read_buf_len;
- 	u8 *read_buf;
-+	bool suspended;
- };
- 
- static int st1232_ts_read_data(struct st1232_ts_data *ts, u8 reg,
-@@ -173,9 +174,13 @@ static int st1232_ts_parse_and_report(struct st1232_ts_data *ts)
- static irqreturn_t st1232_ts_irq_handler(int irq, void *dev_id)
- {
- 	struct st1232_ts_data *ts = dev_id;
-+	struct i2c_client *client = ts->client;
- 	int count;
- 	int error;
- 
-+	if (ts->suspended && device_may_wakeup(&client->dev))
-+		pm_wakeup_event(&client->dev, 0);
-+
- 	error = st1232_ts_read_data(ts, REG_XY_COORDINATES, ts->read_buf_len);
- 	if (error)
- 		goto out;
-@@ -345,6 +350,8 @@ static int st1232_ts_suspend(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct st1232_ts_data *ts = i2c_get_clientdata(client);
- 
-+	ts->suspended = true;
-+
- 	if (!device_may_wakeup(&client->dev)) {
- 		disable_irq(client->irq);
- 		st1232_ts_power(ts, false);
-@@ -358,6 +365,8 @@ static int st1232_ts_resume(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct st1232_ts_data *ts = i2c_get_clientdata(client);
- 
-+	ts->suspended = false;
-+
- 	if (!device_may_wakeup(&client->dev)) {
- 		enable_irq(client->irq);
- 		st1232_ts_power(ts, true);
-
--- 
-2.39.2
-
+Konrad
