@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E56B7A1BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096EA7A1BB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbjIOKET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        id S234030AbjIOKFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233984AbjIOKEM (ORCPT
+        with ESMTP id S234129AbjIOKFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:04:12 -0400
+        Fri, 15 Sep 2023 06:05:19 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FED3592;
-        Fri, 15 Sep 2023 03:02:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BB4268A;
+        Fri, 15 Sep 2023 03:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694772167; x=1726308167;
+  t=1694772178; x=1726308178;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SNz9ScF+wt804GivI3ixasEzsFqTt1XAXDDCOHpojXU=;
-  b=S6Zn2VKdeTr7lLpNvU1QmttEvVUO/Jt+JFEPPfA8YJRW/ffc1u13H+z5
-   JGuzCwt804I3LIbVgGJ0Rgkl17FtuorlhYmARPJVv5ruIl5G/cViSuvc3
-   WWJttCMUcsGBfSod/drqJTYVMlwqKp6raTDiBQVO+JR0tIXyBQl59QG+5
-   QCZnuty+GYK/Yss/CINOzx4Gz4KavTB93INzVTwB9iApobxLbiEf4cSPC
-   Sn4NQNiDqCd84ab94FrBpEUPNmeAARQJ48RPJUAEmsit/0IxwUKuOHtbJ
-   xoq9ufpOSukEE9dJOyA03f4qHn44Wrdvo8kYOAjLu3aW1+B3AFLcwoYYp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381938691"
+  bh=dlwnheLHWrheCZf+0lnqyF5y1gAk0XJDuzApxL+C0IU=;
+  b=gI3engqurk/g/497fI/CT66pBwFbuwP1ckNDl9K2h2Uy2QkoNG0CwqNJ
+   dYUpHTZbDlP4VueUD0xrGldn52YsMKtzD2NyJAY3FwL/TCI2y4qwMath2
+   CNDkw8G/Grkp0XCDg4cPL4W9RKYojpbup0TNYvjZypnYax3JpJ4yNmOeB
+   EN1iNesEl3AT/9Ann9Dkgj4uEJm8cWVHyyRAEZmLSzFRQh0EXyLz/ryA9
+   Z7xhOW36Fw2rgkt4UL7MgGM5NWDIP/T+zAsRH19yXFqDm7FQc7tTce9Ee
+   0i8KvbKa3a5vzIklEItn0c570dG4m/e62VxuTooHwnM+SUZzEongmdns1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="381938741"
 X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="381938691"
+   d="scan'208";a="381938741"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 02:54:31 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 02:54:38 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744916306"
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744916324"
 X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="744916306"
+   d="scan'208";a="744916324"
 Received: from pglc00032.png.intel.com ([10.221.207.52])
-  by orsmga002.jf.intel.com with ESMTP; 15 Sep 2023 02:54:27 -0700
+  by orsmga002.jf.intel.com with ESMTP; 15 Sep 2023 02:54:33 -0700
 From:   Rohan G Thomas <rohan.g.thomas@intel.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -56,9 +56,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Rohan G Thomas <rohan.g.thomas@intel.com>
-Subject: [PATCH net-next v6 1/2] dt-bindings: net: snps,dwmac: Tx coe unsupported
-Date:   Fri, 15 Sep 2023 17:54:16 +0800
-Message-Id: <20230915095417.1949-2-rohan.g.thomas@intel.com>
+Subject: [PATCH net-next v6 2/2] net: stmmac: Tx coe sw fallback
+Date:   Fri, 15 Sep 2023 17:54:17 +0800
+Message-Id: <20230915095417.1949-3-rohan.g.thomas@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230915095417.1949-1-rohan.g.thomas@intel.com>
 References: <20230915095417.1949-1-rohan.g.thomas@intel.com>
@@ -74,27 +74,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt-bindings for coe-unsupported property per tx queue.
+Add sw fallback of tx checksum calculation for those tx queues that
+don't support tx checksum offloading. DW xGMAC IP can be synthesized
+such that it can support tx checksum offloading only for a few
+initial tx queues. Also as Serge pointed out, for the DW QoS IP, tx
+coe can be individually configured for each tx queue.
+
+So when tx coe is enabled, for any tx queue that doesn't support
+tx coe with 'coe-unsupported' flag set will have a sw fallback
+happen in the driver for tx checksum calculation when any packets to
+be transmitted on these tx queues.
 
 Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
 ---
- Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     | 10 ++++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c |  3 +++
+ include/linux/stmmac.h                                |  1 +
+ 3 files changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index ddf9522a5dc2..365e6cb73484 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -394,6 +394,9 @@ properties:
-               When a PFC frame is received with priorities matching the bitmask,
-               the queue is blocked from transmitting for the pause time specified
-               in the PFC frame.
-+          snps,coe-unsupported:
-+            type: boolean
-+            description: TX checksum offload is unsupported by the TX queue.
-         allOf:
-           - if:
-               required:
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 2206789802bf..9201ed778ebc 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -4401,6 +4401,16 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	WARN_ON(tx_q->tx_skbuff[first_entry]);
+ 
+ 	csum_insertion = (skb->ip_summed == CHECKSUM_PARTIAL);
++	/* DWMAC IPs can be synthesized to support tx coe only for a few tx
++	 * queues. In that case, checksum offloading for those queues that don't
++	 * support tx coe needs to fallback to software checksum calculation.
++	 */
++	if (csum_insertion &&
++	    priv->plat->tx_queues_cfg[queue].coe_unsupported) {
++		if (unlikely(skb_checksum_help(skb)))
++			goto dma_map_err;
++		csum_insertion = !csum_insertion;
++	}
+ 
+ 	if (likely(priv->extend_desc))
+ 		desc = (struct dma_desc *)(tx_q->dma_etx + entry);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 0f28795e581c..a09014c9e7d0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -276,6 +276,9 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
+ 			plat->tx_queues_cfg[queue].use_prio = true;
+ 		}
+ 
++		plat->tx_queues_cfg[queue].coe_unsupported =
++			of_property_read_bool(q_node, "snps,coe-unsupported");
++
+ 		queue++;
+ 	}
+ 	if (queue != plat->tx_queues_to_use) {
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index ce89cc3e4913..c0079a7574ae 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -139,6 +139,7 @@ struct stmmac_rxq_cfg {
+ 
+ struct stmmac_txq_cfg {
+ 	u32 weight;
++	bool coe_unsupported;
+ 	u8 mode_to_use;
+ 	/* Credit Base Shaper parameters */
+ 	u32 send_slope;
 -- 
 2.25.1
 
