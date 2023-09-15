@@ -2,153 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD38F7A28E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF877A28E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 23:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237713AbjIOVDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 17:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        id S237781AbjIOVDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 17:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237859AbjIOVCr (ORCPT
+        with ESMTP id S237887AbjIOVCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 17:02:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8986ACF0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694811640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hz2Gr4W8krSahXjUxPdr3jXTt0H0e/3KkApHp87Hn88=;
-        b=KF3UnaGIBRIgf3/lRtMwsNRVrcWsFwmHNT3Lv1owseKsj/WOv9GpeGVSTFXIek3QRbxWds
-        sh8EX5Lqiz+bELvYeilDU+IS/tIqteNaiEQ5AqV+nrEyKuwcgj4dVxwVIbWWaYmJ844mHe
-        ss1ezCZRQejAAWxvWgdhYq8dfvEUHDQ=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-281-W29VB7FdMniVs732whRm7w-1; Fri, 15 Sep 2023 17:00:38 -0400
-X-MC-Unique: W29VB7FdMniVs732whRm7w-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7834a155749so236091539f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:00:38 -0700 (PDT)
+        Fri, 15 Sep 2023 17:02:50 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC261271F
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:02:14 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf5c314a57so21764375ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 14:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694811734; x=1695416534; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xIW8YzBnPzjMwFioxgcY2G/FS0UtBiM6jL3TdyU9mWA=;
+        b=Ws6lioHkXmZRkCOfm4sRK9gIiGAU1M/1cX+vG1UpxKtsUFMS5tgMAk2Vty2SXot0ET
+         rHR25M8Qe1bG6gO6TZazHhKLScPzHe1xL3UiZzoTP2i3nnsLwdjc7SKg7snaRht+Kp4w
+         uCvuzOSqj/FnYtu4X/9iXHFedOrE3aBTbrJ6A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694811637; x=1695416437;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hz2Gr4W8krSahXjUxPdr3jXTt0H0e/3KkApHp87Hn88=;
-        b=DszOc0R2A+3No6Z0Xtn4mn3JUF0n49Q4IEj+L+zcOa9u42C8tW+4vpAuQO2K+9JGZc
-         RrNptqT3YQv2gm+xzV7Dx4t2cuNKwwutKk34+6kIAkLxcwUhWQzjPjmYDk8YpgW5XF1Z
-         tL89zQVnJjATFx6KZztdRqfH6hh4yORki+Z+heCDreC9munV+1QdsVfbbkk2W45H/zQq
-         QH7eOZYpVhh9/Nj+l3/YbBuaf7n7Y+6bQvQ+hCxfzYsjZsxO6HDQJmAhnOEH+hZ3dyql
-         S26fd7qijSditO1OVamQ4jdxVGgGZKBl/+Ct8Gk6ZjMW1s/VAuJf6BF2Z4nzmKVq496N
-         B6ig==
-X-Gm-Message-State: AOJu0Yw3papSTVF4FkbtAE0FC1hX1vH0v7PcvqbPiuHf+D8xHocM2sQl
-        fEwthmHobq4tzCt8WKATJfbSp5KLrdzD3BnoX512/mj31NscGiqYzHtp2owG0EJrtCwVUMyfqtz
-        bSQJOsI+vKrw8Hmxcoq1sVl//
-X-Received: by 2002:a05:6e02:f93:b0:34c:bc10:2573 with SMTP id v19-20020a056e020f9300b0034cbc102573mr2826210ilo.3.1694811637255;
-        Fri, 15 Sep 2023 14:00:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9HCbfJQ/A+CS+mqNbZ0uTH9Ez7eEcwa2DwlwrqMSm/zQsyvnIZbEpIPB3VbM+zyq1iQfSFQ==
-X-Received: by 2002:a05:6e02:f93:b0:34c:bc10:2573 with SMTP id v19-20020a056e020f9300b0034cbc102573mr2826200ilo.3.1694811637006;
-        Fri, 15 Sep 2023 14:00:37 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id y25-20020a02ce99000000b0042b4e2fc546sm1296952jaq.140.2023.09.15.14.00.36
+        d=1e100.net; s=20230601; t=1694811734; x=1695416534;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xIW8YzBnPzjMwFioxgcY2G/FS0UtBiM6jL3TdyU9mWA=;
+        b=vVEstpI2dP9Es5ROnhEyJ9M7GW8AC0A5PALyHqeHoqCuz/6UC2ETJdcbSwxOP294Ao
+         +YC0mDzTLCyH6LANSFLzFt/+Wxc7B2HVsWTLTS0mF812lEvjMgoCfBkWThLLH/X5LmWK
+         n29A2UNpl4DCz6mSaKvaFZ2tIQNldaTCZZ28YFBzn5QmsEqyFqnbR6MoXNn/GWnTgxoZ
+         EyeoHJR45qsqwDnhxQNCr246kHGOYkQ/EV7ftx1J9g6KyrKDaga9YbfYKZEzJlImA+8d
+         ucpLaln0xQ/5ek0OtnGPbr50Im6+RiuaFs3wrhLDcWMZXY9fOtLkdufqG5QHyNASXUUb
+         N3Cg==
+X-Gm-Message-State: AOJu0YwX70e398OIAxSfX/pZ5C1H3qeiDsBGWSz9wjwnQkaNrTSoyUrf
+        shp3fkSSNt/jgBxjlZP6kvTvVA==
+X-Google-Smtp-Source: AGHT+IGnL4Eg/UbrsjZtb65Tqj96GTr48RD7WqWC+PhqArwGW32wNsPvpvJK3pY3wbLoK553JZFM+w==
+X-Received: by 2002:a17:903:455:b0:1c0:b17a:7554 with SMTP id iw21-20020a170903045500b001c0b17a7554mr2433786plb.64.1694811734323;
+        Fri, 15 Sep 2023 14:02:14 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q15-20020a17090311cf00b001c3267ae317sm3902440plh.165.2023.09.15.14.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 14:00:36 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 15:00:35 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: Re: [PATCH v15 2/2] Documentation: add debugfs description for vfio
-Message-ID: <20230915150035.0311e9be.alex.williamson@redhat.com>
-In-Reply-To: <20230901023606.47587-3-liulongfang@huawei.com>
-References: <20230901023606.47587-1-liulongfang@huawei.com>
-        <20230901023606.47587-3-liulongfang@huawei.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Fri, 15 Sep 2023 14:02:13 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 14:02:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Matteo Rizzo <matteorizzo@google.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        corbet@lwn.net, luto@kernel.org, peterz@infradead.org,
+        jannh@google.com, evn@google.com, poprdi@google.com,
+        jordyzomer@google.com
+Subject: Re: [RFC PATCH 05/14] mm/slub: create folio_set/clear_slab helpers
+Message-ID: <202309151401.C49DDCE8@keescook>
+References: <20230915105933.495735-1-matteorizzo@google.com>
+ <20230915105933.495735-6-matteorizzo@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915105933.495735-6-matteorizzo@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Sep 2023 10:36:06 +0800
-liulongfang <liulongfang@huawei.com> wrote:
-
-> From: Longfang Liu <liulongfang@huawei.com>
+On Fri, Sep 15, 2023 at 10:59:24AM +0000, Matteo Rizzo wrote:
+> From: Jann Horn <jannh@google.com>
 > 
-> 1.Add an debugfs document description file to help users understand
-> how to use the accelerator live migration driver's debugfs.
-> 2.Update the file paths that need to be maintained in MAINTAINERS
+> This is refactoring in preparation for SLAB_VIRTUAL. Extract this code
+> to separate functions so that it's not duplicated in the code that
+> allocates and frees page with SLAB_VIRTUAL enabled.
 > 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> Signed-off-by: Jann Horn <jannh@google.com>
+> Co-developed-by: Matteo Rizzo <matteorizzo@google.com>
+> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
 > ---
->  Documentation/ABI/testing/debugfs-vfio | 25 +++++++++++++++++++++++++
->  MAINTAINERS                            |  1 +
->  2 files changed, 26 insertions(+)
->  create mode 100644 Documentation/ABI/testing/debugfs-vfio
+>  mm/slub.c | 32 ++++++++++++++++++++++----------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/debugfs-vfio b/Documentation/ABI/testing/debugfs-vfio
-> new file mode 100644
-> index 000000000000..086a8c52df35
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/debugfs-vfio
-> @@ -0,0 +1,25 @@
-> +What:		/sys/kernel/debug/vfio
-> +Date:		Aug 2023
-> +KernelVersion:  6.6
+> diff --git a/mm/slub.c b/mm/slub.c
+> index ad33d9e1601d..9b87afade125 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1849,6 +1849,26 @@ static void *setup_object(struct kmem_cache *s, void *object)
+>  /*
+>   * Slab allocation and freeing
+>   */
+> +
+> +static void folio_set_slab(struct folio *folio, struct slab *slab)
+> +{
+> +	__folio_set_slab(folio);
+> +	/* Make the flag visible before any changes to folio->mapping */
+> +	smp_wmb();
+> +
+> +	if (folio_is_pfmemalloc(folio))
+> +		slab_set_pfmemalloc(slab);
+> +}
+> +
+> +static void folio_clear_slab(struct folio *folio, struct slab *slab)
+> +{
+> +	__slab_clear_pfmemalloc(slab);
+> +	folio->mapping = NULL;
+> +	/* Make the mapping reset visible before clearing the flag */
+> +	smp_wmb();
+> +	__folio_clear_slab(folio);
+> +}
 
-This is all 6.7 material now and we might be conservative and mark it
-for Oct 2023.
-
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	This debugfs file directory is used for debugging
-> +		of vfio devices, it's a common directory for all vfio devices.
-> +		Each device should create a device subdirectory under this
-> +		directory by referencing the public registration interface.
-
-The device sub-directory is already provided by the core.  Thanks,
-
-Alex
+Perhaps these should be explicitly marked as inlines?
 
 > +
-> +What:		/sys/kernel/debug/vfio/<device>/migration
-> +Date:		Aug 2023
-> +KernelVersion:  6.6
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	This debugfs file directory is used for debugging
-> +		of vfio devices that support live migration.
-> +		The debugfs of each vfio device that supports live migration
-> +		could be created under this directory.
-> +
-> +What:		/sys/kernel/debug/vfio/<device>/migration/state
-> +Date:		Aug 2023
-> +KernelVersion:  6.6
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	Read the live migration status of the vfio device.
-> +		The status of these live migrations includes:
-> +		ERROR, RUNNING, STOP, STOP_COPY, RESUMING.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7b1306615fc0..bd01ca674c60 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -22304,6 +22304,7 @@ L:	kvm@vger.kernel.org
->  S:	Maintained
->  T:	git https://github.com/awilliam/linux-vfio.git
->  F:	Documentation/ABI/testing/sysfs-devices-vfio-dev
-> +F:	Documentation/ABI/testing/debugfs-vfio
->  F:	Documentation/driver-api/vfio.rst
->  F:	drivers/vfio/
->  F:	include/linux/vfio.h
+>  static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+>  		struct kmem_cache_order_objects oo)
+>  {
+> @@ -1865,11 +1885,7 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+>  		return NULL;
+>  
+>  	slab = folio_slab(folio);
+> -	__folio_set_slab(folio);
+> -	/* Make the flag visible before any changes to folio->mapping */
+> -	smp_wmb();
+> -	if (folio_is_pfmemalloc(folio))
+> -		slab_set_pfmemalloc(slab);
+> +	folio_set_slab(folio, slab);
+>  
+>  	return slab;
+>  }
+> @@ -2067,11 +2083,7 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
+>  	int order = folio_order(folio);
+>  	int pages = 1 << order;
+>  
+> -	__slab_clear_pfmemalloc(slab);
+> -	folio->mapping = NULL;
+> -	/* Make the mapping reset visible before clearing the flag */
+> -	smp_wmb();
+> -	__folio_clear_slab(folio);
+> +	folio_clear_slab(folio, slab);
+>  	mm_account_reclaimed_pages(pages);
+>  	unaccount_slab(slab, order, s);
+>  	__free_pages(&folio->page, order);
+> -- 
+> 2.42.0.459.ge4e396fd5e-goog
 
+Otherwise this is a straight function extraction.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
