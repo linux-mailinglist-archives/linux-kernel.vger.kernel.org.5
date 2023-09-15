@@ -2,143 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1A97A2806
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E7E7A280E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 22:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbjIOUYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 16:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
+        id S237133AbjIOUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 16:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237309AbjIOUXy (ORCPT
+        with ESMTP id S237390AbjIOUZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 16:23:54 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF748B2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 13:23:49 -0700 (PDT)
-Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
-        by cmsmtp with ESMTP
-        id hF2WqA36HOzKlhFLxqI7Nf; Fri, 15 Sep 2023 20:23:49 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id hFLwqL02V4x9chFLxqN1lX; Fri, 15 Sep 2023 20:23:49 +0000
-X-Authority-Analysis: v=2.4 cv=Cp6sz10D c=1 sm=1 tr=0 ts=6504bd55
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=MRXkqwc6AAAA:8 a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8 a=Mw5oN-FQwNtlLNIY7psA:9
- a=QEXdDO2ut3YA:10 a=tmQuKXRa9JHWtioalwAU:22 a=AjGcO6oz07-iQ99wixmX:22
- a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dRKiLGohBO+l2o2LcNabfrL4Za7Tt/SCkLsJLXnqc/s=; b=XoYtOhMDah9gcug71RnUEpxyGR
-        37eNPy3kq5IFwpQbDJz4MgcSY//yxuoGzx2mxtZ4Y7md7RgTSmdpidy25q2CVTDo0V31M3C+ep5+l
-        sIgRWv83wwXabhWaDa1i+uwqPOEbBKyd63eqVnplD+wVRHcIKC76rF0Q/iHjODGpWPubcRPvXLACu
-        MeisaMFzEI2aNaNDeA5hz7LdTkPayrNw02CyXNHkCDCkZhJGCXw5HdgTv0GenubQ2ZkiCDAIDmtkb
-        Xm5CwnNuJdtN00tFCmrfHbVS6SqYFSEcZbVP+UUKzv4EPDA0t7s1gXsGmvjGXg1udhvWnW9dzIsp3
-        m02ryiPA==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:34976 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qhFLu-002GXj-10;
-        Fri, 15 Sep 2023 15:23:47 -0500
-Message-ID: <c2c552ff-c650-1e69-b552-f6f872605526@embeddedor.com>
-Date:   Fri, 15 Sep 2023 14:24:35 -0600
+        Fri, 15 Sep 2023 16:25:34 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EFDE58;
+        Fri, 15 Sep 2023 13:25:24 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38FK0VNh031699;
+        Fri, 15 Sep 2023 20:25:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=YFfmbZH6gaxbGnFwOI4MZHQoLb9HlwagtxNd2wzZ+PM=;
+ b=c1bwHGuiSIwNCGEBkwNDDeR7k5ENY3TKDrtWFNLl1biDYSeeB8+FCZEQy+4Hh2A3XrrC
+ tLehgLk9Lhbh7apzlwPx+6ZHRSpKQQAhhcBCV7Rr3MN0/FL5X7JyzTWvQ8J2WUcIjpwr
+ zX3sFzZdneOoCkVD/5dRdF466VjAh8pL9DHglrZ1n/GDR5OOe6htfQAmJZOm5GIh1ini
+ 0sb5A3k8oFCYUV/j7aZRS4ca2YluozymYiBCl/zmOH7PWZ8Zb0wLSmrvjLrP2U2DsbDq
+ pL8BGSBUl029z2OD4jOF/WVej4BjIuOY2r8A6Yvch//7ksc/XpCnABcxywemzh3OgqST Tg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4fsfa94a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:25:15 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38FKPESH025139
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 20:25:15 GMT
+Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
+ 2023 13:25:14 -0700
+From:   Oza Pawandeep <quic_poza@quicinc.com>
+To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     Oza Pawandeep <quic_poza@quicinc.com>
+Subject: [PATCH v7] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+Date:   Fri, 15 Sep 2023 13:25:11 -0700
+Message-ID: <20230915202511.1452091-1-quic_poza@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drbd: Annotate struct fifo_buffer with __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>
-Cc:     Lars Ellenberg <lars.ellenberg@linbit.com>,
-        =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, Jens Axboe <axboe@kernel.dk>,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915200316.never.707-kees@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230915200316.never.707-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qhFLu-002GXj-10
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:34976
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 55
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMZnLE0PdzyrzAVd/tqe8CkYMGrfKHJ0dr1ChPC6RlN4G0sxdEJ+rPf2Stchhb72UPGX48CHDM1qohJx3m6zTwLvEpdkA+hEfA5mJDW0q9ccHBFLUnyB
- j9JXTBQYXGJCGfBhkYk0nLed2OXzTZWgi346qS127uPaqT4hH7CrVD5IH+/yFNppTw8LCoEJE9nD/mpTXyT7znl/iXjS9s5v3YvEQSJ+QGtYtKoN0ie/VslG
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: M7-COwnCTjttp9yOVaseilNUiCTGJAlc
+X-Proofpoint-GUID: M7-COwnCTjttp9yOVaseilNUiCTGJAlc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_17,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=26 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=45 mlxscore=26
+ malwarescore=0 priorityscore=1501 suspectscore=0 adultscore=0 bulkscore=0
+ spamscore=26 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150183
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arm® Functional Fixed Hardware Specification defines LPI states,
+which provide an architectural context loss flags field that can
+be used to describe the context that might be lost when an LPI
+state is entered.
 
+- Core context Lost
+        - General purpose registers.
+        - Floating point and SIMD registers.
+        - System registers, include the System register based
+        - generic timer for the core.
+        - Debug register in the core power domain.
+        - PMU registers in the core power domain.
+        - Trace register in the core power domain.
+- Trace context loss
+- GICR
+- GICD
 
-On 9/15/23 14:03, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct fifo_buffer.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Philipp Reisner <philipp.reisner@linbit.com>
-> Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
-> Cc: "Christoph Böhmwalder" <christoph.boehmwalder@linbit.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: drbd-dev@lists.linbit.com
-> Cc: linux-block@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Qualcomm's custom CPUs preserves the architectural state,
+including keeping the power domain for local timers active.
+when core is power gated, the local timers are sufficient to
+wake the core up without needing broadcast timer.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+broadcast timer if core context lost is defined in ACPI LPI.
 
-Thanks
+Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+---
+
+Notes:
+    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index 4d537d56eb84..269d21209723 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -9,6 +9,7 @@
+ #ifndef _ASM_ACPI_H
+ #define _ASM_ACPI_H
+ 
++#include <linux/cpuidle.h>
+ #include <linux/efi.h>
+ #include <linux/memblock.h>
+ #include <linux/psci.h>
+@@ -44,6 +45,23 @@
+ 
+ #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	trbe_interrupt) + sizeof(u16))
++/*
++ * Arm® Functional Fixed Hardware Specification Version 1.2.
++ * Table 2: Arm Architecture context loss flags
++ */
++#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
++
++static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
++							unsigned int *sflags)
++{
++	if (arch_flags & CPUIDLE_CORE_CTXT)
++		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
++}
++#define arch_update_idle_state_flags _arch_update_idle_state_flags
++
++#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
++#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
++#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+ 
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index dc615ef6550a..5c1d13eecdd1 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+ 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+ 		state->exit_latency = lpi->wake_latency;
+ 		state->target_residency = lpi->min_residency;
+-		if (lpi->arch_flags)
+-			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+ 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+ 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 		state->enter = acpi_idle_lpi_enter;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index a73246c3c35e..07a825c76bab 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1480,6 +1480,12 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ }
+ #endif
+ 
++#ifdef CONFIG_ACPI_PROCESSOR_IDLE
++#ifndef arch_update_idle_state_flags
++#define arch_update_idle_state_flags(af, sf)	do {} while (0)
++#endif
++#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
++
+ #ifdef CONFIG_ACPI_PPTT
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
 -- 
-Gustavo
+2.25.1
 
-> ---
->   drivers/block/drbd/drbd_int.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/drbd/drbd_int.h b/drivers/block/drbd/drbd_int.h
-> index a30a5ed811be..7eecc53fae3d 100644
-> --- a/drivers/block/drbd/drbd_int.h
-> +++ b/drivers/block/drbd/drbd_int.h
-> @@ -553,7 +553,7 @@ struct fifo_buffer {
->   	unsigned int head_index;
->   	unsigned int size;
->   	int total; /* sum of all values */
-> -	int values[];
-> +	int values[] __counted_by(size);
->   };
->   extern struct fifo_buffer *fifo_alloc(unsigned int fifo_size);
->   
