@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6302E7A12E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E6B7A12EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbjIOBYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S231270AbjIOB27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjIOBYq (ORCPT
+        with ESMTP id S230193AbjIOB25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:24:46 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176EE2708
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:24:42 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-41513d2cca7so156491cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:24:42 -0700 (PDT)
+        Thu, 14 Sep 2023 21:28:57 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F5B2100
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-98377c5d53eso204405866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694741081; x=1695345881; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694741329; x=1695346129; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=74CtxUCIYHKHg9tWUr4iQH71rMCgTYq33VCTDKT+9KU=;
-        b=SnYJtr+lnAINHypdcPq/d/if5PcWVnEjwBp+G8vsN2bjy59rTNel9a9GI5EoaRBW9n
-         Rvukc3AP/SP8ikfd9vRaEzhUuDZ/9bObHjxXSknIr6D5mIK19zeUkkqip9PGW5i5ex3c
-         7hemnDRVuqHwis1y0zfG59uVsulZNq3MiFrNgVgOGDDKiG5rMfss3+9IQ2BdV7VGDCwg
-         TdAqEqSlXGzz4CLwHrFHmryDGcAonRp2oSBLc1xfi4SYDnWdUSwB+AS0cxtacRFwJy0Z
-         aMaU4mbYT+AVRWuE4lX5GKNZih2a6GROvO9Xy7lXWxHjkW1GWlWmxZ1MMcoU/at1AVSl
-         AEmg==
+        bh=fBGNOe9gI9NaJRPLZ/Vx8tqTgrMHNSFjAjNWZOJ75IE=;
+        b=U1Pi6e7SQjnYLqhQ6iC1GT+CqA51C6lv7qHyeG7Tp4BJ4ZUi2KFmMS03JvLkzRFlZ1
+         x58lqaicroEAmHW8LjKIKOI8YlN8oTtRynf6QnQRtwjUFnDnr3zMkTQUVVHFl4PY3B1V
+         3K/RajSOYpCwq5l7lrIuDtdejlN1XgKTtMN70=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694741081; x=1695345881;
+        d=1e100.net; s=20230601; t=1694741329; x=1695346129;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=74CtxUCIYHKHg9tWUr4iQH71rMCgTYq33VCTDKT+9KU=;
-        b=U+VfFku8cxmuzNq9zKuBxCsARxGSLzgH6kuhepriTO0AfAHBvWGZx0qgc6II+OchlF
-         fW9eeNS7iIrHcNp6gylrdNrU9fUknn9JtD5rLIaScMs3xLK5pv48MIEURw4INyrw/EO0
-         qMWZ0xEth5wV6O/Rh2Pa7GeX5+uQ71+qyy+pug6TCgvcpwu2mBw6jjOLAvjZ6cEAIFKD
-         5nXkSGrBawFfFwJ8JOUi3QbY2whfH49wRYbgnqQc0nRlxqxs2vzwC+u/5V7xJ2ZbVkHu
-         TRSFWSktZnQl9f1W4dqvSn0tJ1bSWxvBqzRKRF5fUGO7hikkYuY8/t/cjnGE7qCCWJTE
-         EX/Q==
-X-Gm-Message-State: AOJu0Yzv0oNX8K1zeEy/aUgqNxvz+Fa/O5TLKdGL/udwDdbtJaSB5QPJ
-        lGZp5lnNpsTwMeuYXql3cLrSusCAA1S+P3sVBKpwDA==
-X-Google-Smtp-Source: AGHT+IGFwUSKsgWRp7QDr28sTxEcIygWw9HdJsiUKYG75UfmKQUC0mX+HXPSLwhkIeiL3CIYCl7XZdzp0KHoRjzRn9Q=
-X-Received: by 2002:a05:622a:13c7:b0:410:8ba3:21c7 with SMTP id
- p7-20020a05622a13c700b004108ba321c7mr160183qtk.18.1694741081098; Thu, 14 Sep
- 2023 18:24:41 -0700 (PDT)
+        bh=fBGNOe9gI9NaJRPLZ/Vx8tqTgrMHNSFjAjNWZOJ75IE=;
+        b=lRzCqsGFfgMHTWVuN4dcIpKTOQqzT9A2KEL1FA7SXyDPJLMLi/8f+r7CAKj5BmFcJX
+         lzddjk7qwwvPNmV68QIu8zGS1bAtee0aCuDBKBNobiVvzsCGbLf4atkwhLHsL1q8qGRg
+         vVkvl+o2pVQazqFptKlglL9oSB4yR+H9lgQD6RQ/UOxw8J2bRHgasLacilSMfkeqwAN8
+         fLdKdNDF8iy9XGu1TofuOHSxwkqZADjbvUVU5sDcQefLFgRmGcUNmWAR1yNv7xkEjt0b
+         nSGVnyN3pEOSgllKiElylkSukfQoKLCqHx2q+n/Wt2Yc+MM5uOYtwcJPlrp+iI2Daowh
+         1g0w==
+X-Gm-Message-State: AOJu0YzXp/u3I7b4ZM3zdiRG/pINfHfi5QNv9VbPAdMo3+wMo/9rtpdM
+        0HV5U9KkHucfH09M5zTXjCJJpzMm+h2010LyyV8=
+X-Google-Smtp-Source: AGHT+IGf21eqPPMkmngTVsi8qiU+nLHHOJQNWt4OLnnEeE0eexxjUDsPrLpLstE6F0EfXgGBlCl1aw==
+X-Received: by 2002:a17:906:dc:b0:9a5:9f3c:9615 with SMTP id 28-20020a17090600dc00b009a59f3c9615mr89329eji.63.1694741328635;
+        Thu, 14 Sep 2023 18:28:48 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id e6-20020a170906374600b009ad81554c1bsm1688214ejc.55.2023.09.14.18.28.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 18:28:46 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-98377c5d53eso204399966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:28:46 -0700 (PDT)
+X-Received: by 2002:a17:906:3191:b0:9a5:d899:cc36 with SMTP id
+ 17-20020a170906319100b009a5d899cc36mr143392ejy.2.1694741326159; Thu, 14 Sep
+ 2023 18:28:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230914182922.27157-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20230914182922.27157-1-quic_kriskura@quicinc.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Thu, 14 Sep 2023 18:24:30 -0700
-Message-ID: <CANP3RGeMFnBdQ3yS3i_QqWCuQB34Ma8ToEnfH-WjZQBeNgqoFw@mail.gmail.com>
-Subject: Re: [RFC] usb: gadget: ncm: Handle decoding of multiple NTB's in
- unwrap call
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linyu Yuan <quic_linyyuan@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
-        quic_jackp@quicinc.com
+References: <PA4PR04MB9638B8753EFD81E174E55BC3D114A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+In-Reply-To: <PA4PR04MB96381E2BC08BD1B636067413D1F7A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Thu, 14 Sep 2023 18:28:31 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
+Message-ID: <CA+ASDXP9rytcdS1Ao4RbfEULU2kwm4fRiu1MC1H59HABWGPdEg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/1] Patch History
+To:     David Lin <yu-hao.lin@nxp.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "amitkarwar@gmail.com" <amitkarwar@gmail.com>,
+        "ganapathi017@gmail.com" <ganapathi017@gmail.com>,
+        "huxinming820@gmail.com" <huxinming820@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Francesco Dolcini <francesco@dolcini.it>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Maciej =C5=BBenczykowski <maze@google.com>
+On Wed, Sep 13, 2023 at 11:42=E2=80=AFPM David Lin <yu-hao.lin@nxp.com> wro=
+te:
+>
+> Hi Kalle,
+>
+>         Patch v4 (https://patchwork.kernel.org/project/linux-wireless/pat=
+ch/PA4PR04MB963838F12BADC1B9FD377CB7D114A@PA4PR04MB9638.eurprd04.prod.outlo=
+ok.com/) for host mlme had been submitted for a while.
+>
+>         Current state of this patch is "Deferred". I wonder when can this=
+ patch be reviewed and merged.
+>
+>         Is there anything I can do to speed up the acceptance of this pat=
+ch by upstream?
 
-The casts should probably use the actual correct ptr type instead of void*
+You still haven't sent this to the correct maintainers (i.e., me) for
+one. I also thought there were outstanding unaddressed comments from
+Francesco. And given how much Francesco looked, I'd appreciate getting
+his Reviewed-by when he's actually happy with it.
 
-Feels like this should go to stable@
+(Like I said earlier, I'm not exactly happy that y'all are failing to
+maintain this driver, but then insisting the community review and
+accept new features. At least if your paying customers will help out
+this process, the bargain is less-bad...)
+
+Brian
