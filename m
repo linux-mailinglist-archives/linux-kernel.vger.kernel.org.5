@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA567A24BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8026D7A24C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 19:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236138AbjIOR3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 13:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S236381AbjIOR3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 13:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235944AbjIOR3L (ORCPT
+        with ESMTP id S231697AbjIOR3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 13:29:11 -0400
+        Fri, 15 Sep 2023 13:29:12 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907D22119;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908A8211E;
         Fri, 15 Sep 2023 10:29:05 -0700 (PDT)
 Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLkb068Nz6K6C2;
-        Sat, 16 Sep 2023 01:28:22 +0800 (CST)
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RnLkb2JTKz6K6CT;
+        Sat, 16 Sep 2023 01:28:23 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 15 Sep 2023 18:29:02 +0100
+ 15.1.2507.31; Fri, 15 Sep 2023 18:29:03 +0100
 From:   <shiju.jose@huawei.com>
 To:     <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>
@@ -35,10 +35,12 @@ CC:     <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
         <gthelen@google.com>, <linuxarm@huawei.com>,
         <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
         <prime.zeng@hisilicon.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 0/9] ACPI:RASF: Add support for ACPI RASF, ACPI RAS2 and configure scrubbers
-Date:   Sat, 16 Sep 2023 01:28:09 +0800
-Message-ID: <20230915172818.761-1-shiju.jose@huawei.com>
+Subject: [RFC PATCH 1/9] memory: scrub: Add scrub driver supports configuring memory scrubbers in the system
+Date:   Sat, 16 Sep 2023 01:28:10 +0800
+Message-ID: <20230915172818.761-2-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
+In-Reply-To: <20230915172818.761-1-shiju.jose@huawei.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -57,74 +59,630 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shiju Jose <shiju.jose@huawei.com>
 
-This series add,
-1. support for ACPI RASF(RAS feature table) PCC interfaces
-to communicate with the HW patrol scrubber in the platform,
-as per ACPI 5.1 & upwards revision. Section 5.2.20.
+Add scrub driver supports configuring the memory scrubbers in the
+system. The scrub driver provides the interface for registering the
+scrub devices and to configure the parameters of memory scrubbers in the
+system.
+Driver exposes the scrub parameter attributes to the user via sysfs in
+/sys/class/scrub/scrubX/regionY/
 
-2. support for ACPI RAS2(RAS2 feature table), as per
-ACPI 6.5 & upwards revision. Section 5.2.21.
+This driver has been implemented based on the hwmon subsystem.
 
-3. scrub driver supports configuring parameters of the memory
-scrubbers in the system. This driver has been implemented
-based on the hwmon subsystem.
-
-The features have tested with RASF and RAS2 emulation in the QEMU.
-
-Previous references to the memory scub and RASF topics.
-https://lore.kernel.org/all/20221103155029.2451105-1-jiaqiyan@google.com/
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/CS1PR84MB0038718F49DBC0FF03919E1184390@CS1PR84MB0038.NAMPRD84.PROD.OUTLOOK.COM/
-
-A Somasundaram (2):
-  ACPI:RASF: Add extract RASF table to register RASF platform devices
-  ACPI:RASF: Add common library for RASF and RAS2 PCC interfaces
-
-Shiju Jose (7):
-  memory: scrub: Add scrub driver supports configuring memory scrubbers
-    in the system
-  memory: scrub: sysfs: Add Documentation entries for set of scrub
-    attributes
-  Documentation/scrub-configure.rst: Add documentation for scrub driver
-  memory: RASF: Add memory RASF driver
-  ACPICA: ACPI 6.5: Add support for RAS2 table
-  ACPI:RAS2: Add driver for ACPI RAS2 feature table (RAS2)
-  memory: RAS2: Add memory RAS2 driver
-
- .../ABI/testing/sysfs-class-scrub-configure   |  82 ++++
- Documentation/scrub-configure.rst             |  55 +++
- drivers/acpi/Kconfig                          |  15 +
- drivers/acpi/Makefile                         |   1 +
- drivers/acpi/ras2_acpi.c                      |  97 ++++
- drivers/acpi/rasf_acpi.c                      |  71 +++
- drivers/acpi/rasf_acpi_common.c               | 272 +++++++++++
- drivers/memory/Kconfig                        |  15 +
- drivers/memory/Makefile                       |   3 +
- drivers/memory/ras2.c                         | 334 +++++++++++++
- drivers/memory/rasf.c                         | 335 +++++++++++++
- drivers/memory/rasf_common.c                  | 251 ++++++++++
- drivers/memory/scrub/Kconfig                  |  11 +
- drivers/memory/scrub/Makefile                 |   6 +
- drivers/memory/scrub/memory-scrub.c           | 452 ++++++++++++++++++
- include/acpi/actbl2.h                         |  55 +++
- include/acpi/rasf_acpi.h                      |  59 +++
- include/memory/memory-scrub.h                 |  85 ++++
- include/memory/rasf.h                         |  82 ++++
- 19 files changed, 2281 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
- create mode 100644 Documentation/scrub-configure.rst
- create mode 100755 drivers/acpi/ras2_acpi.c
- create mode 100755 drivers/acpi/rasf_acpi.c
- create mode 100755 drivers/acpi/rasf_acpi_common.c
- create mode 100644 drivers/memory/ras2.c
- create mode 100644 drivers/memory/rasf.c
- create mode 100644 drivers/memory/rasf_common.c
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+---
+ drivers/memory/Kconfig              |   1 +
+ drivers/memory/Makefile             |   1 +
+ drivers/memory/scrub/Kconfig        |  11 +
+ drivers/memory/scrub/Makefile       |   6 +
+ drivers/memory/scrub/memory-scrub.c | 452 ++++++++++++++++++++++++++++
+ include/memory/memory-scrub.h       |  85 ++++++
+ 6 files changed, 556 insertions(+)
  create mode 100644 drivers/memory/scrub/Kconfig
  create mode 100644 drivers/memory/scrub/Makefile
  create mode 100755 drivers/memory/scrub/memory-scrub.c
- create mode 100755 include/acpi/rasf_acpi.h
  create mode 100755 include/memory/memory-scrub.h
- create mode 100755 include/memory/rasf.h
 
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 8efdd1f97139..d2e015c09d83 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -227,5 +227,6 @@ config STM32_FMC2_EBI
+ 
+ source "drivers/memory/samsung/Kconfig"
+ source "drivers/memory/tegra/Kconfig"
++source "drivers/memory/scrub/Kconfig"
+ 
+ endif
+diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+index d2e6ca9abbe0..4b37312cb342 100644
+--- a/drivers/memory/Makefile
++++ b/drivers/memory/Makefile
+@@ -27,6 +27,7 @@ obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
+ 
+ obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
+ obj-$(CONFIG_TEGRA_MC)		+= tegra/
++obj-$(CONFIG_SCRUB)		+= scrub/
+ obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
+ obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
+ 
+diff --git a/drivers/memory/scrub/Kconfig b/drivers/memory/scrub/Kconfig
+new file mode 100644
+index 000000000000..fa7d68f53a69
+--- /dev/null
++++ b/drivers/memory/scrub/Kconfig
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Memory scrub driver configurations
++#
++
++config SCRUB
++	bool "Memory scrub driver"
++	help
++	  This option selects the memory scrub subsystem, supports
++	  configuring the parameters of underlying scrubbers in the
++	  system for the DRAM memories.
+diff --git a/drivers/memory/scrub/Makefile b/drivers/memory/scrub/Makefile
+new file mode 100644
+index 000000000000..1b677132ca13
+--- /dev/null
++++ b/drivers/memory/scrub/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for memory scrub drivers
++#
++
++obj-$(CONFIG_SCRUB)		+= memory-scrub.o
+diff --git a/drivers/memory/scrub/memory-scrub.c b/drivers/memory/scrub/memory-scrub.c
+new file mode 100755
+index 000000000000..b3011e7cd062
+--- /dev/null
++++ b/drivers/memory/scrub/memory-scrub.c
+@@ -0,0 +1,452 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Memory scrub controller driver support to configure
++ * the parameters of the memory scrubbers and enable.
++ *
++ * Copyright (c) 2023 HiSilicon Limited.
++ */
++
++#define pr_fmt(fmt)     "MEM SCRUB: " fmt
++
++#include <linux/acpi.h>
++#include <linux/bitops.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/kfifo.h>
++#include <linux/spinlock.h>
++#include <memory/memory-scrub.h>
++
++/* memory scrubber config definitions */
++#define SCRUB_ID_PREFIX "scrub"
++#define SCRUB_ID_FORMAT SCRUB_ID_PREFIX "%d"
++#define SCRUB_DEV_MAX_NAME_LENGTH	128
++
++static DEFINE_IDA(scrub_ida);
++
++struct scrub_device {
++	char name[SCRUB_DEV_MAX_NAME_LENGTH];
++	int id;
++	struct device dev;
++	const struct scrub_source_info *source_info;
++	struct list_head tzdata;
++	char (*region_name)[];
++	struct attribute_group group;
++	int ngroups;
++	struct attribute_group *region_groups;
++	const struct attribute_group **groups;
++};
++
++#define to_scrub_device(d) container_of(d, struct scrub_device, dev)
++#define SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH	64
++
++struct scrub_device_attribute {
++	struct device_attribute dev_attr;
++	const struct scrub_ops *ops;
++	u32 attr;
++	int region_id;
++	char name[SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH];
++};
++
++#define to_scrub_attr(d) \
++	container_of(d, struct scrub_device_attribute, dev_attr)
++#define to_dev_attr(a) container_of(a, struct device_attribute, attr)
++
++static ssize_t name_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%s\n", to_scrub_device(dev)->name);
++}
++static DEVICE_ATTR_RO(name);
++
++static struct attribute *scrub_dev_attrs[] = {
++	&dev_attr_name.attr,
++	NULL
++};
++
++static umode_t scrub_dev_attr_is_visible(struct kobject *kobj,
++					    struct attribute *attr, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct scrub_device *scrub_dev = to_scrub_device(dev);
++
++	if (attr == &dev_attr_name.attr && scrub_dev->name == NULL)
++		return 0;
++
++	return attr->mode;
++}
++
++static const struct attribute_group scrub_dev_attr_group = {
++	.attrs		= scrub_dev_attrs,
++	.is_visible	= scrub_dev_attr_is_visible,
++};
++
++static const struct attribute_group *scrub_dev_attr_groups[] = {
++	&scrub_dev_attr_group,
++	NULL
++};
++
++static void scrub_free_attrs(struct attribute **attrs)
++{
++	int i;
++
++	for (i = 0; attrs[i]; i++) {
++		struct device_attribute *dattr = to_dev_attr(attrs[i]);
++		struct scrub_device_attribute *hattr = to_scrub_attr(dattr);
++
++		kfree(hattr);
++	}
++	kfree(attrs);
++}
++
++static void scrub_dev_release(struct device *dev)
++{
++	int count;
++	struct attribute_group *group;
++	struct scrub_device *scrub_dev = to_scrub_device(dev);
++
++	for (count = 0; count < scrub_dev->ngroups; count++) {
++		group = (struct attribute_group *)scrub_dev->groups[count];
++		if (group)
++			scrub_free_attrs(group->attrs);
++	}
++	kfree(scrub_dev->region_name);
++	kfree(scrub_dev->region_groups);
++	kfree(scrub_dev->groups);
++	ida_free(&scrub_ida, scrub_dev->id);
++	kfree(scrub_dev);
++}
++
++static struct class scrub_class = {
++	.name = "scrub",
++	.dev_groups = scrub_dev_attr_groups,
++	.dev_release = scrub_dev_release,
++};
++
++/* sysfs attribute management */
++
++static ssize_t scrub_attr_show(struct device *dev,
++			       struct device_attribute *devattr, char *buf)
++{
++	int ret;
++	u64 val;
++	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
++
++	ret = hattr->ops->read(dev, hattr->attr, hattr->region_id, &val);
++	if (ret < 0)
++		return ret;
++
++	return sprintf(buf, "0x%llx\n", val);
++}
++
++static ssize_t scrub_attr_show_string(struct device *dev,
++				      struct device_attribute *devattr,
++				      char *buf)
++{
++	int ret;
++	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
++
++	ret = hattr->ops->read_string(dev, hattr->attr, hattr->region_id, buf);
++	if (ret < 0)
++		return ret;
++
++	return strlen(buf);
++}
++
++static ssize_t scrub_attr_store(struct device *dev,
++				struct device_attribute *devattr,
++				const char *buf, size_t count)
++{
++	int ret;
++	long val;
++	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
++
++	ret = kstrtol(buf, 10, &val);
++	if (ret < 0)
++		return ret;
++
++	ret = hattr->ops->write(dev, hattr->attr, hattr->region_id, val);
++	if (ret < 0)
++		return ret;
++
++	return count;
++}
++
++static ssize_t scrub_attr_store_hex(struct device *dev,
++				    struct device_attribute *devattr,
++				    const char *buf, size_t count)
++{
++	int ret;
++	u64 val;
++	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
++
++	ret = kstrtou64(buf, 16, &val);
++	if (ret < 0)
++		return ret;
++
++	ret = hattr->ops->write(dev, hattr->attr, hattr->region_id, val);
++	if (ret < 0)
++		return ret;
++
++	return count;
++}
++
++static bool is_hex_attr(u32 attr)
++{
++	return	(attr == scrub_addr_base) ||
++		(attr == scrub_addr_size);
++}
++
++static bool is_string_attr(u32 attr)
++{
++	return	attr == scrub_speed_available;
++}
++
++static struct attribute *scrub_genattr(const void *drvdata,
++				       u32 attr,
++				       const char *attrb_name,
++				       const struct scrub_ops *ops,
++				       int region_id)
++{
++	umode_t mode;
++	struct attribute *a;
++	struct device_attribute *dattr;
++	bool is_hex = is_hex_attr(attr);
++	struct scrub_device_attribute *hattr;
++	bool is_string = is_string_attr(attr);
++
++	/* The attribute is invisible if there is no template string */
++	if (!attrb_name)
++		return ERR_PTR(-ENOENT);
++
++	mode = ops->is_visible(drvdata, attr, region_id);
++	if (!mode)
++		return ERR_PTR(-ENOENT);
++
++	if ((mode & 0444) && ((is_string && !ops->read_string) ||
++			      (!is_string && !ops->read)))
++		return ERR_PTR(-EINVAL);
++	if ((mode & 0222) && (!ops->write))
++		return ERR_PTR(-EINVAL);
++
++	hattr = kzalloc(sizeof(*hattr), GFP_KERNEL);
++	if (!hattr)
++		return ERR_PTR(-ENOMEM);
++
++	hattr->attr = attr;
++	hattr->ops = ops;
++	hattr->region_id = region_id;
++
++	dattr = &hattr->dev_attr;
++	dattr->show = is_string ? scrub_attr_show_string : scrub_attr_show;
++	dattr->store = is_hex ? scrub_attr_store_hex : scrub_attr_store;
++
++	a = &dattr->attr;
++	sysfs_attr_init(a);
++	a->name = attrb_name;
++	a->mode = mode;
++
++	return a;
++}
++
++static const char * const scrub_common_attrs[] = {
++	[scrub_addr_base] = "addr_base",
++	[scrub_addr_size] = "addr_size",
++	[scrub_enable] = "enable",
++	[scrub_speed] = "speed",
++	[scrub_speed_available] = "speed_available",
++};
++
++static struct attribute **
++scrub_create_attrs(const void *drvdata, const struct scrub_ops *ops, int region_id)
++{
++	u32 attr;
++	int aindex = 0;
++	struct attribute *a;
++	struct attribute **attrs;
++
++	attrs = kcalloc(max_attrs, sizeof(*attrs), GFP_KERNEL);
++	if (!attrs)
++		return ERR_PTR(-ENOMEM);
++
++	for (attr = 0; attr < max_attrs; attr++) {
++		a = scrub_genattr(drvdata, attr, scrub_common_attrs[attr],
++				  ops, region_id);
++		if (IS_ERR(a)) {
++			if (PTR_ERR(a) != -ENOENT) {
++				scrub_free_attrs(attrs);
++				return ERR_PTR(PTR_ERR(a));
++			}
++			continue;
++		}
++		attrs[aindex++] = a;
++	}
++
++	return attrs;
++}
++
++static struct device *
++scrub_device_register(struct device *dev, const char *name, void *drvdata,
++		      const struct scrub_ops *ops,
++		      int nregions)
++{
++	struct device *hdev;
++	struct attribute **attrs;
++	int err, count, region_id;
++	struct attribute_group *group;
++	struct scrub_device *scrub_dev;
++	char (*region_name)[SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH];
++
++	scrub_dev = kzalloc(sizeof(*scrub_dev), GFP_KERNEL);
++	if (!scrub_dev)
++		return ERR_PTR(-ENOMEM);
++	hdev = &scrub_dev->dev;
++
++	scrub_dev->id = ida_alloc(&scrub_ida, GFP_KERNEL);
++	if (scrub_dev->id < 0) {
++		err = -ENOMEM;
++		goto free_scrub_dev;
++	}
++	int ngroups = 2; /* terminating NULL plus &scrub_dev->groups */
++
++	ngroups += nregions;
++
++	scrub_dev->groups = kcalloc(ngroups, sizeof(struct attribute_group *), GFP_KERNEL);
++	if (!scrub_dev->groups) {
++		err = -ENOMEM;
++		goto free_ida;
++	}
++
++	if (nregions) {
++		scrub_dev->region_groups = kcalloc(nregions, sizeof(struct attribute_group),
++						   GFP_KERNEL);
++		if (!scrub_dev->groups) {
++			err = -ENOMEM;
++			goto free_groups;
++		}
++		scrub_dev->region_name = kcalloc(nregions, SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH,
++						 GFP_KERNEL);
++		if (!scrub_dev->region_name) {
++			err = -ENOMEM;
++			goto free_region_groups;
++		}
++	}
++
++	ngroups = 0;
++	scrub_dev->ngroups = 0;
++	if (nregions) {
++		region_name = scrub_dev->region_name;
++		for (region_id = 0; region_id < nregions; region_id++) {
++			attrs = scrub_create_attrs(drvdata, ops, region_id);
++			if (IS_ERR(attrs)) {
++				err = PTR_ERR(attrs);
++				goto free_attrs;
++			}
++			snprintf((char *)region_name, SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH,
++				 "region%d", region_id);
++			scrub_dev->region_groups[region_id].name = (char *)region_name;
++			scrub_dev->region_groups[region_id].attrs = attrs;
++			region_name++;
++			scrub_dev->groups[ngroups++] = &scrub_dev->region_groups[region_id];
++			scrub_dev->ngroups = ngroups;
++		}
++	} else {
++		attrs = scrub_create_attrs(drvdata, ops, -1);
++		if (IS_ERR(attrs)) {
++			err = PTR_ERR(attrs);
++			goto free_region_name;
++		}
++		scrub_dev->group.attrs = attrs;
++		scrub_dev->groups[ngroups++] = &scrub_dev->group;
++		scrub_dev->ngroups = ngroups;
++	}
++
++	hdev->groups = scrub_dev->groups;
++	hdev->class = &scrub_class;
++	hdev->parent = dev;
++	dev_set_drvdata(hdev, drvdata);
++	dev_set_name(hdev, SCRUB_ID_FORMAT, scrub_dev->id);
++	snprintf(scrub_dev->name, SCRUB_DEV_MAX_NAME_LENGTH, "%s", name);
++	err = device_register(hdev);
++	if (err) {
++		put_device(hdev);
++		return ERR_PTR(err);
++	}
++
++	return hdev;
++
++free_attrs:
++	for (count = 0; count < scrub_dev->ngroups; count++) {
++		group = (struct attribute_group *)scrub_dev->groups[count];
++		if (group)
++			scrub_free_attrs(group->attrs);
++	}
++
++free_region_name:
++	kfree(scrub_dev->region_name);
++
++free_region_groups:
++	kfree(scrub_dev->region_groups);
++
++free_groups:
++	kfree(scrub_dev->groups);
++
++free_ida:
++	ida_free(&scrub_ida, scrub_dev->id);
++
++free_scrub_dev:
++	kfree(scrub_dev);
++	return ERR_PTR(err);
++}
++
++static void devm_scrub_release(void *dev)
++{
++	struct device *hdev = dev;
++
++	device_unregister(hdev);
++}
++
++/**
++ * devm_scrub_device_register - register hw scrubber device
++ * @dev: the parent device (mandatory)
++ * @name: hw scrubber name attribute (mandatory)
++ * @drvdata: driver data to attach to created device (mandatory)
++ * @ops: pointer to scrub_ops structure (mandatory)
++ * @nregions: number of scrub regions to create (optional)
++ *
++ * Returns the pointer to the new device. The new device is automatically
++ * unregistered with the parent device.
++ */
++struct device *
++devm_scrub_device_register(struct device *dev, const char *name,
++			   void *drvdata,
++			   const struct scrub_ops *ops,
++			   int nregions)
++{
++	struct device *hdev;
++
++	if (!dev || !name || !ops)
++		return ERR_PTR(-EINVAL);
++
++	hdev = scrub_device_register(dev, name, drvdata, ops, nregions);
++	if (IS_ERR(hdev))
++		return hdev;
++
++	if (devm_add_action_or_reset(dev, devm_scrub_release, hdev))
++		return NULL;
++
++	return hdev;
++}
++EXPORT_SYMBOL_GPL(devm_scrub_device_register);
++
++static int __init memory_scrub_control_init(void)
++{
++	int err;
++
++	err = class_register(&scrub_class);
++	if (err) {
++		pr_err("couldn't register memory scrub control sysfs class\n");
++		return err;
++	}
++
++	return 0;
++}
++subsys_initcall(memory_scrub_control_init);
+diff --git a/include/memory/memory-scrub.h b/include/memory/memory-scrub.h
+new file mode 100755
+index 000000000000..8e999c9daaed
+--- /dev/null
++++ b/include/memory/memory-scrub.h
+@@ -0,0 +1,85 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Memory scrub controller driver support to configure
++ * the parameters of the memory scrubbers and enable.
++ *
++ * Copyright (c) 2023 HiSilicon Limited.
++ */
++
++#ifndef __MEMORY_SCRUB_H
++#define __MEMORY_SCRUB_H
++
++#include <linux/types.h>
++
++enum scrub_types {
++	scrub_common,
++	scrub_max,
++};
++
++enum scrub_attributes {
++	scrub_addr_base,
++	scrub_addr_size,
++	scrub_enable,
++	scrub_speed,
++	scrub_speed_available,
++	max_attrs,
++};
++
++#define SCRUB_ENABLE		BIT(scrub_enable)
++#define SCRUB_ADDR_BASE		BIT(scrub_addr_base)
++#define SCRUB_ADDR_SIZE		BIT(scrub_addr_size)
++#define SCRUB_SPEED		BIT(scrub_speed)
++#define SCRUB_SPEED_AVAILABLE	BIT(scrub_speed_available)
++
++/**
++ * struct scrub_ops - scrub device operations
++ * @is_visible: Callback to return attribute visibility. Mandatory.
++ *		Parameters are:
++ *		@drvdata:
++ *			pointer to driver-private data structure passed
++ *			as argument to scrub_device_register().
++ *		@attr:	scrubber attribute
++ *		@region_id:
++ *			memory region id
++ *		The function returns the file permissions.
++ *		If the return value is 0, no attribute will be created.
++ * @read:	Read callback for data attributes. Mandatory if readable
++ *		data attributes are present.
++ *		Parameters are:
++ *		@dev:	pointer to hardware scrub device
++ *		@attr:	scrubber attribute
++ *		@region_id:
++ *			memory region id
++ *		@val:	pointer to returned value
++ *		The function returns 0 on success or a negative error number.
++ * @read_string: Read callback for string attributes. Mandatory if string
++ *		attributes are present.
++ *		Parameters are:
++ *		@dev:	pointer to hardware scrub device
++ *		@attr:	scrubber attribute
++ *		@region_id:
++ *			memory region id
++ *		@buf:	pointer to buffer to copy string
++ *		The function returns 0 on success or a negative error number.
++ * @write:	Write callback for data attributes. Mandatory if writeable
++ *		data attributes are present.
++ *		Parameters are:
++ *		@dev:	pointer to hardware scrub device
++ *		@attr:	scrubber attribute
++ *		@region_id:
++ *			memory region id
++ *		@val:	value to write
++ *		The function returns 0 on success or a negative error number.
++ */
++struct scrub_ops {
++	umode_t (*is_visible)(const void *drvdata, u32 attr, int region_id);
++	int (*read)(struct device *dev, u32 attr, int region_id, u64 *val);
++	int (*read_string)(struct device *dev, u32 attr, int region_id, char *buf);
++	int (*write)(struct device *dev, u32 attr, int region_id, u64 val);
++};
++
++struct device *
++devm_scrub_device_register(struct device *dev, const char *name,
++			   void *drvdata, const struct scrub_ops *ops,
++			   int nregions);
++#endif /* __MEMORY_SCRUB_H */
 -- 
 2.34.1
 
