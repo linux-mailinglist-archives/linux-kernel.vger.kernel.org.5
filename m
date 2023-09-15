@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4817A1932
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EC07A1936
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 10:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjIOIwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 04:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        id S232825AbjIOIxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 04:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbjIOIwU (ORCPT
+        with ESMTP id S232435AbjIOIxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 04:52:20 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E6AE7F
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:52:15 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d818d4230f6so1661230276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 01:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694767935; x=1695372735; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQEA2FIOx2kKdYQhqTeGKcS5B9p1K7dbq3FSAP3UBRc=;
-        b=YSf0EaQAwBVhJ5wCemEofRT6vFIRuzTBW63Gcmqe3yiE2n0Nm3x5seKVpchsL0QshX
-         cp1A4jEKTwYX9wpRgn8z0yfMYdSt9J1YoVwNpGNltDW8PUaTnNf5v5Yor40XZhUHPnD9
-         sCgnOZwdKQJvl/KXCyDrTd2R8v0a4GY1izrg2tSiu9dnUfvhgtk+dN62BV5h4OO/wtUW
-         WBuIagiSwtDgNtoSXGeqrEnt6BNplU9KKibNomoLfZxHxZvkVje0knC0+m+wLFTeqcMh
-         VivUGXWWMYp0JhkP7kqKIRYt6w/9QIY8hIn0yWLETzPBmxIh/vqqXSZyKmABNpxBE6UI
-         ZV9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694767935; x=1695372735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QQEA2FIOx2kKdYQhqTeGKcS5B9p1K7dbq3FSAP3UBRc=;
-        b=Xs/ifUpekMZ1ZvGpm3aabeAfRNQDtdgAVsOgSb0jItJw3DbEEkm1Q8r4L9IwUhxhdL
-         3mIkE1qEy/OqNUY6r7OyIMnTwCWlfM/QYzQr+Iynq+GMwtLhvIH1oCF3+k15NB8arsp7
-         nz6ZUTbmaI1mXl385eK5SHQXQLPsRPGPJRvrttUxbjqBxjeVELTXcl0smGQwQgpvzjVw
-         C+W7xAKXikOlFAPkkQ9dcPSsBiczX9+dJATxeeQkY5KFMup0Dd/nkCtunBol0xDceRGt
-         1mnX4ST4KpVzqPW/6wU8pkqLKQXs6CMlpHF0uCQzCmgzwXgh7SLmpYqt094TxWnyT/LP
-         H8qA==
-X-Gm-Message-State: AOJu0YwhtA8HRuUEY5/rnpyhCHZI+6f1VTrrc5nBkaapA+4PKeO0hOQc
-        5mT/pLP7+Ck3RHDfMLSJS4XXRdusWjrHwLLBeI+Tkw==
-X-Google-Smtp-Source: AGHT+IF03Cm5Va9hUiFUq1vEzW6LcyQAcPPtXI3kkxlLHejHACO76N1blpi+PQJOeYgaIv7Amr4/YkwX0A4xUwTw4/k=
-X-Received: by 2002:a25:3496:0:b0:d80:b87:3299 with SMTP id
- b144-20020a253496000000b00d800b873299mr602004yba.49.1694767934897; Fri, 15
- Sep 2023 01:52:14 -0700 (PDT)
+        Fri, 15 Sep 2023 04:53:37 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B6210C3;
+        Fri, 15 Sep 2023 01:53:32 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38F7eHx6003950;
+        Fri, 15 Sep 2023 08:52:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=//2nAYjOmcE5p4p0cxze69B6rxCiDlRI7WFYWaMvEb4=;
+ b=j8VwC+7TvMKTWNwb4llxo1hGqoXl5ht5rrHqb2i6itjPIhfmorTa+s9yDUDcXiElamo/
+ YFmocDgKWrjkVdnXr1GhjjX1s6LZX4qs11kclFU4vcslj16a/b8ghCJ6TEh8noexiR7p
+ zC7WJWPkl4Z1SVJqDs8nAwjO3Hg3ZAgLLW8eBnNx5RzvhX5EII2Ads0guu7plgQ1J+fr
+ RzQjWxpdkav+Ye6iBc4VUxgMfHKmXPe2PLG+oX3zNRtJg+NwNF976jrLX3+ELeO5od24
+ NxLotJHS52RNAUUjXQ974gyY8h0WKF5ainobIc30ztnt4+gTReOXpOboMA2rSVHC92VZ KQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g070k6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 08:52:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38F8qsEY030335
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Sep 2023 08:52:54 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
+ 2023 01:52:46 -0700
+Message-ID: <c993ecc1-771e-4061-bd10-d3dea1254389@quicinc.com>
+Date:   Fri, 15 Sep 2023 16:52:43 +0800
 MIME-Version: 1.0
-References: <20230914150904.155630-1-yann.gautier@foss.st.com>
-In-Reply-To: <20230914150904.155630-1-yann.gautier@foss.st.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 15 Sep 2023 10:52:04 +0200
-Message-ID: <CACRpkdasQqbSGhrd7+0M7t5ATsj7krpvmCGZ9uPsYHcu5K87kw@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: mmci: stm32: add SDIO in-band interrupt mode
-To:     Yann Gautier <yann.gautier@foss.st.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Rob Herring <robh@kernel.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/8] dt-bindings: arm-smmu: Add compatible for SM4450
+ SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <catalin.marinas@arm.com>
+CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
+References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
+ <20230915021509.25773-3-quic_tengfan@quicinc.com>
+ <5a386be4-facc-8aef-aad7-da6508aa0505@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <5a386be4-facc-8aef-aad7-da6508aa0505@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nGgYYbeD4lV7XyvjzAflKbgSpdyEaIWU
+X-Proofpoint-ORIG-GUID: nGgYYbeD4lV7XyvjzAflKbgSpdyEaIWU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_05,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=983 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309150077
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 5:09=E2=80=AFPM Yann Gautier <yann.gautier@foss.st.=
-com> wrote:
 
-> From: Christophe Kerello <christophe.kerello@foss.st.com>
->
-> Add the support of SDIO in-band interrupt mode for STM32 and Ux500
-> variants.
-> It allows the SD I/O card to interrupt the host on SDMMC_D1 data line.
-> It is not enabled by default on Ux500 variant as this is unstable and
-> Ux500 users should use out-of-band IRQs.
->
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
 
-v2 looks good to me,
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+在 9/15/2023 3:11 PM, Krzysztof Kozlowski 写道:
+> On 15/09/2023 04:15, Tengfei Fan wrote:
+>> Add the SoC specific compatible for SM4450 implementing arm,mmu-500.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> index cf29ab10501c..b57751c8ad90 100644
+>> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> @@ -47,6 +47,7 @@ properties:
+>>                 - qcom,sdx55-smmu-500
+>>                 - qcom,sdx65-smmu-500
+>>                 - qcom,sdx75-smmu-500
+>> +              - qcom,sm4450-smmu-500
+>>                 - qcom,sm6115-smmu-500
+>>                 - qcom,sm6125-smmu-500
+>>                 - qcom,sm6350-smmu-500
+>> @@ -70,6 +71,7 @@ properties:
+>>                 - qcom,sc8180x-smmu-500
+>>                 - qcom,sc8280xp-smmu-500
+>>                 - qcom,sdm845-smmu-500
+>> +              - qcom,sm4450-smmu-500
+> 
+> Isn't there comment just few lines above your edit? Comment saying DON'T?
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+Hi Kraysztof
+I seems haven't understand your comments totaly.
+I want to confirm that if you think only need "qcom,smmu-500" and 
+"arm,mmu-500" compitbale name, needn't specific compitable name for each 
+platform?
 
-Yours,
-Linus Walleij
+-- 
+Thx and BRs,
+Tengfei Fan
