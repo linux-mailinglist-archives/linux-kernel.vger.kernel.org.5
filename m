@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A817A21DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8705D7A21D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 17:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235928AbjIOPEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 11:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
+        id S235971AbjIOPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 11:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235677AbjIOPDt (ORCPT
+        with ESMTP id S235712AbjIOPDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 11:03:49 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F782126
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:43 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso21087915e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694790222; x=1695395022; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MZXaGIIfZuiGEdZwV32Js1I7wu0xbFZLpMopu8S/63c=;
-        b=j2pacwyiuGqTLgRQPiPev31PTbwYrLft7UMISs+FzqeTwAHLotWLe9L6I7Lqlrmz78
-         M5HV2tZf+TZSSsMfSly/0lSta9ckePIJB/rtu84rsvU5bmMNFr8G08ic1NMs6YH9btCU
-         w+NFXzByRrfe7SL9soj+SlQvt5Wbd1zBnUa0wmKQtWA2MbrFbFNrh5E1XVDmkk6w4BXK
-         1Z56/oXQSKcoGX0jN1pfMaqDEAICy+tShrY4WO8gH2SRL1Jo5aQcKyYED4b0uVoiIy/1
-         5ETSt1a5nAp40btPNN1cp+5z9XXgYCC0IkjCAFozHzPPuvebJvYGbWB9jitiQPYiCcB3
-         8PWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694790222; x=1695395022;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MZXaGIIfZuiGEdZwV32Js1I7wu0xbFZLpMopu8S/63c=;
-        b=nTSn+PVjx6QC9e5qzuyKjZpKIAtGNI9DMdjZAs7y4uTkiVUM9yN33ogShDEyiQvn3q
-         XblvLadXFHfNnBiu/ecEhIpomcChmdSjTO6zB/8CRI8k0E3hV8nwxpXpUJBIM0T6orXh
-         nNq9Of0Q8mJNRPqkuINDShRdkcmtFvkt1q6HjrzYjZUmiT3AwnrDOFponr1jVq6MvL30
-         fzJc7z9pD5U6KKecQuL5kBuKqPQnKSpBMrgGqRzfZX0R7fAROg8omOmn2w078GU5Fecu
-         JYefBBlnQ1cjVqoc84IEx5s9MjVHq0Kxof/sjp9r8PLGPaXUCWmnRBImVWHnS9P27wEr
-         qD2A==
-X-Gm-Message-State: AOJu0YwdA1lDSMQgRSXtVmKokU+QfX390dxohM+JNaU0cCgT6lBB7qCO
-        aVmgA4yLV4msVrQu3ULQm/3lsw==
-X-Google-Smtp-Source: AGHT+IFsSQMOEeoA9BMaHmpw2qAAQ1eXHoD6wcfgKGxbaoXoy4QfUJYUrirtRB5CXrqE7WkQALKXVA==
-X-Received: by 2002:a05:600c:221a:b0:3fa:97ad:2ba5 with SMTP id z26-20020a05600c221a00b003fa97ad2ba5mr1881686wml.31.1694790221828;
-        Fri, 15 Sep 2023 08:03:41 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:aa19:4569:aeeb:c0d3])
-        by smtp.gmail.com with ESMTPSA id hn40-20020a05600ca3a800b003fef19bb55csm4853369wmb.34.2023.09.15.08.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 08:03:41 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 11/11] gpio: sysfs: drop the mention of gpiochip_find() from sysfs code
-Date:   Fri, 15 Sep 2023 17:03:26 +0200
-Message-Id: <20230915150327.81918-12-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230915150327.81918-1-brgl@bgdev.pl>
-References: <20230915150327.81918-1-brgl@bgdev.pl>
+        Fri, 15 Sep 2023 11:03:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9533F2709
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 08:03:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAC4C433C8;
+        Fri, 15 Sep 2023 15:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694790215;
+        bh=UtY3Y7r9znKWxNJDaZ5ltW/b+hC2P2B8V/VhuUu8pkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ne/aH+FqERho8uP8TYtT4xl5rClVk1+AgqInqI+Ngw9OWuKsmalkSvAGsGsxXanSl
+         PCQBMZwKUde2FomJm48t9Ez3yWTDkTmPiYFc+h5vAVraAPNj3OAUIraTovluJKwjkg
+         HW3SP1ed4Mruwi1rL2mZbGJD0PnM+pQ08LJf2csDZ3SlHK/a7G15lvkO69a/4acByr
+         t/w/S6eknf7CjRaD5I0aB9bnU0QLlfBjS7Oeu84QQ86ng9BawZKApuv2+R8ELgg1G8
+         YIJ9AJdSuGgLJEXQj/tEpz7Z/dJbo2uwho5Ywf5VbCCywZU71eZi+qWR4RUTtYpXGK
+         HPvytPLGspJOQ==
+Received: (nullmailer pid 3729895 invoked by uid 1000);
+        Fri, 15 Sep 2023 15:03:32 -0000
+Date:   Fri, 15 Sep 2023 10:03:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Wang Chen <unicornxw@gmail.com>, linux-riscv@lists.infradead.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH 04/12] dt-bindings: riscv: Add T-HEAD C920 compatibles
+Message-ID: <20230915150332.GA3719864-robh@kernel.org>
+References: <20230915072333.117991-1-wangchen20@iscas.ac.cn>
+ <20230915-muster-viability-93d7d4ec2b49@spud>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230915-muster-viability-93d7d4ec2b49@spud>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Fri, Sep 15, 2023 at 03:11:43PM +0100, Conor Dooley wrote:
+> On Fri, Sep 15, 2023 at 03:23:33PM +0800, Wang Chen wrote:
+> > The C920 is RISC-V CPU cores from T-HEAD Semiconductor.
+> > Notably, the C920 core is used in the SOPHGO SG2042 SoC.
+> > 
+> > Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+> > Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> 
+> I figure this is missing a From: or Co-developed-by line.
 
-We have removed all callers of gpiochip_find() so don't mention it in
-gpiolib-sysfs.c.
+From: (author) as 2 authors for 1 line change is questionable.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/gpio/gpiolib-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The sender's email should be the last S-o-b. So like this:
 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index 50503a4525eb..6f309a3b2d9a 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -814,7 +814,7 @@ static int __init gpiolib_sysfs_init(void)
- 		 * gpiochip_sysfs_register() acquires a mutex. This is unsafe
- 		 * and needs to be fixed.
- 		 *
--		 * Also it would be nice to use gpiochip_find() here so we
-+		 * Also it would be nice to use gpio_device_find() here so we
- 		 * can keep gpio_chips local to gpiolib.c, but the yield of
- 		 * gpio_lock prevents us from doing this.
- 		 */
--- 
-2.39.2
+From: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+
+...
+
+Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+
+
+> 
+> > ---
+> >  Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > index 38c0b5213736..185a0191bad6 100644
+> > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > @@ -47,6 +47,7 @@ properties:
+> >                - sifive,u74-mc
+> >                - thead,c906
+> >                - thead,c910
+> > +              - thead,c920
+> >            - const: riscv
+> >        - items:
+> >            - enum:
+> > -- 
+> > 2.25.1
+> > 
+
 
