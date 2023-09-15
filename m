@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B38587A1BC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89087A1BCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 12:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbjIOKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 06:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
+        id S234196AbjIOKKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 06:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbjIOKKA (ORCPT
+        with ESMTP id S234208AbjIOKKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 06:10:00 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F6A3591
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:45 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D04503F67C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 10:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694772463;
-        bh=CePvDk/TxgBw6w90UlCCAlVR7GMFDlWsOITzDbSZkZE=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=KSqcbl2GquNamS8ZyHjLk+kK0OmTqqRvi0VeHrfPBosU8wrYYdR3rEhaAy/sI1tST
-         q49Drx9jb1aZo04a+FvlCj5/+ZWcBLFwVQ7sgk0QxE+RzJqPol3IUCMJY56swmuEHz
-         lnBMCTTjYuwqCnusdQAGJMsWmHmiKg18A9VIUxtTKaeGwnHmQqFz8eO0cDSJ9l0EB/
-         a39NJJBX8N5W5leKm4thzEIjiYZLwUoHYuaqm4jtdz8io+dlcY1wfoa7A0mEMrvkks
-         x7a0gmWcAz0I0NccjnSZaX+g7HeyYCY3i6fKicHk48p+qFqdcSJ7p9seUB4NExRHeK
-         hjF66zkT/eOZA==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-412136f4706so20117881cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:07:43 -0700 (PDT)
+        Fri, 15 Sep 2023 06:10:16 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF39DBB
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:09:39 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59bc956b029so20583717b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 03:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694772579; x=1695377379; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v4KfpQzja2bZ8y8lL4LNkQMrLo3G1cILj6bkpeLJFqE=;
+        b=zOi+IuJCvMJ99kwCxjwp/A6Xgr013ZlRdTDwiDq+bIpncgFAJHA5mjti016GSn8Kfv
+         EJNcR4ZaqTN5eE6Wm/EFKRoafBvdGt9G7fyLXioI0iJOXTm01TZwKVhaJ+2avxqid5kg
+         9u1hw8LhdUcFtF37HYOKBd6sHUaw4ZiUH3WGdEF944SOnSm5CirTDxl61OLA1SKT+yMp
+         XlrbqbLmTwxgtxIMCWm308cxSmbM8fo09S19ciDKrsNug/dkDVKo15h0Id5rAs5HLu97
+         9W9YMhLCXHlpH9/A+ojIUzcCifaGCzAJArfI8XlStik+SPopFDq3aRtZCJkU1T4uaBNG
+         IaUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694772460; x=1695377260;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CePvDk/TxgBw6w90UlCCAlVR7GMFDlWsOITzDbSZkZE=;
-        b=qNt+U9aWvC0PYKpoXJZ6tCdVTNrsuIZz27lXbwPNWtWU6tKnHwKZrQz3gSqL4R0CB4
-         szwiqjB/M+ZrN1w4OMUNWAX0XY2G4sOwnqzW8RtXTTK6A6lHaB0JCQtHV+RHGtG1xJLo
-         UrRhDUUEvx/7Deb1VZD6uK3JcDCQ+CCG3lsfjNhI5cqaPP9eTjClBCf5DaS3ddPJa3oM
-         YSJkdgd2hPdFqp6glXLha6c4gB7lZPjdgHT3NFMMQwYJ/IWfhpOhWKAUcLr4StcVjWdX
-         Sd3PGUzqbasVqjssgIdkrafes2OsaUbcF9PsLOCVJIQMv1hchU8uZ4qjFEC8zU/5FxcF
-         k+JQ==
-X-Gm-Message-State: AOJu0YzuBD+i+MIqoNsN6OZxQGGQtxAV9Dz3YLT0QXqZkg7j74dV8IqZ
-        MRnuV+l8MRi7m6Afqev2/EQpAHYJscNdqbjfILbFedzdIFdimSig/WJgeL0k0G9R6y2ka+TpGTV
-        SIN5pB//57j4+nAt4DZdMmIgmSOQvvdwcgZiAF/kgT4L1+NiPzHNe7j89Pw==
-X-Received: by 2002:ac8:59ca:0:b0:412:1ba6:32af with SMTP id f10-20020ac859ca000000b004121ba632afmr1121511qtf.19.1694772460112;
-        Fri, 15 Sep 2023 03:07:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH+ttv6EU1BRZWt+DGbR4+QlOm43LirF30qz5OYUZ4PVhJmX/0LnnR85y4NNlsb75YxMffLnjCJzd0uf44Zpgw=
-X-Received: by 2002:ac8:59ca:0:b0:412:1ba6:32af with SMTP id
- f10-20020ac859ca000000b004121ba632afmr1121495qtf.19.1694772459877; Fri, 15
- Sep 2023 03:07:39 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 15 Sep 2023 03:07:39 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20230914-optimize_checksum-v5-2-c95b82a2757e@rivosinc.com>
-References: <20230914-optimize_checksum-v5-0-c95b82a2757e@rivosinc.com> <20230914-optimize_checksum-v5-2-c95b82a2757e@rivosinc.com>
-Mime-Version: 1.0
-Date:   Fri, 15 Sep 2023 03:07:39 -0700
-Message-ID: <CAJM55Z8Pjbu8uCqh9Heaj=ScuAoYgqsEzFuxwBUCfiZmMmk+KQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] riscv: Checksum header
-To:     Charlie Jenkins <charlie@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
+        d=1e100.net; s=20230601; t=1694772579; x=1695377379;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v4KfpQzja2bZ8y8lL4LNkQMrLo3G1cILj6bkpeLJFqE=;
+        b=bMh3TZaKXD4rRY5fQPFYu+rLG1QpRdh8pyr1uxIPVW2cFI7zp4OkAmSWHCZ6fHaNoO
+         ZMt7fhxyLCgJW4z4iHsWZM0t6fs0QQgnGrUg0dl2Z0doWePta7Mht13aShfLMxVJc4SP
+         85ZgKFyJSNhV8P0XT3uvGb3Xk+gD5KCAjO+OpIx/JYk8KnUlvFokaT3JAKixDAMSfJj6
+         6EbbLUGcaTE2oEZTNBdAkNkFcyPu5HWL1xAlHc6CPvdYdCMxYLpb8NWSNvEZ9fAG3dZo
+         2lz/ls2beeMEZM0fHb7kIQ2OJZKx5ikaI3lCpd1icpKX7TCmXNrqDsETvfn1IqKze8Uf
+         fPVA==
+X-Gm-Message-State: AOJu0YynWmExKmU9NyGSHcQ63J1WP6gh5CRuMgPpLlI3ovmiDWbyXRdP
+        TRyuf+qPZ5fwXbtC4zP3QXxFpGEuxApfbxTdvHqurA==
+X-Google-Smtp-Source: AGHT+IFZQJDXMgDKZjK6p6cQN4paCQlm6x7Ii+qiPr5B4nkU/0jgpYr8U9VAyRmKFjuOBv7bG64YdavpdrQjY1gKfPA=
+X-Received: by 2002:a81:6cd8:0:b0:586:9c4b:95fb with SMTP id
+ h207-20020a816cd8000000b005869c4b95fbmr1242141ywc.19.1694772579165; Fri, 15
+ Sep 2023 03:09:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183>
+In-Reply-To: <07c32bf1-6c1a-49d9-b97d-f0ae4a2b42ab@p183>
+From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date:   Fri, 15 Sep 2023 12:09:28 +0200
+Message-ID: <CACMJSeu1NYNbQkiZC1BOs4QKhR4+VwYRrpDgq8gczRujt13zEQ@mail.gmail.com>
+Subject: Re: Buggy __free(kfree) usage pattern already in tree
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,110 +68,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Charlie Jenkins wrote:
-> Provide checksum algorithms that have been designed to leverage riscv
-> instructions such as rotate. In 64-bit, can take advantage of the larger
-> register to avoid some overflow checking.
+On Fri, 15 Sept 2023 at 11:56, Alexey Dobriyan <adobriyan@gmail.com> wrote:
 >
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/asm/checksum.h | 79 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
+> __free() got some usage and some of the usage is buggy:
 >
-> diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
-> new file mode 100644
-> index 000000000000..2f0f224682bd
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/checksum.h
-> @@ -0,0 +1,79 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * IP checksum routines
-> + *
-> + * Copyright (C) 2023 Rivos Inc.
-> + */
-> +#ifndef __ASM_RISCV_CHECKSUM_H
-> +#define __ASM_RISCV_CHECKSUM_H
-> +
-> +#include <linux/in6.h>
-> +#include <linux/uaccess.h>
-> +
-> +#define ip_fast_csum ip_fast_csum
-> +
-> +#include <asm-generic/checksum.h>
-> +
-> +/*
-> + * Quickly compute an IP checksum with the assumption that IPv4 headers will
-> + * always be in multiples of 32-bits, and have an ihl of at least 5.
-> + * @ihl is the number of 32 bit segments and must be greater than or equal to 5.
-> + * @iph is assumed to be word aligned.
-> + */
-> +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> +{
-> +	unsigned long csum = 0;
-> +	int pos = 0;
-> +
-> +	do {
-> +		csum += ((const unsigned int *)iph)[pos];
-> +		if (IS_ENABLED(CONFIG_32BIT))
-> +			csum += csum < ((const unsigned int *)iph)[pos];
-> +	} while (++pos < ihl);
-> +
-> +	/*
-> +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
-> +	 * worth checking if supported without Alternatives.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> +		unsigned long fold_temp;
-> +
-> +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> +					      RISCV_ISA_EXT_ZBB, 1)
-> +		    :
-> +		    :
-> +		    :
-> +		    : no_zbb);
-> +
-> +		if (IS_ENABLED(CONFIG_32BIT)) {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				rori	%[csum], %[csum], 16		\n\
-> +				sub	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> +		} else {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				rori	%[fold_temp], %[csum], 32	\n\
-> +				add	%[csum], %[fold_temp], %[csum]	\n\
-> +				srli	%[csum], %[csum], 32		\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				roriw	%[csum], %[csum], 16		\n\
-> +				subw	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> +		}
-> +		return csum >> 16;
-> +	}
-> +no_zbb:
-> +#ifndef CONFIG_32BIT
-> +		csum += (csum >> 32) | (csum << 32);
-> +		csum >>= 32;
+>    832  static struct fwnode_handle *
+>    833  gpio_sim_make_bank_swnode(struct gpio_sim_bank *bank,
+>    834                            struct fwnode_handle *parent)
+>    835  {
+>    838          char **line_names __free(kfree) = NULL;
+>                 // returns NULL or ERR_PTR(-E)
+>    848          line_names = gpio_sim_make_line_names(bank, &line_names_size);
+>    849          if (IS_ERR(line_names))
+>    850                  return ERR_CAST(line_names);
+>
 
-This indentation is still weird.
+Thanks for the report, I'll send a fix.
 
-> +#endif
-> +	return csum_fold((__force __wsum)csum);
-> +}
-> +
-> +#endif // __ASM_RISCV_CHECKSUM_H
+Bart
+
 >
-> --
-> 2.42.0
+> This pattern will result in calling kfree() on error value.
+> And there are no compiler or sparse checking these things.
 >
+> This test module demonstrates the landmine:
 >
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> [  812.981089] ------------[ cut here ]------------
+> [  812.981597] WARNING: CPU: 0 PID: 1326 at mm/slab_common.c:991 free_large_kmalloc+0x50/0x80
+> [  813.013266] ---[ end trace 0000000000000000 ]---
+> [  813.013800] object pointer: 0xfffffffffffffff4
+>
+> #include <linux/module.h>
+> #include <linux/slab.h>
+> #include <linux/cleanup.h>
+>
+> struct S {
+>         int x;
+> };
+>
+> static struct S* f(void)
+> {
+>         struct S* s = kmalloc(sizeof(struct S), GFP_KERNEL);
+>         s = NULL;
+>         return s ?: ERR_PTR(-ENOMEM);
+> }
+>
+> static int __init xxx_module_init(void)
+> {
+>         struct S *s __free(kfree) = NULL;
+>         s = f();
+>         if (IS_ERR(s)) {
+>                 return PTR_ERR(s);
+>         }
+>         return 0;
+> }
+>
+> static void __exit xxx_module_exit(void)
+> {
+> }
+> module_init(xxx_module_init);
+> module_exit(xxx_module_exit);
+> MODULE_LICENSE("GPL");
