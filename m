@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709407A12D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DCB7A12DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Sep 2023 03:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjIOBQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Sep 2023 21:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        id S231230AbjIOBUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Sep 2023 21:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjIOBQ5 (ORCPT
+        with ESMTP id S230100AbjIOBUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Sep 2023 21:16:57 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB45268E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:16:52 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso220192566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Sep 2023 18:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1694740611; x=1695345411; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=NPhAEJforhjWZp+uVyQ1+GyAsVZzUl1B486vJg9MvnA=;
-        b=qc0HR92ns3kwOlSuTfQ7vELR7rhC1HJlvaiK5pD+E6oVGzbyAlJiA0zsQdgHhwGogh
-         esNR9ivv7SCtib/rLWOICnDa7LdUDc350eNd+Ao/CRMGSl07p7GxmiX/QXgA2U5kt4az
-         XxkHPUMa9rK1jBT9jMGI22o6tVMLecG+UR4K8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694740611; x=1695345411;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NPhAEJforhjWZp+uVyQ1+GyAsVZzUl1B486vJg9MvnA=;
-        b=sZUjBqCr7licz4gFhk7GH0fVuFANUcRLE72HzGD2KXLnspY40iR9r2vwpPjdva91zW
-         B4vYLPe4yN5tQo3idFaOxWRijUB6eb8xKGlY0QzI9j7/QPe7fGvQ/CZ8bI6uYKcXF8Dp
-         6VVwZu+oRGXIO8+jB1Yuj47EwaEo6DQB+NJy2yjIjYMfUaZcFs9kpGzrLUuGwEOfDEKT
-         erQK2c7Q9+FSpF6dcZkHRvx/BKQY0bAMbZ6U0OHTAt8g1tFh3v8+nZuk4KELMfoE/ajX
-         iYL+jBpObh90xngIIDmfujb6bnOneufVwpkiLJodrgFJy/k2xItL9lZemhqvHOq9XtGZ
-         oBWg==
-X-Gm-Message-State: AOJu0Yz6C79JO87sB0kFCxPnr424kYcmm+7yWuU2JR0GUQu4InLwg1HV
-        /n7AsWfita9L4g7iKEmcv+QZ0w==
-X-Google-Smtp-Source: AGHT+IE7O+PeUxB72+aWKd2SThAEBmIs9sfrCItn5Ff0aKMedVWukOd31H6m4Ef8LNnP3BDRvPbAaw==
-X-Received: by 2002:a17:906:3f49:b0:99c:56d1:7c71 with SMTP id f9-20020a1709063f4900b0099c56d17c71mr118141ejj.26.1694740611206;
-        Thu, 14 Sep 2023 18:16:51 -0700 (PDT)
-Received: from [192.168.1.10] (host-92-12-44-130.as13285.net. [92.12.44.130])
-        by smtp.gmail.com with ESMTPSA id v7-20020a1709064e8700b00977cad140a8sm1674597eju.218.2023.09.14.18.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 18:16:51 -0700 (PDT)
-Message-ID: <6575702e-fea5-61b2-dd61-7b556a8603e8@citrix.com>
-Date:   Fri, 15 Sep 2023 02:16:50 +0100
+        Thu, 14 Sep 2023 21:20:51 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2B42100;
+        Thu, 14 Sep 2023 18:20:47 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 33767320093B;
+        Thu, 14 Sep 2023 21:20:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 14 Sep 2023 21:20:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694740845; x=1694827245; bh=pmP7OP8Teh0wQAibyNwOhpBxRHvDRLuM8su
+        1niOjxnQ=; b=NqhFWMnVCcxQHZPlXyLw0n7dKBIX2C8Jsn5W9axT3zoFM/sTGxj
+        LnECOWQ4SqR878gxfxPCxd/HgY2M/ZSbwbVr59gkl42U4aJlAMfk+/nf5HWLok5S
+        e3DpNyYJTIdf2aBgi3JKEFdxgXf7MBIn8FFLAX/yKQU+0BNkxyrM7f3+jJpcgL8i
+        RT571MYz/JY1HNPzAuOz205Os1PT3HqMHwmHoCBW7rgwjKs8r/FC3f8HO3qvgboS
+        VO6elqDybO+zYZa17Ka72MvynEGydL+3iuFv90+tXt1xVRedRjgyKeVVGg64hwe+
+        mUiM5PggvTS7Qbdthzpd3EN5s9TMrLuiFyg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694740845; x=1694827245; bh=pmP7OP8Teh0wQAibyNwOhpBxRHvDRLuM8su
+        1niOjxnQ=; b=jE3sXdcqMRKGAL+0avRoWasTzWML+Ek8m0C6HJCGg+2+rMqgiaT
+        XX2cw0J9LpAzI2nVaYHletTIve0xGkLbQ14U1g5SdxegqbKPow4EjcMV1cUokrCS
+        0OuobbOJjUAwzDw4deAmvx4qmzXr8EBiXCdykPwlfKxray0HP+FlaURGnvcLyxmS
+        6Eo8xEl6/7jt8/kTEueJjK/UKnUmiZtTk88/gUtHva+fiSGqS2EQajs2jsEky1Ie
+        BBnrG/0/bproKk9CGIQvpWAeUnd4DGISXc78UHFeAtbDxBoSzRc0gCje6ns2Pvz2
+        EYvXhiPuUCih68Wu89aareqB/caTtuEJ5LQ==
+X-ME-Sender: <xms:bbEDZYz3U3uTLR6OF7JIrHAuZvoAx4RUgbKJ3vVGIZfnlANqXm0ptw>
+    <xme:bbEDZcRKLtg5DwDicCJKun8Q_0GJVrPKEmn6KY731dYv6OTYSJoPkX2IrTiLS_w9l
+    Vjd8SADVrvI>
+X-ME-Received: <xmr:bbEDZaVF8n4NWE0ArebMmg-JLA22gNAsyxaDbHesyOUcUewFUuTuexn0MI7ht7_cd2onncGuFsroYEH0Pb3nDJ__ndAXmV_2SfXwQJsbAiGlRwTfLoH2>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epgedvteevvdefiedvueeujeegtedvheelhfehtefhkefgjeeuffeguefgkeduhfejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:bbEDZWhRuUaBVlLzmQ4jUJKO7tqQJqZTWkxt77y288tkZSdyYlt2iw>
+    <xmx:bbEDZaDdLhT6HMc2k2fZDM9QIw3s7zbQJg36_CFvpt1-wGQQnpx3cw>
+    <xmx:bbEDZXK5eEOluEb2yRcMaBRsmQTOojCZbpvpl4aQJbDepopwt3y9zQ>
+    <xmx:bbEDZSuc5We0fdnIICrw3rnOkCmJE4mHp84VZCqYZ4V5RwbPqhXb3A>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Sep 2023 21:20:40 -0400 (EDT)
+Message-ID: <904a8d17-b6df-e294-fcf6-6f95459e1ffa@themaw.net>
+Date:   Fri, 15 Sep 2023 09:20:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   andrew.cooper3@citrix.com
-Subject: Re: [PATCH v10 03/38] x86/msr: Add the WRMSRNS instruction support
-Content-Language: en-GB
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
-        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
-        ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        jiangshanlai@gmail.com
-References: <20230914044805.301390-1-xin3.li@intel.com>
- <20230914044805.301390-4-xin3.li@intel.com>
- <6f5678ff-f8b1-9ada-c8c7-f32cfb77263a@citrix.com> <87y1h81ht4.ffs@tglx>
- <7ba4ae3e-f75d-66a8-7669-b6eb17c1aa1c@citrix.com>
- <0e7d37db-e1af-ac40-6eca-5565d1bebcde@zytor.com>
-In-Reply-To: <0e7d37db-e1af-ac40-6eca-5565d1bebcde@zytor.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 0/3] quering mount attributes
+Content-Language: en-US
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 2:01 am, H. Peter Anvin wrote:
-> The whole bit with alternatives and pvops being separate is a major
-> maintainability problem, and honestly it never made any sense in the
-> first place. Never have two mechanisms to do one job; it makes it
-> harder to grok their interactions.
+On 14/9/23 14:47, Amir Goldstein wrote:
+> On Wed, Sep 13, 2023 at 6:22 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>> Implement the mount querying syscalls agreed on at LSF/MM 2023.  This is an
+>> RFC with just x86_64 syscalls.
+>>
+>> Excepting notification this should allow full replacement for
+>> parsing /proc/self/mountinfo.
+> Since you mentioned notifications, I will add that the plan discussed
+> in LFSMM was, once we have an API to query mount stats and children,
+> implement fanotify events for:
+> mount [mntuid] was un/mounted at [parent mntuid],[dirfid+name]
+>
+> As with other fanotify events, the self mntuid and dirfid+name
+> information can be omitted and without it, multiple un/mount events
+> from the same parent mntuid will be merged, allowing userspace
+> to listmnt() periodically only mntuid whose child mounts have changed,
+> with little risk of event queue overflow.
+>
+> The possible monitoring scopes would be the entire mount namespace
+> of the monitoring program or watching a single mount for change in
+> its children mounts. The latter is similar to inotify directory children watch,
+> where the watches needs to be set recursively, with all the weight on
+> userspace to avoid races.
 
-This bit is easy.
+It's been my belief that the existing notification mechanisms don't
 
-Juergen has already done the work to delete one of these two patching
-mechanisms and replace it with the other.
+quite fully satisfy the needs of users of these calls (aka. the need
 
-https://lore.kernel.org/lkml/a32e211f-4add-4fb2-9e5a-480ae9b9bbf2@suse.com/
+I found when implementing David's original calls into systemd).
 
-Unfortunately, it's only collecting pings and tumbleweeds.
 
-~Andrew
+Specifically the ability to process a batch of notifications at once.
+
+Admittedly the notifications mechanism that David originally implemented
+
+didn't fully implement what I found I needed but it did provide for a
+
+settable queue length and getting a batch of notifications at a time.
+
+
+Am I mistaken in my belief?
+
+
+Don't misunderstand me, it would be great for the existing notification
+
+mechanisms to support these system calls, I just have a specific use case
+
+in mind that I think is important, at least to me.
+
+
+Ian
+
