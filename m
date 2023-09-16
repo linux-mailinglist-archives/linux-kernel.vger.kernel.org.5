@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457137A3240
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FA57A322E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239160AbjIPTZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S238556AbjIPT1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237149AbjIPTZf (ORCPT
+        with ESMTP id S239406AbjIPT1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:25:35 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6A7F7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:25:29 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff7d73a6feso36575785e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:25:29 -0700 (PDT)
+        Sat, 16 Sep 2023 15:27:17 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4CD139
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:27:12 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40476ce8b2fso24807725e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694892328; x=1695497128; darn=vger.kernel.org;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694892431; x=1695497231; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E2ak/x1WTkgqGnFpeeTytapXoHBG+0Maebkw6pQDONU=;
-        b=dtEzH7+g9SIAzBkQl+6oIjBcLF3jsMrtL20qxebkWPMQg7ELUAjrNsvsu7BV7RJkOl
-         2r+ay+Fihb0igBpvrSmEf3gOQHRKHrGwBMI4BDJPJJ0NrWt8NJQuil2sMfeP32HzaA+m
-         AVEmSq+GOmWNvicy2ghbtxZnKlybCvMNoM/mb7zFHKQuJaSneur1qAu3NKbY/alV8sWE
-         bURdIM/RVfK8cLs6u6wK8P8SbzjtnWFItB6e/wW76OoD8JfsRay8uukAtoWA6mLdjg0l
-         MTysKazqquDvOeA/Gv9qSa3mFZTJZAYdxkxJaOchtqnM78raK64EFTXZOHDWHH4hLTgH
-         rp4A==
+        bh=8w7ve4STZCqGPr6S0Mqjp3qKSLpdP4D49x5sftmoEMc=;
+        b=v85lGhEy2ArRZLjc+F6D+pdjW9CoZD1Jr7dle4CI0bJntvgkq9VCgVrzsaPa32XVFV
+         VYsnvmgEJTIA45Mv5Z8xihiZ0F8P68JmoEVdnORH3bKjA+KpEsg4OcETKLkRFaDjanbI
+         /d+9RNTgtcebjmY9SFoNzC61hy0/EsCA3Y8SeqvgBe9T/+TscGVifqjeUkB4AxiYO66o
+         DGs04LVmzip5+hQeffHY8MPiPV1vBDG3M9XyN0EbD5VqyB9DTDDCyM+8CU/57ECvQywe
+         nJd58lTmsYfZbdAWNkw0GKR4HoXXYCQcgKAQ+4O1T7fimuC02GMnfw0gO0rCSmiqC1Si
+         BfEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694892328; x=1695497128;
+        d=1e100.net; s=20230601; t=1694892431; x=1695497231;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E2ak/x1WTkgqGnFpeeTytapXoHBG+0Maebkw6pQDONU=;
-        b=UIAeZLl3MaVhczPh9k6iI2KIcVeiFqMiC/AwK+vO42VyRekg7DUghsK4DxfhoB3RCt
-         E8GYPyIDNnk8Y4UXhqh2RGPzCBv99Mje2mGb7+fVxD/xvxaOteOcu6kijMQR0S76IdXn
-         /C7qGRaWvXDacgC+l7lqUkn4lh0QKMBFRabsmTV+OBi1+diTrZHO/v1wZZNWyWPYAGF3
-         Z1RC62GV3eVwForDuISjZsDp/Kw8b8pftSjxJzxqKJY/AaOC1SIQcOeCk4deLBv47ot4
-         ZP5z11fVIQDQXftxe7ADgEmd65nnWDPze3t2keYgulCCBErqP94rLi1nClGM+vNOepa7
-         00qA==
-X-Gm-Message-State: AOJu0YyC+GaA6hFz5X6s8+XxqnhNzP8lAxo7j3p/tXBiT/d3fkDSnJTW
-        afrIcAszP2tIomz1QYPoAb93Iw==
-X-Google-Smtp-Source: AGHT+IG7h8jkNjHayxzj7qQhK5Y+fTM3y8iZsizQkXy9tbdxFhcqElXj7FcXFolcLjlQMVp+WdkMuQ==
-X-Received: by 2002:a05:600c:21cb:b0:401:b53e:6c57 with SMTP id x11-20020a05600c21cb00b00401b53e6c57mr4630266wmj.9.1694892328167;
-        Sat, 16 Sep 2023 12:25:28 -0700 (PDT)
+        bh=8w7ve4STZCqGPr6S0Mqjp3qKSLpdP4D49x5sftmoEMc=;
+        b=u2ZSfBatkCWUAGmi/ibj6uPTiu1wwJgW9co6dGIoBgtroH8P5Rpr9lHBDCpABUpkps
+         lzwR1hXoXt3qD4CdxQWa3u4kp57xdNkY+/8MIR9laqdpIpqI7j0S7+Kf5jzYc9mIBLj+
+         UiMIB51OcnHRMA4T2kM04SzW/Mw1otdjZy8rvEn+J76fNMESPBHUABuRVbIVFHNS2l1D
+         31MksMBEqpXiNjQxlNzuBTMhIF/DRUdpsfAbUPW5OHDvMUoubuFR9QSiuPP3k+3Q9vru
+         E2M607yGy6aDzq7K8n42sobYc4xr6hg9u2SdvKUF19mruukHHtdgq8R426MQCJT7Q4bS
+         hL2A==
+X-Gm-Message-State: AOJu0YyWv54t+Q3x8QqpiMR/rS7FBog+g5MT3WSVi/Hl5PwhSsgrU/NS
+        6woWCse1DX3w4uIlH16zFtfZhg==
+X-Google-Smtp-Source: AGHT+IFck6LaYBLeQsmyagGhELi/K0Zj8ALsgDvIAK4Czo8s4jyeE2sRxkC0jkVTQdbvpPehYCKO5g==
+X-Received: by 2002:a05:600c:3781:b0:401:b2c7:349b with SMTP id o1-20020a05600c378100b00401b2c7349bmr4098099wmr.7.1694892431002;
+        Sat, 16 Sep 2023 12:27:11 -0700 (PDT)
 Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id q5-20020a7bce85000000b004013797efb6sm10866566wmj.9.2023.09.16.12.25.27
+        by smtp.gmail.com with ESMTPSA id l13-20020a7bc44d000000b00401c595fcc7sm10841915wmi.11.2023.09.16.12.27.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 12:25:27 -0700 (PDT)
-Date:   Sat, 16 Sep 2023 20:25:26 +0100
+        Sat, 16 Sep 2023 12:27:10 -0700 (PDT)
+Date:   Sat, 16 Sep 2023 20:27:09 +0100
 From:   Qais Yousef <qyousef@layalina.io>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
- uclamp constraints
-Message-ID: <20230916192526.gd2kevpq5okondjm@airbuntu>
-References: <20230820210640.585311-1-qyousef@layalina.io>
- <20230820210640.585311-3-qyousef@layalina.io>
- <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
- <20230829163740.uadhv2jfjuumqk3w@airbuntu>
- <CAKfTPtCP6uX79dOrzN4PxFTMBFrDAMOOrWyZrsVypUQ0RY7BAA@mail.gmail.com>
- <20230907215555.exjxho34ntkjmn6r@airbuntu>
- <CAKfTPtA8Ljy4NBqjw8Wj4pEFc-OCR55QPuwh+5GgrHN6u+ugsg@mail.gmail.com>
- <20230910174638.qe7jqq6mq36brh6o@airbuntu>
- <979a9e2f-06a8-1936-b5cd-2949eca99b21@arm.com>
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Wei Wang <wvw@google.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+        Hank <han.lin@mediatek.com>,
+        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
+        Hongyan Xia <hongyan.xia2@arm.com>
+Subject: Re: [PATCH v4 1/3] sched/uclamp: Set max_spare_cap_cpu even if
+ max_spare_cap is 0
+Message-ID: <20230916192709.5s22femf73pccmu3@airbuntu>
+References: <20230821224504.710576-1-qyousef@layalina.io>
+ <20230821224504.710576-2-qyousef@layalina.io>
+ <d5407fdf-8e49-1035-3188-f96248c96c44@arm.com>
+ <20230826204156.5gznalle6qzwl7y3@airbuntu>
+ <ZQKqsL0MCZCW3Rpi@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <979a9e2f-06a8-1936-b5cd-2949eca99b21@arm.com>
+In-Reply-To: <ZQKqsL0MCZCW3Rpi@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -84,91 +81,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/23 15:40, Dietmar Eggemann wrote:
-> On 10/09/2023 19:46, Qais Yousef wrote:
-> > On 09/08/23 16:30, Vincent Guittot wrote:
+On 09/14/23 08:39, Ingo Molnar wrote:
+> 
+> * Qais Yousef <qyousef@layalina.io> wrote:
+> 
+> > > Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 > > 
+> > Thanks for the review!
+> > 
+> > I will wait for the maintainers to see if they would like a v5 to address 
+> > the nitpicks or it's actually good enough and happy to pick this up. I 
+> > think the commit messages explain the problem clear enough and doesn't 
+> > warrant sending a new version. But happy to do so if there's insistence 
+> > :-)
 > 
-> [...]
-> 
-> >>>> above 512 whatever the current (720)  formula or your proposal (608).
-> >>>> In the case of uclamp, it should be applied after having been scaled
-> >>>> by irq time.
-> >>>
-> >>> I lost you a bit here. I'm not sure how you reached the 720 and 608 numbers.
-> >>
-> >> My bad, I finally decided to use an irq pressure of 128 in my
-> >> calculation but forgot to change the value in my email
-> >>
-> >>>
-> >>> So the way I'm proposing it here
-> >>>
-> >>>         util = cfs + rt + dvfs_headroom(cfs+rt) = 800 + 0.25 * 800 = 1000
-> >>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
-> >>>         util = scale_rq_capacity(512, 256, 1024) = 0.75 * 512 = 384
-> >>>         util += dvfs_headroom(irq) = 384 + 256 + 0.25 * 256 = 704
-> >>>         util += dvfs_headroom(dl_bw) = 704
-> >>>
-> >>>>
-> >>>> So we should have reported utilization of 720 with a bandwidth
-> >>>> requirement of 512 and then cpufreq can applies its headroom if needed
-> >>>
-> >>> The key part I'm changing is this
-> >>>
-> >>>         util = cfs + rt + dvfs_headroom(cfs+rt) = 800 + 0.25 * 800 = 1000
-> >>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
-> >>>
-> >>> Before we had (assume irq, rt and dl are 0 for simplicity and a single task is
-> >>> running)
-> >>>
-> >>>         util = cfs = 800
-> >>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
-> >>>         util = dvfs_headroom(util) = 512 * 0.25 * 512 = 640
-> >>>
-> >>> So we are running higher than we are allowed to. So applying the headroom
-> >>> after taking uclamp constraints into account is the problem.
-> 
-> I'm not sure I understood all the example math in this thread correctly:
-> 
-> Examples:
-> 
-> irq = 128 or 256
-> 
-> util = 800 uclamp = 512
-> 
-> 
-> --- current code:
-> 
-> ((util_cfs + util_rt) * ((max - irq) / max) + irq + dl_bw) * scale
-> 
-> <- uclamped(cfs+rt) ->
-> 
-> <--               scale_irq_capacity()                  -->|<-- map_util_perf() 
->                                                                / (headroom())  
-> 
-> irq = 128: (512 * (1024 - 128) / 1024 + 128 + 0) * 1.25 = 576 * 1.25 = 720
-> 
-> irq = 256: (512 * (1024 - 256) / 1024 + 256 + 0) * 1.25 = 640 * 1.25 = 800
-> 
-> 
-> --- new approach:
-> 
-> irq = 128: (512 * (1024 - 128) / 1024 + 128 + 0.25 * 128)            = 608
-> 
-> irq = 256: (512 * (1024 - 256) / 1024 + 256 + 0.25 * 256)            = 704
-> 
->             <->
->             uclamped(cfs+rt+headroom(cfs+rt))
-> 
->             <- scale_irq_capacity() ->
-> 
->             <--               headroom(irq) ?        -->
-> 
-> 
-> Is the correct?
+> Yeah, please always do that: sensible review replies with actionable 
+> feedback cause a semi-atomatic "mark this thread as read, there will be a 
+> next version" reflexive action from maintainers, especially if a series is 
+> in its 4th iteration already...
 
-Yes, this is my understanding too. But I'm not sure anymore as it seems I'm
-missing something from what Vincent is saying.
+Apologies. I did realize that and intended to send a new version last weekend,
+but failed to get to it. I hope to be able to do so today or tomorrow.
 
 
 Thanks!
