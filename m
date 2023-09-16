@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B47B7A2EF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD087A2EF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238801AbjIPJMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S233713AbjIPJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237947AbjIPJLp (ORCPT
+        with ESMTP id S238315AbjIPJO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:11:45 -0400
+        Sat, 16 Sep 2023 05:14:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AD2173C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:11:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34B56C433C8;
-        Sat, 16 Sep 2023 09:11:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A071173B
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:14:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CCAC433C7;
+        Sat, 16 Sep 2023 09:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694855499;
-        bh=covprlx2zu7EStEAq1dkZceiipg+g+xBDyRtgZg9lEU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L20Zf8ShTCrxx+h6ckh03Od5+HOYHYbXqncrkJFqcHhMf9IrBOY8fGUP42lmwZ8hg
-         +G68JIxSWkJsBBX5C+H8XG84fNggO1Xd9HeIFddmEarKb+almvYUrq+QPAscJPy7Y+
-         ZJnlCfgb8qXzGMGbhN0lIJhBmiToMaL7ftQJkb3YYY/ZfJm1nO1Pj48Yi++ke1Toye
-         QHRhiZU6m+MbTyEqctSauNs/Td80++HpiH1UAypN0HYsbET1CqRyu3QmBMa6b17yq0
-         IdZ7RgYG5mTRGTWuqX10IzfF9CEBeEJolpaPYvdHps1I4CKZY1nkXS73+GVSy95iMV
-         zojbBd90U/DSw==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [RFC PATCH 2/2] vlynq: remove bus driver
-Date:   Sat, 16 Sep 2023 11:11:24 +0200
-Message-Id: <20230916091125.3221-3-wsa@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230916091125.3221-1-wsa@kernel.org>
-References: <20230916091125.3221-1-wsa@kernel.org>
+        s=k20201202; t=1694855661;
+        bh=GdGIL53lm5iv/mox0ahLK0T+iKNQXpwOmFGuHh0bLKI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MXFjs8+pBJZdHwmuPF39Dgwiac3x3AZ6Ss001Xqa4bdVx5TwxJZjc+2e08dgidLqf
+         a1ThGwqoJ6cAu9E0MeCHJLx4YOr4hm9Z4mcrWe/AUeICdzvrfMbZbi2UcDrqEh1tJu
+         WK2k44+EDyhxS10IwH49j77ngj+JZcI23btS3KkdtAZqkUiiUMQxMS/U0aQ0eZ9YOd
+         k1fEulNFIvO4rcGn6pWtQ7eDvtckKZ5CJIrZVrbRcmjwKpWfQ8W4iomNjJpwNeTJuf
+         6gRJg40669dhp8j//RhdpTdWlIC4Q/Wrs9uP6kOb5PQrs2tS15Xl/YQFaiYnQp7g/i
+         uoD7BOXntteuw==
+From:   Conor Dooley <conor@kernel.org>
+To:     linux-riscv@lists.infradead.org
+Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] riscv: dts: allwinner: remove address-cells from intc node
+Date:   Sat, 16 Sep 2023 10:14:00 +0100
+Message-Id: <20230916-saddling-dastardly-8cf6d1263c24@spud>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1512; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=UgmedOCSd3V8sGIbZthMv9VrCmYnN+opWlLsZB5DVno=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKmshVfr/vQqXF5o7fZG0oplI5uJspPEknN7nj39fsdMy ckhYXlFRykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACbizMbwT8U7bukPz22JO/Yt to7Y7bVftroz1N7/sa+Obo/PthIJK4b/NVf+PvkQ5LS8NWG25eMLWp3N3x9XHX96bs379guOHle SGQA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Conor Dooley <conor.dooley@microchip.com>
 
-There are no users with a vlynq_driver in the Kernel tree. So, remove
-the bus driver which hardly has seen any activity since 2009. It was
-even marked EXPERIMENTAL as long as that symbol existed. OpenWRT had
-some out-of-tree drivers which they probably intended to upport, but AR7
-devices are not supported anymore because they are "stuck with Kernel
-3.18" [1]. So, this code can go nowadays.
+A recent submission [1] from Rob has added additionalProperties: false
+to the interrupt-controller child node of RISC-V cpus, highlighting that
+the D1 DT has been incorrectly using #address-cells since its
+introduction. It has no child nodes, so #address-cells is not needed.
+Remove it.
 
-[1] https://openwrt.org/docs/techref/targets/ar7
-
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Fixes: 077e5f4f5528 ("riscv: dts: allwinner: Add the D1/D1s SoC devicetree")
+Link: https://patchwork.kernel.org/project/linux-riscv/patch/20230915201946.4184468-1-robh@kernel.org/ [1]
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- MAINTAINERS            |   7 -
- drivers/Kconfig        |   2 -
- drivers/Makefile       |   1 -
- drivers/vlynq/Kconfig  |  21 --
- drivers/vlynq/Makefile |   6 -
- drivers/vlynq/vlynq.c  | 799 -----------------------------------------
- include/linux/vlynq.h  | 149 --------
- 7 files changed, 985 deletions(-)
- delete mode 100644 drivers/vlynq/Kconfig
- delete mode 100644 drivers/vlynq/Makefile
- delete mode 100644 drivers/vlynq/vlynq.c
- delete mode 100644 include/linux/vlynq.h
+CC: Rob Herring <robh+dt@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Conor Dooley <conor+dt@kernel.org>
+CC: Chen-Yu Tsai <wens@csie.org>
+CC: Jernej Skrabec <jernej.skrabec@gmail.com>
+CC: Samuel Holland <samuel@sholland.org>
+CC: devicetree@vger.kernel.org
+CC: linux-riscv@lists.infradead.org
+CC: linux-sunxi@lists.linux.dev
+CC: linux-kernel@vger.kernel.org
+---
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..02b83539a5ed 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22962,13 +22962,6 @@ W:	https://linuxtv.org
- T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/test-drivers/vivid/*
- 
--VLYNQ BUS
--M:	Florian Fainelli <f.fainelli@gmail.com>
--L:	openwrt-devel@lists.openwrt.org (subscribers-only)
--S:	Maintained
--F:	drivers/vlynq/vlynq.c
--F:	include/linux/vlynq.h
--
- VM SOCKETS (AF_VSOCK)
- M:	Stefano Garzarella <sgarzare@redhat.com>
- L:	virtualization@lists.linux-foundation.org
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index efb66e25fa2d..9c8b82ddebfe 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -135,8 +135,6 @@ source "drivers/uio/Kconfig"
- 
- source "drivers/vfio/Kconfig"
- 
--source "drivers/vlynq/Kconfig"
--
- source "drivers/virt/Kconfig"
- 
- source "drivers/virtio/Kconfig"
-diff --git a/drivers/Makefile b/drivers/Makefile
-index cb0afca2e4a0..2ec0005bb840 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -151,7 +151,6 @@ obj-$(CONFIG_BCMA)		+= bcma/
- obj-$(CONFIG_VHOST_RING)	+= vhost/
- obj-$(CONFIG_VHOST_IOTLB)	+= vhost/
- obj-$(CONFIG_VHOST)		+= vhost/
--obj-$(CONFIG_VLYNQ)		+= vlynq/
- obj-$(CONFIG_GREYBUS)		+= greybus/
- obj-$(CONFIG_COMEDI)		+= comedi/
- obj-$(CONFIG_STAGING)		+= staging/
-diff --git a/drivers/vlynq/Kconfig b/drivers/vlynq/Kconfig
-deleted file mode 100644
-index e7f9492a0b04..000000000000
-diff --git a/drivers/vlynq/Makefile b/drivers/vlynq/Makefile
-deleted file mode 100644
-index d9ce5b2b5ce0..000000000000
-diff --git a/drivers/vlynq/vlynq.c b/drivers/vlynq/vlynq.c
-deleted file mode 100644
-index 4af6615808cc..000000000000
-diff --git a/include/linux/vlynq.h b/include/linux/vlynq.h
-deleted file mode 100644
-index e9c0cd36c48a..000000000000
+diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+index 8275630af977..b8684312593e 100644
+--- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+@@ -30,7 +30,6 @@ cpu0: cpu@0 {
+ 			cpu0_intc: interrupt-controller {
+ 				compatible = "riscv,cpu-intc";
+ 				interrupt-controller;
+-				#address-cells = <0>;
+ 				#interrupt-cells = <1>;
+ 			};
+ 		};
 -- 
-2.35.1
+2.39.2
 
