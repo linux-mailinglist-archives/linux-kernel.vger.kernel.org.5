@@ -2,111 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCFA7A3089
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9331D7A308A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239380AbjIPNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 09:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        id S237777AbjIPNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 09:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236560AbjIPNDo (ORCPT
+        with ESMTP id S239269AbjIPNH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 09:03:44 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62208DD;
-        Sat, 16 Sep 2023 06:03:38 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VsA36xg_1694869413;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsA36xg_1694869413)
-          by smtp.aliyun-inc.com;
-          Sat, 16 Sep 2023 21:03:34 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        ardb@kernel.org, robert.moore@intel.com
-Cc:     linux-hardening@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        xueshuai@linux.alibaba.com, baolin.wang@linux.alibaba.com
-Subject: [RFC PATCH 9/9] ACPI: APEI: ESRT: log ARM processor error
-Date:   Sat, 16 Sep 2023 21:03:16 +0800
-Message-Id: <20230916130316.65815-10-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230916130316.65815-1-xueshuai@linux.alibaba.com>
-References: <20230916130316.65815-1-xueshuai@linux.alibaba.com>
+        Sat, 16 Sep 2023 09:07:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCDBCC4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694869624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jDXtiR/0/D/booQvTxY6wI8UNSyTRiqpkXd3v2pYXds=;
+        b=jSc+9WwrfPHoHoMlt5k4R9Vv7tq0v8I84J+OFltP6RMO74HEvguplnsGqli8bl6VWfuKcV
+        JGIiiOSulkpzCEz18XzwIxDwBIZjiHWf9b9m1kdg4g5tJohkAIQwNjqGYayaxSNftB1+GB
+        Lsyelm1vEc0eklWcexkG/3SYzJkoGU4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-280-4Fl6nKn_OuesLwuyArMYcg-1; Sat, 16 Sep 2023 09:06:57 -0400
+X-MC-Unique: 4Fl6nKn_OuesLwuyArMYcg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0ED4B101A529;
+        Sat, 16 Sep 2023 13:06:57 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86EB740C6EA8;
+        Sat, 16 Sep 2023 13:06:54 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Subject: [PATCH v3] x86/platform/uv: Rework NMI "action" modparam handling
+Date:   Sat, 16 Sep 2023 15:06:53 +0200
+Message-ID: <20230916130653.243532-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new pstore_record type, PSTORE_TYPE_CPER_PROC_ARM, so that
-serialized ARM processor errors can be retrieved and saved as a file in
-pstore file system. While the serialized errors is retrieved from ERST
-backend, log it.
+Rework NMI "action" modparam handling:
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+1. Replace the uv_nmi_action string with an enum; and
+2. Use sysfs_match_string() for string parsing in param_set_action()
+
+Suggested-by: Steve Wahl <steve.wahl@hpe.com>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Tested-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/acpi/apei/erst.c | 6 ++++++
- fs/pstore/platform.c     | 1 +
- include/linux/pstore.h   | 1 +
- 3 files changed, 8 insertions(+)
+Changes in v3:
+- Add 'include <string.h>'
+- Add nmi_act_max and use it for string array sizes
+- Stop printing val when it is invalid to avoid issues with
+  printing unvalidated user input which could e.g. contain a '\n'
+- Add Reviewed- / Tested-by tags
 
-diff --git a/drivers/acpi/apei/erst.c b/drivers/acpi/apei/erst.c
-index 4f000cb1433a..c92d977d15cd 100644
---- a/drivers/acpi/apei/erst.c
-+++ b/drivers/acpi/apei/erst.c
-@@ -29,6 +29,7 @@
- #include <acpi/ghes.h>
- #include <linux/aer.h>
- #include <linux/pci.h>
-+#include <linux/ras.h>
- /* only define CREATE_TRACE_POINTS once */
- #include <trace/events/mce.h>
+Changes in v2:
+- Also change uv_nmi_action to an enum to replace a bunch of
+  strcmp() calls
+---
+ arch/x86/platform/uv/uv_nmi.c | 104 +++++++++++++++++++---------------
+ 1 file changed, 57 insertions(+), 47 deletions(-)
+
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index 45d0c17ce77c..e03207de2880 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -17,6 +17,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/slab.h>
++#include <linux/string.h>
+ #include <linux/clocksource.h>
  
-@@ -1088,6 +1089,11 @@ static ssize_t erst_reader(struct pstore_record *record)
- 		cper_print_aer(
- 			pdev, AER_FATAL,
- 			(struct aer_capability_regs *)pcie_err->aer_info);
-+	} else if (guid_equal(&rcd->sec_hdr.section_type, &CPER_SEC_PROC_ARM)) {
-+		struct cper_sec_proc_arm *err = (struct cper_sec_proc_arm *)rcd->data;
-+
-+		record->type = PSTORE_TYPE_CPER_PROC_ARM;
-+		log_arm_hw_error(err);
- 	}
- 	else
- 		record->type = PSTORE_TYPE_MAX;
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 40a062546fe4..48ad3202284c 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -53,6 +53,7 @@ static const char * const pstore_type_names[] = {
- 	"powerpc-opal",
- 	"cper-mem",
- 	"cper-pcie",
-+	"cper-proc-arm",
+ #include <asm/apic.h>
+@@ -178,49 +179,56 @@ module_param_named(debug, uv_nmi_debug, int, 0644);
+ 	} while (0)
+ 
+ /* Valid NMI Actions */
+-#define	ACTION_LEN	16
+-static struct nmi_action {
+-	char	*action;
+-	char	*desc;
+-} valid_acts[] = {
+-	{	"kdump",	"do kernel crash dump"			},
+-	{	"dump",		"dump process stack for each cpu"	},
+-	{	"ips",		"dump Inst Ptr info for each cpu"	},
+-	{	"kdb",		"enter KDB (needs kgdboc= assignment)"	},
+-	{	"kgdb",		"enter KGDB (needs gdb target remote)"	},
+-	{	"health",	"check if CPUs respond to NMI"		},
++enum action_t {
++	nmi_act_kdump,
++	nmi_act_dump,
++	nmi_act_ips,
++	nmi_act_kdb,
++	nmi_act_kgdb,
++	nmi_act_health,
++	nmi_act_max
  };
+-typedef char action_t[ACTION_LEN];
+-static action_t uv_nmi_action = { "dump" };
++
++static const char * const actions[nmi_act_max] = {
++	[nmi_act_kdump] = "kdump",
++	[nmi_act_dump] = "dump",
++	[nmi_act_ips] = "ips",
++	[nmi_act_kdb] = "kdb",
++	[nmi_act_kgdb] = "kgdb",
++	[nmi_act_health] = "health",
++};
++
++static const char * const actions_desc[nmi_act_max] = {
++	[nmi_act_kdump] = "do kernel crash dump",
++	[nmi_act_dump] = "dump process stack for each cpu",
++	[nmi_act_ips] = "dump Inst Ptr info for each cpu",
++	[nmi_act_kdb] = "enter KDB (needs kgdboc= assignment)",
++	[nmi_act_kgdb] = "enter KGDB (needs gdb target remote)",
++	[nmi_act_health] = "check if CPUs respond to NMI",
++};
++
++static enum action_t uv_nmi_action = nmi_act_dump;
  
- static int pstore_new_entry;
-diff --git a/include/linux/pstore.h b/include/linux/pstore.h
-index e63f51e9c22e..83edff5aab0b 100644
---- a/include/linux/pstore.h
-+++ b/include/linux/pstore.h
-@@ -43,6 +43,7 @@ enum pstore_type_id {
- 	/* APEI section */
- 	PSTORE_TYPE_CPER_MEM		= 9,
- 	PSTORE_TYPE_CPER_PCIE		= 10,
-+	PSTORE_TYPE_CPER_PROC_ARM	= 11,
+ static int param_get_action(char *buffer, const struct kernel_param *kp)
+ {
+-	return sprintf(buffer, "%s\n", uv_nmi_action);
++	return sprintf(buffer, "%s\n", actions[uv_nmi_action]);
+ }
  
- 	/* End of the list */
- 	PSTORE_TYPE_MAX
+ static int param_set_action(const char *val, const struct kernel_param *kp)
+ {
+-	int i;
+-	int n = ARRAY_SIZE(valid_acts);
+-	char arg[ACTION_LEN];
++	int i, n = ARRAY_SIZE(actions);
+ 
+-	/* (remove possible '\n') */
+-	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
+-
+-	for (i = 0; i < n; i++)
+-		if (!strcmp(arg, valid_acts[i].action))
+-			break;
+-
+-	if (i < n) {
+-		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
+-		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
++	i = sysfs_match_string(actions, val);
++	if (i >= 0) {
++		uv_nmi_action = i;
++		pr_info("UV: New NMI action:%s\n", actions[i]);
+ 		return 0;
+ 	}
+ 
+-	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", arg);
++	pr_err("UV: Invalid NMI action. Valid actions are:\n");
+ 	for (i = 0; i < n; i++)
+-		pr_err("UV: %-8s - %s\n",
+-			valid_acts[i].action, valid_acts[i].desc);
++		pr_err("UV: %-8s - %s\n", actions[i], actions_desc[i]);
++
+ 	return -EINVAL;
+ }
+ 
+@@ -228,15 +236,10 @@ static const struct kernel_param_ops param_ops_action = {
+ 	.get = param_get_action,
+ 	.set = param_set_action,
+ };
+-#define param_check_action(name, p) __param_check(name, p, action_t)
++#define param_check_action(name, p) __param_check(name, p, enum action_t)
+ 
+ module_param_named(action, uv_nmi_action, action, 0644);
+ 
+-static inline bool uv_nmi_action_is(const char *action)
+-{
+-	return (strncmp(uv_nmi_action, action, strlen(action)) == 0);
+-}
+-
+ /* Setup which NMI support is present in system */
+ static void uv_nmi_setup_mmrs(void)
+ {
+@@ -727,10 +730,10 @@ static void uv_nmi_dump_state_cpu(int cpu, struct pt_regs *regs)
+ 	if (cpu == 0)
+ 		uv_nmi_dump_cpu_ip_hdr();
+ 
+-	if (current->pid != 0 || !uv_nmi_action_is("ips"))
++	if (current->pid != 0 || uv_nmi_action != nmi_act_ips)
+ 		uv_nmi_dump_cpu_ip(cpu, regs);
+ 
+-	if (uv_nmi_action_is("dump")) {
++	if (uv_nmi_action == nmi_act_dump) {
+ 		pr_info("UV:%sNMI process trace for CPU %d\n", dots, cpu);
+ 		show_regs(regs);
+ 	}
+@@ -798,7 +801,7 @@ static void uv_nmi_dump_state(int cpu, struct pt_regs *regs, int master)
+ 		int saved_console_loglevel = console_loglevel;
+ 
+ 		pr_alert("UV: tracing %s for %d CPUs from CPU %d\n",
+-			uv_nmi_action_is("ips") ? "IPs" : "processes",
++			uv_nmi_action == nmi_act_ips ? "IPs" : "processes",
+ 			atomic_read(&uv_nmi_cpus_in_nmi), cpu);
+ 
+ 		console_loglevel = uv_nmi_loglevel;
+@@ -874,7 +877,7 @@ static inline int uv_nmi_kdb_reason(void)
+ static inline int uv_nmi_kdb_reason(void)
+ {
+ 	/* Ensure user is expecting to attach gdb remote */
+-	if (uv_nmi_action_is("kgdb"))
++	if (uv_nmi_action == nmi_act_kgdb)
+ 		return 0;
+ 
+ 	pr_err("UV: NMI error: KDB is not enabled in this kernel\n");
+@@ -950,28 +953,35 @@ static int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
+ 	master = (atomic_read(&uv_nmi_cpu) == cpu);
+ 
+ 	/* If NMI action is "kdump", then attempt to do it */
+-	if (uv_nmi_action_is("kdump")) {
++	if (uv_nmi_action == nmi_act_kdump) {
+ 		uv_nmi_kdump(cpu, master, regs);
+ 
+ 		/* Unexpected return, revert action to "dump" */
+ 		if (master)
+-			strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_action));
++			uv_nmi_action = nmi_act_dump;
+ 	}
+ 
+ 	/* Pause as all CPU's enter the NMI handler */
+ 	uv_nmi_wait(master);
+ 
+ 	/* Process actions other than "kdump": */
+-	if (uv_nmi_action_is("health")) {
++	switch (uv_nmi_action) {
++	case nmi_act_health:
+ 		uv_nmi_action_health(cpu, regs, master);
+-	} else if (uv_nmi_action_is("ips") || uv_nmi_action_is("dump")) {
++		break;
++	case nmi_act_ips:
++	case nmi_act_dump:
+ 		uv_nmi_dump_state(cpu, regs, master);
+-	} else if (uv_nmi_action_is("kdb") || uv_nmi_action_is("kgdb")) {
++		break;
++	case nmi_act_kdb:
++	case nmi_act_kgdb:
+ 		uv_call_kgdb_kdb(cpu, regs, master);
+-	} else {
++		break;
++	default:
+ 		if (master)
+-			pr_alert("UV: unknown NMI action: %s\n", uv_nmi_action);
++			pr_alert("UV: unknown NMI action: %d\n", uv_nmi_action);
+ 		uv_nmi_sync_exit(master);
++		break;
+ 	}
+ 
+ 	/* Clear per_cpu "in_nmi" flag */
 -- 
 2.41.0
 
