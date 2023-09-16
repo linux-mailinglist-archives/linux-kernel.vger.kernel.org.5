@@ -2,147 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C36BD7A2CE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840E37A2BE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238671AbjIPBMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 21:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52802 "EHLO
+        id S238084AbjIPAXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 20:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237857AbjIPBMd (ORCPT
+        with ESMTP id S238503AbjIPAW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 21:12:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456A4E3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:12:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAFAC433C8;
-        Sat, 16 Sep 2023 00:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694823395;
-        bh=KVD5/Hzc2O0pK0uQVAxIpL/l7Ybq76eSDT1eP8jejfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lqmFxnLZU74ovH6yS4VAqaw1t5nNnOzQ8wefTNWAY9Z9vYhrT6m4ne9oeMciU+JXh
-         ZFUPhNCldoNZ7i8LZnUuLZdeg29eROEvMDADioenGxgUnJICAtK9nmIL1GEmdC+8gU
-         lS2tdQ4UZRzDlYI7M2webMInj+8xn9QrbScJqlcNstP6/LlucruvKeW6gshaRJ0i+v
-         GDAHRULMzdY47670KU6WmBWfEmYdmFAOhqgRHnD1z82DGPRz8ACchjuVvJiQZts6H2
-         1Q7PPVAGAP3Oc4C9eXsm5IWI1jZk5n6da6TYyNLysFf7KZB5Yp7Sa7n1j7mP9I6/zS
-         E0Lz4AHgxTDzQ==
-Date:   Sat, 16 Sep 2023 01:16:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20230916-celtic-flavored-f6e5f49cec20@spud>
-References: <20230915184904.1976183-1-evan@rivosinc.com>
+        Fri, 15 Sep 2023 20:22:59 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1DA44B9;
+        Fri, 15 Sep 2023 17:19:57 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so29132525e9.1;
+        Fri, 15 Sep 2023 17:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694823548; x=1695428348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u9flE6dYRYbq8DBhx5GKkycXD3lGBgnPeT7V0R69zQo=;
+        b=aWmezyHDC0gQyvdVa+K4eio5vDlXQQXuI0tjEx+ScKQC5ycdVE+yWuufMivTcQzTXN
+         0uBmLBGvJFKr5ofuBF7yrHsP93lb81VaxRmQUcC0ArvDvD8+uDjxbCV46FhCILZJ0QKh
+         ddAMPC7DObJe0BgXEn91nLX8QSxZI4eZ1iqFPH3ZbdkHU7etyuK3Snw5cRE8HpHP6Ltk
+         YY9lMGt+B7jekIdiBh2bUF8hgmg+JZfG7WAoEoSio+zz5+cdY++QYwiHI4rBw+Y/orW7
+         knoVCh7Ree7nlDE9ANVN/4nFxSKDz7pmSnvHkQDKZoBk2I8GYVNgIwlV/nlxP+hvGb6u
+         0IKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694823548; x=1695428348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u9flE6dYRYbq8DBhx5GKkycXD3lGBgnPeT7V0R69zQo=;
+        b=AoGIiNOjm+QPzZQWiFQsklUMloYzH6TDgIgn5wEf+QBt4dZGW7+i4zUhiwKCCskMD5
+         0zIti2r43CZ7K3qBKxD5Gkae1wM0DxiOqBAYcCM/DsWgZx3epF0QsZmVuPiSRUODk6S1
+         aK8e/ku9xCYZBev0F49c4pkatyC2b6tRC35/f9wPfMRXrMiypIyg7hIBfeltTKJOt6t9
+         LZ84HbDIHgT85n5ZVdRAHob/l60389nrljdHtLkhQZoCLryAqDkDZ/EToqgfC3e6brqj
+         WMtZt/qpYFlN4m9R25Xv9O6puUm/JjFgS/iWFrY2BOKbQ+TtgiFkl+DINbRl6jqQKXz0
+         i0tw==
+X-Gm-Message-State: AOJu0YwyDNfxIcNR1QxBizHfQG2NLqi/cd0NvcxyDlp7RTFzOm+FH+le
+        WbKVXQwM+rBhn1a3XN/+/cJmGm7vmz9zVI8UkBc=
+X-Google-Smtp-Source: AGHT+IEPE6CWPA9ayILU9kIgGKupoUTtyfybCYP0bX1o30D1C/gOv6i+wOk2NCHx6iKJA0mKvgtDnM7QzusuVBVPd84=
+X-Received: by 2002:a7b:cbcf:0:b0:401:cf0d:25cd with SMTP id
+ n15-20020a7bcbcf000000b00401cf0d25cdmr2688762wmi.22.1694823548286; Fri, 15
+ Sep 2023 17:19:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EtuFmNE6fZ9CiTEz"
-Content-Disposition: inline
-In-Reply-To: <20230915184904.1976183-1-evan@rivosinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230907230550.1417590-1-puranjay12@gmail.com>
+ <20230907230550.1417590-10-puranjay12@gmail.com> <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
+ <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net> <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
+In-Reply-To: <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 15 Sep 2023 17:18:56 -0700
+Message-ID: <CAADnVQLBc1pc7rRb0vm-e5a-bYzdtCdL05HezEJXbfPMhqLBPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 8, 2023 at 7:50=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.com=
+> wrote:
+>
+> On Fri, Sep 8, 2023 at 3:49=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+> >
+> > On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
+> > > On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
+> > >> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JI=
+T.
+> > >>
+> > >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > >> ---
+> > >>   MAINTAINERS | 5 +++--
+> > >>   1 file changed, 3 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/MAINTAINERS b/MAINTAINERS
+> > >> index 612d6d1dbf36..c241856819bd 100644
+> > >> --- a/MAINTAINERS
+> > >> +++ b/MAINTAINERS
+> > >> @@ -3602,9 +3602,10 @@ F:    Documentation/devicetree/bindings/iio/a=
+ccel/bosch,bma400.yaml
+> > >>   F: drivers/iio/accel/bma400*
+> > >>
+> > >>   BPF JIT for ARM
+> > >> -M:  Shubham Bansal <illusionist.neo@gmail.com>
+> > >> +M:  Puranjay Mohan <puranjay12@gmail.com>
+> > >> +R:  Shubham Bansal <illusionist.neo@gmail.com>
+> > >
+> > > Don't forget that I also want to review the changes, but I guess my
+> > > arch/arm entry will cover this too.
+> >
+> > If there are no objections from all parties, it would be nice/better if=
+ both of
+> > you (Puranjay & Russell) could be explicitly added here as maintainers.
+>
+> Yes, I agree with that. Russell knows more about ARM than anyone else!
+>
+> If I send another version for any other comments I get, I will include
+> this change.
+> But if this version of the series is applied, can you make this change
+> while applying the patch?
 
---EtuFmNE6fZ9CiTEz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I removed Shubham, since he didn't touch the code in years
+and added Russell while applying.
 
-Yo Evan,
-
-On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
-> Probing for misaligned access speed takes about 0.06 seconds. On a
-> system with 64 cores, doing this in smp_callin() means it's done
-> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
->=20
-> Instead of measuring each CPU serially, let's do the measurements on
-> all CPUs in parallel. If we disable preemption on all CPUs, the
-> jiffies stop ticking, so we can do this in stages of 1) everybody
-> except core 0, then 2) core 0.
->=20
-> The measurement call in smp_callin() stays around, but is now
-> conditionalized to only run if a new CPU shows up after the round of
-> in-parallel measurements has run. The goal is to have the measurement
-> call not run during boot or suspend/resume, but only on a hotplug
-> addition.
->=20
-> Signed-off-by: Evan Green <evan@rivosinc.com>
->=20
-> ---
->=20
-> Jisheng, I didn't add your Tested-by tag since the patch evolved from
-> the one you tested. Hopefully this one brings you the same result.
-
-Ya know, I think there's scope to add Reported-by:, Closes: and Fixes:
-tags to this patch, mentioning explicitly that this has regressed boot
-time for many core systems, so that this can be fixes material. What do
-you think?
-
-> ---
->  arch/riscv/include/asm/cpufeature.h |  3 ++-
->  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
->  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
->  3 files changed, 35 insertions(+), 7 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index d0345bd659c9..19e7817eba10 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
->  /* Per-cpu ISA extensions. */
->  extern struct riscv_isainfo hart_isa[NR_CPUS];
-> =20
-> -void check_unaligned_access(int cpu);
-> +extern bool misaligned_speed_measured;
-> +int check_unaligned_access(void *unused);
-> =20
->  #endif
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 1cfbba65d11a..8eb36e1dfb95 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
->  /* Performance information */
->  DEFINE_PER_CPU(long, misaligned_access_speed);
-> =20
-> +/* Boot-time in-parallel unaligned access measurement has occurred. */
-> +bool misaligned_speed_measured;
-
-If you did something like s/measured/complete/ I think you could drop
-the comment. Tis whatever though :)
-
-Conor.
-
---EtuFmNE6fZ9CiTEz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQTz3gAKCRB4tDGHoIJi
-0pL6APoCJx7gPKIJyKx4k4hG/Noh2gJZfE37eh09UhuU5jaYYQD8CUoYpcT0HQHB
-pQLKcJ6KdLxEs3zcHVsMGIxM2Q232gY=
-=gqqj
------END PGP SIGNATURE-----
-
---EtuFmNE6fZ9CiTEz--
+Thanks a lot for upgrading the status of arm jit to Maintained !
+This has been long overdue. We see increased use of BPF on arm32.
