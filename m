@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F6C7A3360
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 01:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398C47A3361
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 01:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbjIPXa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 19:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
+        id S235296AbjIPXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 19:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjIPXaO (ORCPT
+        with ESMTP id S232530AbjIPXaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 19:30:14 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD20CD1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:08 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-402d499580dso36058345e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:08 -0700 (PDT)
+        Sat, 16 Sep 2023 19:30:19 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE345CD1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:11 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-404314388ceso35094835e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694907007; x=1695511807; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/1IXi3ynm9dqjmx4LzLlP/fpKYDMXOqkWbXcAvWGPIc=;
-        b=DUZDsk7EP/CsDE78p9ChwRhAGI2FPU/6yppBFiHm0LtSowgqRd6c2i+K+AiZillgdU
-         qP+DIIhgeZFne9g1sobnIbwdvrgYKsq0/Q5Vc5LCfvFvRkW5NfaT57ZJwMMBE19Cw9Be
-         WejirkHahXM+RMzZwTjjNuhurTqUE3FrKTvmEY2ztfgRifalI3pTVWHKkTM2h20Et0Qr
-         3t223lHqgnA0Li84evcf1HhqsPhmu2eofIDFSL9DQvVMJBORMdNKnwWVueIHlph/hWlB
-         Z85BlsoJMKg4HeUXsQIKV5rWewLLxKEjPCWGO7kXlnLXJigOBjUMIYyuqCQxY16HTXHT
-         UntQ==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694907010; x=1695511810; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OWEM5rFnaxOpgcGqQ9iXm3kgW4XrovKW3FNIx9UUP3U=;
+        b=aX0OVGvG8a6WCDG1Hz5uw3UYiluU7DKtM7LcqqRaPC7q20kcZsaG3q6KimWyKqCaLP
+         kGi/+c+KzTZQMjnmMH2vnBjHmv4Kx84zMDNqUT8SzqHZHl4Em5B6ev56jk7SvyXQZrR9
+         WPqX7Y9TBes7u+Z8ayKNE4VvYuJMbVJRP1Lh4xnRVprv5v8XRX/XuuW9JL15miZC0vzi
+         AJyQkSmVH5hfdRK3+DZnzZNqW3BegBN1Pb08eUaBSm32EyzYACz6nmKLIAR0Yu7Tol4a
+         gUJTszRXy338qUC336Dv3t2sONouPtOraFMp2Qm0Id3v1FRBBgx588EFtxZ8lpxiRUun
+         swUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694907007; x=1695511807;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/1IXi3ynm9dqjmx4LzLlP/fpKYDMXOqkWbXcAvWGPIc=;
-        b=xPW/+I99xbpRMbeO/SKnfZnk/tDMMSsLnDttbioVc42iHy88AjWknqDAd8L5H4dWmZ
-         aWsLuHVod2WQpqlzjvXK0wows0zqdWRnTI+Gefyw9eYFLseo6hEV0URRaklLXLXjvALV
-         X9wwMD/IcAFX5svpzEWdZsr93aUdi+fkPIduThlnR11RnpPVtgVRpYfivJSL7qIHwMTw
-         pHw9vg6sPaaqAtUusFVTVPbEgqIp0aiHExxCcJlE+r3Xs0TuLkRjoWIc7uGoAaZEGspF
-         vbM+Mb9DglnoEF9tf4noth+NASbQXnAGbM36z2OPT8QK8055XDdQGzWu0DzooIgdcOtT
-         cEtQ==
-X-Gm-Message-State: AOJu0YwYBi2wWogNnH4jPE+2SXoRBbzCIZBQCriqyhl8FE9aX5oAGOqM
-        Xto6QgClVl1tVfDNiTPs1zs6dw==
-X-Google-Smtp-Source: AGHT+IGzPvTVPbOR1QIDXlfpjq4SH+gQjEgRCh3/u3A8oFDPndGI2KB6fIFzVvxIT94MnXpphFDFtw==
-X-Received: by 2002:a7b:c858:0:b0:3fb:a102:6d7a with SMTP id c24-20020a7bc858000000b003fba1026d7amr4415542wml.28.1694907006712;
-        Sat, 16 Sep 2023 16:30:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694907010; x=1695511810;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OWEM5rFnaxOpgcGqQ9iXm3kgW4XrovKW3FNIx9UUP3U=;
+        b=oGWSGD3JTZdyfQm1LRjS97TtuN4TZWy3EvfARTRiveut6tlp5DTJemG9lTsgftbhWS
+         kRLMyct6YjtKERHvmdFTe0lJeAoIE4kF9fLAZ3RY99be6/oP6jIqv/S302Sxh8fIXcsD
+         dAB4csUTFpaRSuAlXLvU/sxolw+vgKClft12/m/ILqt0wfCXWfMPDQXuDcXsXMhC668H
+         WUbF8yNbRlvcQN2mLJIacC9vTyHCBhR6YaL58GMSSITZHlS7dSLSdWiKrHzlckp2vVA3
+         HwwYjjf8RDf37Qa6CL7GSRRgyFYEeB8rK2nT1n/X7uUpX8aXPXCJT6NXfCv9Fo8J5P9+
+         UAJg==
+X-Gm-Message-State: AOJu0YxlWo5aqNQtwGVhIXQoTgBpcIzA6OEc1shfmkbKNrxTDORZZU7G
+        ZR+ajUPd3zeaXrP/E/oWuCChzg==
+X-Google-Smtp-Source: AGHT+IH8zt9b/coOQ/xxZj95zGbY/KfbY9VgHNql/0TMbF0y5DIMj6gMNv9nWvsWMlFWXyyAhIvdwQ==
+X-Received: by 2002:a1c:7407:0:b0:3fd:30cb:18bd with SMTP id p7-20020a1c7407000000b003fd30cb18bdmr4936651wmc.15.1694907009520;
+        Sat, 16 Sep 2023 16:30:09 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id b14-20020a05600c11ce00b003fee8502999sm11203929wmi.18.2023.09.16.16.30.05
+        by smtp.gmail.com with ESMTPSA id b14-20020a05600c11ce00b003fee8502999sm11203929wmi.18.2023.09.16.16.30.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 16:30:06 -0700 (PDT)
+        Sat, 16 Sep 2023 16:30:09 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -60,10 +61,12 @@ Cc:     linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
         Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
         Hongyan Xia <hongyan.xia2@arm.com>,
         Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH v5 0/3] Fix a couple of corner cases in feec() when using uclamp_max
-Date:   Sun, 17 Sep 2023 00:29:52 +0100
-Message-Id: <20230916232955.2099394-1-qyousef@layalina.io>
+Subject: [PATCH v5 1/3] sched/uclamp: Set max_spare_cap_cpu even if max_spare_cap is 0
+Date:   Sun, 17 Sep 2023 00:29:53 +0100
+Message-Id: <20230916232955.2099394-2-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230916232955.2099394-1-qyousef@layalina.io>
+References: <20230916232955.2099394-1-qyousef@layalina.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,68 +78,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for all the reviews so far!
+When uclamp_max is being used, the util of the task could be higher than
+the spare capacity of the CPU, but due to uclamp_max value we force fit
+it there.
 
-Changes in v5:
+The way the condition for checking for max_spare_cap in
+find_energy_efficient_cpu() was constructed; it ignored any CPU that has
+its spare_cap less than or _equal_ to max_spare_cap. Since we initialize
+max_spare_cap to 0; this lead to never setting max_spare_cap_cpu and
+hence ending up never performing compute_energy() for this cluster and
+missing an opportunity for a better energy efficient placement to honour
+uclamp_max setting.
 
-	* Added Reviewed-by Dietmar Eggemann.
-	* Updated commit messages in patch 1 and 2 as requested by Dietmar.
+	max_spare_cap = 0;
+	cpu_cap = capacity_of(cpu) - cpu_util(p);  // 0 if cpu_util(p) is high
 
-Changes in v4:
+	...
 
-	* Added Reviewed-by Vincent Guittot.
-	* Updated sched_compute_energy_tp() to include  max_util and busy_time
-	  as requested by Lukasz.
+	util_fits_cpu(...);		// will return true if uclamp_max forces it to fit
 
-Changes in v3:
+	...
 
-	* Fix sign comparison problem in patch 1 (Thanks Vincent!)
-	* Simplify comparison and remove function in patch 2 (Thanks Dietmar!)
+	// this logic will fail to update max_spare_cap_cpu if cpu_cap is 0
+	if (cpu_cap > max_spare_cap) {
+		max_spare_cap = cpu_cap;
+		max_spare_cap_cpu = cpu;
+	}
 
-Changes in v2:
+prev_spare_cap suffers from a similar problem.
 
-	* Use long instead of unsigned long to keep the comparison simple
-	  in spite of being inconsistent with how capacity type.
-	* Fix missing termination parenthesis that caused build error.
-	* Rebase on latest tip/sched/core and Vincent v5 of Unlink misift patch.
+Fix the logic by converting the variables into long and treating -1
+value as 'not populated' instead of 0 which is a viable and correct
+spare capacity value. We need to be careful signed comparison is used
+when comparing with cpu_cap in one of the conditions.
 
-v1 link: https://lore.kernel.org/lkml/20230129161444.1674958-1-qyousef@layalina.io/
-v2 link: https://lore.kernel.org/lkml/20230205224318.2035646-1-qyousef@layalina.io/
-v3 link: https://lore.kernel.org/lkml/20230717215717.309174-1-qyousef@layalina.io/
-v4 link: https://lore.kernel.org/lkml/20230821224504.710576-1-qyousef@layalina.io/
+Fixes: 1d42509e475c ("sched/fair: Make EAS wakeup placement consider uclamp restrictions")
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+---
+ kernel/sched/fair.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-In v2 Dietmar has raised concerns about limitation in current EM calculations
-that can end up packing more tasks on a cluster. While this is not ideal
-situation and we need to fix it, but it is another independent problem that is
-not introduced by this fix. I don't see a reason why we should couple them
-rather than work on each problem independently. The packing behavior in
-practice is actually not bad as if something is capped really hard, there's
-a desire to keep them on this less performant clusters.
-
-Patch 1 addresses a bug because forcing a task on a small CPU to honour
-uclamp_max hint means we can end up with spare_capacity = 0; but the logic is
-constructed such that spare_capacity = 0 leads to ignoring this CPU as
-a candidate to compute_energy().
-
-Patch 2 addresses a bug due to an optimization in feec() that could lead to
-ignoring tasks whose uclamp_max = 0 but task_util(0) != 0.
-
-Patch 3 adds a new tracepoint in compute_energy() as it was helpful in
-debugging these two problems.
-
-This is based on tip/sched/core.
-
-Qais Yousef (3):
-  sched/uclamp: Set max_spare_cap_cpu even if max_spare_cap is 0
-  sched/uclamp: Ignore (util == 0) optimization in feec() when
-    p_util_max = 0
-  sched/tp: Add new tracepoint to track compute energy computation
-
- include/trace/events/sched.h |  5 +++++
- kernel/sched/core.c          |  1 +
- kernel/sched/fair.c          | 36 ++++++++++++------------------------
- 3 files changed, 18 insertions(+), 24 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c893721ff5b1..3a0a28a0b9c7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7695,11 +7695,10 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 	for (; pd; pd = pd->next) {
+ 		unsigned long util_min = p_util_min, util_max = p_util_max;
+ 		unsigned long cpu_cap, cpu_thermal_cap, util;
+-		unsigned long cur_delta, max_spare_cap = 0;
++		long prev_spare_cap = -1, max_spare_cap = -1;
+ 		unsigned long rq_util_min, rq_util_max;
+-		unsigned long prev_spare_cap = 0;
++		unsigned long cur_delta, base_energy;
+ 		int max_spare_cap_cpu = -1;
+-		unsigned long base_energy;
+ 		int fits, max_fits = -1;
+ 
+ 		cpumask_and(cpus, perf_domain_span(pd), cpu_online_mask);
+@@ -7762,7 +7761,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 				prev_spare_cap = cpu_cap;
+ 				prev_fits = fits;
+ 			} else if ((fits > max_fits) ||
+-				   ((fits == max_fits) && (cpu_cap > max_spare_cap))) {
++				   ((fits == max_fits) && ((long)cpu_cap > max_spare_cap))) {
+ 				/*
+ 				 * Find the CPU with the maximum spare capacity
+ 				 * among the remaining CPUs in the performance
+@@ -7774,7 +7773,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 			}
+ 		}
+ 
+-		if (max_spare_cap_cpu < 0 && prev_spare_cap == 0)
++		if (max_spare_cap_cpu < 0 && prev_spare_cap < 0)
+ 			continue;
+ 
+ 		eenv_pd_busy_time(&eenv, cpus, p);
+@@ -7782,7 +7781,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 		base_energy = compute_energy(&eenv, pd, cpus, p, -1);
+ 
+ 		/* Evaluate the energy impact of using prev_cpu. */
+-		if (prev_spare_cap > 0) {
++		if (prev_spare_cap > -1) {
+ 			prev_delta = compute_energy(&eenv, pd, cpus, p,
+ 						    prev_cpu);
+ 			/* CPU utilization has changed */
 -- 
 2.34.1
 
