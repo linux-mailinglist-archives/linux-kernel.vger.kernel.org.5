@@ -2,120 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DE37A2CC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9E97A2CDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238593AbjIPAzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S238343AbjIPBIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 21:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238719AbjIPAzd (ORCPT
+        with ESMTP id S238063AbjIPBIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:55:33 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D212733
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:54:18 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b703a0453fso44996601fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:54:18 -0700 (PDT)
+        Fri, 15 Sep 2023 21:08:17 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6CD99
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:08:11 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-59c26aa19b7so7222927b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:08:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694825657; x=1695430457; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YouDa+ERRcXfsKD05SHv7uq2HbLul8fzNckpEFgl+38=;
-        b=A/rXRJ+5hj8kZa4RuChDDkIJtcazBhGC0MaUBkPsdLogNF5KaF8LJJ07/6fvpnJRi6
-         Jc072txH1x7ImV90wUQBnfsGU0rhB0gfb8RFRQ9o3PFxA1nHm661EX9L18pUUjsV3bvm
-         gKTVBsmURcasuyxnH/7V/TEVlEIhXnbE9h7cCO5b4MFL17N9qKnUq+hgw0jPTyoLmXDb
-         OgEsoUGl723pYIBipj4arNIINORb1Ud10xn/3IwD4ouUGORWVFCi817alll4cnHCxoi0
-         vP9+GXkR7AVa0QH7xq15RgExKOzwNlEqytzvWfECLmejltwg9XiBmJLrfYeSm7aT+VXk
-         EL6Q==
+        d=linaro.org; s=google; t=1694826490; x=1695431290; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lqKBRyFePWKTO3hOGR9JrUyWyf6igxwdMSPQCg5MXyU=;
+        b=b4WhoRZ3CeMjUs7M2cbyEvtZLGyWX9k58LgZNiAcmDPWNb/Xc1+hinBmyoY2myVy7U
+         rnyWqxLQ/bJ8GNKEAUzeqxgo9sIjBKC+nI0e3mNgD2tlgHkSWmudkgpHR5IMUQuCg3Bv
+         eLjklmGkeoYtdmt5C2vPUDajTEKOJ5K5MvUVg4JahpQ9Ov/RHin6Dh477B4y4FcgKvEq
+         Oo37XeeMwH0q+5PbFqA5LLm72Hr3UT0zzBKQvbmaQ7QOaRMQ2CeWX5yLs1BLC6xaOgxS
+         FQzjosFcYOIMy5PJrngOQaGOTAf/e/+efAbDevy538AcjgJgn40+EUCyuEePV5tijgCd
+         V0fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694825657; x=1695430457;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YouDa+ERRcXfsKD05SHv7uq2HbLul8fzNckpEFgl+38=;
-        b=lpzUB9KFJRs363pU0w6C0TwZqAKUWR09M6vhMZShnuuPtGQVmfNniLv3k11YxF8TGU
-         d2826DONFCJ3zLukHSrtYlImUlAvJUbBXe/+91F35tTTnvJfjSKXKpmiBhNZjT9LaPk7
-         hqw8ARzncxwkIEyokePVmkz+kxfC36j16fpzZypwK4LVh9Gr2YTJpExRj6QC2nFBT4ZT
-         dx8rNXQjhdmoy+zJ7wPG81u+SiDC9eYX7v4hUEpwVzcwlAWZBD/n+qSN0JfBlp97meCi
-         jF3lrzkSKYWd428pbeXTeXxTayIH5nxtvqPdtLppQjaMV/GuDDeNUPIivND6468XoTtL
-         CtvA==
-X-Gm-Message-State: AOJu0Yz+XPpUW4A0fBCZzEthPToUxKuqb+ll6w9wIVZesrJ8F7mgCdyS
-        dUNJ2C62IQ9um/3ft3k59/pBeQ==
-X-Google-Smtp-Source: AGHT+IHUdnhlfTeK4MtrE3fpZApJQcwswA5kVYL+eRCHSesSPAIVMBTUHObYeXXNmyeSYbM6adsOHQ==
-X-Received: by 2002:a2e:3505:0:b0:2bd:10b7:4610 with SMTP id z5-20020a2e3505000000b002bd10b74610mr2594910ljz.25.1694825656782;
-        Fri, 15 Sep 2023 17:54:16 -0700 (PDT)
-Received: from [192.168.37.154] (178235177186.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.186])
-        by smtp.gmail.com with ESMTPSA id e10-20020a170906248a00b00993928e4d1bsm3046483ejb.24.2023.09.15.17.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 17:54:16 -0700 (PDT)
-Message-ID: <49687bc6-7121-422c-99fd-e68dd46aae95@linaro.org>
-Date:   Sat, 16 Sep 2023 02:54:14 +0200
+        d=1e100.net; s=20230601; t=1694826490; x=1695431290;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lqKBRyFePWKTO3hOGR9JrUyWyf6igxwdMSPQCg5MXyU=;
+        b=RyQ5TSSa+05yQK22uj2X8/Y2/Y5UbNVprQqkdTuMzmK5Hg3407av05jSwNO+9xwI87
+         TTrHPlPk4tFHfn5owiq/wMuAcXxhl+h/kK76FarXMoF93Z1TRa7Mi34Ogjbm+slVg04c
+         CTsWm4PgBLfuM48jKDzKonvda6MUlYPD3N44MLqxPqJxolcTBWXnE6QrO1Ojr4CLzP03
+         OFiyXY+c0LHe8dvX/Y+M2hE15XCHWbtxCtSCnH5lBtZkjJGPoziv+M+uWlGwUI3vyoPf
+         EiC330/wvPGcCryna+mc8v3WTqbI+HtIfUVgliwHsLPl60mYsApepX1rqrtZP/oGaQhX
+         Ircg==
+X-Gm-Message-State: AOJu0YwunrsqA2rkeEOnLNyEhx6Wtm7rvMD2aPTjpS/3qlzm8xV4xRxN
+        woF4cWEdt5575eyCpltaQxTgbsp7iT5J7FtWtqn4rw==
+X-Google-Smtp-Source: AGHT+IFx28poxYC0xUXpJ7MCQRUCJ3JGifC0qNZKo1d7nnJUQc6LgqF6uvkuaWUGzeYICn2JZ0VphWbew9RrdF/hiEY=
+X-Received: by 2002:a0d:d6cf:0:b0:583:7b49:57ac with SMTP id
+ y198-20020a0dd6cf000000b005837b4957acmr3702525ywd.25.1694826490146; Fri, 15
+ Sep 2023 18:08:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/53] icc-rpmh multi-RSC voting groundwork
-Content-Language: en-US
-To:     Mike Tipton <quic_mdtipton@quicinc.com>
-Cc:     Georgi Djakov <djakov@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org>
- <c067a45f-9629-d516-9e56-36538e4ff6db@kernel.org>
- <20230807215739.GA9621@hu-mdtipton-lv.qualcomm.com>
- <10520827-dc01-475c-b09a-35cefc9e0a62@linaro.org>
- <20230913012951.GA19284@hu-mdtipton-lv.qualcomm.com>
- <ffc58838-c306-49f3-a90a-95b2cf02ae3d@linaro.org>
- <20230914023239.GA25147@hu-mdtipton-lv.qualcomm.com>
- <978fd46d-8142-41e6-9c62-df678018d6c2@linaro.org>
- <20230915160525.GA14240@hu-mdtipton-lv.qualcomm.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230915160525.GA14240@hu-mdtipton-lv.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com> <1694813901-26952-5-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1694813901-26952-5-git-send-email-quic_khsieh@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 16 Sep 2023 04:07:58 +0300
+Message-ID: <CAA8EJprxf5RBfuiJVJsfnb7buC9Mbxr=U7VSaPRc1+OMJcBFZg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] drm/msm/dp: incorporate pm_runtime framework into
+ DP driver
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -124,82 +73,391 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.09.2023 18:05, Mike Tipton wrote:
-> On Fri, Sep 15, 2023 at 03:43:27PM +0200, Konrad Dybcio wrote:
->> On 14.09.2023 04:32, Mike Tipton wrote:
->>> On Wed, Sep 13, 2023 at 10:31:49AM +0200, Konrad Dybcio wrote:
->>>>> The applicable voters should likely be defined in the target-specific
->>>>> headers, rather than the common qcom,icc.h. The bit range used for them
->>>>> could be common, but each target may only support a small subset of the
->>>>> total set of possible voters across all targets.
->>>> I'm not sure how client drivers would then choose the
->>>> correct path other than
->>>>
->>>> switch (soc) {
->>>> case 8450:
->>>> 	tag = QCOM_ICC_TAG_VOTER_8450_HLOS;
->>>> 	break;
->>>> case 8550:
->>>> 	tag = QCOM_ICC_TAG_VOTER_8550_HLOS;
->>>> 	break;
->>>> ...
->>>> }
->>>>
->>>> which would be unacceptable.
->>>
->>> The same general way it's handled for the endpoint bindings, which are
->>> already target-specific. 
->>>
->>> Any client drivers hardcoding the endpoint bindings in their driver
->>> would have to include the appropriate, target-specific binding header
->>> (e.g. qcom,sm8550-rpmh.h). That would only be possible if their driver
->>> file is itself target-specific. Otherwise, it would have to pull the
->>> endpoint bindings from devicetree. Or just use the recommended
->>> of_icc_get() and let devicetree do everything for them. Same for the
->>> target-specific voter tag bindings.
->>>
->>> Clients can also specify their tags in devicetree. They don't actually
->>> have to call icc_set_tag() directly. For example:
->>>
->>>     #include <dt-bindings/interconnect/qcom,sm8450.h>
->>>
->>>     interconnects = <&mmss_noc MASTER_MDP QCOM_ICC_TAG_VOTER_DISP
->>>                      &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_VOTER_DISP>;
->>>
->>> Then when they call of_icc_get() for this path it'll automatically have
->>> QCOM_ICC_TAG_VOTER_DISP set for them.
->> I think I'd skew towards the "define everything in the DT" approach.
->>
->> One thing that makes me uneasy to go on with this approach is the
->> question whether there is a case in which we would want to switch
->> from e.g. voting through DISP to voting through APPS (or similar)
->> from within a single device.
-> 
-> It shouldn't be common. But it could be done fairly simply by listing
-> paths for each different voter in the dt properties. 
-> 
->     interconnects = <&mmss_noc MASTER_MDP QCOM_ICC_TAG_VOTER_APPS
->                      &mc_virt SLAVE_EBI1  QCOM_ICC_TAG_VOTER_APPS>,
->                     <&mmss_noc MASTER_MDP QCOM_ICC_TAG_VOTER_DISP
->                      &mc_virt SLAVE_EBI1  QCOM_ICC_TAG_VOTER_DISP>,
->     interconnect-names = "path-apps-voter",
->                          "path-disp-voter";
-Eeeeeh, I don't know.. this almost sounds like a patch-up solution
-to a problem that doesn't quite yet exist.
+On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> Currently DP driver is executed independent of PM runtime framework.
+> This lead DP driver incompatible with others. Incorporating pm runtime
 
-I debated introducing a third interconnect cell for this, but I am
-not sure the added complexity is worth it.
+Why is it incompatible? Which others are mentioned here?
+
+> framework into DP driver so that both power and clocks to enable/disable
+> host controller fits with PM runtime mechanism. Once pm runtime framework
+> is incorporated into DP driver, wake up device from power up path is not
+> necessary. Hence remove it. Both EV_POWER_PM_GET and EV_POWER_PM_PUT events
+> are introduced to perform pm runtime control for the HPD GPIO routing to a
+> display-connector case.
+>
+> Changes in v3:
+> -- incorporate removing pm_runtime_xx() from dp_pwer.c to this patch
+> -- use pm_runtime_resume_and_get() instead of pm_runtime_get()
+> -- error checking pm_runtime_resume_and_get() return value
+> -- add EV_POWER_PM_GET and PM_EV_POWER_PUT to handle HPD_GPIO case
+
+Previous changelog?
+
+>
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_aux.c     |   5 ++
+>  drivers/gpu/drm/msm/dp/dp_display.c | 114 +++++++++++++++++++++++++++---------
+>  drivers/gpu/drm/msm/dp/dp_power.c   |   9 ---
+>  3 files changed, 90 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
+> index 8e3b677..8fa93c5 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> @@ -291,6 +291,9 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
+>                 return -EINVAL;
+>         }
+>
+> +       if (pm_runtime_resume_and_get(dp_aux->dev))
+> +               return  -EINVAL;
+
+Please propagate error values instead of reinventing them.
+
+> +
+>         mutex_lock(&aux->mutex);
+>         if (!aux->initted) {
+>                 ret = -EIO;
+> @@ -364,6 +367,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
+>
+>  exit:
+>         mutex_unlock(&aux->mutex);
+> +       pm_runtime_mark_last_busy(dp_aux->dev);
+> +       pm_runtime_put_autosuspend(dp_aux->dev);
+
+What is the reason for using autosuspend? Such design decisions should
+be described in the commit message.
+
+>
+>         return ret;
+>  }
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 59f9d85..e7af7f7 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -60,6 +60,8 @@ enum {
+>         EV_IRQ_HPD_INT,
+>         EV_HPD_UNPLUG_INT,
+>         EV_USER_NOTIFICATION,
+> +       EV_POWER_PM_GET,
+> +       EV_POWER_PM_PUT,
+>  };
+>
+>  #define EVENT_TIMEOUT  (HZ/10) /* 100ms */
+> @@ -276,13 +278,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+>         dp->dp_display.drm_dev = drm;
+>         priv->dp[dp->id] = &dp->dp_display;
+>
+> -       rc = dp->parser->parse(dp->parser);
+> -       if (rc) {
+> -               DRM_ERROR("device tree parsing failed\n");
+> -               goto end;
+> -       }
+> -
+> -
+>         dp->drm_dev = drm;
+>         dp->aux->drm_dev = drm;
+>         rc = dp_aux_register(dp->aux);
+> @@ -291,12 +286,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+>                 goto end;
+>         }
+>
+> -       rc = dp_power_client_init(dp->power);
+> -       if (rc) {
+> -               DRM_ERROR("Power client create failed\n");
+> -               goto end;
+> -       }
+> -
+>         rc = dp_register_audio_driver(dev, dp->audio);
+>         if (rc) {
+>                 DRM_ERROR("Audio registration Dp failed\n");
+> @@ -320,10 +309,6 @@ static void dp_display_unbind(struct device *dev, struct device *master,
+>         struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>         struct msm_drm_private *priv = dev_get_drvdata(master);
+>
+> -       /* disable all HPD interrupts */
+> -       if (dp->core_initialized)
+> -               dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_INT_MASK, false);
+> -
+>         kthread_stop(dp->ev_tsk);
+>
+>         of_dp_aux_depopulate_bus(dp->aux);
+> @@ -467,6 +452,18 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+>         dp->core_initialized = false;
+>  }
+>
+> +static void dp_display_pm_get(struct dp_display_private *dp)
+> +{
+> +       if (pm_runtime_resume_and_get(&dp->pdev->dev))
+> +               DRM_ERROR("failed to start power\n");
+> +}
+
+Huge NAK here. This means that the error is completely ignored (other
+than being dumped to the log). This is a short path to Sync error and
+other kinds of reboot.
+
+> +
+> +static void dp_display_pm_put(struct dp_display_private *dp)
+> +{
+> +       pm_runtime_mark_last_busy(&dp->pdev->dev);
+> +       pm_runtime_put_autosuspend(&dp->pdev->dev);
+> +}
+> +
+>  static int dp_display_usbpd_configure_cb(struct device *dev)
+>  {
+>         struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> @@ -1096,7 +1093,6 @@ static int hpd_event_thread(void *data)
+>
+>                 switch (todo->event_id) {
+>                 case EV_HPD_INIT_SETUP:
+> -                       dp_display_host_init(dp_priv);
+>                         break;
+>                 case EV_HPD_PLUG_INT:
+>                         dp_hpd_plug_handle(dp_priv, todo->data);
+> @@ -1111,6 +1107,12 @@ static int hpd_event_thread(void *data)
+>                         dp_display_send_hpd_notification(dp_priv,
+>                                                 todo->data);
+>                         break;
+> +               case EV_POWER_PM_GET:
+> +                       dp_display_pm_get(dp_priv);
+> +                       break;
+> +               case EV_POWER_PM_PUT:
+> +                       dp_display_pm_put(dp_priv);
+> +                       break;
+
+No. runtime_get / runtime_put are not HPD events. They should be
+executed directly from the place where the drivers needs the device to
+be powered up.
+
+>                 default:
+>                         break;
+>                 }
+> @@ -1251,6 +1253,18 @@ static int dp_display_probe(struct platform_device *pdev)
+>                 return -EPROBE_DEFER;
+>         }
+>
+> +       rc = dp->parser->parse(dp->parser);
+> +       if (rc) {
+> +               DRM_ERROR("device tree parsing failed\n");
+> +               return -EPROBE_DEFER;
+> +       }
+> +
+> +       rc = dp_power_client_init(dp->power);
+> +       if (rc) {
+> +               DRM_ERROR("Power client create failed\n");
+> +               return -EPROBE_DEFER;
+> +       }
+
+Why? This moves resource allocation to the probe function, which is
+irrelevant to the pm_runtime code. If this is required, you can move
+these changes to a separate patch.
+
+> +
+>         /* setup event q */
+>         mutex_init(&dp->event_mutex);
+>         init_waitqueue_head(&dp->event_q);
+> @@ -1263,6 +1277,10 @@ static int dp_display_probe(struct platform_device *pdev)
+>
+>         platform_set_drvdata(pdev, &dp->dp_display);
+>
+> +       devm_pm_runtime_enable(&pdev->dev);
+
+error code handling?
+
+> +       pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+> +       pm_runtime_use_autosuspend(&pdev->dev);
+> +
+>         rc = dp_display_request_irq(dp);
+>         if (rc)
+>                 return rc;
+> @@ -1285,6 +1303,36 @@ static int dp_display_remove(struct platform_device *pdev)
+>
+>         platform_set_drvdata(pdev, NULL);
+>
+> +       pm_runtime_put_sync_suspend(&pdev->dev);
+
+Why? Who is holding the pm count here?
+
+> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
+> +       pm_runtime_disable(&pdev->dev);
+
+Why do you need _disable if you have a devm_pm_runtime_enable()? Not
+to mention that pm_runtime_disable_action() already has a call to
+pm_runtime_dont_use_autosuspend()
+
+> +
+> +       return 0;
+> +}
+> +
+> +static int dp_pm_runtime_suspend(struct device *dev)
+> +{
+> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> +
+> +       if (dp->dp_display.is_edp) {
+> +               dp_display_host_phy_exit(dp);
+> +               dp_catalog_ctrl_hpd_disable(dp->catalog);
+> +       }
+> +       dp_display_host_deinit(dp);
+> +
+> +       return 0;
+> +}
+> +
+> +static int dp_pm_runtime_resume(struct device *dev)
+> +{
+> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> +
+> +       dp_display_host_init(dp);
+> +       if (dp->dp_display.is_edp) {
+> +               dp_catalog_ctrl_hpd_enable(dp->catalog);
+> +               dp_display_host_phy_init(dp);
+> +       }
+> +
+>         return 0;
+>  }
+>
+> @@ -1389,6 +1437,7 @@ static int dp_pm_suspend(struct device *dev)
+>  }
+>
+>  static const struct dev_pm_ops dp_pm_ops = {
+> +       SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
+>         .suspend = dp_pm_suspend,
+>         .resume =  dp_pm_resume,
+>  };
+> @@ -1473,10 +1522,6 @@ static int dp_display_get_next_bridge(struct msm_dp *dp)
+>         aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>
+>         if (aux_bus && dp->is_edp) {
+> -               dp_display_host_init(dp_priv);
+> -               dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
+> -               dp_display_host_phy_init(dp_priv);
+> -
+>                 /*
+>                  * The code below assumes that the panel will finish probing
+>                  * by the time devm_of_dp_aux_populate_ep_devices() returns.
+> @@ -1578,6 +1623,11 @@ void dp_bridge_atomic_enable(struct drm_bridge *drm_bridge,
+>                 dp_hpd_plug_handle(dp_display, 0);
+>
+>         mutex_lock(&dp_display->event_mutex);
+> +       if (pm_runtime_resume_and_get(&dp_display->pdev->dev)) {
+> +               DRM_ERROR("failed to start power\n");
+> +               mutex_unlock(&dp_display->event_mutex);
+> +               return;
+> +       }
+>
+>         state = dp_display->hpd_state;
+>         if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
+> @@ -1658,6 +1708,8 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
+>         }
+>
+>         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", dp->connector_type);
+> +
+> +       pm_runtime_put_sync(&dp_display->pdev->dev);
+
+So, no autosuspend now?
+
+Also, I think we can get an unbalanced runtime status, as there is no
+guarantee that atomic_enable / atomic_disable will be paired. Please
+correct me if I'm wrong.
+And also there is a possible return earlier in this function. The
+driver will leak the runtime status again.
+
+>         mutex_unlock(&dp_display->event_mutex);
+>  }
+>
+> @@ -1697,6 +1749,9 @@ void dp_bridge_hpd_enable(struct drm_bridge *bridge)
+>         struct dp_display_private *dp = container_of(dp_display, struct dp_display_private, dp_display);
+>
+>         mutex_lock(&dp->event_mutex);
+> +       if (pm_runtime_resume_and_get(&dp->pdev->dev))
+> +               DRM_ERROR("failed to start power\n");
+
+Return?
+
+> +
+>         dp_catalog_ctrl_hpd_enable(dp->catalog);
+>
+>         /* enable HDP interrupts */
+> @@ -1718,6 +1773,9 @@ void dp_bridge_hpd_disable(struct drm_bridge *bridge)
+>         dp_catalog_ctrl_hpd_disable(dp->catalog);
+>
+>         dp_display->internal_hpd = false;
+> +
+> +       pm_runtime_mark_last_busy(&dp->pdev->dev);
+> +       pm_runtime_put_autosuspend(&dp->pdev->dev);
+>         mutex_unlock(&dp->event_mutex);
+>  }
+>
+> @@ -1732,13 +1790,11 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
+>         if (dp_display->internal_hpd)
+>                 return;
+>
+> -       if (!dp->core_initialized) {
+> -               drm_dbg_dp(dp->drm_dev, "not initialized\n");
+> -               return;
+> -       }
+> -
+> -       if (!dp_display->link_ready && status == connector_status_connected)
+> +       if (!dp_display->link_ready && status == connector_status_connected) {
+> +               dp_add_event(dp, EV_POWER_PM_GET, 0, 0);
+
+Why? What for?
+
+>                 dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+> -       else if (dp_display->link_ready && status == connector_status_disconnected)
+> +       } else if (dp_display->link_ready && status == connector_status_disconnected) {
+>                 dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+> +               dp_add_event(dp, EV_POWER_PM_PUT, 0, 0);
+> +       }
+>  }
+> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
+> index 5cb84ca..ed2f62a 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_power.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
+> @@ -152,8 +152,6 @@ int dp_power_client_init(struct dp_power *dp_power)
+>
+>         power = container_of(dp_power, struct dp_power_private, dp_power);
+>
+> -       pm_runtime_enable(power->dev);
+> -
+>         return dp_power_clk_init(power);
+>  }
+>
+> @@ -162,8 +160,6 @@ void dp_power_client_deinit(struct dp_power *dp_power)
+>         struct dp_power_private *power;
+>
+>         power = container_of(dp_power, struct dp_power_private, dp_power);
+> -
+> -       pm_runtime_disable(power->dev);
+>  }
+>
+>  int dp_power_init(struct dp_power *dp_power)
+> @@ -173,11 +169,7 @@ int dp_power_init(struct dp_power *dp_power)
+>
+>         power = container_of(dp_power, struct dp_power_private, dp_power);
+>
+> -       pm_runtime_get_sync(power->dev);
+> -
+>         rc = dp_power_clk_enable(dp_power, DP_CORE_PM, true);
+> -       if (rc)
+> -               pm_runtime_put_sync(power->dev);
+>
+>         return rc;
+>  }
+> @@ -189,7 +181,6 @@ int dp_power_deinit(struct dp_power *dp_power)
+>         power = container_of(dp_power, struct dp_power_private, dp_power);
+>
+>         dp_power_clk_enable(dp_power, DP_CORE_PM, false);
+> -       pm_runtime_put_sync(power->dev);
+>         return 0;
+>  }
+>
+> --
+> 2.7.4
+>
 
 
-Having a global set of RSC-bound tags would be a "nice" and tidy
-solution.. Maybe we could even allocate like 24 bits to these, as
-I don't think you'll be introducing new buckets (or at least I hope
-you won't!).
-
-24 is an obscene amount of RSCs to have, even counting virtual
-channels, so unless you folks have some dark plans to make all
-pieces of hardware powered completely separately from each other,
-I suppose I could ask for a pinky-promise to not exceed that
-number, ever :D
-
-Konrad
+-- 
+With best wishes
+Dmitry
