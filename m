@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0672D7A2EE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 10:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E65D7A2EE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 10:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbjIPIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 04:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        id S232482AbjIPIyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 04:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237743AbjIPIuq (ORCPT
+        with ESMTP id S238874AbjIPIyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 04:50:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71826CF8;
-        Sat, 16 Sep 2023 01:50:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05AADC433C7;
-        Sat, 16 Sep 2023 08:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694854241;
-        bh=40ylAetvH2D45aO5J/08CkEvM05rm1lwgoMuurgAuH0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gC+VjBFi06GNrUV4aejNhpXtveOVkoTOJURdSDxNPs+L1wLQuki8wXleFcffnq9Xj
-         X6PW2HOI5TlnVkKC591doTM7l1THmFUSQB1Jlhx+3uRq0UhlHHiZ3+p97Na0Qtfg2K
-         bsD5I6szMJPGak1RUxwzIs6upcyErp1/s+Xp1mHqDjtHjnkTugyv7vANcepK86Xpa+
-         aFAIMbolhjbh59Ge0hy1eVd/nWSAq2zQOF8PmqxOcN11bATns2sTU/wkdxq3y7jdaK
-         kQBUNNwtA6EDXCOucwung84Z5syZ82le1aiY0yVEe+oxASsns0Wn/HTYHuajwtILlm
-         l9AVHz3LY2Zhg==
-Date:   Sat, 16 Sep 2023 09:50:36 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 1/4] asm-generic: Improve csum_fold
-Message-ID: <20230916-jackpot-guy-01c2024c6a63@spud>
-References: <20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com>
- <20230915-optimize_checksum-v6-1-14a6cf61c618@rivosinc.com>
+        Sat, 16 Sep 2023 04:54:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B972F1720
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 01:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AlpOWelhfZuxNFmsb+NCEO45kUZ57SgYZ2VMJo6EZf4=; b=PXxE3hBt9i43smfHycQKVudTkj
+        rH4zBetgksjPtSiw6AIvGkiLNnCf5zD2xS67+rP3O1csXBwvtS8o6sRS0qqsW7Yqhpdiiyn3ds1Yn
+        EXB2veb4j9MpKJE2zx3b6ottrQyf1Xo1a74p/2NUqoyMSebTvgrMiJ9M1IBDiGq1x74E1+JSr827q
+        9UpDDDbPt8Cp++Ikff0TYLjZEPjMShu8OisI0YswCebcb5H3quMLKz3EgZVcQoDIkQWwRtkknAcI+
+        jKeopRMvMmJY/QIPy3p31vmhDqJMwhFvo3Lgk2zUk8khZu86rYelyLL6jCtNVQic3Javvk03wR/k9
+        MPGnJdYw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qhR1I-00AER2-2j;
+        Sat, 16 Sep 2023 08:53:23 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF5FB300353; Sat, 16 Sep 2023 10:51:17 +0200 (CEST)
+Date:   Sat, 16 Sep 2023 10:51:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] seqlock: simplify SEQCOUNT_LOCKNAME()
+Message-ID: <20230916085117.GA35156@noisy.programming.kicks-ass.net>
+References: <20230913154907.GA26210@redhat.com>
+ <20230913154953.GA26242@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="60Aaxr3gdQT472cE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230915-optimize_checksum-v6-1-14a6cf61c618@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230913154953.GA26242@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 13, 2023 at 05:49:53PM +0200, Oleg Nesterov wrote:
+> 1. Kill the "lockmember" argument. It is always s->lock plus
+>    __seqprop_##lockname##_sequence() already uses s->lock and
+>    ignores "lockmember".
+> 
+> 2. Kill the "lock_acquire" argument. __seqprop_##lockname##_sequence()
+>    can use the same "lockbase" prefix for _lock and _unlock.
+> 
+> Apart from line numbers, gcc -E outputs the same code.
 
---60Aaxr3gdQT472cE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+With seqlock_ww_mutex gone, yes this is a nice cleanup.
 
-On Fri, Sep 15, 2023 at 10:01:17AM -0700, Charlie Jenkins wrote:
-> This csum_fold implementation introduced into arch/arc by Vineet Gupta
-> is better than the default implementation on at least arc, x86, and
-> riscv. Using GCC trunk and compiling non-inlined version, this
-> implementation has 41.6667%, 25% fewer instructions on riscv64, x86-64
-> respectively with -O3 optimization. Most implmentations override this
-> default in asm, but this should be more performant than all of those
-> other implementations except for arm which has barrel shifting and
-> sparc32 which has a carry flag.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: David Laight <david.laight@aculab.com>
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 > ---
->  include/asm-generic/checksum.h | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->=20
-> diff --git a/include/asm-generic/checksum.h b/include/asm-generic/checksu=
-m.h
-> index 43e18db89c14..37f5ec70ac93 100644
-> --- a/include/asm-generic/checksum.h
-> +++ b/include/asm-generic/checksum.h
-> @@ -31,9 +31,7 @@ extern __sum16 ip_fast_csum(const void *iph, unsigned i=
-nt ihl);
->  static inline __sum16 csum_fold(__wsum csum)
->  {
->  	u32 sum =3D (__force u32)csum;
-> -	sum =3D (sum & 0xffff) + (sum >> 16);
-> -	sum =3D (sum & 0xffff) + (sum >> 16);
-> -	return (__force __sum16)~sum;
-> +	return (__force __sum16)((~sum - ror32(sum, 16)) >> 16);
-
-Breaks the build on RISC-V in a way that is repaired by later patches in
-the series, so you likely did not notice:
-
-=2E/include/asm-generic/checksum.h:34:35: error: call to undeclared functio=
-n 'ror32'; ISO C99 and later do not support implicit function declarations =
-[-Wimplicit-function-declaration]
-=2E./include/linux/bitops.h:134:21: error: static declaration of 'ror32' fo=
-llows non-static declaration
-
-Cheers,
-Conor.
-
---60Aaxr3gdQT472cE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQVsXAAKCRB4tDGHoIJi
-0mnEAQCTLnl3iMEBVo3Tzp6o42hU6amG6PduNyUQd8smnnQAVAD/RhsXtPuthkcC
-tk+v8xXjpz227mU8sGL65Usl2rfDRgk=
-=GX46
------END PGP SIGNATURE-----
-
---60Aaxr3gdQT472cE--
+>  include/linux/seqlock.h | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index 987a59d977c5..ac6631bd5706 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -191,11 +191,9 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+>   * @lockname:		"LOCKNAME" part of seqcount_LOCKNAME_t
+>   * @locktype:		LOCKNAME canonical C data type
+>   * @preemptible:	preemptibility of above locktype
+> - * @lockmember:		argument for lockdep_assert_held()
+> - * @lockbase:		associated lock release function (prefix only)
+> - * @lock_acquire:	associated lock acquisition function (full call)
+> + * @lockbase:		prefix for associated lock/unlock
+>   */
+> -#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockmember, lockbase, lock_acquire) \
+> +#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
+>  typedef struct seqcount_##lockname {					\
+>  	seqcount_t		seqcount;				\
+>  	__SEQ_LOCK(locktype	*lock);					\
+> @@ -216,7 +214,7 @@ __seqprop_##lockname##_sequence(const seqcount_##lockname##_t *s)	\
+>  		return seq;						\
+>  									\
+>  	if (preemptible && unlikely(seq & 1)) {				\
+> -		__SEQ_LOCK(lock_acquire);				\
+> +		__SEQ_LOCK(lockbase##_lock(s->lock));			\
+>  		__SEQ_LOCK(lockbase##_unlock(s->lock));			\
+>  									\
+>  		/*							\
+> @@ -242,7 +240,7 @@ __seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
+>  static __always_inline void						\
+>  __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
+>  {									\
+> -	__SEQ_LOCK(lockdep_assert_held(lockmember));			\
+> +	__SEQ_LOCK(lockdep_assert_held(s->lock));			\
+>  }
+>  
+>  /*
+> @@ -271,10 +269,10 @@ static inline void __seqprop_assert(const seqcount_t *s)
+>  
+>  #define __SEQ_RT	IS_ENABLED(CONFIG_PREEMPT_RT)
+>  
+> -SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    s->lock,        raw_spin, raw_spin_lock(s->lock))
+> -SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, s->lock,        spin,     spin_lock(s->lock))
+> -SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, s->lock,        read,     read_lock(s->lock))
+> -SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     s->lock,        mutex,    mutex_lock(s->lock))
+> +SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
+> +SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
+> +SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
+> +SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+>  
+>  /*
+>   * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
+> -- 
+> 2.25.1.362.g51ebf55
+> 
