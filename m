@@ -2,286 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9331D7A308A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73C07A30A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237777AbjIPNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 09:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S239294AbjIPNQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 09:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239269AbjIPNH5 (ORCPT
+        with ESMTP id S239228AbjIPNQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 09:07:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCDBCC4
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694869624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jDXtiR/0/D/booQvTxY6wI8UNSyTRiqpkXd3v2pYXds=;
-        b=jSc+9WwrfPHoHoMlt5k4R9Vv7tq0v8I84J+OFltP6RMO74HEvguplnsGqli8bl6VWfuKcV
-        JGIiiOSulkpzCEz18XzwIxDwBIZjiHWf9b9m1kdg4g5tJohkAIQwNjqGYayaxSNftB1+GB
-        Lsyelm1vEc0eklWcexkG/3SYzJkoGU4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-280-4Fl6nKn_OuesLwuyArMYcg-1; Sat, 16 Sep 2023 09:06:57 -0400
-X-MC-Unique: 4Fl6nKn_OuesLwuyArMYcg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        Sat, 16 Sep 2023 09:16:26 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7951B5;
+        Sat, 16 Sep 2023 06:16:18 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 373CC12000B;
+        Sat, 16 Sep 2023 16:16:15 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 373CC12000B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694870175;
+        bh=Sdq3fDXjPa3CrACJWQvLhfRSTOnnHZbbxxjFtBJgqQs=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Vm/xWXLAS7Izu+GKWS6lCqc/Q5DENeLzjgy1E6f617THBTzB7K6Kckv0Sn8hdhBni
+         hPr9BH3MFYzaQpV/p/jLC+ObDlCSXisDyfT7KarF4mUbHbcjTRbCgKLryWjBSKGk/q
+         oORn/R1YxDIk8FHoOgqHGfs4szkM892Cmz5F3f705KwhVzIfTp/booGMtbGIjXPpxk
+         0bhH+XNFEL2qxrB6whnLNJ1QIVqtT11AhAEpciafJj8EewhnHWCmwkoWTzXeVyRCNE
+         9ZIdI/61/lQ/DGQZhZM6l/7ppVzXayHB+aVfw0zQ2bs+X0ugmBPuiw1Hdcu2f1uLps
+         wflhxIVpTO7Zg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0ED4B101A529;
-        Sat, 16 Sep 2023 13:06:57 +0000 (UTC)
-Received: from shalem.redhat.com (unknown [10.39.192.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 86EB740C6EA8;
-        Sat, 16 Sep 2023 13:06:54 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Steve Wahl <steve.wahl@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Kyle Meyer <kyle.meyer@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Subject: [PATCH v3] x86/platform/uv: Rework NMI "action" modparam handling
-Date:   Sat, 16 Sep 2023 15:06:53 +0200
-Message-ID: <20230916130653.243532-1-hdegoede@redhat.com>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sat, 16 Sep 2023 16:16:14 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sat, 16 Sep 2023 16:16:14 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v9 0/4] vsock/virtio/vhost: MSG_ZEROCOPY preparations
+Date:   Sat, 16 Sep 2023 16:09:14 +0300
+Message-ID: <20230916130918.4105122-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179905 [Sep 16 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;git.kernel.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/16 12:20:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/16 12:20:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/16 12:14:00 #21905676
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework NMI "action" modparam handling:
+Hello,
 
-1. Replace the uv_nmi_action string with an enum; and
-2. Use sysfs_match_string() for string parsing in param_set_action()
+this patchset is first of three parts of another big patchset for
+MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
-Suggested-by: Steve Wahl <steve.wahl@hpe.com>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Tested-by: Steve Wahl <steve.wahl@hpe.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v3:
-- Add 'include <string.h>'
-- Add nmi_act_max and use it for string array sizes
-- Stop printing val when it is invalid to avoid issues with
-  printing unvalidated user input which could e.g. contain a '\n'
-- Add Reviewed- / Tested-by tags
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
 
-Changes in v2:
-- Also change uv_nmi_action to an enum to replace a bunch of
-  strcmp() calls
----
- arch/x86/platform/uv/uv_nmi.c | 104 +++++++++++++++++++---------------
- 1 file changed, 57 insertions(+), 47 deletions(-)
+1) virtio and vhost updates (for fragged skbs) <--- this patchset
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/.
+3) Updates for tests and utils.
 
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index 45d0c17ce77c..e03207de2880 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/slab.h>
-+#include <linux/string.h>
- #include <linux/clocksource.h>
- 
- #include <asm/apic.h>
-@@ -178,49 +179,56 @@ module_param_named(debug, uv_nmi_debug, int, 0644);
- 	} while (0)
- 
- /* Valid NMI Actions */
--#define	ACTION_LEN	16
--static struct nmi_action {
--	char	*action;
--	char	*desc;
--} valid_acts[] = {
--	{	"kdump",	"do kernel crash dump"			},
--	{	"dump",		"dump process stack for each cpu"	},
--	{	"ips",		"dump Inst Ptr info for each cpu"	},
--	{	"kdb",		"enter KDB (needs kgdboc= assignment)"	},
--	{	"kgdb",		"enter KGDB (needs gdb target remote)"	},
--	{	"health",	"check if CPUs respond to NMI"		},
-+enum action_t {
-+	nmi_act_kdump,
-+	nmi_act_dump,
-+	nmi_act_ips,
-+	nmi_act_kdb,
-+	nmi_act_kgdb,
-+	nmi_act_health,
-+	nmi_act_max
- };
--typedef char action_t[ACTION_LEN];
--static action_t uv_nmi_action = { "dump" };
-+
-+static const char * const actions[nmi_act_max] = {
-+	[nmi_act_kdump] = "kdump",
-+	[nmi_act_dump] = "dump",
-+	[nmi_act_ips] = "ips",
-+	[nmi_act_kdb] = "kdb",
-+	[nmi_act_kgdb] = "kgdb",
-+	[nmi_act_health] = "health",
-+};
-+
-+static const char * const actions_desc[nmi_act_max] = {
-+	[nmi_act_kdump] = "do kernel crash dump",
-+	[nmi_act_dump] = "dump process stack for each cpu",
-+	[nmi_act_ips] = "dump Inst Ptr info for each cpu",
-+	[nmi_act_kdb] = "enter KDB (needs kgdboc= assignment)",
-+	[nmi_act_kgdb] = "enter KGDB (needs gdb target remote)",
-+	[nmi_act_health] = "check if CPUs respond to NMI",
-+};
-+
-+static enum action_t uv_nmi_action = nmi_act_dump;
- 
- static int param_get_action(char *buffer, const struct kernel_param *kp)
- {
--	return sprintf(buffer, "%s\n", uv_nmi_action);
-+	return sprintf(buffer, "%s\n", actions[uv_nmi_action]);
- }
- 
- static int param_set_action(const char *val, const struct kernel_param *kp)
- {
--	int i;
--	int n = ARRAY_SIZE(valid_acts);
--	char arg[ACTION_LEN];
-+	int i, n = ARRAY_SIZE(actions);
- 
--	/* (remove possible '\n') */
--	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
--
--	for (i = 0; i < n; i++)
--		if (!strcmp(arg, valid_acts[i].action))
--			break;
--
--	if (i < n) {
--		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
--		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
-+	i = sysfs_match_string(actions, val);
-+	if (i >= 0) {
-+		uv_nmi_action = i;
-+		pr_info("UV: New NMI action:%s\n", actions[i]);
- 		return 0;
- 	}
- 
--	pr_err("UV: Invalid NMI action:%s, valid actions are:\n", arg);
-+	pr_err("UV: Invalid NMI action. Valid actions are:\n");
- 	for (i = 0; i < n; i++)
--		pr_err("UV: %-8s - %s\n",
--			valid_acts[i].action, valid_acts[i].desc);
-+		pr_err("UV: %-8s - %s\n", actions[i], actions_desc[i]);
-+
- 	return -EINVAL;
- }
- 
-@@ -228,15 +236,10 @@ static const struct kernel_param_ops param_ops_action = {
- 	.get = param_get_action,
- 	.set = param_set_action,
- };
--#define param_check_action(name, p) __param_check(name, p, action_t)
-+#define param_check_action(name, p) __param_check(name, p, enum action_t)
- 
- module_param_named(action, uv_nmi_action, action, 0644);
- 
--static inline bool uv_nmi_action_is(const char *action)
--{
--	return (strncmp(uv_nmi_action, action, strlen(action)) == 0);
--}
--
- /* Setup which NMI support is present in system */
- static void uv_nmi_setup_mmrs(void)
- {
-@@ -727,10 +730,10 @@ static void uv_nmi_dump_state_cpu(int cpu, struct pt_regs *regs)
- 	if (cpu == 0)
- 		uv_nmi_dump_cpu_ip_hdr();
- 
--	if (current->pid != 0 || !uv_nmi_action_is("ips"))
-+	if (current->pid != 0 || uv_nmi_action != nmi_act_ips)
- 		uv_nmi_dump_cpu_ip(cpu, regs);
- 
--	if (uv_nmi_action_is("dump")) {
-+	if (uv_nmi_action == nmi_act_dump) {
- 		pr_info("UV:%sNMI process trace for CPU %d\n", dots, cpu);
- 		show_regs(regs);
- 	}
-@@ -798,7 +801,7 @@ static void uv_nmi_dump_state(int cpu, struct pt_regs *regs, int master)
- 		int saved_console_loglevel = console_loglevel;
- 
- 		pr_alert("UV: tracing %s for %d CPUs from CPU %d\n",
--			uv_nmi_action_is("ips") ? "IPs" : "processes",
-+			uv_nmi_action == nmi_act_ips ? "IPs" : "processes",
- 			atomic_read(&uv_nmi_cpus_in_nmi), cpu);
- 
- 		console_loglevel = uv_nmi_loglevel;
-@@ -874,7 +877,7 @@ static inline int uv_nmi_kdb_reason(void)
- static inline int uv_nmi_kdb_reason(void)
- {
- 	/* Ensure user is expecting to attach gdb remote */
--	if (uv_nmi_action_is("kgdb"))
-+	if (uv_nmi_action == nmi_act_kgdb)
- 		return 0;
- 
- 	pr_err("UV: NMI error: KDB is not enabled in this kernel\n");
-@@ -950,28 +953,35 @@ static int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
- 	master = (atomic_read(&uv_nmi_cpu) == cpu);
- 
- 	/* If NMI action is "kdump", then attempt to do it */
--	if (uv_nmi_action_is("kdump")) {
-+	if (uv_nmi_action == nmi_act_kdump) {
- 		uv_nmi_kdump(cpu, master, regs);
- 
- 		/* Unexpected return, revert action to "dump" */
- 		if (master)
--			strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_action));
-+			uv_nmi_action = nmi_act_dump;
- 	}
- 
- 	/* Pause as all CPU's enter the NMI handler */
- 	uv_nmi_wait(master);
- 
- 	/* Process actions other than "kdump": */
--	if (uv_nmi_action_is("health")) {
-+	switch (uv_nmi_action) {
-+	case nmi_act_health:
- 		uv_nmi_action_health(cpu, regs, master);
--	} else if (uv_nmi_action_is("ips") || uv_nmi_action_is("dump")) {
-+		break;
-+	case nmi_act_ips:
-+	case nmi_act_dump:
- 		uv_nmi_dump_state(cpu, regs, master);
--	} else if (uv_nmi_action_is("kdb") || uv_nmi_action_is("kgdb")) {
-+		break;
-+	case nmi_act_kdb:
-+	case nmi_act_kgdb:
- 		uv_call_kgdb_kdb(cpu, regs, master);
--	} else {
-+		break;
-+	default:
- 		if (master)
--			pr_alert("UV: unknown NMI action: %s\n", uv_nmi_action);
-+			pr_alert("UV: unknown NMI action: %d\n", uv_nmi_action);
- 		uv_nmi_sync_exit(master);
-+		break;
- 	}
- 
- 	/* Clear per_cpu "in_nmi" flag */
+This series enables handling of fragged skbs in virtio and vhost parts.
+Newly logic won't be triggered, because SO_ZEROCOPY options is still
+impossible to enable at this moment (next bunch of patches from big
+set above will enable it).
+
+I've included changelog to some patches anyway, because there were some
+comments during review of last big patchset from the link above.
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=f2fa1c812c91e99d0317d1fc7d845e1e05f39716
+
+Link to v1:
+https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+Link to v2:
+https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+Link to v3:
+https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
+Link to v4:
+https://lore.kernel.org/netdev/20230727222627.1895355-1-AVKrasnov@sberdevices.ru/
+Link to v5:
+https://lore.kernel.org/netdev/20230730085905.3420811-1-AVKrasnov@sberdevices.ru/
+Link to v6:
+https://lore.kernel.org/netdev/20230814212720.3679058-1-AVKrasnov@sberdevices.ru/
+Link to v7:
+https://lore.kernel.org/netdev/20230827085436.941183-1-avkrasnov@salutedevices.com/
+Link to v8:
+https://lore.kernel.org/netdev/20230911202234.1932024-1-avkrasnov@salutedevices.com/
+
+Changelog:
+ v3 -> v4:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ v4 -> v5:
+ * See per-patch changelog after ---.
+ v5 -> v6:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v6 -> v7:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v7 -> v8:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v8 -> v9:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+
+Arseniy Krasnov (4):
+  vsock/virtio/vhost: read data from non-linear skb
+  vsock/virtio: support to send non-linear skb
+  vsock/virtio: non-linear skb handling for tap
+  vsock/virtio: MSG_ZEROCOPY flag support
+
+ drivers/vhost/vsock.c                         |  14 +-
+ include/linux/virtio_vsock.h                  |  10 +
+ .../events/vsock_virtio_transport_common.h    |  12 +-
+ net/vmw_vsock/virtio_transport.c              |  92 +++++-
+ net/vmw_vsock/virtio_transport_common.c       | 307 ++++++++++++++----
+ 5 files changed, 348 insertions(+), 87 deletions(-)
+
 -- 
-2.41.0
+2.25.1
 
