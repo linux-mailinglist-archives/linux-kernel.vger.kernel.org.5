@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBE17A3284
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838647A3287
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239445AbjIPUjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 16:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
+        id S239419AbjIPUkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 16:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239417AbjIPUil (ORCPT
+        with ESMTP id S239522AbjIPUkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 16:38:41 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AABCF2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:35 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a6190af24aso428259666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:35 -0700 (PDT)
+        Sat, 16 Sep 2023 16:40:04 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBF1CF5
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:39:57 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso395828066b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694896714; x=1695501514; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694896796; x=1695501596; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ck99DUFP41VW4qtdyIsbrq+XQAWsmxc+F6KcFhlBIVI=;
-        b=OTmPHfbWHTio8SDNvy6ecAlqhcOOlHM/OMt0pyKSBnQEOtL5P57xkKVSiXn3xOfZAw
-         KR2TQ6ZWYH5RzQQ0zDxioPBKnNqItVFIWDEo2j/yrqQihi0O6iHF+gH0sM8MD4aKD9Kk
-         oWBBFf2vUFIpfWk7CKsow7a+f1LC/yLX1YmWTnBbBiDGwbsyvvHcxQhhf2Va69uDmKiK
-         JAXJlQDa/RJFRKYRyxZ12xrImWidMHP41KOh+coxUL/M/Hbm4h+JrxojzvG13jJS4Iiw
-         3eO6j0Wp8r7Zn6Ox0lJXMsOAsrlMcv3pgoFdwHITNoCblYIukpaLjWBBQ81uY/Ofy7OX
-         Y3Og==
+        bh=lR5T6ibwSrvheSebyD3OBI+eNynqOjBxcgSy01mbWmU=;
+        b=RANesbT4XnnLodCcUhyl9ouw15NrfbkPBrqtdTe0bBXcYXGlN4SdWvuxDmYb/2ac6p
+         s+hxa2G/IXyCzsrGnfnIMFvsl9aslJQi5nDyAGODhSi+25BZHmZ3v3uqnyOFgE+Je+PY
+         sU1Yv5W9zoIC1zoqd4JTC0DiWt8U7odsjwDHzrK4AT6OAc6CfEdBZrcPT5K/vQfk1Qq0
+         0nw7bxq/Yy+ffIKu5BBVXNJM+wSOClPzmvL2uVGlKawzwM+BjpH9ZFzmbtavA1qivjoy
+         Kl/3AP3uKk3nQti0ICAmuUjscz4Sws7ILQEX6le9Km4Yk++mV1jWGdWNzYVUWa0JjNHv
+         CsFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694896714; x=1695501514;
+        d=1e100.net; s=20230601; t=1694896796; x=1695501596;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ck99DUFP41VW4qtdyIsbrq+XQAWsmxc+F6KcFhlBIVI=;
-        b=SyIw0sp86PZP1SgSzqaF3IB2szZzYv+yAqlgQs+TavkDSVrOILTVh8hOgizo1b2JiS
-         VDQf5hdBm0WF8twDuFR/Og4Kwz5/YT7Uibr89wiQtMm/htod5w3X4JNdWYmonNWWngvr
-         sLe7L3xJTuyze/rZXynAgvuA6DmV+V7Tqn6lImihyzWRLebG/3T962oPqsNYlgmCpCs+
-         Sbbrv3Zd/rR2TOH90o+Tys585z3x/JgIL4xyAvtIVMvhrpe0mTFdiipsx4t8afkXFTgt
-         M+jTscNnysctiT1Rgxo4YwB24Irhh+MkUrz9YekF+rlZ/bUnlb6mWmf6/yPrAMiNMSUg
-         CWAA==
-X-Gm-Message-State: AOJu0Yy5HpVMXk9rdvF2FCK36+QFhf/JFVnjqJOWAl1T2M2MVjFE0nGL
-        j51tJ5al/3CB8XwKI1o7NAnvMA==
-X-Google-Smtp-Source: AGHT+IGPpt6HSdp0GP6i/O8o1TEptGSzL8dCPxxFd82lf1rChEkuakTOqy25fHB2mJDQABKyYTWTMQ==
-X-Received: by 2002:a17:906:24b:b0:9ad:d084:a024 with SMTP id 11-20020a170906024b00b009add084a024mr4178083ejl.35.1694896713975;
-        Sat, 16 Sep 2023 13:38:33 -0700 (PDT)
+        bh=lR5T6ibwSrvheSebyD3OBI+eNynqOjBxcgSy01mbWmU=;
+        b=jVX5QPImQOiLx4IPY+4M2vraUMLbavgiPFjc7upiOBhU1TcGgjca1vAQIORsTYGafH
+         071WowiUeb0OnLvxHu+6PvNnlfEfrg95lOy4E6B1hrHVDGjQcHK+oCIl9qKdLvHjXy+7
+         GNt3SPB5fNdoTqb+WcZH1B30IHmadV+/6fW+7pvhvfy2Fg4t8o0tVSyl5AXosSaNqxDj
+         xV1j3mOj7JDEs0NjBXkf+Fh3UNdsoWY7tSkKQ3PMS1HhC9zaf2rmuQ2G2S7zMjd0wZT8
+         2UAqkRNButCWVQP3XQq/SjRM3zOZprbWRfLp+U3PcHqYal03usqoOkbIVy/Nnl3ii3+5
+         FSXQ==
+X-Gm-Message-State: AOJu0Yy0d+2BtvoHtgBJWBYR6Bae/pgjHDnqBRJ+3vtwDkWc+WKwnvWb
+        gc81m4cpgj/dLR885A6a6YszRg==
+X-Google-Smtp-Source: AGHT+IG0agA43aj2FABBUW8LcSlXyrYgJOmlotEOtAspWlPfaHsL2EVQAPzuRlrdQpY6P2iyOjGKUQ==
+X-Received: by 2002:a17:906:73cb:b0:9a9:f3df:80cd with SMTP id n11-20020a17090673cb00b009a9f3df80cdmr4420148ejl.72.1694896795733;
+        Sat, 16 Sep 2023 13:39:55 -0700 (PDT)
 Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
-        by smtp.gmail.com with ESMTPSA id l21-20020a1709061c5500b009ad89697c86sm4159546ejg.144.2023.09.16.13.38.32
+        by smtp.gmail.com with ESMTPSA id bj26-20020a170906b05a00b00997e99a662bsm4058272ejb.20.2023.09.16.13.39.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 13:38:33 -0700 (PDT)
-Message-ID: <95863623-8c77-efe8-50fe-4e00cdf5220f@linaro.org>
-Date:   Sat, 16 Sep 2023 22:38:32 +0200
+        Sat, 16 Sep 2023 13:39:55 -0700 (PDT)
+Message-ID: <bd833cee-2349-368d-93a4-9465ebc8a0e9@linaro.org>
+Date:   Sat, 16 Sep 2023 22:39:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add Huawei Honor 5X / GR5
- (2016)
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
+ device tree
 Content-Language: en-US
 To:     Lukas Walter <lukas.walter@aceart.de>,
         Andy Gross <agross@kernel.org>,
@@ -67,10 +67,12 @@ To:     Lukas Walter <lukas.walter@aceart.de>,
         Conor Dooley <conor+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Raymond Hackley <raymondhackley@protonmail.com>
 References: <20230916134147.163764-1-lukas.walter@aceart.de>
+ <20230916134147.163764-2-lukas.walter@aceart.de>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230916134147.163764-1-lukas.walter@aceart.de>
+In-Reply-To: <20230916134147.163764-2-lukas.walter@aceart.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,13 +86,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16/09/2023 15:41, Lukas Walter wrote:
-> Add a compatible for Huawei Honor 5X / GR5 (2016).
+> This dts adds support for Huawei Honor 5X / GR5 (2016) smartphone
+> released in 2015.
+> 
+> Add device tree with initial support for:
+> 
+> - GPIO keys
+> - Hall sensor
+> - SDHCI (internal and external storage)
+> - WCNSS (BT/WIFI)
+> - Sensors (accelerometer, proximity and gyroscope)
+> - Vibrator
+> - Touchscreen
 > 
 > Signed-off-by: Lukas Walter <lukas.walter@aceart.de>
-> ---
+> Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
 
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Order of SoB is unusual. Who did what here?
 
 Best regards,
 Krzysztof
