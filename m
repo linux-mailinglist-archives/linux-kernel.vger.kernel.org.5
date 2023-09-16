@@ -2,247 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 789E67A2E46
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 08:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD327A2E43
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 08:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbjIPGqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 02:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
+        id S238783AbjIPGwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 02:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237823AbjIPGp7 (ORCPT
+        with ESMTP id S232518AbjIPGwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 02:45:59 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211FE1BC1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 23:45:54 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31f71b25a99so2722696f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 23:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1694846752; x=1695451552; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MIDeAWdahUMHOh7TW9BYceBIpM4QDz+5Y/okXYT71D4=;
-        b=DRB/9v9cvgnnoUwQ7JFyZUJPxKst18z3etP1l97V638sqWWLmGCWi6lE7lbuSPeEox
-         INDg3cznm6b6yNExDJBXe3k/lzgMyx+iTRpCKMYtJDazj4qVkTjnYO2C9MYCwbC4RtA/
-         Dy8WQx3OvWF6Qnesj18Dq6Fjq/J1k/w/Jpk/7QoVRYX8+Bn8WehfnEz0iuE6DobnM/d8
-         cnaHz7uROwNf9u/LNFJ0mIQ2oy1dX7wT9i/ehYNBIFkedvX1/Aoti41IzFCu1XYu7Vmn
-         /n+9FZ6HpDWRECAwoZNO9Lw38cTwgmcDaJx/pK8mMnpyfgLPOiHp87eQI8n7OtM47vY3
-         ffCg==
+        Sat, 16 Sep 2023 02:52:00 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE681BC1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 23:51:55 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3a1e869ed0aso4422822b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 23:51:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694846752; x=1695451552;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MIDeAWdahUMHOh7TW9BYceBIpM4QDz+5Y/okXYT71D4=;
-        b=HfTDKJTTRu0N9irAKZXVLFZraKTqwXJBPOQa6ccrqYP8yrsvliAKDz09fcQ6x6Lw5m
-         kIYZJj1PjrsCgBsxUUapTvGV710hPxNl6BvuezZqR0yfq4O1qFchmoJ7PucYLMK3LhAo
-         8d9lOC4P7fVKKD6dKPLLn0sZh2PwmDeYb4WnvKNPJwr/9uzT13U00oYc4VGhCDlgc4Uu
-         W89gkekdFKFM7cUU/OZzLqyQ9n6tfdm0Uo3q1P02JKpFpwLYFfCVSGxswWbrx/xyToV3
-         VTZ05ITy2qgEzLcJHzi4UEo7LEU3JchpSdEJ/BO3zWURCcr6WMWRWviuLqCVJGAn6z9S
-         Qm9A==
-X-Gm-Message-State: AOJu0YyM2odguc+0mKx4eHm09QdKvhhHftpZB59uKYMNP+WjtCHKLKDX
-        3Kn1fjgvw/lLhxPdkyN6WbpT8w==
-X-Google-Smtp-Source: AGHT+IF9Pu6RAzmT+sR/UCnGMu/RRFT0lIKVr5isE7jkDP2hkunpqOL7QDrFb6yjnQSOzvEIEuEdkg==
-X-Received: by 2002:a5d:5965:0:b0:313:f61c:42ab with SMTP id e37-20020a5d5965000000b00313f61c42abmr3019654wri.56.1694846752519;
-        Fri, 15 Sep 2023 23:45:52 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id h4-20020a056000000400b00317909f9985sm6277045wrx.113.2023.09.15.23.45.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 23:45:51 -0700 (PDT)
-Date:   Sat, 16 Sep 2023 08:45:51 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        David Laight <David.Laight@aculab.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20230916-ab31c90dd56c99d36d5fce6c@orel>
-References: <20230915184904.1976183-1-evan@rivosinc.com>
+        d=1e100.net; s=20230601; t=1694847114; x=1695451914;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EJGvlfgw7TNHd0h3ACkY6TxHvXPd27j4aXkbbUSsrkQ=;
+        b=IfXw6aEMqG+/m5558UdaDayXBhMufghoilAAjEqoymLuWpUvuRUe5NToYleLYTIiF6
+         GsJ2RiBIdQeKl3Z/B52oLl3YuMiN4/GhLeXQMJe1uOqFALULOfZUE6h1y9aMn3gIZzN+
+         ckBuSbMrnlsPnTimSoXe4zQgrdNQkazAHkf23NHnp4RVlJU8BfGmuZcPXND/LLtw5hrP
+         O4/KWOtS8qqKbyl+POOd0f3AxDJEfFtuCMuDK70+58H6dKhqrBm37zuJds0OBGAtdGXs
+         bao9BbwRQw+UFf913x4sDK3jwctj7Bk3Q/P9fBudmLJ9BYibaqQDkgXjnMla/QjqW6SP
+         tuew==
+X-Gm-Message-State: AOJu0Yz+xpic6dvQTXw7jlaIZhOED3pnferOLq+Fjz8kpUlk9eEXL6L+
+        M8maIr0DD2+XiYgFFLuuakzJ1QE945xunWO9pYXnVlesSAfd
+X-Google-Smtp-Source: AGHT+IEw9yD3FZr20zageWerz5sOz/v4+MPuxems2c8WQJNxUEJVjeGGdd3RUPCsYN3plpJPkewbzVROeMJSAz4SoMZmuuewcCJO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915184904.1976183-1-evan@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:2006:b0:3ac:ab4f:ee6 with SMTP id
+ q6-20020a056808200600b003acab4f0ee6mr1508692oiw.1.1694847114399; Fri, 15 Sep
+ 2023 23:51:54 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 23:51:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033d44706057458b3@google.com>
+Subject: [syzbot] [ext4?] WARNING in setattr_copy
+From:   syzbot <syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, brauner@kernel.org, jlayton@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
-> Probing for misaligned access speed takes about 0.06 seconds. On a
-> system with 64 cores, doing this in smp_callin() means it's done
-> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
-> 
-> Instead of measuring each CPU serially, let's do the measurements on
-> all CPUs in parallel. If we disable preemption on all CPUs, the
-> jiffies stop ticking, so we can do this in stages of 1) everybody
-> except core 0, then 2) core 0.
-> 
-> The measurement call in smp_callin() stays around, but is now
-> conditionalized to only run if a new CPU shows up after the round of
-> in-parallel measurements has run. The goal is to have the measurement
-> call not run during boot or suspend/resume, but only on a hotplug
-> addition.
+Hello,
 
-Yay! I had just recently tested suspend/resume and wanted to report the
-probe as an issue, but I hadn't gotten around to it. This patch resolves
-the issue, so
+syzbot found the following issue on:
 
-Test-by: Andrew Jones <ajones@ventanamicro.com>
+HEAD commit:    3c13c772fc23 Add linux-next specific files for 20230912
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15b02b0c680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7149cbda1664bc5
+dashboard link: https://syzkaller.appspot.com/bug?extid=450a6d7e0a2db0d8326a
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155b32b4680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cf6028680000
 
-> 
-> Signed-off-by: Evan Green <evan@rivosinc.com>
-> 
-> ---
-> 
-> Jisheng, I didn't add your Tested-by tag since the patch evolved from
-> the one you tested. Hopefully this one brings you the same result.
-> 
-> ---
->  arch/riscv/include/asm/cpufeature.h |  3 ++-
->  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
->  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
->  3 files changed, 35 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-> index d0345bd659c9..19e7817eba10 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
->  /* Per-cpu ISA extensions. */
->  extern struct riscv_isainfo hart_isa[NR_CPUS];
->  
-> -void check_unaligned_access(int cpu);
-> +extern bool misaligned_speed_measured;
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/eb6fbc71f83a/disk-3c13c772.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2d671ade67d9/vmlinux-3c13c772.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b2b7190a3a61/bzImage-3c13c772.xz
 
-Do we need this new state or could we just always check the boot cpu's
-state to get the same information?
+The issue was bisected to:
 
- per_cpu(misaligned_access_speed, 0) != RISCV_HWPROBE_MISALIGNED_UNKNOWN
+commit d6f106662147d78e9a439608e8deac7d046ca0fa
+Author: Jeff Layton <jlayton@kernel.org>
+Date:   Wed Aug 30 18:28:43 2023 +0000
 
-> +int check_unaligned_access(void *unused);
->  
->  #endif
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 1cfbba65d11a..8eb36e1dfb95 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
->  /* Performance information */
->  DEFINE_PER_CPU(long, misaligned_access_speed);
->  
-> +/* Boot-time in-parallel unaligned access measurement has occurred. */
-> +bool misaligned_speed_measured;
-> +
->  /**
->   * riscv_isa_extension_base() - Get base extension word
->   *
-> @@ -556,8 +559,9 @@ unsigned long riscv_get_elf_hwcap(void)
->  	return hwcap;
->  }
->  
-> -void check_unaligned_access(int cpu)
-> +int check_unaligned_access(void *unused)
->  {
-> +	int cpu = smp_processor_id();
->  	u64 start_cycles, end_cycles;
->  	u64 word_cycles;
->  	u64 byte_cycles;
-> @@ -571,7 +575,7 @@ void check_unaligned_access(int cpu)
->  	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
->  	if (!page) {
->  		pr_warn("Can't alloc pages to measure memcpy performance");
-> -		return;
-> +		return 0;
->  	}
->  
->  	/* Make an unaligned destination buffer. */
-> @@ -643,15 +647,29 @@ void check_unaligned_access(int cpu)
->  
->  out:
->  	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
-> +	return 0;
-> +}
-> +
-> +static void check_unaligned_access_nonboot_cpu(void *param)
-> +{
-> +	if (smp_processor_id() != 0)
-> +		check_unaligned_access(param);
->  }
->  
-> -static int check_unaligned_access_boot_cpu(void)
-> +static int check_unaligned_access_all_cpus(void)
->  {
-> -	check_unaligned_access(0);
-> +	/* Check everybody except 0, who stays behind to tend jiffies. */
-> +	on_each_cpu(check_unaligned_access_nonboot_cpu, NULL, 1);
-> +
-> +	/* Check core 0. */
-> +	smp_call_on_cpu(0, check_unaligned_access, NULL, true);
-> +
-> +	/* Boot-time measurements are complete. */
-> +	misaligned_speed_measured = true;
->  	return 0;
->  }
->  
-> -arch_initcall(check_unaligned_access_boot_cpu);
-> +arch_initcall(check_unaligned_access_all_cpus);
->  
->  #ifdef CONFIG_RISCV_ALTERNATIVE
->  /*
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> index 1b8da4e40a4d..39322ae20a75 100644
-> --- a/arch/riscv/kernel/smpboot.c
-> +++ b/arch/riscv/kernel/smpboot.c
-> @@ -27,6 +27,7 @@
->  #include <linux/sched/mm.h>
->  #include <asm/cpu_ops.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/hwprobe.h>
->  #include <asm/irq.h>
->  #include <asm/mmu_context.h>
->  #include <asm/numa.h>
-> @@ -246,7 +247,15 @@ asmlinkage __visible void smp_callin(void)
->  
->  	numa_add_cpu(curr_cpuid);
->  	set_cpu_online(curr_cpuid, 1);
-> -	check_unaligned_access(curr_cpuid);
-> +
-> +	/*
-> +	 * Boot-time misaligned access speed measurements are done in parallel
-> +	 * in an initcall. Only measure here for hotplug.
-> +	 */
-> +	if (misaligned_speed_measured &&
-> +	    (per_cpu(misaligned_access_speed, curr_cpuid) == RISCV_HWPROBE_MISALIGNED_UNKNOWN)) {
-> +		check_unaligned_access(NULL);
-> +	}
->  
->  	if (has_vector()) {
->  		if (riscv_v_setup_vsize())
-> -- 
-> 2.34.1
->
+    fs: have setattr_copy handle multigrain timestamps appropriately
 
-Besides my reluctance to add another global variable, this looks good to
-me.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1419f8d8680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1619f8d8680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1219f8d8680000
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+450a6d7e0a2db0d8326a@syzkaller.appspotmail.com
+Fixes: d6f106662147 ("fs: have setattr_copy handle multigrain timestamps appropriately")
 
-Thanks,
-drew
+overlayfs: fs on './file0' does not support file handles, falling back to index=off,nfs_export=off.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5042 at fs/attr.c:298 setattr_copy_mgtime fs/attr.c:298 [inline]
+WARNING: CPU: 0 PID: 5042 at fs/attr.c:298 setattr_copy+0x84c/0x950 fs/attr.c:355
+Modules linked in:
+CPU: 0 PID: 5042 Comm: syz-executor172 Not tainted 6.6.0-rc1-next-20230912-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:setattr_copy_mgtime fs/attr.c:298 [inline]
+RIP: 0010:setattr_copy+0x84c/0x950 fs/attr.c:355
+Code: 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 66 83 3c 02 00 0f 85 ff 00 00 00 4c 89 73 68 4c 89 7b 70 e9 9d fd ff ff e8 74 a8 92 ff <0f> 0b e9 91 fd ff ff 4c 89 ff e8 b5 93 e8 ff e9 69 f8 ff ff e8 ab
+RSP: 0018:ffffc900038cf268 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888076c766b0 RCX: 0000000000000000
+RDX: ffff88807926d940 RSI: ffffffff81f54afc RDI: 0000000000000005
+RBP: ffffc900038cf2a0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000030 R11: ffffffff81ddb7d3 R12: ffffc900038cf420
+R13: 0000000000000030 R14: 0000000000000000 R15: ffff888076c766d8
+FS:  00005555574de380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001000 CR3: 000000001fdba000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_setattr+0x36f/0x2990 fs/ext4/inode.c:5479
+ notify_change+0x742/0x11c0 fs/attr.c:539
+ ovl_do_notify_change fs/overlayfs/overlayfs.h:188 [inline]
+ ovl_set_timestamps.isra.0+0x168/0x1e0 fs/overlayfs/copy_up.c:345
+ ovl_set_attr.part.0+0x1c8/0x210 fs/overlayfs/copy_up.c:369
+ ovl_set_attr+0x1c9/0x200 fs/overlayfs/copy_up.c:372
+ ovl_copy_up_metadata+0x471/0x6c0 fs/overlayfs/copy_up.c:668
+ ovl_copy_up_workdir fs/overlayfs/copy_up.c:747 [inline]
+ ovl_do_copy_up fs/overlayfs/copy_up.c:905 [inline]
+ ovl_copy_up_one+0xb10/0x2f10 fs/overlayfs/copy_up.c:1091
+ ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1146
+ ovl_setattr+0x109/0x520 fs/overlayfs/inode.c:45
+ notify_change+0x742/0x11c0 fs/attr.c:539
+ chown_common+0x596/0x660 fs/open.c:783
+ do_fchownat+0x140/0x1f0 fs/open.c:814
+ __do_sys_lchown fs/open.c:839 [inline]
+ __se_sys_lchown fs/open.c:837 [inline]
+ __x64_sys_lchown+0x7e/0xc0 fs/open.c:837
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9f835ef429
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffbe3679e8 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 69662f7375622f2e RCX: 00007f9f835ef429
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200002c0
+RBP: 0079616c7265766f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffbe367bc8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
