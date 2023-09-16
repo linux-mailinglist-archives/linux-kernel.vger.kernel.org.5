@@ -2,66 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CAA7A2E63
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 09:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414577A2E66
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 09:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbjIPHYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 03:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        id S234877AbjIPHbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 03:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjIPHXs (ORCPT
+        with ESMTP id S233324AbjIPHa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 03:23:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16B6CD8;
-        Sat, 16 Sep 2023 00:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694849022; x=1726385022;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c8i88xw7kqkRtm+RFJUtTj4XqEyRCmEHSLpdILSbhQA=;
-  b=IwIbhVEFS9ctTz8z8ccdFka4LvjICuBk+O8Hqs1RppYB/Q5D/1RbYXd/
-   Y2XPyEJgftakNEP9YFDOY912wqSfNltmHFiprJT59KyUiWat4DHDTbUtX
-   t/XOpeH/y3/azzEKM/ogdqCTpTldTvY4CT0QNwCJyfdh1sXvDGvmgXDfC
-   chdLS1n4k7ZkY3jq2a6JAZdtT9cGX6Q+GlzsRx9mlxjTYHI8mThpRnGim
-   fppGcF4dQQFpIDbAGQGiDOIFvhHDXWNESAle6IrQcM+YNXPSzay23Emc+
-   W+XfJPy4jjEjXlfO8lReUBRO/CvrEmgd8xtUdK0r/WuRRIRmdBEEi7mJS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359640194"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="359640194"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 00:23:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="745246136"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="745246136"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 16 Sep 2023 00:23:39 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhPeS-00041Q-2x;
-        Sat, 16 Sep 2023 07:23:36 +0000
-Date:   Sat, 16 Sep 2023 15:22:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ma Ke <make_ruc2021@163.com>, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: Re: [PATCH] net: sched: qfq: dont intepret cls results when asked to
- drop
-Message-ID: <202309161521.08Hs5BL9-lkp@intel.com>
-References: <20230915142355.3411527-1-make_ruc2021@163.com>
+        Sat, 16 Sep 2023 03:30:29 -0400
+Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBE710D4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 00:30:23 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id hPkzqXWcGBLWLhPkzqni2a; Sat, 16 Sep 2023 09:30:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694849422;
+        bh=FCzGUfVfl3gyXvyMuMWEuajChRiIpmEDWmkcE4/V2oA=;
+        h=From:To:Cc:Subject:Date;
+        b=bj5eJ+EpYft4no84HOrXdiDq5nzVL9vVG65EmhQgoM+uUPmKRJwuX5QWFsk0LsTgm
+         pqPKT8vemhX3ZmpzoDYR2+sVOn2MEeAN1cRnp6rRRcFwTyTTVPdrr8xj5oa8WHq9NL
+         Qw9wmVBBCqnwycFUd9TVZzp1UkpYdcNyLV9fFXubg9jZ7Jp1X1WZyBZFdpqMaR3XrB
+         cehOkz8dLPiWpFCfMXc4yDqhAOrWS49eT1eZUEqpM/N0zdhSigyBL2O3LZ8fR16E0a
+         IOyerjRtCULOvgQAIN0/Rs0lLOQ7dKFGQoXKp2oJHpTBU/uAH1bjzOW0To80ZaPSmY
+         W1nIE7qwIxp/w==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 16 Sep 2023 09:30:22 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-bcachefs@vger.kernel.org
+Subject: [PATCH] bcachefs: Use snprintf() instead of scnprintf() when appropriate
+Date:   Sat, 16 Sep 2023 09:30:19 +0200
+Message-Id: <9a998be3e2dbedcd3a9eae5f81ae6dcc6c0f98c4.1694849375.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915142355.3411527-1-make_ruc2021@163.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,84 +54,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ma,
+snprintf() and scnprintf() are the same, except for the returned value.
+When this value is not used, it is more logical to use snprintf() which is
+slightly simpler.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ fs/bcachefs/super.c | 2 +-
+ fs/bcachefs/tests.c | 2 +-
+ fs/bcachefs/trace.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-[auto build test ERROR on net-next/main]
-[also build test ERROR on net/main linus/master v6.6-rc1 next-20230915]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ma-Ke/net-sched-qfq-dont-intepret-cls-results-when-asked-to-drop/20230915-222648
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20230915142355.3411527-1-make_ruc2021%40163.com
-patch subject: [PATCH] net: sched: qfq: dont intepret cls results when asked to drop
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20230916/202309161521.08Hs5BL9-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309161521.08Hs5BL9-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309161521.08Hs5BL9-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> net/sched/sch_qfq.c:707:4: error: fallthrough annotation does not directly precede switch label
-                           fallthrough;
-                           ^
-   include/linux/compiler_attributes.h:227:41: note: expanded from macro 'fallthrough'
-   # define fallthrough                    __attribute__((__fallthrough__))
-                                           ^
-   1 error generated.
-
-
-vim +707 net/sched/sch_qfq.c
-
-0545a303777351 stephen hemminger   2011-04-04  678  
-0545a303777351 stephen hemminger   2011-04-04  679  static struct qfq_class *qfq_classify(struct sk_buff *skb, struct Qdisc *sch,
-0545a303777351 stephen hemminger   2011-04-04  680  				      int *qerr)
-0545a303777351 stephen hemminger   2011-04-04  681  {
-0545a303777351 stephen hemminger   2011-04-04  682  	struct qfq_sched *q = qdisc_priv(sch);
-0545a303777351 stephen hemminger   2011-04-04  683  	struct qfq_class *cl;
-0545a303777351 stephen hemminger   2011-04-04  684  	struct tcf_result res;
-25d8c0d55f241c John Fastabend      2014-09-12  685  	struct tcf_proto *fl;
-0545a303777351 stephen hemminger   2011-04-04  686  	int result;
-0545a303777351 stephen hemminger   2011-04-04  687  
-0545a303777351 stephen hemminger   2011-04-04  688  	if (TC_H_MAJ(skb->priority ^ sch->handle) == 0) {
-0545a303777351 stephen hemminger   2011-04-04  689  		pr_debug("qfq_classify: found %d\n", skb->priority);
-0545a303777351 stephen hemminger   2011-04-04  690  		cl = qfq_find_class(sch, skb->priority);
-0545a303777351 stephen hemminger   2011-04-04  691  		if (cl != NULL)
-0545a303777351 stephen hemminger   2011-04-04  692  			return cl;
-0545a303777351 stephen hemminger   2011-04-04  693  	}
-0545a303777351 stephen hemminger   2011-04-04  694  
-0545a303777351 stephen hemminger   2011-04-04  695  	*qerr = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
-25d8c0d55f241c John Fastabend      2014-09-12  696  	fl = rcu_dereference_bh(q->filter_list);
-3aa2605594556c Davide Caratti      2021-07-28  697  	result = tcf_classify(skb, NULL, fl, &res, false);
-0545a303777351 stephen hemminger   2011-04-04  698  	if (result >= 0) {
-0698b7004e7da6 Ma Ke               2023-09-15  699  		if (result == TC_ACT_SHOT)
-0698b7004e7da6 Ma Ke               2023-09-15  700  			return NULL;
-0545a303777351 stephen hemminger   2011-04-04  701  #ifdef CONFIG_NET_CLS_ACT
-0545a303777351 stephen hemminger   2011-04-04  702  		switch (result) {
-0545a303777351 stephen hemminger   2011-04-04  703  		case TC_ACT_QUEUED:
-0545a303777351 stephen hemminger   2011-04-04  704  		case TC_ACT_STOLEN:
-e25ea21ffa66a0 Jiri Pirko          2017-06-06  705  		case TC_ACT_TRAP:
-0545a303777351 stephen hemminger   2011-04-04  706  			*qerr = NET_XMIT_SUCCESS | __NET_XMIT_STOLEN;
-964201de695b8a Gustavo A. R. Silva 2020-07-07 @707  			fallthrough;
-0545a303777351 stephen hemminger   2011-04-04  708  		}
-0545a303777351 stephen hemminger   2011-04-04  709  #endif
-0545a303777351 stephen hemminger   2011-04-04  710  		cl = (struct qfq_class *)res.class;
-0545a303777351 stephen hemminger   2011-04-04  711  		if (cl == NULL)
-0545a303777351 stephen hemminger   2011-04-04  712  			cl = qfq_find_class(sch, res.classid);
-0545a303777351 stephen hemminger   2011-04-04  713  		return cl;
-0545a303777351 stephen hemminger   2011-04-04  714  	}
-0545a303777351 stephen hemminger   2011-04-04  715  
-0545a303777351 stephen hemminger   2011-04-04  716  	return NULL;
-0545a303777351 stephen hemminger   2011-04-04  717  }
-0545a303777351 stephen hemminger   2011-04-04  718  
-
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 2990eed85adf..773ea93e44c1 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1180,7 +1180,7 @@ static void bch2_dev_attach(struct bch_fs *c, struct bch_dev *ca,
+ {
+ 	ca->dev_idx = dev_idx;
+ 	__set_bit(ca->dev_idx, ca->self.d);
+-	scnprintf(ca->name, sizeof(ca->name), "dev-%u", dev_idx);
++	snprintf(ca->name, sizeof(ca->name), "dev-%u", dev_idx);
+ 
+ 	ca->fs = c;
+ 	rcu_assign_pointer(c->devs[ca->dev_idx], ca);
+diff --git a/fs/bcachefs/tests.c b/fs/bcachefs/tests.c
+index c907b3e00176..72f9bf186f9c 100644
+--- a/fs/bcachefs/tests.c
++++ b/fs/bcachefs/tests.c
+@@ -926,7 +926,7 @@ int bch2_btree_perf_test(struct bch_fs *c, const char *testname,
+ 
+ 	time = j.finish - j.start;
+ 
+-	scnprintf(name_buf, sizeof(name_buf), "%s:", testname);
++	snprintf(name_buf, sizeof(name_buf), "%s:", testname);
+ 	prt_human_readable_u64(&nr_buf, nr);
+ 	prt_human_readable_u64(&per_sec_buf, div64_u64(nr * NSEC_PER_SEC, time));
+ 	printk(KERN_INFO "%-12s %s with %u threads in %5llu sec, %5llu nsec per iter, %5s per sec\n",
+diff --git a/fs/bcachefs/trace.h b/fs/bcachefs/trace.h
+index 19264492151b..da303dd4b71c 100644
+--- a/fs/bcachefs/trace.h
++++ b/fs/bcachefs/trace.h
+@@ -450,7 +450,7 @@ TRACE_EVENT(btree_path_relock_fail,
+ 			c = six_lock_counts(&path->l[level].b->c.lock);
+ 			__entry->read_count	= c.n[SIX_LOCK_read];
+ 			__entry->intent_count	= c.n[SIX_LOCK_intent];
+-			scnprintf(__entry->node, sizeof(__entry->node), "%px", b);
++			snprintf(__entry->node, sizeof(__entry->node), "%px", b);
+ 		}
+ 		__entry->iter_lock_seq		= path->l[level].lock_seq;
+ 		__entry->node_lock_seq		= is_btree_node(path, level)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
