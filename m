@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147A87A3236
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8437A323F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237296AbjIPTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        id S236660AbjIPTUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbjIPTUU (ORCPT
+        with ESMTP id S233237AbjIPTUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:20:20 -0400
+        Sat, 16 Sep 2023 15:20:21 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D39C186
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4028DCE7
         for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:20:15 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1694892013;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ypaWc5Og+ko+YhlZxCoeIG9EwGQFApQm6ipFjJd/eyo=;
-        b=sXQTslrXSUNhuY3Y1oIEkt5g/U3qacYDD+q3dOQWrp0h/eVurpRHGp39kUvrg3sqEu8mQ1
-        PB8SPxXuFF4AldaBtcWQ9XcObap7TGNMJYIYSIfvAcyjquCIP1Etfb9qkYvx3BLoR0ZaSD
-        nG+L9gYA7//AnMrMjm+kdZYJO89Z0cgEVjPSA54/XBQs6sbRcPekj1OcqF0Goh+3BcDgJg
-        rD8Z5gW/mPocYYbbQNOALaTy82h6w1PTY3pGCl9hOxDlmHPg/pHPBsBQjEfQJiR/IEOg8W
-        PEkM3FGNxPGBPcXL/esJM4mMJ2uH8151flFE2o7+uMEULBOwIk/tfNMwtXBpBg==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6wxS1Fz8Ibgm+/x2Kb12v9fPLF/VWSQ/SBW6v8ioXYc=;
+        b=pwljhJBdr8qoSzNURMcTUkOb/mNdvPgHkZcBUJ5g2TBPYIVCG07xw7H82dSgz916Va+7md
+        ldirVhcMNmGm9M2tSnPOr0nmU86LKFtwInhefmJYfBTKcpZkZtP6wI3WyRViTtlMRGf3wn
+        EiiBdP+moW3/DI7ipxQv4YKZms4MwKlVycqYIsP9eQABL1jY8jsMps3qPBCCivw/XjpFmB
+        B89t+rDh+Wo8iw3YcOwGKPGBZswQM2W3lMPiOTW5wsNHE1iLjAcHkB9SWkrc1+g/y2nPJW
+        hFvJ/T577MqrKqi2AfvRgt5fCNpwbFdV/FBSp2VSXB0OPyvt/vnqYq7bL3Xexg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694892013;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ypaWc5Og+ko+YhlZxCoeIG9EwGQFApQm6ipFjJd/eyo=;
-        b=IIBRzTUqihn24cm8qcNIbOE7bP13aiYNxUohq5mUVsSMBd2FK8MPwRmE4j6VttYE0OQc6L
-        T0LECY2SHu+4UJAQ==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6wxS1Fz8Ibgm+/x2Kb12v9fPLF/VWSQ/SBW6v8ioXYc=;
+        b=w1VixJanFJPnE+aFUT4V87m+VQIIeSnG3jO79OdZrYnPIMMkF6JpHbXXC0+fwY6CqjYwkQ
+        9WtWR/Hz8XIEffBQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH printk v5 0/8] provide nbcon base
-Date:   Sat, 16 Sep 2023 21:25:59 +0206
-Message-Id: <20230916192007.608398-1-john.ogness@linutronix.de>
+Subject: [PATCH printk v5 1/8] printk: Add non-BKL (nbcon) console basic infrastructure
+Date:   Sat, 16 Sep 2023 21:26:00 +0206
+Message-Id: <20230916192007.608398-2-john.ogness@linutronix.de>
+In-Reply-To: <20230916192007.608398-1-john.ogness@linutronix.de>
+References: <20230916192007.608398-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,80 +60,270 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This is v5 of a series to introduce the new non-BKL (nbcon)
-consoles. v4 is here [0]. For information about the motivation
-of the atomic consoles, please read the cover letter of v1 [1].
+The current console/printk subsystem is protected by a Big Kernel Lock,
+(aka console_lock) which has ill defined semantics and is more or less
+stateless. This puts severe limitations on the console subsystem and
+makes forced takeover and output in emergency and panic situations a
+fragile endeavour that is based on try and pray.
 
-This series focuses on providing the base functionality of the
-nbcon consoles. In particular, it implements the ownership and
-priority semantics for nbcon consoles. This series does _not_
-include threaded printing, atomic printing regions, or nbcon
-drivers. Those features will be added in separate follow-up
-series.
+The goal of non-BKL (nbcon) consoles is to break out of the console lock
+jail and to provide a new infrastructure that avoids the pitfalls and
+also allows console drivers to be gradually converted over.
 
-The changes since v4:
+The proposed infrastructure aims for the following properties:
 
-- Remove nbcon_seq_init() and use nbcon_seq_force() instead.
+  - Per console locking instead of global locking
+  - Per console state that allows to make informed decisions
+  - Stateful handover and takeover
 
-- For nbcon_seq_force(), use the oldest record if the specified
-  record no longer exists.
+As a first step, state is added to struct console. The per console state
+is an atomic_t using a 32bit bit field.
 
-- For all try_acquire_*() variants, do not update the nbcon
-  state on success since it was not used.
+Reserve state bits, which will be populated later in the series. Wire
+it up into the console register/unregister functionality.
 
-- For nbcon_context_try_acquire_requested(), replace the cmpxhg
-  loop with a single cmpxchg.
+It was decided to use a bitfield because using a plain u32 with
+mask/shift operations resulted in uncomprehensible code.
 
-- For nbcon_context_try_acquire_requested(), remove an explicit
-  check for @unsafe_takeover. The nbcon_waiter_matches() check
-  is enough to detect unsafe hostile takeovers.
-
-- Rename nbcon_context_acquire_hostile() back to
-  nbcon_context_try_acquire_hostile().
-
-- Decide in nbcon_context_try_acquire_hostile() if an unsafe
-  hostile acquire is allowed rather than at the end of and
-  after nbcon_context_try_acquire_handover().
-
-- For register_console(), call nbcon_free() if it is a braille
-  console.
-
-- Change many comments as suggested by pmladek. In the feedback
-  thread I mentioned some other comment changes that I made.
-
-- Added various WARN_ON_ONCE() checks as suggested by pmladek.
-
-John Ogness
-
-[0] https://lore.kernel.org/lkml/20230908185008.468566-1-john.ogness@linutronix.de
-
-[1] https://lore.kernel.org/lkml/20230302195618.156940-1-john.ogness@linutronix.de
-
-John Ogness (1):
-  printk: Make static printk buffers available to nbcon
-
-Thomas Gleixner (7):
-  printk: Add non-BKL (nbcon) console basic infrastructure
-  printk: nbcon: Add acquire/release logic
-  printk: nbcon: Add buffer management
-  printk: nbcon: Add ownership state functions
-  printk: nbcon: Add sequence handling
-  printk: nbcon: Add emit function and callback function for atomic
-    printing
-  printk: nbcon: Allow drivers to mark unsafe regions and check state
-
- include/linux/console.h  |  129 +++++
- kernel/printk/Makefile   |    2 +-
- kernel/printk/internal.h |   31 ++
- kernel/printk/nbcon.c    | 1029 ++++++++++++++++++++++++++++++++++++++
- kernel/printk/printk.c   |   78 ++-
- 5 files changed, 1245 insertions(+), 24 deletions(-)
+Co-developed-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+---
+ include/linux/console.h  | 31 ++++++++++++++++++
+ kernel/printk/Makefile   |  2 +-
+ kernel/printk/internal.h |  8 +++++
+ kernel/printk/nbcon.c    | 70 ++++++++++++++++++++++++++++++++++++++++
+ kernel/printk/printk.c   | 13 ++++++--
+ 5 files changed, 120 insertions(+), 4 deletions(-)
  create mode 100644 kernel/printk/nbcon.c
 
-
-base-commit: 189f53ec666838729ab29a220ca4c1e1f1359f95
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 7de11c763eb3..a2d37a7a98a8 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -156,6 +156,8 @@ static inline int con_debug_leave(void)
+  *			/dev/kmesg which requires a larger output buffer.
+  * @CON_SUSPENDED:	Indicates if a console is suspended. If true, the
+  *			printing callbacks must not be called.
++ * @CON_NBCON:		Console can operate outside of the legacy style console_lock
++ *			constraints.
+  */
+ enum cons_flags {
+ 	CON_PRINTBUFFER		= BIT(0),
+@@ -166,8 +168,32 @@ enum cons_flags {
+ 	CON_BRL			= BIT(5),
+ 	CON_EXTENDED		= BIT(6),
+ 	CON_SUSPENDED		= BIT(7),
++	CON_NBCON		= BIT(8),
+ };
+ 
++/**
++ * struct nbcon_state - console state for nbcon consoles
++ * @atom:	Compound of the state fields for atomic operations
++ *
++ * To be used for reading and preparing of the value stored in the nbcon
++ * state variable @console::nbcon_state.
++ */
++struct nbcon_state {
++	union {
++		unsigned int	atom;
++		struct {
++		};
++	};
++};
++
++/*
++ * The nbcon_state struct is used to easily create and interpret values that
++ * are stored in the @console::nbcon_state variable. Ensure this struct stays
++ * within the size boundaries of the atomic variable's underlying type in
++ * order to avoid any accidental truncation.
++ */
++static_assert(sizeof(struct nbcon_state) <= sizeof(int));
++
+ /**
+  * struct console - The console descriptor structure
+  * @name:		The name of the console driver
+@@ -187,6 +213,8 @@ enum cons_flags {
+  * @dropped:		Number of unreported dropped ringbuffer records
+  * @data:		Driver private data
+  * @node:		hlist node for the console list
++ *
++ * @nbcon_state:	State for nbcon consoles
+  */
+ struct console {
+ 	char			name[16];
+@@ -206,6 +234,9 @@ struct console {
+ 	unsigned long		dropped;
+ 	void			*data;
+ 	struct hlist_node	node;
++
++	/* nbcon console specific members */
++	atomic_t		__private nbcon_state;
+ };
+ 
+ #ifdef CONFIG_LOCKDEP
+diff --git a/kernel/printk/Makefile b/kernel/printk/Makefile
+index f5b388e810b9..39a2b61c7232 100644
+--- a/kernel/printk/Makefile
++++ b/kernel/printk/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y	= printk.o
+-obj-$(CONFIG_PRINTK)	+= printk_safe.o
++obj-$(CONFIG_PRINTK)	+= printk_safe.o nbcon.o
+ obj-$(CONFIG_A11Y_BRAILLE_CONSOLE)	+= braille.o
+ obj-$(CONFIG_PRINTK_INDEX)	+= index.o
+ 
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index 7d4979d5c3ce..2ca0ab78802c 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -3,6 +3,7 @@
+  * internal.h - printk internal definitions
+  */
+ #include <linux/percpu.h>
++#include <linux/console.h>
+ 
+ #if defined(CONFIG_PRINTK) && defined(CONFIG_SYSCTL)
+ void __init printk_sysctl_init(void);
+@@ -61,6 +62,10 @@ void defer_console_output(void);
+ 
+ u16 printk_parse_prefix(const char *text, int *level,
+ 			enum printk_info_flags *flags);
++
++void nbcon_init(struct console *con);
++void nbcon_cleanup(struct console *con);
++
+ #else
+ 
+ #define PRINTK_PREFIX_MAX	0
+@@ -76,6 +81,9 @@ u16 printk_parse_prefix(const char *text, int *level,
+ #define printk_safe_exit_irqrestore(flags) local_irq_restore(flags)
+ 
+ static inline bool printk_percpu_data_ready(void) { return false; }
++static inline void nbcon_init(struct console *con) { }
++static inline void nbcon_cleanup(struct console *con) { }
++
+ #endif /* CONFIG_PRINTK */
+ 
+ /**
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+new file mode 100644
+index 000000000000..63d24ca62ac5
+--- /dev/null
++++ b/kernel/printk/nbcon.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// Copyright (C) 2022 Linutronix GmbH, John Ogness
++// Copyright (C) 2022 Intel, Thomas Gleixner
++
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include "internal.h"
++/*
++ * Printk console printing implementation for consoles which does not depend
++ * on the legacy style console_lock mechanism.
++ */
++
++/**
++ * nbcon_state_set - Helper function to set the console state
++ * @con:	Console to update
++ * @new:	The new state to write
++ *
++ * Only to be used when the console is not yet or no longer visible in the
++ * system. Otherwise use nbcon_state_try_cmpxchg().
++ */
++static inline void nbcon_state_set(struct console *con, struct nbcon_state *new)
++{
++	atomic_set(&ACCESS_PRIVATE(con, nbcon_state), new->atom);
++}
++
++/**
++ * nbcon_state_read - Helper function to read the console state
++ * @con:	Console to read
++ * @state:	The state to store the result
++ */
++static inline void nbcon_state_read(struct console *con, struct nbcon_state *state)
++{
++	state->atom = atomic_read(&ACCESS_PRIVATE(con, nbcon_state));
++}
++
++/**
++ * nbcon_state_try_cmpxchg() - Helper function for atomic_try_cmpxchg() on console state
++ * @con:	Console to update
++ * @cur:	Old/expected state
++ * @new:	New state
++ *
++ * Return: True on success. False on fail and @cur is updated.
++ */
++static inline bool nbcon_state_try_cmpxchg(struct console *con, struct nbcon_state *cur,
++					   struct nbcon_state *new)
++{
++	return atomic_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_state), &cur->atom, new->atom);
++}
++
++/**
++ * nbcon_init - Initialize the nbcon console specific data
++ * @con:	Console to initialize
++ */
++void nbcon_init(struct console *con)
++{
++	struct nbcon_state state = { };
++
++	nbcon_state_set(con, &state);
++}
++
++/**
++ * nbcon_cleanup - Cleanup the nbcon console specific data
++ * @con:	Console to cleanup
++ */
++void nbcon_cleanup(struct console *con)
++{
++	struct nbcon_state state = { };
++
++	nbcon_state_set(con, &state);
++}
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 7e0b4dd02398..5f372eaceb29 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3326,9 +3326,10 @@ static void try_enable_default_console(struct console *newcon)
+ 		newcon->flags |= CON_CONSDEV;
+ }
+ 
+-#define con_printk(lvl, con, fmt, ...)			\
+-	printk(lvl pr_fmt("%sconsole [%s%d] " fmt),	\
+-	       (con->flags & CON_BOOT) ? "boot" : "",	\
++#define con_printk(lvl, con, fmt, ...)				\
++	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
++	       (con->flags & CON_NBCON) ? "" : "legacy ",	\
++	       (con->flags & CON_BOOT) ? "boot" : "",		\
+ 	       con->name, con->index, ##__VA_ARGS__)
+ 
+ static void console_init_seq(struct console *newcon, bool bootcon_registered)
+@@ -3488,6 +3489,9 @@ void register_console(struct console *newcon)
+ 	newcon->dropped = 0;
+ 	console_init_seq(newcon, bootcon_registered);
+ 
++	if (newcon->flags & CON_NBCON)
++		nbcon_init(newcon);
++
+ 	/*
+ 	 * Put this console in the list - keep the
+ 	 * preferred driver at the head of the list.
+@@ -3579,6 +3583,9 @@ static int unregister_console_locked(struct console *console)
+ 	 */
+ 	synchronize_srcu(&console_srcu);
+ 
++	if (console->flags & CON_NBCON)
++		nbcon_cleanup(console);
++
+ 	console_sysfs_notify();
+ 
+ 	if (console->exit)
 -- 
 2.39.2
 
