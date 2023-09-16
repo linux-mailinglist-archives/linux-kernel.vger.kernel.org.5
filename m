@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1097A321C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EA97A321F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbjIPTO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        id S234164AbjIPTRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjIPTOy (ORCPT
+        with ESMTP id S233237AbjIPTQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:14:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2D3CE8;
-        Sat, 16 Sep 2023 12:14:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C9F4C433CD;
-        Sat, 16 Sep 2023 19:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694891688;
-        bh=GhEPs001caUtxwRsE4CgbQic7rBW6RkecWPBoHLDshg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=B6EpN3T7NeJLqmpijC2ABe3zkhN7Mky/SKq3Wy46erS33iNYDHo7ePdb5NvptwhFH
-         ZNfNeWEo+sda6PO1R1CRfd0MP7I/mQpofgcocUqbtTA67QvdCiouPO6SLpdwHR1NBh
-         jiu+Qvj8LtBdpdg72StJjUpp7l7Mv0IaM6co40P+VNwlC4q/Voj9opKgn7iavZOv8e
-         HzATNC1jVbdXapmA9prWf3+2NI8LUO/XpZtg3s1NZHsQhDOVtAmBzBa2ui376mBqMn
-         jV4DLhWB7iSfG54I5vJOL33l/0wB6x2WEcRefcGRFsQUptvp19JvE/D37xpBfDjMuf
-         6T+naGWoHW3bA==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b962c226ceso51990651fa.3;
-        Sat, 16 Sep 2023 12:14:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzwtsSuuk7ntRLQuFwz5nc1ivw4B7EPwH3hQ/0WfJ0BdeUGdx9V
-        64iuqp2fHZH82bwBnluNgIcaxlOGB3pAC2MCwxM=
-X-Google-Smtp-Source: AGHT+IFFfllFzyDKsE+GvRpJHheHwfGf/pRlgEDGGKEVgxkT9+rKubZ/wvd926AEUbG6IJatdHLJbJlkSf+hRxAbKoc=
-X-Received: by 2002:a2e:680c:0:b0:2bd:133c:58ff with SMTP id
- c12-20020a2e680c000000b002bd133c58ffmr3852284lja.48.1694891686814; Sat, 16
- Sep 2023 12:14:46 -0700 (PDT)
+        Sat, 16 Sep 2023 15:16:35 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95E186;
+        Sat, 16 Sep 2023 12:16:30 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31ffc8ead75so97706f8f.0;
+        Sat, 16 Sep 2023 12:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694891788; x=1695496588; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vwUo4LhXW6t1Gnv3Q0htjfrVL7zsllgauCJSS4C+aNg=;
+        b=RzIY5wwqUA51SkVB0Z8HRNXXBmk+VBI78AVY8GSbre2vHGiFul9H21UgbL77gOg46F
+         nGbgd9IpGteNTbcwLZMvLaLD9Zbiqt1ihTLQLxV4AhJ/kTiOcQX60INzUisy/ONfInB1
+         5J+d+BaXxUWgdPUoGhfSLg+rg5vgf4xHxPyaz6ZiTPo9UN+etdoQFy9qMaSrRXRk9tvR
+         /6tXWy5Kx6NNiaA47okOvl52wSUsGwVs2lLet+WJdtZTZ5YxizPo6skEHxhBLIqWM4jF
+         D/9QFTlMhKZIOl2/zsdi5MMbZIZISGhKh2mx79L0nSAigx62sU/J1w9F1LnoKxGuzOnp
+         DhoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694891788; x=1695496588;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vwUo4LhXW6t1Gnv3Q0htjfrVL7zsllgauCJSS4C+aNg=;
+        b=gzNTkUCUhurqDRHE5xrKhVbC8xXWI+NMrHdMoxVlwiFYhjHfOdnU0GCMiVpg7B+OTV
+         p8vKaZtTIdvXEP1L0JCiaruuD4WXx6+YAWlJWsE0NWrMiMZx4Vh1WP7dYqUGcq6qavdk
+         gmTTUUDlZBOQReRmxDmAOVRMJrMjN2RGgu2NLkyS+LhjdmWn8H7YlQwfaV5heHLV2Dfb
+         WuuLCws0/lX/py1jb/qk+9yrtIJ9CN9j1uTMcHNTC9WtOh549XieoYfNi/SqANlm4XQt
+         gdbc8Sck36CQhKUjaCqQQSkGLbQd0XtCHbJ2m93I3WJElm2Z4axQnw6CMSXgEykuz5pX
+         rxEQ==
+X-Gm-Message-State: AOJu0YxunZFsjxl6ZsSopHCMGAGE1BOW14T2d5li9TZZWiPc7+cMVxVE
+        YlwUqsGIm+nv0RqwEWszR/U=
+X-Google-Smtp-Source: AGHT+IFQvgWlTqJ+ytOsAKXGLEU/ChOtRbJNqGOsj29RBk91cgJULaEEW3Hth1jXthX00cPN+Zp19Q==
+X-Received: by 2002:a05:6000:1f9c:b0:320:b1e:7e6c with SMTP id bw28-20020a0560001f9c00b003200b1e7e6cmr163143wrb.3.1694891788289;
+        Sat, 16 Sep 2023 12:16:28 -0700 (PDT)
+Received: from [10.0.0.26] ([178.160.241.68])
+        by smtp.gmail.com with ESMTPSA id d6-20020adfef86000000b0031f82743e25sm7883184wro.67.2023.09.16.12.16.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Sep 2023 12:16:27 -0700 (PDT)
+Message-ID: <f1c8d747-dcf6-a913-f6d5-37fdfe3e2be6@gmail.com>
+Date:   Sat, 16 Sep 2023 23:16:26 +0400
 MIME-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com> <ZQQiUxh5vmeZnp7s@gmail.com>
- <ZQRAckHVxQZRNEGA@gmail.com> <CAGnOC3Zw49_30FkGY=RRLn-sCHNgFY_T0ugNJZCgg_T3opHm+Q@mail.gmail.com>
- <CAMj1kXEVA5iL79HwXdYOAXAr0ZemS6repMRi9b20VSU=u0Ee=Q@mail.gmail.com> <ZQVxIIh1byq65lK/@gmail.com>
-In-Reply-To: <ZQVxIIh1byq65lK/@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 16 Sep 2023 21:14:35 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH7b+TRajewcY0hzh_j0qMV+X9Nm2PNFftWTTEBp9xr5g@mail.gmail.com>
-Message-ID: <CAMj1kXH7b+TRajewcY0hzh_j0qMV+X9Nm2PNFftWTTEBp9xr5g@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ard Biesheuvel <ardb@google.com>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] selftests: ALSA: fix warnings in 'test-pcmtest-driver'
+Content-Language: en-US
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
+ <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
+ <128d057c-0d60-418d-7129-093ea59b8870@gmail.com>
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <128d057c-0d60-418d-7129-093ea59b8870@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Sept 2023 at 11:11, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > > > So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootup,
-> > > > due to the 8th patch:
-> > > >
-> > > >   988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
-> > > >   commit 988b52b207a9fe74c3699bda8c2256714926b94b
-> > > >   Author: Ard Biesheuvel <ardb@kernel.org>
-> > > >   Date:   Tue Sep 12 09:01:01 2023 +0000
-> > > >
-> > > >       x86/boot: Define setup size in linker script
-> > > >
-> > > > I've removed it for now - but this side effect was not expected.
-> > > >
-> > >
-> > > No, definitely not expected. I tested various combinations of i386 /
-> > > x86_64 built with GCC / Clang doing EFI or BIOS boot.
-> > >
-> > > I'll rebase the remaining stuff onto -tip and see if I can reproduce this.
-> >
-> > This is actually quite bizarre. x86_64_defconfig has
-> > CONFIG_EFI_MIXED=y and i tested that this change produces the exact
-> > same bzImage binary in that case.
-> >
-> > Could you send me the .config and the QEMU command line perhaps?
->
-> So the patch below is the delta between v2 and v3 - that is expected
-> to fix the bzImage boot crash, right?
->
+On 9/16/23 22:25, Javier Carrasco wrote:
+> Removing an unused variable is actually removing a blank line from a
+> logical point of view. Is an extra patch not overkill considering that
+> it cannot affect the code behavior?
 
-Yes.
+Well, no, it is not, as the line is not blank (nothing except removing a 
+blank line could be considered as blank line removal) :) And an extra 
+patch is not an overkill in case if you are separating logical changes.
 
-ld.bfd does something unexpected [to me] here, and the resulting value
-turns out not to be a multiple of 512 at all.
+However, rules may vary from one subsystem to another, so it is up to 
+Shuah to decide take this patch or not. My opinion is that such changes 
+should be separated into different patches.
 
-With this tweak, my claim that this patch does not affect the binary
-bzImage at all actually holds for ld.bfd as well (provided that
-CONFIG_EFI_MIXED=y and CONFIG_LOCAL_VERSION_AUTO is disabled)
-
-So if this still does not work in your test, could you please disable
-CONFIG_LOCAL_VERSION_AUTO and compare the md5sums of the two builds?
-
-Thanks,
-
-
-> --- tip.orig/arch/x86/boot/setup.ld
-> +++ tip/arch/x86/boot/setup.ld
-> @@ -41,7 +41,7 @@ SECTIONS
->                 LONG(0x5a5aaa55)
->
->                 /* Reserve some extra space for the reloc and compat sections */
-> -               setup_size = ABSOLUTE(ALIGN(. + 64, 512));
-> +               setup_size = ALIGN(ABSOLUTE(.) + 64, 512);
->                 setup_sects = ABSOLUTE(setup_size / 512);
->         }
->
->
