@@ -2,265 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E497A30CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAA17A30D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239393AbjIPOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 10:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S239271AbjIPOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 10:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239390AbjIPOEP (ORCPT
+        with ESMTP id S239408AbjIPOGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 10:04:15 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B26CE7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:03:47 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690471b5889so1272730b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694873026; x=1695477826; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Oj4pOI3pVs327qsHEGlUcaJ2/26WPRFSldanwmoKx0c=;
-        b=N4P+uUxGnXVdU5xKTfwYny5j7YFUdG4gdBnGtQsWcmpdWD1VLy76saq8rhCblcuwsg
-         7EkfMfzQ8fla9xlYKDGbGEwc/NWM4i3u2xCNw5JpP+MAfnqlObMj9WWhwETPDIHvE7/n
-         BvzXXLcX8UHDPqdMEoBvD7BDosLDYGlg9Rgm4g9lR65lnsPoIlaYtHai51VYITeTetRd
-         rn+U2u6c+DIfXxp9Ab80yDSOTJIFJ/tv/+KsPRdsWyq1VnP+Gx5WqQaPtr08N7nYNb1p
-         WLnjUtW32u3WhTXBS+kn55amzOLmulO9f496nEOHrsQi5Yt4cUtvA+H1yiGEZU/zd+V5
-         wogg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694873026; x=1695477826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Oj4pOI3pVs327qsHEGlUcaJ2/26WPRFSldanwmoKx0c=;
-        b=A4hVweUI+aIW1NhCwIberofZxXUroAxZqDNBz83kdLzmrBqu3XajFoKKaFmUrQwxat
-         GYjUqC4XIakPkzVAlrV9IB4V0J/OYPY5HKLRWauH7Bh94tkwjEVDc/sKIzngqqZId1Bg
-         hjrwzMIJ6zovqD4jMkSoOrFd3RYg+s1rOVB1b64pgB2f9yYzRji0BIhv3o8k7LoV9bBR
-         Hk1HWlrzdcFke0kYmEOu37HpJMbaW2jQx3jDVlbWFZpvmyUVL0yF+p+LhxQuWjkj4aFz
-         BPG02VRm2AS0qdMPt9yccMcv4WE6qsz4dz0q3JtPWON5gD8ZIFcVbdCJ4AO5C+v2Sv9H
-         pnVQ==
-X-Gm-Message-State: AOJu0YxtVpSq5YYh3MjTR5wDR3OL20G0NDxv02ng/3rWXEVrwWE3SJ/M
-        I5jCRpUa0frKlNYPbrrmr76DYw==
-X-Google-Smtp-Source: AGHT+IEVzFXumo/J/QE/xF5PDDqrKhmcaVZNjrP37KzyfnDB3I5vEYYde0qucCyi444GkbUpzdEcEw==
-X-Received: by 2002:a05:6a20:3cac:b0:15a:478f:9f2e with SMTP id b44-20020a056a203cac00b0015a478f9f2emr5411493pzj.1.1694873026408;
-        Sat, 16 Sep 2023 07:03:46 -0700 (PDT)
-Received: from [10.5.75.238] ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id n17-20020aa78a51000000b0068bc014f352sm4551431pfa.7.2023.09.16.07.03.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 07:03:44 -0700 (PDT)
-Message-ID: <67d07ab7-8202-4bbd-88d9-587707bd58b1@bytedance.com>
-Date:   Sat, 16 Sep 2023 22:03:36 +0800
+        Sat, 16 Sep 2023 10:06:21 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55F5B3;
+        Sat, 16 Sep 2023 07:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=gyJXrV2FBaJt5av+urMDvCRwP7rvah/NV7MA4qmSXFg=; b=u9f5w5Fn8ttIDhKg1E3O8+bt5e
+        Wurr44B24wGxlE/Sdq5Woyxu8FbDDcx8uxsC48IwsfOvw1o8zY2WFK4qMXbd8/dxV8EPT28Ste7Vc
+        qtpRHSHHvWZIA2cBax8dfMesckkr/Z8BPJq7r9r5gJv5kKRlZ0Mw5MOjKf3gdxKR6Gxc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qhVvB-006dhI-Ev; Sat, 16 Sep 2023 16:05:17 +0200
+Date:   Sat, 16 Sep 2023 16:05:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Crispin <john@phrozen.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH net-next v2 08/10] dt-bindings: net: dsa: marvell:
+ convert to json-schema
+Message-ID: <63cc4c3c-5cac-4d54-99be-7f05e98406ba@lunn.ch>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <20230916110902.234273-9-arinc.unal@arinc9.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: Introduce process open coded
- iterator kfuncs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-4-zhouchuyi@bytedance.com>
- <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
- <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com>
- <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230916110902.234273-9-arinc.unal@arinc9.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: |
+> +          Switch has base address 0x10. Use with models:
+> +          6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165, 6171, 6172, 6175,
+> +          6176, 6185, 6240, 6320, 6321, 6341, 6350, 6351, 6352
+> +        const: marvell,mv88e6085
 
-在 2023/9/16 04:37, Andrii Nakryiko 写道:
-> On Fri, Sep 15, 2023 at 8:03 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->> 在 2023/9/15 07:26, Andrii Nakryiko 写道:
->>> On Tue, Sep 12, 2023 at 12:02 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>>>
->>>> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
->>>> creation and manipulation of struct bpf_iter_process in open-coded iterator
->>>> style. BPF programs can use these kfuncs or through bpf_for_each macro to
->>>> iterate all processes in the system.
->>>>
-[...cut...]
->>>
->>> Few high level thoughts. I think it would be good to follow
->>> SEC("iter/task") naming and approach. Open-coded iterators in many
->>> ways are in-kernel counterpart to iterator programs, so keeping them
->>> close enough within reason is useful for knowledge transfer.
->>>
->>> SEC("iter/task") allows to:
->>> a) iterate all threads in the system
->>> b) iterate all threads for a given TGID
->>> c) it also allows to "iterate" a single thread or process, but that's
->>> a bit less relevant for in-kernel iterator, but we can still support
->>> them, why not?
->>>
->>> I'm not sure if it supports iterating all processes (as in group
->>> leaders of each task group) in the system, but if it's possible I
->>> think we should support it at least for open-coded iterator, seems
->>> like a very useful functionality.
->>>
->>> So to that end, let's design a small set of input arguments for
->>> bpf_iter_process_new() that would allow to specify this as flags +
->>> either (optional) struct task_struct * pointer to represent
->>> task/process or PID/TGID.
->>>
->>
->> Another concern from Alexei was the readability of the API of open-coded
->> in BPF Program[1].
->>
->> bpf_for_each(task, curr) is straightforward. Users can easily understand
->> that this API does the same thing as 'for_each_process' in kernel.
-> 
-> In general, users might have no idea about for_each_process macro in
-> the kernel, so I don't find this particular argument very convincing.
-> 
-> We can add a separate set of iterator kfuncs for every useful
-> combination of conditions, of course, but it's a double-edged sword.
-> Needing to use a different iterator just to specify a different
-> direction of cgroup iteration (from the example you referred in [1])
-> also means that it's now harder to write some generic function that
-> needs to do something for all cgroups matching some criteria where the
-> order might be coming as an argument.
-> 
-> Similarly for task iterators. It's not hard to imagine some processing
-> that can be equivalently done per thread or per process in the system,
-> or on each thread of the process, depending on some conditions or
-> external configuration. Having to do three different
-> bpf_for_each(task_xxx, task, ...) for this seems suboptimal. If the
-> nature of the thing that is iterated over is the same, and it's just a
-> different set of filters to specify which subset of those items should
-> be iterated, I think it's better to try to stick to the same iterator
-> with few simple arguments. IMO, of course, there is no objectively
-> best approach.
-> 
->>
->> However, if we keep the approach of SEC("iter/task")
->>
->> enum ITER_ITEM {
->>          ITER_TASK,
->>          ITER_THREAD,
->> }
->>
->> __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_process *it, struct
->> task_struct *group_task, enum ITER_ITEM type)
->>
->> the API have to chang:
->>
->>
->> bpf_for_each(task, curr, NULL, ITERATE_TASK) // iterate all process in
->> the  system
->> bpf_for_each(task, curr, group_leader, ITERATE_THREAD) // iterate all
->> thread of group_leader
->> bpf_for_each(task, curr, NULL, ITERATE_THREAD) //iterate all threads of
->> all the process in the system
->>
->> Useres may guess what are this API actually doing....
-> 
-> I'd expect users to consult documentation before trying to use an
-> unfamiliar cutting-edge functionality. So let's try to keep
-> documentation clear and up to the point. Extra flag argument doesn't
-> seem to be a big deal.
+The .txt file contained:
 
-Thanks for your suggestion!
+    The compatibility string is used only to find an identification
+    register, which is at a different MDIO base address in different
+    switch families.
 
-Before we begin working on the next version, I have outlined a detailed 
-API design here:
+Please keep this text. There has been a lot of confusion in the past,
+lots of circular arguments etc, and it is way too late to do anything
+different. So i want to make it clear what the compatible is used for,
+juts to find the ID registers, nothing more.
 
-1.task_iter
+> +
+> +      - description: |
+> +          Switch has base address 0x00. Use with models:
+> +          6190, 6190X, 6191, 6290, 6361, 6390, 6390X
 
-It will be used to iterate process/threads like SEC("iter/task"). Here 
-we should better to follow the naming and approach SEC("iter/task"):
+The .txt file is missing the 6191X and 6393X, which belong here. If
+you need to respin, please could you add them here.
 
-enum {
-	ITERATE_PROCESS,
-	ITERATE_THREAD,
-}
-
-__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct 
-task_struct *task, int flag);
-
-If we want to iterate all processes in the system, the iteration will 
-start from the *task* which is passed from user.(since process in the 
-system are connected through a linked list)
-
-Additionally, the *task* can allow users to specify iterating all 
-threads within a task group.
-
-SEC("xxx")
-int xxxx(void *ctx)
-{
-	struct task_struct *pos;
-	struct task_struct *cur_task = bpf_get_current_task_btf();
-
-	bpf_rcu_read_lock();
-
-	// iterating all process in the system start from cur_task
-	bpf_for_each(task, pos, cur_task, ITERATE_PROCESS) {
-		
-	}
-
-	// iterate all thread belongs to cur_task group.
-	bpf_for_each(task, pos, cur_task, ITERATE_THREAD) {
-	
-	}
-	
-	bpf_rcu_read_unlock();
-	return 0;
-}
-
-Iterating all thread of each process is great（ITERATE_ALL）. But maybe 
-let's break it down step by step and implement 
-ITERATE_PROCESS/ITERATE_THREAD first? (I'm little worried about the cpu 
-overhead of ITERATE_ALL, since we are doing a heavy job in BPF Prog)
-
-I wanted to reuse BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID 
-insted of new enums like ITERATE_PROCESS/ITERATE_THREAD. But it seems 
-necessary. In BPF Prog, we usually operate task_struct directly instead 
-of pid/tgid. It's a little weird to use 
-BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID here:
-
-bpf_for_each(task, pos, cur_task, BPF_TASK_ITER_TID) {
-}
-
-On the other hand, 
-BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID are inner flags 
-that are hidden from the users.
-Exposing ITERATE_PROCESS/ITERATE_THREAD will not cause confusion to user.
-
-
-2. css_iter.
-
-css_iter will be used to:
-(1) iterating subsystem, like 
-for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
-(2) iterating cgroup. (patch-6's selfetest has a basic example)
-
-css(cgroup_subsys_state) is more fundamental than struct cgroup. I think 
-we'd better operating css rather than cgroup, since it's can be hard for 
-cgroup_iter to achive (2). So here we keep the name of "css_iter", 
-BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST/BPF_CGROUP_ITER_ANCESTORS_UP 
-can be reused.
-
-
-__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-		struct cgroup_subsys_state *root, unsigned int flag)
-
-bpf_for_each(css, root, BPF_CGROUP_ITER_DESCENDANTS_PRE)
-
-Thanks.
-
-
-
-
+	Andrew
