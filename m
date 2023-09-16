@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFE77A2E08
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 07:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360777A2E0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 07:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238706AbjIPFSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 01:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S238732AbjIPF0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 01:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238742AbjIPFSU (ORCPT
+        with ESMTP id S238470AbjIPF03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 01:18:20 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9701BCA;
-        Fri, 15 Sep 2023 22:18:14 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2745cd2ba68so2323042a91.0;
-        Fri, 15 Sep 2023 22:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694841493; x=1695446293; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:subject:to:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1qdYiZ8LF0tnKSZBA/euKOT4dE27FmTPvneuvwGAtB4=;
-        b=k7Zl+NS0nW91td44ZPci9WfG0wc8x70mOEIEPeBAcEtIWdTB6PLysFXv9hnOh77wYp
-         i0a+tSeX1yfcryElX5orRWtphblRx4S6d947rTG9fGw3Cg+UMbaG+GtWS+WuXmPA08G0
-         FRb49Yt+4Bv2rC7u+hmE7lC1EwoA26sRsTdtgOhPToGfdTdK0cgN3UhThlL+lejtpB30
-         SOSQ1D+QyldBTEWZf45vlWTiYEg9u+3irmS3wf/HwS91STUq5hBHaqKL6vX4jHpaAroQ
-         Tcfv1EHuivpI6/jkmhTrO1DEhUGfW1JXQHbMoKUWnyzqTb/jrmUM1lQRX0o9WpetYPpd
-         XlEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694841493; x=1695446293;
-        h=content-transfer-encoding:in-reply-to:references:subject:to:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1qdYiZ8LF0tnKSZBA/euKOT4dE27FmTPvneuvwGAtB4=;
-        b=VD4f+Tmx2IAneeS3JnGEOIeEc1OtOvn++cD4ci1LoWMHfUH8/bG8oEnNE+eiKxw5tC
-         ZGkqJiWwqc2s0dbDwOhLBYqEcAj1tGHUNlyKmgIiEkV6s+VnBcCVnG7xO+mAX5D1QBXR
-         duQel+Nz0xoYZuslOP4DCzSjBZq6Mi56X6Zef0MbDwUBFvVciEZmXMQ1XcB5FJ8SE1TS
-         2I+TFR8Q67nuT1YvxESzAXNXtoUWpZXOAinP00g4risbslAhNmTv2IGrSGYDFIHycYyp
-         ZE73RwvWDEcjNISsP2paqTIijwPKR1RjDqksncoaVoBW9JixexW5PSJPwLO7Bwa1Y7MK
-         Tg9A==
-X-Gm-Message-State: AOJu0YyoDTz9pbeOIQT6CtCOusmw37ESsF/TnhO84a6R0UZL0KqDpUAM
-        auy66dj8s8i5sPS4Clv6K20=
-X-Google-Smtp-Source: AGHT+IHdVfenN52p2XAOd1T6Tm4wVogq0iXsaKupgPDHdMKw528Otc/dSSu/9b9aAGUZo4iSklnRww==
-X-Received: by 2002:a17:90b:4d83:b0:274:5638:2a03 with SMTP id oj3-20020a17090b4d8300b0027456382a03mr3239453pjb.20.1694841493383;
-        Fri, 15 Sep 2023 22:18:13 -0700 (PDT)
-Received: from ?IPV6:2401:4900:1c60:c4b6:ed28:95c7:9a77:34ba? ([2401:4900:1c60:c4b6:ed28:95c7:9a77:34ba])
-        by smtp.gmail.com with ESMTPSA id r1-20020a17090a438100b0027480345180sm3451992pjg.2.2023.09.15.22.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 22:18:12 -0700 (PDT)
-Message-ID: <916720db-0d36-2587-9b91-69ec6f70d64c@gmail.com>
-Date:   Sat, 16 Sep 2023 10:48:05 +0530
+        Sat, 16 Sep 2023 01:26:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BF01BC9;
+        Fri, 15 Sep 2023 22:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694841983; x=1726377983;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sQqNUz8NvUk6DBasGIZFf64Imf283b8WYPr38zLikEA=;
+  b=OIZ4pbKaFCn0nM0FDzobFYXxyceV5hWbYn0mEmLEFnHci7Sygv12/SRe
+   Wlsnh5OZJvLbHoi5J23cz9+iAfYvFAWzX7SBu3nUeExPQB/DbLkSZ+cKD
+   0QhlR+dImVEMSv2U6y/drkDcRvrcmFThB854oYUjrSqdqfPtSwiJSUmgt
+   Xy3/0hQmm2NALE9UVhDNRPnkeMbyNihs/+bLu3smHin3T3LnFqE/77Muv
+   iMiYFkE3ZM5AciacFWkkT3G6cuhCCsbw99WXzjMECE+uchKoc5r+fd69F
+   FpHNXHZ5qmkAGSjUymnmP+tuxYO4op07iBlI2h9CpEsRBd8OvxiphWxzH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="445860730"
+X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
+   d="scan'208";a="445860730"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 22:26:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="860400269"
+X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
+   d="scan'208";a="860400269"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Sep 2023 22:26:18 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qhNou-0003ts-09;
+        Sat, 16 Sep 2023 05:26:16 +0000
+Date:   Sat, 16 Sep 2023 13:25:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, quic_sbillaka@quicinc.com,
+        linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        marijn.suijten@somainline.org, quic_jesszhan@quicinc.com,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] drm/msm/dp: incorporate pm_runtime framework into
+ DP driver
+Message-ID: <202309161321.UeiYRcIs-lkp@intel.com>
+References: <1694813901-26952-5-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-From:   bhupesh.linux@gmail.com
-To:     Georgi Djakov <djakov@kernel.org>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, vkoul@kernel.org,
-        davem@davemloft.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Update Bhupesh's email address
-References: <20230915191600.3410862-1-bhupesh.linux@gmail.com>
- <facce62d-07cd-4899-866b-c9d7eebe38a8@kernel.org>
-In-Reply-To: <facce62d-07cd-4899-866b-c9d7eebe38a8@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694813901-26952-5-git-send-email-quic_khsieh@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kuogee,
 
-On 9/16/23 2:07 AM, Georgi Djakov <djakov@kernel.org> wrote:
-> Hi Bhupesh,
-> 
-> On 15.09.23 22:16, Bhupesh Sharma wrote:
-> > Update the email address for Bhupesh's maintainer entry and fill in
-> > .mailmap accordingly.
-> >
-> > Signed-off-by: Bhupesh Sharma <bhupesh.linux@gmail.com>
-> > ---
-> >   .mailmap    | 5 +++++
-> >   MAINTAINERS | 2 +-
-> >   2 files changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/.mailmap b/.mailmap
-> > index a0a6efe87186..a69dfc6bbf1f 100644
-> > --- a/.mailmap
-> > +++ b/.mailmap
-> > @@ -94,6 +94,11 @@ Ben M Cahill <ben.m.cahill@intel.com>
-> >   Ben Widawsky <bwidawsk@kernel.org> <ben@bwidawsk.net>
-> >   Ben Widawsky <bwidawsk@kernel.org> <ben.widawsky@intel.com>
-> >   Ben Widawsky <bwidawsk@kernel.org> <benjamin.widawsky@intel.com>
-> > +Bhupesh Sharma <bhupesh.linux@gmail.com> <bhupesh.sharma@linaro.org>
-> > +Bhupesh Sharma <bhupesh.linux@gmail.com> <bhsharma@redhat.com>
-> > +Bhupesh Sharma <bhupesh.linux@gmail.com> <bhupesh.sharma@freescale.com>
-> > +Bhupesh Sharma <bhupesh.linux@gmail.com> <bhupesh.sharma@st.com>
-> > +Bjorn Andersson <andersson@kernel.org> <bjorn@kryo.se>
-> 
-> This line looks like an unintentional change?
+kernel test robot noticed the following build warnings:
 
-Oops. Indeed. Let me fix this in v2.
+[auto build test WARNING on drm/drm-next]
+[also build test WARNING on drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes linus/master v6.6-rc1]
+[cannot apply to drm-misc/drm-misc-next drm-tip/drm-tip next-20230915]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Regards,
-Bhupesh
+url:    https://github.com/intel-lab-lkp/linux/commits/Kuogee-Hsieh/drm-msm-dp-tie-dp_display_irq_handler-with-dp-driver/20230916-054014
+base:   git://anongit.freedesktop.org/drm/drm drm-next
+patch link:    https://lore.kernel.org/r/1694813901-26952-5-git-send-email-quic_khsieh%40quicinc.com
+patch subject: [PATCH v3 4/7] drm/msm/dp: incorporate pm_runtime framework into DP driver
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230916/202309161321.UeiYRcIs-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309161321.UeiYRcIs-lkp@intel.com/reproduce)
 
-> >   Bjorn Andersson <andersson@kernel.org> <bjorn@kryo.se>
-> >   Bjorn Andersson <andersson@kernel.org> <bjorn.andersson@linaro.org>
-> >   Bjorn Andersson <andersson@kernel.org> <bjorn.andersson@sonymobile.com>
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index fa7487b7729b..620301a2b5ef 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -17740,7 +17740,7 @@ F:    drivers/net/ethernet/qualcomm/emac/
-> >   QUALCOMM ETHQOS ETHERNET DRIVER
-> >   M:    Vinod Koul <vkoul@kernel.org>
-> > -R:    Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > +R:    Bhupesh Sharma <bhupesh.linux@gmail.com>
-> >   L:    netdev@vger.kernel.org
-> >   L:    linux-arm-msm@vger.kernel.org
-> >   S:    Maintained
-> 
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309161321.UeiYRcIs-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/msm/dp/dp_power.c: In function 'dp_power_client_deinit':
+>> drivers/gpu/drm/msm/dp/dp_power.c:160:34: warning: variable 'power' set but not used [-Wunused-but-set-variable]
+     160 |         struct dp_power_private *power;
+         |                                  ^~~~~
+   drivers/gpu/drm/msm/dp/dp_power.c: In function 'dp_power_init':
+   drivers/gpu/drm/msm/dp/dp_power.c:168:34: warning: variable 'power' set but not used [-Wunused-but-set-variable]
+     168 |         struct dp_power_private *power = NULL;
+         |                                  ^~~~~
+   drivers/gpu/drm/msm/dp/dp_power.c: In function 'dp_power_deinit':
+   drivers/gpu/drm/msm/dp/dp_power.c:179:34: warning: variable 'power' set but not used [-Wunused-but-set-variable]
+     179 |         struct dp_power_private *power;
+         |                                  ^~~~~
+
+
+vim +/power +160 drivers/gpu/drm/msm/dp/dp_power.c
+
+c943b4948b5848 Chandan Uddaraju 2020-08-27  157  
+c943b4948b5848 Chandan Uddaraju 2020-08-27  158  void dp_power_client_deinit(struct dp_power *dp_power)
+c943b4948b5848 Chandan Uddaraju 2020-08-27  159  {
+c943b4948b5848 Chandan Uddaraju 2020-08-27 @160  	struct dp_power_private *power;
+c943b4948b5848 Chandan Uddaraju 2020-08-27  161  
+c943b4948b5848 Chandan Uddaraju 2020-08-27  162  	power = container_of(dp_power, struct dp_power_private, dp_power);
+c943b4948b5848 Chandan Uddaraju 2020-08-27  163  }
+c943b4948b5848 Chandan Uddaraju 2020-08-27  164  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
