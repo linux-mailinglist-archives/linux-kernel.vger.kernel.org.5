@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 400187A31D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3947A31D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbjIPSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 14:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S236159AbjIPSHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 14:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjIPSFj (ORCPT
+        with ESMTP id S233268AbjIPSHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 14:05:39 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD340180;
-        Sat, 16 Sep 2023 11:05:33 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40471c054f9so8712985e9.0;
-        Sat, 16 Sep 2023 11:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694887532; x=1695492332; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DVbOZtDmbMexD/9gCiyvbGFst0WQ8c5NS6OBdsiTSoQ=;
-        b=gUA+buxc3rFn4d4y5lN7MnQGr2pyRdGRjlh4Yilr7wbmfe8LTeeht7fQTKtQG3jXcC
-         XUzON4a4FbJqiAW/CubmFD+LKQZEUZu4NcSo7nD4uudAwpWTjondfrSo1LBUIcRT51Tc
-         BRFE8JzG9Y2Oq6xncCvJa1uXzWaMZLTYxBb+nykA6mM3kvpXoOWQK+Kfn5G9YY5djugT
-         EbE3/uGDYAudFUp8dVObtjXJLdldjKwGZbK4sn8hGjFItraRVDfr6SUPpmrayJdXJpOs
-         czkg9zeejhhX2OQBzRlSbdRPIYxI7qysBJ25kfW3keOJ86ySQHhTKiUCev4BIrVpf10t
-         q+yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694887532; x=1695492332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DVbOZtDmbMexD/9gCiyvbGFst0WQ8c5NS6OBdsiTSoQ=;
-        b=Csuu3oD9wzt1sG/hrwxyXPJIDR9JkzTCWFYhcgqanLgSeNLWlaXC8s3Fw17nUQofR6
-         3xZmfLyDDUnfurVRxRoMjP8QySho2whMz4NbNmecKiCleXzr5OHJ0v9zVslB8liulJjA
-         T/K45oohMj6BtFD18ihPM5x9GyGyV98g6CeFwgT2oXYn659y1F3qQL91FyV1tsCcCN/z
-         MdqQyXLqWDjWQDBdZq0/O9c37mRnDQAbEIwrhENoYwpz1uBqcVfuHKLRgwlu61zecUrY
-         FwWQDvPbKiMYNIpdzcVcxPt285cYZzxKARzOUCymkJu0Ex/sEN93Nl3THfmBkjCVb+vo
-         wGtg==
-X-Gm-Message-State: AOJu0YzA8FBdNASokITNdu0lop+9xbs+V+dxG8YGHu8I9JrBVQGTxOoo
-        nuGWvUNMGE3KuWRzKrhih78Pc2nvO40=
-X-Google-Smtp-Source: AGHT+IGyzH2yu/6hUHOmL8w1dZVsxgoKTJgQ/SNo/4Bvb7BjabOw8CQtwW8w8VFC81JIqrYXFuDoiQ==
-X-Received: by 2002:a05:600c:500c:b0:401:b53e:6c3e with SMTP id n12-20020a05600c500c00b00401b53e6c3emr4671065wmr.1.1694887531817;
-        Sat, 16 Sep 2023 11:05:31 -0700 (PDT)
-Received: from [10.0.0.26] ([178.160.241.68])
-        by smtp.gmail.com with ESMTPSA id u5-20020a7bc045000000b00402be2666bcsm10732150wmc.6.2023.09.16.11.05.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 11:05:31 -0700 (PDT)
-Message-ID: <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
-Date:   Sat, 16 Sep 2023 22:05:29 +0400
+        Sat, 16 Sep 2023 14:07:06 -0400
+X-Greylist: delayed 4433 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 16 Sep 2023 11:07:01 PDT
+Received: from gimli.kloenk.dev (gimli.kloenk.dev [IPv6:2a01:4f8:c012:b874::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D75191;
+        Sat, 16 Sep 2023 11:07:01 -0700 (PDT)
+From:   Finn Behrens <me@kloenk.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kloenk.dev; s=mail;
+        t=1694887618; bh=lqZdo4cSoaQIllOmN8FxoVmWJKHuKTh22y8m1E3kGxM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=AnetxXH5p8tp6yPv2FyMgzNrIoXq3PZEtHGyXq6MfoFBLqWrKLWvMJwDE/W1B6jU2
+         rH291cZ2rAsRXQ9PZ4Mx2jLzG9Z+eRLqKQA7lSRQPdfpo8LzIOie8G3J/hcq0emOzR
+         hZcQoAZNGvLI4J9vf8Wqarn2y2wiXBl7XPA2hZCQ=
+To:     =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
+Date:   Sat, 16 Sep 2023 20:06:47 +0200
+Message-ID: <0561303E-2089-43FC-AA31-836C7BB844B7@kloenk.dev>
+In-Reply-To: <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
+References: <20230915172900.3784163-1-mmaurer@google.com>
+ <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
+ <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests: ALSA: fix warnings in 'test-pcmtest-driver'
-Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
-Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/23 19:22, Javier Carrasco wrote:
-> Defining the 'len' variable inside the 'patten_buf' as unsigned
-> makes it more consistent with its actual meaning and the rest of the
-> size variables in the test. Moreover, this removes an implicit
-> conversion in the fscanf function call.
+
+
+On 16 Sep 2023, at 19:53, Bj=C3=B6rn Roy Baron wrote:
+
+> On Saturday, September 16th, 2023 at 18:52, Finn Behrens <me@kloenk.dev=
+> wrote:
 >
+>>
+>> On 15 Sep 2023, at 19:28, Matthew Maurer wrote:
+>>
+>>> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defin=
+ed,
+>>> resulting in build failures in hermetic environments where `cc` does =
+not
+>>> exist. This includes both hostprogs and proc-macros.
+>>>
+>>> Since we are setting the linker to `HOSTCC`, we set the linker flavor=
+ to
+>>> `gcc` explicitly.
+>> But as `HOSTCC` could also be clang, the linker flavor would then be w=
+rong, would that create a problem?
+>
+> Rustc uses the gcc linker flavor for clang too. There has been a propos=
+al to split it up, but I'm not sure of the status of that. In any case cl=
+ang's cli is similar enough to gcc that it works fine to use the gcc link=
+er flavor.
+>
+In that case this looks very reasonable.
 
-Considering the fact that the pattern buffer length can't be negative or 
-larger that 4096, I really don't think that it is a necessary change.
+Second thing I noticed is that `HOSTCC` could be the wrong variable, and =
+`HOSTLD` would make more sense as we look for the linker and not the gene=
+ral C compiler.
 
-> Additionally, remove the unused variable 'it' from the reset_ioctl test.
-> 
-
-Your patches should always contain only one logical change. If you, for 
-instance, remove redundant blank lines, combining it with something else 
-is fine, but otherwise you should split the changes up.
-
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
-> Defining the 'len' variable inside the 'patten_buf' as unsigned
-> makes it more consistent with its actual meaning and the rest of the
-> size variables in the test. Moreover, this removes an implicit
-> conversion in the fscanf function call.
-> 
-> Additionally, remove the unused variable 'it' from the reset_ioctl test.
-
-You don't need this text here. Usually it is the place for changelog 
-between patch versions if we have more than one version of the patch. 
-For instance, if you send a patch V2, it could look like this:
-
-Signed-off-by: ...
----
-V1 -> V2:
-- Improve something
-- Add something
-
-So, don't repeat the commit message here :)
-
-Anyway, great job! I believe this test could be enhanced in lots of 
-ways, so I look forward to seeing new patches related to it from you :)
-
---
-Kind regards,
-Ivan Orlov
+>>>
+>>> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+>>> ---
+>>>  rust/Makefile         | 1 +
+>>>  scripts/Makefile.host | 1 +
+>>>  2 files changed, 2 insertions(+)
+>>>
+>>> diff --git a/rust/Makefile b/rust/Makefile
+>>> index 87958e864be0..2a2352638f11 100644
+>>> --- a/rust/Makefile
+>>> +++ b/rust/Makefile
+>>> @@ -383,6 +383,7 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.=
+o FORCE
+>>>  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
+>>>        cmd_rustc_procmacro =3D \
+>>>  	$(RUSTC_OR_CLIPPY) $(rust_common_flags) \
+>>> +		-C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
+>>>  		--emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --extern proc_ma=
+cro \
+>>>  		--crate-type proc-macro \
+>>>  		--crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
+>>> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
+>>> index 8f7f842b54f9..0aa95a3af1c4 100644
+>>> --- a/scripts/Makefile.host
+>>> +++ b/scripts/Makefile.host
+>>> @@ -91,6 +91,7 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
+>>>  # current working directory, which may be not accessible in the out-=
+of-tree
+>>>  # modules case.
+>>>  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile=
+) \
+>>> +		 -C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
+>>>                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
+>>>                   $(HOSTRUSTFLAGS_$(target-stem))
+>>>
+>>> --
+>>> 2.42.0.459.ge4e396fd5e-goog
