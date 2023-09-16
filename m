@@ -2,159 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1C87A2D0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A317A2D14
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238195AbjIPBaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 21:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        id S238225AbjIPBfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 21:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236656AbjIPB3q (ORCPT
+        with ESMTP id S234845AbjIPBfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 21:29:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86D43119
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694827740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4qbIE5Sx2G6B9yvMVQiBRk6nSJz0jXl9dCA6L1yJm1M=;
-        b=KrAtfbm+krvKslztbPqg4tLSSInziaPUe+NW2ga0FzQkRTN+zW9xwQXy9SidbYF25y+P+f
-        hErXZYNVFTf4MGZ5/iw+HuyYcg9amiFFZZJ3azyOt0y8R+1ECO4HaKxxoRE1L4J+ePWD5d
-        sXNQRwvYSFxobUd82exJmZ3zMZnS/3o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-111-Tk3Gc_49MvaBP6egFecfag-1; Fri, 15 Sep 2023 21:28:56 -0400
-X-MC-Unique: Tk3Gc_49MvaBP6egFecfag-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D85691875062;
-        Sat, 16 Sep 2023 01:28:55 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05C732026D68;
-        Sat, 16 Sep 2023 01:28:52 +0000 (UTC)
-Date:   Sat, 16 Sep 2023 09:28:49 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Jay Patel <jaypatel@linux.ibm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mm/slub: refactor calculate_order() and
- calc_slab_order()
-Message-ID: <ZQUE0e4i8HrGUthB@MiWiFi-R3L-srv>
-References: <20230908145302.30320-6-vbabka@suse.cz>
- <20230908145302.30320-10-vbabka@suse.cz>
+        Fri, 15 Sep 2023 21:35:11 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3740EF9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:35:06 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fdcc37827so2760813b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694828105; x=1695432905; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=toD6EFgP0T4cQ/eiqbO2aolFsIZoNjqb/6QD41jedUg=;
+        b=CQhn1NG5a/M1cCNuT7TyCCgEZbeNKvNaRoTXO+NfJriAYCKp36GV+PKQVen1/ja2/h
+         NeizmlU8mZaYrY1uoCT3uRzx+GfjDtAC1xJcCrR+GDN72Kbqz89ts49kPokb2iTItZYw
+         9lsHiDhoz9qXpWF07xKskWGCgxN6oU+DSthiikePwkCUMTCJi4Cknvanm88mi1uWAexY
+         m4cK3HBJBZ9+smDV7WHLFrXbj7lMnSjFDIBNVSANPdqPb2nAPqwNUaDxT/WKKp+3F8AI
+         OD0l8eNMLs2crRc8fN1ht5PFauQpcie8+6i5q5uPTY/zoBs4yN59byMQDz5WPPuiijmX
+         6L0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694828105; x=1695432905;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=toD6EFgP0T4cQ/eiqbO2aolFsIZoNjqb/6QD41jedUg=;
+        b=dbQYbT53Vc8zLXiw50fSUhIPQiXU9HH0i9YP4rRmBP3J84JRuGRPTGWxP7ln6UoKa3
+         u2CLv3QVjq0i/0WCLeQzKazgDJRvMeSgYL1RsMBnIybIeUTl1N97rQ6q9ItA1Vx0PSe+
+         mQwmmqAlfmYCMKfhm9sCS/uJUOu38PMD1lM8Fv5/Bxscm1SW5hCnJ167fW6PXhteTmji
+         28gfJP2a0O3kMkplCpeUyuBKS6ZaaDXD8RfszPs0FwboiUpdvkIFIXw3keQmyEst3MZu
+         QayBp9+QDWDIOqeelD7KQgQqtnuouP8fdneiF63S5+WZ1Ldi5a2k0GbrobZXSJpG9lyy
+         LUyQ==
+X-Gm-Message-State: AOJu0YwM7pxNcgJLeYCk1Je0cjD84VMq671LEBhlAqnqRr1Vp1ylJ6ZI
+        K7CDowVs0pzqCnO91mypX2ADN/MId5skNf1PVtgaRs5H
+X-Google-Smtp-Source: AGHT+IHNnHRJBBVi+BYo04BTVXZA/fzmZ6ZxZruz2fUX29bjVq+evf4AIgUyCzvrINosLB/SSGZOAA==
+X-Received: by 2002:a05:6a21:191:b0:151:35ad:f331 with SMTP id le17-20020a056a21019100b0015135adf331mr4500306pzb.14.1694828105451;
+        Fri, 15 Sep 2023 18:35:05 -0700 (PDT)
+Received: from [192.168.60.239] (124.190.199.35.bc.googleusercontent.com. [35.199.190.124])
+        by smtp.gmail.com with ESMTPSA id a4-20020aa780c4000000b0068bbe3073b6sm3525568pfn.181.2023.09.15.18.35.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Sep 2023 18:35:04 -0700 (PDT)
+Message-ID: <af3c1637-ff43-4346-8cfb-db836d6de3f0@google.com>
+Date:   Fri, 15 Sep 2023 18:35:03 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908145302.30320-10-vbabka@suse.cz>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/2] usb: gadget: uvc: stability fixes when stopping
+ streams
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Scally <dan.scally@ideasonboard.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230912041910.726442-1-arakesh@google.com>
+ <CAMHf4WLeSC9m05XOU54yL=2xUcSqbWP0f7evM0rZRsJ=J-btWw@mail.gmail.com>
+ <ZQTlz9Koe2CQIsrC@pengutronix.de>
+Content-Language: en-US
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <ZQTlz9Koe2CQIsrC@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/23 at 04:53pm, Vlastimil Babka wrote:
-> After the previous cleanups, we can now move some code from
-> calc_slab_order() to calculate_order() so it's executed just once, and
-> do some more cleanups.
-> 
-> - move the min_order and MAX_OBJS_PER_PAGE evaluation to
->   calc_slab_order().
-> 
-> - change calc_slab_order() parameter min_objects to min_order
-> 
-> Also make MAX_OBJS_PER_PAGE check more robust by considering also
-> min_objects in addition to slub_min_order. Otherwise this is not a
-> functional change.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f04eb029d85a..1c91f72c7239 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4110,17 +4110,12 @@ static unsigned int slub_min_objects;
->   * the smallest order which will fit the object.
->   */
->  static inline unsigned int calc_slab_order(unsigned int size,
-> -		unsigned int min_objects, unsigned int max_order,
-> +		unsigned int min_order, unsigned int max_order,
->  		unsigned int fract_leftover)
->  {
-> -	unsigned int min_order = slub_min_order;
->  	unsigned int order;
->  
-> -	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
-> -		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
-> -
-> -	for (order = max(min_order, (unsigned int)get_order(min_objects * size));
-> -			order <= max_order; order++) {
-> +	for (order = min_order; order <= max_order; order++) {
->  
->  		unsigned int slab_size = (unsigned int)PAGE_SIZE << order;
->  		unsigned int rem;
-> @@ -4139,7 +4134,7 @@ static inline int calculate_order(unsigned int size)
->  	unsigned int order;
->  	unsigned int min_objects;
->  	unsigned int max_objects;
-> -	unsigned int nr_cpus;
-> +	unsigned int min_order;
->  
->  	min_objects = slub_min_objects;
->  	if (!min_objects) {
-> @@ -4152,7 +4147,7 @@ static inline int calculate_order(unsigned int size)
->  		 * order on systems that appear larger than they are, and too
->  		 * low order on systems that appear smaller than they are.
->  		 */
-> -		nr_cpus = num_present_cpus();
-> +		unsigned int nr_cpus = num_present_cpus();
->  		if (nr_cpus <= 1)
->  			nr_cpus = nr_cpu_ids;
->  		min_objects = 4 * (fls(nr_cpus) + 1);
 
-A minor concern, should we change 'min_objects' to be a local static
-to avoid the "if (!min_objects) {" code block every time?  It's deducing
-the value from nr_cpus, we may not need do the calculation each time.
 
-> @@ -4160,6 +4155,10 @@ static inline int calculate_order(unsigned int size)
->  	max_objects = order_objects(slub_max_order, size);
->  	min_objects = min(min_objects, max_objects);
->  
-> +	min_order = max(slub_min_order, (unsigned int)get_order(min_objects * size));
-> +	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
-> +		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
-> +
->  	/*
->  	 * Attempt to find best configuration for a slab. This works by first
->  	 * attempting to generate a layout with the best possible configuration and
-> @@ -4176,7 +4175,7 @@ static inline int calculate_order(unsigned int size)
->  	 * long as at least single object fits within slub_max_order.
->  	 */
->  	for (unsigned int fraction = 16; fraction > 1; fraction /= 2) {
-> -		order = calc_slab_order(size, min_objects, slub_max_order,
-> +		order = calc_slab_order(size, min_order, slub_max_order,
->  					fraction);
->  		if (order <= slub_max_order)
->  			return order;
-> -- 
-> 2.42.0
+On 9/15/23 16:16, Michael Grzeschik wrote:
+> Hi Avichal
 > 
+> On Thu, Sep 14, 2023 at 04:05:36PM -0700, Avichal Rakesh wrote:
+>> On Mon, Sep 11, 2023 at 9:19 PM Avichal Rakesh <arakesh@google.com> wrote:
+>>>
+>>> We have been seeing two main bugs when stopping stream:
+>>> 1. attempting to queue usb_requests on a disabled usb endpoint, and
+>>> 2. use-after-free problems for inflight requests
+>>>
+>>> Avichal Rakesh (2):
+>>>   usb: gadget: uvc: prevent use of disabled endpoint
+>>>   usb: gadget: uvc: prevent de-allocating inflight usb_requests
+>>>
+>>>  drivers/usb/gadget/function/f_uvc.c     | 11 ++++----
+>>>  drivers/usb/gadget/function/f_uvc.h     |  2 +-
+>>>  drivers/usb/gadget/function/uvc.h       |  5 +++-
+>>>  drivers/usb/gadget/function/uvc_v4l2.c  | 21 ++++++++++++---
+>>>  drivers/usb/gadget/function/uvc_video.c | 34 +++++++++++++++++++++++--
+>>>  5 files changed, 60 insertions(+), 13 deletions(-)
+>>>
+>>
+>> Bumping this thread up. Laurent, Dan, and Michael could you take a look?
+> 
+> I tested the patches against my setup and it did not help.
 
+Thank you for testing the patch, I really appreciate your help in testing the 
+patches!
+
+> 
+> In fact I saw two different issues when calling the streamoff event.
+> 
+> One issue was a stalled pipeline after the streamoff from the host came in.
+> The streaming application did not handle any events anymore.
+
+This sounds like uvc_function_setup_continue was never called, so no more control
+events were queued for the userspace to handle. This is a little bit of a shot in
+the dark: if you are not using the Laurent's uvc-gadget
+(https://git.ideasonboard.org/uvc-gadget.git) on the gadget, could you check that 
+your userspace application (on the gadget side) calls VIDIOC_STREAMOFF when 
+handling UVC_EVENT_STREAMOFF? 
+
+This is similar to how it should called VIDIOC_STREAMON when handling 
+UVC_EVENT_STREAMON. Before my patch, I think UVC gadget driver is functionally fine
+with userspace application not calling VIDIOC_STREAMOFF. However, my patch prevents
+the host from making any more control requests until the gadget's userspace
+application calls VIDIOC_STREAMOFF, which looks like a stalled control ep.
+
+> 
+> The second issue was when the streamoff event is triggered sometimes the
+> following trace is shown, even with your patches applied.
+> 
+> 
+> [  104.202689] Unable to handle kernel paging request at virtual address 005bf43a692a5fd5
+> [  104.235122] Mem abort info:
+> [  104.238257]   ESR = 0x0000000096000004
+> [  104.242449]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [  104.248391]   SET = 0, FnV = 0
+> [  104.251803]   EA = 0, S1PTW = 0
+> [  104.255313]   FSC = 0x04: level 0 translation fault
+> [  104.260765] Data abort info:
+> [  104.263982]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> [  104.270114]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> [  104.275760]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> [  104.281698] [005bf43a692a5fd5] address between user and kernel address ranges
+> [  104.290042] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> [  104.297060] Dumping ftrace buffer:
+> [  104.300869]    (ftrace buffer empty)
+> [  104.304862] Modules linked in: st1232 hantro_vpu v4l2_vp9 v4l2_h264 uio_pdrv_genirq fuse [last unloaded: rockchip_vpu(C)]
+> [  104.312080] panfrost fde60000.gpu: Panfrost Dump: BO has no sgt, cannot dump
+> [  104.317137] CPU: 0 PID: 465 Comm: irq/46-dwc3 Tainted: G         C         6.5.0-20230831-2+ #5
+> [  104.317144] Hardware name: WolfVision PF5 (DT)
+> [  104.317148] pstate: 604000c9 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  104.317154] pc : __list_del_entry_valid+0x48/0xe8
+> [  104.352728] lr : dwc3_gadget_giveback+0x3c/0x1b0
+> [  104.357893] sp : ffffffc08381bc60
+> [  104.361593] x29: ffffffc08381bc60 x28: ffffff80047d4000 x27: ffffff80047de440
+> [  104.369576] x26: 0000000000000000 x25: ffffffc08135b2d0 x24: ffffffc08381bd00
+> [  104.377559] x23: 00000000ffffff98 x22: ffffff8004204880 x21: ffffff80047d4000
+> [  104.385541] x20: ffffff800718dea0 x19: ffffff800718dea0 x18: 0000000000000000
+> [  104.393523] x17: 7461747320687469 x16: 7720646574656c70 x15: 6d6f632074736575
+> [  104.401504] x14: 716572205356203a x13: 2e3430312d207375 x12: 7461747320687469
+> [  104.409486] x11: ffffffc0815c98f0 x10: 0000000000000000 x9 : ffffffc0808f4fa0
+> [  104.417468] x8 : ffffffc082415000 x7 : ffffffc0808f4e2c x6 : ffffffc0823d0928
+> [  104.425450] x5 : 0000000000000282 x4 : 0000000000000201 x3 : d85bf43a692a5fcd
+> [  104.433431] x2 : ffffff80047d4048 x1 : ffffff800718dea0 x0 : dead000000000122
+> [  104.441413] Call trace:
+> [  104.444142]  __list_del_entry_valid+0x48/0xe8
+> [  104.449013]  dwc3_gadget_giveback+0x3c/0x1b0
+> [  104.453786]  dwc3_gadget_ep_cleanup_cancelled_requests+0xe0/0x170
+> [  104.460599]  dwc3_process_event_buf+0x2a8/0xbb0
+> [  104.465662]  dwc3_thread_interrupt+0x4c/0x90
+> [  104.470435]  irq_thread_fn+0x34/0xb8
+> [  104.474431]  irq_thread+0x1a0/0x290
+> [  104.478327]  kthread+0x10c/0x120
+> [  104.481933]  ret_from_fork+0x10/0x20
+> 
+> The error path triggering these list errors are usually in the
+> dwc3 driver handling the cancelled or completed list.
+
+It looks like we're still freeing un-returned requests :(. If you still have
+the setup can you pull the uvc logs to see if waiting for requests to be returned timed 
+out? I wonder if dwc3's interrupt handler is being scheduled too late. 500ms seemed
+like a reasonable time out to me, but this seems to prove otherwise.
+
+Thank you!
+- Avi.
