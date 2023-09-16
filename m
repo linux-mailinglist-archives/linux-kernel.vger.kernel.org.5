@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CB87A2F7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343507A2F80
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbjIPLKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 07:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S238974AbjIPLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 07:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239240AbjIPLKT (ORCPT
+        with ESMTP id S239051AbjIPLKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 07:10:19 -0400
+        Sat, 16 Sep 2023 07:10:35 -0400
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B381B0;
-        Sat, 16 Sep 2023 04:10:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C6EE8240004;
-        Sat, 16 Sep 2023 11:09:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8148E19A;
+        Sat, 16 Sep 2023 04:10:29 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 91CB3240003;
+        Sat, 16 Sep 2023 11:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1694862609;
+        t=1694862628;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bCVsSCUqr94fHC72W488TJM9Q7uBl3U9XOpO5b6zFkI=;
-        b=HFsOWmhU1AcmLExDDgGw+IVR7jUbH2dKOYbsQSzyL2/Y3HtO7H7t2hWrEwTraBnNLF4Hmd
-        2wzXQfuG7cx4+RvoIVZhkyP+aeXXfN7BObZ+w6LTHTSTFxSbHSrbKHPzWN5tPE8TM2pjZ2
-        5B1Hm1Ud+TRTYf16+hrsWr7H2DJn0AUeMfLqf8nGWVsGuak+TQeE12kxIcBCofOtG3lBti
-        fEZjgT02/ye1we3qf17VcgXSc2jHSC9TwLnI0cn4RK4BOmqFNUc7rEX0NyZZs6D3LzKXNa
-        ex0TJsVceQFcxXb2dkoH1PrA/YI1y1xZ8Erzqp1WhvnGaQJCYh4uJ4UdoYU42Q==
+        bh=BgK1RR7PvoKyZDk0Jc59OCF7MxiLvtGydv7ioUqbT0Y=;
+        b=jfHvHtuc+xqfSbVdGtke/CXe36aT3ln5BhveQlDrHTC4bUBcwnisulq7Nq5WitSm3y/Zro
+        v8JuJhLWLr+P6UfJQfQBfkcldkNix/BAG7b5INH2Zo461XHQKOBuaLe6MPW8EfCvMimDe6
+        esnrB0UDXQ23P3rmQZgIXkzecBbPtSgH+S/RokQbhJMm0/w4dI3Mqws6oIHcRuVm6z64UW
+        kV1yltovhTPM93EnMDIBCf7n7vc0phIBwojsrPUnl76AEqrFIKhc1bte9p5fs+MkZjpUVY
+        Lk084pAvydhldmDOQkS9YGPo7O/vNcPTmYi5hOvW9iFD/bqArjKLiqclwu8EJg==
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -82,18 +82,16 @@ To:     "David S. Miller" <davem@davemloft.net>,
         Grygorii Strashko <grygorii.strashko@ti.com>,
         Sekhar Nori <nsekhar@ti.com>,
         Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Rob Herring <robh@kernel.org>,
-        Woojung Huh <Woojung.Huh@microchip.com>,
+Cc:     Woojung Huh <Woojung.Huh@microchip.com>,
         Steen Hegelund <steen.hegelund@microchip.com>,
         mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org
-Subject: [PATCH net-next v2 02/10] dt-bindings: net: dsa: microchip,lan937x: add missing ethernet on example
-Date:   Sat, 16 Sep 2023 14:08:54 +0300
-Message-Id: <20230916110902.234273-3-arinc.unal@arinc9.com>
+Subject: [PATCH net-next v2 03/10] dt-bindings: net: dsa: realtek: fix MDIO bus child node restrictions
+Date:   Sat, 16 Sep 2023 14:08:55 +0300
+Message-Id: <20230916110902.234273-4-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230916110902.234273-1-arinc.unal@arinc9.com>
 References: <20230916110902.234273-1-arinc.unal@arinc9.com>
@@ -111,51 +109,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The port@5 node on the example is supposed to be used as a CPU port. Add
-the missing ethernet property and remove the label property. Remove the MAC
-bindings on the example as they cannot be validated.
+The MDIO controlled Realtek switches (distinguished by the reg property
+being used) are allowed to have their MDIO bus registered OF-based. Allow
+the mdio property for them.
+
+Only the SMI controlled Realtek switches require the compatible property of
+the mdio child node. Require it for them and disallow it for the MDIO controlled
+ones.
+
+Remove the unnecessary if:then:not:required rule and comments.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/net/dsa/microchip,lan937x.yaml          | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ .../devicetree/bindings/net/dsa/realtek.yaml  | 20 ++++++++-----------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-index 8d7e878b84dc..d187034fb31a 100644
---- a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-+++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-@@ -68,16 +68,6 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
+diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+index cfd69c2604ea..7eb025df0df8 100644
+--- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+@@ -109,18 +109,19 @@ if:
  
--    macb0 {
--            #address-cells = <1>;
--            #size-cells = <0>;
+ then:
+   $ref: /schemas/spi/spi-peripheral-props.yaml#
+-  not:
+-    required:
+-      - mdc-gpios
+-      - mdio-gpios
+-      - mdio
 -
--            fixed-link {
--                    speed = <1000>;
--                    full-duplex;
--            };
--    };
+   properties:
+     mdc-gpios: false
+     mdio-gpios: false
+-    mdio: false
++    mdio:
++      properties:
++        compatible: false
+ 
+ else:
++  properties:
++    mdio:
++      required:
++        - compatible
++
+   required:
+     - mdc-gpios
+     - mdio-gpios
+@@ -130,11 +131,6 @@ else:
+ required:
+   - compatible
+ 
+-    #  - mdc-gpios
+-    #  - mdio-gpios
+-    #  - reset-gpios
+-    #  - mdio
 -
-     spi {
-             #address-cells = <1>;
-             #size-cells = <0>;
-@@ -134,10 +124,10 @@ examples:
+ unevaluatedProperties: false
  
-                             port@5 {
-                                     reg = <5>;
--                                    label = "lan7";
-                                     phy-mode = "rgmii";
-                                     tx-internal-delay-ps = <2000>;
-                                     rx-internal-delay-ps = <2000>;
-+                                    ethernet = <&macb1>;
- 
-                                     fixed-link {
-                                             speed = <1000>;
+ examples:
 -- 
 2.39.2
 
