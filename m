@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBD97A322B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95447A323B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbjIPTU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S239301AbjIPTVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234088AbjIPTUX (ORCPT
+        with ESMTP id S235328AbjIPTUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 16 Sep 2023 15:20:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1134F186
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF24139
         for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:20:18 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694892014;
+        s=2020; t=1694892015;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dCV3i1wQ/bXXG540WfqP1F60ZYpDTCVSQtP5FLHtm5E=;
-        b=pQOtxZCoxoPD+9RXbk7QD3yIODoh9u047Qrqj8bRW1APyv7MPSmwlp84kl918W8Xu4PikK
-        a1p3LDkzr6ANYIUbik2JZlF1gFZhaZcE4qVzZJLZFL012f7ajv4Bofg+5fMAk4iDTzvEuu
-        FtfK+JQa7kEin2z2RPdyt49DUteYDtEkxeILvkBIJHxUx+irIZJMpCyFGy8R6xJOhb/2XQ
-        DRhUaoMMpdzxrW1U2IrElCdMVspN1eE3ktJ7HIjfrQkidynEuWwmAzt2asya8ii6BkNhdg
-        R7kPX/qa81xrBAjtKzubL8+qRjkTrm13Z1KmHOQAVI4Shis6YDVboDThoQn74A==
+        bh=Md6N7/2JsSbGTum2bAPExStCLr4ncCxy8KATj7cQFQc=;
+        b=yqxg/zKDpYcWzr70UYp8+lbN3ZuOhIGjWd9ojouiid9nwB9VEr4oLmY16oYAjgYUlOxLTx
+        nVDBXCD9SRTr/SCMqZ+DQcsro6pCjr52gIxtCv30gDU98daaggh1MCSrxgU/OCvzfi01HC
+        hLzUYHYeGo4kIQ6FR0r60cfNyM85R4MBJbjzNLpzbMLZWaKp62BqpRRiey/TxmaQYurSXW
+        DJRerg+3jsLmaExI0B85gN46lf8lTV8kjrnk6dcLI2Bee8TkZOqSX4r3Ql7+gcGo0qNfZV
+        0VE9435ccJDklUHjAf6Q+/HmTOhhrWLPec3F6/q9SZvZyIXXuKLaNhRgNbhFlQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694892014;
+        s=2020e; t=1694892015;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dCV3i1wQ/bXXG540WfqP1F60ZYpDTCVSQtP5FLHtm5E=;
-        b=zSzkj9zVy+3i7DWujXcU/QZ0hH07sm6Lh/niV+YtVBUO7c3gZULsGbD0iPOxftB+i49pkW
-        KnIHTj8r3KKMT3BA==
+        bh=Md6N7/2JsSbGTum2bAPExStCLr4ncCxy8KATj7cQFQc=;
+        b=uHaeOW2ERnpiYaoqiv9Aw+3xgluaovm7K3hES4XvClGAntBWq5VVxp9/ZUFomSWIyUdh/W
+        iGApuom1SQdC54Bg==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH printk v5 5/8] printk: nbcon: Add ownership state functions
-Date:   Sat, 16 Sep 2023 21:26:04 +0206
-Message-Id: <20230916192007.608398-6-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH printk v5 6/8] printk: nbcon: Add sequence handling
+Date:   Sat, 16 Sep 2023 21:26:05 +0206
+Message-Id: <20230916192007.608398-7-john.ogness@linutronix.de>
 In-Reply-To: <20230916192007.608398-1-john.ogness@linutronix.de>
 References: <20230916192007.608398-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -61,179 +62,317 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Provide functions that are related to the safe handover mechanism
-and allow console drivers to dynamically specify unsafe regions:
+Add an atomic_long_t field @nbcon_seq to the console struct to
+store the sequence number for nbcon consoles. For nbcon consoles
+this will be used instead of the non-atomic @seq field. The new
+field allows for safe atomic sequence number updates without
+requiring any locking.
 
- - nbcon_context_can_proceed()
+On 64bit systems the new field stores the full sequence number.
+On 32bit systems the new field stores the lower 32 bits of the
+sequence number, which are expanded to 64bit as needed by
+folding the values based on the sequence numbers available in
+the ringbuffer.
 
-   Invoked by a console owner to check whether a handover request
-   is pending or whether the console has been taken over by another
-   context. If a handover request is pending, this function will
-   also perform the handover, thus cancelling its own ownership.
-
- - nbcon_context_enter_unsafe()/nbcon_context_exit_unsafe()
-
-   Invoked by a console owner to denote that the driver is about
-   to enter or leave a critical region where a take over is unsafe.
-   The exit variant is the point where the current owner releases
-   the lock for a higher priority context which asked for the
-   friendly handover.
-
-   The unsafe state is stored in the console state and allows a
-   new context to make informed decisions whether to attempt a
-   takeover of such a console. The unsafe state is also available
-   to the driver so that it can make informed decisions about the
-   required actions and possibly take a special emergency path.
+For 32bit systems, having a 32bit representation in the console
+is sufficient. If a console ever gets more than 2^31 records
+behind the ringbuffer then this is the least of the problems.
 
 Co-developed-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/nbcon.c | 123 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 122 insertions(+), 1 deletion(-)
+ include/linux/console.h  |   4 ++
+ kernel/printk/internal.h |   7 +++
+ kernel/printk/nbcon.c    | 101 +++++++++++++++++++++++++++++++++++++++
+ kernel/printk/printk.c   |  31 +++++++++---
+ 4 files changed, 136 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/console.h b/include/linux/console.h
+index ca1ef8700e55..20cd486b76ad 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -243,6 +243,7 @@ struct printk_buffers;
+  *				might cause a system freeze when the console
+  *				is used later.
+  * @pbufs:			Pointer to the text buffer for this context
++ * @seq:			The sequence number to print for this context
+  */
+ struct nbcon_context {
+ 	/* members set by caller */
+@@ -253,6 +254,7 @@ struct nbcon_context {
+ 
+ 	/* members set by acquire */
+ 	struct printk_buffers	*pbufs;
++	u64			seq;
+ };
+ 
+ /**
+@@ -276,6 +278,7 @@ struct nbcon_context {
+  * @node:		hlist node for the console list
+  *
+  * @nbcon_state:	State for nbcon consoles
++ * @nbcon_seq:		Sequence number of the next record for nbcon to print
+  * @pbufs:		Pointer to nbcon private buffer
+  */
+ struct console {
+@@ -299,6 +302,7 @@ struct console {
+ 
+ 	/* nbcon console specific members */
+ 	atomic_t		__private nbcon_state;
++	atomic_long_t		__private nbcon_seq;
+ 	struct printk_buffers	*pbufs;
+ };
+ 
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index f6161cd75d7d..6473f5ae4a18 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -4,6 +4,7 @@
+  */
+ #include <linux/percpu.h>
+ #include <linux/console.h>
++#include "printk_ringbuffer.h"
+ 
+ #if defined(CONFIG_PRINTK) && defined(CONFIG_SYSCTL)
+ void __init printk_sysctl_init(void);
+@@ -42,6 +43,8 @@ enum printk_info_flags {
+ 	LOG_CONT	= 8,	/* text is a fragment of a continuation line */
+ };
+ 
++extern struct printk_ringbuffer *prb;
++
+ __printf(4, 0)
+ int vprintk_store(int facility, int level,
+ 		  const struct dev_printk_info *dev_info,
+@@ -69,6 +72,8 @@ void defer_console_output(void);
+ u16 printk_parse_prefix(const char *text, int *level,
+ 			enum printk_info_flags *flags);
+ 
++u64 nbcon_seq_read(struct console *con);
++void nbcon_seq_force(struct console *con, u64 seq);
+ bool nbcon_alloc(struct console *con);
+ void nbcon_init(struct console *con);
+ void nbcon_free(struct console *con);
+@@ -88,6 +93,8 @@ void nbcon_free(struct console *con);
+ #define printk_safe_exit_irqrestore(flags) local_irq_restore(flags)
+ 
+ static inline bool printk_percpu_data_ready(void) { return false; }
++static inline u64 nbcon_seq_read(struct console *con) { return 0; }
++static inline void nbcon_seq_force(struct console *con, u64 seq) { }
+ static inline bool nbcon_alloc(struct console *con) { return false; }
+ static inline void nbcon_init(struct console *con) { }
+ static inline void nbcon_free(struct console *con) { }
 diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index ba1febf15db6..98e4be5429f0 100644
+index 98e4be5429f0..e076096b31c0 100644
 --- a/kernel/printk/nbcon.c
 +++ b/kernel/printk/nbcon.c
-@@ -537,7 +537,6 @@ static bool nbcon_owner_matches(struct nbcon_state *cur, int expected_cpu,
-  * nbcon_context_release - Release the console
-  * @ctxt:	The nbcon context from nbcon_context_try_acquire()
-  */
--__maybe_unused
- static void nbcon_context_release(struct nbcon_context *ctxt)
- {
- 	unsigned int cpu = smp_processor_id();
-@@ -565,6 +564,128 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
- 	ctxt->pbufs = NULL;
+@@ -140,6 +140,101 @@ static inline bool nbcon_state_try_cmpxchg(struct console *con, struct nbcon_sta
+ 	return atomic_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_state), &cur->atom, new->atom);
  }
  
-+/**
-+ * nbcon_context_can_proceed - Check whether ownership can proceed
-+ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
-+ * @cur:	The current console state
-+ *
-+ * Return:	True if this context still owns the console. False if
-+ *		ownership was handed over or taken.
-+ *
-+ * Must be invoked when entering the unsafe state to make sure that it still
-+ * owns the lock. Also must be invoked when exiting the unsafe context
-+ * to eventually free the lock for a higher priority context which asked
-+ * for the friendly handover.
-+ *
-+ * It can be called inside an unsafe section when the console is just
-+ * temporary in safe state instead of exiting and entering the unsafe
-+ * state.
-+ *
-+ * Also it can be called in the safe context before doing an expensive
-+ * safe operation. It does not make sense to do the operation when
-+ * a higher priority context took the lock.
-+ *
-+ * When this function returns false then the calling context no longer owns
-+ * the console and is no longer allowed to go forward. In this case it must
-+ * back out immediately and carefully. The buffer content is also no longer
-+ * trusted since it no longer belongs to the calling context.
-+ */
-+static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_state *cur)
++#ifdef CONFIG_64BIT
++
++#define __seq_to_nbcon_seq(seq) (seq)
++#define __nbcon_seq_to_seq(seq) (seq)
++
++#else /* CONFIG_64BIT */
++
++#define __seq_to_nbcon_seq(seq) ((u32)seq)
++
++static inline u64 __nbcon_seq_to_seq(u32 nbcon_seq)
 +{
-+	unsigned int cpu = smp_processor_id();
-+
-+	/* Make sure this context still owns the console. */
-+	if (!nbcon_owner_matches(cur, cpu, ctxt->prio))
-+		return false;
-+
-+	/* The console owner can proceed if there is no waiter. */
-+	if (cur->req_prio == NBCON_PRIO_NONE)
-+		return true;
++	u64 seq;
++	u64 rb_next_seq;
 +
 +	/*
-+	 * A console owner within an unsafe region is always allowed to
-+	 * proceed, even if there are waiters. It can perform a handover
-+	 * when exiting the unsafe region. Otherwise the waiter will
-+	 * need to perform an unsafe hostile takeover.
-+	 */
-+	if (cur->unsafe)
-+		return true;
-+
-+	/* Waiters always have higher priorities than owners. */
-+	WARN_ON_ONCE(cur->req_prio <= cur->prio);
-+
-+	/*
-+	 * Having a safe point for take over and eventually a few
-+	 * duplicated characters or a full line is way better than a
-+	 * hostile takeover. Post processing can take care of the garbage.
-+	 * Release and hand over.
-+	 */
-+	nbcon_context_release(ctxt);
-+
-+	/*
-+	 * It is not clear whether the waiter really took over ownership. The
-+	 * outermost callsite must make the final decision whether console
-+	 * ownership is needed for it to proceed. If yes, it must reacquire
-+	 * ownership (possibly hostile) before carefully proceeding.
++	 * The provided sequence is only the lower 32 bits of the ringbuffer
++	 * sequence. It needs to be expanded to 64bit. Get the next sequence
++	 * number from the ringbuffer and fold it.
 +	 *
-+	 * The calling context no longer owns the console so go back all the
-+	 * way instead of trying to implement reacquire heuristics in tons of
-+	 * places.
++	 * Having a 32bit representation in the console is sufficient.
++	 * If a console ever gets more than 2^31 records behind
++	 * the ringbuffer then this is the least of the problems.
++	 *
++	 * Also the access to the ring buffer is always safe.
 +	 */
-+	return false;
++	rb_next_seq = prb_next_seq(prb);
++	seq = rb_next_seq - ((u32)rb_next_seq - nbcon_seq);
++
++	return seq;
 +}
 +
-+#define nbcon_context_enter_unsafe(c)	__nbcon_context_update_unsafe(c, true)
-+#define nbcon_context_exit_unsafe(c)	__nbcon_context_update_unsafe(c, false)
++#endif /* CONFIG_64BIT */
 +
 +/**
-+ * __nbcon_context_update_unsafe - Update the unsafe bit in @con->nbcon_state
-+ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
-+ * @unsafe:	The new value for the unsafe bit
++ * nbcon_seq_read - Read the current console sequence
++ * @con:	Console to read the sequence of
 + *
-+ * Return:	True if the unsafe state was updated and this context still
-+ *		owns the console. Otherwise false if ownership was handed
-+ *		over or taken.
++ * Return:	Sequence number of the next record to print on @con.
++ */
++u64 nbcon_seq_read(struct console *con)
++{
++	unsigned long nbcon_seq = atomic_long_read(&ACCESS_PRIVATE(con, nbcon_seq));
++
++	return __nbcon_seq_to_seq(nbcon_seq);
++}
++
++/**
++ * nbcon_seq_force - Force console sequence to a specific value
++ * @con:	Console to work on
++ * @seq:	Sequence number value to set
 + *
-+ * This function allows console owners to modify the unsafe status of the
-+ * console.
++ * Only to be used during init (before registration) or in extreme situations
++ * (such as panic with CONSOLE_REPLAY_ALL).
++ */
++void nbcon_seq_force(struct console *con, u64 seq)
++{
++	/*
++	 * If the specified record no longer exists, the oldest available record
++	 * is chosen. This is especially important on 32bit systems because only
++	 * the lower 32 bits of the sequence number are stored. The upper 32 bits
++	 * are derived from the sequence numbers available in the ringbuffer.
++	 */
++	u64 valid_seq = max_t(u64, seq, prb_first_valid_seq(prb));
++
++	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(valid_seq));
++
++	/* Clear con->seq since nbcon consoles use con->nbcon_seq instead. */
++	con->seq = 0;
++}
++
++/**
++ * nbcon_seq_try_update - Try to update the console sequence number
++ * @ctxt:	Pointer to an acquire context that contains
++ *		all information about the acquire mode
++ * @new_seq:	The new sequence number to set
 + *
-+ * When this function returns false then the calling context no longer owns
-+ * the console and is no longer allowed to go forward. In this case it must
-+ * back out immediately and carefully. The buffer content is also no longer
-+ * trusted since it no longer belongs to the calling context.
-+ *
-+ * Internal helper to avoid duplicated code.
++ * @ctxt->seq is updated to the new value of @con::nbcon_seq (expanded to
++ * the 64bit value). This could be a different value than @new_seq if
++ * nbcon_seq_force() was used or the current context no longer owns the
++ * console. In the later case, it will stop printing anyway.
 + */
 +__maybe_unused
-+static bool __nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
++static void nbcon_seq_try_update(struct nbcon_context *ctxt, u64 new_seq)
 +{
++	unsigned long nbcon_seq = __seq_to_nbcon_seq(ctxt->seq);
 +	struct console *con = ctxt->console;
-+	struct nbcon_state cur;
-+	struct nbcon_state new;
 +
-+	nbcon_state_read(con, &cur);
-+
-+	do {
-+		/*
-+		 * The unsafe bit must not be cleared if an
-+		 * unsafe hostile takeover has occurred.
-+		 */
-+		if (!unsafe && cur.unsafe_takeover)
-+			goto out;
-+
-+		if (!nbcon_context_can_proceed(ctxt, &cur))
-+			return false;
-+
-+		new.atom = cur.atom;
-+		new.unsafe = unsafe;
-+	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
-+
-+	cur.atom = new.atom;
-+out:
-+	return nbcon_context_can_proceed(ctxt, &cur);
++	if (atomic_long_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_seq), &nbcon_seq,
++				    __seq_to_nbcon_seq(new_seq))) {
++		ctxt->seq = new_seq;
++	} else {
++		ctxt->seq = nbcon_seq_read(con);
++	}
 +}
 +
  /**
-  * nbcon_alloc - Allocate buffers needed by the nbcon console
-  * @con:	Console to allocate buffers for
+  * nbcon_context_try_acquire_direct - Try to acquire directly
+  * @ctxt:	The context of the caller
+@@ -510,6 +605,9 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+ 	else
+ 		ctxt->pbufs = con->pbufs;
+ 
++	/* Set the record sequence for this context to print. */
++	ctxt->seq = nbcon_seq_read(ctxt->console);
++
+ 	return true;
+ }
+ 
+@@ -722,6 +820,8 @@ bool nbcon_alloc(struct console *con)
+  *
+  * nbcon_alloc() *must* be called and succeed before this function
+  * is called.
++ *
++ * This function expects that the legacy @con->seq has been set.
+  */
+ void nbcon_init(struct console *con)
+ {
+@@ -730,6 +830,7 @@ void nbcon_init(struct console *con)
+ 	/* nbcon_alloc() must have been called and successful! */
+ 	BUG_ON(!con->pbufs);
+ 
++	nbcon_seq_force(con, con->seq);
+ 	nbcon_state_set(con, &state);
+ }
+ 
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 1c9720acd960..77857d2118ca 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -494,7 +494,7 @@ _DEFINE_PRINTKRB(printk_rb_static, CONFIG_LOG_BUF_SHIFT - PRB_AVGBITS,
+ 
+ static struct printk_ringbuffer printk_rb_dynamic;
+ 
+-static struct printk_ringbuffer *prb = &printk_rb_static;
++struct printk_ringbuffer *prb = &printk_rb_static;
+ 
+ /*
+  * We cannot access per-CPU data (e.g. per-CPU flush irq_work) before
+@@ -3168,6 +3168,7 @@ void console_flush_on_panic(enum con_flush_mode mode)
+ 
+ 	if (mode == CONSOLE_REPLAY_ALL) {
+ 		struct console *c;
++		short flags;
+ 		int cookie;
+ 		u64 seq;
+ 
+@@ -3175,11 +3176,17 @@ void console_flush_on_panic(enum con_flush_mode mode)
+ 
+ 		cookie = console_srcu_read_lock();
+ 		for_each_console_srcu(c) {
+-			/*
+-			 * This is an unsynchronized assignment, but the
+-			 * kernel is in "hope and pray" mode anyway.
+-			 */
+-			c->seq = seq;
++			flags = console_srcu_read_flags(c);
++
++			if (flags & CON_NBCON) {
++				nbcon_seq_force(c, seq);
++			} else {
++				/*
++				 * This is an unsynchronized assignment. On
++				 * panic legacy consoles are only best effort.
++				 */
++				c->seq = seq;
++			}
+ 		}
+ 		console_srcu_read_unlock(cookie);
+ 	}
+@@ -3750,6 +3757,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+ 	struct console *c;
+ 	u64 last_diff = 0;
+ 	u64 printk_seq;
++	short flags;
+ 	int cookie;
+ 	u64 diff;
+ 	u64 seq;
+@@ -3771,6 +3779,9 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+ 		for_each_console_srcu(c) {
+ 			if (con && con != c)
+ 				continue;
++
++			flags = console_srcu_read_flags(c);
++
+ 			/*
+ 			 * If consoles are not usable, it cannot be expected
+ 			 * that they make forward progress, so only increment
+@@ -3778,7 +3789,13 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+ 			 */
+ 			if (!console_is_usable(c))
+ 				continue;
+-			printk_seq = c->seq;
++
++			if (flags & CON_NBCON) {
++				printk_seq = nbcon_seq_read(c);
++			} else {
++				printk_seq = c->seq;
++			}
++
+ 			if (printk_seq < seq)
+ 				diff += seq - printk_seq;
+ 		}
 -- 
 2.39.2
 
