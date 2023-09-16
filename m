@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D897A2B2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2AE7A2B2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238062AbjIPAFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        id S238050AbjIPAHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 20:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbjIPAFS (ORCPT
+        with ESMTP id S238109AbjIPAHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:05:18 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9339B2102;
-        Fri, 15 Sep 2023 17:05:13 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb2e9ebbfso2263879b3a.2;
-        Fri, 15 Sep 2023 17:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694822713; x=1695427513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uBFU91Ab8Ty50yBCscF+Su8H4xiggY1DMOJHupjwHzg=;
-        b=iR0jblj6A4F3WEwG0SY1rSNR3HzQymwwpzmcST0dKpzLP4Dboq9QmxzPyrebEPxS3n
-         QJvKCzw2b6gLni10oXASC6oenaRPcJKSUNEmVz/L3wDnYVSFXkqaO4IaTfeKUHtmNIbg
-         J0WH1YwAbxRQrJPAJGm/hpUiAFwR05DL+8w4iefR8txGUug7Jd0+SG1r91PYY8DnPid7
-         w3NiOV2jAZzETh6GMX/M15XRYhFrBj/YfwUB8wMYxQu6ejo7AqS9Vn+y4AgDot2OrxBc
-         IfJvTNDngVFnLIRhY1f0DH4VA9v6xXsw+HHG5Bfaoxqol3CeA0awWRTUF3Km4+4Eruh+
-         XJcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694822713; x=1695427513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uBFU91Ab8Ty50yBCscF+Su8H4xiggY1DMOJHupjwHzg=;
-        b=Dw4At7CEPRITC/Wm33K0D3wNod1Y3IRbz3gUHUQdbs2feq13z6y9xinpugFF3YoDdM
-         Ee8pUxHbR9De2LWjjAXoAAlRxaBWBZ1SByV4M8NIxiCg9EL1Jyu4X4UhAFMTP0uUlhAC
-         p1CkziOuk221bnX8TvrldyQINtEB8W2PozB0A4N15/geR8ZPRG8/GBXYK8CLkz88eWmW
-         0Rac5gfEkQS8gUF+6fiWrhQzxHQ2RdZumj4kcWC585xofd8Dcqw5MtGar1aaUfGwb7UH
-         PtopU71PtccAMGKip8bgZv7d6hdmemfNQqK43MmutJCDI1RG36sOl+UGZDe2udBpZlS9
-         WCyg==
-X-Gm-Message-State: AOJu0YyeVTYRHS+KV7MesUFXObrEe4kc5G0JwUqGbh71G3nHSl3Uu7pj
-        0Yhvl0K8+EphHZ5vcL723wI=
-X-Google-Smtp-Source: AGHT+IF0Gziwgjs8IBkPNW32gp0eqmvsqmMuvS0x7PTIdUhgCFb6Vt3ZXEPLS8yJVzATlvoLr0H0cw==
-X-Received: by 2002:a05:6a00:1588:b0:68c:4e22:8f78 with SMTP id u8-20020a056a00158800b0068c4e228f78mr3528463pfk.25.1694822712935;
-        Fri, 15 Sep 2023 17:05:12 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id c5-20020aa78805000000b0068ff6d21563sm3569946pfo.148.2023.09.15.17.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 17:05:11 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 33456811F023; Sat, 16 Sep 2023 07:05:07 +0700 (WIB)
-Date:   Sat, 16 Sep 2023 07:05:07 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Tester47 <e598@gmx.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux TTY & Serial <linux-serial@vger.kernel.org>,
-        Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>
-Subject: Re: Fwd: Kernel 6.6-rc1 fails to reboot or shutdown Ryzen 5825U
-Message-ID: <ZQTxM0JdyV8mpxbt@debian.me>
-References: <2bc62c07-2195-e378-c057-f28e8d4a6034@gmail.com>
+        Fri, 15 Sep 2023 20:07:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C2998;
+        Fri, 15 Sep 2023 17:07:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBAEC433C8;
+        Sat, 16 Sep 2023 00:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694822826;
+        bh=8Yu+GwYPHDePl3LqNlzEzfrFvMmCmV66DDHEshoQFPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CNH6CLgxFzU1zRS0ABaVNSmRwjWQmVfC7I+QNZrLanrYn2S10zMTqneXnbPwIx8U+
+         9+DYbJCYWmEjSRJLFUD0KnU4SrTfH4U70goBTEtWJYYgE+3CDQj+S3xahTybXlvnI8
+         4+hXbVGzT3NrhxXoS7XMOoswH8SBrs7wuJAcOF/OO9C3feM3vkPLoLdSn2ljVt86RK
+         5e7cGHkB2Lxc38+DNvVOM9w4WpQtgBzaL7RK4nBiIaLc/XKkVS+PdQE+h/FYgT5qjw
+         v+xWeWSrzk26/qThAn9dkn6BUyKeIP3f7IuSP+BCNnVyKI4KQN3Z7AGLxQNSa/LO+P
+         g8EQp9/9wUiPw==
+Date:   Sat, 16 Sep 2023 01:07:00 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v6 19/19] riscv: dts: starfive: add PCIe dts
+ configuration for JH7110
+Message-ID: <20230916-monitor-idiom-86d6894b1e88@spud>
+References: <20230915102243.59775-1-minda.chen@starfivetech.com>
+ <20230915102243.59775-20-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Xh9/EH8MO3HbfOrP"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+RcYDkBcBEoWjbZf"
 Content-Disposition: inline
-In-Reply-To: <2bc62c07-2195-e378-c057-f28e8d4a6034@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230915102243.59775-20-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,34 +67,30 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Xh9/EH8MO3HbfOrP
-Content-Type: text/plain; charset=utf-8
+--+RcYDkBcBEoWjbZf
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 14, 2023 at 02:03:00PM +0700, Bagas Sanjaya wrote:
-> #regzbot introduced: v6.5..v6.6 https://bugzilla.kernel.org/show_bug.cgi?=
-id=3D217905
-> #regzbot title: shutdown/reboot hang on Ryzen 5825U (stuck on amdgpu init=
-ialization)
+On Fri, Sep 15, 2023 at 06:22:43PM +0800, Minda Chen wrote:
+> Add PCIe dts configuraion for JH7110 SoC platform.
 >=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 
-Fixing up commit range:
+Not really important, but checkpatch whinges about the double signoff
+here, since both are you"
 
-#regzbot introduced: v6.5..v6.6-rc1
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Xh9/EH8MO3HbfOrP
+--+RcYDkBcBEoWjbZf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQTxLQAKCRD2uYlJVVFO
-o8rgAPwIzBXYXKeK6pcEOYV2weLfbQUqgqPF2jOk3Ec5KM6KWQD/bUH8Sr/mt0Fy
-cMDw3XSd1I3kgWf0GonS0cLKCV7tpQ0=
-=kMdp
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQTxpAAKCRB4tDGHoIJi
+0lj9AQDNWfMti/9mi01vMJjKM7GVM2xrI3XaabEtUXwy9R9NmAD7BHYTvEI4JQ/I
++ECDoV1Pnxx67atTC+kUEC0W38scYQw=
+=uVmt
 -----END PGP SIGNATURE-----
 
---Xh9/EH8MO3HbfOrP--
+--+RcYDkBcBEoWjbZf--
