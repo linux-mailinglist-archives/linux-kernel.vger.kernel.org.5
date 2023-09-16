@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BD87A3262
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E847A3267
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbjIPUEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 16:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        id S236677AbjIPUNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 16:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbjIPUET (ORCPT
+        with ESMTP id S232530AbjIPUNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 16:04:19 -0400
+        Sat, 16 Sep 2023 16:13:09 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F27D1AD
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:04:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 618BFC433C7;
-        Sat, 16 Sep 2023 20:04:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FB21B5
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:13:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1561FC433C7;
+        Sat, 16 Sep 2023 20:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1694894653;
-        bh=bawxczNPnq3Vfgyc+ufnLqCHSJIojqF/0A0qUQ9y1j8=;
+        s=korg; t=1694895183;
+        bh=UAYiYwiz1QUuo/1OrgH7awbGSA0xwqGi6uf3RFIGe9U=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zLp5UXZ+KHJ/obNuLFg8OsxY+e0pepS0EIR4adFyhEfP+HNeCvIZJGVULoiIJb5n4
-         SBd94FsYXibZxiBK71pST/Bc7P4FEcau+IuMnlLoqny7sMNJ3IzZvfFzCFws1YY1PR
-         ZCsvfhj5DOhIOgG9VSjOFgrGoD43hlird1jD8QCY=
-Date:   Sat, 16 Sep 2023 13:04:12 -0700
+        b=VcGbmb5axXWDHl0ZARVRMyPPmtgkTL8CGsyCs9ko9BceDWU6tqMaktI/GOoQMtHpr
+         GJ7zLy/RfTR6csb9NdNfnEVu26JmgPaFJsOMG2dIAn+9STfuYZzNx3aPL2BOBXZt+D
+         uMUYRgU69K8sbaWKW/OpXVv8WJc+ivHZmlwF52VU=
+Date:   Sat, 16 Sep 2023 13:13:02 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>, arnd@arndb.de,
-        sfr@canb.auug.org.au
-Subject: Re: [PATCH v2 12/19] lib/stackdepot: use list_head for stack record
- links
-Message-Id: <20230916130412.bdd04e5344f80af583332e9d@linux-foundation.org>
-In-Reply-To: <20230916174334.GA1030024@mutt>
-References: <cover.1694625260.git.andreyknvl@google.com>
-        <d94caa60d28349ca5a3c709fdb67545d9374e0dc.1694625260.git.andreyknvl@google.com>
-        <20230916174334.GA1030024@mutt>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+Message-Id: <20230916131302.252399080ac5b4d983668f7e@linux-foundation.org>
+In-Reply-To: <20230916195739.GB618858@monkey>
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+        <20230914235238.GB129171@monkey>
+        <20230915141610.GA104956@cmpxchg.org>
+        <20230916195739.GB618858@monkey>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -58,34 +55,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Sep 2023 19:43:35 +0200 Anders Roxell <anders.roxell@linaro.org> wrote:
+On Sat, 16 Sep 2023 12:57:39 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 
-> On 2023-09-13 19:14, andrey.konovalov@linux.dev wrote:
-> > From: Andrey Konovalov <andreyknvl@google.com>
-> > 
-> > Switch stack_record to use list_head for links in the hash table
-> > and in the freelist.
-> > 
-> > This will allow removing entries from the hash table buckets.
-> > 
-> > This is preparatory patch for implementing the eviction of stack records
-> > from the stack depot.
-> > 
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > 
+> > So this was purely a sanity check against the pcpmigratetype cache
+> > operations. With that gone, we can remove it.
 > 
-> Building on an arm64 kernel from linux-next tag next-20230915, and boot
-> that in QEMU. I see the following kernel panic.
-> 
-> ...
->
-> The full log can be found [1] and the .config file [2]. I bisected down
-> to this commit, see the bisect log [3].
-> 
-> When reverted these two commits I managed to build and the kernel
-> booted.
-> 
-> 47590ecf1166 ("lib/stackdepot: use list_head for stack record links")
-> 8729f3c26fc2 ("lib/stackdepot: allow users to evict stack traces")
+> With the patch below applied, a slightly different workload triggers the
+> following warnings.  It seems related, and appears to go away when
+> reverting the series.
 
-Thanks, I have dropped this v2 series.
+Thanks, I've dropped this v2 series from mm.git.
