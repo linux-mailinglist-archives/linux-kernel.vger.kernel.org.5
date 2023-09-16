@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9DF7A3097
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3880A7A30A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239141AbjIPNPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 09:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
+        id S239369AbjIPNRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 09:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239195AbjIPNOz (ORCPT
+        with ESMTP id S239257AbjIPNQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 09:14:55 -0400
-X-Greylist: delayed 184 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 16 Sep 2023 06:14:46 PDT
-Received: from icp-osb-irony-out2.external.iinet.net.au (icp-osb-irony-out2.external.iinet.net.au [203.59.1.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FC6BDD;
-        Sat, 16 Sep 2023 06:14:45 -0700 (PDT)
-X-SMTP-MATCH: 1
-IronPort-Data: A9a23:BSxs+K1vAQ0dQ7pFnvbD5cNwkn2cJEfYwER7XKvMYLTBsI5bpwWzt
- Nbn7RIyw0v2EmDwS237GIy29Xqy2ebUyshhVgBcGUhFFxpisdDCCcmSMnD+NiaTKtyrZE985
- q3yUPGZRCwPZiGa/k3F3oTJ9yEmjvnZH+SkUoYoBwgqLeNaYHZ54f5cs7Nh6mJYqYDRKx+Av
- 9r0v/reNDeNs9KjGjtJg04rgEoHUMXa4Fv0jHRnDRx4lAa2e00uMX4qDfrZw00U42VjNrXSq
- +7rlNlV90uFpE11UovNfrzTKiXmSZaKVeSCoiYNAfD62nCuqwRqupvXOsbwZm9ziT/UoolT1
- elGtIW1EzY4EfXdm9wkBkww/yFWZcWq+Zf0eCnl95XNnwueNSG29p2CDmlrbctGvLwtXycUr
- axwxDMlN3hvg8q52r+0V+9ji94uNuH0MZgDvHx8izreCLAvXPgvRo2Wu4QIh21u3Zsm8fD2X
- dQVViFJVVf6OQRyFWpHOKAzjfz3iSyqG9FfgBfPzUYt2EDMzQh1wZDsNtTPc9CHTMkTmVyXz
- krC/mLkElQZOcaZxD6t7H2hnKnMkDn9VYZUE6e3ntZugVuO1ikdExEbS1a/iee2h1T4WN9FL
- UEQvC00osAa8E2tU8m4VgezoFaasRMGHdldCes37EeK0KW8yxqeHHYNSjJaQNgnstImADIty
- 1mFls/oAjopt6eaIVqb7rabojK0EScQJG4GIyQDSGM4D8LL/dF20FeVFIgmSvblyMHtFjC2y
- DeP6iEj71kOsfM2O2yA1Qivq1qRSlLhFGbZOi2/srqZ0z5E
-IronPort-HdrOrdr: A9a23:wC60R6Horfpb1OhrpLqE98eALOsnbusQ8zAXPiFKJyC9F/bzqy
- nAppsmPHPP+VQssRIb+OxoWpPtfZq0z/cc3WB2B9eftWLdyQiVxe9ZgLcKkweKJxHD
-X-Talos-CUID: 9a23:K6nxDG+9szhpjgR9OpWVv2oWEJ0YK1/A8HzROkriOHdGEKyWcWbFrQ==
-X-Talos-MUID: 9a23:JZcesAS6+AJ9wfe5RXTWmj1dL+FRoJ70EX0irMU2icSVLnN/bmI=
-X-IronPort-AV: E=Sophos;i="6.02,152,1688400000"; 
-   d="scan'208";a="463832633"
-Received: from 58-6-226-208.tpgi.com.au (HELO [192.168.0.22]) ([58.6.226.208])
-  by icp-osb-irony-out2.iinet.net.au with ESMTP; 16 Sep 2023 21:11:32 +0800
-Message-ID: <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
-Date:   Sat, 16 Sep 2023 23:11:32 +1000
+        Sat, 16 Sep 2023 09:16:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747A5139
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694870200; x=1726406200;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=JxbzpYVN521YHhqcI4SHspUSz+oF7VEr3ENcG2aE+Dc=;
+  b=QPUX/WiFekRMYqqadMtoHy/NgjuaABfna2bZkhCpiVVmq/bp6JFwBrOx
+   Kfy7Wun83VG6adRvDeqa2sGehYvlcFkgZO6Uzfv49cBa+XqJXvn9mNR1X
+   VSIKdXjQAWsVDhF+zlCaF3sC7F1fn0plaLP5FRKMrggTWHFQNPNbJZu2M
+   GpTxxZT0ngqZqIRMlIaTOmuGDnEwdAy7FPNjUEdjqybRi9MEKFoDhe8G1
+   JCD2Wdw2BJSk8imU2oMCNa5kL3+N1C5AdQsEIWgDFmmVK50lkCma2K4c9
+   7Qub4ac3WRMD6xeHOAASVzd+gBjYIbSQwvUP4xKiahDW09fkQdC34v3+l
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="359662004"
+X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
+   d="scan'208";a="359662004"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 06:16:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="780421605"
+X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
+   d="scan'208";a="780421605"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 16 Sep 2023 06:16:38 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qhVA4-0004JK-1B;
+        Sat, 16 Sep 2023 13:16:36 +0000
+Date:   Sat, 16 Sep 2023 21:15:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: drivers/power/supply/qcom_battmgr.c:357:31: sparse: sparse:
+ incorrect type in initializer (different base types)
+Message-ID: <202309162149.4owm9iXc-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
-Content-Language: en-US
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        torvalds@linux-foundation.org, Nicholas Piggin <npiggin@gmail.com>
-References: <20230915183707.2707298-1-willy@infradead.org>
- <20230915183707.2707298-10-willy@infradead.org>
-From:   Greg Ungerer <gregungerer@westnet.com.au>
-In-Reply-To: <20230915183707.2707298-10-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   57d88e8a5974644039fbc47806bac7bb12025636
+commit: 29e8142b5623b5949587bcc4f591c4e6595c4aca power: supply: Introduce Qualcomm PMIC GLINK power supply
+date:   7 months ago
+config: i386-randconfig-062-20230916 (https://download.01.org/0day-ci/archive/20230916/202309162149.4owm9iXc-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309162149.4owm9iXc-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309162149.4owm9iXc-lkp@intel.com/
 
-On 16/9/23 04:36, Matthew Wilcox (Oracle) wrote:
-> Using EOR to clear the guaranteed-to-be-set lock bit will test the
-> negative flag just like the x86 implementation.  This should be
-> more efficient than the generic implementation in filemap.c.  It
-> would be better if m68k had __GCC_ASM_FLAG_OUTPUTS__.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   arch/m68k/include/asm/bitops.h | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-> index e984af71df6b..909ebe7cab5d 100644
-> --- a/arch/m68k/include/asm/bitops.h
-> +++ b/arch/m68k/include/asm/bitops.h
-> @@ -319,6 +319,20 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
->   	return test_and_change_bit(nr, addr);
->   }
->   
-> +static inline bool xor_unlock_is_negative_byte(unsigned long mask,
-> +		volatile unsigned long *p)
-> +{
-> +	char result;
-> +	char *cp = (char *)p + 3;	/* m68k is big-endian */
-> +
-> +	__asm__ __volatile__ ("eor.b %1, %2; smi %0"
+sparse warnings: (new ones prefixed by >>)
+>> drivers/power/supply/qcom_battmgr.c:357:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] battery_id @@     got restricted __le32 [usertype] @@
+   drivers/power/supply/qcom_battmgr.c:357:31: sparse:     expected unsigned int [usertype] battery_id
+   drivers/power/supply/qcom_battmgr.c:357:31: sparse:     got restricted __le32 [usertype]
+   drivers/power/supply/qcom_battmgr.c:369:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] battery_id @@     got restricted __le32 [usertype] @@
+   drivers/power/supply/qcom_battmgr.c:369:31: sparse:     expected unsigned int [usertype] battery_id
+   drivers/power/supply/qcom_battmgr.c:369:31: sparse:     got restricted __le32 [usertype]
+>> drivers/power/supply/qcom_battmgr.c:1286:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] owner @@     got int @@
+   drivers/power/supply/qcom_battmgr.c:1286:30: sparse:     expected restricted __le32 [usertype] owner
+   drivers/power/supply/qcom_battmgr.c:1286:30: sparse:     got int
+>> drivers/power/supply/qcom_battmgr.c:1287:29: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] type @@     got int @@
+   drivers/power/supply/qcom_battmgr.c:1287:29: sparse:     expected restricted __le32 [usertype] type
+   drivers/power/supply/qcom_battmgr.c:1287:29: sparse:     got int
+>> drivers/power/supply/qcom_battmgr.c:1288:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] opcode @@     got int @@
+   drivers/power/supply/qcom_battmgr.c:1288:31: sparse:     expected restricted __le32 [usertype] opcode
+   drivers/power/supply/qcom_battmgr.c:1288:31: sparse:     got int
 
-The ColdFire members of the 68k family do not support byte size eor:
+vim +357 drivers/power/supply/qcom_battmgr.c
 
-   CC      mm/filemap.o
-{standard input}: Assembler messages:
-{standard input}:824: Error: invalid instruction for this architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001, 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32 [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) -- statement `eor.b #1,3(%a0)' ignored
+   350	
+   351	static int qcom_battmgr_update_status(struct qcom_battmgr *battmgr)
+   352	{
+   353		struct qcom_battmgr_update_request request = {
+   354			.hdr.owner = cpu_to_le32(PMIC_GLINK_OWNER_BATTMGR),
+   355			.hdr.type = cpu_to_le32(PMIC_GLINK_REQ_RESP),
+   356			.hdr.opcode = cpu_to_le32(BATTMGR_BAT_STATUS),
+ > 357			.battery_id = cpu_to_le32(0),
+   358		};
+   359	
+   360		return qcom_battmgr_request(battmgr, &request, sizeof(request));
+   361	}
+   362	
 
-Regards
-Greg
-
-
-
-
-> +		: "=d" (result)
-> +		: "di" (mask), "o" (*cp)
-> +		: "memory");
-> +	return result;
-> +}
-> +#define xor_unlock_is_negative_byte xor_unlock_is_negative_byte
-> +
->   /*
->    *	The true 68020 and more advanced processors support the "bfffo"
->    *	instruction for finding bits. ColdFire and simple 68000 parts
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
