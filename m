@@ -2,356 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5DC7A326D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA807A3270
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbjIPUYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 16:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S232701AbjIPUae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 16:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbjIPUY3 (ORCPT
+        with ESMTP id S230310AbjIPUaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 16:24:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2A8CE1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694895862; x=1726431862;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=/MlbyAomM76NPSLGK79POkTmm2dsbvnTUWM0TZohHxs=;
-  b=dizQGZFQ3p8fU23mx7V+MkqeNu3f3nao0lOzHHJXwxY2Bw9XnxcwnaIk
-   jWMWIgLOXqLrXkk5DDd6razYIaqtOoSZw/Lo5oxORg2OLjOj8k+gGv6V0
-   qpXAJ5qizirnkCE+6uK9NiPLPJp6Re++BiiVl3A6VwZsZ99lw5Dt4bv4O
-   voxKoc15ITxhcY5QyEzatsQPXvWRKXUDADUqygiss4UR3clt6PO1CtWnL
-   62cxQpUglJp2SabT+yZ0MiLwklla8fBQzlDMIf5AMiBNpCARl6nYaol4B
-   qcup9QXBe5TJLTBskD5WnaX4OH7qnEgauXCMvFnGLI9zPitqZBXnNubAk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="443522142"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="443522142"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 13:24:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="722069956"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="722069956"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 16 Sep 2023 13:24:19 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhbpw-0004cU-31;
-        Sat, 16 Sep 2023 20:24:16 +0000
-Date:   Sun, 17 Sep 2023 04:24:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: drivers/net/usb/lan78xx.c:2963:27: sparse: sparse: incorrect type in
- assignment (different base types)
-Message-ID: <202309170415.2sBG5pAK-lkp@intel.com>
+        Sat, 16 Sep 2023 16:30:11 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CD7CE3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:30:05 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32008e339adso310749f8f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694896203; x=1695501003; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Mv4crFclQdEkZGsP8km6uD1B/Et729oV33YEvfH1Us=;
+        b=mmbyU89odPstwynsAjdTzeZ0rxhsX9aWML8hUKhYx4mZT+r3eYHjBtmsRtIyrTZ5RN
+         6KjHOFrt9Lc6C3aglTOSNEHwOP2miysik6VBUqppJLIKigHxRRDh2eUnlVWqDhZ+dbhi
+         1uNiPEQVH7Nw9T4RoxY215JHbPUK1U388j1aaqEi35bkx5iP/Bm3br5hni+q4pBukBau
+         ASRbpQmAOnhatcmng7lIA06or+0yU+VdNjU4zVkE60IWywzjWgNbI8sdRxggM6s/pppj
+         rXhhaXRiJVMMD6x8Ggqm6BW1AWLnNDKwzaiCuImZhlQQo9c+WURATGT1wl/iypDtOzos
+         3BKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694896203; x=1695501003;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Mv4crFclQdEkZGsP8km6uD1B/Et729oV33YEvfH1Us=;
+        b=QFSFaQsVptyNzIUHmPCf3L+/JljYqLhqCqz1CE0p5vmz1L0lPVFCceQBD8Uvj/rdKf
+         5fDxu4lDXFBMfkCS6iTHY48gTtCmYAmJ9hb+0u2c33m2U268HlYVEs9KHfTEVWCXYbnH
+         En+Wi6JAYZGZA30o7vCdjeVGKPmrdUWhoXnl9FSUBbXEnSgb6bdsilx6WaMM7ZjhjNfT
+         XOSBFXkbGjIE8LAiOZKGaZZlh+vHpJYORl4jc4bGSmDAQgIB66oRnh40L04szgTdSair
+         5TS8VkyIG892tcnP6YCsmKCtXwvnn1k+3kn0VYJhcY52UZPEOr8OKb14Au7UrtqdsCko
+         dKeg==
+X-Gm-Message-State: AOJu0YxbZBrWZDnnytNImi5187lR4FmoWqStOyTJJ+ObI6kgJmZ1v12K
+        2Itm7yTq97VeYLr7FVNMHhGaGg==
+X-Google-Smtp-Source: AGHT+IFhZjAVFGkFjpwnV99v5Q1I2ryBCXVW3gFbSyjtkwV3ZkbK8w+QJzpwIdshXWfKVm7OG77/yQ==
+X-Received: by 2002:a5d:484a:0:b0:319:f9d6:a769 with SMTP id n10-20020a5d484a000000b00319f9d6a769mr4118351wrs.45.1694896202693;
+        Sat, 16 Sep 2023 13:30:02 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id q2-20020adff782000000b00317f70240afsm7940655wrp.27.2023.09.16.13.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 13:30:02 -0700 (PDT)
+Date:   Sat, 16 Sep 2023 21:30:00 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
+ uclamp constraints
+Message-ID: <20230916203000.ulngn5huefndb2cq@airbuntu>
+References: <20230820210640.585311-1-qyousef@layalina.io>
+ <20230820210640.585311-3-qyousef@layalina.io>
+ <7839dd5f-e7fd-7065-934d-436d012ac9d6@arm.com>
+ <20230826200829.gnha7xcrjbyipjr2@airbuntu>
+ <ecbd165e-4213-8dd4-d5b5-309256cc64a9@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ecbd165e-4213-8dd4-d5b5-309256cc64a9@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   57d88e8a5974644039fbc47806bac7bb12025636
-commit: d991bb1c8da842a2a0b9dc83b1005e655783f861 include/linux/compiler-gcc.h: sparse can do constant folding of __builtin_bswap*()
-date:   2 years, 5 months ago
-config: i386-randconfig-062-20230916 (https://download.01.org/0day-ci/archive/20230917/202309170415.2sBG5pAK-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230917/202309170415.2sBG5pAK-lkp@intel.com/reproduce)
+On 09/12/23 16:34, Dietmar Eggemann wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309170415.2sBG5pAK-lkp@intel.com/
+> No that's not what I wanted to say here.
+> 
+> I wanted to highlight the different treatment of `(1) a task with
+> (natural) util = 800` and `(2) a task with uclamp_max = 800`.
+> 
+> (1) util = 800
+> 
+> util = (1.25 * 800 * (1024 - irq) / 1024 + ...
+> 
+>         <-      ->
+>         uclamped(cfs+rt+headroom(cfs+rt))
+> 
+> 
+> (2) uclamp_max = 800
+> 
+> util = (800 * (1024 - irq) / 1024 + ...
+> 
+>         <->
+>         uclamped(cfs+rt+headroom(cfs+rt))
+> 
+> So for (1) the scheduler would ask for more than in (2).
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/net/usb/lan78xx.c:2963:29: sparse: sparse: cast to restricted __be16
->> drivers/net/usb/lan78xx.c:2963:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned short [usertype] @@
-   drivers/net/usb/lan78xx.c:2963:27: sparse:     expected restricted __wsum [usertype] csum
-   drivers/net/usb/lan78xx.c:2963:27: sparse:     got unsigned short [usertype]
+Yes, which is the intention IMHO. If they behave the same, then uclamp_max is
+not doing anything. And really this is the critical region in the system as
+this is where the expensive OPPs lie.
+
+> 
+> That's essentially the same question which was raised here:
+> 
+> https://lkml.kernel.org/r/CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com
+> 
+> >>> Note that similar problem exist for uclamp_min. If util was 50, and
+> >>> uclamp_min is 100. Since we apply_dvfs_headroom() after apply uclamp
+> >>> constraints, we'll end up with util of 125 instead of 100. IOW, we get
+> >>> boosted twice, first time by uclamp_min, and second time by dvfs
+> >>> headroom.
+> >>
+> >> I see what you want to change here but:
+> >>
+> >> So far we have `util -> uclamp -> map_util_to_perf()`
+> > 
+> > :-O
+> > 
+> > So when I set the system uclamp_max to 800 it will still run at max; and this
+> > is normal?!!
+> 
+> No that's an issue (A) as well. But the diff between (1) and (2) is IMHO a
+> new issue introduced by this patch-set.
+
+It is also the problem to fix :-)
+
+> 
+> >> which is fine when we see uclamp as an entity which constrains util, not
+> >> the util after being mapped to a capacity constraint.
+> > 
+> > -ENOPARSE.
+> 
+> What I meant is 'clamping the util' before scheduler hands over to
+> 'cpufreq' is fine:
+> 
+>     util -> uclamp -> map_util_to_perf()
+>                
+>     scheduler    -->|<-- cpufreq
+> 
+> I do understand that you guys are already discussing a new
+> cpufreq_give_me_freq_for_this_utilization_ctx() between EM and CPUfreq
+> in the other thread of this patch to maybe sort out (A).
+
+This will help with abstraction. But behavior wise, I still think that if
+a task (or a cgroup, the system) has uclamp_max to 800, then we should not run
+faster than this because of dvfs headroom.
+
+If we don't do this then max performance is effectively mapped at anything at
+800 and above. And likely less than that.
+
+For example if
+
+	util@OPP[Fmax-1] = 950
+
+then any util value at
+
+	util = 950 * 0.8 = 760
+
+will saturate the system and run at Fmax, because all values from above 950
+will map to Fmax, and because of the headroom this becomes all values at 760 or
+above.
+
+This mean from user's perspective uclamp_min and uclamp_max is from 0-760 on
+that system. But the abstraction we're providing is that the performance range
+is from 0-1024.
+
+If uclamp_min is set to 512 and the task has a util of 100, why should we run
+at 512*1.25?
+
+Similarly if uclamp_max wants to cap the task/cgroup/system from consuming the
+top resources, why it needs the 1.25 headroom? If there are two tasks running
+on the CPU and one of them is not capped, then yeah the headroom will be
+applied. But if the rq->uclamp[UCLAMP_MAX] = 800, then the vote from freq from
+this CPU should not exceed this. I don't see what the headroom is for in this
+case.
+
+As another example, do you expect a task that has a util of 1024 but uclamp_max
+= 800 to run at max or at an OPP equivalent to 800 which would be 2 or 3 below
+Fmax usually? The latter is the expectation from the interface. Users shouldn't
+need to know there's a dvfs headroom and cater for that when they set
+uclamp_max or uclamp_min.
+
+
+Thanks!
+
 --
-   drivers/scsi/bfa/bfa_ioc.c:1800:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [assigned] [usertype] clscode @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:1800:28: sparse:     expected unsigned short [assigned] [usertype] clscode
-   drivers/scsi/bfa/bfa_ioc.c:1800:28: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:1802:29: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:1813:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [assigned] [usertype] clscode @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:1813:29: sparse:     expected unsigned short [assigned] [usertype] clscode
-   drivers/scsi/bfa/bfa_ioc.c:1813:29: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:1815:30: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:1780:24: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int val @@     got restricted __le32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:1780:24: sparse:     expected unsigned int val
-   drivers/scsi/bfa/bfa_ioc.c:1780:24: sparse:     got restricted __le32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:1963:31: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:1964:31: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:1965:31: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:1967:27: sparse: sparse: cast to restricted __be16
->> drivers/scsi/bfa/bfa_ioc.c:2066:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] r32 @@     got unsigned int [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:2066:21: sparse:     expected restricted __be32 [usertype] r32
-   drivers/scsi/bfa/bfa_ioc.c:2066:21: sparse:     got unsigned int [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:2067:26: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:2989:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] clscode @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:2989:22: sparse:     expected unsigned short [usertype] clscode
-   drivers/scsi/bfa/bfa_ioc.c:2989:22: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:3265:52: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:3267:58: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:3269:59: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:3271:54: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:3273:54: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:3440:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] pers @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:3440:17: sparse:     expected unsigned short [usertype] pers
-   drivers/scsi/bfa/bfa_ioc.c:3440:17: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:3441:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] bw_min @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:3441:19: sparse:     expected unsigned short [usertype] bw_min
-   drivers/scsi/bfa/bfa_ioc.c:3441:19: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:3442:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] bw_max @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:3442:19: sparse:     expected unsigned short [usertype] bw_max
-   drivers/scsi/bfa/bfa_ioc.c:3442:19: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:3565:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] bw_min @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:3565:19: sparse:     expected unsigned short [usertype] bw_min
-   drivers/scsi/bfa/bfa_ioc.c:3565:19: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:3566:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] bw_max @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:3566:19: sparse:     expected unsigned short [usertype] bw_max
-   drivers/scsi/bfa/bfa_ioc.c:3566:19: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:4268:21: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4270:23: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4273:23: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4301:21: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4303:23: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4306:23: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4325:21: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4364:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4372:40: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4373:39: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4378:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4380:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4382:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4384:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4386:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4388:41: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4395:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4401:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4412:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4418:35: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4435:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:4441:33: sparse: sparse: cast to restricted __be32
->> drivers/scsi/bfa/bfa_ioc.c:4829:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] count @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:4829:27: sparse:     expected unsigned int [usertype] count
-   drivers/scsi/bfa/bfa_ioc.c:4829:27: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:4924:36: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:4933:33: sparse: sparse: cast to restricted __be16
->> drivers/scsi/bfa/bfa_ioc.c:4979:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] freq @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:4979:19: sparse:     expected unsigned short [usertype] freq
-   drivers/scsi/bfa/bfa_ioc.c:4979:19: sparse:     got restricted __be16 [usertype]
->> drivers/scsi/bfa/bfa_ioc.c:5006:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] period @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5006:21: sparse:     expected unsigned int [usertype] period
-   drivers/scsi/bfa/bfa_ioc.c:5006:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:5301:27: sparse: sparse: cast to restricted __be32
->> drivers/scsi/bfa/bfa_ioc.c:5367:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] offset @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5367:21: sparse:     expected unsigned int [usertype] offset
-   drivers/scsi/bfa/bfa_ioc.c:5367:21: sparse:     got restricted __be32 [usertype]
->> drivers/scsi/bfa/bfa_ioc.c:5370:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] length @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5370:21: sparse:     expected unsigned int [usertype] length
-   drivers/scsi/bfa/bfa_ioc.c:5370:21: sparse:     got restricted __be32 [usertype]
->> drivers/scsi/bfa/bfa_ioc.c:5383:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5383:24: sparse:     expected unsigned short [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:5383:24: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:5405:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] offset @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5405:21: sparse:     expected unsigned int [usertype] offset
-   drivers/scsi/bfa/bfa_ioc.c:5405:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:5408:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] length @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:5408:21: sparse:     expected unsigned int [usertype] length
-   drivers/scsi/bfa/bfa_ioc.c:5408:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:5722:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:5740:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:5757:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:5771:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:5780:35: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:5789:42: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_ioc.c:6222:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] offset @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:6222:21: sparse:     expected unsigned int [usertype] offset
-   drivers/scsi/bfa/bfa_ioc.c:6222:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:6225:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] length @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:6225:21: sparse:     expected unsigned int [usertype] length
-   drivers/scsi/bfa/bfa_ioc.c:6225:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:6256:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] offset @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:6256:21: sparse:     expected unsigned int [usertype] offset
-   drivers/scsi/bfa/bfa_ioc.c:6256:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:6259:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] length @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.c:6259:21: sparse:     expected unsigned int [usertype] length
-   drivers/scsi/bfa/bfa_ioc.c:6259:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.c:6571:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:6591:26: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c:6600:35: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_ioc.c: note: in included file (through drivers/scsi/bfa/bfa.h, drivers/scsi/bfa/bfa_modules.h, drivers/scsi/bfa/bfad_drv.h):
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
---
-   drivers/scsi/bfa/bfa_svc.c:753:21: sparse: sparse: restricted __be32 degrades to integer
-   drivers/scsi/bfa/bfa_svc.c:760:48: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:765:41: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:770:33: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:3175:33: sparse: sparse: cast from restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:3178:9: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:3179:9: sparse: sparse: cast from restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:4485:25: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:4487:25: sparse: sparse: cast to restricted __be32
->> drivers/scsi/bfa/bfa_svc.c:680:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] rsp_len @@     got unsigned int [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:680:27: sparse:     expected restricted __be32 [usertype] rsp_len
-   drivers/scsi/bfa/bfa_svc.c:680:27: sparse:     got unsigned int [usertype]
->> drivers/scsi/bfa/bfa_svc.c:689:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] residue_len @@     got unsigned int [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:689:39: sparse:     expected restricted __be32 [usertype] residue_len
-   drivers/scsi/bfa/bfa_svc.c:689:39: sparse:     got unsigned int [usertype]
-   drivers/scsi/bfa/bfa_svc.c:701:71: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected unsigned int [usertype] rsp_len @@     got restricted __be32 [usertype] rsp_len @@
-   drivers/scsi/bfa/bfa_svc.c:701:71: sparse:     expected unsigned int [usertype] rsp_len
-   drivers/scsi/bfa/bfa_svc.c:701:71: sparse:     got restricted __be32 [usertype] rsp_len
-   drivers/scsi/bfa/bfa_svc.c:702:49: sparse: sparse: incorrect type in argument 6 (different base types) @@     expected unsigned int [usertype] resid_len @@     got restricted __be32 [usertype] residue_len @@
-   drivers/scsi/bfa/bfa_svc.c:702:49: sparse:     expected unsigned int [usertype] resid_len
-   drivers/scsi/bfa/bfa_svc.c:702:49: sparse:     got restricted __be32 [usertype] residue_len
-   drivers/scsi/bfa/bfa_svc.c:709:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] rsp_len @@     got restricted __be32 [usertype] rsp_len @@
-   drivers/scsi/bfa/bfa_svc.c:709:39: sparse:     expected unsigned int [usertype] rsp_len
-   drivers/scsi/bfa/bfa_svc.c:709:39: sparse:     got restricted __be32 [usertype] rsp_len
-   drivers/scsi/bfa/bfa_svc.c:710:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] residue_len @@     got restricted __be32 [usertype] residue_len @@
-   drivers/scsi/bfa/bfa_svc.c:710:43: sparse:     expected unsigned int [usertype] residue_len
-   drivers/scsi/bfa/bfa_svc.c:710:43: sparse:     got restricted __be32 [usertype] residue_len
-   drivers/scsi/bfa/bfa_svc.c:3529:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] maxfrsize @@     got unsigned short [usertype] maxfrsize @@
-   drivers/scsi/bfa/bfa_svc.c:3529:39: sparse:     expected restricted __be16 [usertype] maxfrsize
-   drivers/scsi/bfa/bfa_svc.c:3529:39: sparse:     got unsigned short [usertype] maxfrsize
-   drivers/scsi/bfa/bfa_svc.c:3564:41: sparse: sparse: cast from restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:3565:54: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] path_tov @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:3565:54: sparse:     expected unsigned short [usertype] path_tov
-   drivers/scsi/bfa/bfa_svc.c:3565:54: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:3567:53: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] q_depth @@     got restricted __be16 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:3567:53: sparse:     expected unsigned short [usertype] q_depth
-   drivers/scsi/bfa/bfa_svc.c:3567:53: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:3903:9: sparse: sparse: cast from restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:3913:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] maxfrsize @@     got unsigned short [usertype] maxfrsize @@
-   drivers/scsi/bfa/bfa_svc.c:3913:31: sparse:     expected restricted __be16 [usertype] maxfrsize
-   drivers/scsi/bfa/bfa_svc.c:3913:31: sparse:     got unsigned short [usertype] maxfrsize
-   drivers/scsi/bfa/bfa_svc.c:3922:27: sparse: sparse: incorrect type in return expression (different base types) @@     expected unsigned short @@     got restricted __be16 [usertype] maxfrsize @@
-   drivers/scsi/bfa/bfa_svc.c:3922:27: sparse:     expected unsigned short
-   drivers/scsi/bfa/bfa_svc.c:3922:27: sparse:     got restricted __be16 [usertype] maxfrsize
-   drivers/scsi/bfa/bfa_svc.c:5525:22: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:5526:22: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:6516:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int enum bfa_status status @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6516:21: sparse:     expected unsigned int enum bfa_status status
-   drivers/scsi/bfa/bfa_svc.c:6516:21: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:6567:49: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] roundtrip_latency @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6567:49: sparse:     expected unsigned int [usertype] roundtrip_latency
-   drivers/scsi/bfa/bfa_svc.c:6567:49: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:6569:50: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] est_cable_distance @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6569:50: sparse:     expected unsigned int [usertype] est_cable_distance
-   drivers/scsi/bfa/bfa_svc.c:6569:50: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:6572:25: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:6574:39: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfa_svc.c:6601:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] lpcnt @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6601:30: sparse:     expected unsigned int [usertype] lpcnt
-   drivers/scsi/bfa/bfa_svc.c:6601:30: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:5854:27: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:5855:27: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:5856:27: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:5857:27: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:5858:27: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfa_svc.c:6493:26: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] lpcnt @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6493:26: sparse:     expected unsigned int [usertype] lpcnt
-   drivers/scsi/bfa/bfa_svc.c:6493:26: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c:6494:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] payload @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_svc.c:6494:28: sparse:     expected unsigned int [usertype] payload
-   drivers/scsi/bfa/bfa_svc.c:6494:28: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_svc.c: note: in included file (through drivers/scsi/bfa/bfa.h, drivers/scsi/bfa/bfa_modules.h, drivers/scsi/bfa/bfad_drv.h):
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] al_len @@     got restricted __be32 [usertype] @@
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     expected unsigned int [usertype] al_len
-   drivers/scsi/bfa/bfa_ioc.h:190:22: sparse:     got restricted __be32 [usertype]
-
-vim +2963 drivers/net/usb/lan78xx.c
-
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2949  
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2950  static void lan78xx_rx_csum_offload(struct lan78xx_net *dev,
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2951  				    struct sk_buff *skb,
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2952  				    u32 rx_cmd_a, u32 rx_cmd_b)
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2953  {
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2954  	/* HW Checksum offload appears to be flawed if used when not stripping
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2955  	 * VLAN headers. Drop back to S/W checksums under these conditions.
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2956  	 */
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2957  	if (!(dev->net->features & NETIF_F_RXCSUM) ||
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2958  	    unlikely(rx_cmd_a & RX_CMD_A_ICSM_) ||
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2959  	    ((rx_cmd_a & RX_CMD_A_FVTG_) &&
-9343ac87f2a4e0 Dave Stevenson            2018-06-25  2960  	     !(dev->net->features & NETIF_F_HW_VLAN_CTAG_RX))) {
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2961  		skb->ip_summed = CHECKSUM_NONE;
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2962  	} else {
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30 @2963  		skb->csum = ntohs((u16)(rx_cmd_b >> RX_CMD_B_CSUM_SHIFT_));
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2964  		skb->ip_summed = CHECKSUM_COMPLETE;
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2965  	}
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2966  }
-55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2967  
-
-:::::: The code at line 2963 was first introduced by commit
-:::::: 55d7de9de6c30adce8d675c7ce513e283829c2ff Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver
-
-:::::: TO: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Qais Yousef
