@@ -2,229 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF407A2D2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D5E7A2D42
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbjIPBwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 21:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
+        id S234992AbjIPCAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 22:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235752AbjIPBvx (ORCPT
+        with ESMTP id S231489AbjIPB7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 21:51:53 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDB6189
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:51:47 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d81b42a3108so1841454276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694829107; x=1695433907; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eqNQwvCRvzhNFUM4Xk8w/poEBc9Vi+BUYPDpyIE14H8=;
-        b=evwTPgVJ75kR22IL5iQ54QCiN4G2L9Ovz31MyDzjxNQpJr5zVyqNFhVghCW+kHT/bq
-         WQD7B0DM4/K327tCJrhrGTEELvwv9LbiFSdLXN3lLMwbMmG/P6vpp6LUxuW4XEJ6nzAH
-         KFjoAAIwmFoEy3AEXq171Q4O6WZKbRB8R4iEE6BmOWFFKTh2RQ/py++ivxZWVGf4Uxdf
-         qQKZA4j9+phcWL28O4udwynsUI/vF1Ln6BT4+GhzPzkvxpB8wzSKWqBS4enVSiIv90Yl
-         YZR0L6/MZjYTHtruYE3LlbSHgLH3NQRpNOIrnSFpPtCSXH110Zbjrg4f/8YeMcpw+ras
-         UT5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694829107; x=1695433907;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eqNQwvCRvzhNFUM4Xk8w/poEBc9Vi+BUYPDpyIE14H8=;
-        b=DH4Fky+BQ6/Dxg178NcVmGrghFwzrJHVzx583Cpwx86S5eTAWh18M/xv5oRLnqOw3y
-         nfGo+yYFiILzl4bBpxVLXqJ4uIlueUMf7PfpBSny4PDWCHQaOhZ5HL6kUjzb9QVyyqbd
-         Nk/PM/EjyO17XWNQUakkrNqBMV12OC8m1YW5pj5MiII6CmxGePJOktej1vWFtKGT9GxX
-         dIren4uQhKWP06b4eUU3MXQSouEeqFrzltRsK3GsC2QkUdVziFaUrauu8gVAg/6v2nnK
-         R0Pj/UYYVGlDTlz380t70pIEP1NdP7M2wl9G/jRJehwAWX0+bZLlSXjrD9Qcp+MhTg9y
-         3DYw==
-X-Gm-Message-State: AOJu0YzhST//ZVRwe/RR19vFCHFxMUC3+dKu6m+viH1CyWgbtilGK7J/
-        nLkCRBC4YPZ2ZLkzTSc8oos9JL21drvkLyg4h1PmBg==
-X-Google-Smtp-Source: AGHT+IG71idRyutnZFqe2Q+EcTypw3iqJoSMsXZ5Cl3htTxCNf0SRBSzc4iZj/PuWdGVOHoBt8xeITM4p606svQV468=
-X-Received: by 2002:a25:e644:0:b0:d0a:fbef:1590 with SMTP id
- d65-20020a25e644000000b00d0afbef1590mr2856112ybh.37.1694829106986; Fri, 15
- Sep 2023 18:51:46 -0700 (PDT)
+        Fri, 15 Sep 2023 21:59:37 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2065.outbound.protection.outlook.com [40.107.105.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5861BF2;
+        Fri, 15 Sep 2023 18:59:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jlBh49j3/OsZcyYtoQ2Ehf9QPR+bcsRvfxzj0nl1gcNWFBlhUc8x5XbA+MGkP7TUfVXIzti4fTxSrmqNTzEsHaBBBvl3bhv2pVFroJ2UWEhjOo8+fEQJG2YzEoatanstj+5bqPStqyQDnaq2YyyOLialiqP9Sj4bp7JQsC31hR5yJK+OOXW7fiiQU68GLOAyGN1iwc1eTRZB1KXcLQqYCAXC/vjr2d7GuarWUG6JKocLjeTxNBUkMV2hAVqgRshVUkyl5hLVS9Nh+6Mb8X3tutHxlyEY/pkYdCJAR+guA7IL6zxtfJGQIdLs+gYhSoplY/XpkRpwtq7yYDdoY5pljg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VDn4jOH2g5yfmqfvlcFfEWe8iuP434PkpGXzbFbO53c=;
+ b=SnjzO6P/BhxJBLMgrfUuC92RPnnAHCq2Cie1mdpD2YUfP87ElEAndfAI+RmxOl5l/5FInvsFZs6qy86+LBzB/orLJI3UCuM9sPojKwDWgl41RtI/WUpbEfcc3RPTUtU05eWtbz5jUMEzi3Owybxba03ZBD0oQUV37kUqVyjLyHrp6hq3ypGWg5JKXypzVXiXyOYL/L0VuVoQ3P64qlpznS9WChhm9+L5Z7M0Dn5EdNU9A6+xbkWTQXLSpU6XAjN45CZrM0IUBLn539wYt9/+db3v4WpkygY/t8Uv2snp7GrtfSMLB3h8HHX0YFtYIn4baRV84J1yQVIx6nnV+GUQgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VDn4jOH2g5yfmqfvlcFfEWe8iuP434PkpGXzbFbO53c=;
+ b=Of/kzjwIkIHBImJ48KkhKLfn+pLlqb+4siVgdwwZlgjUCR0gjzIS0In/2+s05+1ToZNBb7/jD6TBTBx9EHhXnLYSO4NAtPaEDyb1fG+2LIEO1Dh6MhiG3v3cz+X2EQ/QSQRUA8Wx8XQsv3PR9EmNzDb527hR+jhlKV0ibTrN7zo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB9142.eurprd04.prod.outlook.com (2603:10a6:20b:449::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Sat, 16 Sep
+ 2023 01:59:28 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6792.023; Sat, 16 Sep 2023
+ 01:59:27 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Subject: [PATCH v2 0/6] gpio: update i.MX93/8ULP and support i.MX95
+Date:   Sat, 16 Sep 2023 10:03:56 +0800
+Message-Id: <20230916-vf610-gpio-v2-0-40823da788d7@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAwNBWUC/23MQQ6CMBCF4auQWTumU7BBV97DsKjtALOwJa1pM
+ IS7W1m7/F/yvg0yJ+EMt2aDxEWyxFBDnxpwsw0To/jaoJVu1ZU6LKMhhdMiETvD3jqvnxdqoR6
+ WxKOsB/YYas+S3zF9DrvQb/3LFEKFLfuOeuq1NfYe1uXs4guGfd+/ZDEgYqIAAAA=
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694829858; l=1999;
+ i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
+ bh=qrzfoZZ8Iyf3O65G1OyMKkFexcYDUMlv43NsC6vXnhs=;
+ b=LjJAB5AoFYZ9Zdnw1uJwC+sNGFgwPZXK6WVGwwGafemwJwOMIdTPeE8tYvnOyBws9kXmHeeHN
+ Bomc9QZ73HhAjS7s8CvtwlxDsOj4ep9LJjwOn+dqFl2MvzasF8jcACU
+X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
+ pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
+X-ClientProxiedBy: SI2PR06CA0004.apcprd06.prod.outlook.com
+ (2603:1096:4:186::20) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 MIME-Version: 1.0
-References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com> <1694813901-26952-3-git-send-email-quic_khsieh@quicinc.com>
-In-Reply-To: <1694813901-26952-3-git-send-email-quic_khsieh@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 16 Sep 2023 04:51:36 +0300
-Message-ID: <CAA8EJprRrTW3pqmjVbfKG5t8t_QNGvPboETNgaAUxg3PvkRjcA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] drm/msm/dp: replace is_connected with link_ready
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB9142:EE_
+X-MS-Office365-Filtering-Correlation-Id: fa3dae11-c14a-4a6f-5eda-08dbb6588ee0
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9gVeNQG7wuSPAwF/B908CnD2Qfh2SZLc6qZxNSJu8shxI+ppcr+78LB82+ebR8W5KbmgHpvt+RIGJjt3fCgUDqucqnmcAXDumJSnN3KoupTDfUcJbNbA8EoPuRn+WWsBR5ChV9+PE3GmOT2EAczI0Ra2XnMXFguOvHSil1vXwE6RekqEuZBKGcs8zxFd1qi1lAFwq12Zn78dAJw4nxgulVlFPXDlM8mn+ZDWYl4G5+IA3x34zRUmgf+u9Me1ePCi/xI8GMVCpgiIHjoX+HDDYc9wBWs2wgrF5yzyoZthZirxlnwc+lFkAEQMDOzWaU9zeX2Y0Q7aYuLpLbCHZMcObdU83UVAucNFaCIks/bBxG91ykqypuuWwIBaPIWUeP0qs68myv4Mtl1NrUn1ff6x0oso5cLFfRa879QWKSDLOVJ+HyIGzN5Tj0hv+5lRW0DsH50P+vKDTV4KJu7s+DkZz2c6kbSuhaBgQrVOHSeZ3DW8OQa9cA4RHKAb3Zhz2WBzXbNi5S282rz2ipbHKlr8T0dx+zURxc50w7lRKMfHDvBpH6TdMjxhZSNHi18NT2iL9NxyeANYPDlYB7+D7+jUcTdu4bJa5QLzmHj/3+WY0+cUxTZm/yzcupl+1ZLq+UAf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(136003)(346002)(39860400002)(451199024)(186009)(1800799009)(6666004)(6512007)(6506007)(6486002)(5660300002)(66476007)(66556008)(66946007)(110136005)(316002)(26005)(52116002)(9686003)(41300700001)(921005)(8936002)(8676002)(966005)(4326008)(478600001)(83380400001)(15650500001)(2906002)(86362001)(7416002)(36756003)(38100700002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHE0ajR5QTQxZTloOWhmMUZmbytBNGVSOWM0WTdCQzBrSEQ3T0t0dzN3eGRH?=
+ =?utf-8?B?YkpUOXhSbEY3NGFIRU0waHBJQWlzYS9JUDRJckJOdDZOKzNPSFpxTk41YWRh?=
+ =?utf-8?B?ZHJzY0sxQ1ZvUzgwMDQ1V21nOGd0ZE92MkZPQVAwektkMDlSR09GV3k2UjZD?=
+ =?utf-8?B?VFNzYi94UHpyWCtzVmVvRThXREsyRFNIR0dSVCtkbWcrVWc0WTd0dEhVOEFv?=
+ =?utf-8?B?RjkrTDNKU0REMjN3SDMzTUZHZk12bzlWSEl3blFOVmdrUVFOYkRNVndvS0pE?=
+ =?utf-8?B?V0RvVmVrdFpuV3BTVytvdWpINStMV3ovRmtUaVJ4NTUvS1BjTjdUMk9pV3Nw?=
+ =?utf-8?B?dnVOZ0Q3R29pckx6UzdHV1FTVUF5SytHdnJnWk1GRng3KzIveFB6QUhSeTIz?=
+ =?utf-8?B?elZxaW1XTUxZSkNUU01QS3FFcHZ4T2tWeVdlc0NiUS9qejREQnpQbVJISmJz?=
+ =?utf-8?B?d0lPWUdrWjZKMWNmWVJldlA1aDE3YnZORVdmVUFDaTJWOVJqZUJSZzFWMEg1?=
+ =?utf-8?B?M1BOTWFLOXJlYnBxUTh5NDF3MU15WVpVWUR5MTdsejNNVXhYNEduMDEvSEZM?=
+ =?utf-8?B?bnRiLy8zVzZvVDBRN1Y4MmhoRFNsM3ZJNW9pWndjUys2UlFqMDU5WkJjNHBU?=
+ =?utf-8?B?cmkzczNCSEVYVkYxbThsRzFlNWkydE1BamUybXRhbVEvZE1EVTV1d1dOYjNY?=
+ =?utf-8?B?cFR4bWxqMFJ0enZHQ3pZQ2ovVWkvK05NbTVKWmFQQkZTY010VTJ1eXA1VlJn?=
+ =?utf-8?B?SFovdWl0Z2toek9yMzFGS29HMDFRTnh1MEZyWXVpdktOcXlrYk9NeE8rSWFJ?=
+ =?utf-8?B?S29ydjhaYjdnQnhpYzZaSm95Nk1ZTStUeWtOVXpoSllaMTRvTmdQcG1iRGNX?=
+ =?utf-8?B?U1dqYjV1Q2tFMnpSQ3Q4T2RpR055dWoyWjRlanBWK2RIQ2ZJN0JrY1g5UjFp?=
+ =?utf-8?B?SHdYZndMUlRneXNBWTh1K3l1UUNkZ1VNY2htWmpvUnZzUUludVRha0xsMkpM?=
+ =?utf-8?B?NWxLb2NFbHRGMEtoNURNd3BWczVkWWNjUVluQndRbHNsQTR6bnFhQ2Z3ZlZD?=
+ =?utf-8?B?OTVsNXR1VStSZDlZZmMvK3RWNmo1UkNYRzFicWY4djBUV1ZScTNjSU43T1hj?=
+ =?utf-8?B?MG9UVGNsbVYrMEJhcVdKTXVrMjNvbC9xa1hocy9BSS85MXNGeGRRVFhOL3hi?=
+ =?utf-8?B?L1MrOEZPTjI1VXFQNFczQjl6MHFzVXFpME5xL1B4cDVhdUZXT0VjVXNtYXFO?=
+ =?utf-8?B?MHZTYWdYQS9YTXRKZyttN1k3TU9pTlgzUHpxQmJDakxOSlcyQ2tNcDFMN0J3?=
+ =?utf-8?B?eXJhU1QySW14VEk3UC9XeiswdkFSVEExS3BSMUh1cHVDY1NKVWh5Z1VVd045?=
+ =?utf-8?B?V2JnRFpaNDdYZ1gxRFF2eFNvMXJIS1d2ZVU1RUgvazQ1emcxSHU4QndibjM3?=
+ =?utf-8?B?UnhiSGdTUTlBNkZvRFplTkJTZ1duK0c4THhYbDNBclVMNlQ4bWF5QlZrUmJM?=
+ =?utf-8?B?MnJHZUhtdVc5b1pCcklxWTJHcy9PUGw3cUZlWVltY1NEYnk2dVV5SEZZRzd4?=
+ =?utf-8?B?b0MrUWJETW04aHh6T2hzK3c3QWlza3E5YlBQTVZ3ak16YmpKMi9KeWcrN1Az?=
+ =?utf-8?B?cU1laUh4Yjc0MFdpb09YVDJIK2Q2dzFJRXIvcWx2b2VuZVdzQnVVR21pQ05L?=
+ =?utf-8?B?eDBzUVB1UnFNRGhLNWx4U3MxUm1HMU5pOUd0YkJHMGp2aVVEc3lyZlU5S1h1?=
+ =?utf-8?B?Wmphb1Z1N1E0ODcweEc5RkJIN0ZVVzFpSDJ1YmJ4bTQ0Vlp2VzlZR1VvQVRP?=
+ =?utf-8?B?V1htVzdNQjhiR0tvcTFsRUdSUk1oM2YzQ1NFL0k5U1RzSlVVYmxvQ0V0TVVV?=
+ =?utf-8?B?bkZEdGpnVy9sanpycGkyRStUS0VwVEI5V1lNWHRSOHl0blVNS01hTVlnbXU0?=
+ =?utf-8?B?TEV0MlpJSUJmYy9NL1JjTkczWTZHM0NaaHdSOXpMVzFQNkZjWFU0TlU2d2ht?=
+ =?utf-8?B?SWY3OC9kNVppYy8vMlR0NXZUMFM3c1ZuSnFrZlVlQlZEU3ZMWE8yWFVpejEx?=
+ =?utf-8?B?YXJ0LzNFb2xOU0VqV3dFYnBKWXJjNmJGM3FoVVFtaUtUSEs2My9US0Z3dmQv?=
+ =?utf-8?Q?ujpavLtsFqywizdUxYxWmfUs9?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa3dae11-c14a-4a6f-5eda-08dbb6588ee0
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2023 01:59:27.6541
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DyR8yJtrmXL2c047toCw9/U/sUtRw5XkUreIZoFaoOFonEW3nq2vHHlxLoAL4iZ4xEbMGkiN4nZLqfzoFrcgsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9142
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
-> The is_connected flag is set to true after DP mainlink successfully
-> finish link training. Replace the is_connected flag with link_ready
+From hardware perspective:
+- i.MX8ULP/93 GPIO supports two interrupts, 1st for Trustzone non-secure irq,
+  2nd for Trustzone secure irq.
+- i.MX8ULP/93 only has one register base
 
-finishes.
-Also this is not a replace, this patch renames the flag.
+The current linux gpio-vf610.c could work with i.MX8ULP/i.MX93, it is
+because some trick did in device tree node with offset added to base:
+  reg = <0x2d010080 0x1000>, <0x2d010040 0x40>;
+But actually the register base should be 0x2d010000.
 
-> flag to avoid confusing.
+So i.MX8ULP/93 is not HW compatible with i.MX7ULP.
 
-confusing what with what?
+i.MX93 GPIO is directly derived from i.MX8ULP, so make i.MX93 compatible
+with i.MX8ULP. i.MX95 GPIO is same as i.MX93, so also compatible with
+i.MX8ULP
 
->
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 19 +++++++++----------
->  drivers/gpu/drm/msm/dp/dp_display.h |  2 +-
->  drivers/gpu/drm/msm/dp/dp_drm.c     | 14 +++++++-------
->  3 files changed, 17 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index c217430..18d16c7 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -367,12 +367,11 @@ static void dp_display_send_hpd_event(struct msm_dp *dp_display)
->         drm_helper_hpd_irq_event(connector->dev);
->  }
->
-> -
->  static int dp_display_send_hpd_notification(struct dp_display_private *dp,
->                                             bool hpd)
->  {
-> -       if ((hpd && dp->dp_display.is_connected) ||
-> -                       (!hpd && !dp->dp_display.is_connected)) {
-> +       if ((hpd && dp->dp_display.link_ready) ||
-> +                       (!hpd && !dp->dp_display.link_ready)) {
->                 drm_dbg_dp(dp->drm_dev, "HPD already %s\n",
->                                 (hpd ? "on" : "off"));
->                 return 0;
-> @@ -382,7 +381,7 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
->         if (!hpd)
->                 dp->panel->video_test = false;
->
-> -       dp->dp_display.is_connected = hpd;
-> +       dp->dp_display.link_ready = hpd;
->
->         drm_dbg_dp(dp->drm_dev, "type=%d hpd=%d\n",
->                         dp->dp_display.connector_type, hpd);
-> @@ -922,7 +921,7 @@ int dp_display_set_plugged_cb(struct msm_dp *dp_display,
->
->         dp_display->plugged_cb = fn;
->         dp_display->codec_dev = codec_dev;
-> -       plugged = dp_display->is_connected;
-> +       plugged = dp_display->link_ready;
->         dp_display_handle_plugged_change(dp_display, plugged);
->
->         return 0;
-> @@ -1352,16 +1351,16 @@ static int dp_pm_resume(struct device *dev)
->          * also only signal audio when disconnected
->          */
->         if (dp->link->sink_count) {
-> -               dp->dp_display.is_connected = true;
-> +               dp->dp_display.link_ready = true;
->         } else {
-> -               dp->dp_display.is_connected = false;
-> +               dp->dp_display.link_ready = false;
->                 dp_display_handle_plugged_change(dp_display, false);
->         }
->
->         drm_dbg_dp(dp->drm_dev,
->                 "After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
->                 dp->dp_display.connector_type, dp->link->sink_count,
-> -               dp->dp_display.is_connected, dp->core_initialized,
-> +               dp->dp_display.link_ready, dp->core_initialized,
->                 dp->phy_initialized, dp_display->power_on);
->
->         mutex_unlock(&dp->event_mutex);
-> @@ -1754,8 +1753,8 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
->                 return;
->         }
->
-> -       if (!dp_display->is_connected && status == connector_status_connected)
-> +       if (!dp_display->link_ready && status == connector_status_connected)
->                 dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
-> -       else if (dp_display->is_connected && status == connector_status_disconnected)
-> +       else if (dp_display->link_ready && status == connector_status_disconnected)
->                 dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-> index b3c08de..d65693e 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
-> @@ -16,7 +16,7 @@ struct msm_dp {
->         struct drm_bridge *bridge;
->         struct drm_connector *connector;
->         struct drm_bridge *next_bridge;
-> -       bool is_connected;
-> +       bool link_ready;
->         bool audio_enabled;
->         bool power_on;
->         unsigned int connector_type;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c b/drivers/gpu/drm/msm/dp/dp_drm.c
-> index 785d766..ee945ca 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_drm.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_drm.c
-> @@ -24,10 +24,10 @@ static enum drm_connector_status dp_bridge_detect(struct drm_bridge *bridge)
->
->         dp = to_dp_bridge(bridge)->dp_display;
->
-> -       drm_dbg_dp(dp->drm_dev, "is_connected = %s\n",
-> -               (dp->is_connected) ? "true" : "false");
-> +       drm_dbg_dp(dp->drm_dev, "link_ready = %s\n",
-> +               (dp->link_ready) ? "true" : "false");
->
-> -       return (dp->is_connected) ? connector_status_connected :
-> +       return (dp->link_ready) ? connector_status_connected :
->                                         connector_status_disconnected;
->  }
->
-> @@ -40,8 +40,8 @@ static int dp_bridge_atomic_check(struct drm_bridge *bridge,
->
->         dp = to_dp_bridge(bridge)->dp_display;
->
-> -       drm_dbg_dp(dp->drm_dev, "is_connected = %s\n",
-> -               (dp->is_connected) ? "true" : "false");
-> +       drm_dbg_dp(dp->drm_dev, "link_ready = %s\n",
-> +               (dp->link_ready) ? "true" : "false");
->
->         /*
->          * There is no protection in the DRM framework to check if the display
-> @@ -55,7 +55,7 @@ static int dp_bridge_atomic_check(struct drm_bridge *bridge,
->          * After that this piece of code can be removed.
->          */
->         if (bridge->ops & DRM_BRIDGE_OP_HPD)
-> -               return (dp->is_connected) ? 0 : -ENOTCONN;
-> +               return (dp->link_ready) ? 0 : -ENOTCONN;
->
->         return 0;
->  }
-> @@ -78,7 +78,7 @@ static int dp_bridge_get_modes(struct drm_bridge *bridge, struct drm_connector *
->         dp = to_dp_bridge(bridge)->dp_display;
->
->         /* pluggable case assumes EDID is read when HPD */
-> -       if (dp->is_connected) {
-> +       if (dp->link_ready) {
->                 rc = dp_display_get_modes(dp);
->                 if (rc <= 0) {
->                         DRM_ERROR("failed to get DP sink modes, rc=%d\n", rc);
-> --
-> 2.7.4
->
+There maybe dtbs_check failure if only test the 1st patch. After
+the patchset applied, no failure.
 
+To make avoid break old bindings from work, update the driver
+to support both old/new bindings.
 
+---
+Changes in v2:
+- Update bindings with describe items, add one reg base for i.MX8ULP/93
+- Update driver to support one reg base, support both new/old bindings
+- Add a new patch 1 to update gpio-ranges found in dtbs_check
+- Link to v1: https://lore.kernel.org/r/20230914-vf610-gpio-v1-0-3ed418182a6a@nxp.com
+
+---
+Peng Fan (6):
+      dt-bindings: gpio: vf610: update gpio-ranges
+      dt-bindings: gpio: vf610: correct i.MX8ULP and i.MX93
+      dt-bindings: gpio: vf610: add i.MX95 compatible
+      gpio: vf610: add i.MX8ULP of_device_id entry
+      arm64: dts: imx8ulp: update gpio node
+      arm64: dts: imx93: update gpio node
+
+ .../devicetree/bindings/gpio/gpio-vf610.yaml       | 45 ++++++++++++++++--
+ arch/arm64/boot/dts/freescale/imx8ulp.dtsi         | 21 +++++----
+ arch/arm64/boot/dts/freescale/imx93.dtsi           | 28 ++++++-----
+ drivers/gpio/gpio-vf610.c                          | 55 +++++++++++++++++++---
+ 4 files changed, 117 insertions(+), 32 deletions(-)
+---
+base-commit: e143016b56ecb0fcda5bb6026b0a25fe55274f56
+change-id: 20230914-vf610-gpio-46edacd2b513
+
+Best regards,
 -- 
-With best wishes
-Dmitry
+Peng Fan <peng.fan@nxp.com>
+
