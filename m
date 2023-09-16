@@ -2,51 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C253E7A314D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 18:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC45A7A3154
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 18:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238948AbjIPQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 12:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        id S239316AbjIPQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 12:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237427AbjIPQFi (ORCPT
+        with ESMTP id S229939AbjIPQLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 12:05:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5A6CEA;
-        Sat, 16 Sep 2023 09:05:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B214CC433C8;
-        Sat, 16 Sep 2023 16:05:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694880333;
-        bh=S2qkbqJUN4xM/JqgxAIPcZ9QPqdw1x0qxbnAG6qi9SI=;
-        h=From:Date:Subject:To:Cc:From;
-        b=AWe8B/ueBK2t4UyYJddPWXmVuk9ze7vxupYeN2zuT+AI49rY0QZe9Yrz88KgFsbiW
-         nsQ0bsj0JuVew2/V8lik3fscX9UKl6IOuWEsTpYJj1glg4Q3YiRDSaMBiH2lCswJVM
-         /0LqUFW/VXal2PcqsZaRuu32A5RtlPSt3XpTyQMgLUyxysY3wbFF2Rdv6IFsRwuBBe
-         nci3hFlACwWUDei4sruRZ8yFmViC42w+kKET1iNGRLbfkWzqfh8kg46dM2rcGrcJOF
-         zI9I5H4KOU3/tV22VOBBKKzKogVMeZvllB4NWLYewJOYk2saZmGZSZBVaL5LddiNzC
-         p1eE1p85fl8/w==
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1cca0a1b3c7so1875801fac.2;
-        Sat, 16 Sep 2023 09:05:33 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzv1CP1sErJ+gK2BgyemJUuNyJqtGnpUpJA5zZHz0fnZocZTiJs
-        M2aSiYVqmZwop48PfwJgHgNobwt1P4DDVFmdiL4=
-X-Google-Smtp-Source: AGHT+IFcpWqM0FMulwBLx6nLMKbGzaLif3RRVnEQhzhZWUhK2fWkZwISYWXv5CtVXyWeS5Coolp8iG284TNHVQNxTzo=
-X-Received: by 2002:a05:6870:58a5:b0:1be:d9cc:d902 with SMTP id
- be37-20020a05687058a500b001bed9ccd902mr5272238oab.57.1694880333068; Sat, 16
- Sep 2023 09:05:33 -0700 (PDT)
+        Sat, 16 Sep 2023 12:11:41 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45300CC0;
+        Sat, 16 Sep 2023 09:11:35 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so3782909a12.0;
+        Sat, 16 Sep 2023 09:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694880693; x=1695485493; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2D29quburpZKmR88i6a3MAgQFNHJh6PxWDpmGkVgtps=;
+        b=H8AHCEgDKJ+1KS90ga9snc7C8CeBqqxMRq1AuxDywSt7MWsLCzdPzd2iFROXiAxmXR
+         WojYbQMQhSgzhhxi0W/l5rM9p1TMvP6gRthVn+GffgP9VBMqWIbx1T7GZjjHdWLBD5kG
+         /9jTEifQfcXTQtFpvx1308kkMrUqwESSbxnrBr4Y6SOUhXqF9E6G+zTqMrCgLxQGNlRt
+         90oIHYrmSD3fRarFqQISwWMFLF+4i49g/FKpmBUjTR4H2JXBPD1M2W45AhXbsxcQEbdn
+         lNyrunE5cWlb1qZSaqmsvTLI8sZsX3eoG5fOn76lz+Ya6g+TMZr99Py1Q/cXcDFk86ew
+         BgGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694880693; x=1695485493;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2D29quburpZKmR88i6a3MAgQFNHJh6PxWDpmGkVgtps=;
+        b=hninRCwtcZTZFOQevQJmOim+lQF71OLYTpR8Puy5qVuMEsYxAmDMZjPap2x83mwx2X
+         Qd8e6+ZGo62fj60n6LKqn2iuYhtQ4B5HvvbMOcZYGA1VtQ4vkGmH/8GytSTQl+CgwSOP
+         nvyU3jt0Iu6ci7kHbGoLIBZaPD55txwegRMN0nTcu8UIX0VF45YXbegiPRvSJx7qUE5X
+         dDRDas/inqd2mKBzEwP9PDBwt+8jCwkoBfVv6Mk2/pdyKyZ/iGcB7wT0knkXnpiw0tQC
+         AtW2oX9AteHM8Hp3gV8qqSALU5IsI4DxUetSfCQDfA7Rit0NlAe7rHympHyBRSYDPCIK
+         sbKw==
+X-Gm-Message-State: AOJu0YyIbl28ZlTWhCEWWZRs6XBuQOzpXoPnNrV5xzyrV4uPlYT2CMLz
+        UE484se0W3g113Rbv0pqAMw=
+X-Google-Smtp-Source: AGHT+IEtqsFwHKCcW79YHmTi16x18Ywke6xmHVW2O7x1m8mDtbz6o33y1ZArqXail0vCaVgtpR36gg==
+X-Received: by 2002:a17:907:75c4:b0:9a5:d657:47ee with SMTP id jl4-20020a17090775c400b009a5d65747eemr3939414ejc.58.1694880693556;
+        Sat, 16 Sep 2023 09:11:33 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41b4-ce80-82f4-11ae-0d42-6e00.cable.dynamic.v6.surfer.at. [2a02:8389:41b4:ce80:82f4:11ae:d42:6e00])
+        by smtp.gmail.com with ESMTPSA id xo23-20020a170907bb9700b0099290e2c163sm3861131ejc.204.2023.09.16.09.11.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 09:11:33 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Sat, 16 Sep 2023 18:11:31 +0200
+Subject: [PATCH] selftests: uevent filtering: fix return on error in
+ uevent_listener
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 17 Sep 2023 01:04:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATCV9WGKeDyR+ymZsq5QBbNVU3bqS_0U230BTpRLFcnBw@mail.gmail.com>
-Message-ID: <CAK7LNATCV9WGKeDyR+ymZsq5QBbNVU3bqS_0U230BTpRLFcnBw@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v6.6-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com>
+X-B4-Tracking: v=1; b=H4sIALLTBWUC/x3NQQrCMBCF4auUWRtoUo3oVURKEiftQJiWTFqE0
+ rs7uPzf4nsHCFZCgWd3QMWdhBbWsJcO0hx4QkMfbXC9G/qH9aYtKyUjWPK44Y7cxkylKcKTsfd
+ 4G5x3MV09qBCDoIk1cJrV4K0UHdeKmb7/y9f7PH9rZ3RaggAAAA==
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694880692; l=1362;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=S4RWDQgvO5XPexY8N6KFcYh6xsBydPzqOVbL1s6XVhU=;
+ b=cAovhn9t4cDxBHwizFmibdCmD41kYpuZCsM9shSZIle8xzuK77Bbk4dqB4qR+hik+zhOlw6Mc
+ 2GP+/wu8iunDBc6XMyi5FHQ37WBPyj2Zo5tmFnEN4OClltYyD8Ha80T
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,48 +81,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Assign the error value to the real returned variable fret. The ret
+variable is used to check function return values and assigning values to
+it on error has no effect as it is an unused value.
 
-Please pull Kbuild fixes for v6.6-rc2.
-Thank you.
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+ tools/testing/selftests/uevent/uevent_filtering.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/tools/testing/selftests/uevent/uevent_filtering.c b/tools/testing/selftests/uevent/uevent_filtering.c
+index 5cebfb356345..e191b6d69f8c 100644
+--- a/tools/testing/selftests/uevent/uevent_filtering.c
++++ b/tools/testing/selftests/uevent/uevent_filtering.c
+@@ -158,7 +158,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+ 		r = recvmsg(sk_fd, &hdr, 0);
+ 		if (r <= 0) {
+ 			fprintf(stderr, "%s - Failed to receive uevent\n", strerror(errno));
+-			ret = -1;
++			fret = -1;
+ 			break;
+ 		}
+ 
+@@ -172,7 +172,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+ 
+ 		if (!expect_uevent) {
+ 			fprintf(stderr, "Received unexpected uevent:\n");
+-			ret = -1;
++			fret = -1;
+ 		}
+ 
+ 		if (TH_LOG_ENABLED) {
 
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230916-topic-self_uevent_filtering-17b53262bc46
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v6.6
-
-for you to fetch changes up to 552c5013f2bc648611395ea80df6250aa4fe28f6:
-
-  kbuild: avoid long argument lists in make modules_install
-(2023-09-15 02:39:24 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v6.6
-
- - Fix kernel-devel RPM and linux-headers Deb package
-
- - Fix too long argument list error in 'make modules_install'
-
-----------------------------------------------------------------
-Masahiro Yamada (1):
-      kbuild: fix kernel-devel RPM package and linux-headers Deb package
-
-Michal Kubecek (1):
-      kbuild: avoid long argument lists in make modules_install
-
- scripts/Makefile.modinst             | 2 +-
- scripts/package/install-extmod-build | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-
-
-
+Best regards,
 -- 
-Best Regards
-Masahiro Yamada
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
