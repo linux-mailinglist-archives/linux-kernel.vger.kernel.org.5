@@ -2,103 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEC47A2FA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEADE7A2FA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbjIPLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 07:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        id S239212AbjIPLPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 07:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239238AbjIPLOu (ORCPT
+        with ESMTP id S239262AbjIPLPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 07:14:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53E01A8;
-        Sat, 16 Sep 2023 04:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694862876; x=1726398876;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=6LByGd6BJ/KoBVbB5quf9dys3O4g3Rte15yl6U221g8=;
-  b=MOal2r9zJrpGbYM4CJ1+UPByaY8s6RQuqvymjOTESOkd8LNJ48jKr4Fp
-   w5NAg82U8+b3tLewesd//ihzuCMz2PWIFz+PNn3lSLnTN6SmqixQ9BxES
-   KPLHoPu9zCyrSgCqilkOkt+rAGeARUfBisuSAYhP0lsNRgxBJ14A5j3p5
-   zSiHiDnH7nW3SMI9lkEPzWZ20GVl0ooIQodE/hFjVJ/KQ9AFnQOrRe3hK
-   A5IHNjax3o5rV8XqlHt/8kFnkX750k/c1LwtnGdF+BpbRnYLxl3f46OI7
-   +C6gjT6BbYF/vBwei79z5pmDOyC0RqcIPz4wbhbwh0Y1MU3xf62kxkiKW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359655880"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="359655880"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 04:14:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="869045162"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="869045162"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 04:14:10 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qhTFX-0000000Gg9M-2NuF;
-        Sat, 16 Sep 2023 14:14:07 +0300
-Date:   Sat, 16 Sep 2023 14:14:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v4 3/4] platform/x86: intel_scu_ipc: Don't override scu
- in intel_scu_ipc_dev_simple_command()
-Message-ID: <ZQWN/xpN2801loCo@smile.fi.intel.com>
-References: <20230913212723.3055315-1-swboyd@chromium.org>
- <20230913212723.3055315-4-swboyd@chromium.org>
- <58e817b0-1872-6ff1-58bb-1aeeb572361@linux.intel.com>
+        Sat, 16 Sep 2023 07:15:35 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB741A3;
+        Sat, 16 Sep 2023 04:15:10 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 3B6F8320092A;
+        Sat, 16 Sep 2023 07:15:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 16 Sep 2023 07:15:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:content-transfer-encoding:content-type:content-type:date:date
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1694862908; x=1694949308; bh=0bwZMM2xOlKcoGRCbyHscdRQUzZ526W6h6D
+        76rWL19I=; b=B8rjWQkgkGdrU+PiiEm5yXFGjazEAVs95C++guKUOi+xKktDDrR
+        N9ncvtdQnH8Jq6XgUw3V8LBdqE+afpSXjqyYa4vIQpsB1NatkB+Dx0o85W2W4XDT
+        8NdEhdeZOaIQhinHAW2w1jP0gU0PJ9d5Gtk7RepwqMMxBTorWga0sWRljOaopjYn
+        hG9jy7e5Qf1wnbuk/XNDhUVfeiH+9Z/MJhyJoBehI+OZspCpf0dChxEYGIUe/7G8
+        uuwLT7JmnMwqVeTe7sHwaMpS/wEo/15GVOP2RtCnmVaun13qKQwvjKXZYDw21rt2
+        5DNy36R2CGI+yeZ1YSRl/t5VlNjjU6yW6kA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1694862908; x=
+        1694949308; bh=0bwZMM2xOlKcoGRCbyHscdRQUzZ526W6h6D76rWL19I=; b=E
+        JP2fpid1tg2b9Qj2SYxLk9pmXUvg/Icc4ZO8JY8P1DRPKMQr8iKpkicZaUxbGnYf
+        cEYOFllsrY3UXwNesSj6jKvzU1Pjw0pZvWwdEVLLi9MvFrK6hmmcrCaUA2rirgrU
+        KcoVuLL5kK+j4ol7roBPlWWDUdxTxr9c2usmBB6/UXyGzD+KAgR1968L5DIdmPzf
+        w4Qz4UYvECf/dEmvfnpcgiwtTU4GsTyETWhotc+I2ceU/SuSSdiRr6+6fNFvPDPK
+        3E4WXWAVelezkeOUZC/iOz8j9/pjdJTmMGvivJWuwIIgCJqZCghkhR6DRXBif70j
+        3WsJY5c/SHo4Wsvd+aUmQ==
+X-ME-Sender: <xms:PI4FZQd5Ir-ABwzpgw9zLdmNmREHRmUNOz-cP1N7wmDruBJP-OZrNQ>
+    <xme:PI4FZSPu00a8THAy8J6hbkQW3i_GmwfpCcRUkFOUYhUCATcLaruuERhAaAp4Gywjs
+    G0NYUSqTZij4Krn>
+X-ME-Received: <xmr:PI4FZRgv1GmeG_SBsFHqzCEtL-28t5oVef-WEolF9AxNDf-SRuQfuJAeY8HiDKFosyYjfUT75yGaeYaaxwoC27gfDDZKJH6u1Eu7p7gq0yNuHq_AEBWh>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejgedgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeegffdutdegiefgteelleeggeeuueduteefiedu
+    vedvueefieejledvjeeuhfefgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
+    mh
+X-ME-Proxy: <xmx:PI4FZV8JqzCtpDhrPUjdEZtCptwxQ5r044VINrM8HUaa7MwzK4bKQw>
+    <xmx:PI4FZcsbFqVCFmoXS_Mkur7GClkKLEoR463NPTDCwnCeRmPTrT4muw>
+    <xmx:PI4FZcHTbFHpTPxTuuQVql_gHJ666M_rFcInDU4RB0VmvEd-vZhzbA>
+    <xmx:PI4FZV63PtnqU5MyVHz7oFFYKGiJm9Y43PzRCSy0hpUGk_xuExPvNQ>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 16 Sep 2023 07:15:07 -0400 (EDT)
+Message-ID: <7a6d2c91-2221-ce07-995b-9f648f9ba2d3@fastmail.fm>
+Date:   Sat, 16 Sep 2023 13:15:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <58e817b0-1872-6ff1-58bb-1aeeb572361@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/2] fuse: move FR_WAITING set from
+ fuse_request_queue_background to fuse_simple_background
+Content-Language: en-US, de-DE
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, miklos@szeredi.hu,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913092246.22747-1-shikemeng@huaweicloud.com>
+ <20230913092246.22747-2-shikemeng@huaweicloud.com>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <20230913092246.22747-2-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 05:45:42PM +0300, Ilpo Järvinen wrote:
-> On Wed, 13 Sep 2023, Stephen Boyd wrote:
+
+
+On 9/13/23 11:22, Kemeng Shi wrote:
+> Current way to set FR_WAITING in fuse_simple_background:
+> fuse_simple_background
+> 	if (args->force)
+> 		fuse_request_alloc
+> 		/* need to increase num_waiting before request is queued */
+> 	else
+> 		fuse_get_req
+> 			atomic_inc(&fc->num_waiting);
+> 			__set_bit(FR_WAITING, &req->flags);
 > 
-> > Andy discovered this bug during patch review. The 'scu' argument to this
-> > function shouldn't be overridden by the function itself. It doesn't make
-> > any sense. Looking at the commit history, we see that commit
-> > f57fa18583f5 ("platform/x86: intel_scu_ipc: Introduce new SCU IPC API")
-> > removed the setting of the scu to ipcdev in other functions, but not
-> > this one. That was an oversight. Remove this line so that we stop
-> > overriding the scu instance that is used by this function.
-> > 
-> > Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Closes: https://lore.kernel.org/r/ZPjdZ3xNmBEBvNiS@smile.fi.intel.com
+> 	fuse_request_queue_background
+> 		if (!test_bit(FR_WAITING, &req->flags)
+> 			__set_bit(FR_WAITING, &req->flags);
+> 			atomic_inc(&fc->num_waiting);
 > 
-> This looks somewhat unusual way to tag it. I'd just drop the Closes tag 
-> as the email list is not a bug tracter.
+> We only need to increase num_waiting for force allocated reqeust in
+> fuse_request_queue_background. Simply increase num_waiting in force block
+> to remove unnecessary test_bit(FR_WAITING).
+> This patch also makes it more intuitive to remove FR_WAITING usage in next
+> commit.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>   fs/fuse/dev.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+> index 1a8f82f478cb..59e1357d4880 100644
+> --- a/fs/fuse/dev.c
+> +++ b/fs/fuse/dev.c
+> @@ -528,10 +528,6 @@ static bool fuse_request_queue_background(struct fuse_req *req)
+>   	bool queued = false;
+>   
+>   	WARN_ON(!test_bit(FR_BACKGROUND, &req->flags));
+> -	if (!test_bit(FR_WAITING, &req->flags)) {
+> -		__set_bit(FR_WAITING, &req->flags);
+> -		atomic_inc(&fc->num_waiting);
+> -	}
+>   	__set_bit(FR_ISREPLY, &req->flags);
+>   	spin_lock(&fc->bg_lock);
+>   	if (likely(fc->connected)) {
+> @@ -553,10 +549,14 @@ int fuse_simple_background(struct fuse_mount *fm, struct fuse_args *args,
+>   	struct fuse_req *req;
+>   
+>   	if (args->force) {
+> +		struct fuse_conn *fc = fm->fc;
+> +
+>   		WARN_ON(!args->nocreds);
+>   		req = fuse_request_alloc(fm, gfp_flags);
+>   		if (!req)
+>   			return -ENOMEM;
+> +		atomic_inc(&fc->num_waiting);
+> +		__set_bit(FR_WAITING, &req->flags);
+>   		__set_bit(FR_BACKGROUND, &req->flags);
+>   	} else {
+>   		WARN_ON(args->nocreds);
 
-This is a new requirement enforced by checkpatch.pl. If commit message has
-the Reported-by: tag it should have Closes: one as well.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Looks good to me.
+Reviewed-by: Bernd Schubert <bschubert@ddn.com>
