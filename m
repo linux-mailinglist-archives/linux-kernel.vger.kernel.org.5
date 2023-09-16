@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701067A2F02
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E517A2F09
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238876AbjIPJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S238879AbjIPJdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238872AbjIPJYG (ORCPT
+        with ESMTP id S232127AbjIPJcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:24:06 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A801985;
-        Sat, 16 Sep 2023 02:24:00 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RnlrN3dXmztSRG;
-        Sat, 16 Sep 2023 17:19:48 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 16 Sep 2023 17:23:57 +0800
-Subject: Re: [PATCH v8 0/6] perf record: Track sideband events for all CPUs
- when tracing selected CPUs
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Ravi Bangoria <ravi.bangoria@amd.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <irogers@google.com>, <adrian.hunter@intel.com>,
-        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
-        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
-        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>
-References: <20230904023340.12707-1-yangjihong1@huawei.com>
- <453bd95c-932d-c60a-bd7b-96f87bc7779a@amd.com> <ZQDK4kZhwyZL/8tx@kernel.org>
- <CAM9d7cgNH2+zhSAmA3en_6as915UsF25MoLbfjE350tAP43Bog@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <c9f60c53-191c-e323-e641-bcdcd5b61c38@huawei.com>
-Date:   Sat, 16 Sep 2023 17:23:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sat, 16 Sep 2023 05:32:53 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A1F6E3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:32:47 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-244-9HYSYDoAOBG_m3lja_VXfg-1; Sat, 16 Sep 2023 10:32:44 +0100
+X-MC-Unique: 9HYSYDoAOBG_m3lja_VXfg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 16 Sep
+ 2023 10:32:40 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 16 Sep 2023 10:32:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Charlie Jenkins' <charlie@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: RE: [PATCH v6 3/4] riscv: Add checksum library
+Thread-Topic: [PATCH v6 3/4] riscv: Add checksum library
+Thread-Index: AQHZ5/ZuR2Nhj94ZDEWquHSBL7yNdbAdI/3w
+Date:   Sat, 16 Sep 2023 09:32:40 +0000
+Message-ID: <0357e092c05043fba13eccad77ba799f@AcuMS.aculab.com>
+References: <20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com>
+ <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
+In-Reply-To: <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cgNH2+zhSAmA3en_6as915UsF25MoLbfjE350tAP43Bog@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,114 +64,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+RnJvbTogQ2hhcmxpZSBKZW5raW5zDQo+IFNlbnQ6IDE1IFNlcHRlbWJlciAyMDIzIDE4OjAxDQo+
+IA0KPiBQcm92aWRlIGEgMzIgYW5kIDY0IGJpdCB2ZXJzaW9uIG9mIGRvX2NzdW0uIFdoZW4gY29t
+cGlsZWQgZm9yIDMyLWJpdA0KPiB3aWxsIGxvYWQgZnJvbSB0aGUgYnVmZmVyIGluIGdyb3VwcyBv
+ZiAzMiBiaXRzLCBhbmQgd2hlbiBjb21waWxlZCBmb3INCj4gNjQtYml0IHdpbGwgbG9hZCBpbiBn
+cm91cHMgb2YgNjQgYml0cy4NCj4gDQouLi4NCj4gKwkvKg0KPiArCSAqIERvIDMyLWJpdCByZWFk
+cyBvbiBSVjMyIGFuZCA2NC1iaXQgcmVhZHMgb3RoZXJ3aXNlLiBUaGlzIHNob3VsZCBiZQ0KPiAr
+CSAqIGZhc3RlciB0aGFuIGRvaW5nIDMyLWJpdCByZWFkcyBvbiBhcmNoaXRlY3R1cmVzIHRoYXQg
+c3VwcG9ydCBsYXJnZXINCj4gKwkgKiByZWFkcy4NCj4gKwkgKi8NCj4gKwl3aGlsZSAobGVuID4g
+MCkgew0KPiArCQljc3VtICs9IGRhdGE7DQo+ICsJCWNzdW0gKz0gY3N1bSA8IGRhdGE7DQo+ICsJ
+CWxlbiAtPSBzaXplb2YodW5zaWduZWQgbG9uZyk7DQo+ICsJCXB0ciArPSAxOw0KPiArCQlkYXRh
+ID0gKnB0cjsNCj4gKwl9DQoNCkkgdGhpbmsgeW91J2QgYmUgYmV0dGVyIGFkZGluZyB0aGUgJ2Nh
+cnJ5JyBiaXRzIGluIGEgc2VwYXJhdGUNCnZhcmlhYmxlLg0KSXQgcmVkdWNlcyB0aGUgcmVnaXN0
+ZXIgZGVwZW5kZW5jeSBjaGFpbiBsZW5ndGggaW4gdGhlIGxvb3AuDQooSGVscHMgaWYgdGhlIGNw
+dSBjYW4gZXhlY3V0ZSB0d28gaW5zdHJ1Y3Rpb25zIGluIG9uZSBjbG9jay4pDQoNClRoZSBtYXNr
+ZWQgbWlzYWxpZ25lZCBkYXRhIHZhbHVlcyBhcmUgbWF4IDI0IGJpdHMNCihpZiANCg0KWW91J2xs
+IGFsc28gYWxtb3N0IGNlcnRhaW5seSByZW1vdmUgYXQgbGVhc3Qgb25lIGluc3RydWN0aW9uDQpm
+cm9tIHRoZSBsb29wIGJ5IGNvbXBhcmluZyBhZ2FpbnN0IHRoZSBlbmQgYWRkcmVzcyByYXRoZXIg
+dGhhbg0KY2hhbmdpbmcgJ2xlbicuDQoNClNvIGVuZGluZyB1cCB3aXRoIChzb21ldGhpbmcgbGlr
+ZSk6DQoJZW5kID0gYnVmZiArIGxlbmd0aDsNCgkuLi4NCgl3aGlsZSAoKytwdHIgPCBlbmQpIHsN
+CgkJY3N1bSArPSBkYXRhOw0KCQljYXJyeSArPSBjc3VtIDwgZGF0YTsNCgkJZGF0YSA9IHB0clst
+MV07DQoJfQ0KKEFsdGhvdWdoIGEgZG8td2hpbGUgbG9vcCB0ZW5kcyB0byBnZW5lcmF0ZSBiZXR0
+ZXIgY29kZQ0KYW5kIGdjYyB3aWxsIHByZXR0eSBtdWNoIGFsd2F5cyBtYWtlIHRoYXQgdHJhbnNm
+b3JtYXRpb24uKQ0KDQpJIHRoaW5rIHRoYXQgaXMgNCBpbnN0cnVjdGlvbnMgcGVyIHdvcmQgKGxv
+YWQsIGFkZCwgY21wK3NldCwgYWRkKS4NCkluIHByaW5jaXBsZSB0aGV5IGNvdWxkIGJlIGNvbXBs
+ZXRlbHkgcGlwZWxpbmVkIGFuZCBhbGwNCmV4ZWN1dGUgKGZvciBkaWZmZXJlbnQgbG9vcCBpdGVy
+YXRpb25zKSBpbiB0aGUgc2FtZSBjbG9jay4NCihCdXQgdGhhdCBpcyBwcmV0dHkgdW5saWtlbHkg
+dG8gaGFwcGVuIC0gZXZlbiB4ODYgaXNuJ3QgdGhhdCBnb29kLikNCkJ1dCB0YWtpbmcgdHdvIGNs
+b2NrcyBpcyBxdWl0ZSBwbGF1c2libGUuDQpQbHVzIDIgaW5zdHJ1Y3Rpb25zIHBlciBsb29wIChp
+bmMsIGNtcCtqbXApLg0KVGhleSBtaWdodCBleGVjdXRlIGluIHBhcmFsbGVsLCBidXQgdW5yb2xs
+aW5nIG9uY2UNCm1heSBiZSByZXF1aXJlZC4NCg0KLi4uDQo+ICsJaWYgKElTX0VOQUJMRUQoQ09O
+RklHX1JJU0NWX0lTQV9aQkIpICYmDQo+ICsJICAgIHJpc2N2X2hhc19leHRlbnNpb25fbGlrZWx5
+KFJJU0NWX0lTQV9FWFRfWkJCKSkgew0KLi4uDQo+ICsJCX0NCj4gK2VuZDoNCj4gKwkJcmV0dXJu
+IGNzdW0gPj4gMTY7DQo+ICsJfQ0KDQpJcyBpdCByZWFsbHkgd29ydGggZG9pbmcgYWxsIHRoYXQg
+dG8gc2F2ZSAoSSB0aGluaykgNCBpbnN0cnVjdGlvbnM/DQooc2hpZnQsIHNoaWZ0LCBvciB3aXRo
+IHJvdGF0ZSB0d2ljZSkuDQpUaGVyZSBpcyBtdWNoIG1vcmUgdG8gYmUgZ2FpbmVkIGJ5IGNhcmVm
+dWwgaW5zcGVjdGlvbg0Kb2YgdGhlIGxvb3AgKGV2ZW4gbGVhdmluZyBpdCBpbiBDKS4NCg0KPiAr
+DQo+ICsjaWZuZGVmIENPTkZJR18zMkJJVA0KPiArCWNzdW0gKz0gKGNzdW0gPj4gMzIpIHwgKGNz
+dW0gPDwgMzIpOw0KPiArCWNzdW0gPj49IDMyOw0KPiArI2VuZGlmDQo+ICsJY3N1bSA9ICh1bnNp
+Z25lZCBpbnQpY3N1bSArICgoKHVuc2lnbmVkIGludCljc3VtID4+IDE2KSB8ICgodW5zaWduZWQg
+aW50KWNzdW0gPDwgMTYpKTsNCg0KVXNlIHJvcjY0KCkgYW5kIHJvcjMyKCkuDQoNCglEYXZpZA0K
+DQo+ICsJaWYgKG9mZnNldCAmIDEpDQo+ICsJCXJldHVybiAodW5zaWduZWQgc2hvcnQpc3dhYjMy
+KGNzdW0pOw0KPiArCXJldHVybiBjc3VtID4+IDE2Ow0KPiArfQ0KPiANCj4gLS0NCj4gMi40Mi4w
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
-On 2023/9/16 8:14, Namhyung Kim wrote:
-> Hello,
-> 
-> On Tue, Sep 12, 2023 at 1:32 PM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
->>
->> Em Tue, Sep 12, 2023 at 02:41:56PM +0530, Ravi Bangoria escreveu:
->>> On 04-Sep-23 8:03 AM, Yang Jihong wrote:
->>>> User space tasks can migrate between CPUs, track sideband events for all
->>>> CPUs.
->>>>
->>>> The specific scenarios are as follows:
->>>>
->>>>           CPU0                                 CPU1
->>>>    perf record -C 0 start
->>>>                                taskA starts to be created and executed
->>>>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
->>>>                                     events only deliver to CPU1
->>>>                                ......
->>>>                                  |
->>>>                            migrate to CPU0
->>>>                                  |
->>>>    Running on CPU0    <----------/
->>>>    ...
->>>>
->>>>    perf record -C 0 stop
->>>>
->>>> Now perf samples the PC of taskA. However, perf does not record the
->>>> PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
->>>> Therefore, the comm and symbols of taskA cannot be parsed.
->>>>
->>>> The sys_perf_event_open invoked is as follows:
->>>>
->>>>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
->>>>    <SNIP>
->>>>    Opening: cpu-clock
->>>>    ------------------------------------------------------------
->>>>    perf_event_attr:
->>>>      type                             1 (PERF_TYPE_SOFTWARE)
->>>>      size                             136
->>>>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->>>>      { sample_period, sample_freq }   4000
->>>>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
->>>>      read_format                      ID|LOST
->>>>      disabled                         1
->>>>      inherit                          1
->>>>      freq                             1
->>>>      sample_id_all                    1
->>>>      exclude_guest                    1
->>>>    ------------------------------------------------------------
->>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
->>>>    Opening: dummy:u
->>>>    ------------------------------------------------------------
->>>>    perf_event_attr:
->>>>      type                             1 (PERF_TYPE_SOFTWARE)
->>>>      size                             136
->>>>      config                           0x9 (PERF_COUNT_SW_DUMMY)
->>>>      { sample_period, sample_freq }   1
->>>>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
->>>>      read_format                      ID|LOST
->>>>      inherit                          1
->>>>      exclude_kernel                   1
->>>>      exclude_hv                       1
->>>>      mmap                             1
->>>>      comm                             1
->>>>      task                             1
->>>>      sample_id_all                    1
->>>>      exclude_guest                    1
->>>>      mmap2                            1
->>>>      comm_exec                        1
->>>>      ksymbol                          1
->>>>      bpf_event                        1
->>>>    ------------------------------------------------------------
->>>>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
->>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
->>>>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
->>>>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
->>>>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
->>>>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
->>>>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
->>>>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
->>>>    <SNIP>
->>>>
->>>> Changes since_v7:
->>>>   - The condition for requiring system_wide sideband is changed to
->>>>     "as long as a non-dummy event exists" (patch4).
->>>>   - Modify the corresponding test case to record only dummy event (patch6).
->>>>   - Thanks to tested-by tag from Ravi, but because the solution is modified,
->>>>     the tested-by tag of Ravi is not added to this version.
->>>
->>> I've re-tested v8 with my simple test.
->>>
->>> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
->>
->>
->> Thanks, applied to the csets that were still sitting in an umpublished
->> perf-tools-next local branch, soon public.
-> 
-> Now I'm seeing a perf test failure on perf-tools-next.
-
-Uh.. the kernel I was using before didn't support PERF_FORMAT_LOST, so 
-forget about supporting PERF_FORMAT_LOST. I've updated the kernel and 
-retested it.
-
-The link to the fixed patch is as follows:
-https://lore.kernel.org/all/20230916091641.776031-1-yangjihong1@huawei.com/
-
-Thanks,
-Yang
