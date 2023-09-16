@@ -2,185 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D24F7A2E1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 08:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1FB7A2E03
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 07:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbjIPF7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 01:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        id S238632AbjIPFAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 01:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbjIPF7C (ORCPT
+        with ESMTP id S238431AbjIPFAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 01:59:02 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2094.outbound.protection.outlook.com [40.107.255.94])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19EE1BD3;
-        Fri, 15 Sep 2023 22:58:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RDk0O/YaH7xyvSADWY04a1Kq8EGI/a5uCsp6KhZSYSo4mcQBTC0K3FqoyMmQCOuyzszKHoeaSQK+sVOXWXq6YvUInntUHT79NriY//cdDeFd7evD64LHrUFtTXQanYjWt8HVgx/5fg7d40n/shjSTKTnNIvPo6sGvnc0YRHutLX/PSH9Ike3MnBzhSAy04MMaLIHu9bfe/RZqCM6wICJtPAAVkh2ESlbQJTzAQMgGZZrQOyTrXZebI/BcmhAazTAeNUWQzdzEFUbDH76JyhbOoWfsjKObUixo6RJ1eB8Ual3s5lZaHcubiLCGbH+VyoEwPAVUB07Zmf3OJOKcqQ3dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4hm+lhYvKGPsgiAdh1aD0tYmNntDmEqvBMPH/tRN53U=;
- b=HAJ/1kvn5pYDgOKvk/eLTfQYyglZK+qStSAM2VKVa5AlU/uE9ixBKDwIv+6tqTCr1f7NnJaXeC7q57ROqIS5o4Xhgn7t0NdBAw2oTzyMiW56dCr3XlVz7k88cUMdxvLqDUPlM/pGaqTp+4m5OWtgX8QAC6zVK9WFECJCnDlMKbj7Rr/J9nL1h5khB6fZNqoeHgbXCrB78qblTXgFnD8T9EsGUVUuPtiXsFCdNr8yXpYLs2hPSZcmSrGh5nYH/TDFw+YrvC8gXssSyAOX7Xd6jkMhMvQz/QFUk4BQYPmP/5rNLsiSzk4z6dSkjx7Cr1XeI8qVjuLXDgWEtqhte8SGqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4hm+lhYvKGPsgiAdh1aD0tYmNntDmEqvBMPH/tRN53U=;
- b=btv3VC6TnuJ3GYAppBIfYTusj/NvRsKBVRckd8FNktlLTqUqV+0ULcLcazUgu68ihEYzULikPliYTb7SnBeqn6hHrYxBL5izl2G1juQbEl3Ku/lyW7Vf+cWynu34XlwVt4Yqj02pH/A+3kCB9vQdP5VPeBFc3Vuo96vBj99aJ0/Kp0YjnnlFxPSzhR2koFMX60JTQuWD6aAjP6Dg/JtTGvQDL0/CoWu4OJuA5ASriUokvwTbsUtft2hfwmA26POfF2hjfQmkcy6SKz6l1psZTebF/GtsrMzdvw/n8zVKwii4ih5vduovw0HS5PNDRZI08SQL84H+zEEUkHAHQ+aMpw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
- by TYZPR06MB6308.apcprd06.prod.outlook.com (2603:1096:400:41d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.23; Sat, 16 Sep
- 2023 05:58:53 +0000
-Received: from TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959]) by TY2PR06MB3342.apcprd06.prod.outlook.com
- ([fe80::60d3:1ef9:d644:3959%4]) with mapi id 15.20.6792.023; Sat, 16 Sep 2023
- 05:58:52 +0000
-From:   Chunhai Guo <guochunhai@vivo.com>
-To:     jack@suse.cz
-Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chunhai Guo <guochunhai@vivo.com>
-Subject: [PATCH] fs-writeback: do not requeue a clean inode having skipped pages
-Date:   Fri, 15 Sep 2023 22:51:31 -0600
-Message-Id: <20230916045131.957929-1-guochunhai@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0001.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::7)
- To TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
+        Sat, 16 Sep 2023 01:00:10 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1041BE3;
+        Fri, 15 Sep 2023 22:00:05 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id D3C5B5C01EC;
+        Sat, 16 Sep 2023 01:00:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sat, 16 Sep 2023 01:00:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1694840401; x=1694926801; bh=AiiRLsWmSd5omTSsVWE7/nPP8xSFayX8bsX
+        WXu59V40=; b=Kqw/d/2w3S28QiXRFwkxvePDrM8dFhz74RMTQQJakHkL8DctgJ8
+        MbJivKPiMXpIntW2cRIZmdLHwIHzrwyU7pBbxsUOzZmNZCp3gMUOS/SlvXHVgq1d
+        po6bsMlGMANNr6c5OOTivp2hQCOJK1NZlVHyUyXzkpgonPH87kvxHeCkEDpOK2Cp
+        qWaDbCUojHmtbQQeexcMlMHmA/YhrbWhyvGc+o00OpEzzH5hTrRMeG8HrAqebiXT
+        3xXxvB1lp9/1x/xxInYe/DfRdsxVmCpHkY/xAaGhPSTmT2M45lor8uEx92QzAZb9
+        kMnC3bo/CkNvKeHUJ/E1rkplLGHx6IS5Miw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694840401; x=1694926801; bh=AiiRLsWmSd5omTSsVWE7/nPP8xSFayX8bsX
+        WXu59V40=; b=oQNWFgitw5weXS+KA0QECq8DgO+ECRW0F//RIDseWzy3uqP/PEv
+        gLmIyQ/T/0y371VAET/dY3LjoJmRaFiAK8lJhzYyeCIKCdTGpJmBOf0Xf0HGZTFx
+        fYM0h/lzhi9ZbH3E1yrVDm/ZxxpAGAcKdWxewpmr3G7bz759oWhj1BdmeRvWfdCV
+        iy/zwKMpfc8XwIw1AlPv7tZyUcKoqCHtuTcKlJfvooiJiPzML5Dy6ae5sos6igDd
+        MzxwViTTBew0hv18+PxHTJkGxkuZLT3pXDLqKOlSke881D3dbewfrkNw2iHlGvVJ
+        NDpNAwaTDz8Az0X0ZONzwSpfiH/jz+pjCeA==
+X-ME-Sender: <xms:UTYFZczVCVNsIIaRQZ7gYqFsCbmY4MI4bddOIPcgUeAdPABqSm_yMQ>
+    <xme:UTYFZQRsS3n6ALnljNFzyQGDQQP8wo8DswbXMcFjWQXId6BhceQxhhVvaVqjQbjOT
+    VR1TCxTsH7HPCXl5w>
+X-ME-Received: <xmr:UTYFZeXtOGuiCwzI3B8nHWyR8f3E6_qRobN0VSQ4we5uiMFVvqyxHPX-Zd544Rnfr1EOTerSTygT499P_pQPAkSnzN8NLq2plOSaOh2cxvU2Bwpls-H3TODGPg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejfedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefurghm
+    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpefgtdfgleffkeevledvueetteefgfellefhjeetieeuhfehteeu
+    feefgfehfeevfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:UTYFZah0-PaqvA4nj4ZY_O8HMUeG1W7ePMRBi4K3cZF_uFXWtszXgw>
+    <xmx:UTYFZeBfvNdBgb9TfUIUiBVKpOnla51SXXfp63mDEpQe26BG0epXcQ>
+    <xmx:UTYFZbKuvjzgZBANrb4FC7uXKki538ESCh5PH_LMc9bS2R7beDmIhQ>
+    <xmx:UTYFZUSz3iE_RY_bA7j4H0TUn4gupbpOGnduN4TX_TTs_zrl3SIIDA>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 16 Sep 2023 01:00:00 -0400 (EDT)
+Message-ID: <367a8ee4-2047-879d-22ae-a0082a04f92f@sholland.org>
+Date:   Fri, 15 Sep 2023 23:59:59 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TY2PR06MB3342:EE_|TYZPR06MB6308:EE_
-X-MS-Office365-Filtering-Correlation-Id: e47af366-76b8-4c1d-602e-08dbb67a0120
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J9Db6LnaDZ0M4MtzW8SxMRsXalYGwjEdGsQg/MbD3ZHfSUJiMcTSFeY0UA0f9GML1zsQVyGYpxXAoRdj1KFxcrrwNze+m9k/9IshFbopAaWi5SHIrsowFZ2zurSsl+p9wcxDcf9gSzOapCZchUAxRTT+nmFh7jQeoD5vHIy9uccFFyGI0eFqH4ifuhS7kx/oDDN74J5oFqPtHqVSSG5Jma99Oz+esMkWoxB1z/pca3ozPycC3PyxHCAAAtGPodjLBpcH9khcfYJzVApTEJufnRYROcCFF2ug7obwd2ZrsFEHrG831Ve68QGwhEzp3ipFy03BJeFIFK+FpsdQmZ74UALDNrNNfB5aOgw+2d7n2Xm0HaVP2Fl7Iz8VhRsiCNuMA7V6WuHq2/acEmCjsp74IKTRSvtAfj/tBn3icvq9pykBGwfsE7RW45H4bvfg8mRnxnMBCAXXUJBB/bgk3V4I73xazRe4zyLcUaq1hvRyUWkkN4oMpGD55ByFYhvT1UBV3n+jO423yZi2zWKklT3V4zeFlOCxuJ0+uTSPgOtZ53HCInFwvXq/BdvQe3EiBPg58Q9D6fSm8FKwdsfrYhzfsNZytJNOU8deTbDtBIlGPexa55IVoQ/jspDlucF+GOLT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3342.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(346002)(39850400004)(186009)(1800799009)(451199024)(2616005)(1076003)(107886003)(26005)(6486002)(6506007)(52116002)(6512007)(38100700002)(36756003)(38350700002)(86362001)(83380400001)(5660300002)(478600001)(41300700001)(316002)(66556008)(66476007)(8676002)(8936002)(6916009)(4326008)(6666004)(66946007)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qDGpopi8JF+iX8k2A8cJbYksi0DF+lcIGt8efgluxczroKjnV104l0c197qs?=
- =?us-ascii?Q?z0oPJ1j6xXylpwks5VTXmg30DlrNajw5Ygdzga90a1XfIFRnJUxs03u0JEf1?=
- =?us-ascii?Q?/U6XPbCQ6r2hW+2gZwlEdDSW5fPrChOAIrwwvjLPTj4pcCAG4ZkZ0xoBuNWt?=
- =?us-ascii?Q?qGp+uWtu6uXW7PhzZM3yWW9yqNm/INIUUY7F7fENtjJHJ5OrWFES/G3OwZGU?=
- =?us-ascii?Q?ZWlD7nttv3iRPd5OXs5wAuTNSnJZMg//WnnZghyTO9sEdB9dGNOXqNt5+zY8?=
- =?us-ascii?Q?8geegdjcrA+4IsO9W1WftHuxT9C3tD16NIfRpTxgT4y6jndkzw0iorra/qgJ?=
- =?us-ascii?Q?ED3KfBx55vkRXtR68dR4uTKkyJhip5UW5ZdwvvJ3XarYdY2KGLJVp9XCO11e?=
- =?us-ascii?Q?VJnXNPU4SIbNO7RGVt3KVeLjXpdeS3KMSz1FqeB1BVs8lhFnYlTkOwDFEENs?=
- =?us-ascii?Q?epNT+0Fe1OY9Tu5uZW5AVFBkIAql07RPE254+Sw8P9G6Bk0ROXRaRdttdoQg?=
- =?us-ascii?Q?miLRjsefBv/M4i1Chw62TS3Iq7wF8T/yqdiA7BC2srFiZgeFfzPBgALw6ViK?=
- =?us-ascii?Q?Z3795kks+ISaFInL6cJbM2gxrVmEwwa6dovPWDe8S8SMJPCxf980dotbP/od?=
- =?us-ascii?Q?eYIPlDN9624vDQMtnj9YXUE4Wfc5gt3SaTHd55o7sSg34m9kXS6IMbWrfgP8?=
- =?us-ascii?Q?Od+6u8jVQ8BKANXDilpJk/hQ3pFOlj4emyuWSgljrPr9OmGtpit1Cg1lY8k+?=
- =?us-ascii?Q?ReO5QxoHIyJQcsZpgQkiq+weayY2rWI5xkthAxhkPhBQX4B2GdCNxSeaG5Ob?=
- =?us-ascii?Q?fb/8/bcluNeeDTCDVh+2g9BHsa4JkV9woCA0e50qieT1eh3o7yGFH8rll0mW?=
- =?us-ascii?Q?HZSEvLjl0sN+dmTRQ04Ysg1yPcnMDmUwmKq787J29ZKQ7DXwgqfQT2xkQwaG?=
- =?us-ascii?Q?aKyoRYT7/XrxKij9ycLnh+jMVgHT8Ode/+bxD0DkTNDpKzsy6t3jA6A5OnvS?=
- =?us-ascii?Q?dIEDOg6ATxWaYFep59LsDLJAnN1b6oy8kqY8PFoYMYK7cG0wMROEMcveoyaV?=
- =?us-ascii?Q?5oLC/Onlsk0/H+PJY7MsMXSClvzWsMUXYuxZu2rby9793bbh7ifrBOvWUw44?=
- =?us-ascii?Q?F5JcH6lUPDXKUYnSDadVwrcxgoYWWRxMO3we3SjFNyrh7zTuUjs7wiet6fGQ?=
- =?us-ascii?Q?5qfKusmnl1fX1mphIoKeizZxTGxzv7cSrhLdXb50e1Oa366IHelHKmQRBXqH?=
- =?us-ascii?Q?EDaeU3NujTyKV5ufwTqPj/6aR6XmdQOQAL/EcQ+dd8COa7Z8i4WTeUhoTv8z?=
- =?us-ascii?Q?uvC/wJkc12mIN6oYOKlFSQgyP0RcQK9+sqVALzrhKTnK68c2TvGJYApwARbr?=
- =?us-ascii?Q?gkvlFoMr0xwd3JW9pp3MprPZ8Dgh2M8lObkPw7QZMpeyQXQj9TPv9LU4i3I1?=
- =?us-ascii?Q?CA/26+DDYVD4jWMp4UbbxbVi1r99k9yegd4CeQLS4wDpJEic9u/WLNDiT9F4?=
- =?us-ascii?Q?Y6gALjdWqlcI3RGBN621WWg9rqQzOdUbydrb8E2unonLtgjsq7lO59aJKv0g?=
- =?us-ascii?Q?j9Z8T9I160m2VBnlwz7KqSx8G3IZnCL9Hzgf1pxd?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e47af366-76b8-4c1d-602e-08dbb67a0120
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3342.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2023 05:58:52.6948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4n8aSjGY5OZHHIcmWGuAmxPW/FfYqPX8gXcY4l4JizId39cU7XkDPrbY+YoOCbKq8O07/SxDjJm4GR0hsRVmNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6308
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux ppc64le; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain
+ dependency
+Content-Language: en-US
+To:     Saravana Kannan <saravanak@google.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kernel@pengutronix.de,
+        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
+ <20230904115816.1237684-2-s.hauer@pengutronix.de>
+ <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
+ <CAGb2v65G-8EECNjqnpKCxqAD5nATAb0S7AA_WMiGXYOR1avrvg@mail.gmail.com>
+ <20230913065843.GF637806@pengutronix.de>
+ <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
+From:   Samuel Holland <samuel@sholland.org>
+In-Reply-To: <CAGETcx8rO=aykjb6=5k0wpOyscqokNwSL6w-AHnodY7pNXyzGQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When writing back an inode and performing an fsync on it concurrently, a
-deadlock issue may arise as shown below. In each writeback iteration, a
-clean inode is requeued to the wb->b_dirty queue due to non-zero
-pages_skipped, without anything actually being written. This causes an
-infinite loop and prevents the plug from being flushed, resulting in a
-deadlock. We now avoid requeuing the clean inode to prevent this issue.
+On 9/13/23 15:48, Saravana Kannan wrote:
+> On Tue, Sep 12, 2023 at 11:58 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+>> On Wed, Sep 13, 2023 at 12:37:54PM +0800, Chen-Yu Tsai wrote:
+>>> On Tue, Sep 12, 2023 at 4:07 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>>>>
+>>>> Top posting to bring Saravana Kannan into this discussion.
+>>>>
+>>>> This looks like a big hack to me, Saravana has been working
+>>>> tirelessly to make the device tree probe order "sort itself out"
+>>>> and I am pretty sure this issue needs to be fixed at the DT
+>>>> core level and not in a driver.
+>>>
+>>> We could merge all the IO domain stuff into the pinctrl node/driver,
+>>> like is done for Allwinner? Maybe that would simplify things a bit?
+>>
+>> I thought about this as well. On Rockchip the pinctrl driver and the IO
+>> domain driver even work on the same register space, so putting these
+>> into a single node/driver would even feel more natural than what we have
+>> now.
+> 
+> Then we should try to do this and fix any issues blocking us.
+> 
+>> However, with that the pinctrl node would get the supplies that the IO
+>> domain node now has and we would never get into the probe of the pinctrl
+>> driver due to the circular dependencies.
+> 
+> From a fw_devlink perspective, the circular dependency shouldn't be a
+> problem. It's smart enough to recognize all cycle possibilities (since
+> 6.3) and not enforce ordering between nodes in a cycle.
+> 
+> So, this is really only a matter of pinctrl not trying to do
+> regulator_get() in its probe function. You need to do the
+> regulator_get() when the pins that depend on the io-domain are
+> requested. And if the regulator isn't ready yet, return -EPROBE_DEFER?
+> 
+> Is there something that prevents us from doing that?
 
-    wb_writeback        fsync (inode-Y)
-blk_start_plug(&plug)
-for (;;) {
-  iter i-1: some reqs with page-X added into plug->mq_list // f2fs node page-X with PG_writeback
-                        filemap_fdatawrite
-                          __filemap_fdatawrite_range // write inode-Y with sync_mode WB_SYNC_ALL
-                           do_writepages
-                            f2fs_write_data_pages
-                             __f2fs_write_data_pages // wb_sync_req[DATA]++ for WB_SYNC_ALL
-                              f2fs_write_cache_pages
-                               f2fs_write_single_data_page
-                                f2fs_do_write_data_page
-                                 f2fs_outplace_write_data
-                                  f2fs_update_data_blkaddr
-                                   f2fs_wait_on_page_writeback
-                                     wait_on_page_writeback // wait for f2fs node page-X
-  iter i:
-    progress = __writeback_inodes_wb(wb, work)
-    . writeback_sb_inodes
-    .   __writeback_single_inode // write inode-Y with sync_mode WB_SYNC_NONE
-    .   . do_writepages
-    .   .   f2fs_write_data_pages
-    .   .   .  __f2fs_write_data_pages // skip writepages due to (wb_sync_req[DATA]>0)
-    .   .   .   wbc->pages_skipped += get_dirty_pages(inode) // wbc->pages_skipped = 1
-    .   if (!(inode->i_state & I_DIRTY_ALL)) // i_state = I_SYNC | I_SYNC_QUEUED
-    .    total_wrote++;  // total_wrote = 1
-    .   requeue_inode // requeue inode-Y to wb->b_dirty queue due to non-zero pages_skipped
-    if (progress) // progress = 1
-      continue;
-  iter i+1:
-      queue_io
-      // similar process with iter i, infinite for-loop !
-}
-blk_finish_plug(&plug)   // flush plug won't be called
+Calling regulator_get() from the pin request function does not solve the
+problem on its own. We already do that in the Allwinner driver (in
+sunxi_pmx_request()), and we still have the circular dependency:
 
-Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
----
- fs/fs-writeback.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+  __driver_probe_device(I2C/RSB controller)
+    pinctrl_bind_pins(I2C/RSB controller)
+      pinctrl_select_state(I2C/RSB controller default pins)
+        pinmux_enable_setting()
+          pin_request()
+            sunxi_pmx_request()
+              regulator_get(vcc-pl)
+                [depends on the PMIC/regulator driver]
+                  [depends on the I2C/RSB controller driver]
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 969ce991b0b0..c1af01b2c42d 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -1535,10 +1535,15 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
- 
- 	if (wbc->pages_skipped) {
- 		/*
--		 * writeback is not making progress due to locked
--		 * buffers. Skip this inode for now.
-+		 * Writeback is not making progress due to locked buffers.
-+		 * Skip this inode for now. Although having skipped pages
-+		 * is odd for clean inodes, it can happen for some
-+		 * filesystems so handle that gracefully.
- 		 */
--		redirty_tail_locked(inode, wb);
-+		if (inode->i_state & I_DIRTY_ALL)
-+			redirty_tail_locked(inode, wb);
-+		else
-+			inode_cgwb_move_to_attached(inode, wb);
- 		return;
- 	}
- 
--- 
-2.25.1
+To break the cycle, you need to defer the regulator_get() call during
+this specific call to the pin request function, then come back later and
+call regulator_get() once the regulator is actually registered.
+
+If we have a DT property somewhere that provides an initial voltage for
+the I/O domain, then regulator_get() returning -EPROBE_DEFER would not
+be an error. Instead, we would configure the I/O domain based on the DT
+property, and add the pair (IO domain, regulator OF node) to a list.
+Then register a notifier for new regulator class devices. Check each new
+ device's OF node against the list; if it is found, hook up the voltage
+notifier and remove the list entry. When the list is empty, remove the
+regulator class notifier.
+
+I thought about (ab)using the pinctrl "init" state so pin_request() gets
+called a second time inside pinctrl_init_done() after the PMIC's bus
+controller gets probed, but that would rely on the regulator getting
+registered synchronously by some recursive call inside the bus
+controller probe function. So it would break if probing the
+PMIC/regulator driver got deferred for any reason.
+
+So the suggestion from my perspective ends up being the same as what
+Robin just suggested elsewhere in the thread. :)
+
+Regards,
+Samuel
 
