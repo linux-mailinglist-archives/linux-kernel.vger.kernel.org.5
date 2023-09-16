@@ -2,176 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A347A2D6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F967A2D6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbjIPCXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 22:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        id S238348AbjIPCWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 22:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238685AbjIPCWa (ORCPT
+        with ESMTP id S238659AbjIPCWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 22:22:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A777E6;
-        Fri, 15 Sep 2023 19:22:24 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38G1x1YN011725;
-        Sat, 16 Sep 2023 02:21:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=1R36WjfkZxHYOJy2LplpgS3S6JdXrNHUUNIhn81PzLo=;
- b=erNsIUqyzVmW1vk4+h25EqnpMvPOIzjPpWsdP386H7zkeTZhSg07K0FoOHHCqIJRPCiC
- igkGoZkxAmkTy93uxaIArR0PzMvLwF0QDFfxyDc42V0s/+CcmUV1ebC5yQr0+A5xlaf6
- 9DtkOqEGcfKQ0wXSU9rXqQTBf5T+8wQ60wugKZUaqNTJLZgCUNuhMOw5ZLSyCMBNeKqQ
- cyiRbeKNbZ5QwS74n6Ue5yy1YNG5Rd30yRd2nOMxrk2YTQq7mO3Q+3o6S7VmBxFtmuqK
- bfKCiD1U8D+AIrYHGMNyJH3TXSBfIkOHFTHVxYknXHr73m/tHiMbKj0TVdUkyyk5f8bZ jw== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t51qug50q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Sep 2023 02:21:46 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38G2Ljgn011180
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Sep 2023 02:21:45 GMT
-Received: from [10.110.15.95] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 19:21:41 -0700
-Message-ID: <01c020ae-a019-e4eb-14cb-64503bde05a6@quicinc.com>
-Date:   Fri, 15 Sep 2023 19:21:39 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v2 8/8] arm64: defconfig: enable interconnect and pinctrl
- for SM4450
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Tengfei Fan <quic_tengfan@quicinc.com>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <joro@8bytes.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <catalin.marinas@arm.com>
-CC:     <geert+renesas@glider.be>, <arnd@arndb.de>,
-        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <kernel@quicinc.com>
-References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
- <20230915021509.25773-10-quic_tengfan@quicinc.com>
- <8f2c9664-a2c8-50dc-8a1c-e50a071ebeb2@linaro.org>
- <e9ff05b3-2742-416e-b417-5e2414036008@quicinc.com>
- <0a34dd35-7aea-4655-4cdd-e7196a1ba52b@linaro.org>
- <f76e1cc8-fc48-4208-bbe4-9204d9d28363@quicinc.com>
- <b7398390-23bc-467c-5b83-411110d60f43@linaro.org>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <b7398390-23bc-467c-5b83-411110d60f43@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6VUDJoTl82cWLQ9nXyAeN5rzv0gbgnqd
-X-Proofpoint-ORIG-GUID: 6VUDJoTl82cWLQ9nXyAeN5rzv0gbgnqd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1011 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309160020
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 15 Sep 2023 22:22:13 -0400
+Received: from sphereful.davidgow.net (sphereful.davidgow.net [IPv6:2404:9400:4:0:216:3eff:fee2:5328])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB20E6;
+        Fri, 15 Sep 2023 19:22:05 -0700 (PDT)
+Received: by sphereful.davidgow.net (Postfix, from userid 119)
+        id 6B6011D5837; Sat, 16 Sep 2023 10:22:00 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
+        s=201606; t=1694830920;
+        bh=Hjtk5BbVsm8eL9+VXeOx9qTRndZHLmAyy1xJeOlFiBs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=bt0sq8rpKmyJtSfTvpTeQHNuYIr4PwCfKXLf/gJU/KfUHfxeyR+snNUYyHDv7vLKR
+         eT1N5OpmQ1dIV7LzG8VuLa/CdzNemLPNKk4SYVZ2O4q6arqU9a7iuhqNsbQ0xeWPUu
+         v/imFF9FKEJjPUHYUPYnKI4/QEKdRhloEroYtydKfPq1grdBClolt6fwgXPNMv5ERh
+         byeVX5WXPUBFg/684XOXgtuL3rvDvNkCyL6w16BxMQOaOjO47WRckgLaRaDjGPrbzB
+         EXSQFfo+b45VS6HiXs1FX39QXH159OyAqwVF/oHhRamBu641xgkBackzQOg3mO3Qx0
+         ho36lWsCvtQhQxpe/PgZs9OvyaW9CMTtN5S8o4D2J6SKCXPEa563oOq4SUJIYPFapo
+         znPZVdSMEPqvA5AJeQYBDUeFnGjVzwP7N2Q7Z14d2mzeWF1YMatp2OlrXXk3K+k2Xp
+         r+FSBJ4gyTp1T2hc+ZcCAFENCicevBXL0FEjEZ1m9AooSvT0LEXZOUwE14ooPeMEiD
+         t9kZ065fVa0RxzQqJpDxwl71dxi7fAyya7a2n2nWFIVYIQbucilZaBgcRTHz9ToHOd
+         McrQP3Cqg4k7KUOole9pLVKbxSFavmT6oaIhRHSqMkYOKq9BlLrpLt8UIzBZ9ejrqu
+         HmUEjHU24QKwxkBCVwPZUWkE=
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Received: from [IPV6:2001:8003:8824:9e00::bec] (unknown [IPv6:2001:8003:8824:9e00::bec])
+        by sphereful.davidgow.net (Postfix) with ESMTPSA id C55A21D580B;
+        Sat, 16 Sep 2023 10:21:57 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
+        s=201606; t=1694830917;
+        bh=Hjtk5BbVsm8eL9+VXeOx9qTRndZHLmAyy1xJeOlFiBs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=d3c1T6dDVieNLo1yeoJaClHy8gD1NTEsUphxaHWqXVNgPzKoEsTeDWecTQ0zSy8B5
+         ZLjYFhBEJdf9zNGTjrbzaw4uCg8iAycQuFgIrk21wl1Lvk1QMCezUTVp/B91OGfrfK
+         Usew6qzj+mXdiwYKyhl75Kf7yGcbXbTBk8C9YnfF+CmyBS6qRYeNIiQ6Kv5epbPWbt
+         Sqb9+tYsnuAAv2h4toCYBoawXbuwHleAtETHixVO5Txk56VcwunisJmg5DdaO8mm7q
+         1GWEUeXYRqqGY9yL6uOuRvPlupQaOQI7qCrZJBVTj1OKZSyeESd03jp2tIZ95AldVp
+         laxrLuNmlOca8z6lVJ54h2R7vEvCAhm7C/SeWSwWraNM4CcW2051ssb+Yku/xhsi3S
+         uPOvHU8WzS9gCvj7tuv1e/y1yVuThPu28x0hlo4+pu0iHpnH3x7XLE7nx+me0zmOK6
+         2PFxoKomldV4lMj7Z/J/6NS41RLW6xBJ2uwqOiqi38TrUePzmLcWTnHh1lkb6Rk8zX
+         LAQMKmXcoROhzrtKC2bXfPGmURsrthCoSLq3cijcyN1m+uzvJd0W7xmQAcF8mFMHug
+         7+JC17Z7LGiXAAY9y6IVMh1CbazdYk4C8P3SFzn0crdk2pJzvQtWX4Q3KWkBP22kIv
+         kaNho1Sa5AbfVCLvrtQ9zA68=
+Message-ID: <bbe4ae16-86b3-4629-b5e0-c704881fe5cb@davidgow.net>
+Date:   Sat, 16 Sep 2023 10:21:53 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe
+ SATA to Constantly Reset
+Content-Language: fr
+To:     Niklas Cassel <Niklas.Cassel@wdc.com>
+Cc:     Damien Le Moal <dlemoal@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        patenteng <dimitar@daskalov.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux IDE and libata <linux-ide@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+References: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
+ <ZQHRQHAPQdG+Nu1o@x1-carbon>
+ <59f6ff78-6b45-465a-bd41-28c7a5d10931@davidgow.net>
+ <10f65dfe-5e8a-10ab-4d89-efe693c07caa@kernel.org>
+ <658b9285-e030-4987-86a7-57cdb6c7f161@davidgow.net>
+ <ZQQa0QRhm1BuI5IT@x1-carbon>
+ <49d92af6-4968-4066-b33c-0fd06f8fdf28@davidgow.net>
+ <ZQSEXl0GB3iKoqjZ@x1-carbon>
+From:   David Gow <david@davidgow.net>
+In-Reply-To: <ZQSEXl0GB3iKoqjZ@x1-carbon>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/2023 4:29 AM, Krzysztof Kozlowski wrote:
-> On 15/09/2023 13:18, Tengfei Fan wrote:
+Le 2023/09/16 à 0:20, Niklas Cassel a écrit :
+> On Fri, Sep 15, 2023 at 08:26:58PM +0800, David Gow wrote:
+>> In any case, the bisect is done:
+>>
+>> 624885209f31eb9985bf51abe204ecbffe2fdeea is the first bad commit
+>> commit 624885209f31eb9985bf51abe204ecbffe2fdeea
+>> Author: Damien Le Moal <dlemoal@kernel.org>
+>> Date:   Thu May 11 03:13:41 2023 +0200
+>>
+>>      scsi: core: Detect support for command duration limits
+>>
+>>      Introduce the function scsi_cdl_check() to detect if a device supports
+>>      command duration limits (CDL). Support for the READ 16, WRITE 16, READ
+>> 32
+>>      and WRITE 32 commands are checked using the function
+>> scsi_report_opcode()
+>>      to probe the rwcdlp and cdlp bits as they indicate the mode page
+>> defining
+>>      the command duration limits descriptors that apply to the command being
+>>      tested.
+>>
+>>      If any of these commands support CDL, the field cdl_supported of struct
+>>      scsi_device is set to 1 to indicate that the device supports CDL.
+>>
+>>      Support for CDL for a device is advertizes through sysfs using the new
+>>      cdl_supported device attribute. This attribute value is 1 for a device
+>>      supporting CDL and 0 otherwise.
+>>
+>>      Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+>>      Reviewed-by: Hannes Reinecke <hare@suse.de>
+>>      Co-developed-by: Niklas Cassel <niklas.cassel@wdc.com>
+>>      Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+>>      Link: https://lore.kernel.org/r/20230511011356.227789-9-nks@flawful.org
+>>      Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+>>
+>>   Documentation/ABI/testing/sysfs-block-device |  9 ++++
+>>   drivers/scsi/scsi.c                          | 81
+>> ++++++++++++++++++++++++++++
+>>   drivers/scsi/scsi_scan.c                     |  3 ++
+>>   drivers/scsi/scsi_sysfs.c                    |  2 +
+>>   include/scsi/scsi_device.h                   |  3 ++
+>>   5 files changed, 98 insertions(+)
 >>
 >>
->> 在 9/15/2023 5:16 PM, Krzysztof Kozlowski 写道:
->>> On 15/09/2023 11:12, Tengfei Fan wrote:
->>>>
->>>>
->>>> 在 9/15/2023 3:21 PM, Krzysztof Kozlowski 写道:
->>>>> On 15/09/2023 04:15, Tengfei Fan wrote:
->>>>>> Add the SM4450 interconnect and pinctrl drivers as built-in for
->>>>>> support the Qualcomm SM4450 platform to boot to uart shell.
->>>>>>
->>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>>>> ---
->>>>>>    arch/arm64/configs/defconfig | 2 ++
->>>>>>    1 file changed, 2 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->>>>>> index ec59174b14db..e91993de865e 100644
->>>>>> --- a/arch/arm64/configs/defconfig
->>>>>> +++ b/arch/arm64/configs/defconfig
->>>>>> @@ -598,6 +598,7 @@ CONFIG_PINCTRL_SC8280XP=y
->>>>>>    CONFIG_PINCTRL_SDM660=y
->>>>>>    CONFIG_PINCTRL_SDM670=y
->>>>>>    CONFIG_PINCTRL_SDM845=y
->>>>>> +CONFIG_PINCTRL_SM4450=y
->>>>>>    CONFIG_PINCTRL_SM6115=y
->>>>>>    CONFIG_PINCTRL_SM6125=y
->>>>>>    CONFIG_PINCTRL_SM6350=y
->>>>>> @@ -1500,6 +1501,7 @@ CONFIG_INTERCONNECT_QCOM_SC7280=y
->>>>>>    CONFIG_INTERCONNECT_QCOM_SC8180X=y
->>>>>>    CONFIG_INTERCONNECT_QCOM_SC8280XP=y
->>>>>>    CONFIG_INTERCONNECT_QCOM_SDM845=y
->>>>>> +CONFIG_INTERCONNECT_QCOM_SM4450=y
->>>>>
->>>>> Why it cannot be =m?
->>>>>
->>>>> Best regards,
->>>>> Krzysztof
->>>>>
->>>>
->>>> Hi Krzysztof,
->>>> Because system haven't capacity of loading ko files at this time on
->>>> SM4450 platform, so setting to "Y".
->>>
->>> Hm? System has this capability. All systems have. What is so different
->>> on SM4450 comparing to everything else we have here?
->>>
->>> No, this should be =m and you need to fix your system.
->>>
->>> Best regards,
->>> Krzysztof
->>>
->> Hi Krzysztof,
->> Find new way which can load ko files on SM4450 platform, still need use 
->> "Y", because of some other modules have dependence to these two config, 
->> like scm, smmu module drivers, uart shell console cannot be got if set 
->> to "m".
-> 
-> That's what I am asking, which device exactly needs it.
-> 
+>> This seems to match what was found on the Arch Linux forums, too:
+>> https://bbs.archlinux.org/viewtopic.php?id=288723&p=3
 >>
->> Also do test for setting these two config to "m" on SM8450 platform, get 
->> uart shell consle failed if so setting.
+>> I haven't tried it yet, but according to that forum thread, removing the
+>> calls to scsi_cdl_check() seems to resolve the issue. This is all well
+>> beyond my SCSI knowledge, but maybe a quirk to disable these CDL checks for
+>> these older marvell controllers is required? Though it seems odd that the
+>> device would be rescanned and/or scsi_add_lun called multiple times a second
+>> -- is that normal?
+>>
+>> In any case, this seems to be the cause.
 > 
-> Yeah, this we know, I did this. I am asking about SM4450.
+> Hello David,
+> 
+> Thank you very much for your effort of bisecting this.
+> 
+> Could you please try this patch and see if it improves things for you:
+> https://lore.kernel.org/linux-scsi/20230915022034.678121-1-dlemoal@kernel.org/
+> 
 
-Why we have =m requirement when other drivers above are =Y?. Can we confirm
-w/ Georgi? I am not aware that Interconnect drivers needs to be =m only.
+Thanks very much: this seems to fix it here (on top of torvalds/master).
 
-CONFIG_INTERCONNECT_QCOM_SC8180X=y
-CONFIG_INTERCONNECT_QCOM_SC8280XP=y
-CONFIG_INTERCONNECT_QCOM_SDM845=y
-
--- 
----Trilok Soni
+Cheers,
+-- David
 
