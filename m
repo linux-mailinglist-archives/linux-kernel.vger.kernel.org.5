@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B581C7A333B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 00:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191FC7A333D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 00:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbjIPW0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 18:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
+        id S232617AbjIPW35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 18:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjIPW0K (ORCPT
+        with ESMTP id S232246AbjIPW31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 18:26:10 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5B41BF
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 15:26:01 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50300141a64so1360283e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 15:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694903159; x=1695507959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=r9idXErWZI7pNQUkUS1qR53dXjSp7SyDv32PM6WVIlo=;
-        b=D0+EXYBsjJYNf4JseaWdf7sDE7XKUSh6qxONeU9hUkrJtvQ3Sxe8n3TTjI62iE8VvB
-         dK+Jwyhj0UOtUPw3+tfDimLtF81+v2n7xdl/0lII+69Lkiwhloqi8pzhGxr35ZFuXtQI
-         eDwmeqJrgpk+aJ/cx1cF98iIrtOivrfM/6/gs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694903159; x=1695507959;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r9idXErWZI7pNQUkUS1qR53dXjSp7SyDv32PM6WVIlo=;
-        b=IpIQLDtKNqcETDNWNhjaeIypW2WOXqpVZWJczseI9np4KPWl2TLsywDAu+gZKv4N7Q
-         9ja3DyrvIXXZ4MiEMUy20JuSz7IE4Q2rSx2h+hfMb4lw5moNfXLBITqndHYO3Zr5PZ14
-         Sk2BoLy0/6aBnbk8bEHGESLuidfhxVNIo7Le2XV+bDXhK5JMFHaxl0SLljj4YPjU6asl
-         dYr56xOu/W+pvEjRTHcCXqg8yrkfqLqgSdyTkrhUdp/yEFqy+EdWB0wutB6rxN/uxrUj
-         UYO888F1LUuwrEzY6ljyLL2++dbN91BMYNYFd7QnmnabqtPeS0/aboytkTMG4mvystSO
-         qdmg==
-X-Gm-Message-State: AOJu0YyAZeMy8ymBMWKBT6DfXJc58NTwYKWv0WB0ySjRtMxC4ULOJyaE
-        3bYbWyC3po7z6E1VgG0igO8UaDWdxOQu53HQRGkgDoGa
-X-Google-Smtp-Source: AGHT+IF9LP/TQtniQIHFI3FVVhhT+sSiCdJpvdJEmLyRZg5bI2/oVyHwnpzuhXUNT9IthqvpdvNhWg==
-X-Received: by 2002:a05:6512:a84:b0:4fb:745e:dd01 with SMTP id m4-20020a0565120a8400b004fb745edd01mr5522058lfu.45.1694903159703;
-        Sat, 16 Sep 2023 15:25:59 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id b28-20020ac2563c000000b004fbc95a4db3sm1176177lff.28.2023.09.16.15.25.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 15:25:58 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-501eec0a373so5293295e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 15:25:58 -0700 (PDT)
-X-Received: by 2002:a05:6512:1321:b0:500:99a9:bc40 with SMTP id
- x33-20020a056512132100b0050099a9bc40mr5258347lfu.69.1694903157814; Sat, 16
- Sep 2023 15:25:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <1694366957@msgid.manchmal.in-ulm.de> <ZQWUzwiKWLk79qbp@debian.me>
- <CAHk-=wh29JJSVGyJM7ubxOs51-Nxp6YnmU9Bw1gdOk3rrQ_0mg@mail.gmail.com>
- <CAHk-=wjrEjaUw3oFVEYpF=AWAwrSM3sQTQHuPfFjFdQsvQxHeg@mail.gmail.com> <40eecbdf-40d4-0fa2-6718-3875ed852104@virtuozzo.com>
-In-Reply-To: <40eecbdf-40d4-0fa2-6718-3875ed852104@virtuozzo.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 16 Sep 2023 15:25:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjRnv92Y-b69OTefTxVHbmtnijNt8Dw7BFe+fgJTHK60A@mail.gmail.com>
-Message-ID: <CAHk-=wjRnv92Y-b69OTefTxVHbmtnijNt8Dw7BFe+fgJTHK60A@mail.gmail.com>
-Subject: Re: Possible 6.5 regression: Huge values for "commited memory"
-To:     Michael Labiuk <michael.labiuk@virtuozzo.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
-        Linux PARISC <linux-parisc@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        Sat, 16 Sep 2023 18:29:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF2D1BF;
+        Sat, 16 Sep 2023 15:29:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 040ADC433C8;
+        Sat, 16 Sep 2023 22:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694903360;
+        bh=q/06MsLSqytnIGIhMNkVlqdzrbo6WiKx1MJGVv+Kq90=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=QIu1ejUQrSBi239/J667/xAcUGGEaO6+rMy46F7+VdK33NvN++GgUu6evsKhD6Jlz
+         8NeUSuolyXZxMKlaWmRzc7b/KEp2UkrOltwgboMGjfY4Z6OJ14Fo5v1mh1m2SJtplw
+         NzCxilBbpkKzqFg009yNmDSQMmxw/fI+wDLHJ4m/FGyz76I5jfCbpQ2N+6Yz7PMOn7
+         PtwXMT855uQS6Wn69N3DT3TzBTLj+gq3YBPC5xc42yqVShrOy/S0ViOfF4GjId86WN
+         g7VMGUKHwrFfQdpqb0rwLWgbj0wfED6iQs3NWNlcjsOfscE7TVqgsoN8IvaOKTKGFm
+         NvpYDpAJ9kO5Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DA57EE26881;
+        Sat, 16 Sep 2023 22:29:19 +0000 (UTC)
+Subject: Re: [GIT PULL] Kbuild fixes for v6.6-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNATCV9WGKeDyR+ymZsq5QBbNVU3bqS_0U230BTpRLFcnBw@mail.gmail.com>
+References: <CAK7LNATCV9WGKeDyR+ymZsq5QBbNVU3bqS_0U230BTpRLFcnBw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNATCV9WGKeDyR+ymZsq5QBbNVU3bqS_0U230BTpRLFcnBw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.6
+X-PR-Tracked-Commit-Id: 552c5013f2bc648611395ea80df6250aa4fe28f6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f0b0d403eabbe135d8dbb40ad5e41018947d336c
+Message-Id: <169490335988.1784.3743668000657008913.pr-tracker-bot@kernel.org>
+Date:   Sat, 16 Sep 2023 22:29:19 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,16 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Sept 2023 at 15:20, Michael Labiuk
-<michael.labiuk@virtuozzo.com> wrote:
->
-> This patch fixes problem with counter for committed memory.
->
-> Thanks!
+The pull request you sent on Sun, 17 Sep 2023 01:04:57 +0900:
 
-Oh, no, thank *you*. With the bisection, this was fairly straightforward.
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.6
 
-A silly mistake in the original patch, but hard to see without a clear
-"this is when the problem was introduced".
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f0b0d403eabbe135d8dbb40ad5e41018947d336c
 
-           Linus
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
