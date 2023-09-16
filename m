@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0307A2C05
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36BD7A2CE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbjIPAbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        id S238671AbjIPBMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 21:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238456AbjIPAbV (ORCPT
+        with ESMTP id S237857AbjIPBMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:31:21 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40B0CED
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:29:58 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52f9a45b4bdso3173403a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694824197; x=1695428997; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zporDHrE3+uyIwe+VfbiYR93jfa43r8rLTR9B3l5F9o=;
-        b=OVpuhFSt7kKe8EAp1ix12Y6+KCVXgodkw07mHnAJeqfgImBLOgWSIJRNX9Gt6PC9UM
-         8yXCba9L76NIeC4tiEAglKkaS1e/wObs9EjuLLtYiRAe2UAVRzBVs7Vj2KUyLzTdG7bc
-         62Qif+hrHmGxkrKcpwdYKrYVxPIjaPK69TOMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694824197; x=1695428997;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zporDHrE3+uyIwe+VfbiYR93jfa43r8rLTR9B3l5F9o=;
-        b=SROi/mhLPJfN+ga6P/ZWwBAL/yGzZ5n5P22/Lro2npVFZ9psV1TuZ6Z/BdDeGLHklP
-         jfv4fPkRnezRcBgfEqyc0KyzZixurRApHPk91XYMfQ6BV9QaCPUQDZwrC+ZGwIwkUyfz
-         liQ4no7xZ747AnpsUGnOnhT+N7+mal8pgak6/ttaF1lGs6ZSYENguPqGhPKYT4LwQhhB
-         /aQ7PwRzyWATeYzgrWDlQefQIi3PuTTlTyRh+scTkrKSrxXBu3ubJRL38yWHS/7f/yXS
-         ZLaMx7t5yQ1Y5ukykA1Kknl2apwakjkoLBugPtVbzFng0q7ousRIW/65OU1kISiwPEB8
-         QnnQ==
-X-Gm-Message-State: AOJu0YwTc/UCqxKHDpV5knMAnCKUj78M5bIhLGs6VJ2O1w38DB9wJDy1
-        CwHtTwUR0gMI5x97FHZJUCQShIBeXtXE+7ZJTNe+NdKx
-X-Google-Smtp-Source: AGHT+IFh0nh63BTwu/MTERQMlTx2bHXs44guxY0gEA76k9Wfopf4LlPitAKyc1i0u/H9Yu9iTQ/meA==
-X-Received: by 2002:ac2:4db3:0:b0:502:9bd7:ec79 with SMTP id h19-20020ac24db3000000b005029bd7ec79mr2629473lfe.29.1694823371091;
-        Fri, 15 Sep 2023 17:16:11 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id b17-20020ac25e91000000b004fb7848bacbsm800625lfq.46.2023.09.15.17.16.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 17:16:10 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-500913779f5so4362748e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:16:10 -0700 (PDT)
-X-Received: by 2002:a05:6512:3113:b0:500:bc14:3e06 with SMTP id
- n19-20020a056512311300b00500bc143e06mr2583654lfb.44.1694823369876; Fri, 15
- Sep 2023 17:16:09 -0700 (PDT)
+        Fri, 15 Sep 2023 21:12:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456A4E3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 18:12:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAFAC433C8;
+        Sat, 16 Sep 2023 00:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694823395;
+        bh=KVD5/Hzc2O0pK0uQVAxIpL/l7Ybq76eSDT1eP8jejfY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lqmFxnLZU74ovH6yS4VAqaw1t5nNnOzQ8wefTNWAY9Z9vYhrT6m4ne9oeMciU+JXh
+         ZFUPhNCldoNZ7i8LZnUuLZdeg29eROEvMDADioenGxgUnJICAtK9nmIL1GEmdC+8gU
+         lS2tdQ4UZRzDlYI7M2webMInj+8xn9QrbScJqlcNstP6/LlucruvKeW6gshaRJ0i+v
+         GDAHRULMzdY47670KU6WmBWfEmYdmFAOhqgRHnD1z82DGPRz8ACchjuVvJiQZts6H2
+         1Q7PPVAGAP3Oc4C9eXsm5IWI1jZk5n6da6TYyNLysFf7KZB5Yp7Sa7n1j7mP9I6/zS
+         E0Lz4AHgxTDzQ==
+Date:   Sat, 16 Sep 2023 01:16:30 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv@lists.infradead.org,
+        Andrew Jones <ajones@ventanamicro.com>
+Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
+Message-ID: <20230916-celtic-flavored-f6e5f49cec20@spud>
+References: <20230915184904.1976183-1-evan@rivosinc.com>
 MIME-Version: 1.0
-References: <20230915183707.2707298-1-willy@infradead.org> <20230915183707.2707298-3-willy@infradead.org>
- <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
-In-Reply-To: <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 17:15:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whqZqTYunL-0tn2-khCU1rcZDrTvY4cdFsx_b_bF=xbGw@mail.gmail.com>
-Message-ID: <CAHk-=whqZqTYunL-0tn2-khCU1rcZDrTvY4cdFsx_b_bF=xbGw@mail.gmail.com>
-Subject: Re: [PATCH 02/17] iomap: Protect read_bytes_pending with the state_lock
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EtuFmNE6fZ9CiTEz"
+Content-Disposition: inline
+In-Reply-To: <20230915184904.1976183-1-evan@rivosinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 17:11, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-[...]
->         if (unlikely(error))
->                 folio_set_error(folio);
->         else if (uptodate)
->                 folio_mark_uptodate(folio);
->         if (finished)
->                 folio_unlock(folio);
->   }
 
-Note that this then becomes
+--EtuFmNE6fZ9CiTEz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        if (unlikely(error))
-                folio_set_error(folio);
-        if (finished)
-                folio_unlock(folio, uptodate && !error);
-  }
+Yo Evan,
 
-but that change would happen later, in patch 6/17.
+On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
+> Probing for misaligned access speed takes about 0.06 seconds. On a
+> system with 64 cores, doing this in smp_callin() means it's done
+> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+>=20
+> Instead of measuring each CPU serially, let's do the measurements on
+> all CPUs in parallel. If we disable preemption on all CPUs, the
+> jiffies stop ticking, so we can do this in stages of 1) everybody
+> except core 0, then 2) core 0.
+>=20
+> The measurement call in smp_callin() stays around, but is now
+> conditionalized to only run if a new CPU shows up after the round of
+> in-parallel measurements has run. The goal is to have the measurement
+> call not run during boot or suspend/resume, but only on a hotplug
+> addition.
+>=20
+> Signed-off-by: Evan Green <evan@rivosinc.com>
+>=20
+> ---
+>=20
+> Jisheng, I didn't add your Tested-by tag since the patch evolved from
+> the one you tested. Hopefully this one brings you the same result.
 
-             Linus
+Ya know, I think there's scope to add Reported-by:, Closes: and Fixes:
+tags to this patch, mentioning explicitly that this has regressed boot
+time for many core systems, so that this can be fixes material. What do
+you think?
+
+> ---
+>  arch/riscv/include/asm/cpufeature.h |  3 ++-
+>  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
+>  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
+>  3 files changed, 35 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
+/cpufeature.h
+> index d0345bd659c9..19e7817eba10 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
+>  /* Per-cpu ISA extensions. */
+>  extern struct riscv_isainfo hart_isa[NR_CPUS];
+> =20
+> -void check_unaligned_access(int cpu);
+> +extern bool misaligned_speed_measured;
+> +int check_unaligned_access(void *unused);
+> =20
+>  #endif
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 1cfbba65d11a..8eb36e1dfb95 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
+>  /* Performance information */
+>  DEFINE_PER_CPU(long, misaligned_access_speed);
+> =20
+> +/* Boot-time in-parallel unaligned access measurement has occurred. */
+> +bool misaligned_speed_measured;
+
+If you did something like s/measured/complete/ I think you could drop
+the comment. Tis whatever though :)
+
+Conor.
+
+--EtuFmNE6fZ9CiTEz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQTz3gAKCRB4tDGHoIJi
+0pL6APoCJx7gPKIJyKx4k4hG/Noh2gJZfE37eh09UhuU5jaYYQD8CUoYpcT0HQHB
+pQLKcJ6KdLxEs3zcHVsMGIxM2Q232gY=
+=gqqj
+-----END PGP SIGNATURE-----
+
+--EtuFmNE6fZ9CiTEz--
