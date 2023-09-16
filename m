@@ -2,210 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3141D7A31CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400187A31D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238714AbjIPSBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 14:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
+        id S233168AbjIPSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 14:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238556AbjIPSBF (ORCPT
+        with ESMTP id S229520AbjIPSFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 14:01:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6205610B
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 11:00:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 076E2C433C9;
-        Sat, 16 Sep 2023 18:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694887257;
-        bh=ul1iN8HpVZcfnlmUiMzJEP8GTsDZxDc39Cq6k3T7vkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pHz20afM1LmCRNkebPbf9s29aMmZW9a1MsveNhR4ElECGZYt4y2ot32wMfQ7DJmxP
-         RyS6b7DTnRdVTRs9xunu9kmc8J73btGNDhqOxJWFJktx9OAZvUCB9FGs4gjbtgZrPx
-         B3wphUdaYiVBRC6NQ8M+g12EzyZ5DO/keHftyoNAyhsPqFoHqGxQaXveEMPH0j2o75
-         AAB1Gfb57lEPdMTXkZmsnIIJW0dr9+umSUntZiDeLqHRtBvHYtcaCGrtG+2ay5rRXI
-         iU/aku6rsWuNM/eGXnQUAgjYC5cKKLg+LEI19vlpW7x0zZOOzJSSEoAFgySxbJqxui
-         rC9PNTUnwBqyA==
-Date:   Sat, 16 Sep 2023 20:00:51 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, llvm@lists.linux.dev,
-        ndesaulniers@google.com, nathan@kernel.org, trix@redhat.com
-Subject: Re: [PATCH net-next] net: ethernet: mtk_eth_soc: add paths and
- SerDes modes for MT7988
-Message-ID: <20230916180051.GH1125562@kernel.org>
-References: <675b5abd8b40a71c177e9e4e4c92d2d6b1413b9b.1694527316.git.daniel@makrotopia.org>
+        Sat, 16 Sep 2023 14:05:39 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD340180;
+        Sat, 16 Sep 2023 11:05:33 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40471c054f9so8712985e9.0;
+        Sat, 16 Sep 2023 11:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694887532; x=1695492332; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DVbOZtDmbMexD/9gCiyvbGFst0WQ8c5NS6OBdsiTSoQ=;
+        b=gUA+buxc3rFn4d4y5lN7MnQGr2pyRdGRjlh4Yilr7wbmfe8LTeeht7fQTKtQG3jXcC
+         XUzON4a4FbJqiAW/CubmFD+LKQZEUZu4NcSo7nD4uudAwpWTjondfrSo1LBUIcRT51Tc
+         BRFE8JzG9Y2Oq6xncCvJa1uXzWaMZLTYxBb+nykA6mM3kvpXoOWQK+Kfn5G9YY5djugT
+         EbE3/uGDYAudFUp8dVObtjXJLdldjKwGZbK4sn8hGjFItraRVDfr6SUPpmrayJdXJpOs
+         czkg9zeejhhX2OQBzRlSbdRPIYxI7qysBJ25kfW3keOJ86ySQHhTKiUCev4BIrVpf10t
+         q+yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694887532; x=1695492332;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DVbOZtDmbMexD/9gCiyvbGFst0WQ8c5NS6OBdsiTSoQ=;
+        b=Csuu3oD9wzt1sG/hrwxyXPJIDR9JkzTCWFYhcgqanLgSeNLWlaXC8s3Fw17nUQofR6
+         3xZmfLyDDUnfurVRxRoMjP8QySho2whMz4NbNmecKiCleXzr5OHJ0v9zVslB8liulJjA
+         T/K45oohMj6BtFD18ihPM5x9GyGyV98g6CeFwgT2oXYn659y1F3qQL91FyV1tsCcCN/z
+         MdqQyXLqWDjWQDBdZq0/O9c37mRnDQAbEIwrhENoYwpz1uBqcVfuHKLRgwlu61zecUrY
+         FwWQDvPbKiMYNIpdzcVcxPt285cYZzxKARzOUCymkJu0Ex/sEN93Nl3THfmBkjCVb+vo
+         wGtg==
+X-Gm-Message-State: AOJu0YzA8FBdNASokITNdu0lop+9xbs+V+dxG8YGHu8I9JrBVQGTxOoo
+        nuGWvUNMGE3KuWRzKrhih78Pc2nvO40=
+X-Google-Smtp-Source: AGHT+IGyzH2yu/6hUHOmL8w1dZVsxgoKTJgQ/SNo/4Bvb7BjabOw8CQtwW8w8VFC81JIqrYXFuDoiQ==
+X-Received: by 2002:a05:600c:500c:b0:401:b53e:6c3e with SMTP id n12-20020a05600c500c00b00401b53e6c3emr4671065wmr.1.1694887531817;
+        Sat, 16 Sep 2023 11:05:31 -0700 (PDT)
+Received: from [10.0.0.26] ([178.160.241.68])
+        by smtp.gmail.com with ESMTPSA id u5-20020a7bc045000000b00402be2666bcsm10732150wmc.6.2023.09.16.11.05.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Sep 2023 11:05:31 -0700 (PDT)
+Message-ID: <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
+Date:   Sat, 16 Sep 2023 22:05:29 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <675b5abd8b40a71c177e9e4e4c92d2d6b1413b9b.1694527316.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] selftests: ALSA: fix warnings in 'test-pcmtest-driver'
+Content-Language: en-US
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:54:40PM +0100, Daniel Golle wrote:
-> MT7988 comes with a built-in 2.5G PHY as well as SerDes lanes to
-> connect external PHYs or transceivers in USXGMII, 10GBase-R, 5GBase-R,
-> 2500Base-X, 1000Base-X and Cisco SGMII interface modes.
+On 9/16/23 19:22, Javier Carrasco wrote:
+> Defining the 'len' variable inside the 'patten_buf' as unsigned
+> makes it more consistent with its actual meaning and the rest of the
+> size variables in the test. Moreover, this removes an implicit
+> conversion in the fscanf function call.
+>
+
+Considering the fact that the pattern buffer length can't be negative or 
+larger that 4096, I really don't think that it is a necessary change.
+
+> Additionally, remove the unused variable 'it' from the reset_ioctl test.
 > 
-> Implement support for configuring for the new paths to SerDes interfaces
-> and the internal 2.5G PHY.
-> 
-> Add USXGMII PCS driver for 10GBase-R, 5GBase-R and USXGMII mode, and
-> setup the new PHYA on MT7988 to access the also still existing old
-> LynxI PCS for 1000Base-X, 2500Base-X and Cisco SGMII interface modes.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+
+Your patches should always contain only one logical change. If you, for 
+instance, remove redundant blank lines, combining it with something else 
+is fine, but otherwise you should split the changes up.
+
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 > ---
-> Changes since RFC v2:
->  * read PCS_RX_STATUS0 register to avoid bogus link-up
->    (recommended by mtk devs)
->  * use parenthese to fix evaluation order
->    (Simon Horman reported clang warning)
->  * fix allocation size of usxgmii_pcs
->    (Simon Horman reported Smatch warning)
->  * always set USXGMII_AN_ENABLE bit in USXGMII mode
->    (it's what the vendor driver does and USXGMII doesn't seem to work
->     at all otherwise, we may need to manually set rate matching registers
->     if we don't use AN, but this isn't implemented at this point)
+> Defining the 'len' variable inside the 'patten_buf' as unsigned
+> makes it more consistent with its actual meaning and the rest of the
+> size variables in the test. Moreover, this removes an implicit
+> conversion in the fscanf function call.
 > 
-> Changes since initial RFC:
->  * set missing neg_mode = true for usxgmii pcs
->  * use phylink_decode_usxgmii_word instead of open coding
-> 
->  drivers/net/ethernet/mediatek/Kconfig        |  16 +
->  drivers/net/ethernet/mediatek/Makefile       |   1 +
->  drivers/net/ethernet/mediatek/mtk_eth_path.c | 123 +++-
->  drivers/net/ethernet/mediatek/mtk_eth_soc.c  | 182 ++++-
->  drivers/net/ethernet/mediatek/mtk_eth_soc.h  | 232 +++++-
->  drivers/net/ethernet/mediatek/mtk_usxgmii.c  | 702 +++++++++++++++++++
->  6 files changed, 1225 insertions(+), 31 deletions(-)
->  create mode 100644 drivers/net/ethernet/mediatek/mtk_usxgmii.c
-> 
-> diff --git a/drivers/net/ethernet/mediatek/Kconfig b/drivers/net/ethernet/mediatek/Kconfig
-> index da0db417ab690..b942b4622d146 100644
-> --- a/drivers/net/ethernet/mediatek/Kconfig
-> +++ b/drivers/net/ethernet/mediatek/Kconfig
-> @@ -25,6 +25,22 @@ config NET_MEDIATEK_SOC
->  	  This driver supports the gigabit ethernet MACs in the
->  	  MediaTek SoC family.
->  
-> +config NET_MEDIATEK_SOC_USXGMII
-> +	bool "Support USXGMII SerDes on MT7988"
-> +	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
-> +	def_bool NET_MEDIATEK_SOC != n
-> +	help
-> +	  Include support for 10GE SerDes which can be found on MT7988.
-> +	  If this kernel should run on SoCs with 10 GBit/s Ethernet you
-> +	  will need to select this option to use GMAC2 and GMAC3 with
-> +	  external PHYs, SFP(+) cages in 10GBase-R, 5GBase-R or USXGMII
-> +	  interface modes.
-> +
-> +	  Note that as the 2500Base-X/1000Base-X/Cisco SGMII SerDes PCS
-> +	  unit (MediaTek LynxI) in MT7988 is connected via the new 10GE
-> +	  SerDes, you will also need to select this option in case you
-> +	  want to use any of those SerDes modes.
-> +
->  config NET_MEDIATEK_STAR_EMAC
->  	tristate "MediaTek STAR Ethernet MAC support"
->  	select PHYLIB
+> Additionally, remove the unused variable 'it' from the reset_ioctl test.
 
-...
+You don't need this text here. Usually it is the place for changelog 
+between patch versions if we have more than one version of the patch. 
+For instance, if you send a patch V2, it could look like this:
 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_usxgmii.c b/drivers/net/ethernet/mediatek/mtk_usxgmii.c
+Signed-off-by: ...
+---
+V1 -> V2:
+- Improve something
+- Add something
 
-...
+So, don't repeat the commit message here :)
 
-> +static void mtk_usxgmii_pcs_get_state(struct phylink_pcs *pcs,
-> +				      struct phylink_link_state *state)
-> +{
-> +	struct mtk_usxgmii_pcs *mpcs = pcs_to_mtk_usxgmii_pcs(pcs);
-> +	struct mtk_eth *eth = mpcs->eth;
-> +	struct mtk_mac *mac = eth->mac[mtk_xgmii2mac_id(eth, mpcs->id)];
-> +	u32 val = 0;
-> +
-> +	regmap_read(mpcs->regmap, RG_PCS_AN_CTRL0, &val);
-> +	if (FIELD_GET(USXGMII_AN_ENABLE, val)) {
-> +		/* Refresh LPA by inverting LPA_LATCH */
-> +		regmap_read(mpcs->regmap, RG_PCS_AN_STS0, &val);
-> +		regmap_update_bits(mpcs->regmap, RG_PCS_AN_STS0,
-> +				   USXGMII_LPA_LATCH,
-> +				   !(val & USXGMII_LPA_LATCH));
-> +
-> +		regmap_read(mpcs->regmap, RG_PCS_AN_STS0, &val);
-> +
-> +		phylink_decode_usxgmii_word(state, FIELD_GET(USXGMII_PCS_AN_WORD,
-> +							     val));
-> +
-> +		state->interface = mpcs->interface;
-> +	} else {
-> +		val = mtk_r32(mac->hw, MTK_XGMAC_STS(mac->id));
-> +
-> +		if (mac->id == MTK_GMAC2_ID)
-> +			val >>= 16;
-> +
-> +		switch (FIELD_GET(MTK_USXGMII_PCS_MODE, val)) {
-> +		case 0:
-> +			state->speed = SPEED_10000;
-> +			break;
-> +		case 1:
-> +			state->speed = SPEED_5000;
-> +			break;
-> +		case 2:
-> +			state->speed = SPEED_2500;
-> +			break;
-> +		case 3:
-> +			state->speed = SPEED_1000;
-> +			break;
-> +		}
-> +
-> +		state->interface = mpcs->interface;
-> +		state->link = FIELD_GET(MTK_USXGMII_PCS_LINK, val);
-> +		state->duplex = DUPLEX_FULL;
-> +	}
-> +
-> +	/* Refresh USXGMII link status by toggling RG_PCS_RX_STATUS_UPDATE */
-> +	regmap_set_bits(mpcs->regmap, RG_PCS_RX_STATUS0, RG_PCS_RX_STATUS_UPDATE);
-> +	ndelay(1020);
-> +	regmap_clear_bits(mpcs->regmap, RG_PCS_RX_STATUS0, RG_PCS_RX_STATUS_UPDATE);
-> +	ndelay(1020);
-> +
-> +	/* Read USXGMII link status */
-> +	regmap_read(mpcs->regmap, RG_PCS_RX_STATUS0, &val);
-> +	state->link = state->link && FIELD_GET(RG_PCS_RX_LINK_STATUS, val);
-> +
-> +	/* Continuously repeat re-configuration sequence until link comes up */
-> +	if (!state->link)
-> +		mtk_usxgmii_pcs_config(pcs, mpcs->neg_mode,
-> +				       state->interface, NULL, false);
-> +}
+Anyway, great job! I believe this test could be enhanced in lots of 
+ways, so I look forward to seeing new patches related to it from you :)
 
-Hi Daniel,
-
-I feel that I'm missing something obvious, but with this patch applied,
-when building with allmodconfig for both x86_64 and arm64 the build fails
-reporting that RG_PCS_RX_STATUS0, RG_PCS_RX_STATUS_UPDATE and
-RG_PCS_RX_LINK_STATUS are undefined.
-
-...
+--
+Kind regards,
+Ivan Orlov
