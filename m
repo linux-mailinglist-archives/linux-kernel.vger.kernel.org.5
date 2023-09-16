@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD087A2EF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411967A2EF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjIPJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S238315AbjIPJS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238315AbjIPJO0 (ORCPT
+        with ESMTP id S232127AbjIPJS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:14:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A071173B
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:14:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CCAC433C7;
-        Sat, 16 Sep 2023 09:14:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694855661;
-        bh=GdGIL53lm5iv/mox0ahLK0T+iKNQXpwOmFGuHh0bLKI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MXFjs8+pBJZdHwmuPF39Dgwiac3x3AZ6Ss001Xqa4bdVx5TwxJZjc+2e08dgidLqf
-         a1ThGwqoJ6cAu9E0MeCHJLx4YOr4hm9Z4mcrWe/AUeICdzvrfMbZbi2UcDrqEh1tJu
-         WK2k44+EDyhxS10IwH49j77ngj+JZcI23btS3KkdtAZqkUiiUMQxMS/U0aQ0eZ9YOd
-         k1fEulNFIvO4rcGn6pWtQ7eDvtckKZ5CJIrZVrbRcmjwKpWfQ8W4iomNjJpwNeTJuf
-         6gRJg40669dhp8j//RhdpTdWlIC4Q/Wrs9uP6kOb5PQrs2tS15Xl/YQFaiYnQp7g/i
-         uoD7BOXntteuw==
-From:   Conor Dooley <conor@kernel.org>
-To:     linux-riscv@lists.infradead.org
-Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] riscv: dts: allwinner: remove address-cells from intc node
-Date:   Sat, 16 Sep 2023 10:14:00 +0100
-Message-Id: <20230916-saddling-dastardly-8cf6d1263c24@spud>
-X-Mailer: git-send-email 2.39.2
+        Sat, 16 Sep 2023 05:18:28 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E092173C;
+        Sat, 16 Sep 2023 02:18:17 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RnljX4Rj2ztS5B;
+        Sat, 16 Sep 2023 17:13:52 +0800 (CST)
+Received: from ubuntu2204.huawei.com (10.67.174.22) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 16 Sep 2023 17:18:02 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] perf test: Fix test-record-dummy-C0 failure for supported PERF_FORMAT_LOST feature kernel
+Date:   Sat, 16 Sep 2023 09:16:41 +0000
+Message-ID: <20230916091641.776031-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1512; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=UgmedOCSd3V8sGIbZthMv9VrCmYnN+opWlLsZB5DVno=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKmshVfr/vQqXF5o7fZG0oplI5uJspPEknN7nj39fsdMy ckhYXlFRykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACbizMbwT8U7bukPz22JO/Yt to7Y7bVftroz1N7/sa+Obo/PthIJK4b/NVf+PvkQ5LS8NWG25eMLWp3N3x9XHX96bs379guOHle SGQA=
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.22]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+For kernel that supports PERF_FORMAT_LOST, attr->read_format has
+PERF_FORMAT_LOST bit. Update expected value of
+attr->read_format of test-record-dummy-C0 for this scenario.
 
-A recent submission [1] from Rob has added additionalProperties: false
-to the interrupt-controller child node of RISC-V cpus, highlighting that
-the D1 DT has been incorrectly using #address-cells since its
-introduction. It has no child nodes, so #address-cells is not needed.
-Remove it.
+Before:
 
-Fixes: 077e5f4f5528 ("riscv: dts: allwinner: Add the D1/D1s SoC devicetree")
-Link: https://patchwork.kernel.org/project/linux-riscv/patch/20230915201946.4184468-1-robh@kernel.org/ [1]
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+  # ./perf test 17 -vv
+   17: Setup struct perf_event_attr                                    :
+  --- start ---
+  test child forked, pid 1609441
+  <SNIP>
+  running './tests/attr/test-record-dummy-C0'
+    'PERF_TEST_ATTR=/tmp/tmpm3s60aji ./perf record -o /tmp/tmpm3s60aji/perf.data --no-bpf-event -e dummy -C 0 kill >/dev/null 2>&1' ret '1', expected '1'
+  expected read_format=4, got 20
+  FAILED './tests/attr/test-record-dummy-C0' - match failure
+  test child finished with -1
+  ---- end ----
+  Setup struct perf_event_attr: FAILED!
+
+After:
+
+  # ./perf test 17 -vv
+   17: Setup struct perf_event_attr                                    :
+  --- start ---
+  test child forked, pid 1609441
+  <SNIP>
+  running './tests/attr/test-record-dummy-C0'
+    'PERF_TEST_ATTR=/tmp/tmppa9vxcb7 ./perf record -o /tmp/tmppa9vxcb7/perf.data --no-bpf-event -e dummy -C 0 kill >/dev/null 2>&1' ret '1', expected '1'
+  <SNIP>
+  test child finished with 0
+  ---- end ----
+  Setup struct perf_event_attr: Ok
+
+Reported-by: Namhyung Kim <namhyung@kernel.org>
+Closes: https://lore.kernel.org/all/CAM9d7cgNH2+zhSAmA3en_6as915UsF25MoLbfjE350tAP43Bog@mail.gmail.com/
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Conor Dooley <conor+dt@kernel.org>
-CC: Chen-Yu Tsai <wens@csie.org>
-CC: Jernej Skrabec <jernej.skrabec@gmail.com>
-CC: Samuel Holland <samuel@sholland.org>
-CC: devicetree@vger.kernel.org
-CC: linux-riscv@lists.infradead.org
-CC: linux-sunxi@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
----
- arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/tests/attr/test-record-dummy-C0 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-index 8275630af977..b8684312593e 100644
---- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-@@ -30,7 +30,6 @@ cpu0: cpu@0 {
- 			cpu0_intc: interrupt-controller {
- 				compatible = "riscv,cpu-intc";
- 				interrupt-controller;
--				#address-cells = <0>;
- 				#interrupt-cells = <1>;
- 			};
- 		};
+diff --git a/tools/perf/tests/attr/test-record-dummy-C0 b/tools/perf/tests/attr/test-record-dummy-C0
+index 83ca4e373acd..576ec48b3aaf 100644
+--- a/tools/perf/tests/attr/test-record-dummy-C0
++++ b/tools/perf/tests/attr/test-record-dummy-C0
+@@ -17,7 +17,7 @@ sample_period=4000
+ # PERF_SAMPLE_PERIOD
+ # + PERF_SAMPLE_CPU added by -C 0
+ sample_type=391
+-read_format=4
++read_format=4|20
+ disabled=0
+ inherit=1
+ pinned=0
 -- 
-2.39.2
+2.34.1
 
