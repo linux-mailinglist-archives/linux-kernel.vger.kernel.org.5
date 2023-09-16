@@ -2,138 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA657A30F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D634C7A3100
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238817AbjIPOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 10:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
+        id S235519AbjIPO67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 10:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjIPOqr (ORCPT
+        with ESMTP id S229616AbjIPO6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 10:46:47 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5294218E;
-        Sat, 16 Sep 2023 07:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=kKrlL3psbhaCacm+GqwkX8wPmM3l79IE3hZOV3TRBaI=; b=zE
-        HVhZz4uTqMJMVJcu3KYGmi2MLjVRMMHNyLX6kcjia1n2F2IQc5io9HeXGOfGGKvZH8iRZIPVZcp77
-        LYzk7HhHXaOsCZo9gQEC4pSqcpkLutxR9IK8JXRLqlbCiDWp1ZE+40PSHsw0ZI0x9t45osDZMRWM0
-        Cd2D5NLvGyYD+O8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qhWZ9-006dsL-DM; Sat, 16 Sep 2023 16:46:35 +0200
-Date:   Sat, 16 Sep 2023 16:46:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Louis-Marie <rauline.lm@protonmail.com>,
-        Linux USB <linux-usb@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Simon Horman <horms@kernel.org>,
-        Antonio Napolitano <anton@polit.no>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andrew Gaul <gaul@gaul.org>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Jean-Francois Le Fillatre <jflf_kernel@gmx.com>,
-        Dennis Wassenberg <dennis.wassenberg@secunet.com>,
-        Nicolas Dumazet <ndumazet@google.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>,
-        Hannu Hartikainen <hannu@hrtk.in>,
-        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>
-Subject: Re: Lenovo Hybrid Dock MAC passtrough patch
-Message-ID: <a4d79eb6-ebab-4a7e-9b57-81c8e68b7c41@lunn.ch>
-References: <guK8MKcjWbPsZ1LuRVYxFf7WfsWa025shmVj7iq289LHf59N6i6OlkD0N9KhICJzbMfFW2aXYbguZ1NtZNn6PlA_-JvF3k7uJtG89THdZ6w=@protonmail.com>
- <ZQWcQTQahx-QEGDl@debian.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Sat, 16 Sep 2023 10:58:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F72819F;
+        Sat, 16 Sep 2023 07:58:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE970C433C8;
+        Sat, 16 Sep 2023 14:58:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694876317;
+        bh=dX6K8/8XTSFKCE9NxfqH47czugynVM+kjIOAxFuFB9s=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=YjCrlxY1jQcRkHX+Hldo+cnX3j9K2He5UwSQk4NsQe5K4qCH8v+6AvS5OambCyNVi
+         UMO/Fq8TTQUxh1RquceijxjT8DaCPaqdP9hEp2O31bnA08K/Q/J7tRVBY2c9TIc3Yz
+         gLDgVuZ88cFu8SQ1juqlnaQZ/yPOc1RlDg6OFsagLql9SkeM/ZtEvH8huiIX4N45kJ
+         C5uOQA0JQ+I0L/LQUDhyl19yIAPLNOuOtCRO8XHXsepTW4dkvZPh4A0iqwLHddO1/O
+         dQCrMXpXXxitmlKHJmu0SQ/6g5xeeW6PSEyn7pHZnfceNBCBHtnykGm+I2vKXF1rsN
+         NH2hhZg+QV5Xw==
+Received: (nullmailer pid 1637982 invoked by uid 1000);
+        Sat, 16 Sep 2023 14:58:30 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQWcQTQahx-QEGDl@debian.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc:     Marcin Wojtas <mw@semihalf.com>, erkin.bozoglu@xeront.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <clement.leger@bootlin.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Steen He gelund <steen.hegelund@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>, mithat.guner@xeront.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        devicetree@vger.kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        John Crispin <john@phrozen.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        DENG Qingfang <dqfext@gmail.com>, Felix Fietkau <nbd@nbd.name>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        linux-mediatek@lists.infradead.org,
+        Eric Dumazet <edumazet@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Alexandr e Torgue <alexandre.torgue@foss.st.com>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Woojung Huh <Woojung.Huh@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230916110902.234273-8-arinc.unal@arinc9.com>
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <20230916110902.234273-8-arinc.unal@arinc9.com>
+Message-Id: <169487630940.1637895.12001153052612710003.robh@kernel.org>
+Subject: Re: [PATCH net-next v2 07/10] dt-bindings: net: enforce phylink
+ bindings on certain ethernet controllers
+Date:   Sat, 16 Sep 2023 09:58:30 -0500
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 07:14:57PM +0700, Bagas Sanjaya wrote:
-> On Sat, Sep 16, 2023 at 11:41:49AM +0000, Louis-Marie wrote:
-> > Hi,
-> > I would like to submit a patch for enabling mac passtrough for the Lenovo Hybrid Dock.
-> > Tested with Fedora 6.4.12.
-> > 
-> > 
-> > 
-> > diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.cindex 0c13d9950cd8..02e6404bf6ea 100644
-> > --- a/drivers/net/usb/r8152.c
-> > +++ b/drivers/net/usb/r8152.c
-> > @@ -781,6 +781,7 @@ enum rtl8152_flags {
-> >  #define DEVICE_ID_THINKPAD_USB_C_DONGLE            0x720c
-> >  #define DEVICE_ID_THINKPAD_USB_C_DOCK_GEN2     0xa387
-> >  #define DEVICE_ID_THINKPAD_USB_C_DOCK_GEN3     0x3062
-> > +#define DEVICE_ID_THINKPAD_HYBRID_USB_C_DOCK       0xa359
-> > 
-> >  struct tally_counter {
-> >     __le64  tx_packets;
-> > @@ -9583,6 +9584,7 @@ static bool rtl8152_supports_lenovo_macpassthru(struct usb_device *udev)
-> >         case DEVICE_ID_THINKPAD_THUNDERBOLT3_DOCK_GEN2:
-> >         case DEVICE_ID_THINKPAD_USB_C_DOCK_GEN2:
-> >         case DEVICE_ID_THINKPAD_USB_C_DOCK_GEN3:
-> > +       case DEVICE_ID_THINKPAD_HYBRID_USB_C_DOCK:
-> >         case DEVICE_ID_THINKPAD_USB_C_DONGLE:
-> >             return 1;
-> >         }
-> > @@ -9832,6 +9834,7 @@ static const struct usb_device_id rtl8152_table[] = {
-> >     { USB_DEVICE(VENDOR_ID_LENOVO,  0x7214) },
-> >     { USB_DEVICE(VENDOR_ID_LENOVO,  0x721e) },
-> >     { USB_DEVICE(VENDOR_ID_LENOVO,  0xa387) },
-> > +   { USB_DEVICE(VENDOR_ID_LENOVO,  0xa359) },
-> >     { USB_DEVICE(VENDOR_ID_LINKSYS, 0x0041) },
-> >     { USB_DEVICE(VENDOR_ID_NVIDIA,  0x09ff) },
-> >     { USB_DEVICE(VENDOR_ID_TPLINK,  0x0601) },
-> > diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> > index 15e9bd180a1d..ad98c8ffbc69 100644
-> > --- a/drivers/usb/core/quirks.c
-> > +++ b/drivers/usb/core/quirks.c
-> > @@ -470,6 +470,9 @@ static const struct usb_device_id usb_quirk_list[] = {
-> >     /* Lenovo ThinkPad USB-C Dock Gen2 Ethernet (RTL8153 GigE) */
-> >     { USB_DEVICE(0x17ef, 0xa387), .driver_info = USB_QUIRK_NO_LPM },
-> > 
-> > +   /* Lenovo ThinkPad Hydrid USB-C Dock */
-> > +   { USB_DEVICE(0x17ef, 0xa359), .driver_info = USB_QUIRK_NO_LPM },
-> > +
-> >     /* BUILDWIN Photo Frame */
-> >     { USB_DEVICE(0x1908, 0x1315), .driver_info =
-> >             USB_QUIRK_HONOR_BNUMINTERFACES },
-> > 
-> > Signed-off-by: Louis-Marie Rauline <rauline.lm@protonmail.com>
-> > 
-> 
-> Can you send above suggestion as formal patch instead? See
-> Documentation/process/submitting-patches.rst for how to properly submit
-> patches. And also, use git-send-email(1) when sending them so that patch
-> corruption (like tabs converting to spaces and line wrapping as in above
-> diff) doesn't occur.
-> 
-> Thanks.
 
-This appears to do more than MAC passthrough, e.g. adding a quirk for
-LPM. Please split the patch up. The MAC passthrough part is likely to
-be rejected, because MAC pass through is a mess, but the quirk part
-looks O.K.
+On Sat, 16 Sep 2023 14:08:59 +0300, ArÄ±nÃ§ ÃœNAL wrote:
+> Phylink bindings are required for ethernet controllers that utilise
+> phylink_fwnode_phy_connect() directly or through phylink_of_phy_connect(),
+> and register OF-based only MDIO buses, if they register any.
+> 
+> All the drivers that utilise phylink_fwnode_phy_connect() directly or
+> through phylink_of_phy_connect():
+> 
+> - DSA
+> - drivers/net/ethernet/mscc/ocelot_net.c
+>   - mscc,vsc7514-switch.yaml
+> - drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c
+>   - microchip,sparx5-switch.yaml
+> - drivers/net/ethernet/altera/altera_tse_main.c
+>   - altr,tse.yaml
+> - drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+>   - xlnx,axi-ethernet.yaml
+> - drivers/net/ethernet/mediatek/mtk_eth_soc.c
+>   - mediatek,net.yaml
+> - drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>   - ti,k3-am654-cpsw-nuss.yaml
+> - drivers/net/ethernet/atheros/ag71xx.c
+>   - qca,ar71xx.yaml
+> - drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+>   - fsl,fman-dtsec.yaml
+> - drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+>   - microchip,lan966x-switch.yaml
+> - drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+>   - marvell,pp2.yaml
+> - drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
+>   - fsl,qoriq-mc-dpmac.yaml
+> - drivers/net/ethernet/cadence/macb_main.c
+>   - cdns,macb.yaml
+>   - Can register non-OF-based bus.
+> - drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>   - snps,dwmac.yaml
+>   - Can register non-OF-based bus.
+> - drivers/net/ethernet/marvell/mvneta.c
+>   - marvell-armada-370-neta.txt
+> - drivers/net/ethernet/freescale/enetc/enetc.c
+>   - fsl-enetc.txt
+> 
+> RFC: The drivers marked with "can register non-OF-based bus" seem to search
+> the MDIO bus to connect the PHY to the MAC using phylink_connect_phy()
+> and/or phy_find_first() if phylink bindings don't exist. Should we enforce
+> phylink bindings on their schemas regardless?
+> 
+> DSA, like any other driver utilising the Linux MDIO infrastructure,
+> can register a bus. On certain conditions, it registers the MDIO
+> bus of the switch it controls non-OF-based.
+> 
+> We can know when DSA won't create any non-OF-based buses. That leaves us
+> with only OF-based buses in which case we can enforce phylink bindings for
+> user ports. The bindings are already enforced for shared ports so we can
+> enforce the bindings for all ports on the switch schemas which will achieve
+> the same result with fewer lines.
+> 
+> By looking at whether the mdio child node exists and what is explained on
+> it, we can enforce phylink bindings.
+> 
+> - mscc,vsc7514-switch.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - arrow,xrs700x.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - brcm,b53.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - brcm,sf2.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - hirschmann,hellcreek.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - mediatek,mt7530.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - microchip,ksz.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - microchip,lan937x.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - mscc,ocelot.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - nxp,sja1105.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - qca8k.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - realtek.yaml
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - renesas,rzn1-a5psw.yaml
+>   - Enforce phylink bindings for all ports.
+> 
+> - ar9331.txt
+>   - Enforce phylink bindings for all ports.
+> 
+> - lan9303.txt
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - lantiq-gswip.txt
+>   - Enforce phylink bindings for all ports.
+> 
+> - marvell.txt
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> - vitesse,vsc73xx.txt
+>   - Enforce phylink bindings for all ports if "mdio" is defined.
+> 
+> I will convert the non json-schema documents accordingly.
+> 
+> Signed-off-by: ArÄ±nÃ§ ÃœNAL <arinc.unal@arinc9.com>
+> ---
+>  .../devicetree/bindings/net/altr,tse.yaml     |  1 +
+>  .../devicetree/bindings/net/cdns,macb.yaml    |  1 +
+>  .../bindings/net/dsa/arrow,xrs700x.yaml       |  6 ++
+>  .../devicetree/bindings/net/dsa/brcm,b53.yaml |  9 +++
+>  .../devicetree/bindings/net/dsa/brcm,sf2.yaml |  6 +-
+>  .../net/dsa/hirschmann,hellcreek.yaml         |  6 ++
+>  .../bindings/net/dsa/mediatek,mt7530.yaml     |  9 +++
+>  .../bindings/net/dsa/microchip,ksz.yaml       |  9 +++
+>  .../bindings/net/dsa/microchip,lan937x.yaml   |  9 +++
+>  .../bindings/net/dsa/mscc,ocelot.yaml         |  6 ++
+>  .../bindings/net/dsa/nxp,sja1105.yaml         |  1 +
+>  .../devicetree/bindings/net/dsa/qca8k.yaml    |  9 +++
+>  .../devicetree/bindings/net/dsa/realtek.yaml  | 57 +++++++++++--------
+>  .../bindings/net/dsa/renesas,rzn1-a5psw.yaml  |  2 +-
+>  .../bindings/net/fsl,fman-dtsec.yaml          |  1 +
+>  .../bindings/net/fsl,qoriq-mc-dpmac.yaml      |  1 +
+>  .../devicetree/bindings/net/marvell,pp2.yaml  |  4 +-
+>  .../devicetree/bindings/net/mediatek,net.yaml |  1 +
+>  .../net/microchip,lan966x-switch.yaml         |  4 +-
+>  .../bindings/net/microchip,sparx5-switch.yaml |  5 +-
+>  .../bindings/net/mscc,vsc7514-switch.yaml     |  5 ++
+>  .../devicetree/bindings/net/qca,ar71xx.yaml   |  1 +
+>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+>  .../bindings/net/ti,k3-am654-cpsw-nuss.yaml   |  4 +-
+>  .../bindings/net/xlnx,axi-ethernet.yaml       |  3 +-
+>  25 files changed, 130 insertions(+), 31 deletions(-)
+> 
 
-      Andrew
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@5800a000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@5800a000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode', 'snps,axi-config', 'snps,pbl', 'snps,tso' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@5800a000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40028000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40028000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode', 'snps,mixed-burst', 'snps,pbl' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40028000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40027000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40027000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode', 'snps,pbl' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/stm32-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.example.dtb: ethernet@40027000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/cdns,macb.example.dtb: ethernet@fffc4000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/cdns,macb.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,pp2.example.dtb: ethernet@f0000: ethernet-port@0: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/marvell,pp2.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,pp2.example.dtb: ethernet@f0000: ethernet-port@1: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/marvell,pp2.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,pp2.example.dtb: ethernet@0: ethernet-port@0: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/marvell,pp2.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,pp2.example.dtb: ethernet@0: ethernet-port@1: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/marvell,pp2.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nxp,dwmac-imx.example.dtb: ethernet@30bf0000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/nxp,dwmac-imx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nxp,dwmac-imx.example.dtb: ethernet@30bf0000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode', 'reg' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/nxp,dwmac-imx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/nxp,dwmac-imx.example.dtb: ethernet@30bf0000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/rockchip-dwmac.example.dtb: ethernet@ff290000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/rockchip-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/rockchip-dwmac.example.dtb: ethernet@ff290000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode', 'reg' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/rockchip-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dtb: ethernet@c9410000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/amlogic,meson-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dtb: ethernet@c9410000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'phy-mode' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/amlogic,meson-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dtb: ethernet@c9410000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/snps,dwmac.example.dtb: ethernet@e0800000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/allwinner,sun7i-a20-gmac.example.dtb: ethernet@1c50000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/allwinner,sun7i-a20-gmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/allwinner,sun7i-a20-gmac.example.dtb: ethernet@1c50000: Unevaluated properties are not allowed ('phy-mode' was unexpected)
+	from schema $id: http://devicetree.org/schemas/net/allwinner,sun7i-a20-gmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mediatek-dwmac.example.dtb: ethernet@1101c000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mediatek-dwmac.example.dtb: ethernet@1101c000: 'anyOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'pcs-handle' is a required property
+	'tbi-handle' is a required property
+	'phy-handle' is a required property
+	'sfp' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/mediatek-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mediatek-dwmac.example.dtb: ethernet@1101c000: Unevaluated properties are not allowed ('interrupt-names', 'interrupts', 'mac-address', 'phy-mode', 'reg', 'snps,reset-delays-us', 'snps,reset-gpio', 'snps,rxpbl', 'snps,txpbl' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/mediatek-dwmac.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230916110902.234273-8-arinc.unal@arinc9.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
