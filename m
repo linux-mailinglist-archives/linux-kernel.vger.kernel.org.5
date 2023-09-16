@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981D37A3359
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 01:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F6C7A3360
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 01:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbjIPXJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 19:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        id S234932AbjIPXa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 19:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjIPXIb (ORCPT
+        with ESMTP id S229713AbjIPXaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 19:08:31 -0400
-Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC42CD5;
-        Sat, 16 Sep 2023 16:08:25 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by sonata.ens-lyon.org (Postfix) with ESMTP id D89D32013C;
-        Sun, 17 Sep 2023 01:08:09 +0200 (CEST)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id o1eLfS2tQsgw; Sun, 17 Sep 2023 01:08:09 +0200 (CEST)
-Received: from begin (lfbn-bor-1-1163-184.w92-158.abo.wanadoo.fr [92.158.138.184])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sonata.ens-lyon.org (Postfix) with ESMTPSA id 7FDB520137;
-        Sun, 17 Sep 2023 01:08:08 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.96)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1qheOW-007HHT-04;
-        Sun, 17 Sep 2023 01:08:08 +0200
-Date:   Sun, 17 Sep 2023 01:08:07 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>, speakup@linux-speakup.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] accessibility: speakup: refactor deprecated strncpy
-Message-ID: <20230916230807.motaqyb5gqzqjvub@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>, speakup@linux-speakup.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20230824-strncpy-drivers-accessibility-speakup-kobjects-c-v1-1-3a1ef1221e90@google.com>
- <202308251439.36BC33ADB2@keescook>
- <CAFhGd8r6A4VH5C=yF1WHKEPY86oh6PEzt6wuxPxsJAD0XKfrsQ@mail.gmail.com>
+        Sat, 16 Sep 2023 19:30:14 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD20CD1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:08 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-402d499580dso36058345e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 16:30:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694907007; x=1695511807; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/1IXi3ynm9dqjmx4LzLlP/fpKYDMXOqkWbXcAvWGPIc=;
+        b=DUZDsk7EP/CsDE78p9ChwRhAGI2FPU/6yppBFiHm0LtSowgqRd6c2i+K+AiZillgdU
+         qP+DIIhgeZFne9g1sobnIbwdvrgYKsq0/Q5Vc5LCfvFvRkW5NfaT57ZJwMMBE19Cw9Be
+         WejirkHahXM+RMzZwTjjNuhurTqUE3FrKTvmEY2ztfgRifalI3pTVWHKkTM2h20Et0Qr
+         3t223lHqgnA0Li84evcf1HhqsPhmu2eofIDFSL9DQvVMJBORMdNKnwWVueIHlph/hWlB
+         Z85BlsoJMKg4HeUXsQIKV5rWewLLxKEjPCWGO7kXlnLXJigOBjUMIYyuqCQxY16HTXHT
+         UntQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694907007; x=1695511807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/1IXi3ynm9dqjmx4LzLlP/fpKYDMXOqkWbXcAvWGPIc=;
+        b=xPW/+I99xbpRMbeO/SKnfZnk/tDMMSsLnDttbioVc42iHy88AjWknqDAd8L5H4dWmZ
+         aWsLuHVod2WQpqlzjvXK0wows0zqdWRnTI+Gefyw9eYFLseo6hEV0URRaklLXLXjvALV
+         X9wwMD/IcAFX5svpzEWdZsr93aUdi+fkPIduThlnR11RnpPVtgVRpYfivJSL7qIHwMTw
+         pHw9vg6sPaaqAtUusFVTVPbEgqIp0aiHExxCcJlE+r3Xs0TuLkRjoWIc7uGoAaZEGspF
+         vbM+Mb9DglnoEF9tf4noth+NASbQXnAGbM36z2OPT8QK8055XDdQGzWu0DzooIgdcOtT
+         cEtQ==
+X-Gm-Message-State: AOJu0YwYBi2wWogNnH4jPE+2SXoRBbzCIZBQCriqyhl8FE9aX5oAGOqM
+        Xto6QgClVl1tVfDNiTPs1zs6dw==
+X-Google-Smtp-Source: AGHT+IGzPvTVPbOR1QIDXlfpjq4SH+gQjEgRCh3/u3A8oFDPndGI2KB6fIFzVvxIT94MnXpphFDFtw==
+X-Received: by 2002:a7b:c858:0:b0:3fb:a102:6d7a with SMTP id c24-20020a7bc858000000b003fba1026d7amr4415542wml.28.1694907006712;
+        Sat, 16 Sep 2023 16:30:06 -0700 (PDT)
+Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id b14-20020a05600c11ce00b003fee8502999sm11203929wmi.18.2023.09.16.16.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 16:30:06 -0700 (PDT)
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Wei Wang <wvw@google.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+        Hank <han.lin@mediatek.com>,
+        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
+        Hongyan Xia <hongyan.xia2@arm.com>,
+        Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH v5 0/3] Fix a couple of corner cases in feec() when using uclamp_max
+Date:   Sun, 17 Sep 2023 00:29:52 +0100
+Message-Id: <20230916232955.2099394-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFhGd8r6A4VH5C=yF1WHKEPY86oh6PEzt6wuxPxsJAD0XKfrsQ@mail.gmail.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,89 +75,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Thanks for all the reviews so far!
 
-Justin Stitt, le ven. 25 août 2023 15:41:03 -0700, a ecrit:
-> Thanks for the review Kees and Samuel. Hoping to get this picked-up soon :)
-> 
-> FWIW, I've quickly copy/pasted Kees' suggested refactor of
-> synth_direct_store and rebased against v6.5-rc7 if anyone has the
-> means by which to test it.
-> 
-> TEST PATCH BELOW
-> ---
-> From e7216bca30673a162660c51f8bad3b463d283041 Mon Sep 17 00:00:00 2001
-> From: Justin Stitt <justinstitt@google.com>
-> Date: Fri, 25 Aug 2023 22:32:03 +0000
-> Subject: [PATCH NEEDS TEST] synth_direct_store refactor to use synth_write
-> 
-> I've just copy/pasted Kees' suggestion here [1] and rebased it against
-> 6.5-rc7.
-> 
-> This patch needs testing as it refactors behavior in synth_direct_store.
-> 
-> [1]: https://lore.kernel.org/all/202308251439.36BC33ADB2@keescook/
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Changes in v5:
 
-Tested-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+	* Added Reviewed-by Dietmar Eggemann.
+	* Updated commit messages in patch 1 and 2 as requested by Dietmar.
 
-but please submit it properly :) It was completely mangled in the mail.
+Changes in v4:
 
-> ---
->  drivers/accessibility/speakup/kobjects.c | 25 +++++++++++-------------
->  1 file changed, 11 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/accessibility/speakup/kobjects.c
-> b/drivers/accessibility/speakup/kobjects.c
-> index a7522d409802..0dfdb6608e02 100644
-> --- a/drivers/accessibility/speakup/kobjects.c
-> +++ b/drivers/accessibility/speakup/kobjects.c
-> @@ -413,27 +413,24 @@ static ssize_t synth_direct_store(struct kobject *kobj,
->     struct kobj_attribute *attr,
->     const char *buf, size_t count)
->  {
-> - u_char tmp[256];
-> - int len;
-> - int bytes;
-> - const char *ptr = buf;
-> + char *unescaped;
->   unsigned long flags;
-> 
->   if (!synth)
->   return -EPERM;
-> 
-> - len = strlen(buf);
-> + unescaped = kstrdup(buf, GFP_KERNEL);
-> + if (!unescaped)
-> + return -ENOMEM;
-> +
-> + string_unescape_any_inplace(unescaped);
-> +
->   spin_lock_irqsave(&speakup_info.spinlock, flags);
-> - while (len > 0) {
-> - bytes = min_t(size_t, len, 250);
-> - strncpy(tmp, ptr, bytes);
-> - tmp[bytes] = '\0';
-> - string_unescape_any_inplace(tmp);
-> - synth_printf("%s", tmp);
-> - ptr += bytes;
-> - len -= bytes;
-> - }
-> + synth_write(unescaped, strlen(unescaped));
->   spin_unlock_irqrestore(&speakup_info.spinlock, flags);
-> +
-> + kfree(unescaped);
-> +
->   return count;
->  }
-> 
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
-> 
+	* Added Reviewed-by Vincent Guittot.
+	* Updated sched_compute_energy_tp() to include  max_util and busy_time
+	  as requested by Lukasz.
+
+Changes in v3:
+
+	* Fix sign comparison problem in patch 1 (Thanks Vincent!)
+	* Simplify comparison and remove function in patch 2 (Thanks Dietmar!)
+
+Changes in v2:
+
+	* Use long instead of unsigned long to keep the comparison simple
+	  in spite of being inconsistent with how capacity type.
+	* Fix missing termination parenthesis that caused build error.
+	* Rebase on latest tip/sched/core and Vincent v5 of Unlink misift patch.
+
+v1 link: https://lore.kernel.org/lkml/20230129161444.1674958-1-qyousef@layalina.io/
+v2 link: https://lore.kernel.org/lkml/20230205224318.2035646-1-qyousef@layalina.io/
+v3 link: https://lore.kernel.org/lkml/20230717215717.309174-1-qyousef@layalina.io/
+v4 link: https://lore.kernel.org/lkml/20230821224504.710576-1-qyousef@layalina.io/
+
+In v2 Dietmar has raised concerns about limitation in current EM calculations
+that can end up packing more tasks on a cluster. While this is not ideal
+situation and we need to fix it, but it is another independent problem that is
+not introduced by this fix. I don't see a reason why we should couple them
+rather than work on each problem independently. The packing behavior in
+practice is actually not bad as if something is capped really hard, there's
+a desire to keep them on this less performant clusters.
+
+Patch 1 addresses a bug because forcing a task on a small CPU to honour
+uclamp_max hint means we can end up with spare_capacity = 0; but the logic is
+constructed such that spare_capacity = 0 leads to ignoring this CPU as
+a candidate to compute_energy().
+
+Patch 2 addresses a bug due to an optimization in feec() that could lead to
+ignoring tasks whose uclamp_max = 0 but task_util(0) != 0.
+
+Patch 3 adds a new tracepoint in compute_energy() as it was helpful in
+debugging these two problems.
+
+This is based on tip/sched/core.
+
+Qais Yousef (3):
+  sched/uclamp: Set max_spare_cap_cpu even if max_spare_cap is 0
+  sched/uclamp: Ignore (util == 0) optimization in feec() when
+    p_util_max = 0
+  sched/tp: Add new tracepoint to track compute energy computation
+
+ include/trace/events/sched.h |  5 +++++
+ kernel/sched/core.c          |  1 +
+ kernel/sched/fair.c          | 36 ++++++++++++------------------------
+ 3 files changed, 18 insertions(+), 24 deletions(-)
 
 -- 
-Samuel
----
-Pour une évaluation indépendante, transparente et rigoureuse !
-Je soutiens la Commission d'Évaluation de l'Inria.
+2.34.1
+
