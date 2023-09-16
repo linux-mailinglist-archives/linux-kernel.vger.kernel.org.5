@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0A57A313A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 17:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7067A313D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 17:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbjIPPup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 11:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
+        id S239115AbjIPPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 11:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbjIPPuZ (ORCPT
+        with ESMTP id S238407AbjIPPvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 11:50:25 -0400
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326B9CEA
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 08:50:18 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id hXYkq3WSEUbVihXYkqPVvW; Sat, 16 Sep 2023 17:50:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694879416;
-        bh=Apgbf+4k5j0y245gUGakuZZxFJFzdZ6jheOh94UyP3g=;
-        h=From:To:Cc:Subject:Date;
-        b=Q8rWoivz63vNREMgi47qen5kKm5KBYmXPC9+wiTnsNU0BR0L0+5jxXf7PDZasaVnz
-         8ohvQ7QiIGvPMW7oM6UDkEz1UoiUCfSztkHA56sK2HS+d3pcOXzwY6WGVKSPGG6i3W
-         IzrpVvt9n8Ta9/PI3VF/yAoYXDNO/ikh/c1ZAnmobGbo9w2nsG6bVnazxgw/YWdzbH
-         hEIZkK/glw1ZBa267LkMf41OzHQuaYxUEnrCGUFre8TBfQp8N2nxPjRaDHrk51PRoX
-         6GliQedPc22O89AzjZFflbhY6HcsYGwCiU5/U6KJC4GUnwmiknrThu+hXSQ9wzCLdN
-         3CKIA3VQ5geEQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 16 Sep 2023 17:50:16 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH resend] kstrtox: Remove strtobool()
-Date:   Sat, 16 Sep 2023 17:50:11 +0200
-Message-Id: <87e3cc2547df174cd5af1fadbf866be4ef9e8e45.1694878151.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 16 Sep 2023 11:51:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32199F7;
+        Sat, 16 Sep 2023 08:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q9NosZnRxeft56oj4p2r/NWATsovvrHRZyqFuy7rBbo=; b=HygmhOnBUvsHJeiHPubdfb6ZLL
+        hrfrPa1q2R2TpeY5Ad9/H0TbJtEgaTml9EaeGSj21539hAQJqfKtMQOJ9r2F2KnqPGhePdSCJyR0s
+        ZMgMGUgWo+sLl4xPf3Omm+XgP1gXCJirGlrJp9oiHhOMZacR/s+44GBXYUuDh0Ci/b+qZ00nx+raO
+        oLFtCGoCxtIrvnOXjFdY1f3NhsgMUYB+obMrsjscvx0EHfezQAh3qHadIVrejW2o6A2vAUWuoeM2Y
+        BM6Grx2D+H9d1C32e/gNSxNTNorwHumwKS+bDZvXb80Li/a3gGdpkY330aynHXUPuZXxrtET18XSK
+        lEyjgYEQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhXZL-00H0DC-O8; Sat, 16 Sep 2023 15:50:51 +0000
+Date:   Sat, 16 Sep 2023 16:50:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 02/17] iomap: Protect read_bytes_pending with the
+ state_lock
+Message-ID: <ZQXO27KCTaWvuPPA@casper.infradead.org>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-3-willy@infradead.org>
+ <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion from strtobool() to kstrtobool() is completed.
-So strtobool() can now be removed.
+On Fri, Sep 15, 2023 at 05:11:55PM -0700, Linus Torvalds wrote:
+> I think it ends up looking like this:
+> 
+>   static void iomap_finish_folio_read(struct folio *folio, size_t off,
+>                   size_t len, int error)
+>   {
+>         struct iomap_folio_state *ifs = folio->private;
+>         bool uptodate = true;
+>         bool finished = true;
+> 
+>         if (ifs) {
+>                 unsigned long flags;
+> 
+>                 spin_lock_irqsave(&ifs->state_lock, flags);
+> 
+>                 if (!error)
+>                         uptodate = ifs_set_range_uptodate(folio, ifs,
+> off, len);
+> 
+>                 ifs->read_bytes_pending -= len;
+>                 finished = !ifs->read_bytes_pending;
+>                 spin_unlock_irqrestore(&ifs->state_lock, flags);
+>         }
+> 
+>         if (unlikely(error))
+>                 folio_set_error(folio);
+>         else if (uptodate)
+>                 folio_mark_uptodate(folio);
+>         if (finished)
+>                 folio_unlock(folio);
+>   }
+> 
+> but that was just a quick hack-work by me (the above does, for
+> example, depend on folio_mark_uptodate() not needing the
+> ifs->state_lock, so the shared parts then got moved out).
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v6.6-rc1 has no more reference to strtobool() (except a version local to
-tools/)
+I really like this.  One tweak compared to your version:
 
-The previous post is:
-    https://lore.kernel.org/all/23d2ea6b90579207e87cc1bf64fc4eed1ed9f173.1689885328.git.christophe.jaillet@wanadoo.fr/
----
- include/linux/kstrtox.h | 5 -----
- 1 file changed, 5 deletions(-)
+        bool uptodate = !error;
+...
+        if (error)
+                folio_set_error(folio);
+        if (uptodate)
+                folio_mark_uptodate(folio);
+        if (finished)
+                folio_unlock(folio);
 
-diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
-index 529974e22ea7..7fcf29a4e0de 100644
---- a/include/linux/kstrtox.h
-+++ b/include/linux/kstrtox.h
-@@ -147,9 +147,4 @@ extern long simple_strtol(const char *,char **,unsigned int);
- extern unsigned long long simple_strtoull(const char *,char **,unsigned int);
- extern long long simple_strtoll(const char *,char **,unsigned int);
- 
--static inline int strtobool(const char *s, bool *res)
--{
--	return kstrtobool(s, res);
--}
--
- #endif	/* _LINUX_KSTRTOX_H */
--- 
-2.34.1
+... and then the later patch becomes
 
+	if (finished)
+		folio_end_read(folio, uptodate);
