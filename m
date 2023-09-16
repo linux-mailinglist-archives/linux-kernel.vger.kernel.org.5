@@ -2,288 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 664127A2FA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A567C7A2F8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239218AbjIPLOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 07:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        id S239024AbjIPLMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 07:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239219AbjIPLOR (ORCPT
+        with ESMTP id S239215AbjIPLMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 07:14:17 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A031BD;
-        Sat, 16 Sep 2023 04:14:04 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 89478240005;
-        Sat, 16 Sep 2023 11:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1694862843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HAZCgeoh9KUduxxc51sEyaD/Ww3GnyAUx/PFLTVQyPc=;
-        b=hKK2Wuk79GoaUo/hY/fuO5GNEsYpXvHQTmZHzkmUu1psjYgV5XTyUjTmWeR3yNV65L4Ghz
-        kQB0p3rthYgY0/1iJ1iTHdBtt3XqWLfmGTwb2cQTywTU4YqVAi5uQYhbNk7NK/b0s7wch5
-        o3R6bt5DMAyUXaAkMcviVr7aHL8KquFNdxeplIiYsZKYMMVXrxtHkocr3elHkU4mPcuJqK
-        21vBYwU+gVEk/OLBULj3WcOF61OeP3y7yC+8z+plp1vHHwnnZbaTiVNcvxSGNrMqFtf+FM
-        p6uiuukzlQvtFjbmaBTjXA7kM9QiyQdGrD7nVsUCHlmLE9UgQKwalLOkDla9Pw==
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Marek Vasut <marex@denx.de>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Crispin <john@phrozen.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     Woojung Huh <Woojung.Huh@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH net-next v2 10/10] dt-bindings: net: marvell-armada-370-neta: convert to json-schema
-Date:   Sat, 16 Sep 2023 14:09:02 +0300
-Message-Id: <20230916110902.234273-11-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230916110902.234273-1-arinc.unal@arinc9.com>
-References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+        Sat, 16 Sep 2023 07:12:14 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60E91A3;
+        Sat, 16 Sep 2023 04:11:53 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-570e005c480so1681543eaf.0;
+        Sat, 16 Sep 2023 04:11:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694862713; x=1695467513; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=raj3TFvnsTRGxNUO3J84IQFAMSMyIEU1QWAtfpvgdzg=;
+        b=GR/KI80mTh9BU1MiBXycv3GG6jjJ02aNLdkSp/llq9q8MHUBCT7DXEqzplPQXhJnJ3
+         +Te6LyANJ7AH3Ewf2/mENyE70gAjpL1je0KvJ+ogBlF7ff1U8t2QV97OjoKH/ibewCuB
+         DVFni/77EHGNycBtuNhs1gZVqkmcdmpq4vxOIWigMVyTABNfsicsoJ2YEO6Fn/EhyX2V
+         CCdcASgIPWHLO8w6q7+oQbTN2+Sl3YkR2Y5Q1sFBToULLHEhpI/sDI5tdNMy4z8sc7bT
+         iT2xVP7rrtcGP2NWIUCaxJL+ceiLmlvsC+QytloyBPtdEU4zB9oif8Xey6IVdGr6hHbO
+         Vaqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694862713; x=1695467513;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=raj3TFvnsTRGxNUO3J84IQFAMSMyIEU1QWAtfpvgdzg=;
+        b=kT3D7gljkSdRfslRRudMFUw8Y0KT4AF3nC7PC8qHJwzKyMHqHETcBE4xMJkFoN6ZBk
+         bW3ZW7g7NOSPHaHXtIfOqxf/amERPm2H2prGxaAQ/lC9nm+KSemx7eKd9/Qkp72xi4i5
+         wsLZljp/jO/pO5nHOrEjVPUxJTCl2ZiqgE93bJl5J559Vo56pX9PwaiL5lnCvcJIeLgu
+         BxfGFf9NPB811Ub3ZJH3tavgEDY7jW6jZctQQ9pEF5Evdj5jU9YRkkIqf0PqZv2Z99Ln
+         kOHCK6LOoD6jdmhA3hoa8GzGNBbhUtCduIwGZ3ymjk+3J3XKrSum+QgLKzt4K2p8TLG7
+         R3Yw==
+X-Gm-Message-State: AOJu0YwVIcErM3BkLMtEJnP+qGBUTpC6/VAcWiVU7WUn8yph+O5Qg1Uv
+        WBJmTlvd1RN4o6TxdRrb3El9e4crmlc+t93T83w=
+X-Google-Smtp-Source: AGHT+IEh5zot1C9twPgQH0TCMIzvmtoPp+rkBGKw6bJ/ouiLnnc1kXxpxnamnt+ba+Oaao2HpUSukyQRjS4AH/MtIGE=
+X-Received: by 2002:a05:6870:eaaa:b0:1d5:8d8b:dcc with SMTP id
+ s42-20020a056870eaaa00b001d58d8b0dccmr5278739oap.18.1694862712665; Sat, 16
+ Sep 2023 04:11:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230916091125.3221-1-wsa@kernel.org>
+In-Reply-To: <20230916091125.3221-1-wsa@kernel.org>
+From:   Jonas Gorski <jonas.gorski@gmail.com>
+Date:   Sat, 16 Sep 2023 13:11:41 +0200
+Message-ID: <CAOiHx=kLQzTTzuGM0tyuv=e9J3Oi7EbWWYFRK5mEfqNrVj05NQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] vlynq: remove bus support
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the document for Marvell Armada 370 / Armada XP / Armada 3700
-Ethernet Controller (NETA) to json-schema.
+On Sat, 16 Sept 2023 at 11:18, Wolfram Sang <wsa@kernel.org> wrote:
+>
+> From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>
+> I'd like to clean up the 'drivers' directory and Kconfig menu, at least
+> a little. One major thing I noticed is that VLYNQ can actually be
+> removed. From patch 2:
+>
+> ---
+> There are no users with a vlynq_driver in the Kernel tree. So, remove
+> the bus driver which hardly has seen any activity since 2009. It was
+> even marked EXPERIMENTAL as long as that symbol existed. OpenWRT had
+> some out-of-tree drivers which they probably intended to upport, but AR7
+> devices are not supported anymore because they are "stuck with Kernel
+> 3.18" [1]. So, this code can go nowadays.
+>
+> [1] https://openwrt.org/docs/techref/targets/ar7
+> ---
+>
+> Patch 1 removes MIPS specific bus initialization code which is the only
+> user of the VLYNQ bus currently.
+>
+> Sending out as RFC to gather comments. Patches are based on 6.6-rc1 and
+> created with "--irreversible-delete" to save some space. They are
+> compile tested only, buildbots were happy.
+>
+> I think this mainly goes to Florian Fainelli. Florian, what do you
+> think?
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- .../bindings/net/marvell-armada-370-neta.txt  |  50 ---------
- .../bindings/net/marvell-armada-370-neta.yaml | 102 ++++++++++++++++++
- 2 files changed, 102 insertions(+), 50 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt
- create mode 100644 Documentation/devicetree/bindings/net/marvell-armada-370-neta.yaml
+I'm not Florian, but I worked a bit with AR7 as well, and going
+through the (previously) supported/known devices they topped out at 8
+MiB Flash and 32 MiB RAM, which isn't enough to run any reasonably
+modern OpenWrt even if one would be willing to re-add support for it.
 
-diff --git a/Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt b/Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt
-deleted file mode 100644
-index 2bf31572b08d..000000000000
---- a/Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--* Marvell Armada 370 / Armada XP / Armada 3700 Ethernet Controller (NETA)
--
--Required properties:
--- compatible: could be one of the following:
--	"marvell,armada-370-neta"
--	"marvell,armada-xp-neta"
--	"marvell,armada-3700-neta"
--	"marvell,armada-ac5-neta"
--- reg: address and length of the register set for the device.
--- interrupts: interrupt for the device
--- phy: See ethernet.txt file in the same directory.
--- phy-mode: See ethernet.txt file in the same directory
--- clocks: List of clocks for this device. At least one clock is
--  mandatory for the core clock. If several clocks are given, then the
--  clock-names property must be used to identify them.
--
--Optional properties:
--- tx-csum-limit: maximum mtu supported by port that allow TX checksum.
--  Value is presented in bytes. If not used, by default 1600B is set for
--  "marvell,armada-370-neta" and 9800B for others.
--- clock-names: List of names corresponding to clocks property; shall be
--  "core" for core clock and "bus" for the optional bus clock.
--- phys: comphy for the ethernet port, see ../phy/phy-bindings.txt
--
--Optional properties (valid only for Armada XP/38x):
--
--- buffer-manager: a phandle to a buffer manager node. Please refer to
--  Documentation/devicetree/bindings/net/marvell-neta-bm.txt
--- bm,pool-long: ID of a pool, that will accept all packets of a size
--  higher than 'short' pool's threshold (if set) and up to MTU value.
--  Obligatory, when the port is supposed to use hardware
--  buffer management.
--- bm,pool-short: ID of a pool, that will be used for accepting
--  packets of a size lower than given threshold. If not set, the port
--  will use a single 'long' pool for all packets, as defined above.
--
--Example:
--
--ethernet@70000 {
--	compatible = "marvell,armada-370-neta";
--	reg = <0x70000 0x2500>;
--	interrupts = <8>;
--	clocks = <&gate_clk 4>;
--	tx-csum-limit = <9800>
--	phy = <&phy0>;
--	phy-mode = "rgmii-id";
--	buffer-manager = <&bm>;
--	bm,pool-long = <0>;
--	bm,pool-short = <1>;
--};
-diff --git a/Documentation/devicetree/bindings/net/marvell-armada-370-neta.yaml b/Documentation/devicetree/bindings/net/marvell-armada-370-neta.yaml
-new file mode 100644
-index 000000000000..9283ab74cdb2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/marvell-armada-370-neta.yaml
-@@ -0,0 +1,102 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/marvell-armada-370-neta.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell Armada 370 / Armada XP / Armada 3700 Ethernet Controller (NETA)
-+
-+allOf:
-+  - $ref: ethernet-controller.yaml#
-+  - $ref: ethernet-controller.yaml#/$defs/phylink
-+
-+maintainers:
-+  - Arınç ÜNAL <arinc.unal@arinc9.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - marvell,armada-370-neta
-+      - marvell,armada-xp-neta
-+      - marvell,armada-3700-neta
-+      - marvell,armada-ac5-neta
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description:
-+      List of clocks for this device. At least one clock is mandatory for the
-+      core clock. If several clocks are given, then the clock-names property
-+      must be used to identify them.
-+
-+  tx-csum-limit:
-+    description:
-+      Maximum mtu supported by port that allow TX checksum. Value is presented
-+      in bytes. If not used, by default 1600B is set for
-+      "marvell,armada-370-neta" and 9800B for others.
-+
-+  clock-names:
-+    description:
-+      List of names corresponding to clocks property; shall be "core" for core
-+      clock and "bus" for the optional bus clock.
-+
-+  phys:
-+    description:
-+      comphy for the ethernet port, see ../phy/phy-bindings.txt.
-+
-+if:
-+  properties:
-+    compatible:
-+      enum:
-+        - marvell,armada-370-neta
-+        - marvell,armada-xp-neta
-+then:
-+  properties:
-+    buffer-manager:
-+      description:
-+        A phandle to a buffer manager node. Please refer to
-+        Documentation/devicetree/bindings/net/marvell-neta-bm.txt.
-+
-+    bm,pool-long:
-+      description:
-+        ID of a pool, that will accept all packets of a size higher than 'short'
-+        pool's threshold (if set) and up to MTU value. Obligatory, when the port
-+        is supposed to use hardware buffer management.
-+
-+    bm,pool-short:
-+      description:
-+        ID of a pool, that will be used for accepting packets of a size lower
-+        than given threshold. If not set, the port will use a single 'long' pool
-+        for all packets, as defined above.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - phy-mode
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    ethernet@70000 {
-+        compatible = "marvell,armada-370-neta";
-+        reg = <0x70000 0x2500>;
-+        interrupts = <8>;
-+        clocks = <&gate_clk 4>;
-+        tx-csum-limit = <9800>;
-+        phy-mode = "rgmii-id";
-+        buffer-manager = <&bm>;
-+        bm,pool-long = <0>;
-+        bm,pool-short = <1>;
-+
-+        fixed-link {
-+            speed = <1000>;
-+            full-duplex;
-+        };
-+    };
--- 
-2.39.2
+So from my perspective I suggest even dropping the AR7 code entirely.
+I seriously doubt anyone is running a modern kernel on that.
 
+Best Regards,
+Jonas
