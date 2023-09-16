@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E517A2F09
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324877A2F0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238879AbjIPJdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
+        id S238909AbjIPJeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjIPJcx (ORCPT
+        with ESMTP id S232127AbjIPJde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:32:53 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A1F6E3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:32:47 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-244-9HYSYDoAOBG_m3lja_VXfg-1; Sat, 16 Sep 2023 10:32:44 +0100
-X-MC-Unique: 9HYSYDoAOBG_m3lja_VXfg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 16 Sep
- 2023 10:32:40 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 16 Sep 2023 10:32:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Charlie Jenkins' <charlie@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH v6 3/4] riscv: Add checksum library
-Thread-Topic: [PATCH v6 3/4] riscv: Add checksum library
-Thread-Index: AQHZ5/ZuR2Nhj94ZDEWquHSBL7yNdbAdI/3w
-Date:   Sat, 16 Sep 2023 09:32:40 +0000
-Message-ID: <0357e092c05043fba13eccad77ba799f@AcuMS.aculab.com>
-References: <20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com>
- <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
-In-Reply-To: <20230915-optimize_checksum-v6-3-14a6cf61c618@rivosinc.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 16 Sep 2023 05:33:34 -0400
+Received: from out-228.mta0.migadu.com (out-228.mta0.migadu.com [91.218.175.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3439BE3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:33:29 -0700 (PDT)
+Message-ID: <bcde25fe-0ae2-2297-0ee6-59d7cb1feff7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694856807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZF32vfY+QsmaR5/VYssON92iTEQMNzL9mloi6Y3iFaM=;
+        b=uxmBO6nK4ty+VXCIcM5E2NxfFqxxuywvQMv0AyqN5Cozm8WHhyPXlUWAnXOahBAMtTv+60
+        6urWdcDzV5h9hexhdy8LPoDblZ0SGihhRiAjGJCkVQ0Gw+5zt1Q5w7aiQ/hedHviKIeVUl
+        cJiFvuf+kEyAVEn9ncBX49zJ7rUCCQU=
+Date:   Sat, 16 Sep 2023 17:32:58 +0800
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+Subject: Re: [PATCH v2 1/5] blk-mq: account active requests when get driver
+ tag
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     axboe@kernel.dk, hch@lst.de, bvanassche@acm.org, kbusch@kernel.org,
+        mst@redhat.com, damien.lemoal@opensource.wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20230913151616.3164338-1-chengming.zhou@linux.dev>
+ <20230913151616.3164338-2-chengming.zhou@linux.dev> <ZQVz/hFxxaM8Orza@fedora>
 Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <ZQVz/hFxxaM8Orza@fedora>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hhcmxpZSBKZW5raW5zDQo+IFNlbnQ6IDE1IFNlcHRlbWJlciAyMDIzIDE4OjAxDQo+
-IA0KPiBQcm92aWRlIGEgMzIgYW5kIDY0IGJpdCB2ZXJzaW9uIG9mIGRvX2NzdW0uIFdoZW4gY29t
-cGlsZWQgZm9yIDMyLWJpdA0KPiB3aWxsIGxvYWQgZnJvbSB0aGUgYnVmZmVyIGluIGdyb3VwcyBv
-ZiAzMiBiaXRzLCBhbmQgd2hlbiBjb21waWxlZCBmb3INCj4gNjQtYml0IHdpbGwgbG9hZCBpbiBn
-cm91cHMgb2YgNjQgYml0cy4NCj4gDQouLi4NCj4gKwkvKg0KPiArCSAqIERvIDMyLWJpdCByZWFk
-cyBvbiBSVjMyIGFuZCA2NC1iaXQgcmVhZHMgb3RoZXJ3aXNlLiBUaGlzIHNob3VsZCBiZQ0KPiAr
-CSAqIGZhc3RlciB0aGFuIGRvaW5nIDMyLWJpdCByZWFkcyBvbiBhcmNoaXRlY3R1cmVzIHRoYXQg
-c3VwcG9ydCBsYXJnZXINCj4gKwkgKiByZWFkcy4NCj4gKwkgKi8NCj4gKwl3aGlsZSAobGVuID4g
-MCkgew0KPiArCQljc3VtICs9IGRhdGE7DQo+ICsJCWNzdW0gKz0gY3N1bSA8IGRhdGE7DQo+ICsJ
-CWxlbiAtPSBzaXplb2YodW5zaWduZWQgbG9uZyk7DQo+ICsJCXB0ciArPSAxOw0KPiArCQlkYXRh
-ID0gKnB0cjsNCj4gKwl9DQoNCkkgdGhpbmsgeW91J2QgYmUgYmV0dGVyIGFkZGluZyB0aGUgJ2Nh
-cnJ5JyBiaXRzIGluIGEgc2VwYXJhdGUNCnZhcmlhYmxlLg0KSXQgcmVkdWNlcyB0aGUgcmVnaXN0
-ZXIgZGVwZW5kZW5jeSBjaGFpbiBsZW5ndGggaW4gdGhlIGxvb3AuDQooSGVscHMgaWYgdGhlIGNw
-dSBjYW4gZXhlY3V0ZSB0d28gaW5zdHJ1Y3Rpb25zIGluIG9uZSBjbG9jay4pDQoNClRoZSBtYXNr
-ZWQgbWlzYWxpZ25lZCBkYXRhIHZhbHVlcyBhcmUgbWF4IDI0IGJpdHMNCihpZiANCg0KWW91J2xs
-IGFsc28gYWxtb3N0IGNlcnRhaW5seSByZW1vdmUgYXQgbGVhc3Qgb25lIGluc3RydWN0aW9uDQpm
-cm9tIHRoZSBsb29wIGJ5IGNvbXBhcmluZyBhZ2FpbnN0IHRoZSBlbmQgYWRkcmVzcyByYXRoZXIg
-dGhhbg0KY2hhbmdpbmcgJ2xlbicuDQoNClNvIGVuZGluZyB1cCB3aXRoIChzb21ldGhpbmcgbGlr
-ZSk6DQoJZW5kID0gYnVmZiArIGxlbmd0aDsNCgkuLi4NCgl3aGlsZSAoKytwdHIgPCBlbmQpIHsN
-CgkJY3N1bSArPSBkYXRhOw0KCQljYXJyeSArPSBjc3VtIDwgZGF0YTsNCgkJZGF0YSA9IHB0clst
-MV07DQoJfQ0KKEFsdGhvdWdoIGEgZG8td2hpbGUgbG9vcCB0ZW5kcyB0byBnZW5lcmF0ZSBiZXR0
-ZXIgY29kZQ0KYW5kIGdjYyB3aWxsIHByZXR0eSBtdWNoIGFsd2F5cyBtYWtlIHRoYXQgdHJhbnNm
-b3JtYXRpb24uKQ0KDQpJIHRoaW5rIHRoYXQgaXMgNCBpbnN0cnVjdGlvbnMgcGVyIHdvcmQgKGxv
-YWQsIGFkZCwgY21wK3NldCwgYWRkKS4NCkluIHByaW5jaXBsZSB0aGV5IGNvdWxkIGJlIGNvbXBs
-ZXRlbHkgcGlwZWxpbmVkIGFuZCBhbGwNCmV4ZWN1dGUgKGZvciBkaWZmZXJlbnQgbG9vcCBpdGVy
-YXRpb25zKSBpbiB0aGUgc2FtZSBjbG9jay4NCihCdXQgdGhhdCBpcyBwcmV0dHkgdW5saWtlbHkg
-dG8gaGFwcGVuIC0gZXZlbiB4ODYgaXNuJ3QgdGhhdCBnb29kLikNCkJ1dCB0YWtpbmcgdHdvIGNs
-b2NrcyBpcyBxdWl0ZSBwbGF1c2libGUuDQpQbHVzIDIgaW5zdHJ1Y3Rpb25zIHBlciBsb29wIChp
-bmMsIGNtcCtqbXApLg0KVGhleSBtaWdodCBleGVjdXRlIGluIHBhcmFsbGVsLCBidXQgdW5yb2xs
-aW5nIG9uY2UNCm1heSBiZSByZXF1aXJlZC4NCg0KLi4uDQo+ICsJaWYgKElTX0VOQUJMRUQoQ09O
-RklHX1JJU0NWX0lTQV9aQkIpICYmDQo+ICsJICAgIHJpc2N2X2hhc19leHRlbnNpb25fbGlrZWx5
-KFJJU0NWX0lTQV9FWFRfWkJCKSkgew0KLi4uDQo+ICsJCX0NCj4gK2VuZDoNCj4gKwkJcmV0dXJu
-IGNzdW0gPj4gMTY7DQo+ICsJfQ0KDQpJcyBpdCByZWFsbHkgd29ydGggZG9pbmcgYWxsIHRoYXQg
-dG8gc2F2ZSAoSSB0aGluaykgNCBpbnN0cnVjdGlvbnM/DQooc2hpZnQsIHNoaWZ0LCBvciB3aXRo
-IHJvdGF0ZSB0d2ljZSkuDQpUaGVyZSBpcyBtdWNoIG1vcmUgdG8gYmUgZ2FpbmVkIGJ5IGNhcmVm
-dWwgaW5zcGVjdGlvbg0Kb2YgdGhlIGxvb3AgKGV2ZW4gbGVhdmluZyBpdCBpbiBDKS4NCg0KPiAr
-DQo+ICsjaWZuZGVmIENPTkZJR18zMkJJVA0KPiArCWNzdW0gKz0gKGNzdW0gPj4gMzIpIHwgKGNz
-dW0gPDwgMzIpOw0KPiArCWNzdW0gPj49IDMyOw0KPiArI2VuZGlmDQo+ICsJY3N1bSA9ICh1bnNp
-Z25lZCBpbnQpY3N1bSArICgoKHVuc2lnbmVkIGludCljc3VtID4+IDE2KSB8ICgodW5zaWduZWQg
-aW50KWNzdW0gPDwgMTYpKTsNCg0KVXNlIHJvcjY0KCkgYW5kIHJvcjMyKCkuDQoNCglEYXZpZA0K
-DQo+ICsJaWYgKG9mZnNldCAmIDEpDQo+ICsJCXJldHVybiAodW5zaWduZWQgc2hvcnQpc3dhYjMy
-KGNzdW0pOw0KPiArCXJldHVybiBjc3VtID4+IDE2Ow0KPiArfQ0KPiANCj4gLS0NCj4gMi40Mi4w
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+On 2023/9/16 17:23, Ming Lei wrote:
+> On Wed, Sep 13, 2023 at 03:16:12PM +0000, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> There is a limit that batched queue_rqs() can't work on shared tags
+>> queue, since the account of active requests can't be done there.
+>>
+>> Now we account the active requests only in blk_mq_get_driver_tag(),
+>> which is not the time we get driver tag actually (with none elevator).
+>>
+>> To support batched queue_rqs() on shared tags queue, we move the
+>> account of active requests to where we get the driver tag:
+>>
+>> 1. none elevator: blk_mq_get_tags() and blk_mq_get_tag()
+>> 2. other elevator: __blk_mq_alloc_driver_tag()
+>>
+>> This is clearer and match with the unaccount side, which just happen
+>> when we put the driver tag.
+>>
+>> The other good point is that we don't need RQF_MQ_INFLIGHT trick
+>> anymore, which used to avoid double account of flush request.
+>> Now we only account when actually get the driver tag, so all is good.
+>> We will remove RQF_MQ_INFLIGHT in the next patch.
+> 
+> RQF_MQ_INFLIGHT is only set for BLK_MQ_F_TAG_QUEUE_SHARED, so we can
+> avoid the extra atomic accounting for !BLK_MQ_F_TAG_QUEUE_SHARED.
+> 
+> But now your patch switches to account unconditionally by removing
+> RQF_MQ_INFLIGHT, not friendly for !BLK_MQ_F_TAG_QUEUE_SHARED.
+> 
 
+Hi Ming, blk_mq_add_active_requests() will check hctx->flags before
+doing atomic accounting and only account for BLK_MQ_F_TAG_QUEUE_SHARED.
+
+Yes, we don't need any atomic accounting in non-shared queue.
+
+Thanks.
