@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9517A3235
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AE97A3231
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbjIPTUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S238164AbjIPTUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjIPTUV (ORCPT
+        with ESMTP id S233394AbjIPTUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:20:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA48139
+        Sat, 16 Sep 2023 15:20:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8996CDE
         for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:20:15 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,29 +22,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jNeRpVHG0OdM83PrKLG+UdCmA4Kb+afHXFf5PMIQJM4=;
-        b=gCYaR4mw1DXja+pAMA92dMbugAw9SHgAKPc2kYUM25FN1CZEqzwusMNJr93nQiL6IeE0IX
-        MoeeuVgNvWN0iRsq3Z5h+/zhpmrconWi966MoyDVIpwYKG0XXpmoDsaKm1W31N4PoZ2F79
-        TX3fthiVRR3A4rodfrJv/MUQLCyEd0qUTTXr8BSxasGwrA6v4ccNh5f7P3HvVVJtVxxtk3
-        +jE6MglwAlNMTlNtrhu8V3wYP9FjHUnEFpXOHXlsNfSWUlzDMXecPDFVe/aQKtkrDMIx/k
-        cDNkPKKBX0Py7uschF8NXAo7uXZvJrOTd0NCFyZCQsYrwiXJ2XAeei1unhiNlg==
+        bh=Dhsa2P9vTGqd8ZtquwpdTUsG5r+QIig9neDj0403uMI=;
+        b=YehlPQIQwDc71Wct5LTtf3d8vdL2AYneoYV1TooNUyJnOkIYlKx3sCJ2vuys4ff/MVe/Cp
+        0Jps6o8gd/iS080dyP5X4WSNq4hrHUtcl841BB0JcBUrrDMuzzjxYPLZ1fAIx7La2u37NQ
+        hBnzir0WugVQXAU2nmbjnVNEOXbkwfDFmoiUIrPupdYCgMILs6WC+uI4xYvLmRD1vn5aWp
+        8wrXAe8St5TcXf0Bla2E85GaXp0AL3ZRjBrmYdqgXE3Ye3Txw6uFmfziDjewj/ZpaSTqgd
+        xJFzanWAnJ/CZirERdDPw6FaaGTSFqeH6eYVCaQdNw4cI+lD4Z8nAxBoPfSzAQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694892014;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jNeRpVHG0OdM83PrKLG+UdCmA4Kb+afHXFf5PMIQJM4=;
-        b=S/EO2UAWeoajmNz66txZA9K2MtJwOo6svmZtAgn7nGmF20OaZmyszh/K/hi6gnIPn/fo+c
-        8n825voFp3YN+vBw==
+        bh=Dhsa2P9vTGqd8ZtquwpdTUsG5r+QIig9neDj0403uMI=;
+        b=jVlclms7TkBFd8fW9unXdshgAQYAaLU3An19WgzaHKYUrKTzNzb3ra5zlGruW7XTQfDNGq
+        +RQb6hb7uD9/SiAg==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH printk v5 3/8] printk: Make static printk buffers available to nbcon
-Date:   Sat, 16 Sep 2023 21:26:02 +0206
-Message-Id: <20230916192007.608398-4-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH printk v5 4/8] printk: nbcon: Add buffer management
+Date:   Sat, 16 Sep 2023 21:26:03 +0206
+Message-Id: <20230916192007.608398-5-john.ogness@linutronix.de>
 In-Reply-To: <20230916192007.608398-1-john.ogness@linutronix.de>
 References: <20230916192007.608398-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -59,66 +60,318 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nbcon boot consoles also need printk buffers that are available
-very early. Since the nbcon boot consoles will also be serialized
-by the console_lock, they can use the same static printk buffers
-that the legacy consoles are using.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Make the legacy static printk buffers available outside of printk.c
-so they can be used by nbcon.c.
+In case of hostile takeovers it must be ensured that the previous
+owner cannot scribble over the output buffer of the emergency/panic
+context. This is achieved by:
 
+ - Adding a global output buffer instance for the panic context.
+   This is the only situation where hostile takeovers can occur and
+   there is always at most 1 panic context.
+
+ - Allocating an output buffer per non-boot console upon console
+   registration. This buffer is used by the console owner when not
+   in panic context. (For boot consoles, the existing shared global
+   legacy output buffer is used instead. Boot console printing will
+   be synchronized with legacy console printing.)
+
+ - Choosing the appropriate buffer is handled in the acquire/release
+   functions.
+
+Co-developed-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/internal.h |  2 ++
- kernel/printk/printk.c   | 13 +++++++++----
- 2 files changed, 11 insertions(+), 4 deletions(-)
+ include/linux/console.h  |  7 ++++
+ kernel/printk/internal.h | 12 +++++--
+ kernel/printk/nbcon.c    | 73 +++++++++++++++++++++++++++++++++++++---
+ kernel/printk/printk.c   | 22 +++++++-----
+ 4 files changed, 99 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 98210fd01f18..ca1ef8700e55 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -231,6 +231,7 @@ enum nbcon_prio {
+ };
+ 
+ struct console;
++struct printk_buffers;
+ 
+ /**
+  * struct nbcon_context - Context for console acquire/release
+@@ -241,6 +242,7 @@ struct console;
+  *				be used only with NBCON_PRIO_PANIC @prio. It
+  *				might cause a system freeze when the console
+  *				is used later.
++ * @pbufs:			Pointer to the text buffer for this context
+  */
+ struct nbcon_context {
+ 	/* members set by caller */
+@@ -248,6 +250,9 @@ struct nbcon_context {
+ 	unsigned int		spinwait_max_us;
+ 	enum nbcon_prio		prio;
+ 	unsigned int		allow_unsafe_takeover	: 1;
++
++	/* members set by acquire */
++	struct printk_buffers	*pbufs;
+ };
+ 
+ /**
+@@ -271,6 +276,7 @@ struct nbcon_context {
+  * @node:		hlist node for the console list
+  *
+  * @nbcon_state:	State for nbcon consoles
++ * @pbufs:		Pointer to nbcon private buffer
+  */
+ struct console {
+ 	char			name[16];
+@@ -293,6 +299,7 @@ struct console {
+ 
+ 	/* nbcon console specific members */
+ 	atomic_t		__private nbcon_state;
++	struct printk_buffers	*pbufs;
+ };
+ 
+ #ifdef CONFIG_LOCKDEP
 diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 2ca0ab78802c..7199d60bfc25 100644
+index 7199d60bfc25..f6161cd75d7d 100644
 --- a/kernel/printk/internal.h
 +++ b/kernel/printk/internal.h
-@@ -86,6 +86,8 @@ static inline void nbcon_cleanup(struct console *con) { }
+@@ -13,6 +13,12 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+ #define printk_sysctl_init() do { } while (0)
+ #endif
+ 
++#define con_printk(lvl, con, fmt, ...)				\
++	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
++		(con->flags & CON_NBCON) ? "" : "legacy ",	\
++		(con->flags & CON_BOOT) ? "boot" : "",		\
++		con->name, con->index, ##__VA_ARGS__)
++
+ #ifdef CONFIG_PRINTK
+ 
+ #ifdef CONFIG_PRINTK_CALLER
+@@ -63,8 +69,9 @@ void defer_console_output(void);
+ u16 printk_parse_prefix(const char *text, int *level,
+ 			enum printk_info_flags *flags);
+ 
++bool nbcon_alloc(struct console *con);
+ void nbcon_init(struct console *con);
+-void nbcon_cleanup(struct console *con);
++void nbcon_free(struct console *con);
+ 
+ #else
+ 
+@@ -81,8 +88,9 @@ void nbcon_cleanup(struct console *con);
+ #define printk_safe_exit_irqrestore(flags) local_irq_restore(flags)
+ 
+ static inline bool printk_percpu_data_ready(void) { return false; }
++static inline bool nbcon_alloc(struct console *con) { return false; }
+ static inline void nbcon_init(struct console *con) { }
+-static inline void nbcon_cleanup(struct console *con) { }
++static inline void nbcon_free(struct console *con) { }
  
  #endif /* CONFIG_PRINTK */
  
-+extern struct printk_buffers printk_shared_pbufs;
-+
- /**
-  * struct printk_buffers - Buffers to read/format/output printk messages.
-  * @outbuf:	After formatting, contains text to output.
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 5f372eaceb29..17def3791bc0 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2846,6 +2846,13 @@ static bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 	return true;
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index a2a354f859f9..ba1febf15db6 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -5,6 +5,7 @@
+ #include <linux/kernel.h>
+ #include <linux/console.h>
+ #include <linux/delay.h>
++#include <linux/slab.h>
+ #include "internal.h"
+ /*
+  * Printk console printing implementation for consoles which does not depend
+@@ -70,6 +71,10 @@
+  *      console is an unsafe state. It is used only in panic() by the final
+  *      attempt to flush consoles in a try and hope mode.
+  *
++ *      Note that separate record buffers are used in panic(). As a result,
++ *      the messages can be read and formatted without any risk even after
++ *      using the hostile takeover in unsafe state.
++ *
+  * The release function simply clears the 'prio' field.
+  *
+  * All operations on @console::nbcon_state are atomic cmpxchg based to
+@@ -459,6 +464,8 @@ static int nbcon_context_try_acquire_hostile(struct nbcon_context *ctxt,
+ 	return 0;
  }
  
-+/*
-+ * Used as the printk buffers for non-panic, serialized console printing.
-+ * This is for legacy (!CON_NBCON) as well as all boot (CON_BOOT) consoles.
-+ * Its usage requires the console_lock held.
-+ */
-+struct printk_buffers printk_shared_pbufs;
++static struct printk_buffers panic_nbcon_pbufs;
 +
- /*
-  * Print one record for the given console. The record printed is whatever
-  * record is the next available record for the given console.
-@@ -2863,12 +2870,10 @@ static bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
-  */
- static bool console_emit_next_record(struct console *con, bool *handover, int cookie)
+ /**
+  * nbcon_context_try_acquire - Try to acquire nbcon console
+  * @ctxt:	The context of the caller
+@@ -473,6 +480,7 @@ static int nbcon_context_try_acquire_hostile(struct nbcon_context *ctxt,
+ __maybe_unused
+ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
  {
--	static struct printk_buffers pbufs;
++	unsigned int cpu = smp_processor_id();
+ 	struct console *con = ctxt->console;
+ 	struct nbcon_state cur;
+ 	int err;
+@@ -491,7 +499,18 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+ 
+ 	err = nbcon_context_try_acquire_hostile(ctxt, &cur);
+ out:
+-	return !err;
++	if (err)
++		return false;
++
++	/* Acquire succeeded. */
++
++	/* Assign the appropriate buffer for this context. */
++	if (atomic_read(&panic_cpu) == cpu)
++		ctxt->pbufs = &panic_nbcon_pbufs;
++	else
++		ctxt->pbufs = con->pbufs;
++
++	return true;
+ }
+ 
+ static bool nbcon_owner_matches(struct nbcon_state *cur, int expected_cpu,
+@@ -530,7 +549,7 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+ 
+ 	do {
+ 		if (!nbcon_owner_matches(&cur, cpu, ctxt->prio))
+-			return;
++			break;
+ 
+ 		new.atom = cur.atom;
+ 		new.prio = NBCON_PRIO_NONE;
+@@ -542,26 +561,70 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+ 		new.unsafe |= cur.unsafe_takeover;
+ 
+ 	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
++
++	ctxt->pbufs = NULL;
++}
++
++/**
++ * nbcon_alloc - Allocate buffers needed by the nbcon console
++ * @con:	Console to allocate buffers for
++ *
++ * Return:	True on success. False otherwise and the console cannot
++ *		be used.
++ *
++ * This is not part of nbcon_init() because buffer allocation must
++ * be performed earlier in the console registration process.
++ */
++bool nbcon_alloc(struct console *con)
++{
++	if (con->flags & CON_BOOT) {
++		/*
++		 * Boot console printing is synchronized with legacy console
++		 * printing, so boot consoles can share the same global printk
++		 * buffers.
++		 */
++		con->pbufs = &printk_shared_pbufs;
++	} else {
++		con->pbufs = kmalloc(sizeof(*con->pbufs), GFP_KERNEL);
++		if (!con->pbufs) {
++			con_printk(KERN_ERR, con, "failed to allocate printing buffer\n");
++			return false;
++		}
++	}
++
++	return true;
+ }
+ 
+ /**
+  * nbcon_init - Initialize the nbcon console specific data
+  * @con:	Console to initialize
++ *
++ * nbcon_alloc() *must* be called and succeed before this function
++ * is called.
+  */
+ void nbcon_init(struct console *con)
+ {
+ 	struct nbcon_state state = { };
+ 
++	/* nbcon_alloc() must have been called and successful! */
++	BUG_ON(!con->pbufs);
++
+ 	nbcon_state_set(con, &state);
+ }
+ 
+ /**
+- * nbcon_cleanup - Cleanup the nbcon console specific data
+- * @con:	Console to cleanup
++ * nbcon_free - Free and cleanup the nbcon console specific data
++ * @con:	Console to free/cleanup nbcon data
+  */
+-void nbcon_cleanup(struct console *con)
++void nbcon_free(struct console *con)
+ {
+ 	struct nbcon_state state = { };
+ 
+ 	nbcon_state_set(con, &state);
++
++	/* Boot consoles share global printk buffers. */
++	if (!(con->flags & CON_BOOT))
++		kfree(con->pbufs);
++
++	con->pbufs = NULL;
+ }
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 17def3791bc0..1c9720acd960 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3331,12 +3331,6 @@ static void try_enable_default_console(struct console *newcon)
+ 		newcon->flags |= CON_CONSDEV;
+ }
+ 
+-#define con_printk(lvl, con, fmt, ...)				\
+-	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
+-	       (con->flags & CON_NBCON) ? "" : "legacy ",	\
+-	       (con->flags & CON_BOOT) ? "boot" : "",		\
+-	       con->name, con->index, ##__VA_ARGS__)
 -
- 	bool is_extended = console_srcu_read_flags(con) & CON_EXTENDED;
--	char *outbuf = &pbufs.outbuf[0];
-+	char *outbuf = &printk_shared_pbufs.outbuf[0];
- 	struct printk_message pmsg = {
--		.pbufs = &pbufs,
-+		.pbufs = &printk_shared_pbufs,
- 	};
- 	unsigned long flags;
+ static void console_init_seq(struct console *newcon, bool bootcon_registered)
+ {
+ 	struct console *con;
+@@ -3450,6 +3444,15 @@ void register_console(struct console *newcon)
+ 		goto unlock;
+ 	}
+ 
++	if (newcon->flags & CON_NBCON) {
++		/*
++		 * Ensure the nbcon console buffers can be allocated
++		 * before modifying any global data.
++		 */
++		if (!nbcon_alloc(newcon))
++			goto unlock;
++	}
++
+ 	/*
+ 	 * See if we want to enable this console driver by default.
+ 	 *
+@@ -3477,8 +3480,11 @@ void register_console(struct console *newcon)
+ 		err = try_enable_preferred_console(newcon, false);
+ 
+ 	/* printk() messages are not printed to the Braille console. */
+-	if (err || newcon->flags & CON_BRL)
++	if (err || newcon->flags & CON_BRL) {
++		if (newcon->flags & CON_NBCON)
++			nbcon_free(newcon);
+ 		goto unlock;
++	}
+ 
+ 	/*
+ 	 * If we have a bootconsole, and are switching to a real console,
+@@ -3589,7 +3595,7 @@ static int unregister_console_locked(struct console *console)
+ 	synchronize_srcu(&console_srcu);
+ 
+ 	if (console->flags & CON_NBCON)
+-		nbcon_cleanup(console);
++		nbcon_free(console);
+ 
+ 	console_sysfs_notify();
  
 -- 
 2.39.2
