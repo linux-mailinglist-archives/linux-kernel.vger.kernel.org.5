@@ -2,144 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEAA7A31E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347827A31E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237021AbjIPSZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 14:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        id S238282AbjIPS0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 14:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236500AbjIPSZO (ORCPT
+        with ESMTP id S236500AbjIPSZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 14:25:14 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D010CE6;
-        Sat, 16 Sep 2023 11:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xaTgqIRqEW118i1euHWPGl1GL4m7oLRslyef9vzxato=; b=cMTQ5S0H6ptadVHrLUVUPezYG0
-        M/m9SP+CLoFdyO2PpoZEf5Ld6DB59iCsLWDck05pQLQDBzS050zVFVFDppfLyXkFDpX2nA+G/x10F
-        nUyJ1hPFsUIrnBQ24CHqasjX/Mmqnqvy+Y41WlSNOFxP9Cuwx8cSG/nXTAtt95OQi03B8pkCatQpW
-        hDgHmHJj/FNxOxFAcXuHdkTaBlcSxOnSvsDzlYQrEhoNkl4jAPPBvPbW03oCBYytNzrIyLiLEtZ+E
-        hJLzXV137LRsaeX/ajGL72d+sO8izCz9F8L9Hl1Nmoq96ettQHwKEm3GOCVWkQHDKzYoVca2sdnQG
-        x9Lo2Jyg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38474)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qhZyG-0006uM-23;
-        Sat, 16 Sep 2023 19:24:44 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qhZyA-00072B-OD; Sat, 16 Sep 2023 19:24:38 +0100
-Date:   Sat, 16 Sep 2023 19:24:38 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, llvm@lists.linux.dev,
-        ndesaulniers@google.com, nathan@kernel.org, trix@redhat.com
-Subject: Re: [PATCH net-next] net: ethernet: mtk_eth_soc: add paths and
- SerDes modes for MT7988
-Message-ID: <ZQXy5pxPRN1QXQkq@shell.armlinux.org.uk>
-References: <675b5abd8b40a71c177e9e4e4c92d2d6b1413b9b.1694527316.git.daniel@makrotopia.org>
+        Sat, 16 Sep 2023 14:25:37 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7659CCE3;
+        Sat, 16 Sep 2023 11:25:32 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31ff7535aa6so1430070f8f.0;
+        Sat, 16 Sep 2023 11:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694888731; x=1695493531; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ckuQZ1CawEUL97pJvhzualqoX+UXSrLJZVGT08Xyrcg=;
+        b=BbCX2VhYG9B8HSer6l1IVjMhGr6y2/egGTnN+V8rgzpVCYxzkIx+WJ1xdNsZZBiUps
+         A2lXF2BT1PBq0jyvsT3asBMgIz82KCuOIFQaqiMoU0fN6ZC7lJE7X8DTEyI4m2xQ4Aea
+         CX4BiaUEtDpuhWVd3EUmr/D8omfIdxqo4IrnQk0Y/aPgYrfyb4uFqsbkcG8KUHDy4hFY
+         rx1PHt6pTQpPGpgnmQfdOBUk8RJURIp8c3PxHyp3SrG15qpA1WxnIhZHURLFZFrY1Z8Z
+         WRP5M9+YompcHfNBAdqI+maXPb2LAT9iJr393DNGfPnnIyEuap42JyKYEoJQmbwhA/lx
+         6yag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694888731; x=1695493531;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ckuQZ1CawEUL97pJvhzualqoX+UXSrLJZVGT08Xyrcg=;
+        b=rZlSAM65Ber6wpKDSi/qMAQMoIxukuJrIPjBnWAIS8oCZsHg9nL3j1kvd9v3xpGoFl
+         KDQIGNeclhFl0CopiqxSGgfEqewM7SoYhtP8gUQtOo64iP13pQiVCjtNC+9yD0PFPprd
+         a+NQp/dLlKwvD5HHe6OQetuu75JJoPa3vH626Y5dt/Z9dLYeTgjKEdqRLgrup8lkqOE1
+         ySsaEGiIuNBHaPcqe8PvSmYRqFVzkXPcKzCFPaz9P6e/OkjsQM8OInLDl5jXAlVwkc4s
+         uZ0P60GCIdYR7Y+yjLzZZD/KqhBMWJwqh7QdQjsZpzuZAo1e51ebtwjKQLMEFf7FQmwV
+         1sDw==
+X-Gm-Message-State: AOJu0Yz++ng2Kq5aaIpOsUF9i8XTG9bFvIDygnEIqfAWgwCcoyhPtjJ5
+        hgXDND1lmuh0uneQQ9OCk+Y=
+X-Google-Smtp-Source: AGHT+IGVa+XIIFY8QmJ67pNTWSWASvWz2SosTfH23zEiYYZcAQR/VAmKZuHIVUDpULlmkx9mYLv2Ow==
+X-Received: by 2002:adf:dccc:0:b0:31a:ea86:cbb8 with SMTP id x12-20020adfdccc000000b0031aea86cbb8mr3704433wrm.2.1694888730582;
+        Sat, 16 Sep 2023 11:25:30 -0700 (PDT)
+Received: from ?IPV6:2a02:8389:41b4:ce80:33dd:a87e:3888:429c? (2a02-8389-41b4-ce80-33dd-a87e-3888-429c.cable.dynamic.v6.surfer.at. [2a02:8389:41b4:ce80:33dd:a87e:3888:429c])
+        by smtp.gmail.com with ESMTPSA id v16-20020aa7d9d0000000b0052f3471ccf6sm3791715eds.6.2023.09.16.11.25.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Sep 2023 11:25:29 -0700 (PDT)
+Message-ID: <128d057c-0d60-418d-7129-093ea59b8870@gmail.com>
+Date:   Sat, 16 Sep 2023 20:25:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <675b5abd8b40a71c177e9e4e4c92d2d6b1413b9b.1694527316.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] selftests: ALSA: fix warnings in 'test-pcmtest-driver'
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
+ <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
+Content-Language: en-US
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:54:40PM +0100, Daniel Golle wrote:
-> +static void mtk_usxgmii_pcs_get_state(struct phylink_pcs *pcs,
-> +				      struct phylink_link_state *state)
-> +{
-> +	struct mtk_usxgmii_pcs *mpcs = pcs_to_mtk_usxgmii_pcs(pcs);
-> +	struct mtk_eth *eth = mpcs->eth;
-> +	struct mtk_mac *mac = eth->mac[mtk_xgmii2mac_id(eth, mpcs->id)];
-> +	u32 val = 0;
-> +
-> +	regmap_read(mpcs->regmap, RG_PCS_AN_CTRL0, &val);
-> +	if (FIELD_GET(USXGMII_AN_ENABLE, val)) {
-> +		/* Refresh LPA by inverting LPA_LATCH */
-> +		regmap_read(mpcs->regmap, RG_PCS_AN_STS0, &val);
-> +		regmap_update_bits(mpcs->regmap, RG_PCS_AN_STS0,
-> +				   USXGMII_LPA_LATCH,
-> +				   !(val & USXGMII_LPA_LATCH));
-> +
-> +		regmap_read(mpcs->regmap, RG_PCS_AN_STS0, &val);
-> +
-> +		phylink_decode_usxgmii_word(state, FIELD_GET(USXGMII_PCS_AN_WORD,
-> +							     val));
-> +
-> +		state->interface = mpcs->interface;
+Hi Ivan,
 
-Why are you assigning state->interface?
+On 16.09.23 20:05, Ivan Orlov wrote:
+> On 9/16/23 19:22, Javier Carrasco wrote:
+>> Defining the 'len' variable inside the 'patten_buf' as unsigned
+>> makes it more consistent with its actual meaning and the rest of the
+>> size variables in the test. Moreover, this removes an implicit
+>> conversion in the fscanf function call.
+>>
+> 
+> Considering the fact that the pattern buffer length can't be negative or
+> larger that 4096, I really don't think that it is a necessary change.
+> 
 
-> +	} else {
-> +		val = mtk_r32(mac->hw, MTK_XGMAC_STS(mac->id));
-> +
-> +		if (mac->id == MTK_GMAC2_ID)
-> +			val >>= 16;
-> +
-> +		switch (FIELD_GET(MTK_USXGMII_PCS_MODE, val)) {
-> +		case 0:
-> +			state->speed = SPEED_10000;
-> +			break;
-> +		case 1:
-> +			state->speed = SPEED_5000;
-> +			break;
-> +		case 2:
-> +			state->speed = SPEED_2500;
-> +			break;
-> +		case 3:
-> +			state->speed = SPEED_1000;
-> +			break;
-> +		}
-> +
-> +		state->interface = mpcs->interface;
-> +		state->link = FIELD_GET(MTK_USXGMII_PCS_LINK, val);
-> +		state->duplex = DUPLEX_FULL;
-> +	}
-> +
-> +	/* Refresh USXGMII link status by toggling RG_PCS_RX_STATUS_UPDATE */
-> +	regmap_set_bits(mpcs->regmap, RG_PCS_RX_STATUS0, RG_PCS_RX_STATUS_UPDATE);
-> +	ndelay(1020);
-> +	regmap_clear_bits(mpcs->regmap, RG_PCS_RX_STATUS0, RG_PCS_RX_STATUS_UPDATE);
-> +	ndelay(1020);
-> +
-> +	/* Read USXGMII link status */
-> +	regmap_read(mpcs->regmap, RG_PCS_RX_STATUS0, &val);
-> +	state->link = state->link && FIELD_GET(RG_PCS_RX_LINK_STATUS, val);
-
-Doesn't this make the assignment to state->link above irrelevant?
-
-I need to spend a bit longer looking through this - it looks like there
-are three levels of indirection in this now?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+>> Additionally, remove the unused variable 'it' from the reset_ioctl test.
+>>
+> 
+> Your patches should always contain only one logical change. If you, for
+> instance, remove redundant blank lines, combining it with something else
+> is fine, but otherwise you should split the changes up.
+>
+Removing an unused variable is actually removing a blank line from a
+logical point of view. Is an extra patch not overkill considering that
+it cannot affect the code behavior?
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> ---
+>> Defining the 'len' variable inside the 'patten_buf' as unsigned
+>> makes it more consistent with its actual meaning and the rest of the
+>> size variables in the test. Moreover, this removes an implicit
+>> conversion in the fscanf function call.
+>>
+>> Additionally, remove the unused variable 'it' from the reset_ioctl test.
+> 
+> You don't need this text here. Usually it is the place for changelog
+> between patch versions if we have more than one version of the patch.
+> For instance, if you send a patch V2, it could look like this:
+> 
+Sorry, this got merged from the cover letter by b4. I will be more
+careful next time, thanks!
+> Signed-off-by: ...
+> ---
+> V1 -> V2:
+> - Improve something
+> - Add something
+> 
+> So, don't repeat the commit message here :)
+> 
+> Anyway, great job! I believe this test could be enhanced in lots of
+> ways, so I look forward to seeing new patches related to it from you :)
+> 
+> -- 
+> Kind regards,
+> Ivan Orlov
+Thanks for your feedback and best regards,
+Javier Carrasco
