@@ -2,119 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E08EB7A2E5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 09:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7B27A2E64
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 09:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238856AbjIPHQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 03:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
+        id S231483AbjIPHXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 03:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239024AbjIPHQX (ORCPT
+        with ESMTP id S229570AbjIPHXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 03:16:23 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859F1268A
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 00:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=BmfF
-        l2SC+D+xgefkLw3XFWBhlaLj9X0bxXdeqbL18Hw=; b=h/rqGk0Sbvg232NA9MAc
-        2WQn93C9e9zhZs41iVsFTHXl3XTSVNB60BZGxUi1kBohmzvy4aZ/6i7PTciVlwa+
-        +K6BIpFP6JfTByM/HDgTLBp73wvggP9G1OSCtcO1WL7JEErWooApnwbUCNqljzCK
-        LaKwOHuL6RETPCLOT0C31by20sQmqxSyoZtFC2xbnpfUXEmVrulxIr0n0NzXhdVd
-        GfY/9ZQ4mIrLJe6IA1nN2wkJuFEx6+yn9lG5mvuFsLReg4FPIDdb8sb6WRBZBXFK
-        bj9muCd9PzYpVe9RRG/MO7a9yYXxYI73Ab9VQjRi2loLCTWzwlufDDk2XWeNnnaf
-        gA==
-Received: (qmail 1558226 invoked from network); 16 Sep 2023 09:15:58 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 16 Sep 2023 09:15:58 +0200
-X-UD-Smtp-Session: l3s3148p1@urQ7rnQFFEsuciNa
-Date:   Sat, 16 Sep 2023 09:15:55 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH 0/2] i2c: rcar: add support for Gen4 devices
-Message-ID: <ZQVWK9Q2YtbehvjW@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
-References: <20230913203242.31505-1-wsa+renesas@sang-engineering.com>
- <TYBPR01MB5341A56291AFCB54E4918167D8F7A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
+        Sat, 16 Sep 2023 03:23:10 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0318DCD8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 00:23:02 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 38G7Mu3q043658;
+        Sat, 16 Sep 2023 15:22:56 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Sat, 16 Sep 2023 15:22:54 +0800
+Date:   Sat, 16 Sep 2023 15:22:51 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Alexandre Ghiti <alex@ghiti.fr>
+CC:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <david@redhat.com>,
+        <akpm@linux-foundation.org>, <alexghiti@rivosinc.com>,
+        <bjorn@rivosinc.com>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ycliang@andestech.com>
+Subject: Re: [PATCH v2 1/3] riscv: Improve PTDUMP to show RSW with non-zero
+ value
+Message-ID: <ZQVXy6I42HJM4XLM@APC323>
+References: <20230914014027.273002-1-peterlin@andestech.com>
+ <51f5c170-2659-d76a-afbb-632b7a55586c@ghiti.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xUMUwyrLf7FPccL/"
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <TYBPR01MB5341A56291AFCB54E4918167D8F7A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <51f5c170-2659-d76a-afbb-632b7a55586c@ghiti.fr>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 38G7Mu3q043658
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexandre,
 
---xUMUwyrLf7FPccL/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, Sep 15, 2023 at 01:07:04PM +0200, Alexandre Ghiti wrote:
+> On 14/09/2023 03:40, Yu Chien Peter Lin wrote:
+> > RSW field can be used to encode 2 bits of software defined
+> > information, currently PTDUMP only prints RSW when its value
+> > is 1 or 3.
+> > 
+> > To fix this issue and enhance the debug experience with PTDUMP,
+> > we use _PAGE_SOFT as the RSW mask and redefine _PAGE_SPECIAL to
+> > (1 << 8), allow it to print the RSW with any non-zero value,
+> > otherwise, it will print an empty string for each row.
+> > 
+> > This patch also removes the val from the struct prot_bits as
+> > it is no longer needed.
+> > 
+> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > ---
+> >   arch/riscv/include/asm/pgtable-bits.h |  4 +--
+> >   arch/riscv/mm/ptdump.c                | 36 +++++++++++----------------
+> >   2 files changed, 17 insertions(+), 23 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/pgtable-bits.h b/arch/riscv/include/asm/pgtable-bits.h
+> > index f896708e8331..99e60fd3eb72 100644
+> > --- a/arch/riscv/include/asm/pgtable-bits.h
+> > +++ b/arch/riscv/include/asm/pgtable-bits.h
+> > @@ -16,9 +16,9 @@
+> >   #define _PAGE_GLOBAL    (1 << 5)    /* Global */
+> >   #define _PAGE_ACCESSED  (1 << 6)    /* Set by hardware on any access */
+> >   #define _PAGE_DIRTY     (1 << 7)    /* Set by hardware on any write */
+> > -#define _PAGE_SOFT      (1 << 8)    /* Reserved for software */
+> > +#define _PAGE_SOFT      (3 << 8)    /* Reserved for software */
+> > -#define _PAGE_SPECIAL   _PAGE_SOFT
+> 
+> 
+> That's nit, but maybe you could have introduced a _PAGE_SOFT_1 and
+> _PAGE_SOFT_2
+> 
 
-Hi Shimoda-san,
+Thanks for the suggestion, maybe we just add a comment here?
 
-> I tested the branch on the Spider, and then the i2c cannot be probed with the following errors:
-> -----
-> # dmesg | grep i2c
-> [    1.528773] i2c_dev: i2c /dev entries driver
-> [    1.533572] i2c-rcar e6500000.i2c: clk 395647/400000(133333333), round 46, CDF: 6 SMD 20 SCL gran 27
+#define _PAGE_SPECIAL   (1 << 8) /* RSW: 0x1 */
 
-These values look good and match the values from Falcon.
+> > +#define _PAGE_SPECIAL   (1 << 8)
+> 
+> 
+> instead of hardcoding (1<<8) here, but that can be done when we'll use the
+> second bit :)
+> 
+> >   #define _PAGE_TABLE     _PAGE_PRESENT
+> >   /*
+> > diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+> > index 20a9f991a6d7..85686652f342 100644
+> > --- a/arch/riscv/mm/ptdump.c
+> > +++ b/arch/riscv/mm/ptdump.c
+> > @@ -129,7 +129,6 @@ static struct ptd_mm_info efi_ptd_info = {
+> >   /* Page Table Entry */
+> >   struct prot_bits {
+> >   	u64 mask;
+> > -	u64 val;
+> >   	const char *set;
+> >   	const char *clear;
+> >   };
+> > @@ -137,47 +136,38 @@ struct prot_bits {
+> >   static const struct prot_bits pte_bits[] = {
+> >   	{
+> >   		.mask = _PAGE_SOFT,
+> > -		.val = _PAGE_SOFT,
+> > -		.set = "RSW",
+> > -		.clear = "   ",
+> > +		.set = "RSW(%d)",
+> > +		.clear = "      ",
+> >   	}, {
+> >   		.mask = _PAGE_DIRTY,
+> > -		.val = _PAGE_DIRTY,
+> >   		.set = "D",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_ACCESSED,
+> > -		.val = _PAGE_ACCESSED,
+> >   		.set = "A",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_GLOBAL,
+> > -		.val = _PAGE_GLOBAL,
+> >   		.set = "G",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_USER,
+> > -		.val = _PAGE_USER,
+> >   		.set = "U",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_EXEC,
+> > -		.val = _PAGE_EXEC,
+> >   		.set = "X",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_WRITE,
+> > -		.val = _PAGE_WRITE,
+> >   		.set = "W",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_READ,
+> > -		.val = _PAGE_READ,
+> >   		.set = "R",
+> >   		.clear = ".",
+> >   	}, {
+> >   		.mask = _PAGE_PRESENT,
+> > -		.val = _PAGE_PRESENT,
+> >   		.set = "V",
+> >   		.clear = ".",
+> >   	}
+> > @@ -208,15 +198,19 @@ static void dump_prot(struct pg_state *st)
+> >   	unsigned int i;
+> >   	for (i = 0; i < ARRAY_SIZE(pte_bits); i++) {
+> > -		const char *s;
+> > -
+> > -		if ((st->current_prot & pte_bits[i].mask) == pte_bits[i].val)
+> > -			s = pte_bits[i].set;
+> > -		else
+> > -			s = pte_bits[i].clear;
+> > -
+> > -		if (s)
+> > -			pt_dump_seq_printf(st->seq, " %s", s);
+> > +		char s[7];
+> > +		unsigned long val;
+> > +
+> > +		val = st->current_prot & pte_bits[i].mask;
+> > +		if (val) {
+> > +			if (pte_bits[i].mask == _PAGE_SOFT)
+> > +				sprintf(s, pte_bits[i].set, val >> 8);
+> > +			else
+> > +				sprintf(s, "%s", pte_bits[i].set);
+> > +		} else
+> > +			sprintf(s, "%s", pte_bits[i].clear);
+> > +
+> > +		pt_dump_seq_printf(st->seq, " %s", s);
+> >   	}
+> >   }
+> 
+> 
+> I don't see any issue in your patch, but just the output is a bit "weird"
+> now as the there is a large "hole" between the PTE type and the PTE
+> protection bits:
+> 
+> Before:
+> 
+> 0xffffffd800000000-0xffffffd800200000 0x0000000080000000         2M PMD    
+> D A G . . W R V
+> 
+> After:
+> 
+> 0xffffaf8000000000-0xffffaf8000200000 0x0000000080000000         2M PMD
+> .               D A G . . W R V
+> 
+> Maybe you could add the PBMT/N bits after the protections bits to void this
+> hole?
 
-> [    1.554646] i2c-rcar e6500000.i2c: request_channel failed for tx (-517)
-> [    1.561487] i2c-rcar e6500000.i2c: request_channel failed for tx (-517)
-> [    1.568133] i2c-rcar e6500000.i2c: request_channel failed for rx (-517)
+Agreed, PBMT and RSW fields are not commonly used. How about adding ".."
+for 2-bit zero values instead of spaces? hopefully it will look better.
 
--EPROBE_DEFER when requesting the DMA channel? This is weird, at first
-glimpse this seems unrelated to my series. But you say v6.6-rc1 works
-fine. Strange.
+0xffffffc802088000-0xffffffc80208c000    0x0000000000d36000        16K PTE .   ..     ..   D A G . . W R V
+0xffffffc802090000-0xffffffc802094000    0x0000000000d4d000        16K PTE . MT(IO)   ..   D A G . . W R V
+0xffffffc802095000-0xffffffc8020b5000    0x0000000100d80000       128K PTE .   ..   RSW(2) D A G . . W R V
+0xffffffc8020b6000-0xffffffc8020d6000    0x0000000100da0000       128K PTE .   ..   RSW(2) D A G . . W R V
+0xffffffc8020d8000-0xffffffc8020dc000    0x0000000000d7b000        16K PTE .   ..     ..   D A G . . W R V
+0xffffffc8020e0000-0xffffffc8020e4000    0x0000000000d7f000        16K PTE .   ..     ..   D A G . . W R V
 
-> I checked that the v6.6-rc1 (commit 0bb80ecc33a8) could worked correctly.
-> JFYI, I pasted whole log at the end of this email. Should I do git bisect to find
-> a bad commit on the branch?
+> Anyway, as a heavy user of this kernel page table dump, that's really
+> appreciated, thanks :)
 
-Very kind of you but I think this is not needed. There is a Spider in
-Kieran's lab and I will try to reproduce the issue there myself. If that
-doesn't work, I'll come back to you.
+Thansk for the review :)
 
-Thank you for the report!
+Best regards,
+Peter Lin
 
-All the best,
-
-   Wolfram
-
-
---xUMUwyrLf7FPccL/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUFVigACgkQFA3kzBSg
-KbYTZw/9EpX4Kk1xswDtEcyK0bowR+TyKJ18FVDF0sKeXIENFY/qkbdrguS0cX+U
-7iU6vAlaz+5HQ9w2Wa0cboMz6sM3QKsO4q68Ae6R96W+c7Uyg3d2ZaOVpCL8qf9j
-L8pcwAM7AGtGNbE40lD1eYr/iLj26FH0tfinB53nn9oWT10FiyECIuZ+UzmsgYmD
-WSgruHhTCNpJ/++WcWSRzxRyFVaMHASli/WjHiJbjkzfIp+cZHCUtcElw/hCVaZA
-abW2He9IXE7cqXgj9nwAjzXiTObsgduknTaEIbHJaRY1TvX+EaHywQntharQTPa9
-UkOkKKmWhH35hP8u6n/rYcBOOItxdVlpYlSP/xgjsgDZEO6M8leMaXj8DUCM0Pmn
-UL+PaeEnItc1kwaqa85qRRhnMSE0x7kg0Tg0iRB/W3NlL+ym0+xE37Tma+QL+sef
-06RjU1/4nDwv4/uMWWLXkjJ9laznrI06k14X//AnaU1fWF45dg7nfHTUT6b/n1mC
-G2J0MCXC7vp6EPQQ5fPk7bFU+awpp2v2baRPNtHOIoweurSxHvVmZyf9Gn1brL+/
-oHVIJaeBxDZdlfq4dXmextrpYew90FxeWP0/SsdRfoZs/uIuX92pxBYNzNfk5F6i
-4aK2hwLYmqLB5etCG/pRtDV3ma3ZgxdsUtMP1bw97SLgHp1ff9s=
-=s0l4
------END PGP SIGNATURE-----
-
---xUMUwyrLf7FPccL/--
+> Alex
+> 
