@@ -2,94 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A857A2EDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 10:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFD67A2EE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 10:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbjIPIcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 04:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
+        id S236898AbjIPIwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 04:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbjIPIc1 (ORCPT
+        with ESMTP id S237743AbjIPIv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 04:32:27 -0400
-Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A9173C
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 01:32:22 -0700 (PDT)
-Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout2.routing.net (Postfix) with ESMTP id 451E75FC74;
-        Sat, 16 Sep 2023 08:32:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1694853139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ic0G510ZkrT/w9xgsy/Q4oN6GJTYtCSGMrmgyEarLCE=;
-        b=vQZ1GmUJ5av0r9PP1cpwiGMhSeA35dVYE6Sk3QBRvsMzURa7FFsUe4bAw0t/7F1g0rYRPx
-        SkPxg6iZyfsDFqDzIfKM3f6O4rECv4K04bVOx+k2y531SjOb74WFuPXpRdbsboGFa4a+Ta
-        MXAOB0NGsXsrH6DstXD3ZCS5BP7tXPk=
-Received: from frank-G5.. (fttx-pool-217.61.145.236.bambit.de [217.61.145.236])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 90DC6100906;
-        Sat, 16 Sep 2023 08:32:18 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RFC v1] arm64: dts: mediatek: add dtbs with applied overlays for bpi-r3
-Date:   Sat, 16 Sep 2023 10:32:14 +0200
-Message-Id: <20230916083214.7059-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.34.1
+        Sat, 16 Sep 2023 04:51:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582B4CF8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 01:51:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A06C433C8;
+        Sat, 16 Sep 2023 08:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694854308;
+        bh=sBLYwExMm0kwbbKuF7H9j3Qpj6omVfe3V1PmoGAgmZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jg8t1lzgoBnQNqwqVbQk92gPDGuziLB22TGq3Svz1GeCVgPmMm58n1hKEbkT/9jzm
+         e2k2J0X969awzEjX06/iugqTqh2WDYP09GMVu6AuUWr10q5/IBgxMh4q70LUHXO7B9
+         82VI9h9Bm6uMCjMDEXEqnY2WIm430o+d7So5udYZ+0VpK2lgTxpJLG6QS/eIXefkRt
+         8LX0voWG2Ps9xb01KmvgR7uLh9rXLpwSK+SWE3XxXteXqegF5/VfpihhLdt4C3DWpP
+         zNfLS+1vK/eECi+OWLTr53eirrGoInxdRQBV4cF6u9pmZ+1EuE+kmYCSmVzpXWoy/9
+         O0BtKeXrC1myQ==
+Date:   Sat, 16 Sep 2023 16:39:48 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        David Laight <David.Laight@aculab.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
+Message-ID: <ZQVp1PJb+HuEdu4L@xhacker>
+References: <20230915184904.1976183-1-evan@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: 5c8dae74-ce6d-4c6a-8ecf-5a7e050675ff
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230915184904.1976183-1-evan@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Fri, Sep 15, 2023 at 11:49:03AM -0700, Evan Green wrote:
+> Probing for misaligned access speed takes about 0.06 seconds. On a
+> system with 64 cores, doing this in smp_callin() means it's done
+> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+> 
+> Instead of measuring each CPU serially, let's do the measurements on
+> all CPUs in parallel. If we disable preemption on all CPUs, the
+> jiffies stop ticking, so we can do this in stages of 1) everybody
+> except core 0, then 2) core 0.
+> 
+> The measurement call in smp_callin() stays around, but is now
+> conditionalized to only run if a new CPU shows up after the round of
+> in-parallel measurements has run. The goal is to have the measurement
+> call not run during boot or suspend/resume, but only on a hotplug
+> addition.
+> 
+> Signed-off-by: Evan Green <evan@rivosinc.com>
 
-Build devicetree binaries for testing overlays and providing users
-full dtb without using overlays.
+Reported-by: Jisheng Zhang <jszhang@kernel.org>
+> 
+> ---
+> 
+> Jisheng, I didn't add your Tested-by tag since the patch evolved from
+> the one you tested. Hopefully this one brings you the same result.
+> 
+> ---
+>  arch/riscv/include/asm/cpufeature.h |  3 ++-
+>  arch/riscv/kernel/cpufeature.c      | 28 +++++++++++++++++++++++-----
+>  arch/riscv/kernel/smpboot.c         | 11 ++++++++++-
+>  3 files changed, 35 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+> index d0345bd659c9..19e7817eba10 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -30,6 +30,7 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
+>  /* Per-cpu ISA extensions. */
+>  extern struct riscv_isainfo hart_isa[NR_CPUS];
+>  
+> -void check_unaligned_access(int cpu);
+> +extern bool misaligned_speed_measured;
+> +int check_unaligned_access(void *unused);
+>  
+>  #endif
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 1cfbba65d11a..8eb36e1dfb95 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -42,6 +42,9 @@ struct riscv_isainfo hart_isa[NR_CPUS];
+>  /* Performance information */
+>  DEFINE_PER_CPU(long, misaligned_access_speed);
+>  
+> +/* Boot-time in-parallel unaligned access measurement has occurred. */
+> +bool misaligned_speed_measured;
 
-Suggested-by: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
-based on discussion here:
-https://lore.kernel.org/all/CAL_JsqK_3xxD0DFwipXO85P=q=EYjUdjE1_8g1MKtvw3vVzx5A@mail.gmail.com/
-https://lore.kernel.org/all/CAL_JsqJSi=kJSix=f3787ULZnaCy_Y26Phdhy5y9fat_vkDuUw@mail.gmail.com/
----
- arch/arm64/boot/dts/mediatek/Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This var can be avoided, see below.
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index c99c3372a4b5..18be027bf6b4 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -13,6 +13,14 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc.dtbo
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-nand.dtbo
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-nor.dtbo
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd.dtbo
-+mt7986a-bananapi-bpi-r3-emmc-nand-dtbs := mt7986a-bananapi-bpi-r3.dtb mt7986a-bananapi-bpi-r3-emmc.dtbo mt7986a-bananapi-bpi-r3-nand.dtbo
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc-nand.dtb
-+mt7986a-bananapi-bpi-r3-emmc-nor-dtbs := mt7986a-bananapi-bpi-r3.dtb mt7986a-bananapi-bpi-r3-emmc.dtbo mt7986a-bananapi-bpi-r3-nor.dtbo
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc-nor.dtb
-+mt7986a-bananapi-bpi-r3-sd-nand-dtbs := mt7986a-bananapi-bpi-r3.dtb mt7986a-bananapi-bpi-r3-sd.dtbo mt7986a-bananapi-bpi-r3-nand.dtbo
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd-nand.dtb
-+mt7986a-bananapi-bpi-r3-sd-nor-dtbs := mt7986a-bananapi-bpi-r3.dtb mt7986a-bananapi-bpi-r3-sd.dtbo mt7986a-bananapi-bpi-r3-nor.dtbo
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd-nor.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
--- 
-2.34.1
+> +
+>  /**
+>   * riscv_isa_extension_base() - Get base extension word
+>   *
+> @@ -556,8 +559,9 @@ unsigned long riscv_get_elf_hwcap(void)
+>  	return hwcap;
+>  }
+>  
+> -void check_unaligned_access(int cpu)
+> +int check_unaligned_access(void *unused)
+>  {
+> +	int cpu = smp_processor_id();
+>  	u64 start_cycles, end_cycles;
+>  	u64 word_cycles;
+>  	u64 byte_cycles;
+> @@ -571,7 +575,7 @@ void check_unaligned_access(int cpu)
+>  	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
+>  	if (!page) {
+>  		pr_warn("Can't alloc pages to measure memcpy performance");
+> -		return;
+> +		return 0;
+>  	}
+>  
+>  	/* Make an unaligned destination buffer. */
+> @@ -643,15 +647,29 @@ void check_unaligned_access(int cpu)
+>  
+>  out:
+>  	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
+> +	return 0;
+> +}
+> +
+> +static void check_unaligned_access_nonboot_cpu(void *param)
+> +{
+> +	if (smp_processor_id() != 0)
+> +		check_unaligned_access(param);
+>  }
+>  
+> -static int check_unaligned_access_boot_cpu(void)
+> +static int check_unaligned_access_all_cpus(void)
+>  {
+> -	check_unaligned_access(0);
+> +	/* Check everybody except 0, who stays behind to tend jiffies. */
+> +	on_each_cpu(check_unaligned_access_nonboot_cpu, NULL, 1);
+> +
+> +	/* Check core 0. */
+> +	smp_call_on_cpu(0, check_unaligned_access, NULL, true);
+> +
+> +	/* Boot-time measurements are complete. */
+> +	misaligned_speed_measured = true;
+>  	return 0;
+>  }
+>  
+> -arch_initcall(check_unaligned_access_boot_cpu);
+> +arch_initcall(check_unaligned_access_all_cpus);
+>  
+>  #ifdef CONFIG_RISCV_ALTERNATIVE
+>  /*
+> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+> index 1b8da4e40a4d..39322ae20a75 100644
+> --- a/arch/riscv/kernel/smpboot.c
+> +++ b/arch/riscv/kernel/smpboot.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/sched/mm.h>
+>  #include <asm/cpu_ops.h>
+>  #include <asm/cpufeature.h>
+> +#include <asm/hwprobe.h>
+>  #include <asm/irq.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/numa.h>
+> @@ -246,7 +247,15 @@ asmlinkage __visible void smp_callin(void)
+>  
+>  	numa_add_cpu(curr_cpuid);
+>  	set_cpu_online(curr_cpuid, 1);
+> -	check_unaligned_access(curr_cpuid);
+> +
+> +	/*
+> +	 * Boot-time misaligned access speed measurements are done in parallel
+> +	 * in an initcall. Only measure here for hotplug.
+> +	 */
+> +	if (misaligned_speed_measured &&
+> +	    (per_cpu(misaligned_access_speed, curr_cpuid) == RISCV_HWPROBE_MISALIGNED_UNKNOWN)) {
 
+I believe this check is for cpu not-booted during boot time but hotplug in
+after that, if so I'm not sure whether
+misaligned_speed_measured can be replaced with
+(system_state == SYSTEM_RUNNING)
+then we don't need misaligned_speed_measured at all.
+
+> +		check_unaligned_access(NULL);
+> +	}
+>  
+>  	if (has_vector()) {
+>  		if (riscv_v_setup_vsize())
+> -- 
+> 2.34.1
+> 
