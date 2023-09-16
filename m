@@ -2,157 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553317A2CD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 03:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012487A2CBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238534AbjIPBE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 21:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S238607AbjIPAvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 20:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238426AbjIPBD7 (ORCPT
+        with ESMTP id S238929AbjIPAu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 21:03:59 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C1A90;
-        Fri, 15 Sep 2023 18:03:53 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38G0AjxH018114;
-        Sat, 16 Sep 2023 00:46:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ck+kiCghvHyIq4BaYnOXBbHHLhiRIKeMgU0Ox/vMOs0=;
- b=bS9T3u21H8RVIEBXoeHKFi33J5e9jT5yQX9DQQcT44fiqw68fHwfAGYMHhd2B+dN9vcJ
- pqGFB7edIOjCbzjqfOEowz+BvF5ZJq7P/7tOaWBXZzn3T/uqnGjwXI8IxREd85LDVqQM
- Dxrcc2VFxSxKMsIxt+pMYzd6a4lyVvPc5Cd3E8fGn9mplSqqygYdrWby095vAW6ACbX6
- HtpYrfMV5yE1ghZ67qtKA31DVX3ubzu15W3RpeOMz3aZyaoL3GNVWPxHZJ91dFRApDs4
- bUNhvYpI5Qo6ZxWQ2q7nfW/jpEPeopycNaak1ucNJEkChwNy4//RBuhncIbpsw28x9+p uA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g86teve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Sep 2023 00:46:10 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38G0k93I016034
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Sep 2023 00:46:09 GMT
-Received: from [10.110.47.184] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 17:46:07 -0700
-Message-ID: <60df2d55-ce96-1095-0e52-254d7bd91e7b@quicinc.com>
-Date:   Fri, 15 Sep 2023 17:46:07 -0700
+        Fri, 15 Sep 2023 20:50:57 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B080F272E;
+        Fri, 15 Sep 2023 17:47:10 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-65637f0d10eso4766716d6.1;
+        Fri, 15 Sep 2023 17:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694825228; x=1695430028; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OBHxW502vU8e53k9oCuqrI/4gYcnPRfLjigLIIeAUug=;
+        b=TGYf6yL+lpRLojXBYPaIa4uiZA8pvfPaCakdfkslwqtlGz0xzwwfVPEPi6guLtxdhc
+         HToYzCjq7UyGf8CteELt+BTn3keAaMIX2DKwFVp0LlowDcWLjTRl1lW0LU7Oy9ZHANU0
+         1GophPdoR4oAjsGFL2QmoiOHLa9g8YZyOmCbN263pillqtXDsiB3gULyDRki0JkbMNQA
+         UqUjhoNuWFwM9V+/LrOck6oIxpPAdrnfZ/vKtAF4/n8IRlI24NuBxwowKSmmLIJK2MxD
+         JBKDZ2EvVeblxqflSa66c4ek2GqwjGqahGy5X7ZF+EMTUj7aG0R/byKweaMbqdlXi9Ty
+         ipLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694825228; x=1695430028;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OBHxW502vU8e53k9oCuqrI/4gYcnPRfLjigLIIeAUug=;
+        b=WXmENQlhItncb2tlECTC2RoJ97E3u9MwXdpVMy9eg62SHxylBFB3tK3MTbev+XL3Zp
+         2neQbaFOyEkhspIkUFutg3/+7PQsg+GpYMUAAXA3G73xm7B0p91XEGdabPLVdMQUt16d
+         dPgGhZ0+5jKq52EPbyRPbnxHP2VMtNbHXzv2nG0IyLcYr0CqB7LzKHDn3fTHvfuARYZC
+         rn/v1p04q1bPTo+RNrrq8JdlxdGMpXUKv1bx5hFwCv2gn4F+I6okfwyFffHkS32VJgp7
+         YePQz/cvJcCzsufi+65wFe/0/WZTOJP926NNpZlAlYdHHx38sTvhbbRMh4OZ9x/drb+H
+         DH0A==
+X-Gm-Message-State: AOJu0YxUOJnm9h+1KZRf3eu7SuEtLrQw96/YA+Sjwd8/jy08Jyw1ApnH
+        eOQtnQRQYYyCqg5cwWLQ0dAUNOa6p64khtAtRFo=
+X-Google-Smtp-Source: AGHT+IFFKdbmFxyTAEg51NciK8t4OKI137LB+9RsFkYxzW1wvBThEcZn7VBiNX9iRv/ryzCHsYTOgq/nirF2i6sMg+s=
+X-Received: by 2002:a0c:f3c4:0:b0:656:eae:d7b2 with SMTP id
+ f4-20020a0cf3c4000000b006560eaed7b2mr4468467qvm.2.1694825227951; Fri, 15 Sep
+ 2023 17:47:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v6 23/33] ASoC: dt-bindings: Add Q6USB backend
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20230916001026.315-1-quic_wcheng@quicinc.com>
- <20230916001026.315-24-quic_wcheng@quicinc.com>
- <9144cb67-9606-4b17-b760-a6d3e8e346cc@linaro.org>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <9144cb67-9606-4b17-b760-a6d3e8e346cc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zgDNW_TDu9Oe6lDKtF37RINtdlYN4fmk
-X-Proofpoint-ORIG-GUID: zgDNW_TDu9Oe6lDKtF37RINtdlYN4fmk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=712
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309160005
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915072333.117991-1-wangchen20@iscas.ac.cn>
+ <20230915-muster-viability-93d7d4ec2b49@spud> <20230915150332.GA3719864-robh@kernel.org>
+In-Reply-To: <20230915150332.GA3719864-robh@kernel.org>
+From:   Chen Wang <unicornxw@gmail.com>
+Date:   Sat, 16 Sep 2023 08:46:57 +0800
+Message-ID: <CAHAQgRAtFBvoKbfL266cjUNnhSCM4UkU=g6n++7XXXeKOXR8yw@mail.gmail.com>
+Subject: Re: [PATCH 04/12] dt-bindings: riscv: Add T-HEAD C920 compatibles
+To:     Rob Herring <robh@kernel.org>
+Cc:     Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org,
+        aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jszhang@kernel.org, guoren@kernel.org, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com, Wang Chen <wangchen20@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+Thanks for your detailed clarification, Rob. I'll pay attention next time.
+Regards,
 
-On 9/15/2023 5:37 PM, Konrad Dybcio wrote:
-> On 16.09.2023 02:10, Wesley Cheng wrote:
->> Add a dt-binding to describe the definition of enabling the Q6 USB backend
->> device for audio offloading.  The node carries information, which is passed
->> along to the QC USB SND class driver counterpart.  These parameters will be
->> utilized during QMI stream enable requests.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   .../devicetree/bindings/sound/qcom,q6usb.yaml | 55 +++++++++++++++++++
->>   1 file changed, 55 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml b/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->> new file mode 100644
->> index 000000000000..51ff0b1ffa2d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->> @@ -0,0 +1,55 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/qcom,q6usb-dais.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm ASoC DPCM USB backend DAI
->> +
->> +maintainers:
->> +  - Wesley Cheng <quic_wcheng@quicinc.com>
->> +
->> +description:
->> +  The USB port is a supported AFE path on the Q6 DSP.  This ASoC DPCM
->> +  backend DAI will communicate the required settings to initialize the
->> +  XHCI host controller properly for enabling the offloaded audio stream.
->> +  Parameters defined under this node will carry settings, which will be
->> +  passed along during the QMI stream enable request and configuration of
->> +  the XHCI host controller.
->> +
->> +allOf:
->> +  - $ref: dai-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,q6usb
->> +
->> +  iommus:
->> +    maxItems: 1
->> +
->> +  "#sound-dai-cells":
->> +    const: 1
->> +
->> +  qcom,usb-audio-intr-num:
->> +    description:
->> +      Desired XHCI interrupter number to use.  Depending on the audio DSP
->> +      on the platform, it will operate on a specific XHCI interrupter.
-> So is this the number of interrupters to be used or the index of
-> a single interrupter? If the latter, then "num" is definitely way
-> too ambiguous.
-> 
+unicornx
 
-It defines the index of a single interrupter.  I'll change the naming of 
-this property.
-
-Thanks
-Wesley Cheng
+Rob Herring <robh@kernel.org> =E4=BA=8E2023=E5=B9=B49=E6=9C=8815=E6=97=A5=
+=E5=91=A8=E4=BA=94 23:03=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Sep 15, 2023 at 03:11:43PM +0100, Conor Dooley wrote:
+> > On Fri, Sep 15, 2023 at 03:23:33PM +0800, Wang Chen wrote:
+> > > The C920 is RISC-V CPU cores from T-HEAD Semiconductor.
+> > > Notably, the C920 core is used in the SOPHGO SG2042 SoC.
+> > >
+> > > Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+> > > Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> >
+> > I figure this is missing a From: or Co-developed-by line.
+>
+> From: (author) as 2 authors for 1 line change is questionable.
+>
+> The sender's email should be the last S-o-b. So like this:
+>
+> From: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+>
+> ...
+>
+> Signed-off-by: Xiaoguang Xing <xiaoguang.xing@sophgo.com>
+> Signed-off-by: Wang Chen <wangchen20@iscas.ac.cn>
+>
+>
+> >
+> > > ---
+> > >  Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Docu=
+mentation/devicetree/bindings/riscv/cpus.yaml
+> > > index 38c0b5213736..185a0191bad6 100644
+> > > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > @@ -47,6 +47,7 @@ properties:
+> > >                - sifive,u74-mc
+> > >                - thead,c906
+> > >                - thead,c910
+> > > +              - thead,c920
+> > >            - const: riscv
+> > >        - items:
+> > >            - enum:
+> > > --
+> > > 2.25.1
+> > >
+>
+>
