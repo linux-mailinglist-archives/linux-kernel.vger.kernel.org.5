@@ -2,169 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C44D57A30C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E497A30CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239377AbjIPN57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 09:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S239393AbjIPOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 10:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236702AbjIPN5l (ORCPT
+        with ESMTP id S239390AbjIPOEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 09:57:41 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1C8CEA;
-        Sat, 16 Sep 2023 06:57:35 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 9159D42498;
-        Sat, 16 Sep 2023 18:57:29 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1694872650; bh=4hf9NDkSjXIiEDRF/oTd87ONW933mcqoFz4BE59iyKY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=O2X0OmxK3DHH70+wCsefFAaVmGbwaPuAKMV/tDqsLXzVjVyKalk0DbPKd6nlDsZbT
-         wS2NaBhSAca2FIVtC+Rerib9hSYFK2LVV0B57KJriC+5ktRZdDk+QFFmcukRcHXp+g
-         wIbU33hcomGbbJQWemjPX9cXt9M6AGLKnudab+KDc9dqngW6XbzAA6ctD+QLOdZDRd
-         A1Pl/vhnGdfZxFJW4xeMFdWfKvnQe1vW7aC29l35831hflI895iR3LWq8vlL/IdV6F
-         tLnjPlIDyj0iBzneFGUqVi02QGv9rh/1+gvoXDALCt2weqrKb/N3Nr7XtENeXvgmFi
-         7PaO85BCx6h5w==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Sat, 16 Sep 2023 18:57:06 +0500
-Subject: [PATCH 3/3] arm64: dts: qcom: msm8916-longcheer-l8150: Add battery
- and charger
+        Sat, 16 Sep 2023 10:04:15 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B26CE7
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:03:47 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690471b5889so1272730b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694873026; x=1695477826; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oj4pOI3pVs327qsHEGlUcaJ2/26WPRFSldanwmoKx0c=;
+        b=N4P+uUxGnXVdU5xKTfwYny5j7YFUdG4gdBnGtQsWcmpdWD1VLy76saq8rhCblcuwsg
+         7EkfMfzQ8fla9xlYKDGbGEwc/NWM4i3u2xCNw5JpP+MAfnqlObMj9WWhwETPDIHvE7/n
+         BvzXXLcX8UHDPqdMEoBvD7BDosLDYGlg9Rgm4g9lR65lnsPoIlaYtHai51VYITeTetRd
+         rn+U2u6c+DIfXxp9Ab80yDSOTJIFJ/tv/+KsPRdsWyq1VnP+Gx5WqQaPtr08N7nYNb1p
+         WLnjUtW32u3WhTXBS+kn55amzOLmulO9f496nEOHrsQi5Yt4cUtvA+H1yiGEZU/zd+V5
+         wogg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694873026; x=1695477826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Oj4pOI3pVs327qsHEGlUcaJ2/26WPRFSldanwmoKx0c=;
+        b=A4hVweUI+aIW1NhCwIberofZxXUroAxZqDNBz83kdLzmrBqu3XajFoKKaFmUrQwxat
+         GYjUqC4XIakPkzVAlrV9IB4V0J/OYPY5HKLRWauH7Bh94tkwjEVDc/sKIzngqqZId1Bg
+         hjrwzMIJ6zovqD4jMkSoOrFd3RYg+s1rOVB1b64pgB2f9yYzRji0BIhv3o8k7LoV9bBR
+         Hk1HWlrzdcFke0kYmEOu37HpJMbaW2jQx3jDVlbWFZpvmyUVL0yF+p+LhxQuWjkj4aFz
+         BPG02VRm2AS0qdMPt9yccMcv4WE6qsz4dz0q3JtPWON5gD8ZIFcVbdCJ4AO5C+v2Sv9H
+         pnVQ==
+X-Gm-Message-State: AOJu0YxtVpSq5YYh3MjTR5wDR3OL20G0NDxv02ng/3rWXEVrwWE3SJ/M
+        I5jCRpUa0frKlNYPbrrmr76DYw==
+X-Google-Smtp-Source: AGHT+IEVzFXumo/J/QE/xF5PDDqrKhmcaVZNjrP37KzyfnDB3I5vEYYde0qucCyi444GkbUpzdEcEw==
+X-Received: by 2002:a05:6a20:3cac:b0:15a:478f:9f2e with SMTP id b44-20020a056a203cac00b0015a478f9f2emr5411493pzj.1.1694873026408;
+        Sat, 16 Sep 2023 07:03:46 -0700 (PDT)
+Received: from [10.5.75.238] ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id n17-20020aa78a51000000b0068bc014f352sm4551431pfa.7.2023.09.16.07.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Sep 2023 07:03:44 -0700 (PDT)
+Message-ID: <67d07ab7-8202-4bbd-88d9-587707bd58b1@bytedance.com>
+Date:   Sat, 16 Sep 2023 22:03:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230916-pm8916-dtsi-bms-lbc-v1-3-7db0b42f9fb1@trvn.ru>
-References: <20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru>
-In-Reply-To: <20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2453; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=4hf9NDkSjXIiEDRF/oTd87ONW933mcqoFz4BE59iyKY=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlBbQ8BNlnZPYaTsGrRi3gzuGx+ikU9W0eOJm+o
- qE4NQTu52WJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZQW0PAAKCRBDHOzuKBm/
- dZTeEACEw58WEI8ogGUTMLa2uBApWvK7ZnseHAogy6bvt7D4FGX7bpO3b3rqMbzMgF5DiFyyjau
- AHNe80OsUFIR9/OUba8TAMwin9DtHVbzNo/Ja/J8maUeK45Wnq9pbOIm4QYkjK6nXGhOZWA2RPt
- loL47GYG1LnCg30ZfwNUiu/YmWPICHPHsT0xEAvenwOEwUTlllUR8YYapL/w8iHIg9n1cn2iei4
- l5qBs5yXasktNeZLvE37iM4zrAwruOAaZO9WLQtOvlSYXAaJ4mzcjqZiSnvOdeOji0+Vhcrp2Sj
- YPAX6QSKlRTCAPhVFdPueRC4F8sgoXuRJR6FLyrjgudS3o//6tx2eX6x4LCZQe01n1oY4LkOzzl
- xBWz1FOiZSB7NN7MkzStMbEo1Jc7e+Ur2ndrbeAGO1SwxDaWO5lXe0VW7UrLh83Yipz2r238HGo
- 61nRiXfQD+NAiHbGE5ubNj63lHR6qhv2HEMmfppX0tpi22NYMl+5aKnGx2NukE/l+ChYry9EHFO
- dm4/udF2U74ER0m5w33GCfaTLGN6VKre485OO3AMJLfsq+jBTYalxyuqdtv9wKw04DmBzjR+NO1
- ISSLNC9Dm7CpZhNFlUwkIeDVuDzjm50Xhm2QsFYBPtJEzXkSWszi53d5pma/HsELdA9smRXYzqc
- CXhkqqlMohzJWyw==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: Introduce process open coded
+ iterator kfuncs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
+ <20230912070149.969939-4-zhouchuyi@bytedance.com>
+ <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
+ <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com>
+ <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Longcheer L8150 doesn't have any dedicated fuel-gauge or charger,
-instead making use of the pmic hardware blocks for those purposes.
+Hello.
 
-Add pm8916 bms and charger, as well as the battery cell description
-that those devices rely on.
+在 2023/9/16 04:37, Andrii Nakryiko 写道:
+> On Fri, Sep 15, 2023 at 8:03 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>> 在 2023/9/15 07:26, Andrii Nakryiko 写道:
+>>> On Tue, Sep 12, 2023 at 12:02 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>>>
+>>>> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
+>>>> creation and manipulation of struct bpf_iter_process in open-coded iterator
+>>>> style. BPF programs can use these kfuncs or through bpf_for_each macro to
+>>>> iterate all processes in the system.
+>>>>
+[...cut...]
+>>>
+>>> Few high level thoughts. I think it would be good to follow
+>>> SEC("iter/task") naming and approach. Open-coded iterators in many
+>>> ways are in-kernel counterpart to iterator programs, so keeping them
+>>> close enough within reason is useful for knowledge transfer.
+>>>
+>>> SEC("iter/task") allows to:
+>>> a) iterate all threads in the system
+>>> b) iterate all threads for a given TGID
+>>> c) it also allows to "iterate" a single thread or process, but that's
+>>> a bit less relevant for in-kernel iterator, but we can still support
+>>> them, why not?
+>>>
+>>> I'm not sure if it supports iterating all processes (as in group
+>>> leaders of each task group) in the system, but if it's possible I
+>>> think we should support it at least for open-coded iterator, seems
+>>> like a very useful functionality.
+>>>
+>>> So to that end, let's design a small set of input arguments for
+>>> bpf_iter_process_new() that would allow to specify this as flags +
+>>> either (optional) struct task_struct * pointer to represent
+>>> task/process or PID/TGID.
+>>>
+>>
+>> Another concern from Alexei was the readability of the API of open-coded
+>> in BPF Program[1].
+>>
+>> bpf_for_each(task, curr) is straightforward. Users can easily understand
+>> that this API does the same thing as 'for_each_process' in kernel.
+> 
+> In general, users might have no idea about for_each_process macro in
+> the kernel, so I don't find this particular argument very convincing.
+> 
+> We can add a separate set of iterator kfuncs for every useful
+> combination of conditions, of course, but it's a double-edged sword.
+> Needing to use a different iterator just to specify a different
+> direction of cgroup iteration (from the example you referred in [1])
+> also means that it's now harder to write some generic function that
+> needs to do something for all cgroups matching some criteria where the
+> order might be coming as an argument.
+> 
+> Similarly for task iterators. It's not hard to imagine some processing
+> that can be equivalently done per thread or per process in the system,
+> or on each thread of the process, depending on some conditions or
+> external configuration. Having to do three different
+> bpf_for_each(task_xxx, task, ...) for this seems suboptimal. If the
+> nature of the thing that is iterated over is the same, and it's just a
+> different set of filters to specify which subset of those items should
+> be iterated, I think it's better to try to stick to the same iterator
+> with few simple arguments. IMO, of course, there is no objectively
+> best approach.
+> 
+>>
+>> However, if we keep the approach of SEC("iter/task")
+>>
+>> enum ITER_ITEM {
+>>          ITER_TASK,
+>>          ITER_THREAD,
+>> }
+>>
+>> __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_process *it, struct
+>> task_struct *group_task, enum ITER_ITEM type)
+>>
+>> the API have to chang:
+>>
+>>
+>> bpf_for_each(task, curr, NULL, ITERATE_TASK) // iterate all process in
+>> the  system
+>> bpf_for_each(task, curr, group_leader, ITERATE_THREAD) // iterate all
+>> thread of group_leader
+>> bpf_for_each(task, curr, NULL, ITERATE_THREAD) //iterate all threads of
+>> all the process in the system
+>>
+>> Useres may guess what are this API actually doing....
+> 
+> I'd expect users to consult documentation before trying to use an
+> unfamiliar cutting-edge functionality. So let's try to keep
+> documentation clear and up to the point. Extra flag argument doesn't
+> seem to be a big deal.
 
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
----
- .../boot/dts/qcom/msm8916-longcheer-l8150.dts      | 43 +++++++++++++++++++---
- 1 file changed, 37 insertions(+), 6 deletions(-)
+Thanks for your suggestion!
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-index 3892ad4f639a..95dddf3b3880 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-@@ -33,6 +33,25 @@ wcnss_mem: wcnss@8b600000 {
- 		};
- 	};
- 
-+	battery: battery {
-+		compatible = "simple-battery";
-+		voltage-min-design-microvolt = <3400000>;
-+		voltage-max-design-microvolt = <4350000>;
-+		energy-full-design-microwatt-hours = <9500000>;
-+		charge-full-design-microamp-hours = <2500000>;
-+
-+		ocv-capacity-celsius = <25>;
-+		ocv-capacity-table-0 = <4330000 100>, <4265000 95>,
-+			<4208000 90>, <4153000 85>, <4100000 80>, <4049000 75>,
-+			<4001000 70>, <3962000 65>, <3919000 60>, <3872000 55>,
-+			<3839000 50>, <3817000 45>, <3798000 40>, <3783000 35>,
-+			<3767000 30>, <3747000 25>, <3729000 20>, <3709000 16>,
-+			<3688000 13>, <3681000 11>, <3680000 10>, <3679000 9>,
-+			<3677000 8>, <3674000 7>, <3666000 6>, <3641000 5>,
-+			<3597000 4>, <3537000 3>, <3457000 2>, <3336000 1>,
-+			<3000000 0>;
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 
-@@ -220,6 +239,22 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+&pm8916_bms {
-+	status = "okay";
-+
-+	monitored-battery = <&battery>;
-+	power-supplies = <&pm8916_charger>;
-+};
-+
-+&pm8916_charger {
-+	status = "okay";
-+
-+	monitored-battery = <&battery>;
-+
-+	qcom,fast-charge-safe-current = <900000>;
-+	qcom,fast-charge-safe-voltage = <4300000>;
-+};
-+
- &pm8916_resin {
- 	status = "okay";
- 	linux,code = <KEY_VOLUMEDOWN>;
-@@ -232,10 +267,6 @@ pm8916_l17: l17 {
- 	};
- };
- 
--&pm8916_usbin {
--	status = "okay";
--};
--
- &pm8916_vib {
- 	status = "okay";
- };
-@@ -252,11 +283,11 @@ &sdhc_2 {
- &usb {
- 	status = "okay";
- 	dr_mode = "peripheral";
--	extcon = <&pm8916_usbin>;
-+	extcon = <&pm8916_charger>;
- };
- 
- &usb_hs_phy {
--	extcon = <&pm8916_usbin>;
-+	extcon = <&pm8916_charger>;
- };
- 
- &wcnss {
+Before we begin working on the next version, I have outlined a detailed 
+API design here:
 
--- 
-2.41.0
+1.task_iter
+
+It will be used to iterate process/threads like SEC("iter/task"). Here 
+we should better to follow the naming and approach SEC("iter/task"):
+
+enum {
+	ITERATE_PROCESS,
+	ITERATE_THREAD,
+}
+
+__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct 
+task_struct *task, int flag);
+
+If we want to iterate all processes in the system, the iteration will 
+start from the *task* which is passed from user.(since process in the 
+system are connected through a linked list)
+
+Additionally, the *task* can allow users to specify iterating all 
+threads within a task group.
+
+SEC("xxx")
+int xxxx(void *ctx)
+{
+	struct task_struct *pos;
+	struct task_struct *cur_task = bpf_get_current_task_btf();
+
+	bpf_rcu_read_lock();
+
+	// iterating all process in the system start from cur_task
+	bpf_for_each(task, pos, cur_task, ITERATE_PROCESS) {
+		
+	}
+
+	// iterate all thread belongs to cur_task group.
+	bpf_for_each(task, pos, cur_task, ITERATE_THREAD) {
+	
+	}
+	
+	bpf_rcu_read_unlock();
+	return 0;
+}
+
+Iterating all thread of each process is great（ITERATE_ALL）. But maybe 
+let's break it down step by step and implement 
+ITERATE_PROCESS/ITERATE_THREAD first? (I'm little worried about the cpu 
+overhead of ITERATE_ALL, since we are doing a heavy job in BPF Prog)
+
+I wanted to reuse BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID 
+insted of new enums like ITERATE_PROCESS/ITERATE_THREAD. But it seems 
+necessary. In BPF Prog, we usually operate task_struct directly instead 
+of pid/tgid. It's a little weird to use 
+BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID here:
+
+bpf_for_each(task, pos, cur_task, BPF_TASK_ITER_TID) {
+}
+
+On the other hand, 
+BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID are inner flags 
+that are hidden from the users.
+Exposing ITERATE_PROCESS/ITERATE_THREAD will not cause confusion to user.
+
+
+2. css_iter.
+
+css_iter will be used to:
+(1) iterating subsystem, like 
+for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
+(2) iterating cgroup. (patch-6's selfetest has a basic example)
+
+css(cgroup_subsys_state) is more fundamental than struct cgroup. I think 
+we'd better operating css rather than cgroup, since it's can be hard for 
+cgroup_iter to achive (2). So here we keep the name of "css_iter", 
+BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST/BPF_CGROUP_ITER_ANCESTORS_UP 
+can be reused.
+
+
+__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+		struct cgroup_subsys_state *root, unsigned int flag)
+
+bpf_for_each(css, root, BPF_CGROUP_ITER_DESCENDANTS_PRE)
+
+Thanks.
+
+
+
 
