@@ -2,77 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EA97A321F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5518B7A323A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjIPTRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S235908AbjIPTRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbjIPTQf (ORCPT
+        with ESMTP id S233237AbjIPTRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:16:35 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95E186;
-        Sat, 16 Sep 2023 12:16:30 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31ffc8ead75so97706f8f.0;
-        Sat, 16 Sep 2023 12:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694891788; x=1695496588; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vwUo4LhXW6t1Gnv3Q0htjfrVL7zsllgauCJSS4C+aNg=;
-        b=RzIY5wwqUA51SkVB0Z8HRNXXBmk+VBI78AVY8GSbre2vHGiFul9H21UgbL77gOg46F
-         nGbgd9IpGteNTbcwLZMvLaLD9Zbiqt1ihTLQLxV4AhJ/kTiOcQX60INzUisy/ONfInB1
-         5J+d+BaXxUWgdPUoGhfSLg+rg5vgf4xHxPyaz6ZiTPo9UN+etdoQFy9qMaSrRXRk9tvR
-         /6tXWy5Kx6NNiaA47okOvl52wSUsGwVs2lLet+WJdtZTZ5YxizPo6skEHxhBLIqWM4jF
-         D/9QFTlMhKZIOl2/zsdi5MMbZIZISGhKh2mx79L0nSAigx62sU/J1w9F1LnoKxGuzOnp
-         DhoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694891788; x=1695496588;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vwUo4LhXW6t1Gnv3Q0htjfrVL7zsllgauCJSS4C+aNg=;
-        b=gzNTkUCUhurqDRHE5xrKhVbC8xXWI+NMrHdMoxVlwiFYhjHfOdnU0GCMiVpg7B+OTV
-         p8vKaZtTIdvXEP1L0JCiaruuD4WXx6+YAWlJWsE0NWrMiMZx4Vh1WP7dYqUGcq6qavdk
-         gmTTUUDlZBOQReRmxDmAOVRMJrMjN2RGgu2NLkyS+LhjdmWn8H7YlQwfaV5heHLV2Dfb
-         WuuLCws0/lX/py1jb/qk+9yrtIJ9CN9j1uTMcHNTC9WtOh549XieoYfNi/SqANlm4XQt
-         gdbc8Sck36CQhKUjaCqQQSkGLbQd0XtCHbJ2m93I3WJElm2Z4axQnw6CMSXgEykuz5pX
-         rxEQ==
-X-Gm-Message-State: AOJu0YxunZFsjxl6ZsSopHCMGAGE1BOW14T2d5li9TZZWiPc7+cMVxVE
-        YlwUqsGIm+nv0RqwEWszR/U=
-X-Google-Smtp-Source: AGHT+IFQvgWlTqJ+ytOsAKXGLEU/ChOtRbJNqGOsj29RBk91cgJULaEEW3Hth1jXthX00cPN+Zp19Q==
-X-Received: by 2002:a05:6000:1f9c:b0:320:b1e:7e6c with SMTP id bw28-20020a0560001f9c00b003200b1e7e6cmr163143wrb.3.1694891788289;
-        Sat, 16 Sep 2023 12:16:28 -0700 (PDT)
-Received: from [10.0.0.26] ([178.160.241.68])
-        by smtp.gmail.com with ESMTPSA id d6-20020adfef86000000b0031f82743e25sm7883184wro.67.2023.09.16.12.16.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 12:16:27 -0700 (PDT)
-Message-ID: <f1c8d747-dcf6-a913-f6d5-37fdfe3e2be6@gmail.com>
-Date:   Sat, 16 Sep 2023 23:16:26 +0400
+        Sat, 16 Sep 2023 15:17:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A215186
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:17:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5492C433C7;
+        Sat, 16 Sep 2023 19:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694891825;
+        bh=KNCWSzmod9aM3xB/4gvd2mfB0pCaFsgNdqQUI1NNB38=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nkg0fUGQ+SpOPSRkCea7UXDF1rKKGzEIMAeV1nG6omIeQrRrM3M6zoxmJD83DWpKm
+         MB9ZgpXLwhb7kZyh8bNbP6WdzpLjYuXxQ77F1hBEQWVxJ+wMv9yo2TJhS7u8991zKZ
+         /AA6qyQehk3vqS7Kpboyxo7QvReRYjfYPDO/+jqs=
+Date:   Sat, 16 Sep 2023 21:17:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org, i@zenithal.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb/usbip : fixing warnings in stub_dev.c
+Message-ID: <2023091601-mulch-linoleum-a4c7@gregkh>
+References: <20230916174020.3218-1-bragathemanick0908@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests: ALSA: fix warnings in 'test-pcmtest-driver'
-Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
-Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230916-topic-pcmtest_warnings-v1-1-2422091212f5@gmail.com>
- <96ed6e41-65ca-7410-e2d9-78bd18bdf844@gmail.com>
- <128d057c-0d60-418d-7129-093ea59b8870@gmail.com>
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <128d057c-0d60-418d-7129-093ea59b8870@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230916174020.3218-1-bragathemanick0908@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,16 +46,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/23 22:25, Javier Carrasco wrote:
-> Removing an unused variable is actually removing a blank line from a
-> logical point of view. Is an extra patch not overkill considering that
-> it cannot affect the code behavior?
+On Sat, Sep 16, 2023 at 11:10:20PM +0530, Bragatheswaran Manickavel wrote:
+> Fix some checkpatch complaints in usb/usbip/stub_dev.c
+> 
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> ---
+>  drivers/usb/usbip/stub_dev.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/usbip/stub_dev.c b/drivers/usb/usbip/stub_dev.c
+> index 9c6954aad6c8..3a5771f74a3f 100644
+> --- a/drivers/usb/usbip/stub_dev.c
+> +++ b/drivers/usb/usbip/stub_dev.c
+> @@ -495,24 +495,25 @@ static void stub_disconnect(struct usb_device *udev)
+>  		busid_priv->status = STUB_BUSID_ADDED;
+>  	/* release busid_lock */
+>  	spin_unlock(&busid_priv->busid_lock);
+> -	return;
+>  }
+>  
+>  #ifdef CONFIG_PM
+>  
+> -/* These functions need usb_port_suspend and usb_port_resume,
+> - * which reside in drivers/usb/core/usb.h. Skip for now. */
+> +/*
+> + * These functions need usb_port_suspend and usb_port_resume,
+> + * which reside in drivers/usb/core/usb.h. Skip for now.
+> + */
+>  
+>  static int stub_suspend(struct usb_device *udev, pm_message_t message)
+>  {
+> -	dev_dbg(&udev->dev, "stub_suspend\n");
+> +	dev_dbg(&udev->dev, "stub suspend\n");
+>  
+>  	return 0;
+>  }
+>  
+>  static int stub_resume(struct usb_device *udev, pm_message_t message)
+>  {
+> -	dev_dbg(&udev->dev, "stub_resume\n");
+> +	dev_dbg(&udev->dev, "stub resume\n");
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.34.1
+> 
+> 
 
-Well, no, it is not, as the line is not blank (nothing except removing a 
-blank line could be considered as blank line removal) :) And an extra 
-patch is not an overkill in case if you are separating logical changes.
+Hi,
 
-However, rules may vary from one subsystem to another, so it is up to 
-Shuah to decide take this patch or not. My opinion is that such changes 
-should be separated into different patches.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what is needed in
+  order to properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what a proper
+  Subject: line should look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
