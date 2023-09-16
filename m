@@ -2,230 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09E17A2E10
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 07:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D3A7A2E15
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 07:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238431AbjIPF3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 01:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S238379AbjIPFq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 01:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbjIPF3Y (ORCPT
+        with ESMTP id S234025AbjIPFqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 01:29:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36BD1BC9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 22:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694842159; x=1726378159;
-  h=date:from:to:cc:subject:message-id;
-  bh=l3IZiElQVl2dH3jwdqay6wNvEbURSRCdsYvfxO08WjU=;
-  b=BU4ie1CxD4Dc7T5SnVKTriu4MvcMYYYKd6IVtXJnNS5xql4Czy09Qxer
-   wFbK/1mllADsWaYYL//NNqaV4mceU85bUNuJr2x1LByjcPzifL8aXiQSl
-   ILrssJJ1uIWQF/vyURlW44HmsZrBF01gvCCRKDyxEW41HocHB13LvL8Xf
-   M2UxoWK5LMll5tkZQ9Av1mkaljrpNVTdPq6lvZkaZ7Dm/hIFXCYi/h3y9
-   kHWc3k2TJeR8d0G7o0kwRyL6zNFOq/vTWyV0rIElPo1USZ3mgXhcV5qrL
-   r08A1CcZux1yLoaG6GyfAUdvJVAk/VhGJ8Ib+LF5tWBvQA/L2TMEHcUPo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="465746847"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="465746847"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 22:29:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="992096953"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="992096953"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Sep 2023 22:29:18 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhNro-0003uc-1a;
-        Sat, 16 Sep 2023 05:29:16 +0000
-Date:   Sat, 16 Sep 2023 13:28:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 4ff34ad3d39377d9f6953f3606ccf611ce636767
-Message-ID: <202309161321.5gU2IFCw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 16 Sep 2023 01:46:00 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A417B3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 22:45:54 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3ab27eff294so4694334b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 22:45:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694843154; x=1695447954;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CNuaOXSaOO8dIy+6fOQaCbir5/pyuJoNg7bHCoCtKlY=;
+        b=K3hEhQ58S+q4esJU9VWJh3eEvjp7ODPsLpOGZ2vfaU24PjSRTuG5sRE+j5DSPfJm3Q
+         Q5rii2KGCwRdf6kq8d/snPai2Ml5/k2+NvJvbPmOwtdNUT6IOwv916GbY28jOWv+mYHP
+         qSYY+ZJF5cMvIxvbGQOYGnx5Ng10Jwk6dTSbXN5Wii9gg0jPhDh/fSDgZsDUGrjAzfAt
+         kax7dWCABO/kN742oyyvVZ/gBLyoepqgZymKNrUgbc5hg3Z4vptV72R8IebC7RrDJDsn
+         qW8/5NL43GkOfv3DnWY+0d+BSu4q4gKd+ij4aFlRB45IsdIKBAcWcUDeU2xTKKGx00lL
+         rBBg==
+X-Gm-Message-State: AOJu0YymBVVXyQKX+NP2JBqDfTtEoTTqg2FQMqDZLHiJv4gyD4zZT6GV
+        PS9xKMDUL43gNUMhiXzf8NfirunrQ8VUnFN+lUjG5tki8r/s
+X-Google-Smtp-Source: AGHT+IFETru2iM1tpVdN7+01nnxbuisCUwb3WmtisGEGQhE5Xm9TYSudKp5In9ZzfxbPvhxChoc2ecD4jd1SYEHVuaHftdkWRayq
+MIME-Version: 1.0
+X-Received: by 2002:a05:6808:20a4:b0:3a8:74ff:6c01 with SMTP id
+ s36-20020a05680820a400b003a874ff6c01mr1514811oiw.5.1694843153968; Fri, 15 Sep
+ 2023 22:45:53 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 22:45:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002475cc0605736cf8@google.com>
+Subject: [syzbot] [block?] INFO: task hung in truncate_inode_pages
+From:   syzbot <syzbot+bae3c73c7bf2fe3a740b@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 4ff34ad3d39377d9f6953f3606ccf611ce636767  sched/core: Use do-while instead of for loop in set_nr_if_polling()
+Hello,
 
-elapsed time: 848m
+syzbot found the following issue on:
 
-configs tested: 153
-configs skipped: 2
+HEAD commit:    0bb80ecc33a8 Linux 6.6-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=174f44e8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7435f9f9f66fcd9
+dashboard link: https://syzkaller.appspot.com/bug?extid=bae3c73c7bf2fe3a740b
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1381f8d8680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1365c2a0680000
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-0bb80ecc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fa2698d36fcb/vmlinux-0bb80ecc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/077f03e6d621/Image-0bb80ecc.gz.xz
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230916   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      jornada720_defconfig   gcc  
-arm                   randconfig-001-20230916   gcc  
-arm                         s5pv210_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          alldefconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230916   gcc  
-i386         buildonly-randconfig-002-20230916   gcc  
-i386         buildonly-randconfig-003-20230916   gcc  
-i386         buildonly-randconfig-004-20230916   gcc  
-i386         buildonly-randconfig-005-20230916   gcc  
-i386         buildonly-randconfig-006-20230916   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230916   gcc  
-i386                  randconfig-002-20230916   gcc  
-i386                  randconfig-003-20230916   gcc  
-i386                  randconfig-004-20230916   gcc  
-i386                  randconfig-005-20230916   gcc  
-i386                  randconfig-006-20230916   gcc  
-i386                  randconfig-011-20230915   gcc  
-i386                  randconfig-012-20230915   gcc  
-i386                  randconfig-013-20230915   gcc  
-i386                  randconfig-014-20230915   gcc  
-i386                  randconfig-015-20230915   gcc  
-i386                  randconfig-016-20230915   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230915   gcc  
-loongarch             randconfig-001-20230916   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        bcm47xx_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-nios2                            alldefconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                     kmeter1_defconfig   clang
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                     taishan_defconfig   gcc  
-powerpc                     tqm5200_defconfig   clang
-powerpc                         wii_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230915   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230915   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                          sdk7786_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230916   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230915   gcc  
-x86_64       buildonly-randconfig-002-20230915   gcc  
-x86_64       buildonly-randconfig-003-20230915   gcc  
-x86_64       buildonly-randconfig-004-20230915   gcc  
-x86_64       buildonly-randconfig-005-20230915   gcc  
-x86_64       buildonly-randconfig-006-20230915   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230915   gcc  
-x86_64                randconfig-002-20230915   gcc  
-x86_64                randconfig-003-20230915   gcc  
-x86_64                randconfig-004-20230915   gcc  
-x86_64                randconfig-005-20230915   gcc  
-x86_64                randconfig-006-20230915   gcc  
-x86_64                randconfig-011-20230915   gcc  
-x86_64                randconfig-012-20230915   gcc  
-x86_64                randconfig-013-20230915   gcc  
-x86_64                randconfig-014-20230915   gcc  
-x86_64                randconfig-015-20230915   gcc  
-x86_64                randconfig-016-20230915   gcc  
-x86_64                randconfig-071-20230915   gcc  
-x86_64                randconfig-072-20230915   gcc  
-x86_64                randconfig-073-20230915   gcc  
-x86_64                randconfig-074-20230915   gcc  
-x86_64                randconfig-075-20230915   gcc  
-x86_64                randconfig-076-20230915   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                         virt_defconfig   gcc  
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bae3c73c7bf2fe3a740b@syzkaller.appspotmail.com
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+INFO: task udevd:3125 blocked for more than 450 seconds.
+      Not tainted 6.6.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:udevd           state:D stack:0     pid:3125  ppid:2924   flags:0x0000000d
+Call trace:
+ __switch_to+0x1d0/0x348 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xac4/0x2ae4 kernel/sched/core.c:6695
+ schedule+0xc8/0x19c kernel/sched/core.c:6771
+ io_schedule+0xac/0x114 kernel/sched/core.c:9026
+ folio_wait_bit_common+0x2a8/0x6d8 mm/filemap.c:1301
+ __folio_lock mm/filemap.c:1629 [inline]
+ folio_lock include/linux/pagemap.h:1042 [inline]
+ folio_lock include/linux/pagemap.h:1038 [inline]
+ __filemap_get_folio+0x418/0x840 mm/filemap.c:1882
+ truncate_inode_pages_range+0x270/0xb4c mm/truncate.c:376
+ truncate_inode_pages+0x14/0x20 mm/truncate.c:448
+ kill_bdev block/bdev.c:76 [inline]
+ blkdev_flush_mapping+0x100/0x250 block/bdev.c:630
+ blkdev_put_whole+0xd4/0xf0 block/bdev.c:661
+ blkdev_put+0x284/0x6a8 block/bdev.c:898
+ blkdev_release+0x74/0xa8 block/fops.c:604
+ __fput+0x2a8/0x830 fs/file_table.c:384
+ ____fput+0x10/0x1c fs/file_table.c:412
+ task_work_run+0x124/0x20c kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x75c/0x1ecc kernel/exit.c:874
+ do_group_exit+0xa4/0x208 kernel/exit.c:1024
+ get_signal+0x19a4/0x1ae8 kernel/signal.c:2892
+ do_signal arch/arm64/kernel/signal.c:1249 [inline]
+ do_notify_resume+0x480/0x3028 arch/arm64/kernel/signal.c:1302
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
+ el0_svc+0x11c/0x140 arch/arm64/kernel/entry-common.c:679
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+INFO: task syz-executor137:3128 blocked for more than 450 seconds.
+      Not tainted 6.6.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor137 state:D stack:0     pid:3128  ppid:3121   flags:0x00000005
+Call trace:
+ __switch_to+0x1d0/0x348 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xac4/0x2ae4 kernel/sched/core.c:6695
+ schedule+0xc8/0x19c kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x4e8/0x840 kernel/locking/mutex.c:747
+ mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:799
+ blkdev_get_by_dev.part.0+0x3ec/0x810 block/bdev.c:786
+ blkdev_get_by_dev+0x68/0x7c block/bdev.c:829
+ blkdev_open+0xec/0x288 block/fops.c:589
+ do_dentry_open+0x4e8/0x1138 fs/open.c:929
+ vfs_open+0x90/0xc8 fs/open.c:1063
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x1488/0x2058 fs/namei.c:3796
+ do_filp_open+0x16c/0x330 fs/namei.c:3823
+ do_sys_openat2+0x12c/0x160 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __arm64_sys_openat+0x12c/0x1b8 fs/open.c:1448
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
+ el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+INFO: lockdep is turned off.
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
