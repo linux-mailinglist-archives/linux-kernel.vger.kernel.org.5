@@ -2,129 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3947A31D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3717A31DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbjIPSHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 14:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        id S234496AbjIPSVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 14:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjIPSHG (ORCPT
+        with ESMTP id S233902AbjIPSVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 14:07:06 -0400
-X-Greylist: delayed 4433 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 16 Sep 2023 11:07:01 PDT
-Received: from gimli.kloenk.dev (gimli.kloenk.dev [IPv6:2a01:4f8:c012:b874::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D75191;
-        Sat, 16 Sep 2023 11:07:01 -0700 (PDT)
-From:   Finn Behrens <me@kloenk.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kloenk.dev; s=mail;
-        t=1694887618; bh=lqZdo4cSoaQIllOmN8FxoVmWJKHuKTh22y8m1E3kGxM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=AnetxXH5p8tp6yPv2FyMgzNrIoXq3PZEtHGyXq6MfoFBLqWrKLWvMJwDE/W1B6jU2
-         rH291cZ2rAsRXQ9PZ4Mx2jLzG9Z+eRLqKQA7lSRQPdfpo8LzIOie8G3J/hcq0emOzR
-         hZcQoAZNGvLI4J9vf8Wqarn2y2wiXBl7XPA2hZCQ=
-To:     =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
-Date:   Sat, 16 Sep 2023 20:06:47 +0200
-Message-ID: <0561303E-2089-43FC-AA31-836C7BB844B7@kloenk.dev>
-In-Reply-To: <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
-References: <20230915172900.3784163-1-mmaurer@google.com>
- <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
- <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
+        Sat, 16 Sep 2023 14:21:40 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BD8CE6
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 11:21:35 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9adb9fa7200so622079366b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 11:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694888494; x=1695493294; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FTdyb3zvatPdaFJlPoz0gdD5HKKgZ3y8QEX/wWGYg5M=;
+        b=QpkTPR8XiGZ29rzL5rat9BsWqhdJz5cSPb60q9FUdHVTNF4YUcDOXyRka/Fqga8OeM
+         qHXYKEp0TA8nSlwW5K2rTiDAFFr97J+i4yJRcOyf71C0yIT9lBE8/EneCl/37UKRDM3O
+         qv6o9dJisXVXONmdZPoSSdlBsrx8KlvE+euGdg8V9RXpgJO64KIW1e+x6u1gm5PPICzb
+         HX9RezJIB8HrU5iQiZDO+r9dNNapnPySW5M2eBXoygPTEtX9GegagkSQxlJjpPbyI6wP
+         CWRGMYIgHc6OWA4An1myijlxxhx87HdeAbtR/96aFo7RwSkkkcdtUfIYH9BleP+5Qzs4
+         O6TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694888494; x=1695493294;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FTdyb3zvatPdaFJlPoz0gdD5HKKgZ3y8QEX/wWGYg5M=;
+        b=wFsG/w7NTy6yYGY8eoWdfcYV2Y7XU2fogTeQcxBzoTYZkVnM8G/NwRR+CYJbD0YQ0t
+         XCzL2xM8QAhbx8LOi6XmltBEUzyw5JH9h4IAKtV9MHy9wbrXmiSQ2+OqEOef+L0ipg/4
+         JYeM/90lc+UGAR5tMQl9p7CP4ZI2alc149Fp64I9SetF+V8jKtB5pdAjxR5bEz3uMydC
+         1cMHgfE4It8uxSlqHU9DhRgyb7VX3F3axCgfFBTOreuWD1R/0hUrDAi7XLt7DWQj7IhG
+         qfzUyFpI2MmB1FtpbJbOh+EHziQsF4mCAdUsQwmoW7IgnIiBtcUylff83PVyLEusxW7Q
+         0C0g==
+X-Gm-Message-State: AOJu0Ywn32Yg34DnJP1cgDtBOuVBcsz7v/yJ4MO/HGG11DFEy5MfmqZm
+        R+LRhlxsvPpGiEsAFrKN/rVyF4hKfg==
+X-Google-Smtp-Source: AGHT+IFqF4m/kwNi2KZ3OjlqMt0CyFqdxsmR4W1ZGkRfaL54yc/jzwaSl5/Lj+YXarYWsxjJMSX6fQ==
+X-Received: by 2002:a17:906:5a5f:b0:9a5:9305:83fb with SMTP id my31-20020a1709065a5f00b009a5930583fbmr6797477ejc.34.1694888493805;
+        Sat, 16 Sep 2023 11:21:33 -0700 (PDT)
+Received: from p183 ([46.53.254.83])
+        by smtp.gmail.com with ESMTPSA id rl20-20020a1709076c1400b009adc81c0c7esm2830391ejc.107.2023.09.16.11.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 11:21:33 -0700 (PDT)
+Date:   Sat, 16 Sep 2023 21:21:31 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] extract and use FILE_LINE macro
+Message-ID: <ebf12ac4-5a61-4b12-b8b0-1253eb371332@p183>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Extract nifty FILE_LINE useful for printk style debugging:
+
+	printk("%s\n", FILE_LINE);
 
 
-On 16 Sep 2023, at 19:53, Bj=C3=B6rn Roy Baron wrote:
+It should not be used en mass probably because __FILE__ string literals
+can be merged while FILE_LINE's won't. But for debugging it is what
+the doctor ordered.
 
-> On Saturday, September 16th, 2023 at 18:52, Finn Behrens <me@kloenk.dev=
-> wrote:
->
->>
->> On 15 Sep 2023, at 19:28, Matthew Maurer wrote:
->>
->>> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defin=
-ed,
->>> resulting in build failures in hermetic environments where `cc` does =
-not
->>> exist. This includes both hostprogs and proc-macros.
->>>
->>> Since we are setting the linker to `HOSTCC`, we set the linker flavor=
- to
->>> `gcc` explicitly.
->> But as `HOSTCC` could also be clang, the linker flavor would then be w=
-rong, would that create a problem?
->
-> Rustc uses the gcc linker flavor for clang too. There has been a propos=
-al to split it up, but I'm not sure of the status of that. In any case cl=
-ang's cli is similar enough to gcc that it works fine to use the gcc link=
-er flavor.
->
-In that case this looks very reasonable.
+Don't add leading and trailing underscores, they're painful to type.
+Trust me, I've tried both versions.
 
-Second thing I noticed is that `HOSTCC` could be the wrong variable, and =
-`HOSTLD` would make more sense as we look for the linker and not the gene=
-ral C compiler.
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
->>>
->>> Signed-off-by: Matthew Maurer <mmaurer@google.com>
->>> ---
->>>  rust/Makefile         | 1 +
->>>  scripts/Makefile.host | 1 +
->>>  2 files changed, 2 insertions(+)
->>>
->>> diff --git a/rust/Makefile b/rust/Makefile
->>> index 87958e864be0..2a2352638f11 100644
->>> --- a/rust/Makefile
->>> +++ b/rust/Makefile
->>> @@ -383,6 +383,7 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.=
-o FORCE
->>>  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
->>>        cmd_rustc_procmacro =3D \
->>>  	$(RUSTC_OR_CLIPPY) $(rust_common_flags) \
->>> +		-C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
->>>  		--emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --extern proc_ma=
-cro \
->>>  		--crate-type proc-macro \
->>>  		--crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
->>> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
->>> index 8f7f842b54f9..0aa95a3af1c4 100644
->>> --- a/scripts/Makefile.host
->>> +++ b/scripts/Makefile.host
->>> @@ -91,6 +91,7 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
->>>  # current working directory, which may be not accessible in the out-=
-of-tree
->>>  # modules case.
->>>  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile=
-) \
->>> +		 -C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
->>>                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
->>>                   $(HOSTRUSTFLAGS_$(target-stem))
->>>
->>> --
->>> 2.42.0.459.ge4e396fd5e-goog
+ include/linux/fortify-string.h |    2 +-
+ include/linux/stringify.h      |    2 ++
+ include/linux/timer.h          |    3 +--
+ sound/pci/asihpi/hpidebug.h    |    9 ++++-----
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+--- a/include/linux/fortify-string.h
++++ b/include/linux/fortify-string.h
+@@ -643,7 +643,7 @@ __FORTIFY_INLINE bool fortify_memcpy_chk(__kernel_size_t size,
+ 				     __q_size_field, #op),		\
+ 		  #op ": detected field-spanning write (size %zu) of single %s (size %zu)\n", \
+ 		  __fortify_size,					\
+-		  "field \"" #p "\" at " __FILE__ ":" __stringify(__LINE__), \
++		  "field \"" #p "\" at " FILE_LINE,			\
+ 		  __p_size_field);					\
+ 	__underlying_##op(p, q, __fortify_size);			\
+ })
+--- a/include/linux/stringify.h
++++ b/include/linux/stringify.h
+@@ -9,4 +9,6 @@
+ #define __stringify_1(x...)	#x
+ #define __stringify(x...)	__stringify_1(x)
+ 
++#define FILE_LINE	__FILE__ ":" __stringify(__LINE__)
++
+ #endif	/* !__LINUX_STRINGIFY_H */
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -77,8 +77,7 @@ struct timer_list {
+ 		.entry = { .next = TIMER_ENTRY_STATIC },	\
+ 		.function = (_function),			\
+ 		.flags = (_flags),				\
+-		__TIMER_LOCKDEP_MAP_INITIALIZER(		\
+-			__FILE__ ":" __stringify(__LINE__))	\
++		__TIMER_LOCKDEP_MAP_INITIALIZER(FILE_LINE)	\
+ 	}
+ 
+ #define DEFINE_TIMER(_name, _function)				\
+--- a/sound/pci/asihpi/hpidebug.h
++++ b/sound/pci/asihpi/hpidebug.h
+@@ -29,16 +29,15 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
+    the start of each message, eg see linux kernel hpios.h */
+ 
+ #ifdef SOURCEFILE_NAME
++#undef FILE_LINE
+ #define FILE_LINE  SOURCEFILE_NAME ":" __stringify(__LINE__) " "
+-#else
+-#define FILE_LINE  __FILE__ ":" __stringify(__LINE__) " "
+ #endif
+ 
+ #define HPI_DEBUG_ASSERT(expression) \
+ 	do { \
+ 		if (!(expression)) { \
+ 			printk(KERN_ERR  FILE_LINE \
+-				"ASSERT " __stringify(expression)); \
++				" ASSERT " __stringify(expression)); \
+ 		} \
+ 	} while (0)
+ 
+@@ -46,7 +45,7 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
+ 	do { \
+ 		if (hpi_debug_level >= HPI_DEBUG_LEVEL_##level) { \
+ 			printk(HPI_DEBUG_FLAG_##level \
+-			FILE_LINE  __VA_ARGS__); \
++			FILE_LINE " " __VA_ARGS__); \
+ 		} \
+ 	} while (0)
+ 
+@@ -70,7 +69,7 @@ void hpi_debug_data(u16 *pdata, u32 len);
+ 	do { \
+ 		if (hpi_debug_level >= HPI_DEBUG_LEVEL_##level) { \
+ 			hpi_debug_message(phm, HPI_DEBUG_FLAG_##level \
+-				FILE_LINE __stringify(level)); \
++				FILE_LINE " " __stringify(level)); \
+ 		} \
+ 	} while (0)
+ 
