@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC45A7A3154
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 18:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8567A315A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 18:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239316AbjIPQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 12:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S239299AbjIPQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 12:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjIPQLl (ORCPT
+        with ESMTP id S230396AbjIPQQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 12:11:41 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45300CC0;
-        Sat, 16 Sep 2023 09:11:35 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so3782909a12.0;
-        Sat, 16 Sep 2023 09:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694880693; x=1695485493; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2D29quburpZKmR88i6a3MAgQFNHJh6PxWDpmGkVgtps=;
-        b=H8AHCEgDKJ+1KS90ga9snc7C8CeBqqxMRq1AuxDywSt7MWsLCzdPzd2iFROXiAxmXR
-         WojYbQMQhSgzhhxi0W/l5rM9p1TMvP6gRthVn+GffgP9VBMqWIbx1T7GZjjHdWLBD5kG
-         /9jTEifQfcXTQtFpvx1308kkMrUqwESSbxnrBr4Y6SOUhXqF9E6G+zTqMrCgLxQGNlRt
-         90oIHYrmSD3fRarFqQISwWMFLF+4i49g/FKpmBUjTR4H2JXBPD1M2W45AhXbsxcQEbdn
-         lNyrunE5cWlb1qZSaqmsvTLI8sZsX3eoG5fOn76lz+Ya6g+TMZr99Py1Q/cXcDFk86ew
-         BgGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694880693; x=1695485493;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2D29quburpZKmR88i6a3MAgQFNHJh6PxWDpmGkVgtps=;
-        b=hninRCwtcZTZFOQevQJmOim+lQF71OLYTpR8Puy5qVuMEsYxAmDMZjPap2x83mwx2X
-         Qd8e6+ZGo62fj60n6LKqn2iuYhtQ4B5HvvbMOcZYGA1VtQ4vkGmH/8GytSTQl+CgwSOP
-         nvyU3jt0Iu6ci7kHbGoLIBZaPD55txwegRMN0nTcu8UIX0VF45YXbegiPRvSJx7qUE5X
-         dDRDas/inqd2mKBzEwP9PDBwt+8jCwkoBfVv6Mk2/pdyKyZ/iGcB7wT0knkXnpiw0tQC
-         AtW2oX9AteHM8Hp3gV8qqSALU5IsI4DxUetSfCQDfA7Rit0NlAe7rHympHyBRSYDPCIK
-         sbKw==
-X-Gm-Message-State: AOJu0YyIbl28ZlTWhCEWWZRs6XBuQOzpXoPnNrV5xzyrV4uPlYT2CMLz
-        UE484se0W3g113Rbv0pqAMw=
-X-Google-Smtp-Source: AGHT+IEtqsFwHKCcW79YHmTi16x18Ywke6xmHVW2O7x1m8mDtbz6o33y1ZArqXail0vCaVgtpR36gg==
-X-Received: by 2002:a17:907:75c4:b0:9a5:d657:47ee with SMTP id jl4-20020a17090775c400b009a5d65747eemr3939414ejc.58.1694880693556;
-        Sat, 16 Sep 2023 09:11:33 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41b4-ce80-82f4-11ae-0d42-6e00.cable.dynamic.v6.surfer.at. [2a02:8389:41b4:ce80:82f4:11ae:d42:6e00])
-        by smtp.gmail.com with ESMTPSA id xo23-20020a170907bb9700b0099290e2c163sm3861131ejc.204.2023.09.16.09.11.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 09:11:33 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sat, 16 Sep 2023 18:11:31 +0200
-Subject: [PATCH] selftests: uevent filtering: fix return on error in
- uevent_listener
+        Sat, 16 Sep 2023 12:16:13 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39C4CC0;
+        Sat, 16 Sep 2023 09:16:03 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A761F20004;
+        Sat, 16 Sep 2023 16:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1694880962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gR3DLgOcVXEyCHmeRvHW5kTpbx/Ml5B4FTcTxP2j0o=;
+        b=dlTg8bzB+GMfQwAkNn10piDT3xlzayexaJtzerTcgHGpGMs/JAhpZPkaM8RoNcP//TSyqN
+        3qqwDwy34P2RQiy3Kz8V9s5uw9bjz86onvrpaijDpXuq/oH81lB+2Yme5oZAxFBj7pTtCX
+        oM2LDmFmQum3aFrwsNN4fZtg9PUMRqx6PwUFU7uvrKAlbbFMOzjF3Dqm9MQ+BO6pxYcOMh
+        ifohoX73vuoVQ12QX1Ql7G1QHgmUvNpWCS/+P+cwSVNJ19TSSVrCnNe1mXIr/9LntGG2p8
+        3yC5m9V4cZIzMAHQGVFJEoeGGAnb+x1HyLflkFe7W4wgbaNMfGzsecHWLd0tfg==
+Message-ID: <e0a925bb-d4f1-44a1-8fe3-e1a59c4a7476@arinc9.com>
+Date:   Sat, 16 Sep 2023 19:15:02 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com>
-X-B4-Tracking: v=1; b=H4sIALLTBWUC/x3NQQrCMBCF4auUWRtoUo3oVURKEiftQJiWTFqE0
- rs7uPzf4nsHCFZCgWd3QMWdhBbWsJcO0hx4QkMfbXC9G/qH9aYtKyUjWPK44Y7cxkylKcKTsfd
- 4G5x3MV09qBCDoIk1cJrV4K0UHdeKmb7/y9f7PH9rZ3RaggAAAA==
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694880692; l=1362;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=S4RWDQgvO5XPexY8N6KFcYh6xsBydPzqOVbL1s6XVhU=;
- b=cAovhn9t4cDxBHwizFmibdCmD41kYpuZCsM9shSZIle8xzuK77Bbk4dqB4qR+hik+zhOlw6Mc
- 2GP+/wu8iunDBc6XMyi5FHQ37WBPyj2Zo5tmFnEN4OClltYyD8Ha80T
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 10/10] dt-bindings: net:
+ marvell-armada-370-neta: convert to json-schema
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Woojung Huh <Woojung.Huh@microchip.com>,
+        John Crispin <john@phrozen.org>,
+        linux-mediatek@lists.infradead.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>, UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Marek Vasut <marex@denx.de>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>, netdev@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, mithat.guner@xeront.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        erkin.bozoglu@xeront.com, linux-renesas-soc@vger.kernel.org
+References: <20230916110902.234273-1-arinc.unal@arinc9.com>
+ <20230916110902.234273-11-arinc.unal@arinc9.com>
+ <169487631064.1637966.13545721653989465162.robh@kernel.org>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <169487631064.1637966.13545721653989465162.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assign the error value to the real returned variable fret. The ret
-variable is used to check function return values and assigning values to
-it on error has no effect as it is an unused value.
+On 16.09.2023 17:58, Rob Herring wrote:
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell-armada-370-neta.yaml:
+> Unresolvable JSON pointer: '$defs/phylink'
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/uevent/uevent_filtering.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Not surprising as this is added with a previous patch in this series.
 
-diff --git a/tools/testing/selftests/uevent/uevent_filtering.c b/tools/testing/selftests/uevent/uevent_filtering.c
-index 5cebfb356345..e191b6d69f8c 100644
---- a/tools/testing/selftests/uevent/uevent_filtering.c
-+++ b/tools/testing/selftests/uevent/uevent_filtering.c
-@@ -158,7 +158,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- 		r = recvmsg(sk_fd, &hdr, 0);
- 		if (r <= 0) {
- 			fprintf(stderr, "%s - Failed to receive uevent\n", strerror(errno));
--			ret = -1;
-+			fret = -1;
- 			break;
- 		}
- 
-@@ -172,7 +172,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- 
- 		if (!expect_uevent) {
- 			fprintf(stderr, "Received unexpected uevent:\n");
--			ret = -1;
-+			fret = -1;
- 		}
- 
- 		if (TH_LOG_ENABLED) {
+> doc reference errors (make refcheckdocs):
+> Warning: Documentation/devicetree/bindings/net/marvell-neta-bm.txt references a file that doesn't exist: Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt
+> Documentation/devicetree/bindings/net/marvell-neta-bm.txt: Documentation/devicetree/bindings/net/marvell-armada-370-neta.txt
 
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230916-topic-self_uevent_filtering-17b53262bc46
+Will address.
 
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-
+Arınç
