@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981607A3282
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBE17A3284
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 22:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239408AbjIPUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 16:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S239445AbjIPUjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 16:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237485AbjIPUiX (ORCPT
+        with ESMTP id S239417AbjIPUil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 16:38:23 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1890CE8
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:16 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so3752043a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:16 -0700 (PDT)
+        Sat, 16 Sep 2023 16:38:41 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AABCF2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:35 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a6190af24aso428259666b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 13:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694896695; x=1695501495; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694896714; x=1695501514; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M5mtdsABJYkZ37qC2C38/N7zHZsWwIrfw/Qhh3bbiuw=;
-        b=fZkprpac8Xgd50UnERGh/62V0LjoPca569fSU/oAHN2mYMyeficxFY3MdBJjZsDAuv
-         3rAHM5OzEvxU2vb/lCPsJr4k2R0zEVGk1F4KAiixzY/VPBIKiHWRZRVIZFL/vE57NzG3
-         R4Dq0kEygYPy41OcOjAc6OTdeFUFQeaxFJCEfyrvtMLCwnu7Mg4KwkUy2mm+QgEhBpqs
-         V9hBoT6l4e4R3rr6kjLMDXITxoYH04Xf1ybflyU0t4oi5ON0PcQJoNXgdxpbGM3vS0RK
-         YBT9ONVNFgs8lLxYwjjSuM8l4JVpuBUvE12NQirxk+ZTanTnANMrV9rV7WKIaT0nONYp
-         fBMw==
+        bh=Ck99DUFP41VW4qtdyIsbrq+XQAWsmxc+F6KcFhlBIVI=;
+        b=OTmPHfbWHTio8SDNvy6ecAlqhcOOlHM/OMt0pyKSBnQEOtL5P57xkKVSiXn3xOfZAw
+         KR2TQ6ZWYH5RzQQ0zDxioPBKnNqItVFIWDEo2j/yrqQihi0O6iHF+gH0sM8MD4aKD9Kk
+         oWBBFf2vUFIpfWk7CKsow7a+f1LC/yLX1YmWTnBbBiDGwbsyvvHcxQhhf2Va69uDmKiK
+         JAXJlQDa/RJFRKYRyxZ12xrImWidMHP41KOh+coxUL/M/Hbm4h+JrxojzvG13jJS4Iiw
+         3eO6j0Wp8r7Zn6Ox0lJXMsOAsrlMcv3pgoFdwHITNoCblYIukpaLjWBBQ81uY/Ofy7OX
+         Y3Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694896695; x=1695501495;
+        d=1e100.net; s=20230601; t=1694896714; x=1695501514;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M5mtdsABJYkZ37qC2C38/N7zHZsWwIrfw/Qhh3bbiuw=;
-        b=rhfu6HYMLZAiGlVRLDOb1QA9lVWOGmGOgaFwH4D+IqrLLQmPbshjJgaqyxtfLYRtPW
-         G4lXcH2cBGk0j72BWjyGcg+3HD97dH6HfQlgmPdVOQ6Ypt6Fqk85g/r3Y7x4x1c0yWxa
-         nYX6JDyL9B/aDRsOR73e0bJA37K8Hp6XizTeOqUcsvEApfD5nQp1zfNy++WNvKiWsFQN
-         LvjLetfyqMhYOz0aMJiDxs4af/9PGySmjrIlLxE5EMkqh72kWtbvYBxz3VwIpVnlVYWx
-         M0uTgnMwvAB8nSmKiK/eKXNk7M3tOkcgLiUehbQkDr4qIn6Ca7OLyOJGc6JBdQPwGYIf
-         OglA==
-X-Gm-Message-State: AOJu0YwdkORETYfOygm5MASysNHV+pBBQ31Xz8VSK5HkNDhJGUCPQk5k
-        ndZgXNikiXPGp53YF/evSVMzQA==
-X-Google-Smtp-Source: AGHT+IHbchk3PUwrMNToUoM+pJOEkNiQ+H/1dUMlTy+kuUA3vXvlD49RNngPnzeYAHP3oG9NtQoigQ==
-X-Received: by 2002:a05:6402:409:b0:525:4c2b:b87b with SMTP id q9-20020a056402040900b005254c2bb87bmr4286627edv.22.1694896695225;
-        Sat, 16 Sep 2023 13:38:15 -0700 (PDT)
+        bh=Ck99DUFP41VW4qtdyIsbrq+XQAWsmxc+F6KcFhlBIVI=;
+        b=SyIw0sp86PZP1SgSzqaF3IB2szZzYv+yAqlgQs+TavkDSVrOILTVh8hOgizo1b2JiS
+         VDQf5hdBm0WF8twDuFR/Og4Kwz5/YT7Uibr89wiQtMm/htod5w3X4JNdWYmonNWWngvr
+         sLe7L3xJTuyze/rZXynAgvuA6DmV+V7Tqn6lImihyzWRLebG/3T962oPqsNYlgmCpCs+
+         Sbbrv3Zd/rR2TOH90o+Tys585z3x/JgIL4xyAvtIVMvhrpe0mTFdiipsx4t8afkXFTgt
+         M+jTscNnysctiT1Rgxo4YwB24Irhh+MkUrz9YekF+rlZ/bUnlb6mWmf6/yPrAMiNMSUg
+         CWAA==
+X-Gm-Message-State: AOJu0Yy5HpVMXk9rdvF2FCK36+QFhf/JFVnjqJOWAl1T2M2MVjFE0nGL
+        j51tJ5al/3CB8XwKI1o7NAnvMA==
+X-Google-Smtp-Source: AGHT+IGPpt6HSdp0GP6i/O8o1TEptGSzL8dCPxxFd82lf1rChEkuakTOqy25fHB2mJDQABKyYTWTMQ==
+X-Received: by 2002:a17:906:24b:b0:9ad:d084:a024 with SMTP id 11-20020a170906024b00b009add084a024mr4178083ejl.35.1694896713975;
+        Sat, 16 Sep 2023 13:38:33 -0700 (PDT)
 Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
-        by smtp.gmail.com with ESMTPSA id fd14-20020a056402388e00b005307e75d24dsm2625322edb.17.2023.09.16.13.38.14
+        by smtp.gmail.com with ESMTPSA id l21-20020a1709061c5500b009ad89697c86sm4159546ejg.144.2023.09.16.13.38.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Sep 2023 13:38:14 -0700 (PDT)
-Message-ID: <8c46b45e-2127-346c-0584-54b06a8a343a@linaro.org>
-Date:   Sat, 16 Sep 2023 22:38:13 +0200
+        Sat, 16 Sep 2023 13:38:33 -0700 (PDT)
+Message-ID: <95863623-8c77-efe8-50fe-4e00cdf5220f@linaro.org>
+Date:   Sat, 16 Sep 2023 22:38:32 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH] dt-bindings: watchdog: atmel,at91rm9200-wdt: convert txt
- to yaml
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add Huawei Honor 5X / GR5
+ (2016)
 Content-Language: en-US
-To:     Nik Bune <n3q5u8@yahoo.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230916154826.84925-1-n3q5u8.ref@yahoo.com>
- <20230916154826.84925-1-n3q5u8@yahoo.com>
+To:     Lukas Walter <lukas.walter@aceart.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20230916134147.163764-1-lukas.walter@aceart.de>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230916154826.84925-1-n3q5u8@yahoo.com>
+In-Reply-To: <20230916134147.163764-1-lukas.walter@aceart.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,25 +83,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2023 17:48, Nik Bune wrote:
-> Convert txt file to yaml. 
-> Add reg to the list of required properties.
-> Add mainteiners from ./scripts/get_maintainer.pl output.
+On 16/09/2023 15:41, Lukas Walter wrote:
+> Add a compatible for Huawei Honor 5X / GR5 (2016).
+> 
+> Signed-off-by: Lukas Walter <lukas.walter@aceart.de>
+> ---
 
 
-...
-
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/atmel,at91rm9200-wdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel AT91RM9200 System Timer Watchdog
-> +
-> +maintainers:
-> +  - Wim Van Sebroeck <wim@linux-watchdog.org>
-> +  - Guenter Roeck <linux@roeck-us.net>
-
-No, these should be maintainer of device or subarch, not subsystem.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
