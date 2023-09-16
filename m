@@ -2,166 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFF77A3245
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC517A324C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 21:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjIPTjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 15:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
+        id S236528AbjIPTmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 15:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235328AbjIPTiz (ORCPT
+        with ESMTP id S232530AbjIPTma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 15:38:55 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5E7CDE
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:38:49 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401ec23be82so34349855e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 12:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694893128; x=1695497928; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BeZ0NIpOmzeTyZCjOgYbHI0Gt5u0onUOD1oUG1cRlok=;
-        b=HRoQL5RIDFZ0He+o4INrsz2v6P2E6zZMLk1t/L+zL0GyqEJlsDpQkPzg53sU5AdDHp
-         nqp5nilF6Ko5EgCG++Wrj+DMjtdo+0Hq7HBqBGF3B214J2mFWmKLNHQB+X5M1qDal8oD
-         SbmCEJPrg5VyS/kDw7peSPRErcgtLL4SKdh9otgE2L/UnZOUEW1vgVNQmIrcftLm5aKX
-         o6ENd3UMYq1JnMOZPqAw5FGStpaZ08Im6hqZBCWAPDz8/nKdyFRb3n6X410Q+xEDzVeT
-         3MO3FuAMQn2FlfA8BOGpZc+4v9FgJAkNjHe0ymYtp20PEI7EgTXe4aVw6atnHL1rMBR4
-         hPsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694893128; x=1695497928;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BeZ0NIpOmzeTyZCjOgYbHI0Gt5u0onUOD1oUG1cRlok=;
-        b=IdijaE8disbdUDtjVfJkvxXvHnl2sy7Wx+wGpoybY77kqKF81NUzaLpUQZ7e2Ub3KJ
-         nKrbo1iwYcFwIdfBM2OKl6SBNlOqZSOD2gkPOphqFjRpXRocghwZK1bikZgWltOva7dC
-         gkYteV2gCqBffyGWKjiNscSFTG4fbwD6zJvUU67/iPbMbHAFYLch2L6xaHOid//gHelw
-         h4UqxeTKk9Hfkz8Em65fM43yQVZ1btN68nsz9icvBRvt3Bz67a2z0e2bg+7CPwaCPYdZ
-         qLs2LbMjPj3LiPZ5adLKKP06LgW7UmE1zPUbWlT5rIcQy6pXijaIDNeUEMY1oXjmW6a5
-         rf3A==
-X-Gm-Message-State: AOJu0YyznFVhTILqtvbJDBmqiACOZBHP5gfWpV70VvPCc49KE2xsL38D
-        V7ovkv8+CNe9miWqMtVPSbQ1LA==
-X-Google-Smtp-Source: AGHT+IHJwXa3gfND3C/MWf5h9JP4AjQysFATf6P0IvfVvrmYiaaYJq8kFBqOMOKKH6gsoSO4VuJjMg==
-X-Received: by 2002:a5d:46cf:0:b0:31f:918a:ca9d with SMTP id g15-20020a5d46cf000000b0031f918aca9dmr3830791wrs.13.1694893128243;
-        Sat, 16 Sep 2023 12:38:48 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id l12-20020a5d674c000000b0030ae53550f5sm7845395wrw.51.2023.09.16.12.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 12:38:47 -0700 (PDT)
-Date:   Sat, 16 Sep 2023 20:38:46 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Message-ID: <20230916193846.ewjie23c4vtf4edn@airbuntu>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <20230907130805.GE10955@noisy.programming.kicks-ass.net>
- <20230908001725.mtqbse3xwhzvo5qp@airbuntu>
- <44fc6d03-c663-53de-e4f7-e56687c5718d@arm.com>
- <20230908140757.haewcuwsumphcv7p@airbuntu>
- <356ec193-5c89-4f7e-5e43-d600dff68cf9@arm.com>
+        Sat, 16 Sep 2023 15:42:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD929CDE;
+        Sat, 16 Sep 2023 12:42:25 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694893343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/zPwTVnbIqykq0xrJwLN9r6avPOKHnWBnlaBD7Ntd/o=;
+        b=CUQAEeiOCW0UB0mZHKKbATmxrT7v104AXTk8BgIS3LnhJdkwcK31VIKNUWTyr5NJ5FDSAZ
+        1rUmkomzu0i8ra8Pr7MuVj6uXx2bx2AvsuHAsgoTtNXk1SlphGsF2Tko1c6bGtCosz+5D3
+        3LvB5+XWrTyiZslCvN25C026vuzPMwe37ifQkKb5hvuaQ1IXWgjVHVi1QG1ERhp6yVLoCG
+        KEjXv3lRy4sKTNf9zIytvVhfEZiamkJbj8QmGaOgd3j5PMU/plPNL9TqQlN3PM7t/8qtdr
+        r8HTYvNQEPG5ZOF1NNpsGWfBpFE4WC9xOJQFYPlGWWvKaI1nzHahesMl0GR2sw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694893343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/zPwTVnbIqykq0xrJwLN9r6avPOKHnWBnlaBD7Ntd/o=;
+        b=/s+j74ZDjoLeO5pQcnU/VyXRmqc0m+3/h/bRCXztbsATbbfdFH/5imwYhMMMSk+geHP+hf
+        BWo+CyCuYQ4k1qBQ==
+To:     Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Thierry Reding <treding@nvidia.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Davis <afd@ti.com>,
+        Matthew Howell <matthew.howell@sealevel.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Johan Hovold <johan@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        linux-mediatek@lists.infradead.org, Lukas Wunner <lukas@wunner.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+        Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Hongyu Xie <xiehongyu1@kylinos.cn>,
+        Jiamei Xie <jiamei.xie@arm.com>, Rob Herring <robh@kernel.org>,
+        delisun <delisun@pateo.com.cn>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        Yangtao Li <frank.li@vivo.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Richard Genoud <richard.genoud@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sergey Organov <sorganov@gmail.com>, Tom Rix <trix@redhat.com>,
+        Marek Vasut <marex@denx.de>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Shan-Chun Hung <schung@nuvoton.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+        Lucas Tanure <tanure@linux.com>,
+        linux-amlogic@lists.infradead.org,
+        Taichi Sugaya <sugaya.taichi@socionext.com>,
+        Takao Orito <orito.takao@socionext.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-actions@lists.infradead.org,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yuan Can <yuancan@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-unisoc@lists.infradead.org,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Isaac True <isaac.true@canonical.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Hu <nick.hu@sifive.com>,
+        Ruan Jinjie <ruanjinjie@huawei.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        linux-riscv@lists.infradead.org, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Hammer Hsieh <hammerh0314@gmail.com>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Timur Tabi <timur@kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Michal Simek <michal.simek@amd.com>
+Subject: Re: [PATCH tty v1 00/74] serial: wrappers for uart port lock
+In-Reply-To: <1446dc6-5ab0-629-45c8-3b7d8c76367d@linux.intel.com>
+References: <20230914183831.587273-1-john.ogness@linutronix.de>
+ <1446dc6-5ab0-629-45c8-3b7d8c76367d@linux.intel.com>
+Date:   Sat, 16 Sep 2023 21:48:14 +0206
+Message-ID: <878r95nbvt.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <356ec193-5c89-4f7e-5e43-d600dff68cf9@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/23 19:18, Dietmar Eggemann wrote:
-> On 08/09/2023 16:07, Qais Yousef wrote:
-> > On 09/08/23 09:40, Dietmar Eggemann wrote:
-> >> On 08/09/2023 02:17, Qais Yousef wrote:
-> >>> On 09/07/23 15:08, Peter Zijlstra wrote:
-> >>>> On Mon, Aug 28, 2023 at 12:31:56AM +0100, Qais Yousef wrote:
-> 
-> [...]
-> 
-> >>> And what was a high end A78 is a mid core today. So if you look at today's
-> >>> mobile world topology we really have a tiy+big+huge combination of cores. The
-> >>> bigs are called mids, but they're very capable. Fits capacity forces migration
-> >>> to the 'huge' cores too soon with that 80% margin. While the 80% might be too
-> >>> small for the tiny ones as some workloads really struggle there if they hang on
-> >>> for too long. It doesn't help that these systems ship with 4ms tick. Something
-> >>> more to consider changing I guess.
-> >>
-> >> If this is the problem then you could simply make the margin (headroom)
-> >> a function of cpu_capacity_orig?
-> > 
-> > I don't see what you mean. instead of capacity_of() but keep the 80%?
-> > 
-> > Again, I could be delusional and misunderstanding everything, but what I really
-> > see fits_capacity() is about is misfit detection. But a task is not really
-> > misfit until it actually has a util above the capacity of the CPU. Now due to
-> > implementation details there can be a delay between the task crossing this
-> > capacity and being able to move it. Which what I believe this headroom is
-> > trying to achieve.
-> > 
-> > I think we can better define this by tying this headroom to the worst case
-> > scenario it takes to actually move this misfit task to the right CPU. If it can
-> > continue to run without being impacted with this delay and crossing the
-> > capacity of the CPU it is on, then we should not trigger misfit IMO.
-> 
-> 
-> Instead of:
-> 
->   fits_capacity(unsigned long util, unsigned long capacity)
-> 
->       return approximate_util_avg(util, TICK_USEC) < capacity;
-> 
-> just make 1280 in:
-> 
->   #define fits_capacity(cap, max) ((cap) * 1280 < (max) * 1024)
-> 
-> dependent on cpu's capacity_orig or the capacity diff to the next higher
-> capacity_orig.
-> 
-> Typical example today: {little-medium-big capacity_orig} = {128, 896, 1024}
-> 
-> 896÷128 = 7
-> 
-> 1024/896 = 1.14
-> 
-> to achieve higher margin on little and lower margin on medium.
+On 2023-09-15, Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
+> Would this also be useful to enable printing to console while under
+> port's lock (by postponing the output until the lock is released)?
+>
+> E.g., 8250_dw.c has had this commented out since the dawn on time:
+>         /*
+>          * FIXME: this deadlocks if port->lock is already held
+>          * dev_err(p->dev, "Couldn't set LCR to %d\n", value);
+>          */
 
-I am not keen on this personally. I think these numbers are random to me and
-why they help (or not help) is not clear to me at least.
+Yes, this will fix such issues. However, only for consoles that are
+converted to the new NBCON console type.
 
-I do believe that the only reason why we want to move before a task util
-crosses the capacity of the CPU is tied down to the misfit load balance to be
-able to move the task. Because until the task crosses the capacity, it is
-getting its computational demand per our PELT representation. But since load
-balance is not an immediate action (especially on our platforms where it is
-4ms, something I hope we can change); we need to preemptively exclude the CPU
-as a misfit when we know the task will get 'stuck' on this CPU and not get its
-computational demand (as per our representation of course).
+Good news, the 8250 driver will be the flagship driver that is converted
+as part of the rework. So this particular issue will be solved then. I
+will try to remember this so that I can remove the FIXME in the series.
 
-I think this removes all guess work and provides a very meaningful decision
-making process that I think will scale transparently so we utilize our
-resources the best we can.
+Thanks for mentioning it.
 
-We can probably optimize the code to avoid the call to approximate_util_avg()
-if this is a problem.
-
-Why do you think the ratio of cpu capacities gives more meaningful method to
-judge misfit?
-
-
-Thanks!
-
---
-Qais Yousef
+John
