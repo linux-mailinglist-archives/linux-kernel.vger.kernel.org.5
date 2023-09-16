@@ -2,145 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D8E7A2B98
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA197A2BDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238197AbjIPAOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        id S235888AbjIPAWK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Sep 2023 20:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238184AbjIPANu (ORCPT
+        with ESMTP id S238200AbjIPAVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:13:50 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9182720
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:12:16 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-98377c5d53eso332500966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694823134; x=1695427934; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8c5EEQNtbw0MpT7TQp8klkowES4X88JiAqVKAD/YI88=;
-        b=SAzVGnsSi8BcZpTJaUyPPV8QfS1io9zyJoTpqj/aCUaU/DHdZCtTSJlyO2gONTR6NL
-         QN7/53scWRsHIWD4L+z0R6jDQvMVQMNL889eo3RqKkAEJ0xqj4ijq5Lyd0C5r2dkWerS
-         00YOYT6DSopPN+IQ5PZaPjwqLI6IerIpyeQn4=
+        Fri, 15 Sep 2023 20:21:49 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65143AB5;
+        Fri, 15 Sep 2023 17:17:26 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso89735339f.3;
+        Fri, 15 Sep 2023 17:17:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694823134; x=1695427934;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8c5EEQNtbw0MpT7TQp8klkowES4X88JiAqVKAD/YI88=;
-        b=D2xUHXLl7DgA/GJjwePC1xgJu2Ltpd9pkLs3hLYjjScxrTb/agC3C8Fq1sSPX5jdV8
-         oXoNXEFFLsjmNuB56z8zmqPxZnZ9j7H6gzP/dnTw9nXzZZ5XqM+DGUmjik76lu2IxdUU
-         1zprF8p42sHRWqdZYYH7rMOZU+YiRCAQqsuzsBZC/Bc7dO34SyjBQzH7HGKsJ0eF2u02
-         vu4P8xTSNXzJrjmZ1j+crZOkUqYxnyh03aIPLCCMc2SD3v43hEo781e7mGRF73qLp0h9
-         /HAAHxMDb6A3BpYyVxMXtHAE6lrPnsCRlAPoemgQsd+rFnuGueIfONGiWpW71zqfCXd2
-         FKqg==
-X-Gm-Message-State: AOJu0Yy/9SWjPCc0m58lNc8bPAdA5lPEwVpnLrtXxb7xk3TuUmnHZvUj
-        BblET4rFnOKh4cqGWy//mnciLqW+CqVHhtyRnegdugfv
-X-Google-Smtp-Source: AGHT+IGmz9A/BzLJZa/kDq8qhnAjcP2biaiG886zUqR1cOYHgHPnRb2cpZGohA72yKWQcaqfYF9ZCw==
-X-Received: by 2002:a17:906:9e:b0:9a1:be50:ae61 with SMTP id 30-20020a170906009e00b009a1be50ae61mr2561099ejc.69.1694823134318;
-        Fri, 15 Sep 2023 17:12:14 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id lc3-20020a170906dfe300b00982a352f078sm2990553ejc.124.2023.09.15.17.12.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 17:12:13 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52e5900cf77so3212032a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:12:13 -0700 (PDT)
-X-Received: by 2002:aa7:d758:0:b0:525:6d6e:ed53 with SMTP id
- a24-20020aa7d758000000b005256d6eed53mr2493234eds.27.1694823132722; Fri, 15
- Sep 2023 17:12:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694823261; x=1695428061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mg+2dCrd8UTwfK+HAOc17X5FOQTPFeCWzvxdUscOZgU=;
+        b=DTlwS6CxIg2qK8ZRwHlGZ6Ia0BhPhdBqHKUtb3haTAtOlZ39RBc/Fr064/TvVMIE8f
+         oMriKAJA5XpfnjZ80snDe2JpaGxTpIQWRs1ZdVvkXl4BnhJDDExWlYMqMItMD6N5r6KN
+         I+h58DPVmioeWdpcekKd/GjzTpAHLxqJTWraBJWMtHhQQCdMsQ0+WwylyQOuLzmVvXQg
+         qomeH33I6bR7QC/8tKgnODdGhQNvRAt7hB6G3Ghx9ojRpdZV0yqvfZBY+kTe6WKKWSHg
+         mlAWSgTfO5br6QXDe6LgsvSl37ILxWkctImXu6pp9/o3xIhmL2CEUqkvLBsSZu+OgEHd
+         LCQA==
+X-Gm-Message-State: AOJu0YxP30y7jr5IvrX9IpGpB/cPE6++2wJ5xgYGAWYVFb1iwTMpOCYT
+        f4S0l0U0/dFOiKuZHHyMNEifpDP6vG2xZNvRShzb5XfBy4g=
+X-Google-Smtp-Source: AGHT+IFIZ6gQXt/jo/6ORQjPMRep/mYCOtnjiQF+55Lhva85OmID1+3tz8ye/WhfUe1m4yrXl1+0fsAJPZeww5BJQ3o=
+X-Received: by 2002:a6b:5809:0:b0:791:1739:d525 with SMTP id
+ m9-20020a6b5809000000b007911739d525mr2515952iob.20.1694823260628; Fri, 15 Sep
+ 2023 17:14:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230915183707.2707298-1-willy@infradead.org> <20230915183707.2707298-3-willy@infradead.org>
-In-Reply-To: <20230915183707.2707298-3-willy@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 17:11:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
-Message-ID: <CAHk-=wh4=cYh5OC5PiiX_nAQkyViXL21bpmaARduGOLiOOgTyw@mail.gmail.com>
-Subject: Re: [PATCH 02/17] iomap: Protect read_bytes_pending with the state_lock
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
+References: <20230904023340.12707-1-yangjihong1@huawei.com>
+ <453bd95c-932d-c60a-bd7b-96f87bc7779a@amd.com> <ZQDK4kZhwyZL/8tx@kernel.org>
+In-Reply-To: <ZQDK4kZhwyZL/8tx@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 15 Sep 2023 17:14:09 -0700
+Message-ID: <CAM9d7cgNH2+zhSAmA3en_6as915UsF25MoLbfjE350tAP43Bog@mail.gmail.com>
+Subject: Re: [PATCH v8 0/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ravi Bangoria <ravi.bangoria@amd.com>,
+        Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 11:37, Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
+Hello,
+
+On Tue, Sep 12, 2023 at 1:32 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> Perform one atomic operation (acquiring the spinlock) instead of
-> two (spinlock & atomic_sub) per read completion.
+> Em Tue, Sep 12, 2023 at 02:41:56PM +0530, Ravi Bangoria escreveu:
+> > On 04-Sep-23 8:03 AM, Yang Jihong wrote:
+> > > User space tasks can migrate between CPUs, track sideband events for all
+> > > CPUs.
+> > >
+> > > The specific scenarios are as follows:
+> > >
+> > >          CPU0                                 CPU1
+> > >   perf record -C 0 start
+> > >                               taskA starts to be created and executed
+> > >                                 -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+> > >                                    events only deliver to CPU1
+> > >                               ......
+> > >                                 |
+> > >                           migrate to CPU0
+> > >                                 |
+> > >   Running on CPU0    <----------/
+> > >   ...
+> > >
+> > >   perf record -C 0 stop
+> > >
+> > > Now perf samples the PC of taskA. However, perf does not record the
+> > > PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
+> > > Therefore, the comm and symbols of taskA cannot be parsed.
+> > >
+> > > The sys_perf_event_open invoked is as follows:
+> > >
+> > >   # perf --debug verbose=3 record -e cpu-clock -C 1 true
+> > >   <SNIP>
+> > >   Opening: cpu-clock
+> > >   ------------------------------------------------------------
+> > >   perf_event_attr:
+> > >     type                             1 (PERF_TYPE_SOFTWARE)
+> > >     size                             136
+> > >     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+> > >     { sample_period, sample_freq }   4000
+> > >     sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+> > >     read_format                      ID|LOST
+> > >     disabled                         1
+> > >     inherit                          1
+> > >     freq                             1
+> > >     sample_id_all                    1
+> > >     exclude_guest                    1
+> > >   ------------------------------------------------------------
+> > >   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+> > >   Opening: dummy:u
+> > >   ------------------------------------------------------------
+> > >   perf_event_attr:
+> > >     type                             1 (PERF_TYPE_SOFTWARE)
+> > >     size                             136
+> > >     config                           0x9 (PERF_COUNT_SW_DUMMY)
+> > >     { sample_period, sample_freq }   1
+> > >     sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+> > >     read_format                      ID|LOST
+> > >     inherit                          1
+> > >     exclude_kernel                   1
+> > >     exclude_hv                       1
+> > >     mmap                             1
+> > >     comm                             1
+> > >     task                             1
+> > >     sample_id_all                    1
+> > >     exclude_guest                    1
+> > >     mmap2                            1
+> > >     comm_exec                        1
+> > >     ksymbol                          1
+> > >     bpf_event                        1
+> > >   ------------------------------------------------------------
+> > >   sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+> > >   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+> > >   sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+> > >   sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+> > >   sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+> > >   sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+> > >   sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+> > >   sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+> > >   <SNIP>
+> > >
+> > > Changes since_v7:
+> > >  - The condition for requiring system_wide sideband is changed to
+> > >    "as long as a non-dummy event exists" (patch4).
+> > >  - Modify the corresponding test case to record only dummy event (patch6).
+> > >  - Thanks to tested-by tag from Ravi, but because the solution is modified,
+> > >    the tested-by tag of Ravi is not added to this version.
+> >
+> > I've re-tested v8 with my simple test.
+> >
+> > Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+>
+>
+> Thanks, applied to the csets that were still sitting in an umpublished
+> perf-tools-next local branch, soon public.
 
-I think this may be a worthwhile thing to do, but...
+Now I'm seeing a perf test failure on perf-tools-next.
 
-> -static void iomap_finish_folio_read(struct folio *folio, size_t offset,
-> +static void iomap_finish_folio_read(struct folio *folio, size_t off,
 
-this function really turns into a mess.
-
-The diff is hard to read, and I'm not talking about the 'offset' ->
-'off' part, but about how now about half of the function has various
-'if (ifs)' tests spread out.
-
-And I think it actually hides what is going on.
-
-If you decide to combine all the "if (ifs)" parts on one side, and
-then simplify the end result, you actually end up with a much
-easier-to-read function.
-
-I think it ends up looking like this:
-
-  static void iomap_finish_folio_read(struct folio *folio, size_t off,
-                  size_t len, int error)
-  {
-        struct iomap_folio_state *ifs = folio->private;
-        bool uptodate = true;
-        bool finished = true;
-
-        if (ifs) {
-                unsigned long flags;
-
-                spin_lock_irqsave(&ifs->state_lock, flags);
-
-                if (!error)
-                        uptodate = ifs_set_range_uptodate(folio, ifs,
-off, len);
-
-                ifs->read_bytes_pending -= len;
-                finished = !ifs->read_bytes_pending;
-                spin_unlock_irqrestore(&ifs->state_lock, flags);
-        }
-
-        if (unlikely(error))
-                folio_set_error(folio);
-        else if (uptodate)
-                folio_mark_uptodate(folio);
-        if (finished)
-                folio_unlock(folio);
-  }
-
-but that was just a quick hack-work by me (the above does, for
-example, depend on folio_mark_uptodate() not needing the
-ifs->state_lock, so the shared parts then got moved out).
-
-I think the above looks a *lot* more legible than having three
-different versions of "if (ifs)" spread out in the function, and it
-also makes the parts that are actually protected by ifs->state_lock a
-lot more obvious.
-
-But again: I looked at your patch, found it very hard to follow, and
-then decided to quickly do a "what  happens if I apply the patch and
-then try to simplify the result".
-
-I might have made some simplification error. But please give that a look, ok?
-
-              Linus
+$ sudo ./perf test -v 17
+ 17: Setup struct perf_event_attr                                    :
+--- start ---
+test child forked, pid 1616372
+Using CPUID GenuineIntel-6-8C-1
+running './tests/attr/test-record-branch-filter-k'
+running './tests/attr/test-record-period'
+running './tests/attr/test-record-graph-default'
+test limitation '!aarch64'
+excluded architecture list ['aarch64']
+running './tests/attr/test-record-branch-filter-any'
+running './tests/attr/test-record-data'
+running './tests/attr/test-stat-detailed-1'
+running './tests/attr/test-record-branch-filter-hv'
+running './tests/attr/test-record-graph-fp'
+test limitation '!aarch64'
+excluded architecture list ['aarch64']
+running './tests/attr/test-record-basic'
+running './tests/attr/test-record-group2'
+running './tests/attr/test-stat-detailed-3'
+running './tests/attr/test-record-branch-any'
+running './tests/attr/test-record-branch-filter-ind_call'
+running './tests/attr/test-stat-detailed-2'
+running './tests/attr/test-record-group1'
+running './tests/attr/test-record-count'
+running './tests/attr/test-record-no-samples'
+running './tests/attr/test-record-graph-dwarf'
+running './tests/attr/test-record-spe-period'
+test limitation 'aarch64'
+skipped [x86_64] './tests/attr/test-record-spe-period'
+running './tests/attr/test-record-graph-fp-aarch64'
+test limitation 'aarch64'
+skipped [x86_64] './tests/attr/test-record-graph-fp-aarch64'
+running './tests/attr/test-record-freq'
+running './tests/attr/test-record-pfm-period'
+running './tests/attr/test-record-no-buffering'
+running './tests/attr/test-record-no-inherit'
+running './tests/attr/test-record-branch-filter-any_ret'
+running './tests/attr/test-record-raw'
+running './tests/attr/test-record-dummy-C0'
+expected read_format=4, got 20
+FAILED './tests/attr/test-record-dummy-C0' - match failure
+test child finished with -1
+---- end ----
+Setup struct perf_event_attr: FAILED!
