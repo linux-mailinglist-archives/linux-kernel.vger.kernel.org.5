@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36DD7A30DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480777A30E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbjIPOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 10:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S237227AbjIPOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 10:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjIPOS0 (ORCPT
+        with ESMTP id S232018AbjIPOcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 10:18:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6159F3;
-        Sat, 16 Sep 2023 07:18:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28959C433C7;
-        Sat, 16 Sep 2023 14:18:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694873901;
-        bh=lU1UqlK6iJyZTRFmdx3dOntPp2RXPR3ioPjf8uvli3c=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=SRcPPriV9exloMszZXqiEGcU+EzvltRxZmXZHPVT8O5HPQgvlMU0sM3QiixvbCLkY
-         HOe7pcKkfR++T0Bm/g0q9WohSTo62dI6YAT5Uq2g3vApSKEMDOBlDlaZyiDuDfP31h
-         41lTpE/nJWRnkNknaATY1ZVqM0jBoyhBdEP/ccb1799QwYaKYzqndu5S0iPRIyN949
-         Gd0S93x24wbYsnuFfWJbOggFuFFyuUkO1imqUk7W1alcMmo5LAP6DmsC7Q1h33AB9c
-         A14r8QLzTvob1Sx0OwAi643E1dSHOdQWut6jmQTf5ONLUkbK4cducY09uW/zLSbgG7
-         IUJmZHjR8xFdA==
-Received: (nullmailer pid 1593168 invoked by uid 1000);
-        Sat, 16 Sep 2023 14:18:19 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sat, 16 Sep 2023 10:32:52 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66640CE8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:32:47 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31ad9155414so2846204f8f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694874766; x=1695479566; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RuCMRYRUI5pE2pACmrLEmespxY+dxj38Ol7yGsVBHSU=;
+        b=PuqGDe6CZBYIFMsaW2bIwkwwRy+umt+pbvUsZgYaxXTsxpY1MY6UcdFcZ32Xbzhh7N
+         MPtR9SDdRpoYnQ0CJWuUAl5Zwuu2iXIwQSB45yIEHNI6QN0qkpOWvtr38c5rMBi7UW+1
+         kB0Dg/gHWlFRM3RvaEZd3pEYv/vyuwqBb+TTigDXkYC8Dww5Y43o8X7CF8ebSVexZmyU
+         6mxVceBfza4WEp8kmD+9IZjzi65t87Cw1Ro47uIq72+4iovstqZ+Oqtk31ztOpUy8PK+
+         KNDiPibdXcAckXdAguzGwFnZOMa54ovBINgtgM8kNgG7HoETDk3KvXVCv+iIedCWkTqk
+         mXyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694874766; x=1695479566;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RuCMRYRUI5pE2pACmrLEmespxY+dxj38Ol7yGsVBHSU=;
+        b=PRMPvkXuG8/qZ5Out/WlQv5JucUk15/6S/285MGezthZtMRu2SwbJMv+mbixbiBVux
+         VTEC8udvar9H15Gh3xQWCQrkm8b6PlI0aEJsi7ci68fDWFFvO3rZ//MUJDtecWPoP085
+         IKkncgXKjVhFGWUo4HvyoxvAFBRovtFK4m4n+S2RB5pLpKgsLVHuRRxiTmTiozQcMIkk
+         8ZlU1Yu7prYksPpED+ghNN5KPcJZdQ1I4RwV2i/qpGlOoqQWzKHPjvfTydDM2D6/EFxk
+         RVtIa4jkj41NKekdzxQw+TdKkEwN5oXBtEU88uk2BRTgFXlyS+HKee4XPeNdt7tEPxPd
+         4Wrw==
+X-Gm-Message-State: AOJu0YyTXdNRB4wnLNzDHkmg5iwad2J6KSK6FmVx0uyY8rxDFuwIzTaR
+        SbKwpT88saNI3aBUZg2OCCxJWw==
+X-Google-Smtp-Source: AGHT+IFo2cGGQRjJb8BtVCZ+zzLXMvuJine6w6l4fG9U93EB+rQqIuIbo58+ykYvKJeUmr2pjBhAfA==
+X-Received: by 2002:a05:6000:a1a:b0:31f:facb:e1ba with SMTP id co26-20020a0560000a1a00b0031ffacbe1bamr2807958wrb.70.1694874765714;
+        Sat, 16 Sep 2023 07:32:45 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id j15-20020a5d604f000000b0031779a6b451sm7270032wrt.83.2023.09.16.07.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 07:32:45 -0700 (PDT)
+Date:   Sat, 16 Sep 2023 17:32:42 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
+        David Airlie <airlied@redhat.com>
+Subject: Re: [PATCH v2 1/5] string.h: add array-wrappers for (v)memdup_user()
+Message-ID: <b219788a-69e6-44cf-a609-91f9640967f5@moroto.mountain>
+References: <cover.1694202430.git.pstanner@redhat.com>
+ <93001a9f3f101be0f374080090f9c32df73ca773.1694202430.git.pstanner@redhat.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-In-Reply-To: <20230916-pm8916-dtsi-bms-lbc-v1-1-7db0b42f9fb1@trvn.ru>
-References: <20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru>
- <20230916-pm8916-dtsi-bms-lbc-v1-1-7db0b42f9fb1@trvn.ru>
-Message-Id: <169487389902.1593151.17540098459280673320.robh@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916
- vm-bms and lbc
-Date:   Sat, 16 Sep 2023 09:18:19 -0500
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93001a9f3f101be0f374080090f9c32df73ca773.1694202430.git.pstanner@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 08, 2023 at 09:59:40PM +0200, Philipp Stanner wrote:
+> +static inline void *memdup_array_user(const void __user *src, size_t n, size_t size)
+> +{
+> +	size_t nbytes;
+> +
+> +	if (unlikely(check_mul_overflow(n, size, &nbytes)))
+> +		return ERR_PTR(-EOVERFLOW);
 
-On Sat, 16 Sep 2023 18:57:04 +0500, Nikita Travkin wrote:
-> PM8916 (and probably some other similar pmics) have hardware blocks for
-> battery monitoring and charging. Add patterns for respecive nodes so the
-> dt for those blocks can be validated properly.
-> 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-> Schemas for those devices were added in [1].
-> 
-> [1] https://lore.kernel.org/r/20230915-pm8916-bms-lbc-v3-0-f30881e951a0@trvn.ru
-> ---
->  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+No need for an unlikely() because check_mul_overflow() already has one
+inside.  I feel like -ENOMEM is more traditional but I doubt anyone/userspace
+cares.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> +
+> +	return memdup_user(src, nbytes);
+> +}
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230916-pm8916-dtsi-bms-lbc-v1-1-7db0b42f9fb1@trvn.ru
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+regards,
+dan carpenter
