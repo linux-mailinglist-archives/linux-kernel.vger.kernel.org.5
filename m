@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3880A7A30A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2997D7A30AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 15:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239369AbjIPNRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 09:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S236226AbjIPNgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 09:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239257AbjIPNQp (ORCPT
+        with ESMTP id S234448AbjIPNf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 09:16:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747A5139
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694870200; x=1726406200;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JxbzpYVN521YHhqcI4SHspUSz+oF7VEr3ENcG2aE+Dc=;
-  b=QPUX/WiFekRMYqqadMtoHy/NgjuaABfna2bZkhCpiVVmq/bp6JFwBrOx
-   Kfy7Wun83VG6adRvDeqa2sGehYvlcFkgZO6Uzfv49cBa+XqJXvn9mNR1X
-   VSIKdXjQAWsVDhF+zlCaF3sC7F1fn0plaLP5FRKMrggTWHFQNPNbJZu2M
-   GpTxxZT0ngqZqIRMlIaTOmuGDnEwdAy7FPNjUEdjqybRi9MEKFoDhe8G1
-   JCD2Wdw2BJSk8imU2oMCNa5kL3+N1C5AdQsEIWgDFmmVK50lkCma2K4c9
-   7Qub4ac3WRMD6xeHOAASVzd+gBjYIbSQwvUP4xKiahDW09fkQdC34v3+l
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="359662004"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="359662004"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 06:16:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10835"; a="780421605"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="780421605"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 16 Sep 2023 06:16:38 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhVA4-0004JK-1B;
-        Sat, 16 Sep 2023 13:16:36 +0000
-Date:   Sat, 16 Sep 2023 21:15:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: drivers/power/supply/qcom_battmgr.c:357:31: sparse: sparse:
- incorrect type in initializer (different base types)
-Message-ID: <202309162149.4owm9iXc-lkp@intel.com>
+        Sat, 16 Sep 2023 09:35:58 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8334E197
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:35:53 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-57358a689d2so1888930eaf.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 06:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694871353; x=1695476153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/IgdmKyG2oBgLUj8iDGVi77dhR1poilu0MDEaA6E+Ac=;
+        b=SZbHFk8KlpVKV7S+Enh6mw2jknoNu5PJBAFAwmn8Op5AnYiBW2jpwlSKyMKt3/vq9F
+         Cc0WfxKL6q83bqWP3z01s+r35tFAZplNdOvWfjqDD5jrd9jpzkVpeN/2TK6kbQoUTnl1
+         XMq11A5BKp6wOPA8F/U0KuobDmtQhl+fUO3NfxHASXBw1qTwi4B9MGBVkqkbNgWtjOKi
+         SfAdeSkYE2Yx5mCZm0BZkJnF2uqh/p7hz9PbEifDgs8zRipmobKqgMtiWNpX99BHuaPX
+         ZfKH5GS9lM+LbJt0p+ixoUd3GqnN5yB4navzo8Y+8Gcbi7eh4z9k6rlJrwDAA1hcl8iB
+         7Wug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694871353; x=1695476153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/IgdmKyG2oBgLUj8iDGVi77dhR1poilu0MDEaA6E+Ac=;
+        b=LL2G0LCBJHPDT650FzPLiSkE1+kuP3mEuav6muYU6erIWhsr6U5YGYPVLPWdi+JhFp
+         wM0hGZCGH/0h7fO87LVDeMaTRfPdlSllRlfl9wPBGVdVIQa1f8IVxfrgnt7jYVeiw7dM
+         nn2aFbOcHdmUaqCmP4ogAyqRU9oVbFn2lyIJEPRIYYIKkG67wZSkMtLMCaVPmMOXsFbv
+         C2Yu8FncZLd9m8riKxVshgdhMNsXvOCCZ51FdFvmOa9IhjrwDU262dQ0CvB2qX9f63uX
+         tfopNLwkDLw4U1e/ejZ3XXzuPvD9LoYjd37uitEW8MijmFEQ+b0R9gqGrx5gJhIXMvSn
+         4OaA==
+X-Gm-Message-State: AOJu0YzP43rVoN3N1mRqbhFQeamuBp6D3twf9qPSwXyP8ZTo6TprA1Bu
+        Qst9rOrLOShkRMaKkDA+pd1wXAwcvP0yQqcc9ys=
+X-Google-Smtp-Source: AGHT+IGGUy6ANEX5fOPOUnLqUEaTpL7HgmucOkqH1eEGerQE4XJlSW/mAgcK2oYVJHHXQHL0MSTlx7bHAvfVGEKKp6Q=
+X-Received: by 2002:a4a:dfcb:0:b0:576:8b2b:1ea with SMTP id
+ p11-20020a4adfcb000000b005768b2b01eamr4825690ood.2.1694871352661; Sat, 16 Sep
+ 2023 06:35:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230916130653.243532-1-hdegoede@redhat.com>
+In-Reply-To: <20230916130653.243532-1-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 16 Sep 2023 16:35:16 +0300
+Message-ID: <CAHp75VdgNraMM15=DLnd66DVEpBX8zwv8VEon7pVjoy9MhHZRA@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/platform/uv: Rework NMI "action" modparam handling
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   57d88e8a5974644039fbc47806bac7bb12025636
-commit: 29e8142b5623b5949587bcc4f591c4e6595c4aca power: supply: Introduce Qualcomm PMIC GLINK power supply
-date:   7 months ago
-config: i386-randconfig-062-20230916 (https://download.01.org/0day-ci/archive/20230916/202309162149.4owm9iXc-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230916/202309162149.4owm9iXc-lkp@intel.com/reproduce)
+On Sat, Sep 16, 2023 at 4:07=E2=80=AFPM Hans de Goede <hdegoede@redhat.com>=
+ wrote:
+>
+> Rework NMI "action" modparam handling:
+>
+> 1. Replace the uv_nmi_action string with an enum; and
+> 2. Use sysfs_match_string() for string parsing in param_set_action()
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309162149.4owm9iXc-lkp@intel.com/
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/power/supply/qcom_battmgr.c:357:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] battery_id @@     got restricted __le32 [usertype] @@
-   drivers/power/supply/qcom_battmgr.c:357:31: sparse:     expected unsigned int [usertype] battery_id
-   drivers/power/supply/qcom_battmgr.c:357:31: sparse:     got restricted __le32 [usertype]
-   drivers/power/supply/qcom_battmgr.c:369:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] battery_id @@     got restricted __le32 [usertype] @@
-   drivers/power/supply/qcom_battmgr.c:369:31: sparse:     expected unsigned int [usertype] battery_id
-   drivers/power/supply/qcom_battmgr.c:369:31: sparse:     got restricted __le32 [usertype]
->> drivers/power/supply/qcom_battmgr.c:1286:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] owner @@     got int @@
-   drivers/power/supply/qcom_battmgr.c:1286:30: sparse:     expected restricted __le32 [usertype] owner
-   drivers/power/supply/qcom_battmgr.c:1286:30: sparse:     got int
->> drivers/power/supply/qcom_battmgr.c:1287:29: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] type @@     got int @@
-   drivers/power/supply/qcom_battmgr.c:1287:29: sparse:     expected restricted __le32 [usertype] type
-   drivers/power/supply/qcom_battmgr.c:1287:29: sparse:     got int
->> drivers/power/supply/qcom_battmgr.c:1288:31: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] opcode @@     got int @@
-   drivers/power/supply/qcom_battmgr.c:1288:31: sparse:     expected restricted __le32 [usertype] opcode
-   drivers/power/supply/qcom_battmgr.c:1288:31: sparse:     got int
+...
 
-vim +357 drivers/power/supply/qcom_battmgr.c
+>  static int param_get_action(char *buffer, const struct kernel_param *kp)
+>  {
+> -       return sprintf(buffer, "%s\n", uv_nmi_action);
+> +       return sprintf(buffer, "%s\n", actions[uv_nmi_action]);
+>  }
 
-   350	
-   351	static int qcom_battmgr_update_status(struct qcom_battmgr *battmgr)
-   352	{
-   353		struct qcom_battmgr_update_request request = {
-   354			.hdr.owner = cpu_to_le32(PMIC_GLINK_OWNER_BATTMGR),
-   355			.hdr.type = cpu_to_le32(PMIC_GLINK_REQ_RESP),
-   356			.hdr.opcode = cpu_to_le32(BATTMGR_BAT_STATUS),
- > 357			.battery_id = cpu_to_le32(0),
-   358		};
-   359	
-   360		return qcom_battmgr_request(battmgr, &request, sizeof(request));
-   361	}
-   362	
+Recently I have sent a patch to make all *printf() to be sysfs_emit()
+in params.c a s I believe that those are for sysfs only. That said, I
+think this is the case here. But,  this is out of scope of the change
+and up to you what to do with this (meanwhile you are using
+*sysfs*_match_string() which emphasizes the use case already).
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+With Best Regards,
+Andy Shevchenko
