@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEAD7A3141
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 17:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E180E7A3146
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 18:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238158AbjIPP4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 11:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S239232AbjIPP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 11:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbjIPPzi (ORCPT
+        with ESMTP id S232394AbjIPP7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 11:55:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECBDF7;
-        Sat, 16 Sep 2023 08:55:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AFD6C433CD;
-        Sat, 16 Sep 2023 15:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694879733;
-        bh=ZY2cAb1W6cjpppzMyn+14W1CgRCu210r+XVVtUOwwKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gmqJKfpvSmqL4tw5rTeaNKxgBmXs0Wqq//Osd6MWQOZ4OCUKHa8THhHtFyp4onno+
-         lbzj4iA+g0AtSl9+c6G8YIIDU/zCQdIbAPFfZD0wMrsRSnvz+WAajOjFbK7JyNwCRT
-         XX1VUpTII13Qe8BlNUeVrZzueEUauqYOLeURiz+jxLySxE9021gT30a67s5QtBWnlf
-         P5I6bSqCRCJyMSyuX7P0k6DAmc2AJJVA8/HQRz5Cm7KcIAwWg9VGAQsVmN7/+D0wMY
-         Y3xEtspEo4P0rWe0g0YG4xmlVmNHZ9L+ocOoDNXERGRJBQw9RFj6S4fvafvxLRTjtf
-         iu/HQysYTuD3g==
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3adba522a5dso637522b6e.2;
-        Sat, 16 Sep 2023 08:55:33 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzpElqZiDzijEwZPudDWcCTD1z/5ZKS/SLF9Wg9Txa7TZVGOgYZ
-        sHqbXNu9sp7Z6/NTaN6aJzUZt1L7NkxzIn8bSgk=
-X-Google-Smtp-Source: AGHT+IF88S2QLX44swt2RNrINmE4POOQwsa0NGIJBJ65q287dC2YJ/yh9EsEYy+jpPU3BV0W+MXtW0uZLCg9Sw7rqaU=
-X-Received: by 2002:a05:6871:611:b0:1c8:d72a:d6ba with SMTP id
- w17-20020a056871061100b001c8d72ad6bamr5793850oan.45.1694879732849; Sat, 16
- Sep 2023 08:55:32 -0700 (PDT)
+        Sat, 16 Sep 2023 11:59:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32BC114;
+        Sat, 16 Sep 2023 08:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w48b1gTGXHiaqxwJXgXOFHKSen7VOnpQ1+UdzbtV8mQ=; b=mSUuCOplScq5spGBc4yY1EjuuG
+        C+5Ns+4ln0AVgDoLmm4dW2C3bau1nzQZSkJRoTq+kJi4tZNl1mPhkXfvuMSjRgc9NM1zrCZuomzJm
+        5Lc9LWVh1e5QLAuTK3Hx8tnZ/DdaVqJpU6X0ZBs5/kt3I/pUJgkz2fQNhred2Y9uy4XvQze7BT+C1
+        5npTOgn387mrIi6cQLGkUARogmX8+2Vpe8/1gpB8fw3S/HP/sSKuR74sr7xuHWSCzpkLrQksiQLBp
+        b0N1qW+pkcz7JwohapppuB0nK9KYwRtxp8wIFD9mBTK6GEWEYrBzu4HwP8JO1CA10ObpqeXMl13qE
+        yXT1oZ5Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhXhk-00H0Wr-8s; Sat, 16 Sep 2023 15:59:32 +0000
+Date:   Sat, 16 Sep 2023 16:59:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 08/17] alpha: Implement xor_unlock_is_negative_byte
+Message-ID: <ZQXQ5OnAgisxVyKs@casper.infradead.org>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-9-willy@infradead.org>
+ <CAHk-=wgBUvM7tc70AAvUw+HHOo6Q=jD4FVheFGDCjNaK3OCEGA@mail.gmail.com>
+ <ZQT4/gA4vIa/7H6q@casper.infradead.org>
+ <CAHk-=whbj+pVGhJTcQCLhY8KZJNomWOKM=s-GZSpK_G=G4fXEA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230916-nolibc-initramfs-v1-0-4416ecedca6d@weissschuh.net> <20230916-nolibc-initramfs-v1-1-4416ecedca6d@weissschuh.net>
-In-Reply-To: <20230916-nolibc-initramfs-v1-1-4416ecedca6d@weissschuh.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 17 Sep 2023 00:54:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATru0tQYF+Kehb33pJV8xQKBCUEHcoC_M3EX8xCrzQ-NA@mail.gmail.com>
-Message-ID: <CAK7LNATru0tQYF+Kehb33pJV8xQKBCUEHcoC_M3EX8xCrzQ-NA@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/3] kbuild: add toplevel target for usr/gen_init_cpio
-To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <shuah@kernel.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whbj+pVGhJTcQCLhY8KZJNomWOKM=s-GZSpK_G=G4fXEA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 4:13=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
->
-> The nolibc testsuite wants to generate an initrams without linking it
-> into the kernel for which it needs access to gen_init_cpio.
-> Add a new toplevel target for it so it can be built standalone.
->
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
->
-> ---
->
-> Kbuild maintainers:
->
-> If there is a way that does not require modification of the toplevel
-> Makefile that would be nice, too.
-> I followed the example of the "scripts_unifdef" target.
+On Fri, Sep 15, 2023 at 07:01:14PM -0700, Linus Torvalds wrote:
+> On Fri, 15 Sept 2023 at 17:38, Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Fri, Sep 15, 2023 at 05:27:17PM -0700, Linus Torvalds wrote:
+> > > On Fri, 15 Sept 2023 at 11:37, Matthew Wilcox (Oracle)
+> > > <willy@infradead.org> wrote:
+> > > >
+> > > > +       "1:     ldl_l %0,%4\n"
+> > > > +       "       xor %0,%3,%0\n"
+> > > > +       "       xor %0,%3,%2\n"
+> > > > +       "       stl_c %0,%1\n"
+> > >
+> > > What an odd thing to do.
+> > >
+> > > Why don't you just save the old value? That double xor looks all kinds
+> > > of strange, and is a data dependency for no good reason that I can
+> > > see.
+> > >
+> > > Why isn't this "ldl_l + mov %0,%2 + xor + stl_c" instead?
+> > >
+> > > Not that I think alpha matters, but since I was looking through the
+> > > series, this just made me go "Whaa?"
+> >
+> > Well, this is my first time writing Alpha assembler ;-)  I stole this
+> > from ATOMIC_OP_RETURN:
+> >
+> >         "1:     ldl_l %0,%1\n"                                          \
+> >         "       " #asm_op " %0,%3,%2\n"                                 \
+> >         "       " #asm_op " %0,%3,%0\n"                                 \
+> 
+> Note how that does "orig" assignment first (ie the '%2" destination is
+> the first instruction), unlike your version.
 
+Wow.  I totally missed that I'd transposed those two lines.  I read
+it back with the lines in the order that they should have been in.
+Every time I read it.  I was wondering why you were talking about a data
+dependency, and I just couldn't see it.  With the lines in the order that
+they're actually in, it's quite obvious and totally not what I meant.
+Of course, it doesn't matter which order they're in from the point of
+view of testing the waiters bit since we don't change the waiters bit.
 
-This worked for me.
+> Does any of this matter? Nope. It's alpha. There's probably a handful
+> of machines, and it's maybe one extra cycle. It's really the oddity
+> that threw me.
 
-
-masahiro@zoe:~/ref/linux$ make -s mrproper
-masahiro@zoe:~/ref/linux$ make -s defconfig
-masahiro@zoe:~/ref/linux$ make run-command KBUILD_RUN_COMMAND=3D'$(MAKE)
-$(build)=3Dusr usr/gen_init_cpio'
-  HOSTCC  usr/gen_init_cpio
-
-
-
-
-
-
-
-
-> ---
->  Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index ceb23eed4dce..1caa4429eceb 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1812,6 +1812,10 @@ endif
->
->  endif # KBUILD_EXTMOD
->
-> +PHONY +=3D usr_gen_init_cpio
-> +usr_gen_init_cpio:
-> +       $(Q)$(MAKE) $(build)=3Dusr usr/gen_init_cpio
-> +
->  # ----------------------------------------------------------------------=
------
->  # Modules
->
->
-> --
-> 2.42.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+I'll admit to spending far more time on the m68k version of this than
+the alpha version ;-)
