@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E1B7A2D8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583807A2D94
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 05:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjIPCoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 22:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
+        id S235302AbjIPCyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 22:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbjIPCoU (ORCPT
+        with ESMTP id S231539AbjIPCyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 22:44:20 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ED8106
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:44:14 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-58dfe2d5b9aso38268567b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:44:14 -0700 (PDT)
+        Fri, 15 Sep 2023 22:54:25 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C9A1BD2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:54:20 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59c26aa19b7so7637437b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:54:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694832251; x=1695437051; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694832859; x=1695437659; darn=vger.kernel.org;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISPnyLNUfhuOEH21ItuTRLONf/o/+Vp6ZXvrFb0oXUg=;
-        b=t0L7XEnehnrU5Zvss8N/KYmO0ArDUoll+ZSkJZtka7pDLUsxe73T9vha8AgKwUa5Z7
-         +CTqPlgHEUaROqelCYqFzftLflOCvL2rNSc7cuD9cb3x52LxLh5qARleB84hCdZJSe47
-         iNrAJE5yaGl68AO3PN6t/ZySVeNWtBMqWXcdDuFBHFUdB554aVUC+1CYss0AGUkCFaa4
-         TtHhVkD50b+rwWccjrdlj7WLHbG5RUAs+DdUCDUuQaeJwivTfg7NGBl5UnzRyShliL13
-         URGLuJ0/3bSwhaMojRCj/xgbq8clSCoDGu7reUGsOTdsrOaWjjttHk7oAyf2/+aBgmFg
-         29Dg==
+        bh=pRgYEKeBnhc137LJPUJ1YX5jXl/+dvV/D/bsE7EFVFU=;
+        b=ruaSHKEQKnnwpWuTTIeLxtcg3C4ijVzzFj7/rAGJGT6xzsobYUlPuZ5VsLKvi1TqWI
+         zPPjMa+kR0HW9p3PtE/1eH5MgXgFt0n/GLJh6s3EuOgtqmejdKZPHnYwNXrpwBK3Sw6P
+         uPRlb0c+eQUMgrrEUODBgD8KW6yGMI2YTXBcRrZuxmVWFSwSEeTta4mSoX8jF0oQF2TV
+         EzT6/xQ/v5/0BjCS1loytBSf6AnzcE4NRezshCbhgrP5QPcROsXwIx4IRg2YbjObfrvo
+         G7EZLtb6F62FUdJnWb34U54AR6mAaL00itz3wv9OIp+ba8GVQS2VqSRtoZ+8HtIoGX4N
+         C76A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694832251; x=1695437051;
+        d=1e100.net; s=20230601; t=1694832859; x=1695437659;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISPnyLNUfhuOEH21ItuTRLONf/o/+Vp6ZXvrFb0oXUg=;
-        b=GIqCNLJzHeizLLK8jPpe8vb3BWUD6Q2NJ5PwCgTkTACYbXigKizDQygOqzHpyKVR2Y
-         oYVHcky77TJmFtt1c+5m17cm08VZo0HtWzcc9m7u2JaSeoMr/t0/0XhLZFmFCmiscRgC
-         pA2uXdVipyheIVm/sTEZOYKdGXodOOZ+PyMBr7z+Ic3DbBMidTouokkpVBYSkZ/gr1DX
-         7Rskow7yQ9FvrhUkAtkxe9gVWHoi8MicGKv5JZcOVRvt0N6i2VOvpW2jzRoeNhhx/guc
-         aAGZ34mbqfK46GVj/upuU1D1QMdmI1gZNL22jhptnsSWISntN8T27bB13dyRaoaNS0fI
-         bQPw==
-X-Gm-Message-State: AOJu0YwoV6vAJi77hFxhSHRLO1bcsWTajhFV2oS64qUt7hUfet1fimSD
-        T7bKepwwkdp2DyFF2BlCUMYDDQ==
-X-Google-Smtp-Source: AGHT+IGkD9tRpts+Kot+QJ/QB//55QmamJf5bkfILtPqQYnfwt1OagBcnZkLMkIDPTkUlIdrBRajkg==
-X-Received: by 2002:a81:6d0f:0:b0:59b:e9d5:a41c with SMTP id i15-20020a816d0f000000b0059be9d5a41cmr3982610ywc.22.1694832251056;
-        Fri, 15 Sep 2023 19:44:11 -0700 (PDT)
+        bh=pRgYEKeBnhc137LJPUJ1YX5jXl/+dvV/D/bsE7EFVFU=;
+        b=LF+0vynr1NIVj9ReBwT3oFnYTDmVK9ii6olUTOEBQK79G77T9kj0SAbjREEDAIpmF6
+         HWC7RBpL7VLXGNfXwT3sYR20BFWb92POQrmM0pU0fWKd0xMmfO6tU0L+kUxC40W06VkY
+         uwvcjj8NbZUy+xkYENXZwYclEB05rYYqjGakmW6Q8ufPmD6jMuE3/jaBtl1qB0jQeyY7
+         4O9DeQJ898Ah9i6R+5+7RfdeBcCJN+bi3TOaL+PKA937maeHP8tTQ9tnl1ejT+2A5dVT
+         2fFpWHZ4POLG8cfIOAQ0t2mzdCI1MM9Ju9EQx7oDO0L9Hn8aXmOT5F+ZE8dWkaOlI1BH
+         naqA==
+X-Gm-Message-State: AOJu0Yw81nhUbkBBPZmP1dcJ/T84TMmx2rgW/JvJwQBjAuDq79gX/eyP
+        TS/mEU9N5fftKIHHms4Sh93TWA==
+X-Google-Smtp-Source: AGHT+IGyKMGHnMEM0WFtSTclUrFRubYqjyVdCHiMGPhbY5XPEn9cF7hIB744pXwvKTtzMGrN/Y+6mQ==
+X-Received: by 2002:a81:73d5:0:b0:59c:3f8:b0ab with SMTP id o204-20020a8173d5000000b0059c03f8b0abmr4202510ywc.41.1694832859109;
+        Fri, 15 Sep 2023 19:54:19 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q5-20020a815c05000000b0058fc7604f45sm1182997ywb.130.2023.09.15.19.44.09
+        by smtp.gmail.com with ESMTPSA id u127-20020a0dd285000000b0059bce30a498sm1196082ywd.139.2023.09.15.19.54.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 19:44:10 -0700 (PDT)
-Date:   Fri, 15 Sep 2023 19:43:58 -0700 (PDT)
+        Fri, 15 Sep 2023 19:54:18 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 19:54:16 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.attlocal.net
-To:     Suren Baghdasaryan <surenb@google.com>
+To:     Matthew Wilcox <willy@infradead.org>
 cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
         Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
         akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
-In-Reply-To: <CAJuCfpE8jnvL23W6fY4_HZf-969aEgvR3-LGRTUC-SFhPFju+w@mail.gmail.com>
-Message-ID: <c5c51578-efdc-7de-2238-4039fb1b6c36@google.com>
-References: <ZP/3hgDCXeceE9uU@casper.infradead.org> <ZQB76G/6NxVgoE9u@casper.infradead.org> <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com> <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
- <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com> <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com> <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com> <ZQNaT/3xPxATKJVR@casper.infradead.org>
- <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com> <CAJuCfpGp2CwGJmmwzK7WdudOyL1CCWVaERRK9qTtNA8SZ365SA@mail.gmail.com> <ZQN58hFWfgn+OfvG@casper.infradead.org> <CAJuCfpGRSJhBBZop_L-UubuveUWBca4YtyPBzM2KZGEx7iwhXg@mail.gmail.com>
- <da13f5a-b87f-d776-e58a-d492fa2773f9@google.com> <CAJuCfpGO4bRZaDJv5Vuf2wLh3t4hE=5EqDObm_UfcQk4B08PrQ@mail.gmail.com> <CAJuCfpE8jnvL23W6fY4_HZf-969aEgvR3-LGRTUC-SFhPFju+w@mail.gmail.com>
+In-Reply-To: <ZQShw8lESIBle7GF@casper.infradead.org>
+Message-ID: <ace766bc-49c1-8399-9548-5faac04e87c8@google.com>
+References: <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com> <CAJuCfpF4j6fKpk853tXu155jbfk1z_PbWXjf4bypYwDRf78-iw@mail.gmail.com> <CAJuCfpETZr56WD5j7aQY-dY84ciur=QTZYxuShmjEG+fZFhDsw@mail.gmail.com> <CAJuCfpECwpQ8wHnwhkLztvvxZmP9rH+aW3A39BSzkZ9t2JK6dQ@mail.gmail.com>
+ <ZQNaT/3xPxATKJVR@casper.infradead.org> <CAJuCfpEAZbtUrwrfqd+PWJv9efVy1HRbqrLUYAP4rYRvk0vWug@mail.gmail.com> <CAJuCfpGp2CwGJmmwzK7WdudOyL1CCWVaERRK9qTtNA8SZ365SA@mail.gmail.com> <ZQN58hFWfgn+OfvG@casper.infradead.org> <CAJuCfpGRSJhBBZop_L-UubuveUWBca4YtyPBzM2KZGEx7iwhXg@mail.gmail.com>
+ <da13f5a-b87f-d776-e58a-d492fa2773f9@google.com> <ZQShw8lESIBle7GF@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463760895-168202884-1694832249=:16517"
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,68 +78,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, 15 Sep 2023, Matthew Wilcox wrote:
+> On Thu, Sep 14, 2023 at 09:26:15PM -0700, Hugh Dickins wrote:
+> > On Thu, 14 Sep 2023, Suren Baghdasaryan wrote:
+> > > Yes, I just finished running the reproducer on both upstream and
+> > > linux-next builds listed in
+> > > https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023 and the
+> > > problem does not happen anymore.
+> > > I'm fine with your suggestion too, just wanted to point out it would
+> > > introduce change in the behavior. Let me know how you want to proceed.
+> > 
+> > Well done, identifying the mysterious cause of this problem:
+> > I'm glad to hear that you've now verified that hypothesis.
+> > 
+> > You're right, it would be a regression to follow Matthew's suggestion.
+> > 
+> > Traditionally, modulo bugs and inconsistencies, the queue_pages_range()
+> > phase of do_mbind() has done the best it can, gathering all the pages it
+> > can that need migration, even if some were missed; and proceeds to do the
+> > mbind_range() phase if there was nothing "seriously" wrong (a gap causing
+> > -EFAULT).  Then at the end, if MPOL_MF_STRICT was set, and not all the
+> > pages could be migrated (or MOVE was not specified and not all pages
+> > were well placed), it returns -EIO rather than 0 to inform the caller
+> > that not all could be done.
+> > 
+> > There have been numerous tweaks, but I think most importantly
+> > 5.3's d883544515aa ("mm: mempolicy: make the behavior consistent when
+> > MPOL_MF_MOVE* and MPOL_MF_STRICT were specified") added those "return 1"s
+> > which stop the pagewalk early.  In my opinion, not an improvement - makes
+> > it harder to get mbind() to do the best job it can (or is it justified as
+> > what you're asking for if you say STRICT?).
+> 
+> I suspect you agree that it's inconsistent to stop early.  Userspace
+> doesn't know at which point we found an unmovable page, so it can't behave
+> rationally.  Perhaps we should remove the 'early stop' and attempt to
+> migrate every page in the range, whether it's before or after the first
+> unmovable page?
 
----1463760895-168202884-1694832249=:16517
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Yes, that's what I was arguing for, and how it was done in olden days.
+Though (after Yang Shi's following comments, and looking back at my
+last attempted patch here) I may disagree with myself about the right
+behavior in the MPOL_MF_STRICT case.
 
-On Fri, 15 Sep 2023, Suren Baghdasaryan wrote:
-> On Fri, Sep 15, 2023 at 9:09=E2=80=AFAM Suren Baghdasaryan <surenb@google=
-=2Ecom> wrote:
-> >
-> > Thanks for the feedback, Hugh!
-> > Yeah, this positive err handling is kinda weird. If this behavior (do
-> > as much as possible even if we fail eventually) is specific to mbind()
-> > then we could keep walk_page_range() as is and lock the VMAs inside
-> > the loop that calls mbind_range() with a condition that ret is
-> > positive. That would be the simplest solution IMHO. But if we expect
-> > walk_page_range() to always apply requested page_walk_lock policy to
-> > all VMAs even if some mm_walk_ops returns a positive error somewhere
-> > in the middle of the walk then my fix would work for that. So, to me
-> > the important question is how we want walk_page_range() to behave in
-> > these conditions. I think we should answer that first and document
-> > that. Then the fix will be easy.
->=20
-> I looked at all the cases where we perform page walk while locking
-> VMAs and mbind() seems to be the only one that would require
-> walk_page_range() to lock all VMAs even for a failed walk.
-
-Yes, I can well believe that.
-
-> So, I suggest this fix instead and I can also document that if
-> walk_page_range() fails it might not apply page_walk_lock policy to
-> the VMAs.
->=20
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 42b5567e3773..cbc584e9b6ca 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1342,6 +1342,9 @@ static long do_mbind(unsigned long start,
-> unsigned long len,
->          vma_iter_init(&vmi, mm, start);
->          prev =3D vma_prev(&vmi);
->          for_each_vma_range(vmi, vma, end) {
-> +                /* If queue_pages_range failed then not all VMAs
-> might be locked */
-> +                if (ret)
-> +                        vma_start_write(vma);
->                  err =3D mbind_range(&vmi, vma, &prev, start, end, new);
->                  if (err)
->                          break;
->=20
-> If this looks good I'll post the patch. Matthew, Hugh, anyone else?
-
-Yes, I do prefer this, to adding those pos ret mods into the generic
-pagewalk.  The "if (ret)" above being just a minor optimization, that
-I would probably not have bothered with (does it even save any atomics?)
-- but I guess it helps as documentation.
-
-I think it's quite likely that mbind() will be changed sooner or later
-not to need this; but it's much the best to fix this vma locking issue
-urgently as above, without depending on any mbind() behavioral discussions.
-
-Thanks,
 Hugh
----1463760895-168202884-1694832249=:16517--
