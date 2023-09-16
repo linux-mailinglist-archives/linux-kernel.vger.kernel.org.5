@@ -2,118 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149727A3109
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 17:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E077A310E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 17:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbjIPPKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 11:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        id S234480AbjIPPNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 11:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjIPPKT (ORCPT
+        with ESMTP id S229750AbjIPPNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 11:10:19 -0400
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473BFCCF
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 08:10:13 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id hWvyqftxFNtVWhWvyqismR; Sat, 16 Sep 2023 17:10:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694877011;
-        bh=6jwMYAEqJdvc3UEqksxRjN6+6v4fxqBOxhEdpC1aB2w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=t+BvTvMHqfmRNlhzui1OBOyxk0/k/0D0FuMcSRbEktFCHLq3BjnLA9OHemlXwRp+L
-         pNwL1IErYVUnSiKUooWgiaNj6NA/FFAm+RbXw00LXjw6Y0uWPsEkgK/Afm112TDt2b
-         5O7n3sa2GciUP19MoU7H7wAEigTqF/CuipLPOo+UgS50W0CeNoAAv1TcX2fkJl4Oqn
-         sIed5WdUUkfOfn2qz2CQvrDhA8hDmlS69/STHV13lUy4k9N9KlXCuqTot4h6GRnAlI
-         OY7P+4JRnd7RGqqlw0JHBZkLy9PdEj3NHqHRO7u8INHMEDI2UWXnxyXOchq8zN22DY
-         S4hM6HcFw3UMA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 16 Sep 2023 17:10:11 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <4f629125-2b62-1284-3311-d95639044764@wanadoo.fr>
-Date:   Sat, 16 Sep 2023 17:10:10 +0200
+        Sat, 16 Sep 2023 11:13:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C261CCC9;
+        Sat, 16 Sep 2023 08:13:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA167C433C8;
+        Sat, 16 Sep 2023 15:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694877205;
+        bh=UJcG/Z4VLEEdcyUQ1btwTp8/xlKMyVOUA/d+z5tDKPE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NS6hr4/Wd6HWpqFTi90Cbt/zkPXqtLtXB9/M2GugUVKALv9XtGEUqk+2e+htsDuXU
+         ohpqAQDK6EipATqHisod7Gxqxkw49iUaZpr9xvqqNInza5o1MihQNdKDsvK4Xq/o+Z
+         lrF/me9MFNUgGa0q82mkM/ZyB6sSJRyvHwHFo7yN3wKBM/qaJt3QC2NIVTfRPACIc2
+         EIMm6FRfe8Uxkbrut4AiGm8QolfvgtB8uHI2N/FVo+pkwanNzekTl2I6v+K7qi+mrF
+         qZGNb9PhINkg1OdQcXNm94ffHwWHWr2SFHiRL7QkaAMgDqVCRQ2qLn83w+9+HGWotq
+         p3oH8hUhuyA5g==
+Message-ID: <e30870d5-a0cc-4210-a2b0-c7621ea5ecfa@kernel.org>
+Date:   Sat, 16 Sep 2023 18:13:15 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] gpio: tb10x: Fix an error handling path in
- tb10x_gpio_probe()
-Content-Language: fr, en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     linus.walleij@linaro.org, andy@kernel.org, galak@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <ceeda269bceee1c805f148bcbc628abc9d42601a.1693721348.git.christophe.jaillet@wanadoo.fr>
- <CAMRc=Meq+1z50=tXXt3MFAexRCmfSQ5rs6hT7311KRGO=q2RHQ@mail.gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <CAMRc=Meq+1z50=tXXt3MFAexRCmfSQ5rs6hT7311KRGO=q2RHQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/8] arm64: defconfig: enable interconnect and pinctrl
+ for SM4450
+Content-Language: en-US
+To:     Trilok Soni <quic_tsoni@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Tengfei Fan <quic_tengfan@quicinc.com>, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        catalin.marinas@arm.com
+Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com
+References: <20230915021509.25773-1-quic_tengfan@quicinc.com>
+ <20230915021509.25773-10-quic_tengfan@quicinc.com>
+ <8f2c9664-a2c8-50dc-8a1c-e50a071ebeb2@linaro.org>
+ <e9ff05b3-2742-416e-b417-5e2414036008@quicinc.com>
+ <0a34dd35-7aea-4655-4cdd-e7196a1ba52b@linaro.org>
+ <f76e1cc8-fc48-4208-bbe4-9204d9d28363@quicinc.com>
+ <b7398390-23bc-467c-5b83-411110d60f43@linaro.org>
+ <01c020ae-a019-e4eb-14cb-64503bde05a6@quicinc.com>
+ <212f9bfa-6d4c-bba2-60d2-272c001a4322@quicinc.com>
+From:   Georgi Djakov <djakov@kernel.org>
+In-Reply-To: <212f9bfa-6d4c-bba2-60d2-272c001a4322@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/09/2023 à 19:02, Bartosz Golaszewski a écrit :
-> On Sun, Sep 3, 2023 at 8:13 AM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
+Hi Trilok,
+
+On 16.09.23 5:25, Trilok Soni wrote:
+> On 9/15/2023 7:21 PM, Trilok Soni wrote:
+>> On 9/15/2023 4:29 AM, Krzysztof Kozlowski wrote:
+>>> On 15/09/2023 13:18, Tengfei Fan wrote:
+>>>>
+>>>>
+>>>> 在 9/15/2023 5:16 PM, Krzysztof Kozlowski 写道:
+>>>>> On 15/09/2023 11:12, Tengfei Fan wrote:
+>>>>>>
+>>>>>>
+>>>>>> 在 9/15/2023 3:21 PM, Krzysztof Kozlowski 写道:
+>>>>>>> On 15/09/2023 04:15, Tengfei Fan wrote:
+>>>>>>>> Add the SM4450 interconnect and pinctrl drivers as built-in for
+>>>>>>>> support the Qualcomm SM4450 platform to boot to uart shell.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>>>>>> ---
+>>>>>>>>     arch/arm64/configs/defconfig | 2 ++
+>>>>>>>>     1 file changed, 2 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>>>>>>>> index ec59174b14db..e91993de865e 100644
+>>>>>>>> --- a/arch/arm64/configs/defconfig
+>>>>>>>> +++ b/arch/arm64/configs/defconfig
+>>>>>>>> @@ -598,6 +598,7 @@ CONFIG_PINCTRL_SC8280XP=y
+>>>>>>>>     CONFIG_PINCTRL_SDM660=y
+>>>>>>>>     CONFIG_PINCTRL_SDM670=y
+>>>>>>>>     CONFIG_PINCTRL_SDM845=y
+>>>>>>>> +CONFIG_PINCTRL_SM4450=y
+>>>>>>>>     CONFIG_PINCTRL_SM6115=y
+>>>>>>>>     CONFIG_PINCTRL_SM6125=y
+>>>>>>>>     CONFIG_PINCTRL_SM6350=y
+>>>>>>>> @@ -1500,6 +1501,7 @@ CONFIG_INTERCONNECT_QCOM_SC7280=y
+>>>>>>>>     CONFIG_INTERCONNECT_QCOM_SC8180X=y
+>>>>>>>>     CONFIG_INTERCONNECT_QCOM_SC8280XP=y
+>>>>>>>>     CONFIG_INTERCONNECT_QCOM_SDM845=y
+>>>>>>>> +CONFIG_INTERCONNECT_QCOM_SM4450=y
+>>>>>>>
+>>>>>>> Why it cannot be =m?
+>>>>>>>
+>>>>>>> Best regards,
+>>>>>>> Krzysztof
+>>>>>>>
+>>>>>>
+>>>>>> Hi Krzysztof,
+>>>>>> Because system haven't capacity of loading ko files at this time on
+>>>>>> SM4450 platform, so setting to "Y".
+>>>>>
+>>>>> Hm? System has this capability. All systems have. What is so different
+>>>>> on SM4450 comparing to everything else we have here?
+>>>>>
+>>>>> No, this should be =m and you need to fix your system.
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
+>>>> Hi Krzysztof,
+>>>> Find new way which can load ko files on SM4450 platform, still need use
+>>>> "Y", because of some other modules have dependence to these two config,
+>>>> like scm, smmu module drivers, uart shell console cannot be got if set
+>>>> to "m".
+>>>
+>>> That's what I am asking, which device exactly needs it.
+>>>
+>>>>
+>>>> Also do test for setting these two config to "m" on SM8450 platform, get
+>>>> uart shell consle failed if so setting.
+>>>
+>>> Yeah, this we know, I did this. I am asking about SM4450.
 >>
->> If an error occurs after a successful irq_domain_add_linear() call, it
->> should be undone by a corresponding irq_domain_remove(), as already done
->> in the remove function.
+>> Why we have =m requirement when other drivers above are =Y?. Can we confirm
+>> w/ Georgi? I am not aware that Interconnect drivers needs to be =m only.
 >>
->> Fixes: c6ce2b6bffe5 ("gpio: add TB10x GPIO driver")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/gpio/gpio-tb10x.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpio/gpio-tb10x.c b/drivers/gpio/gpio-tb10x.c
->> index 78f8790168ae..f96d260a4a19 100644
->> --- a/drivers/gpio/gpio-tb10x.c
->> +++ b/drivers/gpio/gpio-tb10x.c
->> @@ -195,7 +195,7 @@ static int tb10x_gpio_probe(struct platform_device *pdev)
->>                                  handle_edge_irq, IRQ_NOREQUEST, IRQ_NOPROBE,
->>                                  IRQ_GC_INIT_MASK_CACHE);
->>                  if (ret)
->> -                       return ret;
->> +                       goto err_remove_domain;
->>
->>                  gc = tb10x_gpio->domain->gc->gc[0];
->>                  gc->reg_base                         = tb10x_gpio->base;
->> @@ -209,6 +209,10 @@ static int tb10x_gpio_probe(struct platform_device *pdev)
->>          }
->>
->>          return 0;
->> +
->> +err_remove_domain:
->> +       irq_domain_remove(tb10x_gpio->domain);
->> +       return ret;
->>   }
->>
->>   static int tb10x_gpio_remove(struct platform_device *pdev)
->> --
->> 2.34.1
->>
+>> CONFIG_INTERCONNECT_QCOM_SC8180X=y
+>> CONFIG_INTERCONNECT_QCOM_SC8280XP=y
+>> CONFIG_INTERCONNECT_QCOM_SDM845=y
 > 
-> That's not enough, you also need to dispose of all remaining mappings.
-> Please see drivers/gpio/gpiolib.c and how it handles the gpio_irq_chip
-> domain.
-
-Hi,
-
-you'll have to give me more explanation because I've not been able to 
-find anything useful to me.
-
-CJ
-
+> Complete list here, and it is inconsistent. Latest 8550 is also =y. Do we document
+> the reasons somewhere on why they are added as =y?
 > 
-> Bartosz
-> 
+> CONFIG_INTERCONNECT_QCOM=y
+> CONFIG_INTERCONNECT_QCOM_MSM8916=m
+> CONFIG_INTERCONNECT_QCOM_MSM8996=m
+> CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+> CONFIG_INTERCONNECT_QCOM_QCM2290=m
+> CONFIG_INTERCONNECT_QCOM_QCS404=m
+> CONFIG_INTERCONNECT_QCOM_SA8775P=y
+> CONFIG_INTERCONNECT_QCOM_SC7180=y
+> CONFIG_INTERCONNECT_QCOM_SC7280=y
+> CONFIG_INTERCONNECT_QCOM_SC8180X=y
+> CONFIG_INTERCONNECT_QCOM_SC8280XP=y
+> CONFIG_INTERCONNECT_QCOM_SDM845=y
+> CONFIG_INTERCONNECT_QCOM_SM8150=m
+> CONFIG_INTERCONNECT_QCOM_SM8250=m
+> CONFIG_INTERCONNECT_QCOM_SM8350=m
+> CONFIG_INTERCONNECT_QCOM_SM8450=y
+> CONFIG_INTERCONNECT_QCOM_SM8550=y
 
+If the device can boot (to console/initramfs) with =m, we go with that.
+But if something critical like the UART depends on the interconnect
+provider, then we make it built-in.
+
+On SM8550 for example, we have enabled bandwidth scaling support for QUP
+and that's why it needs to be =y.
+
+It looks like on SM4450 this should be =y too.
+
+Thanks,
+Georgi
