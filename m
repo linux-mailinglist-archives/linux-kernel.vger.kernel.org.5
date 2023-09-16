@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EC67A31B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 19:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE527A31C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 20:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236576AbjIPRyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 13:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        id S236712AbjIPSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 14:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbjIPRxg (ORCPT
+        with ESMTP id S231652AbjIPR74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 13:53:36 -0400
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4752418D
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 10:53:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1694886803; x=1695146003;
-        bh=Utb7hBOVxc/ZFn0MMOWNFNa55EwwLJ9JMnuohv777VQ=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=cqrArCzhFcgQZsen0K2oFKA+zYxyuqficq4GoKKVywYLanUOBlxHyE5X5r283U3zX
-         KkmwyWC4zr0ko5ulI/bemoo3G+7DVmFRxBySe4WRhOb8KoWaNJacuxkz38/n9vfYpy
-         AxEWQGsdwM/dAAOgEzO5eiiWJEFW06e/vVd2chnaGyKOHXnjLyWvdsW+cOKEXym004
-         swrKr/jupAqU3LA57t5HsMVmJkUvotKGEcaC6YhK4/1ivX43p7AAdpwVCWtVn6WMJy
-         XSV3Rv+yyAfYu4sBI/Q+4KvchImHeS6OREB0ZbCw7e1Vt9Kd7+CeWRLHuZSW9JBbSz
-         4MvkDo6rZF+kQ==
-Date:   Sat, 16 Sep 2023 17:53:03 +0000
-To:     Finn Behrens <me@kloenk.dev>
-From:   =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
-Message-ID: <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
-In-Reply-To: <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
-References: <20230915172900.3784163-1-mmaurer@google.com> <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
-Feedback-ID: 27884398:user:proton
+        Sat, 16 Sep 2023 13:59:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 766DBCDE
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 10:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694887144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uxC3KkgcEVk/woa2gOxR4oEmhN+ppIRoS6d7Lsp8+jk=;
+        b=ZAB+IaNbZavaBi3m6wGUZlCIdi3FHp0Jqk6cuZK22KCFvBCgCpE6x1/w+gdu87CJSzvFFt
+        2cnEdMYX0V6Uo1zNhCxTM743p73hwT/CGGi0MXYQfqJPyiYH9EFMV0hmCQVAft2u6GJYhE
+        yqwgi0pPc66xVzJhLBnKz0Plat0z4XM=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-cqmp7cImNdin5c9zXDkffw-1; Sat, 16 Sep 2023 13:59:02 -0400
+X-MC-Unique: cqmp7cImNdin5c9zXDkffw-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c41538c7eeso24369185ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 10:59:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694887141; x=1695491941;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uxC3KkgcEVk/woa2gOxR4oEmhN+ppIRoS6d7Lsp8+jk=;
+        b=P/udCxt0fHjI5eulWTP3MJ9+Tilpalts9YQNq06Lav5vWNERdTiU0Sd6Fu3qHNz6A0
+         LYZasKindZ+eSNobOWL+eCOdg8hG6EPDC1gEk1wZfQlJWVjuPks51gzp23JOj+dviErK
+         V9o2g5ju50Jv3BQiiSo3ZOvZiYBJYYjj5+myOPfe6ex/UeRoLYlV8wUVK5C2AOIRzQOs
+         PoONTGRu8fL8nBl/M0YRKiZWPRXuaua9VO7bFnNB1XSvXqYtrvOilFKczxm7zKcASR2H
+         o2G5t5Np6fljWxLZJrkZNuhq8/ZBlZ6n/M4oBxBk2RKtbAdIpeo1C2rLndVtlFq8AMMR
+         FEfQ==
+X-Gm-Message-State: AOJu0YxiaP+CpLvl8RkUi4uzNybUhLL5wAC7Gub5QCxMKMrLDFbk7CKJ
+        P+HIKbBrM8imC8vDJVsUOVJg2KzKcOE/iEgU7EQb1+DfehJVrV9UfoVtDIBzds2Vaj1tR+8yF7f
+        iQtPSM7YzKfJ/sw6wMzkZXizFAn5QvTzN
+X-Received: by 2002:a17:902:b284:b0:1c0:953d:58 with SMTP id u4-20020a170902b28400b001c0953d0058mr4864512plr.0.1694887141105;
+        Sat, 16 Sep 2023 10:59:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHPk14frCdL1OB9hOXeYU8B5nEszOYgyqoW2r0dhAy/z9+/X7Gm77SjyEdqKN5zCh9sOkGjJg==
+X-Received: by 2002:a17:902:b284:b0:1c0:953d:58 with SMTP id u4-20020a170902b28400b001c0953d0058mr4864503plr.0.1694887140831;
+        Sat, 16 Sep 2023 10:59:00 -0700 (PDT)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id jw16-20020a170903279000b001b016313b1dsm5345546plb.86.2023.09.16.10.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 10:59:00 -0700 (PDT)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     almaz.alexandrovich@paragon-software.com
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        syzbot+9ccdd15480e9d9833822@syzkaller.appspotmail.com
+Subject: [PATCH] fs/ntfs3: Fix memory leak in ntfs_fill_super()
+Date:   Sun, 17 Sep 2023 02:58:52 +0900
+Message-ID: <20230916175852.1607269-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, September 16th, 2023 at 18:52, Finn Behrens <me@kloenk.dev> wr=
-ote:
+syzbot reported memory leak in ntfs_fill_super(). ntfs_fill_super() calls
+wnd_init() and this allocates memory. So, we need to free those memory on the
+error handling path in ntfs_fill_super().
 
->=20
-> On 15 Sep 2023, at 19:28, Matthew Maurer wrote:
->=20
-> > Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined=
-,
-> > resulting in build failures in hermetic environments where `cc` does no=
-t
-> > exist. This includes both hostprogs and proc-macros.
-> >
-> > Since we are setting the linker to `HOSTCC`, we set the linker flavor t=
-o
-> > `gcc` explicitly.
-> But as `HOSTCC` could also be clang, the linker flavor would then be wron=
-g, would that create a problem?
+Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+Reported-and-tested-by: syzbot+9ccdd15480e9d9833822@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=9ccdd15480e9d9833822
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+ fs/ntfs3/super.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Rustc uses the gcc linker flavor for clang too. There has been a proposal t=
-o split it up, but I'm not sure of the status of that. In any case clang's =
-cli is similar enough to gcc that it works fine to use the gcc linker flavo=
-r.
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index cfec5e0c7f66..a9610f5f4cc0 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -1563,6 +1563,13 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	iput(inode);
+ out:
+ 	kfree(boot2);
++
++	if (sbi->mft.bitmap.inited)
++		wnd_close(&sbi->mft.bitmap);
++
++	if (sbi->used.bitmap.inited)
++		wnd_close(&sbi->used.bitmap);
++
+ 	return err;
+ }
+ 
+-- 
+2.41.0
 
-> >
-> > Signed-off-by: Matthew Maurer <mmaurer@google.com>
-> > ---
-> >  rust/Makefile         | 1 +
-> >  scripts/Makefile.host | 1 +
-> >  2 files changed, 2 insertions(+)
-> >
-> > diff --git a/rust/Makefile b/rust/Makefile
-> > index 87958e864be0..2a2352638f11 100644
-> > --- a/rust/Makefile
-> > +++ b/rust/Makefile
-> > @@ -383,6 +383,7 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.o =
-FORCE
-> >  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
-> >        cmd_rustc_procmacro =3D \
-> >  =09$(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-> > +=09=09-C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
-> >  =09=09--emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --extern proc_=
-macro \
-> >  =09=09--crate-type proc-macro \
-> >  =09=09--crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-> > diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-> > index 8f7f842b54f9..0aa95a3af1c4 100644
-> > --- a/scripts/Makefile.host
-> > +++ b/scripts/Makefile.host
-> > @@ -91,6 +91,7 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
-> >  # current working directory, which may be not accessible in the out-of=
--tree
-> >  # modules case.
-> >  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) =
-\
-> > +=09=09 -C linker-flavor=3Dgcc -C linker=3D$(HOSTCC) \
-> >                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-> >                   $(HOSTRUSTFLAGS_$(target-stem))
-> >
-> > --
-> > 2.42.0.459.ge4e396fd5e-goog
