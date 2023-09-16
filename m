@@ -2,85 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480777A30E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187C87A30E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 16:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237227AbjIPOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 10:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        id S239237AbjIPOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 10:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbjIPOcw (ORCPT
+        with ESMTP id S239442AbjIPOeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 10:32:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66640CE8
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:32:47 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31ad9155414so2846204f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 07:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694874766; x=1695479566; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RuCMRYRUI5pE2pACmrLEmespxY+dxj38Ol7yGsVBHSU=;
-        b=PuqGDe6CZBYIFMsaW2bIwkwwRy+umt+pbvUsZgYaxXTsxpY1MY6UcdFcZ32Xbzhh7N
-         MPtR9SDdRpoYnQ0CJWuUAl5Zwuu2iXIwQSB45yIEHNI6QN0qkpOWvtr38c5rMBi7UW+1
-         kB0Dg/gHWlFRM3RvaEZd3pEYv/vyuwqBb+TTigDXkYC8Dww5Y43o8X7CF8ebSVexZmyU
-         6mxVceBfza4WEp8kmD+9IZjzi65t87Cw1Ro47uIq72+4iovstqZ+Oqtk31ztOpUy8PK+
-         KNDiPibdXcAckXdAguzGwFnZOMa54ovBINgtgM8kNgG7HoETDk3KvXVCv+iIedCWkTqk
-         mXyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694874766; x=1695479566;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RuCMRYRUI5pE2pACmrLEmespxY+dxj38Ol7yGsVBHSU=;
-        b=PRMPvkXuG8/qZ5Out/WlQv5JucUk15/6S/285MGezthZtMRu2SwbJMv+mbixbiBVux
-         VTEC8udvar9H15Gh3xQWCQrkm8b6PlI0aEJsi7ci68fDWFFvO3rZ//MUJDtecWPoP085
-         IKkncgXKjVhFGWUo4HvyoxvAFBRovtFK4m4n+S2RB5pLpKgsLVHuRRxiTmTiozQcMIkk
-         8ZlU1Yu7prYksPpED+ghNN5KPcJZdQ1I4RwV2i/qpGlOoqQWzKHPjvfTydDM2D6/EFxk
-         RVtIa4jkj41NKekdzxQw+TdKkEwN5oXBtEU88uk2BRTgFXlyS+HKee4XPeNdt7tEPxPd
-         4Wrw==
-X-Gm-Message-State: AOJu0YyTXdNRB4wnLNzDHkmg5iwad2J6KSK6FmVx0uyY8rxDFuwIzTaR
-        SbKwpT88saNI3aBUZg2OCCxJWw==
-X-Google-Smtp-Source: AGHT+IFo2cGGQRjJb8BtVCZ+zzLXMvuJine6w6l4fG9U93EB+rQqIuIbo58+ykYvKJeUmr2pjBhAfA==
-X-Received: by 2002:a05:6000:a1a:b0:31f:facb:e1ba with SMTP id co26-20020a0560000a1a00b0031ffacbe1bamr2807958wrb.70.1694874765714;
-        Sat, 16 Sep 2023 07:32:45 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id j15-20020a5d604f000000b0031779a6b451sm7270032wrt.83.2023.09.16.07.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 07:32:45 -0700 (PDT)
-Date:   Sat, 16 Sep 2023 17:32:42 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Philipp Stanner <pstanner@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Disseldorp <ddiss@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Siddh Raman Pant <code@siddh.me>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
-        David Airlie <airlied@redhat.com>
-Subject: Re: [PATCH v2 1/5] string.h: add array-wrappers for (v)memdup_user()
-Message-ID: <b219788a-69e6-44cf-a609-91f9640967f5@moroto.mountain>
-References: <cover.1694202430.git.pstanner@redhat.com>
- <93001a9f3f101be0f374080090f9c32df73ca773.1694202430.git.pstanner@redhat.com>
+        Sat, 16 Sep 2023 10:34:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99390CE8;
+        Sat, 16 Sep 2023 07:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uWg+CjZp6pxnNhsobBoEIP17WYA0CfxidefvFWg7MJo=; b=PR69pf8rgy43jUBW1riqJEYCOk
+        4xweYKKMSdTGyzPBNHWkB0Dpxag5wSUlLQ1cthhL9JNBAEd1rtjY4yyF4r3C8iFDaNwbB+6Cu1vJR
+        VEa9ICsGyHuxU0x5CiykcBi8Y3dLHleMsGi4xdsmt3OjSeF53OJ0UrBROeKkgC6IOiksWgyUMt8Yf
+        wmrg6OkDUjMRRTXxtMcFJPJ24ER05cck/OTMe1MK/yeU40SIgJFmDcDoDsDc6u/vC4C0qBs2fh5WH
+        nqffeRog131qazSdbvo9E+SGOwTVMCIKVx01L7JIh0cTlJWx6QAf9HDAdXAI5nMd6dtui63/Lhwck
+        PC+Az47A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qhWN9-00Gf2K-7B; Sat, 16 Sep 2023 14:34:11 +0000
+Date:   Sat, 16 Sep 2023 15:34:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Ungerer <gregungerer@westnet.com.au>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, torvalds@linux-foundation.org,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
+Message-ID: <ZQW849TfSCK6u2f8@casper.infradead.org>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-10-willy@infradead.org>
+ <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93001a9f3f101be0f374080090f9c32df73ca773.1694202430.git.pstanner@redhat.com>
+In-Reply-To: <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,21 +52,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 09:59:40PM +0200, Philipp Stanner wrote:
-> +static inline void *memdup_array_user(const void __user *src, size_t n, size_t size)
-> +{
-> +	size_t nbytes;
-> +
-> +	if (unlikely(check_mul_overflow(n, size, &nbytes)))
-> +		return ERR_PTR(-EOVERFLOW);
+On Sat, Sep 16, 2023 at 11:11:32PM +1000, Greg Ungerer wrote:
+> On 16/9/23 04:36, Matthew Wilcox (Oracle) wrote:
+> > Using EOR to clear the guaranteed-to-be-set lock bit will test the
+> > negative flag just like the x86 implementation.  This should be
+> > more efficient than the generic implementation in filemap.c.  It
+> > would be better if m68k had __GCC_ASM_FLAG_OUTPUTS__.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> >   arch/m68k/include/asm/bitops.h | 14 ++++++++++++++
+> >   1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+> > index e984af71df6b..909ebe7cab5d 100644
+> > --- a/arch/m68k/include/asm/bitops.h
+> > +++ b/arch/m68k/include/asm/bitops.h
+> > @@ -319,6 +319,20 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
+> >   	return test_and_change_bit(nr, addr);
+> >   }
+> > +static inline bool xor_unlock_is_negative_byte(unsigned long mask,
+> > +		volatile unsigned long *p)
+> > +{
+> > +	char result;
+> > +	char *cp = (char *)p + 3;	/* m68k is big-endian */
+> > +
+> > +	__asm__ __volatile__ ("eor.b %1, %2; smi %0"
+> 
+> The ColdFire members of the 68k family do not support byte size eor:
+> 
+>   CC      mm/filemap.o
+> {standard input}: Assembler messages:
+> {standard input}:824: Error: invalid instruction for this architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001, 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32 [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) -- statement `eor.b #1,3(%a0)' ignored
 
-No need for an unlikely() because check_mul_overflow() already has one
-inside.  I feel like -ENOMEM is more traditional but I doubt anyone/userspace
-cares.
+Well, that sucks.  What do you suggest for Coldfire?
 
-> +
-> +	return memdup_user(src, nbytes);
-> +}
-
-regards,
-dan carpenter
+(Shame you didn't join in on the original discussion:
+https://lore.kernel.org/linux-m68k/ZLmKq2VLjYGBVhMI@casper.infradead.org/ )
