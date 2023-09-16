@@ -2,95 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721227A2BF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7CA7A2C1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238207AbjIPA2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
+        id S238646AbjIPAcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 20:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238332AbjIPA2J (ORCPT
+        with ESMTP id S238535AbjIPAcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:28:09 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6841193
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:27:38 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so8066136a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694824056; x=1695428856; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E8Y6H+CGjrqtUwepfVg3ZapOU4tcqDJDh2TjsLFPfcI=;
-        b=TcQG2Kb/Ip8PZWX2Cc3dnN58Lcb4fXG4xyYDtQTu/rKnLSdEkxpVSyDC/bSmfyG4iB
-         ByiFLo9h+G356gxS9zNIYHVdUfDVD3r1NbBN918JCGUk/xkk4Nf0LzCw5g0+PMkU3TvU
-         NVOh5inKCcyUTVoqS7mOSOg/iy2LR2HjB52xY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694824056; x=1695428856;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E8Y6H+CGjrqtUwepfVg3ZapOU4tcqDJDh2TjsLFPfcI=;
-        b=GNy48otxLHIcbcyJL34lNxj/R/3zqCQyLMW4DXSn3qreQwlQB+VDn3DB9bzqMtFc9l
-         n2SNU339BY1pXE6a76072plL1/NMmVc3C4AeSEZdVvQYc8YZnO9TOkSMbfqlx4nhZ3Pf
-         b42pKW4lB9uoZRvk/b0x5vL9g9LUkmiWRPYRN9E5HPrSa9IU7LRjKdSDAIV4263vcYpr
-         IJuroh9ZYxaVwQ6vl4PoA1sPRLVnqGXeNPS/T7iAx7tCuWKDpPsNCfOJMlVlG4eZ/A20
-         QoRiFj/dWQtDRSwm+ipjZloeJyA4eFnNruE+ReX/lrzPwZj/isnL/furmpmYhRtZMxfp
-         zeGQ==
-X-Gm-Message-State: AOJu0Yyqo1PLBGRyMMtG7Hxt0t2r/qrGJTk/Ko4QLTuFCto404jkWRZd
-        ng4z8jewcCro/GpikZqxokOGLdU7t8+k2PGrKUskpci/
-X-Google-Smtp-Source: AGHT+IGtFLlbLhpf3YYb7yR9dj7qe2vIbvDLPd+ZCuCrEnvFEcoHc6eGgTdloIiRXfHaOCdoBp0sog==
-X-Received: by 2002:a05:6402:34f:b0:530:5149:b725 with SMTP id r15-20020a056402034f00b005305149b725mr5000746edw.4.1694824055828;
-        Fri, 15 Sep 2023 17:27:35 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id bm10-20020a0564020b0a00b005236410a16bsm2864994edb.35.2023.09.15.17.27.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Sep 2023 17:27:35 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso820452866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:27:35 -0700 (PDT)
-X-Received: by 2002:a17:907:80a:b0:9a9:405b:26d1 with SMTP id
- wv10-20020a170907080a00b009a9405b26d1mr8271589ejb.5.1694824054952; Fri, 15
- Sep 2023 17:27:34 -0700 (PDT)
+        Fri, 15 Sep 2023 20:32:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2C4C2126
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694824179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VFlZ5nOYBRhVa9tbB+zfgy6vwVzlYbXq61zXTKpXiW0=;
+        b=RRXLVzy+zNA8dT26TS1THS7EsEaI+XnYLJImR+repmVbTayxONog9Ct/pO6qem/BEWXPyi
+        w2Q0kTQkjQuidqijZLoLf20Y3N/3AKZur+UQyOOCV/OPTv2NNIGIfr3HkVyqIK7H53jzfX
+        RamzrS3JPWxBo9SEWU0EKCqHwS0OgZg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-340-V11sprw1PVCYC33g-DDKyA-1; Fri, 15 Sep 2023 20:29:36 -0400
+X-MC-Unique: V11sprw1PVCYC33g-DDKyA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A10981B54D;
+        Sat, 16 Sep 2023 00:29:35 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26FC31D093;
+        Sat, 16 Sep 2023 00:29:33 +0000 (UTC)
+Date:   Sat, 16 Sep 2023 08:29:30 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Cc:     thunder.leizhen@huawei.com, catalin.marinas@arm.com,
+        chenjiahao16@huawei.com, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: [PATCH v4 6/9] x86: kdump: use generic interface to simplify
+ crashkernel reservation code
+Message-ID: <ZQT26loqCPCQSjiz@MiWiFi-R3L-srv>
+References: <20230914033142.676708-1-bhe@redhat.com>
+ <20230914033142.676708-7-bhe@redhat.com>
 MIME-Version: 1.0
-References: <20230915183707.2707298-1-willy@infradead.org> <20230915183707.2707298-9-willy@infradead.org>
-In-Reply-To: <20230915183707.2707298-9-willy@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 15 Sep 2023 17:27:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgBUvM7tc70AAvUw+HHOo6Q=jD4FVheFGDCjNaK3OCEGA@mail.gmail.com>
-Message-ID: <CAHk-=wgBUvM7tc70AAvUw+HHOo6Q=jD4FVheFGDCjNaK3OCEGA@mail.gmail.com>
-Subject: Re: [PATCH 08/17] alpha: Implement xor_unlock_is_negative_byte
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HTML_MESSAGE,MIME_HEADER_CTYPE_ONLY,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914033142.676708-7-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sept 2023 at 11:37, Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
->
-> +       "1:     ldl_l %0,%4\n"
-> +       "       xor %0,%3,%0\n"
-> +       "       xor %0,%3,%2\n"
-> +       "       stl_c %0,%1\n"
+With the help of newly changed function parse_crashkernel() and
+generic reserve_crashkernel_generic(), crashkernel reservation can be
+simplified by steps:
 
-What an odd thing to do.
+1) Add a new header file <asm/crash_core.h>, and define CRASH_ALIGN,
+   CRASH_ADDR_LOW_MAX, CRASH_ADDR_HIGH_MAX and
+   DEFAULT_CRASH_KERNEL_LOW_SIZE in <asm/crash_core.h>;
 
-Why don't you just save the old value? That double xor looks all kinds
-of strange, and is a data dependency for no good reason that I can
-see.
+2) Add arch_reserve_crashkernel() to call parse_crashkernel() and
+   reserve_crashkernel_generic(), and do the ARCH specific work if
+   needed.
 
-Why isn't this "ldl_l + mov %0,%2 + xor + stl_c" instead?
+3) Add ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION Kconfig in
+   arch/x86/Kconfig.
 
-Not that I think alpha matters, but since I was looking through the
-series, this just made me go "Whaa?"
+When adding DEFAULT_CRASH_KERNEL_LOW_SIZE, add crash_low_size_default()
+to calculate crashkernel low memory because x86_64 has special
+requirement.
 
-                Linus
+The old reserve_crashkernel_low() and reserve_crashkernel() can be
+removed.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+v3->v4:
+  Move crash_low_size_default() to <asm/crash_core.h> to make it a
+  static inline function. This fixes the warning reported by LKP.
+
+ arch/x86/Kconfig                  |   3 +
+ arch/x86/include/asm/crash_core.h |  42 +++++++++
+ arch/x86/kernel/setup.c           | 148 +++---------------------------
+ 3 files changed, 56 insertions(+), 137 deletions(-)
+ create mode 100644 arch/x86/include/asm/crash_core.h
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 982b777eadc7..d5ebb2ad2ad6 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2062,6 +2062,9 @@ config ARCH_SUPPORTS_CRASH_DUMP
+ config ARCH_SUPPORTS_CRASH_HOTPLUG
+ 	def_bool y
+ 
++config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
++	def_bool CRASH_CORE
++
+ config PHYSICAL_START
+ 	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
+ 	default "0x1000000"
+diff --git a/arch/x86/include/asm/crash_core.h b/arch/x86/include/asm/crash_core.h
+new file mode 100644
+index 000000000000..76af98f4e801
+--- /dev/null
++++ b/arch/x86/include/asm/crash_core.h
+@@ -0,0 +1,42 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _X86_CRASH_CORE_H
++#define _X86_CRASH_CORE_H
++
++/* 16M alignment for crash kernel regions */
++#define CRASH_ALIGN             SZ_16M
++
++/*
++ * Keep the crash kernel below this limit.
++ *
++ * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
++ * due to mapping restrictions.
++ *
++ * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
++ * the upper limit of system RAM in 4-level paging mode. Since the kdump
++ * jump could be from 5-level paging to 4-level paging, the jump will fail if
++ * the kernel is put above 64 TB, and during the 1st kernel bootup there's
++ * no good way to detect the paging mode of the target kernel which will be
++ * loaded for dumping.
++ */
++extern unsigned long swiotlb_size_or_default(void);
++
++#ifdef CONFIG_X86_32
++# define CRASH_ADDR_LOW_MAX     SZ_512M
++# define CRASH_ADDR_HIGH_MAX    SZ_512M
++#else
++# define CRASH_ADDR_LOW_MAX     SZ_4G
++# define CRASH_ADDR_HIGH_MAX    SZ_64T
++#endif
++
++# define DEFAULT_CRASH_KERNEL_LOW_SIZE crash_low_size_default()
++
++static inline unsigned long crash_low_size_default(void)
++{
++#ifdef CONFIG_X86_64
++	return max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
++#else
++	return 0;
++#endif
++}
++
++#endif /* _X86_CRASH_CORE_H */
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index f945d88215b4..d7baa567c68e 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -470,155 +470,29 @@ static void __init memblock_x86_reserve_range_setup_data(void)
+ 	}
+ }
+ 
+-/*
+- * --------- Crashkernel reservation ------------------------------
+- */
+-
+-/* 16M alignment for crash kernel regions */
+-#define CRASH_ALIGN		SZ_16M
+-
+-/*
+- * Keep the crash kernel below this limit.
+- *
+- * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
+- * due to mapping restrictions.
+- *
+- * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
+- * the upper limit of system RAM in 4-level paging mode. Since the kdump
+- * jump could be from 5-level paging to 4-level paging, the jump will fail if
+- * the kernel is put above 64 TB, and during the 1st kernel bootup there's
+- * no good way to detect the paging mode of the target kernel which will be
+- * loaded for dumping.
+- */
+-#ifdef CONFIG_X86_32
+-# define CRASH_ADDR_LOW_MAX	SZ_512M
+-# define CRASH_ADDR_HIGH_MAX	SZ_512M
+-#else
+-# define CRASH_ADDR_LOW_MAX	SZ_4G
+-# define CRASH_ADDR_HIGH_MAX	SZ_64T
+-#endif
+-
+-static int __init reserve_crashkernel_low(void)
++static void __init arch_reserve_crashkernel(void)
+ {
+-#ifdef CONFIG_X86_64
+-	unsigned long long base, low_base = 0, low_size = 0;
+-	unsigned long low_mem_limit;
+-	int ret;
+-
+-	low_mem_limit = min(memblock_phys_mem_size(), CRASH_ADDR_LOW_MAX);
+-
+-	/* crashkernel=Y,low */
+-	ret = parse_crashkernel_low(boot_command_line, low_mem_limit, &low_size, &base);
+-	if (ret) {
+-		/*
+-		 * two parts from kernel/dma/swiotlb.c:
+-		 * -swiotlb size: user-specified with swiotlb= or default.
+-		 *
+-		 * -swiotlb overflow buffer: now hardcoded to 32k. We round it
+-		 * to 8M for other buffers that may need to stay low too. Also
+-		 * make sure we allocate enough extra low memory so that we
+-		 * don't run out of DMA buffers for 32-bit devices.
+-		 */
+-		low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
+-	} else {
+-		/* passed with crashkernel=0,low ? */
+-		if (!low_size)
+-			return 0;
+-	}
+-
+-	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
+-	if (!low_base) {
+-		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
+-		       (unsigned long)(low_size >> 20));
+-		return -ENOMEM;
+-	}
+-
+-	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (low RAM limit: %ldMB)\n",
+-		(unsigned long)(low_size >> 20),
+-		(unsigned long)(low_base >> 20),
+-		(unsigned long)(low_mem_limit >> 20));
+-
+-	crashk_low_res.start = low_base;
+-	crashk_low_res.end   = low_base + low_size - 1;
+-	insert_resource(&iomem_resource, &crashk_low_res);
+-#endif
+-	return 0;
+-}
+-
+-static void __init reserve_crashkernel(void)
+-{
+-	unsigned long long crash_size, crash_base, total_mem;
++	unsigned long long crash_base, crash_size, low_size = 0;
++	char *cmdline = boot_command_line;
+ 	bool high = false;
+ 	int ret;
+ 
+ 	if (!IS_ENABLED(CONFIG_KEXEC_CORE))
+ 		return;
+ 
+-	total_mem = memblock_phys_mem_size();
+-
+-	/* crashkernel=XM */
+-	ret = parse_crashkernel(boot_command_line, total_mem,
+-				&crash_size, &crash_base, NULL, NULL);
+-	if (ret != 0 || crash_size <= 0) {
+-		/* crashkernel=X,high */
+-		ret = parse_crashkernel_high(boot_command_line, total_mem,
+-					     &crash_size, &crash_base);
+-		if (ret != 0 || crash_size <= 0)
+-			return;
+-		high = true;
+-	}
++	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
++				&crash_size, &crash_base,
++				&low_size, &high);
++	if (ret)
++		return;
+ 
+ 	if (xen_pv_domain()) {
+ 		pr_info("Ignoring crashkernel for a Xen PV domain\n");
+ 		return;
+ 	}
+ 
+-	/* 0 means: find the address automatically */
+-	if (!crash_base) {
+-		/*
+-		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
+-		 * crashkernel=x,high reserves memory over 4G, also allocates
+-		 * 256M extra low memory for DMA buffers and swiotlb.
+-		 * But the extra memory is not required for all machines.
+-		 * So try low memory first and fall back to high memory
+-		 * unless "crashkernel=size[KMG],high" is specified.
+-		 */
+-		if (!high)
+-			crash_base = memblock_phys_alloc_range(crash_size,
+-						CRASH_ALIGN, CRASH_ALIGN,
+-						CRASH_ADDR_LOW_MAX);
+-		if (!crash_base)
+-			crash_base = memblock_phys_alloc_range(crash_size,
+-						CRASH_ALIGN, CRASH_ALIGN,
+-						CRASH_ADDR_HIGH_MAX);
+-		if (!crash_base) {
+-			pr_info("crashkernel reservation failed - No suitable area found.\n");
+-			return;
+-		}
+-	} else {
+-		unsigned long long start;
+-
+-		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
+-						  crash_base + crash_size);
+-		if (start != crash_base) {
+-			pr_info("crashkernel reservation failed - memory is in use.\n");
+-			return;
+-		}
+-	}
+-
+-	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
+-		memblock_phys_free(crash_base, crash_size);
+-		return;
+-	}
+-
+-	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System RAM: %ldMB)\n",
+-		(unsigned long)(crash_size >> 20),
+-		(unsigned long)(crash_base >> 20),
+-		(unsigned long)(total_mem >> 20));
+-
+-	crashk_res.start = crash_base;
+-	crashk_res.end   = crash_base + crash_size - 1;
+-	insert_resource(&iomem_resource, &crashk_res);
++	reserve_crashkernel_generic(cmdline, crash_size, crash_base,
++				    low_size, high);
+ }
+ 
+ static struct resource standard_io_resources[] = {
+@@ -1232,7 +1106,7 @@ void __init setup_arch(char **cmdline_p)
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+ 	 */
+-	reserve_crashkernel();
++	arch_reserve_crashkernel();
+ 
+ 	memblock_find_dma_reserve();
+ 
+-- 
+2.41.0
+
