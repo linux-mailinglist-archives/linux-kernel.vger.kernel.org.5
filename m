@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B547A2F64
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 12:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0357A2F5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 12:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239099AbjIPKy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 06:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S239145AbjIPKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 06:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239093AbjIPKyD (ORCPT
+        with ESMTP id S239105AbjIPKyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 06:54:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F98BE42
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 03:53:56 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-317c3ac7339so2599668f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 03:53:56 -0700 (PDT)
+        Sat, 16 Sep 2023 06:54:05 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAB4CF6
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 03:53:58 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-501bd6f7d11so4851080e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 03:53:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1694861635; x=1695466435; darn=vger.kernel.org;
+        d=tessares.net; s=google; t=1694861636; x=1695466436; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WqJ79R2SnJAHHfAI9dTKO9toC5LU8hBRU518BwY/FZA=;
-        b=eMQdMrnLE7kErtVEdSa8yvR8tGJaKjcFyje8tqP9gCPRNp6htL1clQqeB8BT8cMwcO
-         msBqVzjx3hN6T1CI2y4Nb3PcaBPdOI0YfhV7RRJ1EezasEj4cMK/PPyzxb7tg1yIAXjs
-         Au5PV8AXs8aOqizcvgJz2IyvmTBy2Sgp3pUr9zy5SjUHgxIjrlssC1QiDBjlhELf+lTn
-         KW7y1z6KBeZObxO9LNWue3Dyp1T7PjwhnegpD5M9ub+9Mr8bnyB1mroZL8IUWM0XGwiC
-         OLV0iWozMqFwKM98XFxFODPTwn7tWJS6L+jUUuYkbpzFQTs5MYHtLZ1Ynm365Dv07d3z
-         wW3A==
+        bh=UvXzRr88SnSDxxsAv4ZSTVo/5hnYCAUN9lBO/XCA5NQ=;
+        b=3mj1dia69biC8hCu6gCSNb53w7F3pc3kCQsrgESRohZ53KDudZPCrx4PfA9z2VMlv3
+         e2A7cQVZhd0O0CIn3zqo4mG/4+VTIB3g9bP53TpSdmQM5IOba58Ls44657BglGhzVApn
+         3e6mKzHbcY82Pezz4R+4Uao+7P7yk6RIzEcfiHPpdYRzeWiwZM7yiurBVva+8DEdhhLs
+         rVZL+nDtWRhIupBcC6YGKWdaDLqi3+G2utxRAz/bwOVByDN2lRlHJ+G+cIKkKv9ezlCv
+         0Na2iBjYqcNr4fQlfDikYMZPoRlnw3DBlT5OlO3gZxRKOwP5MvFBdm3Gltvq+e4BC2mX
+         4GUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694861635; x=1695466435;
+        d=1e100.net; s=20230601; t=1694861636; x=1695466436;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WqJ79R2SnJAHHfAI9dTKO9toC5LU8hBRU518BwY/FZA=;
-        b=TyWSWGpurPMfySM3HHJcv8M92pjR8lOdiYDSm9TJwVLDGgdwjkngIwkltNJ3Cd3m2P
-         yJ8g1qpm7vKpRcAo006rWx9vBzoNVoVaK4zKvRqC+bHgjQ4dB47DYx8e5HE/L8H7go9o
-         q4GpfBGof5TvPY9Q2YXbF2/gzszgH6Sgt+e21x4U75xbG1WsKRnT2g+qQVYFYCEiQ7IM
-         axR5Iz1zciPTRrV75serjQi5xJWUCh6pHSOxRavofJNwPOMeAFYTbU2H1MqazI7htiYj
-         w5CD+RZhAG11VDaMiWYy8mRAmmWo/nIc7mJM6HHHqXa042yxln9aCVnjR+RWFpo89wVP
-         U4Lg==
-X-Gm-Message-State: AOJu0YxodFjwJqgMH6iS3E71yCo9VVU1xXxNHHkvoWdbbWjf+BsReepj
-        llfUSZ1AQ2kDLHRbfaBbQYr3hfIv5DyEcDSI7OzuulI3
-X-Google-Smtp-Source: AGHT+IHsZm0HQC9qiLlex5/BpHC1RrP5Q384dz5/IrZZm1i/R4fOEFUr8sglC/57npnA1QpgbQt7dw==
-X-Received: by 2002:adf:ea0b:0:b0:314:15b7:20a5 with SMTP id q11-20020adfea0b000000b0031415b720a5mr3605338wrm.54.1694861635092;
-        Sat, 16 Sep 2023 03:53:55 -0700 (PDT)
+        bh=UvXzRr88SnSDxxsAv4ZSTVo/5hnYCAUN9lBO/XCA5NQ=;
+        b=qrB0LD/lIuS67VZrZN/U8oA8kiaF4MvoCrG4oMOA24VeauVSTJZnXURLBS+/EUqRa1
+         BSzdinM8j4GExulpzLt7tALHqMejMsvyzHRIxLZ7K9NFJ70LKZumPl/RtODII5D2L72W
+         nPfYeELw0VIxz2BELM2H24Ct4kEUx33lG4etWCyk6H/Kr4sZOAVvjcLfxV7iMH5fJ6UI
+         XJguHoxAPQHrFQxk4tEPwVNeegWHASg+BULqt7bLZRSUk09sugEbN9S9mSkVyKXaj7Lq
+         6/id01+JdpK+aNxWimvGEYQggafOCYMin5Xn+RStDPu/dq4fRCtl2a2NbcYN1gHkjfMo
+         cbGg==
+X-Gm-Message-State: AOJu0Yy51IzRm/m/wFs9gSO4sC7uR+yoGN27XNp1BTVknzgqAhMs0cBC
+        JljuAqGdk/q3awmKqxrydQIw8kLqnX+piuLQimzmNni/
+X-Google-Smtp-Source: AGHT+IHtX5K9ta5qbhSPuwwilwWoJTuhSxV4JuGUo8+ZCkJwFKR7S7akQYR8J9f36ryoXsEa9vW34Q==
+X-Received: by 2002:a19:6715:0:b0:502:e2be:54b5 with SMTP id b21-20020a196715000000b00502e2be54b5mr3268108lfc.17.1694861636296;
+        Sat, 16 Sep 2023 03:53:56 -0700 (PDT)
 Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id z20-20020a7bc7d4000000b003feae747ff2sm9900743wmk.35.2023.09.16.03.53.53
+        by smtp.gmail.com with ESMTPSA id z20-20020a7bc7d4000000b003feae747ff2sm9900743wmk.35.2023.09.16.03.53.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Sep 2023 03:53:54 -0700 (PDT)
+        Sat, 16 Sep 2023 03:53:55 -0700 (PDT)
 From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Date:   Sat, 16 Sep 2023 12:52:45 +0200
-Subject: [PATCH net 1/5] mptcp: fix bogus receive window shrinkage with
- multiple subflows
+Date:   Sat, 16 Sep 2023 12:52:46 +0200
+Subject: [PATCH net 2/5] mptcp: move __mptcp_error_report in protocol.c
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-1-05d1a8b851a8@tessares.net>
+Message-Id: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-2-05d1a8b851a8@tessares.net>
 References: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-0-05d1a8b851a8@tessares.net>
 In-Reply-To: <20230916-upstream-net-20230915-mptcp-hanging-conn-v1-0-05d1a8b851a8@tessares.net>
 To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
@@ -70,21 +69,21 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Matthieu Baerts <matthieu.baerts@tessares.net>,
         stable@vger.kernel.org
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1538;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3409;
  i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=sz+nh5NIsadTNPEpnKohPqzpae+0POVMkN8Lp2ml4e8=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlBYlAdD3Es2m1E+RxWvNs/6/5QPODTmMhRSwga
- qJifHcbjWyJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZQWJQAAKCRD2t4JPQmmg
- cz88D/49ajLuykR6XBy8Phzep80ts3D/bLO/Wts9WXfRmd2F/xNh4N/cdCe0DbPX+wZtnmqMVKp
- 3pmPgHBKv08muyta2rpwqA7GylzSd0e/1ZYS3IGJ/J7hjWkNKaX4bxBxVB/q1lUb+22gSHacwKB
- ruuSHNc9CGczV7vsE+BACTuqa0O3WgGCFG6IgMGOnyM6Ox0sIcu6aJ7O9M2h8TRcwmNW9/17k1m
- OE3qmsghIv8HuxMswryoWTF7jefrzEHUIX5P6C06oCQ9Qc/usq9Y4SUWZT46ZZrCuAzkxZRbzec
- QeUMZMuXAov/AyzwQlqccOLUme9Ae6R0u9ofRhbBIjvr8jKaS+QVeUNekIeDgdJQOb4A7XM08Xz
- ILodhtl8IqGn2VuKMFL1nzNuVEaT/vXXEQ2jjIQJyP/DILkbPKpkhAWAYM2IeIYZx6ZUrF92v9N
- vYZX1+zPl1DW++NrwG21eNtLWuHeay7haUgFDiMiS8x561d9GjatxgQ92rv1KQn9Q5K+1Md+2j4
- 3Dp4lqfBYbbAs6bT8BRPuQSzWkK8zecRQHOBwvMaSpKOeRmvTeAZkHC5V5S/U9mvz2MieztvHAB
- xWpwFB7o4BrkrXLVpc9rNjBRaLO74SXEVxhHD0I6S+2Wgd5hKW7lxKsu2UyCwdqTf/PktTIcBaD
- j34N2UGTmFlme1w==
+ bh=UCzONQs8IbPl41AgIyasVUSFyocd6ByoszHVHBiWnr4=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlBYlAE4rFvQULAtV4XxAqAqenuymInl5nYoNWA
+ +2Zl3C/OP2JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZQWJQAAKCRD2t4JPQmmg
+ cwpoEADUHOOGVVygnOP/3dSVU8OHtSYLaNemMIDJhsqCUCurZS9AorYWIdENIP0Y5LKJX3y4hbF
+ QagnCCUz49DbXHtDlc1KqwHFI0Sy64GUurBXyqnv6LuPsPGISXBDEq1ykawed40/t6OrSEZau/I
+ 5t5i032ECrUeiooVypidj7HWkukdn8XaSDYSLTV8LUNtoXgzk/NjBSC5ft7EM8FQXaVVr1jFJ1D
+ nI7VIN/fsIodx45oPKBBrQV4m6gSWQ6Z4i7AUNkjgtPPvhYQbM+7lZsa44pAm+MGB2UxAN2r7nY
+ 3VR1KzI+DQwzDcbXzfHVfFvps+UrHgfQT3OQLHCEXRMOBqHiXaeZg3pLFIltNcYjrkNYdZoO+ME
+ dhTuQF2nWh5t4FFmKnkc7mMT521SPtFiaZ7mxUimM2T5cOl1FoOsq70wpyAqLoZ7QByGwMu0vi/
+ DIn8LNX4X+ZTYKoNfNAtWc7lHJ6YuQWkiu6ddwO4vkvk9NkurKA9cPE0s+WGIEiLMEHCIRwisbg
+ czehBHr3Uy/DGoatW8/umqh+q+BGv6zEsxnlGOGA579UQh2Y3XM5OrQIsaYefV7L4feOgaqlPmC
+ zUmv91Mr7naOXvfv+wvCobZmTKwFEVpHlPH1GcAeZxYDrS2gN/fkCdF5yib5cp+sG2ta9t3JX3w
+ hHL4mOoUD7/Lvsg==
 X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -99,47 +98,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paolo Abeni <pabeni@redhat.com>
 
-In case multiple subflows race to update the mptcp-level receive
-window, the subflow losing the race should use the window value
-provided by the "winning" subflow to update it's own tcp-level
-rcv_wnd.
+This will simplify the next patch ("mptcp: process pending subflow error
+on close").
 
-To such goal, the current code bogusly uses the mptcp-level rcv_wnd
-value as observed before the update attempt. On unlucky circumstances
-that may lead to TCP-level window shrinkage, and stall the other end.
+No functional change intended.
 
-Address the issue feeding to the rcv wnd update the correct value.
-
-Fixes: f3589be0c420 ("mptcp: never shrink offered window")
-Cc: stable@vger.kernel.org
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/427
+Cc: stable@vger.kernel.org # v5.12+
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Reviewed-by: Mat Martineau <martineau@kernel.org>
 Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 ---
- net/mptcp/options.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/mptcp/protocol.c | 36 ++++++++++++++++++++++++++++++++++++
+ net/mptcp/subflow.c  | 36 ------------------------------------
+ 2 files changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/net/mptcp/options.c b/net/mptcp/options.c
-index c254accb14de..cd15ec73073e 100644
---- a/net/mptcp/options.c
-+++ b/net/mptcp/options.c
-@@ -1269,12 +1269,13 @@ static void mptcp_set_rwin(struct tcp_sock *tp, struct tcphdr *th)
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index a7fc16f5175d..915860027b1a 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -770,6 +770,42 @@ static bool __mptcp_ofo_queue(struct mptcp_sock *msk)
+ 	return moved;
+ }
  
- 			if (rcv_wnd == rcv_wnd_old)
- 				break;
--			if (before64(rcv_wnd_new, rcv_wnd)) {
++void __mptcp_error_report(struct sock *sk)
++{
++	struct mptcp_subflow_context *subflow;
++	struct mptcp_sock *msk = mptcp_sk(sk);
 +
-+			rcv_wnd_old = rcv_wnd;
-+			if (before64(rcv_wnd_new, rcv_wnd_old)) {
- 				MPTCP_INC_STATS(sock_net(ssk), MPTCP_MIB_RCVWNDCONFLICTUPDATE);
- 				goto raise_win;
- 			}
- 			MPTCP_INC_STATS(sock_net(ssk), MPTCP_MIB_RCVWNDCONFLICT);
--			rcv_wnd_old = rcv_wnd;
- 		}
- 		return;
- 	}
++	mptcp_for_each_subflow(msk, subflow) {
++		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
++		int err = sock_error(ssk);
++		int ssk_state;
++
++		if (!err)
++			continue;
++
++		/* only propagate errors on fallen-back sockets or
++		 * on MPC connect
++		 */
++		if (sk->sk_state != TCP_SYN_SENT && !__mptcp_check_fallback(msk))
++			continue;
++
++		/* We need to propagate only transition to CLOSE state.
++		 * Orphaned socket will see such state change via
++		 * subflow_sched_work_if_closed() and that path will properly
++		 * destroy the msk as needed.
++		 */
++		ssk_state = inet_sk_state_load(ssk);
++		if (ssk_state == TCP_CLOSE && !sock_flag(sk, SOCK_DEAD))
++			inet_sk_state_store(sk, ssk_state);
++		WRITE_ONCE(sk->sk_err, -err);
++
++		/* This barrier is coupled with smp_rmb() in mptcp_poll() */
++		smp_wmb();
++		sk_error_report(sk);
++		break;
++	}
++}
++
+ /* In most cases we will be able to lock the mptcp socket.  If its already
+  * owned, we need to defer to the work queue to avoid ABBA deadlock.
+  */
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index 9bf3c7bc1762..2f40c23fdb0d 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -1362,42 +1362,6 @@ void mptcp_space(const struct sock *ssk, int *space, int *full_space)
+ 	*full_space = mptcp_win_from_space(sk, READ_ONCE(sk->sk_rcvbuf));
+ }
+ 
+-void __mptcp_error_report(struct sock *sk)
+-{
+-	struct mptcp_subflow_context *subflow;
+-	struct mptcp_sock *msk = mptcp_sk(sk);
+-
+-	mptcp_for_each_subflow(msk, subflow) {
+-		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
+-		int err = sock_error(ssk);
+-		int ssk_state;
+-
+-		if (!err)
+-			continue;
+-
+-		/* only propagate errors on fallen-back sockets or
+-		 * on MPC connect
+-		 */
+-		if (sk->sk_state != TCP_SYN_SENT && !__mptcp_check_fallback(msk))
+-			continue;
+-
+-		/* We need to propagate only transition to CLOSE state.
+-		 * Orphaned socket will see such state change via
+-		 * subflow_sched_work_if_closed() and that path will properly
+-		 * destroy the msk as needed.
+-		 */
+-		ssk_state = inet_sk_state_load(ssk);
+-		if (ssk_state == TCP_CLOSE && !sock_flag(sk, SOCK_DEAD))
+-			inet_sk_state_store(sk, ssk_state);
+-		WRITE_ONCE(sk->sk_err, -err);
+-
+-		/* This barrier is coupled with smp_rmb() in mptcp_poll() */
+-		smp_wmb();
+-		sk_error_report(sk);
+-		break;
+-	}
+-}
+-
+ static void subflow_error_report(struct sock *ssk)
+ {
+ 	struct sock *sk = mptcp_subflow_ctx(ssk)->conn;
 
 -- 
 2.40.1
