@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411967A2EF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FB27A2EFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbjIPJS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        id S238818AbjIPJUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjIPJS2 (ORCPT
+        with ESMTP id S238928AbjIPJTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:18:28 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E092173C;
-        Sat, 16 Sep 2023 02:18:17 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RnljX4Rj2ztS5B;
-        Sat, 16 Sep 2023 17:13:52 +0800 (CST)
-Received: from ubuntu2204.huawei.com (10.67.174.22) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 16 Sep 2023 17:18:02 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
-        <adrian.hunter@intel.com>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH] perf test: Fix test-record-dummy-C0 failure for supported PERF_FORMAT_LOST feature kernel
-Date:   Sat, 16 Sep 2023 09:16:41 +0000
-Message-ID: <20230916091641.776031-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 16 Sep 2023 05:19:44 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF1319A0;
+        Sat, 16 Sep 2023 02:19:38 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c3c8adb27so372614366b.1;
+        Sat, 16 Sep 2023 02:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694855977; x=1695460777; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zFJd7ltrwpbT4DSzaox+CxAOaYm6Gohr2EKr2+yB84k=;
+        b=ZXERlyJhfCwHXLKCUOeGvzVRW8HNISFoXR/3xXltpAnH2JhXrCIM+Cj8eyxjOs/Y0l
+         v6JX1FibC6wwQmCVONGiCn934jK5BvHh3Lk1xUmR8giNo0mfLgOXvehY0mrs6a1Jas1P
+         qtAj9tqCJ6SXoKZhLm0cjGThXb2NGgA+judoQ8iVI2gZQoP7KfElWIpM8be6YCMJu1fA
+         1WgktyjrZ/ADkrxSBrCevQvPjmHWPCXw/Ejj9mudCb2oj64/1hDOExNGNwMdjn4OgX0C
+         BrwXWihBgSs1j+/MYogPkKuGr1twPFHSMuCYYYvVLTqNbj3tkPEcXlj5zfMcBdsUU54k
+         +zSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694855977; x=1695460777;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zFJd7ltrwpbT4DSzaox+CxAOaYm6Gohr2EKr2+yB84k=;
+        b=dyc1r2QWDcVxud+ipbsJzQprxPxHy6NAk+vSuCBYjMGlrKlhA1SNuaLPBiQMEjVemJ
+         lYltGm2aV7EJSRHE0SPNPAs33dGS18AS4/JLLwyqYRI1wvlkBezNNzMon3gk5whYgpAX
+         8LORgOuyo4yqDv2F3BjOAjRsbOfa9knIA5OylsAJJZaRBKIfcoX5LSd+wrCWt7eYok73
+         Tcxv9cp5Q3AC/rvemrMZtVPnxPqikjnmJkItstplQq0pej8Sq4fZ9UYnXCRbRHZuAzD7
+         aLNWBOY0PItcrWv/w11vZqA77rcW18bikh9K5e+y2WnIo0N4z1Y6cmLzzSrclmp93Cir
+         Hj8A==
+X-Gm-Message-State: AOJu0Yz4PAA7qFOas3MQ8e18KAnBliqUjN0rL/PRMuLG4E4g/9r1tlVe
+        HT+dtuqmohdbqJ/UG0t6KbQ=
+X-Google-Smtp-Source: AGHT+IGy/x0Gdo4oedr1VhUKoxzWh+QhuIJZyqLn+KOrwgXWAd4adujQ9NUcmB6KBH8aH4xguBlWrg==
+X-Received: by 2002:a17:906:5357:b0:9ad:ada4:bad4 with SMTP id j23-20020a170906535700b009adada4bad4mr3597691ejo.11.1694855977052;
+        Sat, 16 Sep 2023 02:19:37 -0700 (PDT)
+Received: from gmail.com (84-236-113-53.pool.digikabel.hu. [84.236.113.53])
+        by smtp.gmail.com with ESMTPSA id p25-20020a1709060e9900b00992b50fbbe9sm3517591ejf.90.2023.09.16.02.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 02:19:35 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 16 Sep 2023 11:19:33 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
+Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page
+ aligned
+Message-ID: <ZQVzJfXXg171DDiW@gmail.com>
+References: <20230818233451.3615464-1-srutherford@google.com>
+ <ZQRHIN7as8f+PFeh@gmail.com>
+ <CABayD+fH+AVu1u+LAtpd4-vRO9E12tVajR9WdWMtr1x_McoO6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.22]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABayD+fH+AVu1u+LAtpd4-vRO9E12tVajR9WdWMtr1x_McoO6A@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For kernel that supports PERF_FORMAT_LOST, attr->read_format has
-PERF_FORMAT_LOST bit. Update expected value of
-attr->read_format of test-record-dummy-C0 for this scenario.
 
-Before:
+* Steve Rutherford <srutherford@google.com> wrote:
 
-  # ./perf test 17 -vv
-   17: Setup struct perf_event_attr                                    :
-  --- start ---
-  test child forked, pid 1609441
-  <SNIP>
-  running './tests/attr/test-record-dummy-C0'
-    'PERF_TEST_ATTR=/tmp/tmpm3s60aji ./perf record -o /tmp/tmpm3s60aji/perf.data --no-bpf-event -e dummy -C 0 kill >/dev/null 2>&1' ret '1', expected '1'
-  expected read_format=4, got 20
-  FAILED './tests/attr/test-record-dummy-C0' - match failure
-  test child finished with -1
-  ---- end ----
-  Setup struct perf_event_attr: FAILED!
+> I believe V3 of this fix was already merged into both x86 and Linus'
+> tree (I think as ac3f9c9f1b37edaa7d1a9b908bc79d843955a1a2, "x86/sev:
+> Make enc_dec_hypercall() accept a size instead of npages").
 
-After:
+Erm ... indeed, and I forgot to mark the old v1 thread as read and then
+promptly forgot about it all ... ;-)
 
-  # ./perf test 17 -vv
-   17: Setup struct perf_event_attr                                    :
-  --- start ---
-  test child forked, pid 1609441
-  <SNIP>
-  running './tests/attr/test-record-dummy-C0'
-    'PERF_TEST_ATTR=/tmp/tmppa9vxcb7 ./perf record -o /tmp/tmppa9vxcb7/perf.data --no-bpf-event -e dummy -C 0 kill >/dev/null 2>&1' ret '1', expected '1'
-  <SNIP>
-  test child finished with 0
-  ---- end ----
-  Setup struct perf_event_attr: Ok
+Thanks,
 
-Reported-by: Namhyung Kim <namhyung@kernel.org>
-Closes: https://lore.kernel.org/all/CAM9d7cgNH2+zhSAmA3en_6as915UsF25MoLbfjE350tAP43Bog@mail.gmail.com/
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- tools/perf/tests/attr/test-record-dummy-C0 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/attr/test-record-dummy-C0 b/tools/perf/tests/attr/test-record-dummy-C0
-index 83ca4e373acd..576ec48b3aaf 100644
---- a/tools/perf/tests/attr/test-record-dummy-C0
-+++ b/tools/perf/tests/attr/test-record-dummy-C0
-@@ -17,7 +17,7 @@ sample_period=4000
- # PERF_SAMPLE_PERIOD
- # + PERF_SAMPLE_CPU added by -C 0
- sample_type=391
--read_format=4
-+read_format=4|20
- disabled=0
- inherit=1
- pinned=0
--- 
-2.34.1
-
+	Ingo
