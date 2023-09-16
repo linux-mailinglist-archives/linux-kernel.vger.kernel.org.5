@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EB97A2FCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A4B7A2FCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 14:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235007AbjIPL7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 07:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S238967AbjIPL7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 07:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbjIPL7I (ORCPT
+        with ESMTP id S238123AbjIPL7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 07:59:08 -0400
+        Sat, 16 Sep 2023 07:59:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3530DCCB
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 04:59:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DDFC433C7;
-        Sat, 16 Sep 2023 11:59:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA962CCB
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 04:59:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21020C433C8;
+        Sat, 16 Sep 2023 11:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694865543;
-        bh=76wPwulo/cXNp40P+q+GDdQrRZmAZGnvwIqofTmTG6s=;
+        s=korg; t=1694865571;
+        bh=mzoVyVKRVpO07eBhxKowz5IZt6J187Oq2WelLQ0zG+Q=;
         h=Date:From:To:Cc:Subject:From;
-        b=n8Qlt43JtDoLnnDmYZrIoK28eoDnf5lx0Ep7DLrXi9R5Ggl/1cyi+67Bp9rmc6o/4
-         A2L5dLzEZZxgyvK7DPURUTO9jq5lCeTS2Cl006iEMKiHDfIPa4WbA+87eM9VovdkHi
-         fTTR4Jui5RZ8sDgGUdcBxgEPG4nUWxy4fWI0VuOA=
-Date:   Sat, 16 Sep 2023 13:59:01 +0200
+        b=VugREvb2XGr2uZNilYdyd+zL6oi6XVyYToWc4hj4tMcg2wDdVjwlbFuKKeN7xtVK9
+         M1fXaW5bVskayNgYsg8CTbNC0En9rmhyfZYi6eQ52OSD7wKeLwYuNEMk831iPiyNXO
+         ZXu/qgSsd7OJrfyeeGa0HS1s5QxgzcIgZDTBJv18=
+Date:   Sat, 16 Sep 2023 13:59:28 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fix for 6.6-rc2
-Message-ID: <ZQWYhSxtU3PRwKys@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [GIT PULL] Driver core fix for 6.6-rc2
+Message-ID: <ZQWYoJkwI85bJ5tz@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -50,29 +52,34 @@ The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.6-rc2
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.6-rc2
 
-for you to fetch changes up to 98a15816636044f25be4644db2a3e09fad68aaf7:
+for you to fetch changes up to 139e08188babf7a4c5f0df54b605105852fc347a:
 
-  Revert "comedi: add HAS_IOPORT dependencies" (2023-09-12 15:49:20 +0200)
+  Documentation: embargoed-hardware-issues.rst: Add myself for RISC-V (2023-09-13 09:19:49 +0200)
 
 ----------------------------------------------------------------
-Char/Misc fix for 6.6-rc2
+Driver core fix for 6.6-rc2
 
-Here is a single patch for 6.6-rc2 that reverts a 6.5 change for the
-comedi subsystem that has ended up being incorrect and caused drivers
-that were working for people to be unable to be able to be selected to
-build at all.  To fix this, the Kconfig change needs to be reverted and
-a future set of fixes for the ioport dependancies will show up in
-6.7-rc1 (there's no rush for them.)
+Here is a single driver core fix for a much-reported-by-sysbot issue
+that showed up in 6.6-rc1.  It's been submitted by many people, all in
+the same way, so it obviously fixes things for them all.
 
-This has been in linux-next with no reported issues.
+Also in here is a single documentation update adding riscv to the
+embargoed hardware document in case there are any future issues with
+that processor family.
+
+Both of these have been in linux-next with no reported problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Ian Abbott (1):
-      Revert "comedi: add HAS_IOPORT dependencies"
+Andy Shevchenko (1):
+      driver core: return an error when dev_set_name() hasn't happened
 
- drivers/comedi/Kconfig | 103 +++++++++++++++++--------------------------------
- 1 file changed, 35 insertions(+), 68 deletions(-)
+Palmer Dabbelt (1):
+      Documentation: embargoed-hardware-issues.rst: Add myself for RISC-V
+
+ Documentation/process/embargoed-hardware-issues.rst | 1 +
+ drivers/base/core.c                                 | 2 ++
+ 2 files changed, 3 insertions(+)
