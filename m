@@ -2,146 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5DA7A2F10
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AF97A2F12
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238451AbjIPJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S238925AbjIPJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236177AbjIPJvz (ORCPT
+        with ESMTP id S238921AbjIPJxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:51:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136F0CD0;
-        Sat, 16 Sep 2023 02:51:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE713C433C8;
-        Sat, 16 Sep 2023 09:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694857910;
-        bh=ZeYVpQf9w9apII2mwFjEUPKNLRuO0rMX6CZC9OF9K2o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iWZQLYsDOqwqaFVO8JG34ooJkOLcK/rjkVN+X+RJwdqfI95yW6nUIMI3XuW+EYPJ7
-         f1sFzH061WvUi07vVahYSL+4GY7Yo1zlL6Syo/QeXIOXiZnCb+x3l8JzFbyo/5fEKP
-         hX8sbJl3HbxPeix2uC2iSGrI6O7ChREIz7gGx/jl+y3UCv4iHSt9fDMKaHSegyOQNf
-         s7tw/AUI1KftNQl+7ZIoPkohnvo9uI4VAg2JkkkzDAweC7S0F/RtDh83bzcm0UU0Hg
-         UvC+8egchf/UDYaGFb8uildnWWjv9nwAB/7Sg/o4TYyNB1hwX2r41p5Fh/LE+wav1z
-         oOmoQPaiaxSxA==
-Date:   Sat, 16 Sep 2023 11:51:47 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.6-rc2
-Message-ID: <ZQV6s4ScLByb/gkD@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
+        Sat, 16 Sep 2023 05:53:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18CDCD0;
+        Sat, 16 Sep 2023 02:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694858012; x=1726394012;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Ub4i+7/Nq1xk7dy6tjvuEZbfUQbBpW9K/cCmy8f69nM=;
+  b=hawuiMII1XLRvRkN3YNKK6qnSfaPivIhqi4xoQhsbNwjDf8npHghzTH8
+   Iw7a+OvHFLxqaPeW2H3kex1OIdfciKQ7VYp0kON99n4Pq0egXri6gTPZG
+   cCmTKfWFcMUM/YIMbw6SwNvs1hT8YdHDCIiWbaU9aPOLefb3m0Y/9AVo9
+   BahWx9ixCfRR6/YZ68J+7Ikfb6FaP/ViwHwf0nlFnVTqv+0vH3s2K8MZs
+   YAvXX3nAAtQ5JWEdcbp3bR71YIh04euYxjHiQxqMq0/IMsyA1f42xKlrt
+   WyXSQSucwnBAlOdxcCOJ2pHTjtNFf/KpDX1J0zs6hqdQK1t8BMpBNyQCy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="382134742"
+X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
+   d="scan'208";a="382134742"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 02:53:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="748460147"
+X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
+   d="scan'208";a="748460147"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Sep 2023 02:53:31 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Sat, 16 Sep 2023 02:53:31 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Sat, 16 Sep 2023 02:53:30 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Sat, 16 Sep 2023 02:53:30 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Sat, 16 Sep 2023 02:53:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GImUnrd1f8IVYVLH1LjWHn8ak+4Llw1gZHIjDNel6SmqFjMxMfVXJkd7zxYse3STArAfYEZXNsMk5en/UsDcFOtpqsSOcDCmTeKtaE90axAs2ESxPiyP+1NjuUSm8jIJEd2B2SeWyzpJETTDGQv27ewgOx8OtADgdwLmGHE65KuBu5k90JkStDQlLlpkn+huF8+WzNhPJxxnp1eOk1MhNLOTq8RE58AbJwl55WyGpY0zmap0Q+0DPAH2zDAeeq1Qrg1BTRCnEfp8gI2ivTSB3IRODcdfedY4ZB5jbFMwD/cyoKAKz8zQ62YixT4MhiX0l1dFdz1GCQSTIRCvv89V6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zv5JY1cj4T9IqYh3UvuuWa/drg7kFTz+fYGLNRpIICg=;
+ b=f3XdQRJkMwBhcYjcIDw3XMxnZyEidopYkS/fWL1bPblosmRqFjuTfTAweoKPFFypTp6lX7JnMokeevUG8EYHRAJJxyRATxUosTAeONpElvmckPzmYohgfFqyqi0t0Av0og34m3R+8YBqK+4yn+nQ8Aj0T3mcUrFZvt4CFDNTmZDUTjajFh6znMMGULmzhYLLeqODIWcG/lzULTbwtR5cgUV7UnRl7eSTbbqo0iuWaByo4LNJu8dIQWYRllgvOB7ckDjscnMdyOuoo0r3TiTTc4v2ARGXapxFv/Ow35ff5GQLnbCzkwn+mwNNy8AE3LXjNFdYHLex2fhAfqsh5CIL7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SA0PR11MB4653.namprd11.prod.outlook.com (2603:10b6:806:94::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Sat, 16 Sep
+ 2023 09:53:29 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::ddda:2559:a7a6:8323]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::ddda:2559:a7a6:8323%7]) with mapi id 15.20.6792.023; Sat, 16 Sep 2023
+ 09:53:29 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        oushixiong <oushixiong@kylinos.cn>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
+        "Shameer Kolothum" <shameerali.kolothum.thodi@huawei.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] vfio/pds: Use proper PF device access helper
+Thread-Topic: [PATCH] vfio/pds: Use proper PF device access helper
+Thread-Index: AQHZ5rFDCQ0JWtwtcU+DMfvAXSfZOLAcP/oAgAD5NlA=
+Date:   Sat, 16 Sep 2023 09:53:29 +0000
+Message-ID: <BN9PR11MB527624CEBA0B039CD62A8F428CF5A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
+ <20230915125858.72b75a16.alex.williamson@redhat.com>
+In-Reply-To: <20230915125858.72b75a16.alex.williamson@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA0PR11MB4653:EE_
+x-ms-office365-filtering-correlation-id: 3a352435-b0e8-47f3-816d-08dbb69ac777
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KxjsItxDZwOCn/MbDZ7MXKTDwNMJhdFSL2VGeI24tv7pMKS+5v1lB8vGo+4pSDCzLotrNh9eNz4vBLH493YcrkDx5BQLPei+4rVSCd8+xJiPtOwj0/PFuO6cWjeEZD4WpujKDSC7X2BIbVfhrBxSFdAKHbMr/6NOPRpdwlcsOvlUmgXmlcVwGGw/7j3fKBz7q2TC00zRGX0bQIbdSyI3nM605c4elGUMBTniVNI5DFvEFngOSQJ/B3xvM09Qj1CBkS/962+u/SeGT0aFKntUA86eWtIups1SHVOgIazYJ72Bhc82dmX8qw4nrxc58Gpk5qn8AVxd8BLBfhUObGgEwC8uXJFGaisAmNlExUMPEL4zoR2sW43QewE1es8Ku3LJx4M6dmAtKyaJmcbtKM5aDWQyONpjs7E9IHQWb5/adxvxMgeT5+Z04W5dG0mmL7kip3tcCyDShB93kTpwb4hxsPXYXux/NnYogjolVPorvwdz31pBXSYwRnxTip9Vs4l17Xca653Qs6MfJaTe9Ylkko6eDFOFVJ/9hlgpXrk5NtDyWaybCKw87qPyzut+oCrwxNN5v2gLaI6TBBHjbB83ktZAvk/+WHOnhfk9vIcLcBo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39860400002)(136003)(451199024)(1800799009)(186009)(4744005)(2906002)(86362001)(122000001)(38100700002)(33656002)(82960400001)(38070700005)(55016003)(4326008)(41300700001)(316002)(71200400001)(64756008)(8676002)(66556008)(110136005)(9686003)(8936002)(66946007)(54906003)(6506007)(76116006)(52536014)(66446008)(66476007)(83380400001)(478600001)(7696005)(966005)(26005)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MtT0dgkKlYqgzkkxDUvBB3D9+gMsE9zMXAVC6W0kP1TFJhcUjlIsdlM4mhuP?=
+ =?us-ascii?Q?Mpyf+JnVclXGBdBX5O08rdMD1/A3JENK0DLmqxeFVQ91cnk45BAozeSrGCDZ?=
+ =?us-ascii?Q?183o+3O1hIdo71ag6QPJxEo5QggvJE677A4D+Un9mnyxF+SpQ7OWzA8aqQRE?=
+ =?us-ascii?Q?Rm6CTh+Ri6rSgrg5Ik2KjzKngXozv5Jd6pGhHLa9V028eKTy4QMOKId8JlhR?=
+ =?us-ascii?Q?I/OIPqxopY+5h6OwucGSqqGwYCLys+5fjDiZRDu+FvjrZ4LAYUBIj4YIprBs?=
+ =?us-ascii?Q?Y7zrzR8L5sf0zdUJL64yRH66FN6ySNpO++eh2dliKsWaCaNlcfD6U88pxyaP?=
+ =?us-ascii?Q?dRgT6ceRJmp2lidivAkKrPPis1aRs/JPNMVXfriQUCWNGwHzH1BZYgkeIudz?=
+ =?us-ascii?Q?jG9+kYJ0mB7ImZpPVAXEIsS16jrRVU0zsa9IeOIEIhtfMH1WffwlIRC93IHf?=
+ =?us-ascii?Q?2CdsiECZNhrpiU1q544bEpGNcrmiBMYsWxT+3hSizfzVGHIeHp/Pks4VPFZX?=
+ =?us-ascii?Q?forTV/7z+p8YK4a22FBNWPvP4nugLGOGW8bFUxwRYHeTH7rftNjtavhCUO6g?=
+ =?us-ascii?Q?eVxCBiskSTYTheqMviciuEugfAUQgB+90SiaQLVK14ZO1f32POVtJVgxvRO/?=
+ =?us-ascii?Q?Cw1H+4IpNNFB4LYtpllQx1XUOahcwG6t3NMbU8bXrwZ+bB6AoS4q9cjT+vD1?=
+ =?us-ascii?Q?UajXZrqvki4rgFsHPU6JbM1Wx7MvIW6aKAHx8Km81LtjtcUmi+NarnMHITx5?=
+ =?us-ascii?Q?4+e13MWNQPjgRH3KrvEJK7gbx8Ibk313wxrG9JKRNNojjAaZ1pgWN3l0kjrU?=
+ =?us-ascii?Q?7WxOc9N3/Hq0iQpsDpwYHYM211e6WFYK42I0UD5qk9wpGoWk7MQPkIa4UxE0?=
+ =?us-ascii?Q?5HIDMEVUc+VVpkdCMlrVFvgVEW6xfXCw+P7ehM2Lu/rlaeulGjMT5JyRAgAJ?=
+ =?us-ascii?Q?BsyY1GtUEzJHiLqKA/8jyRJ5shRbEcI7lB3NZLgn4TdGCJtdt0JighS0C21f?=
+ =?us-ascii?Q?9og+bLffKl7j2yR0dn+8AFbgD6pL7vkOaVo2sVTE2MuGDK7dzXyvPPnTFLxi?=
+ =?us-ascii?Q?uut6yihahDHDLTbtkk1jYr3JaJ6oGCNAAKUnAufqDTHR4EssU5ylel53zyCn?=
+ =?us-ascii?Q?BBogamb0fcdQyPPW378GkUKk9YFehxHqgZfO22ac368WvmDZGoTcZeApm05h?=
+ =?us-ascii?Q?vu8qllxwRRdKhTTyOIjgD02XFNRZH5yXYAYxR6TTBSUeytQ9vgsffCvJPaA0?=
+ =?us-ascii?Q?qKkK1/n1FnK0JWZUMbRsk0OOxX4VFCPOoZuJIBu/v75WUSZv1Js/N+Hjyden?=
+ =?us-ascii?Q?VlhRNP82BT7vFa/vJhgNZDtg2189bcqfk1qp9yrZjbjCIPEhZmrJPqezGDU2?=
+ =?us-ascii?Q?I9lByjC5DMnFTs0SiAdA/Dqqj63g2DnZJ3/z9M3nalZxu++lzjbX5G6QLeH4?=
+ =?us-ascii?Q?XvXo+62UEhmsB2VC75CAsKZgYD7+n/8Otp2lZEp811lndP8c8OL0OA7qN4GF?=
+ =?us-ascii?Q?C3rQIZYxNQ6siRj4HplvfNJeMZN9BGFfZP08dFf5/EFSPKWqL/KvBafipEBP?=
+ =?us-ascii?Q?TAYJhcBUHDWi7EbuW4BTce0yAI5uxi7r5YkEKndI?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y26t4o5Wkbpd60wd"
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a352435-b0e8-47f3-816d-08dbb69ac777
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2023 09:53:29.0404
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n/EegFIdGvA+lPu1iDTrBDE3nHyfmNdRS7cNpMk+p8rHizqGNej3UB/rIeCzNCcEdgp7IRyKMoX46/5x8wXQAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4653
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Sent: Saturday, September 16, 2023 2:59 AM
+>=20
+> On Thu, 14 Sep 2023 10:13:32 +0800
+> oushixiong <oushixiong@kylinos.cn> wrote:
+>=20
+> > From: Shixiong Ou <oushixiong@kylinos.cn>
+> >
+> > The pci_physfn() helper exists to support cases where the physfn
+> > field may not be compiled into the pci_dev structure. We've
+> > declared this driver dependent on PCI_IOV to avoid this problem,
+> > but regardless we should follow the precedent not to access this
+> > field directly.
+> >
+> > Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
+> > ---
+> >
+> > This patch changes the subject line and commit log, and the previous
+> > patch's links is:
+> >
+> 	https://patchwork.kernel.org/project/kvm/patch/20230911080828.6
+> 35184-1-oushixiong@kylinos.cn/
+>=20
+> Kevin & Jason,
+>=20
+> I assume your R-b's apply to this version as well.  Thanks,
+>=20
 
---Y26t4o5Wkbpd60wd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-=
-6.6-rc2
-
-for you to fetch changes up to 637f33a4fe864ac8636e22766d67210e801fcd0d:
-
-  i2c: cadence: Fix the kernel-doc warnings (2023-09-13 11:10:49 +0200)
-
-----------------------------------------------------------------
-Main thing is the removal of 'probe_new' because all i2c client drivers
-are converted now. Thanks Uwe, this marks the end of a long conversion
-process. Other than that, we have a few Kconfig updates and driver
-bugfixes.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      i2c: Make I2C_ATR invisible
-      i2c: I2C_MLXCPLD on ARM64 should depend on ACPI
-
-Shubhrajyoti Datta (1):
-      i2c: cadence: Fix the kernel-doc warnings
-
-Tommy Huang (1):
-      i2c: aspeed: Reset the i2c controller when timeout occurs
-
-Uwe Kleine-K=C3=B6nig (2):
-      w1: ds2482: Switch back to use struct i2c_driver's .probe()
-      i2c: Drop legacy callback .probe_new()
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Andi Shyti (2):
-      (Rev.) i2c: cadence: Fix the kernel-doc warnings
-      (Rev.) i2c: aspeed: Reset the i2c controller when timeout occurs
-
-Javier Martinez Canillas (1):
-      (Rev.) i2c: Drop legacy callback .probe_new()
-
-Jean Delvare (1):
-      (Rev.) i2c: Drop legacy callback .probe_new()
-
-Krzysztof Kozlowski (1):
-      (Rev.) w1: ds2482: Switch back to use struct i2c_driver's .probe()
-
-Luca Ceresoli (1):
-      (Rev.) i2c: Make I2C_ATR invisible
-
-Tomi Valkeinen (1):
-      (Rev.) i2c: Make I2C_ATR invisible
-
- drivers/i2c/Kconfig              |  2 +-
- drivers/i2c/busses/Kconfig       |  4 ++--
- drivers/i2c/busses/i2c-aspeed.c  |  7 +++++--
- drivers/i2c/busses/i2c-cadence.c |  1 +
- drivers/w1/masters/ds2482.c      |  2 +-
- include/linux/i2c.h              | 11 +----------
- 6 files changed, 11 insertions(+), 16 deletions(-)
-
---Y26t4o5Wkbpd60wd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUFerIACgkQFA3kzBSg
-KbZgoQ//efW0w9QfqRolK0t8zRWz/I4gONZqjjFvyaDnKAPUZrMkR0PMiuF4FaAz
-sScn2GvMqT/7OWiCMm7ml6VvXInKZ0YN3gCuhJNgzQ3ws+Nzhrvm0M5q4W2WEaRX
-kRtDFX2a6LkYbGuiqyb2EhwBeSAlkF/1dNJtY7ejRVQvVRSdeHdFrgQNFiQTfWUe
-/pX6hZX3elAcYRcQ08oRzuhx/p7BJe53TzxhJC8SHT3c4gmblejRTlb8lRcFxE4J
-YWrS81M98ahuFHD0rGXKI3Y7gDSV8RRebNRqxSBhHvfb8p8ckWQYt24+9UBMDMHq
-3wwG6n/NiajiyKzhV8YF5T03LlU6oekqVI7bjcJpMDGNWNT86pX4kU0QKvB2lBUh
-m2dQlqQTZb2ZrhVll0SGzV5vsDt1IXkq2kX+EDL+gD93xpmmTki/W+qc5zgftsJe
-M/zpv1ofLNqGg2/NY64ewhIjobpqDS1ZVUBjPBG0dIRIo3NbFM7VmDbTr42JJePx
-ohYmlAg9kvxWuRitRibWOl9WCO83pPgzXsJHwmTY9lddO53KVQiISQXFZi/IzjBq
-ypOCXYRhAlYMpS8kmvUMbE4r4VyUdMdbJxkGuHq6hR2JeL5fpUIh3vdMY4kDi2mh
-Jhx/OHzlBVohl74JhdPdEoLf6LCxxMte8K53yod/hLwLcCkKHDY=
-=2P6e
------END PGP SIGNATURE-----
-
---Y26t4o5Wkbpd60wd--
+yes.
