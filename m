@@ -2,227 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CECE7A2DDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 06:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45357A2DDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 06:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238126AbjIPEGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 00:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S238267AbjIPEJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 00:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238267AbjIPEGQ (ORCPT
+        with ESMTP id S237962AbjIPEJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 00:06:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3B71FC7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 21:06:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694837170; x=1726373170;
-  h=date:from:to:cc:subject:message-id;
-  bh=UskpD/kyWaulYpGVYYXWSf/nl8AXGvg6rneP1stLDY0=;
-  b=RKnl1ZR3sn21XmEjgdFPIE9vnkYjt+oFElbzQsOfQuUXBsbbLVA0LDXz
-   Fq9GGGU/WPXwcbBTfUgePyJyv4Fk8rmGOBBi4MJ3YY2MRqusQpXzLR9ac
-   dVNx+yMIojpqY+/NsihRoEf+Y5QQA1shqfzikawM7tybibV8k43gTB5hr
-   2lmeWRoX6B6JOTjpRmdyey0Mz5iHWyu2lSnwV2rG080tzwvx3WiZULejQ
-   h3Ob3GNooGs0Dk5QGaW4TFFnSgqDvjleCWbzDe178JNOGtb7VEw7voRJ2
-   Ck4VhP8kC+MiGVxAra9ZADi8FRoRn2lYiX7lLSoulGWwtJH6jZJBf2wTm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="359631050"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="359631050"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 21:06:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="810731070"
-X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
-   d="scan'208";a="810731070"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Sep 2023 21:06:09 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhMZL-0003pM-1d;
-        Sat, 16 Sep 2023 04:06:07 +0000
-Date:   Sat, 16 Sep 2023 12:05:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 7448e8e5d15a3c4df649bf6d6d460f78396f7e1e
-Message-ID: <202309161209.dhtrWMAb-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sat, 16 Sep 2023 00:09:25 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3BB1BD1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 21:09:20 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c0327b75dso23340357b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 21:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694837359; x=1695442159; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zipWfEEsnum9dauMSnXBQTgBSpY3twUkBA45BcLxABI=;
+        b=idKeyoRr24pRaWecrAw7DJ7O9deBaDjKus4zQYhZ9wDfziiLGXTkkEEyR1UTiuwbL4
+         dyQWK0hFXLkmTtNYLEGAL1zunC0pg2o/4bpzGYZnFFemnXi8v6FzVuI+XqdK5F5qvz4c
+         uRkSBDmavtyTe3CQINeKdB9+sbwzFFQhjqgegufmE/50U3B8qAdB1y6HL6OUQPEEfm5h
+         ECoMKeMO8t122ofA247EgWpRt8bNcMlGqclnRKDDMvJqozDsJNCoMOsNP/EVzdzXaXKM
+         ++fVWTEa4Tlw5QrMra9BcjsWyzQBPK2IUi6qhouRKFgc6KwPU19xK0WyfawPQZtmCnRT
+         sbEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694837359; x=1695442159;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zipWfEEsnum9dauMSnXBQTgBSpY3twUkBA45BcLxABI=;
+        b=jPM9RIuNpYyj5I0XYIJvmsfn1kYuVXg4tfO0V2To7cmPalf4J4oUbSj/8D2e7yattV
+         TpYqMF0rRzzGwQoae0oxbF/kb9LjXi3OYot0I+l9tBI4v0GcpxstTt0I1Tu1iogLNCqR
+         y/eCGpkHBk4Mp0oCDV0EzH+kZKfgt3OO7EEP0ujOMmbU90jsFUxdrYaR2K3sgJljn3Cq
+         sT7QFabcI+Pqo8OccCWEZX44wpG2euRANKzzA0vEN4+n1hj98DUSHvWqR814RfyZgPe1
+         mxr+E9BaiqY8EpfZShPWTjJrKqmkx6A0z4jR9CHAG+69PajiQZZEjTgizs3wVwc+AAEh
+         ZTEQ==
+X-Gm-Message-State: AOJu0Yz6qqCfWu14zW0FoApJJoQlARdHBMrurN9tBSYMhOhuPnJcF3+4
+        MrrOX5dAdxWmh9n/XUTOcU2s+qG/bjPI
+X-Google-Smtp-Source: AGHT+IFCMvRhEqBZ5w3q2IXMRP5+eviNQUZ+p7MKuvjjo68Vr2FD7mxfcCmn3VsoAaiTr1ZuqeKTJZYfjMnZ
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:de72:1a43:1938:6165])
+ (user=irogers job=sendgmr) by 2002:a81:ac60:0:b0:59b:e669:c940 with SMTP id
+ z32-20020a81ac60000000b0059be669c940mr96303ywj.5.1694837359199; Fri, 15 Sep
+ 2023 21:09:19 -0700 (PDT)
+Date:   Fri, 15 Sep 2023 21:09:15 -0700
+Message-Id: <20230916040915.1075620-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Subject: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-branch HEAD: 7448e8e5d15a3c4df649bf6d6d460f78396f7e1e  x86/boot: Drop redundant code setting the root device
+Dummy events are created with an attribute where the period and freq
+are zero. evsel__config will then see the uninitialized values and
+initialize them in evsel__default_freq_period. As fequency mode is
+used by default the dummy event would be set to use frequency
+mode. However, this has no effect on the dummy event but does cause
+unnecessary timers/interrupts. Avoid this overhead by setting the
+period to 1 for dummy events.
 
-elapsed time: 735m
+evlist__add_aux_dummy calls evlist__add_dummy then sets freq=0 and
+period=1. This isn't necessary after this change and so the setting is
+removed.
 
-configs tested: 150
-configs skipped: 4
+From Stephane:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The dummy event is not counting anything. It is used to collect mmap
+records and avoid a race condition during the synthesize mmap phase of
+perf record. As such, it should not cause any overhead during active
+profiling. Yet, it did. Because of a bug the dummy event was
+programmed as a sampling event in frequency mode. Events in that mode
+incur more kernel overheads because on timer tick, the kernel has to
+look at the number of samples for each event and potentially adjust
+the sampling period to achieve the desired frequency. The dummy event
+was therefore adding a frequency event to task and ctx contexts we may
+otherwise not have any, e.g., perf record -a -e
+cpu/event=0x3c,period=10000000/. On each timer tick the
+perf_adjust_freq_unthr_context() is invoked and if ctx->nr_freq is
+non-zero, then the kernel will loop over ALL the events of the context
+looking for frequency mode ones. In doing, so it locks the context,
+and enable/disable the PMU of each hw event. If all the events of the
+context are in period mode, the kernel will have to traverse the list for
+nothing incurring overhead. The overhead is multiplied by a very large
+factor when this happens in a guest kernel. There is no need for the
+dummy event to be in frequency mode, it does not count anything and
+therefore should not cause extra overhead for no reason.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20230916   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                         lpc32xx_defconfig   clang
-arm                        multi_v5_defconfig   clang
-arm                        mvebu_v5_defconfig   clang
-arm                             pxa_defconfig   gcc  
-arm                   randconfig-001-20230916   gcc  
-arm                          sp7021_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230916   gcc  
-i386         buildonly-randconfig-002-20230916   gcc  
-i386         buildonly-randconfig-003-20230916   gcc  
-i386         buildonly-randconfig-004-20230916   gcc  
-i386         buildonly-randconfig-005-20230916   gcc  
-i386         buildonly-randconfig-006-20230916   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230916   gcc  
-i386                  randconfig-002-20230916   gcc  
-i386                  randconfig-003-20230916   gcc  
-i386                  randconfig-004-20230916   gcc  
-i386                  randconfig-005-20230916   gcc  
-i386                  randconfig-006-20230916   gcc  
-i386                  randconfig-011-20230916   gcc  
-i386                  randconfig-012-20230916   gcc  
-i386                  randconfig-013-20230916   gcc  
-i386                  randconfig-014-20230916   gcc  
-i386                  randconfig-015-20230916   gcc  
-i386                  randconfig-016-20230916   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230916   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                            gpr_defconfig   gcc  
-mips                          malta_defconfig   clang
-mips                        omega2p_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      bamboo_defconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                        fsp2_defconfig   clang
-powerpc                          g5_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230915   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230915   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          r7785rp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230916   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230916   gcc  
-x86_64       buildonly-randconfig-002-20230916   gcc  
-x86_64       buildonly-randconfig-003-20230916   gcc  
-x86_64       buildonly-randconfig-004-20230916   gcc  
-x86_64       buildonly-randconfig-005-20230916   gcc  
-x86_64       buildonly-randconfig-006-20230916   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230916   gcc  
-x86_64                randconfig-002-20230916   gcc  
-x86_64                randconfig-003-20230916   gcc  
-x86_64                randconfig-004-20230916   gcc  
-x86_64                randconfig-005-20230916   gcc  
-x86_64                randconfig-006-20230916   gcc  
-x86_64                randconfig-011-20230916   gcc  
-x86_64                randconfig-012-20230916   gcc  
-x86_64                randconfig-013-20230916   gcc  
-x86_64                randconfig-014-20230916   gcc  
-x86_64                randconfig-015-20230916   gcc  
-x86_64                randconfig-016-20230916   gcc  
-x86_64                randconfig-071-20230916   gcc  
-x86_64                randconfig-072-20230916   gcc  
-x86_64                randconfig-073-20230916   gcc  
-x86_64                randconfig-074-20230916   gcc  
-x86_64                randconfig-075-20230916   gcc  
-x86_64                randconfig-076-20230916   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+Fixes: 5bae0250237f ("perf evlist: Introduce perf_evlist__new_dummy constructor")
+Reported-by: Stephane Eranian <eranian@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/evlist.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 25c3ebe2c2f5..e36da58522ef 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -251,6 +251,9 @@ static struct evsel *evlist__dummy_event(struct evlist *evlist)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config = PERF_COUNT_SW_DUMMY,
+ 		.size	= sizeof(attr), /* to capture ABI version */
++		/* Avoid frequency mode for dummy events to avoid associated timers. */
++		.freq = 0,
++		.sample_period = 1,
+ 	};
+ 
+ 	return evsel__new_idx(&attr, evlist->core.nr_entries);
+@@ -277,8 +280,6 @@ struct evsel *evlist__add_aux_dummy(struct evlist *evlist, bool system_wide)
+ 	evsel->core.attr.exclude_kernel = 1;
+ 	evsel->core.attr.exclude_guest = 1;
+ 	evsel->core.attr.exclude_hv = 1;
+-	evsel->core.attr.freq = 0;
+-	evsel->core.attr.sample_period = 1;
+ 	evsel->core.system_wide = system_wide;
+ 	evsel->no_aux_samples = true;
+ 	evsel->name = strdup("dummy:u");
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.459.ge4e396fd5e-goog
+
