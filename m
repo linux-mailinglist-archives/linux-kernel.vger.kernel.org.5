@@ -2,343 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7CA7A2C1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C347A2C04
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 02:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238646AbjIPAcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 20:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S238210AbjIPAbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 20:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238535AbjIPAcG (ORCPT
+        with ESMTP id S238496AbjIPAbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 20:32:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2C4C2126
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694824179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VFlZ5nOYBRhVa9tbB+zfgy6vwVzlYbXq61zXTKpXiW0=;
-        b=RRXLVzy+zNA8dT26TS1THS7EsEaI+XnYLJImR+repmVbTayxONog9Ct/pO6qem/BEWXPyi
-        w2Q0kTQkjQuidqijZLoLf20Y3N/3AKZur+UQyOOCV/OPTv2NNIGIfr3HkVyqIK7H53jzfX
-        RamzrS3JPWxBo9SEWU0EKCqHwS0OgZg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-340-V11sprw1PVCYC33g-DDKyA-1; Fri, 15 Sep 2023 20:29:36 -0400
-X-MC-Unique: V11sprw1PVCYC33g-DDKyA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A10981B54D;
-        Sat, 16 Sep 2023 00:29:35 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26FC31D093;
-        Sat, 16 Sep 2023 00:29:33 +0000 (UTC)
-Date:   Sat, 16 Sep 2023 08:29:30 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-Cc:     thunder.leizhen@huawei.com, catalin.marinas@arm.com,
-        chenjiahao16@huawei.com, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: [PATCH v4 6/9] x86: kdump: use generic interface to simplify
- crashkernel reservation code
-Message-ID: <ZQT26loqCPCQSjiz@MiWiFi-R3L-srv>
-References: <20230914033142.676708-1-bhe@redhat.com>
- <20230914033142.676708-7-bhe@redhat.com>
+        Fri, 15 Sep 2023 20:31:25 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5C9E78
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:30:06 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d7f0048b042so2633719276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 17:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694824205; x=1695429005; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKG1f2vWtn3rxoFyylQkmHI05xPy2LbsMYzfeNRbE94=;
+        b=dI7t50bSxp84h7CzuUwA9fhTb4D46V57Vk91JhHBGnNhpYobTJGZPEnTtYAR4JG2UT
+         2FkS/9xJ0AXM/YeR0mnI8i8YsTq1RTmd3adPpsFaEkoc2/T7BG+OMvFoRVCN1C5nKnqk
+         2u2zQ8NtTMAvLbtwVaWFJMqW8tSmKbKdtwbd9WfR9fQk5bHxsDxMIp2BpB+SwBNurdzn
+         C6KzHjHsIhBqnRu4VcdTTGibVhevQdM3LIERpngjwXa9DMxNT/v7wu5HKmeLUEzQim8r
+         O7oKUMqhjQsA7y4p2gejJ9a7FK0pbzoBrAxk+kVUOT2EEHo4nOSn/YtX1okNYp4/EzIw
+         uGDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694824205; x=1695429005;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UKG1f2vWtn3rxoFyylQkmHI05xPy2LbsMYzfeNRbE94=;
+        b=CRRt7w/D+EyBLBII//HkmDUsHCTfD0tEGdiLjHnGS+k35wZOYEyJUtBfDdUVDIT7Lb
+         ZN/T32GBYJd6G8oh7p0/4TvSHk4CwhczQnHF4ko+Fdpei8MDK3uvH9VW6Fdcul+asMNK
+         0n3E4TlW0DaXyAlhzF+NDuVl8M/QGW/+D82V/UsEVP26f0nCDKRcSQ19xY9Hqw4lVch4
+         jLB+3NCPCcPf26+eqaWrkjWB1+Ly5lCKAKkzLzf3MBozWINJ5yAQkeS9db1P8czZ31fn
+         s3I6DmR6tMK5vtwBV3vcJ6NY14PGRIh/xPwX/7GgFRQu25IfXVYWXHLudIUNViL3fs3i
+         YZ0Q==
+X-Gm-Message-State: AOJu0YxifOJ1xnJAK9laCtv9uUlVQWbBD2Bw2rQVLb0yrMNfOEsMrT2J
+        OFeYs6PmRs24N5YJACVsIPqrQo0HTY2bMlkj5E5wsA==
+X-Google-Smtp-Source: AGHT+IHhX/JKjbZ7l2rDepEtwshKF9tSkcCpppE/UlOx5xZD7LfakyNxo9z3pYuUtsI9K2yh4+/L5L/0ntvja0Xr3xI=
+X-Received: by 2002:a25:b30f:0:b0:d7b:9f03:20cc with SMTP id
+ l15-20020a25b30f000000b00d7b9f0320ccmr3240208ybj.32.1694824205419; Fri, 15
+ Sep 2023 17:30:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914033142.676708-7-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com> <1694813901-26952-2-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1694813901-26952-2-git-send-email-quic_khsieh@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 16 Sep 2023 03:29:54 +0300
+Message-ID: <CAA8EJprRFYMF-6yxcL75rftfii0kt7hmg_+TeOMJw+BRyDYdeg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] drm/msm/dp: tie dp_display_irq_handler() with dp driver
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the help of newly changed function parse_crashkernel() and
-generic reserve_crashkernel_generic(), crashkernel reservation can be
-simplified by steps:
+On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> Currently the dp_display_irq_handler() is executed at msm_dp_modeset_init()
+> which ties irq registration to the DPU device's life cycle, while depending on
+> resources that are released as the DP device is torn down. Move register DP
+> driver irq handler at dp_display_probe() to have dp_display_irq_handler()
+> is tied with DP device.
+>
+> Changes in v3:
+> -- move calling dp_display_irq_handler() to probe
 
-1) Add a new header file <asm/crash_core.h>, and define CRASH_ALIGN,
-   CRASH_ADDR_LOW_MAX, CRASH_ADDR_HIGH_MAX and
-   DEFAULT_CRASH_KERNEL_LOW_SIZE in <asm/crash_core.h>;
+Was there a changelog for the previous reivions? What is the
+difference between v1 and v2?
 
-2) Add arch_reserve_crashkernel() to call parse_crashkernel() and
-   reserve_crashkernel_generic(), and do the ARCH specific work if
-   needed.
+>
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 35 +++++++++++++----------------------
+>  drivers/gpu/drm/msm/dp/dp_display.h |  1 -
+>  2 files changed, 13 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 76f1395..c217430 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1193,30 +1193,23 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
+>         return ret;
+>  }
+>
+> -int dp_display_request_irq(struct msm_dp *dp_display)
+> +static int dp_display_request_irq(struct dp_display_private *dp)
+>  {
+>         int rc = 0;
+> -       struct dp_display_private *dp;
+> -
+> -       if (!dp_display) {
+> -               DRM_ERROR("invalid input\n");
+> -               return -EINVAL;
+> -       }
+> -
+> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+> +       struct device *dev = &dp->pdev->dev;
+>
+> -       dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
+>         if (!dp->irq) {
 
-3) Add ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION Kconfig in
-   arch/x86/Kconfig.
+What is the point in this check?
 
-When adding DEFAULT_CRASH_KERNEL_LOW_SIZE, add crash_low_size_default()
-to calculate crashkernel low memory because x86_64 has special
-requirement.
+> -               DRM_ERROR("failed to get irq\n");
+> -               return -EINVAL;
+> +               dp->irq = platform_get_irq(dp->pdev, 0);
+> +               if (!dp->irq) {
+> +                       DRM_ERROR("failed to get irq\n");
+> +                       return -EINVAL;
+> +               }
+>         }
+>
+> -       rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
+> -                       dp_display_irq_handler,
+> +       rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
+>                         IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
+>         if (rc < 0) {
+> -               DRM_ERROR("failed to request IRQ%u: %d\n",
+> -                               dp->irq, rc);
+> +               DRM_ERROR("failed to request IRQ%u: %d\n", dp->irq, rc);
+>                 return rc;
+>         }
+>
+> @@ -1287,6 +1280,10 @@ static int dp_display_probe(struct platform_device *pdev)
+>
+>         platform_set_drvdata(pdev, &dp->dp_display);
+>
+> +       rc = dp_display_request_irq(dp);
+> +       if (rc)
+> +               return rc;
 
-The old reserve_crashkernel_low() and reserve_crashkernel() can be
-removed.
+This way the IRQ ends up being enabled in _probe. Are we ready to
+handle it here? Is the DP device fully setup at this moment?
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
-v3->v4:
-  Move crash_low_size_default() to <asm/crash_core.h> to make it a
-  static inline function. This fixes the warning reported by LKP.
+> +
+>         rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>         if (rc) {
+>                 DRM_ERROR("component add failed, rc=%d\n", rc);
+> @@ -1549,12 +1546,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+>
+>         dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
+>
+> -       ret = dp_display_request_irq(dp_display);
+> -       if (ret) {
+> -               DRM_ERROR("request_irq failed, ret=%d\n", ret);
+> -               return ret;
+> -       }
+> -
+>         ret = dp_display_get_next_bridge(dp_display);
+>         if (ret)
+>                 return ret;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+> index 1e9415a..b3c08de 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+> @@ -35,7 +35,6 @@ struct msm_dp {
+>  int dp_display_set_plugged_cb(struct msm_dp *dp_display,
+>                 hdmi_codec_plugged_cb fn, struct device *codec_dev);
+>  int dp_display_get_modes(struct msm_dp *dp_display);
+> -int dp_display_request_irq(struct msm_dp *dp_display);
+>  bool dp_display_check_video_test(struct msm_dp *dp_display);
+>  int dp_display_get_test_bpp(struct msm_dp *dp_display);
+>  void dp_display_signal_audio_start(struct msm_dp *dp_display);
+> --
+> 2.7.4
+>
 
- arch/x86/Kconfig                  |   3 +
- arch/x86/include/asm/crash_core.h |  42 +++++++++
- arch/x86/kernel/setup.c           | 148 +++---------------------------
- 3 files changed, 56 insertions(+), 137 deletions(-)
- create mode 100644 arch/x86/include/asm/crash_core.h
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 982b777eadc7..d5ebb2ad2ad6 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2062,6 +2062,9 @@ config ARCH_SUPPORTS_CRASH_DUMP
- config ARCH_SUPPORTS_CRASH_HOTPLUG
- 	def_bool y
- 
-+config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
-+	def_bool CRASH_CORE
-+
- config PHYSICAL_START
- 	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
- 	default "0x1000000"
-diff --git a/arch/x86/include/asm/crash_core.h b/arch/x86/include/asm/crash_core.h
-new file mode 100644
-index 000000000000..76af98f4e801
---- /dev/null
-+++ b/arch/x86/include/asm/crash_core.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _X86_CRASH_CORE_H
-+#define _X86_CRASH_CORE_H
-+
-+/* 16M alignment for crash kernel regions */
-+#define CRASH_ALIGN             SZ_16M
-+
-+/*
-+ * Keep the crash kernel below this limit.
-+ *
-+ * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
-+ * due to mapping restrictions.
-+ *
-+ * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
-+ * the upper limit of system RAM in 4-level paging mode. Since the kdump
-+ * jump could be from 5-level paging to 4-level paging, the jump will fail if
-+ * the kernel is put above 64 TB, and during the 1st kernel bootup there's
-+ * no good way to detect the paging mode of the target kernel which will be
-+ * loaded for dumping.
-+ */
-+extern unsigned long swiotlb_size_or_default(void);
-+
-+#ifdef CONFIG_X86_32
-+# define CRASH_ADDR_LOW_MAX     SZ_512M
-+# define CRASH_ADDR_HIGH_MAX    SZ_512M
-+#else
-+# define CRASH_ADDR_LOW_MAX     SZ_4G
-+# define CRASH_ADDR_HIGH_MAX    SZ_64T
-+#endif
-+
-+# define DEFAULT_CRASH_KERNEL_LOW_SIZE crash_low_size_default()
-+
-+static inline unsigned long crash_low_size_default(void)
-+{
-+#ifdef CONFIG_X86_64
-+	return max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
-+#else
-+	return 0;
-+#endif
-+}
-+
-+#endif /* _X86_CRASH_CORE_H */
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index f945d88215b4..d7baa567c68e 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -470,155 +470,29 @@ static void __init memblock_x86_reserve_range_setup_data(void)
- 	}
- }
- 
--/*
-- * --------- Crashkernel reservation ------------------------------
-- */
--
--/* 16M alignment for crash kernel regions */
--#define CRASH_ALIGN		SZ_16M
--
--/*
-- * Keep the crash kernel below this limit.
-- *
-- * Earlier 32-bits kernels would limit the kernel to the low 512 MB range
-- * due to mapping restrictions.
-- *
-- * 64-bit kdump kernels need to be restricted to be under 64 TB, which is
-- * the upper limit of system RAM in 4-level paging mode. Since the kdump
-- * jump could be from 5-level paging to 4-level paging, the jump will fail if
-- * the kernel is put above 64 TB, and during the 1st kernel bootup there's
-- * no good way to detect the paging mode of the target kernel which will be
-- * loaded for dumping.
-- */
--#ifdef CONFIG_X86_32
--# define CRASH_ADDR_LOW_MAX	SZ_512M
--# define CRASH_ADDR_HIGH_MAX	SZ_512M
--#else
--# define CRASH_ADDR_LOW_MAX	SZ_4G
--# define CRASH_ADDR_HIGH_MAX	SZ_64T
--#endif
--
--static int __init reserve_crashkernel_low(void)
-+static void __init arch_reserve_crashkernel(void)
- {
--#ifdef CONFIG_X86_64
--	unsigned long long base, low_base = 0, low_size = 0;
--	unsigned long low_mem_limit;
--	int ret;
--
--	low_mem_limit = min(memblock_phys_mem_size(), CRASH_ADDR_LOW_MAX);
--
--	/* crashkernel=Y,low */
--	ret = parse_crashkernel_low(boot_command_line, low_mem_limit, &low_size, &base);
--	if (ret) {
--		/*
--		 * two parts from kernel/dma/swiotlb.c:
--		 * -swiotlb size: user-specified with swiotlb= or default.
--		 *
--		 * -swiotlb overflow buffer: now hardcoded to 32k. We round it
--		 * to 8M for other buffers that may need to stay low too. Also
--		 * make sure we allocate enough extra low memory so that we
--		 * don't run out of DMA buffers for 32-bit devices.
--		 */
--		low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
--	} else {
--		/* passed with crashkernel=0,low ? */
--		if (!low_size)
--			return 0;
--	}
--
--	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
--	if (!low_base) {
--		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
--		       (unsigned long)(low_size >> 20));
--		return -ENOMEM;
--	}
--
--	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (low RAM limit: %ldMB)\n",
--		(unsigned long)(low_size >> 20),
--		(unsigned long)(low_base >> 20),
--		(unsigned long)(low_mem_limit >> 20));
--
--	crashk_low_res.start = low_base;
--	crashk_low_res.end   = low_base + low_size - 1;
--	insert_resource(&iomem_resource, &crashk_low_res);
--#endif
--	return 0;
--}
--
--static void __init reserve_crashkernel(void)
--{
--	unsigned long long crash_size, crash_base, total_mem;
-+	unsigned long long crash_base, crash_size, low_size = 0;
-+	char *cmdline = boot_command_line;
- 	bool high = false;
- 	int ret;
- 
- 	if (!IS_ENABLED(CONFIG_KEXEC_CORE))
- 		return;
- 
--	total_mem = memblock_phys_mem_size();
--
--	/* crashkernel=XM */
--	ret = parse_crashkernel(boot_command_line, total_mem,
--				&crash_size, &crash_base, NULL, NULL);
--	if (ret != 0 || crash_size <= 0) {
--		/* crashkernel=X,high */
--		ret = parse_crashkernel_high(boot_command_line, total_mem,
--					     &crash_size, &crash_base);
--		if (ret != 0 || crash_size <= 0)
--			return;
--		high = true;
--	}
-+	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
-+				&crash_size, &crash_base,
-+				&low_size, &high);
-+	if (ret)
-+		return;
- 
- 	if (xen_pv_domain()) {
- 		pr_info("Ignoring crashkernel for a Xen PV domain\n");
- 		return;
- 	}
- 
--	/* 0 means: find the address automatically */
--	if (!crash_base) {
--		/*
--		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
--		 * crashkernel=x,high reserves memory over 4G, also allocates
--		 * 256M extra low memory for DMA buffers and swiotlb.
--		 * But the extra memory is not required for all machines.
--		 * So try low memory first and fall back to high memory
--		 * unless "crashkernel=size[KMG],high" is specified.
--		 */
--		if (!high)
--			crash_base = memblock_phys_alloc_range(crash_size,
--						CRASH_ALIGN, CRASH_ALIGN,
--						CRASH_ADDR_LOW_MAX);
--		if (!crash_base)
--			crash_base = memblock_phys_alloc_range(crash_size,
--						CRASH_ALIGN, CRASH_ALIGN,
--						CRASH_ADDR_HIGH_MAX);
--		if (!crash_base) {
--			pr_info("crashkernel reservation failed - No suitable area found.\n");
--			return;
--		}
--	} else {
--		unsigned long long start;
--
--		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
--						  crash_base + crash_size);
--		if (start != crash_base) {
--			pr_info("crashkernel reservation failed - memory is in use.\n");
--			return;
--		}
--	}
--
--	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
--		memblock_phys_free(crash_base, crash_size);
--		return;
--	}
--
--	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System RAM: %ldMB)\n",
--		(unsigned long)(crash_size >> 20),
--		(unsigned long)(crash_base >> 20),
--		(unsigned long)(total_mem >> 20));
--
--	crashk_res.start = crash_base;
--	crashk_res.end   = crash_base + crash_size - 1;
--	insert_resource(&iomem_resource, &crashk_res);
-+	reserve_crashkernel_generic(cmdline, crash_size, crash_base,
-+				    low_size, high);
- }
- 
- static struct resource standard_io_resources[] = {
-@@ -1232,7 +1106,7 @@ void __init setup_arch(char **cmdline_p)
- 	 * Reserve memory for crash kernel after SRAT is parsed so that it
- 	 * won't consume hotpluggable memory.
- 	 */
--	reserve_crashkernel();
-+	arch_reserve_crashkernel();
- 
- 	memblock_find_dma_reserve();
- 
 -- 
-2.41.0
-
+With best wishes
+Dmitry
