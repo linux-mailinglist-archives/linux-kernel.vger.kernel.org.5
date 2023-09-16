@@ -2,150 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 303907A2D63
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA317A2D67
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 04:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbjIPCTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Sep 2023 22:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S238219AbjIPCTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Sep 2023 22:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjIPCSs (ORCPT
+        with ESMTP id S231650AbjIPCTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Sep 2023 22:18:48 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2449EFA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:18:43 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565e54cb93aso1728274a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Sep 2023 19:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694830722; x=1695435522; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lNAcEM45JnuCfTSJI3E/dx3IgazeK//Dr+dUsENW/9I=;
-        b=dErwtPH2G7abDL5kB5qiGhpulzgA5oK2y0zkfp9GNJk4LH2sASgp46k9IgrS/USCvW
-         o314qKE6fVK4/+0TrC7RogNKAno77k86WiE1r30sveWDMrNlrsYdbWQ7FGvXKTdhJ7pq
-         9WqeFwo3BBWBE6YLyYcn3/2H4u8e8GWwI9LL8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694830722; x=1695435522;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lNAcEM45JnuCfTSJI3E/dx3IgazeK//Dr+dUsENW/9I=;
-        b=JhsOuCuFnh2RXbmh+VYsOIca4rVRyBCqWBzjbQUmyNFq3hNey5dDIIOAOQi7B6xy4W
-         y6yNu1HgGwYR9xDWmJ94KTH7uQozW4FNXgcM4guKSfQag5M4h+g7MiNWbSC5rB714Aiq
-         rVGnBhyt8WlTATkYhcMQhHq+JNV7XkdWx69aksXsgF7uty/cESOQDeIMAcvEalGhSzn+
-         fHz4RrUnIY+//acmPxvYRXDnRFm1OYkyk+mHlUDs+4tR6Khs9g1lZO7kGerDfU4fa1RI
-         v8buE/CrXRpU5NZGNUVyqPLV0BMgY8lxn8rWBgEMweChfTIH9eEls5kyot6SsS6XyLjX
-         ZDLQ==
-X-Gm-Message-State: AOJu0YwrrVdZkqLPaD76b5tTE+PJeFaFqm8Y3xGPUChCc1h+Fy/otuhc
-        kXQH3pcnHCwu8q8VGQLXF6XX5w==
-X-Google-Smtp-Source: AGHT+IHGflPojIWFVtfNOoBI/mmU5yo4NTnIHWbhbq4XOzjG2hmoFQfv/CUSUlzb4Q2BjUy9ltgeBw==
-X-Received: by 2002:a05:6a20:3206:b0:15a:58c8:b10f with SMTP id hl6-20020a056a20320600b0015a58c8b10fmr2994151pzc.43.1694830722637;
-        Fri, 15 Sep 2023 19:18:42 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p4-20020a170902a40400b001b03a1a3151sm4116061plq.70.2023.09.15.19.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 19:18:41 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Matteo Rizzo <matteorizzo@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] x86/mm/dump_pagetables: Add SLAB_VIRTUAL knowledge
-Date:   Fri, 15 Sep 2023 19:18:39 -0700
-Message-Id: <20230916021835.never.147-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 15 Sep 2023 22:19:20 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B531BF2;
+        Fri, 15 Sep 2023 19:19:15 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 78D0132002FB;
+        Fri, 15 Sep 2023 22:19:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 15 Sep 2023 22:19:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694830752; x=1694917152; bh=dczvAIbYbztKI9psgMdrTQAOAqQnIvtCypR
+        JKfR2cKQ=; b=CZEdpjTuZlQ0iPdoZFIPXx7Cl1P79HLCyQkGlqXSInAk2td5bk0
+        viG/ZNH1onVP5rV5wuGtovHaEkZyhUvyndY0CbXBUxL0i8gDI4SWBqmWlgUHR/tv
+        dxiNm1KrQoX32cScG1d44ssxTuL11xbCxuC3n8+O1DuzEoqFdqhk4BXE8EktP9Ve
+        xMKb/hXnujcCkqBMKukW3k+CnHF14LsA4teZLsEJyZaHYUnsN1KYdDfSohyI85bu
+        C9JtRU3NiTtwCMTi9uNIR5SObSrEK69cRTa7/4dbwbcjHnuhwnnP3B4QR5nQ5qUU
+        QgVowKpmZsh4Nus1g/yUI+pEJHCudRD7Lnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694830752; x=1694917152; bh=dczvAIbYbztKI9psgMdrTQAOAqQnIvtCypR
+        JKfR2cKQ=; b=a0J0xLTNceVYiEUX4d0ul+CYxgHpq5vjFRiN2wF2X9I6oS5Jxqr
+        FyAm+lkrwbNm0ccm1XxuRagVLJ/MRAsKYpavBg1WP/AiPJWSFtxWTRVPIyY3+WrV
+        ZQYlovfJOPRGDu9WkPUui9shKdUq2+6QLIcqzOQkFaW2WTtIRXPXsZv1XvzXxnEr
+        6h2hM4eXpSKRJ+CtpMaNyY+/IBdWk4ULX5D1yB9QrBDhwjS5/2frV5f5isgFOJkS
+        OoCIjAI/B4QYG+5FqrCELx25dL9L/lvM9zq/Gg1K+fjOOXqsOK/cEQ3I+JtOpIh5
+        x+luKYhtCzMOAeYCh9RI/HRwtcxZ5luGyHA==
+X-ME-Sender: <xms:oBAFZbW-uVubx3qTOXLOjdU8v5vgUvdfO5eiyE0yuddfyIVNHDdmJg>
+    <xme:oBAFZTntPvyxOx-sqE5zM_yPLVEPjXNz0Har04g8qQpN_p1nS8M196J0ExUpGvfDv
+    Z9clFM_Z4Gr>
+X-ME-Received: <xmr:oBAFZXaP2AXcO25rsMbCAW02QZkHypWXmZipruFibu8Rs9nVowC2Dfsa3qKBl_69BpqixDZGD-rlen4PfyyCToUiIlNX-cxjCajZrJeyHhpK7761T5s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejfedgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epgedvteevvdefiedvueeujeegtedvheelhfehtefhkefgjeeuffeguefgkeduhfejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:oBAFZWWFxOfIxI1hWXvxK47W7hBn7BZojSODYM7ctjJzgj_vePOMFg>
+    <xmx:oBAFZVlO5Qlg_sNTkMPzdBA8DGn_8uOaXjusILeGgia6pnvAqFdRmQ>
+    <xmx:oBAFZTfu-CPfjI2SSAdr0LiiyIqjkikUcDjgdzP0JILObRVRBB8QPA>
+    <xmx:oBAFZWjJydA6INuWWB_fhoiJEpCWqekY7mGq4164RuAupPbOuPvcXA>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Sep 2023 22:19:07 -0400 (EDT)
+Message-ID: <9fd2f8da-17b0-e918-adef-4043678efaa2@themaw.net>
+Date:   Sat, 16 Sep 2023 10:19:02 +0800
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1869; i=keescook@chromium.org;
- h=from:subject:message-id; bh=HmsovkvkpuwppfIJaKsY4lAxAF0+pyYONDwvgfgBOPE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlBRB/T8jhFzJbx6o5pyHiafrDVYrG9hl2ENXaj
- 1vL0IdviLGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQUQfwAKCRCJcvTf3G3A
- JmvID/9kiQNsFcjzH+6NwX2OKRtQtlFTPX4yZBTLdnCSlSxoiZOn1Um7n4ushYsTSH9QPZ2ddwb
- ZO0VP2CD4+wb17Lra8vU4oBGVa7Qou3CMDgsmY29UzQAgJMybMY2IA7PK6tsbotWnW9A0fD50ux
- yzmULaSqemZOWBFAe7ahP5HoWMdrmi45KP/vnhSAJbiTrIYUBueQQectsRg2UEufA3kpMGFpyRc
- vuRQVGyTzX6c/w7jLd9IP06ww2nvV9deNlrTD0khFfDrR40jbKZ4YkHRuiS7DD9fDvuRKMAU0QX
- FkOWDs7Mvx/UO44vjmmLT6g9/T/temLWY4ud/DGWD2mZm7FD6wmCKCxFTgzKQSD/P90lhr9o217
- rOulVz8VirrktInFxsA3t0ODzZpdyyMk3w48IOt+uXWi/Z3Ql8D3303wxw5XbNpSiFk9AwGhagg
- vx238fBXuPczyRGAzINKeLr/5u5vt8ErQmw1Tzij2Ph1UOVzGUwyDTTFTd9FP0HMDN+XqFG8T3B
- kE4REF5HqLOMJLVDOJjHJLpRnDkuO6gOMeLnoX+JEpJByYJex8wltdRkjYGRjh14psEpBsZaAU5
- MCc6f8enuWqjL04mNW/SYQfAfq8gqQ/h/i1Pz8/vZB3hAMqTbLsopoZ2D7u1Mx7xr2jlhk/qqJh
- lchwYnO C2pRB0MQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 0/3] quering mount attributes
+Content-Language: en-US
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <CAOQ4uxiuc0VNVaF98SE0axE3Mw6wMJJ1t36cmbcM5vwYLqtWSw@mail.gmail.com>
+ <904a8d17-b6df-e294-fcf6-6f95459e1ffa@themaw.net>
+ <CAOQ4uxgHxVqtvb51Z27Sgft-U=oYtXeiv+3HJbara4zdRC-FZg@mail.gmail.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAOQ4uxgHxVqtvb51Z27Sgft-U=oYtXeiv+3HJbara4zdRC-FZg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the markings for the SLAB_VIRTUAL area.
+On 15/9/23 11:06, Amir Goldstein wrote:
+> On Fri, Sep 15, 2023 at 4:20 AM Ian Kent <raven@themaw.net> wrote:
+>> On 14/9/23 14:47, Amir Goldstein wrote:
+>>> On Wed, Sep 13, 2023 at 6:22 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>>>> Implement the mount querying syscalls agreed on at LSF/MM 2023.  This is an
+>>>> RFC with just x86_64 syscalls.
+>>>>
+>>>> Excepting notification this should allow full replacement for
+>>>> parsing /proc/self/mountinfo.
+>>> Since you mentioned notifications, I will add that the plan discussed
+>>> in LFSMM was, once we have an API to query mount stats and children,
+>>> implement fanotify events for:
+>>> mount [mntuid] was un/mounted at [parent mntuid],[dirfid+name]
+>>>
+>>> As with other fanotify events, the self mntuid and dirfid+name
+>>> information can be omitted and without it, multiple un/mount events
+>>> from the same parent mntuid will be merged, allowing userspace
+>>> to listmnt() periodically only mntuid whose child mounts have changed,
+>>> with little risk of event queue overflow.
+>>>
+>>> The possible monitoring scopes would be the entire mount namespace
+>>> of the monitoring program or watching a single mount for change in
+>>> its children mounts. The latter is similar to inotify directory children watch,
+>>> where the watches needs to be set recursively, with all the weight on
+>>> userspace to avoid races.
+>> It's been my belief that the existing notification mechanisms don't
+>> quite fully satisfy the needs of users of these calls (aka. the need
+>> I found when implementing David's original calls into systemd).
+>>
+>> Specifically the ability to process a batch of notifications at once.
+>>
+>> Admittedly the notifications mechanism that David originally implemented
+>> didn't fully implement what I found I needed but it did provide for a
+>> settable queue length and getting a batch of notifications at a time.
+>>
+>> Am I mistaken in my belief?
+>>
+> I am not sure I understand the question.
+>
+> fanotify has an event queue (16K events by default), but it can
+> also use unlimited size.
+> With a limited size queue, event queue overflow generates an
+> overflow event.
+>
+> event listeners can read a batch of events, depending on
+> the size of the buffer that they provide.
 
-Cc: Matteo Rizzo <matteorizzo@google.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-This is on top of the SLAB_VIRTUAL series:
-https://lore.kernel.org/all/20230915105933.495735-11-matteorizzo@google.com/
+So it sounds like I can get a bunch of events at once with fanotify.
 
-Feel free to collapse this into the x86 patch from the above series.
+I'll have to look at the code again ...
 
-FYI, as expected, the kernel page table entries get way longer with
-SLAB_VIRTUAL. :)
 
-Without SLAB_VIRTUAL:
+Ian
 
-# wc -l /sys/kernel/debug/page_tables/kernel
-1501 /sys/kernel/debug/page_tables/kernel
-
-With SLAB_VIRTUAL:
-
-# wc -l /sys/kernel/debug/page_tables/kernel
-7549 /sys/kernel/debug/page_tables/kernel
----
- arch/x86/mm/dump_pagetables.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/x86/mm/dump_pagetables.c b/arch/x86/mm/dump_pagetables.c
-index e1b599ecbbc2..b1fa68669e61 100644
---- a/arch/x86/mm/dump_pagetables.c
-+++ b/arch/x86/mm/dump_pagetables.c
-@@ -64,6 +64,9 @@ enum address_markers_idx {
- 	KASAN_SHADOW_END_NR,
- #endif
- 	CPU_ENTRY_AREA_NR,
-+#ifdef CONFIG_SLAB_VIRTUAL
-+	SLAB_AREA_NR,
-+#endif
- #ifdef CONFIG_X86_ESPFIX64
- 	ESPFIX_START_NR,
- #endif
-@@ -95,6 +98,9 @@ static struct addr_marker address_markers[] = {
- 	[LDT_NR]		= { 0UL,		"LDT remap" },
- #endif
- 	[CPU_ENTRY_AREA_NR]	= { CPU_ENTRY_AREA_BASE,"CPU entry Area" },
-+#ifdef CONFIG_SLAB_VIRTUAL
-+	[SLAB_AREA_NR]		= { SLAB_BASE_ADDR,	"Slab Area" },
-+#endif
- #ifdef CONFIG_X86_ESPFIX64
- 	[ESPFIX_START_NR]	= { ESPFIX_BASE_ADDR,	"ESPfix Area", 16 },
- #endif
--- 
-2.34.1
-
+>
+> when multiple events with same information are queued,
+> for example "something was un/mounted over parent mntuid 100"
+> fanotify will merged those all those events in the queue and the
+> event listeners will get only one such event in the batch.
+>
+>> Don't misunderstand me, it would be great for the existing notification
+>> mechanisms to support these system calls, I just have a specific use case
+>> in mind that I think is important, at least to me.
+>>
+> Please explain the use case and your belief about existing fanotify
+> limitations. I did not understand it.
+>
+> Thanks,
+> Amir.
