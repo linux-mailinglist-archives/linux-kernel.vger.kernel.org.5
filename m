@@ -2,186 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AF97A2F12
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B960D7A2F14
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238925AbjIPJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        id S238946AbjIPJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238921AbjIPJxh (ORCPT
+        with ESMTP id S238921AbjIPJ43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:53:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18CDCD0;
-        Sat, 16 Sep 2023 02:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694858012; x=1726394012;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ub4i+7/Nq1xk7dy6tjvuEZbfUQbBpW9K/cCmy8f69nM=;
-  b=hawuiMII1XLRvRkN3YNKK6qnSfaPivIhqi4xoQhsbNwjDf8npHghzTH8
-   Iw7a+OvHFLxqaPeW2H3kex1OIdfciKQ7VYp0kON99n4Pq0egXri6gTPZG
-   cCmTKfWFcMUM/YIMbw6SwNvs1hT8YdHDCIiWbaU9aPOLefb3m0Y/9AVo9
-   BahWx9ixCfRR6/YZ68J+7Ikfb6FaP/ViwHwf0nlFnVTqv+0vH3s2K8MZs
-   YAvXX3nAAtQ5JWEdcbp3bR71YIh04euYxjHiQxqMq0/IMsyA1f42xKlrt
-   WyXSQSucwnBAlOdxcCOJ2pHTjtNFf/KpDX1J0zs6hqdQK1t8BMpBNyQCy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="382134742"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="382134742"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 02:53:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="748460147"
-X-IronPort-AV: E=Sophos;i="6.02,152,1688454000"; 
-   d="scan'208";a="748460147"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Sep 2023 02:53:31 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sat, 16 Sep 2023 02:53:31 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sat, 16 Sep 2023 02:53:30 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sat, 16 Sep 2023 02:53:30 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sat, 16 Sep 2023 02:53:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GImUnrd1f8IVYVLH1LjWHn8ak+4Llw1gZHIjDNel6SmqFjMxMfVXJkd7zxYse3STArAfYEZXNsMk5en/UsDcFOtpqsSOcDCmTeKtaE90axAs2ESxPiyP+1NjuUSm8jIJEd2B2SeWyzpJETTDGQv27ewgOx8OtADgdwLmGHE65KuBu5k90JkStDQlLlpkn+huF8+WzNhPJxxnp1eOk1MhNLOTq8RE58AbJwl55WyGpY0zmap0Q+0DPAH2zDAeeq1Qrg1BTRCnEfp8gI2ivTSB3IRODcdfedY4ZB5jbFMwD/cyoKAKz8zQ62YixT4MhiX0l1dFdz1GCQSTIRCvv89V6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zv5JY1cj4T9IqYh3UvuuWa/drg7kFTz+fYGLNRpIICg=;
- b=f3XdQRJkMwBhcYjcIDw3XMxnZyEidopYkS/fWL1bPblosmRqFjuTfTAweoKPFFypTp6lX7JnMokeevUG8EYHRAJJxyRATxUosTAeONpElvmckPzmYohgfFqyqi0t0Av0og34m3R+8YBqK+4yn+nQ8Aj0T3mcUrFZvt4CFDNTmZDUTjajFh6znMMGULmzhYLLeqODIWcG/lzULTbwtR5cgUV7UnRl7eSTbbqo0iuWaByo4LNJu8dIQWYRllgvOB7ckDjscnMdyOuoo0r3TiTTc4v2ARGXapxFv/Ow35ff5GQLnbCzkwn+mwNNy8AE3LXjNFdYHLex2fhAfqsh5CIL7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA0PR11MB4653.namprd11.prod.outlook.com (2603:10b6:806:94::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Sat, 16 Sep
- 2023 09:53:29 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::ddda:2559:a7a6:8323]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::ddda:2559:a7a6:8323%7]) with mapi id 15.20.6792.023; Sat, 16 Sep 2023
- 09:53:29 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        oushixiong <oushixiong@kylinos.cn>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
-        "Shameer Kolothum" <shameerali.kolothum.thodi@huawei.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] vfio/pds: Use proper PF device access helper
-Thread-Topic: [PATCH] vfio/pds: Use proper PF device access helper
-Thread-Index: AQHZ5rFDCQ0JWtwtcU+DMfvAXSfZOLAcP/oAgAD5NlA=
-Date:   Sat, 16 Sep 2023 09:53:29 +0000
-Message-ID: <BN9PR11MB527624CEBA0B039CD62A8F428CF5A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230914021332.1929155-1-oushixiong@kylinos.cn>
- <20230915125858.72b75a16.alex.williamson@redhat.com>
-In-Reply-To: <20230915125858.72b75a16.alex.williamson@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA0PR11MB4653:EE_
-x-ms-office365-filtering-correlation-id: 3a352435-b0e8-47f3-816d-08dbb69ac777
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KxjsItxDZwOCn/MbDZ7MXKTDwNMJhdFSL2VGeI24tv7pMKS+5v1lB8vGo+4pSDCzLotrNh9eNz4vBLH493YcrkDx5BQLPei+4rVSCd8+xJiPtOwj0/PFuO6cWjeEZD4WpujKDSC7X2BIbVfhrBxSFdAKHbMr/6NOPRpdwlcsOvlUmgXmlcVwGGw/7j3fKBz7q2TC00zRGX0bQIbdSyI3nM605c4elGUMBTniVNI5DFvEFngOSQJ/B3xvM09Qj1CBkS/962+u/SeGT0aFKntUA86eWtIups1SHVOgIazYJ72Bhc82dmX8qw4nrxc58Gpk5qn8AVxd8BLBfhUObGgEwC8uXJFGaisAmNlExUMPEL4zoR2sW43QewE1es8Ku3LJx4M6dmAtKyaJmcbtKM5aDWQyONpjs7E9IHQWb5/adxvxMgeT5+Z04W5dG0mmL7kip3tcCyDShB93kTpwb4hxsPXYXux/NnYogjolVPorvwdz31pBXSYwRnxTip9Vs4l17Xca653Qs6MfJaTe9Ylkko6eDFOFVJ/9hlgpXrk5NtDyWaybCKw87qPyzut+oCrwxNN5v2gLaI6TBBHjbB83ktZAvk/+WHOnhfk9vIcLcBo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39860400002)(136003)(451199024)(1800799009)(186009)(4744005)(2906002)(86362001)(122000001)(38100700002)(33656002)(82960400001)(38070700005)(55016003)(4326008)(41300700001)(316002)(71200400001)(64756008)(8676002)(66556008)(110136005)(9686003)(8936002)(66946007)(54906003)(6506007)(76116006)(52536014)(66446008)(66476007)(83380400001)(478600001)(7696005)(966005)(26005)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MtT0dgkKlYqgzkkxDUvBB3D9+gMsE9zMXAVC6W0kP1TFJhcUjlIsdlM4mhuP?=
- =?us-ascii?Q?Mpyf+JnVclXGBdBX5O08rdMD1/A3JENK0DLmqxeFVQ91cnk45BAozeSrGCDZ?=
- =?us-ascii?Q?183o+3O1hIdo71ag6QPJxEo5QggvJE677A4D+Un9mnyxF+SpQ7OWzA8aqQRE?=
- =?us-ascii?Q?Rm6CTh+Ri6rSgrg5Ik2KjzKngXozv5Jd6pGhHLa9V028eKTy4QMOKId8JlhR?=
- =?us-ascii?Q?I/OIPqxopY+5h6OwucGSqqGwYCLys+5fjDiZRDu+FvjrZ4LAYUBIj4YIprBs?=
- =?us-ascii?Q?Y7zrzR8L5sf0zdUJL64yRH66FN6ySNpO++eh2dliKsWaCaNlcfD6U88pxyaP?=
- =?us-ascii?Q?dRgT6ceRJmp2lidivAkKrPPis1aRs/JPNMVXfriQUCWNGwHzH1BZYgkeIudz?=
- =?us-ascii?Q?jG9+kYJ0mB7ImZpPVAXEIsS16jrRVU0zsa9IeOIEIhtfMH1WffwlIRC93IHf?=
- =?us-ascii?Q?2CdsiECZNhrpiU1q544bEpGNcrmiBMYsWxT+3hSizfzVGHIeHp/Pks4VPFZX?=
- =?us-ascii?Q?forTV/7z+p8YK4a22FBNWPvP4nugLGOGW8bFUxwRYHeTH7rftNjtavhCUO6g?=
- =?us-ascii?Q?eVxCBiskSTYTheqMviciuEugfAUQgB+90SiaQLVK14ZO1f32POVtJVgxvRO/?=
- =?us-ascii?Q?Cw1H+4IpNNFB4LYtpllQx1XUOahcwG6t3NMbU8bXrwZ+bB6AoS4q9cjT+vD1?=
- =?us-ascii?Q?UajXZrqvki4rgFsHPU6JbM1Wx7MvIW6aKAHx8Km81LtjtcUmi+NarnMHITx5?=
- =?us-ascii?Q?4+e13MWNQPjgRH3KrvEJK7gbx8Ibk313wxrG9JKRNNojjAaZ1pgWN3l0kjrU?=
- =?us-ascii?Q?7WxOc9N3/Hq0iQpsDpwYHYM211e6WFYK42I0UD5qk9wpGoWk7MQPkIa4UxE0?=
- =?us-ascii?Q?5HIDMEVUc+VVpkdCMlrVFvgVEW6xfXCw+P7ehM2Lu/rlaeulGjMT5JyRAgAJ?=
- =?us-ascii?Q?BsyY1GtUEzJHiLqKA/8jyRJ5shRbEcI7lB3NZLgn4TdGCJtdt0JighS0C21f?=
- =?us-ascii?Q?9og+bLffKl7j2yR0dn+8AFbgD6pL7vkOaVo2sVTE2MuGDK7dzXyvPPnTFLxi?=
- =?us-ascii?Q?uut6yihahDHDLTbtkk1jYr3JaJ6oGCNAAKUnAufqDTHR4EssU5ylel53zyCn?=
- =?us-ascii?Q?BBogamb0fcdQyPPW378GkUKk9YFehxHqgZfO22ac368WvmDZGoTcZeApm05h?=
- =?us-ascii?Q?vu8qllxwRRdKhTTyOIjgD02XFNRZH5yXYAYxR6TTBSUeytQ9vgsffCvJPaA0?=
- =?us-ascii?Q?qKkK1/n1FnK0JWZUMbRsk0OOxX4VFCPOoZuJIBu/v75WUSZv1Js/N+Hjyden?=
- =?us-ascii?Q?VlhRNP82BT7vFa/vJhgNZDtg2189bcqfk1qp9yrZjbjCIPEhZmrJPqezGDU2?=
- =?us-ascii?Q?I9lByjC5DMnFTs0SiAdA/Dqqj63g2DnZJ3/z9M3nalZxu++lzjbX5G6QLeH4?=
- =?us-ascii?Q?XvXo+62UEhmsB2VC75CAsKZgYD7+n/8Otp2lZEp811lndP8c8OL0OA7qN4GF?=
- =?us-ascii?Q?C3rQIZYxNQ6siRj4HplvfNJeMZN9BGFfZP08dFf5/EFSPKWqL/KvBafipEBP?=
- =?us-ascii?Q?TAYJhcBUHDWi7EbuW4BTce0yAI5uxi7r5YkEKndI?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 16 Sep 2023 05:56:29 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 005BCF7
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:56:22 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8DxBfHFewVlKAgpAA--.13264S3;
+        Sat, 16 Sep 2023 17:56:21 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNzBewVl+6IIAA--.16875S3;
+        Sat, 16 Sep 2023 17:56:19 +0800 (CST)
+Message-ID: <1918be3c-3560-bd3d-6518-c5e49319b1d6@loongson.cn>
+Date:   Sat, 16 Sep 2023 17:56:17 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a352435-b0e8-47f3-816d-08dbb69ac777
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2023 09:53:29.0404
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n/EegFIdGvA+lPu1iDTrBDE3nHyfmNdRS7cNpMk+p8rHizqGNej3UB/rIeCzNCcEdgp7IRyKMoX46/5x8wXQAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4653
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] LoongArch: Fix some build warnings with -W1 option
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230916092330.971630-1-maobibo@loongson.cn>
+ <CAAhV-H50_aY8Sw0uPSs1VuNOtbaHF2-a5mZE2jnSC7QPUaWf=Q@mail.gmail.com>
+Content-Language: en-US
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <CAAhV-H50_aY8Sw0uPSs1VuNOtbaHF2-a5mZE2jnSC7QPUaWf=Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxXNzBewVl+6IIAA--.16875S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWfGryDXrW3WFyUCrW5uF47KFX_yoWkJrWrpF
+        yDAF4DGF4rGr1kW3ZIy3s8ZFnxtwnYga4I9F17tFyYvFn8tr1fXr1ktr98ZF1qkaykKF10
+        vFy5tw1avFWYqwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
+        67AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
+        CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+        1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
+        vfC2KfnxnUUI43ZEXa7IU8r9N3UUUUU==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Alex Williamson <alex.williamson@redhat.com>
-> Sent: Saturday, September 16, 2023 2:59 AM
->=20
-> On Thu, 14 Sep 2023 10:13:32 +0800
-> oushixiong <oushixiong@kylinos.cn> wrote:
->=20
-> > From: Shixiong Ou <oushixiong@kylinos.cn>
-> >
-> > The pci_physfn() helper exists to support cases where the physfn
-> > field may not be compiled into the pci_dev structure. We've
-> > declared this driver dependent on PCI_IOV to avoid this problem,
-> > but regardless we should follow the precedent not to access this
-> > field directly.
-> >
-> > Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> > ---
-> >
-> > This patch changes the subject line and commit log, and the previous
-> > patch's links is:
-> >
-> 	https://patchwork.kernel.org/project/kvm/patch/20230911080828.6
-> 35184-1-oushixiong@kylinos.cn/
->=20
-> Kevin & Jason,
->=20
-> I assume your R-b's apply to this version as well.  Thanks,
->=20
 
-yes.
+
+在 2023/9/16 17:42, Huacai Chen 写道:
+> Hi, Bibo,
+> 
+> On Sat, Sep 16, 2023 at 5:23 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> There are some building warnings when building LoongArch kernel
+>> with -W1 option as following, this patch fixes these building
+>> warnings.
+> Don't touch asm-offsets.c now, because it is being refactored by the community.
+Well, I will bypass this file and send the next version.
+
+Do you think that is it deserved to add -Wno-override-init option
+to remove compiling warning about file syscall.c? I am not sure about it.
+
+Regards
+Bibo Mao
+
+> 
+> Huacai
+>>
+>> arch/loongarch/kernel/asm-offsets.c:18:6: warning: no previous
+>> prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
+>>    18 | void output_ptreg_defines(void)
+>>       |      ^~~~~~~~~~~~~~~~~~~~
+>> arch/loongarch/kernel/traps.c:496:25: warning: no previous prototype
+>> for 'do_fpe' [-Wmissing-prototypes]
+>>   496 | asmlinkage void noinstr do_fpe(struct pt_regs *regs
+>>       |                         ^~~~~~
+>> arch/loongarch/kernel/syscall.c:21:40: warning: initialized field
+>> overwritten [-Woverride-init]
+>>    21 | #define __SYSCALL(nr, call)     [nr] = (call),
+>>       |                                        ^
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>  arch/loongarch/include/asm/exception.h | 26 ++++++++++++++++++++++++++
+>>  arch/loongarch/kernel/Makefile         |  1 +
+>>  arch/loongarch/kernel/asm-offsets.c    | 24 ++++++++++++------------
+>>  arch/loongarch/kernel/smp.c            |  3 +++
+>>  arch/loongarch/kernel/traps.c          | 10 ++++++----
+>>  arch/loongarch/mm/fault.c              |  1 +
+>>  arch/loongarch/mm/tlb.c                |  2 +-
+>>  7 files changed, 50 insertions(+), 17 deletions(-)
+>>  create mode 100644 arch/loongarch/include/asm/exception.h
+>>
+>> diff --git a/arch/loongarch/include/asm/exception.h b/arch/loongarch/include/asm/exception.h
+>> new file mode 100644
+>> index 000000000000..ffa068aa6ac9
+>> --- /dev/null
+>> +++ b/arch/loongarch/include/asm/exception.h
+>> @@ -0,0 +1,26 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +
+>> +#ifndef __ASM_EXCEPTION_H
+>> +#define __ASM_EXCEPTION_H
+>> +
+>> +#include <asm/ptrace.h>
+>> +
+>> +asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr);
+>> +asmlinkage void noinstr do_ade(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_ale(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_bce(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_bp(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_watch(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_ri(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_fpu(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_lsx(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_lasx(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_lbt(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_reserved(struct pt_regs *regs);
+>> +asmlinkage void cache_parity_error(void);
+>> +asmlinkage void noinstr handle_loongarch_irq(struct pt_regs *regs);
+>> +asmlinkage void noinstr do_vint(struct pt_regs *regs, unsigned long sp);
+>> +asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
+>> +                               unsigned long write, unsigned long address);
+>> +
+>> +#endif /* __ASM_EXCEPTION_H */
+>> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
+>> index c56ea0b75448..1e94764005e1 100644
+>> --- a/arch/loongarch/kernel/Makefile
+>> +++ b/arch/loongarch/kernel/Makefile
+>> @@ -19,6 +19,7 @@ obj-$(CONFIG_CPU_HAS_LBT)     += lbt.o
+>>
+>>  obj-$(CONFIG_ARCH_STRICT_ALIGN)        += unaligned.o
+>>
+>> +CFLAGS_syscall.o       += $(call cc-option,-Wno-override-init,)
+>>  ifdef CONFIG_FUNCTION_TRACER
+>>    ifndef CONFIG_DYNAMIC_FTRACE
+>>      obj-y += mcount.o ftrace.o
+>> diff --git a/arch/loongarch/kernel/asm-offsets.c b/arch/loongarch/kernel/asm-offsets.c
+>> index 8da0726777ed..202873bcfeb0 100644
+>> --- a/arch/loongarch/kernel/asm-offsets.c
+>> +++ b/arch/loongarch/kernel/asm-offsets.c
+>> @@ -14,7 +14,7 @@
+>>  #include <asm/processor.h>
+>>  #include <asm/ftrace.h>
+>>
+>> -void output_ptreg_defines(void)
+>> +static void __used output_ptreg_defines(void)
+>>  {
+>>         COMMENT("LoongArch pt_regs offsets.");
+>>         OFFSET(PT_R0, pt_regs, regs[0]);
+>> @@ -61,7 +61,7 @@ void output_ptreg_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_task_defines(void)
+>> +static void __used output_task_defines(void)
+>>  {
+>>         COMMENT("LoongArch task_struct offsets.");
+>>         OFFSET(TASK_STATE, task_struct, __state);
+>> @@ -76,7 +76,7 @@ void output_task_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_thread_info_defines(void)
+>> +static void __used output_thread_info_defines(void)
+>>  {
+>>         COMMENT("LoongArch thread_info offsets.");
+>>         OFFSET(TI_TASK, thread_info, task);
+>> @@ -92,7 +92,7 @@ void output_thread_info_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_thread_defines(void)
+>> +static void __used output_thread_defines(void)
+>>  {
+>>         COMMENT("LoongArch specific thread_struct offsets.");
+>>         OFFSET(THREAD_REG01, task_struct, thread.reg01);
+>> @@ -128,7 +128,7 @@ void output_thread_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_thread_fpu_defines(void)
+>> +static void __used output_thread_fpu_defines(void)
+>>  {
+>>         OFFSET(THREAD_FPR0, loongarch_fpu, fpr[0]);
+>>         OFFSET(THREAD_FPR1, loongarch_fpu, fpr[1]);
+>> @@ -169,7 +169,7 @@ void output_thread_fpu_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_thread_lbt_defines(void)
+>> +static void __used output_thread_lbt_defines(void)
+>>  {
+>>         OFFSET(THREAD_SCR0,  loongarch_lbt, scr0);
+>>         OFFSET(THREAD_SCR1,  loongarch_lbt, scr1);
+>> @@ -179,7 +179,7 @@ void output_thread_lbt_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_mm_defines(void)
+>> +static void __used output_mm_defines(void)
+>>  {
+>>         COMMENT("Size of struct page");
+>>         DEFINE(STRUCT_PAGE_SIZE, sizeof(struct page));
+>> @@ -211,7 +211,7 @@ void output_mm_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_sc_defines(void)
+>> +static void __used output_sc_defines(void)
+>>  {
+>>         COMMENT("Linux sigcontext offsets.");
+>>         OFFSET(SC_REGS, sigcontext, sc_regs);
+>> @@ -219,7 +219,7 @@ void output_sc_defines(void)
+>>         BLANK();
+>>  }
+>>
+>> -void output_signal_defines(void)
+>> +static void __used output_signal_defines(void)
+>>  {
+>>         COMMENT("Linux signal numbers.");
+>>         DEFINE(_SIGHUP, SIGHUP);
+>> @@ -257,7 +257,7 @@ void output_signal_defines(void)
+>>  }
+>>
+>>  #ifdef CONFIG_SMP
+>> -void output_smpboot_defines(void)
+>> +static void __used output_smpboot_defines(void)
+>>  {
+>>         COMMENT("Linux smp cpu boot offsets.");
+>>         OFFSET(CPU_BOOT_STACK, secondary_data, stack);
+>> @@ -267,7 +267,7 @@ void output_smpboot_defines(void)
+>>  #endif
+>>
+>>  #ifdef CONFIG_HIBERNATION
+>> -void output_pbe_defines(void)
+>> +static void __used output_pbe_defines(void)
+>>  {
+>>         COMMENT("Linux struct pbe offsets.");
+>>         OFFSET(PBE_ADDRESS, pbe, address);
+>> @@ -279,7 +279,7 @@ void output_pbe_defines(void)
+>>  #endif
+>>
+>>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>> -void output_fgraph_ret_regs_defines(void)
+>> +static void __used output_fgraph_ret_regs_defines(void)
+>>  {
+>>         COMMENT("LoongArch fgraph_ret_regs offsets.");
+>>         OFFSET(FGRET_REGS_A0, fgraph_ret_regs, regs[0]);
+>> diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+>> index 6667b0a90f81..ef35c871244f 100644
+>> --- a/arch/loongarch/kernel/smp.c
+>> +++ b/arch/loongarch/kernel/smp.c
+>> @@ -13,6 +13,7 @@
+>>  #include <linux/cpumask.h>
+>>  #include <linux/init.h>
+>>  #include <linux/interrupt.h>
+>> +#include <linux/profile.h>
+>>  #include <linux/seq_file.h>
+>>  #include <linux/smp.h>
+>>  #include <linux/threads.h>
+>> @@ -556,10 +557,12 @@ void smp_send_stop(void)
+>>         smp_call_function(stop_this_cpu, NULL, 0);
+>>  }
+>>
+>> +#ifdef CONFIG_PROFILING
+>>  int setup_profiling_timer(unsigned int multiplier)
+>>  {
+>>         return 0;
+>>  }
+>> +#endif
+>>
+>>  static void flush_tlb_all_ipi(void *info)
+>>  {
+>> diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
+>> index 65214774ef7c..e6429047b6d9 100644
+>> --- a/arch/loongarch/kernel/traps.c
+>> +++ b/arch/loongarch/kernel/traps.c
+>> @@ -35,6 +35,7 @@
+>>  #include <asm/branch.h>
+>>  #include <asm/break.h>
+>>  #include <asm/cpu.h>
+>> +#include <asm/exception.h>
+>>  #include <asm/fpu.h>
+>>  #include <asm/lbt.h>
+>>  #include <asm/inst.h>
+>> @@ -371,7 +372,7 @@ void show_regs(struct pt_regs *regs)
+>>         dump_stack();
+>>  }
+>>
+>> -void show_registers(struct pt_regs *regs)
+>> +static void show_registers(struct pt_regs *regs)
+>>  {
+>>         __show_regs(regs);
+>>         print_modules();
+>> @@ -439,7 +440,7 @@ static inline void setup_vint_size(unsigned int size)
+>>   * happen together with Overflow or Underflow, and `ptrace' can set
+>>   * any bits.
+>>   */
+>> -void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
+>> +static void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
+>>                      struct task_struct *tsk)
+>>  {
+>>         int si_code = FPE_FLTUNK;
+>> @@ -458,7 +459,8 @@ void force_fcsr_sig(unsigned long fcsr, void __user *fault_addr,
+>>         force_sig_fault(SIGFPE, si_code, fault_addr);
+>>  }
+>>
+>> -int process_fpemu_return(int sig, void __user *fault_addr, unsigned long fcsr)
+>> +static int process_fpemu_return(int sig, void __user *fault_addr,
+>> +                               unsigned long fcsr)
+>>  {
+>>         int si_code;
+>>
+>> @@ -824,7 +826,7 @@ asmlinkage void noinstr do_watch(struct pt_regs *regs)
+>>  asmlinkage void noinstr do_ri(struct pt_regs *regs)
+>>  {
+>>         int status = SIGILL;
+>> -       unsigned int opcode = 0;
+>> +       unsigned int __maybe_unused opcode;
+>>         unsigned int __user *era = (unsigned int __user *)exception_era(regs);
+>>         irqentry_state_t state = irqentry_enter(regs);
+>>
+>> diff --git a/arch/loongarch/mm/fault.c b/arch/loongarch/mm/fault.c
+>> index e6376e3dce86..02f2a9765524 100644
+>> --- a/arch/loongarch/mm/fault.c
+>> +++ b/arch/loongarch/mm/fault.c
+>> @@ -26,6 +26,7 @@
+>>  #include <linux/kfence.h>
+>>
+>>  #include <asm/branch.h>
+>> +#include <asm/exception.h>
+>>  #include <asm/mmu_context.h>
+>>  #include <asm/ptrace.h>
+>>
+>> diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
+>> index eb8572e201ea..2c0a411f23aa 100644
+>> --- a/arch/loongarch/mm/tlb.c
+>> +++ b/arch/loongarch/mm/tlb.c
+>> @@ -261,7 +261,7 @@ unsigned long pcpu_handlers[NR_CPUS];
+>>  #endif
+>>  extern long exception_handlers[VECSIZE * 128 / sizeof(long)];
+>>
+>> -void setup_tlb_handler(int cpu)
+>> +static void setup_tlb_handler(int cpu)
+>>  {
+>>         setup_ptwalker();
+>>         local_flush_tlb_all();
+>>
+>> base-commit: 9fdfb15a3dbf818e06be514f4abbfc071004cbe7
+>> --
+>> 2.27.0
+>>
+
