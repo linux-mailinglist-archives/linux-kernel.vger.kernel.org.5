@@ -2,480 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71FA7A2EED
+	by mail.lfdr.de (Postfix) with ESMTP id 8336C7A2EEC
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbjIPJB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S235204AbjIPJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjIPJBj (ORCPT
+        with ESMTP id S238670AbjIPJDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:01:39 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F65910FA;
-        Sat, 16 Sep 2023 02:01:32 -0700 (PDT)
-Received: from loongson.cn (unknown [10.40.46.158])
-        by gateway (Coremail) with SMTP id _____8CxfOrrbgVlTwYpAA--.51564S3;
-        Sat, 16 Sep 2023 17:01:31 +0800 (CST)
-Received: from [192.168.124.126] (unknown [10.40.46.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxvi_nbgVlqp0IAA--.16945S3;
-        Sat, 16 Sep 2023 17:01:30 +0800 (CST)
-Subject: Re: [PATCH v21 02/29] LoongArch: KVM: Implement kvm module related
- interface
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20230915014949.1222777-1-zhaotianrui@loongson.cn>
- <20230915014949.1222777-3-zhaotianrui@loongson.cn>
- <CAAhV-H685vOknDORouFmr4zGQ-h_JDhxZhLKy=YrJ9gYX678xw@mail.gmail.com>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <254c828b-2f1c-4991-3c29-6df143c8093c@loongson.cn>
-Date:   Sat, 16 Sep 2023 17:01:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAAhV-H685vOknDORouFmr4zGQ-h_JDhxZhLKy=YrJ9gYX678xw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Sat, 16 Sep 2023 05:03:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6282170E
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694854995; x=1726390995;
+  h=message-id:date:to:cc:references:from:subject:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=yDwfsvx4sGgxut2Mwpp+zt2UmfVUe9/6WO/i40jkh24=;
+  b=mBIoZCXCHO48G/RJLrBlkdhH5K1xOEpCV0TafK0UETLKbgACZ30P5a8z
+   slCdq1PermCptME9lKI1nGOV2lSZi0yEN5Ddl6Hyow6+bjRhflo6Z3win
+   0rGLXHzQmDL4uncH2Dn4xTUfM9F41AtbdvkZpM+BJU+fDYOif6BlUOt8d
+   KVd4hrxinoCOkVzqu9STmd2ccE/H25zKhLVgR+8/O8Qsz3R6ScLscljL0
+   IoZryGlB/sE3tRF3bY4zGmhGzl+WTlLBQ9Pfm3amrwpjJ8WKMGn9V3Svy
+   aF5JK2cLHkehfRiQxJJt4k7hHyIZz3J96wlyCGCO8lvU1rOcbrlx8LRw/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="378308451"
+X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
+   d="scan'208";a="378308451"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2023 02:03:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="738593871"
+X-IronPort-AV: E=Sophos;i="6.02,151,1688454000"; 
+   d="scan'208";a="738593871"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Sep 2023 02:03:15 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Sat, 16 Sep 2023 02:03:14 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Sat, 16 Sep 2023 02:03:14 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Sat, 16 Sep 2023 02:03:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KTitvSVCQ8ZZp8YpmmqhhnsXCRiC0EWW8/pPCymLcOSCYURkkQcCO5mYL1hHwn0A1EbI9um7kM8ty0hjY6/tDJWH9rBqLY1clNT5gdKYUSrmyjOdWF0CBfO1BmEA6fo6qsbaFLK4g5xhVLnNjtKwOfkFQjuDPLj05sqHN1qIeqnxuznPbXrRgRinJvnQ1C2tB4wpfMWmzrhusk65MkO2ExjHghWk0+PYnqnmD8aJMgE78pqJn/UmV3lGMHmt4dhg+DB5eW6++Q6bz3yjWBfVHdtMyK74m+nICQRJF733MyWTcYAW2jm9DBQs3P1W8U+3QjygExxitPZZlwVikiKIDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=amL8IxWyBBYqPK1DLHPWJ1iiONPSvU0BvlwUKXFa1lw=;
+ b=j2NTYRtBcCEfTPwVNqXv+7p2FrhDfW0Kx/YcG6YeAWy7slaFCKCQtAmzc34SUxAJHcnuH2eRW9SND6ddSaYwEZFS2WmaqIfYw/fQL8BqD85DSEChuGnKvfaagI2r7f+f5DPcryXbSVlIrQQLM9XjSEeV6el8ML742td8qN+X15hj2FvMJA898W6c+f1Njo1rLWa8WV+S/sZeH/s7Md6vySSSTTY0Gbe9ljcRVpDphZCITHDWWyG4kxHipF37PLSlSf6aLzhCa/KgoZ4CzzymAFu/xkqYoQCPQNss45y9dsKS2zFTjXjyJLzAHrNDpOYd5ewSW57UVO7IuWU0/EbnEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by CY8PR11MB6890.namprd11.prod.outlook.com (2603:10b6:930:5d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.21; Sat, 16 Sep
+ 2023 09:03:07 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::388:a305:5017:8453]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::388:a305:5017:8453%4]) with mapi id 15.20.6792.021; Sat, 16 Sep 2023
+ 09:03:06 +0000
+Message-ID: <1e2ecded-c1f6-462c-f66e-756a9d76c41d@intel.com>
+Date:   Sat, 16 Sep 2023 02:03:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, Peter Anvin <hpa@zytor.com>
+References: <20230912065249.695681286@linutronix.de>
+ <20230912065500.823314239@linutronix.de>
 Content-Language: en-US
-X-CM-TRANSID: AQAAf8Dxvi_nbgVlqp0IAA--.16945S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9fXoWfJrWfXF1kJry7Cw48ZryktFc_yoW8Gw4Duo
-        WrKF4rGF1UAr12yrZxW34qqaykWr1rGa9ava17Zw1ftw1qy3WFgrZ8Ca1UArsxXF1UCa4U
-        GanFgF1j9FWxKr13l-sFpf9Il3svdjkaLaAFLSUrUUUUnb8apTn2vfkv8UJUUUU8wcxFpf
-        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-        UjIYCTnIWjp_UUUOn7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
-        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-        Y2AK021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-        xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-        JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
-        xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
-        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8uc_3
-        UUUUU==
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+Subject: Re: [patch V3 01/30] x86/microcode/32: Move early loading after
+ paging enable
+In-Reply-To: <20230912065500.823314239@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0167.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::22) To PH0PR11MB4855.namprd11.prod.outlook.com
+ (2603:10b6:510:41::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4855:EE_|CY8PR11MB6890:EE_
+X-MS-Office365-Filtering-Correlation-Id: d99c8b84-a064-4ae9-2073-08dbb693bd67
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ssNFxdNdw/MB3dzz7XIgOGVs6DYabIXtmDo3TpDy9iFgODbDGvH3qVNi/prNg2aFHIO24rrsf92g7d9PZ2/0i5bf7olJwgh+5+QJUuv9nV4HZwWxBOFG8eVBxb/WOafZ2wYSntmt5COuO3Ywhe9JyUHT5MTZcUvQ8npJ2IRGBHr6uLP4L9RNl09Fl5aqDbt2PoE4Gy9SOzjnBP3yw17v/nOumfHmrUyK+WinI0QetMplCnTbb2evhkLdnkDpolkUvXN3jzPd+p3FhCJyltzTiWYI/9XnStliK/9xpYaRaap8f3i8cUVfiE1SNkg8btNoPTuhAjp1WzYmKhNE+GNQUHKsCPTG4H67TOt3NEXM/xlTsEZjqhovrd2p2lh4RLzNtIrNflwwxePxPHaI4sTnmAwyHLKfveSiTcfo8OXe0XBlBZMJZgj18P/uH/sKZ+rO0o5ErPelJ+clpI8tinSnlpClX7wOzTlD3zSKcu+KcsgY9auN9V+pTixG5pm7ocEy5cI+1rYry2Utx0rNyPuPiRvZtM28tSd1ConfNs27c7f8y3tww/lBBDBkOaPHyDBCUPujMrs8oENERKwZys+J+hhsFObqPD83osP+Gx1okvz3fIj49fRwQKJUAMmq3RS/CWjnZTJ591z1eR4rFF6Hqg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(366004)(136003)(396003)(186009)(451199024)(1800799009)(53546011)(6486002)(6506007)(6666004)(6512007)(478600001)(26005)(2616005)(4744005)(2906002)(4326008)(66556008)(316002)(66476007)(66946007)(54906003)(110136005)(5660300002)(8676002)(41300700001)(8936002)(36756003)(31696002)(86362001)(82960400001)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjR3Q3VpbGI0WHRaVjVWSFk3VG9qUjJBTTFPZUY1NnZuN1VPNU4xTFdzY0sx?=
+ =?utf-8?B?QU9JZlZYeEFxZHJEUUptM1FoZU53TUVCaC9RcGFWbm1DcDBpVUx4b3RrdXBW?=
+ =?utf-8?B?MzJsV1RGR0tqbzhOTlpYSTM0Y3RaenU2SzdUUVdXSXk0OTlYMFdvUldPenlQ?=
+ =?utf-8?B?blhKMWE4allRcCthaWhSWXJuVms5UmpPUjNFVlM4U0R4WTltREhzbGEvNm9k?=
+ =?utf-8?B?MjBRcDdUNVhGSVJiQlg5RkxtQ0RJVUNubEU5NzdiQ2ZCOU1IY0t1c1hXeHMr?=
+ =?utf-8?B?UEJtVGtqQkhQM09NcGkrQUwzbjRwYXpweVhyMERPQTZVMTBlYUFrWlBsRWll?=
+ =?utf-8?B?RktJUGE0ekZheGtUTlhKL0JwZk44c1VtZkFuaUF2WWwwZlh4Nnl1ejE2MWty?=
+ =?utf-8?B?OUdzaXlOWHNKeEhLUXRNNEN5Ny9oRVJBT0M2MTZyMmdwSk50NjlpMVFId3hN?=
+ =?utf-8?B?M3l2L2x3cTNNR3lUek9MaEx0VmdBYWV4TjNJNUgwWFlqTldJZXBCZXhZeFp2?=
+ =?utf-8?B?WmY5M2ZTV1gzdzQyQUUyRHZ0cUNTYk9MR1UxQ2xYcXZwZGR4clcva29vbFFp?=
+ =?utf-8?B?WjFEQmdsMmhTV2M0dTViQjRQSVpNT0x6TmZGcTU5VXhGVWFuSUxvam9PSE85?=
+ =?utf-8?B?ZGxjK1ROQlNLYUxFV1EvVEZFZVlmL3ZGVnJlejlET0xkVXdLS3IrL0pJTlZS?=
+ =?utf-8?B?L0tEa3JuNmV6VXpKRnN4OFJvQXEzODlVUHVzVW1JUUYzRzlMM3l4UW1DdW9h?=
+ =?utf-8?B?bkpDZGNiOURnMHdtYkJzTmRNM1NmTCs2YWN5MWxZTk4rTzd5N1lRNGQ3WE13?=
+ =?utf-8?B?NzZablBJM0x5a2g5NE1RcTJBdEhBVXRsZExwYUhBVzdFaTc1ZWdtTFJDYmt0?=
+ =?utf-8?B?czE0Uy94NEJ5dmJFOEdyTiszVjUwb0tQNFJQbFh3KzZGTEdCVnFXKzUwQXVt?=
+ =?utf-8?B?NkxFV0Y3OWlsQm95NFh6alhxbng4REx2bEJodlFrQTdraVBQbW52YUdqa1pX?=
+ =?utf-8?B?bm55dEl1NldWU1FXaUc0T0lKVGlRQU11MCttb0ZJSldtQWdCVW9IcDAxV3Jq?=
+ =?utf-8?B?c0lpWkJtSWRsdklYbHZ1eGVtOHlSTkJGWnUzQlBiaTYwN3ZDNkd3VStNVzhn?=
+ =?utf-8?B?Q1VlelAwWjRFYmxXS0owUlVBS0ZpN1MwTVgyMFM5SnhycWcvQkxKNjRaL2c2?=
+ =?utf-8?B?b3gzajVaekEzSW1ZNGxYL0YwRnQ2Yk83cTRrMlp4bzVsaXpURWFWcWwwR2NQ?=
+ =?utf-8?B?WDlmQlF2bTJ2NW84L1dzYWhGSjJvLytudHJLVisyeFlQWVV6cXRjRVp6VnBH?=
+ =?utf-8?B?Z2xnMUEzYWYvNlJ5YzkzeDFXOEhuNUorN1hYRUtsWkhXODFzcXdXSXFwUHUv?=
+ =?utf-8?B?dXRJb3BOa2RtN0FZOHZ0M01IdTBVTm5oVXExUHhXSEcyL3ZaejJ2VHBrOTRo?=
+ =?utf-8?B?TGdiR0c0SXdUTXhRTFVKZWVSWmUya3h2Q2dmMmZNZm9veExnUTFQSGg5Z1FR?=
+ =?utf-8?B?NG5HT1g3a0JDZ3A5WTM1QTl4clZTck9Sd3gyRkQ1OU0xbWxOdVpucy9STDBs?=
+ =?utf-8?B?WDFrcVVMUGdWdjBDa0tXRHNxVTVmdzNQMFBaVjVpUUJUZU1TTVdKbk5jbnBK?=
+ =?utf-8?B?QXc1dzQ2bFA1b3BNRDhsTUVoK0ZhVjFwNmFxWHowSTRFMzRpNzBxZVJxMGRy?=
+ =?utf-8?B?d09LbVd1TWtNL0ZDKzFqeXcrdkRWOWFtM1VVQ2kxVllMLzQ5MlBGeDNwVk9K?=
+ =?utf-8?B?OWpqYnhtcnVVS3FhSnp1UFlhZkl3UHNJeEd0YlhaQyt5OFprelRmY1FPQ0Qw?=
+ =?utf-8?B?MTZpSk9mUHJIYWZ0SSs5U1dvOVh2NzlXOUZVT1RjSU4wdkJTeW11NFVjMFhr?=
+ =?utf-8?B?amR6dWRpZ0ZqOW9HOGpwVW5zcS9jNGxZOGhTd0ZtWHpXMWZIMWxPREgwWmdq?=
+ =?utf-8?B?NVVwRmJiQ3ZXb1BjWGNtMTlLSC9hZnQxd2JndVdVcWFRY3lYYTlpYzFFVXp6?=
+ =?utf-8?B?TUoxOEJJckxJRFZoNzRGeFp6Qk5BMGdMOHcvWlZFaGZCNG52TWQ4a0RjTHI5?=
+ =?utf-8?B?WmVSQzNWcjJXeVZFQmZsa2h5QVFQN3lXaS9uQkNPcVpMQXdkb0pTWitqeVoz?=
+ =?utf-8?B?bDFVMWoxdHljYWl0OTFGY3M4Y3JOWnJoRS9MMXgrTTRVWFFlMGJOdEp2QmNa?=
+ =?utf-8?B?R2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d99c8b84-a064-4ae9-2073-08dbb693bd67
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2023 09:03:06.0014
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xzhZbGFG7jlrr+kRwxBJKiZ+ieoXJPM1kg+UpOWjCEq7rT6OwpLIg3ldLl2OPmJAm7LrVyudsSXYBzspcFbdjunOc0b5Aoj4ewpzfN6XMq0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6890
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/12/2023 12:57 AM, Thomas Gleixner wrote:
+> 
+>   static int apply_microcode_early(struct ucode_cpu_info *uci, bool early)
+>   {
+...
+> -	if (early)
+> -		print_ucode(old_rev, uci->cpu_sig.rev, mc->hdr.date);
+> -	else
+> -		print_ucode_info(old_rev, uci->cpu_sig.rev, mc->hdr.date);
+> -
 
-在 2023/9/16 下午2:57, Huacai Chen 写道:
-> Hi, Tianrui,
->
-> On Fri, Sep 15, 2023 at 9:50 AM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
->> Implement LoongArch kvm module init, module exit interface,
->> using kvm context to save the vpid info and vcpu world switch
->> interface pointer.
->>
->> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
->> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->> ---
->>   arch/loongarch/kvm/main.c | 367 ++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 367 insertions(+)
->>   create mode 100644 arch/loongarch/kvm/main.c
->>
->> diff --git a/arch/loongarch/kvm/main.c b/arch/loongarch/kvm/main.c
->> new file mode 100644
->> index 0000000000..0deb9273d8
->> --- /dev/null
->> +++ b/arch/loongarch/kvm/main.c
->> @@ -0,0 +1,367 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
->> + */
->> +
->> +#include <linux/err.h>
->> +#include <linux/module.h>
->> +#include <linux/kvm_host.h>
->> +#include <asm/cacheflush.h>
->> +#include <asm/cpufeature.h>
->> +#include <asm/kvm_csr.h>
->> +#include "trace.h"
->> +
->> +static struct kvm_context __percpu *vmcs;
->> +struct kvm_world_switch *kvm_loongarch_ops;
->> +unsigned long vpid_mask;
->> +static int gcsr_flag[CSR_MAX_NUMS];
->> +
->> +int get_gcsr_flag(int csr)
->> +{
->> +       if (csr < CSR_MAX_NUMS)
->> +               return gcsr_flag[csr];
->> +
->> +       return INVALID_GCSR;
->> +}
->> +
->> +static inline void set_gcsr_sw_flag(int csr)
->> +{
->> +       if (csr < CSR_MAX_NUMS)
->> +               gcsr_flag[csr] |= SW_GCSR;
->> +}
->> +
->> +static inline void set_gcsr_hw_flag(int csr)
->> +{
->> +       if (csr < CSR_MAX_NUMS)
->> +               gcsr_flag[csr] |= HW_GCSR;
->> +}
->> +
->> +/*
->> + * The default value of gcsr_flag[CSR] is 0, and we use this
->> + * function to set the flag to 1(SW_GCSR) or 2(HW_GCSR) if the
->> + * gcsr is software or hardware. It will be used by get/set_gcsr,
->> + * if gcsr_flag is HW we should use gcsrrd/gcsrwr to access it,
->> + * else use sw csr to emulate it.
->> + */
->> +static void kvm_init_gcsr_flag(void)
->> +{
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_CRMD);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRMD);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_EUEN);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_MISC);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_ECFG);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_ESTAT);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_ERA);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADV);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_BADI);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_EENTRY);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBIDX);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBEHI);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO0);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBELO1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_ASID);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDL);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PGDH);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL0);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PWCTL1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_STLBPGSIZE);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_RVACFG);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_CPUID);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG2);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_PRCFG3);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS0);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS2);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS3);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS4);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS5);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS6);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_KS7);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TMID);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TCFG);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TVAL);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_CNTC);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_LLBCTL);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRENTRY);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRBADV);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRERA);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRSAVE);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO0);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRELO1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBREHI);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_TLBRPRMD);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN0);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN1);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN2);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_DMWIN3);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_MWPS);
->> +       set_gcsr_hw_flag(LOONGARCH_CSR_FWPS);
->> +
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL1);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IMPCTL2);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRCTL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO1);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRINFO2);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRENTRY);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRERA);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MERRSAVE);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_CTAG);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DEBUG);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DERA);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DESAVE);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG1);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG2);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PRCFG3);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PGD);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_TINTCLR);
->> +
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPS);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_FWPC);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPS);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_MWPC);
->> +
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB0ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB1ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB2ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB3ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB4ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB5ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB6ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_DB7ASID);
->> +
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB0ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB1ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB2ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB3ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB4ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB5ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB6ASID);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ADDR);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7MASK);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7CTRL);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_IB7ASID);
->> +
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL0);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR0);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL1);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR1);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL2);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR2);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCTRL3);
->> +       set_gcsr_sw_flag(LOONGARCH_CSR_PERFCNTR3);
->> +}
->> +
->> +static void kvm_update_vpid(struct kvm_vcpu *vcpu, int cpu)
->> +{
->> +       struct kvm_context *context;
->> +       unsigned long vpid;
->> +
->> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
->> +       vpid = context->vpid_cache + 1;
->> +       if (!(vpid & vpid_mask)) {
->> +               /* finish round of 64 bit loop */
-> "64 bit" means what?
-It should be /* finish round of vpid loop */
->
->> +               if (unlikely(!vpid))
->> +                       vpid = vpid_mask + 1;
->> +
->> +               /* vpid 0 reserved for root */
-> Is this line really a comment about "++vpid"?
-Yes, vpid should not be 0, so it should plus 1.
+Nitpick:
 
-Thanks
-Tianrui Zhao
->
-> Huacai
->
->> +               ++vpid;
->> +
->> +               /* start new vpid cycle */
->> +               kvm_flush_tlb_all();
->> +       }
->> +
->> +       context->vpid_cache = vpid;
->> +       vcpu->arch.vpid = vpid;
->> +}
->> +
->> +void kvm_check_vpid(struct kvm_vcpu *vcpu)
->> +{
->> +       struct kvm_context *context;
->> +       bool migrated;
->> +       unsigned long ver, old, vpid;
->> +       int cpu;
->> +
->> +       cpu = smp_processor_id();
->> +       /*
->> +        * Are we entering guest context on a different CPU to last time?
->> +        * If so, the vCPU's guest TLB state on this CPU may be stale.
->> +        */
->> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
->> +       migrated = (vcpu->cpu != cpu);
->> +
->> +       /*
->> +        * Check if our vpid is of an older version
->> +        *
->> +        * We also discard the stored vpid if we've executed on
->> +        * another CPU, as the guest mappings may have changed without
->> +        * hypervisor knowledge.
->> +        */
->> +       ver = vcpu->arch.vpid & ~vpid_mask;
->> +       old = context->vpid_cache  & ~vpid_mask;
->> +       if (migrated || (ver != old)) {
->> +               kvm_update_vpid(vcpu, cpu);
->> +               trace_kvm_vpid_change(vcpu, vcpu->arch.vpid);
->> +               vcpu->cpu = cpu;
->> +       }
->> +
->> +       /* Restore GSTAT(0x50).vpid */
->> +       vpid = (vcpu->arch.vpid & vpid_mask) << CSR_GSTAT_GID_SHIFT;
->> +       change_csr_gstat(vpid_mask << CSR_GSTAT_GID_SHIFT, vpid);
->> +}
->> +
->> +static int kvm_loongarch_env_init(void)
->> +{
->> +       struct kvm_context *context;
->> +       int cpu, order;
->> +       void *addr;
->> +
->> +       vmcs = alloc_percpu(struct kvm_context);
->> +       if (!vmcs) {
->> +               pr_err("kvm: failed to allocate percpu kvm_context\n");
->> +               return -ENOMEM;
->> +       }
->> +
->> +       kvm_loongarch_ops = kzalloc(sizeof(*kvm_loongarch_ops), GFP_KERNEL);
->> +       if (!kvm_loongarch_ops) {
->> +               free_percpu(vmcs);
->> +               vmcs = NULL;
->> +               return -ENOMEM;
->> +       }
->> +       /*
->> +        * There will be problem in world switch code if there
->> +        * is page fault reenter, since pgd register is shared
->> +        * between root kernel and kvm hypervisor. World switch
->> +        * entry need be unmapped area, cannot be tlb mapped area.
->> +        * In future if hw pagetable walking is supported, or there
->> +        * is separate pgd registers between root kernel and kvm
->> +        * hypervisor, copying about world switch code will not be used.
->> +        */
->> +
->> +       order = get_order(kvm_vector_size + kvm_enter_guest_size);
->> +       addr = (void *)__get_free_pages(GFP_KERNEL, order);
->> +       if (!addr) {
->> +               free_percpu(vmcs);
->> +               vmcs = NULL;
->> +               kfree(kvm_loongarch_ops);
->> +               kvm_loongarch_ops = NULL;
->> +               return -ENOMEM;
->> +       }
->> +
->> +       memcpy(addr, kvm_vector_entry, kvm_vector_size);
->> +       memcpy(addr + kvm_vector_size, kvm_enter_guest, kvm_enter_guest_size);
->> +       flush_icache_range((unsigned long)addr, (unsigned long)addr +
->> +                               kvm_vector_size + kvm_enter_guest_size);
->> +       kvm_loongarch_ops->guest_eentry = addr;
->> +       kvm_loongarch_ops->enter_guest = addr + kvm_vector_size;
->> +       kvm_loongarch_ops->page_order = order;
->> +
->> +       vpid_mask = read_csr_gstat();
->> +       vpid_mask = (vpid_mask & CSR_GSTAT_GIDBIT) >> CSR_GSTAT_GIDBIT_SHIFT;
->> +       if (vpid_mask)
->> +               vpid_mask = GENMASK(vpid_mask - 1, 0);
->> +
->> +       for_each_possible_cpu(cpu) {
->> +               context = per_cpu_ptr(vmcs, cpu);
->> +               context->vpid_cache = vpid_mask + 1;
->> +               context->last_vcpu = NULL;
->> +       }
->> +
->> +       kvm_init_fault();
->> +       kvm_init_gcsr_flag();
->> +
->> +       return 0;
->> +}
->> +
->> +static void kvm_loongarch_env_exit(void)
->> +{
->> +       unsigned long addr;
->> +
->> +       if (vmcs)
->> +               free_percpu(vmcs);
->> +
->> +       if (kvm_loongarch_ops) {
->> +               if (kvm_loongarch_ops->guest_eentry) {
->> +                       addr = (unsigned long)kvm_loongarch_ops->guest_eentry;
->> +                       free_pages(addr, kvm_loongarch_ops->page_order);
->> +               }
->> +               kfree(kvm_loongarch_ops);
->> +       }
->> +}
->> +
->> +static int kvm_loongarch_init(void)
->> +{
->> +       int r;
->> +
->> +       if (!cpu_has_lvz) {
->> +               kvm_info("hardware virtualization not available\n");
->> +               return -ENODEV;
->> +       }
->> +       r = kvm_loongarch_env_init();
->> +       if (r)
->> +               return r;
->> +
->> +       return kvm_init(sizeof(struct kvm_vcpu), 0, THIS_MODULE);
->> +}
->> +
->> +static void kvm_loongarch_exit(void)
->> +{
->> +       kvm_exit();
->> +       kvm_loongarch_env_exit();
->> +}
->> +
->> +module_init(kvm_loongarch_init);
->> +module_exit(kvm_loongarch_exit);
->> +
->> +#ifdef MODULE
->> +static const struct cpu_feature loongarch_kvm_feature[] = {
->> +       { .feature = cpu_feature(LOONGARCH_LVZ) },
->> +       {},
->> +};
->> +MODULE_DEVICE_TABLE(cpu, loongarch_kvm_feature);
->> +#endif
->> --
->> 2.39.1
->>
+with this change, there is no need for the second argument -- 'bool early'.
 
+Thanks,
+Chang
