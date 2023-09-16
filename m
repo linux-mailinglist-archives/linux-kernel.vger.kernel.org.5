@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D577A2EF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B47B7A2EF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 11:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238670AbjIPJME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 05:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
+        id S238801AbjIPJMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 05:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237290AbjIPJLl (ORCPT
+        with ESMTP id S237947AbjIPJLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 05:11:41 -0400
+        Sat, 16 Sep 2023 05:11:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ABC173B;
-        Sat, 16 Sep 2023 02:11:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB14AC433C7;
-        Sat, 16 Sep 2023 09:11:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AD2173C
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 02:11:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34B56C433C8;
+        Sat, 16 Sep 2023 09:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694855495;
-        bh=zxWRKx6qcJqNX0nIAEXQQKlcB3+IREcOJx11K9aTCFc=;
+        s=k20201202; t=1694855499;
+        bh=covprlx2zu7EStEAq1dkZceiipg+g+xBDyRtgZg9lEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NUUy2ASHBy00tqqzciqnGjjgz0DPJwWQG1rx5x28KmfI2BjAUZkYJXRo9cSG9zkCE
-         eLWtrpCVfKQbjCrZ8ANyZ+9WlNXU8MgME5fQfyBBOCfXb+rx8t3dTPmL/8RvSf4+Qi
-         P4WGfeyY8jgtcrSLnOuXVS9lupXW7JPWPkyd3Yhfvra3LovGA2KGgs9fKh/Xv6T6Sw
-         VO1UHw/uQLl0yFySWAROQ/qS2WjAGWjIIodu59SkMstJbWP+8ermfIbpKwBNq0LTDD
-         hqMTLcBnFgJTR31kyFE1VJbwGwgjDHWz3MxDtPsMdOsbV1rgi7eQ6tUNMmMh23KH/u
-         fxrtC1uud5U5w==
+        b=L20Zf8ShTCrxx+h6ckh03Od5+HOYHYbXqncrkJFqcHhMf9IrBOY8fGUP42lmwZ8hg
+         +G68JIxSWkJsBBX5C+H8XG84fNggO1Xd9HeIFddmEarKb+almvYUrq+QPAscJPy7Y+
+         ZJnlCfgb8qXzGMGbhN0lIJhBmiToMaL7ftQJkb3YYY/ZfJm1nO1Pj48Yi++ke1Toye
+         QHRhiZU6m+MbTyEqctSauNs/Td80++HpiH1UAypN0HYsbET1CqRyu3QmBMa6b17yq0
+         IdZ7RgYG5mTRGTWuqX10IzfF9CEBeEJolpaPYvdHps1I4CKZY1nkXS73+GVSy95iMV
+         zojbBd90U/DSw==
 From:   Wolfram Sang <wsa@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [RFC PATCH 1/2] MIPS: AR7: remove VLYNQ init
-Date:   Sat, 16 Sep 2023 11:11:23 +0200
-Message-Id: <20230916091125.3221-2-wsa@kernel.org>
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [RFC PATCH 2/2] vlynq: remove bus driver
+Date:   Sat, 16 Sep 2023 11:11:24 +0200
+Message-Id: <20230916091125.3221-3-wsa@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230916091125.3221-1-wsa@kernel.org>
 References: <20230916091125.3221-1-wsa@kernel.org>
@@ -44,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,274 +52,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-VLYNQ bus support is going to be removed from the Kernel because there
-has never been a vlynq_driver in the tree since 2009. So, it doesn't
-make sense to setup a bus controller when it is not going to be
-accessed. Remove the VLYNQ init code to remove the bus driver later.
+There are no users with a vlynq_driver in the Kernel tree. So, remove
+the bus driver which hardly has seen any activity since 2009. It was
+even marked EXPERIMENTAL as long as that symbol existed. OpenWRT had
+some out-of-tree drivers which they probably intended to upport, but AR7
+devices are not supported anymore because they are "stuck with Kernel
+3.18" [1]. So, this code can go nowadays.
+
+[1] https://openwrt.org/docs/techref/targets/ar7
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- arch/mips/Kconfig                    |   1 -
- arch/mips/ar7/platform.c             | 193 +--------------------------
- arch/mips/include/asm/mach-ar7/ar7.h |   1 -
- 3 files changed, 1 insertion(+), 194 deletions(-)
+ MAINTAINERS            |   7 -
+ drivers/Kconfig        |   2 -
+ drivers/Makefile       |   1 -
+ drivers/vlynq/Kconfig  |  21 --
+ drivers/vlynq/Makefile |   6 -
+ drivers/vlynq/vlynq.c  | 799 -----------------------------------------
+ include/linux/vlynq.h  | 149 --------
+ 7 files changed, 985 deletions(-)
+ delete mode 100644 drivers/vlynq/Kconfig
+ delete mode 100644 drivers/vlynq/Makefile
+ delete mode 100644 drivers/vlynq/vlynq.c
+ delete mode 100644 include/linux/vlynq.h
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index bc8421859006..0e8aff7355fb 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -219,7 +219,6 @@ config AR7
- 	select SYS_SUPPORTS_MIPS16
- 	select SYS_SUPPORTS_ZBOOT_UART16550
- 	select GPIOLIB
--	select VLYNQ
- 	help
- 	  Support for the Texas Instruments AR7 System-on-a-Chip
- 	  family: TNETD7100, 7200 and 7300.
-diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
-index 215149a85d83..b23dd74ca40e 100644
---- a/arch/mips/ar7/platform.c
-+++ b/arch/mips/ar7/platform.c
-@@ -14,7 +14,6 @@
- #include <linux/serial_8250.h>
- #include <linux/ioport.h>
- #include <linux/io.h>
--#include <linux/vlynq.h>
- #include <linux/leds.h>
- #include <linux/string.h>
- #include <linux/etherdevice.h>
-@@ -27,156 +26,6 @@
- #include <asm/mach-ar7/ar7.h>
- #include <asm/mach-ar7/prom.h>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 90f13281d297..02b83539a5ed 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22962,13 +22962,6 @@ W:	https://linuxtv.org
+ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/test-drivers/vivid/*
  
--/*****************************************************************************
-- * VLYNQ Bus
-- ****************************************************************************/
--struct plat_vlynq_data {
--	struct plat_vlynq_ops ops;
--	int gpio_bit;
--	int reset_bit;
--};
+-VLYNQ BUS
+-M:	Florian Fainelli <f.fainelli@gmail.com>
+-L:	openwrt-devel@lists.openwrt.org (subscribers-only)
+-S:	Maintained
+-F:	drivers/vlynq/vlynq.c
+-F:	include/linux/vlynq.h
 -
--static int vlynq_on(struct vlynq_device *dev)
--{
--	int ret;
--	struct plat_vlynq_data *pdata = dev->dev.platform_data;
--
--	ret = gpio_request(pdata->gpio_bit, "vlynq");
--	if (ret)
--		goto out;
--
--	ar7_device_reset(pdata->reset_bit);
--
--	ret = ar7_gpio_disable(pdata->gpio_bit);
--	if (ret)
--		goto out_enabled;
--
--	ret = ar7_gpio_enable(pdata->gpio_bit);
--	if (ret)
--		goto out_enabled;
--
--	ret = gpio_direction_output(pdata->gpio_bit, 0);
--	if (ret)
--		goto out_gpio_enabled;
--
--	msleep(50);
--
--	gpio_set_value(pdata->gpio_bit, 1);
--
--	msleep(50);
--
--	return 0;
--
--out_gpio_enabled:
--	ar7_gpio_disable(pdata->gpio_bit);
--out_enabled:
--	ar7_device_disable(pdata->reset_bit);
--	gpio_free(pdata->gpio_bit);
--out:
--	return ret;
--}
--
--static void vlynq_off(struct vlynq_device *dev)
--{
--	struct plat_vlynq_data *pdata = dev->dev.platform_data;
--
--	ar7_gpio_disable(pdata->gpio_bit);
--	gpio_free(pdata->gpio_bit);
--	ar7_device_disable(pdata->reset_bit);
--}
--
--static struct resource vlynq_low_res[] = {
--	{
--		.name	= "regs",
--		.flags	= IORESOURCE_MEM,
--		.start	= AR7_REGS_VLYNQ0,
--		.end	= AR7_REGS_VLYNQ0 + 0xff,
--	},
--	{
--		.name	= "irq",
--		.flags	= IORESOURCE_IRQ,
--		.start	= 29,
--		.end	= 29,
--	},
--	{
--		.name	= "mem",
--		.flags	= IORESOURCE_MEM,
--		.start	= 0x04000000,
--		.end	= 0x04ffffff,
--	},
--	{
--		.name	= "devirq",
--		.flags	= IORESOURCE_IRQ,
--		.start	= 80,
--		.end	= 111,
--	},
--};
--
--static struct resource vlynq_high_res[] = {
--	{
--		.name	= "regs",
--		.flags	= IORESOURCE_MEM,
--		.start	= AR7_REGS_VLYNQ1,
--		.end	= AR7_REGS_VLYNQ1 + 0xff,
--	},
--	{
--		.name	= "irq",
--		.flags	= IORESOURCE_IRQ,
--		.start	= 33,
--		.end	= 33,
--	},
--	{
--		.name	= "mem",
--		.flags	= IORESOURCE_MEM,
--		.start	= 0x0c000000,
--		.end	= 0x0cffffff,
--	},
--	{
--		.name	= "devirq",
--		.flags	= IORESOURCE_IRQ,
--		.start	= 112,
--		.end	= 143,
--	},
--};
--
--static struct plat_vlynq_data vlynq_low_data = {
--	.ops = {
--		.on	= vlynq_on,
--		.off	= vlynq_off,
--	},
--	.reset_bit	= 20,
--	.gpio_bit	= 18,
--};
--
--static struct plat_vlynq_data vlynq_high_data = {
--	.ops = {
--		.on	= vlynq_on,
--		.off	= vlynq_off,
--	},
--	.reset_bit	= 16,
--	.gpio_bit	= 19,
--};
--
--static struct platform_device vlynq_low = {
--	.id		= 0,
--	.name		= "vlynq",
--	.dev = {
--		.platform_data	= &vlynq_low_data,
--	},
--	.resource	= vlynq_low_res,
--	.num_resources	= ARRAY_SIZE(vlynq_low_res),
--};
--
--static struct platform_device vlynq_high = {
--	.id		= 1,
--	.name		= "vlynq",
--	.dev = {
--		.platform_data	= &vlynq_high_data,
--	},
--	.resource	= vlynq_high_res,
--	.num_resources	= ARRAY_SIZE(vlynq_high_res),
--};
--
- /*****************************************************************************
-  * Flash
-  ****************************************************************************/
-@@ -592,34 +441,6 @@ static int __init ar7_register_uarts(void)
+ VM SOCKETS (AF_VSOCK)
+ M:	Stefano Garzarella <sgarzare@redhat.com>
+ L:	virtualization@lists.linux-foundation.org
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index efb66e25fa2d..9c8b82ddebfe 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -135,8 +135,6 @@ source "drivers/uio/Kconfig"
  
- static void __init titan_fixup_devices(void)
- {
--	/* Set vlynq0 data */
--	vlynq_low_data.reset_bit = 15;
--	vlynq_low_data.gpio_bit = 14;
--
--	/* Set vlynq1 data */
--	vlynq_high_data.reset_bit = 16;
--	vlynq_high_data.gpio_bit = 7;
--
--	/* Set vlynq0 resources */
--	vlynq_low_res[0].start = TITAN_REGS_VLYNQ0;
--	vlynq_low_res[0].end = TITAN_REGS_VLYNQ0 + 0xff;
--	vlynq_low_res[1].start = 33;
--	vlynq_low_res[1].end = 33;
--	vlynq_low_res[2].start = 0x0c000000;
--	vlynq_low_res[2].end = 0x0fffffff;
--	vlynq_low_res[3].start = 80;
--	vlynq_low_res[3].end = 111;
--
--	/* Set vlynq1 resources */
--	vlynq_high_res[0].start = TITAN_REGS_VLYNQ1;
--	vlynq_high_res[0].end = TITAN_REGS_VLYNQ1 + 0xff;
--	vlynq_high_res[1].start = 34;
--	vlynq_high_res[1].end = 34;
--	vlynq_high_res[2].start = 0x40000000;
--	vlynq_high_res[2].end = 0x43ffffff;
--	vlynq_high_res[3].start = 112;
--	vlynq_high_res[3].end = 143;
--
- 	/* Set cpmac0 data */
- 	cpmac_low_data.phy_mask = 0x40000000;
+ source "drivers/vfio/Kconfig"
  
-@@ -656,18 +477,6 @@ static int __init ar7_register_devices(void)
- 	if (ar7_is_titan())
- 		titan_fixup_devices();
- 
--	ar7_device_disable(vlynq_low_data.reset_bit);
--	res = platform_device_register(&vlynq_low);
--	if (res)
--		pr_warn("unable to register vlynq-low: %d\n", res);
+-source "drivers/vlynq/Kconfig"
 -
--	if (ar7_has_high_vlynq()) {
--		ar7_device_disable(vlynq_high_data.reset_bit);
--		res = platform_device_register(&vlynq_high);
--		if (res)
--			pr_warn("unable to register vlynq-high: %d\n", res);
--	}
--
- 	if (ar7_has_high_cpmac()) {
- 		res = fixed_phy_add(PHY_POLL, cpmac_high.id,
- 				    &fixed_phy_status);
-@@ -706,7 +515,7 @@ static int __init ar7_register_devices(void)
- 	val = readl(bootcr);
- 	iounmap(bootcr);
- 	if (val & AR7_WDT_HW_ENA) {
--		if (ar7_has_high_vlynq())
-+		if (ar7_has_high_cpmac())
- 			ar7_wdt_res.start = UR8_REGS_WDT;
- 		else
- 			ar7_wdt_res.start = AR7_REGS_WDT;
-diff --git a/arch/mips/include/asm/mach-ar7/ar7.h b/arch/mips/include/asm/mach-ar7/ar7.h
-index 1e8621a6afa3..faa6a15503d6 100644
---- a/arch/mips/include/asm/mach-ar7/ar7.h
-+++ b/arch/mips/include/asm/mach-ar7/ar7.h
-@@ -142,7 +142,6 @@ static inline int ar7_has_high_cpmac(void)
- 		return -ENXIO;
- 	}
- }
--#define ar7_has_high_vlynq ar7_has_high_cpmac
- #define ar7_has_second_uart ar7_has_high_cpmac
+ source "drivers/virt/Kconfig"
  
- static inline void ar7_device_enable(u32 bit)
+ source "drivers/virtio/Kconfig"
+diff --git a/drivers/Makefile b/drivers/Makefile
+index cb0afca2e4a0..2ec0005bb840 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -151,7 +151,6 @@ obj-$(CONFIG_BCMA)		+= bcma/
+ obj-$(CONFIG_VHOST_RING)	+= vhost/
+ obj-$(CONFIG_VHOST_IOTLB)	+= vhost/
+ obj-$(CONFIG_VHOST)		+= vhost/
+-obj-$(CONFIG_VLYNQ)		+= vlynq/
+ obj-$(CONFIG_GREYBUS)		+= greybus/
+ obj-$(CONFIG_COMEDI)		+= comedi/
+ obj-$(CONFIG_STAGING)		+= staging/
+diff --git a/drivers/vlynq/Kconfig b/drivers/vlynq/Kconfig
+deleted file mode 100644
+index e7f9492a0b04..000000000000
+diff --git a/drivers/vlynq/Makefile b/drivers/vlynq/Makefile
+deleted file mode 100644
+index d9ce5b2b5ce0..000000000000
+diff --git a/drivers/vlynq/vlynq.c b/drivers/vlynq/vlynq.c
+deleted file mode 100644
+index 4af6615808cc..000000000000
+diff --git a/include/linux/vlynq.h b/include/linux/vlynq.h
+deleted file mode 100644
+index e9c0cd36c48a..000000000000
 -- 
 2.35.1
 
