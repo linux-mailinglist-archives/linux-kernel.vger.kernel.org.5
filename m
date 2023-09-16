@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C455C7A2FB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB057A2FB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Sep 2023 13:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238371AbjIPLap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 07:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        id S235719AbjIPLcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 07:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbjIPLa3 (ORCPT
+        with ESMTP id S232622AbjIPLbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 07:30:29 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250EFCC0;
-        Sat, 16 Sep 2023 04:30:24 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 554C1320091C;
-        Sat, 16 Sep 2023 07:30:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sat, 16 Sep 2023 07:30:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1694863822; x=1694950222; bh=mprAwCT7s3jxXm1o3B8GItufVCyeNrzoBOD
-        W4N/kqkI=; b=QtY9vbdpeNeKnWXKfyHl9kwXv8TmizTpgubcSxc+txjcxl50zAX
-        CJCGWd02WBO645q0VJ1aB9ZD3lco8WZ/0vVvXoDMo3wUpap9dbnUpMhjw1Zowg70
-        YBDYMoYroZxoT/k0wu8FsKwCpmmqj7Koyd21Hzy4X5+yiuyYk/C9awvNngbv0hbU
-        NvAg1UB3tE6Dl9mErhmYbUeBqLckQKXrm/5Z5iUusp/zXWngWZ+fVgJCCSjqPPOP
-        oLOqZcETPDzTkBxc8qd93bVSCHutIXltnlajNKY6dtJuRRKH6bTjuKTU+/lwcmiC
-        IQlFDO0I+TYEYpDn/gp0MsTJgAKERACByBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1694863822; x=
-        1694950222; bh=mprAwCT7s3jxXm1o3B8GItufVCyeNrzoBODW4N/kqkI=; b=S
-        Hmx3mPywf7rUIbjPvz7kxzABbYmTVNWk/EDu1PNyNrm2uqOxYgJy/nQeibYby9Ms
-        l5W/hpjMETuIzff1xLv8fHgfmunx44IbRZ++r7NtKVsoa7ee7f6CkP0jXsmCoP78
-        Pjn7E8upd3HFkd9XkLHLobWru2eZq+LeSHtECH3heRDNzn7LysysO5WZBxSIpEqa
-        a+MGvWsZHDFGEAWP/SgnmmW+j8tI7pTWiugA8BWbNJ65mR4OxMGP2qabyF35TYF8
-        bS+CEBvX1CqCEL4Mz8826ELBvnwqLjub8hRPEqWb9wevjTm84CA5FTJJzs4muYWE
-        RNRlLNQcDcIpGlpG8z3YA==
-X-ME-Sender: <xms:zpEFZW55B_ddH_po5wYZ12JveCsjy5MeU8KxR73IK2lg_e1mwT-f_w>
-    <xme:zpEFZf6jpYKSb0jStULOFysnRnLcl01dZNBU3A66Gk7xYhn2S8XLXhPSvke2Yrn88
-    zJSYY3II4ZIyqGQ>
-X-ME-Received: <xmr:zpEFZVdfZdsQ9PSNvERo7fFQRlsdZELhGB9ilHHUQ2HCKgoDGSgpb1L8Jby7A6oa0zfZspKyjF-Hb4DqlvS9wQFjhbXu_r5II43Id0LEDRZvoS0xjyEK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejgedggedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
-    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
-    drfhhmqeenucggtffrrghtthgvrhhnpeegffdutdegiefgteelleeggeeuueduteefiedu
-    vedvueefieejledvjeeuhfefgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
-    mh
-X-ME-Proxy: <xmx:zpEFZTIu6RgVXj6qVTu1eCDuX5MGpGgZP-JCegUBD29jrLLNPLQKvg>
-    <xmx:zpEFZaJbJUkyptk1T16qhuU9frikMpSNMqI71NRZgmvo98knl0ikYA>
-    <xmx:zpEFZUwseitTa4oDo_c7fx33GMBvub9EWyXu2ZQdrS6js1coxjzVbw>
-    <xmx:zpEFZRV77zr8bcTFlB_Jc4x_2lbZNDACJA4luef_wdhBycx7XjRxHA>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Sep 2023 07:30:21 -0400 (EDT)
-Message-ID: <8d72c789-5db3-dd01-1e20-71fff4046c83@fastmail.fm>
-Date:   Sat, 16 Sep 2023 13:30:19 +0200
+        Sat, 16 Sep 2023 07:31:49 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE89CC9
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 04:31:43 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-565334377d0so2366522a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 04:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694863903; x=1695468703; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HpLzCpp4ouGz/OEm3hygeNnaRFyXfqnZwX2nHo6Wzok=;
+        b=OjNgV7bMNn4HoFkkvlfZq/RvVIayLAh1NEf51Qk+EKU8G6d/3XkUxM3wrjJt6/34zf
+         GM7PkBv3U0Ag31+nZTs19QJde7kqlYZHh5Jlp6MvC2gXNG99PX+LXG3l3xXwKJgGENag
+         Z3boM/etG+hi9+uoe0L5MhVKzm3IJ+7rYC1vWborGrjuEaC7wHtCdIAdG7LF1dYnOf97
+         7TTJff1Wstd6O56BYMDfwpfwWPClM91B2lNnoCpHNG5/1aoVXXRMCGw0ZG9dKd4HNM5o
+         X7zxu0MXrtuWEDIGYqc6s5O1SSmOYNCiw5+3hIpgzWbCiZ3UUHHL+a8XxB8yJtAElY43
+         CQSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694863903; x=1695468703;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HpLzCpp4ouGz/OEm3hygeNnaRFyXfqnZwX2nHo6Wzok=;
+        b=KmXQQIBuBZQPgZSGRq7TfJ3nsA7jaDfhSOersvF2TT+UqbszdZK27xhcODy3djPyLL
+         BcUmJ+0ngn9hwoBAYS0q8jBIHnNtrrlsE7tJZqQuE6LtFyJsb6CMU6AOlOa+GyKJMGPM
+         o5TUpQoPhjDKYkSdxu2IjN+Niy9q8sY5NIqmKwki7kkUPovJYUmt9Fm0riM79z/862LB
+         5mMJLyPq6kcuqPrl3p0HCQ8VAfcfpsf71t96hW5szPbPfQcQjR3GZv9D6TvLVO9KoD5u
+         pnG/1z3UwosHYY/Am7+06ZxyH4iXIuZd/D9b/isFpgGfnqiClDswmjufqPPK1J7/rnBG
+         crCw==
+X-Gm-Message-State: AOJu0YzGqdgEWqZDzVrJcFtJAK+iCB9BuyYmVlE6tKHSn78xw5NF+Gav
+        brGYAcj+aLNHVO74wy4f+RQ=
+X-Google-Smtp-Source: AGHT+IHDxN5uOoCGgHPaH8q22KkvGNEbjL2HT742QPMNqY91zkWwoVYJ2tFXAtM7jdsgjHTPrU6UOQ==
+X-Received: by 2002:a05:6a20:a127:b0:15a:56b9:43f6 with SMTP id q39-20020a056a20a12700b0015a56b943f6mr5367048pzk.37.1694863903045;
+        Sat, 16 Sep 2023 04:31:43 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id v3-20020a62a503000000b00682bec0b680sm4354978pfm.89.2023.09.16.04.31.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 04:31:42 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id EA6A182F4CC2; Sat, 16 Sep 2023 18:31:37 +0700 (WIB)
+Date:   Sat, 16 Sep 2023 18:31:34 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     xiaohui li <buhuiyuanyuan1984@gmail.com>
+Cc:     Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: =?utf-8?B?44CQQnVn44CRdXNlLWFmdGVyLWZy?= =?utf-8?Q?ee?= in NVMe
+ request double completion detected by kasan
+Message-ID: <ZQWSFgDrkLgw0tO2@debian.me>
+References: <CAEVrx8CEFY21BBpbpq5CmshyzgDY_WYg7VGh6Br1bZac7kBiTA@mail.gmail.com>
+ <ZQQRaj6WFizrDZHM@debian.me>
+ <CAEVrx8APjinyO043+DOcciqDo_iygnB8x91g8XgeMFkCueiQ9A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/2] fuse: remove usage of FR_WATING flag
-Content-Language: en-US, de-DE
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, miklos@szeredi.hu,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913092246.22747-1-shikemeng@huaweicloud.com>
- <20230913092246.22747-3-shikemeng@huaweicloud.com>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <20230913092246.22747-3-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6zWCu6giBt3n2KWK"
+Content-Disposition: inline
+In-Reply-To: <CAEVrx8APjinyO043+DOcciqDo_iygnB8x91g8XgeMFkCueiQ9A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,80 +85,51 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--6zWCu6giBt3n2KWK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/13/23 11:22, Kemeng Shi wrote:
-> Each allocated request from fuse_request_alloc counts to num_waiting
-> before request is freed.
-> Simply drop num_waiting without FR_WAITING flag check in fuse_put_request
-> to remove unneeded usage of FR_WAITING flag.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   fs/fuse/dev.c    | 9 +--------
->   fs/fuse/fuse_i.h | 2 --
->   2 files changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-> index 59e1357d4880..4f49b1946635 100644
-> --- a/fs/fuse/dev.c
-> +++ b/fs/fuse/dev.c
-> @@ -139,7 +139,6 @@ static struct fuse_req *fuse_get_req(struct fuse_mount *fm, bool for_background)
->   	req->in.h.gid = from_kgid(fc->user_ns, current_fsgid());
->   	req->in.h.pid = pid_nr_ns(task_pid(current), fc->pid_ns);
->   
-> -	__set_bit(FR_WAITING, &req->flags);
->   	if (for_background)
->   		__set_bit(FR_BACKGROUND, &req->flags);
->   
-> @@ -171,11 +170,7 @@ static void fuse_put_request(struct fuse_req *req)
->   			spin_unlock(&fc->bg_lock);
->   		}
->   
-> -		if (test_bit(FR_WAITING, &req->flags)) {
-> -			__clear_bit(FR_WAITING, &req->flags);
-> -			fuse_drop_waiting(fc);
-> -		}
-> -
-> +		fuse_drop_waiting(fc);
->   		fuse_request_free(req);
->   	}
->   }
-> @@ -495,7 +490,6 @@ ssize_t fuse_simple_request(struct fuse_mount *fm, struct fuse_args *args)
->   		if (!args->nocreds)
->   			fuse_force_creds(req);
->   
-> -		__set_bit(FR_WAITING, &req->flags);
->   		__set_bit(FR_FORCE, &req->flags);
->   	} else {
->   		WARN_ON(args->nocreds);
-> @@ -556,7 +550,6 @@ int fuse_simple_background(struct fuse_mount *fm, struct fuse_args *args,
->   		if (!req)
->   			return -ENOMEM;
->   		atomic_inc(&fc->num_waiting);
-> -		__set_bit(FR_WAITING, &req->flags);
->   		__set_bit(FR_BACKGROUND, &req->flags);
->   	} else {
->   		WARN_ON(args->nocreds);
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index bf0b85d0b95c..a78764cef313 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -312,7 +312,6 @@ struct fuse_io_priv {
->    * FR_ISREPLY:		set if the request has reply
->    * FR_FORCE:		force sending of the request even if interrupted
->    * FR_BACKGROUND:	request is sent in the background
-> - * FR_WAITING:		request is counted as "waiting"
->    * FR_ABORTED:		the request was aborted
->    * FR_INTERRUPTED:	the request has been interrupted
->    * FR_LOCKED:		data is being copied to/from the request
-> @@ -326,7 +325,6 @@ enum fuse_req_flag {
->   	FR_ISREPLY,
->   	FR_FORCE,
->   	FR_BACKGROUND,
-> -	FR_WAITING,
->   	FR_ABORTED,
->   	FR_INTERRUPTED,
->   	FR_LOCKED,
+On Sat, Sep 16, 2023 at 02:23:21PM +0800, xiaohui li wrote:
+> This bug only appears during concurrent stress testing, It has nothing
+> to do with what kinds of nvme disk to use.
+> Especially when conducting DDR stress testing, the consumption of DDR
+> bandwidth is high. Once the NVME driver is under pressure, the NVME IO
+> request times out=EF=BC=8C
+> and then this use-after-free bug appears with high probability.
+>=20
+> and i find other pepole have also encountered this bug. such as below:
+> https://access.redhat.com/solutions/6993136   (System crash due to
+> use-after-free in NVMe request double completion)
+>=20
+> i have no v6.6-rc1 kernel,
+> shall some one can give a bug-fix patch on 5.10.x linux kernel ?   many t=
+hanks.
+Please don't top-post; reply inline with appropriate context instead. Reply=
+ing
+inline allows readers to follow the conversation flow.
 
-Thanks, looks good to me.
-Reviewed-by: Bernd Schubert <bschubert@ddn.com>
+Again, as I repeat, please test mainline kernel first. Since you're about
+to compile your own kernel, there is a kernel documentation on it [1]. Or
+you can follow Rocky Linux's guide ([2]) (as it is based on RedHat).
+
+Thanks.
+
+[1]: https://docs.kernel.org/admin-guide/quickly-build-trimmed-linux.html
+[2]: https://docs.rockylinux.org/guides/custom-linux-kernel/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--6zWCu6giBt3n2KWK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQWSCwAKCRD2uYlJVVFO
+o6ZLAP44nW9Uh09dS3YJqOWwZbUWii6MnJMKuHqStNANLwD9vgEAqoDn8nNZXNcc
+ynVJXTo4j5E5ibBS4KIps59eIfcXPA4=
+=qnVn
+-----END PGP SIGNATURE-----
+
+--6zWCu6giBt3n2KWK--
