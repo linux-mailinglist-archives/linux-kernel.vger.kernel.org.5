@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 449BC7A3652
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E032C7A3661
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbjIQP2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        id S237256AbjIQP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234782AbjIQP1r (ORCPT
+        with ESMTP id S234821AbjIQP1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:27:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8940211F;
-        Sun, 17 Sep 2023 08:27:41 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32003aae100so564774f8f.0;
-        Sun, 17 Sep 2023 08:27:41 -0700 (PDT)
+        Sun, 17 Sep 2023 11:27:53 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D2188;
+        Sun, 17 Sep 2023 08:27:44 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso36715645e9.1;
+        Sun, 17 Sep 2023 08:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694964460; x=1695569260; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694964462; x=1695569262; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DBK+EuhlZqztM+Alma3nr5nA9Qm2t1d0t11jSRG7m0Q=;
-        b=cc1gvsdwENHqJp29Yvy07Smcane7fTY7Hu3q0f2pkmamlPuceshYhxFMCnrXodWFM+
-         pDNxuHdRu/Q0iaC2hBbgnN56hwMEZ9NtUgdnZc6l+crZ8SaFMCedxYkHOjqv+Em68ybU
-         UXHG8TIkhU/su077BkjTi9nyMblAJrI1rz5e/gwJVLcq/FqdIYjLbvJx1NE+fEXy2c3n
-         Fo21Q3JPl0xFCjJ90v597ZaYi96ZX8SNjUYxymwGMngDqBiKiul76ofMZ8eT8L9sAMXE
-         qjeA+pGQiADzJuG92pee48Iq4HtLgh82RqZbnoMiPg53a0RHoJjbDzOo8TBZSkvFEbkG
-         Jn8Q==
+        bh=cxpfJhVV2ocOjrZiYJqyl63jEXCWOHPBdFU1UNBK2Hg=;
+        b=gRNBpb9HOtqxDzQhi4tad8dwDUm3yEPAnN2kMYMEeY0eDvamf27XQET8oInvCY85yR
+         RL1B1/F0LyavWkcbVLTtVbzZDIBnSXNQUi17OR2p5e6BSQJCPZxQDmu4VKejfOQud3CQ
+         ng6G8N5QDJNR8sB5dpIKhOqOk2LOncO+18Gc7Fbu4Iqm6PWaMU5vCWyexkv/PROjNCW3
+         mXo4T8jq28DAe4YEUc/S4fPht9yg6JnkpEBm2utYBMxJpb0Y6rm3rdzep+0uuVytqdEs
+         HiCpw6ZLHgQwMBf3StqNQCldf1t51bqhAQdkP2ccSQBwVATaIulAM5yPeKKQbLL9rsSd
+         D2Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694964460; x=1695569260;
+        d=1e100.net; s=20230601; t=1694964462; x=1695569262;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DBK+EuhlZqztM+Alma3nr5nA9Qm2t1d0t11jSRG7m0Q=;
-        b=JABQ70HbXajOFmBWEH2xJEcjT6AZHOlD8c5bW/VAxWiGfRFfKc8sm+sWutjZtTRVg3
-         /BXMho1yTo/Ty5HNH7xRsXSYuRIK5rq6fFpTEabRUwFdJ54rbOjFvPl8GJEtwF6Xg/2i
-         0YmrXacskhwC38I2QHS6UsWQuslm7cow4SKb21lQacSf0LOvJIb3uF/1lXYvi6vd1BGn
-         4xoPUKmHBuPKMr4smN4VK05xaFXzYHo20/rEV3Otg+71q8SDPOEG2H7k8etZA0/pBOdf
-         3HOlmblil76euD3tClP/I/GUg2x5k4fe9NUFZbEbpzYSRSA8hNxEYHa2WZZxcBIhMxRx
-         hH+A==
-X-Gm-Message-State: AOJu0YxtBmHiek4Z4qW1i0jEI0OD5cjW6X0geePRZDrrR3Pv6Wutwlwh
-        gS4bUywIaZvm/yT3cGe1MZI=
-X-Google-Smtp-Source: AGHT+IHhkqw+OHSOmFSTdEoq5773mUgp2STJiAqBe8b13HYPxJ4M4UUXZ8onuJKTHZGa1ibtNCLIcw==
-X-Received: by 2002:adf:ea02:0:b0:317:dadc:4a63 with SMTP id q2-20020adfea02000000b00317dadc4a63mr7509736wrm.8.1694964459904;
-        Sun, 17 Sep 2023 08:27:39 -0700 (PDT)
+        bh=cxpfJhVV2ocOjrZiYJqyl63jEXCWOHPBdFU1UNBK2Hg=;
+        b=ewPDrh5p6E3rOKVLvK6zMd2KvCbYKe7EufRivWWZ1ZJY7Z9OeNFus9ExkqyU1lVu8E
+         DxXvvXXAUpf/sG6okYlL9JUit4RF5F4/jvFvR5hkjv2BPcxXVVU7Amuf1LYlU/5CYhJO
+         POVyna0KSpRu+YA0LR1cXQUhbC93cIAi9tEwi89VV5uepfLP37XGASR+qjpaKcjV4IdZ
+         0nWbTWnxQcvnHTJsHIVkkqZLeopKpkUudfKeitCThnlXeI3sHOhjGWjWzjMyirj8Wfqg
+         i34W/o4SjXAcaTMnxFDeagMTci6RTptzv708cfICjYp6ADuLPoN/WMf6oz/gCISVIala
+         8rmQ==
+X-Gm-Message-State: AOJu0Yzniukqyza9UMLyQOiPlP6rpUDxZXdvpuSo41nNBGWIhRj5hfP9
+        aE4qC42+PTWeGZRunrtcJxU=
+X-Google-Smtp-Source: AGHT+IE2whKvpl5VAri2AnH12htURwwKvEYwF8MPrJNUKJ1cuni1fK0gHc0sI7GYpuTgXWiceWtWpw==
+X-Received: by 2002:a1c:7419:0:b0:402:feff:90d5 with SMTP id p25-20020a1c7419000000b00402feff90d5mr5647361wmc.5.1694964462453;
+        Sun, 17 Sep 2023 08:27:42 -0700 (PDT)
 Received: from localhost.localdomain ([5.45.134.53])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.37
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 08:27:39 -0700 (PDT)
+        Sun, 17 Sep 2023 08:27:42 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
         linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         conor+dt@kernel.org, linux-kernel@vger.kernel.org,
         abdelalkuor@geotab.com
-Subject: [PATCH v5 09/15] USB: typec: Refactor tps6598x port registration
-Date:   Sun, 17 Sep 2023 11:26:33 -0400
-Message-Id: <20230917152639.21443-10-alkuor@gmail.com>
+Subject: [PATCH v5 10/15] USB: typec: Add port registration for tps25750
+Date:   Sun, 17 Sep 2023 11:26:34 -0400
+Message-Id: <20230917152639.21443-11-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230917152639.21443-1-alkuor@gmail.com>
 References: <20230917152639.21443-1-alkuor@gmail.com>
@@ -77,64 +77,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-tps6598x and cd321x use TPS_REG_SYSTEM_CONF to get dr/pr roles
-where other similar devices don't have this register such as tps25750.
+TPS25750 doesn't have system configuration register to get dr/pr of the
+current applied binary configuration.
 
-Move tps6598x port registration to its own function
+Get data role from the device node and power role from PD status register.
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
- drivers/usb/typec/tipd/core.c | 99 +++++++++++++++++++----------------
- 1 file changed, 54 insertions(+), 45 deletions(-)
+ drivers/usb/typec/tipd/core.c     | 61 ++++++++++++++++++++++++++++++-
+ drivers/usb/typec/tipd/tps6598x.h | 10 +++++
+ 2 files changed, 70 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 17b3bc480f97..8218d88a4a06 100644
+index 8218d88a4a06..a97fda68cb54 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -976,15 +976,65 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+@@ -39,6 +39,7 @@
+ #define TPS_REG_CTRL_CONF		0x29
+ #define TPS_REG_BOOT_STATUS		0x2D
+ #define TPS_REG_POWER_STATUS		0x3f
++#define TPS_REG_PD_STATUS		0x40
+ #define TPS_REG_RX_IDENTITY_SOP		0x48
+ #define TPS_REG_DATA_STATUS		0x5f
+ 
+@@ -1028,6 +1029,60 @@ tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
  	return 0;
- };
+ }
  
 +static int
-+tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
++tps25750_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
 +{
-+	int ret;
-+	u32 conf;
 +	struct typec_capability typec_cap = { };
++	const char *data_role;
++	u8 pd_status;
++	int ret;
 +
-+	ret = tps6598x_read32(tps, TPS_REG_SYSTEM_CONF, &conf);
++	ret = tps6598x_read8(tps, TPS_REG_PD_STATUS, &pd_status);
 +	if (ret)
 +		return ret;
 +
-+	typec_cap.revision = USB_TYPEC_REV_1_2;
-+	typec_cap.pd_revision = 0x200;
-+	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
++	ret = fwnode_property_read_string(fwnode, "data-role", &data_role);
++	if (ret) {
++		dev_err(tps->dev, "data-role not found: %d\n", ret);
++		return ret;
++	}
++
++	ret = typec_find_port_data_role(data_role);
++	if (ret < 0) {
++		dev_err(tps->dev, "unknown data-role: %s\n", data_role);
++		return ret;
++	}
++
++	typec_cap.data = ret;
++	typec_cap.revision = USB_TYPEC_REV_1_3;
++	typec_cap.pd_revision = 0x300;
 +	typec_cap.driver_data = tps;
 +	typec_cap.ops = &tps6598x_ops;
 +	typec_cap.fwnode = fwnode;
++	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
 +
-+	switch (TPS_SYSCONF_PORTINFO(conf)) {
-+	case TPS_PORTINFO_SINK_ACCESSORY:
-+	case TPS_PORTINFO_SINK:
++	switch (TPS_PD_STATUS_PORT_TYPE(pd_status)) {
++	case TPS_PD_STATUS_PORT_TYPE_SINK_SOURCE:
++	case TPS_PD_STATUS_PORT_TYPE_SOURCE_SINK:
++		typec_cap.type = TYPEC_PORT_DRP;
++		break;
++	case TPS_PD_STATUS_PORT_TYPE_SINK:
 +		typec_cap.type = TYPEC_PORT_SNK;
-+		typec_cap.data = TYPEC_PORT_UFP;
 +		break;
-+	case TPS_PORTINFO_DRP_UFP_DRD:
-+	case TPS_PORTINFO_DRP_DFP_DRD:
-+		typec_cap.type = TYPEC_PORT_DRP;
-+		typec_cap.data = TYPEC_PORT_DRD;
-+		break;
-+	case TPS_PORTINFO_DRP_UFP:
-+		typec_cap.type = TYPEC_PORT_DRP;
-+		typec_cap.data = TYPEC_PORT_UFP;
-+		break;
-+	case TPS_PORTINFO_DRP_DFP:
-+		typec_cap.type = TYPEC_PORT_DRP;
-+		typec_cap.data = TYPEC_PORT_DFP;
-+		break;
-+	case TPS_PORTINFO_SOURCE:
++	case TPS_PD_STATUS_PORT_TYPE_SOURCE:
 +		typec_cap.type = TYPEC_PORT_SRC;
-+		typec_cap.data = TYPEC_PORT_DFP;
 +		break;
 +	default:
 +		return -ENODEV;
@@ -150,79 +161,38 @@ index 17b3bc480f97..8218d88a4a06 100644
  static int tps6598x_probe(struct i2c_client *client)
  {
  	irq_handler_t irq_handler = tps6598x_interrupt;
- 	struct device_node *np = client->dev.of_node;
--	struct typec_capability typec_cap = { };
- 	struct tps6598x *tps;
- 	struct fwnode_handle *fwnode;
- 	u32 status;
--	u32 conf;
- 	u32 vid;
- 	int ret;
- 	u64 mask1;
-@@ -1053,10 +1103,6 @@ static int tps6598x_probe(struct i2c_client *client)
- 		goto err_clear_mask;
- 	trace_tps6598x_status(status);
- 
--	ret = tps6598x_read32(tps, TPS_REG_SYSTEM_CONF, &conf);
--	if (ret < 0)
--		goto err_clear_mask;
--
- 	/*
- 	 * This fwnode has a "compatible" property, but is never populated as a
- 	 * struct device. Instead we simply parse it to read the properties.
-@@ -1074,50 +1120,13 @@ static int tps6598x_probe(struct i2c_client *client)
- 		goto err_fwnode_put;
- 	}
- 
--	typec_cap.revision = USB_TYPEC_REV_1_2;
--	typec_cap.pd_revision = 0x200;
--	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
--	typec_cap.driver_data = tps;
--	typec_cap.ops = &tps6598x_ops;
--	typec_cap.fwnode = fwnode;
--
--	switch (TPS_SYSCONF_PORTINFO(conf)) {
--	case TPS_PORTINFO_SINK_ACCESSORY:
--	case TPS_PORTINFO_SINK:
--		typec_cap.type = TYPEC_PORT_SNK;
--		typec_cap.data = TYPEC_PORT_UFP;
--		break;
--	case TPS_PORTINFO_DRP_UFP_DRD:
--	case TPS_PORTINFO_DRP_DFP_DRD:
--		typec_cap.type = TYPEC_PORT_DRP;
--		typec_cap.data = TYPEC_PORT_DRD;
--		break;
--	case TPS_PORTINFO_DRP_UFP:
--		typec_cap.type = TYPEC_PORT_DRP;
--		typec_cap.data = TYPEC_PORT_UFP;
--		break;
--	case TPS_PORTINFO_DRP_DFP:
--		typec_cap.type = TYPEC_PORT_DRP;
--		typec_cap.data = TYPEC_PORT_DFP;
--		break;
--	case TPS_PORTINFO_SOURCE:
--		typec_cap.type = TYPEC_PORT_SRC;
--		typec_cap.data = TYPEC_PORT_DFP;
--		break;
--	default:
--		ret = -ENODEV;
--		goto err_role_put;
--	}
--
- 	ret = devm_tps6598_psy_register(tps);
+@@ -1124,7 +1179,11 @@ static int tps6598x_probe(struct i2c_client *client)
  	if (ret)
  		goto err_role_put;
  
--	tps->port = typec_register_port(&client->dev, &typec_cap);
--	if (IS_ERR(tps->port)) {
--		ret = PTR_ERR(tps->port);
-+	ret = tps6598x_register_port(tps, fwnode);
-+	if (ret)
+-	ret = tps6598x_register_port(tps, fwnode);
++	if (np && of_device_is_compatible(np, "ti,tps25750"))
++		ret = tps25750_register_port(tps, fwnode);
++	else
++		ret = tps6598x_register_port(tps, fwnode);
++
+ 	if (ret)
  		goto err_role_put;
--	}
  
- 	if (status & TPS_STATUS_PLUG_PRESENT) {
- 		ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &tps->pwr_status);
+diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+index 362e1eca53ad..d2c65387994f 100644
+--- a/drivers/usb/typec/tipd/tps6598x.h
++++ b/drivers/usb/typec/tipd/tps6598x.h
+@@ -203,4 +203,14 @@
+ #define TPS_BOOT_STATUS_DEAD_BATTERY_FLAG	BIT(2)
+ #define TPS25750_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
+ 
++/* PD STATUS REG */
++#define TPS_REG_PD_STATUS_PORT_TYPE_MASK	GENMASK(5, 4)
++#define TPS_PD_STATUS_PORT_TYPE(x) \
++	TPS_FIELD_GET(TPS_REG_PD_STATUS_PORT_TYPE_MASK, x)
++
++#define TPS_PD_STATUS_PORT_TYPE_SINK_SOURCE	0
++#define TPS_PD_STATUS_PORT_TYPE_SINK		1
++#define TPS_PD_STATUS_PORT_TYPE_SOURCE		2
++#define TPS_PD_STATUS_PORT_TYPE_SOURCE_SINK	3
++
+ #endif /* __TPS6598X_H__ */
 -- 
 2.34.1
 
