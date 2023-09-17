@@ -2,200 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B396C7A3B95
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF167A3BAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240749AbjIQUTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 16:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S240784AbjIQUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 16:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240775AbjIQUTl (ORCPT
+        with ESMTP id S240820AbjIQUUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 16:19:41 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3ECF1;
-        Sun, 17 Sep 2023 13:19:34 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 412E360157;
-        Sun, 17 Sep 2023 22:19:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1694981960; bh=8v9qPr5HGGnBG/0kpdufIwG1xFEuGlb2Ahrbt5XQf+s=;
-        h=Date:To:Cc:From:Subject:From;
-        b=m6tdgRiT4sAx2C+AAduPbhNc7VzQRh0FTVKvjjSD3cc6pH7U8TmCt9OUWk2MRX4+f
-         Y0BbQFo3STi746nuY6pAzdIzHXmf2s/kFSDkegnqD1HNdLxbdYZ5v9UywfIjiVuX+r
-         J6xjM/MChePe9r4eY84B6e1mRjyK8yREeN45NxgVywSeKGr13XKZZJJuIys+/Hg4K+
-         8ZAbS99c/mqIPidyure+UWAyOn5C6ESd2QxdEGDnNlXbk+P1bDK67kJxNajhrt5NKb
-         MbIYDF89hIC+z/g2A+gB04zrWxlsvu+qywTnH6vTXKc6aYdh1QFdlldZ3Npah16AMT
-         CACtr0CwyoKgg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rTEe40IVj_R9; Sun, 17 Sep 2023 22:19:17 +0200 (CEST)
-Received: from [192.168.1.6] (78-2-88-58.adsl.net.t-com.hr [78.2.88.58])
-        by domac.alu.hr (Postfix) with ESMTPSA id 0BBF160155;
-        Sun, 17 Sep 2023 22:19:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1694981957; bh=8v9qPr5HGGnBG/0kpdufIwG1xFEuGlb2Ahrbt5XQf+s=;
-        h=Date:To:Cc:From:Subject:From;
-        b=fudaO/FrJu8l6O4fOKE6VZ1ywcB4MaxuW0JuXEm6PTPAsmGwIV6xZiO4MwJB1m7rO
-         hqF/RUwX02FmuSPc3L23V8ndO22X4NHkZsSGIbPib2I6KzCSz8/eZ+x88PCWePLmYl
-         yzzKLSPuYLPbP6nJ8ZmlwrGq8AlRnXFASGTK1akIlQ7IBH4xDY+W9WFGpcTEFunAQV
-         xDCx5hOE2K9alBk7yRAUvdXr7yVBCxvbezLvcadgCy2vPRK0llvaSzs230KYHiQIp9
-         eaJv6Q2KGyChP+UnA+KMqghf3OhTgwK8I5tLRB1qwgfXw7RiCJY8U5rmuhtuL+KiwJ
-         u2w6MWTSQFK8Q==
-Message-ID: <1b84f2a0-97d9-3d81-0c7a-e8b5b3dc3a02@alu.unizg.hr>
-Date:   Sun, 17 Sep 2023 22:19:12 +0200
+        Sun, 17 Sep 2023 16:20:30 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3309B196
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:20:23 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhyFF-0008UD-3j; Sun, 17 Sep 2023 22:19:53 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhyFB-0073yw-4k; Sun, 17 Sep 2023 22:19:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhyFA-002Q2Y-R4; Sun, 17 Sep 2023 22:19:48 +0200
+Date:   Sun, 17 Sep 2023 22:19:46 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev,
+        linux-stm32@st-md-mailman.stormreply.com, johannes@sipsolutions.net
+Subject: Re: [PATCH v2] net: stmmac: fix incorrect rxq|txq_stats reference
+Message-ID: <20230917201946.5z5y2qn4ydpwppse@pengutronix.de>
+References: <20230917165328.3403-1-jszhang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: BUG: KCSAN: data-race in poll_schedule_timeout.constprop.0 / pollwake
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z7mb6j7jc652k2fi"
+Content-Disposition: inline
+In-Reply-To: <20230917165328.3403-1-jszhang@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-The setup is Linux 6.6.0-rc1-kcsan-00269-ge789286468a9-dirty x86_64 ("dirty" is from the applied patch,
-but we'll come to that below) on an Ubuntu 22.04 LTS system.
+--z7mb6j7jc652k2fi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK, so the KCSAN stacktrace is:
+On Mon, Sep 18, 2023 at 12:53:28AM +0800, Jisheng Zhang wrote:
+> commit 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics
+> where necessary") caused one regression as found by Uwe, the backtrace
+> looks like:
+>=20
+> 	INFO: trying to register non-static key.
+> 	The code is fine but needs lockdep annotation, or maybe
+> 	you didn't initialize this object before use?
+> 	turning off the locking correctness validator.
+> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3bbe1-=
+dirty #21
+> 	Hardware name: STM32 (Device Tree Support)
+> 	 unwind_backtrace from show_stack+0x18/0x1c
+> 	 show_stack from dump_stack_lvl+0x60/0x90
+> 	 dump_stack_lvl from register_lock_class+0x98c/0x99c
+> 	 register_lock_class from __lock_acquire+0x74/0x293c
+> 	 __lock_acquire from lock_acquire+0x134/0x398
+> 	 lock_acquire from stmmac_get_stats64+0x2ac/0x2fc
+> 	 stmmac_get_stats64 from dev_get_stats+0x44/0x130
+> 	 dev_get_stats from rtnl_fill_stats+0x38/0x120
+> 	 rtnl_fill_stats from rtnl_fill_ifinfo+0x834/0x17f4
+> 	 rtnl_fill_ifinfo from rtmsg_ifinfo_build_skb+0xc0/0x144
+> 	 rtmsg_ifinfo_build_skb from rtmsg_ifinfo+0x50/0x88
+> 	 rtmsg_ifinfo from __dev_notify_flags+0xc0/0xec
+> 	 __dev_notify_flags from dev_change_flags+0x50/0x5c
+> 	 dev_change_flags from ip_auto_config+0x2f4/0x1260
+> 	 ip_auto_config from do_one_initcall+0x70/0x35c
+> 	 do_one_initcall from kernel_init_freeable+0x2ac/0x308
+> 	 kernel_init_freeable from kernel_init+0x1c/0x138
+> 	 kernel_init from ret_from_fork+0x14/0x2c
+>=20
+> The reason is the rxq|txq_stats structures are not what expected
+> because stmmac_open() -> __stmmac_open() the structure is overwritten
+> by "memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));"
+> This causes the well initialized syncp member of rxq|txq_stats is
+> overwritten unexpectedly as pointed out by Johannes and Uwe.
+>=20
+> Fix this issue by moving rxq|txq_stats back to stmmac_extra_stats. For
+> SMP cache friendly, we also mark stmmac_txq_stats and stmmac_rxq_stats
+> as ____cacheline_aligned_in_smp.
+>=20
+> Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where =
+necessary")
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Reported-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-[  139.315774] ==================================================================
-[  139.315798] BUG: KCSAN: data-race in poll_schedule_timeout.constprop.0 / pollwake
+I didn't look at the patch, but it makes the splat go away for me.
+Thanks \o/
 
-[  139.315830] write to 0xffffc90003f3fb60 of 4 bytes by task 1848 on cpu 6:
-[  139.315843]  pollwake+0xc0/0x110
-[  139.315860]  __wake_up_common+0x7a/0x150
-[  139.315877]  __wake_up_common_lock+0x7f/0xd0
-[  139.315893]  __wake_up_sync_key+0x20/0x50
-[  139.315905]  sock_def_readable+0x67/0x160
-[  139.315917]  unix_stream_sendmsg+0x35f/0x990
-[  139.315932]  sock_sendmsg+0x15d/0x170
-[  139.315947]  ____sys_sendmsg+0x3d5/0x500
-[  139.315962]  ___sys_sendmsg+0x9e/0x100
-[  139.315976]  __sys_sendmsg+0x6f/0x100
-[  139.315990]  __x64_sys_sendmsg+0x47/0x60
-[  139.316005]  do_syscall_64+0x5d/0xa0
-[  139.316022]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+Tested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-[  139.316043] read to 0xffffc90003f3fb60 of 4 bytes by task 1877 on cpu 18:
-[  139.316055]  poll_schedule_timeout.constprop.0+0x4e/0xc0
-[  139.316071]  do_sys_poll+0x50d/0x760
-[  139.316081]  __x64_sys_poll+0x5f/0x210
-[  139.316091]  do_syscall_64+0x5d/0xa0
-[  139.316105]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+Best regards
+Uwe
 
-[  139.316125] value changed: 0x00000000 -> 0x00000001
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-[  139.316143] Reported by Kernel Concurrency Sanitizer on:
-[  139.316153] CPU: 18 PID: 1877 Comm: gdbus Tainted: G             L     6.6.0-rc1-kcsan-00269-ge789286468a9-dirty #3
-[  139.316167] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[  139.316177] ==================================================================
+--z7mb6j7jc652k2fi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The problematic code seems to be:
+-----BEGIN PGP SIGNATURE-----
 
-   185 static int __pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
-   186 {
-   187         struct poll_wqueues *pwq = wait->private;
-   188         DECLARE_WAITQUEUE(dummy_wait, pwq->polling_task);
-   189
-   190         /*
-   191          * Although this function is called under waitqueue lock, LOCK
-   192          * doesn't imply write barrier and the users expect write
-   193          * barrier semantics on wakeup functions.  The following
-   194          * smp_wmb() is equivalent to smp_wmb() in try_to_wake_up()
-   195          * and is paired with smp_store_mb() in poll_schedule_timeout.
-   196          */
-   197         smp_wmb();
-   198         pwq->triggered = 1;
-   199
-   200         /*
-   201          * Perform the default wake up operation using a dummy
-   202          * waitqueue.
-   203          *
-   204          * TODO: This is hacky but there currently is no interface to
-   205          * pass in @sync.  @sync is scheduled to be removed and once
-   206          * that happens, wake_up_process() can be used directly.
-   207          */
-→ 208         return default_wake_function(&dummy_wait, mode, sync, key);
-   209 }
-   210
-   211 static int pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
-   212 {
-   213         struct poll_table_entry *entry;
-   214
-   215         entry = container_of(wait, struct poll_table_entry, wait);
-   216         if (key && !(key_to_poll(key) & entry->key))
-   217                 return 0;
-→ 218         return __pollwake(wait, mode, sync, key);
-   219 }
-   220
-   .
-   .
-   .
-   236
-   237 static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
-   238                           ktime_t *expires, unsigned long slack)
-   239 {
-   240         int rc = -EINTR;
-   241
-   242         set_current_state(state);
-→ 243         if (!pwq->triggered)
-   244                 rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
-   245         __set_current_state(TASK_RUNNING);
-   246
-   247         /*
-   248          * Prepare for the next iteration.
-   249          *
-   250          * The following smp_store_mb() serves two purposes.  First, it's
-   251          * the counterpart rmb of the wmb in pollwake() such that data
-   252          * written before wake up is always visible after wake up.
-   253          * Second, the full barrier guarantees that triggered clearing
-   254          * doesn't pass event check of the next iteration.  Note that
-   255          * this problem doesn't exist for the first iteration as
-   256          * add_wait_queue() has full barrier semantics.
-   257          */
-   258         smp_store_mb(pwq->triggered, 0);
-   259
-   260         return rc;
-   261 }
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUHX2EACgkQj4D7WH0S
+/k5snggAu813qfU1WKakoC+H/WXhJwN4cXPPgMXgDZA6nrYzT6bBacs0CwmyDpWt
+QnNFTF3trjFkTqqD+OIn3o+sSBzDLWcePKsvaaAJwCnhdUwKN0NCS8wFsj1EUS6K
+NlRGAoXKAMJ2GxBz/cjG3SH5crrX5JaWQ1Z300jnDyLuissdrE8e1p4FMkx7+u2U
+tNQoaDlzrO7/Yyu252ydShGf/7BcPQ0ORHt+J3nwlnia8wEjsyhiuGBEdvNW+lgo
+h4zST1Qthn8dzmTg8U4bqG9C1UWJSOC+jliAqn9m3wjguxxlozI1wp9EoAtnQhSy
+eJazAhMpOnqwixpWYHL9dJV8Uuaxkw==
+=c2ks
+-----END PGP SIGNATURE-----
 
-This quick and dirty fix had removed the KCSAN warnings which were about +100 in the test run:
-
-You will probably have the clearer big picture, as this fix only removes the symptom.
-
-I should probably do some homework before submitting a formal patch.
-
-Best regards,
-Mirsad Todorovac
-
------------------------------------------------------------------------------------
-  fs/select.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/select.c b/fs/select.c
-index 0ee55af1a55c..38e12084daf1 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -240,7 +240,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
-         int rc = -EINTR;
-  
-         set_current_state(state);
--       if (!pwq->triggered)
-+       if (!READ_ONCE(pwq->triggered))
-                 rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
-         __set_current_state(TASK_RUNNING);
-  
+--z7mb6j7jc652k2fi--
