@@ -2,34 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF1A7A339A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 04:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1286A7A339C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 04:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbjIQCsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 22:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S233242AbjIQCuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 22:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbjIQCsM (ORCPT
+        with ESMTP id S230166AbjIQCu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 22:48:12 -0400
+        Sat, 16 Sep 2023 22:50:28 -0400
 Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD603CD7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 19:48:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 960F219A;
+        Sat, 16 Sep 2023 19:50:22 -0700 (PDT)
 Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 38H2lxAT009848;
-        Sun, 17 Sep 2023 04:47:59 +0200
-Date:   Sun, 17 Sep 2023 04:47:59 +0200
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 38H2nnj8009853;
+        Sun, 17 Sep 2023 04:49:49 +0200
+Date:   Sun, 17 Sep 2023 04:49:49 +0200
 From:   Willy Tarreau <w@1wt.eu>
 To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: nolibc: update tree location
-Message-ID: <20230917024759.GC9646@1wt.eu>
-References: <20230916-nolibc-tree-v1-1-06c9b59a5035@weissschuh.net>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/4] selftests/nolibc: allow building i386 with multiarch
+ compiler
+Message-ID: <20230917024949.GD9646@1wt.eu>
+References: <20230914-nolibc-syscall-nr-v1-0-e50df410da11@weissschuh.net>
+ <20230914-nolibc-syscall-nr-v1-1-e50df410da11@weissschuh.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230916-nolibc-tree-v1-1-06c9b59a5035@weissschuh.net>
+In-Reply-To: <20230914-nolibc-syscall-nr-v1-1-e50df410da11@weissschuh.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -40,9 +46,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 12:08:54AM +0200, Thomas Weiﬂschuh wrote:
-> The nolibc tree moved out of Willys user namespace into its own.
+On Thu, Sep 14, 2023 at 06:01:17PM +0200, Thomas Weiﬂschuh wrote:
+> When building with a multiarch-capable compiler, like those provided by
+> common distributions the -m32 argument is required to build 32bit code.
 > 
+> Wrap it in cc-option in case the compiler is not multiarch-capable.
+
+I think it's a good idea. Zhangjin was also using a single compiler for
+both archs.
+
 > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
 Acked-by: Willy Tarreau <w@1wt.eu>
