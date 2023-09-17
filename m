@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97DD7A3621
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816497A3669
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjIQPWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S231896AbjIQP11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbjIQPVr (ORCPT
+        with ESMTP id S233546AbjIQP1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:21:47 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0468B5;
-        Sun, 17 Sep 2023 08:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694964099;
-        bh=IIibg1/4WvIjXQyZJl+4IBf/DvAGCXDdcSGNSt2pWjA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=LlqUgOyEsBqAZqjJivPFcSsQLVsFgWx5g0J7ezOBTL/g0AJZYqIhsArLRKAkEKYwa
-         2DCtFNjYNDQQTkXxJ6gKzi+WDjtKJx4OXgMHeNOWpvuI7lx441MwIrivlZjiVXYxMH
-         gkxxH3KX0nTexxX7Po80lIjCgsDBLSB98egltGts=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sun, 17 Sep 2023 17:21:38 +0200
-Subject: [PATCH RFC v2] selftests/nolibc: don't embed initramfs into kernel
- image
+        Sun, 17 Sep 2023 11:27:08 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F3911F;
+        Sun, 17 Sep 2023 08:27:03 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3214de9cd8bso230129f8f.2;
+        Sun, 17 Sep 2023 08:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694964421; x=1695569221; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=itAnQtUK0esq7xPW/PIltIlBTpoKhniXVdlB9pgFqig=;
+        b=fpcmbzioRagxHtRRBJqwPgMcM5eEUjASlnE4sGUhQKLKouuNeMEJe6jVKLb36Yw+3c
+         Pnb03qaFZE343cTmm5WgnuvNWJhq6EwxCoI74pUcKUldEiyCaoX26lfPvN41JZjan6Jc
+         P7H80jFNdsvHpD9kRND3HN+4b/2iIvg2GxIrNfr9r/vbSRszfj7NCvKja9vrNnCARb/s
+         rdP6gSaEA6QV9qvIivjpopByu+zgcf81h9OnUH+tDccKmuITDQx4ywZSJ7RmXs+VlpeR
+         8BdpfIYj0Kja5D7tvsAPMvKkjPM/q5xcq2/yul79//1uDoGhi58gt2Kq/B0OsWu16+DV
+         +rDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694964421; x=1695569221;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=itAnQtUK0esq7xPW/PIltIlBTpoKhniXVdlB9pgFqig=;
+        b=r4MjzYvzib8d5YPD4pge/uqEew1YnWqjLqXrGPLsklFtHmdSwA48uuzqRVRgAeEyVy
+         owCnCcyTXr3W3FqWZ9BAIdZylnUnExSor79NzYD/KbZvuxUHz7WjaQQd3QSdGRUlZKb8
+         ftxTz6iOWiyHc/4/GJug0WIqN0iCSZnK8OO1XFzA1ixByuTy4TopG+rCGlk4JAciTLbW
+         LLaof8LKi8jY/2ElhOSk0w3is0kX9bkDi66RFnnrLyRpkZNRuNDMapKzFg9qbD5QmoBB
+         DZlnqGbefOZ+maNBlifvdVNUSrldufQ/O1Z7Doqu7NOHPYr5nWD5WpF2bPHrnlDWLxJE
+         xaZw==
+X-Gm-Message-State: AOJu0Yye9jt9A08lcMULo3+zgXLlFU2SKnZ+zBu1tilaL0hfIo6K2uAd
+        XNo14HqMtlJuyX2/YnNsf80=
+X-Google-Smtp-Source: AGHT+IHukKtw2b9SH5a5yatF3/vlsOtq0OzgkV4iDDaL+tlI2m6aiInWnEoKVXTTzZ8SIA5rrVCllA==
+X-Received: by 2002:a05:6000:118d:b0:316:efb9:101d with SMTP id g13-20020a056000118d00b00316efb9101dmr6956862wrx.25.1694964421068;
+        Sun, 17 Sep 2023 08:27:01 -0700 (PDT)
+Received: from localhost.localdomain ([5.45.134.53])
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 08:27:00 -0700 (PDT)
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
+        bryan.odonoghue@linaro.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com
+Subject: [PATCH v5 00/15] Add TPS25750 USB type-C PD controller support
+Date:   Sun, 17 Sep 2023 11:26:24 -0400
+Message-Id: <20230917152639.21443-1-alkuor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230917-nolibc-initramfs-v2-1-f0f293a8b198@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAIEZB2UC/3WNwQrCMBBEf6Xs2UiSxoCehIIf4FV6iMnWLGgq2
- ViV0n839O7xzTBvZmDMhAyHZoaMEzGNqYLeNOCjSzcUFCqDlrqVe2VFGu909YISleweAwszBCn
- R+VbvLNTZM+NAn1V5gfOpg76GkbiM+bveTGqt/hsnJaQwRln0GLyz4fhGYmYfX3GbsEC/LMsPb
- 8YCkLoAAAA=
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694964099; l=5921;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=IIibg1/4WvIjXQyZJl+4IBf/DvAGCXDdcSGNSt2pWjA=;
- b=TMywZlcbRfqxkouH8taMqHBh3L3qIqomdcFFYO6Sgvb1gIcjNkUTBZBzTsZX2PgpnQIyVEeek
- RpFYtG0ll4MB5N+H1KBQwsBkanZ7UaY2LH6RT6Wp84CFmzlJLUWQu9r
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the initramfs is embedded into the kernel each rebuild of it will
-trigger a full kernel relink and all the expensive postprocessing steps.
+From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-Currently nolibc-test and therefore the initramfs are always rebuild,
-even without source changes, leading to lots of slow kernel relinks.
+TPS25750 USB type-C PD controller has the same register offsets as
+tps6598x. The following is a summary of incorporating TPS25750 into
+TPS6598x driver:
 
-Instead of linking the initramfs into the kernel assemble it manually
-and pass it explicitly to qemu.
-This avoids all of the kernel relinks.
+- Only Check VID register (0x00) for TPS6598x and cd321x, as TPS25750 doesn't
+  have VID register.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Currently the nolibc testsuite embeds the test executable into a kernel
-image with CONFIG_INITRAMFS_SOURCE.
-This forces a full kernel relink everytime the test executable is
-updated.
+- TypeC port registration will be registered differently for each PD
+  controller. TPS6598x uses system configuration register (0x28) to get
+  pr/dr capabilities. On the other hand, TPS25750 will use data role property
+  and PD status register (0x40) to get pr/dr capabilities as TPS25750 doesn't
+  have register 0x28 supported.
 
-This relinking step dominates the test cycle.
-It is slower than building and running the test in qemu together.
+- TPS25750 requires writing a binary configuration to switch PD
+  controller from PTCH mode to APP mode which needs the following changes:
+  - Add PTCH mode to the modes list.
+  - Add an argument to tps6598x_check_mode to return the current mode.
+  - Currently, tps6598x_exec_cmd has cmd timeout hardcoded to 1 second,
+    and doesn't wait before checking DATA_OUT response. In TPS25750, patch 4CCs
+    take longer than 1 second to execute and some requires a delay before
+    checking DATA_OUT. To accommodate that, cmd_timeout and response_delay will
+    be added as arguments to tps6598x_exec_cmd.
+  - Implement applying patch sequence for TPS25750.
 
-With a bit of Makefile-shuffling the relinking can be avoided.
----
-Changes in v2:
-- avoid need to modify top-level Makefile
-- drop patch removing "rerun" target
-- add kernel-standalone target
-- Link to v1: https://lore.kernel.org/r/20230916-nolibc-initramfs-v1-0-4416ecedca6d@weissschuh.net
----
- tools/testing/selftests/nolibc/Makefile | 42 ++++++++++++++++++++-------------
- 1 file changed, 26 insertions(+), 16 deletions(-)
+- In pm suspend callback, patch mode needs to be checked and the binary
+  configuration should be applied if needed.
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 689658f81a19..ee6a9ad28cfd 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -131,18 +131,20 @@ REPORT  ?= awk '/\[OK\][\r]*$$/{p++} /\[FAIL\][\r]*$$/{if (!f) printf("\n"); f++
- 
- help:
- 	@echo "Supported targets under selftests/nolibc:"
--	@echo "  all          call the \"run\" target below"
--	@echo "  help         this help"
--	@echo "  sysroot      create the nolibc sysroot here (uses \$$ARCH)"
--	@echo "  nolibc-test  build the executable (uses \$$CC and \$$CROSS_COMPILE)"
--	@echo "  libc-test    build an executable using the compiler's default libc instead"
--	@echo "  run-user     runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
--	@echo "  initramfs    prepare the initramfs with nolibc-test"
--	@echo "  defconfig    create a fresh new default config (uses \$$XARCH)"
--	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$XARCH)"
--	@echo "  run          runs the kernel in QEMU after building it (uses \$$XARCH, \$$TEST)"
--	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$XARCH, \$$TEST)"
--	@echo "  clean        clean the sysroot, initramfs, build and output files"
-+	@echo "  all               call the \"run\" target below"
-+	@echo "  help              this help"
-+	@echo "  sysroot           create the nolibc sysroot here (uses \$$ARCH)"
-+	@echo "  nolibc-test       build the executable (uses \$$CC and \$$CROSS_COMPILE)"
-+	@echo "  libc-test         build an executable using the compiler's default libc instead"
-+	@echo "  run-user          runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
-+	@echo "  initramfs.cpio    prepare the initramfs archive with nolibc-test"
-+	@echo "  initramfs         prepare the initramfs tree with nolibc-test"
-+	@echo "  defconfig         create a fresh new default config (uses \$$XARCH)"
-+	@echo "  kernel            (re)build the kernel (uses \$$XARCH)"
-+	@echo "  kernel-standalone (re)build the kernel with the initramfs (uses \$$XARCH)"
-+	@echo "  run               runs the kernel in QEMU after building it (uses \$$XARCH, \$$TEST)"
-+	@echo "  rerun             runs a previously prebuilt kernel in QEMU (uses \$$XARCH, \$$TEST)"
-+	@echo "  clean             clean the sysroot, initramfs, build and output files"
- 	@echo ""
- 	@echo "The output file is \"run.out\". Test ranges may be passed using \$$TEST."
- 	@echo ""
-@@ -195,6 +197,9 @@ run-user: nolibc-test
- 	$(Q)qemu-$(QEMU_ARCH) ./nolibc-test > "$(CURDIR)/run.out" || :
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
-+initramfs.cpio: kernel nolibc-test
-+	$(QUIET_GEN)echo 'file /init nolibc-test 755 0 0' | $(srctree)/usr/gen_init_cpio - > initramfs.cpio
-+
- initramfs: nolibc-test
- 	$(QUIET_MKDIR)mkdir -p initramfs
- 	$(call QUIET_INSTALL, initramfs/init)
-@@ -203,17 +208,20 @@ initramfs: nolibc-test
- defconfig:
- 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
- 
--kernel: initramfs
-+kernel:
-+	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME)
-+
-+kernel-standalone: initramfs
- 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
- 
- # run the tests after building the kernel
--run: kernel
--	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-+run: kernel initramfs.cpio
-+	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
- # re-run the tests from an existing kernel
- rerun:
--	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-+	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -initrd initramfs.cpio -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
- 	$(Q)$(REPORT) $(CURDIR)/run.out
- 
- # report with existing test log
-@@ -227,6 +235,8 @@ clean:
- 	$(Q)rm -f nolibc-test
- 	$(call QUIET_CLEAN, libc-test)
- 	$(Q)rm -f libc-test
-+	$(call QUIET_CLEAN, initramfs.cpio)
-+	$(Q)rm -rf initramfs.cpio
- 	$(call QUIET_CLEAN, initramfs)
- 	$(Q)rm -rf initramfs
- 	$(call QUIET_CLEAN, run.out)
+- For interrupt, TPS25750 has only one event register (0x14) and one mask
+  register (0x16) of 11 bytes each, where TPS6598x has two event
+  and two mask registers of 8 bytes each. Both TPS25750 and TPS65986x
+  shares the same bit field offsets for events/masks/clear but many of
+  there fields are reserved in TPS25750, the following needs to be done in
+  tps6598x_interrupt:
+  - Read EVENT1 register as a block of 11 bytes when tps25750 is present
+  - Write CLEAR1 register as a block of 11 bytes when tps25750 is present
+  - Add trace_tps25750_irq
+  - During testing, I noticed that when a cable is plugged into the PD
+    controller and before PD controller switches to APP mode, there is a
+    lag between dr/pr updates and PlugInsertOrRemoval Event, so a check
+    for dr/pr change needs to be added along TPS_REG_INT_PLUG_EVENT check
 
----
-base-commit: 3f79a57865b33f49fdae6655510bd27c8e6610e0
-change-id: 20230916-nolibc-initramfs-4fd00eac3256
+- Add TPS25750 traces for status and power status registers. Trace for
+  data register won't be added as it doesn't exist in the device.
 
-Best regards,
+- Configure sleep mode for TPS25750.
+
+v5:
+ - PATCH 1: Add tps25750 bindings to tps6598x
+ - PATCH 2: Remove tps25750 driver and incorperate tps25750
+ 	    into tps6598x driver
+v4:
+ - PATCH 1: No change
+ - PATCH 2: Fix comments style and drop of_match_ptr
+v3:
+ - PATCH 1: Fix node name
+ - PATCH 2: Upload tps25750 driver patch
+v2:
+ - PATCH 1: General properties clean up
+
+Abdel Alkuor (15):
+  dt-bindings: usb: tps6598x: Add tps25750
+  USB: typec: Add cmd timeout and response delay
+  USB: typec: Add patch mode to tps6598x
+  USB: typec: Load TPS25750 patch bundle
+  USB: typec: Check for EEPROM present
+  USB: typec: Clear dead battery flag
+  USB: typec: Apply patch again after power resume
+  USB: typec: Add interrupt support for TPS25750
+  USB: typec: Refactor tps6598x port registration
+  USB: typec: Add port registration for tps25750
+  USB: typec: Enable sleep mode for tps25750
+  USB: typec: Add trace for tps25750 irq
+  USB: typec: Add power status trace for tps25750
+  USB: typec: Add status trace for tps25750
+  USB: typec: Do not check VID for tps25750
+
+ .../devicetree/bindings/usb/ti,tps6598x.yaml  |  70 +++
+ drivers/usb/typec/tipd/core.c                 | 570 +++++++++++++++---
+ drivers/usb/typec/tipd/tps6598x.h             |  36 ++
+ drivers/usb/typec/tipd/trace.h                |  84 +++
+ 4 files changed, 683 insertions(+), 77 deletions(-)
+
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.34.1
 
