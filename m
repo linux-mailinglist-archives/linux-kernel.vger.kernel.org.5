@@ -2,153 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045157A3C69
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EEA7A3CFF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241021AbjIQUa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 16:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        id S241182AbjIQUhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 16:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241033AbjIQUae (ORCPT
+        with ESMTP id S241203AbjIQUhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 16:30:34 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676AF101
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:30:28 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6903a452dfaso2411661b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694982628; x=1695587428; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wmN3G4bFpi6nAbIJp8nMJiK+WmgTcWevUBMw6pAf8Vk=;
-        b=hDdpJ+RnMscZTxuRoAob/9vaCK3YMtANVoEhJvkT4sTZ6uOm5KeFzQG95dT+t4VZsn
-         fOEfqsRUEW9H1o/dbo0I6DVIVWbJANR7gXWoA3/gD/mYO2Ul7z+Yb1aeJVwScdZyX5o5
-         f13a2ZuGRgKdEZTzmjlf49CiatE5gs7miRxbb3ujzYv9kJ4+jNowZzX9FvCvS2Ry8+81
-         P6GeLxQ8/sDWaP59fB5+83VY1lE1ndcdXffe7M3EE4ZRlQbxAex8QVvRyE6RdOV4Skbn
-         t1fqCmZmbyQBbd77/+fKoV6fmquxv+qRRC8IM9R1ChMx3TNpk2DwyLUHK23o7J4rS1EQ
-         zf+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694982628; x=1695587428;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wmN3G4bFpi6nAbIJp8nMJiK+WmgTcWevUBMw6pAf8Vk=;
-        b=WJLCSiMz5aQ9u0b7P9S3PcI5/Wb6cxVX4uCHq+rJQm0ZiNv73Xa8+z1uER3O33pCOJ
-         mmiHVKIUWGH+X4Jhb7jeW/spWE31I3r6GGiISlwE3B9XKnb2NJexfFlqiSHpNjp4aiTd
-         pcB+B1nbFixgLFCqeQJS3DtjwswhCWwR+/T2LN0tTGJBMn9yzPyj6CXO0uTZUS7JuJgK
-         Gze01GMsAuzEX63TQj4DTjn/JymElmoWKiV2kAxwN4kRQIOAHntl089etCZvGXnBHl3f
-         QrTBTMt8Afke89MyPhJKqof3yygjlGBS4Ne/3E8NQXazUFX9xO1tRzVKyxobROEfg2Zf
-         28pg==
-X-Gm-Message-State: AOJu0YzeFf7r9gTZfCc4Q6sPb9kxjlpQgBCEdrhojSs294Lqmqn7pIXt
-        JSlzwwPEgTLJ7/kG/HH46yaWUsFbpKMWmRL9z3Q=
-X-Google-Smtp-Source: AGHT+IECasCq4QXMYQn3wUZn42e5l+bVc7WPy0pGFsbORQGQ9sFW5lXlpsfwRKvUNRjABaQXLFFhQQ==
-X-Received: by 2002:a05:6a20:8e0f:b0:134:d4d3:f0a8 with SMTP id y15-20020a056a208e0f00b00134d4d3f0a8mr7470800pzj.3.1694982627806;
-        Sun, 17 Sep 2023 13:30:27 -0700 (PDT)
-Received: from yqt-VirtualBox ([139.227.189.216])
-        by smtp.gmail.com with ESMTPSA id jk15-20020a170903330f00b001b9fef7f454sm4534874plb.73.2023.09.17.13.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 13:30:27 -0700 (PDT)
-From:   Piro Yang <piroyangg@gmail.com>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Piro Yang <piroyangg@gmail.com>
-Subject: [PATCH v2] staging: vme_user: using __func__ to replace function's name in printk
-Date:   Mon, 18 Sep 2023 04:30:19 +0800
-Message-Id: <20230917203019.79180-1-piroyangg@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <9548bc1c-23c9-427f-446e-61f051f14f9c@gmail.com>
-References: <9548bc1c-23c9-427f-446e-61f051f14f9c@gmail.com>
+        Sun, 17 Sep 2023 16:37:40 -0400
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAC2101
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:37:31 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id hyWCqBxzXiBkuhyWCqhbFr; Sun, 17 Sep 2023 22:37:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694983044;
+        bh=R/OeMX2iB0ZqhHm0GSAy+GcdjH61pb96H2jNofIJ5Ew=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Fj356q0IIfB9U9L7pEdjjUe7Ib1OOQFf6KpHjy7W1RhdscPqsNz4iPyK9IMQVI/Xl
+         yjZPuMLSufqntgRhuDvbbXCxKpRQr/ykJ3alH8I5Wvu4Gns8Z6SYtymYxvluo2mHD7
+         BwH/CWUHdISxYD0y0mi45nYtoI1TUoQiMtBXJ3yXTclVc/wEl8zYN+W/x6TcAoBGh9
+         RFlNpMYpVs2lqk1tBKuqe10UrKaUpMA/mTatnCi8kBFz1oYdIFZSa0SQZUcE6z+YCQ
+         H10o4bTWfIfO/F3QMUL7Yc1/eVq4c9Yw8tDoDvPIOCitxtgJdoYzvCj/kN7eWVK1yH
+         tTgfmUaTAg3Bg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 17 Sep 2023 22:37:24 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <5111a913-efc9-28c6-64ad-df2586bd0895@wanadoo.fr>
+Date:   Sun, 17 Sep 2023 22:37:23 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/3] HID: nvidia-shield: Fix the error handling path of
+ shield_probe()
+Content-Language: fr, en-GB
+To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <cover.1693070958.git.christophe.jaillet@wanadoo.fr>
+ <87msxns3nv.fsf@nvidia.com> <d083215e-e9bf-860d-6d04-d919a9b90752@wanadoo.fr>
+ <87msxnupmc.fsf@nvidia.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <87msxnupmc.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix issue relating to prink message:
-	*using __func__ to replace function's name
+Le 15/09/2023 à 22:51, Rahul Rameshbabu a écrit :
+> On Fri, 15 Sep, 2023 22:14:18 +0200 Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+>> Le 15/09/2023 à 20:16, Rahul Rameshbabu a écrit :
+>>> Hi Christophe,
+>>> On Sat, 26 Aug, 2023 19:42:16 +0200 Christophe JAILLET
+>>> <christophe.jaillet@wanadoo.fr> wrote:
+>>>> This serie fixes some missing clean-up function calls in the error handling of
+>>>> the probe.
+>>>>
+>>>> Patch 1 and 2 fix some similar issues introduced in 2 different commits (hence 2
+>>>> patches)
+>>>>
+>>>> Patch 3 is a proposal to be more future proof.
+>>>>
+>>>>
+>>>> *Note*: I'm not 100% sure that the order of the functions is the best one in
+>>>> thunderstrike_destroy(), but it is the way it was.
+>>>>
+>>>> My personal preference would be to undo things in reverse order they are
+>>>> allocated, such as:
+>>>> 	led_classdev_unregister(&ts->led_dev);
+>>>> 	power_supply_unregister(ts->base.battery_dev.psy);
+>>>> 	if (ts->haptics_dev)
+>>>> 		input_unregister_device(ts->haptics_dev);
+>>>> 	ida_free(&thunderstrike_ida, ts->id);
+>>>> This order was explicitly chnaged by 3ab196f88237, so, as I can't test the
+>>>> changes on a real harware, I've left it as-is.
+>>>>
+>>>> Christophe JAILLET (3):
+>>>>     HID: nvidia-shield: Fix a missing led_classdev_unregister() in the
+>>>>       probe error handling path
+>>>>     HID: nvidia-shield: Fix some missing function calls() in the probe
+>>>>       error handling path
+>>>>     HID: nvidia-shield: Introduce thunderstrike_destroy()
+>>>>
+>>>>    drivers/hid/hid-nvidia-shield.c | 23 ++++++++++++++++-------
+>>>>    1 file changed, 16 insertions(+), 7 deletions(-)
+>>> I was wondering if you have time to address the comments in this
+>>> submission. If not, I can re-spin the patches with the needed changes in
+>>> upcoming days.
+>>
+>> I can send an update tomorrow, but I'm only working with -next, so should using
+>> for-6.6/nvidia (as said in your comment in #1/3) be a must have, then it would
+>> be more convenient for me if you make the changes by yourself.
+> 
+> Luckily, it does not have to be on top of for-6.6/nvidia to add the fix
+> I mentioned with regards to the led_classdev flag for not trying to
+> power off the led when unregistering the led_classdev. That should still
+> merge nicely on top of for-6.6/nvidia. The main reason I mentioned it
+> was due to the commit living there with regards to the issue involving
+> unregistering the led_classdev without the mentioned flag.
 
-Issue found by checkpatch
+Well, because of your comment on patch #1/3, I would prefer you to make 
+the relevant changes.
 
-Signed-off-by: Piro Yang <piroyangg@gmail.com>
----
-Changes in v2:
-  - Firstly, fix only one type of Waring by checkpatch.
-	using '"%s...", __func__' substitute for function's name of printked information
+Understanding this code if more time consuming than I first expected.
 
-diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index 5960562dcd96..de404c6765f3 100644
---- a/drivers/staging/vme_user/vme.c
-+++ b/drivers/staging/vme_user/vme.c
-@@ -418,7 +418,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
- 	image = list_entry(resource->entry, struct vme_slave_resource, list);
- 
- 	if (!bridge->slave_get) {
--		printk(KERN_ERR "vme_slave_get not supported\n");
-+		printk(KERN_ERR "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -568,7 +568,7 @@ int vme_master_set(struct vme_resource *resource, int enabled,
- 	image = list_entry(resource->entry, struct vme_master_resource, list);
- 
- 	if (!bridge->master_set) {
--		printk(KERN_WARNING "vme_master_set not supported\n");
-+		printk(KERN_WARNING "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1552,7 +1552,7 @@ int vme_lm_set(struct vme_resource *resource, unsigned long long lm_base,
- 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
- 
- 	if (!bridge->lm_set) {
--		printk(KERN_ERR "vme_lm_set not supported\n");
-+		printk(KERN_ERR "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1588,7 +1588,7 @@ int vme_lm_get(struct vme_resource *resource, unsigned long long *lm_base,
- 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
- 
- 	if (!bridge->lm_get) {
--		printk(KERN_ERR "vme_lm_get not supported\n");
-+		printk(KERN_ERR "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1625,7 +1625,7 @@ int vme_lm_attach(struct vme_resource *resource, int monitor,
- 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
- 
- 	if (!bridge->lm_attach) {
--		printk(KERN_ERR "vme_lm_attach not supported\n");
-+		printk(KERN_ERR "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1658,7 +1658,7 @@ int vme_lm_detach(struct vme_resource *resource, int monitor)
- 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
- 
- 	if (!bridge->lm_detach) {
--		printk(KERN_ERR "vme_lm_detach not supported\n");
-+		printk(KERN_ERR "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1725,7 +1725,7 @@ int vme_slot_num(struct vme_dev *vdev)
- 	}
- 
- 	if (!bridge->slot_get) {
--		printk(KERN_WARNING "vme_slot_num not supported\n");
-+		printk(KERN_WARNING "%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
--- 
-2.25.1
+CJ
+
+> 
+> --
+> Thanks for the patches,
+> 
+> Rahul Rameshbabu
+> 
+>>
+>> CJ
+>>
+>>> --
+>>> Thanks,
+>>> Rahul Rameshbabu
+>>>
+> 
+
