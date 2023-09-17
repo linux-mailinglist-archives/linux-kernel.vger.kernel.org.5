@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ACB7A3445
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 10:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18347A3448
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 10:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjIQIXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 04:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        id S233940AbjIQI01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 04:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbjIQIWu (ORCPT
+        with ESMTP id S235359AbjIQI0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 04:22:50 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1932412F
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 01:22:43 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bf8b9c5ca0so56712661fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 01:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694938961; x=1695543761; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UKJQdmUO+2e6eXt5x8oNFwJaRXFDIfNhfyn01aL90+s=;
-        b=wzKHXfxyb1OFlP/hAPZLw7pZtRHhgf3FYt3aHEgWdtHlt1yD+tiB+bfuoZa18F/ReX
-         lmUEg978Wjr+V9N2tC5GiJbRAe8t3CMDoAHxxa8ULKVV0NcceIgyAz3C5N55Z/AUePOm
-         fu7S0flpa2Ll+2OGTVKS6lxqrYLeJZbmA2Dvi5nzOytTjKaA1bwP+WyAne8RqW5yvjJG
-         wJq1oRz8RTUF+Zd6EtTvy+7wFR/ByO3RofPuthAEay0hIVaOG3QpY2bBuhrHAq+FEzdm
-         EnO/wtisqItT/a23L9KBUztbLawHzOJVKTyXQyrIC4AC2+9NJe8DDAqDhsLy+4nHwqrI
-         VFHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694938961; x=1695543761;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UKJQdmUO+2e6eXt5x8oNFwJaRXFDIfNhfyn01aL90+s=;
-        b=XwATizwhiqEGOjz/k0Uy4+JZyNzdqnan9yEf6qfgVR6sDhCT0+Oqsy0CHo8ntn/cPM
-         hHnobVh0Dax8Zq/eR4WlmQ1qHAzmemje1LMofiNEPC83KSFnRXrPF86q+JzIywS8Wqee
-         WN5fFR6BKL3qW8eP48F/wMn7QXPh4El/ALv8rpTf8TJHDuEyg0pyPzrN+sn+duecTlWg
-         ZHUJRaQhSMxIo4MGwLiDDgQb416sfN+hGfVQjUQd56s7XkVRbCFrO0drfjna2OrSHDUn
-         nA+rE/nHYHT/q0O+CNK9bITAh1ugmRfMGx6tCxUVEimt6LiHvuzU/9gJefkbv3dRmXKI
-         cMXQ==
-X-Gm-Message-State: AOJu0YwQ619J0cSW8fyEPuqnGpwEZcrwk4ur0TAGEdfdePi7bjaB8pA1
-        xyO7wSAbR05Zb/RfcaYyl7Xn3g==
-X-Google-Smtp-Source: AGHT+IHhKmI2AHVuwE1u4od36FAcoAVoqNik+gwDo4HPAZycohFbezmVf25FmXnTpiN7CXkAeqnU3A==
-X-Received: by 2002:a05:651c:1a27:b0:2bf:f5c9:2dce with SMTP id by39-20020a05651c1a2700b002bff5c92dcemr2603321ljb.30.1694938961251;
-        Sun, 17 Sep 2023 01:22:41 -0700 (PDT)
-Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
-        by smtp.gmail.com with ESMTPSA id g21-20020a170906595500b00992f2befcbcsm4667110ejr.180.2023.09.17.01.22.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 01:22:40 -0700 (PDT)
-Message-ID: <6166b695-25af-54b0-9d30-36c75189b0c5@linaro.org>
-Date:   Sun, 17 Sep 2023 10:22:39 +0200
+        Sun, 17 Sep 2023 04:26:21 -0400
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D4C130;
+        Sun, 17 Sep 2023 01:26:15 -0700 (PDT)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id DFDE0408E9;
+        Sun, 17 Sep 2023 13:26:09 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1694939170; bh=RnwYYmjMyyRIV1V1HDGTWtsAia7F8WWhWq4msK/d1oM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mDHgyjKbYa9HZUOkBW+Bcserl/b0Qx+Drh8mL2L6zO0Lw28VynpTQOIoYmpnsr/av
+         VwJVZYn017n1y+oOvxz1c9H7gSrqHfI+20gfyQ0Bn6ab7Oy2xE9RDUo+30f+knGlHN
+         5iY4TvN4hLRQxCTG22SrVAywiohM+09mM9LL7fxMBrm4xjGJvAM1SHSeQRm9EeoEho
+         5ODlTjBfqX6mqBQLw6hkuYAUkAwVvHoD0sn7kD3zVdIctfHnILLI1Z+Lis6a7bsMdw
+         keq8IxFDhm1dLqHEnNt28pIaiEuGOzjWVfRaUz5e8DQhcrQVFyJUgjBG71RgfMH+qT
+         BsvGntsMr236A==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1 1/1] ARM: dts: hpe: BUG: Correct GXP register ranges
-Content-Language: en-US
-To:     charles.kearney@hpe.com, verdun@hpe.com, nick.hawkins@hpe.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230915165436.3118284-1-charles.kearney@hpe.com>
- <20230915165436.3118284-2-charles.kearney@hpe.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230915165436.3118284-2-charles.kearney@hpe.com>
+Date:   Sun, 17 Sep 2023 13:26:08 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms
+ and lbc
+In-Reply-To: <18bef7a4-608b-9ba3-ce8f-ca25999705c3@linaro.org>
+References: <20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru>
+ <20230916-pm8916-dtsi-bms-lbc-v1-1-7db0b42f9fb1@trvn.ru>
+ <18bef7a4-608b-9ba3-ce8f-ca25999705c3@linaro.org>
+Message-ID: <fac4a27d08108bd6e902ba0fa4708ec4@trvn.ru>
+X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/2023 18:54, charles.kearney@hpe.com wrote:
-> From: Charles Kearney <charles.kearney@hpe.com>
+Krzysztof Kozlowski писал(а) 17.09.2023 12:58:
+> On 16/09/2023 15:57, Nikita Travkin wrote:
+>> PM8916 (and probably some other similar pmics) have hardware blocks for
+>> battery monitoring and charging. Add patterns for respecive nodes so the
 > 
-> Bug fix to correct memory ranges on GXP to include host registers. This
-> corrects a issue where the host interrupt controller is not available.
-
-Then you miss Fixes tag. Maybe also Cc-stable tag.
-
+> typo: respective
 > 
-> Signed-off-by: Charles Kearney <charles.kearney@hpe.com>
-> ---
->  arch/arm/boot/dts/hpe/hpe-gxp.dtsi | 39 +++++++++++++++---------------
->  1 file changed, 20 insertions(+), 19 deletions(-)
+
+Oops, will fix if we get to v2.
+
+>> dt for those blocks can be validated properly.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>> Schemas for those devices were added in [1].
 > 
-> diff --git a/arch/arm/boot/dts/hpe/hpe-gxp.dtsi b/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-> index cf735b3c4f35..18230a4754a6 100644
-> --- a/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-> +++ b/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Device Tree file for HPE GXP
-> + * Device Tree for HPE
+> "Dependency"
+> 
 
-How is this related to bug?
+You are right, will try to word it better next time.
 
->   */
->  
->  /dts-v1/;
-> @@ -52,73 +52,74 @@ L2: cache-controller@b0040000 {
->  			cache-level = <2>;
->  		};
->  
-> -		ahb@c0000000 {
-> +		ahb@80000000 {
->  			compatible = "simple-bus";
->  			#address-cells = <1>;
->  			#size-cells = <1>;
-> -			ranges = <0x0 0xc0000000 0x30000000>;
->  			dma-ranges;
-> +			ranges = <0x0 0x80000000 0x20000000>,
-> +			<0x40000000 0xc0000000 0x3fff0000>;
+>>
+>> [1] https://lore.kernel.org/r/20230915-pm8916-bms-lbc-v3-0-f30881e951a0@trvn.ru
+>> ---
+>>  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+>> index 9f03436b1cdc..8bcd76748faa 100644
+>> --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+>> @@ -133,9 +133,15 @@ patternProperties:
+>>      type: object
+>>      $ref: /schemas/sound/qcom,pm8916-wcd-analog-codec.yaml#
+>>
+>> +  "^battery@[0-9a-f]+$":
+>> +    type: object
+>> +    oneOf:
+>> +      - $ref: /schemas/power/supply/qcom,pm8916-bms-vm.yaml#
+> 
+> That's just ref, so no need for oneOf... unless you already think this
+> will grow with different schemas like the charger below?
+> 
 
-Missing proper alignment.
+Yes, I think some other PMICs have different battery/fuel-gauge
+blocks too so I'd like to have some room for expansion here.
 
+Thanks for the review!
+Nikita
 
-Best regards,
-Krzysztof
-
+>> +
+>>    "^charger@[0-9a-f]+$":
+>>      type: object
+>>      oneOf:
+>> +      - $ref: /schemas/power/supply/qcom,pm8916-lbc.yaml#
+>>        - $ref: /schemas/power/supply/qcom,pm8941-charger.yaml#
+>>        - $ref: /schemas/power/supply/qcom,pm8941-coincell.yaml#
+>>        - $ref: /schemas/power/supply/qcom,pmi8998-charger.yaml#
+>>
+> 
+> Best regards,
+> Krzysztof
