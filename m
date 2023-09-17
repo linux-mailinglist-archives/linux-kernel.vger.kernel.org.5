@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3E67A3383
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 02:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E2B7A3387
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 02:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjIQAqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 20:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        id S233836AbjIQAyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 20:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjIQAq0 (ORCPT
+        with ESMTP id S231312AbjIQAym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 20:46:26 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE4F1AB
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 17:46:21 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6563e4defedso7819426d6.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 17:46:21 -0700 (PDT)
+        Sat, 16 Sep 2023 20:54:42 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C9F1BB;
+        Sat, 16 Sep 2023 17:54:35 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d819b185e74so3961861276.0;
+        Sat, 16 Sep 2023 17:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694911580; x=1695516380; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1694912074; x=1695516874; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+aEmj8XWPxbuE/jyhPT5yboCcWyurniEilj0tCFF0PI=;
-        b=DMp7dGH4GGfWNou7gCP45SjRrWWBALgSzZThsA0xkwryQH/wrpmG2p7/8BagKe272g
-         7/gJL9eDA3vWV/R0dzGs55asGC+rzBBx6ilXgHg+LDwg/irY10VisVvppKO3TpV5RSN5
-         ul2E8hui/0akRfGMO4YfyMRk7E+3QOA2l6O1Mln7rLPvnjwCUGSVib5dJt4oQC4JemcA
-         4HRlabfQ09elEYYZkeN0jLZSZ6NAOhQwwR3KOKucM3Okb+xUCl8T3knqtUlvxSPfyMpg
-         HP035POcAIGAxh5qZ8kegiC8dEq9DBqs5kltQ/gkpgCJN6/WwFe4DVREoF3LPBNMjcq3
-         lAtA==
+        bh=8owqa21vXJkG1+oMpAuVFPRX6vxCaWjYAEUZ6DT+cy8=;
+        b=C901flT7TxRd052Zffy8+3RAR1wl59ACacr3ct1cxKw3fe5C14CO5+Go9ypm9/FNYU
+         dV5pGUT1ZAOjP2ReULet+UOHrQWlufGaJJSPz8YmmcFdF+uP3HKvew2dDE1mLFsKFN40
+         qxFSj7vtV9Mh681+05vpIWu2XJt8B1XZT77cXEcBjLkvjiFhP3MJIhOIjEpIYt8c3MH9
+         1G1xETh+zeVSi5wCPHWyPbRIGZAiJi/YKmPxxTAwpu6lu9c5/s4q3fOkPCLvu4LAqhDG
+         0VDerzjkf9B1s9o+REHHhRVlDLhU0hZ0BjFBRDuF+VTVO/Z7QrS9szmbO0YqD8PFt+uL
+         5CAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694911580; x=1695516380;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694912074; x=1695516874;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+aEmj8XWPxbuE/jyhPT5yboCcWyurniEilj0tCFF0PI=;
-        b=h/RwvENBNbVRFahLzHcV9J0yGMaL7jMT0vkaRQLdSKCG0VUhD2eahbuB6vI/41UIyI
-         6jIuMe3lrOvmEnpfDV0gSWHsUqHlCVt22Y1z8ZEneSzlBWw6lvgjeWL6PTasv1TrzDSl
-         P4hH3ep7qWK41A5Omd9AxtEW3gh0En+kfaj9P0+2EMcR0zA04rUlLzeRls0OZp6nmr7f
-         kC5+eAeX0j5JZb9nD/UdmTqhuZULUURPrNxMekLV9PiX3vmnbkxR97CsB6Tojt3PdcC1
-         Cllt37qiEFhfGawzOM8b3Nyjrkype4E3Dst82XU4wWtJRZHjxNYzDYx29Etq7HorViJo
-         VGrw==
-X-Gm-Message-State: AOJu0YzYmem0WmTnAced9Tmq8ev6XLHK5fsHJT5jLcU5952ISuZvPNrp
-        cqCzp0/hpIunZIhmV2sYNuhUvlbT3TV8/zmh2mO0Yg==
-X-Google-Smtp-Source: AGHT+IFsZYGuexoTW0OQeG2A8TdgpZEVd1UokZV9+/98bP6+pbBPkbQg5dNIdOX17qidz7/cHW6YvPiw7z6T/+ogfjQ=
-X-Received: by 2002:a0c:e34c:0:b0:656:3f9f:349d with SMTP id
- a12-20020a0ce34c000000b006563f9f349dmr3963490qvm.52.1694911580338; Sat, 16
- Sep 2023 17:46:20 -0700 (PDT)
+        bh=8owqa21vXJkG1+oMpAuVFPRX6vxCaWjYAEUZ6DT+cy8=;
+        b=ceVPyAyH5jSyhnPlWWwy/5VlhxzVvQKhv/VHPNbWS0CMRY5opUCVQJr5OAI0ufAwze
+         ldopDyFDX9D9ETsmpGsZ6QcBz/d0k7pwTi221BJvJ/FDCPIQWxt1RBECSj7NxJ2bJNVq
+         22/IzgXd5SuF0Amxijz2zZkMsCk+AYlfMoSft7uwxZl7OmkIMStVSMQF2skIee7TrGjw
+         8WDMkzPUibhdurgnpzkpov49tR7euid4CzY+TU2Z4TXBCTijGPUazy+qnvIBOfZhKFyL
+         7+V1hvPp44mG8iCSfCw7YLIB84CY3wKCTHe3vafAVkBrH8gzPT7K/t/d1lHudXlEURYT
+         IQOg==
+X-Gm-Message-State: AOJu0YxdeGO7Za1LC+r7EKO8vm39IpgpFxmWvJKFinim6RZD3SCboB3Y
+        jHjxbSr2OZijfoZfCszFaeP1hjQAYtl68w==
+X-Google-Smtp-Source: AGHT+IGRHaDDn4gVlzS3ArEh47DYqeTBKTvCFg6pthNM0e51NBQ13SL4jQ9C/wBfTbvTlwTaz2G60w==
+X-Received: by 2002:a0d:e809:0:b0:583:7545:2f2e with SMTP id r9-20020a0de809000000b0058375452f2emr9027964ywe.7.1694912074523;
+        Sat, 16 Sep 2023 17:54:34 -0700 (PDT)
+Received: from firmament.. (h198-137-20-64.xnet.uga.edu. [198.137.20.64])
+        by smtp.gmail.com with ESMTPSA id t143-20020a818395000000b0059beb468cb3sm1648052ywf.32.2023.09.16.17.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 17:54:34 -0700 (PDT)
+From:   Matthew House <mattlloydhouse@gmail.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 3/3] add listmnt(2) syscall
+Date:   Sat, 16 Sep 2023 20:54:16 -0400
+Message-ID: <20230917005419.397938-1-mattlloydhouse@gmail.com>
+In-Reply-To: <20230913152238.905247-4-mszeredi@redhat.com>
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-4-mszeredi@redhat.com>
 MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com>
-In-Reply-To: <20230916040915.1075620-1-irogers@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Sat, 16 Sep 2023 17:45:44 -0700
-Message-ID: <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,87 +78,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 9:10=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
+On Thu, Sep 14, 2023 at 12:02 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+> Add way to query the children of a particular mount.  This is a more
+> flexible way to iterate the mount tree than having to parse the complete
+> /proc/self/mountinfo.
 >
-> Dummy events are created with an attribute where the period and freq
-> are zero. evsel__config will then see the uninitialized values and
-> initialize them in evsel__default_freq_period. As fequency mode is
-> used by default the dummy event would be set to use frequency
-> mode. However, this has no effect on the dummy event but does cause
-> unnecessary timers/interrupts. Avoid this overhead by setting the
-> period to 1 for dummy events.
+> Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+> needs to be queried based on path, then statx(2) can be used to first que=
+ry
+> the mount ID belonging to the path.
 >
-> evlist__add_aux_dummy calls evlist__add_dummy then sets freq=3D0 and
-> period=3D1. This isn't necessary after this change and so the setting is
-> removed.
+> Return an array of new (64bit) mount ID's.  Without privileges only mounts
+> are listed which are reachable from the task's root.
 >
-> From Stephane:
->
-> The dummy event is not counting anything. It is used to collect mmap
-> records and avoid a race condition during the synthesize mmap phase of
-> perf record. As such, it should not cause any overhead during active
-> profiling. Yet, it did. Because of a bug the dummy event was
-> programmed as a sampling event in frequency mode. Events in that mode
-> incur more kernel overheads because on timer tick, the kernel has to
-> look at the number of samples for each event and potentially adjust
-> the sampling period to achieve the desired frequency. The dummy event
-> was therefore adding a frequency event to task and ctx contexts we may
-> otherwise not have any, e.g., perf record -a -e
-> cpu/event=3D0x3c,period=3D10000000/. On each timer tick the
-> perf_adjust_freq_unthr_context() is invoked and if ctx->nr_freq is
-> non-zero, then the kernel will loop over ALL the events of the context
-> looking for frequency mode ones. In doing, so it locks the context,
-> and enable/disable the PMU of each hw event. If all the events of the
-> context are in period mode, the kernel will have to traverse the list for
-> nothing incurring overhead. The overhead is multiplied by a very large
-> factor when this happens in a guest kernel. There is no need for the
-> dummy event to be in frequency mode, it does not count anything and
-> therefore should not cause extra overhead for no reason.
->
-> Fixes: 5bae0250237f ("perf evlist: Introduce perf_evlist__new_dummy const=
-ructor")
-> Reported-by: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 > ---
->  tools/perf/util/evlist.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+>  fs/namespace.c                         | 51 ++++++++++++++++++++++++++
+>  include/linux/syscalls.h               |  2 +
+>  include/uapi/asm-generic/unistd.h      |  5 ++-
+>  4 files changed, 58 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 25c3ebe2c2f5..e36da58522ef 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -251,6 +251,9 @@ static struct evsel *evlist__dummy_event(struct evlis=
-t *evlist)
->                 .type   =3D PERF_TYPE_SOFTWARE,
->                 .config =3D PERF_COUNT_SW_DUMMY,
->                 .size   =3D sizeof(attr), /* to capture ABI version */
-> +               /* Avoid frequency mode for dummy events to avoid associa=
-ted timers. */
-> +               .freq =3D 0,
-> +               .sample_period =3D 1,
->         };
+> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/sysc=
+alls/syscall_64.tbl
+> index 6d807c30cd16..0d9a47b0ce9b 100644
+> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+> @@ -376,6 +376,7 @@
+>  452    common  fchmodat2               sys_fchmodat2
+>  453    64      map_shadow_stack        sys_map_shadow_stack
+>  454    common  statmnt                 sys_statmnt
+> +455    common  listmnt                 sys_listmnt
 >
->         return evsel__new_idx(&attr, evlist->core.nr_entries);
-> @@ -277,8 +280,6 @@ struct evsel *evlist__add_aux_dummy(struct evlist *ev=
-list, bool system_wide)
->         evsel->core.attr.exclude_kernel =3D 1;
->         evsel->core.attr.exclude_guest =3D 1;
->         evsel->core.attr.exclude_hv =3D 1;
-> -       evsel->core.attr.freq =3D 0;
-> -       evsel->core.attr.sample_period =3D 1;
->         evsel->core.system_wide =3D system_wide;
->         evsel->no_aux_samples =3D true;
->         evsel->name =3D strdup("dummy:u");
+>  #
+>  # Due to a historical design error, certain syscalls are numbered differ=
+ently
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 088a52043bba..5362b1ffb26f 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4988,6 +4988,57 @@ SYSCALL_DEFINE5(statmnt, u64, mnt_id,
+>         return err;
+>  }
+>
+> +static long do_listmnt(struct vfsmount *mnt, u64 __user *buf, size_t buf=
+size,
+> +                     const struct path *root)
+> +{
+> +       struct mount *r, *m =3D real_mount(mnt);
+> +       struct path rootmnt =3D { .mnt =3D root->mnt, .dentry =3D root->m=
+nt->mnt_root };
+> +       long ctr =3D 0;
+> +
+> +       if (!capable(CAP_SYS_ADMIN) &&
+> +           !is_path_reachable(m, mnt->mnt_root, &rootmnt))
+> +               return -EPERM;
+> +
+> +       list_for_each_entry(r, &m->mnt_mounts, mnt_child) {
+> +               if (!capable(CAP_SYS_ADMIN) &&
+> +                   !is_path_reachable(r, r->mnt.mnt_root, root))
+> +                       continue;
+
+I'm not an expert on the kernel API, but to my eyes, it looks a bit weird
+to silently include or exclude unreachable mounts from the list based on
+the result of a capability check. I'd normally expect a more explicit
+design, where (e.g.) the caller would set a flag to request unreachable
+mounts, then get an -EPERM back if it didn't have the capability, as
+opposed to this design, where the meaning of the output ("all mounts" vs.
+"all reachable mounts") changes implicitly depending on the caller. Is
+there any precedent for a design like this, where inaccessible results
+are silently omitted from a returned list?
+
+Thank you,
+Matthew House
+
+> +
+> +               if (ctr >=3D bufsize)
+> +                       return -EOVERFLOW;
+> +               if (put_user(r->mnt_id_unique, buf + ctr))
+> +                       return -EFAULT;
+> +               ctr++;
+> +               if (ctr < 0)
+> +                       return -ERANGE;
+> +       }
+> +       return ctr;
+> +}
+> +
+> +SYSCALL_DEFINE4(listmnt, u64, mnt_id, u64 __user *, buf, size_t, bufsize,
+> +               unsigned int, flags)
+> +{
+> +       struct vfsmount *mnt;
+> +       struct path root;
+> +       long err;
+> +
+> +       if (flags)
+> +               return -EINVAL;
+> +
+> +       down_read(&namespace_sem);
+> +       mnt =3D lookup_mnt_in_ns(mnt_id, current->nsproxy->mnt_ns);
+> +       err =3D -ENOENT;
+> +       if (mnt) {
+> +               get_fs_root(current->fs, &root);
+> +               err =3D do_listmnt(mnt, buf, bufsize, &root);
+> +               path_put(&root);
+> +       }
+> +       up_read(&namespace_sem);
+> +
+> +       return err;
+> +}
+> +
+> +
+>  static void __init init_mount_tree(void)
+>  {
+>         struct vfsmount *mnt;
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index 1099bd307fa7..5d776cdb6f18 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -411,6 +411,8 @@ asmlinkage long sys_fstatfs64(unsigned int fd, size_t=
+ sz,
+>  asmlinkage long sys_statmnt(u64 mnt_id, u64 mask,
+>                             struct statmnt __user *buf, size_t bufsize,
+>                             unsigned int flags);
+> +asmlinkage long sys_listmnt(u64 mnt_id, u64 __user *buf, size_t bufsize,
+> +                           unsigned int flags);
+>  asmlinkage long sys_truncate(const char __user *path, long length);
+>  asmlinkage long sys_ftruncate(unsigned int fd, unsigned long length);
+>  #if BITS_PER_LONG =3D=3D 32
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic=
+/unistd.h
+> index 640997231ff6..a2b41370f603 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -826,8 +826,11 @@ __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
+>  #define __NR_statmnt   454
+>  __SYSCALL(__NR_statmnt, sys_statmnt)
+>
+> +#define __NR_listmnt   455
+> +__SYSCALL(__NR_listmnt, sys_listmnt)
+> +
+>  #undef __NR_syscalls
+> -#define __NR_syscalls 455
+> +#define __NR_syscalls 456
+>
+>  /*
+>   * 32 bit systems traditionally used different
 > --
-> 2.42.0.459.ge4e396fd5e-goog
->
-
-Thank you very much for the change. I have one quick question about
-the PMU unthrottling logic. When I am looking into the function
-perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
-start in each iteration. Is there a good way to avoid this PMU reset
-operation while quickly figuring out the event in frequency mode?
-
-Thanks.
--Mingwei
+> 2.41.0
