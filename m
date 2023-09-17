@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81457A33D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330B47A33D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbjIQF1Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Sep 2023 01:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S233429AbjIQF15 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Sep 2023 01:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233453AbjIQF06 (ORCPT
+        with ESMTP id S234810AbjIQF1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 01:26:58 -0400
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3650E1AE;
-        Sat, 16 Sep 2023 22:26:52 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-79ac0d271b4so76698639f.1;
-        Sat, 16 Sep 2023 22:26:52 -0700 (PDT)
+        Sun, 17 Sep 2023 01:27:37 -0400
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8F31AD;
+        Sat, 16 Sep 2023 22:27:28 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7926b7f8636so86506039f.1;
+        Sat, 16 Sep 2023 22:27:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694928411; x=1695533211;
+        d=1e100.net; s=20230601; t=1694928448; x=1695533248;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SfO839NuY6Onl0KGlAC2kjo8+d7ohK4fYM2jge+IesU=;
-        b=Po62N03k+wbRPiGO5rmQAieAJ49O8VRS7bQ5EDj/Tt95VYfWj4ad3PtB19XFUCOu+Z
-         KZydANGvLoE/zOlqt0KgQZhj/SlFpd7uj71IvKJYyoBc9wtkQ0owfDq76hqPtJ83/nLt
-         4Ghd15+gwpjvh8SVDv3uNkyu0eBoIx8CbTmqizkNDI4u+J/fxrEK8R11CMOOxIGu5mPB
-         6U9RJROa9CItLV+j5pRFp9FISi9z9pAHk9OlZQXpe12sl0wWy1gD2fPtu7U1qH3QbZlA
-         3pmK1qJ9yKUuUP8v11e4tAPTTJXcJJeYYreGzdFrbHqAd5mMAWUZWT47mIVSGFphuzIv
-         Ghsg==
-X-Gm-Message-State: AOJu0YxKtNyHNpOiq3u+cT6NgGun2f7vJLeJ1jKsRR1Yii7kdO4UOm43
-        jXiulzISZs2lWqiQQBBe6HI0+0EvFAePUoMl5Y0=
-X-Google-Smtp-Source: AGHT+IEcz12DmKsdTPdSZxvRu1pBc0PxhybywnJTfzj5kgqbmjW7wTf1cqOLS0hdhKwE1+iM7g9l+UpfReF0pT1yl6w=
-X-Received: by 2002:a05:6602:24c6:b0:792:72b8:b90 with SMTP id
- h6-20020a05660224c600b0079272b80b90mr6665476ioe.16.1694928411437; Sat, 16 Sep
- 2023 22:26:51 -0700 (PDT)
+        bh=TzRftMfR+qB5FSzonRS1Mmq5OWomLaO6LI1sl+SH1Lw=;
+        b=RqQZqHAkrCtjb8z6FNZmp/dCR78/Xcknju9+DzsvLwZtQi+KcYooVGY50H8updOQ3M
+         JTmqY9d2vDanxSxWPGXaEkd0c9oSWQhWXfs0y/iSHmggp7NJCXUXpN8WZnVWQZdwvCcn
+         /NYXbkavzdQaeRPthmbY03PiDmsf+Xeq28ppuAbzJUtuWHJAs3ZU3v0bnIT1nc+1XxOb
+         SspK6LvZlGEZPR6EAZnoD2hI3FDdtYu9BF33l81gSzeHm13c18FFRu6oQE8KBW+Mg4Mj
+         CMvOjzFCKdiGzbXxR9A6gEEc5xoCZpTn+Mg+JnLnaVwWdRJS0FHxY1Rz1TzFXAnDoxfc
+         j+VA==
+X-Gm-Message-State: AOJu0YxbqRaaEXXzFEiFTB+vnx8YipE+aaHjPVwp/BfxLLd7pNZnGxy8
+        DTcUIDEm06bIEaZIKK9J3Y5V8VQHXhsi0go5ugE=
+X-Google-Smtp-Source: AGHT+IFv586Np5Rd7lqzI1XUDf/FEYjv1lh76oFG0h5hLyaZBU1EhWP4hFvHwN+h+3L5YBKoqfA0cTmnUeRlL42qKko=
+X-Received: by 2002:a5e:a808:0:b0:794:eb37:b0da with SMTP id
+ c8-20020a5ea808000000b00794eb37b0damr5660549ioa.2.1694928447734; Sat, 16 Sep
+ 2023 22:27:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230914022204.1488383-1-irogers@google.com>
-In-Reply-To: <20230914022204.1488383-1-irogers@google.com>
+References: <20230914022425.1489035-1-irogers@google.com>
+In-Reply-To: <20230914022425.1489035-1-irogers@google.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 16 Sep 2023 22:26:39 -0700
-Message-ID: <CAM9d7cjNxuOVM95OoYEhuj0rePMt4tfQ0RGepW4R5WHvjX3v-g@mail.gmail.com>
-Subject: Re: [PATCH v1] perf jevents metric: Fix type of strcmp_cpuid_str
+Date:   Sat, 16 Sep 2023 22:27:15 -0700
+Message-ID: <CAM9d7ci_jHVEU2PStMHudOYGnx9aLdhYT=_5vCJiyjc_YyrtVw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf pmu: Ensure all alias variables are initialized
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -50,8 +50,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
         James Clark <james.clark@arm.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -66,17 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 7:22 PM Ian Rogers <irogers@google.com> wrote:
+On Wed, Sep 13, 2023 at 7:24 PM Ian Rogers <irogers@google.com> wrote:
 >
-> The parser wraps all strings as Events, so the input is an
-> Event. Using a string would be bad as functions like Simplify are
-> called on the arguments, which wouldn't be present on a string.
+> Fix an error detected by memory sanitizer:
+> ```
+> ==4033==WARNING: MemorySanitizer: use-of-uninitialized-value
+>     #0 0x55fb0fbedfc7 in read_alias_info tools/perf/util/pmu.c:457:6
+>     #1 0x55fb0fbea339 in check_info_data tools/perf/util/pmu.c:1434:2
+>     #2 0x55fb0fbea339 in perf_pmu__check_alias tools/perf/util/pmu.c:1504:9
+>     #3 0x55fb0fbdca85 in parse_events_add_pmu tools/perf/util/parse-events.c:1429:32
+>     #4 0x55fb0f965230 in parse_events_parse tools/perf/util/parse-events.y:299:6
+>     #5 0x55fb0fbdf6b2 in parse_events__scanner tools/perf/util/parse-events.c:1822:8
+>     #6 0x55fb0fbdf8c1 in __parse_events tools/perf/util/parse-events.c:2094:8
+>     #7 0x55fb0fa8ffa9 in parse_events tools/perf/util/parse-events.h:41:9
+>     #8 0x55fb0fa8ffa9 in test_event tools/perf/tests/parse-events.c:2393:8
+>     #9 0x55fb0fa8f458 in test__pmu_events tools/perf/tests/parse-events.c:2551:15
+>     #10 0x55fb0fa6d93f in run_test tools/perf/tests/builtin-test.c:242:9
+>     #11 0x55fb0fa6d93f in test_and_print tools/perf/tests/builtin-test.c:271:8
+>     #12 0x55fb0fa6d082 in __cmd_test tools/perf/tests/builtin-test.c:442:5
+>     #13 0x55fb0fa6d082 in cmd_test tools/perf/tests/builtin-test.c:564:9
+>     #14 0x55fb0f942720 in run_builtin tools/perf/perf.c:322:11
+>     #15 0x55fb0f942486 in handle_internal_command tools/perf/perf.c:375:8
+>     #16 0x55fb0f941dab in run_argv tools/perf/perf.c:419:2
+>     #17 0x55fb0f941dab in main tools/perf/perf.c:535:3
+> ```
 >
-> Fixes: 9d5da30e4ae9 ("perf jevents: Add a new expression builtin
-> strcmp_cpuid_str()")
+> Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files
+> from sysfs")
 >
 > Signed-off-by: Ian Rogers <irogers@google.com>
-
 
 Applied to perf-tools, thanks!
 
