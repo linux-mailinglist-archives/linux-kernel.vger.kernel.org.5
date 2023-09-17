@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D8A7A3671
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B21D7A364E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235407AbjIQP17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S236043AbjIQP2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbjIQP10 (ORCPT
+        with ESMTP id S233257AbjIQP12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:27:26 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC3C120;
-        Sun, 17 Sep 2023 08:27:20 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-404773f2501so31256255e9.0;
-        Sun, 17 Sep 2023 08:27:20 -0700 (PDT)
+        Sun, 17 Sep 2023 11:27:28 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F05A188;
+        Sun, 17 Sep 2023 08:27:22 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-404573e6c8fso36714015e9.1;
+        Sun, 17 Sep 2023 08:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694964438; x=1695569238; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694964441; x=1695569241; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sklpvAcj30UO+GX0DztQzCwJiBeqDyCx8hTAU0gXl9E=;
-        b=CnZV3pJ+vnioTkacAboil4MdQW05qIZ2uyW41ygEsS7FUYKPfSwpHj7SjOcTLVbiNN
-         cEbO0aamocdIeb8iqGi3Z+Q87NYrKxlARJG4Hv5OtH1zjtkKb2C3ycNdeLwUDRGgNE4l
-         8amL7CcK94vW4hs6S1XjgTkiBWtYx9ZrldnT/LYvqmceB5EMTzhCdohcOu/+NOym4dCA
-         H8utNvJHD9Jzj24BQRX8sK9L4u4jmtqLJ75Sd4QvvSyKcKdIeys8eIv3FVjejPwH8fzR
-         V2g2w9MauNyllCAi32k4/RVdiR6d1sG5iXR026fdKuvgDL37JkbHEtEYox0gMybT5Gk9
-         Zv0A==
+        bh=V3y8c1achGK+WQ5g0X4obcawzUgKoXn6NXo4Tvawvo4=;
+        b=CctofdMvKInfUHMp8wksY8ygDmJKGvzGshQ4iLysJSoFvv9LXkexqJOjtoxBgffCNh
+         RiYvgGNDlKl4AuiLWoTx0ZE9DH1uylh1phz2QAgTndpLybB9DQK8u09AlkRVc2SfmWAd
+         89b3QGg0U4oZXN13tHycrFDupTt4STrBEhC1X8VZhq9/YGJtvuFuw+MTquF1Ok5Ed6Ee
+         WCs9a64eDFmMOLvHQ9W0cApg558aY6bKlxWEQ9Xt29JV++oCX75vAnK5pu3k0AjevBZT
+         l/zQnGa2GM4lAtWpT9FBj4wqxVvjdh5Nv+yTCLarxquKagaFmdvaUeSNBxn0ipmI5IOH
+         02kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694964438; x=1695569238;
+        d=1e100.net; s=20230601; t=1694964441; x=1695569241;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sklpvAcj30UO+GX0DztQzCwJiBeqDyCx8hTAU0gXl9E=;
-        b=v9UiwikzR+qwsi7F6SYviGCCyI9+0Tt+sOZpEsUYHv22yUll3OfPmGTezSThfuMrlO
-         otcEW1X3lElvk5fSi+3JDetq9nR6/XjlfOlckCV/N/Pi3RC+oStkROeH/0r4t+HfEPrj
-         u2+XXE2LEm9suJ3rB9lyjwavNhL3oqEINjTHvhaSaHUUkFXXNJjtMmp52IoXbAg85XSx
-         a3ZYMBXP6xJ3gk4byTZaEcG/PJ2LuaZEfEmdQnERuDJsbdAM2xjFp55SR9Jnju63DVg4
-         zPHvh1WL89DjWr7+VdOWdDYm/2yzxRvlZEt9v+dE9CKP+IiaTX5XMr48z9ga3cMMEOST
-         YARg==
-X-Gm-Message-State: AOJu0Yz5r4GZAsUSkMv3mWZT0KuETaCQo4ePGOnwPCvafLlfKZm736Bx
-        jI+9XCsHlzV7iTkm9LekyUt7suV3f/OL37cDKWk=
-X-Google-Smtp-Source: AGHT+IFAlU2KLbwPivzOvNhDV1UMVme5WR2wh+T5rKnTHdLovV+gEmPLm0qVb+TxWDSQpUuCpFvRcw==
-X-Received: by 2002:a1c:f717:0:b0:403:b86:f624 with SMTP id v23-20020a1cf717000000b004030b86f624mr5664827wmh.23.1694964438121;
-        Sun, 17 Sep 2023 08:27:18 -0700 (PDT)
+        bh=V3y8c1achGK+WQ5g0X4obcawzUgKoXn6NXo4Tvawvo4=;
+        b=QhnhpUryitCjJUfcmODxzt8PpWU61XNJfO27D57rqRnqJEKNnAw45qJVmfkMxtRs+e
+         bfchqLK0KhuKpP9qpmXp5Y+DicShDo5MqoQ02++4HftI78q9b/GpSY2D7G2aB6LKYhc5
+         z4yT3LqVrfPYodMqJLmiCOPrY0R38riQCIkiFulv1o/399FVZFbnVSHDa+Yyt6DUDPGE
+         75Ki1CKlNoPedwBPpkmuYNjuDQKSoH0uoIjM25xMpgPe+E438Xs9s9SrXIkDeJVmtFOR
+         56mhkIT291Q3Uueqclkz07tkBX7+jSHMenjXCi265KOW988arSwjwR7svqBlUJ/e8MvP
+         q9SA==
+X-Gm-Message-State: AOJu0YwUNotOW08KxsynRm8NNyCa+Amcp3q+mKM8zR7i0Q3Kw4YhrJ70
+        pDiazBDTszjMg42O3l1VSxA=
+X-Google-Smtp-Source: AGHT+IGko7b9aR5sWDMm6H18nBCRxP4mO2QkcpzdwsQ27qTAHPfZm8aZZ0pGm5eyyZXvPOzhlRjw+w==
+X-Received: by 2002:a1c:ed10:0:b0:401:daf2:2737 with SMTP id l16-20020a1ced10000000b00401daf22737mr6521093wmh.30.1694964440875;
+        Sun, 17 Sep 2023 08:27:20 -0700 (PDT)
 Received: from localhost.localdomain ([5.45.134.53])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.15
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 08:27:17 -0700 (PDT)
+        Sun, 17 Sep 2023 08:27:20 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
 Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
         linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         conor+dt@kernel.org, linux-kernel@vger.kernel.org,
-        abdelalkuor@geotab.com
-Subject: [PATCH v5 01/15] dt-bindings: usb: tps6598x: Add tps25750
-Date:   Sun, 17 Sep 2023 11:26:25 -0400
-Message-Id: <20230917152639.21443-2-alkuor@gmail.com>
+        abdelalkuor@geotab.com, Abdel Alkuor <alkuor@gmail.com>
+Subject: [PATCH v5 02/15] USB: typec: Add cmd timeout and response delay
+Date:   Sun, 17 Sep 2023 11:26:26 -0400
+Message-Id: <20230917152639.21443-3-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230917152639.21443-1-alkuor@gmail.com>
 References: <20230917152639.21443-1-alkuor@gmail.com>
@@ -75,112 +75,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abdel Alkuor <abdelalkuor@geotab.com>
+Some commands in tps25750 take longer than 1 second
+to complete, and some responses need some delay before
+the result becomes available.
 
-TPS25750 is USB TypeC PD controller which is a subset of TPS6598x.
-
-Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
 ---
- .../devicetree/bindings/usb/ti,tps6598x.yaml  | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ drivers/usb/typec/tipd/core.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-index 5497a60cddbc..e49bd92b5276 100644
---- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-@@ -20,6 +20,8 @@ properties:
-     enum:
-       - ti,tps6598x
-       - apple,cd321x
-+      - ti,tps25750
-+
-   reg:
-     maxItems: 1
+diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+index 37b56ce75f39..a8aee4e1aeba 100644
+--- a/drivers/usb/typec/tipd/core.c
++++ b/drivers/usb/typec/tipd/core.c
+@@ -284,7 +284,8 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
  
-@@ -32,10 +34,45 @@ properties:
-     items:
-       - const: irq
+ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 			     size_t in_len, u8 *in_data,
+-			     size_t out_len, u8 *out_data)
++			     size_t out_len, u8 *out_data,
++			     u32 cmd_timeout_ms, u32 res_delay_ms)
+ {
+ 	unsigned long timeout;
+ 	u32 val;
+@@ -307,8 +308,7 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 	if (ret < 0)
+ 		return ret;
  
-+  firmware-name:
-+    description: |
-+      Should contain the name of the default patch binary
-+      file located on the firmware search path which is
-+      used to switch the controller into APP mode.
-+      This is used when tps25750 doesn't have an EEPROM
-+      connected to it.
-+    maxItems: 1
-+
-+  ti,patch-address:
-+    description: |
-+      One of PBMs command data field is I2C slave address
-+      which is used when writing the patch for TPS25750.
-+      The slave address can be any value except 0x00, 0x20,
-+      0x21, 0x22, and 0x23
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 1
-+    maximum: 0x7e
-+
- required:
-   - compatible
-   - reg
+-	/* XXX: Using 1s for now, but it may not be enough for every command. */
+-	timeout = jiffies + msecs_to_jiffies(1000);
++	timeout = jiffies + msecs_to_jiffies(cmd_timeout_ms);
  
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: ti,tps25750
-+    then:
-+      required:
-+        - ti,patch-address
-+        - connector
-+
-+      properties:
-+        connector:
-+          required:
-+            - data-role
-+
- additionalProperties: true
+ 	do {
+ 		ret = tps6598x_read32(tps, TPS_REG_CMD1, &val);
+@@ -321,6 +321,9 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 			return -ETIMEDOUT;
+ 	} while (val);
  
- examples:
-@@ -68,4 +105,37 @@ examples:
-             };
-         };
-     };
++	/* some commands require delay for the result to be available */
++	mdelay(res_delay_ms);
 +
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        typec@21 {
-+            compatible = "ti,tps25750";
-+            reg = <0x21>;
-+
-+            interrupt-parent = <&msmgpio>;
-+            interrupts = <100 IRQ_TYPE_LEVEL_LOW>;
-+            interrupt-names = "irq";
-+            firmware-name = "tps25750.bin";
-+
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&typec_pins>;
-+
-+            ti,patch-address = /bits/ 8 <0x0f>;
-+
-+            typec_con0: connector {
-+                compatible = "usb-c-connector";
-+                label = "USB-C";
-+                data-role = "dual";
-+                port {
-+                    typec_ep0: endpoint {
-+                        remote-endpoint = <&otg_ep>;
-+                    };
-+                };
-+            };
-+        };
-+    };
- ...
+ 	if (out_len) {
+ 		ret = tps6598x_block_read(tps, TPS_REG_DATA1,
+ 					  out_data, out_len);
+@@ -354,7 +357,7 @@ static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
+ 
+ 	mutex_lock(&tps->lock);
+ 
+-	ret = tps6598x_exec_cmd(tps, cmd, 0, NULL, 0, NULL);
++	ret = tps6598x_exec_cmd(tps, cmd, 0, NULL, 0, NULL, 1000, 0);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+@@ -384,7 +387,7 @@ static int tps6598x_pr_set(struct typec_port *port, enum typec_role role)
+ 
+ 	mutex_lock(&tps->lock);
+ 
+-	ret = tps6598x_exec_cmd(tps, cmd, 0, NULL, 0, NULL);
++	ret = tps6598x_exec_cmd(tps, cmd, 0, NULL, 0, NULL, 1000, 0);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+@@ -654,7 +657,10 @@ static int cd321x_switch_power_state(struct tps6598x *tps, u8 target_state)
+ 	if (state == target_state)
+ 		return 0;
+ 
+-	ret = tps6598x_exec_cmd(tps, "SSPS", sizeof(u8), &target_state, 0, NULL);
++	ret = tps6598x_exec_cmd(tps, "SSPS",
++				sizeof(u8), &target_state,
++				0, NULL,
++				1000, 0);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.34.1
 
