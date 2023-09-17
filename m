@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 651FA7A3576
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 14:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CF47A357F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 14:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbjIQMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 08:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
+        id S232664AbjIQMM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 08:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjIQMER (ORCPT
+        with ESMTP id S234226AbjIQMMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 08:04:17 -0400
-Received: from shiva.jussieu.fr (shiva.jussieu.fr [134.157.0.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EFA8112B;
-        Sun, 17 Sep 2023 05:04:11 -0700 (PDT)
-Received: from mailix1.insp.jussieu.fr (mailix1.insp.jussieu.fr [134.157.37.11])
-          by shiva.jussieu.fr (8.15.2/jtpda-5.4) with ESMTP id 38HC40nk026906
-          ; Sun, 17 Sep 2023 14:04:05 +0200 (CEST)
-X-Ids:  168
-Received: from hordix.insp.jussieu.fr (hordix.insp.jussieu.fr [134.157.37.9])
-        by mailix1.insp.jussieu.fr (Postfix-INSP-2.10.1) with ESMTPSA id 78A06C062BC0;
-        Sun, 17 Sep 2023 13:58:50 +0200 (CEST)
-Received: from [105.112.96.211] ([105.112.96.211]) by
- webmail.insp.jussieu.fr (Horde Framework) with HTTPS; Sun, 17 Sep 2023
- 11:58:50 +0000
-Date:   Sun, 17 Sep 2023 11:58:50 +0000
-Message-ID: <20230917115850.Horde.nDVhVuZCMbI1tdSrz7hexww@webmail.insp.jussieu.fr>
-From:   Victoria Cleland <wajdi.chaabani@insp.upmc.fr>
-Subject: Hallo
-Reply-to: v.cleland10@aol.com
-User-Agent: Horde Application Framework 5
-Organization: Institut des NanoSciences de Paris
-X-InspUpmcSession: CHAABANI
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        Sun, 17 Sep 2023 08:12:12 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC06135
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 05:12:05 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhqd8-0006Pi-8o; Sun, 17 Sep 2023 14:12:02 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhqd2-006ywg-UO; Sun, 17 Sep 2023 14:11:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qhqd2-002K98-KK; Sun, 17 Sep 2023 14:11:56 +0200
+Date:   Sun, 17 Sep 2023 14:11:54 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Marek Vasut <marex@denx.de>, Rob Herring <robh@kernel.org>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sergey Organov <sorganov@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Tom Rix <trix@redhat.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH tty v1 29/74] serial: imx: Use port lock wrappers
+Message-ID: <20230917121154.q3qopymscpodaago@pengutronix.de>
+References: <20230914183831.587273-1-john.ogness@linutronix.de>
+ <20230914183831.587273-30-john.ogness@linutronix.de>
+ <20230915202122.ulgy4fdxpsxmecbo@pengutronix.de>
+ <875y49nbq3.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l7zqlu23qfo3bmuk"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Miltered: at jchkmail2.reseau.jussieu.fr with ID 6506EB30.005 by Joe's j-chkmail (http : // j-chkmail dot ensmp dot fr)!
-X-j-chkmail-Enveloppe: 6506EB30.005 from mailix1.insp.jussieu.fr/mailix1.insp.jussieu.fr/134.157.37.11/mailix1.insp.jussieu.fr/<wajdi.chaabani@insp.upmc.fr>
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [134.157.0.129 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 RCVD_IN_MSPIKE_H3 RBL: Good reputation (+3)
-        *      [134.157.0.129 listed in wl.mailspike.net]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [v.cleland10[at]aol.com]
-        *  1.0 MISSING_HEADERS Missing To: header
-        *  0.0 RCVD_IN_MSPIKE_WL Mailspike good senders
-        *  1.6 REPLYTO_WITHOUT_TO_CC No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
+In-Reply-To: <875y49nbq3.fsf@jogness.linutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-17. September 2023.
+--l7zqlu23qfo3bmuk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hallo,
+On Sat, Sep 16, 2023 at 09:51:40PM +0206, John Ogness wrote:
+> On 2023-09-15, Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> wrote:
+> >> Converted with coccinelle. No functional change.
+> >>=20
+> >> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> >
+> > This lacks a Signed-off line by John.
+>=20
+> I really didn't have anything to do with the development of this
+> series. (I just did basic testing and the posting to LKML.) But I have
+> no problems adding my SoB if that is more appropriate.
 
-Ich möchte Ihnen einen Geschäftsvorschlag mitteilen. Für weitere  
-Details antworten Sie auf Englisch.
+If you sent it, you have enough to do with it, that your S-o-b is
+required. See Documentation/process/submitting-patches.rst for the
+details, which has for example:
 
-Grüße
-Frau Victoria Cleland
-_________________________
-Sekretär: Wajdi Chaabani
+	Notably, the last Signed-off-by: must always be that of the
+	developer submitting the patch.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--l7zqlu23qfo3bmuk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUG7QkACgkQj4D7WH0S
+/k4l1wgAhPgVKOI/Ns+ehxDqtdNDTj7YzMZ4kngFH8ul/aEkAfoOeLTPFDY085UN
+d3D25kBr5qYQnBhyjbnMep3KF8LnTJtSSLukAL6G9J2MF3QWkbnP/LQbWTdFSnwL
+kDfLxBDjyHckVT0KSG9WxAxbNEqvUBiyjPcYRp2Zu1ycfluNHc7B0NR31DGT6XX0
+J7cp8aiPXlDHZ+pYXcd7w/epJIXbp8wZzjI5ajbt/vhFLDfGQKJjPkiBqugw7vPE
+f8xYYbcFU2TifQUpvCCKX3wOfzmfyyL2lV2PvKViitXeOqm22cMIgAqSnqvkmVTL
+kRtzlb4y8xqH9AZvnsqGIvxQXuw11A==
+=OIHx
+-----END PGP SIGNATURE-----
+
+--l7zqlu23qfo3bmuk--
