@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC607A365B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD13A7A365A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbjIQPgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S237501AbjIQPhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238186AbjIQPgU (ORCPT
+        with ESMTP id S236852AbjIQPgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:36:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9827A1B0;
-        Sun, 17 Sep 2023 08:36:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D6E91C433C8;
-        Sun, 17 Sep 2023 15:36:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694964968;
-        bh=tGnGlLxOw3O9Q2xKZYub2Abe8FhmTfUM3qmTqGuuWMQ=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=faG+7EHCzOomMsGXPBoymcntLOkZ1J7hfs947RAAJ7fO/BskAa/etpG0DFYP2b7Y0
-         UBjJ9HHCiGQ1RSMVwQG401jTbJr9sZxRRp8LI7V55n4lLcVK1OY81gmhslfg4kCAF6
-         y+mFnmd9+krWDEN2KeTuL43KnR7w0iFzV9EMPMbUTZk8OHDB4Nu2GBJFG6+51N/Hqp
-         6FhjCBTGvWSZXOFBO4tMEX1E8Jt2RY8J5Ro8pfcmQl42+Y//7dLOWpbINlws2CsBXF
-         4ob6F1AlnQIn/JU7gb3Uji5Ui0IKJdPWCXCCLWARBF9cZYm5x8Vs4duaRRUPVghKNF
-         Xuo6J1sHiaslg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id C2551CD37B4;
-        Sun, 17 Sep 2023 15:36:08 +0000 (UTC)
-From:   Jianguo Bao via B4 Relay <devnull+roidinev.gmail.com@kernel.org>
-Date:   Sun, 17 Sep 2023 23:35:20 +0800
-Subject: [PATCH v2] mm/writeback: Update filemap_dirty_folio() comment
+        Sun, 17 Sep 2023 11:36:37 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8414F7;
+        Sun, 17 Sep 2023 08:36:31 -0700 (PDT)
+Received: from [192.168.1.129] ([37.4.248.43]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M5jA2-1qnvQi1KaQ-007D1k; Sun, 17 Sep 2023 17:36:14 +0200
+Message-ID: <d8395455-44eb-6762-d978-e912bf2cfe73@i2se.com>
+Date:   Sun, 17 Sep 2023 17:36:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 0/4] staging: vc04: Drop custom logging
+To:     Umang Jain <umang.jain@ideasonboard.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrien Thierry <athierry@redhat.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Phil Elwell <phil@raspberrypi.com>
+References: <20230913185528.770634-1-umang.jain@ideasonboard.com>
+ <1d54715d-25f9-4937-bdff-de0136c95fe8@kadam.mountain>
+Content-Language: en-US
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <1d54715d-25f9-4937-bdff-de0136c95fe8@kadam.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230917-trycontrib1-v2-1-66ae0ce8f7c3@gmail.com>
-X-B4-Tracking: v=1; b=H4sIALccB2UC/23MSwrDIBSF4a2EO67FR2i0o+6jZBCNJhcaLSrSE
- Nx7bcYd/gfOd0CyEW2Ce3dAtAUTBt+CXzow6+QXS3BuDZxyQRUbSI67CT5H1IwYLZ2TPR1Ub6A
- 93tE6/Jzac2y9Ysoh7ide2G/97xRGGJk15zdBtZRCPZZtwtfVhA3GWusXa+9gg6YAAAA=
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jianguo Bao <roidinev@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694964922; l=1148;
- i=roidinev@gmail.com; s=20230906; h=from:subject:message-id;
- bh=kvb09bksQ5sDwvuV+cJThLuKQhUb8lsRZC/HV07PBuA=;
- b=pT3oC5Q0lddFp2DM/hBD+Fq9TCIcs3SzJbQFAfGaMlUBjHTsRg9GZIcMdfhc8li3B5CQpTro4
- 2R2UWQTOF6zAb78eiB8QQHFdw3Lq1xUrhUcHYxnvIzzKlC8kIBo99Ky
-X-Developer-Key: i=roidinev@gmail.com; a=ed25519;
- pk=Itb2tVLere2RkCXs1smCQpxuXvWY0XesWo353ZMHfxs=
-X-Endpoint-Received: by B4 Relay for roidinev@gmail.com/20230906 with auth_id=82
-X-Original-From: Jianguo Bao <roidinev@gmail.com>
-Reply-To: <roidinev@gmail.com>
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:uPuw4stiPpBMOYelFVe2qtzF38EcAPeTCrViqcm3NlXkWZhzOZ0
+ lnRBC8e0/8mhwjdFMc30OAJI+h5CV08nCC/h9O57Az0+31d+fXxvmXIH5shRDQWVqCQNuI5
+ RZpM7Pn5yh8AxGTEn1BqkJRGQdwiij6WEhjLn3gV3wAN25rievUtmdoHdJlw0XhiEVedt50
+ kQvy+lNWkN9hZTPJgq1EA==
+UI-OutboundReport: notjunk:1;M01:P0:+VdWnsPgrrI=;T37xSK4VxoSptZfT7xZGg0iUS14
+ JQE1cZm1YURTNMVGQtCROf7RJPspOj4NIGnhfPZcQsUNhh6QEDVWoaPAI2FCmBmyVM2g0bE0E
+ E1WsQ7YlN+CCmbJ4ZWidCiY6VhBzkKHOUMP0BeTuDc0j2JfOMWEz6uGKwz0ThDoc4lHf5ZSWG
+ Yb96VYx7BRV9PaL4CSiIFk3FUEyHxPdMQ26E1LFW3NhQSotoiGMQmA4tW9QoSAZYJxKo8ivoW
+ 7qQrliTagWRa2eNQ+PCPZA8x2/DSzvEuFLTuRpLi8VH1y66KYywGoFIlhoN9LcWrPA9w1IqLl
+ clgsC+2bcFXnom/srlkhh709duwNQldehrK93WMi5SarECMRLjM/scRv0fgg+1eVsiPA0vONf
+ GGsL/MQh0C/mN1hXa2ovLE22vw4izu54MLh5sHD7Oh07RU9SVar6eF1nGeCQQPsszHCK5vn3l
+ XCBg7ss6VT8ekSW1ax21kL4pRO0j6VJuK8WJeG+6RxFiqExtBvI5VX5vQ5kUALAdlHaO0ajyu
+ U4aJBr6Up2p2nhSHbCrJAJ2EK9oR98MeaRAGd26IRqY0zmtpsHPedJbRup+jyuVZJIduIvoLd
+ 6c1JIqtmjEVL/BatKyj9JNDTaNTb+61rd6qZD3KUNmDKpOStqdlVV+STXlQvk1oiFQtXYbHD7
+ wJRvHZRwCjYLm7BoR+G59jnLn830j1ZVNJ1nWRLyQ1GyniaSfmYYjlyz31WCyYKdsJjDcVSTG
+ VUL94g7l1j1KG0i3UH6y8Wd6SzVOG9sowtqz+5h0T+YoQ5R5OS1UNMl15bsP7Jie1m5N7GUD8
+ lHqCC+oCW7JjE7YOf+5TcGhHyIlXiYszeo9lLPWMDMZYfgWVZ1TwZkE2srMUkadi7bkFLYfvL
+ IFPUvTJvPegpBzw==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianguo Bao <roidinev@gmail.com>
+Hi,
 
-Change to use new address space operation dirty_folio
+Am 14.09.23 um 08:35 schrieb Dan Carpenter:
+> On Thu, Sep 14, 2023 at 12:25:24AM +0530, Umang Jain wrote:
+>> Hello,
+>>
+>> This series attempts to restart the discussion on custom logging used
+>> in VC04. In the last feedback gathered in [1] it seems that the logging
+>> would rather be moved to use dynamic debug. The series tries to move
+>> in that direction.
+>>
+>> The elephant in the room is the ability of turning on/off log levels,
+>> which this series just drops. Compensated by a crude strings
+>> ("error", "warning", "info"... etc) for easier grepping.
+>>
+>> The log category are also just strings (which probably can be transformed
+>> to dynamic debug class names moving forwards?).
+>>
+>> To move forwards, I would like feedback on the broader direction.
+>> There are couple of TODOs in each of the patch (summarised in commit
+>> messages) which require case-by-case discussion.
+>>
+>> Additional high-level questions to move forwards:
+>> 1. Is loss of log levels by moving to dynamic debug, is actually a
+>>     concern? Is dynamic debug a valid replacement?
+> 
+> Dynamic debug is honestly going to be an improvement.  I guess, Greg and
+> I said this back in Jan.
+> 
+>> 2. Whether debugfs should be dropped as well, found vestigial in [2]
+> 
+> Yes. The "vchiq/log" should be removed.  Ideally as part of this
+> patchset so it's easier to understand.
 
-Signed-off-by: Jianguo Bao <roidinev@gmail.com>
----
-Changes in v2:
-- #1: Update author name.
-- Link to v1: https://lore.kernel.org/r/20230917-trycontrib1-v1-1-db22630b8839@gmail.com
----
- mm/page-writeback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, but please do not remote vchiq_debugfs entirely. I'm working on a 
+patch to move the state dump (debug feature) from the character device 
+/dev/vchiq to debugfs /sys/kernel/debug/vchiq/dump_state.
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index b8d3d7040a50..001adbb4a180 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2679,7 +2679,7 @@ void __folio_mark_dirty(struct folio *folio, struct address_space *mapping,
-  * @folio: Folio to be marked as dirty.
-  *
-  * Filesystems which do not use buffer heads should call this function
-- * from their set_page_dirty address space operation.  It ignores the
-+ * from their dirty_folio address space operation.  It ignores the
-  * contents of folio_get_private(), so if the filesystem marks individual
-  * blocks as dirty, the filesystem should handle that itself.
-  *
-
----
-base-commit: f0b0d403eabbe135d8dbb40ad5e41018947d336c
-change-id: 20230917-trycontrib1-cb8ff840794c
-
-Best regards,
--- 
-Jianguo Bao <roidinev@gmail.com>
-
+> 
+>> 3. whether vchiq_log_trace() should actually be tracing support for VC04
+> 
+> That can be done later if people want.  No need to discuss it now.
+> 
+> regards,
+> dan carpenter
+> 
