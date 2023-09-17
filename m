@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118997A35A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 15:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C53D7A35A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 15:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjIQNRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 09:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S232901AbjIQNU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 09:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbjIQNRQ (ORCPT
+        with ESMTP id S230353AbjIQNUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 09:17:16 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3B912F
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:17:11 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-404539209ffso36559575e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:17:11 -0700 (PDT)
+        Sun, 17 Sep 2023 09:20:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAD189
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:20:37 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-401da71b85eso39983505e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:20:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aceart.de; s=google; t=1694956629; x=1695561429; darn=vger.kernel.org;
+        d=aceart.de; s=google; t=1694956836; x=1695561636; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:organization
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Mgpgf51WlJtHJV0Rp4UXo+NI5qfPAJ/I7UubaP6q1W0=;
-        b=HSAn/xV3NFP79uUDNIRz1ybJZCEfgQKNnYdZKck835lpjI3KWZFAKgCi/ES2ivJEOO
-         bIbzPUPQSsPlwIDTN1ysE53v3V3/2rGqBCNb+JDQsfikQoS6TNgiuTOuX1viX/jSUSDk
-         czmARCwXjXJ9dOaSPwUI5IGl0ZBTP5gEo2xvW45NPRF6FA4DGGbI3goCs5FZXcxifyKB
-         CyfjxoDA7T2eNtbaoD1j7iXAWSYNSp6LR5p++35HRjSji2ClbU30z4pttcR3FVsIvs3H
-         2MEVf5/Tz8d+iKHNM8UjH1ZTLtE/p+vlwKmMiAokwG5DSvmlsORiM+JrLHiwO5WT8TE6
-         8bTQ==
+        bh=KeYIqn2tdFkcVAufe9gBvH8l2EIbPxMaLKSc9nvnSeI=;
+        b=fGP/lbeOLDw9ka7WpYIOuuqmh2b0qkPdH4OKothbxnK3awDnxiGkVXPoqDUU4I9Bbh
+         gHibX/usDnz6WHH2BHTYY6hKXtmwJaoLJJwJO+eP1isLelK6Cv0rlx8qXE1PIHe3RdpE
+         XcENRMZei5ZaA5Fvoxugqi3n5axgIOIQQUdZgJjIe55D6YnWB74vgmU96fCdQHdgoCok
+         9yl9FQBmzI4Cb/Ma8gdsOlXtdfw/w5wBdHZckbjoPkE7y3vlsdmHnAzaOXU/WePYx+Ti
+         PZ4/2YQYNzvM6VH5IR8i9KlD7lXZJoBbqf30HE2nsZFJv5cbe0038aHxi4mRLphfmfVl
+         CTTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694956629; x=1695561429;
+        d=1e100.net; s=20230601; t=1694956836; x=1695561636;
         h=mime-version:user-agent:content-transfer-encoding:organization
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mgpgf51WlJtHJV0Rp4UXo+NI5qfPAJ/I7UubaP6q1W0=;
-        b=WzKltm4IiSwBiCKgtjwV2QTy3eXL3W6S0khsIbvOoWE8pTM7zLefCem9zSynJEoo/y
-         kmr5waS5N0+XBKHx68ctY5Gae2GfTa5RFoqcH+gV2JSSy58yAQjCdMTur2PBzd9JMhDy
-         6LimF3esEb7uNdrRww/7zZTWylF7UE2dlv1gkL7UbNkoK4ULAUWCMqdnLsf6Hczag3u1
-         QIHVhHFuKrFEjCoFABRV4mLRy72iTaUyFZOhtk7E5zDF22jx6AaK2z3qcQtNcH+FXBaF
-         bomLhZI1whhV+dqGzSYNTCmpW/OpWv5LOEFZQeZOUkRcaXO3zrfJD4MKgoNC7ej+z6AL
-         q/Uw==
-X-Gm-Message-State: AOJu0YwqdvqwMknYqLZz15w3XaVd3nUd7wHxEavKvEb0PF2EWe+pdY+h
-        NyMFAgsXBcFqbX2mcpS3GaWFkQ==
-X-Google-Smtp-Source: AGHT+IHbddY4ACq7Zaot0S6FIVRIu0s/oobjuCpymDfmDT0A3OCnmkbaFe1yKVSrYn7lFvxvXBA0gw==
-X-Received: by 2002:a1c:f30a:0:b0:402:ea96:c09a with SMTP id q10-20020a1cf30a000000b00402ea96c09amr5889645wmq.16.1694956629493;
-        Sun, 17 Sep 2023 06:17:09 -0700 (PDT)
+        bh=KeYIqn2tdFkcVAufe9gBvH8l2EIbPxMaLKSc9nvnSeI=;
+        b=u0X9USICE6aYmYtcvVViAVVC12XBIsvpGQqv1lYrjmSd0kZVgeBF1EGiXMcqbpNkuN
+         UE5AdsyuI4NeKO42WIq5oX2TMkUXX8u8P0lkxKTR0vpcqqfGdj+kuLsWzaXJfRfmabww
+         wPHlygnIbJtklzy0D4MSvH6oDly71ncEiQe1MPDABT7IWGWAwaCuq1c7nCkEXfaK5DPy
+         nSpK4jJ3A67pZg1C/fnop5l8mt73JTlm0lC/9o7KPpi4fuT8B5718Aq2JpojWaMusU5r
+         DKu2Rqquac98ohXxXnPvKb/ze5Uu/ccuewghuBaWJSmmUjSYC7D4erWRiWPGyIysBkjJ
+         tXTg==
+X-Gm-Message-State: AOJu0YxmRUBOAXWiJR9sL1IgVvNqxKtpShzDomPUfFGzOTEKD7/N2s8i
+        23zTZq8jK4ZlFSsfqRn89O+9vQ==
+X-Google-Smtp-Source: AGHT+IH4ywV4aEv+TpxbpFW30ZsBFhptGh4bDnt8s/U1O/3wFXPg4T07xR32tTPSdkwu/HFEYDVc2A==
+X-Received: by 2002:a05:600c:2901:b0:401:906b:7e9d with SMTP id i1-20020a05600c290100b00401906b7e9dmr6226687wmd.18.1694956835911;
+        Sun, 17 Sep 2023 06:20:35 -0700 (PDT)
 Received: from ?IPv6:2a02:8070:d84:9160:acd3:26fc:724e:a2dd? ([2a02:8070:d84:9160:acd3:26fc:724e:a2dd])
-        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b0031c5dda3aedsm9779189wrs.95.2023.09.17.06.17.08
+        by smtp.gmail.com with ESMTPSA id r9-20020a05600c320900b00404732ad815sm8936077wmp.42.2023.09.17.06.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 06:17:09 -0700 (PDT)
-Message-ID: <c8168e781f3fc55f594f0c85501c480db5176497.camel@aceart.de>
+        Sun, 17 Sep 2023 06:20:35 -0700 (PDT)
+Message-ID: <dd0f65048f7030184caad4d99b8277d589c6d352.camel@aceart.de>
 Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
  device tree
 From:   lukas walter <lukas.walter@aceart.de>
-To:     krzysztof.kozlowski@linaro.org
+To:     bryan.odonoghue@linaro.org
 Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
         krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, lukas.walter@aceart.de,
         phone-devel@vger.kernel.org, raymondhackley@protonmail.com,
         robh+dt@kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Date:   Sun, 17 Sep 2023 15:17:08 +0200
-In-Reply-To: <bd833cee-2349-368d-93a4-9465ebc8a0e9@linaro.org>
+Date:   Sun, 17 Sep 2023 15:20:34 +0200
+In-Reply-To: <3a66a198-5817-4c74-9047-c49e5bcc84c2@linaro.org>
 Organization: aceArt GmbH
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,27 +78,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
 
+>Are you sure this is 3620, have you tried wcn3660 and/or wcn3680 ?
 
->Order of SoB is unusual. Who did what here?
+I am sure. Downstream source [1] and downstream dmesg (wcnss: IRIS Reg:
+51120004 which should equal [2]) indicate 3620 (3620A does not exist)
 
-I created the dts and they update the model name. So it should be the
-other way around
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEi1ngOOsyNO1iyMXiY16HCsLx2zUFAmUG/FQACgkQY16HCsLx
-2zXbug//cFZNScSBr6k1I4tHuthR2+CFhTqOO0x0EqMa6W+l96s7ZimJA8UGq2jJ
-F+4BZHujtBlpd1p4bE/GMDERy6MMHmAW7/N8kl3dEfwErwvjwML4nvDLRSC2Movd
-93MNJ+4tncTndMLUEyARUUg5sP6Idgc/83pMRzKn4toFxWMHfWPFHy5XlNLDjJT5
-/BuvYlbAFpme9ZavTLMGtalOp6ovsS1qNRrNk/CZecV+I5tCVFs4ZbzMHf8vKi3/
-B7yObHRsZEdy80KE77kedgyBlGWu0/Tvu7xrK2qZxawkbraLBn+qE76wCmgk91qg
-7EheFFr30v1LuudZbA+5fOE3qC13u3LbmCaRwwKAC8S7C6OgMM8Vcg08rPdaaV10
-m1MDSPgxddA/TitQNz3epvFahpm1WWuGhR2xihDP/r345kogUYcRiLw4eqIkYKjb
-64Wgalclq8XByymGLndYuoBaR31wauOjCtShiHByRTp86XTWh9C+KJ2wVGdE2UWL
-ok+qs1hrao328+FtgtZn7FxnmO2yLA9I6xLeEPgTSt5VSZ9NWpRNQ5h61AYDEaZV
-YPy3cTJV5VN5Mrp6dul7bT/Ti5rp8tCH5zk6D62WTSq2xEzkDtjnE1DKzr2+0KNt
-c2VZQGmquTiTotnQF2c4E2M9ONd+TxN9sn0dYqwwZa0BLEI1JBk=3D
-=3DF2cY
------END PGP SIGNATURE-----
+[1]:
+https://github.com/CyanogenMod/android_kernel_huawei_kiwi/blob/cm-14.1/arch=
+/arm/boot/dts/qcom/huawei_msm8939_kiw_al20_vb/huawei-bt.dtsi#L5
+[2]:
+https://github.com/msm8916-mainline/linux-downstream/blob/b20608408caff817e=
+c874f325127b07609fbaeb8/drivers/net/wireless/wcnss/wcnss_vreg.c#L51
