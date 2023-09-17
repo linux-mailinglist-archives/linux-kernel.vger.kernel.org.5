@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E9E7A36A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D0B7A36AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbjIQQuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 12:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        id S236826AbjIQQww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 12:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjIQQu3 (ORCPT
+        with ESMTP id S237055AbjIQQwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 12:50:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E646F11D
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:50:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 878ECC433C8;
-        Sun, 17 Sep 2023 16:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694969424;
-        bh=75bPTpm9wsWhjLLscRsZmKkJmuZeVrTEofm/5LUVa2g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mVZNe/ZneTCYdDvVZIdtwikaEPKu+9iz6rhIwinqo/LoWIkmLRQRdNYH1J9IRzkVp
-         ZVA/QCoZs0wQnaJ720Zxc03r0xF6fJWiAqvEwmhSQGwUzRuPhT730htqxtOH7Ykzrj
-         g58LLdmTPsxrr2f2ujZA+sdIprQ0f5PtCNe1sBT2N6OLmgF6tFub6rpGqm45SKiXFP
-         qsgf2p8rn4lozEdyCXFTikTJzEVynS2SBQr0XIIFxuXb3iWXo1klfubWgqFCfnUeaR
-         L6TjDwE1rf1gByJBuEA6PHuRIpdD7QnTLgItXIMD2DLE79UPX8+FaJ9/Owxz5RQkXx
-         aBxzkTPAab7nA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71BD0E26880;
-        Sun, 17 Sep 2023 16:50:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 17 Sep 2023 12:52:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943C4188
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694969509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rgW2MUYlHHfdCZ+QdWezRlOQ9jHuf7PY43yzWv+wfSM=;
+        b=GPuNjIfkACW5iU9yVzT97Wh0CvNk3ZW/aG6b3KQjaLMvGXXH69zf1MIKkKZBTA8sPWLH7r
+        ZEWe4A53zkipDSkVFtbA6anraOSwoujcsMGB1BAhC/Gt9FnFJPTJfu5Jk5FGW9k4YNp1ZV
+        n6D1o7jkhvJWZGZsVcQSwm8Iv7NSgy4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-118-7D-EcRCMNxOI8vbd2BqiLg-1; Sun, 17 Sep 2023 12:51:44 -0400
+X-MC-Unique: 7D-EcRCMNxOI8vbd2BqiLg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4F192945926;
+        Sun, 17 Sep 2023 16:51:44 +0000 (UTC)
+Received: from [10.22.8.73] (unknown [10.22.8.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C64110F1BE7;
+        Sun, 17 Sep 2023 16:51:43 +0000 (UTC)
+Message-ID: <5e513c72-7198-a55e-6e2b-a811d5529284@redhat.com>
+Date:   Sun, 17 Sep 2023 12:51:43 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/5] vsock/test: add recv_buf()/send_buf() utility
- functions and some improvements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169496942446.18728.7629668615433862698.git-patchwork-notify@kernel.org>
-Date:   Sun, 17 Sep 2023 16:50:24 +0000
-References: <20230915121452.87192-1-sgarzare@redhat.com>
-In-Reply-To: <20230915121452.87192-1-sgarzare@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        avkrasnov@salutedevices.com,
-        virtualization@lists.linux-foundation.org, oxffffaa@gmail.com,
-        bobby.eshleman@bytedance.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/1] cgroup/cpuset: Rebuild sched domains if isolated
+ partition changed
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     rui.zhang@intel.com, aaron.lu@intel.com,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+References: <20230915154505.363754-1-pierre.gondois@arm.com>
+ <20230915154505.363754-2-pierre.gondois@arm.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230915154505.363754-2-pierre.gondois@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 9/15/23 11:45, Pierre Gondois wrote:
+> When an isolated parition is created, the sched domains (sds) are
+> rebuilt and the sds of the isolated CPUs are detached. This only
+> happens at the creation of the isolated parition. Updating
+> the cpuset of the partition doesn't rebuild the sds:
+>
+> To reproduce:
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    domain0
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    domain0
+>    #
+>    # mkdir cgroup
+>    # mount -t cgroup2 none cgroup/
+>    # mkdir cgroup/A1/
+>    # echo "+cpuset" > cgroup/cgroup.subtree_control
+>    # echo 0-3 > cgroup/A1/cpuset.cpus
+>    # echo isolated > cgroup/A1/cpuset.cpus.partition
+>    #
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    #
+>    # echo 0 > cgroup/A1/cpuset.cpus
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    #
+>
+> Here CPU1 should have a sched domain re-attached.
+>
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> ---
+>   kernel/cgroup/cpuset.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 58e6f18f01c1..e3eb27ff9b68 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1680,11 +1680,15 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
+>   		 * empty cpuset is changed, we need to rebuild sched domains.
+>   		 * On default hierarchy, the cpuset needs to be a partition
+>   		 * root as well.
+> +		 * Also rebuild sched domains if the cpuset of an isolated
+> +		 * partition changed.
+>   		 */
+> -		if (!cpumask_empty(cp->cpus_allowed) &&
+> -		    is_sched_load_balance(cp) &&
+> -		   (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+> -		    is_partition_valid(cp)))
+> +		if ((!cpumask_empty(cp->cpus_allowed) &&
+> +		     is_sched_load_balance(cp) &&
+> +		     (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+> +		      is_partition_valid(cp))) ||
+> +		    (cp->partition_root_state == PRS_ISOLATED ||
+> +		     cp->partition_root_state == PRS_INVALID_ISOLATED))
+>   			need_rebuild_sched_domains = true;
+>   
+>   		rcu_read_lock();
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Thanks for spotting the problem and sending out a patch to fix it. 
+However, it should be done in the update_cpumask(). The sched_domain 
+rebuild in update_cpumasks_hier() is supposed to be used for impacted 
+descendant cpusets lower down in the hierarchy.
 
-On Fri, 15 Sep 2023 14:14:47 +0200 you wrote:
-> We recently found that some tests were failing [1].
-> 
-> The problem was that we were not waiting for all the bytes correctly,
-> so we had a partial read. I had initially suggested using MSG_WAITALL,
-> but this could have timeout problems.
-> 
-> Since we already had send_byte() and recv_byte() that handled the timeout,
-> but also the expected return value, I moved that code to two new functions
-> that we can now use to send/receive generic buffers.
-> 
-> [...]
+Anyway, I believe this problem should have been fixed in commit 
+a86ce68078b2 ("cgroup/cpuset: Extract out CS_CPU_EXCLUSIVE & 
+CS_SCHED_LOAD_BALANCE handling") recently merged into the v6.6 kernel. 
+Would you mind testing the latest upstream kernel to see if this problem 
+is gone or not?
 
-Here is the summary with links:
-  - [net-next,1/5] vsock/test: add recv_buf() utility function
-    (no matching commit)
-  - [net-next,2/5] vsock/test: use recv_buf() in vsock_test.c
-    https://git.kernel.org/netdev/net-next/c/a0bcb8357716
-  - [net-next,3/5] vsock/test: add send_buf() utility function
-    (no matching commit)
-  - [net-next,4/5] vsock/test: use send_buf() in vsock_test.c
-    https://git.kernel.org/netdev/net-next/c/2a8548a9bb4c
-  - [net-next,5/5] vsock/test: track bytes in MSG_PEEK test for SOCK_SEQPACKET
-    https://git.kernel.org/netdev/net-next/c/bc7bea452d32
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Thanks,
+Longman
 
