@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 483417A365F
+	by mail.lfdr.de (Postfix) with ESMTP id 945087A3660
 	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235720AbjIQP2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        id S236693AbjIQP2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235606AbjIQP2A (ORCPT
+        with ESMTP id S236022AbjIQP2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:28:00 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D0111F;
-        Sun, 17 Sep 2023 08:27:54 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-313e742a787so2320902f8f.1;
-        Sun, 17 Sep 2023 08:27:54 -0700 (PDT)
+        Sun, 17 Sep 2023 11:28:02 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B740120;
+        Sun, 17 Sep 2023 08:27:57 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-403012f27e1so39450635e9.1;
+        Sun, 17 Sep 2023 08:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694964473; x=1695569273; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694964475; x=1695569275; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tt+2C7H8Lp9GSUddurKydQcPQn4TRhG9Hz2u3xUiVI4=;
-        b=FWaHQzU9uco56v7WOUeq90gKntkqmDSyKs66uM6Kg/S2amqkPIUyIclhhS6GcDPsjz
-         xP2LjMjD8YuKIb1Y8O70x/ibtbULSIqcY4C4MWoeehY1QxYgwk3HPouzPgOClX1tBYuh
-         lb6pIco4+bCenG7e/7HEfQqc8SWSocq9q6H8EhN9okKV9NnNHpSG2YNyvSOjdWNMlBOi
-         3SbrCM9oqCF/iDIwJWD4S3VVzWOpwd3WE+Ru2V9jzrqeo8Y+9hMUH4aVcquWfWZxLV19
-         qnUMlujIdFe6E3cWJ/j/X8m5ex661ksIgMhtyUkdEJLhmHce3GODc+u0HwzW4gLyaIEJ
-         d38A==
+        bh=LD+60v9C6UaRp0/siQLtHNIFl77ZDBkVdyJlYrRa+7Y=;
+        b=Gv1GZU9pH77NwfVpQIXgURem5swR3VLvbLwVzgtCXu+IojZri9otJ54Gj/r1pGOz3Y
+         fhffDw+HELJw0TRA+qf0+ZvJJB1AfUzpjXuBS6VFVTvqOIBo2D3894Fyt8AHc00JybyZ
+         m+/P2IvvZCCS3/kQn0zW9FQN0+mZ6UeDQSTW/biqvtsBk2bwW4Ez3XhC2NX8NfaMOgFF
+         6S+hfweTp9sqY8Mbvb7Lm7RyMVpe8ooegY1DXeR+8wet3M8KTJlUFKyK9oMiZ+zoTwya
+         nHxIwKmAIDzu4fbrwksD1Ty4cCLgLQXBYluCVU+XzGX7VGL0O8e0kMOF6xXAeR9W0ZpN
+         1QAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694964473; x=1695569273;
+        d=1e100.net; s=20230601; t=1694964475; x=1695569275;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tt+2C7H8Lp9GSUddurKydQcPQn4TRhG9Hz2u3xUiVI4=;
-        b=xN8NDi+r7lZGxz4Lg6Lfrrqnw1vNi5Bu53uoTyK86HNXEppgmumUIEZPkndQH2/63N
-         9wqUxPkljDU91tgq8nk3tVb87VmxPiy+Gy5S9wlqmaoOyjBrqUt8QfAhLYe/4BqNNTM3
-         TszjSYR3VGoSo72wN8RwIZuG6ji6ftq6/qdMmSK0PFzozrRTPJmSju8pT6FqvThag20n
-         613p6jjJW6YrdG/QAbj8o79m+kf7Kg9MGNBjEKYSKHDYFFRl+d33wbWf/eVAhBobVCXq
-         nqVZ3tsVhdUp3zHlJ/fEMEo91apoUgU92aicUrPJyDdxeh1reOMALw/QsRYtvmQ18Gam
-         Y/zA==
-X-Gm-Message-State: AOJu0Yyq8VjNwlkj2/UtGcebjFDs7TQgVZ3Y6nmJZQJDow7ywmY6lZJ/
-        w17wn5iMlsmyv2LJ2cIhrDuMyT7+mKVFBJCTfFE=
-X-Google-Smtp-Source: AGHT+IHkShHz18zKi/aXxX7+Lx10bI9IqBtUuVptBljp1sNz+m3EcSRCzmtFJFgRBBd2X0z/D3WQgg==
-X-Received: by 2002:a5d:60cc:0:b0:31f:db54:317e with SMTP id x12-20020a5d60cc000000b0031fdb54317emr6996605wrt.14.1694964472989;
-        Sun, 17 Sep 2023 08:27:52 -0700 (PDT)
+        bh=LD+60v9C6UaRp0/siQLtHNIFl77ZDBkVdyJlYrRa+7Y=;
+        b=ilMMzHBwBBOIoWkSXW1zjcnJ/bKBcFGZ6LbS0koP5qniuSAkhmPoED9lxlCOYZfF1h
+         xevSQt6ag8aISEkpEwQ4FYSqFM6B/qd8/YCcHcPzGu+56TOJLJJz4tR7Wz+/NrnRwkso
+         uPNhEWYbt8l0u0sA+CRs69F93J8q1kYJZx/vElsI1jLhIogjDjiB/E9BkHwCAMPKLgow
+         n6AasUzBxOHJ7pUZioNNPaw+lc4i+eH4BCfIN6zTZUUePIHJUyxbXYeiRvWvm3M4JHJl
+         bumeSkXRGqTCQU3lfKSvJD3r+6hKayk/Fkp9WHP20FtB3hoCwyH+Igeo/b+5EHn6YH6P
+         JArQ==
+X-Gm-Message-State: AOJu0Yyi9XihZt94z+d5nphykaprFW+O+bqJwzC71XI/LkycM/Nrup3V
+        tRPAY7rdsUKGXuyQhU36U2g=
+X-Google-Smtp-Source: AGHT+IFMoEpnwQyNLknzPee617qhcmJR/O2NloQ0cpT0cp57T8tjIvz2LAXQD9gdl6ee6PnfvYX2lA==
+X-Received: by 2002:a7b:c40b:0:b0:401:be70:53b6 with SMTP id k11-20020a7bc40b000000b00401be7053b6mr6000332wmi.15.1694964475610;
+        Sun, 17 Sep 2023 08:27:55 -0700 (PDT)
 Received: from localhost.localdomain ([5.45.134.53])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.50
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c489700b003fe15ac0934sm7388865wmp.1.2023.09.17.08.27.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 08:27:52 -0700 (PDT)
+        Sun, 17 Sep 2023 08:27:55 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
         linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         conor+dt@kernel.org, linux-kernel@vger.kernel.org,
         abdelalkuor@geotab.com
-Subject: [PATCH v5 14/15] USB: typec: Add status trace for tps25750
-Date:   Sun, 17 Sep 2023 11:26:38 -0400
-Message-Id: <20230917152639.21443-15-alkuor@gmail.com>
+Subject: [PATCH v5 15/15] USB: typec: Do not check VID for tps25750
+Date:   Sun, 17 Sep 2023 11:26:39 -0400
+Message-Id: <20230917152639.21443-16-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230917152639.21443-1-alkuor@gmail.com>
 References: <20230917152639.21443-1-alkuor@gmail.com>
@@ -77,106 +77,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-tps25750 status register is a subset of tps6598x status register, hence
-a trace for tps25750 status register is added.
+tps25750 doesn't have VID register, check VID for PD controllers
+other than tps25750
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
- drivers/usb/typec/tipd/core.c  | 10 +++++----
- drivers/usb/typec/tipd/trace.h | 37 ++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+), 4 deletions(-)
+ drivers/usb/typec/tipd/core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index dd3c76b57aaa..326c23bfa8e6 100644
+index 326c23bfa8e6..c1399e12a170 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -453,7 +453,11 @@ static bool tps6598x_read_status(struct tps6598x *tps, u32 *status)
- 		dev_err(tps->dev, "%s: failed to read status\n", __func__);
- 		return false;
- 	}
--	trace_tps6598x_status(*status);
-+
-+	if (tps->is_tps25750)
-+		trace_tps25750_status(*status);
-+	else
-+		trace_tps6598x_status(*status);
+@@ -1142,10 +1142,6 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	if (IS_ERR(tps->regmap))
+ 		return PTR_ERR(tps->regmap);
  
- 	return true;
- }
-@@ -1188,10 +1192,8 @@ static int tps6598x_probe(struct i2c_client *client)
- 	if (ret)
- 		goto err_reset_controller;
- 
--	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
--	if (ret < 0)
-+	if (!tps6598x_read_status(tps, &status))
- 		goto err_clear_mask;
--	trace_tps6598x_status(status);
- 
+-	ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
+-	if (ret < 0 || !vid)
+-		return -ENODEV;
+-
  	/*
- 	 * This fwnode has a "compatible" property, but is never populated as a
-diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
-index 739b0a2a867d..afa0875a9de5 100644
---- a/drivers/usb/typec/tipd/trace.h
-+++ b/drivers/usb/typec/tipd/trace.h
-@@ -91,6 +91,14 @@
- 						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
- 						      TPS_STATUS_LEGACY_MASK))
+ 	 * Checking can the adapter handle SMBus protocol. If it can not, the
+ 	 * driver needs to take care of block reads separately.
+@@ -1176,6 +1172,12 @@ static int tps6598x_probe(struct i2c_client *client)
  
-+#define TPS25750_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
-+						      GENMASK(19, 7) | \
-+						      TPS_STATUS_VBUS_STATUS_MASK | \
-+						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
-+						      TPS_STATUS_LEGACY_MASK | \
-+						      BIT(26) | \
-+						      GENMASK(31, 28)))
-+
- #define show_status_conn_state(status) \
- 	__print_symbolic(TPS_STATUS_CONN_STATE((status)), \
- 		{ TPS_STATUS_CONN_STATE_CONN_WITH_R_A,	"conn-Ra"  }, \
-@@ -148,6 +156,14 @@
- 		      { TPS_STATUS_HIGH_VOLAGE_WARNING,	"HIGH_VOLAGE_WARNING" }, \
- 		      { TPS_STATUS_HIGH_LOW_VOLTAGE_WARNING, "HIGH_LOW_VOLTAGE_WARNING" })
+ 	tps->irq_handler = irq_handler;
  
-+#define show_tps25750_status_flags(flags) \
-+	__print_flags((flags & TPS25750_STATUS_FLAGS_MASK), "|", \
-+		      { TPS_STATUS_PLUG_PRESENT,	"PLUG_PRESENT" }, \
-+		      { TPS_STATUS_PLUG_UPSIDE_DOWN,	"UPSIDE_DOWN" }, \
-+		      { TPS_STATUS_PORTROLE,		"PORTROLE" }, \
-+		      { TPS_STATUS_DATAROLE,		"DATAROLE" }, \
-+		      { TPS_STATUS_BIST,		"BIST" })
++	if (!tps->is_tps25750) {
++		ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
++		if (ret < 0 || !vid)
++			return -ENODEV;
++	}
 +
- #define show_power_status_source_sink(power_status) \
- 	__print_symbolic(TPS_POWER_STATUS_SOURCESINK(power_status), \
- 		{ 1, "sink" }, \
-@@ -292,6 +308,27 @@ TRACE_EVENT(tps6598x_status,
- 		    )
- );
- 
-+TRACE_EVENT(tps25750_status,
-+	    TP_PROTO(u32 status),
-+	    TP_ARGS(status),
-+
-+	    TP_STRUCT__entry(
-+			     __field(u32, status)
-+			     ),
-+
-+	    TP_fast_assign(
-+			   __entry->status = status;
-+			   ),
-+
-+	    TP_printk("conn: %s, vbus: %s, usb-host: %s, legacy: %s, flags: %s",
-+		      show_status_conn_state(__entry->status),
-+		      show_status_vbus_status(__entry->status),
-+		      show_status_usb_host_present(__entry->status),
-+		      show_status_legacy(__entry->status),
-+		      show_tps25750_status_flags(__entry->status)
-+		    )
-+);
-+
- TRACE_EVENT(tps6598x_power_status,
- 	    TP_PROTO(u16 power_status),
- 	    TP_ARGS(power_status),
+ 	/* Make sure the controller has application firmware running */
+ 	ret = tps6598x_check_mode(tps, &mode);
+ 	if (ret)
 -- 
 2.34.1
 
