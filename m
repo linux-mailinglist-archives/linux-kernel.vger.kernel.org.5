@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B185D7A3EB0
+	by mail.lfdr.de (Postfix) with ESMTP id 677607A3EAF
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 00:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239741AbjIQWlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 18:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
+        id S239674AbjIQWlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 18:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbjIQWko (ORCPT
+        with ESMTP id S236690AbjIQWko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 17 Sep 2023 18:40:44 -0400
 Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4B412D;
-        Sun, 17 Sep 2023 15:40:38 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403012f27e1so41840165e9.1;
-        Sun, 17 Sep 2023 15:40:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B75412C;
+        Sun, 17 Sep 2023 15:40:39 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-404773f2501so33760315e9.0;
+        Sun, 17 Sep 2023 15:40:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694990436; x=1695595236; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694990437; x=1695595237; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a4cz3ddudUKiI7NnTMxIyuudgr4C+r48kicDtdOb7Wo=;
-        b=Ofm6xD6hRILie2GXLkZfknjM9VFJ5qhvjeoifGCy9YIbK/Ov0mizRL7wN1N4PV5ga1
-         NASPraLe8QJRa0YYO6gAd5qzXIl7/fuD11S+Gqv9dVnvR9j+QGp603L4zfAIBHNpvRYg
-         CtMUmbHgO19lFSFgCKXLLWiFgjvV6N0tZABKxOL6oK76qfahsCtjMc6IkjIyeO6WdiyG
-         0wsPP8G05m7gGNeD8piyxBvcTEXwZG13wKKRsTZuUlei1K2t9FIdkN6RznUuqD0kUb+P
-         25OTftf40/RNAwUnWDIE0hq6MFnIkdFugeCEaeHIrA+KbMCayRKYcFSHU5v0sIMbevEX
-         R8Vg==
+        bh=d58DRMcmmqVdQpNWAbMiLz0ISFX3idJISFoDmPX5pV4=;
+        b=Fs1yJekj5VZUsnEwk9NjkR7+d7C7lyzCpZip1ahwWs1mGgft6TG5RqPx+wrvTtqsWZ
+         /QCbhKrRJDXxHldMLq3iHY0DvSJ37cGAsd7rO7u7G/UnOnohw8sUhKsgv1hvGTDNDAww
+         OX1qTn04J6/iBfzcbRpJdPelsM1+/TTMGCiYgsKVnOiS154bMd/NNIt9qBLDJeXCilSZ
+         KH4tAyjbUS8GMCB2HoFbFGcUmmeuP6Cl+f74TnNYNpq4AkxAzW55/wRZtPH2ugWiikcC
+         1OO0wAH6oq7hdQYEhqqvGXuFwBi9j1ffgisbh9sYlvjgvGgiOaL7QWlnO2eQWUtCdhWw
+         iAxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694990436; x=1695595236;
+        d=1e100.net; s=20230601; t=1694990437; x=1695595237;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a4cz3ddudUKiI7NnTMxIyuudgr4C+r48kicDtdOb7Wo=;
-        b=Ke6rMRyWSg6/HoqhXNe5gWZ8LV3rY9voWXCBBsQYnYlS9XXwkv8nZK5+bPY2P7+rJp
-         dQOO5H60M6XaqmCT9hy9S74F3f7n5ye49stxXEh46PeMUUxlMQW0fh95G8gByjP8jOP3
-         YtajEOBkuZOsuzk0+8A0M3oNBhy7a+ol8qfXqUtzhASUcrCu+oypK+ljdKk5QcfoJ/di
-         YtjovA4bKfueZrRaV7VPd65F3H1OcEw723qlW7+2DmkGqOT56nsWcfmOvMjlno9yvlSx
-         7XIBO8jJqA+ioYgjLkR5zbjAsi9tXi5FrHaYFX0Lt2kMxF53P3QHfaR6O2fRIO9hrbAe
-         WeVQ==
-X-Gm-Message-State: AOJu0Yxd5fXthXnFLHt/HuFzf71Ahqebm11CjdNiP62KS3OjVoFB4By+
-        DxVNv0PEykQCQA+1fSA2hjw=
-X-Google-Smtp-Source: AGHT+IE2H/LAUCgWRax7Ln7Pf/RNykjRml+cUSy7LIhvq+pmSE6UUuK6rKrg8wHXJMeh2LS9XviDXg==
-X-Received: by 2002:a05:600c:3781:b0:401:b2c7:349b with SMTP id o1-20020a05600c378100b00401b2c7349bmr5879782wmr.7.1694990436518;
-        Sun, 17 Sep 2023 15:40:36 -0700 (PDT)
+        bh=d58DRMcmmqVdQpNWAbMiLz0ISFX3idJISFoDmPX5pV4=;
+        b=VXyNeom/Fyb4dEl2F1Y5JaxUVfwz3zHMy5p7T1SbScVrYrFJhvSsihGAOehk9q9k9P
+         Ea55zYD7NtynzM5/E6wt2bPGX5xTQbdfThUzr5GtPezM1yo7UUnz64zaeQCG7sm6xOrA
+         ETZXEfxQGNdKH+yL3U14tiBoxg/DD/eeyH5ukz6c7Zb7lHHpfhPSgSctb2ZSPSQtpkhU
+         5fhd1pwaw+PrxOtxRRABr1G1jHj/wPtmEW9ZTnTAZb7VXebpbjpIY+6oDvgW8P8II5GB
+         +1SRmnAKEw/+4aJlee8aK9gP5j5hDKPsoIplFBwKmY8UWxmvyO+cat/NaloJzV9EUwwZ
+         7tfg==
+X-Gm-Message-State: AOJu0YyIe0uu+Qhs+6T5rOShuYIqN5wHgEn7t7u+ESt94JseKIqY0jy1
+        mewS16w93B3q9CTezvjGCyA=
+X-Google-Smtp-Source: AGHT+IEYhBep8mg6WS7aKBOBPPKW2JCJgL7HelrqDWQ8VqlnSyxcZRRMfPYvNeB+WumXVoC+/YvMXQ==
+X-Received: by 2002:a05:600c:2288:b0:404:7865:bf4 with SMTP id 8-20020a05600c228800b0040478650bf4mr5869641wmf.39.1694990437396;
+        Sun, 17 Sep 2023 15:40:37 -0700 (PDT)
 Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id x14-20020a1c7c0e000000b003fe2b081661sm13642931wmc.30.2023.09.17.15.40.35
+        by smtp.gmail.com with ESMTPSA id x14-20020a1c7c0e000000b003fe2b081661sm13642931wmc.30.2023.09.17.15.40.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 15:40:36 -0700 (PDT)
+        Sun, 17 Sep 2023 15:40:37 -0700 (PDT)
 From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Mon, 18 Sep 2023 00:40:02 +0200
-Subject: [PATCH 06/13] clk: keep track if a clock is explicitly configured
+Date:   Mon, 18 Sep 2023 00:40:03 +0200
+Subject: [PATCH 07/13] clk: detect unintended rate changes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230918-imx8mp-dtsi-v1-6-1d008b3237c0@skidata.com>
+Message-Id: <20230918-imx8mp-dtsi-v1-7-1d008b3237c0@skidata.com>
 References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
 In-Reply-To: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -89,100 +89,121 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Benjamin Bara <benjamin.bara@skidata.com>
 
-When we keep track if a clock has a given rate explicitly set by a
-consumer, we can identify unintentional clock rate changes in an easy
-way. This also helps during debugging, as one can see if a rate is set
-by accident or due to a consumer-related change.
+As we now keep track of the clocks which are allowed to change - namely
+the ones which are along the ancestor line between the rate trigger and
+the top-most changed clock, we can run through the subtree of changes
+and look for unexpected ones. Shared parents must set their rate in a
+way, that all consumer-configured rates are respected. As this is
+sometimes not possible and clocks sometime doesn't require the *exact*
+rate, we might have to find a way to find out if it is *exact enough*.
+Then we could fix it in the core.
 
 Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
 ---
- drivers/clk/clk.c            | 25 +++++++++++++++++++++++++
- include/linux/clk-provider.h |  1 +
- 2 files changed, 26 insertions(+)
+ drivers/clk/clk.c | 83 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 8f4f92547768..82c65ed432c5 100644
+index 82c65ed432c5..faececc44c28 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -70,6 +70,7 @@ struct clk_core {
- 	unsigned long		rate;
- 	unsigned long		req_rate;
- 	unsigned long		new_rate;
-+	unsigned long		set_rate;
- 	struct clk_core		*new_parent;
- 	struct clk_core		*new_child;
- 	unsigned long		flags;
-@@ -541,6 +542,12 @@ bool __clk_is_enabled(struct clk *clk)
- }
- EXPORT_SYMBOL_GPL(__clk_is_enabled);
- 
-+bool __clk_is_rate_set(struct clk *clk)
-+{
-+	return clk->core->set_rate > 0;
-+}
-+EXPORT_SYMBOL_GPL(__clk_is_rate_set);
-+
- static bool mux_is_better_rate(unsigned long rate, unsigned long now,
- 			   unsigned long best, unsigned long flags)
- {
-@@ -578,6 +585,19 @@ static bool clk_core_has_parent(struct clk_core *core, const struct clk_core *pa
- 	return false;
+@@ -2280,6 +2280,74 @@ static struct clk_core *clk_calc_new_rates(struct clk_core *core,
+ 	return top;
  }
  
-+static bool clk_core_is_ancestor(struct clk_core *core, const struct clk_core *ancestor)
++/*
++ * If the changed clock is consumer-configured, but not an ancestor of the
++ * trigger, it is most likely an unintended change. As a workaround, we try to
++ * set the rate back to the old without changing the parent. If this is not
++ * possible, the change should not have been suggested in the first place.
++ */
++static struct clk_core *clk_detect_unintended_rate_changes(struct clk_core *core,
++							   bool fix)
 +{
-+	struct clk_core *tmp = core->parent;
++	struct clk_core *child, *tmp_clk;
 +
-+	while (tmp) {
-+		if (tmp == ancestor)
-+			return true;
-+		tmp = tmp->parent;
++	if (core->rate == core->new_rate)
++		return NULL;
++
++	if (core->set_rate && core != rate_trigger_clk->core &&
++	    !clk_core_is_ancestor(rate_trigger_clk->core, core)) {
++		struct clk_core *parent = core->new_parent ? : core->parent;
++		struct clk_rate_request req;
++
++		pr_debug("%s: unintended change by %s (%lu -> %lu)\n", core->name,
++			 rate_trigger_clk->core->name, core->rate, core->new_rate);
++
++		if (fix) {
++			clk_hw_init_rate_request(core->hw, &req, core->rate);
++			req.best_parent_rate = parent->new_rate;
++			req.best_parent_hw = parent->hw;
++
++			if (clk_core_round_rate_nolock(core, &req))
++				return core;
++
++			/* TODO: how close is close enough? */
++			if (req.rate != core->rate) {
++				pr_debug("%s: %s fix failed, req=%lu, sugg=%lu\n",
++					 __func__, core->name, core->rate, req.rate);
++				return core;
++			}
++			if (req.best_parent_rate != parent->new_rate ||
++			    req.best_parent_hw != parent->hw) {
++				pr_debug("%s: %s fix failed, req=%s@%lu, sugg=%s@%lu\n",
++					 __func__, core->name, parent->name,
++					 parent->new_rate,
++					 req.best_parent_hw->core->name,
++					 req.best_parent_rate);
++				return core;
++			}
++
++			core->new_rate = core->rate;
++		}
++		return NULL;
 +	}
 +
-+	return false;
++	hlist_for_each_entry(child, &core->children, child_node) {
++		if (child->new_parent && child->new_parent != core)
++			continue;
++		tmp_clk = clk_detect_unintended_rate_changes(child, fix);
++		if (tmp_clk)
++			return tmp_clk;
++	}
++
++	if (core->new_child) {
++		tmp_clk = clk_detect_unintended_rate_changes(core->new_child, fix);
++		if (tmp_clk)
++			return tmp_clk;
++	}
++
++	return NULL;
 +}
 +
- static void
- clk_core_forward_rate_req(struct clk_core *core,
- 			  const struct clk_rate_request *old_req,
-@@ -2358,6 +2378,9 @@ static void clk_change_rate(struct clk_core *core)
- 
- 	trace_clk_set_rate_complete(core, core->new_rate);
- 
-+	if (rate_trigger_clk && clk_core_is_ancestor(rate_trigger_clk->core, core))
-+		core->set_rate = core->new_rate;
-+
- 	core->rate = clk_recalc(core, best_parent_rate);
- 
- 	if (core->flags & CLK_SET_RATE_UNGATE) {
-@@ -2528,6 +2551,7 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
- 		clk_core_rate_protect(clk->core);
- 
- 	rate_trigger_clk = NULL;
-+	clk->core->set_rate = rate;
- 
- 	clk_prepare_unlock();
- 
-@@ -2579,6 +2603,7 @@ int clk_set_rate_exclusive(struct clk *clk, unsigned long rate)
+ /*
+  * Notify about rate changes in a subtree. Always walk down the whole tree
+  * so that in case of an error we can walk down the whole tree again and
+@@ -2484,6 +2552,21 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
+ 		goto err;
  	}
  
- 	rate_trigger_clk = NULL;
-+	clk->core->set_rate = rate;
++	/*
++	 * The notifying process offers the possibility to fix the rates of
++	 * unrelated clocks along the tree. After that, run a detection to find
++	 * clocks which are potentially wrongly configured now. These might be
++	 * fixed by the core in the future.
++	 */
++	fail_clk = clk_detect_unintended_rate_changes(top, false);
++	if (fail_clk) {
++		pr_err("%s: unintended rate change cannot be fixed\n",
++		       fail_clk->name);
++		ret = -EINVAL;
++		goto err;
++	}
++
++
+ 	/* change the rates */
+ 	clk_change_rate(top);
  
- 	clk_prepare_unlock();
- 
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index 3fb99ed5e8d9..e3732e0bbed9 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
-@@ -1325,6 +1325,7 @@ bool clk_hw_is_prepared(const struct clk_hw *hw);
- bool clk_hw_rate_is_protected(const struct clk_hw *hw);
- bool clk_hw_is_enabled(const struct clk_hw *hw);
- bool __clk_is_enabled(struct clk *clk);
-+bool __clk_is_rate_set(struct clk *hw);
- struct clk *__clk_lookup(const char *name);
- int __clk_mux_determine_rate(struct clk_hw *hw,
- 			     struct clk_rate_request *req);
 
 -- 
 2.34.1
