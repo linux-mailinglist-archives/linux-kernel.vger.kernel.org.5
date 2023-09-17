@@ -2,129 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 306447A3EBE
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE3F7A3EBF
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 00:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239032AbjIQWqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 18:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S239603AbjIQWqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 18:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239627AbjIQWqY (ORCPT
+        with ESMTP id S239977AbjIQWqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 18:46:24 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D43CFD
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 15:44:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c43fe0c0bfso12647165ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 15:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694990695; x=1695595495; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1qyLoA8TT0bit01uyUmgXDLI8KadydZDu/PI6xCrN/Q=;
-        b=D5U1Iqq0kZyoDMADIN6UnnxeUHZBU0TK+zLoYnULYfQwTs67Bx3SnTLbmtvLJetXfB
-         7PMnvR96paGgA/48BoW+yZrgEr/hKWDtDOdsnwa0Pbl14U5Qp3EKXvDj3jfPZlWU3+PF
-         zJtetdK7vPZEPJ9cn0DfNb4u2bV/Qodjt8KIBmJcO8TTZ6OV4ScUMYqP9fhYXArY4jQq
-         cKDOmwZOdj+UEEu2PFMSzKN9KQ0oPlg+U7472X9iowox2+RoqyQxw153PGxY8lkaUBDe
-         eWjcvL5W+tjqMyzEkDsPU4n1jFhr4IUxIji5EmGxw/ouD1dBB+0Bh7Ew/IAzG1d8ffSa
-         Zi9Q==
+        Sun, 17 Sep 2023 18:46:47 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DE5E67
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 15:46:01 -0700 (PDT)
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DDB283F67B
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 22:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694990759;
+        bh=adOo4FRviXb28KWdA8otRonF2VEmbfWYur20KX0COuI=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=SlAOOX7nLhobW/qr7TS14D0ASOFxMK9UGXKbjZC9Y3ZYpFfh1QeeI5eUN6sjahmCf
+         ZnWwq0o9igNzjpdO9fGV1SOfBNp9aXj9R/TBlh0/kFD9nilQYZeOBvxVheBOq4Hsot
+         JNHEJzVCZSdPP3m+CamrQ+Ztu7D5kGwGWQlHAyOhSNYfKECShWHAm/6RfMUU4LOJiu
+         SBSXORJwvqoMFj1Z/j53DDqG1SsslAwA5GV8/JmEyauBeEWk7J+OcCqshT8CfvhZJS
+         olW+VfpkHv3Vo7rwAgW1gpWbpkJzvPIcjsKVObMrC47LuN3KyFiRa8lTYX+Ar3Pu3E
+         csiquz2ZWQwsA==
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-414ad768944so45795591cf.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 15:45:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694990695; x=1695595495;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1qyLoA8TT0bit01uyUmgXDLI8KadydZDu/PI6xCrN/Q=;
-        b=cVDHsyfaEhlmSOtSXwVsiJnusoq3Z9QJ6dvDaVqZgUjNX4jK1iX2YwK0s0ps5jpkuF
-         OoJA83PtKao2Tz+HoqR1Bh0ncjAwnRxIBRkQKOTIE0LPnyoJMWLrM9I9rEHSSzfZdt4e
-         BnbQtdGvPRrKgYC2jl4YHq95nlOLBFQxCBGLepN+K+sr7CdySzpGEM3oDnUMrB66qLaS
-         bcVFatPXyzEo/RNdMy26uuC4dp0ZgVNUIsAQTjWnZNkd4rupUGzcT5MICFw61c2k440H
-         dxbXwa7wTnUdpD3ba9dpEAlFdVVaNFVX4ulaZCH1pGL31u8Pmxnmkl3GLJcDuVPInqXC
-         JVIQ==
-X-Gm-Message-State: AOJu0Yylogzvf+TSuV0zoQlomeXcyho/Xq6UHhq0WAaw2gDZhQ7aA9Pl
-        3g92JiXWJYGmlEB/pr9uxLX60Q==
-X-Google-Smtp-Source: AGHT+IEo98msZk+KtoOCpjASUTrCWJR5nV+CWsthD9wL8xvjdfQ8r11KrNDPwfuSKyNdkwQsngWjyw==
-X-Received: by 2002:a17:903:2643:b0:1bf:703d:cc6b with SMTP id je3-20020a170903264300b001bf703dcc6bmr5214643plb.10.1694990695330;
-        Sun, 17 Sep 2023 15:44:55 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id y1-20020a170902ed4100b001c446f12973sm3778194plb.203.2023.09.17.15.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 15:44:54 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qi0VX-00267d-35;
-        Mon, 18 Sep 2023 08:44:51 +1000
-Date:   Mon, 18 Sep 2023 08:44:51 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     cheng.lin130@zte.com.cn
-Cc:     djwong@kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiang.yong5@zte.com.cn,
-        wang.liang82@zte.com.cn, liu.dong3@zte.com.cn
-Subject: Re: [PATCH v3] xfs: introduce protection for drop nlink
-Message-ID: <ZQeBY3kmww8qAjfP@dread.disaster.area>
-References: <ZQJIyx419cw24ppF@dread.disaster.area>
- <202309151750563356840@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309151750563356840@zte.com.cn>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1694990757; x=1695595557;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=adOo4FRviXb28KWdA8otRonF2VEmbfWYur20KX0COuI=;
+        b=eae0zJN2F8jjlqWHP7LEGeLmhGfQtzNI1Dip0iPBD4brB/CrDbkfFv2S5sLFgCuJ9Z
+         mSG+Mjmc/onHqyCKSUzhqNrk5nReMFY2ELmG4duXgQlY+MDX3berGUW0k+Q8GwfBUzOP
+         Zs0NIdBqiQ4+6tkXK2pl96xH5utLpEYAxKxK9PF06GWvc05MgRGvHB/wlUPc8qseH7Tv
+         JQEf8eaSD+tP8r/xc8Mv9rMg6oOsS8FQJF7m0I9IkqUX/pYISm9Tw/4s37j02vBvEPqA
+         MOeg2pE4bL6cOTe61ZzRfUQIenhyfAGptvvi2UEzUJIwSTTCDiW/pM4DBgOOUN2h/Zj4
+         nJTg==
+X-Gm-Message-State: AOJu0YwIjjgK2rnjzF8nzkcLDaQLSQ0V+N73b7z/3WLG0bfDPt1LzBiM
+        ZGQqngPfY9WT2neCzh5H/y1mrtoGbVKAu2DICLpqg9jqaxPFDpFU9nvmwYwtj1rjumKtWdz++ln
+        5BdkYb9pqa5ZuqkFC53f0sder8sL1jO/jYlES8RrGAOKdu6issPTLHiRRlA==
+X-Received: by 2002:a05:622a:1302:b0:412:2f9c:668a with SMTP id v2-20020a05622a130200b004122f9c668amr10889374qtk.57.1694990757235;
+        Sun, 17 Sep 2023 15:45:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHt0cz9k7AF6FAHvF0DVOz8jPCvqc/EGwEO8ffOLxDdkWRjv6xnCIfuk1vyxEcc2JzipFIjyceX/qG9uZwUOuU=
+X-Received: by 2002:a05:622a:1302:b0:412:2f9c:668a with SMTP id
+ v2-20020a05622a130200b004122f9c668amr10889360qtk.57.1694990756988; Sun, 17
+ Sep 2023 15:45:56 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 17 Sep 2023 15:45:56 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20230915102243.59775-8-minda.chen@starfivetech.com>
+References: <20230915102243.59775-1-minda.chen@starfivetech.com> <20230915102243.59775-8-minda.chen@starfivetech.com>
+Mime-Version: 1.0
+Date:   Sun, 17 Sep 2023 15:45:56 -0700
+Message-ID: <CAJM55Z-wD4+TUJCsXsbgR49Zux5fuMZQmJ5bXEVW96QVNJbBFQ@mail.gmail.com>
+Subject: Re: [PATCH v6 07/19] PCI: plda: Move the setup functions to pcie-plda-host.c
+To:     Minda Chen <minda.chen@starfivetech.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 05:50:56PM +0800, cheng.lin130@zte.com.cn wrote:
-> > On Wed, Sep 13, 2023 at 05:44:45PM +0800, cheng.lin130@zte.com.cn wrote:
-> > > From: Cheng Lin <cheng.lin130@zte.com.cn>
-> > >
-> > > When abnormal drop_nlink are detected on the inode,
-> > > shutdown filesystem, to avoid corruption propagation.
-> > >
-> > > Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
-> > > ---
-> > >  fs/xfs/xfs_inode.c | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > > index 9e62cc500..40cc106ae 100644
-> > > --- a/fs/xfs/xfs_inode.c
-> > > +++ b/fs/xfs/xfs_inode.c
-> > > @@ -919,6 +919,15 @@ xfs_droplink(
-> > >      xfs_trans_t *tp,
-> > >      xfs_inode_t *ip)
-> > >  {
-> > > +
-> > > +    if (VFS_I(ip)->i_nlink == 0) {
-> > > +        xfs_alert(ip->i_mount,
-> > > +              "%s: Deleting inode %llu with no links.",
-> > > +              __func__, ip->i_ino);
-> > > +        tp->t_flags |= XFS_TRANS_DIRTY;
-> > Marking the transaction dirty is not necessary.
-> > Otherwise this seems fine.
-> Another strategy: 
-> Set nlink to an invalid value(like XFS_NLINK_PINNED), and
-> Complete this transaction before shutdown fs. To make sure
-> nlink not be zero. If the nlink of a directory are zero, it may
-> be cleaned up.
-> Is that appropriate?
+Minda Chen wrote:
+> Move setup functions to common pcie-plda-host.c.
+>
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  drivers/pci/controller/plda/Kconfig           |  4 +
+>  drivers/pci/controller/plda/Makefile          |  1 +
+>  .../pci/controller/plda/pcie-microchip-host.c | 59 -------------
+>  drivers/pci/controller/plda/pcie-plda-host.c  | 82 +++++++++++++++++++
+>  drivers/pci/controller/plda/pcie-plda.h       |  6 ++
+>  5 files changed, 93 insertions(+), 59 deletions(-)
+>  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+>
+> diff --git a/drivers/pci/controller/plda/Kconfig b/drivers/pci/controller/plda/Kconfig
+> index 5cb3be4fc98c..e54a82ee94f5 100644
+> --- a/drivers/pci/controller/plda/Kconfig
+> +++ b/drivers/pci/controller/plda/Kconfig
+> @@ -3,10 +3,14 @@
+>  menu "PLDA-based PCIe controllers"
+>  	depends on PCI
+>
+> +config PCIE_PLDA_HOST
+> +	bool
+> +
+>  config PCIE_MICROCHIP_HOST
+>  	tristate "Microchip AXI PCIe controller"
+>  	depends on PCI_MSI && OF
+>  	select PCI_HOST_COMMON
+> +	select PCIE_PLDA_HOST
+>  	help
+>  	  Say Y here if you want kernel to support the Microchip AXI PCIe
+>  	  Host Bridge driver.
+> diff --git a/drivers/pci/controller/plda/Makefile b/drivers/pci/controller/plda/Makefile
+> index e1a265cbf91c..4340ab007f44 100644
+> --- a/drivers/pci/controller/plda/Makefile
+> +++ b/drivers/pci/controller/plda/Makefile
+> @@ -1,2 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_PCIE_PLDA_HOST) += pcie-plda-host.o
+>  obj-$(CONFIG_PCIE_MICROCHIP_HOST) += pcie-microchip-host.o
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+> index 1d253acd6bc2..ac7126b0bacf 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -837,65 +837,6 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
+>  	return mc_allocate_msi_domains(port);
+>  }
+>
+> -static void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+> -				   phys_addr_t axi_addr, phys_addr_t pci_addr,
+> -				   size_t size)
+> -{
+> -	u32 atr_sz = ilog2(size) - 1;
+> -	u32 val;
+> -
+> -	if (index == 0)
+> -		val = PCIE_CONFIG_INTERFACE;
+> -	else
+> -		val = PCIE_TX_RX_INTERFACE;
+> -
+> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> -	       ATR0_AXI4_SLV0_TRSL_PARAM);
+> -
+> -	val = lower_32_bits(axi_addr) | (atr_sz << ATR_SIZE_SHIFT) |
+> -			    ATR_IMPL_ENABLE;
+> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> -	       ATR0_AXI4_SLV0_SRCADDR_PARAM);
+> -
+> -	val = upper_32_bits(axi_addr);
+> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> -	       ATR0_AXI4_SLV0_SRC_ADDR);
+> -
+> -	val = lower_32_bits(pci_addr);
+> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> -	       ATR0_AXI4_SLV0_TRSL_ADDR_LSB);
+> -
+> -	val = upper_32_bits(pci_addr);
+> -	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> -	       ATR0_AXI4_SLV0_TRSL_ADDR_UDW);
+> -
+> -	val = readl(bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+> -	val |= (ATR0_PCIE_ATR_SIZE << ATR0_PCIE_ATR_SIZE_SHIFT);
+> -	writel(val, bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+> -	writel(0, bridge_base_addr + ATR0_PCIE_WIN0_SRC_ADDR);
+> -}
+> -
+> -static int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+> -				  struct plda_pcie_rp *port)
+> -{
+> -	void __iomem *bridge_base_addr = port->bridge_addr;
+> -	struct resource_entry *entry;
+> -	u64 pci_addr;
+> -	u32 index = 1;
+> -
+> -	resource_list_for_each_entry(entry, &bridge->windows) {
+> -		if (resource_type(entry->res) == IORESOURCE_MEM) {
+> -			pci_addr = entry->res->start - entry->offset;
+> -			plda_pcie_setup_window(bridge_base_addr, index,
+> -					       entry->res->start, pci_addr,
+> -					       resource_size(entry->res));
+> -			index++;
+> -		}
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static inline void mc_clear_secs(struct mc_pcie *port)
+>  {
+>  	void __iomem *ctrl_base_addr = port->axi_base_addr + MC_PCIE_CTRL_ADDR;
+> diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
+> new file mode 100644
+> index 000000000000..f0c7636f1f64
+> --- /dev/null
+> +++ b/drivers/pci/controller/plda/pcie-plda-host.c
+> @@ -0,0 +1,82 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * PLDA PCIe XpressRich host controller driver
+> + *
+> + * Copyright (C) 2023 Microchip Co. Ltd
+> + *		      StarFive Co. Ltd.
+> + *
+> + * Author: Daire McNamara <daire.mcnamara@microchip.com>
+> + * Author: Minda Chen <minda.chen@starfivetech.com>
+> + */
+> +
+> +#include <linux/irqchip/chained_irq.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/msi.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_pci.h>
+> +#include <linux/pci_regs.h>
+> +#include <linux/pci-ecam.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "pcie-plda.h"
+> +
+> +void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+> +			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+> +			    size_t size)
+> +{
+> +	u32 atr_sz = ilog2(size) - 1;
+> +	u32 val;
+> +
+> +	if (index == 0)
+> +		val = PCIE_CONFIG_INTERFACE;
+> +	else
+> +		val = PCIE_TX_RX_INTERFACE;
+> +
+> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> +	       ATR0_AXI4_SLV0_TRSL_PARAM);
+> +
+> +	val = lower_32_bits(axi_addr) | (atr_sz << ATR_SIZE_SHIFT) |
+> +			    ATR_IMPL_ENABLE;
+> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> +	       ATR0_AXI4_SLV0_SRCADDR_PARAM);
+> +
+> +	val = upper_32_bits(axi_addr);
+> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> +	       ATR0_AXI4_SLV0_SRC_ADDR);
+> +
+> +	val = lower_32_bits(pci_addr);
+> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> +	       ATR0_AXI4_SLV0_TRSL_ADDR_LSB);
+> +
+> +	val = upper_32_bits(pci_addr);
+> +	writel(val, bridge_base_addr + (index * ATR_ENTRY_SIZE) +
+> +	       ATR0_AXI4_SLV0_TRSL_ADDR_UDW);
+> +
+> +	val = readl(bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+> +	val |= (ATR0_PCIE_ATR_SIZE << ATR0_PCIE_ATR_SIZE_SHIFT);
 
-No, all I'm asking you to do is drop dirtying of the transaction
-from this patch because it is a) unnecessary and b) a layering
-violation.
+I know this code is just a straight copy, but for future cleanups are we
+guaranteed that this field is always zero?
 
-It is unnecessary because the transaction will almost always be
-dirty before we get to xfs_droplink(). In the cases where it isn't
-dirty (e.g. xfs_remove() on a directory) we explicitly check that
-nlink == 2 before proceeding to call xfs_droplink(). Hence we can't
-actually get to xfs_droplink() with a clean transaction, and so
-marking it dirty here on underrun is unnecessary as returning an
-error from xfs_droplink() will result in shutting down the
-filesystem when the transaction is cancelled.
+Otherwise it looks a little suspicious to do read-modify-write, but just
+set the (0x25 << 1) bits without clearing the field first.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +	writel(val, bridge_base_addr + ATR0_PCIE_WIN0_SRCADDR_PARAM);
+> +	writel(0, bridge_base_addr + ATR0_PCIE_WIN0_SRC_ADDR);
+> +}
+> +EXPORT_SYMBOL_GPL(plda_pcie_setup_window);
+> +
+> +int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+> +			   struct plda_pcie_rp *port)
+> +{
+> +	void __iomem *bridge_base_addr = port->bridge_addr;
+> +	struct resource_entry *entry;
+> +	u64 pci_addr;
+> +	u32 index = 1;
+> +
+> +	resource_list_for_each_entry(entry, &bridge->windows) {
+> +		if (resource_type(entry->res) == IORESOURCE_MEM) {
+> +			pci_addr = entry->res->start - entry->offset;
+> +			plda_pcie_setup_window(bridge_base_addr, index,
+> +					       entry->res->start, pci_addr,
+> +					       resource_size(entry->res));
+> +			index++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(plda_pcie_setup_iomems);
+> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+> index d04a571404b9..3deefd35fa5a 100644
+> --- a/drivers/pci/controller/plda/pcie-plda.h
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -119,4 +119,10 @@ struct plda_pcie_rp {
+>  	struct plda_msi msi;
+>  	void __iomem *bridge_addr;
+>  };
+> +
+> +void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+> +			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+> +			    size_t size);
+> +int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+> +			   struct plda_pcie_rp *port);
+>  #endif
+> --
+> 2.17.1
