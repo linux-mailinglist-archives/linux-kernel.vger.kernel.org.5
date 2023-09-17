@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C4B7A34DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCAB7A34E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235386AbjIQJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 05:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S235852AbjIQJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 05:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236133AbjIQJMo (ORCPT
+        with ESMTP id S235758AbjIQJOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 05:12:44 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD02418D
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:12:38 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31ffe67b5daso1093650f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:12:38 -0700 (PDT)
+        Sun, 17 Sep 2023 05:14:09 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD71B1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:13:56 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso460671066b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694941957; x=1695546757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gLx97nqlGktbTFj4ow2g38C1r2nkF/YD/yvv8rbu4tY=;
-        b=LRE82rMUJdPy0ijzGNRZj1Gaoo6bq4kK+iDNvkNtR+TSi9UcdgMqwJnk+CRUiVAVuO
-         EQqVGvERfyqQowlT1O+fSStDtJ6o9oqRViG5MRAp6/PscyXT1qEsD1LYPS/8NS8d5Mnd
-         MO5FohwNg71lEOw9vdrNS6biBAAh3lPSfG28oQbL6WndPopkuJuvqwKi86zq5SSap9LC
-         X4Ge+FerXgtF/RkBN0F5YvjFeEJqsDQXxAX5lPafyzq9Upyu3MFukLLmG0c8WRoR+xby
-         bxeZ/7y8EK4Y+ExShRVQvkfn8gYQ1Vv8Q4IvGV23RUWMyXRrMB5EBhXeDsLMB7IwGhAP
-         spYg==
+        d=linaro.org; s=google; t=1694942035; x=1695546835; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NxqlGhwY2fUZ1yfWj7spM6aDi6ioSNbYpolJVQsFDKM=;
+        b=siugGCj9SZS0BomloQwlUv1zg2uym/mHjE3Cy4jXcFYhsbLkY13zo0nLIywJXZ4wrd
+         P8b3cpWJSFwI6V2KMwec4kWa55/5neHTSqgOURkShunFfaXgpsW41Tougnesf/xt/L3j
+         CIJJH5W57cCHlCb7STf7NPrNttsetjJs8YtOQTP0zcv8ST9cNzIOe0HlSRFKEn30JePj
+         xiCP8Y4i7IWxxKTw57Qu4VKC4wvmWX8rbYTtTsiUYoKl59l2sWD2Yym6qoFib261Bvvd
+         SzmvZtGa16RE9IpbegxEuK3RmBSX0w9QmGzSZSXFccNCxjAM8CjAzHXDr9ghbXC+E+RQ
+         g1Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694941957; x=1695546757;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gLx97nqlGktbTFj4ow2g38C1r2nkF/YD/yvv8rbu4tY=;
-        b=XNpaDfVcjk7F7ThL8o88jahKUMW/ngahRX2psGRlRXMBf2sZdhu2naC2XdV558P3ZY
-         VMjBxBhyKJvp0pNrb2BTphl8nsl/l4/MSQklBdYU6/JTke4fAaUKA9LmzLT1qCIDe34S
-         1syhqL2EBgpL5hgJrdTa7RFwIUGEDL7lMkLzQYjdRUUNQr3+OguTU21ne/z4bGyCg08N
-         iXIcCG88VoE50VxlfNrp2+V4oNTm4Eu+MAmSjNn87t/d15sXL7Jh7NJXaV9p/Nuji5jV
-         6YvyEMj19w21W9qcoBz8d/0CBi/1CIVzWkKAwuhSPjeVz/sD+EF0eEwZBTClI6Dh1P3U
-         55BA==
-X-Gm-Message-State: AOJu0YwKHqsHNCnSugj5rNO3nBLod4/0lBM5GDaxdohQxS3TkVcEAI5Z
-        Khwu1B0nIzFLcu9gpjkaslHT1w==
-X-Google-Smtp-Source: AGHT+IEBw/0JPKwfYHT0DVsICKOv/CjSf5PNbw8y6XlhvCOWTHBEHUQcDCyjdxPLYTEfiXM1zhqxfA==
-X-Received: by 2002:adf:fb52:0:b0:313:fe1b:f441 with SMTP id c18-20020adffb52000000b00313fe1bf441mr5017807wrs.29.1694941957144;
-        Sun, 17 Sep 2023 02:12:37 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4ea0:9945:6800:8739])
-        by smtp.gmail.com with ESMTPSA id r8-20020a5d4e48000000b0031ad2f9269dsm9099688wrt.40.2023.09.17.02.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 02:12:36 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 2/2] gpio: sim: initialize a managed pointer when declaring it
-Date:   Sun, 17 Sep 2023 11:12:25 +0200
-Message-Id: <20230917091225.6350-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230917091225.6350-1-brgl@bgdev.pl>
-References: <20230917091225.6350-1-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1694942035; x=1695546835;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NxqlGhwY2fUZ1yfWj7spM6aDi6ioSNbYpolJVQsFDKM=;
+        b=pt9rlLWJGqew1S9r3zWanhCyWxqr0IkfdMCaB0ClbpMLWT+EKLCZE7JmzCQ+uEJ1rP
+         aeTPF8sUjymvo71Y6589SaQlT7mnOJoWmE5aizXgSuJk94KNXDed8kmJXGs++oK1TKIX
+         xDXcgKxSMFDZSUkndDFDbtAQxRxo77JBpLJx0MBgq80quJgyy2zY1STlTW6xAW+PWVgH
+         11P2/yD4psEcYZMwLTFhjV0Ugs4zYbSpy1G2N8iMgXu1N1zEHNYx7mi4MS0i34d4p1c0
+         QTd3rK6Pd0FBhpGV3dtYe245lLibYGWusfBz7cKoOSdG375b1kHOHYVMvO/gjZjee3Jz
+         OPUA==
+X-Gm-Message-State: AOJu0YwYh8A9RcSJDHHd62MfwLXEy12nPJA7tz+Gt+aPefWWgN8OZjMF
+        ChDX3sbvWbA86jf16sZF9a+A7A==
+X-Google-Smtp-Source: AGHT+IGznPIr/6FkDMahjI+c8MV7cCopeOQZUE2NeRKnvXfh8yjYJZkt5NVaMdJFOFmqqD2PMB4+Ew==
+X-Received: by 2002:a17:906:8a4c:b0:9a9:dfbe:ca99 with SMTP id gx12-20020a1709068a4c00b009a9dfbeca99mr5709211ejc.10.1694942035483;
+        Sun, 17 Sep 2023 02:13:55 -0700 (PDT)
+Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
+        by smtp.gmail.com with ESMTPSA id o10-20020a1709061d4a00b0099293cdbc98sm4781973ejh.145.2023.09.17.02.13.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 02:13:54 -0700 (PDT)
+Message-ID: <fd9f9cc2-bf56-8046-1b15-ff0ffe30304a@linaro.org>
+Date:   Sun, 17 Sep 2023 11:13:53 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms
+ and lbc
+Content-Language: en-US
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru>
+ <20230916-pm8916-dtsi-bms-lbc-v1-1-7db0b42f9fb1@trvn.ru>
+ <18bef7a4-608b-9ba3-ce8f-ca25999705c3@linaro.org>
+ <fac4a27d08108bd6e902ba0fa4708ec4@trvn.ru>
+ <011074e5-cec2-1c69-7324-30d9ab653577@linaro.org>
+ <27adb905b990398989b4c13f03339ae9@trvn.ru>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <27adb905b990398989b4c13f03339ae9@trvn.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 17/09/2023 10:54, Nikita Travkin wrote:
 
-Variables managed with __free() should typically be initialized where
-they are declared so that the __free() callback is paired with its
-counterpart resource allocator. Fix the second instance of using
-__free() in gpio-sim to follow this pattern.
+>>>>> +  "^battery@[0-9a-f]+$":
+>>>>> +    type: object
+>>>>> +    oneOf:
+>>>>> +      - $ref: /schemas/power/supply/qcom,pm8916-bms-vm.yaml#
+>>>>
+>>>> That's just ref, so no need for oneOf... unless you already think this
+>>>> will grow with different schemas like the charger below?
+>>>>
+>>>
+>>> Yes, I think some other PMICs have different battery/fuel-gauge
+>>> blocks too so I'd like to have some room for expansion here.
+>>
+>> There is always room. Which other device will have different battery
+>> charger?
+>>
+> 
+> I know of non-"VM" BMS block in PM8226. It's used on some Nokia
+> devices that people were working on so I expect it to appear in
+> the future.
+> 
+> There is also some BMS block in more modern PM6150 that I've
+> seen being looked at by people interested in bringing sm7125
+> phones upstream.
+> 
+> Both of those, to my knowledge, are completely different from
+> this VM-BMS block, which I believe was present in the generation
+> of pm8916, pm8909 and was abandoned again shortly after...
 
-Fixes: 3faf89f27aab ("gpio: sim: simplify code with cleanup helpers")
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpio-sim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+OK, sounds good.
 
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index 7d52f7caa1c7..1a8a332a803b 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -1481,10 +1481,10 @@ static const struct config_item_type gpio_sim_device_config_group_type = {
- static struct config_group *
- gpio_sim_config_make_device_group(struct config_group *group, const char *name)
- {
--	struct gpio_sim_device *dev __free(kfree) = NULL;
- 	int id;
- 
--	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	struct gpio_sim_device *dev __free(kfree) = kzalloc(sizeof(*dev),
-+							    GFP_KERNEL);
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.39.2
+Best regards,
+Krzysztof
 
