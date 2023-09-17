@@ -2,87 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE257A3B02
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B396C7A3B95
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240505AbjIQULr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 16:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S240749AbjIQUTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 16:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240590AbjIQULd (ORCPT
+        with ESMTP id S240775AbjIQUTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 16:11:33 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567B3F1;
-        Sun, 17 Sep 2023 13:11:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694981485; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=XcsXwrMZJ4WmkGraLw8tnCxf93iR/28w9SR7c7+HCSiww3BEdBHCUP3YOLbtvM9Tib
-    IECw3WuoXOiu0Da/PESnntJmYoIDWA/486YGzzbDDDYsyaj8Vg/gyFLopaPw0Lu0XhBZ
-    p46NBsyQJaEXrDiJsCUKDal7z/eKDlmoQTxvXp28xjWKcitYcVHg+5T8CrgGHtadXFAJ
-    xWS/SvFNrS+SY8YAgGHKvghLZxHh47JdU5thxAWzhT8RNf0/NWDjBS/X8eSHe/rTJPlo
-    aArkMzjRP1vmmxbAG1To1c+lQiQLVcaVEQ3mfAU6Sp5plhS0wOlcF5nRpeMsyeEvsNDl
-    bwtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694981485;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
-    b=Ef0il6xRoac5wEKvL9zmOYkxhdTxsKQxlUA0odQNLvrDgFSRcocAHvMbbQABCLHJs2
-    AIrENww6hzKbF5a2t+lEIUBuqrWSzIHBcvG0CmvYHIst7cFFkLddbB3E2LAXyV7HX6Si
-    OZIVACXZFsce8I97+aMDt/3fYk5QcmXvcy0k+9cIeEn1T4IsZDZw0QvE08HjlNnKkbr2
-    eeZlH0HUGRLGLVXkS1hbbBFg0cNhqAwRtsleq8UdEbgQpmtu8lgB4f/xCImZRYOiujPE
-    PtkeG97lkd+ua1ar+0lOGBOVcv2YoPN01LRvra5U8lUES9P2iM2pLJzCCGtsL/2es9Zd
-    He3g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694981484;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
-    b=OSnuotJG+MwgZLx8mfpTzwjApvKCScN0Nv4W7AJGdKKCieOo51os4/8XNZY70jR6Pd
-    dldHWl+ybZP8RgVdBGRw4X/11DYdWftSIi5R8y3P8ram3+CR8qklFjyvrwC6gZ9Ttcjr
-    P3zepjXk9GhZh+XQNbFzhCQd8QtaMuQmLzW1TX6+yV+7JurRBfJigDPLU34Yb5SqNaM1
-    jkSXbvbZGPOlunKMbcy+Jp9kJ/NlBG/daKa06zCYpmW+JhmeoQRTSEAa/0wTiZj+CFCy
-    b1bsbluFVNzbu4UyrGl6wB6D9ZMXeyO+PaRgIhTytEQd4+PGT7h7RTkOuGS0wIoiI+cp
-    JnEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694981484;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
-    b=42b5DEePtqlChrZhp9Op9nz7V4ylqCq3akygV8jbyjuNu14kvdlfFHQp8kNnMNcach
-    VsvjSQLemRN5ottbkbBA==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JyMI1zXvWpofGAbhC22VTSyBo5Bpg9wgYEqSm4NXFaofpx464Ao="
-Received: from p200300c58703581b312819b392712fb6.dip0.t-ipconnect.de
-    by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id V04024z8HKBOI6g
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 17 Sep 2023 22:11:24 +0200 (CEST)
-Message-ID: <c66810ae52446db41fd187ee4be24d04d40c1abb.camel@iokpp.de>
-Subject: Re: [PATCH v2] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for
- Micron eMMC Q2J54A
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
-        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Sun, 17 Sep 2023 22:11:24 +0200
-In-Reply-To: <CAPDyKFruYooG4yQ4yqrwEcrvy4xe6hYByF2Q57eQ1g0tiUtcug@mail.gmail.com>
-References: <20230914202749.470100-1-beanhuo@iokpp.de>
-         <CAPDyKFruYooG4yQ4yqrwEcrvy4xe6hYByF2Q57eQ1g0tiUtcug@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Sun, 17 Sep 2023 16:19:41 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3ECF1;
+        Sun, 17 Sep 2023 13:19:34 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 412E360157;
+        Sun, 17 Sep 2023 22:19:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1694981960; bh=8v9qPr5HGGnBG/0kpdufIwG1xFEuGlb2Ahrbt5XQf+s=;
+        h=Date:To:Cc:From:Subject:From;
+        b=m6tdgRiT4sAx2C+AAduPbhNc7VzQRh0FTVKvjjSD3cc6pH7U8TmCt9OUWk2MRX4+f
+         Y0BbQFo3STi746nuY6pAzdIzHXmf2s/kFSDkegnqD1HNdLxbdYZ5v9UywfIjiVuX+r
+         J6xjM/MChePe9r4eY84B6e1mRjyK8yREeN45NxgVywSeKGr13XKZZJJuIys+/Hg4K+
+         8ZAbS99c/mqIPidyure+UWAyOn5C6ESd2QxdEGDnNlXbk+P1bDK67kJxNajhrt5NKb
+         MbIYDF89hIC+z/g2A+gB04zrWxlsvu+qywTnH6vTXKc6aYdh1QFdlldZ3Npah16AMT
+         CACtr0CwyoKgg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rTEe40IVj_R9; Sun, 17 Sep 2023 22:19:17 +0200 (CEST)
+Received: from [192.168.1.6] (78-2-88-58.adsl.net.t-com.hr [78.2.88.58])
+        by domac.alu.hr (Postfix) with ESMTPSA id 0BBF160155;
+        Sun, 17 Sep 2023 22:19:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1694981957; bh=8v9qPr5HGGnBG/0kpdufIwG1xFEuGlb2Ahrbt5XQf+s=;
+        h=Date:To:Cc:From:Subject:From;
+        b=fudaO/FrJu8l6O4fOKE6VZ1ywcB4MaxuW0JuXEm6PTPAsmGwIV6xZiO4MwJB1m7rO
+         hqF/RUwX02FmuSPc3L23V8ndO22X4NHkZsSGIbPib2I6KzCSz8/eZ+x88PCWePLmYl
+         yzzKLSPuYLPbP6nJ8ZmlwrGq8AlRnXFASGTK1akIlQ7IBH4xDY+W9WFGpcTEFunAQV
+         xDCx5hOE2K9alBk7yRAUvdXr7yVBCxvbezLvcadgCy2vPRK0llvaSzs230KYHiQIp9
+         eaJv6Q2KGyChP+UnA+KMqghf3OhTgwK8I5tLRB1qwgfXw7RiCJY8U5rmuhtuL+KiwJ
+         u2w6MWTSQFK8Q==
+Message-ID: <1b84f2a0-97d9-3d81-0c7a-e8b5b3dc3a02@alu.unizg.hr>
+Date:   Sun, 17 Sep 2023 22:19:12 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: BUG: KCSAN: data-race in poll_schedule_timeout.constprop.0 / pollwake
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,149 +66,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Hi Ulf,
+The setup is Linux 6.6.0-rc1-kcsan-00269-ge789286468a9-dirty x86_64 ("dirty" is from the applied patch,
+but we'll come to that below) on an Ubuntu 22.04 LTS system.
 
-Thanks for your comment, much appreciated!
+OK, so the KCSAN stacktrace is:
 
+[  139.315774] ==================================================================
+[  139.315798] BUG: KCSAN: data-race in poll_schedule_timeout.constprop.0 / pollwake
 
-On Fri, 2023-09-15 at 00:09 +0200, Ulf Hansson wrote:
-> On Thu, 14 Sept 2023 at 22:28, Bean Huo <beanhuo@iokpp.de> wrote:
-> >=20
-> > From: Bean Huo <beanhuo@micron.com>
-> >=20
-> > Micron MTFC4GACAJCN eMMC supports cache but requires that flush
-> > cache
-> > operation be allowed only after a write has occurred. Otherwise,
-> > the
-> > cache flush command or subsequent commands will time out.
->=20
-> For my information, more exactly, how can we trigger this problem?
->=20
+[  139.315830] write to 0xffffc90003f3fb60 of 4 bytes by task 1848 on cpu 6:
+[  139.315843]  pollwake+0xc0/0x110
+[  139.315860]  __wake_up_common+0x7a/0x150
+[  139.315877]  __wake_up_common_lock+0x7f/0xd0
+[  139.315893]  __wake_up_sync_key+0x20/0x50
+[  139.315905]  sock_def_readable+0x67/0x160
+[  139.315917]  unix_stream_sendmsg+0x35f/0x990
+[  139.315932]  sock_sendmsg+0x15d/0x170
+[  139.315947]  ____sys_sendmsg+0x3d5/0x500
+[  139.315962]  ___sys_sendmsg+0x9e/0x100
+[  139.315976]  __sys_sendmsg+0x6f/0x100
+[  139.315990]  __x64_sys_sendmsg+0x47/0x60
+[  139.316005]  do_syscall_64+0x5d/0xa0
+[  139.316022]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
-This issue may be likely reproduced in this command sequence:
+[  139.316043] read to 0xffffc90003f3fb60 of 4 bytes by task 1877 on cpu 18:
+[  139.316055]  poll_schedule_timeout.constprop.0+0x4e/0xc0
+[  139.316071]  do_sys_poll+0x50d/0x760
+[  139.316081]  __x64_sys_poll+0x5f/0x210
+[  139.316091]  do_syscall_64+0x5d/0xa0
+[  139.316105]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
-eMMC power-cycle/reset-->...(other operations, but no data write)...-
->cache flush-->...... ->write data, must say, it is not 100%
-reproducable.
+[  139.316125] value changed: 0x00000000 -> 0x00000001
 
-> >=20
-> > Signed-off-by: Bean Huo <beanhuo@micron.com>
-> > Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
-> > Tested-by: Rafael Beims <rafael.beims@toradex.com>
-> > Cc: stable@vger.kernel.org
-> > ---
-> > Changelog:
-> >=20
-> > v1--v2:
-> > =C2=A0=C2=A0=C2=A0 1. Add Rafael's test-tag, and Co-developed-by.
-> > =C2=A0=C2=A0=C2=A0 2. Check host->card whether NULL or not in
-> > __mmc_start_request() before asserting host->card->->quirks
-> >=20
-> > ---
-> > =C2=A0drivers/mmc/core/core.c=C2=A0=C2=A0 | 7 +++++++
-> > =C2=A0drivers/mmc/core/mmc.c=C2=A0=C2=A0=C2=A0 | 5 +++++
-> > =C2=A0drivers/mmc/core/quirks.h | 7 ++++---
-> > =C2=A0include/linux/mmc/card.h=C2=A0 | 2 ++
-> > =C2=A04 files changed, 18 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> > index 3d3e0ca52614..86a669b35b91 100644
-> > --- a/drivers/mmc/core/core.c
-> > +++ b/drivers/mmc/core/core.c
-> > @@ -259,6 +259,13 @@ static void __mmc_start_request(struct
-> > mmc_host *host, struct mmc_request *mrq)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 host->cqe_ops->cqe_off(host);
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->ops->request(host, mrq=
-);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->card && host->card->qui=
-rks &
-> > MMC_QUIRK_BROKEN_CACHE_FLUSH &&
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !host->ca=
-rd->written_flag) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if (mrq->cmd->opcode =3D=3D MMC_WRITE_MULTIPLE_BLOCK ||
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mrq->cmd->opcode =3D=3D MMC_WRITE_B=
-LOCK)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->card-=
->written_flag =3D true;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> I don't quite like that we are adding the above code here - as it's
-> used for *all* requests.
->=20
-> Seems like the flag is better set from the mmc block device driver
-> instead. Somewhere in the path when we serve I/O write requests.
->=20
+[  139.316143] Reported by Kernel Concurrency Sanitizer on:
+[  139.316153] CPU: 18 PID: 1877 Comm: gdbus Tainted: G             L     6.6.0-rc1-kcsan-00269-ge789286468a9-dirty #3
+[  139.316167] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[  139.316177] ==================================================================
 
-yes, you are correct, I will update the patch and add this flag set in
-mmc block driver mmc_blk_mq_issue_rq().
+The problematic code seems to be:
 
-> > =C2=A0}
-> >=20
-> > =C2=A0static void mmc_mrq_pr_debug(struct mmc_host *host, struct
-> > mmc_request *mrq,
-> > diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> > index 89cd48fcec79..a2edd065fa1b 100644
-> > --- a/drivers/mmc/core/mmc.c
-> > +++ b/drivers/mmc/core/mmc.c
-> > @@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host
-> > *host, u32 ocr,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!oldcard)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 host->card =3D card;
-> >=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->written_flag =3D false;
-> > +
->=20
-> According to your earlier reply, it sounds like the problem isn't
-> really about the card being re-initialized, but rather that we
-> actually need a write request to happen before a flush. No matter
-> what, no?
->=20
-> See more about this below.
->=20
+   185 static int __pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+   186 {
+   187         struct poll_wqueues *pwq = wait->private;
+   188         DECLARE_WAITQUEUE(dummy_wait, pwq->polling_task);
+   189
+   190         /*
+   191          * Although this function is called under waitqueue lock, LOCK
+   192          * doesn't imply write barrier and the users expect write
+   193          * barrier semantics on wakeup functions.  The following
+   194          * smp_wmb() is equivalent to smp_wmb() in try_to_wake_up()
+   195          * and is paired with smp_store_mb() in poll_schedule_timeout.
+   196          */
+   197         smp_wmb();
+   198         pwq->triggered = 1;
+   199
+   200         /*
+   201          * Perform the default wake up operation using a dummy
+   202          * waitqueue.
+   203          *
+   204          * TODO: This is hacky but there currently is no interface to
+   205          * pass in @sync.  @sync is scheduled to be removed and once
+   206          * that happens, wake_up_process() can be used directly.
+   207          */
+→ 208         return default_wake_function(&dummy_wait, mode, sync, key);
+   209 }
+   210
+   211 static int pollwake(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+   212 {
+   213         struct poll_table_entry *entry;
+   214
+   215         entry = container_of(wait, struct poll_table_entry, wait);
+   216         if (key && !(key_to_poll(key) & entry->key))
+   217                 return 0;
+→ 218         return __pollwake(wait, mode, sync, key);
+   219 }
+   220
+   .
+   .
+   .
+   236
+   237 static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
+   238                           ktime_t *expires, unsigned long slack)
+   239 {
+   240         int rc = -EINTR;
+   241
+   242         set_current_state(state);
+→ 243         if (!pwq->triggered)
+   244                 rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+   245         __set_current_state(TASK_RUNNING);
+   246
+   247         /*
+   248          * Prepare for the next iteration.
+   249          *
+   250          * The following smp_store_mb() serves two purposes.  First, it's
+   251          * the counterpart rmb of the wmb in pollwake() such that data
+   252          * written before wake up is always visible after wake up.
+   253          * Second, the full barrier guarantees that triggered clearing
+   254          * doesn't pass event check of the next iteration.  Note that
+   255          * this problem doesn't exist for the first iteration as
+   256          * add_wait_queue() has full barrier semantics.
+   257          */
+   258         smp_store_mb(pwq->triggered, 0);
+   259
+   260         return rc;
+   261 }
 
-Actually, it matters that the first cache flush command after
-reboot/reset. means that for the first cache flush command, before
-execution, the write data operation should occur,
-After that, there is no problem even if there are no writes before the
-cache is flushed.
+This quick and dirty fix had removed the KCSAN warnings which were about +100 in the test run:
 
+You will probably have the clearer big picture, as this fix only removes the symptom.
 
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> >=20
-> > =C2=A0free_card:
-> > @@ -2081,6 +2083,9 @@ static int _mmc_flush_cache(struct mmc_host
-> > *host)
-> > =C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
-> >=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->card->quirks & MMC_QUIR=
-K_BROKEN_CACHE_FLUSH &&
-> > !host->card->written_flag)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 return err;
-> > +
->=20
-> Could an option to the above, be to reset the flag here instead.
-> After
-> a successful cache flush has been done.
->=20
->=20
+I should probably do some homework before submitting a formal patch.
 
-As I explained above, the first cache flush after a power cycle/reset
-is important. We just want to eliminate the first unnecessary cache
-flush.
-We can eliminate all unnecessary cache flushes when the cache is empty.
-But I don't want to change the current logic too much, only want to
-focus on the first unnecessary cache flush, how do you think?
+Best regards,
+Mirsad Todorovac
 
-Kind regards,
-Bean
+-----------------------------------------------------------------------------------
+  fs/select.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/select.c b/fs/select.c
+index 0ee55af1a55c..38e12084daf1 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -240,7 +240,7 @@ static int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
+         int rc = -EINTR;
+  
+         set_current_state(state);
+-       if (!pwq->triggered)
++       if (!READ_ONCE(pwq->triggered))
+                 rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+         __set_current_state(TASK_RUNNING);
+  
