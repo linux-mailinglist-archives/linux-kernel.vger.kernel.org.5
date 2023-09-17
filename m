@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A50977A3EB3
+	by mail.lfdr.de (Postfix) with ESMTP id EF2BD7A3EB4
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 00:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239763AbjIQWlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 18:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S239772AbjIQWlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 18:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237118AbjIQWkr (ORCPT
+        with ESMTP id S237426AbjIQWks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 18:40:47 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D274E133;
-        Sun, 17 Sep 2023 15:40:41 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-404c023ef5eso20885805e9.2;
-        Sun, 17 Sep 2023 15:40:41 -0700 (PDT)
+        Sun, 17 Sep 2023 18:40:48 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E81912C;
+        Sun, 17 Sep 2023 15:40:42 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401b5516104so42229985e9.2;
+        Sun, 17 Sep 2023 15:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694990440; x=1695595240; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694990441; x=1695595241; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kxgzRC83NEd59zuKYNAtW33VSR0RcAZP2Du3OW3MEsU=;
-        b=GXF4INtM+N8DSHlep15jKUVWIp9r/WKwCl8Fjop4IdKCNs+55zs6CsmZHdh5+vWzax
-         2j1MQkQLsFQLAG6+HiIfVqVIhNeuTNlmhUZw7/cvXNlTbunHy2lPjh4dVeh/B1MtiwM+
-         aNEItpncQEkmeH5JyWBeN72R1YED3F2puB5a4w/8d0bRxcU6KXhTbXYqUUHqr4lTM6Q1
-         2p9exjVZbpjnc4u+G+6MFfJXOSgCm1Eg8D5CfLR6IrGwh2q+jZzwTVQEPpV388wLJVmK
-         RZhgdsDXTgLEvqXIrU75R34yLu7b7xdQVnfzgiKqrpQGUVhpXApIbXkCH83igLEY+QdW
-         mWKw==
+        bh=kviONp3xwBUSyMm3n9HmjGMrxjEliGN8QJc2qo9i9Gg=;
+        b=EDdjdIGq2P7Xcv8PTewEF6v1RKp/aAo6CdgQlXiuUxJoN1KGwOSCvXSdin+JCy8h6c
+         khklOsRT7uUW9r/H/LKBpi9atO1TixYZUZbqw7tupfo9Y9TNg1qK9LA03g5s5cmdnhTB
+         7GRVNKZRVy7FU5mpYZirDWPioOpyMYi1ylagszL2Utaja+7cwNirZU3EaZQIMHyb/tko
+         hUaO2UKcNA2gm6QqCiGCDQSBnRy0YLXzdU68ztsltiYrG6batmzBAqTcKbBkIYVZ/jd4
+         SsT3cN7bI8yk7y8eN/FEn4jPQrh61ekJzoYexDrZKVs/evUeAaa4CMbnV6+QXFYzmCRm
+         nhfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694990440; x=1695595240;
+        d=1e100.net; s=20230601; t=1694990441; x=1695595241;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kxgzRC83NEd59zuKYNAtW33VSR0RcAZP2Du3OW3MEsU=;
-        b=mJxpvT/3SVLFW4N+UrjAsOBMfLtHXVjSKWzRH40ez5V1D/Xk1gclRyFzL6z/K5DNCy
-         DAq8nVPs/IJl4t9YKjHjfnfvQ7c3A3SfacKUO2N6gcvvHKL+YGUcSQ4eVJIc5WiLZ2Pu
-         QHuuLLxuWsxi2HrJhQcNIx2MzYwnq7lx0IYShpRr48ryKifEweK0nzua/Het7sRxi0+h
-         MoLDL7UZWPxdUB6EiInOp8rfrf6VieicgCRchkM7Cd8FzxSemR92nK7IgW80BsA0/VOe
-         SnoowwVH1DdAPnVAb6O3fv08fU9IYH5DgOHrDIjdox3Zv7HxV1+0HKFXlMbHjF0ZsQ54
-         vvcQ==
-X-Gm-Message-State: AOJu0YyamfmwwYYuMg/ytdXF8puoyP00TVs95bbO5rXbSTXLHgPsPQ/C
-        GjUA9C1J/bGRiCSBT8ul6zM=
-X-Google-Smtp-Source: AGHT+IFoSWsvTCvogylPfTef05sJwd//OcFKTET+KddTyezT5DcPj/b0Rpvtp0gJKAXf1ocmhph9HQ==
-X-Received: by 2002:a7b:ce07:0:b0:401:bdd7:499d with SMTP id m7-20020a7bce07000000b00401bdd7499dmr6467049wmc.25.1694990440181;
-        Sun, 17 Sep 2023 15:40:40 -0700 (PDT)
+        bh=kviONp3xwBUSyMm3n9HmjGMrxjEliGN8QJc2qo9i9Gg=;
+        b=dSBtFbhFxmgvhygqfB3Y+VjsuhnKFnxgfFTeIm3m2JuwbfcWYCMIhCzzXrAidveUCi
+         KiH/zGOiEmCQ6SfHXgDs6oT139M1L/h0EIs/SFgRJl68IhZU6Ot3xjjkM2IAbiVO0TIv
+         NdIN157uKdSb2FV8V/vMOkrxj4mj2N9eYhx9kLQeFyvehqjDRBHm/4ob+GEdhUktPyF3
+         YZ5gzF9O0wbUsp5Z72zanmId+Vmd+hkSiICLQEYEtLPYMt/o9CUC/yiOYnaBlwe6IGea
+         gsrDDGivSFaLDbBxjeKI/hqB0NdteR5hHCIxHnRtKVZD/K69t0oqLf2wknPC1NBmSYNw
+         B4/w==
+X-Gm-Message-State: AOJu0Yyy8fH5syG+MI+u7y3E/6V3G0pfo1piz2YoqLWIXIQ3YWUr8bR5
+        F6E1IVti8lkVm+tlnueQ1HI=
+X-Google-Smtp-Source: AGHT+IGI9iHWZr7kzzg0eUkNH07Lgn024wjCqs9NAjnnhsL3UBw49Jv26TH9svgPt6bxfNSbTxu3XQ==
+X-Received: by 2002:a1c:6a01:0:b0:401:b53e:6c3b with SMTP id f1-20020a1c6a01000000b00401b53e6c3bmr6295687wmc.6.1694990441025;
+        Sun, 17 Sep 2023 15:40:41 -0700 (PDT)
 Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id x14-20020a1c7c0e000000b003fe2b081661sm13642931wmc.30.2023.09.17.15.40.39
+        by smtp.gmail.com with ESMTPSA id x14-20020a1c7c0e000000b003fe2b081661sm13642931wmc.30.2023.09.17.15.40.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 17 Sep 2023 15:40:40 -0700 (PDT)
 From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Mon, 18 Sep 2023 00:40:06 +0200
-Subject: [PATCH 10/13] clk: imx: composite-8m: convert compute_dividers to
- void
+Date:   Mon, 18 Sep 2023 00:40:07 +0200
+Subject: [PATCH 11/13] clk: imx: composite-8m: implement
+ CLK_SET_RATE_PARENT
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230918-imx8mp-dtsi-v1-10-1d008b3237c0@skidata.com>
+Message-Id: <20230918-imx8mp-dtsi-v1-11-1d008b3237c0@skidata.com>
 References: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
 In-Reply-To: <20230918-imx8mp-dtsi-v1-0-1d008b3237c0@skidata.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -90,80 +90,149 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Benjamin Bara <benjamin.bara@skidata.com>
 
-As the current implementation cannot fail, drop the return value.
+One of the key parts to enable dynamic clock propagation on the imx8m,
+are the consumer-facing composites. They currently only divide,
+therefore the parent must be already quite good in shape to provide a
+close enough rate. Therefore, the parents are usually hard-assigned in
+the dt. To workaround that, this commit enables propagation to the
+parent of the composite.
+
+If a rate cannot be reached exactly by only dividing, the parent is
+asked (for now simply for the exact required rate - no dividers taken
+into account). If the parent already has a configured rate, it's the
+parent's job to ensure that all children are satisfied.
+
+By using a notifier, the propagation-enabled clocks listen to clock
+changes coming from the parent. If one is happening, it's the composites
+job to verify if the rate is satisfying and if it is an intended change.
+
+Otherwise, countermeasures have to be taken into account (e.g. setting
+the rate back or aborting the change).
 
 Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
 ---
- drivers/clk/imx/clk-composite-8m.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/clk/imx/clk-composite-8m.c | 71 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 68 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
-index 27a08c50ac1d..a121f1285110 100644
+index a121f1285110..068f61df28b1 100644
 --- a/drivers/clk/imx/clk-composite-8m.c
 +++ b/drivers/clk/imx/clk-composite-8m.c
-@@ -47,13 +47,12 @@ static unsigned long imx8m_clk_composite_divider_recalc_rate(struct clk_hw *hw,
- 				   divider->flags, PCG_DIV_WIDTH);
- }
+@@ -4,6 +4,7 @@
+  */
  
--static int imx8m_clk_composite_compute_dividers(unsigned long rate,
-+static void imx8m_clk_composite_compute_dividers(unsigned long rate,
- 						unsigned long parent_rate,
- 						int *prediv, int *postdiv)
+ #include <linux/clk-provider.h>
++#include <linux/clk.h>
+ #include <linux/errno.h>
+ #include <linux/export.h>
+ #include <linux/io.h>
+@@ -119,8 +120,12 @@ static int imx8m_divider_determine_rate(struct clk_hw *hw,
+ 				      struct clk_rate_request *req)
  {
- 	int div1, div2;
- 	int error = INT_MAX;
--	int ret = -EINVAL;
+ 	struct clk_divider *divider = to_clk_divider(hw);
++	struct clk_hw *parent = clk_hw_get_parent(hw);
+ 	int prediv_value;
+ 	int div_value;
++	unsigned long target_rate;
++	struct clk_rate_request req_parent;
++	int ret;
  
- 	*prediv = 1;
- 	*postdiv = 1;
-@@ -66,11 +65,9 @@ static int imx8m_clk_composite_compute_dividers(unsigned long rate,
- 				*prediv = div1;
- 				*postdiv = div2;
- 				error = new_error;
--				ret = 0;
- 			}
- 		}
+ 	/* if read only, just return current value */
+ 	if (divider->flags & CLK_DIVIDER_READ_ONLY) {
+@@ -140,9 +145,29 @@ static int imx8m_divider_determine_rate(struct clk_hw *hw,
+ 						 divider->flags, prediv_value * div_value);
  	}
--	return ret;
- }
  
- static long imx8m_clk_composite_divider_round_rate(struct clk_hw *hw,
-@@ -80,8 +77,8 @@ static long imx8m_clk_composite_divider_round_rate(struct clk_hw *hw,
- 	int prediv_value;
- 	int div_value;
- 
--	imx8m_clk_composite_compute_dividers(rate, *prate,
--						&prediv_value, &div_value);
-+	imx8m_clk_composite_compute_dividers(rate, *prate, &prediv_value,
-+					     &div_value);
- 	rate = DIV_ROUND_UP(*prate, prediv_value);
- 
- 	return DIV_ROUND_UP(rate, div_value);
-@@ -96,13 +93,10 @@ static int imx8m_clk_composite_divider_set_rate(struct clk_hw *hw,
- 	unsigned long flags;
- 	int prediv_value;
- 	int div_value;
--	int ret;
- 	u32 orig, val;
- 
--	ret = imx8m_clk_composite_compute_dividers(rate, parent_rate,
--						&prediv_value, &div_value);
--	if (ret)
--		return -EINVAL;
-+	imx8m_clk_composite_compute_dividers(rate, parent_rate,	&prediv_value,
-+					     &div_value);
- 
- 	spin_lock_irqsave(divider->lock, flags);
- 
-@@ -118,7 +112,7 @@ static int imx8m_clk_composite_divider_set_rate(struct clk_hw *hw,
- 
- 	spin_unlock_irqrestore(divider->lock, flags);
- 
--	return ret;
+-	return divider_determine_rate(hw, req, divider->table,
+-				      PCG_PREDIV_WIDTH + PCG_DIV_WIDTH,
+-				      divider->flags);
++	target_rate = req->rate;
++	ret = divider_determine_rate(hw, req, divider->table,
++				     PCG_PREDIV_WIDTH + PCG_DIV_WIDTH,
++				     divider->flags);
++	if (ret || req->rate == target_rate)
++		return ret;
++
++	/*
++	 * If re-configuring the parent gives a better rate, do this instead.
++	 * Avoid re-parenting for now, which could be done first if a possible
++	 * parent already has a satisfying rate. The implementation does not
++	 * consider the dividers between the parent and the current clock.
++	 */
++	clk_hw_forward_rate_request(hw, req, parent, &req_parent, target_rate);
++	if (__clk_determine_rate(parent, &req_parent))
++		return 0;
++
++	if (abs(req_parent.rate - target_rate) < abs(req->rate - target_rate)) {
++		req->rate = req_parent.rate;
++		req->best_parent_rate = req_parent.rate;
++	}
++
 +	return 0;
  }
  
- static int imx8m_divider_determine_rate(struct clk_hw *hw,
+ static const struct clk_ops imx8m_clk_composite_divider_ops = {
+@@ -198,6 +223,33 @@ static const struct clk_ops imx8m_clk_composite_mux_ops = {
+ 	.determine_rate = imx8m_clk_composite_mux_determine_rate,
+ };
+ 
++static int imx8m_clk_composite_notifier_fn(struct notifier_block *notifier,
++					   unsigned long code, void *data)
++{
++	struct clk_notifier_data *cnd = data;
++	struct clk_hw *hw = __clk_get_hw(cnd->clk);
++
++	if (code != PRE_RATE_CHANGE)
++		return NOTIFY_OK;
++
++	if (!__clk_is_rate_set(cnd->clk))
++		return NOTIFY_OK;
++
++	/*
++	 * Consumer of a composite-m8 clock usually use the root clk, a gate
++	 * connected to the composite (e.g. media_ldb and media_ldb_root).
++	 * Therefore, evaluate the trigger's parent too.
++	 */
++	if (cnd->clk != cnd->trigger && cnd->clk != clk_get_parent(cnd->trigger))
++		return notifier_from_errno(clk_hw_set_rate(hw, cnd->old_rate));
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block imx8m_clk_composite_notifier = {
++	.notifier_call = imx8m_clk_composite_notifier_fn,
++};
++
+ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+ 					const char * const *parent_names,
+ 					int num_parents, void __iomem *reg,
+@@ -211,6 +263,7 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+ 	struct clk_mux *mux = NULL;
+ 	const struct clk_ops *divider_ops;
+ 	const struct clk_ops *mux_ops;
++	int ret;
+ 
+ 	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
+ 	if (!mux)
+@@ -268,6 +321,18 @@ struct clk_hw *__imx8m_clk_hw_composite(const char *name,
+ 	if (IS_ERR(hw))
+ 		goto fail;
+ 
++	/*
++	 * register a notifier which should switch back to the configured rate
++	 * if the rate is going to be changed unintentionally.
++	 */
++	if (flags & CLK_SET_RATE_PARENT) {
++		ret = clk_notifier_register(hw->clk, &imx8m_clk_composite_notifier);
++		if (ret) {
++			hw = ERR_PTR(ret);
++			goto fail;
++		}
++	}
++
+ 	return hw;
+ 
+ fail:
 
 -- 
 2.34.1
