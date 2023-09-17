@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CE07A3735
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 21:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBBA7A373D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 21:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbjIQS7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 14:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        id S234667AbjIQTJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 15:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234667AbjIQS7T (ORCPT
+        with ESMTP id S238011AbjIQTIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 14:59:19 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BF5107
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:59:13 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-495c744d690so1401517e0c.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694977152; x=1695581952; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VlcPeLWUpqyZXNRe+2hhkQ4dMbixtPe4TC1okl7ks7c=;
-        b=WXzK2Tvpv4iOQYCS9bQ2Jeb4kL8qpzIB2QfghBNL2N05L5RurTAOau3dxGwX11mcuS
-         v8UIsPLILCy1Lj8LkX+CceoAQlb/vwOuKIYnb+DmUMzHMtiLs/XMlcYDinomWT3nFnPV
-         DhzsIZv/lpiaoqd4W9cTEqwdF9qDq8ARZ+E/4CzXiuZXNNWg82ZLb91zJeQsuwXC7+mq
-         F0bQ+KpcH7u683eO60bRjw7WWew4Yf8xVAkvHcSwLCIdxp7FiyXV4qphr5S6LUIdTsDM
-         IvpcwxxwKKDyOC21cv+TKSn0IZZbwrZ+daXvUY+irKs5LbjLEfo2OLIb8rsTwY236TaQ
-         BAQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694977152; x=1695581952;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VlcPeLWUpqyZXNRe+2hhkQ4dMbixtPe4TC1okl7ks7c=;
-        b=DO414XS+2dw4GkY+/ldB5sdA32AkPhK6HvcFQ2mPhJvytHTzOEKf68bsgskf/7IchE
-         AMZGyLTIexvyYiY+6KFZ8bn3itwKGeFTrPbyV+ky78rbCMk12vfVcFa9WMhkM9ZsSgU6
-         +Cm8aiCCN3vcqCi8kfrRkO339llXl7RTtt3CKzNNunXE4M6bC8ZYDizkKJkhpKy/4h+B
-         y5ely5Qlo/cOB+A4SuJk6OeHF+5M8eGHAR4EAzuNHxfM8TQRP79rEumGtppuJAxejZsA
-         /txmSczuRXINjY4DZgwwFm4m7d0Ns4kffKRZofd9YAV7aPxHkLrpLEdRuaM5nViQr+bh
-         TPlw==
-X-Gm-Message-State: AOJu0Yxt+rgDJJLr7mPpnvDXndHSjkEFQji2FOlHN7ySZXdjZKSAv30k
-        q3OO3q1lNZENJ9vMnqur66PgZ9Bebp73H8gVtHf/Dg==
-X-Google-Smtp-Source: AGHT+IFgwfDbhCkqrAtCmQc4CO3yC+LAWPDUVeQW8p19oc1Rg7qipxwd/aimhF9e9xmhJGDCjn1boSrmoj1bm2M0Xnw=
-X-Received: by 2002:a05:6122:1893:b0:496:a303:a321 with SMTP id
- bi19-20020a056122189300b00496a303a321mr828206vkb.8.1694977152568; Sun, 17 Sep
- 2023 11:59:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230917091225.6350-1-brgl@bgdev.pl> <20230917091225.6350-2-brgl@bgdev.pl>
- <CAHk-=wjr5N-2ZKgn_gPaMapprn1vbBxzsdp4fJY+2iC=1H2T5g@mail.gmail.com>
-In-Reply-To: <CAHk-=wjr5N-2ZKgn_gPaMapprn1vbBxzsdp4fJY+2iC=1H2T5g@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Sun, 17 Sep 2023 20:59:01 +0200
-Message-ID: <CAMRc=MdMBo0R2XDMYDU+gySyb_eQnvdE64QxE4JSGRDqH7Xcmw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] gpio: sim: fix an invalid __free() usage
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        Sun, 17 Sep 2023 15:08:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DCA10D;
+        Sun, 17 Sep 2023 12:08:49 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 58B14660721F;
+        Sun, 17 Sep 2023 20:08:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694977727;
+        bh=MhUT4ZgnWZIvqh1JKIu10f1szECnNwOZIDOW8HonKBc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TrqPdfKzJqDG9xMsqEC1xY+ba/jCjD+czKGJ8mpI4Tuih83nSieN+5ih0xl7IfRb+
+         lU8AcYyQcCWgYdt72h3n4G3j31hdzoePHA9L+KvmNHyItfm1J6Ch4XEi9pchXRf8Sj
+         iDdU7q0Atl57/VTJpE0lmu5V7goPnuP3kAiLTWWXos7DOT8CxapxLnf9413aSw+ysU
+         CdVtmShMhfyPRQxakJJ/wiyx03k47P3jYCbDtCDR1Zt3HI/Mq4/GiICx3q58AOqCYy
+         azpIE9dT2aGOlK/Ov2ay0H367G+IJ8CDZsDvb6L9Qq/iWQIHNogxiPYLeX+nfL8mB9
+         yhCe4a0X1C8ug==
+Received: by mercury (Postfix, from userid 1000)
+        id 394D710604B6; Sun, 17 Sep 2023 21:01:31 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH] dt-bindings: power: supply: Drop deprecated ab8500-battery
+Date:   Sun, 17 Sep 2023 21:01:24 +0200
+Message-Id: <20230917190124.1012316-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 6:46=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, 17 Sept 2023 at 02:12, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > +               has_line_names =3D true;
-> > +               max_offset =3D max(line->offset, max_offset);
->
-> I really don't understand why you kept this old broken logic.
->
-> I sent a much better version of this function that didn't need that
-> pointless has_line_names thing or the 'max()' thing, by just making
-> the code a lot simpler.
->
+Linus Walleij modified AB8500 to use the generic simple-battery
+and samsung,battery bindings. This is an unused leftover that
+can be removed.
 
-Right, it does what it's supposed to after all but IMO it's less
-clear, I had to take a second look now to get it. I was wondering if
-I'm simply too sleep deprived but no - it's because in your version
-the max_offset variable actually holds the value of (max_offset + 1)
-which makes the name untrue.
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ .../supply/stericsson,ab8500-battery.txt      | 34 -------------------
+ 1 file changed, 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
 
-I don't want to bikeshed about it, let me know if my version is
-GoodEnough(R) or do you prefer another respin.
+diff --git a/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt b/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
+deleted file mode 100644
+index ee125cb0e46d..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-AB85000 PMIC contains a node, which contains shared
+-information about the battery connected to the PMIC.
+-The node has no compatible property.
+-
+-Properties of this node are:
+-
+-thermistor-on-batctrl:
+-	A boolean value indicating thermistor interface	to battery
+-
+-	Note:
+-	'btemp' and 'batctrl' are the pins interfaced for battery temperature
+-	measurement, 'btemp' signal is used when NTC(negative temperature
+-	coefficient) resister is interfaced external to battery whereas
+-	'batctrl' pin is used when NTC resister is internal to battery.
+-
+-	Example:
+-	ab8500_battery: ab8500_battery {
+-		thermistor-on-batctrl;
+-	};
+-	indicates: NTC resister is internal to battery, 'batctrl' is used
+-		for thermal measurement.
+-
+-	The absence of property 'thermal-on-batctrl' indicates
+-	NTC resister is external to battery and  'btemp' signal is used
+-	for thermal measurement.
+-
+-battery-type:
+-	This shall be the battery manufacturing technology type,
+-	allowed types are:
+-		"UNKNOWN" "NiMH" "LION" "LIPO" "LiFe" "NiCd" "LiMn"
+-	Example:
+-	ab8500_battery: ab8500_battery {
+-		stericsson,battery-type = "LIPO";
+-	}
+-- 
+2.40.1
 
-Bart
-
-> Whatever.
->
-> > +       line_names_size =3D gpio_sim_get_line_names_size(bank);
-> > +       if (line_names_size) {
-> > +               line_names =3D kcalloc(line_names_size, sizeof(*line_na=
-mes),
-> > +                                    GFP_KERNEL);
-> > +               if (!line_names)
-> > +                       return ERR_PTR(-ENOMEM);
-> > +
-> > +               gpio_sim_set_line_names(bank, line_names);
-> >
-> > -       if (line_names)
-> >                 properties[prop_idx++] =3D PROPERTY_ENTRY_STRING_ARRAY_=
-LEN(
-> >                                                 "gpio-line-names",
-> >                                                 line_names, line_names_=
-size);
-> > +       }
->
-> But I do like this reorganization.
->
->             Linus
