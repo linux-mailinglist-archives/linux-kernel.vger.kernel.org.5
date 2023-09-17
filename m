@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BD67A369B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE997A36A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbjIQQlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 12:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
+        id S235920AbjIQQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 12:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237087AbjIQQlE (ORCPT
+        with ESMTP id S237140AbjIQQqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 12:41:04 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC8ED;
-        Sun, 17 Sep 2023 09:40:58 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f7638be6eso3571179f8f.3;
-        Sun, 17 Sep 2023 09:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694968857; x=1695573657; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DeueOuoVmZw39cDuG06Cps8ippAl5MH5eqOWbaiqh3g=;
-        b=TH8UdH3kkLSkJhxPtP4i3HsgVHkgqLeJmYY8bZINLmHF/LqKsHnWEujZE43zcfHz3k
-         3V8qrFourTv+Q5Ep06GZl/20NIIbtUFXSepNk0R5snenoL0h8M+4cW9DupyrRJ87RnQp
-         S/gAn79KqoTX90DQBQYqSKDs+CagqltpOKysk4c6CRj41MvUTkS45y06uZhhXhassJra
-         czokkwiawiQXczUGx8f2YgPL2NTxkX43lmaKTW+7sbi3GsWlb2V3h6soSW1Rz4XJMm/W
-         tYPi2byUdLSqBy9qo4DFftF7SLsripbDYyw7R8LcClN1PjbeTudVYCA3IjHVhAwu+A+b
-         ldmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694968857; x=1695573657;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DeueOuoVmZw39cDuG06Cps8ippAl5MH5eqOWbaiqh3g=;
-        b=UXndguQL/2ZNm/pkAkvE9/8xyWf7w7jNA13QPg5mB8USFQEIzVFMThcZel6FoI9MFk
-         xvgGEfbXxqmUVXMN96eKv+gEI/lBroQwyIpUPBjumHYs7eNEONJChsIbffWWvBL/l7Gz
-         /Dbly7n0uXnkEnBXfLmglDHVGzEZEvS8plgzPpjEaUKx8VOrQnvh+92d6S4IRpfiHXyp
-         ixtishFoeVcRLslW7ioXOeqsuCGk48SN6c8LhNTPB93qUgo0H0gET+auIGFBOwO+SKzC
-         F9oo7Jt4gqzZETs2C67d92TKZf4JUFm6qJvT1gzoGO3PuBN6bIj7xsMI9vYX9XOV8HnN
-         SVJg==
-X-Gm-Message-State: AOJu0Yynky6gS0WyE04aOnfocYpzWrSj5WkQRC5LhiPgUufF0PwVKTZp
-        MaETn9p9DpFMEBa0Az9I2x0=
-X-Google-Smtp-Source: AGHT+IGTqIGzd6ml6FDFPMOmxfNyieEjeC/D/9aiVZaJI3bXyy9mIfH61JwcHIOVEReS3zCv3OJiCQ==
-X-Received: by 2002:a5d:5504:0:b0:314:dc0:2fca with SMTP id b4-20020a5d5504000000b003140dc02fcamr5756561wrv.29.1694968856668;
-        Sun, 17 Sep 2023 09:40:56 -0700 (PDT)
-Received: from localhost.localdomain ([109.38.142.63])
-        by smtp.gmail.com with ESMTPSA id jl6-20020a17090775c600b009ade1a4f795sm2879205ejc.168.2023.09.17.09.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 09:40:56 -0700 (PDT)
-From:   Stefan Moring <stefanmoring@gmail.com>
-To:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronxi.de,
-        festevam@gmail.com, linux-imx@nxmp.com, linux-psi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sre@kernel.org
-Cc:     Stefan Moring <stefanmoring@gmail.com>
-Subject: [PATCH 1/1] take in account bits per word instead of assuming 8-bits
-Date:   Sun, 17 Sep 2023 18:40:37 +0200
-Message-ID: <20230917164037.29284-1-stefanmoring@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Sun, 17 Sep 2023 12:46:25 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2AC130
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:46:18 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 02:41:39 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1694969176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cWEPku0i8kVPsZpOe1gkv2DiCKZJ0Jfwih7/n8DF784=;
+        b=se7/6/QM0A8jm9+kIdXkUD3Jf6aYwkf6CSra3Mddks3SB0bfk7CUE5iQyuYNXvelfrLiIO
+        gG86cqzwkLn7Fj50xHajVTRKAPbMR4UwO+lxAtR7wAdXTUFi9e01LUXiplLeCXEWsYbvtV
+        aOtiEjof1sHiIwLA6SQG5aMDNLUw7E5vK9v5cMqjDSXOXjjh7qJO8faxgdvSpuaqpOKgdH
+        GzYlxOQt4DE/BfkYobq6EvHORYo/wVuOr/Yu3tLOGqLbJ/MZ3y8jsdv4NzkOG4nVeJA7qd
+        QRfHK40BzGPumrAcx8/lo56P+JuZhu61BnmhuOXrFHaF5CnvucD4RJTdk7PE/w==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   John Watts <contact@jookia.org>
+To:     linux-can@vger.kernel.org
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
+Message-ID: <ZQcsQ3z1OZMfZLH9@titan>
+References: <20230905231342.2042759-2-contact@jookia.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905231342.2042759-2-contact@jookia.org>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IMX spi driver has a hardcoded 8, breaking the driver for word
-lengths other than 8.
+Hi there,
 
-Signed-off-by: Stefan Moring <stefanmoring@gmail.com>
+I'd like to bump this. Do I re-send this or just reply to it?
 
----
- drivers/spi/spi-imx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+John.
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index a8a74c7cb79f..498e35c8db2c 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -662,7 +662,7 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
- 		if (spi_imx->count >= 512)
- 			ctrl |= 0xFFF << MX51_ECSPI_CTRL_BL_OFFSET;
- 		else
--			ctrl |= (spi_imx->count*8 - 1)
-+			ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
- 				<< MX51_ECSPI_CTRL_BL_OFFSET;
- 	}
- 
--- 
-2.42.0
-
+On Wed, Sep 06, 2023 at 09:13:43AM +1000, John Watts wrote:
+> When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
+> As a result this option shows up with Allwinner support isn't enabled.
+> Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
+> 
+> Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=grFihrdsz4+o7=_DpBMhjTbkw@mail.gmail.com/
+> Signed-off-by: John Watts <contact@jookia.org>
+> ---
+>  drivers/net/can/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> index 649453a3c858..f8cde9f9f554 100644
+> --- a/drivers/net/can/Kconfig
+> +++ b/drivers/net/can/Kconfig
+> @@ -190,7 +190,7 @@ config CAN_SLCAN
+>  
+>  config CAN_SUN4I
+>  	tristate "Allwinner A10 CAN controller"
+> -	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
+> +	depends on MACH_SUN4I || MACH_SUN7I || (RISCV && ARCH_SUNXI) || COMPILE_TEST
+>  	help
+>  	  Say Y here if you want to use CAN controller found on Allwinner
+>  	  A10/A20/D1 SoCs.
+> -- 
+> 2.42.0
+> 
