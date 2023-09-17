@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE997A36A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5717A36A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 18:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbjIQQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 12:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
+        id S236347AbjIQQrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 12:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237140AbjIQQqZ (ORCPT
+        with ESMTP id S236451AbjIQQqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 12:46:25 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2AC130
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:46:18 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 02:41:39 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1694969176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cWEPku0i8kVPsZpOe1gkv2DiCKZJ0Jfwih7/n8DF784=;
-        b=se7/6/QM0A8jm9+kIdXkUD3Jf6aYwkf6CSra3Mddks3SB0bfk7CUE5iQyuYNXvelfrLiIO
-        gG86cqzwkLn7Fj50xHajVTRKAPbMR4UwO+lxAtR7wAdXTUFi9e01LUXiplLeCXEWsYbvtV
-        aOtiEjof1sHiIwLA6SQG5aMDNLUw7E5vK9v5cMqjDSXOXjjh7qJO8faxgdvSpuaqpOKgdH
-        GzYlxOQt4DE/BfkYobq6EvHORYo/wVuOr/Yu3tLOGqLbJ/MZ3y8jsdv4NzkOG4nVeJA7qd
-        QRfHK40BzGPumrAcx8/lo56P+JuZhu61BnmhuOXrFHaF5CnvucD4RJTdk7PE/w==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   John Watts <contact@jookia.org>
-To:     linux-can@vger.kernel.org
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
-Message-ID: <ZQcsQ3z1OZMfZLH9@titan>
-References: <20230905231342.2042759-2-contact@jookia.org>
+        Sun, 17 Sep 2023 12:46:39 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC9511D
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:46:33 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c1c66876aso454894566b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694969192; x=1695573992; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0paMOWTj7qFjWlnbMH8/b4zKX3pixZT+0KYdXbHqu5E=;
+        b=Gsa1NmXZ8188yNiosasLjNSC5T8hO74jHELIHdsbuPGRo6fYUMM0QAZJjp4feg+lCR
+         uznSXM0aLEztvokrdLH8OsWPf1BvGHGv2h13b4b5THuLXot680C2vkOzrM1BYgdRo1XO
+         Q+A13mz77jvmTgC45YcIHLmFmLPjVTyzPLBMM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694969192; x=1695573992;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0paMOWTj7qFjWlnbMH8/b4zKX3pixZT+0KYdXbHqu5E=;
+        b=e6HE2rOZAxwJ1r632MuHC4Gu37p4L/+TJDEOvNouCpoWSxv2oaDg8gzlV3UWR/gcEU
+         z60tR5E62/rEAQqMY6TZkuYDBUuLXrBpOr4dIahP9MwlZSQ13Fx7WA16wFvwq82N5ZoG
+         4afDksZ0bjCumGVVK3q/jCTJIFW2wEaS8Q5lc7280F7hs/50aIjYwq8UCBfO1Yql0v0B
+         UDrNuPFhWsPPKRDfVVWgoGQkN+wTiEq23UAiyzlHDE1IyunbLJRR4c3IDpnO2ik/Blf1
+         xE/UOoz4D7mPD5LPx05+rSLsxxqrIzsjHelO9fZZ/kwTzDkddNflToP+i+IoFJmESUsM
+         FI7w==
+X-Gm-Message-State: AOJu0YwoaUQJ0O84eyTaWL/KnpHFBeP0c95bhKKvgaq5ZFtAOF1zwP7/
+        j8hLeKCVBZ25Hcijq7U0SzfXAJ6OzyqhY65yk1eM/VBa
+X-Google-Smtp-Source: AGHT+IFMO9X+3Am1KwzF08GGoQ5HFP2tYrL6AOW3aZp6WOfjEbbjotKsM+LFr3zY3pUObJgkzYLxcg==
+X-Received: by 2002:a17:906:10cd:b0:9a1:ea01:35b1 with SMTP id v13-20020a17090610cd00b009a1ea0135b1mr5904549ejv.62.1694969191570;
+        Sun, 17 Sep 2023 09:46:31 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170906710600b00992e14af9c3sm5239180ejj.143.2023.09.17.09.46.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 09:46:30 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-52683da3f5cso4741212a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 09:46:29 -0700 (PDT)
+X-Received: by 2002:a50:e70a:0:b0:52a:1d54:2534 with SMTP id
+ a10-20020a50e70a000000b0052a1d542534mr6243521edn.25.1694969189489; Sun, 17
+ Sep 2023 09:46:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905231342.2042759-2-contact@jookia.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230917091225.6350-1-brgl@bgdev.pl> <20230917091225.6350-2-brgl@bgdev.pl>
+In-Reply-To: <20230917091225.6350-2-brgl@bgdev.pl>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 17 Sep 2023 09:46:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjr5N-2ZKgn_gPaMapprn1vbBxzsdp4fJY+2iC=1H2T5g@mail.gmail.com>
+Message-ID: <CAHk-=wjr5N-2ZKgn_gPaMapprn1vbBxzsdp4fJY+2iC=1H2T5g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] gpio: sim: fix an invalid __free() usage
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        akpm@linux-foundation.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
+On Sun, 17 Sept 2023 at 02:12, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> +               has_line_names = true;
+> +               max_offset = max(line->offset, max_offset);
 
-I'd like to bump this. Do I re-send this or just reply to it?
+I really don't understand why you kept this old broken logic.
 
-John.
+I sent a much better version of this function that didn't need that
+pointless has_line_names thing or the 'max()' thing, by just making
+the code a lot simpler.
 
-On Wed, Sep 06, 2023 at 09:13:43AM +1000, John Watts wrote:
-> When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
-> As a result this option shows up with Allwinner support isn't enabled.
-> Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
-> 
-> Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=grFihrdsz4+o7=_DpBMhjTbkw@mail.gmail.com/
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->  drivers/net/can/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-> index 649453a3c858..f8cde9f9f554 100644
-> --- a/drivers/net/can/Kconfig
-> +++ b/drivers/net/can/Kconfig
-> @@ -190,7 +190,7 @@ config CAN_SLCAN
->  
->  config CAN_SUN4I
->  	tristate "Allwinner A10 CAN controller"
-> -	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
-> +	depends on MACH_SUN4I || MACH_SUN7I || (RISCV && ARCH_SUNXI) || COMPILE_TEST
->  	help
->  	  Say Y here if you want to use CAN controller found on Allwinner
->  	  A10/A20/D1 SoCs.
-> -- 
-> 2.42.0
-> 
+Whatever.
+
+> +       line_names_size = gpio_sim_get_line_names_size(bank);
+> +       if (line_names_size) {
+> +               line_names = kcalloc(line_names_size, sizeof(*line_names),
+> +                                    GFP_KERNEL);
+> +               if (!line_names)
+> +                       return ERR_PTR(-ENOMEM);
+> +
+> +               gpio_sim_set_line_names(bank, line_names);
+>
+> -       if (line_names)
+>                 properties[prop_idx++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
+>                                                 "gpio-line-names",
+>                                                 line_names, line_names_size);
+> +       }
+
+But I do like this reorganization.
+
+            Linus
