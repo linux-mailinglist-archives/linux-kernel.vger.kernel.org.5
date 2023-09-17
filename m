@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A947A35E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 16:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE4D7A35E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 16:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbjIQOfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 10:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        id S235995AbjIQOhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 10:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbjIQOey (ORCPT
+        with ESMTP id S236757AbjIQOgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 10:34:54 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB4E127;
-        Sun, 17 Sep 2023 07:34:48 -0700 (PDT)
-Received: from [185.224.57.162] (helo=akair)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qhsr9-003tmW-OQ; Sun, 17 Sep 2023 16:34:39 +0200
-Date:   Sun, 17 Sep 2023 16:34:35 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Tony Lindgren <tony@atomide.com>, airlied@gmail.com,
-        daniel@ffwll.ch, u.kleine-koenig@pengutronix.de, arnd@arndb.de,
-        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [RFC PATCH] drm: omapdrm: dsi: add refsel also for omap4
-Message-ID: <20230917163435.6bc68110@akair>
-In-Reply-To: <9efde4d8-385d-54da-fb0d-55625d3c4571@ideasonboard.com>
-References: <20230913065911.1551166-1-andreas@kemnade.info>
-        <48972ab0-e4ed-11b2-31fb-ad93695a4db1@ideasonboard.com>
-        <20230913124828.GL5285@atomide.com>
-        <9efde4d8-385d-54da-fb0d-55625d3c4571@ideasonboard.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Sun, 17 Sep 2023 10:36:42 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD2B18E
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 07:36:36 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id hsstqeOGW9p0Shssuq1bZf; Sun, 17 Sep 2023 16:36:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694961389;
+        bh=Eb9i/pcg2sDgpzwYBXcHCssoUoji+5TNSyNGZC5cFDI=;
+        h=From:To:Cc:Subject:Date;
+        b=OUpyags0q45Skaeadp0j10giUtgRYonu/aKJ16AVOVD6A2stjVU2bpJsEf1Gek3nY
+         Y7vZgkJw84llWWsZMfMK7Jaj9aYH3VV9pCl9+reGddQJdSKL2zWJXkqpf8VoM3GxhO
+         GXwcv/Py9iCKgAHi1SGaYt5icxMiU6dTHQC0/V+4vpnsl8gySvCTXq/xaY2NWRkHll
+         Ijzh1pG79230bGCDcS1VXhSUGutSYiYUKushEwsFoKQYRyFMECO6psyphEWqgSlz2J
+         4PFphBZ0eDwqGvC6CB2ijPj6wayN24dyBnxGslGwsp4ZOnKCXVW2nBcgvUNT02Jtq+
+         gB23zUaopkKUg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 17 Sep 2023 16:36:29 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] spi: at91-usart: Remove some dead code
+Date:   Sun, 17 Sep 2023 16:36:26 +0200
+Message-Id: <84eb08daf85d203b34af9d8d08abf86804211413.1694961365.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 13 Sep 2023 15:58:11 +0300
-schrieb Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>:
+dma_request_chan() does not return NULL. It returns a valid pointer or an
+error pointer.
 
-> On 13/09/2023 15:48, Tony Lindgren wrote:
-> > * Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> [230913 12:11]:  
-> >> I'm somewhat sure that the upstream driver used to work on omap4
-> >> sdp, which has two DSI panels. But I can't even remember what
-> >> omap4 version it had.  
-> > 
-> > I think those were both dsi command mode panels though, not video
-> > mode?  
-> 
-> Yes, true. If the PLL is totally wrong due to refsel, I'm sure a
-> command mode panel would also fail. But it's true that video mode
-> panels are more sensitive to the clock rate.
-> 
-hmm, still analyzing:
-What works:
-  OMAP5 + Pyra (Videomode display requiring some init commands) 
-  some command mode stuff with OMAP4 (droid4)
+So, some dead code can be removed.
+
+The IS_ERR_OR_NULL() in the error handling path are still needed, because
+the error handling path is common to the whole function and the
+ctlr->dma_xx are NULL when at91_usart_spi_configure_dma() is called.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/spi/spi-at91-usart.c | 22 ++++------------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/spi/spi-at91-usart.c b/drivers/spi/spi-at91-usart.c
+index b11d0f993cc7..1cea8e159344 100644
+--- a/drivers/spi/spi-at91-usart.c
++++ b/drivers/spi/spi-at91-usart.c
+@@ -132,28 +132,14 @@ static int at91_usart_spi_configure_dma(struct spi_controller *ctlr,
+ 	dma_cap_set(DMA_SLAVE, mask);
  
-What does not work:
-  OMAP4 with some dsi videomode to something else (LVDS/DPI) converter
-       if init commands are sent through dsi, then these commands fail
-       with bta sync problems.
+ 	ctlr->dma_tx = dma_request_chan(dev, "tx");
+-	if (IS_ERR_OR_NULL(ctlr->dma_tx)) {
+-		if (IS_ERR(ctlr->dma_tx)) {
+-			err = PTR_ERR(ctlr->dma_tx);
+-			goto at91_usart_spi_error_clear;
+-		}
+-
+-		dev_dbg(dev,
+-			"DMA TX channel not available, SPI unable to use DMA\n");
+-		err = -EBUSY;
++	if (IS_ERR(ctlr->dma_tx)) {
++		err = PTR_ERR(ctlr->dma_tx);
+ 		goto at91_usart_spi_error_clear;
+ 	}
+ 
+ 	ctlr->dma_rx = dma_request_chan(dev, "rx");
+-	if (IS_ERR_OR_NULL(ctlr->dma_rx)) {
+-		if (IS_ERR(ctlr->dma_rx)) {
+-			err = PTR_ERR(ctlr->dma_rx);
+-			goto at91_usart_spi_error;
+-		}
+-
+-		dev_dbg(dev,
+-			"DMA RX channel not available, SPI unable to use DMA\n");
+-		err = -EBUSY;
++	if (IS_ERR(ctlr->dma_rx)) {
++		err = PTR_ERR(ctlr->dma_rx);
+ 		goto at91_usart_spi_error;
+ 	}
+ 
+-- 
+2.34.1
 
-So sending init commands to video mode displays seems not to be a
-principal problem.
-But looking deeper at the drivers, there seem to be commands sent
-to the converters to configure lanes on that side, e.g.
-tc358762_write(ctx, DSI_LANEENABLE,
-                       LANEENABLE_L0EN | LANEENABLE_CLEN);
-
-There might be trouble if these are not sent in low power mode.
-
-So probably the next analyzing step would be to check if things
-are really sent in low power mode.
-
-Regards,
-Andreas
