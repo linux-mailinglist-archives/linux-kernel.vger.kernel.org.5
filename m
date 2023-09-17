@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3157A3E06
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DE7A3E08
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239438AbjIQVoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 17:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S234408AbjIQVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 17:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239336AbjIQVnq (ORCPT
+        with ESMTP id S233044AbjIQVqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 17:43:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC43133
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdf4752c3cso26806335ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1694987020; x=1695591820; darn=vger.kernel.org;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EjYEVDeyXWGRfU5iV7LvJBf6c7N982G1lGvpbIPmcJ8=;
-        b=KX8FblGrPINTGWJ+F+2OsLf/gAyXu98qR4yxI8s4WMVP0eTwMSfN6urkULb+FAZHtd
-         rxzE+RJAhk50qj6AOC0t/OjpLK0vLxPsruIpQMsdUd0B5RfFHJTZ1NfRtGW2GNiwwAmX
-         IQoHt9NRjqo7K0Yp7DjoEcV1TkJ9bGCmHIy49f9WKA8octbvKA/t1MtXI2yp6ZSVxCta
-         IWXLEZewwro8H7U0M0RTvddQQjcFbDpSM6KTad4o/86uHXJazghPsvMQ/xXX8r6e1XTs
-         c3J4COS3Wg46b4qkzZa6C2nxw7P/ZSrlehVzVRaYPFL6yaG7lBnDr4hdpFW+jN2Iyygf
-         nOTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694987020; x=1695591820;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EjYEVDeyXWGRfU5iV7LvJBf6c7N982G1lGvpbIPmcJ8=;
-        b=OevVJ9T9Ae0Z1itVZzwRfXRTiU9RBj8RHu9zjtPwCJidq/X4ZPvwiT/90ICss/Mkc0
-         dm7uQdmOxaqWbPZHq5/yxdpCudD9+w+KGGtXY3lfAGBCs4jHpynQPktmeLmb0pRnTjEl
-         jT+EBa+vUpFnXt9RHeHz2z1YB6IGbIdVwyj9jOJJgAFyBYmqTSDRJol/fRBRBp+5YkAL
-         +Ijjfu+b6Bo8dVrP9A4n4oWq+BCCooU/litBW9Tw+NXtcge6rUUmcg4HmZ6uqIrHMzQj
-         PIF+V1DLoMgNKXKHZ28+HTPOlgGHueBwIxuQHvWrTI6Bu0ERA3mX/E0IwvbDTpwmNJR9
-         a9Sg==
-X-Gm-Message-State: AOJu0Yz7mNU8eJqhhjI3cRerd49PTT9yipFGbVmev3OY19kbWyvtjVzJ
-        Ye5GXvhIs7lfee9AcMN3MFE1Xg==
-X-Google-Smtp-Source: AGHT+IFfMGfQ5zQmDSFheljxqnHWoOfv4bT82d7KBJ5y1wKvmf3MnOTX9NMedjj7EKPWak+DvfqHCA==
-X-Received: by 2002:a17:903:25ca:b0:1c4:48c4:969b with SMTP id jc10-20020a17090325ca00b001c448c4969bmr4358364plb.52.1694987020400;
-        Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170902f7d500b001ae0a4b1d3fsm7047393plw.153.2023.09.17.14.43.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 17 Sep 2023 14:43:39 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Mario Limonciello'" <mario.limonciello@amd.com>,
-        "'Swapnil Sapkal'" <swapnil.sapkal@amd.com>
-Cc:     <rafael.j.wysocki@intel.com>, <Ray.Huang@amd.com>,
-        <li.meng@amd.com>, <shuah@kernel.org>, <sukrut.bellary@gmail.com>,
-        <gautham.shenoy@amd.com>, <wyes.karny@amd.com>,
-        <Perry.Yuan@amd.com>, <zwisler@chromium.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <20230915104057.132210-1-swapnil.sapkal@amd.com>    <20230915104057.132210-3-swapnil.sapkal@amd.com>        <00b201d9e819$b2447e80$16cd7b80$@telus.net>     <2fd025a9-52f3-4922-99cf-82355b0e35fe@amd.com> <CAAYoRsUhusVzOnaGHjPoMWYy2_iPFAjFLoCrj6vSX26EHNWGiw@mail.gmail.com>
-In-Reply-To: <CAAYoRsUhusVzOnaGHjPoMWYy2_iPFAjFLoCrj6vSX26EHNWGiw@mail.gmail.com>
-Subject: RE: [PATCH 2/2] tools/power/x86/intel_pstate_tracer: Use pygnuplot package for Gnuplot
-Date:   Sun, 17 Sep 2023 14:43:42 -0700
-Message-ID: <001c01d9e9b0$073fadf0$15bf09d0$@telus.net>
+        Sun, 17 Sep 2023 17:46:00 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B06A8;
+        Sun, 17 Sep 2023 14:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694987149;
+        bh=1gq+91PIFQp0CotcayyYLsT0OW67uH5VYysw0SmeuA4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rVhvkr9GckLVSo7ciMprMSh0tSFJROddeHtbkTJVMyDFkC4JN89dtTdS3TjxSK4Jl
+         vvAFPKQ0/RGu4ckjQ8061cTKzywP5SMnJa2oWhGp5Dymi/JrHNbpfI2Cd8LkLmbenR
+         +8pUkv99pRlZeFlOtFBVFi65fJ5AUmqR/JMqRBhuYpFBr4a6/jojhQht1PbUm0ljYJ
+         IKeMuw5llrQKJ3wj5C/7b98d+l6nyo07Qdey/a2+2vEWTTXY3zrRVPoxKhoTZE+HQ7
+         8NNfotWjGtRcqycNU/1DgAtprtL2AxZ41m3/6y5SUpMNMBKKOBPeC/nJDXQ/TJg27s
+         dC/RNzfR17BMw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RphLj1WmKz4wb1;
+        Mon, 18 Sep 2023 07:45:49 +1000 (AEST)
+Date:   Mon, 18 Sep 2023 07:45:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the cxl-fixes tree
+Message-ID: <20230918074537.51fe95ed@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-ca
-Thread-Index: AQKwVkrK5CGttHhKf0ienv16Lobu0QKE+b5tAruzzQ4BoCijAABix5Z4rjiS0sA=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/OFWWOHHTu_mm37Ughuzm_7K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023.09.17 15:17 Doug wrote:
-> On Fri, Sep 15, 2023 at 2:31=E2=80=AFPM Mario Limonciello
->> On 9/15/2023 16:15, Doug Smythies wrote:
->>> On 2023.09.15 03:41 Swapnil Sapkal wrote:
-...
->>> Not really related, but for a few years now I have been meaning to
->>> change the minimum python version prerequisite to >=3D 3.0 and
->>> to change the shebang line.
-...
->>  Besides the shebang, you should also
->> use a helper like 2to3 to look for any other changes.
+--Sig_/OFWWOHHTu_mm37Ughuzm_7K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mario,
+Hi all,
 
-I was not aware of the 2to3 helper.
-Thank you mentioning it.
-The 2to3 helper only changed one line,
-which I included in the minimum python version
-patch I just submitted.
+In commit
 
-> I already did the python 3 patch in January, 2020:
-> commit e749e09db30c38f1a275945814b0109e530a07b0
-> tools/power/x86/intel_pstate_tracer: changes for python 3 =
-compatibility
->=20
-> I haven't had any issues since, shebang aside.
+  18f35dc9314d ("cxl/region: Refactor granularity select in cxl_port_setup_=
+targets()")
 
-... Doug
+Fixes tag
 
+  Fixes: ("27b3f8d13830 cxl/region: Program target lists")
 
+has these problem(s):
+
+  - No SHA1 recognised
+
+It should be
+
+Fixes: 27b3f8d13830 ("cxl/region: Program target lists")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OFWWOHHTu_mm37Ughuzm_7K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUHc4EACgkQAVBC80lX
+0GzMawgApdNMA0K5HVDWtOXztjAKEHUSD91xaPg20vs/7GVj6FBtKKso264fpIzo
+AlXOmbCRhlx1N+D9C52MQWR4n8o3OurYjRCetb61WC8US5GM+2/dUCTDRmUYbhk8
+FCr73XFn5d/JuYvHdGHLstxL2+CulpBRqaykKIjtDFokYVIpmf/KqxWcgCF+ybg7
+BCByYYVlBzzEXDaqIGThFTlaNgX4kOlYBk5XdnWAb7D1lQtSsXQk57FHTjUdyRSr
+1f/5eARQ2MWMJvWm0Wbpl6r5cMoCgyth67Otzv1PkUY6bOAFBQSYzImadrV9+6XO
+sCgpQ62BhloSqk242lr321TQO96DiQ==
+=2DzD
+-----END PGP SIGNATURE-----
+
+--Sig_/OFWWOHHTu_mm37Ughuzm_7K--
