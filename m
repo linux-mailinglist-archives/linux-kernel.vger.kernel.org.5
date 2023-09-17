@@ -2,125 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5267A3367
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 01:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3D97A336D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 02:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbjIPXyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 19:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        id S233322AbjIQAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 20:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjIPXxn (ORCPT
+        with ESMTP id S233648AbjIQABQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 19:53:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D72BCCB;
-        Sat, 16 Sep 2023 16:53:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63C56C433C7;
-        Sat, 16 Sep 2023 23:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694908417;
-        bh=RTInmr2VDsrtyWUxWPbJVqYnWovBm1DvGkVnIXVR5q0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hoIJUTDKJ4LkWCYO2BPWD25CtXN+avIUT6M5wCT14v6r+Aysf7MQyVMH+1FIHJw9E
-         LbY5zWL7498yCY0exeXYi0te8W8ixWEq4kKGggWaVGYKVySSXxxFEYujSqCJAoj7x6
-         15CUKB8B4dtfKaB0iScqfPAHyV8T7soNW8n0UAenirfV26heojp/5rQvqq3o9xjPqw
-         V1326XgrpFietglIhkHAOPhep5YYip9uqpHuWyfc/q0UuBVXAyKTPYiYP219jKWIC2
-         5GnEYz0Qen5qAon0sVLbJDRMshsia1MOwQZFvHDoRcw48EWptPfFQAj7imunlVwEHl
-         iY5NOu0kHjMHg==
-Received: by mercury (Postfix, from userid 1000)
-        id 5AB3110604B2; Sun, 17 Sep 2023 01:53:34 +0200 (CEST)
-Date:   Sun, 17 Sep 2023 01:53:34 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Stefan Moring <stefan.moring@technolution.nl>
-Cc:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: Increase imx51 ecspi burst length based on transfer
- length
-Message-ID: <20230916235334.fqqpowhvacg3xzqy@mercury.elektranox.org>
-References: <20230628125406.237949-1-stefan.moring@technolution.nl>
- <20230914224749.kmg4xqsg3wmfwwhj@mercury.elektranox.org>
- <CAB3BuKAEFewb6W5K=Z2ZX9Xx0gA+RW+XKY-Mkn-PfBOfq3eb+A@mail.gmail.com>
+        Sat, 16 Sep 2023 20:01:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865D4CCE;
+        Sat, 16 Sep 2023 17:01:07 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so3089214f8f.1;
+        Sat, 16 Sep 2023 17:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694908866; x=1695513666; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6BHq/Fmhrzie/rbN5xOf6Z3yTY+jNo9/MvYXQ7WEtc=;
+        b=Cwbt8Ii1B6My/QaDYtZdjkmPLRoBEIaXJt6Yj+tL5yGJwNMWjVuVagvfPBTziemC5Y
+         2Zs8fWtag4jmfEcCSeNzoHdlhhI8fFBNReWrr6PTPxKnFnM6kGbGvE8MKs0qH2HqvLpN
+         jDQz4RvLi3azh1zetJd6aFDM+7Gm1ibRv3PyodGmXj6EUVWV6avUdYQBm40Ej5Vam7jW
+         3+dBBRYQWr03b5JfiMkmX70xNbS8HSkRyb4loZI82NsuqVvuOxR2ZUzSbozCfgKrn0+L
+         bv/sYUvZjSWvUlFF7KPp7K054nYwcOCepU2HqbaaSbiuAyDsojd4ZJDijz1R912ho5vs
+         UUbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694908866; x=1695513666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A6BHq/Fmhrzie/rbN5xOf6Z3yTY+jNo9/MvYXQ7WEtc=;
+        b=f9Wv9zJZPgdAa4mtg9Zetjd1OSNnD+3lJnvr8ksWBhU8f0w80W29BoZQkfpPjs0eRm
+         sJKhx9SPQrBMLDTlaJbywzFb96eEc1PbNwMcc4Gnu8qu5NW9qDCgo8PPuzhLULb8dQWy
+         tuvFBMjfyQl+dDY5hu6LaxmRHkVWzAvoaZlYEcVNriyZaZ4xLH05PicSaj1S6CGwq+Rp
+         IitBxSwTfGis8ARPSVJE8CEu0d+2yO34F5y/0jLTdKu4rHR9w7Bdr31IxiuloooTxC5B
+         9OzNF4yDvdw+maLLZXK8RohBfCGrv4mslCRcjlVrVRTKXxSsCPrRF+vBT0QSp7vYptpT
+         f6dQ==
+X-Gm-Message-State: AOJu0Ywyq5KM0LfSPDZuOoBqYEX0u797GcX72ZCKMcBe3fPmzxXf6ob1
+        R24oqxluZBUOZko2xphLs1gW4JnilRhslzNF
+X-Google-Smtp-Source: AGHT+IEI5tvI6LA0kydBMw3x7dPxE77l9+GYimpXpFuZcf52LqIbmhWgOv8IALYTwDulMXDu1cH4ow==
+X-Received: by 2002:adf:fb90:0:b0:317:e5dc:5cd0 with SMTP id a16-20020adffb90000000b00317e5dc5cd0mr4435414wrr.21.1694908865566;
+        Sat, 16 Sep 2023 17:01:05 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id z8-20020a056000110800b0031f3ad17b2csm8290467wrw.52.2023.09.16.17.01.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Sep 2023 17:01:05 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     puranjay12@gmail.com
+Subject: [PATCH bpf-next v2 0/1] bpf, arm64: Support Exceptions
+Date:   Sun, 17 Sep 2023 00:00:44 +0000
+Message-Id: <20230917000045.56377-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cvhbzmwpf7ya2bo6"
-Content-Disposition: inline
-In-Reply-To: <CAB3BuKAEFewb6W5K=Z2ZX9Xx0gA+RW+XKY-Mkn-PfBOfq3eb+A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in V1->V2:
+V1: https://lore.kernel.org/all/20230912233942.6734-1-puranjay12@gmail.com/
+- Remove exceptions from DENYLIST.aarch64 as they are supported now.
 
---cvhbzmwpf7ya2bo6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The base support for exceptions was merged with [1] and it was enabled for
+x86-64.
 
-Hi,
+This patch enables the support on ARM64, all sefltests are passing:
 
-On Fri, Sep 15, 2023 at 07:55:23AM +0200, Stefan Moring wrote:
-> Op vr 15 sep 2023 om 00:47 schreef Sebastian Reichel <sre@kernel.org>:
-> > On Wed, Jun 28, 2023 at 02:54:06PM +0200, Stefan Moring wrote:
-> > > IMX51 supports 4096 bit burst lengths. Using the spi transfer length
-> > > instead of bits_per_word increases performance significantly.
-> > >
-> > > Signed-off-by: Stefan Moring <stefan.moring@technolution.nl>
-> > > ---
-> >
-> > I have an i.MX6ULL system with "inanbo,t28cp45tn89-v17" panel, which
-> > breaks due to this change. Reverting this patch results in working
-> > panel. Note, that the panel driver [0] does 'spi->bits_per_word = 9;'.
-> >
-> > [0] drivers/gpu/drm/panel/panel-sitronix-st7789v.c
->
-> Would changing line 665 to ctrl |= (spi_imx->count * spi_imx->bits_per_word
-> - 1) fix the issue?
+# ./test_progs -a exceptions
+#74/1    exceptions/exception_throw_always_1:OK
+#74/2    exceptions/exception_throw_always_2:OK
+#74/3    exceptions/exception_throw_unwind_1:OK
+#74/4    exceptions/exception_throw_unwind_2:OK
+#74/5    exceptions/exception_throw_default:OK
+#74/6    exceptions/exception_throw_default_value:OK
+#74/7    exceptions/exception_tail_call:OK
+#74/8    exceptions/exception_ext:OK
+#74/9    exceptions/exception_ext_mod_cb_runtime:OK
+#74/10   exceptions/exception_throw_subprog:OK
+#74/11   exceptions/exception_assert_nz_gfunc:OK
+#74/12   exceptions/exception_assert_zero_gfunc:OK
+#74/13   exceptions/exception_assert_neg_gfunc:OK
+#74/14   exceptions/exception_assert_pos_gfunc:OK
+#74/15   exceptions/exception_assert_negeq_gfunc:OK
+#74/16   exceptions/exception_assert_poseq_gfunc:OK
+#74/17   exceptions/exception_assert_nz_gfunc_with:OK
+#74/18   exceptions/exception_assert_zero_gfunc_with:OK
+#74/19   exceptions/exception_assert_neg_gfunc_with:OK
+#74/20   exceptions/exception_assert_pos_gfunc_with:OK
+#74/21   exceptions/exception_assert_negeq_gfunc_with:OK
+#74/22   exceptions/exception_assert_poseq_gfunc_with:OK
+#74/23   exceptions/exception_bad_assert_nz_gfunc:OK
+#74/24   exceptions/exception_bad_assert_zero_gfunc:OK
+#74/25   exceptions/exception_bad_assert_neg_gfunc:OK
+#74/26   exceptions/exception_bad_assert_pos_gfunc:OK
+#74/27   exceptions/exception_bad_assert_negeq_gfunc:OK
+#74/28   exceptions/exception_bad_assert_poseq_gfunc:OK
+#74/29   exceptions/exception_bad_assert_nz_gfunc_with:OK
+#74/30   exceptions/exception_bad_assert_zero_gfunc_with:OK
+#74/31   exceptions/exception_bad_assert_neg_gfunc_with:OK
+#74/32   exceptions/exception_bad_assert_pos_gfunc_with:OK
+#74/33   exceptions/exception_bad_assert_negeq_gfunc_with:OK
+#74/34   exceptions/exception_bad_assert_poseq_gfunc_with:OK
+#74/35   exceptions/exception_assert_range:OK
+#74/36   exceptions/exception_assert_range_with:OK
+#74/37   exceptions/exception_bad_assert_range:OK
+#74/38   exceptions/exception_bad_assert_range_with:OK
+#74/39   exceptions/non-throwing fentry -> exception_cb:OK
+#74/40   exceptions/throwing fentry -> exception_cb:OK
+#74/41   exceptions/non-throwing fexit -> exception_cb:OK
+#74/42   exceptions/throwing fexit -> exception_cb:OK
+#74/43   exceptions/throwing extension (with custom cb) -> exception_cb:OK
+#74/44   exceptions/throwing extension -> global func in exception_cb:OK
+#74/45   exceptions/exception_ext_mod_cb_runtime:OK
+#74/46   exceptions/throwing extension (with custom cb) -> global func in exception_cb:OK
+#74/47   exceptions/exception_ext:OK
+#74/48   exceptions/non-throwing fentry -> non-throwing subprog:OK
+#74/49   exceptions/throwing fentry -> non-throwing subprog:OK
+#74/50   exceptions/non-throwing fentry -> throwing subprog:OK
+#74/51   exceptions/throwing fentry -> throwing subprog:OK
+#74/52   exceptions/non-throwing fexit -> non-throwing subprog:OK
+#74/53   exceptions/throwing fexit -> non-throwing subprog:OK
+#74/54   exceptions/non-throwing fexit -> throwing subprog:OK
+#74/55   exceptions/throwing fexit -> throwing subprog:OK
+#74/56   exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
+#74/57   exceptions/non-throwing fmod_ret -> non-throwing global subprog:OK
+#74/58   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/59   exceptions/non-throwing extension -> throwing subprog:OK
+#74/60   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/61   exceptions/non-throwing extension -> throwing global subprog:OK
+#74/62   exceptions/throwing extension -> throwing global subprog:OK
+#74/63   exceptions/throwing extension -> non-throwing global subprog:OK
+#74/64   exceptions/non-throwing extension -> main subprog:OK
+#74/65   exceptions/throwing extension -> main subprog:OK
+#74/66   exceptions/reject_exception_cb_type_1:OK
+#74/67   exceptions/reject_exception_cb_type_2:OK
+#74/68   exceptions/reject_exception_cb_type_3:OK
+#74/69   exceptions/reject_exception_cb_type_4:OK
+#74/70   exceptions/reject_async_callback_throw:OK
+#74/71   exceptions/reject_with_lock:OK
+#74/72   exceptions/reject_subprog_with_lock:OK
+#74/73   exceptions/reject_with_rcu_read_lock:OK
+#74/74   exceptions/reject_subprog_with_rcu_read_lock:OK
+#74/75   exceptions/reject_with_rbtree_add_throw:OK
+#74/76   exceptions/reject_with_reference:OK
+#74/77   exceptions/reject_with_cb_reference:OK
+#74/78   exceptions/reject_with_cb:OK
+#74/79   exceptions/reject_with_subprog_reference:OK
+#74/80   exceptions/reject_throwing_exception_cb:OK
+#74/81   exceptions/reject_exception_cb_call_global_func:OK
+#74/82   exceptions/reject_exception_cb_call_static_func:OK
+#74/83   exceptions/reject_multiple_exception_cb:OK
+#74/84   exceptions/reject_exception_throw_cb:OK
+#74/85   exceptions/reject_exception_throw_cb_diff:OK
+#74/86   exceptions/reject_set_exception_cb_bad_ret1:OK
+#74/87   exceptions/reject_set_exception_cb_bad_ret2:OK
+#74/88   exceptions/check_assert_eq_int_min:OK
+#74/89   exceptions/check_assert_eq_int_max:OK
+#74/90   exceptions/check_assert_eq_zero:OK
+#74/91   exceptions/check_assert_eq_llong_min:OK
+#74/92   exceptions/check_assert_eq_llong_max:OK
+#74/93   exceptions/check_assert_lt_pos:OK
+#74/94   exceptions/check_assert_lt_zero:OK
+#74/95   exceptions/check_assert_lt_neg:OK
+#74/96   exceptions/check_assert_le_pos:OK
+#74/97   exceptions/check_assert_le_zero:OK
+#74/98   exceptions/check_assert_le_neg:OK
+#74/99   exceptions/check_assert_gt_pos:OK
+#74/100  exceptions/check_assert_gt_zero:OK
+#74/101  exceptions/check_assert_gt_neg:OK
+#74/102  exceptions/check_assert_ge_pos:OK
+#74/103  exceptions/check_assert_ge_zero:OK
+#74/104  exceptions/check_assert_ge_neg:OK
+#74/105  exceptions/check_assert_range_s64:OK
+#74/106  exceptions/check_assert_range_u64:OK
+#74/107  exceptions/check_assert_single_range_s64:OK
+#74/108  exceptions/check_assert_single_range_u64:OK
+#74/109  exceptions/check_assert_generic:OK
+#74/110  exceptions/check_assert_with_return:OK
+#74      exceptions:OK
+Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
 
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -662,7 +662,7 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
-                if (spi_imx->count >= 512)
-                        ctrl |= 0xFFF << MX51_ECSPI_CTRL_BL_OFFSET;
-                else
--                       ctrl |= (spi_imx->count*8 - 1)
-+                       ctrl |= (spi_imx->count*spi_imx->bits_per_word - 1)
-                                << MX51_ECSPI_CTRL_BL_OFFSET;
-        }
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?h=for-next&id=ec6f1b4db95b7eedb3fe85f4f14e08fa0e9281c3
 
-on top of 6.6-rc1 fixes the problem. Will you send a proper patch with
+Puranjay Mohan (1):
+  bpf, arm64: support exceptions
 
-Reported-by: Sebastian Reichel <sre@kernel.org>
-Fixes: 15a6af94a277 ("spi: Increase imx51 ecspi burst length based on transfer length")
+ arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
+ 2 files changed, 79 insertions(+), 20 deletions(-)
 
-or should I do it?
+-- 
+2.40.1
 
-Greetings,
-
--- Sebastian
-
---cvhbzmwpf7ya2bo6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUGP/oACgkQ2O7X88g7
-+poUKw//bjUN7DAL2U1d2TrCZ6bEJWiI/SCh1KIO/U+qitP7CaKWA2wzZ5vV+Ygk
-uVZx25+tE8jg2ajlDw9hB1jLOhQ0jp/r3ah+F3FjpedhQwbWPIJEuHbG5o4+h75V
-5QN2dIiGdb0D2Oq94710SND4bjCuFozc/pnYqAQYy4rjdswGnfLeFd8dBmFeXhmM
-x+D/NwDfm65USd8VtEykpvKelaiETF+LEwzCuR2oKjgz3TefabKH351t2KEetwJL
-nYgYT2eoF2AcRtDn+ngUAlXIRmY41cmd6KqH8DPa4MIwIsVP0JvawkGHv+R7KNxJ
-/u589F8dYsT8w1aPMKJATFsKY4mr2Oct/pwfs88ARvWQu78mgddyOUyety6TeGP3
-/GOE92xsN1MQ25wn52p+DfwWScYqnyg6Knj16fnH3cSIN+HEk42U3llU6f3o1WDq
-iLhwMKUeCQSErRSs+M2cxvxRexFbv7kcU52oiEqJBTDavGelZrkq01Z0cO29r0/L
-bn+Dd79+7Xx+bTJ83pXC57J+Pp53q76nIAVkoV0V5Fj0e1GzZw61Xl5Kg4Zeoe2q
-ALs4Y8v29/BSh9ScJsjpZGJdmhIPoqnJYZ7uFajyPPjrY5XMpiqd/j3zhjmYJGX7
-SsXs607gYqBVTXB9MMV6GLwzWQywZHpBc4cGi6iolfNkmps+RWs=
-=s2Bq
------END PGP SIGNATURE-----
-
---cvhbzmwpf7ya2bo6--
