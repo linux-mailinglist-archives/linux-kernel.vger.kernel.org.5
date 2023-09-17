@@ -2,339 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 291067A3ACC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE257A3B02
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240474AbjIQUJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 16:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
+        id S240505AbjIQULr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 16:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240526AbjIQUJB (ORCPT
+        with ESMTP id S240590AbjIQULd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 16:09:01 -0400
-Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9009497;
-        Sun, 17 Sep 2023 13:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
-        s=selectormx4; t=1694981329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=inPUEWNeOcYsGT6Rihk7Mfyq+oNXo6B2hTh4FomfyUM=;
-        b=Rv/1UBvREFUr1K2jLeKf3ZbXPPiKU1J+eWNkgScOqgdM2nqxkuNFoUVv662/PbVE3hoKq8
-        3D5u60NkSW7KytjVwiAveVWhC1cpcolqCqBMIRQhRflUAOfFfTf+2mFkvaOnXH9kW2wm0E
-        GKUg8E5/0M9HtXY8UvMDKTdEfFU0zCU=
-Received: from [192.168.1.18] (91-171-21-26.subs.proxad.net [91.171.21.26])
-        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id cf744ae3 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Sun, 17 Sep 2023 20:08:48 +0000 (UTC)
-Message-ID: <37e10c3d-b5ab-75ec-3c96-76e15eb9bef8@sionneau.net>
-Date:   Sun, 17 Sep 2023 22:08:47 +0200
+        Sun, 17 Sep 2023 16:11:33 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567B3F1;
+        Sun, 17 Sep 2023 13:11:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694981485; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=XcsXwrMZJ4WmkGraLw8tnCxf93iR/28w9SR7c7+HCSiww3BEdBHCUP3YOLbtvM9Tib
+    IECw3WuoXOiu0Da/PESnntJmYoIDWA/486YGzzbDDDYsyaj8Vg/gyFLopaPw0Lu0XhBZ
+    p46NBsyQJaEXrDiJsCUKDal7z/eKDlmoQTxvXp28xjWKcitYcVHg+5T8CrgGHtadXFAJ
+    xWS/SvFNrS+SY8YAgGHKvghLZxHh47JdU5thxAWzhT8RNf0/NWDjBS/X8eSHe/rTJPlo
+    aArkMzjRP1vmmxbAG1To1c+lQiQLVcaVEQ3mfAU6Sp5plhS0wOlcF5nRpeMsyeEvsNDl
+    bwtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694981485;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
+    b=Ef0il6xRoac5wEKvL9zmOYkxhdTxsKQxlUA0odQNLvrDgFSRcocAHvMbbQABCLHJs2
+    AIrENww6hzKbF5a2t+lEIUBuqrWSzIHBcvG0CmvYHIst7cFFkLddbB3E2LAXyV7HX6Si
+    OZIVACXZFsce8I97+aMDt/3fYk5QcmXvcy0k+9cIeEn1T4IsZDZw0QvE08HjlNnKkbr2
+    eeZlH0HUGRLGLVXkS1hbbBFg0cNhqAwRtsleq8UdEbgQpmtu8lgB4f/xCImZRYOiujPE
+    PtkeG97lkd+ua1ar+0lOGBOVcv2YoPN01LRvra5U8lUES9P2iM2pLJzCCGtsL/2es9Zd
+    He3g==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694981484;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
+    b=OSnuotJG+MwgZLx8mfpTzwjApvKCScN0Nv4W7AJGdKKCieOo51os4/8XNZY70jR6Pd
+    dldHWl+ybZP8RgVdBGRw4X/11DYdWftSIi5R8y3P8ram3+CR8qklFjyvrwC6gZ9Ttcjr
+    P3zepjXk9GhZh+XQNbFzhCQd8QtaMuQmLzW1TX6+yV+7JurRBfJigDPLU34Yb5SqNaM1
+    jkSXbvbZGPOlunKMbcy+Jp9kJ/NlBG/daKa06zCYpmW+JhmeoQRTSEAa/0wTiZj+CFCy
+    b1bsbluFVNzbu4UyrGl6wB6D9ZMXeyO+PaRgIhTytEQd4+PGT7h7RTkOuGS0wIoiI+cp
+    JnEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694981484;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=zGxppwIRX0Tl3MeLWQbRI04qLkWaOFo5HeDhjvTY4G0=;
+    b=42b5DEePtqlChrZhp9Op9nz7V4ylqCq3akygV8jbyjuNu14kvdlfFHQp8kNnMNcach
+    VsvjSQLemRN5ottbkbBA==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JyMI1zXvWpofGAbhC22VTSyBo5Bpg9wgYEqSm4NXFaofpx464Ao="
+Received: from p200300c58703581b312819b392712fb6.dip0.t-ipconnect.de
+    by smtp.strato.de (RZmta 49.8.2 AUTH)
+    with ESMTPSA id V04024z8HKBOI6g
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 17 Sep 2023 22:11:24 +0200 (CEST)
+Message-ID: <c66810ae52446db41fd187ee4be24d04d40c1abb.camel@iokpp.de>
+Subject: Re: [PATCH v2] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for
+ Micron eMMC Q2J54A
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
+        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Date:   Sun, 17 Sep 2023 22:11:24 +0200
+In-Reply-To: <CAPDyKFruYooG4yQ4yqrwEcrvy4xe6hYByF2Q57eQ1g0tiUtcug@mail.gmail.com>
+References: <20230914202749.470100-1-beanhuo@iokpp.de>
+         <CAPDyKFruYooG4yQ4yqrwEcrvy4xe6hYByF2Q57eQ1g0tiUtcug@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Jan Bottorff <janb@os.amperecomputing.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalrayinc.com>
-References: <20230913232938.420423-1-janb@os.amperecomputing.com>
- <i6h72feyrvo6pajo67b346masyxt7ycpfj46mvrfp4o7suh4ud@xuv5lu64s75m>
- <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
- <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
-Content-Language: en-US
-From:   Yann Sionneau <yann@sionneau.net>
-In-Reply-To: <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-Le 17/09/2023 à 02:01, Serge Semin a écrit :
-> To += Catalin, Will
->
-> Could you please join the discussion and clarify some ARM64 barriers
-> aspects?
->
-> On Fri, Sep 15, 2023 at 06:47:55PM -0700, Jan Bottorff wrote:
->> On 9/15/2023 8:21 AM, Serge Semin wrote:
->> ...
->>>> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
->>>> index ca1035e010c7..1694ac6bb592 100644
->>>> --- a/drivers/i2c/busses/i2c-designware-master.c
->>>> +++ b/drivers/i2c/busses/i2c-designware-master.c
->>>> @@ -248,6 +248,14 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
->>>>        /* Dummy read to avoid the register getting stuck on Bay Trail */
->>>>        regmap_read(dev->map, DW_IC_ENABLE_STATUS, &dummy);
->>>>
->>>> +     /*
->>>> +      * To guarantee data written by the current core is visible to
->>>> +      * all cores, a write barrier is required. This needs to be
->>>> +      * before an interrupt causes execution on another core.
->>>> +      * For ARM processors, this needs to be a DSB barrier.
->>>> +      */
->>>> +     wmb();
->>> Based on the patch log and the comment, smp_wmb() seems to be more
->>> suitable here since the problem looks like SMP-specific. Most
->>> importantly the smp_wmb() will get to be just the compiler barrier on
->>> the UP system, so no cache and pipeline flushes in that case.
->>> Meanwhile
->>>
->>> I am not ARM expert, but based on the problem and the DMB/DSB barriers
->>> descriptions using DMB should be enough in your case since you only
->>> need memory syncs.
->>>
->> Hi Serge,
->>
->> I looked at the definition of smp_wmb, and it looks like on arm64 it uses a
->> DMB barrier not a DSB barrier.
->>
->> In /arch/arm64/include/asm/barrier.h:
->> ...
->> #define __arm_heavy_mb(x...) dsb(x)
->> ...
->> #if defined(CONFIG_ARM_DMA_MEM_BUFFERABLE) || defined(CONFIG_SMP)
->> ...
->> #define wmb()		__arm_heavy_mb(st)
->> ...
->> #define __smp_wmb()	dmb(ishst)
->>
->> And then in /include/asm-generic/barrier.h it says:
->> #ifdef CONFIG_SMP
->> ...
->> #ifndef smp_wmb
->> #define smp_wmb()	do { kcsan_wmb(); __smp_wmb(); } while (0)
->> #endif
->>
->> This looks like wmb() is a DSB and smp_wmb() is a DMB on SMP systems, so the
->> two functions are not equivalent on SMP systems.
-> Right. They aren't. That's why I added a note regarding the DMB
-> instruction. Anyway see further for detailed explantation of my point.
->
->> So lets explore if we think DMB or DSB is the correct barrier.
->>
->> The ARM barrier docs I referred to has a specific example that says this:
->>
->> "In some message passing systems, it is common for one observer to update
->> memory and then send an interrupt using a mailbox of some sort to a second
->> observer to indicate that memory has been updated and the new
->> contents have been read. Even though the sending of the interrupt using a
->> mailbox might be initiated using a memory access, a DSB barrier
->> must be used to ensure the completion of previous memory accesses.
->>
->> Therefore the following sequence is needed to ensure that P2 sees the
->> updated value.
->>
->> P1:
->>   STR R5, [R1] ; message stored to shared memory location
->>   DSB [ST]
->>   STR R1, [R4] ; R4 contains the address of a mailbox
->>
->> P2:
->>   ; interrupt service routine
->>   LDR R5, [R1]
->>
->> Even if R4 is a pointer to Strongly-Ordered memory, the update to R1 might
->> not be visible without the DSB executed by P1.
->> It should be appreciated that these rules are required in connection to the
->> ARM Generic Interrupt Controller (GIC).
->> "
->>
->> I don't positivly understand why it needs to be a DSB and not just a DMB,
->> but this example matches what happens in the driver. The ARM docs do some
->> hand waving that DSB is required because of the GIC.
->>
->> Unless we can come up with a reason why this example in the ARM Barrier docs
->> is not a match for what happens in the i2c driver, then ARM is saying it has
->> to be a DSB not a DMB. If it needs to be a DSB then smb_wmb is insufficient.
->>
->> Does anybody else have a different interpretation of this section in the ARM
->> barrier docs? They use the word mailbox, and show a shared memory write, an
->> interrupt triggering write, and a read of shared memory on a different core.
->> Some would describe that as a software mailbox.
->>
->> I did read someplace (although don't have a specific reference I can give)
->> that ordering applied to normal memory writes are in a different group than
->> ordering applied between strongly ordered accesses. The excerpt from the ARM
->> barrier document above does say "Even if R4 is a pointer to Strongly-Ordered
->> memory, the update to R1 might not be visible without the DSB executed by
->> P1", which implies a DMB is insufficient to cause ordering between normal
->> memory writes and strongly-ordered device memory writes.
->>
->> I know currently on ARM64 Windows, the low-level kernel device MMIO access
->> functions (like WRITE_REGISTER_ULONG) all have a DSB before the MMIO memory
->> access. That seems a little heavy handed to me, but it also may be that was
->> required to get all the current driver code written for AMD/Intel processors
->> to work correctly on ARM64 without adding barriers in the drivers. There are
->> also non-barrier variants that can be used if a driver wants to optimize
->> performance. Defaulting to correct operation with minimal code changes would
->> reduce the risk to delivery schedules.
->>
->> Linux doesn't seem to make any attempt to have barriers in the low level
->> MMIO access functions. If Linux had chosen to do that on ARM64, this patch
->> would not have been required. For a low speed device like an i2c controller,
->> optimizing barriers likely make little difference in performance.
-> * AFAICS it does for the write(b|w|l|q)() accessors. See __dma_wb(),
-> * __io_bw() and __raw_write*() macros. The former one is converted
-> * to DMB.
->
->> Let's look at it from a risk analysis viewpoint. Say a DMB is sufficient and
->> we use the stronger DSB variant, the downside is a few cpu cycles will be
->> wasted in i2c transfers. Say we use a DMB when a DSB is required for correct
->> operation, the downside is i2c operations may malfunction. In this case,
->> using a few extra cpu cycles for an operation that does not happen at high
->> frequency is lower risk than failures in i2c transfers. If there is any
->> uncertainty in what barrier type to use, picking DSB over DMB would be
->> better. We determined from the include fragments above that wmb() give the
->> DSB and smp_wmb() does not.
->>
->> Based on the above info, I think wmb() is still the correct function, and a
->> change to smp_wmb() would not be correct.
->>
->> Sorry for the long message, I know some of you will be inspired to think
->> deeply about barriers, and some will be annoyed that I spent this much space
->> to explain how I came to the choice of wmb().
-> Thank you very much for the very-very-very detailed justification of
-> your point. I well understand why you insist on using the mandatory
-> barrier on your platform. The thing is that your patch concerns the
-> generic driver which is also executed on another archs. Thus we need
-> to be very careful with the barrier selection since it may cause
-> unpleasant side effects there. For instance some time ago I met a
-> problem with using memory barriers on the MMIO accesses on the MIPS
-> arch. Full mem access barrier caused the program execution stalling
-> for too long so it failed to fetch data from a device Rx FIFO on time.
-> FIFO got overrun, data got lost and communications were aborted with an
-> error returned. I am not saying that the same problem may happen here,
-> but just pointing out that selecting a correct barrier is important.
->
-> Since you are fixing a generic driver code we should make the
-> decisions based on the problem description and the barriers semantic
-> defined by the kernel. If for some reason the solution turns to be not
-> working, then it might as well indicate that the barrier isn't working
-> as expected by the kernel. Thorough studying the platform-specific
-> barrier implementation will be necessary then (what you've already
-> done).
->
-> Here is what you say regarding the found problem:
->
-> "Errors were happening in the ISR that looked like corrupted memory.
-> This was because memory writes from the core enabling interrupts were
-> not yet visible to the core running the ISR...  Add a write barrier
-> before enabling interrupts to assure data written by the current core
-> is visible to all cores before the interrupt fires."
->
-> Based on that, I can infer that the problem is relevant for the
-> SMP-systems only and the root of it is in one CPU/core not seeing data
-> written by another CPU/core. Indeed adding a barrier shall fix it.
-> Seeing neither uni-processor systems nor any peripheral devices are
-> affected, SMP-conditional barrier shall be enough. Here is what [1]
-> says regarding the mandatory (mb/rmb/wmb) and SMP-conditional barriers
-> (smp_mb, smp_rmb, smp_wmb):
->
-> "Note that SMP memory barriers _must_ be used to control the ordering
-> of references to shared memory on SMP systems, though the use of
-> locking instead is sufficient. ... Mandatory barriers should not be
-> used to control SMP effects, since mandatory barriers impose
-> unnecessary overhead on both SMP and UP systems. They may, however, be
-> used to control MMIO effects on accesses through relaxed memory I/O
-> windows. ... SMP memory barriers are reduced to compiler barriers on
-> uniprocessor compiled systems because it is assumed that a CPU will
-> appear to be self-consistent, and will order overlapping accesses
-> correctly with respect to itself."
->
-> [1] "CPU MEMORY BARRIERS", Documentation/memory-barriers.txt
->
-> (note [1] also contains an example of using the smp_rmb()/smp_wmb()
-> barriers in a case similar to yours but involving two tasks instead of
-> a task and ISR)
->
-> Based on that description, the mandatory and SMP-conditional barriers
-> are supposed to similarly function when it comes to ordering the
-> shared memory accesses in the SMP systems. Meanwhile the former ones
-> cause additional overhead on UPs and MMIO which is out of the defined
-> problem scope.
->
-> Thus this also indicate that smp_wmb() is your choice here. But adding
-> it didn't solve the problem meanwhile using wmb() did. And here we are
-> getting to these barriers implementation on ARM64:
-> wmb() -> DSB
-> smp_wmb() -> DMB
-> Again I am not the ARM expert, but based on the text cited in your
-> message and what can be found in the Internet I can guess that DMB
-> doesn't guarantee the memory write _completion_, but instead make sure
-> that the accesses are just orderly executed on the core pipeline (for
-> instance just by fetching and dispatching these instructions within
-> different core cycles). The writes _completion_ is guaranteed by the
-> DSB barrier. Seeing in order to solve the problem you described all
-> the writes before the IRQ is raised _must_ be finished for sure to be
-> visible on another core executing an ISR, the barrier you need is DSB.
->
-> Unless I am mistaken in some aspects all of the considerations above
-> make me thinking that perhaps the smp_mb/smp_rmb/smp_wmb barriers
-> implementations on ARM64 are incorrect in using DMB and instead should
-> be converted to using DSB. Then you'll be able to freely utilize the
-> smp_wmb() barrier in the i2c-driver.
->
-> Catalin, Will could you please clarify whether what is stated above is
-> wrong or correct? Could you give your opinion regarding the issue
-> here?
+Hi Ulf,
 
-Indeed I agree with all that's been said by Serge here.
+Thanks for your comment, much appreciated!
 
-I'm just adding some piece of information here to help understand the 
-issue and then decide what's to be done.
 
-* some ARM blog tips about when to use wmb() and smp_wmb() : 
-https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/memory-access-ordering-part-2---barriers-and-the-linux-kernel
+On Fri, 2023-09-15 at 00:09 +0200, Ulf Hansson wrote:
+> On Thu, 14 Sept 2023 at 22:28, Bean Huo <beanhuo@iokpp.de> wrote:
+> >=20
+> > From: Bean Huo <beanhuo@micron.com>
+> >=20
+> > Micron MTFC4GACAJCN eMMC supports cache but requires that flush
+> > cache
+> > operation be allowed only after a write has occurred. Otherwise,
+> > the
+> > cache flush command or subsequent commands will time out.
+>=20
+> For my information, more exactly, how can we trigger this problem?
+>=20
 
-* some details about ARMv7 barrier instructions: isb, dmb, dsb: 
-https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/memory-access-ordering-part-3---memory-access-ordering-in-the-arm-architecture
+This issue may be likely reproduced in this command sequence:
 
-* The kernel doc about memory barriers, even if I guess everybody here 
-knows this resource already: 
-https://www.kernel.org/doc/Documentation/memory-barriers.txt
+eMMC power-cycle/reset-->...(other operations, but no data write)...-
+>cache flush-->...... ->write data, must say, it is not 100%
+reproducable.
 
-If I understand correctly what I've read in the 2nd link, indeed the DMB 
-does not guarantee that the write *completes*. So if the write was for 
-instance targeting DDR: it does not guarantee that the write reached the 
-DDR before another core could be running the ISR and checks for the data.
+> >=20
+> > Signed-off-by: Bean Huo <beanhuo@micron.com>
+> > Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
+> > Tested-by: Rafael Beims <rafael.beims@toradex.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> > Changelog:
+> >=20
+> > v1--v2:
+> > =C2=A0=C2=A0=C2=A0 1. Add Rafael's test-tag, and Co-developed-by.
+> > =C2=A0=C2=A0=C2=A0 2. Check host->card whether NULL or not in
+> > __mmc_start_request() before asserting host->card->->quirks
+> >=20
+> > ---
+> > =C2=A0drivers/mmc/core/core.c=C2=A0=C2=A0 | 7 +++++++
+> > =C2=A0drivers/mmc/core/mmc.c=C2=A0=C2=A0=C2=A0 | 5 +++++
+> > =C2=A0drivers/mmc/core/quirks.h | 7 ++++---
+> > =C2=A0include/linux/mmc/card.h=C2=A0 | 2 ++
+> > =C2=A04 files changed, 18 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> > index 3d3e0ca52614..86a669b35b91 100644
+> > --- a/drivers/mmc/core/core.c
+> > +++ b/drivers/mmc/core/core.c
+> > @@ -259,6 +259,13 @@ static void __mmc_start_request(struct
+> > mmc_host *host, struct mmc_request *mrq)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 host->cqe_ops->cqe_off(host);
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->ops->request(host, mrq=
+);
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->card && host->card->qui=
+rks &
+> > MMC_QUIRK_BROKEN_CACHE_FLUSH &&
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !host->ca=
+rd->written_flag) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (mrq->cmd->opcode =3D=3D MMC_WRITE_MULTIPLE_BLOCK ||
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mrq->cmd->opcode =3D=3D MMC_WRITE_B=
+LOCK)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->card-=
+>written_flag =3D true;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+> I don't quite like that we are adding the above code here - as it's
+> used for *all* requests.
+>=20
+> Seems like the flag is better set from the mmc block device driver
+> instead. Somewhere in the path when we serve I/O write requests.
+>=20
 
-*But*, it guarantees that "All data accesses by this processor/core 
-before the DMB will be visible to all other masters within the specified 
-shareability domain before any of the data accesses after it."
+yes, you are correct, I will update the patch and add this flag set in
+mmc block driver mmc_blk_mq_issue_rq().
 
-In other word (If I understand correctly): maybe it won't have reached 
-the DDR yet *but* the cache coherency mechanism is done and all other 
-cores would read the new data if they load at this address.
+> > =C2=A0}
+> >=20
+> > =C2=A0static void mmc_mrq_pr_debug(struct mmc_host *host, struct
+> > mmc_request *mrq,
+> > diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> > index 89cd48fcec79..a2edd065fa1b 100644
+> > --- a/drivers/mmc/core/mmc.c
+> > +++ b/drivers/mmc/core/mmc.c
+> > @@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host
+> > *host, u32 ocr,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!oldcard)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 host->card =3D card;
+> >=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->written_flag =3D false;
+> > +
+>=20
+> According to your earlier reply, it sounds like the problem isn't
+> really about the card being re-initialized, but rather that we
+> actually need a write request to happen before a flush. No matter
+> what, no?
+>=20
+> See more about this below.
+>=20
 
-That seems to me to do the job for our use case.
+Actually, it matters that the first cache flush command after
+reboot/reset. means that for the first cache flush command, before
+execution, the write data operation should occur,
+After that, there is no problem even if there are no writes before the
+cache is flushed.
 
-The difference between DMB and DSB is that the DSB, on top of doing what 
-the DMB does, stalls *all* instructions (and not just stores) until the 
-synchronization mechanism is done.
 
-That's my understanding but let's wait for the experts to enlighten us :)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> >=20
+> > =C2=A0free_card:
+> > @@ -2081,6 +2083,9 @@ static int _mmc_flush_cache(struct mmc_host
+> > *host)
+> > =C2=A0{
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
+> >=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->card->quirks & MMC_QUIR=
+K_BROKEN_CACHE_FLUSH &&
+> > !host->card->written_flag)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return err;
+> > +
+>=20
+> Could an option to the above, be to reset the flag here instead.
+> After
+> a successful cache flush has been done.
+>=20
+>=20
 
-Regards,
+As I explained above, the first cache flush after a power cycle/reset
+is important. We just want to eliminate the first unnecessary cache
+flush.
+We can eliminate all unnecessary cache flushes when the cache is empty.
+But I don't want to change the current logic too much, only want to
+focus on the first unnecessary cache flush, how do you think?
 
--- 
-
-Yann
+Kind regards,
+Bean
 
