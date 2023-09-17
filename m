@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2827A33DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6915D7A33E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 08:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbjIQFma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 01:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+        id S231886AbjIQFuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 01:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234012AbjIQFm0 (ORCPT
+        with ESMTP id S230222AbjIQFuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 01:42:26 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931DD12D;
-        Sat, 16 Sep 2023 22:42:20 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50300141a64so1610308e87.0;
-        Sat, 16 Sep 2023 22:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694929339; x=1695534139; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=m7X712RcBU0EimntyDGp+oEBEn/juMf/+pTBwumrZJc=;
-        b=E9xGHi37wjQmYwyaQp+bIVarLKQCOjufxcNREQ2UViQchBlnh+RLsHpodPk7KQmX20
-         S0QltsF0N4SsX2+LnfmjjwCcNIJ4rP5J9pb7ISFT+N6PyRDNT7Hf7EgvJN5mK6MlFA//
-         vADbh+2W0VOLcneCYysIMz45J1SFT4QoV8C0RFO+ATaAc0CR3YK3lMdd2SpV4JgWuiS9
-         Rr+ldtRthG8Zdn1cFu2JQj+pGmOUBock7GOHGnhQZ1mOtwoDLpXSTTttxWwqs7s99enC
-         cop3XMGgsXt5sCFRhLMMeTrjbPpmILaTBjDbWVBcjJnQOgjNBwRbbFpd+fkZiqKLC/6D
-         FUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694929339; x=1695534139;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m7X712RcBU0EimntyDGp+oEBEn/juMf/+pTBwumrZJc=;
-        b=vDP0sHlababbTR/5zOUsQC9BvgIXpr9O4N1UT9vSQJmBjtrE0ohF9oTZsdB9oH0Xsd
-         tD3rmToQLwmEH5r7RKO5J4GeOFAzUMCwuOZWkk8jnpYrfpDCpKkbQjP8rxHb9s+qisba
-         jyCMc52zKW4IE8N8nAUOHl6506cewi5M6UXSwUMpQ/FcaGvp3/MOm6A8PFVc/C1BnUAe
-         Q5QQMTqTP4mJnhxZSqVxzhQ15dn5aUcJeNNobWeLr/1vkvXAYOnKQMO5XHKBa/PHPFq/
-         4kGTJMPcpd+Kapgymp8hYr9b3IXFXVzVYlfDKrr8XaLhkirMp9NwED0nBuhL8q1LagiY
-         JFMg==
-X-Gm-Message-State: AOJu0Yy+qmcQ6QhmdwZpS5zagsdbO1eF8mgNvuDPdsmGz9PNOLDxksEB
-        H6QWMOMlq+DkyG2NktIyAu9KQqsOZZMB5rj9DvNjG1QTK2U=
-X-Google-Smtp-Source: AGHT+IHhPISiucVKXq5WicjC8dVd6S4jyb2fDyi7SUvuQYkBwDQfa9mvJpDVukeVVnrIo+TwbPLj2eoC2VOboAanv30=
-X-Received: by 2002:a05:6512:39ca:b0:4fe:3a57:7c98 with SMTP id
- k10-20020a05651239ca00b004fe3a577c98mr6127529lfu.32.1694929338412; Sat, 16
- Sep 2023 22:42:18 -0700 (PDT)
+        Sun, 17 Sep 2023 01:50:08 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BE310B;
+        Sat, 16 Sep 2023 22:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694929799;
+        bh=I2ORHDPmzg8IMQkgZSGbyhmTUn7nAixQxkusYZXX9Ow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bNhvK9COLyxFXqsSZoncbm4ouWx+Xn1gh6p+fU6V31arYi8oIbkEOyMxEv8YtTaM4
+         9JuXFJ7xrV8X8uhdb/ZrUvtuG054Xa4X5b66PsE+uDraTemleD4RBH9PezFqXpHXYh
+         jgb+n3iwz/+Ck3NN2n1YjPHOM/2fLBWGlxMJLLTw=
+Date:   Sun, 17 Sep 2023 07:49:57 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/4] tools/nolibc: avoid unused parameter warnings for
+ ENOSYS fallbacks
+Message-ID: <2bd688b7-5f1b-44ca-a41b-6e90dc3e8557@t-8ch.de>
+References: <20230914-nolibc-syscall-nr-v1-0-e50df410da11@weissschuh.net>
+ <20230914-nolibc-syscall-nr-v1-2-e50df410da11@weissschuh.net>
+ <20230917025851.GE9646@1wt.eu>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 17 Sep 2023 00:42:07 -0500
-Message-ID: <CAH2r5mvynNQOCJFdVOTf82H3y_GF1UuF=EvcAw4FL1RVu5ieTg@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230917025851.GE9646@1wt.eu>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+On 2023-09-17 04:58:51+0200, Willy Tarreau wrote:
+> On Thu, Sep 14, 2023 at 06:01:18PM +0200, Thomas Weißschuh wrote:
+> > The ENOSYS fallback code does not use its functions parameters.
+> > This can lead to compiler warnings about unused parameters.
+> > 
+> > Explicitly avoid these warnings.
+> 
+> Just out of curiosity, did you find a valid case for enabling this
+> warning or were you trying various combinations ? I'm asking because
+> I've never seen it enabled anywhere given that it's probably the most 
+> useless and unusable warning: as soon as you're dealing with function
+> pointers, you start to have multiple functions with a similar
+> prototype, some of which just don't need certain arguments, and the
+> only way to shut the warning is to significantly uglify the code.
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+nolibc-test uses it currently and I also used it in some projects.
 
-are available in the Git repository at:
+> If really needed, I'm wondering if instead we shouldn't have an
+> "no_syscall*" set of macros, that would have the same signature
+> as my_syscall* to just consume all args in the same order and
+> return -ENOSYS. E.g, consider the following:
+> 
+>   @@ -934,6 +960,11 @@ int sys_select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeva
+>    #endif
+>    	return my_syscall5(__NR__newselect, nfds, rfds, wfds, efds, timeout);
+>    #else
+>   +	(void)nfds;
+>   +	(void)rfds;
+>   +	(void)wfds;
+>   +	(void)efds;
+>   +	(void)timeout;
+>    	return -ENOSYS;
+>    #endif
+> 
+> It would become:
+> 
+>   @@ -934,6 +960,11 @@ int sys_select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeva
+>    #endif
+>    	return my_syscall5(__NR__newselect, nfds, rfds, wfds, efds, timeout);
+>    #else
+>   +	return no_syscall5(nfds, rfds, wfds, efds, timeout);
+>   -	return -ENOSYS;
+>    #endif
+> 
+> What do you think ?
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.6-rc1-smb3-client-fixes
+The idea sounds good. But "no_syscall5" sounds a bit non-obvious to me.
 
-for you to fetch changes up to 2c75426c1fea591bb338ba072068f83d2f6be088:
+Maybe the macro-equivalent of this?
 
-  smb3: fix some minor typos and repeated words (2023-09-15 01:37:33 -0500)
+static inline int __nolibc_enosys(...)
+{
+	return -ENOSYS;
+}
 
-----------------------------------------------------------------
-Three small SMB3 client fixes: one for a null check when assembling SMB3 headers
-and two minor cleanup.
+The only-vararg function unfortunately needs C23 so we can't use it.
 
-----------------------------------------------------------------
-Steve French (3):
-      smb3: move server check earlier when setting channel sequence number
-      smb3: correct places where ENOTSUPP is used instead of preferred
-EOPNOTSUPP
-      smb3: fix some minor typos and repeated words
+It's clear to the users that this is about ENOSYS and we don't need a
+bunch of new macros similar.
 
- fs/smb/client/inode.c     |  2 +-
- fs/smb/client/smb2ops.c   |  6 +++---
- fs/smb/client/smb2pdu.c   | 31 +++++++++++++++++++------------
- fs/smb/client/transport.c |  2 +-
- 4 files changed, 24 insertions(+), 17 deletions(-)
+I'll check if it is cleaner to implement a generic macro or a few
+numbered ones.
 
 
--- 
-Thanks,
-
-Steve
+Thomas
