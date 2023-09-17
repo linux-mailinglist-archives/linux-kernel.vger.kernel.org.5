@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 693E27A34D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F09A7A34DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235133AbjIQJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 05:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        id S235791AbjIQJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 05:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235359AbjIQJLL (ORCPT
+        with ESMTP id S236042AbjIQJMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 05:11:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BAF186;
-        Sun, 17 Sep 2023 02:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=wLxL2+Kq/XNTS+h8BUCpeidY77wkZqep7D52h9DDxjM=; b=mnrJS9EL4Y3WIeSkKo4PKDG7AK
-        2Ljnr5FemE/8WZ5M40M/M6JkJTdlJFBx4xeyMlEnkwpONLF8xbq58htSQx/kPCA0B8VnEj+DWBPqx
-        sxh3P6dC7V+n3YZCN8e55sTSr3Nlw2kifthm5YgyOr8mdB6g5IWBCpxLgq0vbFnCZGoJiB6DGrF12
-        s95H3XcLbK1Ftf0hW2j1ZGxVzxRtvYeJjPr3tQB9/0KjrvO0Rzn+3OYVFUioZoT18JggyPIHyBaQT
-        hQThqdf4S3d+XdkeoN854mG4UVsJtgR5TC+G2tdMhI/j4Z12KaA/uONFLoPNU1cj4+SL8i1eH3N9B
-        /2DH85Yw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qhnnU-003pBn-BR; Sun, 17 Sep 2023 09:10:32 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 084ED300388; Sun, 17 Sep 2023 11:10:32 +0200 (CEST)
-Date:   Sun, 17 Sep 2023 11:10:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Yi Zhang <yi.zhang@redhat.com>, Ming Lei <ming.lei@redhat.com>,
-        mark.rutland@arm.com, Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Changhui Zhong <czhong@redhat.com>,
-        yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        chengzhihao <chengzhihao1@huawei.com>
-Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
- fs/dcache.c:365 __dentry_kill+0x214/0x278]
-Message-ID: <20230917091031.GA1543@noisy.programming.kicks-ass.net>
-References: <ZOWFtqA2om0w5Vmz@fedora>
- <20230823-kuppe-lassen-bc81a20dd831@brauner>
- <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
- <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
- <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com>
+        Sun, 17 Sep 2023 05:12:41 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669E0188
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:12:36 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31f7638be6eso3350160f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 02:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694941955; x=1695546755; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eIzkNF7FeuJCHsWmBBiFl7ckCgevreFCJP37qRY7qOE=;
+        b=FlpXbKpNnSh3pcJE2SYWTQ4c8e4fSYth26+ZWthLMOqlCbIJ/OCZIDmHCZOicAN/QL
+         wJKx2mvChib9ZzTjFkJ/uaFFKx8LqCWy7H07GyyCSgwaIfYSPsPVic+e9/gkBS35/XwI
+         D7153ObsrTChalFzg6rjZzk34TdV8zJcEcgZE0KBzv4W1qvDj1gy0+6qr73RFkFZOjoq
+         Mw0L/6ZB91AljXxIf8HwniXsqnOjz9Nel6JSaSzFv9i4a81UpPNRsUci8PzF8Zhc24ue
+         lEKLu2qX7bam/tuHEiB4FEB6jl/AlFSY6kY+eCB+hHFRmp8b4WKFDdb8qoEqMhS2dBgx
+         GK1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694941955; x=1695546755;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eIzkNF7FeuJCHsWmBBiFl7ckCgevreFCJP37qRY7qOE=;
+        b=mQno3Fi8BxrGnGZEPuKJ0KoqbrEgOgBIGQGK6PDrinUtfgXWb/vDu78KHsqRweqfyL
+         Vuvl4Nm546AeQMSoZYZ6NR4erUNQLm+/5M8KrVfk0psTt59AtB8PrqzqZyfCWNnrOtpI
+         +VuegIwQi9aofhubjjtPfFDsb8xHDEtaO+uABVqpyxCJpexhDEXHgRChCvusVpIRHCOw
+         wBOJqhrl8wa9TL2t4W36NE+AXzdUYEGtjSyBi2fSqSF5QWOP8ACGpDeIRVMsxOz8t3jI
+         dqkI3BPWa+5iu+U8kbg9D7nn4B4IyCaIZMz6io6P2tBVc7F/0zXh2XZOWMxXgdJAUF/v
+         1Qtg==
+X-Gm-Message-State: AOJu0YxhQkKWGc+U5VHSnbRnShr70S3i01QaOUUqEuAKA41t0HyeFgpX
+        3BH+J7GGuw+owX9710grPRJBjg==
+X-Google-Smtp-Source: AGHT+IHMt7kgs7ogFAY35Byv8+iZhOk3KvEHEwDynVxRIqZHEWQP5fSujdsR5FSz8PwRPgBs3OfEUw==
+X-Received: by 2002:adf:eccc:0:b0:31a:ed75:75df with SMTP id s12-20020adfeccc000000b0031aed7575dfmr5417500wro.15.1694941954772;
+        Sun, 17 Sep 2023 02:12:34 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4ea0:9945:6800:8739])
+        by smtp.gmail.com with ESMTPSA id r8-20020a5d4e48000000b0031ad2f9269dsm9099688wrt.40.2023.09.17.02.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 02:12:34 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v3 0/2] gpio: sim: improve the usage of __free()
+Date:   Sun, 17 Sep 2023 11:12:23 +0200
+Message-Id: <20230917091225.6350-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 02:55:47PM +0800, Baokun Li wrote:
-> On 2023/9/13 16:59, Yi Zhang wrote:
-> > The issue still can be reproduced on the latest linux tree[2].
-> > To reproduce I need to run about 1000 times blktests block/001, and
-> > bisect shows it was introduced with commit[1], as it was not 100%
-> > reproduced, not sure if it's the culprit?
-> > 
-> > 
-> > [1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeffery
-> Hello, everyone！
-> 
-> We have confirmed that the merge-in of this patch caused hlist_bl_lock
-> (aka, bit_spin_lock) to fail, which in turn triggered the issue above.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> [root@localhost ~]# insmod mymod.ko
-> [   37.994787][  T621] >>> a = 725, b = 724
-> [   37.995313][  T621] ------------[ cut here ]------------
-> [   37.995951][  T621] kernel BUG at fs/mymod/mymod.c:42!
-> [r[  oo 3t7@.l996o4c61al]h[o s T6t21] ~ ]#Int ernal error: Oops - BUG:
-> 00000000f2000800 [#1] SMP
-> [   37.997420][  T621] Modules linked in: mymod(E)
-> [   37.997891][  T621] CPU: 9 PID: 621 Comm: bl_lock_thread2 Tainted:
-> G            E      6.4.0-rc2-00034-g9257959a6e5b-dirty #117
-> [   37.999038][  T621] Hardware name: linux,dummy-virt (DT)
-> [   37.999571][  T621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS
-> BTYPE=--)
-> [   38.000344][  T621] pc : increase_ab+0xcc/0xe70 [mymod]
-> [   38.000882][  T621] lr : increase_ab+0xcc/0xe70 [mymod]
-> [   38.001416][  T621] sp : ffff800008b4be40
-> [   38.001822][  T621] x29: ffff800008b4be40 x28: 0000000000000000 x27:
-> 0000000000000000
-> [   38.002605][  T621] x26: 0000000000000000 x25: 0000000000000000 x24:
-> 0000000000000000
-> [   38.003385][  T621] x23: ffffd9930c698190 x22: ffff800008a0ba38 x21:
-> 0000000000000001
-> [   38.004174][  T621] x20: ffffffffffffefff x19: ffffd9930c69a580 x18:
-> 0000000000000000
-> [   38.004955][  T621] x17: 0000000000000000 x16: ffffd9933011bd38 x15:
-> ffffffffffffffff
-> [   38.005754][  T621] x14: 0000000000000000 x13: 205d313236542020 x12:
-> ffffd99332175b80
-> [   38.006538][  T621] x11: 0000000000000003 x10: 0000000000000001 x9 :
-> ffffd9933022a9d8
-> [   38.007325][  T621] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 :
-> ffffd993320b5b40
-> [   38.008124][  T621] x5 : ffff0001f7d1c708 x4 : 0000000000000000 x3 :
-> 0000000000000000
-> [   38.008912][  T621] x2 : 0000000000000000 x1 : 0000000000000000 x0 :
-> 0000000000000015
-> [   38.009709][  T621] Call trace:
-> [   38.010035][  T621]  increase_ab+0xcc/0xe70 [mymod]
-> [   38.010539][  T621]  kthread+0xdc/0xf0
-> [   38.010927][  T621]  ret_from_fork+0x10/0x20
-> [   38.011370][  T621] Code: 17ffffe0 90000020 91044000 9400000d (d4210000)
-> [   38.012067][  T621] ---[ end trace 0000000000000000 ]---
+Hi Linus et al,
 
-Is this arm64 or something? You seem to have forgotten to mention what
-platform you're using.
+I'm sorry for the noise but v2 was incorrect, this is a fixed version.
+
+As discussed here's an improved fix for the invalid usage of __free() in
+gpio-sim. I based it on your "maybe-sane" suggestion but unfortunately it
+missed a couple details that make it impossible to avoid a conditional
+initialization of the managed pointer without repeating the call to
+fwnode_create_software_node().
+
+What we're doing here is: we're creating the string array for the standard
+"gpio-line-names" device property. It can look like this:
+
+    { "foo", "bar", "baz" }
+
+In which case lines 0, 1 and 2 are named but it can also look like this:
+
+    { "foo", NULL, NULL, "bar", NULL, "baz" }
+
+Where only lines 0, 3 and 5 have assigned names.
+
+So the `has_line_names` boolean set when encountering the first line with a
+name is there for a reason, namely: it's possible that only the line at
+offset 0 will have a name, leaving max_offset at 0 but we still need to
+create an array of size 1 in this case.
+
+If the array is created and filled, then it needs to live until a deep
+copy is completed in fwnode_create_software_node() so it has to be defined
+at the top of the function.
+
+I think this still results in clearer code then if we called
+`return fwnode_create_software_node();` twice with the same arguments.
+
+I also changed the naming to reflect the purpose of the array: it can be
+sparse so it's not really "number of lines", it's the "size of the array
+holding the names". The array can be of size 10 but we can only have 3
+named lines.
+
+To atone for the above, I've added a second patch which changes the other
+instance of __free() in this driver to be initialized in place.
+
+If this is alright for you, please consider applying it directly to your
+tree for v6.6-rc2.
+
+Best regards,
+Bartosz Golaszewski
+
+v2 -> v3:
+- restore the offset out-of-bounds checks
+
+v1 -> v2:
+- split the line name setting into two parts
+- add a patch improving the second instance of using __free()
+
+Bartosz Golaszewski (2):
+  gpio: sim: fix an invalid __free() usage
+  gpio: sim: initialize a managed pointer when declaring it
+
+ drivers/gpio/gpio-sim.c | 68 +++++++++++++++++++----------------------
+ 1 file changed, 32 insertions(+), 36 deletions(-)
+
+-- 
+2.39.2
+
