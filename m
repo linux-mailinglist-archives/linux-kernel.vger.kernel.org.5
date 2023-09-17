@@ -2,86 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCE47A3611
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0F07A3618
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbjIQPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S233251AbjIQPNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbjIQPI7 (ORCPT
+        with ESMTP id S231688AbjIQPM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:08:59 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B84DB187;
-        Sun, 17 Sep 2023 08:08:53 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 38HF8KQT014506;
-        Sun, 17 Sep 2023 17:08:20 +0200
-Date:   Sun, 17 Sep 2023 17:08:20 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/4] tools/nolibc: avoid unused parameter warnings for
- ENOSYS fallbacks
-Message-ID: <20230917150820.GA14418@1wt.eu>
-References: <20230914-nolibc-syscall-nr-v1-0-e50df410da11@weissschuh.net>
- <20230914-nolibc-syscall-nr-v1-2-e50df410da11@weissschuh.net>
- <20230917025851.GE9646@1wt.eu>
- <2bd688b7-5f1b-44ca-a41b-6e90dc3e8557@t-8ch.de>
- <20230917094827.GA11081@1wt.eu>
- <1ef57a1e-89d3-4eb6-be12-3045a31f99e4@t-8ch.de>
+        Sun, 17 Sep 2023 11:12:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEA5119;
+        Sun, 17 Sep 2023 08:12:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE05C433C8;
+        Sun, 17 Sep 2023 15:12:49 +0000 (UTC)
+Date:   Sun, 17 Sep 2023 11:12:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Manjusaka <me@manjusaka.me>
+Cc:     edumazet@google.com, mhiramat@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v4] tracepoint: add new `tcp:tcp_ca_event` trace event
+Message-ID: <20230917111246.42ecffce@rorschach.local.home>
+In-Reply-To: <c978c5a5-a9a6-41bf-86f2-2eebf6888e1e@manjusaka.me>
+References: <20230825133246.344364-1-me@manjusaka.me>
+        <c978c5a5-a9a6-41bf-86f2-2eebf6888e1e@manjusaka.me>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ef57a1e-89d3-4eb6-be12-3045a31f99e4@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 05:07:18PM +0200, Thomas Weißschuh wrote:
-> On 2023-09-17 11:48:27+0200, Willy Tarreau wrote:
-> > [..]
-> > > Maybe the macro-equivalent of this?
-> > > 
-> > > static inline int __nolibc_enosys(...)
-> > > {
-> > > 	return -ENOSYS;
-> > > }
-> > > 
-> > > The only-vararg function unfortunately needs C23 so we can't use it.
-> > >
-> > > It's clear to the users that this is about ENOSYS and we don't need a
-> > > bunch of new macros similar.
-> > 
-> > I like it, I didn't think about varargs, it's an excellent idea! Let's
-> > just do simpler, start with a first arg "syscall_num" that we may later
-> > reuse for debugging, and just mark this one unused:
-> > 
-> >   static inline int __nolibc_enosys(int syscall_num, ...)
-> >   {
-> > 	(void)syscall_num;
-> >   	return -ENOSYS;
-> >   }
-> 
-> But which syscall_num to use, as the point of __nolibc_enosys() would be
-> that no syscall number is available and the defines are missing.
+On Sun, 17 Sep 2023 22:06:45 +0800
+Manjusaka <me@manjusaka.me> wrote:
 
-good point :-)
+> Ping to review(
 
-> For debugging we could add a string argument, though.
+The ask was to resend the patches after the merge window.
 
-That works for me.
-
-Willy
+-- Steve
