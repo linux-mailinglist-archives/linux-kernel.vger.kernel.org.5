@@ -2,69 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7C57A36F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52BC7A36EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237699AbjIQRvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 13:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S237517AbjIQRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 13:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238517AbjIQRvl (ORCPT
+        with ESMTP id S234032AbjIQRuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 13:51:41 -0400
-Received: from out-211.mta0.migadu.com (out-211.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6142E129
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:51:35 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 03:46:06 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1694973092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X5VCzkLDtXSGELcuDnEU7RoMTTqvoogEBre3WHO6Oe4=;
-        b=POpXb36kq+DJyJrG0vdY/DNXzBnwQQvdNRgqGSB3eRhARVMVl1NUpzhs9sy5vsUoUO9Ztb
-        IEJH6VqaBwOZBGLau3ZB7NwcPuCBfGNywbfVf2Bbp9ARvsK32zWZlJPK7fCIkDwrvB7zWU
-        A9Bi9jPmQjXrD0KXvb/91pZfoE3p8qIyLghdXxSz2XwjO5tda2tSxgErFYajJNhCm98oQr
-        BmPWQ9Ehv13cT+Suj80R3guDpJS7zOZTPCutteLzAcgL/UDFoOm3QNQ6R3ky7/udI1jsFs
-        5mVi06C45DmQUiELdif0DP3KmVwGLOvddB7oizToeTkgzsZ2ZrXo5mGrcWzAgA==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   John Watts <contact@jookia.org>
-To:     alsa-devel@alsa-project.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen
- property
-Message-ID: <ZQc7XnrXX5VenYoX@titan>
-References: <20230917173726.1916439-1-contact@jookia.org>
- <20230917173726.1916439-4-contact@jookia.org>
+        Sun, 17 Sep 2023 13:50:22 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2283FF4;
+        Sun, 17 Sep 2023 10:50:17 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3214de9cd8bso313737f8f.2;
+        Sun, 17 Sep 2023 10:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694973015; x=1695577815; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GIu2xad4yPPJphEXscXACo8A+mc86HHOHMLqh4/KKH8=;
+        b=FV9VP6AvlR/cdTC6cFs//boxHepvhHpGFqK5SwUQa1QJE5fT9fhYpJbnl5Mpw9YXIa
+         1hEaVldBTrrqSBDwXNCpG2an5MciHYCcJCrESgw1AgncM/bOtEMR55P4/3eTxt0/EoLV
+         h2qYEN0LWH+Pi5aEJ7bD1EwMhOmgrwYhOJjcakNu3TGpThEG6A5kSu59tZR29GqEsVej
+         FC8s0v0OM88fXNXpjiN2+e14v+y4+N1wU8b4Z6ZmfO6hF7NKc0OxfYc6qepQPGkmSNmQ
+         qb3xec+4r1B4cSwQSegJfRiv9ccStfJ+OnxFFvVYkwj9WCnOVdZsrEaZ+XEIdNrNz21A
+         hrpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694973015; x=1695577815;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GIu2xad4yPPJphEXscXACo8A+mc86HHOHMLqh4/KKH8=;
+        b=bWveCq+ID13kJGLETYdjrS1c8Y4fc5gHzdqc7Vll0akSGDpS9XistPLvhncM6yuedm
+         k6EuusJs9LGdVSgOs/bqjJcat5CmnuGxyrAQm9XeFYGrXoQ+rvX3/ckGQms1MwrLJu0X
+         zKMnZgtz2ZUjZQ4fMEeKeJyxQMIKEPBxOLyawaEc+n5nc/7kgVceN4sjDokLi3yo8jBz
+         elaIC1eJ+xhPqGlZ6CCYByzQJxCRceD/1EKxr/S8xgVn5tugRHXswmbCBUnTPRqp/F9H
+         THvpDGEUqWHN5QrgPk8oX1LXa1BCkwVGhkkvxiRWZPj/LHk/oi8tvjFgaTCYt/JNFwC+
+         dEhQ==
+X-Gm-Message-State: AOJu0YxzVujdDxJg+dC+kMYPZijrOgqApLE38y7wNZDKX6ky5kQZ0cbU
+        MXDC7CCqNRGtDqtkLWP/n1E=
+X-Google-Smtp-Source: AGHT+IHJC9hvoUpHcGYXrYI3w63xwp8sbaCqCFf/9IqQF/EEqAnFvOV+jeN2U/Ycg/iL7Ok7nncyMw==
+X-Received: by 2002:a5d:5188:0:b0:318:7bc:122e with SMTP id k8-20020a5d5188000000b0031807bc122emr6450169wrv.23.1694973015444;
+        Sun, 17 Sep 2023 10:50:15 -0700 (PDT)
+Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
+        by smtp.gmail.com with ESMTPSA id t8-20020a5d42c8000000b00317a04131c5sm3329267wrr.57.2023.09.17.10.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 10:50:13 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 17 Sep 2023 19:50:11 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Ard Biesheuvel <ardb@google.com>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
+Message-ID: <ZQc8U36oL/NES6oo@gmail.com>
+References: <20230912090051.4014114-17-ardb@google.com>
+ <ZQQiUxh5vmeZnp7s@gmail.com>
+ <ZQRAckHVxQZRNEGA@gmail.com>
+ <CAGnOC3Zw49_30FkGY=RRLn-sCHNgFY_T0ugNJZCgg_T3opHm+Q@mail.gmail.com>
+ <CAMj1kXEVA5iL79HwXdYOAXAr0ZemS6repMRi9b20VSU=u0Ee=Q@mail.gmail.com>
+ <ZQVxIIh1byq65lK/@gmail.com>
+ <CAMj1kXH7b+TRajewcY0hzh_j0qMV+X9Nm2PNFftWTTEBp9xr5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230917173726.1916439-4-contact@jookia.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAMj1kXH7b+TRajewcY0hzh_j0qMV+X9Nm2PNFftWTTEBp9xr5g@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 03:37:26AM +1000, John Watts wrote:
-> +Optional properties:
-> +
-> + - wlf,fsampen : FSAMPEN pin value, 0 for low, 1 for high, 2 for disconnected
-> +
 
-Uh-oh, I forgot to specify what it defaults to.
-Should I reply to this patch with a fix or re-send the entire series after I get feedback?
+* Ard Biesheuvel <ardb@kernel.org> wrote:
 
-John.
+> On Sat, 16 Sept 2023 at 11:11, Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > > > > So, the first 8 patches broke the x86-64-defconfig-ish Qemu bzImage bootup,
+> > > > > due to the 8th patch:
+> > > > >
+> > > > >   988b52b207a9fe74c3699bda8c2256714926b94b is the first bad commit
+> > > > >   commit 988b52b207a9fe74c3699bda8c2256714926b94b
+> > > > >   Author: Ard Biesheuvel <ardb@kernel.org>
+> > > > >   Date:   Tue Sep 12 09:01:01 2023 +0000
+> > > > >
+> > > > >       x86/boot: Define setup size in linker script
+> > > > >
+> > > > > I've removed it for now - but this side effect was not expected.
+> > > > >
+> > > >
+> > > > No, definitely not expected. I tested various combinations of i386 /
+> > > > x86_64 built with GCC / Clang doing EFI or BIOS boot.
+> > > >
+> > > > I'll rebase the remaining stuff onto -tip and see if I can reproduce this.
+> > >
+> > > This is actually quite bizarre. x86_64_defconfig has
+> > > CONFIG_EFI_MIXED=y and i tested that this change produces the exact
+> > > same bzImage binary in that case.
+> > >
+> > > Could you send me the .config and the QEMU command line perhaps?
+> >
+> > So the patch below is the delta between v2 and v3 - that is expected
+> > to fix the bzImage boot crash, right?
+> >
+> 
+> Yes.
+> 
+> ld.bfd does something unexpected [to me] here, and the resulting value
+> turns out not to be a multiple of 512 at all.
+> 
+> With this tweak, my claim that this patch does not affect the binary
+> bzImage at all actually holds for ld.bfd as well (provided that
+> CONFIG_EFI_MIXED=y and CONFIG_LOCAL_VERSION_AUTO is disabled)
+
+Ok - it boots & works fine for me too now, with the full series applied.
+
+Thanks,
+
+	Ingo
