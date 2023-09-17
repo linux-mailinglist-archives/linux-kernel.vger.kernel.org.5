@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C530F7A355D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 13:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9427A356A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 13:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbjIQLik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 07:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S232063AbjIQLwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 07:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbjIQLiZ (ORCPT
+        with ESMTP id S230527AbjIQLvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 07:38:25 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC23211F
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 04:38:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2749b3e682aso1613700a91.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 04:38:19 -0700 (PDT)
+        Sun, 17 Sep 2023 07:51:33 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0993BF4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 04:51:28 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c00a32cbb1so1427991fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 04:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694950699; x=1695555499; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g9QH8hk/DgCKb1tbsqeV8sGSBePrOSPOK+lsRX0IiX8=;
-        b=Hx58A5WzT5r3Jx342XeaVAbWXVwhV0LTyn02/BTBVQxKTcnLtdLi/1l2E7X8Zt6d+0
-         tB1VsoHfh0djEGCYvnjDst9aTSVlvofYAk/XqV3wEtsNJQcp7BtzDr/TMQu630TcKSmm
-         X129i8TuGZOdrmmJ+lv6coc9Cj5zFi+poGV8sQ5jGDZVEHlg3JiXyf9pSl3NXyySK1UM
-         PMybdO8rEXps9nED4pt8sFdDkG2ac1tVbbNXjZtPzIcpc31TGgSKQp537ZEx2cKDPIct
-         T3a59B31RgFLOOPYrR3xC32mflBvrBrKmXSEImIajDgC1sKkDWo5FEh79gzucQwR8nxl
-         Wqvw==
+        d=gmail.com; s=20230601; t=1694951486; x=1695556286; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9xrQyEDDPF4pjN0t8fjnGLWFJ3LWmcH4FpyIlSZVAc=;
+        b=S07b+Hn6IFR+3nPPr5Km8AWLhysv5NQc016F16LO+cJ3+Fvc+hpKv35xj1HlifEU4S
+         A4OpfXAFLrUKSlvqkaBSzRNfj946sUFGzycpWPIle8w4PdY4gWTvCt6qbl6SqA8VUByr
+         EctYM5jWhkJUO1CFyrFFef//Ap/EExWT6pO9mzQErnJearn2LN5UIcgamIXopb2UeRFe
+         /JnwLcPPiD88hOvU2xNT9feRPoSvBwaGgR+SLIICPR4OfBoKmHZ8bFwN0XFexXYkmy3b
+         h4BwH3DLZF4vJG3lfMs/ej0CTYQpt5OHl6GVURNeiawTTZyQOJqG8T1MhzgSjB2PnIJ2
+         hFzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694950699; x=1695555499;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g9QH8hk/DgCKb1tbsqeV8sGSBePrOSPOK+lsRX0IiX8=;
-        b=nfG6ZrwrdRAB4sBSbJrMNIUAG8OFDDLHGCU69UiTc6O0W+J2BJTOeHRLknKDhzhG4T
-         ZPUNjN29f3XBQy9TpFsT/4QbXo3CbNuUq1Fh0sBVAdhfqLKd9KQOrzzuNNzmOPxIzfRj
-         s5uNHBHriohbqI3hLZEcHSl6v8v/IcWle52HTL1UAIJhjVQhB7uCWwROnmE2AGxSqIoa
-         WVMwy9sSGt8b/+AgKuNexaxHhP5B+QIwKTpUNHyCABpyb0cxY+kOvmNBHQX9Ez4ZMBDI
-         EJOZfSbC7Mrznf7C9jrWTOQJWxa6s+QmNBJK0/XD2Q/L/2sjwISkWK2G7hbKtKQCPf9v
-         fkLQ==
-X-Gm-Message-State: AOJu0Yy06SXzWNyp1RhHb/UGKDjTv04XWw92FxMwt8LkzyjXMpfvuT/A
-        x+x5AS2ykGt1Ik6TSSwmYaNubi0B7oN6X9FSLGfxfUCLLgE=
-X-Google-Smtp-Source: AGHT+IEZD5rDvgyWFmwBa+YfdtdiE6Bth8swjZTr88VK8s99eGXnlOrzUbCRb+jIwutADn6OilB/0VjX7LP4mNsy7y4=
-X-Received: by 2002:a17:90b:1495:b0:273:a392:7077 with SMTP id
- js21-20020a17090b149500b00273a3927077mr5737624pjb.10.1694950698816; Sun, 17
- Sep 2023 04:38:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694951486; x=1695556286;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O9xrQyEDDPF4pjN0t8fjnGLWFJ3LWmcH4FpyIlSZVAc=;
+        b=tWOf/cklT4L15Gbugi2AoAnjyGWrHMjeIPwP9SiHiw8DgOuHLDnp0xXsTjbjW0CU07
+         MpXchndT3Q/+Xdj22JVYGIU8bVezQ06a0TQCqnYAqTWF6kfWoRmuT+hk3n/dquo1P/9K
+         tN3xzxPy6r1qKSL1q/WPfubY7SGkdyNaoZid7SEb5hJIatafpIthKMb9Sjv1zGaLQoAR
+         1MGp7l4CoEABDmq1rl5mfY52gT/wYYSTJBlAbGuPVqfO5ouuZKu4Sfn35JY0lxRmshG2
+         E5S2/aYCcIL4Iqz5qCRRiHcl8HXnDNEHptYFEvfu532GSZO/m1/TXLoevMSyka3fuy8W
+         9Jog==
+X-Gm-Message-State: AOJu0YzT9wkGM07AM+yvbW+BjE9d4hgM8zZgpraJRdGGdn9TBBx6hdkc
+        +VmEhANSfrFnBafRY33U6CIx9w3FV5hgyZu+
+X-Google-Smtp-Source: AGHT+IH+qthPxv7+ASG27RAKsvysI0ixA/sFrrbszqVZbp5k3YQF1KyKecUXdsvDwO5fw4kcw5a17g==
+X-Received: by 2002:a2e:8e91:0:b0:2c0:7d6:570b with SMTP id z17-20020a2e8e91000000b002c007d6570bmr210492ljk.26.1694951485710;
+        Sun, 17 Sep 2023 04:51:25 -0700 (PDT)
+Received: from HP-ENVY-Notebook (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.gmail.com with ESMTPSA id l16-20020a2ea310000000b002bcbae4c21fsm1581454lje.50.2023.09.17.04.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 04:51:25 -0700 (PDT)
+Date:   Sun, 17 Sep 2023 13:51:23 +0200
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] staging: vme_user: Fix block comments where '*' on
+ each line should be aligned
+Message-ID: <ZQboO4KSoDuANDYe@HP-ENVY-Notebook>
+References: <20230909184818.699987-1-bergh.jonathan@gmail.com>
+ <2023091339-mountain-asleep-9439@gregkh>
 MIME-Version: 1.0
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Sun, 17 Sep 2023 04:38:07 -0700
-Message-ID: <CAMo8BfLb6U9xtMtt1t9vQX_nKek7kEt+Rvv5NwpvTHu0kdiXcg@mail.gmail.com>
-Subject: /proc/*/maps broken on nommu
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023091339-mountain-asleep-9439@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 13, 2023 at 10:33:24AM +0200, Greg KH wrote:
+> On Sat, Sep 09, 2023 at 08:48:18PM +0200, Jonathan Bergh wrote:
+> > Fixed checkpatch warnings where lines with '*' in block comments should
+> > be aligned and were not as well as incorrect tab spacings at the start of
+> > comment lines.
+> > 
+> > Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> > ---
+> >  drivers/staging/vme_user/vme_tsi148.h | 140 +++++++++++++-------------
+> >  1 file changed, 70 insertions(+), 70 deletions(-)
+> > 
+> > diff --git a/drivers/staging/vme_user/vme_tsi148.h b/drivers/staging/vme_user/vme_tsi148.h
+> > index dbdf5dabaf90..9748b7897527 100644
+> > --- a/drivers/staging/vme_user/vme_tsi148.h
+> > +++ b/drivers/staging/vme_user/vme_tsi148.h
+> > @@ -251,28 +251,28 @@ static const int TSI148_LCSR_VIACK[8] = { 0, TSI148_LCSR_VIACK1,
+> >   */
+> >  #define TSI148_LCSR_VMEFL	0x250
+> >  
+> > -	/*
+> > -	 * VME exception.
+> > -	 * offset  260
+> > +/*
+> > + * VME exception.
+> > + * offset  0x260
+> 
+> This change is not documented :(
+> 
+> Also I have two 2/2 patches, yet they are both different :(
+> 
+> Please fix this up and send a whole new series, properly versioned,
+> as-is, I have no idea what to do here.
 
-As of v6.5 cat /proc/*/maps produces empty output on nommu xtensa systems.
-Bisection points to the commit 0c563f148043 ("proc: remove VMA rbtree
-use from nommu").
-It looks like the issue may be not in the m_start (where find_vma(mm,
-addr) returns
-NULL), but in the nommu version of find_vma itself. I've tried replacing nommu
-find_vma implementation with an implementation of the MMU version and it
-fixes the /proc/*/maps output. Kind of (it works as expected on one of
-my systems,
-but consistently locks up on the other).
-
-Any suggestions of what might be wrong/how to fix it properly?
-
--- 
-Thanks.
--- Max
+Great, thanks for your help with these. 
