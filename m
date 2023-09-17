@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8AC7A3654
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4165C7A3662
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237537AbjIQPhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        id S236756AbjIQPpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236757AbjIQPgg (ORCPT
+        with ESMTP id S234517AbjIQPoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:36:36 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070A4120;
-        Sun, 17 Sep 2023 08:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694964989;
-        bh=8OF18RXUU5eFusbx27aPN1t2ODt6bcVmev+mbNqOz2A=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=jVF/GO+twJAwA+z9XJbBE9vdpIcr9l9BFC6GtZzdTFXXA9z6H36B8LppsioT8hRl5
-         s5bEcUZpBoz1Tr+IARCSNrZcRfhREWq7taNBndr6ZiyjvP78UGFp+Sz4oOAzCiSUwN
-         YGNxxign8gznWncWSWAJqkakwDV+JSMZMSUzf28s=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sun, 17 Sep 2023 17:36:19 +0200
-Subject: [PATCH v2 4/4] tools/nolibc: automatically detect necessity to use
- pselect6
+        Sun, 17 Sep 2023 11:44:38 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D92FF7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 08:44:32 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so9257941fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 08:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694965470; x=1695570270; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kyE2cahixYUhSxqHETVMaNUic+89+Aiv8SH8B+785uI=;
+        b=QUMpuvdfFfB8vggbGhcXQwTOtjK8mKZzYvkIOOGj2TpVWvEdDovO9T8YALO5QzZHl7
+         GeM4SJQQ8c4B+9DSSTxn0Y8duB2AnHvE3+qs46q8seJ9Jq6g4C/i2LTUj2iz3/FsbCiF
+         fhZGvAQk7ASJ3km5LGKkau4h9bt1oDYp+pt1/8U60eR+GcqKgg98NkOG3nT0P+xbZTRN
+         VUTi6T/4xBhz6dWaqUwplT2+kiu2DOk80SXhRhJQw7YbaX8xzONW7SJhN2pYRRsgddjU
+         CV+OsuUYZC5N9Avu3T+0hod+ovsezceX56ZcpBuYpPGTf9uqwgo3WqobTEP5sOvDW8zc
+         xAFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694965470; x=1695570270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kyE2cahixYUhSxqHETVMaNUic+89+Aiv8SH8B+785uI=;
+        b=E9Y1KNrlhcTA2deGLfVhQWd3agu/JG7O7SXArA4d5IjMT/dsk0zxbqr8iQAM/MTgQz
+         +DPVPsJmlFnK/BfLQfxO+Q4midowc4i7CJVeF0cRAr4nYsuUfia36/veL61f/kZVJ+n0
+         7IEb9LD8SBc5Xhw+0VB+mBQJl1+9O83o2Ch9gexeWvy0pAzaKtrWUHg1r5rZIqSARzzd
+         4X3GnW4e35LFfhZLKsX12B1XLM/BWNzLRVziLWYl4Y3WZ8ybsAj8vnT1Ns12fUzJamj9
+         ZNZuuKD684kV1Wlv92vK7aHzO/gSmVyrA1gXpZywyXp11AVf8c+7bBR/UxJe8RmHU6F8
+         M0Fw==
+X-Gm-Message-State: AOJu0YxZF+IKzYZPpOwiVCn1hLsj1Kd41VLHeyaZx9yFboYRjVJpjaFk
+        U7YKQsc8tvziJdZNyMxMkUK1rPs0ZfKNxpwN
+X-Google-Smtp-Source: AGHT+IEX25Wx2tJPOYCZ/eMzwF4zM4wpul2EIIBw1pw2JVFiB+wZEFEffTxiQFokZgxXv7dCE4tYIg==
+X-Received: by 2002:a2e:a7c9:0:b0:2bf:ff17:811e with SMTP id x9-20020a2ea7c9000000b002bfff17811emr2215422ljp.14.1694965469323;
+        Sun, 17 Sep 2023 08:44:29 -0700 (PDT)
+Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.googlemail.com with ESMTPSA id h19-20020a2e9ed3000000b002b836d8c839sm1668550ljk.40.2023.09.17.08.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 08:44:28 -0700 (PDT)
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH] staging: vme_user: Replace strcpy with strscpy
+Date:   Sun, 17 Sep 2023 17:43:02 +0200
+Message-Id: <20230917154302.913956-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230917-nolibc-syscall-nr-v2-4-03863d509b9a@weissschuh.net>
-References: <20230917-nolibc-syscall-nr-v2-0-03863d509b9a@weissschuh.net>
-In-Reply-To: <20230917-nolibc-syscall-nr-v2-0-03863d509b9a@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694964977; l=3999;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=8OF18RXUU5eFusbx27aPN1t2ODt6bcVmev+mbNqOz2A=;
- b=r70FaDa0oXnB5g6rG9xiPUzpbzaTBrRLIFecxT5GyLpgj8QqFZA7eO8sFNrih0oVELZmQUBUj
- VIwaqhgVNWHA+sXZ3pLas5fa/tW43zzi/VZugDaqLPIosnDX05BTNPN
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can automatically detect if pselect6 is needed or not from the kernel
-headers. This removes the need to manually specify it.
+Replace strcpy with strscpy as preferred by checkpatch in vme_fake.c to
+prevent warnings.
 
-Acked-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 ---
- tools/include/nolibc/arch-aarch64.h   |  3 ---
- tools/include/nolibc/arch-loongarch.h |  4 +---
- tools/include/nolibc/arch-riscv.h     |  3 ---
- tools/include/nolibc/sys.h            | 10 +++++-----
- 4 files changed, 6 insertions(+), 14 deletions(-)
+ drivers/staging/vme_user/vme_fake.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/include/nolibc/arch-aarch64.h b/tools/include/nolibc/arch-aarch64.h
-index 6c33c46848e3..b23ac1f04035 100644
---- a/tools/include/nolibc/arch-aarch64.h
-+++ b/tools/include/nolibc/arch-aarch64.h
-@@ -20,10 +20,7 @@
-  *   - the arguments are cast to long and assigned into the target registers
-  *     which are then simply passed as registers to the asm code, so that we
-  *     don't have to experience issues with register constraints.
-- *
-- * On aarch64, select() is not implemented so we have to use pselect6().
-  */
--#define __ARCH_WANT_SYS_PSELECT6
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 9bcb89a84d53..0cf5700e151f 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -1093,7 +1093,7 @@ static int __init fake_init(void)
+ 	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
+ 			(unsigned long) fake_bridge);
  
- #define my_syscall0(num)                                                      \
- ({                                                                            \
-diff --git a/tools/include/nolibc/arch-loongarch.h b/tools/include/nolibc/arch-loongarch.h
-index bf98f6220195..3f8ef8f86c0f 100644
---- a/tools/include/nolibc/arch-loongarch.h
-+++ b/tools/include/nolibc/arch-loongarch.h
-@@ -19,10 +19,8 @@
-  *   - the arguments are cast to long and assigned into the target
-  *     registers which are then simply passed as registers to the asm code,
-  *     so that we don't have to experience issues with register constraints.
-- *
-- * On LoongArch, select() is not implemented so we have to use pselect6().
-  */
--#define __ARCH_WANT_SYS_PSELECT6
-+
- #define _NOLIBC_SYSCALL_CLOBBERLIST \
- 	"memory", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8"
+-	strcpy(fake_bridge->name, driver_name);
++	strscpy(fake_bridge->name, driver_name, sizeof(fake_bridge->name));
  
-diff --git a/tools/include/nolibc/arch-riscv.h b/tools/include/nolibc/arch-riscv.h
-index 950cc2283fd7..1927c643c739 100644
---- a/tools/include/nolibc/arch-riscv.h
-+++ b/tools/include/nolibc/arch-riscv.h
-@@ -19,10 +19,7 @@
-  *   - the arguments are cast to long and assigned into the target
-  *     registers which are then simply passed as registers to the asm code,
-  *     so that we don't have to experience issues with register constraints.
-- *
-- * On riscv, select() is not implemented so we have to use pselect6().
-  */
--#define __ARCH_WANT_SYS_PSELECT6
- 
- #define my_syscall0(num)                                                      \
- ({                                                                            \
-diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-index f05144e46b67..2f359cb03d10 100644
---- a/tools/include/nolibc/sys.h
-+++ b/tools/include/nolibc/sys.h
-@@ -930,7 +930,11 @@ int sys_select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeva
- 		struct timeval *t;
- 	} arg = { .n = nfds, .r = rfds, .w = wfds, .e = efds, .t = timeout };
- 	return my_syscall1(__NR_select, &arg);
--#elif defined(__ARCH_WANT_SYS_PSELECT6) && defined(__NR_pselect6)
-+#elif defined(__NR__newselect)
-+	return my_syscall5(__NR__newselect, nfds, rfds, wfds, efds, timeout);
-+#elif defined(__NR_select)
-+	return my_syscall5(__NR_select, nfds, rfds, wfds, efds, timeout);
-+#elif defined(__NR_pselect6)
- 	struct timespec t;
- 
- 	if (timeout) {
-@@ -938,10 +942,6 @@ int sys_select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeva
- 		t.tv_nsec = timeout->tv_usec * 1000;
- 	}
- 	return my_syscall6(__NR_pselect6, nfds, rfds, wfds, efds, timeout ? &t : NULL, NULL);
--#elif defined(__NR__newselect)
--	return my_syscall5(__NR__newselect, nfds, rfds, wfds, efds, timeout);
--#elif defined(__NR_select)
--	return my_syscall5(__NR_select, nfds, rfds, wfds, efds, timeout);
- #else
- 	return __nolibc_enosys(__func__, nfds, rfds, wfds, efds, timeout);
- #endif
-
+ 	/* Add master windows to list */
+ 	INIT_LIST_HEAD(&fake_bridge->master_resources);
 -- 
-2.42.0
+2.34.1
 
