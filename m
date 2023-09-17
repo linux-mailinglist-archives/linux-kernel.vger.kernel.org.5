@@ -2,137 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CBE7A34EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96947A34EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236238AbjIQJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 05:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        id S235156AbjIQJbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 05:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbjIQJ0y (ORCPT
+        with ESMTP id S229651AbjIQJbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 05:26:54 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732C1ED;
-        Sun, 17 Sep 2023 02:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Z+aC0zXdHCc6uureUTWFgaVoTUf6RgPh+KhdB5J8JSU=; b=QiguzArwDK2Mepi9M/SthfKtU2
-        c/aITr3FwwU9zTdPgTXcDeL2lrddAQ956siCu+/HWWrHBnuNgq/8C6iNqsQj0kFKCl8Durr4Xjo3i
-        vEBDqKZGxk0QT0/0AN801cxvPDR7EzrniGjwS0DLnHOG26GB/xOyC6d2Yd25f/TasW13Fkkx6bh1B
-        //tRaV6onVPjGN8W6o9nuPHvsDTlJ4dNbKotqGKljyNrM62Gw+NjH2GL+t1WzJhjXFKyfyLD/Tmtb
-        8HlU5jFF7htOhX56Hom1fNFF5XON/9u6it+0M9ttMC8qWfhNiWCIe0AJbIxGiSwI/WpEpiaRcVJFz
-        o1mY2qbQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qho2h-00BZlC-24;
-        Sun, 17 Sep 2023 09:26:17 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BB0B2300388; Sun, 17 Sep 2023 11:26:16 +0200 (CEST)
-Date:   Sun, 17 Sep 2023 11:26:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Yi Zhang <yi.zhang@redhat.com>, Ming Lei <ming.lei@redhat.com>,
-        mark.rutland@arm.com, Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Changhui Zhong <czhong@redhat.com>,
-        yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        chengzhihao <chengzhihao1@huawei.com>
-Subject: Re: [czhong@redhat.com: [bug report] WARNING: CPU: 121 PID: 93233 at
- fs/dcache.c:365 __dentry_kill+0x214/0x278]
-Message-ID: <20230917092616.GA8409@noisy.programming.kicks-ass.net>
-References: <ZOWFtqA2om0w5Vmz@fedora>
- <20230823-kuppe-lassen-bc81a20dd831@brauner>
- <CAFj5m9KiBDzNHCsTjwUevZh3E3RRda2ypj9+QcRrqEsJnf9rXQ@mail.gmail.com>
- <CAHj4cs_MqqWYy+pKrNrLqTb=eoSOXcZdjPXy44x-aA1WvdVv0w@mail.gmail.com>
- <89d049ed-6bbf-bba7-80d4-06c060e65e5b@huawei.com>
- <20230917091031.GA1543@noisy.programming.kicks-ass.net>
+        Sun, 17 Sep 2023 05:31:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153BCF7;
+        Sun, 17 Sep 2023 02:31:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7ABC433C8;
+        Sun, 17 Sep 2023 09:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694943065;
+        bh=qY0ViA8iEFZmx8G65CjIhaEAbyjyjLTxoLfn54fZa5g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UDH0D2papCX2thnUX8OIVhRc2iRMyi7dle9xYgW2W4iUmTC+yYQPlARmPWjj6PDYh
+         ToMPSZhqcVVj25EqIaozCZtDSatcffWIp7513hN13WkJsll+xBsZxfalAoEFvv5mXf
+         JwslFr68XzhSa5MzrIgl+yleHSbK+iwCT5vUPfJQtREP9GasM0UtLYv0JHAWDLU9E5
+         96haPC9TLesoozutomNkmW57/L/hvt2IKZdFGM/WxwFMHDzp+usMqppJnXoZt20PAO
+         5J2qbRoTB0S/twH+D6IeahregKRdllMSVAwG0NcDCy3wL0in//4IF+YYNmq6oVea5m
+         hMVM4dGDkgG5Q==
+Date:   Sun, 17 Sep 2023 10:30:59 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <william.gray@linaro.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] iio: addac: stx104: Add 8254 Counter/Timer
+ support
+Message-ID: <20230917103059.41730dbd@jic23-huawei>
+In-Reply-To: <20230916112031.3634-1-william.gray@linaro.org>
+References: <20230916112031.3634-1-william.gray@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230917091031.GA1543@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 11:10:32AM +0200, Peter Zijlstra wrote:
-> On Sat, Sep 16, 2023 at 02:55:47PM +0800, Baokun Li wrote:
-> > On 2023/9/13 16:59, Yi Zhang wrote:
-> > > The issue still can be reproduced on the latest linux tree[2].
-> > > To reproduce I need to run about 1000 times blktests block/001, and
-> > > bisect shows it was introduced with commit[1], as it was not 100%
-> > > reproduced, not sure if it's the culprit?
-> > > 
-> > > 
-> > > [1] 9257959a6e5b locking/atomic: scripts: restructure fallback ifdeffery
-> > Hello, everyone！
-> > 
-> > We have confirmed that the merge-in of this patch caused hlist_bl_lock
-> > (aka, bit_spin_lock) to fail, which in turn triggered the issue above.
+On Sat, 16 Sep 2023 07:20:31 -0400
+William Breathitt Gray <william.gray@linaro.org> wrote:
+
+> The STX104 features an 8254 Counter/Timer chip providing three
+> counter/timers which can be used for frequency measurement, frequency
+> output, pulse width modulation, pulse width measurement, event count,
+> etc. The STX104 provides a register bank selection to bank select
+> between the 8254 Bank and the Indexed Register Array Bank; the Indexed
+> Register Array is not utilized by this driver, so the 8254 Bank is
+> selected unconditionally.
 > 
-> > [root@localhost ~]# insmod mymod.ko
-> > [   37.994787][  T621] >>> a = 725, b = 724
-> > [   37.995313][  T621] ------------[ cut here ]------------
-> > [   37.995951][  T621] kernel BUG at fs/mymod/mymod.c:42!
-> > [r[  oo 3t7@.l996o4c61al]h[o s T6t21] ~ ]#Int ernal error: Oops - BUG:
-> > 00000000f2000800 [#1] SMP
-> > [   37.997420][  T621] Modules linked in: mymod(E)
-> > [   37.997891][  T621] CPU: 9 PID: 621 Comm: bl_lock_thread2 Tainted:
-> > G            E      6.4.0-rc2-00034-g9257959a6e5b-dirty #117
-> > [   37.999038][  T621] Hardware name: linux,dummy-virt (DT)
-> > [   37.999571][  T621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS
-> > BTYPE=--)
-> > [   38.000344][  T621] pc : increase_ab+0xcc/0xe70 [mymod]
-> > [   38.000882][  T621] lr : increase_ab+0xcc/0xe70 [mymod]
-> > [   38.001416][  T621] sp : ffff800008b4be40
-> > [   38.001822][  T621] x29: ffff800008b4be40 x28: 0000000000000000 x27:
-> > 0000000000000000
-> > [   38.002605][  T621] x26: 0000000000000000 x25: 0000000000000000 x24:
-> > 0000000000000000
-> > [   38.003385][  T621] x23: ffffd9930c698190 x22: ffff800008a0ba38 x21:
-> > 0000000000000001
-> > [   38.004174][  T621] x20: ffffffffffffefff x19: ffffd9930c69a580 x18:
-> > 0000000000000000
-> > [   38.004955][  T621] x17: 0000000000000000 x16: ffffd9933011bd38 x15:
-> > ffffffffffffffff
-> > [   38.005754][  T621] x14: 0000000000000000 x13: 205d313236542020 x12:
-> > ffffd99332175b80
-> > [   38.006538][  T621] x11: 0000000000000003 x10: 0000000000000001 x9 :
-> > ffffd9933022a9d8
-> > [   38.007325][  T621] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 :
-> > ffffd993320b5b40
-> > [   38.008124][  T621] x5 : ffff0001f7d1c708 x4 : 0000000000000000 x3 :
-> > 0000000000000000
-> > [   38.008912][  T621] x2 : 0000000000000000 x1 : 0000000000000000 x0 :
-> > 0000000000000015
-> > [   38.009709][  T621] Call trace:
-> > [   38.010035][  T621]  increase_ab+0xcc/0xe70 [mymod]
-> > [   38.010539][  T621]  kthread+0xdc/0xf0
-> > [   38.010927][  T621]  ret_from_fork+0x10/0x20
-> > [   38.011370][  T621] Code: 17ffffe0 90000020 91044000 9400000d (d4210000)
-> > [   38.012067][  T621] ---[ end trace 0000000000000000 ]---
+> Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+> ---
+> Looks like this was missed in the last merge cycle, so I'm resending it
+> now as requested. [^1]
 > 
-> Is this arm64 or something? You seem to have forgotten to mention what
-> platform you're using.
+> [^1]: https://lore.kernel.org/all/ZJoO++gEMiDsZioz@fedora/
+Ah. I indeed missed this entirely - saw counters in the patch title and failed
+to notice it was being added to an IIO driver :(  Sorry about that.
 
-Is that an LSE or LLSC arm64 ?
+Anyhow, LGTM. Applied to the togreg branch of iio.git and pushed out as testing
+for 0-day etc to poke at it and see if we missed anything.
 
-Anyway, it seems that ARM64 shouldn't be using the fallback as it does
-everything itself.
+Thanks,
 
-Mark, can you have a look please? At first glance the
-atomic64_fetch_or_acquire() that's being used by generic bitops/lock.h
-seems in order..
+Jonathan
+
+> 
+>  drivers/iio/addac/Kconfig  |  1 +
+>  drivers/iio/addac/stx104.c | 61 ++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 60 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/addac/Kconfig b/drivers/iio/addac/Kconfig
+> index 877f9124803c..b2623881f0ec 100644
+> --- a/drivers/iio/addac/Kconfig
+> +++ b/drivers/iio/addac/Kconfig
+> @@ -38,6 +38,7 @@ config STX104
+>  	select REGMAP_MMIO
+>  	select GPIOLIB
+>  	select GPIO_REGMAP
+> +	select I8254
+>  	help
+>  	  Say yes here to build support for the Apex Embedded Systems STX104
+>  	  integrated analog PC/104 card.
+> diff --git a/drivers/iio/addac/stx104.c b/drivers/iio/addac/stx104.c
+> index d1f7ce033b46..6946a65512ca 100644
+> --- a/drivers/iio/addac/stx104.c
+> +++ b/drivers/iio/addac/stx104.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+>  #include <linux/gpio/regmap.h>
+> +#include <linux/i8254.h>
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/types.h>
+>  #include <linux/isa.h>
+> @@ -55,6 +56,7 @@ MODULE_PARM_DESC(base, "Apex Embedded Systems STX104 base addresses");
+>  #define STX104_ADC_STATUS (STX104_AIO_BASE + 0x8)
+>  #define STX104_ADC_CONTROL (STX104_AIO_BASE + 0x9)
+>  #define STX104_ADC_CONFIGURATION (STX104_AIO_BASE + 0x11)
+> +#define STX104_I8254_BASE (STX104_AIO_BASE + 0x12)
+>  
+>  #define STX104_AIO_DATA_STRIDE 2
+>  #define STX104_DAC_OFFSET(_channel) (STX104_DAC_BASE + STX104_AIO_DATA_STRIDE * (_channel))
+> @@ -77,6 +79,7 @@ MODULE_PARM_DESC(base, "Apex Embedded Systems STX104 base addresses");
+>  /* ADC Configuration */
+>  #define STX104_GAIN GENMASK(1, 0)
+>  #define STX104_ADBU BIT(2)
+> +#define STX104_RBK GENMASK(7, 4)
+>  #define STX104_BIPOLAR 0
+>  #define STX104_GAIN_X1 0
+>  #define STX104_GAIN_X2 1
+> @@ -168,6 +171,32 @@ static const struct regmap_config dio_regmap_config = {
+>  	.io_port = true,
+>  };
+>  
+> +static const struct regmap_range pit_wr_ranges[] = {
+> +	regmap_reg_range(0x0, 0x3),
+> +};
+> +static const struct regmap_range pit_rd_ranges[] = {
+> +	regmap_reg_range(0x0, 0x2),
+> +};
+> +static const struct regmap_access_table pit_wr_table = {
+> +	.yes_ranges = pit_wr_ranges,
+> +	.n_yes_ranges = ARRAY_SIZE(pit_wr_ranges),
+> +};
+> +static const struct regmap_access_table pit_rd_table = {
+> +	.yes_ranges = pit_rd_ranges,
+> +	.n_yes_ranges = ARRAY_SIZE(pit_rd_ranges),
+> +};
+> +
+> +static const struct regmap_config pit_regmap_config = {
+> +	.name = "i8254",
+> +	.reg_bits = 8,
+> +	.reg_stride = 1,
+> +	.reg_base = STX104_I8254_BASE,
+> +	.val_bits = 8,
+> +	.io_port = true,
+> +	.wr_table = &pit_wr_table,
+> +	.rd_table = &pit_rd_table,
+> +};
+> +
+>  static int stx104_read_raw(struct iio_dev *indio_dev,
+>  	struct iio_chan_spec const *chan, int *val, int *val2, long mask)
+>  {
+> @@ -339,6 +368,21 @@ static const char *stx104_names[STX104_NGPIO] = {
+>  	"DIN0", "DIN1", "DIN2", "DIN3", "DOUT0", "DOUT1", "DOUT2", "DOUT3"
+>  };
+>  
+> +static int bank_select_i8254(struct regmap *map)
+> +{
+> +	const u8 select_i8254[] = { 0x3, 0xB, 0xA };
+> +	size_t i;
+> +	int err;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(select_i8254); i++) {
+> +		err = regmap_write_bits(map, STX104_ADC_CONFIGURATION, STX104_RBK, select_i8254[i]);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int stx104_init_hw(struct stx104_iio *const priv)
+>  {
+>  	int err;
+> @@ -361,7 +405,7 @@ static int stx104_init_hw(struct stx104_iio *const priv)
+>  	if (err)
+>  		return err;
+>  
+> -	return 0;
+> +	return bank_select_i8254(priv->aio_ctl_map);
+>  }
+>  
+>  static int stx104_probe(struct device *dev, unsigned int id)
+> @@ -369,6 +413,7 @@ static int stx104_probe(struct device *dev, unsigned int id)
+>  	struct iio_dev *indio_dev;
+>  	struct stx104_iio *priv;
+>  	struct gpio_regmap_config gpio_config;
+> +	struct i8254_regmap_config pit_config;
+>  	void __iomem *stx104_base;
+>  	struct regmap *aio_ctl_map;
+>  	struct regmap *aio_data_map;
+> @@ -406,6 +451,11 @@ static int stx104_probe(struct device *dev, unsigned int id)
+>  		return dev_err_probe(dev, PTR_ERR(dio_map),
+>  				     "Unable to initialize dio register map\n");
+>  
+> +	pit_config.map = devm_regmap_init_mmio(dev, stx104_base, &pit_regmap_config);
+> +	if (IS_ERR(pit_config.map))
+> +		return dev_err_probe(dev, PTR_ERR(pit_config.map),
+> +				     "Unable to initialize i8254 register map\n");
+> +
+>  	priv = iio_priv(indio_dev);
+>  	priv->aio_ctl_map = aio_ctl_map;
+>  	priv->aio_data_map = aio_data_map;
+> @@ -449,7 +499,13 @@ static int stx104_probe(struct device *dev, unsigned int id)
+>  		.drvdata = dio_map,
+>  	};
+>  
+> -	return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &gpio_config));
+> +	err = PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &gpio_config));
+> +	if (err)
+> +		return err;
+> +
+> +	pit_config.parent = dev;
+> +
+> +	return devm_i8254_regmap_register(dev, &pit_config);
+>  }
+>  
+>  static struct isa_driver stx104_driver = {
+> @@ -464,3 +520,4 @@ module_isa_driver(stx104_driver, num_stx104);
+>  MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
+>  MODULE_DESCRIPTION("Apex Embedded Systems STX104 IIO driver");
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_IMPORT_NS(I8254);
+> 
+> base-commit: 9dc03309fe9ba9f9b26a37b2dd4fa2d5111a1ccf
+
