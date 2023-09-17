@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C53D7A35A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 15:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03EE7A35AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 15:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjIQNU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 09:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
+        id S233750AbjIQNYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 09:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbjIQNUn (ORCPT
+        with ESMTP id S232880AbjIQNYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 09:20:43 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEAD189
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:20:37 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-401da71b85eso39983505e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 06:20:37 -0700 (PDT)
+        Sun, 17 Sep 2023 09:24:17 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B38130;
+        Sun, 17 Sep 2023 06:24:11 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3aa14d8641cso2602451b6e.3;
+        Sun, 17 Sep 2023 06:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aceart.de; s=google; t=1694956836; x=1695561636; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KeYIqn2tdFkcVAufe9gBvH8l2EIbPxMaLKSc9nvnSeI=;
-        b=fGP/lbeOLDw9ka7WpYIOuuqmh2b0qkPdH4OKothbxnK3awDnxiGkVXPoqDUU4I9Bbh
-         gHibX/usDnz6WHH2BHTYY6hKXtmwJaoLJJwJO+eP1isLelK6Cv0rlx8qXE1PIHe3RdpE
-         XcENRMZei5ZaA5Fvoxugqi3n5axgIOIQQUdZgJjIe55D6YnWB74vgmU96fCdQHdgoCok
-         9yl9FQBmzI4Cb/Ma8gdsOlXtdfw/w5wBdHZckbjoPkE7y3vlsdmHnAzaOXU/WePYx+Ti
-         PZ4/2YQYNzvM6VH5IR8i9KlD7lXZJoBbqf30HE2nsZFJv5cbe0038aHxi4mRLphfmfVl
-         CTTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694956836; x=1695561636;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1694957051; x=1695561851; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KeYIqn2tdFkcVAufe9gBvH8l2EIbPxMaLKSc9nvnSeI=;
-        b=u0X9USICE6aYmYtcvVViAVVC12XBIsvpGQqv1lYrjmSd0kZVgeBF1EGiXMcqbpNkuN
-         UE5AdsyuI4NeKO42WIq5oX2TMkUXX8u8P0lkxKTR0vpcqqfGdj+kuLsWzaXJfRfmabww
-         wPHlygnIbJtklzy0D4MSvH6oDly71ncEiQe1MPDABT7IWGWAwaCuq1c7nCkEXfaK5DPy
-         nSpK4jJ3A67pZg1C/fnop5l8mt73JTlm0lC/9o7KPpi4fuT8B5718Aq2JpojWaMusU5r
-         DKu2Rqquac98ohXxXnPvKb/ze5Uu/ccuewghuBaWJSmmUjSYC7D4erWRiWPGyIysBkjJ
-         tXTg==
-X-Gm-Message-State: AOJu0YxmRUBOAXWiJR9sL1IgVvNqxKtpShzDomPUfFGzOTEKD7/N2s8i
-        23zTZq8jK4ZlFSsfqRn89O+9vQ==
-X-Google-Smtp-Source: AGHT+IH4ywV4aEv+TpxbpFW30ZsBFhptGh4bDnt8s/U1O/3wFXPg4T07xR32tTPSdkwu/HFEYDVc2A==
-X-Received: by 2002:a05:600c:2901:b0:401:906b:7e9d with SMTP id i1-20020a05600c290100b00401906b7e9dmr6226687wmd.18.1694956835911;
-        Sun, 17 Sep 2023 06:20:35 -0700 (PDT)
-Received: from ?IPv6:2a02:8070:d84:9160:acd3:26fc:724e:a2dd? ([2a02:8070:d84:9160:acd3:26fc:724e:a2dd])
-        by smtp.gmail.com with ESMTPSA id r9-20020a05600c320900b00404732ad815sm8936077wmp.42.2023.09.17.06.20.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 06:20:35 -0700 (PDT)
-Message-ID: <dd0f65048f7030184caad4d99b8277d589c6d352.camel@aceart.de>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial
- device tree
-From:   lukas walter <lukas.walter@aceart.de>
-To:     bryan.odonoghue@linaro.org
-Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lukas.walter@aceart.de,
-        phone-devel@vger.kernel.org, raymondhackley@protonmail.com,
-        robh+dt@kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Date:   Sun, 17 Sep 2023 15:20:34 +0200
-In-Reply-To: <3a66a198-5817-4c74-9047-c49e5bcc84c2@linaro.org>
-Organization: aceArt GmbH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        bh=WowTavHHUt6VXrXWYAIAmM5GQAVg53+hUmPjaFGm7W8=;
+        b=dhyiUTh8x46T1uJ3OtUkdONibVXePNhq4VVgT7hwZIlxRa770kDDjMYeC8WKX4Pgjf
+         EaIFRfhanxdwS3V5yhvnpjPGNBmHncrYqds+UMCBbNP6RNUOi+Rxsy1IPcQdYUAtHJI7
+         dxvqTJ6i5EMT9PFY+MDjA7NK+kIfGOvbVhsAG2z/W/VfFe4R7tAcuHatHuXHPl/EDem1
+         TcjTfnYRI1RosGWB3d4NXyFkcsv+ofHDJEUHhwDn/MVe6Jvfk5gZ1FF3rJLljlxxWyKY
+         LmoetcFI9yZmovgoSePSQfUD9OD5O1Thf3PBXY1sN6GScITEiuxsxpM8meigCchSNqDu
+         eA7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694957051; x=1695561851;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WowTavHHUt6VXrXWYAIAmM5GQAVg53+hUmPjaFGm7W8=;
+        b=HDKl5yYpnOaUvoQomv8mBMk7zecnzQjCLhY+ulVvtkSsBtk29bFQH+lHIY+o8PwtYk
+         JdRja9RM0q/8xQn4I8Wur2BoYvFE1QKb733ReBK95WSkPoDN9VvSJFkqIo2COQm0xpEd
+         8yM+18XCGpka/4cK+UJrzntpYYzgcekG9c/Q4jYZk79U7nX6yUpDLgZZ3tkJ6QSTMsD6
+         oszNnCBRk7/yJpFl2BH6IuPcwyHHZtecM8OXM0pdFKK1qe4xJqsglxyrEtVIQAyeOhUo
+         rH6g1RGH0WmLXe9U4hhkFyGnttfZDgwR6oKum92LQV5LOg6vkqH2+xiSV1nNBr5TLn/J
+         +30g==
+X-Gm-Message-State: AOJu0YzjYSMMn/JzaYhza+vnDOWhnSBhAOclu8LSIfhC4JkUYSVRdIVU
+        x3qT4faNJSPA2D83URxZBvry7RDA27U=
+X-Google-Smtp-Source: AGHT+IEKBFAE86erU9orG9yXk0jnwDalBuX9QqwQG8NALM6qlYFHn1bzDFyyAJrR6X/7Bh0MS1fF/w==
+X-Received: by 2002:a05:6870:548f:b0:1d5:f43a:3a5c with SMTP id f15-20020a056870548f00b001d5f43a3a5cmr8738173oan.45.1694957051135;
+        Sun, 17 Sep 2023 06:24:11 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id zf6-20020a0568716a8600b001d4d7238a78sm3932734oab.54.2023.09.17.06.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 06:24:10 -0700 (PDT)
+Message-ID: <0ed5448e-cd54-4a99-9389-e27deddfda90@gmail.com>
+Date:   Sun, 17 Sep 2023 10:24:04 -0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
+To:     Matthew Maurer <mmaurer@google.com>, Finn Behrens <me@kloenk.dev>
+Cc:     =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+References: <20230915172900.3784163-1-mmaurer@google.com>
+ <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
+ <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
+ <0561303E-2089-43FC-AA31-836C7BB844B7@kloenk.dev>
+ <CAGSQo02p0LWZgV8oVidwvN6X__rv3-rj+ZVg9SaZ5Kx+zYahYQ@mail.gmail.com>
+Content-Language: en-US
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <CAGSQo02p0LWZgV8oVidwvN6X__rv3-rj+ZVg9SaZ5Kx+zYahYQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/16/23 16:54, Matthew Maurer wrote:> Yes, thanks Bjorn - "gcc" is the linker flavor used for "Use the C
+> compiler as a linker".
+> 
+> With regards to HOSTLD, I was trying to make the minimum possible
+> change. Currently, it is using the command `cc` as a linker, so this
+> would preserve existing behavior when HOSTCC is unset.
+> 
+> If we would prefer `HOSTLD` instead we can do that, but we would need
+> to additionally inspect `LLVM` to set the linker flavor accordingly
+> (e.g. set ld vs ld.lld).
 
->Are you sure this is 3620, have you tried wcn3660 and/or wcn3680 ?
+LLVM can use all of bfd, gold, lld and mold plus each and one of them
+support roughly the same set of flags, so we can kinda ignore the
+differences between them.
 
-I am sure. Downstream source [1] and downstream dmesg (wcnss: IRIS Reg:
-51120004 which should equal [2]) indicate 3620 (3620A does not exist)
+> Do folks have strong opinions between these? My primary concern is to
+> avoid calling programs by foo when their HOSTFOO variable is set.
+> 
+> See https://doc.rust-lang.org/rustc/codegen-options/index.html#linker-flavor
+> for details on linker flavor settings.
 
-[1]:
-https://github.com/CyanogenMod/android_kernel_huawei_kiwi/blob/cm-14.1/arch=
-/arm/boot/dts/qcom/huawei_msm8939_kiw_al20_vb/huawei-bt.dtsi#L5
-[2]:
-https://github.com/msm8916-mainline/linux-downstream/blob/b20608408caff817e=
-c874f325127b07609fbaeb8/drivers/net/wireless/wcnss/wcnss_vreg.c#L51
+If I were to talk about my experiences with CMake then I'd say that
+build systems tend to kinda ignore your linker choice if you thought
+that it was going to be used standalone. I think KBuild does indeed
+honor it, so if we can go ahead with that then we could do so.
+Although I don't know what else would bring upon the table.
