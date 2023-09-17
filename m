@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A15C7A33C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20C27A33C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjIQFBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 01:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S230281AbjIQFDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 01:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbjIQFBW (ORCPT
+        with ESMTP id S229713AbjIQFCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 01:01:22 -0400
+        Sun, 17 Sep 2023 01:02:47 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537CE195
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 22:01:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5935B19F
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Sep 2023 22:02:41 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-108-26-156-250.bstnma.fios.verizon.net [108.26.156.250])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38H51BR5022839
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 38H52ZgM023923
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 17 Sep 2023 01:01:12 -0400
+        Sun, 17 Sep 2023 01:02:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1694926873; bh=DsT89jZ+DfXwhz8PQH/3bdXenHE9hyBUpXJCACKX3B4=;
+        t=1694926957; bh=DsT89jZ+DfXwhz8PQH/3bdXenHE9hyBUpXJCACKX3B4=;
         h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=KzIdU55U5TVYqovq0hpag9IYejXPrgX8a7MuDJh6O6C9DW/pT2498VVDG1tCREL4e
-         JH5XB82NQ/ucdT2QTB7Vos98MT7zz8Cl8gDZI80BDDYRC73Rc7yg5adiSJdRT4ZcQl
-         NaQ/c7UKVCTv2MajguKsVMiFkOpiYEwKafBnEDn2guc8Ez7j/FkakXnof3FPsackCM
-         zaivkPE94U0v7E84wgdftltOBtrN9YsI6kuzOzvIIFMi9z7R+E/2ttWsLCoCdBgi2L
-         dqFRdaSSnAbxUio87Dos/YsC6AbsjVgwP5ikikcSPEaL6NR+Gt9YR826VZoHTs/H/7
-         8Gv8uNx/4e9kA==
+        b=Po5t2HJI1FnI65lv1Qz9dkEFilXVjOA3RaIee3TjX0aGPrN2NaQ1NwLZoYvX91k07
+         CFx/Yuh6UjPI3jTqo0TmvTDbeX0WPIQdmKMjH86COLuLpD57KD/oDDyQf/wy4r6T9M
+         +oMY88MX52bZvbBhLLel4vSx2IwG5+gJhhosX/+kH24rlXysizTsd0ojE3JJ9ryzh5
+         OOfFtRgk3EeV198DuVzhHTLnrGCCoO4IaOm+uZkjtUYoVMIH4lams2gRNugS0S5bOE
+         d5I48I1CfVIHjsqrpOGj6zMyrzNWVEbkTotubGstPnFvIhfQ3VvTHpUEiBq9h+AO4q
+         BDJF/s7F37Tsw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 443BD15C0338; Sun, 17 Sep 2023 01:01:11 -0400 (EDT)
-Date:   Sun, 17 Sep 2023 01:01:11 -0400
+        id 8F39315C0338; Sun, 17 Sep 2023 01:02:35 -0400 (EDT)
+Date:   Sun, 17 Sep 2023 01:02:35 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>
 Subject: [GIT PULL] ext4 bug fixes for v6.6-rc2
-Message-ID: <20230917050111.GA1701951@mit.edu>
+Message-ID: <20230917050235.GA1702062@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
