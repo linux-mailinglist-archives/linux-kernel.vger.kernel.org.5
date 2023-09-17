@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2183C7A3DE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3157A3E06
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbjIQVfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 17:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
+        id S239438AbjIQVoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 17:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237676AbjIQVfX (ORCPT
+        with ESMTP id S239336AbjIQVnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 17:35:23 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A15C130
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 14:35:17 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Rph6V5bPFzFj;
-        Sun, 17 Sep 2023 23:35:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1694986514; bh=QVca91oFtGzpLpEdY8ScokeQXsjkCHQgGWo6EomZVKI=;
-        h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=Im+RfvZrI3P2GkPmU75TmPK1tLqo9jp7LTp1JtKAqIchr/0uPXgEtPXptK5mT2VIc
-         5JTK1CxP0FfUL2+KFN0aWZ/oXgBq9ygUM7yWR05JUXDpMOw4/X3HpXIkfkiGn/T0Ux
-         OSql+jEQMaak/23UcD3i0ic7DyyM9DfiASF8VYSQyzAcALRwchCovuRVVKlIpjBRYY
-         7rOkTxtam8FpbpUu5JAG3/5K7wjL2VY0VFt1B+/o8QuAuM1v7EJxCuYrTWWhEMO2eE
-         PF6kkgg796pGpsFaJIIXBzvCu0mcnfI1WufgIZaSl3g0lx5mczZUAhocuKFVzeHvLi
-         VHrEehoEP1NOg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Sun, 17 Sep 2023 23:35:14 +0200
-Message-Id: <811062614da5ec63ac9c975b77bdb6bf34720552.1694985959.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1694985959.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1694985959.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 1/2] regulator/core: regulator_register: set device->class
- earlier
+        Sun, 17 Sep 2023 17:43:46 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC43133
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdf4752c3cso26806335ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google; t=1694987020; x=1695591820; darn=vger.kernel.org;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EjYEVDeyXWGRfU5iV7LvJBf6c7N982G1lGvpbIPmcJ8=;
+        b=KX8FblGrPINTGWJ+F+2OsLf/gAyXu98qR4yxI8s4WMVP0eTwMSfN6urkULb+FAZHtd
+         rxzE+RJAhk50qj6AOC0t/OjpLK0vLxPsruIpQMsdUd0B5RfFHJTZ1NfRtGW2GNiwwAmX
+         IQoHt9NRjqo7K0Yp7DjoEcV1TkJ9bGCmHIy49f9WKA8octbvKA/t1MtXI2yp6ZSVxCta
+         IWXLEZewwro8H7U0M0RTvddQQjcFbDpSM6KTad4o/86uHXJazghPsvMQ/xXX8r6e1XTs
+         c3J4COS3Wg46b4qkzZa6C2nxw7P/ZSrlehVzVRaYPFL6yaG7lBnDr4hdpFW+jN2Iyygf
+         nOTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694987020; x=1695591820;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EjYEVDeyXWGRfU5iV7LvJBf6c7N982G1lGvpbIPmcJ8=;
+        b=OevVJ9T9Ae0Z1itVZzwRfXRTiU9RBj8RHu9zjtPwCJidq/X4ZPvwiT/90ICss/Mkc0
+         dm7uQdmOxaqWbPZHq5/yxdpCudD9+w+KGGtXY3lfAGBCs4jHpynQPktmeLmb0pRnTjEl
+         jT+EBa+vUpFnXt9RHeHz2z1YB6IGbIdVwyj9jOJJgAFyBYmqTSDRJol/fRBRBp+5YkAL
+         +Ijjfu+b6Bo8dVrP9A4n4oWq+BCCooU/litBW9Tw+NXtcge6rUUmcg4HmZ6uqIrHMzQj
+         PIF+V1DLoMgNKXKHZ28+HTPOlgGHueBwIxuQHvWrTI6Bu0ERA3mX/E0IwvbDTpwmNJR9
+         a9Sg==
+X-Gm-Message-State: AOJu0Yz7mNU8eJqhhjI3cRerd49PTT9yipFGbVmev3OY19kbWyvtjVzJ
+        Ye5GXvhIs7lfee9AcMN3MFE1Xg==
+X-Google-Smtp-Source: AGHT+IFfMGfQ5zQmDSFheljxqnHWoOfv4bT82d7KBJ5y1wKvmf3MnOTX9NMedjj7EKPWak+DvfqHCA==
+X-Received: by 2002:a17:903:25ca:b0:1c4:48c4:969b with SMTP id jc10-20020a17090325ca00b001c448c4969bmr4358364plb.52.1694987020400;
+        Sun, 17 Sep 2023 14:43:40 -0700 (PDT)
+Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
+        by smtp.gmail.com with ESMTPSA id h21-20020a170902f7d500b001ae0a4b1d3fsm7047393plw.153.2023.09.17.14.43.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Sep 2023 14:43:39 -0700 (PDT)
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Mario Limonciello'" <mario.limonciello@amd.com>,
+        "'Swapnil Sapkal'" <swapnil.sapkal@amd.com>
+Cc:     <rafael.j.wysocki@intel.com>, <Ray.Huang@amd.com>,
+        <li.meng@amd.com>, <shuah@kernel.org>, <sukrut.bellary@gmail.com>,
+        <gautham.shenoy@amd.com>, <wyes.karny@amd.com>,
+        <Perry.Yuan@amd.com>, <zwisler@chromium.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "Doug Smythies" <dsmythies@telus.net>
+References: <20230915104057.132210-1-swapnil.sapkal@amd.com>    <20230915104057.132210-3-swapnil.sapkal@amd.com>        <00b201d9e819$b2447e80$16cd7b80$@telus.net>     <2fd025a9-52f3-4922-99cf-82355b0e35fe@amd.com> <CAAYoRsUhusVzOnaGHjPoMWYy2_iPFAjFLoCrj6vSX26EHNWGiw@mail.gmail.com>
+In-Reply-To: <CAAYoRsUhusVzOnaGHjPoMWYy2_iPFAjFLoCrj6vSX26EHNWGiw@mail.gmail.com>
+Subject: RE: [PATCH 2/2] tools/power/x86/intel_pstate_tracer: Use pygnuplot package for Gnuplot
+Date:   Sun, 17 Sep 2023 14:43:42 -0700
+Message-ID: <001c01d9e9b0$073fadf0$15bf09d0$@telus.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        Zeng Heng <zengheng4@huawei.com>, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-ca
+Thread-Index: AQKwVkrK5CGttHhKf0ienv16Lobu0QKE+b5tAruzzQ4BoCijAABix5Z4rjiS0sA=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-device_initialize() calls for the `device` struct be freed with
-`put_device()`. This requires a release() callback that is provided by
-the regulator_class.
+On 2023.09.17 15:17 Doug wrote:
+> On Fri, Sep 15, 2023 at 2:31=E2=80=AFPM Mario Limonciello
+>> On 9/15/2023 16:15, Doug Smythies wrote:
+>>> On 2023.09.15 03:41 Swapnil Sapkal wrote:
+...
+>>> Not really related, but for a few years now I have been meaning to
+>>> change the minimum python version prerequisite to >=3D 3.0 and
+>>> to change the shebang line.
+...
+>>  Besides the shebang, you should also
+>> use a helper like 2to3 to look for any other changes.
 
-Fixes: d3c731564e09 ("regulator: plug of_node leak in regulator_register()'s error path")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Mario,
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index d8e1caaf207e..2f6ee5527cb0 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -5542,6 +5542,7 @@ regulator_register(struct device *dev,
- 		goto rinse;
- 	}
- 	device_initialize(&rdev->dev);
-+	rdev->dev.class = &regulator_class;
- 	spin_lock_init(&rdev->err_lock);
- 
- 	/*
-@@ -5603,7 +5604,6 @@ regulator_register(struct device *dev,
- 		rdev->supply_name = regulator_desc->supply_name;
- 
- 	/* register with sysfs */
--	rdev->dev.class = &regulator_class;
- 	rdev->dev.parent = config->dev;
- 	dev_set_name(&rdev->dev, "regulator.%lu",
- 		    (unsigned long) atomic_inc_return(&regulator_no));
--- 
-2.39.2
+I was not aware of the 2to3 helper.
+Thank you mentioning it.
+The 2to3 helper only changed one line,
+which I included in the minimum python version
+patch I just submitted.
+
+> I already did the python 3 patch in January, 2020:
+> commit e749e09db30c38f1a275945814b0109e530a07b0
+> tools/power/x86/intel_pstate_tracer: changes for python 3 =
+compatibility
+>=20
+> I haven't had any issues since, shebang aside.
+
+... Doug
+
 
