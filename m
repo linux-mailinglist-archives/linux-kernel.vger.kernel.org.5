@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1FF7A3393
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 03:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB627A3395
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 03:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjIQBvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 21:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        id S231312AbjIQB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 21:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjIQBup (ORCPT
+        with ESMTP id S229523AbjIQB4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 21:50:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5661BC;
-        Sat, 16 Sep 2023 18:50:40 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a640c23a62f3a-9adb9fa7200so661790566b.0;
-        Sat, 16 Sep 2023 18:50:40 -0700 (PDT)
+        Sat, 16 Sep 2023 21:56:07 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9964DCCF;
+        Sat, 16 Sep 2023 18:55:59 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502b1bbe5c3so5623208e87.1;
+        Sat, 16 Sep 2023 18:55:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694915439; x=1695520239; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K7XVCsxjT9Eqyov05GGtDOauPf8IAuRphc/aPK0/kl8=;
-        b=Qxl2S/yl3onsSIGoGKi9EYjs77oMh3X/oWK+t2saqtS7TzQSDNmmQq3AWue9ccfsnP
-         zmWhRfSU8Z/Wr44zf6q5k0pbPB+EEazSAtnCmLFu9aDe541d/Hk7f/AAnmbah6ZMUz57
-         V1exzpww1BQoetH0zGh0VdeX/1JtmmYhCWg3M9ejyoqbX8rx2qwKXpOACnFKsCgrvvYq
-         j8BNz01eC6V7uuPmRJN1xmG2J+Goa3UvGIRe4kCowPlZdRVGj8mv4TvTO+XBH5FmR4/j
-         62h5WvrFqc1nDDyMev2qD9CPZ2eQWnFHpT6s0UzTahZUrQFAKL0navVlz/x1pFjMpLWE
-         JrMA==
+        d=gmail.com; s=20230601; t=1694915758; x=1695520558; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8EwLc90Wd21xas0fgvqq6H73IyXGR//SFw2PkS94YO0=;
+        b=jXokpf6Rqlabrx7T1WmoTMT2uxjIlUQHGUTHvQU3B88pmDGYDKGYkAsyCifpiqm+27
+         lUO0T95Ax13kjS3fL7UNlq7f0B88LHVsUn8roascOkryLisRCz3cuUisXy0AgDMV+Ks2
+         /OD/B5+VbzDq8BHA0zSnXnM1EaoTYbFl/U9W96Zzo9ZlOtUU3FYcH0T9aN0sPSKTkaI3
+         rb9vSRi+POq/hkyAXeUeF9xv2y0yNb3iRcbQMLuFwYyHvmWYrWT6LNYnX/Ce6cnaZO/S
+         mFcKt3Fg0yRl81hWuBNeObnI8hdgtDT4vxDNl7iYtNsnfcChJ4g81rWo50dgKMX1qSgc
+         PkWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694915439; x=1695520239;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K7XVCsxjT9Eqyov05GGtDOauPf8IAuRphc/aPK0/kl8=;
-        b=kREEtKwraKvJAiQWGTS8Awb55zPo0tK4HyiEPWkvZRy15T/wmkAnxRDJwPpy0pJo/z
-         CNJ8E/gfcw0zc69xLhGeDebaGJnBlSaLxCmONiDlVVw8fvzVq7uJbhNlitb4TkL5vDSH
-         CDMRRbgDpwIpqlEARC4AlcH/4lfH3uogj8mVWo07w/bCVDbhGG6pmF26EYcitIsEiL4v
-         8ZI+8cx8aENJJaWchODsS2WoHyAh0PE5JdWOtQlynG7XxXLv0TtSoogaUjvRyoP4ET+m
-         X/wXZtkpNc/jjcXzpDvUTXRHgRQbY3u1fci8F+fgcDpZ4mYt8zKfzTTq6xRfXEYwZfpL
-         bP2w==
-X-Gm-Message-State: AOJu0YzLIQDmoOz4FCJtQqVsacHLm9eIUOo08va9PMV/m/HcdNg/91eU
-        3eZUpL9dLWPvoxREESIx3sg9SHepAQezrKnmbVY=
-X-Google-Smtp-Source: AGHT+IEPOyF9D2sSR+0QYZt+2F4BWNz1/VJ6CCqkrpmcZnr/+SEVxki0dQA2sU1iVDaJaHYSw6HflqRJ3Ty+JxSyzsU=
-X-Received: by 2002:a17:906:5a4a:b0:9ad:e62c:4517 with SMTP id
- my10-20020a1709065a4a00b009ade62c4517mr3326879ejc.34.1694915438553; Sat, 16
- Sep 2023 18:50:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694915758; x=1695520558;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8EwLc90Wd21xas0fgvqq6H73IyXGR//SFw2PkS94YO0=;
+        b=XDzeSad6hdDFtG0afmU3Z/kQ9gtt6kXfVIBrQEQjcfgTXkz2pTuqL5K8mzGgDlt4NM
+         ToNes3iWuywhm3mhFc1O3oLlWVJFAFUmncMQYgyA9eG1uGLFK/OXQTUVsa2Ijaemksvb
+         8p/1Bc6KkNjOpDCb7tIFG0p9n+GP1AsS77AvcqR9Na0zXUS4cxQ9szNaHwaU7w1437Iv
+         u/vWb3M7ND5X39MBjnX+E/RT1uyFL4Qx899jzPLkYdEOB5wkMMqkAhh5EIhSP5HhD28c
+         MUhLaUiW/dwUHWG63nu9fb/Yi0tCO7qW/Wapfcx+Nr70rdszqHAxJB0wI5BroI4jJtwB
+         q4Hg==
+X-Gm-Message-State: AOJu0Yz0gdYD1400VNUZOmxD5SPHqTgSKO5QNuF0v3cx4miHGK3m0h0u
+        eBGU9GtbaBgvwNmvXW1XQDp33umnozYCI5VSGtoaao9YXu0=
+X-Google-Smtp-Source: AGHT+IFHysjG5kp2ypup+To6AxRxwpxcICS7nQCYr09T84dKCpzrtBNgR2j9sn4gkMZwl7IpzjqmkdhK/uGKG5LvB60=
+X-Received: by 2002:a05:6512:1090:b0:502:f7a4:c31f with SMTP id
+ j16-20020a056512109000b00502f7a4c31fmr5931423lfg.45.1694915757434; Sat, 16
+ Sep 2023 18:55:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230917000045.56377-1-puranjay12@gmail.com> <20230917000045.56377-2-puranjay12@gmail.com>
-In-Reply-To: <20230917000045.56377-2-puranjay12@gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sun, 17 Sep 2023 03:50:02 +0200
-Message-ID: <CAP01T77remDtP9pq8pofXvHgzBKAw8MdGQhyp9Jp+qFt6x9zJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 16 Sep 2023 20:55:46 -0500
+Message-ID: <CAH2r5mtanACUTG3pjXuroE6RUw1WHOw1N4k1bbTmNHrydUK_sg@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,36 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Sept 2023 at 02:01, Puranjay Mohan <puranjay12@gmail.com> wrote:
->
-> Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
-> by bpf_throw() to unwind till the program marked as exception boundary and
-> run the callback with the stack of the main program.
->
-> The prologue generation code has been modified to make the callback
-> program use the stack of the program marked as exception boundary where
-> callee-saved registers are already pushed.
->
-> As the bpf_throw function never returns, if it clobbers any callee-saved
-> registers, they would remain clobbered. So, the prologue of the
-> exception-boundary program is modified to push R23 and R24 as well,
-> which the callback will then recover in its epilogue.
->
-> The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-> that registers r19 to r28 should be saved by the callee. BPF programs on
-> ARM64 already save all callee-saved registers except r23 and r24. This
-> patch adds an instruction in prologue of the  program to save these
-> two registers and another instruction in the epilogue to recover them.
->
-> These extra instructions are only added if bpf_throw() used. Otherwise
-> the emitted prologue/epilogue remains unchanged.
->
-> [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
+Please pull the following changes since commit
+0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-We need reviews from arm64 JIT experts, but otherwise, given we've
-discussed this offline as well:
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+are available in the Git repository at:
+
+  git://git.samba.org/ksmbd.git tags/6.6-rc1-ksmbd
+
+for you to fetch changes up to 59d8d24f4610333560cf2e8fe3f44cafe30322eb:
+
+  ksmbd: fix passing freed memory 'aux_payload_buf' (2023-09-13 10:21:05 -0500)
+
+----------------------------------------------------------------
+Two small ksmbd server fixes
+- quiet smatch warning, clarifying aux_payload_buf freed
+ (set explicitly to NULL)
+- avoid duplicate call to mark_inode_dirty (when setting ACLs)
+----------------------------------------------------------------
+Namjae Jeon (2):
+      ksmbd: remove unneeded mark_inode_dirty in set_info_sec()
+      ksmbd: fix passing freed memory 'aux_payload_buf'
+
+ fs/smb/server/smb2pdu.c | 2 +-
+ fs/smb/server/smbacl.c  | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+-- 
+Thanks,
+
+Steve
