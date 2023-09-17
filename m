@@ -2,109 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7EC7A36D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E827A36D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbjIQRc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 13:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S237249AbjIQRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 13:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238354AbjIQRcQ (ORCPT
+        with ESMTP id S237535AbjIQRcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 13:32:16 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F85130
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:32:08 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401f68602a8so41357455e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:32:08 -0700 (PDT)
+        Sun, 17 Sep 2023 13:32:35 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98BB12B
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:32:28 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b974031aeaso61925271fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:32:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694971926; x=1695576726; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=rv0WXvEmWnyDaqUvUFB3wnqqS3oft6IQcWo3AfHaMBA=;
-        b=I+RASyk5M4/IGleMPJ531Nx9EDgyYVuAse3AFqOISCN5EAgjUywRDBCbNAiVjzRNp5
-         QJkwBAIFABr7zI6Oz0U6yCNYZmF4iJi9e3h4mblPOWf+oe7w/AtiOP4SC6MqPU2hcDco
-         qUfCA4mtxEjxHXWx5qa4gDAVgC/1tHm9wbhRw/tehpA9WYoP3QOoIEL592GgswRYXkBt
-         GF+4Q5CaB2D24f3pSM4CGUX1usmautp6E8vEdrheBbvk0vxVza3rd02njtnzTglnL07Y
-         dHBr5HbxHvYLUaygwPPqdNKsHSoM2TBfdv1pBL9DWnmp6zk3unwgvfdedP8luj7ubWsl
-         zsEw==
+        d=linaro.org; s=google; t=1694971947; x=1695576747; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FAUrGwSXliSzl6do0piL0fUoJFOhBx16PQ2kuiIjv0E=;
+        b=hyOU7VIcNNwwe2F1NyXMasjYdxABwiInez23PZpdyVTHOJvYEnNn//qyoh4AwQirP8
+         eIunm9tAYIJL/hNCOtSzG0FPJatLqDHt3iP8KtgFcR4IdlKGnXZkWw7zD02ElWtHGUQW
+         BmN701nPbZoCa6eRHZL1y09mpDDKLCM3ZRL4FMA6nx9bBA4hX5+gLDsNxn3F8lv8M/O/
+         BxlWM3HFTRUBr0T/tfUE52dGllR/pTOJ22aQ4SpN9ph8I8NEbUXMAMN6p8FCfUDaNALg
+         eN56WzV7F5GOQDgjtzD8iAPSMMk+A49rYumC7pzzakGBCX67l8ElyD8kwFwkV5EIjkg1
+         wouQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694971926; x=1695576726;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rv0WXvEmWnyDaqUvUFB3wnqqS3oft6IQcWo3AfHaMBA=;
-        b=TP9Y8Q7QHMk6bUUqJurusNJ7KcVakfA8juE1YOPtUpMtjhTMpnFoqoiXfV/dVTEgfq
-         M9jmF5zv9c5PMCRaDqqI3+bQg8VU/rxVPTOK19CqF/hhiaQe29LMk0SZm3mmMp6SztlE
-         ZrOetdfhlGmQlhNYX7HZQCm0btBvd+rDzAqike3JW3Yxe6ZV50MCdU+v6UzJqVXFwZuf
-         NdPCE5/+NyBZOErTAmAIbuhhQYjeHZ7+oIcUsGJyq6k4iH42+MDBZuGYlHU/QNK4faG6
-         y/Oos06/8MvdMP8DowrGJYE00lHwO1L7zEGc+8+Jff+u9HIVgysiWir+HDZm+wG/ZLqU
-         WSYg==
-X-Gm-Message-State: AOJu0YxoGaEZPM24o7R5R/4XA0ZUxv8i8WeFUXmlTEgLWlXRCxp9JnLx
-        oJ0JjwFDJZhpkmu8Lf9MaXsEkUQlKV0=
-X-Google-Smtp-Source: AGHT+IEKZM+WwY4MZ5astIFysNcFknxpJeVZuwwWDOkwTkT2C4xhaqZKh4sgJb+WluDHuvLFooBKTQ==
-X-Received: by 2002:a5d:6dcd:0:b0:31a:ea9a:b602 with SMTP id d13-20020a5d6dcd000000b0031aea9ab602mr5600023wrz.1.1694971926279;
-        Sun, 17 Sep 2023 10:32:06 -0700 (PDT)
-Received: from gmail.com (1F2EF265.nat.pool.telekom.hu. [31.46.242.101])
-        by smtp.gmail.com with ESMTPSA id m7-20020a5d4a07000000b00317b0155502sm10126130wrq.8.2023.09.17.10.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Sep 2023 10:32:03 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 17 Sep 2023 19:32:01 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] WARN() fix
-Message-ID: <ZQc4EdCAFDOHpVM+@gmail.com>
+        d=1e100.net; s=20230601; t=1694971947; x=1695576747;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FAUrGwSXliSzl6do0piL0fUoJFOhBx16PQ2kuiIjv0E=;
+        b=loGEXJbYmW09qfxZQx8OZW1XlPsKvhHHd/8fJdQibUAlbBFoo+2Yccb3VH4EJ0FPNt
+         iHzAUoNID04NmOcoCvIeqqNMwO5eGdP6uZgcHCPDjMjOXYlAtG97mi250hSmnMewf6Vf
+         om3YtLv6UlfiHisZOvVfCIwDCYdvaGqMYDnLFpPotr3OPNWmLOsjt8FBeSu4pdKEITY9
+         KctzFEMuWx1FLF8vj1WoxRn0o0EruIXwdZLF4n7tjP7xZXrAU/W4eKWK4f4XGUUuNAfC
+         lKdfjdduJVVd8Oe2rA3y/aR4xcvTj/eqIHlA6TtC/SmDek7Zad0B8TmW5Q8mpjVk0j4M
+         J5Qw==
+X-Gm-Message-State: AOJu0YyK0f9WCdcKl3nmsDTQWt3v84bzbbuB6kdJZBfqZ5SRxbSTDbTr
+        LV1nHYsOz9v20Ghdyf5lM4yRCw==
+X-Google-Smtp-Source: AGHT+IHpuEJOb2kc1LZ7icvbDz8sWqxmRdmM5s1F83iX4feIQVNLKNFPf1XMTFlpL8xUVcJwClqwtw==
+X-Received: by 2002:a2e:2416:0:b0:2b6:eb5a:d377 with SMTP id k22-20020a2e2416000000b002b6eb5ad377mr6054055ljk.5.1694971946989;
+        Sun, 17 Sep 2023 10:32:26 -0700 (PDT)
+Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
+        by smtp.gmail.com with ESMTPSA id r11-20020a170906350b00b009a5f1d1564dsm5171907eja.126.2023.09.17.10.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 10:32:26 -0700 (PDT)
+Message-ID: <43fdd3de-50cf-49f6-0577-61667288453e@linaro.org>
+Date:   Sun, 17 Sep 2023 19:32:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v5 11/15] USB: typec: Enable sleep mode for tps25750
+Content-Language: en-US
+To:     Abdel Alkuor <alkuor@gmail.com>, heikki.krogerus@linux.intel.com,
+        krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        abdelalkuor@geotab.com
+References: <20230917152639.21443-1-alkuor@gmail.com>
+ <20230917152639.21443-12-alkuor@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230917152639.21443-12-alkuor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/09/2023 17:26, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> Allow controller to enter sleep mode after the device
+> is idle for sleep time.
+> 
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> ---
+>  drivers/usb/typec/tipd/core.c     | 29 ++++++++++++++++++++++++++++-
+>  drivers/usb/typec/tipd/tps6598x.h |  3 +++
+>  2 files changed, 31 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index a97fda68cb54..3d9877551160 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -42,6 +42,7 @@
+>  #define TPS_REG_PD_STATUS		0x40
+>  #define TPS_REG_RX_IDENTITY_SOP		0x48
+>  #define TPS_REG_DATA_STATUS		0x5f
+> +#define TPS_REG_SLEEP_CONF		0x70
+>  
+>  /* TPS_REG_SYSTEM_CONF bits */
+>  #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
+> @@ -205,6 +206,11 @@ static inline int tps6598x_read64(struct tps6598x *tps, u8 reg, u64 *val)
+>  	return tps6598x_block_read(tps, reg, val, sizeof(u64));
+>  }
+>  
+> +static inline int tps6598x_write8(struct tps6598x *tps, u8 reg, u8 val)
+> +{
+> +	return tps6598x_block_write(tps, reg, &val, sizeof(u8));
+> +}
+> +
+>  static inline int tps6598x_write64(struct tps6598x *tps, u8 reg, u64 val)
+>  {
+>  	return tps6598x_block_write(tps, reg, &val, sizeof(u64));
+> @@ -977,6 +983,24 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+>  	return 0;
+>  };
+>  
+> +static int tps25750_init(struct tps6598x *tps)
+> +{
+> +	int ret;
+> +
+> +	ret = tps25750_apply_patch(tps);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = tps6598x_write8(tps, TPS_REG_SLEEP_CONF,
+> +			      TPS_SLEEP_CONF_SLEEP_MODE_ALLOWED);
+> +	if (ret)
+> +		dev_warn(tps->dev,
+> +			 "%s: failed to enable sleep mode: %d\n",
+> +			 __func__, ret);
+> +
+> +	return 0;
+> +}
+> +
+>  static int
+>  tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
+>  {
+> @@ -1131,6 +1155,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  		irq_handler = cd321x_interrupt;
+>  	} else {
+>  		tps->is_tps25750 = of_device_is_compatible(np, "ti,tps25750");
+> +
+>  		/* Enable power status, data status and plug event interrupts */
+>  		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
+>  			TPS_REG_INT_DATA_STATUS_UPDATE |
+> @@ -1138,6 +1163,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	}
+>  
+>  	tps->irq_handler = irq_handler;
+> +
 
-Linus,
+Drop
 
-Please pull the latest core/urgent git tree from:
+>  	/* Make sure the controller has application firmware running */
+>  	ret = tps6598x_check_mode(tps, &mode);
+>  	if (ret)
+> @@ -1149,6 +1175,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  			return ret;
+>  	}
+>  
+> +
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2023-09-17
+That's not really relevant, neither correct.
 
-   # HEAD: cccd32816506cbac3a4c65d9dff51b3125ef1a03 panic: Reenable preemption in WARN slowpath
+>  	ret = tps6598x_write64(tps, TPS_REG_INT_MASK1, mask1);
+>  	if (ret)
+>  		goto err_reset_controller;
+> @@ -1286,7 +1313,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
+>  		return ret;
 
-Fix a missing preempt-enable in the WARN() slowpath.
-
- Thanks,
-
-	Ingo
-
------------------->
-Lukas Wunner (1):
-      panic: Reenable preemption in WARN slowpath
-
-
- kernel/panic.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 07239d4ad81e..ffa037fa777d 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -697,6 +697,7 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
- 	if (!fmt) {
- 		__warn(file, line, __builtin_return_address(0), taint,
- 		       NULL, NULL);
-+		warn_rcu_exit(rcu);
- 		return;
- 	}
- 
+Best regards,
+Krzysztof
 
