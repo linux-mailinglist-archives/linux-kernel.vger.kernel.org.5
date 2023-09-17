@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 621DE7A3E08
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF4F7A3E0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 23:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbjIQVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 17:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        id S231953AbjIQVsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 17:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbjIQVqA (ORCPT
+        with ESMTP id S236010AbjIQVrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 17:46:00 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B06A8;
-        Sun, 17 Sep 2023 14:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694987149;
-        bh=1gq+91PIFQp0CotcayyYLsT0OW67uH5VYysw0SmeuA4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rVhvkr9GckLVSo7ciMprMSh0tSFJROddeHtbkTJVMyDFkC4JN89dtTdS3TjxSK4Jl
-         vvAFPKQ0/RGu4ckjQ8061cTKzywP5SMnJa2oWhGp5Dymi/JrHNbpfI2Cd8LkLmbenR
-         +8pUkv99pRlZeFlOtFBVFi65fJ5AUmqR/JMqRBhuYpFBr4a6/jojhQht1PbUm0ljYJ
-         IKeMuw5llrQKJ3wj5C/7b98d+l6nyo07Qdey/a2+2vEWTTXY3zrRVPoxKhoTZE+HQ7
-         8NNfotWjGtRcqycNU/1DgAtprtL2AxZ41m3/6y5SUpMNMBKKOBPeC/nJDXQ/TJg27s
-         dC/RNzfR17BMw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RphLj1WmKz4wb1;
-        Mon, 18 Sep 2023 07:45:49 +1000 (AEST)
-Date:   Mon, 18 Sep 2023 07:45:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the cxl-fixes tree
-Message-ID: <20230918074537.51fe95ed@canb.auug.org.au>
+        Sun, 17 Sep 2023 17:47:32 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6C7116;
+        Sun, 17 Sep 2023 14:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1694987242; x=1695592042; i=rwarsow@gmx.de;
+ bh=5rl3H6QkQt9tZhh36fqYWER8mpe2IdYsDlscVKcBSKI=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=ql6Sxal0k9B85lXEf79JAeAKAVTMONnEnBafxT/btivFTZutOwRuM4wls+rETRiXg3SIYCawQQK
+ HgRzXeZvql9E1+RrDVJAav1m96irkXVMbDu5RwXtR2NA6OMC6uL+rKBiN7Xv0bfqzBjWtJL6ZFtUm
+ dqDHDeuCWKSvwzwPn9oJTzBK32k6i9zLlZmWbGAzFiOvj/vL26bP5siisyJRb3okZsKnckZxKKzH5
+ VDMshEtNdxCKa9uSGWD+FvbuONMoce0ubeaQiBxXEGSGVK+fvy+WRGbfttHv2graGAjstuKly3Sm1
+ vsRILp0KVVDOSaWJlQaVggigCduVYkyhy/fg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.32.119]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MbAcs-1rJXHe2zm4-00bchu; Sun, 17
+ Sep 2023 23:47:22 +0200
+Message-ID: <938bdb77-022c-87d9-d03c-f328ada4639d@gmx.de>
+Date:   Sun, 17 Sep 2023 23:47:21 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/OFWWOHHTu_mm37Ughuzm_7K";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.5 000/285] 6.5.4-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:j6BoztCFQv5+udPsEuGUNYp3AS18A30iBVjkmBsS8uuSFdgm1vE
+ QvtAjnyekMra7rtKiNWJMQPPUxmjdgNSKDslotC92WWeECedOPzN4LeWyxx04+5aSuNcqZi
+ zo0YZmEJDgL9/FhbzHT9XZRxDRHJbFQRSrEF7MIp7zCqeTN1NSpah/Q25Q5Ml6ZqAZ8UaQv
+ fzmKEYsHPDpSmUWpwAVOg==
+UI-OutboundReport: notjunk:1;M01:P0:CyoSbCiadYk=;J88NAEsiktNmlAtt6pJUoiW0xUa
+ imRn2/qWeUVTl+4uqtyXUW/LB9+MK+BH4cxvtKYRZxG6teocaC+RHZU4cwTTC28qzkrRkLyeh
+ p/b1QtcLXweBJy+W3xu0tCa9ugijApAKRWbcq46mKF2cCYNu1m7xr1UoAXJbyW++zhQKsgoOE
+ +nSNvBIcSsZb4ICHEzO7Cao7Ob3Ve5a4AKPDm9i1EkwuUR8HbJsKMBs7GqND1Bjp6/kMrZLc+
+ zLoPFhg0A5T/2VoyNh93tP4Yc6RfAMvRaYgpx5C3olrddrTkryI/HavXDHXnFpn4YuswXR4Px
+ EiCw94p43GyhcoMS1pWaxIP1IBGTtONUoepIZb6aNxwuqh3bsf9wDrjcFvT5qj/UFImmMljM9
+ QKP86kV03xvzAGIZulQ+4sg/cwRTDXCInlUEDmbAAkp0yPXEJQKM6rfe626SVKFmpBDV8oUdX
+ Xa6M7l8fsDj78WMADipI8Ny/Ns2+eEWZMYOyi+e90ahS8asKhYCvDgIKv2a2TWo9IJU2IOOfc
+ 57m98lZ8rN9zVeCvkRXYNNoSodJO7VlH+o+pMXX8pHOO2EIemMFuXgwrcw5TZR7xZeoh15G4h
+ bEIh25e6reI7yhn8jhhnKUtLmjIlVrjYDwrsJrJdZEgEH+xnolIJLh+lgT2kYbzd47S5lih+G
+ B+pxjfnw9l4q3F9plSv5ou+vz0yUqSSiDKTaGq+eISC7GuSvN4UHgYn5yxRyFOM6n4DExa+tK
+ UCKLMYT1zSJI8+AHcsiqKXAjh6IQgI7htJaSHneqITSaglG95oxw20eIsAolrLb5hIYE5S7dU
+ XZia0m7garkFU1zC9BCtnpjAjDu281xfMWxPMnQi0VPyVjhTSAah7y7F/syhVPofZL0r54e/P
+ 0BLNOBCw0stdVF5ps8af+6rzyC0xLjd/Ckn6SA7Ch2LyeCY/BdGOWR+nPBmT7wqYWhGbvNE7y
+ I5s+HatNgTnpker5o9WfCPxn7lY=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/OFWWOHHTu_mm37Ughuzm_7K
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Greg
 
-Hi all,
+6.5.4-rc1
 
-In commit
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake, i5-11400)
 
-  18f35dc9314d ("cxl/region: Refactor granularity select in cxl_port_setup_=
-targets()")
+Thanks
 
-Fixes tag
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
-  Fixes: ("27b3f8d13830 cxl/region: Program target lists")
-
-has these problem(s):
-
-  - No SHA1 recognised
-
-It should be
-
-Fixes: 27b3f8d13830 ("cxl/region: Program target lists")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/OFWWOHHTu_mm37Ughuzm_7K
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUHc4EACgkQAVBC80lX
-0GzMawgApdNMA0K5HVDWtOXztjAKEHUSD91xaPg20vs/7GVj6FBtKKso264fpIzo
-AlXOmbCRhlx1N+D9C52MQWR4n8o3OurYjRCetb61WC8US5GM+2/dUCTDRmUYbhk8
-FCr73XFn5d/JuYvHdGHLstxL2+CulpBRqaykKIjtDFokYVIpmf/KqxWcgCF+ybg7
-BCByYYVlBzzEXDaqIGThFTlaNgX4kOlYBk5XdnWAb7D1lQtSsXQk57FHTjUdyRSr
-1f/5eARQ2MWMJvWm0Wbpl6r5cMoCgyth67Otzv1PkUY6bOAFBQSYzImadrV9+6XO
-sCgpQ62BhloSqk242lr321TQO96DiQ==
-=2DzD
------END PGP SIGNATURE-----
-
---Sig_/OFWWOHHTu_mm37Ughuzm_7K--
