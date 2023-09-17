@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F36F7A371B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 20:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BCD7A371F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 20:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237864AbjIQSTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 14:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        id S238420AbjIQSY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 14:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238517AbjIQSTA (ORCPT
+        with ESMTP id S238186AbjIQSYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 14:19:00 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA460130
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:18:53 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso60818061fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google; t=1694974732; x=1695579532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L+GZybm26Jw3S/QLqnyCqrZ/lHqylFFuVPFliXlkHwI=;
-        b=daFPiJ5BccJge9gfdHPZsr+R09O6Y2XqKNPQeAONPglVjQlaqkK66Dn5W8SjF99GsN
-         Dc6GxcyHHlnlU7tVdPYhvDsMOQoqHwC2nsEFM1ig5SfrpY/Z1r0Mk8F7OimPLVLF9nCj
-         qKxTPDv8XJ2nQi6o/lgPIfiSwZRqvXoksRFIY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694974732; x=1695579532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L+GZybm26Jw3S/QLqnyCqrZ/lHqylFFuVPFliXlkHwI=;
-        b=AFlaMXRyxINXUGkQaIrI7chaFMZYqdwBfPvlkR2y2HYenlQBJczrfqg08OmaXB8BHf
-         CL4sPR8DAdRmqMJmpesIYv9VR5hjgpnjUeejYDt03gOWNUS19PtbpLXWg/aBw5Owuea0
-         WD6gYHKjYxTRQyKC8EMsZxghP/8LaAsClEUkn2XCBJyZ8setamknmm/ff1MqCfHpxJv7
-         PnKpcb+qW8bg3zYhUNqtAz6QWi65tpuxNXIdPnyQrrXZ85+AeK/IvnCn9nSwT52w2rH1
-         YVzdKB8ua8DExDosmA4YAY1v+An/5ze9AA2Vpe8VrZsBHyCy8cRtdAsCzVjyTjzvkPyG
-         cPNg==
-X-Gm-Message-State: AOJu0YwaqbuKhmR2VpZgoXDG8+YAakCv8vU7CnR0NthWyfTPE+HPGImC
-        TNAEb8IiozipRz6709nJXUp/KCSiW1jt5yETe/ilYA==
-X-Google-Smtp-Source: AGHT+IHCxWbRlQ2+N/9gSVdzC1Np1+nWUoDofADS96XpMKxgBmfPJMd2/4WiuZcmuioPYSiRs2Zwoyut/KuiaTv+kwc=
-X-Received: by 2002:a2e:b98b:0:b0:2c0:d06:9e6b with SMTP id
- p11-20020a2eb98b000000b002c00d069e6bmr562052ljp.33.1694974731628; Sun, 17 Sep
- 2023 11:18:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
-In-Reply-To: <20230913152238.905247-3-mszeredi@redhat.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Sun, 17 Sep 2023 12:18:15 -0600
-Message-ID: <CAMp4zn-r5BV_T9VBPJf8Z-iG6=ziDEpCdmPgHRRXF78UoOjTjQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Sun, 17 Sep 2023 14:24:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF8498;
+        Sun, 17 Sep 2023 11:24:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 09F7DC433C8;
+        Sun, 17 Sep 2023 18:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694975066;
+        bh=FDGdHwkRNPrTVp38hUytJBNar8UC14Cnym3MXmktDVE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=nC8/qGFEf569OptY63IHS3UXeEuMBs/k94mo/gB21JO/iin0DJ5Ckg2FqfSTPbvKM
+         LFhe383p7tJQN89sHHg0v0DzrY6xF/ejcBbh5PcD5xTWnEHtqIx5FO/jIpETNnM2A2
+         dbUf3zHt6BBZfBRqctTtg00z9AM+tYTULSS6HDqB/695PzUml65AhM5oapDahlZjGE
+         YkdHEoza9+9gqbMqx+WGRIAP8kGpik1qtzbiRBN/CrETDxvaDSE8TP0YjCKVNfpbVy
+         chqfpbVu19oL1rVkQAukCG72KIA/Lvfvto1ERaP86MjXG4eO+oYeky72H/5CdJoqCJ
+         Lo9tAC3pD3t/g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EC919E26880;
+        Sun, 17 Sep 2023 18:24:25 +0000 (UTC)
+Subject: Re: [GIT PULL] ksmbd server fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5mtanACUTG3pjXuroE6RUw1WHOw1N4k1bbTmNHrydUK_sg@mail.gmail.com>
+References: <CAH2r5mtanACUTG3pjXuroE6RUw1WHOw1N4k1bbTmNHrydUK_sg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mtanACUTG3pjXuroE6RUw1WHOw1N4k1bbTmNHrydUK_sg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/6.6-rc1-ksmbd
+X-PR-Tracked-Commit-Id: 59d8d24f4610333560cf2e8fe3f44cafe30322eb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 39e0c8afdce04157ce229c3d4aa21f80356e88c1
+Message-Id: <169497506596.30007.11928975574136827008.pr-tracker-bot@kernel.org>
+Date:   Sun, 17 Sep 2023 18:24:25 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 9:25=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.com=
-> wrote:
->
-> Add a way to query attributes of a single mount instead of having to pars=
-e
-> the complete /proc/$PID/mountinfo, which might be huge.
->
-> Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
-> needs to be queried based on path, then statx(2) can be used to first que=
-ry
-> the mount ID belonging to the path.
->
-> Design is based on a suggestion by Linus:
->
->   "So I'd suggest something that is very much like "statfsat()", which ge=
-ts
->    a buffer and a length, and returns an extended "struct statfs" *AND*
->    just a string description at the end."
->
-> The interface closely mimics that of statx.
->
-> Handle ASCII attributes by appending after the end of the structure (as p=
-er
-> above suggestion).  Allow querying multiple string attributes with
-> individual offset/length for each.  String are nul terminated (terminatio=
-n
-> isn't counted in length).
->
-> Mount options are also delimited with nul characters.  Unlike proc, speci=
-al
-> characters are not quoted.
->
+The pull request you sent on Sat, 16 Sep 2023 20:55:46 -0500:
 
-Thank you for writing this patch. I wish that this had existed the many tim=
-es
-I've written parsers for mounts files in my life.
+> git://git.samba.org/ksmbd.git tags/6.6-rc1-ksmbd
 
-What do you think about exposing the locked flags, a la what happens
-on propagation of mount across user namespaces?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/39e0c8afdce04157ce229c3d4aa21f80356e88c1
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
