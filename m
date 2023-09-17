@@ -2,218 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9D57A33D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643AE7A33D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 07:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbjIQF2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 01:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S232057AbjIQF3b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 17 Sep 2023 01:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235745AbjIQF2S (ORCPT
+        with ESMTP id S231315AbjIQF3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 01:28:18 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EB31A3;
-        Sat, 16 Sep 2023 22:28:12 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-79ac0d271b4so76716039f.1;
-        Sat, 16 Sep 2023 22:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694928492; x=1695533292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z6IDBKrhfRPJH/ez+XxZO7kY7frB+RTYIZ5shrc8xVs=;
-        b=HuOnffDB0aB3YxY/ENbA9cTX9fzYzHghGtHlBmgDWcJ3TJz5O2vRosWJWszWwSA1A7
-         A/g6zcSxA7mC6J6xPbm/WZ9+liFMK3ULOo12ZvCcEv1IvPf2gPhQlHM3DpcfiNBuLw7l
-         KrOsTF64Rbl/wPiqWXidGylzRi+IkWmBOg6+pN4awQu38WICw1tFP6iYuaj9GwzN2axS
-         UlZ9qqauCRxcmYubhVwB6aP6MRjkTJcbUlMM+9h4gdPnGOD1u2paKM2gRQKrbz6fKuIx
-         uwcXZGRF4eT1FkqK9N3CJdo/xYdredL/EyPLKcYfZBGoKPjTfbKJApLUD1XP29E03HAy
-         3ayA==
+        Sun, 17 Sep 2023 01:29:02 -0400
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C961A1;
+        Sat, 16 Sep 2023 22:28:57 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-79536bc6697so118412239f.1;
+        Sat, 16 Sep 2023 22:28:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694928492; x=1695533292;
+        d=1e100.net; s=20230601; t=1694928536; x=1695533336;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z6IDBKrhfRPJH/ez+XxZO7kY7frB+RTYIZ5shrc8xVs=;
-        b=R/hBCpQaIJaQZtyH0aVkx2Sp2xFq4DWDVhR1fkmFH2m7PDj+XHjZoTHQIlDIZJbXHL
-         /Ra1PbHetbSUGXuFJBetdVr9DXvq39Dqh0J1vbHhdM0+PjVBfkCfqkZmVE8Dt7rI75ML
-         yOh1w82NOKd33zTBztMDaDym2eP7WHEiCSQ/2z+HpRYF9j4WYS4POWlHgUVU7xRv13IR
-         uP9/I/DxQ0nqFQCRB7L04NWHDAWLIdZxFDBlOWI7cEzUp+PGTlT6C60QD8bMu8jS26Of
-         Kz946TLa1gfgeo1++UtkiEVE93+tH+LCgKn5Sn84zj0SCkbA9XjS2iBep0Un2aIinwGK
-         9GfQ==
-X-Gm-Message-State: AOJu0Yz5XhpwrqW9lMkALufKyV2DeuaYAlwGIBeE2bzKbx9lcxI0n4ds
-        iLsk6rpiu2CYBRib+hFosy2RQf+tPR2nzSTfrMo=
-X-Google-Smtp-Source: AGHT+IE32NkLvFiyd4rnVrgZ8uF3dliwkTVN3xQMjuBRv5nGT90K9JUdskEerE63bdygLZclQCp+FOE5qwT8FNUm7bI=
-X-Received: by 2002:a5e:aa0c:0:b0:798:2665:8939 with SMTP id
- s12-20020a5eaa0c000000b0079826658939mr6351889ioe.20.1694928492101; Sat, 16
- Sep 2023 22:28:12 -0700 (PDT)
+        bh=/MHIZkZeAIKnnl1lZGJ/D+rrsmVGORmOG4/glxjZ15E=;
+        b=TfoM8lcHe1ADxDB8c9W1HYknxELZ/3auTLDY2k99+u0zHQyj2U76x4W5xP1AzV2Ek2
+         w0x0P/L0tUmgW8nqDTq5Lqzqhgt9UlBQRbXJhrhz9wYEI5qYqq8zPV8fleNrgiiTaztG
+         /zZsDhQB/Y6Ru1PLQEnDhYVIJXZCoWC/RXd7DHSeys9UKltIHmiLp3epfGT5mMAjCeOi
+         7VCULjoiR8ykTGswjoKztKhb8Qfrj5vNDbXpDoS7GxDHWATVOXs4uXizcRxjcb/Eak72
+         1uQKy7NdQ5Lt1iObObb5GpldXL1YiOSmqceUiecywRXcO97V0S7PXDUJz5yhjEW5mlZA
+         M1bg==
+X-Gm-Message-State: AOJu0YwDF+UbAUDhHDJG5AxI4H22RyIeGLHrE0NWyOOjdbrkl4syGyQ6
+        AbCah43g9bB5TQNytfmE39I6CeO/f0yIAUtSCeE=
+X-Google-Smtp-Source: AGHT+IGhUl97YDoT1dRB7ImhDttCNn1/6JQ4Uu+U9kgLRnGV8tDLdz1mqPJh2iGjnGZsosOTWry9acRtj9qVMGz3mQY=
+X-Received: by 2002:a6b:5c18:0:b0:795:16b8:85fc with SMTP id
+ z24-20020a6b5c18000000b0079516b885fcmr6619462ioh.0.1694928536589; Sat, 16 Sep
+ 2023 22:28:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230913125157.2790375-1-tmricht@linux.ibm.com>
- <CAP-5=fUiHMRPVYhbQv-YM+EMKyBF6TEopea=PPX2thbtdmhGsg@mail.gmail.com>
- <CAM9d7cgbMZzJea_TJJ46AEhLentykmy8r6twC8bkkgXTNAMqgw@mail.gmail.com> <CAP-5=fUXgC7QPk+NqeKFds54do70iePaXC5F8nLC6oWPLC50yg@mail.gmail.com>
-In-Reply-To: <CAP-5=fUXgC7QPk+NqeKFds54do70iePaXC5F8nLC6oWPLC50yg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Sat, 16 Sep 2023 22:28:00 -0700
-Message-ID: <CAM9d7cjzkQ_5oKv9RJtx1QPBuR8fSjrZy_USKqt6G5WC+p_uqg@mail.gmail.com>
-Subject: Re: [PATCH] perf jevent: fix core dump on software events on s390
+References: <20230908052216.566148-1-namhyung@kernel.org> <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
+ <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
+ <ad8a8d46151142a883d2d259c884acc0@AcuMS.aculab.com> <CAM9d7ciB-Rmsi4eTOU7n=mcEP2-JjDycL6f_8cKnKGKtqVT3UQ@mail.gmail.com>
+ <CAP-5=fU=8RwHsd=nP6evT2oxCeOvXF4dfNF9MhBVk3y2WvH3MQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fU=8RwHsd=nP6evT2oxCeOvXF4dfNF9MhBVk3y2WvH3MQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sat, 16 Sep 2023 22:28:44 -0700
+Message-ID: <CAM9d7ciJLC_3kaxUeVB5sRn9O=xX1ktWeejagSdihfV4a9SPuA@mail.gmail.com>
+Subject: Re: [PATCH] perf annotate: Add more x86 mov instruction cases
 To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, sumanthk@linux.ibm.com, dengler@linux.ibm.com,
-        svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com
+Cc:     David Laight <David.Laight@aculab.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 9:11=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
+On Wed, Sep 13, 2023 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
 >
-> On Fri, Sep 15, 2023 at 4:40=E2=80=AFPM Namhyung Kim <namhyung@gmail.com>=
- wrote:
+> On Wed, Sep 13, 2023 at 2:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
 > >
-> > Hello,
-> >
-> > On Thu, Sep 14, 2023 at 6:14=E2=80=AFAM Ian Rogers <irogers@google.com>=
- wrote:
+> > On Mon, Sep 11, 2023 at 1:12 AM David Laight <David.Laight@aculab.com> wrote:
 > > >
-> > > On Wed, Sep 13, 2023 at 5:52=E2=80=AFAM Thomas Richter <tmricht@linux=
-.ibm.com> wrote:
+> > > From: Namhyung Kim
+> > > > Sent: 09 September 2023 00:56
 > > > >
-> > > > Running commands such as
-> > > >  # ./perf stat -e cs -- true
-> > > >  Segmentation fault (core dumped)
-> > > >  # ./perf stat -e cpu-clock-- true
-> > > >  Segmentation fault (core dumped)
-> > > >  #
+> > > > Hi Ian,
 > > > >
-> > > > dump core. This should not happen as these events are defined
-> > > > even when no hardware PMU is available.
-> > > > Debugging this reveals this call chain:
+> > > > On Thu, Sep 7, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
+> > > > >
+> > > > > On Thu, Sep 7, 2023 at 10:22 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > > >
+> > > > > > Instructions with sign- and zero- extention like movsbl and movzwq were
+> > > > > > not handled properly.  As it can check different size suffix (-b, -w, -l
+> > > > > > or -q) we can omit that and add the common parts even though some
+> > > > > > combinations are not possible.
+> > > > > >
+> > > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > > > > ---
+> > > > > >  tools/perf/arch/x86/annotate/instructions.c | 9 ++++++---
+> > > > > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > > > >
+> > > > > > diff --git a/tools/perf/arch/x86/annotate/instructions.c
+> > > > b/tools/perf/arch/x86/annotate/instructions.c
+> > > > > > index 5f4ac4fc7fcf..5cdf457f5cbe 100644
+> > > > > > --- a/tools/perf/arch/x86/annotate/instructions.c
+> > > > > > +++ b/tools/perf/arch/x86/annotate/instructions.c
+> > > > > > @@ -74,12 +74,15 @@ static struct ins x86__instructions[] = {
+> > > > > >         { .name = "movdqa",     .ops = &mov_ops,  },
+> > > > > >         { .name = "movdqu",     .ops = &mov_ops,  },
+> > > > > >         { .name = "movsd",      .ops = &mov_ops,  },
+> > > > > > -       { .name = "movslq",     .ops = &mov_ops,  },
+> > > > > >         { .name = "movss",      .ops = &mov_ops,  },
+> > > > > > +       { .name = "movsb",      .ops = &mov_ops,  },
+> > > > > > +       { .name = "movsw",      .ops = &mov_ops,  },
+> > > > > > +       { .name = "movsl",      .ops = &mov_ops,  },
+> > > > >
+> > > > > In Intel's manual some of these names are "Move Data From String to
+> > > > > String" operations, movsb and movsw in particular. These instructions
+> > > > > can be used to make simple memcpy loops. Could it be the past omission
+> > > > > was deliberate due to the different way the addressing works in the
+> > > > > instructions?
 > > > >
-> > > >   perf_pmus__find_by_type(type=3D1)
-> > > >   +--> pmu_read_sysfs(core_only=3Dfalse)
-> > > >        +--> perf_pmu__find2(dirfd=3D3, name=3D0x152a113 "software")
-> > > >             +--> perf_pmu__lookup(pmus=3D0x14f0568 <other_pmus>, di=
-rfd=3D3,
-> > > >                                   lookup_name=3D0x152a113 "software=
-")
-> > > >                  +--> perf_pmu__find_events_table (pmu=3D0x1532130)
-> > > >
-> > > > Now the pmu is "software" and it tries to find a proper table
-> > > > generated by the pmu-event generation process for s390:
-> > > >
-> > > >  # cd pmu-events/
-> > > >  # ./jevents.py  s390 all /root/linux/tools/perf/pmu-events/arch |\
-> > > >         grep -E '^const struct pmu_table_entry'
-> > > >  const struct pmu_table_entry pmu_events__cf_z10[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_z13[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__cf_z13[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_z14[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__cf_z14[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_z15[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__cf_z15[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_z16[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__cf_z16[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_z196[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__cf_zec12[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__cf_zec12[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__test_soc_cpu[] =3D {
-> > > >  const struct pmu_table_entry pmu_metrics__test_soc_cpu[] =3D {
-> > > >  const struct pmu_table_entry pmu_events__test_soc_sys[] =3D {
-> > > >  #
-> > > >
-> > > > However event "software" is not listed, as can be seen in the
-> > > > generated const struct pmu_events_map pmu_events_map[].
-> > > > So in function perf_pmu__find_events_table(), the variable
-> > > > table is initialized to NULL, but never set to a proper
-> > > > value. The function scans all generated &pmu_events_map[]
-> > > > tables, but no table matches, because the tables are
-> > > > s390 CPU Measurement unit specific:
-> > > >
-> > > >   i =3D 0;
-> > > >   for (;;) {
-> > > >       const struct pmu_events_map *map =3D &pmu_events_map[i++];
-> > > >       if (!map->arch)
-> > > >            break;
-> > > >
-> > > >       --> the maps are there because the build generated them
-> > > >
-> > > >            if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
-> > > >                 table =3D &map->event_table;
-> > > >                 break;
-> > > >            }
-> > > >       --> Since no matching CPU string the table var remains 0x0
-> > > >       }
-> > > >       free(cpuid);
-> > > >       if (!pmu)
-> > > >            return table;
-> > > >
-> > > >       --> The pmu is "software" so it exists and no return
-> > > >
-> > > >       --> and here perf dies because table is 0x0
-> > > >       for (i =3D 0; i < table->num_pmus; i++) {
-> > > >               ...
-> > > >       }
-> > > >       return NULL;
-> > > >
-> > > > Fix this and do not access the table variable. Instead return 0x0
-> > > > which is the same return code when the for-loop was not successful.
-> > > >
-> > > > Output after:
-> > > >  # ./perf stat -e cs -- true
-> > > >
-> > > >  Performance counter stats for 'true':
-> > > >
-> > > >                  0      cs
-> > > >
-> > > >        0.000853105 seconds time elapsed
-> > > >
-> > > >        0.000061000 seconds user
-> > > >        0.000827000 seconds sys
-> > > >
-> > > >  # ./perf stat -e cpu-clock -- true
-> > > >
-> > > >  Performance counter stats for 'true':
-> > > >
-> > > >               0.25 msec cpu-clock #    0.341 CPUs utilized
-> > > >
-> > > >        0.000728383 seconds time elapsed
-> > > >
-> > > >        0.000055000 seconds user
-> > > >        0.000706000 seconds sys
-> > > >
-> > > >  # ./perf stat -e cycles -- true
-> > > >
-> > > >  Performance counter stats for 'true':
-> > > >
-> > > >    <not supported>      cycles
-> > > >
-> > > >        0.000767298 seconds time elapsed
-> > > >
-> > > >        0.000055000 seconds user
-> > > >        0.000739000 seconds sys
-> > > >
-> > > >  #
-> > > >
-> > > > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> > > > I don't know but in terms of instruction parsing, they are the same
+> > > > "MOVE" with two operands.  I'm not aware of anything in perf with
+> > > > the operands of these instructions.  So I guess it'd be fine to add
+> > > > these instructions even if they have different underlying behaviors.
 > > >
-> > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > > I'm pretty sure that 'rep movs[bwlq]' (aka while (cx--) *di++ = *si++)
+> > > is likely to be missing the memory argument parameters.
+> > > There is also 'fun and games' with one variant - iirc 'rep movsd'
+> > > what has been used for 64bit, but got hijacked by one of the SIMD sets.
 > >
-> > I'll add this too, ok?
-> >
-> > Fixes: 7c52f10c0d4d8 ("perf pmu: Cache JSON events table")
+> > It seems perf annotate don't process the rep prefix yet.
+> > So I think there should be no functional change now.
 >
-> Looks good, thanks!
-> Ian
+> Reading the code, I also think it should be okay. Doing:
+> ```
+> $ objdump -d /usr/lib/x86_64-linux-gnu/libc.so.6 |grep rep
+>    2650a:       f3 ab                   rep stos %eax,%es:(%rdi)
+>    33b76:       f3 48 a5                rep movsq %ds:(%rsi),%es:(%rdi)
+> ...
+> ```
+> The mov parsing logic doesn't appear to care about src and dest, and
+> the formatting above matches other mov cases.
+>
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-Applied to perf-tools, thanks!
+Applied to perf-tools-next, thanks!
 
 Namhyung
