@@ -2,105 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6737A3C1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045157A3C69
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 22:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbjIQU0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 16:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
+        id S241021AbjIQUa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 16:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240953AbjIQU01 (ORCPT
+        with ESMTP id S241033AbjIQUae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 16:26:27 -0400
-Received: from out-215.mta0.migadu.com (out-215.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F3310B
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:26:21 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 06:24:24 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1694982379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qEy663wbTYgFkY8BNJi+ahfknVm89R9oplFVkVuCOzo=;
-        b=v/DLL3KPs678sxsCZzCuk+NPwsJvuXXiy9+Dr36jVLgYb4b9d4OY35vNgwMK2ypjpq9xRb
-        d9tuGdAEFz46FUzkxuZqbVkgP0Y/kseaN/ko/r7jjpJDiBkgnq5x3BL5SmljKQ4946CjEU
-        AJKRHQRI5z4BuXZUQPF7nd/5Q/uMPUIs4Yso5FFP4dsZ+YyihpTZlgXNRGcNfrrDyu1+dX
-        1HKWUn+R/Qt3miliSQkGsXXbL6+GBk3nk6pkZlQE+7xTr8L2T+XZzbi35WtgjjZPWazjDP
-        zg/gOQPovAt+0exu6eStLjEvx67ew+yToElQE+vbmKmwUiSEGe3qiDzBfLE7hQ==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   John Watts <contact@jookia.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 8/8] dt-bindings: display: panel: add Fascontek
- FS035VG158 panel
-Message-ID: <ZQdgeA5tQA4xK5qL@titan>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-9-contact@jookia.org>
- <e22e61e7-02b1-8127-888d-e470838f4a18@linaro.org>
+        Sun, 17 Sep 2023 16:30:34 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676AF101
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:30:28 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6903a452dfaso2411661b3a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 13:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694982628; x=1695587428; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wmN3G4bFpi6nAbIJp8nMJiK+WmgTcWevUBMw6pAf8Vk=;
+        b=hDdpJ+RnMscZTxuRoAob/9vaCK3YMtANVoEhJvkT4sTZ6uOm5KeFzQG95dT+t4VZsn
+         fOEfqsRUEW9H1o/dbo0I6DVIVWbJANR7gXWoA3/gD/mYO2Ul7z+Yb1aeJVwScdZyX5o5
+         f13a2ZuGRgKdEZTzmjlf49CiatE5gs7miRxbb3ujzYv9kJ4+jNowZzX9FvCvS2Ry8+81
+         P6GeLxQ8/sDWaP59fB5+83VY1lE1ndcdXffe7M3EE4ZRlQbxAex8QVvRyE6RdOV4Skbn
+         t1fqCmZmbyQBbd77/+fKoV6fmquxv+qRRC8IM9R1ChMx3TNpk2DwyLUHK23o7J4rS1EQ
+         zf+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694982628; x=1695587428;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wmN3G4bFpi6nAbIJp8nMJiK+WmgTcWevUBMw6pAf8Vk=;
+        b=WJLCSiMz5aQ9u0b7P9S3PcI5/Wb6cxVX4uCHq+rJQm0ZiNv73Xa8+z1uER3O33pCOJ
+         mmiHVKIUWGH+X4Jhb7jeW/spWE31I3r6GGiISlwE3B9XKnb2NJexfFlqiSHpNjp4aiTd
+         pcB+B1nbFixgLFCqeQJS3DtjwswhCWwR+/T2LN0tTGJBMn9yzPyj6CXO0uTZUS7JuJgK
+         Gze01GMsAuzEX63TQj4DTjn/JymElmoWKiV2kAxwN4kRQIOAHntl089etCZvGXnBHl3f
+         QrTBTMt8Afke89MyPhJKqof3yygjlGBS4Ne/3E8NQXazUFX9xO1tRzVKyxobROEfg2Zf
+         28pg==
+X-Gm-Message-State: AOJu0YzeFf7r9gTZfCc4Q6sPb9kxjlpQgBCEdrhojSs294Lqmqn7pIXt
+        JSlzwwPEgTLJ7/kG/HH46yaWUsFbpKMWmRL9z3Q=
+X-Google-Smtp-Source: AGHT+IECasCq4QXMYQn3wUZn42e5l+bVc7WPy0pGFsbORQGQ9sFW5lXlpsfwRKvUNRjABaQXLFFhQQ==
+X-Received: by 2002:a05:6a20:8e0f:b0:134:d4d3:f0a8 with SMTP id y15-20020a056a208e0f00b00134d4d3f0a8mr7470800pzj.3.1694982627806;
+        Sun, 17 Sep 2023 13:30:27 -0700 (PDT)
+Received: from yqt-VirtualBox ([139.227.189.216])
+        by smtp.gmail.com with ESMTPSA id jk15-20020a170903330f00b001b9fef7f454sm4534874plb.73.2023.09.17.13.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 13:30:27 -0700 (PDT)
+From:   Piro Yang <piroyangg@gmail.com>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Piro Yang <piroyangg@gmail.com>
+Subject: [PATCH v2] staging: vme_user: using __func__ to replace function's name in printk
+Date:   Mon, 18 Sep 2023 04:30:19 +0800
+Message-Id: <20230917203019.79180-1-piroyangg@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <9548bc1c-23c9-427f-446e-61f051f14f9c@gmail.com>
+References: <9548bc1c-23c9-427f-446e-61f051f14f9c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e22e61e7-02b1-8127-888d-e470838f4a18@linaro.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 11:41:12AM +0200, Krzysztof Kozlowski wrote:
-> Missing reg. Probably also port.
+Fix issue relating to prink message:
+	*using __func__ to replace function's name
 
-Hello again,
+Issue found by checkpatch
 
-I've been working on v2 of this series and done some initial cleanup.
+Signed-off-by: Piro Yang <piroyangg@gmail.com>
+---
+Changes in v2:
+  - Firstly, fix only one type of Waring by checkpatch.
+	using '"%s...", __func__' substitute for function's name of printked information
 
-Right now it looks a bit like this:
-
-> allOf:
->   - $ref: panel-common.yaml#
->   - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> 
-> properties:
->   compatible:
->     const: fascontek,fs035vg158
-> 
->   spi-3wire: true
-> 
-> required:
->   - compatible
->   - reg
->   - port
->   - power-supply
->   - reset-gpios
-
-Does this seem correct?
-- reg is required by spi-controller
-- port is listed in panel-common
-- power-supply is listed in panel-common
-
-I'm guessing that the required section just lists the minimal
-properties needed for this specific device tree yaml?
-There's nothing implied by allOf?
-
-> Best regards,
-> Krzysztof
-> 
-
-John Watts.
+diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+index 5960562dcd96..de404c6765f3 100644
+--- a/drivers/staging/vme_user/vme.c
++++ b/drivers/staging/vme_user/vme.c
+@@ -418,7 +418,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
+ 	image = list_entry(resource->entry, struct vme_slave_resource, list);
+ 
+ 	if (!bridge->slave_get) {
+-		printk(KERN_ERR "vme_slave_get not supported\n");
++		printk(KERN_ERR "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -568,7 +568,7 @@ int vme_master_set(struct vme_resource *resource, int enabled,
+ 	image = list_entry(resource->entry, struct vme_master_resource, list);
+ 
+ 	if (!bridge->master_set) {
+-		printk(KERN_WARNING "vme_master_set not supported\n");
++		printk(KERN_WARNING "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1552,7 +1552,7 @@ int vme_lm_set(struct vme_resource *resource, unsigned long long lm_base,
+ 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+ 
+ 	if (!bridge->lm_set) {
+-		printk(KERN_ERR "vme_lm_set not supported\n");
++		printk(KERN_ERR "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1588,7 +1588,7 @@ int vme_lm_get(struct vme_resource *resource, unsigned long long *lm_base,
+ 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+ 
+ 	if (!bridge->lm_get) {
+-		printk(KERN_ERR "vme_lm_get not supported\n");
++		printk(KERN_ERR "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1625,7 +1625,7 @@ int vme_lm_attach(struct vme_resource *resource, int monitor,
+ 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+ 
+ 	if (!bridge->lm_attach) {
+-		printk(KERN_ERR "vme_lm_attach not supported\n");
++		printk(KERN_ERR "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1658,7 +1658,7 @@ int vme_lm_detach(struct vme_resource *resource, int monitor)
+ 	lm = list_entry(resource->entry, struct vme_lm_resource, list);
+ 
+ 	if (!bridge->lm_detach) {
+-		printk(KERN_ERR "vme_lm_detach not supported\n");
++		printk(KERN_ERR "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1725,7 +1725,7 @@ int vme_slot_num(struct vme_dev *vdev)
+ 	}
+ 
+ 	if (!bridge->slot_get) {
+-		printk(KERN_WARNING "vme_slot_num not supported\n");
++		printk(KERN_WARNING "%s not supported\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
