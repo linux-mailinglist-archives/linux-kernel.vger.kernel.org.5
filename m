@@ -2,45 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380E37A3601
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32E07A3607
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 17:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbjIQPDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 11:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S236051AbjIQPFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 11:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbjIQPDP (ORCPT
+        with ESMTP id S236747AbjIQPFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 11:03:15 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAD8138;
-        Sun, 17 Sep 2023 08:03:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VsCgFuq_1694962983;
-Received: from 30.32.84.199(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VsCgFuq_1694962983)
-          by smtp.aliyun-inc.com;
-          Sun, 17 Sep 2023 23:03:04 +0800
-Message-ID: <30e6453f-95cc-05fa-9582-6b7447d8e2e6@linux.alibaba.com>
-Date:   Sun, 17 Sep 2023 23:03:03 +0800
+        Sun, 17 Sep 2023 11:05:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7A8185;
+        Sun, 17 Sep 2023 08:05:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 43D2BC433C7;
+        Sun, 17 Sep 2023 15:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694963106;
+        bh=j1JVve+qJ7sTdtq49F/gZGwOv9df2c74smS23KOG1Fk=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=flCT/y/ba3CsA49saOAKIKSSwz2nt5NzlpYejycBqN0DIhgksLY0yMm81Tiefcj4p
+         F5YdR0AfBMlE4VbrOhr5P3GDQU3ICuuw6lA0zi6KwnXpmWMFdi3A+AlnWGCywG19ai
+         NrdixOKwvsz4TZHRDPlTW5H+WjiNrXBuqkBcgPiWdJ4fG8UL1gCGeE+Exr05nHMunY
+         uQhFYQWwLvGldcfn7Oe7P4nACqYn5w3i3F1TOViXeCMOF3MZC85onffv5Bxeelhd36
+         m7go+oOgS/SUPII7K9vAoU7mL6DX9R800D4TWLBSmsi9MK0rRo2JJCzaSvheadGqFt
+         Ypp9FVtAtAf8g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 2A106CD13CF;
+        Sun, 17 Sep 2023 15:05:06 +0000 (UTC)
+From:   Jianguo Bau via B4 Relay <devnull+roidinev.gmail.com@kernel.org>
+Date:   Sun, 17 Sep 2023 23:04:01 +0800
+Subject: [PATCH] mm/writeback: Update filemap_dirty_folio() comment
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] ocfs2: Annotate struct ocfs2_slot_info with __counted_by
-To:     Kees Cook <keescook@chromium.org>, Mark Fasheh <mark@fasheh.com>,
-        akpm <akpm@linux-foundation.org>
-Cc:     Joel Becker <jlbec@evilplan.org>, ocfs2-devel@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230915201522.never.979-kees@kernel.org>
-Content-Language: en-US
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20230915201522.never.979-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Message-Id: <20230917-trycontrib1-v1-1-db22630b8839@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAGAVB2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDS0Nz3ZKiyuT8vJKizCRD3eQki7Q0CxMDc0uTZCWgjoKi1LTMCrBp0bG
+ 1tQBsnUXdXQAAAA==
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jianguo Bau <roidinev@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694963054; l=1010;
+ i=roidinev@gmail.com; s=20230906; h=from:subject:message-id;
+ bh=e7I1qPIXQ/mVKNWlcvVD0erRN97KbQ0kdRdeC2hZk4g=;
+ b=trGc0zHM0wysIWlSONy9j7FLdZmOah1N9MQVJhlsORkyZ2GnQ+Mgw6Lap9SZve9f8nwMvXPJP
+ P5bgnzAkVtXD7zJ5iOftev7XsBu/uEPEdtsdQjHwlVLI1U6JyeYe8uR
+X-Developer-Key: i=roidinev@gmail.com; a=ed25519;
+ pk=Itb2tVLere2RkCXs1smCQpxuXvWY0XesWo353ZMHfxs=
+X-Endpoint-Received: by B4 Relay for roidinev@gmail.com/20230906 with auth_id=82
+X-Original-From: Jianguo Bau <roidinev@gmail.com>
+Reply-To: <roidinev@gmail.com>
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,40 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jianguo Bau <roidinev@gmail.com>
 
+Change to use new address space operation dirty_folio
 
-On 9/16/23 4:15 AM, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct ocfs2_slot_info.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Mark Fasheh <mark@fasheh.com>
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-> Cc: ocfs2-devel@lists.linux.dev
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jianguo Bau <roidinev@gmail.com>
+---
+ mm/page-writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  fs/ocfs2/slot_map.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ocfs2/slot_map.c b/fs/ocfs2/slot_map.c
-> index da7718cef735..e544c704b583 100644
-> --- a/fs/ocfs2/slot_map.c
-> +++ b/fs/ocfs2/slot_map.c
-> @@ -37,7 +37,7 @@ struct ocfs2_slot_info {
->  	unsigned int si_blocks;
->  	struct buffer_head **si_bh;
->  	unsigned int si_num_slots;
-> -	struct ocfs2_slot si_slots[];
-> +	struct ocfs2_slot si_slots[] __counted_by(si_num_slots);
->  };
->  
->  
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index b8d3d7040a50..001adbb4a180 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2679,7 +2679,7 @@ void __folio_mark_dirty(struct folio *folio, struct address_space *mapping,
+  * @folio: Folio to be marked as dirty.
+  *
+  * Filesystems which do not use buffer heads should call this function
+- * from their set_page_dirty address space operation.  It ignores the
++ * from their dirty_folio address space operation.  It ignores the
+  * contents of folio_get_private(), so if the filesystem marks individual
+  * blocks as dirty, the filesystem should handle that itself.
+  *
+
+---
+base-commit: f0b0d403eabbe135d8dbb40ad5e41018947d336c
+change-id: 20230917-trycontrib1-cb8ff840794c
+
+Best regards,
+-- 
+Jianguo Bau <roidinev@gmail.com>
+
