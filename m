@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2139A7A351B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 12:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188627A351E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 12:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbjIQKMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 06:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S236592AbjIQKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 06:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236194AbjIQKMR (ORCPT
+        with ESMTP id S236589AbjIQKM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 06:12:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2DC197;
-        Sun, 17 Sep 2023 03:12:10 -0700 (PDT)
-Date:   Sun, 17 Sep 2023 10:12:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694945528;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=tVm7gmJMnGdDCZVKEuiJdX7a159lvd+qt6GKxewQjf0=;
-        b=IBYMk0xTWKgxyi8TSjN+yS5E2ENVZ6cmek62kHknkR0yHBDWA7K8Fy1ooz2pqXYVnNjfUz
-        Eo79UXzwNiBCwa3dQB01B8/gVTBnA9zH+j7w2GIDZspAxSrs2jte/QrwLbmc+T/CPyDuW8
-        +RhC0YjBy6Pr7xjZHIOpoDA0TUkFSHIC73ZZdjfZBIQc5Bsr1fgPgBj+ezp4gLeETkYRfP
-        lSgVbnDVHzODALqMFZ5WQ8yVt0ujHKiOUbZQhHtq8TmgmLth4zLru7QCMsoTCCW0UYDEFL
-        JfALEcTQTXJ5poPQ6O2MR1STqyV4oDbTaEoGL3DK73J+M+eX8yrwebJrKI/7cQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694945528;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=tVm7gmJMnGdDCZVKEuiJdX7a159lvd+qt6GKxewQjf0=;
-        b=9MbrTzjcm9JM0yaw+mkJoRqkfDzAyYZLZZ6CIElaHVYukgUrc5GeSujOGiL5sRhaLKm8ea
-        mmw47X3XK7dVAfDg==
-From:   "tip-bot2 for Elliot Berman" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/core: Remove ifdeffery for saved_state
-Cc:     Elliot Berman <quic_eberman@quicinc.com>, x86@kernel.org,
+        Sun, 17 Sep 2023 06:12:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AFE18E
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 03:12:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB8CFC433C8;
+        Sun, 17 Sep 2023 10:12:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694945541;
+        bh=Vz8TqJ5fsUVWBLlxF+L0vgftJ77qy5DyQpFe/T5uDSA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IE2A6HVdA9KavFz4dMfFOepJ9/8SSmeIB+lV5zTQ5vWljEypbJEsJzdSWTLKoaapa
+         dWiRE76rvsvkyyPMOAaR263XKCunZTVKrYdz/p7oSrkjcyJT22/xBgngWvXMjxNh12
+         V2ihRnpn/Qyz7vNvpie2bpUArdx9wvOcgSd6iY5w=
+Date:   Sun, 17 Sep 2023 12:12:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     mcgrof@kernel.org, russell.h.weight@intel.com, rafael@kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware_loader: Add reboot_in_progress for user helper
+ path
+Message-ID: <2023091727-clever-schilling-3814@gregkh>
+References: <1694773288-15755-1-git-send-email-quic_mojha@quicinc.com>
 MIME-Version: 1.0
-Message-ID: <169494552813.27769.7209596078545807501.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694773288-15755-1-git-send-email-quic_mojha@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Fri, Sep 15, 2023 at 03:51:28PM +0530, Mukesh Ojha wrote:
+> There could be following scenario where there is a ongoing reboot
+> is going from processA which tries to call all the reboot notifier
+> callback and one of them is firmware reboot call which tries to
+> abort all the ongoing firmware userspace request under fw_lock
+> but there could be another processB which tries to do request
+> firmware, which came just after abort done from ProcessA and
+> ask for userspace to load the firmware and this can stop the
+> ongoing reboot ProcessA to stall for next 60s(default timeout)
+> which may be expected behaviour everyone like to see, instead
+> we should abort every request which came after once firmware
+> marks reboot notification.
+> 
+>       ProcessA                             ProcessB
+> 
+> kernel_restart_prepare
+>   blocking_notifier_call_chain
+>    fw_shutdown_notify
+>      kill_pending_fw_fallback_reqs
+>       __fw_load_abort
+>        fw_state_aborted	              request_firmware
+>          __fw_state_set                   firmware_fallback_sysfs
+> ...                                        fw_load_from_user_helper
+> ..                                         ...
+> .                                          ..
+>                                             usermodehelper_read_trylock
+>                                              fw_load_sysfs_fallback
+>                                               fw_sysfs_wait_timeout
+> usermodehelper_disable
+>  __usermodehelper_disable
+>   down_write()
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+>  drivers/base/firmware_loader/fallback.c | 2 +-
+>  drivers/base/firmware_loader/firmware.h | 1 +
+>  drivers/base/firmware_loader/main.c     | 2 ++
+>  3 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+> index bf68e3947814..a5546aeea91f 100644
+> --- a/drivers/base/firmware_loader/fallback.c
+> +++ b/drivers/base/firmware_loader/fallback.c
+> @@ -86,7 +86,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
+>  	}
+>  
+>  	mutex_lock(&fw_lock);
+> -	if (fw_state_is_aborted(fw_priv)) {
+> +	if (reboot_in_progress || fw_state_is_aborted(fw_priv)) {
+>  		mutex_unlock(&fw_lock);
+>  		retval = -EINTR;
+>  		goto out;
 
-Commit-ID:     fa14aa2c23d31eb39bc615feb920f28d32d2a87e
-Gitweb:        https://git.kernel.org/tip/fa14aa2c23d31eb39bc615feb920f28d32d2a87e
-Author:        Elliot Berman <quic_eberman@quicinc.com>
-AuthorDate:    Fri, 08 Sep 2023 15:49:15 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Sat, 16 Sep 2023 11:16:01 +02:00
+What prevents reboot_in_progress to change right after you check it
+here?
 
-sched/core: Remove ifdeffery for saved_state
+And what kernel driver is trying to call the reboot notifier that gets
+mixed up in this?  Why not fix that driver to not need the reboot
+notifier at all (hint, I really doubt it needs it...)
 
-In preparation for freezer to also use saved_state, remove the
-CONFIG_PREEMPT_RT compilation guard around saved_state.
+> --- a/drivers/base/firmware_loader/main.c
+> +++ b/drivers/base/firmware_loader/main.c
+> @@ -93,6 +93,7 @@ static inline struct fw_priv *to_fw_priv(struct kref *ref)
+>  DEFINE_MUTEX(fw_lock);
+>  
+>  struct firmware_cache fw_cache;
+> +bool reboot_in_progress;
 
-On the arm64 platform I tested which did not have CONFIG_PREEMPT_RT,
-there was no statistically significant deviation by applying this patch.
+Bad global name for a variable in the firmware_loader core.
 
-Test methodology:
+thanks,
 
-perf bench sched message -g 40 -l 40
-
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- include/linux/sched.h | 2 --
- kernel/sched/core.c   | 8 ++------
- 2 files changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 77f01ac..dc37ae7 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -750,10 +750,8 @@ struct task_struct {
- #endif
- 	unsigned int			__state;
- 
--#ifdef CONFIG_PREEMPT_RT
- 	/* saved state for "spinlock sleepers" */
- 	unsigned int			saved_state;
--#endif
- 
- 	/*
- 	 * This begins the randomizable portion of task_struct. Only
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f39482d..49541e3 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2232,23 +2232,20 @@ int __task_state_match(struct task_struct *p, unsigned int state)
- 	if (READ_ONCE(p->__state) & state)
- 		return 1;
- 
--#ifdef CONFIG_PREEMPT_RT
- 	if (READ_ONCE(p->saved_state) & state)
- 		return -1;
--#endif
-+
- 	return 0;
- }
- 
- static __always_inline
- int task_state_match(struct task_struct *p, unsigned int state)
- {
--#ifdef CONFIG_PREEMPT_RT
- 	/*
- 	 * Serialize against current_save_and_set_rtlock_wait_state() and
- 	 * current_restore_rtlock_saved_state().
- 	 */
- 	guard(raw_spinlock_irq)(&p->pi_lock);
--#endif
- 	return __task_state_match(p, state);
- }
- 
-@@ -4038,7 +4035,6 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
- 
- 	*success = !!(match = __task_state_match(p, state));
- 
--#ifdef CONFIG_PREEMPT_RT
- 	/*
- 	 * Saved state preserves the task state across blocking on
- 	 * an RT lock.  If the state matches, set p::saved_state to
-@@ -4054,7 +4050,7 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
- 	 */
- 	if (match < 0)
- 		p->saved_state = TASK_RUNNING;
--#endif
-+
- 	return match > 0;
- }
- 
+greg k-h
