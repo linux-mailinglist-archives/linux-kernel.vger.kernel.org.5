@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11417A3713
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 20:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F36F7A371B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 20:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238888AbjIQSNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 14:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        id S237864AbjIQSTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 14:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238352AbjIQSNC (ORCPT
+        with ESMTP id S238517AbjIQSTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 14:13:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9B6137;
-        Sun, 17 Sep 2023 11:12:56 -0700 (PDT)
-Date:   Sun, 17 Sep 2023 18:12:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694974372;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAP5sltfIcvMA4Q2ijBQ4PWfxzckzT5fgVQ66E1pkdo=;
-        b=CXwEOsj3Cq0eXdGLZSqGiJ/8RQItPFa3orVAwlFOws8iHOwzibvR/JixfzeR2TyE8YZv9K
-        rsrkGBoAsReuw2q8VflB3mLcGhWUzLQdafXApbkjdLdQMOUC7jyvcdxVfEgvwKrr6pO4DQ
-        HemdHIlFNMEViLz/AYM5UZJ0JOLoEL0TBgrI58h8uXmV/ocRlbhpPn9hwwGHf4Y0L2Q8tr
-        sZEaEuu3WdHlPOLYnDY/IK2akMlOrIFlpzrlYp0K34P0YtJXSvIhO3XXpIsKcBl/Cy1oHy
-        4DXImyeWMM2pB8qUPDSKn0DHT6NimyjPADKZ8fyDREIkRUefiPbZSBtcNgQsIw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694974372;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAP5sltfIcvMA4Q2ijBQ4PWfxzckzT5fgVQ66E1pkdo=;
-        b=5/l1GVMCPIPIz70/jw76Oangr4ZLCZgtBDLYvPo/apb/EmMaQY7whssCCgP66Lc1mQlHa6
-        AAQBJD4DX4QXwLDA==
-From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Grab kernel_info offset from zoffset header
- directly
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230915171623.655440-11-ardb@google.com>
-References: <20230915171623.655440-11-ardb@google.com>
+        Sun, 17 Sep 2023 14:19:00 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA460130
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:18:53 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso60818061fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 11:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google; t=1694974732; x=1695579532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L+GZybm26Jw3S/QLqnyCqrZ/lHqylFFuVPFliXlkHwI=;
+        b=daFPiJ5BccJge9gfdHPZsr+R09O6Y2XqKNPQeAONPglVjQlaqkK66Dn5W8SjF99GsN
+         Dc6GxcyHHlnlU7tVdPYhvDsMOQoqHwC2nsEFM1ig5SfrpY/Z1r0Mk8F7OimPLVLF9nCj
+         qKxTPDv8XJ2nQi6o/lgPIfiSwZRqvXoksRFIY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694974732; x=1695579532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L+GZybm26Jw3S/QLqnyCqrZ/lHqylFFuVPFliXlkHwI=;
+        b=AFlaMXRyxINXUGkQaIrI7chaFMZYqdwBfPvlkR2y2HYenlQBJczrfqg08OmaXB8BHf
+         CL4sPR8DAdRmqMJmpesIYv9VR5hjgpnjUeejYDt03gOWNUS19PtbpLXWg/aBw5Owuea0
+         WD6gYHKjYxTRQyKC8EMsZxghP/8LaAsClEUkn2XCBJyZ8setamknmm/ff1MqCfHpxJv7
+         PnKpcb+qW8bg3zYhUNqtAz6QWi65tpuxNXIdPnyQrrXZ85+AeK/IvnCn9nSwT52w2rH1
+         YVzdKB8ua8DExDosmA4YAY1v+An/5ze9AA2Vpe8VrZsBHyCy8cRtdAsCzVjyTjzvkPyG
+         cPNg==
+X-Gm-Message-State: AOJu0YwaqbuKhmR2VpZgoXDG8+YAakCv8vU7CnR0NthWyfTPE+HPGImC
+        TNAEb8IiozipRz6709nJXUp/KCSiW1jt5yETe/ilYA==
+X-Google-Smtp-Source: AGHT+IHCxWbRlQ2+N/9gSVdzC1Np1+nWUoDofADS96XpMKxgBmfPJMd2/4WiuZcmuioPYSiRs2Zwoyut/KuiaTv+kwc=
+X-Received: by 2002:a2e:b98b:0:b0:2c0:d06:9e6b with SMTP id
+ p11-20020a2eb98b000000b002c00d069e6bmr562052ljp.33.1694974731628; Sun, 17 Sep
+ 2023 11:18:51 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169497437238.27769.749289405935929274.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
+In-Reply-To: <20230913152238.905247-3-mszeredi@redhat.com>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Sun, 17 Sep 2023 12:18:15 -0600
+Message-ID: <CAMp4zn-r5BV_T9VBPJf8Z-iG6=ziDEpCdmPgHRRXF78UoOjTjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/boot branch of tip:
+On Wed, Sep 13, 2023 at 9:25=E2=80=AFAM Miklos Szeredi <mszeredi@redhat.com=
+> wrote:
+>
+> Add a way to query attributes of a single mount instead of having to pars=
+e
+> the complete /proc/$PID/mountinfo, which might be huge.
+>
+> Lookup the mount by the old (32bit) or new (64bit) mount ID.  If a mount
+> needs to be queried based on path, then statx(2) can be used to first que=
+ry
+> the mount ID belonging to the path.
+>
+> Design is based on a suggestion by Linus:
+>
+>   "So I'd suggest something that is very much like "statfsat()", which ge=
+ts
+>    a buffer and a length, and returns an extended "struct statfs" *AND*
+>    just a string description at the end."
+>
+> The interface closely mimics that of statx.
+>
+> Handle ASCII attributes by appending after the end of the structure (as p=
+er
+> above suggestion).  Allow querying multiple string attributes with
+> individual offset/length for each.  String are nul terminated (terminatio=
+n
+> isn't counted in length).
+>
+> Mount options are also delimited with nul characters.  Unlike proc, speci=
+al
+> characters are not quoted.
+>
 
-Commit-ID:     2e765c02dcbfc2a8a4527c621a84b9502f6b9bd2
-Gitweb:        https://git.kernel.org/tip/2e765c02dcbfc2a8a4527c621a84b9502f6b9bd2
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Fri, 15 Sep 2023 17:16:25 
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 17 Sep 2023 19:48:42 +02:00
+Thank you for writing this patch. I wish that this had existed the many tim=
+es
+I've written parsers for mounts files in my life.
 
-x86/boot: Grab kernel_info offset from zoffset header directly
-
-Instead of parsing zoffset.h and poking the kernel_info offset value
-into the header from the build tool, just grab the value directly in the
-asm file that describes this header.
-
-This change has no impact on the resulting bzImage binary.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230915171623.655440-11-ardb@google.com
----
- arch/x86/boot/header.S      | 2 +-
- arch/x86/boot/tools/build.c | 4 ----
- 2 files changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index 6059f87..5575d0f 100644
---- a/arch/x86/boot/header.S
-+++ b/arch/x86/boot/header.S
-@@ -526,7 +526,7 @@ pref_address:		.quad LOAD_PHYSICAL_ADDR	# preferred load addr
- 
- init_size:		.long INIT_SIZE		# kernel initialization size
- handover_offset:	.long 0			# Filled in by build.c
--kernel_info_offset:	.long 0			# Filled in by build.c
-+kernel_info_offset:	.long ZO_kernel_info
- 
- # End of setup header #####################################################
- 
-diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index 10b0207..14ef13f 100644
---- a/arch/x86/boot/tools/build.c
-+++ b/arch/x86/boot/tools/build.c
-@@ -59,7 +59,6 @@ static unsigned long efi32_stub_entry;
- static unsigned long efi64_stub_entry;
- static unsigned long efi_pe_entry;
- static unsigned long efi32_pe_entry;
--static unsigned long kernel_info;
- static unsigned long _end;
- 
- /*----------------------------------------------------------------------*/
-@@ -337,7 +336,6 @@ static void parse_zoffset(char *fname)
- 		PARSE_ZOFS(p, efi64_stub_entry);
- 		PARSE_ZOFS(p, efi_pe_entry);
- 		PARSE_ZOFS(p, efi32_pe_entry);
--		PARSE_ZOFS(p, kernel_info);
- 		PARSE_ZOFS(p, _end);
- 
- 		p = strchr(p, '\n');
-@@ -419,8 +417,6 @@ int main(int argc, char ** argv)
- 	update_pecoff_text(setup_sectors * 512, i + (sys_size * 16));
- 
- 	efi_stub_entry_update();
--	/* Update kernel_info offset. */
--	put_unaligned_le32(kernel_info, &buf[0x268]);
- 
- 	crc = partial_crc32(buf, i, crc);
- 	if (fwrite(buf, 1, i, dest) != i)
+What do you think about exposing the locked flags, a la what happens
+on propagation of mount across user namespaces?
