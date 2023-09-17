@@ -2,187 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5845A7A36D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13E77A36DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 19:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbjIQR0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 13:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S237255AbjIQR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 13:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236387AbjIQRZm (ORCPT
+        with ESMTP id S237269AbjIQR0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 13:25:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BB0129;
-        Sun, 17 Sep 2023 10:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694971537; x=1726507537;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ENv6ZjlIdXEExHDoykoerWZ3HKSu0pMx/fFt1/9mHTQ=;
-  b=XqDrpaDQziB4HsjkV7ShmDnJ41C44Z5/pTiCt1OJHqxmP7719yU2ti0b
-   srx2W6Es2R/Gk1bj87D86KyUDcLzI4nh7fWHtj9Lce8Wn6jwnps2dRXNf
-   5ekN9TdJMd106MJxoBwEgIIf+Y/WMywBDUebnsIb49tsvIdXD7MHLIRHp
-   dazLT6g6ebXcUc/FdmGvBcvzMO93dVHs9tezpdmW0zwfT/AdiBJPiVL6C
-   JZ8NcTFXzbpZi1lSNMKPaPbdlpO/yp/P6zUjqR2r0h9HQQ9j7X9Pa7c+D
-   57FhnmwSNwFYEdD9i2kIVbrke4WvVFsoGZgF7mJFzGuGNphzscBukNDSo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="376835043"
-X-IronPort-AV: E=Sophos;i="6.02,154,1688454000"; 
-   d="scan'208";a="376835043"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 10:25:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="774885484"
-X-IronPort-AV: E=Sophos;i="6.02,154,1688454000"; 
-   d="scan'208";a="774885484"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 17 Sep 2023 10:25:33 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qhvWU-0005MK-2l;
-        Sun, 17 Sep 2023 17:25:30 +0000
-Date:   Mon, 18 Sep 2023 01:24:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Abdel Alkuor <alkuor@gmail.com>, heikki.krogerus@linux.intel.com,
-        krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, conor+dt@kernel.org,
-        linux-kernel@vger.kernel.org, abdelalkuor@geotab.com
-Subject: Re: [PATCH v5 04/15] USB: typec: Load TPS25750 patch bundle
-Message-ID: <202309180124.ZkZ5E7oC-lkp@intel.com>
-References: <20230917152639.21443-5-alkuor@gmail.com>
+        Sun, 17 Sep 2023 13:26:23 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2139.outbound.protection.outlook.com [40.107.114.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D47BF9
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 10:26:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E3AScnde9RT/SpOmBfN/MV4i3yg7sMq8eEA9qmsW9kd/3xJHRJC1kZdbCthXqqbLuLwl4y5wsvbOkwlCzIbHONqqAwMOMzvu9DMlY3/PqN+kGC5k24/LTrIvxmzROikkU4mlr5BMroXvH6zhhQeanXY5G6j1RLyoIaqjBEcfcSjO4ODvxB/CaL5qIME8q0U91wIMkGICis/XrpjM4j4xyyx38PD6OIVWt8DpYp9BeOMSBDoWhJGMBmMSSGR5mcPGLMiowp/Cr3d7Zqg0HI4h1YKWsExOCnAzupTJVgtTON/hl0hhPRIzS6Cq/SXGtaYUzeFN7VyywHTkakLcBLglkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Aw668z8Q8SOHtstJVfEMdMZRbqXhCA999Yhd2tyVjt0=;
+ b=nFd1nWMLh5tadgSnLFu5Zg98q8dg6dEbe58YkwwOqg/HhsdhiL/P9TF6sqj2PqNpbC6kNXw3jG7fxUPo1qoU3hijuZYhSnIUDeLVCzxMQczvTgaf4jK7SachmZOf7M8HpbRG4H/Bg54fr5MAtALxmv6VO3PTTprf0Sa/q9DQG8QECJjiOTR1fhxa4HgsHU9PK9VtkiZRofAeXdeOKK9bmmrQTS2dCPqYSGqLD2Y8rPMvnTnCuM1uearPqvik+xx5wGtGN99WACkNQufJJUGSkl/Da427Ym35SsqkngV7Bw5TOxBa60PcuDOrGhoVRaIrHDH3BomFOXS9/SEEnWkgPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Aw668z8Q8SOHtstJVfEMdMZRbqXhCA999Yhd2tyVjt0=;
+ b=xhX0+SOg2xd9INtbCrNekNlueBx3URsa0niyV1mEghN8QvI5x8mP6/ehfIo5qYg51quLCX5g6cOTboYbEZl1uy/tcaBTNNk3JZhxrOsAyb6M8kTLKv9tEKQ5pDbHN9LRcVoyQ0hA7GiFSAEjH6r6AqF5qLTKeXDu/7uQ83dthvY=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYWP286MB3676.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3f4::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.13; Sun, 17 Sep 2023 17:26:14 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::7dbd:f4f5:734e:c93e]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::7dbd:f4f5:734e:c93e%6]) with mapi id 15.20.6813.014; Sun, 17 Sep 2023
+ 17:26:13 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "yunjunlee@chromium.org" <yunjunlee@chromium.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIEFMU0E6IGR1bW15OiBGaXggJmRwY20tPmxvY2sg?=
+ =?utf-8?Q?deadlock_issues?=
+Thread-Topic: [PATCH] ALSA: dummy: Fix &dpcm->lock deadlock issues
+Thread-Index: AQHZp3fywsqsa+nIJUORNCRxL38reK+b0p+AgAEUS5KAgt7nGQ==
+Date:   Sun, 17 Sep 2023 17:26:13 +0000
+Message-ID: <TYCP286MB1188D5F722F42601A08DA29D8AF4A@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB1188FEE149369A32D90DCE288A21A@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+ <87edlzwgti.wl-tiwai@suse.de>
+ <TYCP286MB1188D860B56B9FF1FCAA79148A26A@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <TYCP286MB1188D860B56B9FF1FCAA79148A26A@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCP286MB1188:EE_|TYWP286MB3676:EE_
+x-ms-office365-filtering-correlation-id: db9fe7e5-af71-40f2-f238-08dbb7a33169
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OTyMXyvtwuoIJcWeSjZa/qTgpSQb8T0/6CuTyWqJ/mQ0u6nL48MQznd+6iwRxCP96XA4zFMEsm4VqmFm2qG2zB84o1YAloF+BDIij867RCwhWkHW/ow4ltTd//aefcfa0VUiGNYzhudrK6zpV8+tTomroQt5vGtJrrU7WD9BavAR7zJDK0c7hKc53gerHdEGVwonxfYXUhIitca/K07Tr2NUEV+BIM0L+NYyFfT+W3aI/xIk2IdPmLUYFbNdC5TLacWHturVMLvnlcW7R5iCquzvn1oFEK6fNyI9zhAJK/Vl6h5etxNBi0YoEk7MFgHukdM1PIAHGmiboRWlUhxKsOfKQbuj9QGUfq2tm2DHUhFx6xyCYxDqUOtPS+vXrBzj9vPRVl9R+P2kdQd3jfL/xWlpbnrS0p3rcqOEblwsZNZqrF4E1ZLEUjEs1scJV1E2ewClqWpwzREYXhr8MQH/FidVmXeyUBF0336OZ1ePCtiZubONJfsuDctndEyxErq9aQhSRDMGiCgCvS8FB2ed04RbFtDyCamQGgyOz+BMCwmsDYGl6nIZ4MEBt4XPSPEyxfSckYUyfi6JksPLYHc3rSKfp0W8IBFtNn4n8Cg9I+g=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(136003)(39860400002)(451199024)(186009)(1800799009)(316002)(786003)(6916009)(8936002)(4326008)(41300700001)(55016003)(26005)(83380400001)(9686003)(966005)(224303003)(478600001)(55236004)(7696005)(6506007)(71200400001)(86362001)(122000001)(38070700005)(38100700002)(33656002)(91956017)(76116006)(66476007)(64756008)(54906003)(66446008)(66556008)(66946007)(2906002)(4744005)(5660300002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UG9VeVh2OXc5MmllMGZidk82eWQ1SENYWVNiYnFWM21vMm1rV2VDazhEd0Vw?=
+ =?utf-8?B?Sjc1ZWl6V2tvZzNyaG9BbURJaVllYktER0x1TVpKMzdRK29Uclg2R01FNTA4?=
+ =?utf-8?B?NFNKRUxYbkR3cis5WUtUZlVIclRuakV3MnZOYzJSWTN2QVJSZUZ1Qm1yakpt?=
+ =?utf-8?B?WU5sZ0hNMlMzSmFIU2E4eVNsaUFFN3c0RGhHbFdoQ1hVRklTZzNJMytwbW85?=
+ =?utf-8?B?WWRINVhvbTlKS2pGTXlaNC9yWk9ZeE1RZWRjUlMzdDNNQWlMOGhkaGNSUG5o?=
+ =?utf-8?B?UTRHbndvOTgzL1RNMTAydEpFb29EQWdXR0VDZG9XVmZvZXRyclJUd095SVBv?=
+ =?utf-8?B?bDNzM2JyNE91R29hMWp5S2tlZEhQclNtbWFhK3pvQU9yN2o1N2QwcHh6QmJD?=
+ =?utf-8?B?RE9GMXBXN0NSbDd1VGgwTEpSaHRVU0V1MzN1bG9obERzOHo1ZUZ6S3ZkZ1ZM?=
+ =?utf-8?B?eXJsVm50UGkxNlJZQWplTFNRc3VCb2kyVTFkYnNtQkx5dHBXRmdPQ214SGFw?=
+ =?utf-8?B?UDA2Zit5TXk0Q1dYdy85WktNUlNaL0NkeTRQZ05qMDBra1k1d2pXNU1qZ3ND?=
+ =?utf-8?B?bWNmRFk3OW56VU85T3B4cTd0aGl6a2NOeEsyN1NuMHhEMXh5SG9JNXRnc21Q?=
+ =?utf-8?B?cnI4bmdaSEVEWko2aW5PQy94V1AzdEdRbjB3Tlo1RFhJMUtVNEwxcUNtV2lD?=
+ =?utf-8?B?TXFtc2Z6Y05RalZ3MTBFaXJZRmlkb1J6amwvVFVLT1JDa0x1NlRQazJMQ2Jw?=
+ =?utf-8?B?RkpMc3RSMXAyM3RLOUJ5bG90LytTSVd2ck84RWtqQ3pIWUllaE85VHZFN3c3?=
+ =?utf-8?B?ckw4aWJxWnlCK09ZNS9JdUN2b1dDbFR4cVVDVkhZWjZ5ZTBJeSs0RjJDOS9R?=
+ =?utf-8?B?MUdEYlRSNnlJVXBreFh0ZDMwRzZTZmpsc2NUc1hKMjBKeGZYWXRoU3MyY0ZH?=
+ =?utf-8?B?MG5hUGgzbFVWTm5kU2tXYldqbGxGZGxBU2QzamdOMFEvZU91Si9SaGFhM1hZ?=
+ =?utf-8?B?bTRaNGhPZllhdmlCWHpFeUFRRzZFdWVjbk1XYlJlaXZ1YVNyNkx3cjRjK1Zi?=
+ =?utf-8?B?aGN5SERiUmlyT3p6aW8xMkt0aW1Ub0k2THJjMGRkTWRiemJqSnFTK1FtZzJR?=
+ =?utf-8?B?ZWJHbVJxM3JxU1ZtenRlMmFrYUJ3b1pPK2dzUE53WFIxUit0emxXR1k1Ri80?=
+ =?utf-8?B?TVNaSVhzS1pOTnVJeDhvbTh0QURSaGFzbkRnZ2g0a2NMQ3JZMm50QmRkeDRS?=
+ =?utf-8?B?TitRSlZQaDFsK1Z6aEhsempCazl0NVBjaTduL0s3YzFvQmg0bmpBZ1ZBSDRI?=
+ =?utf-8?B?NWkzM3VWOWJKYmIwdGVsMGNHNHNJVHlUa2gxbDdiWkxET1RCa1pUZlpwY1Zp?=
+ =?utf-8?B?d2RyLzFOa29kY0R2NUgxMUhWN093cjJXdVNkblRxS3IzRitlOVZ1K0ljUElR?=
+ =?utf-8?B?ME9iUWliN2tXMWFIalVhZ3MwVWJhQzJvZ2RCbzRUODVzRFN2cGw2STQvSzJu?=
+ =?utf-8?B?bCs4a2JBb1dmNXgyeGVyNitYcWRkWWcreldYRTlTYjdueEwrTDNXMkZ0eXdy?=
+ =?utf-8?B?ZGFWdUpNNnVkQnQ4SW9BVUVLeVU4aWpwaEgzYmZSbmlsQ25Bb1FQS3cyUXhz?=
+ =?utf-8?B?VWpJUzY4REJrb1YvUml2YWRyK1IzRFRjRHFPS0VWRjJDelZmdXR2ckl6a2kx?=
+ =?utf-8?B?S1pYZzVRYXNyeE02Q0xVNVlYazFXWXVnTjlLaWxDbDRpRmhmM3Q5Ky9CTGNG?=
+ =?utf-8?B?akM2Q2E4Nk41WjZjanlUaDRIVjRVOG1mTGRWNzYvOUt5bFAxWitxM2kwZXk0?=
+ =?utf-8?B?bkF0S1ZENzZkSllPY3lpRDl4NDBRd09LWStxb0VxUlJzRVBoRWx6ZjhUelIy?=
+ =?utf-8?B?dkk2bGdHYm0yV2gydmhrUTdIZjNHS1NDRStPV2NtdHZvSHQ2T0FDRS9waTA5?=
+ =?utf-8?B?ZWp5Z2hoOU9OZmRXU3ZQV1MwK3N1TVNrMStMOWdFWHJBRmNoV3ArUVg4RVFD?=
+ =?utf-8?B?K1h3SmY2Q25SNWRuRWxPc3Y1b2JuRmQycXdIbjFHd1M5VzlORUpCZWVseGlY?=
+ =?utf-8?B?bElrRkxIUjc0b3RQU1U3VFF6dTVpN3F3bDdPYlI5VFNGNmRTN0tUT0JWMUE4?=
+ =?utf-8?Q?PDp2Gf+ncBBPo1Xu3gZka1KAg?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230917152639.21443-5-alkuor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: db9fe7e5-af71-40f2-f238-08dbb7a33169
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2023 17:26:13.9075
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 86SFcgMMGrOiN+AORgA/zRH2FtSSO9I74l6WfVhinB5HQaXjQ1p7utVhnspxJSGVb8Vm1qsJMoaikLnexUH1pw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB3676
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abdel,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on usb/usb-next usb/usb-linus linus/master v6.6-rc1 next-20230915]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Abdel-Alkuor/dt-bindings-usb-tps6598x-Add-tps25750/20230917-233037
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20230917152639.21443-5-alkuor%40gmail.com
-patch subject: [PATCH v5 04/15] USB: typec: Load TPS25750 patch bundle
-config: i386-buildonly-randconfig-006-20230917 (https://download.01.org/0day-ci/archive/20230918/202309180124.ZkZ5E7oC-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230918/202309180124.ZkZ5E7oC-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309180124.ZkZ5E7oC-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/device.h:15,
-                    from include/linux/acpi.h:14,
-                    from include/linux/i2c.h:13,
-                    from drivers/usb/typec/tipd/core.c:9:
-   drivers/usb/typec/tipd/core.c: In function 'tps25750_start_patch_burst_mode':
->> drivers/usb/typec/tipd/core.c:844:21: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'const unsigned int'} [-Wformat=]
-     844 |   dev_err(tps->dev, "Failed to write patch %s of %lu bytes\n",
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/dev_printk.h:110:16: note: in definition of macro 'dev_printk_index_wrap'
-     110 |   _p_func(dev, fmt, ##__VA_ARGS__);   \
-         |                ^~~
-   include/linux/dev_printk.h:144:49: note: in expansion of macro 'dev_fmt'
-     144 |  dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
-         |                                                 ^~~~~~~
-   drivers/usb/typec/tipd/core.c:844:3: note: in expansion of macro 'dev_err'
-     844 |   dev_err(tps->dev, "Failed to write patch %s of %lu bytes\n",
-         |   ^~~~~~~
-   drivers/usb/typec/tipd/core.c:844:52: note: format string is defined here
-     844 |   dev_err(tps->dev, "Failed to write patch %s of %lu bytes\n",
-         |                                                  ~~^
-         |                                                    |
-         |                                                    long unsigned int
-         |                                                  %u
-
-
-vim +844 drivers/usb/typec/tipd/core.c
-
-   801	
-   802	static int tps25750_start_patch_burst_mode(struct tps6598x *tps)
-   803	{
-   804		int ret;
-   805		const struct firmware *fw;
-   806		const char *firmware_name;
-   807		struct {
-   808			u32 fw_size;
-   809			u8 addr;
-   810			u8 timeout;
-   811		} __packed bpms_data;
-   812	
-   813		ret = device_property_read_string(tps->dev, "firmware-name",
-   814						  &firmware_name);
-   815		if (ret)
-   816			return ret;
-   817	
-   818		ret = request_firmware(&fw, firmware_name, tps->dev);
-   819		if (ret) {
-   820			dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
-   821			return ret;
-   822		}
-   823	
-   824		if (fw->size == 0) {
-   825			ret = -EINVAL;
-   826			goto release_fw;
-   827		}
-   828	
-   829		ret = device_property_read_u8(tps->dev, "ti,patch-address", &bpms_data.addr);
-   830		if (ret) {
-   831			dev_err(tps->dev, "failed to get patch address\n");
-   832			return ret;
-   833		}
-   834	
-   835		bpms_data.fw_size = fw->size;
-   836		bpms_data.timeout = TPS_BUNDLE_TIMEOUT;
-   837	
-   838		ret = tps25750_exec_pbms(tps, (u8 *)&bpms_data, sizeof(bpms_data));
-   839		if (ret)
-   840			goto release_fw;
-   841	
-   842		ret = tps25750_write_firmware(tps, bpms_data.addr, fw->data, fw->size);
-   843		if (ret) {
- > 844			dev_err(tps->dev, "Failed to write patch %s of %lu bytes\n",
-   845				firmware_name, fw->size);
-   846			goto release_fw;
-   847		}
-   848	
-   849		/*
-   850		 * A delay of 500us is required after the firmware is written
-   851		 * based on pg.62 in tps6598x Host Interface Technical
-   852		 * Reference Manual
-   853		 * https://www.ti.com/lit/ug/slvuc05a/slvuc05a.pdf
-   854		 */
-   855		udelay(500);
-   856	
-   857	release_fw:
-   858		release_firmware(fw);
-   859	
-   860		return ret;
-   861	}
-   862	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SGkgVGFrYXNoaSwKClNvcnJ5IGZvciBpbnRlcnJ1cHQgeW91IGFnYWluIGFmdGVyIHN1Y2ggYSBs
+b25nIHRpbWUuIEkganVzdCBub3RpY2UgdGhlcmUgd2FzIGFuIG9sZCBwYXRjaCBwb3N0ZWRbMV0g
+ZnJvbSB5b3UgdGhhdCBtYWRlIHBjbSBwb2ludGVyKCkgYW5kIHRyaWdnZXIoKSBjYWxsYmFja3Mg
+Y291bGQgYmVpbmcgYWJsZSB0byBiZSBleGVjdXRlZCB1bmRlciBub24tYXRvbWljIGNvbnRleHQs
+IGJ5IHVzaW5nIG11dGV4IGluc3RlYWQgb2Ygc3Bpbl9sb2NrX2lycSgpLgoKSSBmaW5kIHNldmVy
+YWwgc2ltaWxhciBkZWFkbG9ja3MgbGlrZSB0aGlzIG9uZSBvbiBvdGhlciBwbGFjZXMoaW5zaWRl
+IHBvaW50ZXIoKSBhbmQgdHJpZ2dlcigpIGNhbGxiYWNrcyBhbmQgYmVpbmcgaW50ZXJydXB0ZWQg
+YnkgaGFyZGlycSksIEkgYW0gY29uZnVzaW5nIHdoZXRoZXIgdGhleSBjb3VsZCBiZSByZWFsIGRl
+YWRsb2NrcywgYXMgaWYgdGhlc2UgY2FsbGJhY2tzIGFyZSBleGVjdXRlZCB1bmRlciBub24tYXRv
+bWljIGNvbnRleHQgdGhlbiB0aGV5IGNvdWxkIGJlIHJlYWwgcHJvYmxlbS4KClRoYW5rcyBtdWNo
+IGlmIHlvdSBhcmUgYXZhaWxhYmxlIHRvIHJlcGx5LApDaGVuZ2ZlbmcKClsxXcKgaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2Fsc2EtZGV2ZWwvcGF0Y2gvMTQwOTU3MjgzMi0z
+MjU1My0yLWdpdC1zZW5kLWVtYWlsLXRpd2FpQHN1c2UuZGUv
