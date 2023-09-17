@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974BE7A34FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D366D7A3500
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 11:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbjIQJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 05:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
+        id S235691AbjIQJrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 05:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjIQJqN (ORCPT
+        with ESMTP id S234550AbjIQJrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 05:46:13 -0400
+        Sun, 17 Sep 2023 05:47:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A1E136;
-        Sun, 17 Sep 2023 02:46:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA461C433C7;
-        Sun, 17 Sep 2023 09:46:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4613188;
+        Sun, 17 Sep 2023 02:47:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDFA4C433C7;
+        Sun, 17 Sep 2023 09:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694943966;
-        bh=PRQTZ74W76qbT/4zBV5XcHZim2Zv3vF4LRiK4mfC6hU=;
+        s=k20201202; t=1694944030;
+        bh=Hs/pfO3MtWotH2urHQD9K/7HmqsK4SlxRxtd6Dd4BhQ=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=km9vOKMZmfeau6aTEJOVYFQMTKkS4C4p5iSqN03HSsnpGHGpG2ur2Y0Uy85Yz5HQF
-         6u7IroTigKvEhenzzALBv9VCcE1XU3Zha3vByBlSbUDK5bJgYBT8gJFdoMCc2PFGue
-         /L3fthrl2leKPJvXqIpXv0HtS8lyRS6ZLOhCXGTobl3DKdlnhoX+GlxWE1CxF9O0ER
-         Vq8mFapLb/fQ9sF3rdBeCZUw7FQ6cei4X2CTkH5JFidEncy/hWjgTmBforG6mqlgLb
-         ywGPy/NW6WUELFKAnMoy3NiR9xs5ZFJbRD4pvE8ipsYmd3CN9xvR6AXlzf91LoWvCA
-         G17cXjI3aLJJQ==
-Date:   Sun, 17 Sep 2023 10:45:58 +0100
+        b=njcd4vaMzEQPDqKqfqKbP7oIjIEvPp/kLNgxYJploC/NMJSN/BeBNJ4B4J5UQAy2o
+         iHT2lgk2XU8SzUikFMYTmZKnGNzdt1ZgLQ/tH2F1EaNlmlb8PDOJ2v4312Nl0rCFLh
+         6gyj5aoXo4Z3uk8uXahwc8nLjTF5Af3KmHR0NuOpF2hGh5sABGGQvfHPspiJqSF84D
+         5tSjebr0bFlGMOutxpiOiXSllbr/Vv9mTennQbP7A0khyiFKmO9bI6m3M1jNOQUUCm
+         VoXPGb0/ea5WClMJkO4FVDyfjNllrnKhcZJRZ5bRiAbLJJUwoAi+ioB8MoTaECxt1g
+         IXvHvVIShMaIA==
+Date:   Sun, 17 Sep 2023 10:47:02 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
 To:     Mehdi Djait <mehdi.djait.k@gmail.com>
 Cc:     mazziesaccount@gmail.com, krzysztof.kozlowski+dt@linaro.org,
         andriy.shevchenko@linux.intel.com, robh+dt@kernel.org,
         lars@metafoo.de, linux-iio@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v9 6/7] iio: accel: kionix-kx022a: Add a function to
- retrieve number of bytes in buffer
-Message-ID: <20230917104558.19179dbc@jic23-huawei>
-In-Reply-To: <9c550fb28e34915d473e379f812c7753f7643bae.1694867379.git.mehdi.djait.k@gmail.com>
+Subject: Re: [PATCH v9 0/7] iio: accel: Add support for Kionix/ROHM
+ KX132-1211 accelerometer
+Message-ID: <20230917104702.53b1cafe@jic23-huawei>
+In-Reply-To: <cover.1694867379.git.mehdi.djait.k@gmail.com>
 References: <cover.1694867379.git.mehdi.djait.k@gmail.com>
-        <9c550fb28e34915d473e379f812c7753f7643bae.1694867379.git.mehdi.djait.k@gmail.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -54,137 +53,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Sep 2023 14:38:52 +0200
+On Sat, 16 Sep 2023 14:38:46 +0200
 Mehdi Djait <mehdi.djait.k@gmail.com> wrote:
 
-> Since Kionix accelerometers use various numbers of bits to report data, a
-> device-specific function is required.
-> Implement the function as a callback in the device-specific chip_info structure
+> Hello everyone,
 > 
-> Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
+> Version 9 for adding support for the kx132-1211 accelerometer
+> 
+> KX132-1211 accelerometer is a sensor which:
+> 	- supports G-ranges of (+/-) 2, 4, 8, and 16G
+> 	- can be connected to I2C or SPI
+> 	- has internal HW FIFO buffer
+> 	- supports various ODRs (output data rates)
+> 
+> The KX132-1211 accelerometer is very similar to the KX022A. 
+> One key difference is number of bits to report the number of data bytes that 
+> have been stored in the buffer: 8 bits for KX022A vs 10 bits for
+> KX132-1211.
 
+Series applied with some minor white space tweaks as called out for individual
+patches.
 
->  const struct kx022a_chip_info kx022a_chip_info = {
-> -	.name		  = "kx022-accel",
-> -	.regmap_config	  = &kx022a_regmap_config,
-> -	.channels	  = kx022a_channels,
-> -	.num_channels	  = ARRAY_SIZE(kx022a_channels),
-> -	.fifo_length	  = KX022A_FIFO_LENGTH,
-> -	.who		  = KX022A_REG_WHO,
-> -	.id		  = KX022A_ID,
-> -	.cntl		  = KX022A_REG_CNTL,
-> -	.cntl2		  = KX022A_REG_CNTL2,
-> -	.odcntl		  = KX022A_REG_ODCNTL,
-> -	.buf_cntl1	  = KX022A_REG_BUF_CNTL1,
-> -	.buf_cntl2	  = KX022A_REG_BUF_CNTL2,
-> -	.buf_clear	  = KX022A_REG_BUF_CLEAR,
-> -	.buf_status1	  = KX022A_REG_BUF_STATUS_1,
-> -	.buf_read	  = KX022A_REG_BUF_READ,
-> -	.inc1		  = KX022A_REG_INC1,
-> -	.inc4		  = KX022A_REG_INC4,
-> -	.inc5		  = KX022A_REG_INC5,
-> -	.inc6		  = KX022A_REG_INC6,
-> -	.xout_l		  = KX022A_REG_XOUT_L,
-This is a very good illustration of why aligning value assignments is not
-(in my opinion) a good idea. I'll tweak the earlier patch whilst
-applying to add the extra indent.
+Applied to the togreg branch of iio.git and initially pushed out as testing for
+the autobuilders to poke at it and see what we've missed.
 
-However, in future look through your complete series for cases where
-code added in an earlier patch is simply reformatted in a later one.
+Thanks,
 
-Same applies to the structure kdoc below.
+Jonathan
 
-
-> +	.name				= "kx022-accel",
-> +	.regmap_config			= &kx022a_regmap_config,
-> +	.channels			= kx022a_channels,
-> +	.num_channels			= ARRAY_SIZE(kx022a_channels),
-> +	.fifo_length			= KX022A_FIFO_LENGTH,
-> +	.who				= KX022A_REG_WHO,
-> +	.id				= KX022A_ID,
-> +	.cntl				= KX022A_REG_CNTL,
-> +	.cntl2				= KX022A_REG_CNTL2,
-> +	.odcntl				= KX022A_REG_ODCNTL,
-> +	.buf_cntl1			= KX022A_REG_BUF_CNTL1,
-> +	.buf_cntl2			= KX022A_REG_BUF_CNTL2,
-> +	.buf_clear			= KX022A_REG_BUF_CLEAR,
-> +	.buf_status1			= KX022A_REG_BUF_STATUS_1,
-> +	.buf_read			= KX022A_REG_BUF_READ,
-> +	.inc1				= KX022A_REG_INC1,
-> +	.inc4				= KX022A_REG_INC4,
-> +	.inc5				= KX022A_REG_INC5,
-> +	.inc6				= KX022A_REG_INC6,
-> +	.xout_l				= KX022A_REG_XOUT_L,
-> +	.get_fifo_bytes_available	= kx022a_get_fifo_bytes_available,
->  };
->  EXPORT_SYMBOL_NS_GPL(kx022a_chip_info, IIO_KX022A);
->  
-> diff --git a/drivers/iio/accel/kionix-kx022a.h b/drivers/iio/accel/kionix-kx022a.h
-> index 0e5026019213..7ca48e6f2c49 100644
-> --- a/drivers/iio/accel/kionix-kx022a.h
-> +++ b/drivers/iio/accel/kionix-kx022a.h
-> @@ -76,29 +76,34 @@
->  
->  struct device;
->  
-> +struct kx022a_data;
-> +
->  /**
->   * struct kx022a_chip_info - Kionix accelerometer chip specific information
->   *
-> - * @name:		name of the device
-> - * @regmap_config:	pointer to register map configuration
-> - * @channels:		pointer to iio_chan_spec array
-> - * @num_channels:	number of iio_chan_spec channels
-> - * @fifo_length:	number of 16-bit samples in a full buffer
-> - * @who:		WHO_AM_I register
-> - * @id:			WHO_AM_I register value
-> - * @cntl:		control register 1
-> - * @cntl2:		control register 2
-> - * @odcntl:		output data control register
-> - * @buf_cntl1:		buffer control register 1
-> - * @buf_cntl2:		buffer control register 2
-> - * @buf_clear:		buffer clear register
-> - * @buf_status1:	buffer status register 1
-> - * @buf_read:		buffer read register
-> - * @inc1:		interrupt control register 1
-> - * @inc4:		interrupt control register 4
-> - * @inc5:		interrupt control register 5
-> - * @inc6:		interrupt control register 6
-> - * @xout_l:		x-axis output least significant byte
-> + * @name:			name of the device
-> + * @regmap_config:		pointer to register map configuration
-> + * @channels:			pointer to iio_chan_spec array
-> + * @num_channels:		number of iio_chan_spec channels
-> + * @fifo_length:		number of 16-bit samples in a full buffer
-> + * @who:			WHO_AM_I register
-> + * @id:				WHO_AM_I register value
-> + * @cntl:			control register 1
-> + * @cntl2:			control register 2
-> + * @odcntl:			output data control register
-> + * @buf_cntl1:			buffer control register 1
-> + * @buf_cntl2:			buffer control register 2
-> + * @buf_clear:			buffer clear register
-> + * @buf_status1:		buffer status register 1
-> + * @buf_read:			buffer read register
-> + * @inc1:			interrupt control register 1
-> + * @inc4:			interrupt control register 4
-> + * @inc5:			interrupt control register 5
-> + * @inc6:			interrupt control register 6
-> + * @xout_l:			x-axis output least significant byte
-> + * @get_fifo_bytes_available:	function pointer to get amount of acceleration
-> + *				data bytes currently stored in the sensor's FIFO
-> + *				buffer
->   */
->  struct kx022a_chip_info {
->  	const char *name;
-> @@ -121,6 +126,7 @@ struct kx022a_chip_info {
->  	u8 inc5;
->  	u8 inc6;
->  	u8 xout_l;
-> +	int (*get_fifo_bytes_available)(struct kx022a_data *);
->  };
->  
->  int kx022a_probe_internal(struct device *dev, const struct kx022a_chip_info *chip_info);
+> 
+> Changes in v9:
+> - used i2c_get_match_data
+> - changed the name and description of the function to get available data
+>   in HW fifo buffer
+> - changed the description in the Kconfig file
+> 
+> Changes in v8:
+> - replaced min_t by min and kmalloc by kmalloc_array as suggested by Andy
+> 
+> Changes in v7:
+> - added a min_t in kx132_get_fifo_bytes to ensure that we don't that the
+>   fifo_bytes is never bigger than the 
+>   fifo_length * KX022A_FIFO_SAMPLES_SIZE_BYTES - no matter what we read from I2C
+>   as suggested by Matti
+> 
+> Changes in v6:
+> - check for availability of chip_info for the SPI case
+> - changed the order of elements in the kx022a_data struct to save memory
+> 
+> Changes in v5:
+> - moved the "kfree" call to match the reverse of what happens in 
+>   kx022a_fifo_enable() as suggested by Matti and Jonathan
+> - used min_t, checked for availability of chip_info and moved the
+>   position of u16 buf_smp_lvl_mask as suggested by Andy
+> - introduced buf_smp_lvl_mask in Patch 7 as suggested by Jonathan
+> 
+> Changes in v4:
+> - moved the allocation of the fifo_buffer to kx022a_fifo_enable and
+>   kx022a_fifo_disable
+> - some fixes to the regmap ranges of kx132-1211 
+> 
+> Changes in v3:
+> - added two new patches by separating the addition of the 
+>   i2c_device_id table and the removal of blank lines from other
+>   unrelated changes
+> - fixes a warning detected by the kernel test robot
+> - made all the changes related the chip_info in one patch
+> 
+> Changes in v2:
+> - added a new patch for warning when the device_id match fails in the
+>   probe function
+> - added a new patch for the function that retrieves the number of bytes
+>   in the buffer
+> - added a change to the Kconfig file in the patch adding the support
+>   for the kx132-1211
+> - various fixes and modifications listed under each patch
+> 
+> Mehdi Djait (7):
+>   dt-bindings: iio: Add KX132-1211 accelerometer
+>   iio: accel: kionix-kx022a: Remove blank lines
+>   iio: accel: kionix-kx022a: Warn on failed matches and assume
+>     compatibility
+>   iio: accel: kionix-kx022a: Add an i2c_device_id table
+>   iio: accel: kionix-kx022a: Refactor driver and add chip_info structure
+>   iio: accel: kionix-kx022a: Add a function to retrieve number of bytes
+>     in buffer
+>   iio: accel: Add support for Kionix/ROHM KX132-1211 accelerometer
+> 
+>  .../bindings/iio/accel/kionix,kx022a.yaml     |  12 +-
+>  drivers/iio/accel/Kconfig                     |  10 +-
+>  drivers/iio/accel/kionix-kx022a-i2c.c         |  20 +-
+>  drivers/iio/accel/kionix-kx022a-spi.c         |  15 +-
+>  drivers/iio/accel/kionix-kx022a.c             | 315 ++++++++++++++----
+>  drivers/iio/accel/kionix-kx022a.h             | 112 ++++++-
+>  6 files changed, 409 insertions(+), 75 deletions(-)
+> 
 
