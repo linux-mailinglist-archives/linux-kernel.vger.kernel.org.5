@@ -2,198 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0853E7A341B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 09:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5067A3419
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 09:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbjIQHhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 03:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
+        id S232966AbjIQHiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 03:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbjIQHg6 (ORCPT
+        with ESMTP id S229866AbjIQHhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 03:36:58 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC981A1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 00:36:48 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c0cb43abc4so4713108a34.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 00:36:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694936208; x=1695541008;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Sun, 17 Sep 2023 03:37:22 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E5F18D
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 00:37:16 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so895451fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 00:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694936234; x=1695541034; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bE26Pn3KszQqHBtlJf7ueSc1/XFtxhJ9RbOZVjRXo5U=;
-        b=wNQ7QbVcijyeWWKeC0U56X0SxstlO3yaCA8MOa5dNP1Kxli9iEpAzr6hjLj6lGjnjN
-         1HcFSGz7enUr1cpQUjMFzD7v4O+kxyxvSsWJ7iw121+qp4tiTXodaYX4iXLLxAdePZVn
-         1Hixia2bo14agOYQkoE5DB12RqGRZFw1hCtG5b7W8B/4ookGyYOwSt0ua07iNqYhIdE+
-         G1YV9yWJqq9eJ35274Ce8lZxXZuGYq82KO7BS0LoH/UdkZTMSPdL9C6rLPIqLhNZ1GQT
-         fKEYmm9Qy7xCXG/yvayftjSa/TUbLSKzNOnqTUjtJeHQA4IuIPzPXc8ZxqfTo8XvjZZK
-         hvjw==
-X-Gm-Message-State: AOJu0Yykja+RUIAc83CQDMe3OrxzNCuOi3tQg4CMLL0flu8/v5CexzuD
-        4FTV4nwNtTm1E8PicIzPmwFt0d0/Wo4rua18tYoF8uWA8xJV
-X-Google-Smtp-Source: AGHT+IHY+QJz8l3fnNKfeWvRH3RE3SnTlWdY8U6XeSKUxgsG2xxFlvAQxe5NNxaFeIIuIbP0ycJ8h445kI25u1dhMnoh1JEszxBx
+        bh=RvMkdgtkNGNiDefVNDejUYjyLoLcBedhxBbnbsWuV2o=;
+        b=EdgNhkm2/OWh4eFVILZIOYcI4tTe76U7RLvW2g92A2GSGPxugLoWVmxHGdpAycljam
+         fq5MdFWedy/dktk23hfw2K9ACk7LwQe7JpEQF9L4/Iv5f3E1hFDtioCAtAaJAvqpyBaJ
+         G2D++qYjC9RkEfc51/aHN3dua0gL2Lo264sopwHFpKE9sbd+ZoMviY/m0n2wloSRLQy8
+         n1Sjgf+AgDhI6Xvvyh24WxH8x5kt8vR10fDlkM+jMFjLCqU6y1FR7cP0/vRjiyYpIA/a
+         DwDvCGT2iCPdGJKdFncI9yCemqv2KEiOfv3Tvc6GTPxxZPKnpgKifCmYmsGX3ukriy4+
+         prcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694936234; x=1695541034;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvMkdgtkNGNiDefVNDejUYjyLoLcBedhxBbnbsWuV2o=;
+        b=C6OqlnSwSekhpwVtmfrFpnrT+ohROM/4yLsGE9xeQL7XHqWk+eI8LIeVcA1ragDBYC
+         DEGDWr9RG1mZI6PoCMk+K/6lingId1vpFnVQkIr3nq/kyzdWZ6zNSVdESxBbdn2qq/08
+         0VSAfrPkvtvRLPxIsXbn4ro8c2vsUVf1C4gL2kDpVaiWInqUZn2tJ61gxE3iQ+myRoso
+         dks6lVluLidfw228ZlHQQ4AjxzpWhXBRnfEw0aiOO79qnZ22xsatwfzz094axV/84/5f
+         ILku2PN+26awP3eFrHbhtH92qqDbaF4JJ/su+J896BXk0KPu8H/8JO+JNzIGuo483SEd
+         gtTw==
+X-Gm-Message-State: AOJu0Ywcf1hR4gIDLquEaUSI3rtoIYyJMsYOrYiIaOBLAd7QDywVuO2B
+        euJYBz/xrrX/FePPcf4dNCojlw==
+X-Google-Smtp-Source: AGHT+IEL8NbLQzIyJwWj3iyNixBkp1V6UkVgGtcWAffqfVPS4lYuBlbxvc3fLnB6Mt/CSDQri1aZ8g==
+X-Received: by 2002:a2e:9791:0:b0:2bd:1cd0:603f with SMTP id y17-20020a2e9791000000b002bd1cd0603fmr4929585lji.45.1694936233810;
+        Sun, 17 Sep 2023 00:37:13 -0700 (PDT)
+Received: from [192.168.1.77] (150-140-187-31.ftth.glasoperator.nl. [31.187.140.150])
+        by smtp.gmail.com with ESMTPSA id s22-20020a1709066c9600b00993a9a951fasm4739819ejr.11.2023.09.17.00.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Sep 2023 00:37:13 -0700 (PDT)
+Message-ID: <bbf576d9-ec2c-e243-fddf-9f74ae44e0fd@linaro.org>
+Date:   Sun, 17 Sep 2023 09:37:12 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:2712:b0:6b8:a385:c971 with SMTP id
- j18-20020a056830271200b006b8a385c971mr3891582otu.3.1694936208064; Sun, 17 Sep
- 2023 00:36:48 -0700 (PDT)
-Date:   Sun, 17 Sep 2023 00:36:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009947800605891611@google.com>
-Subject: [syzbot] [hfs?] INFO: task hung in hfsplus_find_init
-From:   syzbot <syzbot+a0767f147b6b55daede8@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: power: qcom,rpmpd: Add SM7150
+Content-Language: en-US
+To:     Danila Tikhonov <danila@jiaxyga.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20230916175952.178611-1-danila@jiaxyga.com>
+ <20230916175952.178611-2-danila@jiaxyga.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230916175952.178611-2-danila@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    a747acc0b752 Merge tag 'linux-kselftest-next-6.6-rc2' of g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=164b208c680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=a0767f147b6b55daede8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fb6508680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16473130680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b28ecb88c714/disk-a747acc0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/03dd2cd5356f/vmlinux-a747acc0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/63365d9bf980/bzImage-a747acc0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/40cbe4c7d1f5/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a0767f147b6b55daede8@syzkaller.appspotmail.com
-
-INFO: task kworker/u4:4:59 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc1-syzkaller-00014-ga747acc0b752 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:4    state:D stack:21480 pid:59    ppid:2      flags:0x00004000
-Workqueue: writeback wb_workfn (flush-7:0)
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6695
- schedule+0xc3/0x180 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
- __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
- hfsplus_find_init+0x14a/0x1c0
- hfsplus_ext_read_extent fs/hfsplus/extents.c:216 [inline]
- hfsplus_file_extend+0x454/0x1b70 fs/hfsplus/extents.c:461
- hfsplus_bmap_reserve+0x105/0x4e0 fs/hfsplus/btree.c:358
- __hfsplus_ext_write_extent+0x2a4/0x5b0 fs/hfsplus/extents.c:104
- hfsplus_ext_write_extent_locked fs/hfsplus/extents.c:139 [inline]
- hfsplus_ext_write_extent+0x16a/0x1f0 fs/hfsplus/extents.c:150
- hfsplus_write_inode+0x22/0x5e0 fs/hfsplus/super.c:154
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0x69b/0xfa0 fs/fs-writeback.c:1668
- writeback_sb_inodes+0x8e3/0x11d0 fs/fs-writeback.c:1894
- __writeback_inodes_wb+0x11b/0x260 fs/fs-writeback.c:1965
- wb_writeback+0x461/0xc60 fs/fs-writeback.c:2072
- wb_check_old_data_flush fs/fs-writeback.c:2176 [inline]
- wb_do_writeback fs/fs-writeback.c:2229 [inline]
- wb_workfn+0xbb5/0xff0 fs/fs-writeback.c:2257
- process_one_work+0x781/0x1130 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0xabf/0x1060 kernel/workqueue.c:2784
- kthread+0x2b8/0x350 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-INFO: lockdep is turned off.
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.6.0-rc1-syzkaller-00014-ga747acc0b752 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x310 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xdf5/0xe40 kernel/hung_task.c:379
- kthread+0x2b8/0x350 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 5033 Comm: syz-executor404 Not tainted 6.6.0-rc1-syzkaller-00014-ga747acc0b752 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:dequeue_task+0x0/0x540 kernel/sched/core.c:2109
-Code: c0 75 14 89 6b 68 4c 89 f7 48 89 de 44 89 fa 5b 41 5e 41 5f 5d eb 13 89 f9 80 e1 07 80 c1 03 38 c1 7c e0 e8 c2 fa 86 00 eb d9 <55> 41 57 41 56 41 55 41 54 53 50 41 89 d7 49 89 f5 48 89 fb 48 ba
-RSP: 0018:ffffc90003c9f9d8 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: ffff88807e6e9dc0 RCX: dffffc0000000000
-RDX: 0000000000000009 RSI: ffff88807e6e9dc0 RDI: ffff8880b983c300
-RBP: ffffc90003c9fc08 R08: ffff88807e6e9dc7 R09: 1ffff1100fcdd3b8
-R10: dffffc0000000000 R11: ffffed100fcdd3b9 R12: 0000000000002001
-R13: ffffc90003c9fd98 R14: 1ffff1100fcdd3b8 R15: dffffc0000000000
-FS:  00005555562d8380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001300 CR3: 000000007498d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- deactivate_task kernel/sched/core.c:2141 [inline]
- __schedule+0x612/0x48f0 kernel/sched/core.c:6649
- schedule+0xc3/0x180 kernel/sched/core.c:6771
- do_nanosleep+0x18a/0x610 kernel/time/hrtimer.c:2047
- hrtimer_nanosleep+0x226/0x460 kernel/time/hrtimer.c:2100
- __do_sys_clock_nanosleep kernel/time/posix-timers.c:1396 [inline]
- __se_sys_clock_nanosleep+0x327/0x3b0 kernel/time/posix-timers.c:1373
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f83775a55b3
-Code: 00 00 00 00 0f 1f 00 83 ff 03 74 7b 83 ff 02 b8 fa ff ff ff 49 89 ca 0f 44 f8 80 3d ee fa 03 00 00 74 14 b8 e6 00 00 00 0f 05 <f7> d8 c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec 28 48 89 54 24 10
-RSP: 002b:00007ffe226c6838 EFLAGS: 00000202 ORIG_RAX: 00000000000000e6
-RAX: ffffffffffffffda RBX: 0000000000003ff0 RCX: 00007f83775a55b3
-RDX: 00007ffe226c6850 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00000000000460e0 R08: 0000000000000010 R09: 00007ffe227d30b0
-R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffe226c68a0
-R13: 00007ffe226c688c R14: 431bde82d7b634db R15: 00007f83775b503b
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.089 msecs
+On 16/09/2023 19:59, Danila Tikhonov wrote:
+> Add a compatible for SM7150 platforms.
+> 
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+Krzysztof
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
