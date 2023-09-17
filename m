@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6327A3530
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 12:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FE37A353C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 12:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbjIQKiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Sep 2023 06:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S235120AbjIQKqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Sep 2023 06:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236949AbjIQKiT (ORCPT
+        with ESMTP id S236043AbjIQKqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Sep 2023 06:38:19 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16646189;
-        Sun, 17 Sep 2023 03:38:12 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2DAAF60008;
-        Sun, 17 Sep 2023 10:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1694947091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=b9jlP+QMwX9cNjlMgnqdJZg9rK01wAc9gTFIwnzsuzg=;
-        b=nHTzyZ2EcVd9psF16qt1mZ8cCRB6QinrWTD+DAM75wicxUhCkBBMPSgTP/6EPNRnm3SmGS
-        7BsoC8FlvsQ5yNFBmLQvLap/v9r+JSMR4PGgUTSHLuYugQeoUuVDrZw1DfnIWdEI1M1ama
-        dkV5HQ3bKD/oJkyKI0bkMhic6GydiLVrh7b/ygrOtAUGyfOyCWQJKPZGo5O89Bo8/SoNDw
-        BWhIQP8Yx2f124OEBk+LWTObUlMRCWfh4/y4EPx5HYnOy9521x/YwVEeAuFqOMHtMDH+oC
-        DAkoGBZZyBPHhnPrvPbK0NTaEtsMVfxUqAjWt/xmISha1ASfUqlyTqmTjrWl5g==
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] mips: dts: ralink: mt7621: define each reset as an item
-Date:   Sun, 17 Sep 2023 13:37:53 +0300
-Message-Id: <20230917103753.52644-1-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.39.2
+        Sun, 17 Sep 2023 06:46:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D35A122;
+        Sun, 17 Sep 2023 03:46:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9D28C433C8;
+        Sun, 17 Sep 2023 10:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694947561;
+        bh=tuneXaC50fCB7oGzaG6oE2MeWCqJV7+eq3Gj9nnslX4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jDjT/cL3+CCoFlvprORtsAbBRN2ODlzr2Q3fu1KXSLOidUQ9dVk7iffauAKhax+nf
+         +CCJ9RnIu8V2B/z6uBB0SqKpswGh/4rn5erdbuDsUyYZ+62deV570WXEfFSg9a+gsc
+         nrRNbZPb+3rMXQBRVtVmn7a5m0SK00AHwQyk2F9R3Qyg7ZdHUiDmdKz3ZsR+/GfIeZ
+         dGvYhbZY/owWv/wn3cYWFtJXasd9huEYYRsx6cI0AGrohIoxWXMK5sGt+4ZIcSxnyi
+         UECG95/5NsEwygGPkmVSDctPTrCdSuGqUshKD3yYENxC3NrUTDEWKftgUx5nUyitQ1
+         mWGLICm/AZayQ==
+Date:   Sun, 17 Sep 2023 11:45:52 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Wadim Egorov <w.egorov@phytec.de>
+Cc:     <lars@metafoo.de>, <robh@kernel.org>, <heiko@sntech.de>,
+        <mugunthanvnm@ti.com>, <peter.ujfalusi@ti.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <upstream@lists.phytec.de>, <nm@ti.com>
+Subject: Re: [PATCH] iio: adc: ti_am335x_adc: Make DMAs optional
+Message-ID: <20230917114552.3f5cd081@jic23-huawei>
+In-Reply-To: <20230914121300.845493-1-w.egorov@phytec.de>
+References: <20230914121300.845493-1-w.egorov@phytec.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each item of the resets property should define a reset. Split the item with
-two resets on the ethernet node into two separate items.
+On Thu, 14 Sep 2023 14:13:00 +0200
+Wadim Egorov <w.egorov@phytec.de> wrote:
 
-Sort the items of the clocks property to the same line as a trivial change.
+> DMAs are optional. Even if the DMA request is unsuccessfully,
+> the ADC can still work properly.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- arch/mips/boot/dts/ralink/mt7621.dtsi | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> Make tiadc_request_dma() not fail if we do not provide dmas &
+> dma-names properties.
+> 
+> This actually fixes the wrong error handling of the tiadc_request_dma()
+> result where the probing only failed if -EPROPE_DEFER was returned.
+> 
+> Fixes: f438b9da75eb ("drivers: iio: ti_am335x_adc: add dma support")
+> 
+No line break here.  Fixes tag is part of the main tag block.
+> Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
 
-diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 7caed0d14f11..35a10258f235 100644
---- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -300,14 +300,13 @@ ethernet: ethernet@1e100000 {
- 		compatible = "mediatek,mt7621-eth";
- 		reg = <0x1e100000 0x10000>;
- 
--		clocks = <&sysc MT7621_CLK_FE>,
--			 <&sysc MT7621_CLK_ETH>;
-+		clocks = <&sysc MT7621_CLK_FE>, <&sysc MT7621_CLK_ETH>;
- 		clock-names = "fe", "ethif";
- 
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		resets = <&sysc MT7621_RST_FE &sysc MT7621_RST_ETH>;
-+		resets = <&sysc MT7621_RST_FE>, <&sysc MT7621_RST_ETH>;
- 		reset-names = "fe", "eth";
- 
- 		interrupt-parent = <&gic>;
--- 
-2.39.2
+
+> ---
+>  drivers/iio/adc/ti_am335x_adc.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
+> index 8db7a01cb5fb..e14aa9254ab1 100644
+> --- a/drivers/iio/adc/ti_am335x_adc.c
+> +++ b/drivers/iio/adc/ti_am335x_adc.c
+> @@ -543,8 +543,11 @@ static int tiadc_request_dma(struct platform_device *pdev,
+>  	if (IS_ERR(dma->chan)) {
+>  		int ret = PTR_ERR(dma->chan);
+>  
+> +		if (ret != -ENODEV)
+> +			return dev_err_probe(&pdev->dev, ret,
+> +					     "RX DMA channel request failed\n");
+>  		dma->chan = NULL;
+> -		return ret;
+> +		return 0;
+>  	}
+>  
+>  	/* RX buffer */
+> @@ -670,7 +673,7 @@ static int tiadc_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, indio_dev);
+>  
+>  	err = tiadc_request_dma(pdev, adc_dev);
+> -	if (err && err == -EPROBE_DEFER)
+> +	if (err)
+
+So this looks like a more subtle change than you are describing.
+In the original code, we backed off only if the return was a PROBE_DEFER, otherwise
+we carried on.
+
+Your change seems to make that happen for any non -ENODEV error, including PROBE_DEFER.
+That's fine, but it's not what the description implies.
+
+Whilst tiadc_request_dma will fail today if the dmas etc is not provided, that seems
+like correct behavior to me.  A function requesting dma fails if it isn't available.
+The handling of whether to carry on the job for the caller.
+
+So I think it should just be
+	if (err && err != -EINVAL)
+		goto err_dma;
+
+and no change in tiadc_request_dma()
+
+However, the case you describe should have worked find with existing code
+as it wasn't -EPROBE_DEFER, so I don't understand why you were looking at this
+code block in the first place?
+
+Jonathan
+
+
+>  		goto err_dma;
+>  
+>  	return 0;
 
