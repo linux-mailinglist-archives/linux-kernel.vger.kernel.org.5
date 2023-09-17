@@ -2,306 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC9D7A336C
+	by mail.lfdr.de (Postfix) with ESMTP id 604457A336B
 	for <lists+linux-kernel@lfdr.de>; Sun, 17 Sep 2023 02:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbjIQABa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Sep 2023 20:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        id S235811AbjIQACB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Sep 2023 20:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234100AbjIQABU (ORCPT
+        with ESMTP id S234100AbjIQABb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Sep 2023 20:01:20 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315FDCCE;
-        Sat, 16 Sep 2023 17:01:15 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40479f8325fso23484245e9.1;
-        Sat, 16 Sep 2023 17:01:15 -0700 (PDT)
+        Sat, 16 Sep 2023 20:01:31 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176E1CD5;
+        Sat, 16 Sep 2023 17:01:25 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b962c226ceso53846391fa.3;
+        Sat, 16 Sep 2023 17:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694908873; x=1695513673; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WnIlyJVW2gmhP2Dn/Bd/4E/FZ5hvuh+9FvEMQcxgx7g=;
-        b=hXaJf805XG6eUN/kNPEaEFYdYphtx3hgarQRjxFMPj/9Z+QZZyUrJ1SBt8Sb8nDb3R
-         NTwtvYI49kat5bFBAK63Kn8aanUIcaQdOUmx4UDIXAtmbnArYL9VX/CDChKaZJOfzz7/
-         BqC2sRmLWP7eM2LSKUp7s7SqCwmuxNavuCrC7UObuW0uKWuRjFWkl9p9Abx6YZV9SBtr
-         LgjSos0Zl6Tknp1a7zZ2paxUHhPr+KNKY3+M8OQhqac+tOZiQIex0PlRxLGPdKCHHkAT
-         fMTzQ4oy8qE9bjsvr7xwEBfM2fW3eL8Wam4VuBfhZ9oFK2dmOgrPvZ/EFit762dRwzuI
-         DPDQ==
+        d=gmail.com; s=20230601; t=1694908883; x=1695513683; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M5KzJtfy9rEXq0MBaQgdwufKj5pDF4WKFfVfyhp2YyI=;
+        b=Y64UOYnXikDcFuDx+aajOo6pUhQ4oOyI8JxN7whHh2+pfnsPdSS4wdsKrSbrmSEkRj
+         CB1C6+I9/pcD/yHVA15PMd+X8kT2n4cewRNqbE6Zi4dVHPeF9M7Uk/eWBGG7RNtLxlUP
+         8C0+bbuRlz99ocnruvX5WIvKhHYaUXzWNtvE2Mj9z/RHiAwKr6+2m7wp/TgRzpuWzEeG
+         YPvEQJtnGp0iXoFYoIYTuFGSA/4zwgTqEvUHr7dGq4A26BeO+w3jWfYCmjAXmxNuVVci
+         9/kqaYPbzkxm3gCz0u/sRgcPM/cfKt+VYRKWEAljtAfgofvHoH3nT9nsPc5BQqQR9kMJ
+         fKiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694908873; x=1695513673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WnIlyJVW2gmhP2Dn/Bd/4E/FZ5hvuh+9FvEMQcxgx7g=;
-        b=wR9uJwxxbDS/1mtyNnKDeww+BajyjPqQsjc4A3ACTa5jxr7psEzPkbTc5vW9TsClTZ
-         MjSQ4RhN9yR/wabzZhQkIr/UXWbgu37OaoQNuqzB84u4BpidKEsMQAa8arKCnmjokjmL
-         5Ut8KXO/paSFb86P4yagyffM9zDa1w61Y+9gOjWzgMW+T0X/zmGVYiFdEqO0gNYJF7o8
-         hdjQWxcnBRy0jOnSywYlWzu9XCWse+XvCSNlRllf9MM20c8Eom54joEBAdM9oA1rr1mv
-         rs71doNf1s8in0D3EW27vJqZM3q/7pf7DY9lokFuYBd0wQQW7cV3P3k5gYzqgEWJCWya
-         j8iw==
-X-Gm-Message-State: AOJu0YzNlGS2GvVECpK9PbyJnHcw0IjNJ+BfBa/qtx7oAYLRM5J2CHHq
-        gcaSAd6E3AH1Orpny/PQqnNlE8EhaI5gCbzy
-X-Google-Smtp-Source: AGHT+IEAdhWjvaq6degj0KLRRnbSPHVlyis+LhgCKjvEG2cpxMXbZq2rzBpHF6yH7BHd0gUA6VyG4A==
-X-Received: by 2002:a7b:c857:0:b0:3ff:233f:2cfb with SMTP id c23-20020a7bc857000000b003ff233f2cfbmr4537605wml.23.1694908873308;
-        Sat, 16 Sep 2023 17:01:13 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id u7-20020a7bc047000000b003fc01189b0dsm8307616wmc.42.2023.09.16.17.01.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 16 Sep 2023 17:01:12 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        d=1e100.net; s=20230601; t=1694908883; x=1695513683;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M5KzJtfy9rEXq0MBaQgdwufKj5pDF4WKFfVfyhp2YyI=;
+        b=N+PU7AISLYAcNHBiOmGYuDIeYuLKbeGF/1mKBws2LV0oBiyw1Yc+E9p8IjYjSNUxD6
+         U8c6csw+ytUEgtMGp4NQNXD85Te/IDgxNW1Luj6oTv6RcuLn5uG7v9iIjqZ/hpryFtb8
+         DFiQZ/LQkGp4npEEiWTlpndJbbAUDQ93T/9wsUztuFSUE7hYsCRLPU1SnVW0S2pFL0er
+         jZq1y+WbLk5RkDSBqJAPTTeTTmwpMn4xx8FO9wKPkieZLFAbNSn1U4VbRIOjX0CSsuo2
+         yHCLpCijRFCQI7QQO4/CTn64qtii7XKNf75XhaKF6zDhRb7v8FjitRNGLWR2xYjX7DqS
+         OUBw==
+X-Gm-Message-State: AOJu0YzeLplz3Jf/sjH8Jryet4xxKabw6wKCyoXrexKFmnwOc1sxiqvB
+        hfNFlpvC0Cs/tN4K8Xllp54=
+X-Google-Smtp-Source: AGHT+IG3Znff0tkoQKyr56afzebXgQaRZcZKnVkS3KMM5h9B/PlluGp1/1QDi9Wxr3qZ8ddO9xsF0A==
+X-Received: by 2002:a2e:9e4e:0:b0:2bc:e46d:f4ca with SMTP id g14-20020a2e9e4e000000b002bce46df4camr4513667ljk.46.1694908882822;
+        Sat, 16 Sep 2023 17:01:22 -0700 (PDT)
+Received: from mobilestation ([95.79.219.206])
+        by smtp.gmail.com with ESMTPSA id u25-20020a2ea179000000b002b9e9a8532dsm1349593ljl.138.2023.09.16.17.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Sep 2023 17:01:22 -0700 (PDT)
+Date:   Sun, 17 Sep 2023 03:01:20 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jan Bottorff <janb@os.amperecomputing.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-Date:   Sun, 17 Sep 2023 00:00:45 +0000
-Message-Id: <20230917000045.56377-2-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230917000045.56377-1-puranjay12@gmail.com>
-References: <20230917000045.56377-1-puranjay12@gmail.com>
+        Will Deacon <will@kernel.org>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalrayinc.com>
+Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
+Message-ID: <xxnggfauhkfum63p5bkgxsu3m5odyjda7pnwpb5ocwf4gez7fh@4lu6qyqy6dvh>
+References: <20230913232938.420423-1-janb@os.amperecomputing.com>
+ <i6h72feyrvo6pajo67b346masyxt7ycpfj46mvrfp4o7suh4ud@xuv5lu64s75m>
+ <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a7a85428-d40d-4adb-8f84-75e1dabe19c9@os.amperecomputing.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
-by bpf_throw() to unwind till the program marked as exception boundary and
-run the callback with the stack of the main program.
+To += Catalin, Will
 
-The prologue generation code has been modified to make the callback
-program use the stack of the program marked as exception boundary where
-callee-saved registers are already pushed.
+Could you please join the discussion and clarify some ARM64 barriers
+aspects?
 
-As the bpf_throw function never returns, if it clobbers any callee-saved
-registers, they would remain clobbered. So, the prologue of the
-exception-boundary program is modified to push R23 and R24 as well,
-which the callback will then recover in its epilogue.
+On Fri, Sep 15, 2023 at 06:47:55PM -0700, Jan Bottorff wrote:
+> On 9/15/2023 8:21 AM, Serge Semin wrote:
+> ...
+> > > diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+> > > index ca1035e010c7..1694ac6bb592 100644
+> > > --- a/drivers/i2c/busses/i2c-designware-master.c
+> > > +++ b/drivers/i2c/busses/i2c-designware-master.c
+> > > @@ -248,6 +248,14 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
+> > >       /* Dummy read to avoid the register getting stuck on Bay Trail */
+> > >       regmap_read(dev->map, DW_IC_ENABLE_STATUS, &dummy);
+> > > 
+> > > +     /*
+> > > +      * To guarantee data written by the current core is visible to
+> > > +      * all cores, a write barrier is required. This needs to be
+> > > +      * before an interrupt causes execution on another core.
+> > > +      * For ARM processors, this needs to be a DSB barrier.
+> > > +      */
+> >
+> > > +     wmb();
+> > 
+> > Based on the patch log and the comment, smp_wmb() seems to be more
+> > suitable here since the problem looks like SMP-specific. Most
+> > importantly the smp_wmb() will get to be just the compiler barrier on
+> > the UP system, so no cache and pipeline flushes in that case.
+> > Meanwhile
+> > 
+> > I am not ARM expert, but based on the problem and the DMB/DSB barriers
+> > descriptions using DMB should be enough in your case since you only
+> > need memory syncs.
+> > 
+> Hi Serge,
+> 
+> I looked at the definition of smp_wmb, and it looks like on arm64 it uses a
+> DMB barrier not a DSB barrier.
+> 
+> In /arch/arm64/include/asm/barrier.h:
+> ...
+> #define __arm_heavy_mb(x...) dsb(x)
+> ...
+> #if defined(CONFIG_ARM_DMA_MEM_BUFFERABLE) || defined(CONFIG_SMP)
+> ...
+> #define wmb()		__arm_heavy_mb(st)
+> ...
+> #define __smp_wmb()	dmb(ishst)
+> 
+> And then in /include/asm-generic/barrier.h it says:
+> #ifdef CONFIG_SMP
+> ...
+> #ifndef smp_wmb
+> #define smp_wmb()	do { kcsan_wmb(); __smp_wmb(); } while (0)
+> #endif
+> 
 
-The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-that registers r19 to r28 should be saved by the callee. BPF programs on
-ARM64 already save all callee-saved registers except r23 and r24. This
-patch adds an instruction in prologue of the  program to save these
-two registers and another instruction in the epilogue to recover them.
+> This looks like wmb() is a DSB and smp_wmb() is a DMB on SMP systems, so the
+> two functions are not equivalent on SMP systems.
 
-These extra instructions are only added if bpf_throw() used. Otherwise
-the emitted prologue/epilogue remains unchanged.
+Right. They aren't. That's why I added a note regarding the DMB
+instruction. Anyway see further for detailed explantation of my point.
 
-[1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
+> 
+> So lets explore if we think DMB or DSB is the correct barrier.
+> 
+> The ARM barrier docs I referred to has a specific example that says this:
+> 
+> "In some message passing systems, it is common for one observer to update
+> memory and then send an interrupt using a mailbox of some sort to a second
+> observer to indicate that memory has been updated and the new
+> contents have been read. Even though the sending of the interrupt using a
+> mailbox might be initiated using a memory access, a DSB barrier
+> must be used to ensure the completion of previous memory accesses.
+> 
+> Therefore the following sequence is needed to ensure that P2 sees the
+> updated value.
+> 
+> P1:
+>  STR R5, [R1] ; message stored to shared memory location
+>  DSB [ST]
+>  STR R1, [R4] ; R4 contains the address of a mailbox
+> 
+> P2:
+>  ; interrupt service routine
+>  LDR R5, [R1]
+> 
+> Even if R4 is a pointer to Strongly-Ordered memory, the update to R1 might
+> not be visible without the DSB executed by P1.
+> It should be appreciated that these rules are required in connection to the
+> ARM Generic Interrupt Controller (GIC).
+> "
+> 
+> I don't positivly understand why it needs to be a DSB and not just a DMB,
+> but this example matches what happens in the driver. The ARM docs do some
+> hand waving that DSB is required because of the GIC.
+> 
+> Unless we can come up with a reason why this example in the ARM Barrier docs
+> is not a match for what happens in the i2c driver, then ARM is saying it has
+> to be a DSB not a DMB. If it needs to be a DSB then smb_wmb is insufficient.
+> 
+> Does anybody else have a different interpretation of this section in the ARM
+> barrier docs? They use the word mailbox, and show a shared memory write, an
+> interrupt triggering write, and a read of shared memory on a different core.
+> Some would describe that as a software mailbox.
+> 
+> I did read someplace (although don't have a specific reference I can give)
+> that ordering applied to normal memory writes are in a different group than
+> ordering applied between strongly ordered accesses. The excerpt from the ARM
+> barrier document above does say "Even if R4 is a pointer to Strongly-Ordered
+> memory, the update to R1 might not be visible without the DSB executed by
+> P1", which implies a DMB is insufficient to cause ordering between normal
+> memory writes and strongly-ordered device memory writes.
+> 
+> I know currently on ARM64 Windows, the low-level kernel device MMIO access
+> functions (like WRITE_REGISTER_ULONG) all have a DSB before the MMIO memory
+> access. That seems a little heavy handed to me, but it also may be that was
+> required to get all the current driver code written for AMD/Intel processors
+> to work correctly on ARM64 without adding barriers in the drivers. There are
+> also non-barrier variants that can be used if a driver wants to optimize
+> performance. Defaulting to correct operation with minimal code changes would
+> reduce the risk to delivery schedules.
+> 
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/arm64/net/bpf_jit_comp.c                | 98 ++++++++++++++++----
- tools/testing/selftests/bpf/DENYLIST.aarch64 |  1 -
- 2 files changed, 79 insertions(+), 20 deletions(-)
+> Linux doesn't seem to make any attempt to have barriers in the low level
+> MMIO access functions. If Linux had chosen to do that on ARM64, this patch
+> would not have been required. For a low speed device like an i2c controller,
+> optimizing barriers likely make little difference in performance.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 7d4af64e3982..fcc55e558863 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -21,6 +21,7 @@
- #include <asm/insn.h>
- #include <asm/patching.h>
- #include <asm/set_memory.h>
-+#include <asm/stacktrace.h>
- 
- #include "bpf_jit.h"
- 
-@@ -285,7 +286,7 @@ static bool is_lsi_offset(int offset, int scale)
- /* Tail call offset to jump into */
- #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
- 
--static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
-+static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_exception_cb)
- {
- 	const struct bpf_prog *prog = ctx->prog;
- 	const bool is_main_prog = !bpf_is_subprog(prog);
-@@ -333,19 +334,28 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
- 	emit(A64_NOP, ctx);
- 
--	/* Sign lr */
--	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
--		emit(A64_PACIASP, ctx);
--
--	/* Save FP and LR registers to stay align with ARM64 AAPCS */
--	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
--	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
--
--	/* Save callee-saved registers */
--	emit(A64_PUSH(r6, r7, A64_SP), ctx);
--	emit(A64_PUSH(r8, r9, A64_SP), ctx);
--	emit(A64_PUSH(fp, tcc, A64_SP), ctx);
--	emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-+	if (!is_exception_cb) {
-+		/* Sign lr */
-+		if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
-+			emit(A64_PACIASP, ctx);
-+		/* Save FP and LR registers to stay align with ARM64 AAPCS */
-+		emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-+		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-+
-+		/* Save callee-saved registers */
-+		emit(A64_PUSH(r6, r7, A64_SP), ctx);
-+		emit(A64_PUSH(r8, r9, A64_SP), ctx);
-+		emit(A64_PUSH(fp, tcc, A64_SP), ctx);
-+		emit(A64_PUSH(fpb, A64_R(28), A64_SP), ctx);
-+	} else {
-+		/* Exception callback receives FP of Main Program as third parameter */
-+		emit(A64_MOV(1, A64_FP, A64_R(2)), ctx);
-+		/*
-+		 * Main Program already pushed the frame record and the callee-saved registers. The
-+		 * exception callback will not push anything and re-use the main program's stack.
-+		 */
-+		emit(A64_SUB_I(1, A64_SP, A64_FP, 80), ctx); /* 10 registers are on the stack */
-+	}
- 
- 	/* Set up BPF prog stack base register */
- 	emit(A64_MOV(1, fp, A64_SP), ctx);
-@@ -365,6 +375,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 		emit_bti(A64_BTI_J, ctx);
- 	}
- 
-+	/*
-+	 * Program acting as exception boundary should save all ARM64 Callee-saved registers as the
-+	 * exception callback needs to recover all ARM64 Callee-saved registers in its epilogue.
-+	 */
-+	if (prog->aux->exception_boundary)
-+		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
-+
- 	emit(A64_SUB_I(1, fpb, fp, ctx->fpb_offset), ctx);
- 
- 	/* Stack must be multiples of 16B */
-@@ -653,7 +670,7 @@ static void build_plt(struct jit_ctx *ctx)
- 		plt->target = (u64)&dummy_tramp;
- }
- 
--static void build_epilogue(struct jit_ctx *ctx)
-+static void build_epilogue(struct jit_ctx *ctx, bool is_exception_cb)
- {
- 	const u8 r0 = bpf2a64[BPF_REG_0];
- 	const u8 r6 = bpf2a64[BPF_REG_6];
-@@ -666,6 +683,14 @@ static void build_epilogue(struct jit_ctx *ctx)
- 	/* We're done with BPF stack */
- 	emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
- 
-+	/*
-+	 * Program acting as exception boundary pushes R23 and R24 in addition to BPF callee-saved
-+	 * registers. Exception callback uses the boundary program's stack frame, so recover these
-+	 * extra registers in the above two cases.
-+	 */
-+	if (ctx->prog->aux->exception_boundary || is_exception_cb)
-+		emit(A64_POP(A64_R(23), A64_R(24), A64_SP), ctx);
-+
- 	/* Restore x27 and x28 */
- 	emit(A64_POP(fpb, A64_R(28), A64_SP), ctx);
- 	/* Restore fs (x25) and x26 */
-@@ -1575,7 +1600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	 * BPF line info needs ctx->offset[i] to be the offset of
- 	 * instruction[i] in jited image, so build prologue first.
- 	 */
--	if (build_prologue(&ctx, was_classic)) {
-+	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
- 		prog = orig_prog;
- 		goto out_off;
- 	}
-@@ -1586,7 +1611,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	}
- 
- 	ctx.epilogue_offset = ctx.idx;
--	build_epilogue(&ctx);
-+	build_epilogue(&ctx, prog->aux->exception_cb);
- 	build_plt(&ctx);
- 
- 	extable_align = __alignof__(struct exception_table_entry);
-@@ -1614,7 +1639,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	ctx.idx = 0;
- 	ctx.exentry_idx = 0;
- 
--	build_prologue(&ctx, was_classic);
-+	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
- 
- 	if (build_body(&ctx, extra_pass)) {
- 		bpf_jit_binary_free(header);
-@@ -1622,7 +1647,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		goto out_off;
- 	}
- 
--	build_epilogue(&ctx);
-+	build_epilogue(&ctx, prog->aux->exception_cb);
- 	build_plt(&ctx);
- 
- 	/* 3. Extra pass to validate JITed code. */
-@@ -2286,3 +2311,38 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
- 
- 	return ret;
- }
-+
-+bool bpf_jit_supports_exceptions(void)
-+{
-+	/* We unwind through both kernel frames (starting from within bpf_throw call) and
-+	 * BPF frames. Therefore we require FP unwinder to be enabled to walk kernel frames and
-+	 * reach BPF frames in the stack trace.
-+	 * ARM64 kernel is aways compiled with CONFIG_FRAME_POINTER=y
-+	 */
-+	return true;
-+}
-+
-+void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-+{
-+	struct stack_info stacks[] = {
-+		stackinfo_get_task(current),
-+	};
-+
-+	struct unwind_state state = {
-+		.stacks = stacks,
-+		.nr_stacks = ARRAY_SIZE(stacks),
-+	};
-+	unwind_init_common(&state, current);
-+	state.fp = (unsigned long)__builtin_frame_address(1);
-+	state.pc = (unsigned long)__builtin_return_address(0);
-+
-+	if (unwind_next_frame_record(&state))
-+		return;
-+	while (1) {
-+		/* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
-+		if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
-+			break;
-+		if (unwind_next_frame_record(&state))
-+			break;
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index f5065576cae9..7f768d335698 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -1,6 +1,5 @@
- bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
- bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
--exceptions					 # JIT does not support calling kfunc bpf_throw: -524
- fexit_sleep                                      # The test never returns. The remaining tests cannot start.
- kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--- 
-2.40.1
+* AFAICS it does for the write(b|w|l|q)() accessors. See __dma_wb(),
+* __io_bw() and __raw_write*() macros. The former one is converted
+* to DMB.
 
+> 
+> Let's look at it from a risk analysis viewpoint. Say a DMB is sufficient and
+> we use the stronger DSB variant, the downside is a few cpu cycles will be
+> wasted in i2c transfers. Say we use a DMB when a DSB is required for correct
+> operation, the downside is i2c operations may malfunction. In this case,
+> using a few extra cpu cycles for an operation that does not happen at high
+> frequency is lower risk than failures in i2c transfers. If there is any
+> uncertainty in what barrier type to use, picking DSB over DMB would be
+> better. We determined from the include fragments above that wmb() give the
+> DSB and smp_wmb() does not.
+> 
+> Based on the above info, I think wmb() is still the correct function, and a
+> change to smp_wmb() would not be correct.
+> 
+> Sorry for the long message, I know some of you will be inspired to think
+> deeply about barriers, and some will be annoyed that I spent this much space
+> to explain how I came to the choice of wmb().
+
+Thank you very much for the very-very-very detailed justification of
+your point. I well understand why you insist on using the mandatory
+barrier on your platform. The thing is that your patch concerns the
+generic driver which is also executed on another archs. Thus we need
+to be very careful with the barrier selection since it may cause
+unpleasant side effects there. For instance some time ago I met a
+problem with using memory barriers on the MMIO accesses on the MIPS
+arch. Full mem access barrier caused the program execution stalling
+for too long so it failed to fetch data from a device Rx FIFO on time.
+FIFO got overrun, data got lost and communications were aborted with an
+error returned. I am not saying that the same problem may happen here,
+but just pointing out that selecting a correct barrier is important.
+
+Since you are fixing a generic driver code we should make the
+decisions based on the problem description and the barriers semantic
+defined by the kernel. If for some reason the solution turns to be not
+working, then it might as well indicate that the barrier isn't working
+as expected by the kernel. Thorough studying the platform-specific
+barrier implementation will be necessary then (what you've already
+done).
+
+Here is what you say regarding the found problem:
+
+"Errors were happening in the ISR that looked like corrupted memory.
+This was because memory writes from the core enabling interrupts were
+not yet visible to the core running the ISR...  Add a write barrier
+before enabling interrupts to assure data written by the current core
+is visible to all cores before the interrupt fires."
+
+Based on that, I can infer that the problem is relevant for the
+SMP-systems only and the root of it is in one CPU/core not seeing data
+written by another CPU/core. Indeed adding a barrier shall fix it.
+Seeing neither uni-processor systems nor any peripheral devices are
+affected, SMP-conditional barrier shall be enough. Here is what [1]
+says regarding the mandatory (mb/rmb/wmb) and SMP-conditional barriers
+(smp_mb, smp_rmb, smp_wmb):
+
+"Note that SMP memory barriers _must_ be used to control the ordering
+of references to shared memory on SMP systems, though the use of
+locking instead is sufficient. ... Mandatory barriers should not be
+used to control SMP effects, since mandatory barriers impose
+unnecessary overhead on both SMP and UP systems. They may, however, be
+used to control MMIO effects on accesses through relaxed memory I/O
+windows. ... SMP memory barriers are reduced to compiler barriers on
+uniprocessor compiled systems because it is assumed that a CPU will
+appear to be self-consistent, and will order overlapping accesses
+correctly with respect to itself."
+
+[1] "CPU MEMORY BARRIERS", Documentation/memory-barriers.txt
+
+(note [1] also contains an example of using the smp_rmb()/smp_wmb()
+barriers in a case similar to yours but involving two tasks instead of
+a task and ISR)
+
+Based on that description, the mandatory and SMP-conditional barriers
+are supposed to similarly function when it comes to ordering the
+shared memory accesses in the SMP systems. Meanwhile the former ones
+cause additional overhead on UPs and MMIO which is out of the defined
+problem scope.
+
+Thus this also indicate that smp_wmb() is your choice here. But adding
+it didn't solve the problem meanwhile using wmb() did. And here we are
+getting to these barriers implementation on ARM64:
+wmb() -> DSB
+smp_wmb() -> DMB
+Again I am not the ARM expert, but based on the text cited in your
+message and what can be found in the Internet I can guess that DMB
+doesn't guarantee the memory write _completion_, but instead make sure
+that the accesses are just orderly executed on the core pipeline (for
+instance just by fetching and dispatching these instructions within
+different core cycles). The writes _completion_ is guaranteed by the
+DSB barrier. Seeing in order to solve the problem you described all
+the writes before the IRQ is raised _must_ be finished for sure to be
+visible on another core executing an ISR, the barrier you need is DSB.
+
+Unless I am mistaken in some aspects all of the considerations above
+make me thinking that perhaps the smp_mb/smp_rmb/smp_wmb barriers
+implementations on ARM64 are incorrect in using DMB and instead should
+be converted to using DSB. Then you'll be able to freely utilize the
+smp_wmb() barrier in the i2c-driver.
+
+Catalin, Will could you please clarify whether what is stated above is
+wrong or correct? Could you give your opinion regarding the issue
+here?
+
+-Serge(y)
+
+> 
+> Thanks,
+> Jan
+> 
+> 
