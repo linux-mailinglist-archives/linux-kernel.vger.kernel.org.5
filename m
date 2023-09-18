@@ -2,102 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E36797A4C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BB87A4CA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjIRPh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 11:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        id S229667AbjIRPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIRPh1 (ORCPT
+        with ESMTP id S229641AbjIRPhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 11:37:27 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905BA1998
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:35:20 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-402d63aeea0so36520365e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Sep 2023 08:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695051165; x=1695655965; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jIAk2l8FHhw3IMNFzU025ohtjmLkXGN9K/jxVvhfHgc=;
-        b=cVJya7SGwuir6CJhIpajM68/heZe5B+pSsxnBEc/3ocVl2x1z00NtcFlwGF65MTNzh
-         GREJtCRbBVDgQknrfT0Dysbj9I2XlBHQ73jvj/QYEQOKr4T1cdfDhP7iSq91AfO3Mmv5
-         iOy5Yh6OuJSwJcavN85F3dHnHQt6L3R+ss/7RHiAtn2fENaDgD4+JbwACBklLc6QmKC3
-         FlmouhDQh4McaiSj1BG7c8SStyckAIUd3XKk6i+0YxQPk0q+yLwbiLVnenxaG3zsAOY2
-         W/7mZnBDcO/d3ZZVl1WGlrxFcZQc5FSBl+jEdwDW7qjbEtwuB8boyTtYcN+7bSsrN5+e
-         PjBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695051165; x=1695655965;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jIAk2l8FHhw3IMNFzU025ohtjmLkXGN9K/jxVvhfHgc=;
-        b=D5GR+YVwQGKKJpDhZuOOb/0A0Ei5xYnkLykrruaPtCY7ANHKOXXQnpxSRCN0POUaxj
-         XkarXQ5xW/l9f6Ytqb6doh7j+eiC3DEEv90J81Od4ZRLrrNPT4/QWQHA+lOFsFXheyZx
-         lOTEaMprGVgcrSkB4eikPEC56MdBINpGAWh8pcjXlb70yO/1YRH0v2l0DCmnmhMVEBuf
-         01YU6WuC+Lhyewbe89I8vWzg072jHTzE4/GuaOiVGsiKIyrAgA6wgcwaT9kJ2rJK9+OM
-         d3NaJnMNOOvNIZ06noLU8Y4sSks+zTaQ28u8dQ6Vnic5+1WhN1SF/kK/jaqZFMSqv/XR
-         sqTg==
-X-Gm-Message-State: AOJu0YzpCQ0iyzmWVRBZKCt94cgvoxe4lDfcqpeVp4P0vBGwUCZZcF6E
-        yWTot1LFf7peXqpb8ozvLw7HazZLrnM=
-X-Google-Smtp-Source: AGHT+IELXYJAnoAFGsKSZw5oJYEMng5RjKbSvSMgpNyd71aIXTCRmRDpGxCijCAPRK+nLCipMRwWfsjljr8=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:dffe:ac34:a8e2:f442])
- (user=glider job=sendgmr) by 2002:a5d:4b4f:0:b0:317:f046:25e6 with SMTP id
- w15-20020a5d4b4f000000b00317f04625e6mr101610wrs.2.1695051165285; Mon, 18 Sep
- 2023 08:32:45 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 17:32:41 +0200
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230918153241.2942764-1-glider@google.com>
-Subject: [PATCH v1] mm: make __GFP_BITS_SHIFT independent of CONFIG_LOCKDEP
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, dvyukov@google.com, elver@google.com,
-        akpm@linux-foundation.org, mingo@kernel.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 18 Sep 2023 11:37:40 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7476E7C;
+        Mon, 18 Sep 2023 08:35:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id BEAFE60187;
+        Mon, 18 Sep 2023 17:33:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695051195; bh=A3WfnsfLKB4VtcRcQCaq2eliYXc65wiKBHGm8p0EGtc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=pI7Du1o+GRfU4t0jynsD0HQL9wLlySZsoVZ5LD5hJ5LJwYWXy3YWlmGAfGKBvPCk+
+         gyDZ0FatE4cArPL/NbWo4YdVL7PmXGBUe1iF3WIztiA52Hlz1cHtBcPpfoy+4kMJz8
+         uHAwwDoxXASnpIEEv8cx4G4U0yUJShYoY1Thlf78PNvs762XR6OEtzdP97ftrYxV7L
+         BWciltZWTrXN7TrMY+f5ZnN9nLlVMYVaK6rnizZopucbcfPkA88c+jqt7i8M2OiJi4
+         4QZuvqHRxCsSmm5K5um3NqMHv6cN7b12vrGhBc9eYRlCMOtZt4PJt/TtLpP4pMNG9s
+         gq6a6bQv+Th6A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 53QGMgYFpOhJ; Mon, 18 Sep 2023 17:33:13 +0200 (CEST)
+Received: from [192.168.1.6] (78-1-184-14.adsl.net.t-com.hr [78.1.184.14])
+        by domac.alu.hr (Postfix) with ESMTPSA id EE7DC60186;
+        Mon, 18 Sep 2023 17:33:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695051193; bh=A3WfnsfLKB4VtcRcQCaq2eliYXc65wiKBHGm8p0EGtc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NwJqq4rZHLOUm6Gt/r/mQU71SI2Iahzv9D5++k4VkAzIixMJPO1oswVddCVuvydus
+         UBMJbZaqLBzpnDaEns4yl7EGXICzx/3G2PJ3dm3B03DdqclXZfPia4hPZbzt2087RO
+         pDcmqSqd+6cPkbv8gVt6cBQKSVqt11LAPmmu4nUzqmUMesBWetjhbleZ+G+OxrjA0s
+         /bXJu84Dk6LUmMk3Cm1/Pi/MI3zqY3KwF3UD1bEHutu4H6OCxxAZrf6tCkcLGiLF7n
+         Io+NoVVOEOJnfH7HJiYC4TZAifXpHEWYrJYeFbp9wcMCMZh/lo4nzPta9VqWHBCvyA
+         Hlwcvt4edcwtg==
+Message-ID: <45a59f35-1e86-67a3-26fc-51fd4a4798e0@alu.unizg.hr>
+Date:   Mon, 18 Sep 2023 17:33:08 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
+ using READ_ONCE()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230918044739.29782-1-mirsad.todorovac@alu.unizg.hr>
+ <20230918094116.2mgquyxhnxcawxfu@quack3>
+ <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
+ <20230918113840.h3mmnuyer44e5bc5@quack3>
+ <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
+ <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The list of GFP flags is sparse already (see 0x200u and flags defined
-based on CONFIG_KASAN_HW_TAGS), so it makes little sense to save one
-bit at the end of it if CONFIG_LOCKDEP is undefined.
+On 9/18/23 16:59, Yury Norov wrote:
+> On Mon, Sep 18, 2023 at 02:46:02PM +0200, Mirsad Todorovac wrote:
+> 
+> ...
+> 
+>> Ah, I see. This is definitely not good. But I managed to fix and test the find_next_bit()
+>> family, but this seems that simply
+>>
+>> -------------------------------------------
+>>   include/linux/xarray.h | 8 --------
+>>   1 file changed, 8 deletions(-)
+>>
+>> diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+>> index 1715fd322d62..89918b65b00d 100644
+>> --- a/include/linux/xarray.h
+>> +++ b/include/linux/xarray.h
+>> @@ -1718,14 +1718,6 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+>>          if (advance)
+>>                  offset++;
+>> -       if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+>> -               if (offset < XA_CHUNK_SIZE) {
+>> -                       unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
+>> -                       if (data)
+>> -                               return __ffs(data);
+>> -               }
+>> -               return XA_CHUNK_SIZE;
+>> -       }
+>>          return find_next_bit(addr, XA_CHUNK_SIZE, offset);
+>>   }
+> 
+> This looks correct. As per my understanding, the removed part is the
+> 1-word bitmap optimization for find_next_bit. If so, it's not needed
+> because find_next_bit() bears this optimization itself.
+> 
+> ...
+> 
+>> --------------------------------------------------------
+>>   lib/find_bit.c | 33 +++++++++++++++++----------------
+>>   1 file changed, 17 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/lib/find_bit.c b/lib/find_bit.c
+>> index 32f99e9a670e..56244e4f744e 100644
+>> --- a/lib/find_bit.c
+>> +++ b/lib/find_bit.c
+>> @@ -18,6 +18,7 @@
+>>   #include <linux/math.h>
+>>   #include <linux/minmax.h>
+>>   #include <linux/swab.h>
+>> +#include <asm/rwonce.h>
+>>   /*
+>>    * Common helper for find_bit() function family
+>> @@ -98,7 +99,7 @@ out:                                                                          \
+>>    */
+>>   unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
+>>   {
+>> -       return FIND_FIRST_BIT(addr[idx], /* nop */, size);
+>> +       return FIND_FIRST_BIT(READ_ONCE(addr[idx]), /* nop */, size);
+>>   }
+>>   EXPORT_SYMBOL(_find_first_bit);
+>>   #endif
+> 
+> ...
+> 
+> That doesn't look correct. READ_ONCE() implies that there's another
+> thread modifying the bitmap concurrently. This is not the true for
+> vast majority of bitmap API users, and I expect that forcing
+> READ_ONCE() would affect performance for them.
+> 
+> Bitmap functions, with a few rare exceptions like set_bit(), are not
+> thread-safe and require users to perform locking/synchronization where
+> needed.
+> 
+> If you really need READ_ONCE, I think it's better to implement a new
+> flavor of the function(s) separately, like:
+>          find_first_bit_read_once()
+> 
+> Thanks,
+> Yury
 
-The dependence of __GFP_BITS_SHIFT on CONFIG_LOCKDEP also does not let us
-add new flags after ___GFP_NOLOCKDEP.
+Hi,
 
-Signed-off-by: Alexander Potapenko <glider@google.com>
+I see the quirk. AFAICS, correct locking would be more expensive than READ_ONCE()
+flavour of functions.
 
----
+Only one has to inspect every line where they are used and see if there is the need
+for the *_read_once() version.
 
-An alternative to this patch would be putting all ___GFP_ flags into
-enum, so that we they occupy as few bits as possible.
-My understanding is that this is doable, because tools/perf/builtin-kmem.c
-does not depend on the flag values, but maybe I am missing something?
----
- include/linux/gfp_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I suppose people will not be happy because of the duplication of code. :-(
 
-diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-index 6583a58670c57..bb8d3b31e3b6d 100644
---- a/include/linux/gfp_types.h
-+++ b/include/linux/gfp_types.h
-@@ -249,7 +249,7 @@ typedef unsigned int __bitwise gfp_t;
- #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
- 
- /* Room for N __GFP_FOO bits */
--#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
-+#define __GFP_BITS_SHIFT (27)
- #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
- 
- /**
--- 
-2.42.0.459.ge4e396fd5e-goog
+It is not a lot of work, I will do a PoC code and see if KCSAN still complains.
+(Which was the basic reason in the first place for all this, because something changed
+data from underneath our fingers ...).
+
+Best regards,
+Mirsad
+
 
