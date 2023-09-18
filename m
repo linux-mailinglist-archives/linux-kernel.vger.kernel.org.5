@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 538227A4DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 18:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05A27A4C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 17:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjIRQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 12:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        id S234966AbjIRP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjIRQBD (ORCPT
+        with ESMTP id S231171AbjIRP0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 12:01:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A071721;
-        Mon, 18 Sep 2023 08:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695052617; x=1726588617;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zIzeB2BdT2vjYKtzNJ2hkECCW7d4ci7KzVMVss7VAyM=;
-  b=J+ovU/s9kqYrZGIE1v+QMOUe/fuXR/L+YkfbaXyYOjeIi5jTTlgjTtwM
-   Z1Og0YDaYQv1QAKbxs/ajAKC8nf8UJpBZZhsw4quR48xwVKnc5NehJ07L
-   ihMErDUW2hx1JPhyRgUvtlLDkwznsm4nP92XWeIW42Ohnf1YqI0fHTkI2
-   cLLF0lIgknP5wxStGSGFzIS87rgCJKaj47gMMCUmCY5Z4/giobFK+qvGl
-   pv+prBImAa65msx/IRjKpE9l4Y+OiYvCQl75gKnXwFuAWCTRRoAa8hHSk
-   cPneKiuRApXyhWjbtuslf/SOxaKWm2/osO3RsrvhUWKEcHR7cbAIfQyM0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="466020665"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="466020665"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 07:40:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="1076611132"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
-   d="scan'208";a="1076611132"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2023 07:39:59 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qiFPp-0000000AyGm-0Mzp;
-        Mon, 18 Sep 2023 17:39:57 +0300
-Date:   Mon, 18 Sep 2023 17:39:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Pearson <mpearson-lenovo@squebb.ca>, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86: think-lmi: Add bulk save feature
-Message-ID: <ZQhhPJsQapKkY39v@smile.fi.intel.com>
-References: <mpearson-lenovo@squebb.ca>
- <20230906121328.50437-1-mpearson-lenovo@squebb.ca>
- <ZQhXZkBHviGOEl-x@smile.fi.intel.com>
- <878da778-e183-6ef5-61ce-3a3d059f1a1e@redhat.com>
+        Mon, 18 Sep 2023 11:26:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45DC100;
+        Mon, 18 Sep 2023 08:24:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5744C3278A;
+        Mon, 18 Sep 2023 14:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695048038;
+        bh=72A3RMIZJmHx8XBk/HX5om5J8tMSKPisdGFQjimNloY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K15hjWmAXXINZIdK+qe8cDfi7qyrC+LpFHt2Kw8DsEfq7LWdUA3gozCcNTIZEau/L
+         Lmd0xPiS1yfrDRe3VIldChXs+tTT31RmcZUAnine+flaLZCo5WzMab/bR4LvvWXX7c
+         +Dx2zBgkOvb8vu2zRKY2MYAfFX6sG3ddTO4f8UTw6hcm5RoWVrv3eKZonCjnYxar3a
+         99uCqo1Q4DrgkmHPnxFpoJ9No95POaBkQfkbO77I9eCPiIcu9tZHsYSuCbrcqqXePd
+         tdkqyYoIMNhC5oCQqiIEMT6JddjMnahAI2s6M3nZqz9Q2s6RHXWdX/ZW4TeJQGGyEx
+         dYUayDs8IeCew==
+Date:   Mon, 18 Sep 2023 15:40:33 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Subject: Re: linux-next: Tree for Sep 15 (drivers/mfd/cs42l43.o)
+Message-ID: <20230918144033.GQ13143@google.com>
+References: <20230915120127.1bc03420@canb.auug.org.au>
+ <fb3f00ab-178c-45cf-ba39-baf61bb3f117@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <878da778-e183-6ef5-61ce-3a3d059f1a1e@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fb3f00ab-178c-45cf-ba39-baf61bb3f117@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 04:07:53PM +0200, Hans de Goede wrote:
-> On 9/18/23 15:57, Andy Shevchenko wrote:
-> > On Wed, Sep 06, 2023 at 08:13:14AM -0400, Mark Pearson wrote:
+On Fri, 15 Sep 2023, Randy Dunlap wrote:
 
-...
-
-> >> +static const char * const save_mode_strings[] = {
-> >> +	[TLMI_SAVE_SINGLE] = "single",
-> >> +	[TLMI_SAVE_BULK] = "bulk",
-> >> +	[TLMI_SAVE_SAVE] = "save"
-> > 
-> > Missing comma.
 > 
-> Fixing this retro-actively is not really useful, if we
-> ever need an extra entry we can deal with the churn then.
+> 
+> On 9/14/23 19:01, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20230914:
+> > 
+> > The btrfs tree gained a conflist against the mm tree.
+> > 
+> > The device-mapper tree gained a build failure so I used the version
+> > from next-20230914.
+> > 
+> > The kspp tree lost its build failure.
+> > 
+> > Non-merge commits (relative to Linus' tree): 5026
+> >  2501 files changed, 391711 insertions(+), 34318 deletions(-)
+> > 
+> > ----------------------------------------------------------------------------
+> > 
+> 
+> on arm64:
+> 
+> aarch64-linux-ld: drivers/mfd/cs42l43.o: in function `cs42l43_boot_work':
+> cs42l43.c:(.text+0x19d4): undefined reference to `devm_regmap_add_irq_chip'
+> 
+> Using GCC 13.2.0 from kernel.org crosstools.
+> 
+> Full randconfig file is attached.
 
-I agree, but this is to give a comprehensive review as long as I went through
-the entire change.
+Who is the intended consumer of this report?
 
-> >> +};
+Are you planning on following up with a patch?
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Lee Jones [李琼斯]
