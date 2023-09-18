@@ -2,149 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4DE7A41A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779457A419B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Sep 2023 08:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbjIRG5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Sep 2023 02:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        id S239945AbjIRG4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Sep 2023 02:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240049AbjIRG5K (ORCPT
+        with ESMTP id S239933AbjIRG4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Sep 2023 02:57:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C78E7
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695020179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h2mcwAczqQrH8FC4T+/52u6VelTTkFaOGAGOTHdcUPg=;
-        b=RF6zF9BxAvpjqkGXVGDNq5/ZYynx7F0HhgQMG849GAgnFLeyVdRZA4cxYYhNHsQlawQTBa
-        i96P+pYSV/rH/Bw41jlyDKXNq2vNj+BC94K/wLtR4DFFs89Ix8AaAzMG4IGLLuMQ/vPwsc
-        P4IOIWV9C4pbQhuAqI5g0p0pk171OrY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-341-exEd27FkOQ--mw8D3_lKJA-1; Mon, 18 Sep 2023 02:56:13 -0400
-X-MC-Unique: exEd27FkOQ--mw8D3_lKJA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30932d15a30so2794072f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Sep 2023 23:56:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695020172; x=1695624972;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h2mcwAczqQrH8FC4T+/52u6VelTTkFaOGAGOTHdcUPg=;
-        b=QJvEj6tWWlCrkfKLRTCHfYZLo+b38FFq8iGG3mgWQlGTX7K8r8fIcnnHw+sQwjD+9T
-         eVllFauOR0aFMlr8EeRnoxq2jqyUeXgCpW91dDMF/QSOO9jD1mwlgzPsqNC7E8Y16Kks
-         xdsZMgYnugZZEd0JVlomAWUP/lp+PH9PR5flW7aPpGDhn2P9jQX2OV5hjGxrZfTfpQ4f
-         JIGSImTYlgToVFfL52wMjkhL+eOfu3qDYzXadarMXwurQNyHP7ke3EKhOKevd19MSWYD
-         dDEtKw5F62TxoBj4Lhpd4JRSN+ipzpA7/OZw1oMuLfXSml0hOLMdYRDMB3LMHCxZkR39
-         qqeg==
-X-Gm-Message-State: AOJu0Yz9DbwBRc46bbtRvANYAFe00TZXgHpMEJc/qsZRCCI7RQEw+fjz
-        ZuKdO2aLUbzuWk/cR9XgrSY9F/DldZwofdZTPneoQgqeHElBFoHairedecaVlEU/pnzwWhUMpiA
-        kARYVww2ZTmoab77pFGviSSeezMUr3qMI
-X-Received: by 2002:a5d:4c4a:0:b0:31f:8999:c409 with SMTP id n10-20020a5d4c4a000000b0031f8999c409mr6947602wrt.66.1695020172211;
-        Sun, 17 Sep 2023 23:56:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG6F/Z9q4tB58E26+mCTcb2TpjD2EEslfwOYb0HqPPBuG0zLaR6K3OsqOUHedxMDM3AqkpDEA==
-X-Received: by 2002:a5d:4c4a:0:b0:31f:8999:c409 with SMTP id n10-20020a5d4c4a000000b0031f8999c409mr6947581wrt.66.1695020171900;
-        Sun, 17 Sep 2023 23:56:11 -0700 (PDT)
-Received: from [10.33.192.205] (nat-pool-str-t.redhat.com. [149.14.88.106])
-        by smtp.gmail.com with ESMTPSA id t3-20020a05600001c300b003143b14848dsm11523936wrx.102.2023.09.17.23.56.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 23:56:11 -0700 (PDT)
-Message-ID: <a6a77718-219f-30f6-b8de-acd7aadf3b0c@redhat.com>
-Date:   Mon, 18 Sep 2023 08:56:09 +0200
+        Mon, 18 Sep 2023 02:56:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F809E7;
+        Sun, 17 Sep 2023 23:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695020178; x=1726556178;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XrSfw2W0O+t/0lvXd45ewRtfb5Pv7XZcrDJN+rZoBSI=;
+  b=gNabwxF8llHsdhIe8maUWf/t/4QlZtH0T6AVWzf8Ggs5A8mJ6Td8qXos
+   WZMAR6CEWARYShn24DRsS9+REM5fCcyVKZWSSLrXgppDxS4jpaRAa2VP7
+   TXsbS/HdQjtEciMHSR0SFnxbzwz1/1k9KtIupg48kxoU1GZQ+ChWZC6EJ
+   7OPWnUJAe/s8oSeJykZkGDqKGpTmAW4zj7goxaXl7zQsATi0oVyKfIk1g
+   ugx4dbWQWanywbMYOric2eUZ0Cy4SZ+F+hnbg0spqpK78Pxr3wNul9Wtj
+   51m3exxNTO6/ADFXRZGcM1XGlNYE22WciATmptNp3ek9f1ORJYOIMviT1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="383402053"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="383402053"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:56:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="919354263"
+X-IronPort-AV: E=Sophos;i="6.02,156,1688454000"; 
+   d="scan'208";a="919354263"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 23:56:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qi8B3-0000000DXFJ-33wO;
+        Mon, 18 Sep 2023 09:56:13 +0300
+Date:   Mon, 18 Sep 2023 09:56:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH resend] kstrtox: Remove strtobool()
+Message-ID: <ZQf0jUg6DP42Mgi2@smile.fi.intel.com>
+References: <87e3cc2547df174cd5af1fadbf866be4ef9e8e45.1694878151.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 18/26] KVM: s390: Stop adding virt/kvm to the arch include
- path
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
-References: <20230916003118.2540661-1-seanjc@google.com>
- <20230916003118.2540661-19-seanjc@google.com>
-From:   Thomas Huth <thuth@redhat.com>
-In-Reply-To: <20230916003118.2540661-19-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87e3cc2547df174cd5af1fadbf866be4ef9e8e45.1694878151.git.christophe.jaillet@wanadoo.fr>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2023 02.31, Sean Christopherson wrote:
-> Don't add virt/kvm to KVM s390's include path, the headers in virt/kvm are
-> intended to be used only by other code in virt/kvm, i.e. are "private" to
-> the core KVM code.  It's not clear that s390 *ever* included a header from
-> virt/kvm, i.e. odds are good the "-Ivirt/kvm" was copied from a x86's
-> Makefile when s390 support was first added.
-> 
-> The only headers in virt/kvm at the time were the x86 specific ioapic.h,
-> and iodev.h, neither of which shows up as an #include in the diff for the
-> commit range 37817f2982d0f..e976a2b997fc4.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/s390/kvm/Makefile | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/Makefile b/arch/s390/kvm/Makefile
-> index 02217fb4ae10..f17249ab2a72 100644
-> --- a/arch/s390/kvm/Makefile
-> +++ b/arch/s390/kvm/Makefile
-> @@ -5,7 +5,7 @@
->   
->   include $(srctree)/virt/kvm/Makefile.kvm
->   
-> -ccflags-y := -Ivirt/kvm -Iarch/s390/kvm
-> +ccflags-y := -Iarch/s390/kvm
->   
->   kvm-y += kvm-s390.o intercept.o interrupt.o priv.o sigp.o
->   kvm-y += diag.o gaccess.o guestdbg.o vsie.o pv.o
+On Sat, Sep 16, 2023 at 05:50:11PM +0200, Christophe JAILLET wrote:
+> The conversion from strtobool() to kstrtobool() is completed.
+> So strtobool() can now be removed.
 
-Reviewed-by: Thomas Huth <thuth@redhat.com>
+Thank you for this cleaning up and previous work you have done to make this
+occur!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
